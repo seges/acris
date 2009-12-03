@@ -4,14 +4,14 @@
 
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
-	<artifactId>sesam</artifactId>
-	<version>1.0.5-SNAPSHOT-code-google</version>
+	<artifactId>sesam-os</artifactId>
+	<version>1.0.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
-		<artifactId>sesam-base-parent</artifactId>
-		<version>1.0.5-code-google</version>
+		<artifactId>sesam-os-base-parent</artifactId>
+		<version>1.0.5</version>
 	</parent>
 
 	<!-- More Project Information -->

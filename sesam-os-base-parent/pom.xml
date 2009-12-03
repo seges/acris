@@ -4,8 +4,8 @@
 
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
-	<artifactId>sesam-base-parent</artifactId>
-	<version>1.0.5-code-google</version>
+	<artifactId>sesam-os-base-parent</artifactId>
+	<version>1.0.5</version>
 	<packaging>pom</packaging>
 
 	<!-- More Project Information -->
