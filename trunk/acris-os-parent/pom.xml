@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
-	<artifactId>acris-parent</artifactId>	
-	<version>1.0.0-SNAPSHOT-code-google</version>
+	<artifactId>acris-os-parent</artifactId>	
+	<version>1.0.0-SNAPSHOT</version>
 	<name>AcrIS Parent</name>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
-		<artifactId>acris-gwt-parent</artifactId>
-		<version>1.0.14-code-google</version>
+		<artifactId>acris-os-gwt-parent</artifactId>
+		<version>1.0.14</version>
 	</parent>
 
 	<repositories>
@@ -45,7 +45,7 @@
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
 		
-		<sesam.version>1.0.5-code-google</sesam.version>
+		<sesam.version>1.0.5</sesam.version>
 	</properties>
 	
 	<dependencyManagement>
