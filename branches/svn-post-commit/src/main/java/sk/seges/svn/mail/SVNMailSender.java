@@ -65,6 +65,9 @@ public class SVNMailSender {
 			}
 
             for (String mail : mails) {
+            	if (mail == null) {
+            		continue;
+            	}
 				try {
 		            Message msg = new MimeMessage(session);
 		            msg.setFrom(new InternetAddress(mailConfiguration.getFromMail()));
