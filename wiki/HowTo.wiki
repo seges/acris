@@ -1,0 +1,13 @@
+#labels Phase-Implementation
+= Steps to setup the acris project = 
+
+Prerequisites:
+  * JDK 1.6+
+  * Maven [2.0.9,>
+
+Step:
+  * Download sources from http://acris.googlecode.com/svn/trunk/
+  * cd acris-parent
+  * mvn clean source:jar install
+
+ 
