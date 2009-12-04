@@ -4,7 +4,7 @@
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-gwt-parent</artifactId>
-	<version>1.0.14</version>
+	<version>1.0.15-SNAPSHOT</version>
 	<name>AcrIS Google Web Toolkit Parent</name>
 
 	<parent>
