@@ -14,7 +14,7 @@ import javax.servlet.ServletContext;
 public class MailConfiguration {
 	private List<String> mailAddress = new ArrayList<String>();
 	private String fromMail;
-	
+		 
 	public MailConfiguration(ServletContext context) {
 		
 		Properties properties;
@@ -37,11 +37,6 @@ public class MailConfiguration {
 		for (String mail: mails) {
 			mailAddress.add(mail);
 		}
-		
-//		mailAddress.add("simun@seges.sk");
-//		mailAddress.add("gazo@seges.sk");
-//		mailAddress.add("grosos@seges.sk");
-//		mailAddress.add("sivak@seges.sk");
 	}
 	
 	public List<String> getMailAddresses() {
