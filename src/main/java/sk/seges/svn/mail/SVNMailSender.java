@@ -64,20 +64,20 @@ public class SVNMailSender {
 				body += "D " + change + lineSeparator;
 			}
 
-			try {
-	            Message msg = new MimeMessage(session);
-	            msg.setFrom(new InternetAddress(mailConfiguration.getFromMail()));
-	            for (String mail : mails) {
-	    			log.info("Sending mail to: " + mail);
-		            msg.addRecipient(Message.RecipientType.TO,
-		                             new InternetAddress(mail));
-	            }
-	            msg.setSubject("[SVN - " + commitInfo.getRepositoryPath() + "]: " + revisionInfo.getMessage());
-	            msg.setText(body);
-	            Transport.send(msg);
-	        } catch (Exception e) {
-	        	throw new RuntimeException(e);
-	        }
+            for (String mail : mails) {
+				try {
+		            Message msg = new MimeMessage(session);
+		            msg.setFrom(new InternetAddress(mailConfiguration.getFromMail()));
+		    			log.info("Sending mail to: " + mail);
+			            msg.addRecipient(Message.RecipientType.TO,
+			                             new InternetAddress(mail));
+		            msg.setSubject("[SVN - " + commitInfo.getRepositoryPath() + "]: " + revisionInfo.getMessage());
+		            msg.setText(body);
+		            Transport.send(msg);
+		        } catch (Exception e) {
+		        	throw new RuntimeException(e);
+		        }
+            }
 		}
 	}
 }
