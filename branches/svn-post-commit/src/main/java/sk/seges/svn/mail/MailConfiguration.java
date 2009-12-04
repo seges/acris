@@ -27,8 +27,7 @@ public class MailConfiguration {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		String from = (String)properties.get("from");
-		mailAddress.add(from);
+		fromMail = (String)properties.get("from");
 
 		String to = (String)properties.get("to");
 		
