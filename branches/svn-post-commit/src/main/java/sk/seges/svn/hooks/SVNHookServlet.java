@@ -5,15 +5,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -89,21 +83,6 @@ public class SVNHookServlet extends HttpServlet {
 
 			result = "Message authenticated successfully!";
 		} else {
-			Properties props = new Properties();
-	        Session session = Session.getDefaultInstance(props, null);
-
-	        try {
-		        Message msg = new MimeMessage(session);
-	            msg.setFrom(new InternetAddress("simun@seges.sk"));
-	            msg.addRecipient(Message.RecipientType.TO,
-	                             new InternetAddress("peter.simun@saf-ag.com"));
-	            msg.setSubject("Wrong auth");
-	            msg.setText("Message authentication failed!");
-	            Transport.send(msg);
-	        } catch (Exception e) {
-	        	throw new RuntimeException(e);
-	        }
-	        
             result = "Message authentication failed!";
 		}
 		response.getWriter().write(result);
