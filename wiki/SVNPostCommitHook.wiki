@@ -1,0 +1,21 @@
+#labels Phase-Deploy
+Description of custom SVN post commits notification using hooks implemented in Java and deployed on Google AppEngine.
+
+= Intructions =
+
+We are using free deployment environment for Java application provided by Google App engine on acris-gwt.appspot.com. If you are acris developer just commit your changes and email notification will be delivered to you.
+
+If you want to set-up SVN mail notifications on your own, follow the next steps:
+  * install GEP and GAP (instalation guide is here: http://code.google.com/intl/sk-SK/appengine/docs/java/gettingstarted/installing.html)
+  * download sources from 
+{{{https://acris.googlecode.com/svn/branches/svn-post-commit}}}
+  * generate eclipse project using maven (command mvn eclipse:clean eclipse:eclipse)
+  * import your project into the eclipse workspace
+  * enable Google App engine support to your project
+[http://code.google.com/p/acris/source/browse/wiki/images/svnhook_gep_configration.PNG]
+  * create GAP lanucher
+[http://code.google.com/p/acris/source/browse/wiki/images/svnhook_gep_launcher.PNG]
+  * Deploy the application
+[http://code.google.com/p/acris/source/browse/wiki/images/svnhook_gap_deploy.PNG]
+
+One step is missing :) I will add this step after I'll drink some beers
