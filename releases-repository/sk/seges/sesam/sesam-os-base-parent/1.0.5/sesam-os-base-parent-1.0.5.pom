@@ -4,8 +4,8 @@
 
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
-	<artifactId>sesam-base-parent</artifactId>
-	<version>1.0.5-code-google</version>
+	<artifactId>sesam-os-base-parent</artifactId>
+	<version>1.0.5</version>
 	<packaging>pom</packaging>
 
 	<!-- More Project Information -->
@@ -21,7 +21,7 @@
 
 	<repositories>
 		<repository>
-			<id>seges-snapshots-repo</id>
+			<id>acris-snapshots-repo</id>
   			<url>http://acris.googlecode.com/svn/snapshot-repository/</url>
 			<snapshots>
 				<enabled>true</enabled>
@@ -31,7 +31,7 @@
 			</releases>
 		</repository>
 		<repository>
-			<id>seges-releases-repo</id>
+			<id>acris-releases-repo</id>
   			<url>http://acris.googlecode.com/svn/releases-repository/</url>
 			<snapshots>
 				<enabled>false</enabled>
