@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -19,6 +20,8 @@ public class SVNMailSender {
 	private OverallInfo commitInfo;
 	private MailConfiguration mailConfiguration;
 	
+	private static final Logger log = Logger.getLogger(SVNMailSender.class.getName());
+
 	public SVNMailSender(MailConfiguration mailConfiguration, OverallInfo commitInfo) {
 		this.commitInfo = commitInfo;
 		this.mailConfiguration = mailConfiguration;
@@ -43,10 +46,10 @@ public class SVNMailSender {
 			body += "" + lineSeparator;
 			
 			Date date = new Date();
-			date.setTime(revisionInfo.getTimestamp());
+			date.setTime(revisionInfo.getTimestamp() * 1000);
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z (EEE, dd MMM yyyy)");
 			
-			body += "Date: " + dateFormat.format(date) + lineSeparator + lineSeparator;
+			body += "Date: " + dateFormat.format(date) + lineSeparator;
 			body += "Log msg: " + revisionInfo.getMessage() + lineSeparator;
 			body += "" + lineSeparator;
 			body += "Changes:" + lineSeparator;
@@ -63,10 +66,12 @@ public class SVNMailSender {
 
 			try {
 	            Message msg = new MimeMessage(session);
-	            msg.setFrom(new InternetAddress("devel@seges.sk"));
-	            for (String mail : mails) 
+	            msg.setFrom(new InternetAddress(mailConfiguration.getFromMail()));
+	            for (String mail : mails) {
+	    			log.info("Sending mail to: " + mail);
 		            msg.addRecipient(Message.RecipientType.TO,
 		                             new InternetAddress(mail));
+	            }
 	            msg.setSubject("[SVN - " + commitInfo.getRepositoryPath() + "]: " + revisionInfo.getMessage());
 	            msg.setText(body);
 	            Transport.send(msg);
