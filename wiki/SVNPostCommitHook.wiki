@@ -12,10 +12,10 @@ If you want to set-up SVN mail notifications on your own, follow the next steps:
   * generate eclipse project using maven (command mvn eclipse:clean eclipse:eclipse)
   * import your project into the eclipse workspace
   * enable Google App engine support to your project
-[http://code.google.com/p/acris/source/browse/wiki/images/svnhook_gep_configration.PNG]
+[https://acris.googlecode.com/svn/wiki/images/svnhook_gep_configration.PNG]
   * create GAP lanucher
-[http://code.google.com/p/acris/source/browse/wiki/images/svnhook_gep_launcher.PNG]
+[https://acris.googlecode.com/svn/wiki/images/svnhook_gep_launcher.PNG]
   * Deploy the application
-[http://code.google.com/p/acris/source/browse/wiki/images/svnhook_gap_deploy.PNG]
+[https://acris.googlecode.com/svn/wiki/images/svnhook_gap_deploy.PNG]
 
 One step is missing :) I will add this step after I'll drink some beers
