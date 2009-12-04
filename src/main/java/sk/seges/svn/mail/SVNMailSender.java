@@ -65,15 +65,15 @@ public class SVNMailSender {
 			}
 
             for (String mail : mails) {
-            	if (mail == null) {
+            	if (mail == null || mail.indexOf("@") == -1) {
             		continue;
             	}
 				try {
 		            Message msg = new MimeMessage(session);
 		            msg.setFrom(new InternetAddress(mailConfiguration.getFromMail()));
-		    			log.info("Sending mail to: " + mail);
-			            msg.addRecipient(Message.RecipientType.TO,
-			                             new InternetAddress(mail));
+		    		log.info("Sending mail to: " + mail);
+			        msg.addRecipient(Message.RecipientType.TO,
+			                          new InternetAddress(mail));
 		            msg.setSubject("[SVN - " + commitInfo.getRepositoryPath() + "]: " + revisionInfo.getMessage());
 		            msg.setText(body);
 		            Transport.send(msg);
