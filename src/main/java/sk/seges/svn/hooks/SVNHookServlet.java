@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -15,15 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Hex;
 
+import sk.seges.svn.ProjectSettings;
 import sk.seges.svn.json.reader.PayloadJSONReader;
-import sk.seges.svn.mail.MailConfiguration;
 import sk.seges.svn.mail.SVNMailSender;
 
 public class SVNHookServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
+	private static final Logger log = Logger.getLogger(SVNHookServlet.class.getName());
+
 	private static final long serialVersionUID = -7084142257979312491L;
 
 	// Stores the contents of the JSON object sent in the message from Google
@@ -36,11 +36,13 @@ public class SVNHookServlet extends HttpServlet {
 	// The javax.crypto.SecretKey used to seed the HMAC-MD5 message
 	private SecretKey secret;
 
+	// Configuration properties from settings.properties
+	private ProjectSettings projectConfiguration;
+	
 	public SVNHookServlet() throws IOException {
 		super();
 		// Assumption: Your Google Code project's secret key is stored in the
 		// file referenced in the File() constructor below
-		secret = new GoogleCodeSecretKey("DfowgMGgc7ZoBVJx");
 		payload = "";
 		expectedHash = null;
 	}
@@ -53,6 +55,12 @@ public class SVNHookServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+
+
+		if (secret == null) {
+			projectConfiguration = new ProjectSettings(getServletContext());
+			secret = new GoogleCodeSecretKey(projectConfiguration.getAuthentication());
+		}
 		
 		BufferedReader r = request.getReader();
 		String line;
@@ -74,15 +82,14 @@ public class SVNHookServlet extends HttpServlet {
 		// something
 		// much more exciting based on the results of the validate() method
 		String result;
-		if (validate()) {
-			MailConfiguration mailConfiguration = new MailConfiguration(getServletContext());
-			
+		if (validate()) {			
 			PayloadJSONReader payloadJSONReader = new PayloadJSONReader();
-			SVNMailSender mailSender = new SVNMailSender(mailConfiguration, payloadJSONReader.readFromJSON(payload)); 
+			SVNMailSender mailSender = new SVNMailSender(projectConfiguration, payloadJSONReader.readFromJSON(payload)); 
 			mailSender.sendMail();
 
 			result = "Message authenticated successfully!";
 		} else {
+			log.info("Authentication failed. Remote host: " + request.getRemoteHost());
             result = "Message authentication failed!";
 		}
 		response.getWriter().write(result);
