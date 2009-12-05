@@ -38,6 +38,7 @@
 	</repositories>
 
 	<modules>
+		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
 	</modules>
 	
