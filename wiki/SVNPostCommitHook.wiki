@@ -17,7 +17,7 @@ If you want to set-up SVN mail notifications on your own, follow the next steps:
     ** to property - SVN notification emails recepients
   * enable Google App Engine support to your project
 [http://acris.googlecode.com/svn/wiki/images/svnhook_gep_configration.PNG]
-  * create GAE lanucher (add VM argument: -javaagent:<APP_ENGINE>\lib\agent\appengine-agent.jar for GAE version 1.2.6+)
+  * create GAE lanucher (add VM argument: {{{-javaagent:<APP_ENGINE>\lib\agent\appengine-agent.jar for GAE version 1.2.6+}}})
 [http://acris.googlecode.com/svn/wiki/images/svnhook_gep_launcher.PNG]
   * Now you can locally run and test application using created launcher 
   * Deploy the application
