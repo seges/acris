@@ -12,17 +12,18 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import sk.seges.svn.ProjectSettings;
 import sk.seges.svn.json.data.OverallInfo;
 import sk.seges.svn.json.data.RevisionInfo;
 
 public class SVNMailSender {
 
 	private OverallInfo commitInfo;
-	private MailConfiguration mailConfiguration;
+	private ProjectSettings mailConfiguration;
 	
 	private static final Logger log = Logger.getLogger(SVNMailSender.class.getName());
 
-	public SVNMailSender(MailConfiguration mailConfiguration, OverallInfo commitInfo) {
+	public SVNMailSender(ProjectSettings mailConfiguration, OverallInfo commitInfo) {
 		this.commitInfo = commitInfo;
 		this.mailConfiguration = mailConfiguration;
 	}
