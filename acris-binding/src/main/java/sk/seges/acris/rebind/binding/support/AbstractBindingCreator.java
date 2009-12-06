@@ -33,7 +33,7 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 	 */
 	protected String packageName;
 	protected JClassType parentBeanClassType;
-	protected String formPanelField;
+	protected String bindingHolder;
 	
 	protected AbstractBindingCreator() {
 	}
@@ -69,8 +69,8 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 		this.parentBeanClassType = parentBeanClassType;
 	}
 	
-	void setBindingForm(String formPanelField) {
-		this.formPanelField = formPanelField;
+	void setBindingHolder(String bindingHolderField) {
+		this.bindingHolder = bindingHolderField;
 	}
 	
 	boolean isSupported(JField field) throws UnableToCompleteException {

@@ -66,13 +66,11 @@ public class BindingCreatorFactory {
 		}
 	}
 
-	public static void setBindingForm(String formPanelField) {
+	public static void setBindingHolder(String bindingHolderField) {
 		for (AbstractBindingCreator<? extends Annotation> abstractBindingCreator : bindingCreators) {
-			abstractBindingCreator.setBindingForm(formPanelField);
+			abstractBindingCreator.setBindingHolder(bindingHolderField);
 		}
-	}
-
-	
+	}	
 	
 	static void registerBindingCreator(
 			AbstractBindingCreator<? extends Annotation> bindingCreator) {

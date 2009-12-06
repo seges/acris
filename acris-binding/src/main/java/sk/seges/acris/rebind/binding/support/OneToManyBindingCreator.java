@@ -7,7 +7,7 @@ import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.BindingGroup;
 
 import sk.seges.acris.bind.annotations.BindingField;
-import sk.seges.acris.bind.annotations.FieldSpecLoader;
+import sk.seges.acris.bind.annotations.BindingSpecLoader;
 import sk.seges.acris.bind.providers.annotations.OneToMany;
 import sk.seges.acris.rebind.GeneratorException;
 import sk.seges.acris.rebind.bean.PropertyResolver;
@@ -77,7 +77,7 @@ class OneToManyBindingCreator extends AbstractBindingCreator<OneToMany> implemen
 		sourceWriter.println(getFirstLowerCase(beanProxyWrapper) + ".setTargetWrapper(getBeanWrapper());");
 //		sourceWriter.println(getFirstLowerCase(beanProxyWrapper) + ".setContent(" + classType.getSimpleSourceName().toLowerCase() + ");");
 		sourceWriter.println("");
-		sourceWriter.println("final BindingGroup bg" + propertyTuple + " = " + formPanelField + ".getContainerWidget().addBindingGroup(\"value\", " +
+		sourceWriter.println("final BindingGroup bg" + propertyTuple + " = " + bindingHolder + ".addBindingGroup(\"value\", " +
 				field.getName() + ", \"" + getWidgetBindingAdapterProperty(field) + "\", " + getFirstLowerCase(beanProxyWrapper) + ");");
 		sourceWriter.println("");
 		
@@ -97,7 +97,7 @@ class OneToManyBindingCreator extends AbstractBindingCreator<OneToMany> implemen
 	}
 
 	private ILoaderCreator getLoaderCreator(JField field) throws IntrospectionException {
-		FieldSpecLoader fieldSpecLoader = field.getAnnotation(FieldSpecLoader.class);
+		BindingSpecLoader fieldSpecLoader = field.getAnnotation(BindingSpecLoader.class);
 		
 		if (fieldSpecLoader == null || fieldSpecLoader.value() == null) {
 			try {
