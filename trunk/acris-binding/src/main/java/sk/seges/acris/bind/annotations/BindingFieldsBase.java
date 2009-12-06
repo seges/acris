@@ -22,7 +22,7 @@ import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
  * </ul>
  * </p>
  */
-@Target({ElementType.FIELD, ElementType.TYPE})
+@Target({ElementType.TYPE})
 @Retention(RUNTIME)
 public @interface BindingFieldsBase {
 	public ValidationStrategy validationStrategy() default ValidationStrategy.NEVER;

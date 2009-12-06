@@ -1,6 +1,5 @@
 package sk.seges.acris.samples.form;
 
-
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;

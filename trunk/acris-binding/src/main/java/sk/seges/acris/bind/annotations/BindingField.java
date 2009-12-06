@@ -50,7 +50,7 @@ import org.gwt.beansbinding.core.client.Converter;
  * }</pre></p>
  * <p>
  * Now <code>CustomDataLoader</code> is called when ListBox is initialized. See 
- * {@link FieldSpecLoader} for more details.
+ * {@link BindingSpecLoader} for more details.
  * </p><br/>
  * <li><b>Many-to-Many binding</b> - used to specify binding of {@link List} of values
  * to ListBox with multiselect functionality. Also should be used for binding to the

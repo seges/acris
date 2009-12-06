@@ -5,5 +5,11 @@
 	<!-- Dependency on binding module -->
 	<inherits name='sk.seges.acris.Binding' />
 	
-	<entry-point class="sk.seges.acris.sample.FormSimpleBinding"/>
+	<source path="samples"/>
+	
+	<entry-point class="sk.seges.acris.samples.FormSimpleBinding"/>
+
+	<generate-with class="sk.seges.acris.rebind.bean.BeanWrapperGenerator">
+    	<when-type-assignable class="sk.seges.acris.samples.mocks.SimpleBean" />
+	</generate-with>
 </module>

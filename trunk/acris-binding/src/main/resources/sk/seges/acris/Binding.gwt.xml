@@ -11,9 +11,11 @@
 	<inherits name='org.gwt.beansbinding.BeansBinding' />
 	
 	<source path="bind"/>
-		
-	<replace-with class="sk.seges.acris.rebind.loader.EmptyLoaderCreator">
-    	<when-type-is class="sk.seges.acris.rebind.loader.ILoaderCreator"/>
-    </replace-with> 
+	<source path="holder"/>
+
+	<!-- Binding generator -->
+	<generate-with class="sk.seges.acris.rebind.binding.BeanBindingGenerator">
+    	<when-type-assignable class="sk.seges.acris.holder.IBeanBindingHolder" />
+	</generate-with>
 	
 </module>

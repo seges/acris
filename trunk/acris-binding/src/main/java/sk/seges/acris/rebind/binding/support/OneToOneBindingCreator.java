@@ -30,8 +30,8 @@ class OneToOneBindingCreator extends AbstractBindingCreator<OneToOne> implements
 	public boolean generateBinding(JField field, BindingField bindingFieldAnnotation)
 			throws UnableToCompleteException {
 
-		sourceWriter.println(formPanelField + ".getContainerWidget().addBinding(\"" + bindingFieldAnnotation.value() + 
-				"\", " + field.getName() + ", \"" + getWidgetBindingAdapterProperty(field) + "\", null);");
+		sourceWriter.println(bindingHolder + ".addBinding(\"" + bindingFieldAnnotation.value() + 
+				"\", " + field.getName() + ", \"" + getWidgetBindingAdapterProperty(field) + "\");");
 		
 		return true;
 	}
