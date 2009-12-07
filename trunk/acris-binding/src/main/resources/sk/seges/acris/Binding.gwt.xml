@@ -10,18 +10,18 @@
 	<!-- BeansBinding should inherit from GWTx so it is not necessary to inherit also from GWTx -->
 	<inherits name='org.gwt.beansbinding.BeansBinding' />
 	
-	<source path="bind"/>
-	<source path="holder"/>
-	<source path="init"/>
+	<source path="binding/bind"/>
+	<source path="binding/holder"/>
+	<source path="binding/init"/>
 
 	<!-- Beans binding initialization -->
-	<generate-with class="sk.seges.acris.rebind.BeansBindingInitGenerator">
-    	<when-type-assignable class="sk.seges.acris.BeansBindingInit" />
+	<generate-with class="sk.seges.acris.binding.rebind.BeansBindingInitGenerator">
+    	<when-type-assignable class="sk.seges.acris.binding.BeansBindingInit" />
 	</generate-with>
 
 	<!-- Binding generator for binding widget holders (e.g. panels, forms, ...) -->
-	<generate-with class="sk.seges.acris.rebind.binding.BeanBindingGenerator">
-    	<when-type-assignable class="sk.seges.acris.holder.IBeanBindingHolder" />
+	<generate-with class="sk.seges.acris.binding.rebind.binding.BeanBindingGenerator">
+    	<when-type-assignable class="sk.seges.acris.binding.holder.IBeanBindingHolder" />
 	</generate-with>
 		
 </module>
