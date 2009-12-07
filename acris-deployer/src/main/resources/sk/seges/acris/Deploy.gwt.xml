@@ -1,0 +1,11 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name='com.google.gwt.user.User'/>
+	
+	<inherits name='sk.seges.acris.Showcase' />
+	
+	<source path="samples"/>
+	
+	<!-- entry-point class="sk.seges.acris.samples.FormSimpleBindingDeploy"/-->
+
+</module>
