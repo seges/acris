@@ -6,18 +6,39 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>acris-binding</artifactId>
+	<artifactId>acris-deployer</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>AcrIS Binding</name>
+	<name>AcrIS Deployer</name>
 
 	<properties>
-		<gwt.client.module>sk.seges.acris.Showcase</gwt.client.module>
-		<gwt.client.html>Showcase.html</gwt.client.html>
+		<gwt.client.module>sk.seges.acris.Deploy</gwt.client.module>
+		<gwt.client.html>Deploy.html</gwt.client.html>
 	</properties>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-dependency-plugin</artifactId>
+			    <version>2.1</version>
+			    <executions>
+			    	<execution>
+			            <id>copy-dependencies</id>
+			            <phase>package</phase>
+			            <goals>
+			              <goal>copy-dependencies</goal>
+			            </goals>
+			    	</execution>
+        		</executions>
+		        <configuration>
+              		<outputDirectory>${project.build.directory}/../war/WEB-INF/lib/</outputDirectory>
+					<overWriteReleases>true</overWriteReleases>
+              		<overWriteSnapshots>true</overWriteSnapshots>
+  				    <overWriteIfNewer>true</overWriteIfNewer>
+					<excludeTransitive>false</excludeTransitive>
+ 				</configuration>
+			</plugin>	
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -28,13 +49,29 @@
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-binding</artifactId>
+			<version>${version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-binding</artifactId>
+			<version>${version}</version>
+			<classifier>sources</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-svn-post-commit</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- Sesam dependencies -->
 		<dependency>
