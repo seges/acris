@@ -12,7 +12,7 @@
 	<name>AcrIS Binding</name>
 
 	<properties>
-		<gwt.client.module>sk.seges.acris.Showcase</gwt.client.module>
+		<gwt.client.module>sk.seges.acris.binding.Showcase</gwt.client.module>
 		<gwt.client.html>Showcase.html</gwt.client.html>
 	</properties>
 
