@@ -1,11 +1,11 @@
 package sk.seges.acris.samples;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
-import org.gwt.beansbinding.core.client.util.GWTBeansBinding;
 
 import sk.seges.acris.bind.providers.CheckBoxAdapterProvider;
 import sk.seges.acris.bind.providers.ListBoxAutoAdapterProvider;
 import sk.seges.acris.bind.providers.TextBoxBaseAdapterProvider;
+import sk.seges.acris.init.BeansBindingInit;
 import sk.seges.acris.samples.form.SimpleForm;
 import sk.seges.acris.samples.mocks.Company;
 import sk.seges.acris.samples.mocks.SimpleBean;
@@ -24,7 +24,7 @@ public class FormSimpleBinding implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 
-		GWTBeansBinding.init();
+		BeansBindingInit.init();
 
 		BeanAdapterFactory.addProvider(new TextBoxBaseAdapterProvider());
 		BeanAdapterFactory.addProvider(new ListBoxAutoAdapterProvider());

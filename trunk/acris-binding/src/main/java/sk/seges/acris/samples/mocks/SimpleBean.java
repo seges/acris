@@ -1,15 +1,17 @@
 package sk.seges.acris.samples.mocks;
 
-import java.io.Serializable;
+import sk.seges.sesam.domain.IDomainObject;
 
-public class SimpleBean implements Serializable {
+public class SimpleBean implements IDomainObject<Long> {
 
 	private static final long serialVersionUID = -4200473134297879595L;
-	
+
 	public static final String NAME_ATTRIBUTE = "name";
 	public static final String EMAIL_ATTRIBUTE = "email";
 	public static final String COMPANY_ATTRIBUTE = "company";
-	
+
+	private Long id;
+
 	private String name;
 	private String email;
 	private Company company;
@@ -36,5 +38,13 @@ public class SimpleBean implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }
