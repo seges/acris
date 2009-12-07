@@ -161,6 +161,7 @@ public class BeanBindingGenerator extends Generator {
 		sourceWriter.indent();
 		sourceWriter.println("getBeanWrapper().setContent(bean);");
 		sourceWriter.println(bindingHolder + ".rebind();");
+		sourceWriter.println("super.setBean(bean);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("");
