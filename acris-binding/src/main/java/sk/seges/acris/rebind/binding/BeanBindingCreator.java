@@ -18,7 +18,6 @@ import sk.seges.acris.rebind.loader.DefaultLoaderCreatorFactory;
 import sk.seges.acris.rebind.loader.EmptyLoaderCreator;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
