@@ -30,7 +30,7 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
-public class BeanBindingGenerator extends Generator {
+public class BeanBindingCreator {
 
 	private String bindingHolder = null;
 	
@@ -50,7 +50,6 @@ public class BeanBindingGenerator extends Generator {
 		DefaultLoaderCreatorFactory.setDefaultLoaderCreator(EmptyLoaderCreator.class);
 	}
 	
-	@Override
 	public String generate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {
 
