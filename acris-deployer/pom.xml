@@ -12,8 +12,8 @@
 	<name>AcrIS Deployer</name>
 
 	<properties>
-		<gwt.client.module>sk.seges.acris.Deploy</gwt.client.module>
-		<gwt.client.html>Deploy.html</gwt.client.html>
+		<gwt.client.module>sk.seges.acris.demo.Binding</gwt.client.module>
+		<gwt.client.html>Binding.html</gwt.client.html>
 	</properties>
 
 	<build>
