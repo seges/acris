@@ -16,7 +16,7 @@
 
 	<!-- Beans binding initialization -->
 	<generate-with class="sk.seges.acris.binding.rebind.BeansBindingInitGenerator">
-    	<when-type-assignable class="sk.seges.acris.binding.BeansBindingInit" />
+    	<when-type-assignable class="sk.seges.acris.binding.init.BeansBindingInit" />
 	</generate-with>
 
 	<!-- Binding generator for binding widget holders (e.g. panels, forms, ...) -->
