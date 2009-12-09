@@ -66,9 +66,15 @@ public class BeansBindingInitGenerator extends Generator {
 			return qualifiedBeanClassName;
 		}
 		
+		
+		sourceWriter.println("static {");
+		sourceWriter.indent();
 		for (JClassType classType : types) {
 			generateCreator(sourceWriter, classType);
 		}
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		
 		
 		sourceWriter.commit(logger);
 		
@@ -76,7 +82,9 @@ public class BeansBindingInitGenerator extends Generator {
 	}
 
 	protected void generateCreator(SourceWriter sourceWriter, JClassType classType) {
-		sourceWriter.println(GWT.class.getSimpleName() + ".create(" + classType.getSimpleSourceName() + ".class);");
+		if (classType.isDefaultInstantiable()) {
+			sourceWriter.println(GWT.class.getSimpleName() + ".create(" + classType.getParameterizedQualifiedSourceName() + ".class);");
+		}
 	}
 	
 	protected SourceWriter getSourceWriter(String packageName,
