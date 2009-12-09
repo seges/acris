@@ -10,13 +10,19 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.0.5</version>
+		<version>1.0.6-SNAPSHOT</version>
 	</parent>
 
+	<!-- TODO: why do we have gilead-hibernate-util.version -->
 	<properties>
 		<gwt.version>2.0.0-rc2</gwt.version>
 		<gwtx.version>1.5.3</gwtx.version>
 		<gwt-beans-binding.version>0.2.5-SNAPSHOT</gwt-beans-binding.version>
+
+		<gilead.version>1.2.3</gilead.version>
+		<gilead-hibernate-util.version>1.2.3</gilead-hibernate-util.version>
+		<gwt-widgets-server.version>1.0</gwt-widgets-server.version>
+		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 	</properties>
 
 
@@ -84,6 +90,40 @@
 				<groupId>com.google.code.gwtx</groupId>
 				<artifactId>gwtx</artifactId>
 				<version>${gwtx.version}</version>
+			</dependency>
+
+			<!-- GWT Widgets -->
+			<dependency>
+				<groupId>net.sf.gwt-widget</groupId>
+				<artifactId>gwt-sl</artifactId>
+				<version>${gwt-widgets-server.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gwt-widget</groupId>
+				<artifactId>gwt-widgets</artifactId>
+				<version>${gwt-widgets-library.version}</version>
+			</dependency>
+
+			<!-- Gilead -->
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>adapter-core</artifactId>
+				<version>${gilead.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>adapter4gwt</artifactId>
+				<version>${gilead.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>comet4gwt</artifactId>
+				<version>${gilead.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>hibernate-util</artifactId>
+				<version>${gilead-hibernate-util.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
