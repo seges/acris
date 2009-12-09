@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.0.14</version>
+		<version>1.0.15-SNAPSHOT</version>
 	</parent>
 
 	<repositories>
@@ -40,13 +40,15 @@
 	<modules>
 		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
+		<module>../acris-external</module>
+		<module>../acris-server-components</module>
 	</modules>
 	
 	<properties>
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
 		
-		<sesam.version>1.0.5</sesam.version>
+		<sesam-os.version>1.0.6-SNAPSHOT</sesam-os.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -54,23 +56,45 @@
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>
-				<version>${sesam.version}</version>
+				<version>${sesam-os.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>
-				<version>${sesam.version}</version>
+				<version>${sesam-os.version}</version>
 				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-binding</artifactId>
+				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-binding</artifactId>
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-external</artifactId>
+				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
-				<artifactId>acris-binding</artifactId>
+				<artifactId>acris-external</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-server-components</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-server-components</artifactId>
+				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>
 		</dependencies>
