@@ -1,0 +1,60 @@
+#summary Description of separating client and server, usage in development and production.
+#labels RPC,Routing
+
+= Introduction =
+
+Common use case: Having multiple servers deployed on different nodes/computers means for GWT client not able to communicate with them because of cross-domain requests policy.
+
+== Routing requests ==
+
+Using _acris-external_ project, specifically the *ProxyServlet*, you will be able to redirect requests from GWT klient to anywhere.
+
+There are two things you need to define:
+  * web.xml in client's context - e.g. in tomcat/jetty of development mode or tomcat/jetty of deployed client
+  * routes.properties - routing policy defining what goes where
+
+Routing policy is defined in routes.properties. There is a chain of accepting routes file where ProxyServlet takes:
+  * from path defined by init-param of web.xml, where param name is _routingFile_ and value is the location within servlet context
+  * if the param is not defined, default value of /WEB-INF/routes.properties is taken from deployed directory
+  * if not defined one from classpath is taken - /sk/seges/acris/rpc/routes.properties - usually bundled in the JAR
+
+== Route definition ==
+
+Let's take example routing definition
+
+{{{
+*default-host=localhost
+*default-port=8888
+
+.*/customUpload(.*) = /module-server/customer1Upload$1
+.*sk\.seges\..*\.Module/(module-server/module-service/.*)=/$1
+}}}
+
+We have defined following:
+  * the location where all requests will be directed:
+    * it will be server located on localhost machine listening on 8888 port
+  * two rules in format {{{source URI = target URI}}}
+    * regular expressions are used for parsing the source and applying to the target
+  * when no criteria are met request will be just forwarded to the context where the client is running
+
+== web.xml configuration ==
+
+Example of *web.xml*:
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="WebApp_ID" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd">
+  <servlet>
+    <servlet-name>proxy</servlet-name>
+    <servlet-class>sk.seges.acris.rpc.ProxyServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>proxy</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+</web-app>
+}}}
+
+= Accessing RPC files from server =
+
+TODO:
