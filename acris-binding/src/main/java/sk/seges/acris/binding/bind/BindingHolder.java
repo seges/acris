@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.gwt.beansbinding.core.client.AutoBinding;
 import org.gwt.beansbinding.core.client.BeanProperty;
-import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
@@ -16,7 +15,10 @@ import sk.seges.sesam.domain.IDomainObject;
 import com.google.gwt.user.client.ui.Widget;
 
 public class BindingHolder<T extends Serializable> implements IBindingHolder<T> {
-	protected BindingGroup bindingGroup = new BindingGroup();
+	
+	protected List<BindingGroup> asyncbindingGroups = new ArrayList<BindingGroup>();
+	protected BindingGroup rootBinding = new BindingGroup();
+	
     private UpdateStrategy updateStrategy;
     private BeanWrapper<T> beanWrapper;
 
@@ -48,17 +50,20 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     	bindingFieldInfos.add(bindingFieldInfo);
 
 	    BindingGroup bindingGroup = new BindingGroup();
-
 	    bindingGroup.addBinding(Bindings.createAutoBinding(updateStrategy, sourceObject,
 	    		BeanProperty.create(sourceProperty), targetWidget, BeanProperty.create(targetProperty)));
-	    
+	    asyncbindingGroups.add(bindingGroup);
 	    return bindingGroup; 
     }
         
+    /**
+     * Add one-to-one binding to the root binding group. Be sure you are not add x-to-many binding using
+     * this method. For x-to-many binding you should you use addBindingGroup
+     */
     public void addBinding(String sourceProperty, Widget targetWidget, String targetProperty) {
     	addBindingFieldInfo(sourceProperty, targetWidget, targetProperty);
     	
-    	bindingGroup.addBinding(createBinding(sourceProperty, targetWidget, targetProperty));
+    	rootBinding.addBinding(createBinding(sourceProperty, targetWidget, targetProperty));
 	}
 
 	private AutoBinding<Object, Object, Object, Object> createBinding(String sourceProperty, Widget targetWidget,
@@ -77,62 +82,39 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 	    return bindingFieldInfo;
     }
 
-    @SuppressWarnings("unchecked")
-	private void clearBindings() {
-	    List<Binding> bindings = bindingGroup.getBindings();
-	    
-	    for (Binding binding : bindings) {
-	    	bindingGroup.removeBinding(binding);
-	    }
-    }
-
-    private void reloadBindings() {
-    	for (BindingFieldInfo bindingFieldInfo : bindingFieldInfos) {
-    		Binding<?,?,?,?> binding = null;
-    		if (bindingFieldInfo.getSourceObject() == null) {
-			    binding = Bindings.createAutoBinding(updateStrategy, beanWrapper,
-			    		BeanProperty.create(bindingFieldInfo.getSourceProperty()), 
-			    		bindingFieldInfo.getTargetWidget(), 
-			    		BeanProperty.create(bindingFieldInfo.getTargetProperty()));
-			    bindingGroup.addBinding(binding);
-    		} else {
-    			binding = Bindings.createAutoBinding(updateStrategy, bindingFieldInfo.getSourceObject(),
-			    		BeanProperty.create(bindingFieldInfo.getSourceProperty()), 
-			    		bindingFieldInfo.getTargetWidget(), 
-			    		BeanProperty.create(bindingFieldInfo.getTargetProperty()));
-    		    BindingGroup bindingGroup = new BindingGroup();
-			    bindingGroup.addBinding(binding);
-			    bindingGroup.bind();
-    		}
-    	}	
-    }
-    
     public void bind() {
-	    bindingGroup.bind();
+    	rootBinding.bind();
     }
     
     public void rebind() {
-		if (bindingGroup.getBindings().size() > 0) {
-			bindingGroup.unbind();
-			clearBindings();
-			reloadBindings();
-			bind();
+		if (bindingFieldInfos.size() > 0) {
+			rootBinding.unbind();
+			rootBinding.bind();
+			
+			for (BindingGroup binding : asyncbindingGroups) {
+				binding.unbind();
+				binding.bind();
+			}
 		}
     }
 
 	public void setBean(T bean) {
 		boolean reloadBindings = false;
-		if (bindingGroup.getBindings().size() > 0) {
-			bindingGroup.unbind();
+		if (bindingFieldInfos.size() > 0) {
+			rootBinding.unbind();
+			for (BindingGroup binding : asyncbindingGroups) {
+				binding.unbind();
+			}
 			reloadBindings = true;
-			clearBindings();
 		}
 		
 		beanWrapper.setContent(bean);
 
 		if (reloadBindings) {
-			reloadBindings();
-			bind();
+			rootBinding.bind();
+			for (BindingGroup binding : asyncbindingGroups) {
+				binding.bind();
+			}
 		}
 	}
 }
