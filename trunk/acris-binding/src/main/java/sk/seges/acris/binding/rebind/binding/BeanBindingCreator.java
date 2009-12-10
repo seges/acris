@@ -158,7 +158,7 @@ public class BeanBindingCreator {
 		sourceWriter.println("public void setBean(" + beanClassType.getSimpleSourceName() + " bean) {");
 		sourceWriter.indent();
 		sourceWriter.println("getBeanWrapper().setContent(bean);");
-		sourceWriter.println(bindingHolder + ".rebind();");
+		sourceWriter.println(bindingHolder + ".setBean(bean);");
 		sourceWriter.println("super.setBean(bean);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
