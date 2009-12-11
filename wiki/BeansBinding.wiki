@@ -1,5 +1,5 @@
 #summary GWT beans binding extension using annotations
-#labels Beans-binding,Annotations
+#labels Beans-binding,Annotations,Beans-binding
 
 = UI widgets binding =
 
