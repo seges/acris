@@ -1,8 +1,11 @@
 package sk.seges.acris.binding.samples;
 
+import java.util.Date;
+
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
 
 import sk.seges.acris.binding.bind.providers.CheckBoxAdapterProvider;
+import sk.seges.acris.binding.bind.providers.DateBoxAdapterProvider;
 import sk.seges.acris.binding.bind.providers.ListBoxAutoAdapterProvider;
 import sk.seges.acris.binding.bind.providers.TextBoxBaseAdapterProvider;
 import sk.seges.acris.binding.init.BeansBindingInit;
@@ -29,6 +32,7 @@ public class FormSimpleBinding implements EntryPoint {
 		BeanAdapterFactory.addProvider(new TextBoxBaseAdapterProvider());
 		BeanAdapterFactory.addProvider(new ListBoxAutoAdapterProvider());
 		BeanAdapterFactory.addProvider(new CheckBoxAdapterProvider());
+		BeanAdapterFactory.addProvider(new DateBoxAdapterProvider());
 
 		final Button button1 = GWT.create(Button.class);
 		button1.setText("fat");
@@ -102,6 +106,7 @@ public class FormSimpleBinding implements EntryPoint {
 		fat = new SimpleBean();
 		fat.setName("fat");
 		fat.setEmail("simun [at] seges [dot] sk");
+		fat.setDate(new Date());
 		
 		Company company = new Company();
 		company.setName("Seges s.r.o.");

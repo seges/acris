@@ -1,8 +1,8 @@
-package sk.seges.acris.binding.bind.providers.support;
+package sk.seges.acris.binding.bind.providers.support.generic;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapterProvider;
 
-public interface BindingBeanAdapterProvider<M> extends BeanAdapterProvider {
+public interface IBindingBeanAdapterProvider<M> extends BeanAdapterProvider {
 	public Class<M> getBindingWidgetClasses();
 
 	public boolean isSupportSuperclass();

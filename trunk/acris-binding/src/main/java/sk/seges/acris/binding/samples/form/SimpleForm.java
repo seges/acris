@@ -5,6 +5,7 @@ import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import sk.seges.acris.binding.bind.annotations.BindingField;
 import sk.seges.acris.binding.bind.annotations.BindingFieldsBase;
 import sk.seges.acris.binding.bind.annotations.BindingSpecLoader;
+import sk.seges.acris.binding.bind.annotations.Generated;
 import sk.seges.acris.binding.holder.IBeanBindingHolder;
 import sk.seges.acris.binding.samples.loaders.CompanyDataLoader;
 import sk.seges.acris.binding.samples.mocks.Company;
@@ -37,6 +38,7 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 	protected final ListBox companyListBox = GWT.create(ListBox.class);
 
 	protected final Label birthdayLabel = GWT.create(Label.class);
+	@BindingField(SimpleBean.DATE_ATTRIBUTE)
 	protected final DateBox birthdayDateBox = GWT.create(DateBox.class);
 
 	protected final Label timeLabel = GWT.create(Label.class);
@@ -112,10 +114,12 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 	}
 
 	@Override
+	@Generated
 	public void setBean(SimpleBean bean) {
 	}
 	
 	@Override
+	@Generated
 	public SimpleBean getBean() {
 		return null;
 	}

@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import sk.seges.acris.binding.bind.providers.support.AbstractBindingChangeHandlerAdapterProvider;
+import sk.seges.acris.binding.bind.providers.support.AbstractBindingChangeListenerAdapterProvider;
 import sk.seges.acris.binding.bind.providers.support.AbstractBindingClickHandlerAdapterProvider;
-import sk.seges.acris.binding.bind.providers.support.AbstractBindingListenerAdapterProvider;
-import sk.seges.acris.binding.bind.providers.support.BindingBeanAdapterProvider;
+import sk.seges.acris.binding.bind.providers.support.AbstractBindingValueChangeHandlerAdapterProvider;
+import sk.seges.acris.binding.bind.providers.support.generic.IBindingBeanAdapterProvider;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.RebindUtils;
 
@@ -88,11 +89,11 @@ public class BindingCreatorFactory {
 
 		JClassType type = null;
 		try {
-			type = typeOracle.getType(BindingBeanAdapterProvider.class
+			type = typeOracle.getType(IBindingBeanAdapterProvider.class
 					.getName());
 		} catch (NotFoundException e) {
 			throw new GeneratorException("Cannot find class "
-					+ BindingBeanAdapterProvider.class.getName(), e);
+					+ IBindingBeanAdapterProvider.class.getName(), e);
 		}
 
 		JClassType[] types = type.getSubtypes();
@@ -102,6 +103,19 @@ public class BindingCreatorFactory {
 		for (AbstractBindingCreator<? extends Annotation> bindingCreator : bindingCreators) {
 			supportedAnnotations.add(bindingCreator.getSupportedClass());
 		}
+
+		JClassType changeHandlerClassType = typeOracle
+			.findType(AbstractBindingChangeHandlerAdapterProvider.class
+					.getName());
+		JClassType valueChangeHandlerClassType = typeOracle
+			.findType(AbstractBindingValueChangeHandlerAdapterProvider.class
+					.getName());
+		JClassType depProviderClassType = typeOracle
+				.findType(AbstractBindingChangeListenerAdapterProvider.class
+						.getName());
+		JClassType clickHandlerClassType = typeOracle
+			.findType(AbstractBindingClickHandlerAdapterProvider.class
+				.getName());
 
 		for (JClassType classType : types) {
 			if (classType.isAbstract()) {
@@ -117,18 +131,10 @@ public class BindingCreatorFactory {
 			JClassType widgetClassType = null;
 //TODO
 			try {
-				JClassType changeHandlerClassType = typeOracle
-						.findType(AbstractBindingChangeHandlerAdapterProvider.class
-								.getName());
-				JClassType depProviderClassType = typeOracle
-						.findType(AbstractBindingListenerAdapterProvider.class
-								.getName());
-				JClassType clickHandlerClassType = typeOracle
-					.findType(AbstractBindingClickHandlerAdapterProvider.class
-						.getName());
 				widgetClassType = RebindUtils.getGenericsFromSuperclassType(
-						classType, new JClassType[] { changeHandlerClassType,
+						classType, new JClassType[] { valueChangeHandlerClassType, changeHandlerClassType,
 								depProviderClassType, clickHandlerClassType }, 0);
+
 				supportedTypes.put(widgetClassType.getQualifiedSourceName(),
 						new BindingComponent(property,
 								getBindingType(classType)));

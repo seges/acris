@@ -1,5 +1,7 @@
 package sk.seges.acris.binding.samples.mocks;
 
+import java.util.Date;
+
 import sk.seges.sesam.domain.IDomainObject;
 
 public class SimpleBean implements IDomainObject<Long> {
@@ -9,12 +11,14 @@ public class SimpleBean implements IDomainObject<Long> {
 	public static final String NAME_ATTRIBUTE = "name";
 	public static final String EMAIL_ATTRIBUTE = "email";
 	public static final String COMPANY_ATTRIBUTE = "company";
+	public static final String DATE_ATTRIBUTE = "date";
 
 	private Long id;
 
 	private String name;
 	private String email;
 	private Company company;
+	private Date date;
 
 	public String getName() {
 		return name;
@@ -46,5 +50,13 @@ public class SimpleBean implements IDomainObject<Long> {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

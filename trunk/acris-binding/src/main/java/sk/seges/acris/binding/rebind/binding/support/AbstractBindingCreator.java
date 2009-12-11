@@ -16,6 +16,7 @@ import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.TextBoxBase;
+import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.rebind.SourceWriter;
 
 abstract class AbstractBindingCreator<T extends Annotation> implements IBindingCreator<T> {
@@ -101,7 +102,7 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 		}
 		
 		JClassType classType = (JClassType)field.getType();
-
+		
 		BindingComponent bindingComponent = getBindingComponent(classType);
 		
 		if (bindingComponent == null) {
@@ -142,6 +143,9 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 		
 		try {
 			if (classType.isAssignableTo(typeOracle.getType(TextBoxBase.class.getName()))) {
+				return "value";
+			}
+			if (classType.isAssignableTo(typeOracle.getType(DateBox.class.getName()))) {
 				return "value";
 			}
 			//TODO
