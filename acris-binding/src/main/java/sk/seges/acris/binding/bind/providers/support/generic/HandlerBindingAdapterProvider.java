@@ -1,30 +1,31 @@
-package sk.seges.acris.binding.bind.providers.support;
+package sk.seges.acris.binding.bind.providers.support.generic;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapter;
 import org.gwt.beansbinding.ui.client.adapters.BeanAdapterBase;
 
 import sk.seges.acris.binding.bind.providers.support.AbstractBindingChangeHandlerAdapterProvider.ChangeHandlerAdapter;
 
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.SourcesChangeEvents;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
 
-@Deprecated
-public abstract class AbstractBindingListenerAdapterProvider<M extends SourcesChangeEvents, T> implements BindingBeanAdapterProvider<M> {
+public abstract class HandlerBindingAdapterProvider<M extends HasHandlers, T, V extends EventHandler> implements IBindingBeanAdapterProvider<M> {
+
+	public static final String PROPERTY_VALUE = "value";
 	
 	protected abstract T getValue(M widget);
 	protected abstract void setValue(M widget, T t);
 	
-	public static final class ChangeListenerAdapter<M extends SourcesChangeEvents, T> extends BeanAdapterBase {
+	public static abstract class AbstractHandlerAdapter<M extends HasHandlers, T, V extends EventHandler> extends BeanAdapterBase {
 		
-		private M widget;		
-		private Handler handler;
-		private T previousValue;
-		private AbstractBindingListenerAdapterProvider<M, T> provider;
+		protected M widget;		
+		protected HandlerRegistration handlerRegistration;
+		protected T previousValue;
+		protected HandlerBindingAdapterProvider<M, T, V> provider;
 		
-		public ChangeListenerAdapter(M changeHandlerWidget, String property, AbstractBindingListenerAdapterProvider<M, T> provider) {
+		public AbstractHandlerAdapter(M handlerWidget, String property, HandlerBindingAdapterProvider<M, T, V> provider) {
 			super(property);
-			this.widget = changeHandlerWidget;
+			this.widget = handlerWidget;
 			this.provider = provider;
 		}
 
@@ -38,38 +39,32 @@ public abstract class AbstractBindingListenerAdapterProvider<M extends SourcesCh
 
 		@Override
 		protected void listeningStarted() {
-			handler = new Handler();
+			V handler = createHandler();
 			previousValue = getValue();
-			widget.addChangeListener(handler);
+			handlerRegistration = addHandlerToWidget(handler);
 		}
 
+		protected abstract HandlerRegistration addHandlerToWidget(V handler);
+		protected abstract V createHandler();
+		
 		@Override
 		protected void listeningStopped() {
-			if (handler != null) {
-				widget.removeChangeListener(handler);
-				handler = null;
+			if (handlerRegistration != null) {
+				handlerRegistration.removeHandler();
+				handlerRegistration = null;
 			}
 			previousValue = null;
 		}
 
-		private class Handler implements ChangeListener {
-			@Override
-			public void onChange(Widget sender) {
-				Object oldElementOrElements = previousValue;
-				previousValue = getValue();
-				firePropertyChange(oldElementOrElements, previousValue);
-			}
-		}
 	}
+
+	protected abstract BeanAdapter createHandlerAdapter(Object source, String property);
 
 	public BeanAdapter createAdapter(Object source, String property) {
 		if (!providesAdapter(source.getClass(), property)) {
 			throw new IllegalArgumentException();
 		}
-		if (source instanceof SourcesChangeEvents) {
-			return new ChangeListenerAdapter<M, T>((M)source, property, this);
-		}
-		throw new IllegalArgumentException("Source does not support change events");
+		return createHandlerAdapter(source, property);
 	}
 
 	public boolean providesAdapter(Class<?> type, String property) {
@@ -78,6 +73,10 @@ public abstract class AbstractBindingListenerAdapterProvider<M extends SourcesCh
 
 	public Class<?> getAdapterClass(Class<?> type) {
 		return isSupportedClass(type) ? ChangeHandlerAdapter.class : null;
+	}
+
+	public String getBindingWidgetProperty() {
+		return PROPERTY_VALUE;
 	}
 
 	protected boolean isSupportedClass(Class<?> type) {
@@ -94,10 +93,6 @@ public abstract class AbstractBindingListenerAdapterProvider<M extends SourcesCh
 		return false;
 	}
 	
-	public String getBindingWidgetProperty() {
-		return "value";
-	}
-
 	@Override
 	public boolean isSupportSuperclass() {
 		return true;
