@@ -48,17 +48,26 @@ In our example we are binding name property with textbox.
 
 [http://acris.googlecode.com/svn/wiki/images/bindingsimple.PNG]
 
-Binding mechanism (using GWT generators) will create BeanWrapper which represents middle-point between BindingBean and TextBox. This BeanWrapper implements HasProperty interfaces which is main prerequisite for beans-binding (see <a href="http://code.google.com/p/gwt-beans-binding/">GWT bean binding projects</>)
+Binding mechanism (using GWT generators) will create BeanWrapper which represents middle-point between BindingBean and TextBox. This BeanWrapper implements HasProperty interfaces which is main prerequisite for beans-binding (see <a href="http://code.google.com/p/gwt-beans-binding/">GWT bean binding projects</a>).
+BeanWrapper wraps existing bean and ensures that we can provide dynamic accessing of the properties via introspector. All property changes also fires propertyChange listeners. See IObservableObject for further details.
 
 [http://acris.googlecode.com/svn/wiki/images/bindingsimpledetailed.PNG]
 
 == One To Many binding ==
 
+Provides binding property with list of the values represented by:
  ** ListBox (using ListBoxAutoAdapterProvider)
+
+Using on-to-many is very easy, but from implementation point of view, it is little bit more complicated. Preconditions are:
+ ** Load all possible values to the list box - we are calling this values *ProxyBeans* and are provided by DataLoader
+ ** Indentify binding property in list of Proxy Beans and select it in the widget (e.g. Listbox)
+ ** When selection value is changed (another item in listbox is selected) matching proxy value has to be found and selected back to the binding bean
 
 [http://acris.googlecode.com/svn/wiki/images/bindingcomplex.PNG]
 
 [http://acris.googlecode.com/svn/wiki/images/bindingcomplexdetailed.PNG]
+
+=== Data loaders ===
 
 == Adapter providers == 
  ** 
