@@ -6,7 +6,7 @@
 Project acris-binding represents extension to the gwt-beansbinding library and is focused to binding Beans with GWT UI widgets.
 
 Currently we are supporting 3 types of bindings:
-  * *One-to-One binding* - the most simplest type used to bind simple value to the widget that can hold only simple value (e.g. TextBox, CheckBox, ...)
+  * *One-to-One binding* - the most simplest type used to bind simple value to the widget that can hold only simple value (e.g. `TextBox`, `CheckBox`, ...)
 Sample:
 
 {{{
@@ -14,7 +14,7 @@ Sample:
 protected TextBox username = GWT.create(TextBox.class);
 }}}
 
-  * *One-to-Many binding* - more complex binding type used to bind object with the list of objects represented in ListBox component.
+  * *One-to-Many binding* - more complex binding type used to bind object with the list of objects represented in `ListBox` component.
 
 Sample:
 
@@ -27,7 +27,7 @@ In the sample above we bind role from User with ListBox which holds all availabl
 
 {{{
 @BindingField(User.ROLE + "." + Role.NAME)
-@FieldSpecLoader(CustomDataLoader.class)
+@BindingSpecLoader(CustomDataLoader.class)
 protected ListBox role = GWT.create(ListBox.class);
 }}}
 
@@ -38,10 +38,10 @@ Now CustomDataLoader is called when ListBox is initialized. See FieldSpecLoader 
 == One To One binding ==
 
 Currently we are supporting binding java primites (and their object alternatives) with:
- ** TextBox (using TextBoxBaseAdapterProvider)
- ** TextArea (using TextBoxBaseAdapterProvider)
- ** DateBox (using DateBoxAdapterProvider)
- ** CheckBox (using CheckBoxAdapterProvider) 
+ ** `TextBox` (using `TextBoxBaseAdapterProvider`)
+ ** `TextArea` (using `TextBoxBaseAdapterProvider`)
+ ** `DateBox` (using `DateBoxAdapterProvider`)
+ ** `CheckBox` (using `CheckBoxAdapterProvider`) 
 
 Typical binding scenario is that you want to bind simple bean property (lets say *name* property) with one of the widget listed above.
 In our example we are binding name property with textbox.
@@ -56,18 +56,93 @@ BeanWrapper wraps existing bean and ensures that we can provide dynamic accessin
 == One To Many binding ==
 
 Provides binding property with list of the values represented by:
- ** ListBox (using ListBoxAutoAdapterProvider)
+ ** `ListBox` (using `ListBoxAutoAdapterProvider`)
 
 Using on-to-many is very easy, but from implementation point of view, it is little bit more complicated. Preconditions are:
- ** Load all possible values to the list box - we are calling this values *ProxyBeans* and are provided by DataLoader
- ** Indentify binding property in list of Proxy Beans and select it in the widget (e.g. Listbox)
- ** When selection value is changed (another item in listbox is selected) matching proxy value has to be found and selected back to the binding bean
+ ** Load all possible values to the list box - this values are *`ProxyBeans`* and are provided by DataLoader concrete implementation
+ ** Indentify binding property in list of `ProxyBeans` objects and select it in the widget (e.g. `Listbox`) - see matching algorithm chapter
+ ** When selection value is changed (item in listbox is selected) matching proxy value has to be found and selected back to the binding bean
+
+In our example we are binding Role object to the ListBox which contains all available Role oibjects (`ProxyBeans`). We are binding role through name property.
 
 [http://acris.googlecode.com/svn/wiki/images/bindingcomplex.PNG]
+
+As in the previous example, we are generating middle point between binding property and UI binding widget. In this case we are generating `BeanProxyWrapper`, which holds binding bean and `List` of `ProxyBeans`. Matching beans (via matching property) is provided transparently in setBoundPropertyValue and getBoundPropertyValue methods.
 
 [http://acris.googlecode.com/svn/wiki/images/bindingcomplexdetailed.PNG]
 
 === Data loaders ===
+
+Data loader can be specified using BindingSpecLoader annotation.
+{{{
+@BindingField(User.ROLE + "." + Role.NAME)
+@BindingSpecLoader(CustomDataLoader.class)
+protected ListBox role = GWT.create(ListBox.class);
+}}}
+
+Data loader provides data to the x-to-many binding UI widget and have to implement `IAsyncDataLoader` interface and implement method:
+{{{
+void load(Page page, ICallback<PagedResult<T>> callback);
+}}}
+
+There are many posibilities how data can be obtained, using:
+ ** *GWT RPC*
+
+{{{
+import sk.seges.acris.rpc.CallbackAdapter;
+import sk.seges.sesam.dao.IAsyncDataLoader;
+import sk.seges.sesam.dao.ICallback;
+import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.dao.PagedResult;
+
+public class CompanyDataLoader implements IAsyncDataLoader<List<Company>> {
+	
+	private ICompanyServiceAsync companyService = GWT.create(ICompanyService.class);
+   
+        public CompanyDataLoader() {
+	    //service initialization
+	}
+
+	@Override
+	public void load(Page page, ICallback<PagedResult<List<Company>>> callback) {
+		companyService .findAll(page, new CallbackAdapter<PagedResult<List<Company>>>(callback));
+	}
+}
+}}}
+
+ ** *static defined data (data mocks)*
+
+{{{
+import sk.seges.acris.binding.samples.mocks.Company;
+import sk.seges.sesam.dao.IAsyncDataLoader;
+import sk.seges.sesam.dao.ICallback;
+import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.dao.PagedResult;
+
+public class CompanyDataLoader implements IAsyncDataLoader<List<Company>> {
+
+	@Override
+	public void load(Page page, ICallback<PagedResult<List<Company>>> callback) {
+		PagedResult<List<Company>> pagedResult = new PagedResult<List<Company>>();
+		
+		List<Company> companies = new ArrayList<Company>();
+
+		Company seges = new Company();
+		seges.setName("Seges s.r.o.");
+		companies.add(seges);
+
+		Company zettaflops = new Company();
+		zettaflops.setName("Zettaflops s.r.o");
+		companies.add(zettaflops);
+
+		pagedResult.setResult(companies);
+		pagedResult.setPage(Page.ALL_RESULTS_PAGE);
+
+		callback.onSuccess(pagedResult);
+	}
+}
+}}}
+=== ProxyBeans maching algorithm ===
 
 == Adapter providers == 
  ** 
