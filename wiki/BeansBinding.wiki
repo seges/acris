@@ -1,4 +1,6 @@
+#summary GWT beans binding extension using annotations
 #labels Phase-Implementation
+
 = UI widgets binding =
 
 Project acris-binding represents extension to the gwt-beansbinding library and is focused to binding Beans with GWT UI widgets.
@@ -35,12 +37,28 @@ Now CustomDataLoader is called when ListBox is initialized. See FieldSpecLoader 
 
 == One To One binding ==
 
+Currently we are supporting binding java primites (and their object alternatives) with:
+ ** TextBox (using TextBoxBaseAdapterProvider)
+ ** TextArea (using TextBoxBaseAdapterProvider)
+ ** DateBox (using DateBoxAdapterProvider)
+ ** CheckBox (using CheckBoxAdapterProvider) 
+
+Typical binding scenario is that you want to bind simple bean property (lets say *name* property) with one of the widget listed above.
+In our example we are binding name property with textbox.
+
 [http://acris.googlecode.com/svn/wiki/images/bindingsimple.PNG]
+
+Binding mechanism (using GWT generators) will create BeanWrapper which represents middle-point between BindingBean and TextBox. This BeanWrapper implements HasProperty interfaces which is main prerequisite for beans-binding (see <a href="http://code.google.com/p/gwt-beans-binding/">GWT bean binding projects</>)
 
 [http://acris.googlecode.com/svn/wiki/images/bindingsimpledetailed.PNG]
 
 == One To Many binding ==
 
+ ** ListBox (using ListBoxAutoAdapterProvider)
+
 [http://acris.googlecode.com/svn/wiki/images/bindingcomplex.PNG]
 
 [http://acris.googlecode.com/svn/wiki/images/bindingcomplexdetailed.PNG]
+
+== Adapter providers == 
+ ** 
