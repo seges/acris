@@ -1,13 +1,41 @@
+#summary Step by step tutorial how to get running acris from source code
 #labels Phase-Implementation
+
 = Steps to setup the acris project = 
 
-Prerequisites:
+== Prerequisites ==
   * JDK 1.6+
   * Maven [2.0.9,>
+  * Brain
 
-Step:
+== Steps ==
   * Download sources from http://acris.googlecode.com/svn/trunk/
-  * cd acris-parent
+  * cd acris-os-parent
   * mvn clean source:jar install
+  * pray, a lot, for no error messages
 
- 
+== Runnig from web container (tomcat) == 
+
+Following step are related to acris-binding showcase project (other projects are analogical)
+
+  * cd acris-binding
+  * mvn -f pom-showcase.xml package 
+  * deploy on tomcat - copy acris-binding-1.0.0-SNAPSHOT.war from target directory to your CATALINA_HOME/webapps
+  * start tomcat - CATALINA_HOME/bin/start.bat
+
+== Running from eclipse == 
+
+Following step are related to acris-binding showcase project (other projects are analogical)
+
+  * install GEP from <a href="http://code.google.com/intl/sk-SK/appengine/docs/java/tools/eclipse.html">http://code.google.com/intl/sk-SK/appengine/docs/java/tools/eclipse.html</a>
+  * cd acris-binding
+  * mvn -f pom-showcase.xml gwt:eclipse
+  * file sk.seges.acris.binding.Showcase.launch will be created
+  * copy sk.seges.acris.binding.Showcase.launch into WORKSPACE/.metadata/.plugins/org.eclipse.debug.core directory
+  * restart (or start if it is not runnig) eclipse
+  * enable Google Web Toolkit support on the acris-binding project
+[http://acris.googlecode.com/svn/wiki/images/gep_project_support.PNG]
+  * set sk.seges.acris.binding.Showcase as program argument in launch configuration
+  * launch created Web application launcher to get development mode running
+  * open following URL in your browser (change port, if you had specified different port):
+http://localhost:8888/sk.seges.acris.binding.Showcase/Showcase.html?gwt.codesvr=192.168.145.82:9997
