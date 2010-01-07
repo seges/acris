@@ -3,7 +3,8 @@
  */
 package sk.seges.acris.client.callback;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class used to tracking all RPC requests. RPCRequestTracker can be used to:
@@ -22,7 +23,7 @@ public class RPCRequestTracker {
 	 * All registered listeners for notifying when request/callback state is
 	 * changed
 	 */
-	private Vector<ICallbackTrackingListener> callbackListeners = new Vector<ICallbackTrackingListener>(
+	private List<ICallbackTrackingListener> callbackListeners = new ArrayList<ICallbackTrackingListener>(
 			10);
 
 	/**
@@ -112,7 +113,7 @@ public class RPCRequestTracker {
 	 * Removes all registered listeners
 	 */
 	public void removeAllCallbacks() {
-		callbackListeners.removeAllElements();
+		callbackListeners.clear();
 	}
 
 	/**
@@ -189,7 +190,7 @@ public class RPCRequestTracker {
 	 * 
 	 * @return true if request was removed otherwise false
 	 */
-	private boolean finishedRequest(RPCRequest request) {
+	private synchronized boolean finishedRequest(RPCRequest request) {
 
 		if (request.hasChildrens()) {
 			// waiting for finish all childrens
