@@ -40,6 +40,7 @@
 	<modules>
 		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
+		<module>../acris-callbacks</module>
 		<module>../acris-external</module>
 		<module>../acris-server-components</module>
 	</modules>
@@ -78,6 +79,17 @@
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-callbacks</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-callbacks</artifactId>
+				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
