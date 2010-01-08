@@ -1,0 +1,183 @@
+package sk.seges.acris.generator.client;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import sk.seges.acris.client.callback.ICallbackTrackingListener;
+import sk.seges.acris.client.callback.RPCRequest;
+import sk.seges.acris.client.callback.RPCRequestTracker;
+import sk.seges.acris.client.callback.RequestState;
+import sk.seges.acris.generator.rpc.domain.GeneratorToken;
+import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
+
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
+
+public class ContentNavigator implements Iterator<GeneratorToken>{
+
+	private static final String LOCALE_IDENTIFIER = "?locale=";
+
+	private GeneratorProperties generatorProperties;
+	private IGeneratorServiceAsync generatorService;
+	
+	private List<GeneratorToken> contents = new ArrayList<GeneratorToken>();
+	private Iterator<GeneratorToken> contentsIterator;
+
+	public ContentNavigator(GeneratorProperties generatorProperties, IGeneratorServiceAsync generatorService) {
+		this.generatorProperties = generatorProperties;
+		this.generatorService = generatorService;
+	}
+	
+	public void loadTokensForProcessing(final AsyncCallback<List<GeneratorToken>> callback) {
+		
+		contents.clear();
+		
+		generatorService.getLastProcessingToken(new AsyncCallback<GeneratorToken>() {
+
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+			}
+
+			public void onSuccess(GeneratorToken result) {
+				if (result != null) {
+					loadTokens(result, new AsyncCallback<Void>() {
+
+						public void onFailure(Throwable caught) {
+							callback.onFailure(caught);
+						}
+
+						public void onSuccess(Void v) {
+							callback.onSuccess(contents);
+						}
+					});
+				} else {
+					callback.onSuccess(contents);
+				}
+			}
+		});
+	}
+
+	
+	private GeneratorToken createGeneratorToken(final String token, final String language, final String webId) {
+		GeneratorToken content = new GeneratorToken();
+		content.setToken(token);
+		content.setLanguage(language);
+
+		return content;
+	}
+
+	private void loadTokens(final GeneratorToken generatorToken, final AsyncCallback<Void> callback) {
+		
+		generatorService.getAvailableTokens(generatorToken.getLanguage(), generatorToken.getWebId(), new AsyncCallback<List<String>>() {
+
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+			}
+
+			public void onSuccess(List<String> result) {
+				for (String token : result) {
+					contents.add(createGeneratorToken(token, generatorToken.getLanguage(), generatorToken.getWebId()));
+				}
+				callback.onSuccess(null);
+			}
+		});
+	}
+
+	public boolean hasNext() {
+		if (contentsIterator == null) {
+			contentsIterator = contents.iterator();
+		}
+		return contentsIterator.hasNext();
+	}
+
+	public GeneratorToken next() {
+		if (contentsIterator == null) {
+			contentsIterator = contents.iterator();
+		}
+		return contentsIterator.next();
+	}
+
+	public void remove() {
+		if (contentsIterator == null) {
+			contentsIterator = contents.iterator();
+		}
+		contentsIterator.remove();
+	}
+	
+ 	public void loadContent(final GeneratorToken content, final AsyncCallback<GeneratorToken> callback) {
+
+		String currentHref = Window.Location.getHref();
+
+		int index = currentHref.indexOf(LOCALE_IDENTIFIER);
+
+		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
+
+			@Override
+			public void onProcessingFinished(RPCRequest request) {
+				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
+					callback.onFailure(request.getCaught());
+				} else {
+					if (request.getParentRequest() == null) {
+						RPCRequestTracker.getTracker().removeAllCallbacks();
+						callback.onSuccess(content);
+					}
+				}
+			}
+
+			@Override
+			public void onRequestStarted(RPCRequest request) {
+			}
+
+			@Override
+			public void onResponseReceived(RPCRequest request) {
+			}
+			
+		});
+
+		if (index != -1) {
+			//TODO locale support
+			String oldLocale = currentHref.substring(index + LOCALE_IDENTIFIER.length(), index
+					+ LOCALE_IDENTIFIER.length() + 2);
+
+			if (!oldLocale.equals(content.getLanguage())) {
+				String newHref = currentHref.substring(0, index + LOCALE_IDENTIFIER.length())
+						+ content.getLanguage();
+
+				if (currentHref.length() > index + LOCALE_IDENTIFIER.length() + 2) {
+					newHref += currentHref.substring(index + LOCALE_IDENTIFIER.length() + 2);
+				}
+
+				Window.Location.replace(newHref);
+			}
+		} else {
+			int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
+			History.newItem(content.getToken());
+			int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
+			if (runningRequestsCount == newRunningRequestsCount) {
+				//No new async request was started
+				RPCRequestTracker.getTracker().removeAllCallbacks();
+				callback.onSuccess(content);
+			}
+		}
+	}
+
+	public String getContent(GeneratorToken generatorToken) {
+		//FlowPanel rootPanel = AbstractSite.factory.getChocolate(AbstractSite.ROOT_CONTENT_WRAPPER);
+				
+		//DOM.setInnerHTML(RootPanel.get("rootContent").getElement(), content);
+		String content = RootPanel.get().toString();
+
+		ContentProcessor contentProcessor = new ContentProcessor(generatorProperties);
+		content = contentProcessor.processContent(/*rootPanel.toString()*/content, generatorToken.getLanguage());
+
+		// content = content.replaceAll(GWT.getModuleBaseURL(),
+		// ModulesDefinition.REMOTE_SERVER_DEFINITION + "/"
+		// + ModulesDefinition.APP_NAME + "/"
+		// + GWT.getModuleName() + "/");
+
+		return content;
+	}
+}
