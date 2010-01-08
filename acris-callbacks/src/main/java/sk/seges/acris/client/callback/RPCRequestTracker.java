@@ -23,8 +23,7 @@ public class RPCRequestTracker {
 	 * All registered listeners for notifying when request/callback state is
 	 * changed
 	 */
-	private List<ICallbackTrackingListener> callbackListeners = new ArrayList<ICallbackTrackingListener>(
-			10);
+	private List<ICallbackTrackingListener> callbackListeners = new ArrayList<ICallbackTrackingListener>();
 
 	/**
 	 * Singleton instance for the tracker
@@ -127,7 +126,10 @@ public class RPCRequestTracker {
 	 */
 	void onRequestStarted(RPCRequest request) {
 		runningRequestStarted++;
-		for (ICallbackTrackingListener callbackListener : callbackListeners) {
+
+		ICallbackTrackingListener[] listeners = callbackListeners.toArray(new ICallbackTrackingListener[0]);
+
+		for (ICallbackTrackingListener callbackListener : listeners) {
 			callbackListener.onRequestStarted(request);
 		}
 	}
@@ -154,7 +156,10 @@ public class RPCRequestTracker {
 	 */
 	void onResponseReceived(RPCRequest request) {
 		runningRequestStarted--;
-		for (ICallbackTrackingListener callbackListener : callbackListeners) {
+		
+		ICallbackTrackingListener[] listeners = callbackListeners.toArray(new ICallbackTrackingListener[0]);
+
+		for (ICallbackTrackingListener callbackListener : listeners) {
 			callbackListener.onResponseReceived(request);
 		}
 	}
@@ -190,7 +195,7 @@ public class RPCRequestTracker {
 	 * 
 	 * @return true if request was removed otherwise false
 	 */
-	private synchronized boolean finishedRequest(RPCRequest request) {
+	private boolean finishedRequest(RPCRequest request) {
 
 		if (request.hasChildrens()) {
 			// waiting for finish all childrens
@@ -201,7 +206,9 @@ public class RPCRequestTracker {
 			return false;
 		}
 
-		for (ICallbackTrackingListener callbackListener : callbackListeners) {
+		ICallbackTrackingListener[] listeners = callbackListeners.toArray(new ICallbackTrackingListener[0]);
+		
+		for (ICallbackTrackingListener callbackListener : listeners) {
 			callbackListener.onProcessingFinished(request);
 		}
 
