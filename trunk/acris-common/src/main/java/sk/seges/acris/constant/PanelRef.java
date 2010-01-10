@@ -4,7 +4,6 @@ public interface PanelRef {
 	public static final String MENU_CHOCOLATE_PANEL = "menuChocolatePanel";
 	public static final String CHOCOLATE_PANEL = "chocolatePanel";
 	
-	public static final String PAGE_404 = "404";
     public static final String HTML_LAYOUT_PANEL = "htmlLP";
     public static final String FLOW_LAYOUT_PANEL = "flowLP";
     public static final String DECK_LAYOUT_PANEL = "deckLP";
