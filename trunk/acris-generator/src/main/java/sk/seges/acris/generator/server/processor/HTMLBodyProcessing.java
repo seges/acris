@@ -1,0 +1,165 @@
+package sk.seges.acris.generator.server.processor;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Vector;
+
+import org.htmlparser.Attribute;
+import org.htmlparser.Node;
+import org.htmlparser.NodeFilter;
+import org.htmlparser.Parser;
+import org.htmlparser.filters.TagNameFilter;
+import org.htmlparser.lexer.Lexer;
+import org.htmlparser.lexer.PageAttribute;
+import org.htmlparser.nodes.TagNode;
+import org.htmlparser.nodes.TextNode;
+import org.htmlparser.tags.HeadTag;
+import org.htmlparser.tags.MetaTag;
+import org.htmlparser.tags.TitleTag;
+import org.htmlparser.util.NodeList;
+import org.htmlparser.util.ParserException;
+import org.htmlparser.util.SimpleNodeIterator;
+
+import sk.seges.acris.io.StringFile;
+
+public class HTMLBodyProcessing {
+
+	private static final String BODY_TAG_NAME = "body";
+
+	private final Parser parser;
+
+	private NodeFilter headFilter = new TagNameFilter(BODY_TAG_NAME);
+
+	public HTMLBodyProcessing(final String content) {
+		Lexer lexer = new Lexer(content);
+		parser = new Parser(lexer);
+	}
+
+/*	
+	private void replaceLinks(final NodeList nodes, final String title) {
+		TitleTag node = getTitleNode();
+
+		if (node != null) {
+			removeRecursive(nodes, node);
+		}
+
+		TitleTag tag = new TitleTag();
+		TextNode textNode = new TextNode(title);
+		NodeList nodeList = new NodeList();
+		nodeList.add(textNode);
+		tag.setChildren(nodeList);
+
+		TagNode tagNode = new TagNode();
+		
+		PageAttribute pa = new PageAttribute();
+		pa.setName("/" + ((Attribute) tag.getAttributesEx().get(0)).getName());
+		pa.setValue(null);
+		Vector<PageAttribute> vector = new Vector<PageAttribute>();
+		vector.add(pa);
+		tagNode.setAttributesEx(vector);
+		// tagNode.setAttribute(pa);
+		tag.setEndTag(tagNode);
+		
+		nodes.elementAt(0).getChildren().add(tag);
+	}
+
+	private void replaceMetaTag(final String tagName, final NodeList nodes, final String contentValue) {
+		MetaTag node = getMetaTagNode(tagName);
+
+		if (node != null) {
+			removeRecursive(nodes, node);
+		}
+
+		addMetaTag(tagName, nodes, contentValue);
+	}
+
+	private int indexOf(NodeList nodes, Node searchNode) {
+		MetaTag node;
+		int loc = 0;
+
+		final String searchNodeHtml = searchNode.toHtml();
+
+		for (SimpleNodeIterator e = nodes.elements(); e.hasMoreNodes();) {
+			Node currentNode = e.nextNode();
+
+			if (currentNode instanceof MetaTag) {
+				node = (MetaTag) currentNode;
+
+				if (searchNode instanceof MetaTag) {
+					String nodeName = node.getAttribute(NAME_ATTRIBUTE_NAME);
+					String nodeContent = node.getAttribute(CONTENT_ATTRIBUTE_NAME);
+					
+					if (nodeName != null && nodeName.equalsIgnoreCase(((MetaTag) searchNode).getAttribute(NAME_ATTRIBUTE_NAME)) && 
+						nodeContent != null && nodeContent.equalsIgnoreCase(((MetaTag) searchNode).getAttribute(CONTENT_ATTRIBUTE_NAME))) {
+						return loc;
+					}
+				}
+			} else {
+				final String currentNodeHtml = currentNode.toHtml();
+
+				if (currentNodeHtml.equalsIgnoreCase(searchNodeHtml)) {
+					return loc;
+				}
+			}
+
+			loc++;
+		}
+		return -1;
+	}
+
+	private HeadTag getHeadNode() {
+		NodeList nodes;
+
+		parser.reset();
+
+		try {
+			nodes = parser.parse(headFilter);
+		} catch (ParserException e) {
+			throw new RuntimeException(e);
+		}
+
+		if (nodes.size() == 0) {
+			return null;
+		}
+
+		return (HeadTag) nodes.elementAt(0);
+	}
+
+	private MetaTag getMetaTagNode(String name) {
+
+		if (name == null) {
+			return null;
+		}
+
+		HeadTag headTag = getHeadNode();
+
+		NodeList metaTags = headTag.searchFor(MetaTag.class, true);
+
+		SimpleNodeIterator nodesIterator = metaTags.elements();
+
+		while (nodesIterator.hasMoreNodes()) {
+			MetaTag metaTag = (MetaTag) nodesIterator.nextNode();
+			if (name.equalsIgnoreCase(metaTag.getAttribute(NAME_ATTRIBUTE_NAME))) {
+				return metaTag;
+			}
+		}
+
+		return null;
+	}
+
+	private TitleTag getTitleNode() {
+		HeadTag headTag = getHeadNode();
+
+		NodeList titleTags = headTag.searchFor(TitleTag.class, true);
+
+		if (titleTags.size() == 0) {
+			return null;
+		}
+
+		return (TitleTag) titleTags.elementAt(0);
+	}*/
+}

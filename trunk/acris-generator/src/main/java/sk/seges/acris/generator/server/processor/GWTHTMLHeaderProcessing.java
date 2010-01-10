@@ -3,11 +3,11 @@ package sk.seges.acris.generator.server.processor;
 import org.htmlparser.util.NodeList;
 
 
-public class GWTHTMLProcessing extends HTMLProcessing {
+public class GWTHTMLHeaderProcessing extends HTMLHeaderProcessing {
 	private static final String GWT_PROPERTY_NAME = "gwt:property";
 	private static final String LOCALE_PROPERTY_VALUE ="locale=";
 
-	public GWTHTMLProcessing(final String filename) {
+	public GWTHTMLHeaderProcessing(final String filename) {
 		super(filename);
 	}
 

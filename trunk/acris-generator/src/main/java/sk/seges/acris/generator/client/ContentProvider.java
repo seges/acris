@@ -61,7 +61,7 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 		GeneratorToken content = new GeneratorToken();
 		content.setToken(token);
 		content.setLanguage(language);
-
+		content.setWebId(webId);
 		return content;
 	}
 

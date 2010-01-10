@@ -25,7 +25,7 @@ import org.htmlparser.util.SimpleNodeIterator;
 
 import sk.seges.acris.io.StringFile;
 
-public class HTMLProcessing {
+public class HTMLHeaderProcessing {
 	private final String filename;
 
 	private static final String NAME_ATTRIBUTE_NAME = "name";
@@ -38,7 +38,7 @@ public class HTMLProcessing {
 
 	private NodeFilter headFilter = new TagNameFilter(HEAD_TAG_NAME);
 
-	public HTMLProcessing(final String filename) {
+	public HTMLHeaderProcessing(final String filename) {
 		this.filename = filename;
 		try {
 			if (filename.startsWith("http://")) {
@@ -54,7 +54,6 @@ public class HTMLProcessing {
 				} catch (IOException e) {
 					throw new IllegalArgumentException("Unable to establish connection to the URL " + filename, e);
 				}
-
 				parser = new Parser(connection);
 			} else {
 				parser = new Parser(StringFile.getFileDescriptor(filename).getAbsolutePath());
