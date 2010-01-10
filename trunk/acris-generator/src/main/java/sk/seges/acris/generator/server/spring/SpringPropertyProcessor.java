@@ -1,8 +1,6 @@
 package sk.seges.acris.generator.server.spring;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Properties;
 import java.util.Map.Entry;
 
@@ -25,7 +23,7 @@ public class SpringPropertyProcessor implements BeanFactoryPostProcessor, Applic
 
 	private static final String SETTING_PROPERTIES_FILE = /*StringFile.FILE_SEPARATOR + */"settings.properties";
 	
-	private final Properties properties;
+	private Properties properties;
 	
 	private ApplicationContext context;
 	
@@ -33,10 +31,8 @@ public class SpringPropertyProcessor implements BeanFactoryPostProcessor, Applic
 		properties = new Properties();
 		try {
 			properties.load(new FileInputStream(StringFile.getFileDescriptor(SETTING_PROPERTIES_FILE)));
-		} catch (FileNotFoundException e) {
-			//e.printStackTrace();
-		} catch (IOException e) {
-			//e.printStackTrace();
+		} catch (Exception e) {
+			properties = null;
 		}
 	}
 	
