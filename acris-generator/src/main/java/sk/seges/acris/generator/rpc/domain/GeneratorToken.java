@@ -1,11 +1,18 @@
 package sk.seges.acris.generator.rpc.domain;
 
-public class GeneratorToken {
+import java.io.Serializable;
+
+public class GeneratorToken implements Serializable {
 	
+	private static final long serialVersionUID = -1013144843773775841L;
+
 	private String token;
 	private String language;
 	private String webId;
 
+	public GeneratorToken() {	
+	}
+	
 	public String getToken() {
 		return token;
 	}

@@ -4,4 +4,5 @@
 	<inherits name='com.google.gwt.junit.JUnit'/>
 
 	<source path='client' />
+	<source path='rpc' />
 </module>

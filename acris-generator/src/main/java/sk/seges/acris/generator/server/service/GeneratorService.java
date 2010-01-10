@@ -19,7 +19,8 @@ import sk.seges.acris.etc.Countries;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.server.processor.ContentInfoProvider;
-import sk.seges.acris.generator.server.processor.GWTHTMLProcessing;
+import sk.seges.acris.generator.server.processor.GWTHTMLHeaderProcessing;
+import sk.seges.acris.generator.server.processor.HTMLHeaderProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
 
@@ -165,7 +166,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
 		}
 		
-		StringFile file = new StringFile(dirFile, "#" + contentInfoProvider.getNiceUrl(token) + ".html");
+		StringFile file = new StringFile(dirFile, contentInfoProvider.getNiceUrl(token));
 
 		if (!file.exists()) {
 			try {
@@ -175,7 +176,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			}
 		}
 
-		GWTHTMLProcessing htmlProcessing = new GWTHTMLProcessing(headerFilename);
+		GWTHTMLHeaderProcessing htmlProcessing = new GWTHTMLHeaderProcessing(headerFilename);
 
 		String html = htmlProcessing.getDoctypeDefinition()
 				+ htmlProcessing.getHtmlDefinition(token.getLanguage())
@@ -221,6 +222,8 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		if (endTagsIndex != -1) {
 			html = html.substring(0, endTagsIndex) + googleAnalyticsScript + html.substring(endTagsIndex);
 		}
+
+		HTMLHeaderProcessing finalHtmlContent = new HTMLHeaderProcessing(html);
 
 		try {
 			file.writeTextToFile(html);

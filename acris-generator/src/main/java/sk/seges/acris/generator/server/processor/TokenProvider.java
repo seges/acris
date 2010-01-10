@@ -125,10 +125,10 @@ public class TokenProvider {
 
 		StringFile tokenFile = new StringFile(PATH_PREFIX + TOKEN_DIRECTORY, TOKEN_NAME + tokens.get(0).toString());
 
-		String token_lang = null;
+		String generatorToken = null;
 
 		try {
-			token_lang = tokenFile.readTextFromFile();
+			generatorToken = tokenFile.readTextFromFile();
 		} catch (IOException ioe) {
 			log.error("Unable to read content from the token file '" + tokenFile.getAbsolutePath() + "'", ioe);
 			return null;
@@ -138,11 +138,11 @@ public class TokenProvider {
 			}
 		}
 
-		if (token_lang == null) {
+		if (generatorToken == null) {
 			return null;
 		}
 
-		StringTokenizer tokenizer = new StringTokenizer(token_lang, LANG_DELIMITER);
+		StringTokenizer tokenizer = new StringTokenizer(generatorToken, LANG_DELIMITER);
 		
 		if (!tokenizer.hasMoreTokens()) {
 			return null;
@@ -154,14 +154,20 @@ public class TokenProvider {
 			return null;
 		}
 
-		String webId = tokenizer.nextToken();
-		
-		GeneratorToken generatorToken = new GeneratorToken();;
-		generatorToken.setToken(token);
-		generatorToken.setLanguage(token_lang);
-		generatorToken.setWebId(webId);
+		String lang = tokenizer.nextToken();
 
-		return generatorToken;
+		if (!tokenizer.hasMoreTokens()) {
+			return null;
+		}
+
+		String webId = tokenizer.nextToken();
+
+		GeneratorToken lastGeneratorToken = new GeneratorToken();
+		lastGeneratorToken.setToken(token);
+		lastGeneratorToken.setLanguage(lang);
+		lastGeneratorToken.setWebId(webId);
+
+		return lastGeneratorToken;
 	}
 
 	private class TokensFilenameFilter implements FilenameFilter {
