@@ -1,6 +1,5 @@
 package sk.seges.acris.generator.client;
 
-import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 import sk.seges.acris.util.URLUtils;
 
@@ -9,7 +8,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ContentProcessor {
 
+	/**
+	 * Generator properties
+	 */
 	private GeneratorProperties generatorProperties;
+	
+	/**
+	 * Generator service
+	 */
 	private IGeneratorServiceAsync generatorService;
 
 	public ContentProcessor(GeneratorProperties generatorProperties, IGeneratorServiceAsync generatorService) {
@@ -17,16 +23,16 @@ public class ContentProcessor {
 		this.generatorService = generatorService;
 	}
 
-	public String processContent(String content, String lang_country) {
+	public void processContent(String content, String webId, String lang, final AsyncCallback<String> callback) {
+		
 		//obtaining current server URL, like: http://192.168.1.21:3290/
-		String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
+		final String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
 
-		//replace history frame - used only for GWT needs, not for offline content purposes
+		//remove history frame - used only for GWT needs, not for offline content purposes
 		//TODO - do it better. Remove style and use regexp
-		content = content
+		final String modifiedContent = content
 				.replaceAll(
-						"<IFRAME id=__gwt_historyFrame style=\"BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 0px; HEIGHT: 0px; BORDER-RIGHT-WIDTH: 0px\" src=\"javascript:''\"></IFRAME>",
-						"");
+						"<IFRAME id=__gwt_historyFrame style=\"BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 0px; HEIGHT: 0px; BORDER-RIGHT-WIDTH: 0px\" src=\"javascript:''\"></IFRAME>","");
 
 		String virtualServer = generatorProperties.getVirtualServerProtocol() + 
 									generatorProperties.getVirtualServerName();
@@ -37,32 +43,36 @@ public class ContentProcessor {
 			virtualServer = virtualServer + ":" + generatorProperties.getVirtualServerPort();
 		}
 
-		generatorService.getDomainForLanguage(lang, new AsyncCallback<String>() {
+		final String virtualServerName = virtualServer;
 			
-			public void onSuccess(String arg0) {
+		generatorService.getDomainForLanguage(webId, lang, new AsyncCallback<String>() {
+			
+			public void onSuccess(String domain) {
+				String content = modifiedContent;
+
 				if (generatorProperties.isLocaleSensitiveServer()) {
 					content = content.replaceAll(currentServerURL, URLUtils
-							.getLocalizedServerHost(virtualServer, locale.getDomain())
-							+ "/");
+							.getLocalizedServerHost(virtualServerName, domain) + "/");
 				} else {
-					content = content.replaceAll(currentServerURL, virtualServer + "/");
+					content = content.replaceAll(currentServerURL, virtualServerName + "/");
 				}
 
 				if (generatorProperties.isLocaleSensitiveServer()) {
 					content = content.replaceAll(currentServerURL, URLUtils
-							.getLocalizedServerHost(virtualServer, locale.getDomain()));
+							.getLocalizedServerHost(virtualServerName, domain));
 				} else {
-					content = content.replaceAll(currentServerURL, virtualServer);
+					content = content.replaceAll(currentServerURL, virtualServerName);
 				}
 
 				content = content.replaceAll(GWT.getModuleName() + "/", "");
+				
+				callback.onSuccess(content);
 			}
 			
 			@Override
-			public void onFailure(Throwable arg0) {
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
 			}
 		});
-
-		return content;
 	}
 }

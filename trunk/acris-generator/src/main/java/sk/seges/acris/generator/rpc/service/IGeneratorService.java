@@ -17,20 +17,18 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * Offline content generator service
 	 */
-	boolean saveContent(String token, String lang_country, String webId,
-			String contentText);
+	boolean saveContent(GeneratorToken token, String contentText);
 
 	GeneratorToken getLastProcessingToken();
 
-	String getDomainForLanguage(String language);
+	String getDomainForLanguage(String webId, String language);
 
 	/**
 	 * File provider services
 	 */
 	String readTextFromFile(String filename);
 
-	void writeTextToFile(String headerFilename, String filename,
-			String content, String token, String lang_country, String webId);
+	void writeTextToFile(String headerFilename, String content, GeneratorToken token);
 
 	/**
 	 * Properties provider services
@@ -48,5 +46,5 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * Content provider services
 	 */
-	List<String> getAvailableTokens(String lang_country, String webId);
+	List<String> getAvailableTokens(String lang, String webId);
 }

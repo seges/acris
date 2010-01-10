@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-generator</artifactId>
@@ -17,10 +16,10 @@
 
 	<build>
 		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -41,7 +40,7 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- Acris dependencies -->
+		<!-- Acris client dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-callbacks</artifactId>
@@ -54,13 +53,17 @@
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-common</artifactId>
-			<version>${pom.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-common</artifactId>
 			<classifier>sources</classifier>
-			<version>${pom.version}</version>
+		</dependency>
+
+		<!-- Acris server dependencies -->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-server-components</artifactId>
 		</dependency>
 
 		<!-- GWT dependencies -->
@@ -77,19 +80,43 @@
 			<artifactId>gwt-dev</artifactId>
 			<classifier>${platform}-libs</classifier>
 			<type>zip</type>
-		</dependency>       
+		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 			<classifier>${platform}</classifier>
-        	</dependency>
+		</dependency>
+		<!-- String dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+
+		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>		
-		<dependency>
-			<groupId>com.sun.messaging.mq</groupId>
-			<artifactId>imq</artifactId>
 		</dependency>
+
+		<!-- Log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<!-- Gilead -->
+		<dependency>
+			<groupId>net.sf.gilead</groupId>
+			<artifactId>adapter4gwt</artifactId>
+			<version>${gilead.version}</version>
+		</dependency>
+
+		<!-- HTML parser -->
+		<dependency>
+			<groupId>org.htmlparser</groupId>
+			<artifactId>htmlparser</artifactId>
+			<version>1.6</version>
+		</dependency>
+
 	</dependencies>
 </project>
