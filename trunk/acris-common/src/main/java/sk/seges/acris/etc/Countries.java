@@ -222,12 +222,13 @@ public enum Countries {
     ZIMBABWE("ZIMBABWE", false, 254, "zw", "zw")
 	;
 
-	private String name;
+	private String label;
 	private boolean europeanUnion;
 	private int id;
 	private String domain;
 	private String lang;
 	
+	@Deprecated
 	private static Map<String, Countries> countryMap = new HashMap<String, Countries>();
 
 	static {
@@ -237,20 +238,26 @@ public enum Countries {
 	}
 
 	@Deprecated
-	private Countries(String name, boolean europeanUnion, int id){
-		this.name = name;
+	private Countries(String label, boolean europeanUnion, int id){
+		this.label = label;
 		this.europeanUnion = europeanUnion;
 		this.id = id;
 	}
 
-	private Countries(String name, boolean europeanUnion, int id, String lang, String domain){
-		this.name = name;
+	private Countries(String label, boolean europeanUnion, int id, String lang, String domain){
+		this.label = label;
 		this.europeanUnion = europeanUnion;
 		this.id = id;
 		this.domain = domain;
 		this.lang = lang;
 	}
 
+	/**
+	 * Use {@link #valueOf(String)}
+	 * @param countryName
+	 * @return
+	 */
+	@Deprecated
 	public static Countries ofValue(String countryName) {
 	    return countryMap.get(countryName);
 	}
@@ -263,9 +270,8 @@ public enum Countries {
 		return lang;
 	}
 	
-	@Override
-	public String toString() {
-		return name;
+	public String getLabel() {
+		return label;
 	}
 
 	public boolean isEuropeanUnionCountry(){
@@ -280,4 +286,13 @@ public enum Countries {
         System.out.println(Countries.ofValue("ZAMBIA"));
         System.out.println(Countries.ofValue("AAA"));
     }
+	
+	public static Countries valueOfLang(String lang) {
+		for(Countries country : Countries.values()) {
+			if(lang.equals(country.getLang())) {
+				return country;
+			}
+		}
+		return null;
+	}
 }
