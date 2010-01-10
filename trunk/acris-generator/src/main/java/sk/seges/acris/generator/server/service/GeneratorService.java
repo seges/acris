@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -84,7 +83,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 	public String getDomainForLanguage(String webId, String language) {
 		for (Countries country: Countries.values()) {
-			if (country.getLocale().getLanguage().equals(language)) {
+			if (language.equals(country.getLang())) {
 				return country.getDomain();
 			}
 		}
