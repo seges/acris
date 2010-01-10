@@ -34,13 +34,17 @@ public class SpringPropertyProcessor implements BeanFactoryPostProcessor, Applic
 		try {
 			properties.load(new FileInputStream(StringFile.getFileDescriptor(SETTING_PROPERTIES_FILE)));
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		if (properties == null) {
+			return;
+		}
+		
 		for (Entry<Object, Object> property : properties.entrySet()) {
 			String beanValue = (String)property.getValue();
 			
