@@ -16,21 +16,19 @@ public interface IGeneratorServiceAsync {
 	/**
 	 * Offline content generator service
 	 */
-	void saveContent(String token, String lang, String webId,
+	void saveContent(GeneratorToken token,
 			String contentText, AsyncCallback<Boolean> callback);
 
 	void getLastProcessingToken(AsyncCallback<GeneratorToken> callback);
 
-	void getDomainForLanguage(String language, AsyncCallback<String> callback);
+	void getDomainForLanguage(String webId, String language, AsyncCallback<String> callback);
 
 	/**
 	 * File provider services
 	 */
 	void readTextFromFile(String filename, AsyncCallback<String> callback);
 
-	void writeTextToFile(String headerFilename, String filename,
-			String content, String token, String lang_country, String webId,
-			AsyncCallback<Void> callback);
+	void writeTextToFile(String headerFilename, String content, GeneratorToken token, AsyncCallback<Void> callback);
 
 	/**
 	 * Properties provider services
@@ -48,5 +46,5 @@ public interface IGeneratorServiceAsync {
 	/**
 	 * Content provider services
 	 */
-	void getAvailableTokens(String lang_country, String webId, AsyncCallback<List<String>> callback);
+	void getAvailableTokens(String language, String webId, AsyncCallback<List<String>> callback);
 }

@@ -2,18 +2,9 @@ package sk.seges.acris.generator.rpc.domain;
 
 public class GeneratorToken {
 	
-	private String niceUrl;
 	private String token;
 	private String language;
 	private String webId;
-
-	public String getNiceUrl() {
-		return niceUrl;
-	}
-
-	public void setNiceUrl(String niceUrl) {
-		this.niceUrl = niceUrl;
-	}
 
 	public String getToken() {
 		return token;

@@ -1,5 +1,6 @@
 package sk.seges.acris.generator.client;
 
+import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.core.client.GWT;
@@ -63,11 +64,9 @@ public class OfflineContentProvider {
 				});
 	}
 
-	public void saveContent(String content, String token, String lang_country,
-			String webId, final AsyncCallback<Void> callback) {
+	public void saveContent(String content, GeneratorToken token, final AsyncCallback<Void> callback) {
 		
-		generatorService.writeTextToFile(initialContentFilename, token + "_"
-				+ lang_country + ".html", content, token, lang_country, webId,
+		generatorService.writeTextToFile(initialContentFilename, content, token,
 				new AsyncCallback<Void>() {
 
 					public void onFailure(Throwable caught) {
