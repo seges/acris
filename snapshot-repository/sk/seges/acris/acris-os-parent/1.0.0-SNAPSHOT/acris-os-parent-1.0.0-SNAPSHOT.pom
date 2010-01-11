@@ -40,7 +40,10 @@
 	<modules>
 		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
+		<module>../acris-callbacks</module>
+		<module>../acris-common</module>
 		<module>../acris-external</module>
+		<module>../acris-generator</module>
 		<module>../acris-server-components</module>
 	</modules>
 	
@@ -81,12 +84,45 @@
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-callbacks</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-callbacks</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-common</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-common</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-generator</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-generator</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-server-components</artifactId>
 				<version>${pom.version}</version>
@@ -96,6 +132,16 @@
 				<artifactId>acris-server-components</artifactId>
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>adapter4gwt</artifactId>
+				<version>${gilead.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.htmlparser</groupId>
+				<artifactId>htmlparser</artifactId>
+				<version>1.6</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
