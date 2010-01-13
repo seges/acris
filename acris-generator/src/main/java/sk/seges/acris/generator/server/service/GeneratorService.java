@@ -24,8 +24,6 @@ import sk.seges.acris.generator.server.processor.HTMLBodyProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 /**
  * @author fat
  *
@@ -227,6 +225,12 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 		if (dirFile == null) {
 			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
+		}
+
+		if (!dirFile.exists()) {
+			if (!dirFile.mkdirs()) {
+				throw new RuntimeException("Directory " + dirFile.getAbsolutePath() + " cannot be created.");
+			}
 		}
 		
 		StringFile file = new StringFile(dirFile, contentInfoProvider.getNiceUrl(token));
