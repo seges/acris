@@ -1,2 +1,2 @@
-#A project to create full-featured websites in GWT
+#summary A project to create full-featured websites in GWT
 TODO
