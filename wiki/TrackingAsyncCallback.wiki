@@ -1,9 +1,9 @@
-#summary Asynchronous callback with request trackable possibilities
+#summary Asynchronous callback with request tracking possibilities
 #labels AsyncCallback,RPCRequest,Tracking
 
 = Introduction =
 
-Asynchronous callback in GWT is the only way how user/client can be notified whenever the RPC Request fails or succeed. Using callbacks is pretty straightforward but there are some cases in real life when only AsyncCallback-s are not enought:
+Asynchronous callback in GWT is the only way how can user/client be notified whenever the RPC call fails or succeed. Using callbacks is pretty straightforward, but there are some cases in real life (is the life of developer a real life ? :) ) when only AsyncCallback-s are not enought:
  * when you test your application using GWTTestCase and you want to be notified when any RPC request is finished in order to assert UI components or values in user interface generally
  * when there are chained asynchronous RPC calls (when first asynchronous call is finished, next one will start - request is started from onSuccess handling routine) and you want to be notified when asynchronous RPC calls chain is processed (first asynchronou call is considered as finished when also second one is finished)
 
