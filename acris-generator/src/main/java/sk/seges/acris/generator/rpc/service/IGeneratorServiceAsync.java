@@ -23,12 +23,14 @@ public interface IGeneratorServiceAsync {
 
 	void getDomainForLanguage(String webId, String language, AsyncCallback<String> callback);
 
+	void getOfflineContentHtml(String headerFilename, String content, GeneratorToken token, AsyncCallback<String> callback);
+
 	/**
 	 * File provider services
 	 */
 	void readTextFromFile(String filename, AsyncCallback<String> callback);
 
-	void writeTextToFile(String headerFilename, String content, GeneratorToken token, AsyncCallback<Void> callback);
+	void writeTextToFile(String content, GeneratorToken token, AsyncCallback<Void> callback);
 
 	/**
 	 * Properties provider services

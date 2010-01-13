@@ -20,9 +20,11 @@ import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.server.processor.ContentInfoProvider;
 import sk.seges.acris.generator.server.processor.GWTHTMLHeaderProcessing;
-import sk.seges.acris.generator.server.processor.HTMLHeaderProcessing;
+import sk.seges.acris.generator.server.processor.HTMLBodyProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * @author fat
@@ -33,31 +35,31 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	private static final long serialVersionUID = 6944837756691206504L;
 	
 	@Autowired
-	private TokenProvider tokenProvider;
+	protected TokenProvider tokenProvider;
 
     @Autowired
 	@Qualifier("virtual.server.name")
-	private String virtualServerName;
+	protected String virtualServerName;
 	
 	@Autowired
 	@Qualifier("virtual.server.port")
-	private Integer virtualServerPort;
+	protected Integer virtualServerPort;
 
 	@Autowired
 	@Qualifier("virtual.server.protocol")
-	private String virtualServerProtocol;
+	protected String virtualServerProtocol;
 
 	@Autowired
 	@Qualifier("locale.sensitive.server")
-	private Boolean localeSensitiveServer;
+	protected Boolean localeSensitiveServer;
 
 	@Autowired
 	@Qualifier("google.analytics.script")
-	private String googleAnalyticsScript;
+	protected String googleAnalyticsScript;
 
 	@Autowired
 	@Qualifier("offline.content.taget.path")
-	private String offlineContentTargetPath;
+	protected String offlineContentTargetPath;
 
 	private ContentInfoProvider contentInfoProvider;
 	
@@ -158,23 +160,13 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		return content.toString();
 	}
 
-	public void writeTextToFile(String headerFilename, String content, GeneratorToken token) {
-
-		File dirFile = new File(offlineContentTargetPath);
-
-		if (dirFile == null) {
-			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
-		}
-		
-		StringFile file = new StringFile(dirFile, contentInfoProvider.getNiceUrl(token));
-
-		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	protected String getOfflineContentTargetPath(GeneratorToken token) {
+		return offlineContentTargetPath;
+	}
+	
+	@Override
+	public String getOfflineContentHtml(String headerFilename, String content,
+			GeneratorToken token) {
 
 		GWTHTMLHeaderProcessing htmlProcessing = new GWTHTMLHeaderProcessing(headerFilename);
 
@@ -223,12 +215,34 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			html = html.substring(0, endTagsIndex) + googleAnalyticsScript + html.substring(endTagsIndex);
 		}
 
-		HTMLHeaderProcessing finalHtmlContent = new HTMLHeaderProcessing(html);
+		HTMLBodyProcessing finalHtmlContent = new HTMLBodyProcessing(html);
+		html = finalHtmlContent.replaceAnchors(virtualServerProtocol, token.getWebId(), "" + virtualServerPort);
+		
+		return html;
+	}
+
+	@Override
+	public void writeTextToFile(String content, GeneratorToken token) {
+		File dirFile = new File(getOfflineContentTargetPath(token));
+
+		if (dirFile == null) {
+			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
+		}
+		
+		StringFile file = new StringFile(dirFile, contentInfoProvider.getNiceUrl(token));
+
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
 		try {
-			file.writeTextToFile(html);
+			file.writeTextToFile(content);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}
+		}		
 	}
 }
