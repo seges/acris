@@ -1,0 +1,8 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+A project to create full-featured websites in GWT
+
+= Details =
+TODO
