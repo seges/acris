@@ -1,3 +1,1 @@
-#A project to create full-featured websites in GWT
-
 TODO
