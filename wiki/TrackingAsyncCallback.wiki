@@ -18,7 +18,7 @@ Let's consider that you have Panel which in init method loads data from database
 {{{
 delayTestFinish(timeout);
 }}}
-(note: if you are what I''m talking about, please see details here
+(note: if you don't know what I'm talking about, please see details here
 [http://code.google.com/intl/sk/webtoolkit/doc/latest/DevGuideTesting.html#DevGuideAsynchronousTesting] )
 The question is, what timeout will you define?
   ** 10 seconds ? - what if any RPC call is still not finished?
