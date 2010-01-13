@@ -1,45 +1,71 @@
 package sk.seges.acris.generator.server.processor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Vector;
 
-import org.htmlparser.Attribute;
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.lexer.Lexer;
-import org.htmlparser.lexer.PageAttribute;
-import org.htmlparser.nodes.TagNode;
-import org.htmlparser.nodes.TextNode;
-import org.htmlparser.tags.HeadTag;
-import org.htmlparser.tags.MetaTag;
-import org.htmlparser.tags.TitleTag;
+import org.htmlparser.lexer.Source;
+import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
-import org.htmlparser.util.SimpleNodeIterator;
-
-import sk.seges.acris.io.StringFile;
 
 public class HTMLBodyProcessing {
 
+	private static final String A_TAG_NAME = "a";
 	private static final String BODY_TAG_NAME = "body";
 
 	private final Parser parser;
 
-	private NodeFilter headFilter = new TagNameFilter(BODY_TAG_NAME);
+	private NodeFilter anchorFilter = new TagNameFilter(A_TAG_NAME);
+	private NodeFilter bodyFilter = new TagNameFilter(BODY_TAG_NAME);
 
 	public HTMLBodyProcessing(final String content) {
 		Lexer lexer = new Lexer(content);
 		parser = new Parser(lexer);
 	}
 
-/*	
+	private NodeList getAnchors() {
+		NodeList nodes;
+
+		parser.reset();
+
+		try {
+			nodes = parser.parse(anchorFilter);
+		} catch (ParserException e) {
+			throw new RuntimeException(e);
+		}
+
+		return nodes;
+	}
+
+	public String replaceAnchors(String protocol, String webId, String port) {
+		NodeList anchors = getAnchors();
+		
+		int size = anchors.size();
+		
+		for (int i = 0; i < size; i++) {
+			Node anchor = anchors.elementAt(i);
+			
+			if (anchor instanceof LinkTag) {
+				if (((LinkTag)anchor).getLink().startsWith("#")) {
+					((LinkTag)anchor).setLink(protocol + webId + (port.equals("80") ? "" : port) + "/" + ((LinkTag)anchor).getLink().substring(1));
+				}
+			}
+		}
+		
+		parser.reset();
+		Source source = parser.getLexer().getPage().getSource();
+		int available = source.available();
+		try {
+			return source.getString(source.offset(), available);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	/*
 	private void replaceLinks(final NodeList nodes, final String title) {
 		TitleTag node = getTitleNode();
 

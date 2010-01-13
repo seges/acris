@@ -119,7 +119,7 @@ public class TokenProvider {
 	public synchronized GeneratorToken getTokenForProcessing() {
 		ArrayList<Integer> tokens = getSortedTokenFiles();
 
-		if (tokens == null) {
+		if (tokens == null || tokens.size() == 0) {
 			return null;
 		}
 

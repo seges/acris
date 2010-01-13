@@ -64,17 +64,17 @@ public class OfflineContentProvider {
 				});
 	}
 
-	public void saveContent(String content, GeneratorToken token, final AsyncCallback<Void> callback) {
+	public void getOfflineContent(String content, GeneratorToken token, final AsyncCallback<String> callback) {
 		
-		generatorService.writeTextToFile(initialContentFilename, content, token,
-				new AsyncCallback<Void>() {
+		generatorService.getOfflineContentHtml(initialContentFilename, content, token,
+				new AsyncCallback<String>() {
 
 					public void onFailure(Throwable caught) {
 						GWT.log("Unable to write text to the file. ", caught);
 						callback.onFailure(caught);
 					}
 
-					public void onSuccess(Void result) {
+					public void onSuccess(String result) {
 						callback.onSuccess(result);
 					}
 				});

@@ -23,12 +23,14 @@ public interface IGeneratorService extends RemoteService {
 
 	String getDomainForLanguage(String webId, String language);
 
+	String getOfflineContentHtml(String headerFilename, String content, GeneratorToken token);
+
 	/**
 	 * File provider services
 	 */
 	String readTextFromFile(String filename);
 
-	void writeTextToFile(String headerFilename, String content, GeneratorToken token);
+	void writeTextToFile(String content, GeneratorToken token);
 
 	/**
 	 * Properties provider services

@@ -23,7 +23,6 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private ContentProvider contentProvider;
 	private EntryPoint site;
 	private ValueWrapper count = new ValueWrapper();
-
 	private IGeneratorServiceAsync generatorService;
 	
 	public GwtTestGenerateOfflineContent() {
@@ -198,23 +197,37 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			public void onSuccess(String content) {
 
-				offlineContentProvider.saveContent(content, generatorToken, new AsyncCallback<Void>() {
+				offlineContentProvider.getOfflineContent(content, generatorToken, new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
-						fail("Unable to write text to the file. " + caught);
+						fail("Unable to get offline content for token " + generatorToken.getToken() + ". " + caught);
 						finalizeTest();
 					}
 			
-					public void onSuccess(Void result) {
+					public void onSuccess(String result) {
 						count.value--;
-						if (count.value == 0) {
-							finalizeTest();
-						}
+						processGeneratedContent(result, generatorToken, count.value == 0);
 					}
 				});
 			}
 		});
 		
 		return generatorToken;
+	}
+	
+	protected void processGeneratedContent(String offlineContent, GeneratorToken token, final boolean finishTest) {
+		generatorService.writeTextToFile(offlineContent, token,
+				new AsyncCallback<Void>() {
+
+					public void onFailure(Throwable caught) {
+						fail("Unable to write text to the file. ", caught);
+					}
+
+					public void onSuccess(Void result) {
+						if (finishTest) {
+							finalizeTest();
+						}
+					}
+				});
 	}
 	
 	private void fail(String msg, Throwable caught) {
