@@ -60,7 +60,11 @@ public class HTMLBodyProcessing {
 		Source source = parser.getLexer().getPage().getSource();
 		int available = source.available();
 		try {
-			return source.getString(source.offset(), available);
+			char[] chars = new char[available];
+			
+			source.read(chars, 0, available);
+			return String.valueOf(chars, 0, available);
+			//return source.getString(source.offset(), available);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
