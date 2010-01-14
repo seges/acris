@@ -96,7 +96,7 @@
 		-->
 		<jms.version>1.1</jms.version>
 		<activemq.version>5.2.0</activemq.version>
-		<openmq.version>4.3</openmq.version>
+		<openmq.version>4.4</openmq.version>
 		
 		<jasperreports.version>3.1.2</jasperreports.version>
 
