@@ -1,0 +1,181 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-os</artifactId>
+	<version>1.0.4-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os-base-parent</artifactId>
+		<version>1.0.6-SNAPSHOT</version>
+	</parent>
+
+	<!-- More Project Information -->
+	<name>CorpIS Parent</name>
+	<description>Parent project for CorpIS</description>
+	
+	<modules>
+		<module>../corpis-test</module>
+		<module>../corpis-dao-api</module>
+		<module>../corpis-dao-impl</module>
+	</modules>
+
+	<properties>
+		<repository.type>java</repository.type>
+		<repository.project>corpis</repository.project>
+	
+		<sesam.version>1.0.5-SNAPSHOT</sesam.version>
+		<sesam-os.version>1.0.6-SNAPSHOT</sesam-os.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>${sesam-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-jgoodies</artifactId>
+				<version>${sesam.version}</version>
+			</dependency>
+			
+			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-aggregation</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-dao-api</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-dao-impl</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-domain</artifactId>
+				<version>${pom.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-test</artifactId>
+				<version>${pom.version}</version>  
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-customer-domain</artifactId>
+				<version>${pom.version}</version> 
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-customer-domain</artifactId>
+				<version>${pom.version}</version> 
+				<classifier>sources</classifier>
+			</dependency>			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-invoice-domain</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-invoice-aggregation</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-lang</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-lang</artifactId>
+				<version>${pom.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-news-domain</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-news-dao-api</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-properties-domain</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-properties-dao-api</artifactId>
+				<version>${pom.version}</version>
+			</dependency>					
+		
+			<!-- Desktop part -->
+			<dependency>
+				<groupId>jgoodies</groupId>
+				<artifactId>binding</artifactId>
+				<version>2.0.0</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.swinglabs</groupId>
+				<artifactId>swingx</artifactId>
+				<version>0.9.2-20080208-sk</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jdesktop</groupId>
+				<artifactId>appframework</artifactId>
+				<version>1.0.2-20071029</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jdesktop</groupId>
+				<artifactId>beansbinding</artifactId>
+				<version>1.1.1-20071029</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jdesktop</groupId>
+				<artifactId>swing-worker</artifactId>
+				<version>1.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>dumbster</groupId>
+				<artifactId>dumbster</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+	</dependencies>
+</project>
