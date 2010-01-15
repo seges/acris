@@ -50,12 +50,17 @@
 	<properties>
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
-		
+		<corpis-os.version>1.0.4-SNAPSHOT</corpis-os.version>
 		<sesam-os.version>1.0.6-SNAPSHOT</sesam-os.version>
 	</properties>
 	
 	<dependencyManagement>
-		<dependencies>		
+		<dependencies>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-dao-impl</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>

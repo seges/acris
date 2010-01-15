@@ -1,0 +1,21 @@
+<module>
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+	<inherits name='com.google.gwt.query.Query'/>
+	<inherits name='sk.seges.acris.RpcLog'/>
+	<inherits name="sk.seges.acris.security.Security" />
+	<inherits name="de.novanic.eventservice.GWTEventService"/>
+	<inherits name='com.googlecode.gwtx.Java' />
+	<inherits name='sk.seges.acris.IdGenerator'/>
+	
+	<source path='client' />
+	<source path='event' />
+	<source path='event/encoding' />
+	<source path='event/generic' />
+	<source path='event/handler' />
+	<source path='listener' />
+	<source path='objects' />
+	<source path='panels' />
+	<source path='bean' />
+	
+</module>
