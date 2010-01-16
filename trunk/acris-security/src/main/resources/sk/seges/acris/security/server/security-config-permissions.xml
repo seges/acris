@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"> 
+                           
+    <bean id="administrationPermission" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="org.springframework.security.acls.domain.BasePermission.ADMINISTRATION"/>
+    </bean>
+
+    <bean id="readPermission" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+         <property name="staticField" value="org.springframework.security.acls.domain.BasePermission.READ"/>
+    </bean>
+
+    <bean id="writePermission" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="org.springframework.security.acls.domain.BasePermission.WRITE"/>
+    </bean>
+
+    <bean id="deletePermission" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="org.springframework.security.acls.domain.BasePermission.DELETE"/>
+    </bean>
+    
+    <!-- Add all other permission here -->
+</beans>
