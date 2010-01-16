@@ -5,11 +5,11 @@ import java.lang.annotation.Annotation;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 
-import sk.seges.acris.binding.bind.BeanWrapper;
-import sk.seges.acris.binding.bind.BindingHolder;
-import sk.seges.acris.binding.bind.annotations.BindingField;
-import sk.seges.acris.binding.bind.annotations.BindingFieldsBase;
-import sk.seges.acris.binding.holder.IBeanBindingHolder;
+import sk.seges.acris.binding.client.bind.BeanWrapper;
+import sk.seges.acris.binding.client.bind.BindingHolder;
+import sk.seges.acris.binding.client.bind.annotations.BindingField;
+import sk.seges.acris.binding.client.bind.annotations.BindingFieldsBase;
+import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.RebindUtils;
 import sk.seges.acris.binding.rebind.binding.support.BindingCreatorFactory;

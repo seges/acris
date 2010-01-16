@@ -6,9 +6,9 @@ import org.apache.commons.lang.ArrayUtils;
 import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.BindingGroup;
 
-import sk.seges.acris.binding.bind.annotations.BindingField;
-import sk.seges.acris.binding.bind.annotations.BindingSpecLoader;
-import sk.seges.acris.binding.bind.providers.annotations.OneToMany;
+import sk.seges.acris.binding.client.bind.annotations.BindingField;
+import sk.seges.acris.binding.client.bind.annotations.BindingSpecLoader;
+import sk.seges.acris.binding.client.bind.providers.annotations.OneToMany;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.bean.PropertyResolver;
 import sk.seges.acris.binding.rebind.binding.BindingProxyWraperCreator;
