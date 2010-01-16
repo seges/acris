@@ -55,6 +55,16 @@ public class HTMLBodyProcessing {
 				}
 			}
 		}
+
+		if (size > 0) {
+			Node node = anchors.elementAt(0);
+			
+			while (node.getParent() != null) {
+				node = node.getParent();
+			}
+			
+			return node.toHtml();
+		}
 		
 		parser.reset();
 		Source source = parser.getLexer().getPage().getSource();
@@ -64,7 +74,6 @@ public class HTMLBodyProcessing {
 			
 			source.read(chars, 0, available);
 			return String.valueOf(chars, 0, available);
-			//return source.getString(source.offset(), available);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
