@@ -23,16 +23,6 @@
 			<artifactId>sesam-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
-		<dependency>
-			<groupId>com.google.code.gwtx</groupId>
-			<artifactId>gwtx</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.gwt</groupId>
-			<artifactId>beans-binding</artifactId>
-		</dependency>
-
 		<!-- GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -46,6 +36,15 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 			<classifier>${platform}</classifier>
+		</dependency>
+		<!-- GWT binding other dependenies -->
+		<dependency>
+			<groupId>com.google.code.gwtx</groupId>
+			<artifactId>gwtx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.gwt</groupId>
+			<artifactId>beans-binding</artifactId>
 		</dependency>
 	</dependencies>
 </project>
