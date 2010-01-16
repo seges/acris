@@ -37,7 +37,7 @@ acris-<project-name>
 
 = Code style =
 
- # Source dependency - when you add acris GWT based dependency, add
+ # Source dependency - when you add acris GWT based dependency, add also source dependency
 {{{
 <dependency>
 	<groupId>sk.seges.acris</groupId>
@@ -50,7 +50,7 @@ acris-<project-name>
 </dependency>
 }}}
 
- # GWT Dependency rule - when you add new dependency to the pom.xml you have to also add new inherit to your *.gwt.xml file (only in case of GWT based dependencies). This will keep projects compilable independently and can be reused in other projects in clean way.
+ # GWT Dependency rule - when you add new dependency to the pom.xml you have to also add new inherit to your gwt.xml file (only in case of GWT based dependencies). This will keep projects compilable independently and can be reused in other projects in clean way.
 {{{
 <inherits name="sk.seges.acris.Callbacks"/>
 }}}
