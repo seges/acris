@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingChangeHandlerAdapterProvider;
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingChangeListenerAdapterProvider;
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingClickHandlerAdapterProvider;
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingValueChangeHandlerAdapterProvider;
-import sk.seges.acris.binding.client.bind.providers.support.generic.IBindingBeanAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingChangeHandlerAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingChangeListenerAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingClickHandlerAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingValueChangeHandlerAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.generic.IBindingBeanAdapterProvider;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.RebindUtils;
 

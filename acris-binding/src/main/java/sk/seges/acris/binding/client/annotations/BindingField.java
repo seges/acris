@@ -1,4 +1,4 @@
-package sk.seges.acris.binding.client.bind.annotations;
+package sk.seges.acris.binding.client.annotations;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 

@@ -1,10 +1,8 @@
-package sk.seges.acris.binding.client.bind;
+package sk.seges.acris.binding.client.wrappers;
 
 import java.util.List;
 
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
-
-import sk.seges.acris.binding.client.bind.BeanWrapper;
 
 /**
  * <p>

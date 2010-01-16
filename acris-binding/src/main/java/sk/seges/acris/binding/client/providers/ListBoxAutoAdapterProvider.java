@@ -1,7 +1,7 @@
-package sk.seges.acris.binding.client.bind.providers;
+package sk.seges.acris.binding.client.providers;
 
-import sk.seges.acris.binding.client.bind.providers.annotations.OneToMany;
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingChangeHandlerAdapterProvider;
+import sk.seges.acris.binding.client.providers.annotations.OneToMany;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingChangeHandlerAdapterProvider;
 
 import com.google.gwt.user.client.ui.ListBox;
 

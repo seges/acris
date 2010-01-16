@@ -1,4 +1,4 @@
-package sk.seges.acris.binding.client.bind.providers.annotations;
+package sk.seges.acris.binding.client.providers.annotations;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -6,7 +6,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingChangeHandlerAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingChangeHandlerAdapterProvider;
 
 @Target({ ElementType.TYPE })
 @Retention(RUNTIME)

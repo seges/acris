@@ -1,4 +1,4 @@
-package sk.seges.acris.binding.client.bind.annotations;
+package sk.seges.acris.binding.client.annotations;
 
 /**
  * Validation is part of the binding mechanism and you can define action

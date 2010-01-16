@@ -7,7 +7,7 @@
 	
 	<source path="samples"/>
 	
-	<entry-point class="sk.seges.acris.binding.samples.FormSimpleBinding"/>
+	<entry-point class="sk.seges.acris.binding.client.samples.FormSimpleBinding"/>
 
 	<inherits name="com.google.gwt.user.theme.standard.StandardResources"/>
 

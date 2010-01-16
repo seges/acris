@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.acris.binding.client.bind;
+package sk.seges.acris.binding.client.wrappers;
 
 import sk.seges.sesam.domain.IObservableObject;
 

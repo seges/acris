@@ -3,7 +3,7 @@ package sk.seges.acris.binding.rebind.binding.support;
 import java.beans.IntrospectionException;
 import java.lang.annotation.Annotation;
 
-import sk.seges.acris.binding.client.bind.annotations.BindingField;
+import sk.seges.acris.binding.client.annotations.BindingField;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;

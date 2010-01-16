@@ -1,4 +1,4 @@
-package sk.seges.acris.binding.client.bind;
+package sk.seges.acris.binding.client.annotations;
 
 import org.gwt.beansbinding.core.client.Validator;
 
