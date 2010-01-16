@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
 
-import sk.seges.acris.binding.bind.BeanProxyWrapper;
-import sk.seges.acris.binding.bind.BeanWrapper;
-import sk.seges.acris.binding.bind.providers.BindingProxyWrapperBaseAdapterProvider;
-import sk.seges.acris.binding.bind.providers.support.generic.AbstractBindingBeanAdapterProvider;
+import sk.seges.acris.binding.client.bind.BeanProxyWrapper;
+import sk.seges.acris.binding.client.bind.BeanWrapper;
+import sk.seges.acris.binding.client.bind.providers.BindingProxyWrapperBaseAdapterProvider;
+import sk.seges.acris.binding.client.bind.providers.support.generic.AbstractBindingBeanAdapterProvider;
 import sk.seges.acris.binding.rebind.bean.PropertyResolver;
 
 import com.google.gwt.core.ext.GeneratorContext;

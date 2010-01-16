@@ -18,6 +18,8 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 public class BeansBindingInitGenerator extends Generator {
 
+	private static boolean initialized = false;
+
 	/**
 	 * The {@code TreeLogger} used to log messages.
 	 */
@@ -28,9 +30,16 @@ public class BeansBindingInitGenerator extends Generator {
 	 */
 	private GeneratorContext context = null;
 
+	public static boolean isInitialized() {
+		return initialized;
+	}
+
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {
+		
+		initialized = true;
+
 		this.logger = logger;
 		this.context = context;
 
