@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<inherits name='sk.seges.acris.Callbacks' />
+
+	<!-- Gilead dependencies -->
+	<inherits name='net.sf.gilead.Adapter4Gwt15'/>
+	<inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/>
+
+	<!-- Spring emulation -->
+	<inherits name='sk.seges.acris.security.rpc.Spring' />
+
+	<source path="client" />
+	<source path="rpc" />
+
+	<!-- Gilead dynamic proxy classes -->
+	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
+		<when-type-is class="sk.seges.acris.rpc.domain.RolePermission" />
+	</generate-with>
+
+	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
+		<when-type-is class="sk.seges.acris.rpc.domain.GenericUser" />
+	</generate-with>
+
+	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
+		<when-type-is class="sk.seges.acris.rpc.domain.UserPreferences" />
+	</generate-with>
+
+	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
+		<when-type-assignable class="sk.seges.acris.security.rpc.domain.ITransferableObject" />
+	</generate-with>
+
+	<!-- Session handling generators -->
+	<generate-with
+		class="sk.seges.acris.security.rebind.SessionServiceInterfaceProxyGenerator">
+		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
+	</generate-with>
+
+	<!-- Security generators -->
+	<replace-with class="sk.seges.acris.security.client.context.ClientContextHolderImpl">
+		<when-type-is class="sk.seges.acris.security.rpc.to.ClientContextHolder" />
+	</replace-with>
+
+	<generate-with class="sk.seges.acris.security.rebind.SecuredPanelGenerator">
+		<when-type-assignable class="sk.seges.acris.security.client.ISecuredPanel" />
+	</generate-with>
+
+	<generate-with
+		class="sk.seges.acris.security.rebind.RuntimeSecuredPanelGenerator">
+		<when-type-assignable
+			class="sk.seges.acris.security.client.IRuntimeSecuredPanel" />
+	</generate-with>
+
+</module>
