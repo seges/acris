@@ -1,9 +1,9 @@
-package sk.seges.acris.binding.client.bind.providers;
+package sk.seges.acris.binding.client.providers;
 
 import java.util.Date;
 
-import sk.seges.acris.binding.client.bind.providers.annotations.OneToOne;
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingValueChangeHandlerAdapterProvider;
+import sk.seges.acris.binding.client.providers.annotations.OneToOne;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingValueChangeHandlerAdapterProvider;
 
 import com.google.gwt.user.datepicker.client.DateBox;
 

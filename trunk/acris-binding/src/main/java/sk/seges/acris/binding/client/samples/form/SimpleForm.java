@@ -2,10 +2,10 @@ package sk.seges.acris.binding.client.samples.form;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 
-import sk.seges.acris.binding.client.bind.annotations.BindingField;
-import sk.seges.acris.binding.client.bind.annotations.BindingFieldsBase;
-import sk.seges.acris.binding.client.bind.annotations.BindingSpecLoader;
-import sk.seges.acris.binding.client.bind.annotations.Generated;
+import sk.seges.acris.binding.client.annotations.BindingField;
+import sk.seges.acris.binding.client.annotations.BindingFieldsBase;
+import sk.seges.acris.binding.client.annotations.BindingSpecLoader;
+import sk.seges.acris.binding.client.annotations.Generated;
 import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
 import sk.seges.acris.binding.client.samples.loaders.CompanyDataLoader;
 import sk.seges.acris.binding.client.samples.mocks.Company;

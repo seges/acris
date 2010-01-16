@@ -2,7 +2,7 @@ package sk.seges.acris.binding.client.holder;
 
 import java.io.Serializable;
 
-import sk.seges.acris.binding.client.bind.annotations.BindingField;
+import sk.seges.acris.binding.client.annotations.BindingField;
 import sk.seges.sesam.domain.IDomainObject;
 
 /**

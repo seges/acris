@@ -1,8 +1,8 @@
-package sk.seges.acris.binding.client.bind.providers.support;
+package sk.seges.acris.binding.client.providers.support;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapter;
 
-import sk.seges.acris.binding.client.bind.providers.support.generic.HandlerBindingAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.generic.HandlerBindingAdapterProvider;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;

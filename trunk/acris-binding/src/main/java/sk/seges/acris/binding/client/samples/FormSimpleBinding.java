@@ -4,11 +4,11 @@ import java.util.Date;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
 
-import sk.seges.acris.binding.client.bind.providers.CheckBoxAdapterProvider;
-import sk.seges.acris.binding.client.bind.providers.DateBoxAdapterProvider;
-import sk.seges.acris.binding.client.bind.providers.ListBoxAutoAdapterProvider;
-import sk.seges.acris.binding.client.bind.providers.TextBoxBaseAdapterProvider;
 import sk.seges.acris.binding.client.init.BeansBindingInit;
+import sk.seges.acris.binding.client.providers.CheckBoxAdapterProvider;
+import sk.seges.acris.binding.client.providers.DateBoxAdapterProvider;
+import sk.seges.acris.binding.client.providers.ListBoxAutoAdapterProvider;
+import sk.seges.acris.binding.client.providers.TextBoxBaseAdapterProvider;
 import sk.seges.acris.binding.client.samples.form.SimpleForm;
 import sk.seges.acris.binding.client.samples.mocks.Company;
 import sk.seges.acris.binding.client.samples.mocks.SimpleBean;

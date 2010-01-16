@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
-import sk.seges.acris.binding.client.bind.BeanWrapper;
+import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.binding.rebind.RebindUtils;
 import sk.seges.sesam.domain.IObservableObject;
 

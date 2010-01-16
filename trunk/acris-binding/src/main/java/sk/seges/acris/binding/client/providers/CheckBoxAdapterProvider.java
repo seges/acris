@@ -1,7 +1,7 @@
-package sk.seges.acris.binding.client.bind.providers;
+package sk.seges.acris.binding.client.providers;
 
-import sk.seges.acris.binding.client.bind.providers.annotations.OneToOne;
-import sk.seges.acris.binding.client.bind.providers.support.AbstractBindingClickHandlerAdapterProvider;
+import sk.seges.acris.binding.client.providers.annotations.OneToOne;
+import sk.seges.acris.binding.client.providers.support.AbstractBindingClickHandlerAdapterProvider;
 
 import com.google.gwt.user.client.ui.CheckBox;
 

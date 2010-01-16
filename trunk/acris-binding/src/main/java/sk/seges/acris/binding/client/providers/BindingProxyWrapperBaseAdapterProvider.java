@@ -1,7 +1,7 @@
-package sk.seges.acris.binding.client.bind.providers;
+package sk.seges.acris.binding.client.providers;
 
-import sk.seges.acris.binding.client.bind.BeanProxyWrapper;
-import sk.seges.acris.binding.client.bind.providers.support.generic.AbstractBindingBeanAdapterProvider;
+import sk.seges.acris.binding.client.providers.support.generic.AbstractBindingBeanAdapterProvider;
+import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
 
 public final class BindingProxyWrapperBaseAdapterProvider extends AbstractBindingBeanAdapterProvider<String> {
 

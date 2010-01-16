@@ -1,9 +1,9 @@
-package sk.seges.acris.binding.client.bind.providers.support.generic;
+package sk.seges.acris.binding.client.providers.support.generic;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapter;
 import org.gwt.beansbinding.ui.client.adapters.BeanAdapterBase;
 
-import sk.seges.acris.binding.client.bind.BeanProxyWrapper;
+import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
 
 public abstract class AbstractBindingBeanAdapterProvider<T> implements IBindingBeanAdapterProvider<BeanProxyWrapper<?,?>> {
 

@@ -1,4 +1,4 @@
-package sk.seges.acris.binding.client.bind;
+package sk.seges.acris.binding.client.holder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,6 +10,9 @@ import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 
+import sk.seges.acris.binding.client.annotations.BindingFieldInfo;
+import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
+import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
 
 import com.google.gwt.user.client.ui.Widget;

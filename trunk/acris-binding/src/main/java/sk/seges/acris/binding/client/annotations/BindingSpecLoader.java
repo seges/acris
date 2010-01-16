@@ -1,4 +1,4 @@
-package sk.seges.acris.binding.client.bind.annotations;
+package sk.seges.acris.binding.client.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
