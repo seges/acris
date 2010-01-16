@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.client;
 
-import sk.seges.acris.client.callback.TrackingAsyncCallback;
+import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.core.client.GWT;

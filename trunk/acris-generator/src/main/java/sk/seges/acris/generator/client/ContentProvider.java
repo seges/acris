@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import sk.seges.acris.client.callback.ICallbackTrackingListener;
-import sk.seges.acris.client.callback.RPCRequest;
-import sk.seges.acris.client.callback.RPCRequestTracker;
-import sk.seges.acris.client.callback.RequestState;
+import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
+import sk.seges.acris.callbacks.client.RPCRequest;
+import sk.seges.acris.callbacks.client.RPCRequestTracker;
+import sk.seges.acris.callbacks.client.RequestState;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
