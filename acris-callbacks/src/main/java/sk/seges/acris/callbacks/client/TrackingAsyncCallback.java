@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.acris.client.callback;
+package sk.seges.acris.callbacks.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
