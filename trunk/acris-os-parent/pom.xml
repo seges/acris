@@ -41,9 +41,12 @@
 		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
 		<module>../acris-callbacks</module>
+		<module>../acris-client-core</module>
 		<module>../acris-common</module>
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
+		<module>../acris-recorder</module>
+		<module>../acris-security</module>
 		<module>../acris-server-components</module>
 	</modules>
 	
@@ -56,11 +59,14 @@
 	
 	<dependencyManagement>
 		<dependencies>
+			<!-- Corpis dependencies -->
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-dao-impl</artifactId>
 				<version>${corpis-os.version}</version>
 			</dependency>
+
+			<!-- Sesam dependencies -->
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>
@@ -72,6 +78,8 @@
 				<version>${sesam-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+
+			<!-- Acris dependencies -->
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-binding</artifactId>
@@ -111,6 +119,17 @@
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-client-core</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+  				<artifactId>acris-client-core</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
 				<classifier>sources</classifier>
@@ -129,6 +148,28 @@
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-recorder</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-recorder</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-server-components</artifactId>
 				<version>${pom.version}</version>
 			</dependency>
@@ -138,11 +179,15 @@
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>
+
+			<!-- Gilead dependencies -->
 			<dependency>
 				<groupId>net.sf.gilead</groupId>
 				<artifactId>adapter4gwt</artifactId>
 				<version>${gilead.version}</version>
 			</dependency>
+
+			<!-- Html parser -->
 			<dependency>
 				<groupId>org.htmlparser</groupId>
 				<artifactId>htmlparser</artifactId>
