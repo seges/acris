@@ -78,9 +78,9 @@ public class BeansBindingInitGenerator extends Generator {
 		
 		sourceWriter.println("static {");
 		sourceWriter.indent();
-		for (JClassType classType : types) {
-			generateCreator(sourceWriter, classType);
-		}
+//		for (JClassType classType : types) {
+//			generateCreator(sourceWriter, classType);
+//		}
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		
