@@ -1,4 +1,4 @@
-package sk.seges.acris.client.callback;
+package sk.seges.acris.callbacks.client;
 
 import java.util.ArrayList;
 import java.util.Date;

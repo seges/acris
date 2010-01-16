@@ -1,4 +1,4 @@
-package sk.seges.acris.client.callback;
+package sk.seges.acris.callbacks.client;
 
 /**
  * Listener for handling {@link TrackingAsyncCallback} state changes. 

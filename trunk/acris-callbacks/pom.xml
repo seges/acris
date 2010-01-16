@@ -16,6 +16,7 @@
 	</parent>
   
   	<dependencies>
+  		<!-- GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
@@ -36,6 +37,5 @@
 			<artifactId>gwt-dev</artifactId>
 			<classifier>${platform}</classifier>
 		</dependency>
-
 	</dependencies>
 </project>
