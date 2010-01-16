@@ -2,10 +2,10 @@ package sk.seges.acris.generator.client;
 
 import java.util.List;
 
-import sk.seges.acris.client.callback.ICallbackTrackingListener;
-import sk.seges.acris.client.callback.RPCRequest;
-import sk.seges.acris.client.callback.RPCRequestTracker;
-import sk.seges.acris.client.callback.RequestState;
+import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
+import sk.seges.acris.callbacks.client.RPCRequest;
+import sk.seges.acris.callbacks.client.RPCRequestTracker;
+import sk.seges.acris.callbacks.client.RequestState;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
@@ -30,7 +30,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 	
 	public String getModuleName() {
-		return "sk.seges.synapso.generator.Generator";
+		return "sk.seges.acris.generator.Generator";
 	}
 
 	public String getName() {
