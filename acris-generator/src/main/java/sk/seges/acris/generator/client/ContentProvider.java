@@ -57,9 +57,9 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 	}
 
 	
-	private GeneratorToken createGeneratorToken(final String token, final String language, final String webId) {
+	private GeneratorToken createGeneratorToken(final String niceurl, final String language, final String webId) {
 		GeneratorToken content = new GeneratorToken();
-		content.setToken(token);
+		content.setNiceUrl(niceurl);
 		content.setLanguage(language);
 		content.setWebId(webId);
 		return content;
@@ -67,15 +67,15 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 
 	private void getAvailableTokens(final GeneratorToken generatorToken, final AsyncCallback<Void> callback) {
 		
-		generatorService.getAvailableTokens(generatorToken.getLanguage(), generatorToken.getWebId(), new AsyncCallback<List<String>>() {
+		generatorService.getAvailableNiceurls(generatorToken.getLanguage(), generatorToken.getWebId(), new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
 			}
 
 			public void onSuccess(List<String> result) {
-				for (String token : result) {
-					contents.add(createGeneratorToken(token, generatorToken.getLanguage(), generatorToken.getWebId()));
+				for (String niceurl : result) {
+					contents.add(createGeneratorToken(niceurl, generatorToken.getLanguage(), generatorToken.getWebId()));
 				}
 				callback.onSuccess(null);
 			}

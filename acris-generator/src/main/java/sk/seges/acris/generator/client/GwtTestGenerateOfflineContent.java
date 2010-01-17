@@ -191,7 +191,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		contentProvider.getContent(generatorToken, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
-				fail("Unable to get content for token " + generatorToken.getToken(), caught);
+				fail("Unable to get content for niceurl " + generatorToken.getNiceUrl(), caught);
 				finalizeTest();
 			}
 
@@ -199,7 +199,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 				offlineContentProvider.getOfflineContent(content, generatorToken, new AsyncCallback<String>() {
 					public void onFailure(Throwable caught) {
-						fail("Unable to get offline content for token " + generatorToken.getToken() + ". " + caught);
+						fail("Unable to get offline content for token " + generatorToken.getNiceUrl() + ". " + caught);
 						finalizeTest();
 					}
 			

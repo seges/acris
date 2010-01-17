@@ -86,33 +86,33 @@ public class TokenProvider {
 		final StringFile nextFile = new StringFile(PATH_PREFIX + TOKEN_DIRECTORY, TOKEN_NAME + currentFileIndex);
 
 		if (log.isInfoEnabled()) {
-			log.info("Creating file '" + nextFile.getAbsolutePath() + "' for token '" + generatorToken.getToken() + "'");
+			log.info("Creating file '" + nextFile.getAbsolutePath() + "' for nice url '" + generatorToken.getNiceUrl() + "'");
 		}
 
 		final File tokensDir = new File(PATH_PREFIX + TOKEN_DIRECTORY);
 		if (!tokensDir.exists() && !tokensDir.mkdirs()) {
 			log.error("Unable to create directory structure fot the file '" + nextFile.getAbsolutePath()
-					+ "'. Current token is " + generatorToken.getToken());
+					+ "'. Current niceurl is " + generatorToken.getNiceUrl());
 			return;
 		}
 
 		try {
 			if (!nextFile.createNewFile()) {
-				log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current token is "
-								+ generatorToken.getToken());
+				log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current niceurl is "
+								+ generatorToken.getNiceUrl());
 				return;
 			}
 		} catch (final IOException ioe) {
-			log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current token is " + generatorToken.getToken(),
+			log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current niceurl is " + generatorToken.getNiceUrl(),
 					ioe);
 			return;
 		}
 
 		try {
-			nextFile.writeTextToFile(generatorToken.getToken() + LANG_DELIMITER + generatorToken.getLanguage() + LANG_DELIMITER + generatorToken.getWebId());
+			nextFile.writeTextToFile(generatorToken.getNiceUrl() + LANG_DELIMITER + generatorToken.getLanguage() + LANG_DELIMITER + generatorToken.getWebId());
 		} catch (final IOException ioe) {
 			log.error("Unable to write content to the token file '" + nextFile.getAbsolutePath()
-					+ "'. Current token is " + generatorToken.getToken(), ioe);
+					+ "'. Current token is " + generatorToken.getNiceUrl(), ioe);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class TokenProvider {
 			return null;
 		}
 		
-		String token = tokenizer.nextToken();
+		String niceurl = tokenizer.nextToken();
 
 		if (!tokenizer.hasMoreTokens()) {
 			return null;
@@ -163,7 +163,7 @@ public class TokenProvider {
 		String webId = tokenizer.nextToken();
 
 		GeneratorToken lastGeneratorToken = new GeneratorToken();
-		lastGeneratorToken.setToken(token);
+		lastGeneratorToken.setNiceUrl(niceurl);
 		lastGeneratorToken.setLanguage(lang);
 		lastGeneratorToken.setWebId(webId);
 
@@ -182,8 +182,8 @@ public class TokenProvider {
 
         GeneratorToken token = new GeneratorToken();
         token.setLanguage("en");
-        token.setWebId("VOIPAC_WEB");
-        token.setToken("home");
+        token.setWebId("ICM_WEB");
+        token.setNiceUrl("home");
         
         provider.setTokenForProcessing(token);
     }
