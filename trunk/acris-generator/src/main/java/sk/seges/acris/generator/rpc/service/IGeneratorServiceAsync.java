@@ -48,5 +48,5 @@ public interface IGeneratorServiceAsync {
 	/**
 	 * Content provider services
 	 */
-	void getAvailableTokens(String language, String webId, AsyncCallback<List<String>> callback);
+	void getAvailableNiceurls(String language, String webId, AsyncCallback<List<String>> callback);
 }

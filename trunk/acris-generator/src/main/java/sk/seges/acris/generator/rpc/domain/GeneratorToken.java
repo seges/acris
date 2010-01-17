@@ -6,21 +6,13 @@ public class GeneratorToken implements Serializable {
 	
 	private static final long serialVersionUID = -1013144843773775841L;
 
-	private String token;
 	private String language;
 	private String webId;
+	private String niceUrl;
 
 	public GeneratorToken() {	
 	}
 	
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
 	public String getLanguage() {
 		return language;
 	}
@@ -35,5 +27,13 @@ public class GeneratorToken implements Serializable {
 
 	public void setWebId(String webId) {
 		this.webId = webId;
+	}
+
+	public String getNiceUrl() {
+		return niceUrl;
+	}
+
+	public void setNiceUrl(String niceUrl) {
+		this.niceUrl = niceUrl;
 	}
 }

@@ -35,7 +35,7 @@ public class ContentNavigator {
 				Window.Location.replace(newHref);
 			}
 		} else {
-			History.newItem(token.getToken());
+			History.newItem(token.getNiceUrl());
 		}
 	}
 }

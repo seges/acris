@@ -78,8 +78,8 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		return true;
 	}
 
-	public List<String> getAvailableTokens(String lang, String webId) {
-		return contentInfoProvider.getAvailableTokens(lang, webId);
+	public List<String> getAvailableNiceurls(String lang, String webId) {
+		return contentInfoProvider.getAvailableNiceurls(lang, webId);
 	}
 
 	public String getDomainForLanguage(String webId, String language) {
@@ -181,7 +181,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		for (Entry<String, String> supportedLanguage : languages.entrySet()) {
 			
 			GeneratorToken localizedToken = new GeneratorToken();
-			localizedToken.setToken(token.getToken());
+			localizedToken.setNiceUrl(token.getNiceUrl());
 			localizedToken.setWebId(token.getWebId());
 			localizedToken.setLanguage(supportedLanguage.getKey());
 			
@@ -202,7 +202,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 				}
 			}
 
-			html = html.replace("junit.html?locale=" + supportedLanguage.getKey(), contentInfoProvider.getNiceUrl(localizedToken));
+			html = html.replace("junit.html?locale=" + supportedLanguage.getKey(), localizedToken.getNiceUrl());
 		}
 
 		String htmlEndTags = "</BODY></html>";
@@ -221,7 +221,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 	@Override
 	public void writeTextToFile(String content, GeneratorToken token) {
-		File dirFile = new File(getOfflineContentTargetPath(token));
+		File dirFile = new File("#" + getOfflineContentTargetPath(token));
 
 		if (dirFile == null) {
 			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
@@ -233,7 +233,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			}
 		}
 		
-		StringFile file = new StringFile(dirFile, contentInfoProvider.getNiceUrl(token));
+		StringFile file = new StringFile(dirFile, token.getNiceUrl());
 
 		if (!file.exists()) {
 			try {

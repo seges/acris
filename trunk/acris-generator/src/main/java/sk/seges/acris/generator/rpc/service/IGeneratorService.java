@@ -48,5 +48,5 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * Content provider services
 	 */
-	List<String> getAvailableTokens(String lang, String webId);
+	List<String> getAvailableNiceurls(String lang, String webId);
 }
