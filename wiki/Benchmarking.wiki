@@ -1,5 +1,5 @@
 #summary Various benchmarking tools and guides
-#labels benchmark
+#labels Benchmark
 
 = Benchmarking GWT.create =
 
