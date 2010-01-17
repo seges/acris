@@ -23,6 +23,7 @@
 		<gilead-hibernate-util.version>1.2.3</gilead-hibernate-util.version>
 		<gwt-widgets-server.version>1.0</gwt-widgets-server.version>
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
+		<gwteventservice.version>1.0.2</gwteventservice.version>
 	</properties>
 
 
@@ -125,6 +126,13 @@
 				<artifactId>hibernate-util</artifactId>
 				<version>${gilead-hibernate-util.version}</version>
 			</dependency>
+			<!-- GWT event service -->
+			<dependency>
+				<groupId>de.novanic.gwteventservice</groupId>
+				<artifactId>gwteventservice</artifactId>
+				<version>${gwteventservice.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -260,6 +268,8 @@
 						<mergedWebXml>war/WEB-INF/web.xml</mergedWebXml>
 						<webappDirectory>war</webappDirectory>
 						<soyc>false</soyc>
+						<disableClassMetadata>true</disableClassMetadata>
+						<disableCastChecking>true</disableCastChecking>
 					</configuration>
 					<executions>
 						<execution>
