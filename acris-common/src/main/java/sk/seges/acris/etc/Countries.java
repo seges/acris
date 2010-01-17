@@ -180,7 +180,7 @@ public enum Countries {
     SEYCHELLES("SEYCHELLES", false, 203, "en", "sc", "sc"),
     SIERRA_LEONE("SIERRA LEONE", false, 204, "en", "sl", "sl"),
     SINGAPORE("SINGAPORE", false, 205, "en", "sg", "sg"),
-    SLOVAKIA("SLOVAKIA", true, 206, "en", "sk", "sk"),
+    SLOVAKIA("SLOVAKIA", true, 206, "sk", "sk", "sk"),
     SLOVENIA("SLOVENIA", true, 207, "en", "si", "si"),
     SOLOMON_ISLANDS("SOLOMON ISLANDS", false, 208, "en", "sb", "sb"),
     SOMALIA("SOMALIA", false, 209, "en", "so", "so"),
