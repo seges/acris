@@ -23,7 +23,7 @@ public class MyPanel extends LayoutContainer implements ISecuredPanel {
 and server side security annotations on your secured services like this:
 {{{
 @Secured("USER_MAINTENANCE_ROLE_PERMISSION_CREATE")
-//this method can be executed only to authorized users
+//this method can be executed only by authorized users
 public void addUser(User user) {
     ...
 }
@@ -31,7 +31,6 @@ public void addUser(User user) {
 
 = Integration steps on client side =
 (these steps are assuming that you have separated client&server architecture, if not than integration is little bit earlier, so we are covering the more complex scenario)
-
 
  # Add dependency to the acris-security project on your GWT application (into pom.xml)
 {{{
@@ -45,7 +44,6 @@ public void addUser(User user) {
 	<classifier>sources</classifier>
 </dependency>
 }}}
-
  # Add GWT inherit into your .gwt.xml module file
 {{{
 <inherits name='sk.seges.acris.Security' />
@@ -67,7 +65,6 @@ public void addUser(User user) {
 	<listener-class>sk.seges.acris.security.server.SessionHandlerListener</listener-class>
 </listener>
 }}}
-
  # Add spring resources into your application context configuration 
 {{{
 <jee:jndi-lookup id="dataSource" jndi-name="jdbc/acris" resource-ref="true"/>
