@@ -9,5 +9,3 @@ This utility class will override default GWT bridge implementation and measure t
 
 Running the utility is useful in development mode where you can influence the order of classpath entries easily. It is also possible to integrate it to your build process if you want but there is only one rule you have to fullfil:
   * the project (the dependency itself either in form of project or JAR or...) *must be placed before any GWT library* on the classpath
-
-Image examples below show how to push acris-benchmark to the top of classpath in Eclipse.
