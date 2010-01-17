@@ -69,7 +69,7 @@
 		<hibernate-commons-annotations.version>3.3.0.ga</hibernate-commons-annotations.version>
 		<hibernate-validator.version>4.0.0.GA</hibernate-validator.version>
 	
-		<postgresql.version>8.3-603.jdbc4</postgresql.version>
+		<postgresql.version>8.4-701.jdbc4</postgresql.version>
 		<derby.version>10.4.2.0</derby.version>
 		<hsqldb.version>1.8.0.7</hsqldb.version>
 		<h2.version>1.1.117</h2.version>
@@ -96,7 +96,7 @@
 		-->
 		<jms.version>1.1</jms.version>
 		<activemq.version>5.2.0</activemq.version>
-		<openmq.version>4.3</openmq.version>
+		<openmq.version>4.4</openmq.version>
 		
 		<jasperreports.version>3.1.2</jasperreports.version>
 
@@ -113,6 +113,11 @@
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
 		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<commons-io.version>1.4</commons-io.version>
+
+		<jndi.providerutil.version>1.2</jndi.providerutil.version>
+		<jndi.fscontext.version>1.2-beta-3</jndi.fscontext.version>
+
+		<java-getopts.version>1.0.9</java-getopts.version>
 	</properties>
 
 	<dependencyManagement>
@@ -120,72 +125,72 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
+				<version>4.4</version>
 			</dependency>
 
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
+				<version>1.2.14</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
+				<version>1.5.6</version>
 			</dependency>
 			
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-aop</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-orm</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
-				<version>${spring.version}</version>
+				<version>2.5.6</version>
 				<scope>test</scope>
 			</dependency>
 
@@ -193,47 +198,47 @@
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-acl</artifactId>
-				<version>${spring-security.version}</version>
+				<version>2.0.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
-				<version>${spring-security.version}</version>
+				<version>2.0.4</version>
 			</dependency> 
 			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core-tiger</artifactId>
-				<version>${spring-security.version}</version>
+				<version>2.0.4</version>
 			</dependency> 
 			
 			<!-- JPA & Hibernate -->			
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>ejb3-persistence</artifactId>
-				<version>${jpa.version}</version>
+				<version>1.0.1.GA</version>
 			</dependency>
 
 			<dependency>
 				<groupId>javax.validation</groupId>
 				<artifactId>validation-api</artifactId>
-				<version>${validation-api.version}</version>
+				<version>1.0.0.GA</version>
 			</dependency>
 
 			<!-- Hibernate -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate</artifactId>
-				<version>${hibernate.version}</version>
+				<version>3.2.6-composite_id_fix</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate-entitymanager.version}</version>
+				<version>3.3.2.GA</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-annotations</artifactId>
-				<version>${hibernate-annotations.version}</version>
+				<version>3.3.1.GA</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.hibernate</groupId>
@@ -244,12 +249,12 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-commons-annotations</artifactId>
-				<version>${hibernate-commons-annotations.version}</version>
+				<version>3.3.0.ga</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate-validator.version}</version>
+				<version>4.0.0.GA</version>
 			</dependency>
 			
 			<!-- Databases -->
@@ -258,7 +263,7 @@
 			<dependency>
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>${postgresql.version}</version>
+				<version>8.4-701.jdbc4</version>
 				<scope>runtime</scope>
 			</dependency>
 			
@@ -267,38 +272,38 @@
 			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derby</artifactId>
-				<version>${derby.version}</version>
+				<version>10.4.2.0</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derbyclient</artifactId>
-				<version>${derby.version}</version>
+				<version>10.4.2.0</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derbynet</artifactId>
-				<version>${derby.version}</version>
+				<version>10.4.2.0</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derbytools</artifactId>
-				<version>${derby.version}</version>
+				<version>10.4.2.0</version>
 				<scope>runtime</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
-				<version>${hsqldb.version}</version>
+				<version>1.8.0.7</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>${h2.version}</version>
+				<version>1.1.117</version>
 			</dependency>
 			
 			
@@ -306,13 +311,13 @@
 			<dependency>
 				<groupId>net.sf.ehcache</groupId>
 				<artifactId>ehcache</artifactId>
-				<version>${ehcache.version}</version>
+				<version>1.5.0</version>
 			</dependency>
 
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
-				<version>${servlet-api.version}</version>
+				<version>2.5</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -320,40 +325,40 @@
 			<dependency>
 				<groupId>org.apache.geronimo.specs</groupId>
 				<artifactId>geronimo-jms_1.1_spec</artifactId>
-				<version>${jms.version}</version>
+				<version>1.1</version>
 			</dependency>
 	
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
-				<version>${activemq.version}</version>
+				<version>5.2.0</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
 				<artifactId>imq</artifactId>
-				<version>${openmq.version}</version>
+				<version>4.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
 				<artifactId>imqjmx</artifactId>
-				<version>${openmq.version}</version>
+				<version>4.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
 				<artifactId>imqbroker</artifactId>
-				<version>${openmq.version}</version>
+				<version>4.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
 				<artifactId>imqutil</artifactId>
-				<version>${openmq.version}</version>
+				<version>4.4</version>
   			</dependency>
 
 			<dependency>
 				<groupId>jasperreports</groupId>
 				<artifactId>jasperreports</artifactId>
-				<version>${jasperreports.version}</version>
+				<version>3.1.2</version>
 				<exclusions>
 					<exclusion>
 						<groupId>eclipse</groupId>
@@ -367,69 +372,87 @@
 			<dependency>
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
-				<version>${commons-collections.version}</version>
+				<version>3.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-digester</groupId>
 				<artifactId>commons-digester</artifactId>
-				<version>${commons-digester.version}</version>
+				<version>2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
-				<version>${commons-logging.version}</version>
+				<version>1.1.1</version>
 			</dependency>
 
 			<dependency>
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
-				<version>${commons-fileupload.version}</version>
+				<version>1.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
-				<version>${commons-httpclient.version}</version>
+				<version>3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>${commons-io.version}</version>
+				<version>1.4</version>
 			</dependency>
 			<!-- Mailing -->
 			<dependency>
 			    <groupId>org.apache.geronimo.specs</groupId>
 			    <artifactId>geronimo-javamail_1.4_spec</artifactId>
-			    <version>${mail-api.version}</version>
+			    <version>1.5</version>
 			</dependency> 
 			
 			<dependency>
 			    <groupId>javax.mail</groupId>
 			    <artifactId>mail</artifactId>
-			    <version>${javamail.version}</version>
+			    <version>1.4.1</version>
 			    <scope>provided</scope>
 			</dependency>
 
 			<dependency>
 				<groupId>javax.annotation</groupId>
 				<artifactId>jsr250-api</artifactId>
-				<version>${jsr250-api.version}</version>
+				<version>1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.annotation</groupId>
 				<artifactId>jsr250-api</artifactId>
-				<version>${jsr250-api.version}</version>
+				<version>1.0</version>
 				<classifier>sources</classifier>
 			</dependency>
 
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjrt</artifactId>
-				<version>${aspectj.version}</version>
+				<version>1.6.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>
-				<version>${aspectj.version}</version>
+				<version>1.6.2</version>
+			</dependency>
+			
+			
+			<dependency>
+				<groupId>com.sun.jndi</groupId>
+				<artifactId>providerutil</artifactId>
+				<version>1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jndi</groupId>
+				<artifactId>fscontext</artifactId>
+				<version>1.2-beta-3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>urbanophile</groupId>
+				<artifactId>java-getopt</artifactId>
+				<version>1.0.9</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -448,7 +471,7 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>${maven.version}</version>
+									<version>[2.1.0,)</version>
 								</requireMavenVersion>
 							</rules>
 						</configuration>
