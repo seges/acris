@@ -18,15 +18,11 @@
 
 	<!-- Gilead dynamic proxy classes -->
 	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
-		<when-type-is class="sk.seges.acris.rpc.domain.RolePermission" />
-	</generate-with>
-
-	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
-		<when-type-is class="sk.seges.acris.rpc.domain.GenericUser" />
-	</generate-with>
-
-	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
-		<when-type-is class="sk.seges.acris.rpc.domain.UserPreferences" />
+		<any>
+			<when-type-is class="sk.seges.acris.security.rpc.domain.RolePermission" />
+			<when-type-is class="sk.seges.acris.security.rpc.domain.GenericUser" />
+			<when-type-is class="sk.seges.acris.security.rpc.domain.UserPreferences" />
+		</any>
 	</generate-with>
 
 	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
