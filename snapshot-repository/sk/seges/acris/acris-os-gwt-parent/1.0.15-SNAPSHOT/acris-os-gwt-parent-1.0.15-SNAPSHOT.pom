@@ -268,8 +268,8 @@
 						<mergedWebXml>war/WEB-INF/web.xml</mergedWebXml>
 						<webappDirectory>war</webappDirectory>
 						<soyc>false</soyc>
-						<disableClassMetadata>true</disableClassMetadata>
-						<disableCastChecking>true</disableCastChecking>
+						<!--disableClassMetadata>true</disableClassMetadata>
+						<disableCastChecking>true</disableCastChecking-->
 					</configuration>
 					<executions>
 						<execution>
