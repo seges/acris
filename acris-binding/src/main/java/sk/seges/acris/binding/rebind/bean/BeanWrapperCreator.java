@@ -73,6 +73,10 @@ public class BeanWrapperCreator {
 					continue;
 				}
 
+				if(method.isPrivate() || method.isProtected()) {
+					continue;
+				}
+				
 				for(JMethod allMethod : allMethods) {
 					if(allMethod.getReadableDeclaration().compareTo(method.getReadableDeclaration()) == 0) {
 						found = true;
