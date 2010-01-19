@@ -1,19 +1,19 @@
 package sk.seges.acris.security.client.callback;
 
 import sk.seges.acris.security.rpc.exception.AccessDeniedException;
-import sk.seges.acris.security.rpc.exception.ApplicationSecurityException;
+import sk.seges.acris.security.rpc.exception.SecurityException;
 import sk.seges.acris.security.rpc.exception.AuthenticationException;
 
-public class SecurityCallbackHelper {
-	public static ApplicationSecurityException convertToSecurityException(
+public class SecurityExceptionsProcessor {
+	public static SecurityException convertToSecurityException(
 			final Throwable exception) {
 		if (exception != null && exception.getMessage() != null) {
 			String exceptionMessage = exception.getMessage();
-			if (exceptionMessage.contains(ApplicationSecurityException.class
+			if (exceptionMessage.contains(SecurityException.class
 					.getName())) {
-				return new ApplicationSecurityException(exception.getMessage()
+				return new SecurityException(exception.getMessage()
 						.replaceAll(
-								ApplicationSecurityException.class.getName(),
+								SecurityException.class.getName(),
 								"").trim());
 			}
 			if (exceptionMessage

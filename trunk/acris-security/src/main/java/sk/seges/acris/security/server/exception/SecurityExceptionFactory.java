@@ -4,13 +4,13 @@ import org.springframework.security.AccessDeniedException;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.SpringSecurityException;
 
-import sk.seges.acris.security.rpc.exception.ApplicationSecurityException;
+import sk.seges.acris.security.rpc.exception.SecurityException;
 
 public class SecurityExceptionFactory {
 
 	public static ServerException get(
 			final SpringSecurityException springException) {
-		ApplicationSecurityException gwtException = null;
+		SecurityException gwtException = null;
 		if (springException instanceof AccessDeniedException) {
 			gwtException = new sk.seges.acris.security.rpc.exception.AccessDeniedException(
 					springException.getMessage(), springException.getCause());
@@ -18,7 +18,7 @@ public class SecurityExceptionFactory {
 			gwtException = new sk.seges.acris.security.rpc.exception.AuthenticationException(
 					springException.getMessage(), springException.getCause());
 		} else {
-			gwtException = new sk.seges.acris.security.rpc.exception.ApplicationSecurityException(
+			gwtException = new sk.seges.acris.security.rpc.exception.SecurityException(
 					springException.getMessage(), springException.getCause());
 		}
 		return new ServerException(gwtException);

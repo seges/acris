@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * A more specific exception for access denied error type.
  * 
  */
-public class AccessDeniedException extends ApplicationSecurityException
+public class AccessDeniedException extends SecurityException
 		implements IsSerializable {
 
 	private static final long serialVersionUID = -276267759288796263L;
