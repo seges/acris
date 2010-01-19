@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * A more specific exception for authentication error type.
  * 
  */
-public class AuthenticationException extends ApplicationSecurityException
+public class AuthenticationException extends SecurityException
 		implements IsSerializable {
 
 	private static final long serialVersionUID = -6437864268780034827L;

@@ -2,7 +2,7 @@ package sk.seges.acris.security.client.callback;
 
 //import com.google.gwt.user.client.rpc.AsyncCallback;
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
-import sk.seges.acris.security.rpc.exception.ApplicationSecurityException;
+import sk.seges.acris.security.rpc.exception.SecurityException;
 
 /**
  * This is a secured AsyncCallback class, enabling a specific failure management
@@ -22,7 +22,7 @@ public abstract class SecuredAsyncCallback<T> extends TrackingAsyncCallback<T> {
 	 * @param exception
 	 *            the security exception thrown
 	 */
-	public void onSecurityException(final ApplicationSecurityException exception) {
+	public void onSecurityException(final SecurityException exception) {
 	}
 
 	/**
@@ -41,14 +41,17 @@ public abstract class SecuredAsyncCallback<T> extends TrackingAsyncCallback<T> {
 	 * @param exception
 	 *            the exception thrown, could be a security exception
 	 */
-	/*
-	 * public final void onFailure(final Throwable exception) {
-	 * ApplicationSecurityException newException =
-	 * SecurityCallbackHelper.convertToSecurityException(exception);
-	 * 
-	 * if (newException != null) { onSecurityException(newException); } else {
-	 * onOtherException(exception); } }
-	 */
+
+	public final void onFailureCallback(final Throwable exception) {
+		SecurityException newException = SecurityExceptionsProcessor
+				.convertToSecurityException(exception);
+
+		if (newException != null) {
+			onSecurityException(newException);
+		} else {
+			onOtherException(exception);
+		}
+	}
 
 	/*
 	 * (non-Javadoc) the default behaviour is redirect to input page
@@ -56,7 +59,7 @@ public abstract class SecuredAsyncCallback<T> extends TrackingAsyncCallback<T> {
 	 * (java.lang.Throwable)
 	 */
 	public final Throwable onSecurityFailureCallback(Throwable cause) {
-		ApplicationSecurityException newException = SecurityCallbackHelper
+		SecurityException newException = SecurityExceptionsProcessor
 				.convertToSecurityException(cause);
 
 		if (newException != null) {
