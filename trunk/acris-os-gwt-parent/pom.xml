@@ -17,7 +17,7 @@
 	<properties>
 		<gwt.version>2.0.0-rc2</gwt.version>
 		<gwtx.version>1.5.3</gwtx.version>
-		<gwt-beans-binding.version>0.2.5-SNAPSHOT</gwt-beans-binding.version>
+		<gwt-beansbinding.version>0.3</gwt-beansbinding.version>
 
 		<gilead.version>1.2.3</gilead.version>
 		<gilead-hibernate-util.version>1.2.3</gilead-hibernate-util.version>
@@ -84,8 +84,8 @@
 			<!-- GWT beans binding -->
 			<dependency>
 				<groupId>org.gwt</groupId>
-				<artifactId>beans-binding</artifactId>
-				<version>${gwt-beans-binding.version}</version>
+				<artifactId>beansbinding</artifactId>
+				<version>${gwt-beansbinding.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.code.gwtx</groupId>
