@@ -1,8 +1,8 @@
 package sk.seges.acris.recorder.rpc.domain;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import sk.seges.acris.core.client.rpc.IDataTransferObject;
 
-public class SessionInfoDTO implements IsSerializable {
+public class SessionInfoDTO implements IDataTransferObject {
 
 	private static final long serialVersionUID = 3610456006317425801L;
 
