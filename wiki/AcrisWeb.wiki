@@ -1,5 +1,5 @@
 #summary Project to create websites with GWT - WORK IN PROGRESS
-#labels websitewebflow,Phase-QA
+#labels dynamic-website,webflow,Phase-QA
 =What's this all about ?=
 AcrisWeb is a project exactly matching the summary above. You may be like: "What? Of course it's for websites. It's a web technology..." Well, true, but... GWT is an application framework. You may think of it as "the Swing for your browser". And there's the catch (NullPointerException lameJokeFail :( ). Ever tried to create a website with Swing ? Not that there would be any particular reason for it, but imagining it, you will get the picture of where I am heading with this. GWT, as stated, is an application framework. It's great for creating RIA applications, that are most commonly placed within a page of a website or published as stand-alone applications.
 
