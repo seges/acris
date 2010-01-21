@@ -19,6 +19,30 @@
 
 	<url>http://www.seges.sk</url>
 
+	<scm>
+		<connection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-parent</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-parent</developerConnection>
+		<url>https://acris.googlecode.com/svn/trunk/acris-os-parent</url>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>acris-releases-repo</id>
+			<name>acris-releases-repo</name>
+			<url>https://acris.googlecode.com/svn/releases-repository/</url>
+		</repository>
+		<snapshotRepository>
+			<id>acris-snapshots-repo</id>
+			<name>acris-snapshots-repo</name>
+			<url>https://acris.googlecode.com/svn/snapshot-repository/</url>
+		</snapshotRepository>
+		<!-- Disabled until issues with maven are resolved and anyway it slows release process :) -->
+		<!--site>
+			<id>seges-maven-site</id>
+			<url>dav:https://local.seges.sk/sites/${repository.type}/${repository.project}/${pom.artifactId}/${pom.version}</url>
+		</site-->
+	</distributionManagement>
+
 	<repositories>
 		<repository>
 			<id>acris-snapshots-repo</id>
@@ -326,18 +350,21 @@
 				<groupId>org.apache.geronimo.specs</groupId>
 				<artifactId>geronimo-jms_1.1_spec</artifactId>
 				<version>${jms.version}</version>
+				<scope>provided</scope>
 			</dependency>
 	
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
 				<version>${activemq.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
 				<artifactId>imq</artifactId>
 				<version>${openmq.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
@@ -528,6 +555,17 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
 					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>install</preparationGoals>
+					<tagBase>
+						https://acris.googlecode.com/svn/tags/${pom.artifactId}
+					</tagBase>
 				</configuration>
 			</plugin>
 		</plugins>
