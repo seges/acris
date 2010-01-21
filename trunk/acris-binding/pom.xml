@@ -35,7 +35,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
-			<classifier>${platform}</classifier>
 		</dependency>
 		<!-- GWT binding other dependenies -->
 		<dependency>

@@ -15,7 +15,7 @@
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
 	<properties>
-		<gwt.version>2.0.0-rc2</gwt.version>
+		<gwt.version>2.0.0</gwt.version>
 		<gwtx.version>1.5.3</gwtx.version>
 		<gwt-beansbinding.version>0.3</gwt-beansbinding.version>
 
@@ -69,15 +69,6 @@
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-dev</artifactId>
 				<version>${gwt.version}</version>
-				<classifier>${platform}-libs</classifier>
-				<type>zip</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-dev</artifactId>
-				<version>${gwt.version}</version>
-				<classifier>${platform}</classifier>
 				<scope>provided</scope>
 			</dependency>
 
@@ -138,41 +129,6 @@
 
 	<profiles>
 		<profile>
-			<id>gwt-dev-windows</id>
-			<properties>
-				<platform>windows</platform>
-			</properties>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-		</profile>
-		<profile>
-			<id>gwt-dev-mac</id>
-			<properties>
-				<platform>mac</platform>
-			</properties>
-			<activation>
-				<os>
-					<family>mac</family>
-				</os>
-			</activation>
-		</profile>
-		<profile>
-			<id>gwt-dev-linux</id>
-			<properties>
-				<platform>linux</platform>
-			</properties>
-			<activation>
-				<os>
-					<family>unix</family>
-					<name>linux</name>
-				</os>
-			</activation>
-		</profile>
-
-		<profile>
 			<id>gwt-client</id>
 			<dependencies>
 				<dependency>
@@ -188,14 +144,6 @@
 				<dependency>
 					<groupId>com.google.gwt</groupId>
 					<artifactId>gwt-dev</artifactId>
-					<classifier>${platform}-libs</classifier>
-					<type>zip</type>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-					<classifier>${platform}</classifier>
 					<scope>provided</scope>
 				</dependency>
 			</dependencies>
@@ -268,8 +216,9 @@
 						<mergedWebXml>war/WEB-INF/web.xml</mergedWebXml>
 						<webappDirectory>war</webappDirectory>
 						<soyc>false</soyc>
+						<disableCastChecking>true</disableCastChecking>
 						<!--disableClassMetadata>true</disableClassMetadata>
-						<disableCastChecking>true</disableCastChecking-->
+						<draftCompile>true</draftCompile-->
 					</configuration>
 					<executions>
 						<execution>
