@@ -7,6 +7,8 @@
 
 Download Google certificate into your PC. Follow the guide below. Name the certificate file it e.g. *google.pem*.
 
+[http://acris.googlecode.com/svn/wiki/images/certificateExportGuide.png]
+
 == Step 2 ==
 
 Following command will import the certificate and asks for a password used to authorize the access to the keystore (and for our example we will use: *hesloKuKeystoru*).
