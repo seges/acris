@@ -1,0 +1,43 @@
+#summary Automated process of releasing with Maven
+#labels Deployment,Releasing
+
+= Prepare maven =
+
+== Step 1 ==
+
+Download Google certificate into your PC. Follow the guide below. Name the certificate file it e.g. *google.pem*.
+
+== Step 2 ==
+
+Following command will import the certificate and asks for a password used to authorize the access to the keystore (and for our example we will use: *hesloKuKeystoru*).
+
+Nasledovný príkaz naimportuje certifikát a požiada o heslo, ktoré bude slúžiť na prístup k tomuto keystore (a vy dáte napr. hesloKuKeystoru):
+
+    * {{{keytool -v -alias mavenGoogle -import -file google.pem -keystore trust.jceks -storetype jceks}}}
+
+This will create *trust.jceks* on your filesystem. Place it whereever you can find it because it will be needed by Maven!
+
+Delete the certificate file because it will not be needed anymore. The authorization process will be executed against your keystore.
+
+We will follow with 3rd step - setting MAVEN_OPTS up. There are several ways how to do it but these three parameters of Java VM needs to be in place:
+
+    * -Djavax.net.ssl.trustStore=/path/to/keystore/trust.jceks 
+    * -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru
+    * -Djavax.net.ssl.trustStoreType=jceks
+
+== Step 3 ==
+
+How to setup MAVEN_OPTS:
+
+    * for the environment of the operating system (the preferred way):
+      * in *Windows*: Start -> Control panel -> System -> Environment variables, put new key MAVEN_OPTS following values -Djavax.net.ssl.trustStore=c:\path\to\keystore\trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks
+      * in *Linux*: in your home directory create file *.mavenrc* and put htere following value MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks
+
+    * or you can set environment variable for specific case/terminal/environment:
+      * in Windows console set MAVEN_OPTS=-Djavax.net.ssl.trustStore=c:\path\to\keystore\trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks
+      * almost the same in Linux using export MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks"
+      * or using direct maven command with variable in Linux: MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks" mvn compile
+
+= Snapshots deployment =
+
+Execute *mvn deploy* optionally with -Dmaven.test.skip in project you want to deploy to snapshots repository. Execute it on parent project if you want to deploy all projects.
