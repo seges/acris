@@ -16,7 +16,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
-			<classifier>${platform}</classifier>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
