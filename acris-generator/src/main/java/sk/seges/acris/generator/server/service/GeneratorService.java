@@ -221,7 +221,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 	@Override
 	public void writeTextToFile(String content, GeneratorToken token) {
-		File dirFile = new File("#" + getOfflineContentTargetPath(token));
+		File dirFile = new File(getOfflineContentTargetPath(token));
 
 		if (dirFile == null) {
 			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
@@ -237,6 +237,9 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 		if (!file.exists()) {
 			try {
+				if (!file.getParentFile().exists()) {
+					file.getParentFile().mkdirs();
+				}
 				file.createNewFile();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
