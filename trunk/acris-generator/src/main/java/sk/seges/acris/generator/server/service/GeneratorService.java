@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import net.sf.gilead.gwt.PersistentRemoteService;
 
@@ -20,7 +18,7 @@ import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.server.processor.ContentInfoProvider;
 import sk.seges.acris.generator.server.processor.GWTHTMLHeaderProcessing;
-import sk.seges.acris.generator.server.processor.HTMLBodyProcessing;
+import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
 
@@ -59,6 +57,9 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	@Qualifier("offline.content.taget.path")
 	protected String offlineContentTargetPath;
 
+	@Autowired
+	protected HTMLPostProcessing htmlPostProcessing;
+	
 	private ContentInfoProvider contentInfoProvider;
 	
 	public GeneratorService(ContentInfoProvider contentInfoProvider) {
@@ -168,6 +169,10 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 		GWTHTMLHeaderProcessing htmlProcessing = new GWTHTMLHeaderProcessing(headerFilename);
 
+		if (htmlPostProcessing.setProcessorContent(content, token.getWebId(), token.getLanguage())) {
+			content = htmlPostProcessing.getHtml();	
+		}
+
 		String html = htmlProcessing.getDoctypeDefinition()
 				+ htmlProcessing.getHtmlDefinition(token.getLanguage())
 				+ htmlProcessing.readHeaderFromFile(contentInfoProvider.getContentKeywords(token), 
@@ -175,35 +180,6 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 						contentInfoProvider.getContentTitle(token), 
 						token.getLanguage())
 				+ content + "</html>";
-
-		Map<String, String> languages = contentInfoProvider.getSupportedLanguagesWithDomains(token.getWebId());
-
-		for (Entry<String, String> supportedLanguage : languages.entrySet()) {
-			
-			GeneratorToken localizedToken = new GeneratorToken();
-			localizedToken.setNiceUrl(token.getNiceUrl());
-			localizedToken.setWebId(token.getWebId());
-			localizedToken.setLanguage(supportedLanguage.getKey());
-			
-			final boolean contentExists = contentInfoProvider.exists(localizedToken);
-
-			if (!contentExists) {
-				continue;
-			}
-
-			if (localeSensitiveServer) {
-				int langBarIndex = html.indexOf("junit.html?locale=" + supportedLanguage.getKey());
-
-				if (langBarIndex != -1) {
-					langBarIndex = langBarIndex - languages.get(token.getLanguage()).length() - 1;
-
-					html = html.substring(0, langBarIndex) + supportedLanguage.getValue()
-							+ html.substring(langBarIndex + languages.get(token.getLanguage()).length());
-				}
-			}
-
-			html = html.replace("junit.html?locale=" + supportedLanguage.getKey(), localizedToken.getNiceUrl());
-		}
 
 		String htmlEndTags = "</BODY></html>";
 
@@ -213,9 +189,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			html = html.substring(0, endTagsIndex) + googleAnalyticsScript + html.substring(endTagsIndex);
 		}
 
-		HTMLBodyProcessing finalHtmlContent = new HTMLBodyProcessing(html);
-		html = finalHtmlContent.replaceAnchors(virtualServerProtocol, token.getWebId(), "" + virtualServerPort);
-		
+				
 		return html;
 	}
 
