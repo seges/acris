@@ -37,7 +37,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		return "testLoadContent";
 	}
 
-	protected abstract EntryPoint getEntryPoint(String webId);
+	protected abstract EntryPoint getEntryPoint(String webId, String lang);
 	
 	protected abstract String getGeneratorServiceURL();
 	
@@ -80,13 +80,6 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		});
 	}
 
-	protected ContentNavigator getContentNavigator() {
-		if (site == null) {
-			throw new RuntimeException("Site is not initialized yet. Please, initialize site at first.");
-		}
-		return new ContentNavigator(site);
-	}
-	
 	private void loadTokensForProcessing() {
 
 		//Load last token for processing
@@ -160,7 +153,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		});
 
 		if (site == null) {
-			site = getEntryPoint(generatorToken.getWebId());
+			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
 			site.onModuleLoad();
 		}  else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -171,7 +164,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 	
 	private void loadContentForToken(GeneratorToken generatorToken) {
-		contentProvider.loadContent(generatorToken, getContentNavigator(), new AsyncCallback<GeneratorToken>() {
+		contentProvider.loadContent(generatorToken, new AsyncCallback<GeneratorToken>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

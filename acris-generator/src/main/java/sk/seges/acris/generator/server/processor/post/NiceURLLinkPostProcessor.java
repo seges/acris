@@ -18,7 +18,7 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 	}
 
 	@Override
-	public boolean replace(Node node) {
+	public boolean process(Node node) {
 		((LinkTag)node).setLink(webSettings.getTopLevelDomain() + "/" + ((LinkTag)node).getLink().substring(1));
 		return true;
 	}

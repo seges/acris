@@ -11,6 +11,7 @@ import sk.seges.acris.callbacks.client.RequestState;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -103,7 +104,7 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 		contentsIterator.remove();
 	}
 	
- 	public void loadContent(final GeneratorToken token, ContentNavigator navigator, final AsyncCallback<GeneratorToken> callback) {
+ 	public void loadContent(final GeneratorToken token, final AsyncCallback<GeneratorToken> callback) {
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
 			@Override
@@ -130,7 +131,7 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 
 		int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 
-		navigator.navigateToToken(token);
+		History.newItem(token.getNiceUrl());
 		
 		int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 		if (runningRequestsCount == newRunningRequestsCount) {
@@ -141,9 +142,7 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 	}
 
 	public void getContent(GeneratorToken generatorToken, final AsyncCallback<String> callback) {
-		//FlowPanel rootPanel = AbstractSite.factory.getChocolate(AbstractSite.ROOT_CONTENT_WRAPPER);
-				
-		//DOM.setInnerHTML(RootPanel.get("rootContent").getElement(), content);
+
 		String content = RootPanel.get().toString();
 
 		ContentProcessor contentProcessor = new ContentProcessor(generatorProperties, generatorService);
@@ -157,10 +156,5 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 				callback.onSuccess(content);
 			}
 		});
-
-		// content = content.replaceAll(GWT.getModuleBaseURL(),
-		// ModulesDefinition.REMOTE_SERVER_DEFINITION + "/"
-		// + ModulesDefinition.APP_NAME + "/"
-		// + GWT.getModuleName() + "/");
 	}
 }

@@ -2,6 +2,7 @@ package sk.seges.acris.generator.server.processor.post;
 
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TagNode;
+import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.OptionTag;
 import org.htmlparser.tags.SelectTag;
@@ -35,7 +36,7 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 	}
 
 	@Override
-	public boolean replace(Node node) {
+	public boolean process(Node node) {
 		
 		SelectTag languageSelector = interateToNode(node, SelectTag.class);
 
@@ -48,8 +49,14 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 			WebSettings linkWebSettings = webSettingsService.getWebSettings(webSettings.getWebId(), languageValue);
 
 			LinkTag linkTag = new LinkTag();
+			
+			TextNode textNode = new TextNode(languageText);
+			
+			NodeList nodeList = new NodeList();
+			nodeList.add(textNode);
+			linkTag.setChildren(nodeList);
+			
 			linkTag.setLink(linkWebSettings.getTopLevelDomain());
-			linkTag.setText(languageText);
 			
 			languageLinksList.add(linkTag);
 		}

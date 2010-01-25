@@ -14,7 +14,7 @@ public abstract class AbstractElementPostProcessor {
 
 	public abstract boolean supports(Node node);
 
-	public abstract boolean replace(Node node);
+	public abstract boolean process(Node node);
 	
 	protected WebSettings webSettings;
 
