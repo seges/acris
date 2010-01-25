@@ -1,7 +1,7 @@
-#labels Phase-Deploy
-[http://acris.googlecode.com/svn/wiki/images/logo_appengine.gif]
+#labels GAE,GWTDeploy
+#description Custom SVN post commits notification using hooks implemented in Java and deployed on Google App Engine.
 
-Description of custom SVN post commits notification using hooks implemented in Java and deployed on Google App Engine.
+[http://acris.googlecode.com/svn/wiki/images/logo_appengine.gif]
 
 = Intructions =
 
