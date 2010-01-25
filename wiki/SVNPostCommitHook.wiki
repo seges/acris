@@ -1,5 +1,5 @@
+#summary Custom SVN post commits notification using hooks implemented in Java and deployed on Google App Engine.
 #labels GAE,GWTDeploy
-#description Custom SVN post commits notification using hooks implemented in Java and deployed on Google App Engine.
 
 [http://acris.googlecode.com/svn/wiki/images/logo_appengine.gif]
 
