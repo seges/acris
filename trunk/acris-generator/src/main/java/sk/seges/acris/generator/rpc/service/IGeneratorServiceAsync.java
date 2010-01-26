@@ -21,9 +21,7 @@ public interface IGeneratorServiceAsync {
 
 	void getLastProcessingToken(AsyncCallback<GeneratorToken> callback);
 
-	void getDomainForLanguage(String webId, String language, AsyncCallback<String> callback);
-
-	void getOfflineContentHtml(String headerFilename, String content, GeneratorToken token, AsyncCallback<String> callback);
+	void getOfflineContentHtml(String headerFilename, String content, GeneratorToken token, String currentServerURL, AsyncCallback<String> callback);
 
 	/**
 	 * File provider services
@@ -32,19 +30,6 @@ public interface IGeneratorServiceAsync {
 
 	void writeTextToFile(String content, GeneratorToken token, AsyncCallback<Void> callback);
 
-	/**
-	 * Properties provider services
-	 */
-	void getVirtualServerName(AsyncCallback<String> callback);
-
-	void getVirtualServerPort(AsyncCallback<Integer> callback);
-
-	void getVirtualServerProtocol(AsyncCallback<String> callback);
-
-	void isLocaleSensitiveServer(AsyncCallback<Boolean> callback);
-
-	void getGoogleAnalyticsScript(AsyncCallback<String> callback);
-	
 	/**
 	 * Content provider services
 	 */

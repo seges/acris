@@ -1,4 +1,4 @@
-package sk.seges.acris.generator.server.processor.post;
+package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TagNode;
@@ -10,6 +10,7 @@ import org.htmlparser.util.NodeList;
 import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.WebSettings;
+import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
 @Component
 public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor {

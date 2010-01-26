@@ -33,26 +33,6 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	@Autowired
 	protected TokenProvider tokenProvider;
 
-    @Autowired
-	@Qualifier("virtual.server.name")
-	protected String virtualServerName;
-	
-	@Autowired
-	@Qualifier("virtual.server.port")
-	protected Integer virtualServerPort;
-
-	@Autowired
-	@Qualifier("virtual.server.protocol")
-	protected String virtualServerProtocol;
-
-	@Autowired
-	@Qualifier("locale.sensitive.server")
-	protected Boolean localeSensitiveServer;
-
-	@Autowired
-	@Qualifier("google.analytics.script")
-	protected String googleAnalyticsScript;
-
 	@Autowired
 	@Qualifier("offline.content.taget.path")
 	protected String offlineContentTargetPath;
@@ -91,26 +71,6 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		}
 		return null;
  	}
-
-	public String getVirtualServerName() {
-		return virtualServerName;
-	}
-
-	public Integer getVirtualServerPort() {
-		return virtualServerPort;
-	}
-
-	public String getVirtualServerProtocol() {
-		return virtualServerProtocol;
-	}
-
-	public Boolean isLocaleSensitiveServer() {
-		return localeSensitiveServer;
-	}
-	
-	public String getGoogleAnalyticsScript() {
-		return googleAnalyticsScript;
-	}
 
 	public String readTextFromFile(String filename) {
 
@@ -165,7 +125,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	
 	@Override
 	public String getOfflineContentHtml(String headerFilename, String content,
-			GeneratorToken token) {
+			GeneratorToken token, String currentServerURL) {
 
 		GWTHTMLHeaderProcessing htmlProcessing = new GWTHTMLHeaderProcessing(headerFilename);
 
@@ -181,15 +141,6 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 						token.getLanguage())
 				+ content + "</html>";
 
-		String htmlEndTags = "</BODY></html>";
-
-		int endTagsIndex = html.toLowerCase().indexOf(htmlEndTags.toLowerCase());
-
-		if (endTagsIndex != -1) {
-			html = html.substring(0, endTagsIndex) + googleAnalyticsScript + html.substring(endTagsIndex);
-		}
-
-				
 		return html;
 	}
 

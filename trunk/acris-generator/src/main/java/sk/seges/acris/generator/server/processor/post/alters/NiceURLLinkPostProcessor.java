@@ -1,8 +1,10 @@
-package sk.seges.acris.generator.server.processor.post;
+package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.LinkTag;
 import org.springframework.stereotype.Component;
+
+import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
 @Component
 public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {

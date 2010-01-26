@@ -64,9 +64,9 @@ public class OfflineContentProvider {
 				});
 	}
 
-	public void getOfflineContent(String content, GeneratorToken token, final AsyncCallback<String> callback) {
+	public void getOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<String> callback) {
 		
-		generatorService.getOfflineContentHtml(initialContentFilename, content, token,
+		generatorService.getOfflineContentHtml(initialContentFilename, content, token, currentServerURL, 
 				new AsyncCallback<String>() {
 
 					public void onFailure(Throwable caught) {

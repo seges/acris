@@ -1,12 +1,13 @@
 package sk.seges.acris.generator.server;
 
+
 public class WebSettings {
 
 	private String webId;
-	private String language;
-
-	private String topLevelDomain; // e.g. http://www.seges.sk
-
+	private String lang;
+	private String topLevelDomain;
+	private String googleAnalyticsScript;
+	
 	public String getWebId() {
 		return webId;
 	}
@@ -15,12 +16,20 @@ public class WebSettings {
 		this.webId = webId;
 	}
 
-	public String getLanguage() {
-		return language;
+	public String getGoogleAnalyticsScript() {
+		return googleAnalyticsScript;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setGoogleAnalyticsScript(String googleAnalyticsScript) {
+		this.googleAnalyticsScript = googleAnalyticsScript;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	public String getTopLevelDomain() {
