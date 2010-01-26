@@ -64,20 +64,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	    count.value = 0;
 	    offlineContentProvider = new OfflineContentProvider(getModuleName(), generatorService);
 
-	    final GeneratorProperties generatorProperties = new GeneratorProperties(generatorService);
+	    contentProvider = new ContentProvider(generatorService);
 
-	    //Load generator properties from server
-	    generatorProperties.load(new AsyncCallback<Void>() {
-
-			public void onFailure(Throwable caught) {
-				fail("Unable to load properties for generator run", caught);
-			}
-
-			public void onSuccess(Void result) {
-			    contentProvider = new ContentProvider(generatorProperties, generatorService);
-			    loadTokensForProcessing();
-			}
-		});
+	    loadTokensForProcessing();
 	}
 
 	private void loadTokensForProcessing() {
@@ -181,26 +170,19 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	
 	private GeneratorToken saveContent(final GeneratorToken generatorToken) {
 		
-		contentProvider.getContent(generatorToken, new AsyncCallback<String>() {
+		String content = contentProvider.getContent();
 
+		final String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
+		
+		offlineContentProvider.getOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
-				fail("Unable to get content for niceurl " + generatorToken.getNiceUrl(), caught);
+				fail("Unable to get offline content for token " + generatorToken.getNiceUrl() + ". " + caught);
 				finalizeTest();
 			}
-
-			public void onSuccess(String content) {
-
-				offlineContentProvider.getOfflineContent(content, generatorToken, new AsyncCallback<String>() {
-					public void onFailure(Throwable caught) {
-						fail("Unable to get offline content for token " + generatorToken.getNiceUrl() + ". " + caught);
-						finalizeTest();
-					}
-			
-					public void onSuccess(String result) {
-						count.value--;
-						processGeneratedContent(result, generatorToken, count.value == 0);
-					}
-				});
+	
+			public void onSuccess(String result) {
+				count.value--;
+				processGeneratedContent(result, generatorToken, count.value == 0);
 			}
 		});
 		

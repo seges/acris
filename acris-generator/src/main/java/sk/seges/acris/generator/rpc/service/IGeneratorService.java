@@ -21,9 +21,7 @@ public interface IGeneratorService extends RemoteService {
 
 	GeneratorToken getLastProcessingToken();
 
-	String getDomainForLanguage(String webId, String language);
-
-	String getOfflineContentHtml(String headerFilename, String content, GeneratorToken token);
+	String getOfflineContentHtml(String headerFilename, String content, GeneratorToken token, String currentServerURL);
 
 	/**
 	 * File provider services
@@ -31,19 +29,6 @@ public interface IGeneratorService extends RemoteService {
 	String readTextFromFile(String filename);
 
 	void writeTextToFile(String content, GeneratorToken token);
-
-	/**
-	 * Properties provider services
-	 */
-	String getVirtualServerName();
-
-	Integer getVirtualServerPort();
-
-	String getVirtualServerProtocol();
-
-	Boolean isLocaleSensitiveServer();
-
-	String getGoogleAnalyticsScript();
 
 	/**
 	 * Content provider services

@@ -17,14 +17,12 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class ContentProvider implements Iterator<GeneratorToken>{
 
-	private GeneratorProperties generatorProperties;
 	private IGeneratorServiceAsync generatorService;
 	
 	private List<GeneratorToken> contents = new ArrayList<GeneratorToken>();
 	private Iterator<GeneratorToken> contentsIterator;
 
-	public ContentProvider(GeneratorProperties generatorProperties, IGeneratorServiceAsync generatorService) {
-		this.generatorProperties = generatorProperties;
+	public ContentProvider(IGeneratorServiceAsync generatorService) {
 		this.generatorService = generatorService;
 	}
 	
@@ -141,20 +139,7 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 		}
 	}
 
-	public void getContent(GeneratorToken generatorToken, final AsyncCallback<String> callback) {
-
-		String content = RootPanel.get().toString();
-
-		ContentProcessor contentProcessor = new ContentProcessor(generatorProperties, generatorService);
-		contentProcessor.processContent(/*rootPanel.toString()*/content, generatorToken.getWebId(), generatorToken.getLanguage(), new AsyncCallback<String>() {
-
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-
-			public void onSuccess(String content) {
-				callback.onSuccess(content);
-			}
-		});
+	public String getContent() {
+		return RootPanel.get().toString();	
 	}
 }

@@ -1,6 +1,8 @@
 package sk.seges.acris.generator.server.processor;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +28,7 @@ public class HTMLPostProcessing {
 	private Collection<AbstractElementPostProcessor> postProcessors;
 
 	private NodeIterator nodeIterator;
-	private Node rootNode;
+	private List<Node> rootNodes;
 
 	public HTMLPostProcessing() {
 	}
@@ -36,7 +38,7 @@ public class HTMLPostProcessing {
 			throw new RuntimeException("No HTML postprocessor registered.");
 		}
 
-		rootNode = null;
+		rootNodes = new ArrayList<Node>();
 
 		Lexer lexer = new Lexer(content);
 		Parser parser = new Parser(lexer);
@@ -61,13 +63,10 @@ public class HTMLPostProcessing {
 			elementPostProcessor.setPostProcessorPageId(webId, lang);
 		}
 		
-		
 		while (nodeIterator.hasMoreNodes()) {
 			Node node = nodeIterator.nextNode();
 
-			if (rootNode == null) {
-				rootNode = node;
-			}
+			rootNodes.add(node);
 
 			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
 				if (elementPostProcessor.supports(node)) {
@@ -78,7 +77,7 @@ public class HTMLPostProcessing {
 			processNodes(node.getChildren());
 		}
 		
-		return (rootNode != null);
+		return (rootNodes != null && rootNodes.size() > 0);
 	}
 
 	private void processNodes(NodeList nodeList) throws ParserException {
@@ -103,15 +102,12 @@ public class HTMLPostProcessing {
 
 	public String getHtml() {
 
-		if (rootNode != null) {
-
-			while (rootNode.getParent() != null) {
-				rootNode = rootNode.getParent();
-			}
-
-			return rootNode.toHtml();
+		String result = "";
+		
+		for (Node node : rootNodes) {
+			result += node.toHtml();
 		}
 
-		return null;
+		return result;
 	}
 }
