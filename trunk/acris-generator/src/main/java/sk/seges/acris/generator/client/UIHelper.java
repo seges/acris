@@ -14,6 +14,7 @@ public class UIHelper {
 	}-*/;
 
 	public static void cleanUI() {
+		
 		Element bodyElem = RootPanel.getBodyElement();
 
 		List<Element> toRemove = new ArrayList<Element>();

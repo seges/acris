@@ -17,7 +17,10 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 
 	private String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
 	private String CLASS_ATTRIBUTE_NAME = "class";
+	private String STYLE_ATTRIBUTE_NAME = "style";
 		
+	private String LANGUAGE_BAR_STYLE = "height: 32px; overflow-y: scroll";
+	
 	@Override
 	public boolean supports(Node node) {
 		if (node instanceof TagNode) {
@@ -41,6 +44,16 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 		
 		SelectTag languageSelector = interateToNode(node, SelectTag.class);
 
+		String style = ((TagNode)node).getAttribute(STYLE_ATTRIBUTE_NAME);
+		
+		if (style == null || style.length() == 0) {
+			style = LANGUAGE_BAR_STYLE;
+		} else {
+			style = style + ";" + LANGUAGE_BAR_STYLE;
+		}
+		
+		((TagNode)node).setAttribute(STYLE_ATTRIBUTE_NAME, style);
+		
 		NodeList languageLinksList = new NodeList();
 		
 		for (OptionTag optionTag : languageSelector.getOptionTags()) {
@@ -60,6 +73,7 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 			linkTag.setLink(linkWebSettings.getTopLevelDomain());
 			
 			languageLinksList.add(linkTag);
+			languageLinksList.add(new TextNode("<br/>"));
 		}
 		
 		node.setChildren(languageLinksList);

@@ -17,7 +17,7 @@ import sk.seges.acris.etc.Countries;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.server.processor.ContentInfoProvider;
-import sk.seges.acris.generator.server.processor.GWTHTMLHeaderProcessing;
+import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
@@ -72,6 +72,11 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		return null;
  	}
 
+	public String readHtmlBodyFromFile(String filename) {
+		String content = readTextFromFile(filename);
+		return new HTMLNodeSplitter().getBody(content);
+	}
+	
 	public String readTextFromFile(String filename) {
 
 		URL url;
@@ -124,24 +129,17 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	}
 	
 	@Override
-	public String getOfflineContentHtml(String headerFilename, String content,
+	public String getOfflineContentHtml(String headerFileName, String content,
 			GeneratorToken token, String currentServerURL) {
 
-		GWTHTMLHeaderProcessing htmlProcessing = new GWTHTMLHeaderProcessing(headerFilename);
+		String headerContent = readTextFromFile(headerFileName);
+		content = new HTMLNodeSplitter().replaceBody(headerContent, content);
 
-		if (htmlPostProcessing.setProcessorContent(content, token.getWebId(), token.getLanguage())) {
-			content = htmlPostProcessing.getHtml();	
+		if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
+			return htmlPostProcessing.getHtml();	
 		}
 
-		String html = htmlProcessing.getDoctypeDefinition()
-				+ htmlProcessing.getHtmlDefinition(token.getLanguage())
-				+ htmlProcessing.readHeaderFromFile(contentInfoProvider.getContentKeywords(token), 
-						contentInfoProvider.getContentDescription(token), 
-						contentInfoProvider.getContentTitle(token), 
-						token.getLanguage())
-				+ content + "</html>";
-
-		return html;
+		return content;
 	}
 
 	@Override

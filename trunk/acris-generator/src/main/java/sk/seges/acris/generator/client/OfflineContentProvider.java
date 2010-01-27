@@ -36,9 +36,9 @@ public class OfflineContentProvider {
 		initialContentFilename = GWT.getModuleBaseURL() + pageName + ".html";
 	}
 
-	public void getEntryPointHTML(final AsyncCallback<String> callback) {
+	public void getEntryPointBodyHtml(final AsyncCallback<String> callback) {
 
-		generatorService.readTextFromFile(initialContentFilename,
+		generatorService.readHtmlBodyFromFile(initialContentFilename,
 				new AsyncCallback<String>() {
 
 					public void onFailure(Throwable caught) {

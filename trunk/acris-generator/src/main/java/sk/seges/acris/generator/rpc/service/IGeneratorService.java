@@ -21,12 +21,12 @@ public interface IGeneratorService extends RemoteService {
 
 	GeneratorToken getLastProcessingToken();
 
-	String getOfflineContentHtml(String headerFilename, String content, GeneratorToken token, String currentServerURL);
+	String getOfflineContentHtml(String headerFileName, String content, GeneratorToken token, String currentServerURL);
 
 	/**
 	 * File provider services
 	 */
-	String readTextFromFile(String filename);
+	String readHtmlBodyFromFile(String filename);
 
 	void writeTextToFile(String content, GeneratorToken token);
 

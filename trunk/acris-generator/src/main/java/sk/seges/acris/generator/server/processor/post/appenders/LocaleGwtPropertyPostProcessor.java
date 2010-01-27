@@ -4,9 +4,11 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
 import org.htmlparser.util.NodeList;
+import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
+@Component
 public class LocaleGwtPropertyPostProcessor extends AbstractElementPostProcessor {
 
 	private static final String NAME_ATTRIBUTE_NAME = "name";
