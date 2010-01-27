@@ -4,6 +4,7 @@ import org.htmlparser.Node;
 import org.htmlparser.util.NodeList;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.server.WebSettings;
 import sk.seges.acris.generator.server.service.IWebSettingsService;
 
@@ -17,6 +18,7 @@ public abstract class AbstractElementPostProcessor {
 	public abstract boolean process(Node node);
 	
 	protected WebSettings webSettings;
+	protected GeneratorToken generatorToken;
 
 	@SuppressWarnings("unchecked")
 	protected <T> T interateToNode(Node node, Class<T> nodeClass) {
@@ -41,7 +43,8 @@ public abstract class AbstractElementPostProcessor {
 		return null;
 	}
 
-	public void setPostProcessorPageId(String webId, String lang) {
-		webSettings = webSettingsService.getWebSettings(webId, lang);
+	public void setPostProcessorPageId(GeneratorToken token) {
+		this.generatorToken = token;
+		webSettings = webSettingsService.getWebSettings(token.getWebId(), token.getLanguage());
 	}
 }

@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
+import org.htmlparser.PrototypicalNodeFactory;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
@@ -17,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import sk.seges.acris.generator.rpc.domain.GeneratorToken;
+import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.AbstractContentInfoPostProcessor;
 
 @Component
 public class HTMLPostProcessing {
@@ -33,7 +37,7 @@ public class HTMLPostProcessing {
 	public HTMLPostProcessing() {
 	}
 
-	public boolean setProcessorContent(final String content, String webId, String lang) {
+	public boolean setProcessorContent(final String content, GeneratorToken token, ContentInfoProvider contentInfoProvider) {
 		if (postProcessors == null || postProcessors.size() == 0) {
 			throw new RuntimeException("No HTML postprocessor registered.");
 		}
@@ -42,9 +46,13 @@ public class HTMLPostProcessing {
 
 		Lexer lexer = new Lexer(content);
 		Parser parser = new Parser(lexer);
+		
+		PrototypicalNodeFactory prototypicalNodeFactory = (PrototypicalNodeFactory)parser.getNodeFactory();
+		prototypicalNodeFactory.registerTag(new StyleLinkTag());
+		
 		try {
 			nodeIterator = parser.elements();
-			return processNodes(webId, lang);
+			return processNodes(token, contentInfoProvider);
 		} catch (ParserException e) {
 			throw new RuntimeException(e);
 		}
@@ -58,9 +66,12 @@ public class HTMLPostProcessing {
 		postProcessors = abstractPostProcessors.values();
 	}
 
-	private boolean processNodes(String webId, String lang) throws ParserException {
+	private boolean processNodes(GeneratorToken token, ContentInfoProvider contentInfoProvider) throws ParserException {
 		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-			elementPostProcessor.setPostProcessorPageId(webId, lang);
+			elementPostProcessor.setPostProcessorPageId(token);
+			if (elementPostProcessor instanceof AbstractContentInfoPostProcessor) {
+				((AbstractContentInfoPostProcessor)elementPostProcessor).setContentInfoProvider(contentInfoProvider);
+			}
 		}
 		
 		while (nodeIterator.hasMoreNodes()) {

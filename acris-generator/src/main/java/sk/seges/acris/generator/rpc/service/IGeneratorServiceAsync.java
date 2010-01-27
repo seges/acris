@@ -21,12 +21,12 @@ public interface IGeneratorServiceAsync {
 
 	void getLastProcessingToken(AsyncCallback<GeneratorToken> callback);
 
-	void getOfflineContentHtml(String headerFilename, String content, GeneratorToken token, String currentServerURL, AsyncCallback<String> callback);
+	void getOfflineContentHtml(String headerFileName, String content, GeneratorToken token, String currentServerURL, AsyncCallback<String> callback);
 
 	/**
 	 * File provider services
 	 */
-	void readTextFromFile(String filename, AsyncCallback<String> callback);
+	void readHtmlBodyFromFile(String filename, AsyncCallback<String> callback);
 
 	void writeTextToFile(String content, GeneratorToken token, AsyncCallback<Void> callback);
 
