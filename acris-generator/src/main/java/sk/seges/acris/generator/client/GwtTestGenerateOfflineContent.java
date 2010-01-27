@@ -15,7 +15,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.RootPanel;
 
 public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
     
@@ -80,7 +79,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			public void onSuccess(List<GeneratorToken> result) {
 				if (contentProvider.hasNext()) {
-					loadEntryPointHTML();
+					loadNextContent();
+//					loadEntryPointHTML();
 				} else {
 					fail("No tokens available for processing. Finishing", null);
 				}
@@ -90,7 +90,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 	
 	private void loadEntryPointHTML() {
-	    
+
 		//Load entry point
 		offlineContentProvider.getEntryPointHTML(new AsyncCallback<String>() {
 
@@ -100,8 +100,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			public void onSuccess(String result) {
 				UIHelper.cleanUI();
-				RootPanel.get().getElement().setInnerHTML(result);
-
+				//RootPanel.get().getElement().setInnerHTML(result);
 				loadNextContent();
 			}
 		});
