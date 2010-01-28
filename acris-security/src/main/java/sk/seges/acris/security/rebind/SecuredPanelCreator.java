@@ -185,11 +185,6 @@ public class SecuredPanelCreator {
 		sourceWriter.println("user = ctxt.getUser();");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		sourceWriter.println("if (user == null) {");
-		sourceWriter.indent();
-		sourceWriter.println("return;");
-		sourceWriter.outdent();
-		sourceWriter.println("}");
 		sourceWriter.println("boolean isView = false;");
 		sourceWriter.println("boolean isEdit = false;");
 
@@ -200,7 +195,11 @@ public class SecuredPanelCreator {
 
 		if(classAnnots != null && classAnnots.size() > 0){
 			boolean useModifier = !securedAnnotationProcessor.isAuthorityPermission(classType);
+			sourceWriter.println("if (user != null) {");
+			sourceWriter.indent();
 			sourceWriter.println("isView = " + generateAuthConds(VIEW, classAnnots, useModifier) + ";");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
 			sourceWriter.println("if( !isView ){");
 			sourceWriter.indent();
 			sourceWriter.println("this.setVisible(false);");
@@ -252,7 +251,11 @@ public class SecuredPanelCreator {
 			List<String> fieldAnnots, GeneratorContext context,
 			JType type, JField param, boolean useModifiers) throws NotFoundException {
 		// check of view authority
+		sourceWriter.println("if (user != null) {");
+		sourceWriter.indent();
 		sourceWriter.println("isView = " + generateAuthConds(VIEW, fieldAnnots, useModifiers) + ";");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 		sourceWriter.println("if( isView ){");
 		sourceWriter.indent();
 		// focusable specific
