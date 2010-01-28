@@ -9,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +24,6 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 	protected static final Logger log = Logger.getLogger(AbstractNiceURLGenerator.class);
 
 	@Autowired
-	protected ContentInfoProvider[] contentInfoProviders;
-	
-	protected Set<ContentInfoProvider> contentInfoProvidersSet;
-
-	protected String lang;
-	
-	@Autowired
 	@Qualifier("url.redirect.single.file")
 	protected Boolean redirectSingleFile;
 
@@ -44,18 +36,6 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 	private String redirectFilePath;
 
 	@Autowired
-	@Qualifier("virtual.server.name")
-	protected String virtualServerName;
-
-	@Autowired
-	@Qualifier("virtual.server.port")
-	protected Integer virtualServerPort;
-
-	@Autowired
-	@Qualifier("virtual.server.protocol")
-	protected String virtualServerProtocol;
-
-	@Autowired
 	@Qualifier("legacy.url.redirect.single.file")
 	private Boolean legacyRedirectSingleFile;
 
@@ -63,6 +43,8 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 	@Qualifier("legacy.url.redirect.file.location")
 	private String legacyRedirectFilePath;
 
+	private ContentInfoProvider contentInfoProvider;
+	
 //	public void setContentProvidersFactory(ListFactoryBean contentProvidersFactory) {
 //	    this.contentProvidersFactory = contentProvidersFactory;
 //	    try {
@@ -72,11 +54,6 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 //	    }
 //	    
 //	}
-
-	
-	public void setContentProviders(ContentInfoProvider[] contentInfoProviders) {
-		this.contentInfoProviders = contentInfoProviders;
-	}
 
 	protected abstract String getDefaultRewriteRule();
 	protected abstract String getRewriteRule(String fromURL, String toURL);
@@ -94,34 +71,19 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		return getRewriteRule(fromURL, toURL);
 	}
 
-	private boolean generate(String lang, String niceUrl, String webId, Writer writer) {
-		this.lang = lang;
+	private boolean generate(GeneratorToken token, Writer writer) {
 		
-		GeneratorToken content = new GeneratorToken();
-		content.setLanguage(lang);
-		content.setNiceUrl(niceUrl);
-		content.setWebId(webId);
-
-		boolean found = false;
-		
-	    for(ContentInfoProvider provider : contentInfoProvidersSet) {
-        	if (provider.exists(content)) {
-        		found = true;
-        		break;
-        	}
-	    }
-		
-		if (!found) {
-			log.error("Content for niceurl '" + niceUrl + "' does not exists.");
+		if (!contentInfoProvider.exists(token)) {
+			log.error("Content for niceurl '" + token.getNiceUrl() + "' does not exists.");
 			return false;
 		}
 		
-	    String pageName = "http://" + content.getWebId() + "/" +  content.getNiceUrl() + ".html";
+	    String webUrl = "http://" + token.getWebId() + "/";
 
 	    try {
-	        writer.write(getRewriteRule("#" + content.getNiceUrl(), pageName + "#" + content.getNiceUrl()));
+	        writer.write(getRewriteRule(webUrl + "#" + token.getNiceUrl(), webUrl + token.getNiceUrl()));
 	    } catch (IOException e) {
-	        log.error("Unable to write rewrite rule for niceurl '" + niceUrl + "'. Target URL is '" + pageName + "#" + content.getNiceUrl() + "'");
+	        log.error("Unable to write rewrite rule for niceurl '" + webUrl + "#" + token.getNiceUrl() + "'. Target URL is '" + webUrl + token.getNiceUrl() + "'");
 	        return false;
 	    }
 		/**/
@@ -154,7 +116,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		return new BufferedWriter(new OutputStreamWriter(outputStream));
 	}
 
-	public void clearRewriteFile(String lang_country) {
+	public void clearRewriteFile(String lang) {
 		File file = null;
 		
 		if (redirectSingleFile) {
@@ -163,30 +125,26 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 				file.delete();
 			}
 		} else {
-			file = new File(redirectFilePath + "_" + lang_country);
+			file = new File(redirectFilePath + "_" + lang);
 			if (file.exists()) {
 				file.delete();
 			}
 		}
 	}
 	
-	public boolean generate(String lang, String webId) {
-
-		if(null == contentInfoProvidersSet) {
-	        initializeContentProvidersSet();
-	    }
-	    
-	    this.lang = lang;
+	public boolean generate(String webId, String niceUrl, String lang) {
+		GeneratorToken token = new GeneratorToken();
+		token.setWebId(webId);
+		token.setNiceUrl(niceUrl);
+		token.setLanguage(lang);
 
 		List<String> niceurls = new ArrayList<String>();
 
-		for(ContentInfoProvider provider : contentInfoProvidersSet) {
-		    List<String> availableNiceurls = provider.getAvailableNiceurls(webId, lang);
+	    List<String> availableNiceurls = contentInfoProvider.getAvailableNiceurls(token.getWebId(), token.getLanguage());
 
-		    for(String niceurl : availableNiceurls) {
-		    	niceurls.add(niceurl);
-		    }
-		}
+	    for(String niceurl : availableNiceurls) {
+	    	niceurls.add(niceurl);
+	    }
 
 		if (niceurls == null || niceurls.size() == 0) {
 			if (log.isInfoEnabled()) {
@@ -202,7 +160,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		if (redirectSingleFile) {
 			writer = openOrCreateFile(redirectFilePath);
 		} else {
-			writer = openOrCreateFile(redirectFilePath + "_" + lang);
+			writer = openOrCreateFile(redirectFilePath + "_" + token.getLanguage());
 		}
 		
 		if (writer == null) {
@@ -210,7 +168,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 				if (redirectSingleFile) {
 					log.info("Unable to create buffered writer (from file '" + redirectFilePath  + "') for saving output");
 				} else {
-					log.info("Unable to create buffered writer (from file '" + redirectFilePath + "_" + lang + "') for saving output");
+					log.info("Unable to create buffered writer (from file '" + redirectFilePath + "_" + token.getLanguage() + "') for saving output");
 				}
 			}
 			return false;
@@ -231,7 +189,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 			final BaseURLGenerator baseURLGenerator = new BaseURLGenerator(this);
 	
 			try {
-				writer.write(baseURLGenerator.getBaseURLs(webId));
+				writer.write(baseURLGenerator.getBaseURLs(token.getWebId()));
 			} catch (IOException e) {
 				log.error("Unable to write base rewrite rules");
 				return false;
@@ -239,13 +197,13 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		}
 		
 		for (final String niceurl : niceurls) {
-			if (!generate(lang, niceurl, webId, writer)) {
+			if (!generate(token, writer)) {
 				if (redirectSingleFile) {
 					log.error("Unable to generate and save nice URL for niceurl " + niceurl + ". Output file: "
 						+ redirectFilePath + ". Continue with generating nice URL for the next token");
 				} else {
 					log.error("Unable to generate and save nice URL for niceurl " + niceurl + ". Output file: "
-							+ redirectFilePath + "_" + lang + ". Continue with generating nice URL for the next token");
+							+ redirectFilePath + "_" + token.getLanguage() + ". Continue with generating nice URL for the next token");
 				}
 			}
 		}
@@ -253,7 +211,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		final LegacyURLGenerator legacyURLGenerator = new LegacyURLGenerator(this, legacyRedirectFilePath, legacyRedirectSingleFile);
 
 		try {
-			writer.write(legacyURLGenerator.getLegacyURLs(lang));
+			writer.write(legacyURLGenerator.getLegacyURLs(token.getLanguage()));
 		} catch (IOException e) {
 			log.error("Unable to write rewrite legacy rules");
 			return false;
@@ -278,34 +236,24 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 			if (redirectSingleFile) {
 				log.error("Unable to close output writer for file " + redirectFilePath, e);
 			} else {
-				log.error("Unable to close output writer for file " + redirectFilePath + "_" + lang, e);
+				log.error("Unable to close output writer for file " + redirectFilePath + "_" + token.getLanguage(), e);
 			}
 		}
 		
 		return true;
 	}
 	
-	private void initializeContentProvidersSet() {
-	    if(null == contentInfoProviders) {
-	        throw new RuntimeException("ContentProviders not set - can't continue");
-	    }
-        throw new RuntimeException("Do it better");
-//        contentInfoProvidersSet = new HashSet<ContentInfoProvider>(contentInfoProviders.length);
-//        Set<Class> contentProviderClasses = new HashSet<Class>(contentInfoProviders.length);
-//        for(ContentInfoProvider provider : contentInfoProviders) {
-//            Class contentClass = provider.getContentClass();
-//            if(!contentInfoProviderClasses.contains(contentClass)) {
-//                contentInfoProviderClasses.add(contentClass);
-//                contentInfoProvidersSet.add(provider);
-//            }
-//        }
-	}
-
 	public Boolean getRedirectCondition() {
 		return redirectCondition;
 	}
 
 	public void setRedirectCondition(Boolean redirectCondition) {
 		this.redirectCondition = redirectCondition;
+	}
+	public ContentInfoProvider getContentInfoProvider() {
+		return contentInfoProvider;
+	}
+	public void setContentInfoProvider(ContentInfoProvider contentInfoProvider) {
+		this.contentInfoProvider = contentInfoProvider;
 	}
 }

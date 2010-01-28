@@ -10,23 +10,17 @@ import org.springframework.stereotype.Component;
 public class SunConditionalNiceURLGenerator extends AbstractNiceURLGenerator {
 
 	protected String getDefaultRewriteRule() {
-//		return "<If not restarted and $uri =~ \"^/\" and $uri !~ \"^/.+\">" + NEW_LINE
-//				+ "		NameTrans fn=\"restart\" uri=\"" + ModulesDefinition.INDEX_URL + "\"" + NEW_LINE + "</If>"+NEW_LINE;
-		return null;
+		return "<If not restarted and $uri =~ \"^/\" and $uri !~ \"^/.+\">" + NEW_LINE
+				+ "		NameTrans fn=\"restart\" uri=\"\\\"" + NEW_LINE + "</If>"+NEW_LINE;
 	}
 
 	
 	protected String getRewriteRule(String fromURL, String toURL) {
-//		return   "<ElseIf not restarted and $uri =~ \"^" + ".*" + fromURL + "\">" + NEW_LINE
-//			   + "		NameTrans fn=\"restart\" uri=\"" + toURL + "\"" + NEW_LINE + "</ElseIf>"+NEW_LINE;
-		return null;
+		return   "<ElseIf not restarted and $uri =~ \"^" + ".*" + fromURL + "\">" + NEW_LINE
+			   + "		NameTrans fn=\"restart\" uri=\"" + toURL + "\"" + NEW_LINE + "</ElseIf>"+NEW_LINE;
 	}
 
 	protected String getFinalRewriteRule() {
-//		return "<ElseIf not restarted and $uri =~ \"^/(.*)$\" and $uri !~ \"^/" + ModulesDefinition.APP_NAME + "\" " +
-//									 "and $uri !~ \"^/" + ModulesDefinition.SERVER_APP_NAME + "\" " +
-//									 "and $uri !~ \"^/" + ModulesDefinition.ADMIN_APP_NAME + "\">" + NEW_LINE
-//			 + "		NameTrans fn=\"restart\" uri=\"" + "/" + ModulesDefinition.APP_NAME + "/" + ModulesDefinition.MODULE_NAME + "/" + "$1\"" + NEW_LINE + "</ElseIf>"+NEW_LINE;
-		return null;
+		return NEW_LINE;
 	}
 }
