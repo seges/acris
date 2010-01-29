@@ -16,7 +16,7 @@ public class SunConditionalNiceURLGenerator extends AbstractNiceURLGenerator {
 
 	
 	protected String getRewriteRule(String fromURL, String toURL) {
-		return   "<ElseIf not restarted and $uri =~ \"^" + ".*" + fromURL + "\">" + NEW_LINE
+		return   "<ElseIf not restarted and $uri =~ \"^" + fromURL + "\">" + NEW_LINE
 			   + "		NameTrans fn=\"restart\" uri=\"" + toURL + "\"" + NEW_LINE + "</ElseIf>"+NEW_LINE;
 	}
 
