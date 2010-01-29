@@ -45,16 +45,6 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
 	private ContentInfoProvider contentInfoProvider;
 	
-//	public void setContentProvidersFactory(ListFactoryBean contentProvidersFactory) {
-//	    this.contentProvidersFactory = contentProvidersFactory;
-//	    try {
-//	        this.contentProviders = (List<ContentProvider>) contentProvidersFactory.getObject();    
-//	    } catch (Exception e) {
-//	        throw new RuntimeException(e);
-//	    }
-//	    
-//	}
-
 	protected abstract String getDefaultRewriteRule();
 	protected abstract String getRewriteRule(String fromURL, String toURL);
 	protected abstract String getFinalRewriteRule();
@@ -95,12 +85,17 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
 		if (!outputFile.exists()) {
 			try {
+				if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists() && !outputFile.getParentFile().mkdirs()) {
+					log.error("Unable to create directory for file " + outputFile.getAbsolutePath());
+					return null;
+				}
+				
 				if (!outputFile.createNewFile()) {
-					log.error("Unable to create new empty file " + fileName);
+					log.error("Unable to create new empty file " + outputFile.getAbsolutePath());
 					return null;
 				}
 			} catch (IOException ioe) {
-				log.error("Exception occured while creating new empty file " + fileName, ioe);
+				log.error("Exception occured while creating new empty file " + outputFile.getAbsolutePath(), ioe);
 				return null;
 			}
 		}
@@ -140,7 +135,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
 		List<String> niceurls = new ArrayList<String>();
 
-	    List<String> availableNiceurls = contentInfoProvider.getAvailableNiceurls(token.getWebId(), token.getLanguage());
+	    List<String> availableNiceurls = contentInfoProvider.getAvailableNiceurls(token.getLanguage(), token.getWebId());
 
 	    for(String niceurl : availableNiceurls) {
 	    	niceurls.add(niceurl);
@@ -185,18 +180,10 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 					return false;
 				}
 			}
-		
-			final BaseURLGenerator baseURLGenerator = new BaseURLGenerator(this);
-	
-			try {
-				writer.write(baseURLGenerator.getBaseURLs(token.getWebId()));
-			} catch (IOException e) {
-				log.error("Unable to write base rewrite rules");
-				return false;
-			}
 		}
 		
 		for (final String niceurl : niceurls) {
+			token.setNiceUrl(niceurl);
 			if (!generate(token, writer)) {
 				if (redirectSingleFile) {
 					log.error("Unable to generate and save nice URL for niceurl " + niceurl + ". Output file: "
@@ -217,7 +204,6 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 			return false;
 		}
 
-		//TODO
 		final String finalRule = getFinalRewriteRule(); 
 		
 		if (finalRule != null && finalRule.length() > 0) {
@@ -250,9 +236,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 	public void setRedirectCondition(Boolean redirectCondition) {
 		this.redirectCondition = redirectCondition;
 	}
-	public ContentInfoProvider getContentInfoProvider() {
-		return contentInfoProvider;
-	}
+
 	public void setContentInfoProvider(ContentInfoProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
 	}
