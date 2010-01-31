@@ -72,7 +72,7 @@ public abstract class AbstractPagedList<E> implements List<E> {
 	 * @return Index of the first result in a page where requested index
 	 *         belongs.
 	 */
-	public int getNearestIndexToPageSize(int requestedIndex, int pageSize) {
+	public static int getNearestIndexToPageSize(int requestedIndex, int pageSize) {
 		int page = requestedIndex / pageSize;
 		return page * pageSize;
 	}
@@ -83,9 +83,12 @@ public abstract class AbstractPagedList<E> implements List<E> {
 	 * 
 	 * @return A page number of current loaded paged results.
 	 */
+	public static int getCurrentPageNumber(Page page) {
+		return page.getStartIndex() / page.getPageSize() + 1;
+	}
+	
 	public int getCurrentPageNumber() {
-		return pagedResult.getPage().getStartIndex()
-				/ pagedResult.getPage().getPageSize() + 1;
+		return getCurrentPageNumber(pagedResult.getPage());
 	}
 
 	/**
@@ -93,9 +96,12 @@ public abstract class AbstractPagedList<E> implements List<E> {
 	 * 
 	 * @return Last page number of total results available in a data source.
 	 */
+	public static int getLastPageNumber(int totalResultCount, int pageSize) {
+		return (totalResultCount - 1) / pageSize + 1;
+	}
+	
 	public int getLastPageNumber() {
-		return (pagedResult.getTotalResultCount() - 1)
-				/ pagedResult.getPage().getPageSize() + 1;
+		return getLastPageNumber(pagedResult.getTotalResultCount(), pagedResult.getPage().getPageSize());
 	}
 
 	/**
