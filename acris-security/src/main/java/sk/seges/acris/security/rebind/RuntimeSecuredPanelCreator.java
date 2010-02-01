@@ -211,6 +211,13 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 		sourceWriter.println("roles.add(userPermission.name());");
 		sourceWriter.outdent();
 		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("");
+		sourceWriter.println("public void setPermission(String userPermission) {");
+		sourceWriter.indent();
+		sourceWriter.println("roles.clear();");
+		sourceWriter.println("roles.add(userPermission);");
+		sourceWriter.outdent();
+		sourceWriter.println(RIGHT_BRACKET_FINISH);
 	}
 	
 	private void generateSetPermissions(SourceWriter sourceWriter){
@@ -220,6 +227,17 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 		sourceWriter.println("for(" + IUserPermission.class.getName() + " userPermission : permissions) {");
 		sourceWriter.indent();
 		sourceWriter.println("roles.add(userPermission.name());");
+		sourceWriter.outdent();
+		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.outdent();
+		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println();
+		sourceWriter.println("public void setPermissions(String[] permissions) {");
+		sourceWriter.indent();
+		sourceWriter.println("roles.clear();");
+		sourceWriter.println("for(String userPermission : permissions) {");
+		sourceWriter.indent();
+		sourceWriter.println("roles.add(userPermission);");
 		sourceWriter.outdent();
 		sourceWriter.println(RIGHT_BRACKET_FINISH);
 		sourceWriter.outdent();
