@@ -13,6 +13,7 @@ import org.springframework.security.ConfigAttributeDefinition;
 import org.springframework.security.intercept.method.AbstractFallbackMethodDefinitionSource;
 
 import sk.seges.acris.security.server.acl.RoleRunAsManagerImpl;
+import sk.seges.sesam.dao.PagedResult;
 
 public class SecuredMethodDefinitionSource extends AbstractFallbackMethodDefinitionSource {
 
@@ -76,7 +77,7 @@ public class SecuredMethodDefinitionSource extends AbstractFallbackMethodDefinit
     		return;
     	}
     	
-        if (Collection.class.isAssignableFrom(returnType) || (returnType.isArray())) {
+        if (Collection.class.isAssignableFrom(returnType) || (returnType.isArray()) || PagedResult.class.isAssignableFrom(returnType)) {
     		//if method has DetachedCriteria parameter, then process injection before execution
     		//add specific voter for injecting ACL specific criteria
         	if (parameterTypes != null) {
@@ -90,6 +91,16 @@ public class SecuredMethodDefinitionSource extends AbstractFallbackMethodDefinit
         	//otherwise we have to check result after method execution 
     		atributeTokens.add("AFTER_ACL_COLLECTION_READ");
         } else if (Object.class.isAssignableFrom(returnType)) {
+            //added for the case of a findUniqueResult type method, which takes DetachedCriteria 
+            //as the input parameter and returns only one object
+            if (parameterTypes != null) {
+                for (Class<?> parameterTypeClass : parameterTypes) {
+                    if (parameterTypeClass.isAssignableFrom(DetachedCriteria.class)) {
+                        atributeTokens.add("AFTER_ACL_INJECT_COLLECTION_READ"); //TODO - think of a better name for the parameter
+                        return;
+                    }
+                }
+            }
         	atributeTokens.add("AFTER_ACL_READ");
         }
     }
@@ -113,6 +124,6 @@ public class SecuredMethodDefinitionSource extends AbstractFallbackMethodDefinit
 			return new ConfigAttributeDefinition(Collections.EMPTY_LIST);
 		}
 		
-		return new ConfigAttributeDefinition(atributeTokens.toArray(new String[0]));
+		return new ConfigAttributeDefinition(atributeTokens.toArray(new String[atributeTokens.size()]));
 	}
 }

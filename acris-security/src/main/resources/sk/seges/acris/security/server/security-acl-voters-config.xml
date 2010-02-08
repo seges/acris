@@ -19,33 +19,21 @@
     <bean id="aclObjectReadVoter" class="org.springframework.security.vote.AclEntryVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECT_VIEW"/>
-        <constructor-arg>
-            <list>
-                <ref bean="readPermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="readPermissions"/>
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclObjectsReadVoter" class="sk.seges.acris.security.server.acl.AclEntryListVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECTS_VIEW"/>
-        <constructor-arg>
-            <list>
-                <ref bean="readPermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="readPermissions"/>
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclListObjectsReadVoter" class="sk.seges.acris.security.server.acl.AclEntryListVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_LIST_OBJECTS_VIEW"/>
-        <constructor-arg>
-            <list>
-                <ref bean="readPermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="readPermissions"/>
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
 
@@ -53,9 +41,7 @@
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECT_EDIT"/>
         <constructor-arg>
-            <list>
-                <ref bean="writePermission"/>
-            </list>
+            <ref bean="writePermissions"/>
         </constructor-arg>
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
@@ -63,83 +49,56 @@
     <bean id="aclObjectsWriteVoter" class="sk.seges.acris.security.server.acl.AclEntriesVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECTS_EDIT"/>
-        <constructor-arg>
-            <list>
-                <ref bean="writePermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="writePermissions"/>
+
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclListObjectsWriteVoter" class="sk.seges.acris.security.server.acl.AclEntryListVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_LIST_OBJECTS_EDIT"/>
-        <constructor-arg>
-            <list>
-                <ref bean="writePermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="writePermissions"/>
+
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclObjectDeleteVoter" class="org.springframework.security.vote.AclEntryVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECT_DELETE"/>
-        <constructor-arg>
-            <list>
-                <ref bean="deletePermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="deletePermissions"/>
+
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclObjectsDeleteVoter" class="sk.seges.acris.security.server.acl.AclEntriesVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECTS_DELETE"/>
-        <constructor-arg>
-            <list>
-                <ref bean="deletePermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="deletePermissions"/>
+
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
    
     <bean id="aclListObjectsDeleteVoter" class="sk.seges.acris.security.server.acl.AclEntryListVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_LIST_OBJECTS_DELETE"/>
-        <constructor-arg>
-            <list>
-                <ref bean="deletePermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="deletePermissions"/>
+
         <property name="processDomainObjectClass" value="sk.seges.acris.security.rpc.domain.ISecuredObject"/>
     </bean>
    
     <bean id="afterAclCollectionRead" class="org.springframework.security.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider">
         <constructor-arg ref="aclService"/>
-        <constructor-arg>
-            <list>
-                <ref bean="readPermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="readPermissions"/>
     </bean>
     
     <bean id="afterAclRead" class="org.springframework.security.afterinvocation.AclEntryAfterInvocationProvider">
         <constructor-arg ref="aclService"/>
-        <constructor-arg>
-            <list>
-                <ref bean="readPermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="readPermissions"/>
     </bean>
 
     <bean id="afterAclInjectionCollectionRead" class="sk.seges.acris.security.server.acl.AfterAclInjectionVoter">
         <constructor-arg value="AFTER_ACL_INJECT_COLLECTION_READ"/>
-        <constructor-arg>
-            <list>
-                <ref bean="readPermission"/>
-            </list>
-        </constructor-arg>
+        <constructor-arg ref="readPermissions"/>
     </bean>
 
 </beans>

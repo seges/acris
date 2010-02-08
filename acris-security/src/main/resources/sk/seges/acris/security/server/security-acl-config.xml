@@ -54,10 +54,10 @@
         </constructor-arg>
     </bean>
     
-    <bean id="emptyAclCache" class="sk.seges.acris.security.server.service.EmptyAclCache">
+    <bean id="aclCache" class="sk.seges.acris.security.server.service.EmptyAclCache">
     </bean>
     
-   	<bean id="aclCache" class="org.springframework.security.acls.jdbc.EhCacheBasedAclCache">
+   	<!-- bean id="aclCache" class="org.springframework.security.acls.jdbc.EhCacheBasedAclCache">
         <constructor-arg>
             <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
                 <property name="cacheManager">
@@ -66,7 +66,7 @@
                 <property name="cacheName" value="aclCache"/>
             </bean>
         </constructor-arg>
-    </bean>
+    </bean-->
     
     <bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
         <constructor-arg>

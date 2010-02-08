@@ -1,5 +1,11 @@
 package sk.seges.acris.security.server.service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import net.sf.gilead.pojo.java5.LightEntity;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.Authentication;
 import org.springframework.security.acls.AccessControlEntry;
@@ -8,6 +14,7 @@ import org.springframework.security.acls.MutableAclService;
 import org.springframework.security.acls.NotFoundException;
 import org.springframework.security.acls.Permission;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.DefaultPermissionFactory;
 import org.springframework.security.acls.jdbc.AclCache;
 import org.springframework.security.acls.objectidentity.ObjectIdentityImpl;
 import org.springframework.security.acls.sid.PrincipalSid;
@@ -21,12 +28,24 @@ import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.security.rpc.domain.ISecuredObject;
 import sk.seges.acris.security.server.annotations.RunAs;
 import sk.seges.acris.security.server.dao.acl.IACLEntryDAO;
+import sk.seges.acris.security.server.domain.acl.ACLEntry;
 import sk.seges.acris.security.server.permission.ExtendedPermission;
 
 @Component
 @Transactional(propagation=Propagation.REQUIRES_NEW)
 public class ACLManager {
 
+    private static final String CGLIB_CLASSNAME_SEPARATOR = "$$";
+
+    private static final Set<Class> topParentClasses = new HashSet<Class>();
+    @Autowired
+    private DefaultPermissionFactory permissionFactory;
+    
+    static {
+        topParentClasses.add(Object.class);
+        topParentClasses.add(LightEntity.class);
+    }
+    
 	@Autowired
 	private MutableAclService aclService;
 
@@ -35,6 +54,14 @@ public class ACLManager {
 	
     protected AclCache aclCache;
 
+    public void removeACLEntries(Class<? extends ISecuredObject> securedClass, UserDetails user) {
+        removeACLEntries(securedClass, new PrincipalSid(user.getUsername()));
+    }
+    
+    public void removeACLEntries(ISecuredObject securedObject, UserDetails user) {
+        removeACLEntries(securedObject, new PrincipalSid(user.getUsername()));
+    }
+    
 	public void removeACLEntries(ISecuredObject securedObject) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -44,19 +71,58 @@ public class ACLManager {
 		
 		removeACLEntries(securedObject, new PrincipalSid(authentication));
 	}
-
+	
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void removeObjectIdentity(ISecuredObject securedObject) {
-		ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(securedObject.getClass().getName(), securedObject.getId());
-		aclService.deleteAcl(objectIdentity, false);
+	  //we need to remove also the superclass object identity ACLs
+        Class superClass = securedObject.getClass();
+        while(! isTopParentClass(superClass)) {
+            if(isCglibWrapper(superClass)) {
+                superClass = superClass.getSuperclass();
+                continue;
+            }
+            ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(superClass, securedObject.getId());
+            aclCache.evictFromCache(objectIdentity);
+            aclService.deleteAcl(objectIdentity, false);
+        }
 	}
 	
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	private void removeACLEntries(ISecuredObject securedObject, Sid sid) {
-		ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(securedObject);
-		aclEntryDao.deleteByIdentityIdAndSid(securedObject, sid);
-		aclCache.evictFromCache(objectIdentity);
-		aclService.readAclById(objectIdentity); //update cache
+	    //we need to remove also the superclass object identity ACLs
+	    Class superClass = securedObject.getClass();
+	    while(! isTopParentClass(superClass)) {
+            if(isCglibWrapper(superClass)) {
+                superClass = superClass.getSuperclass();
+                continue;
+            }
+	        ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(superClass, securedObject.getId());
+	        aclEntryDao.deleteByIdentityIdAndSid(securedObject, sid);
+	        aclCache.evictFromCache(objectIdentity);
+	        aclService.readAclById(objectIdentity); //update cache
+	        
+	        superClass = superClass.getSuperclass();
+	    }
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	private void removeACLEntries(Class<? extends ISecuredObject> securedClass, Sid sid) {
+	    //we need to remove also the superclass object identity ACLs
+	    Class superClass = securedClass;
+        while(! isTopParentClass(superClass)) {
+            if(isCglibWrapper(superClass)) {
+                superClass = superClass.getSuperclass();
+                continue;
+            }
+            aclEntryDao.deleteByClassnamAndSid(superClass, sid);
+            List<ACLEntry> entries = aclEntryDao.findByClassnameAndSid(superClass, sid);
+            for(ACLEntry entry : entries) {
+                aclCache.evictFromCache(entry.getObjectIdentity());
+                aclService.readAclById(entry.getObjectIdentity()); //update cache
+            }
+            
+            superClass = superClass.getSuperclass();
+        }
 	}
 
 	@RunAs("ACL_MAINTENANCE_GENERAL_CHANGES")
@@ -81,35 +147,61 @@ public class ACLManager {
 
 		MutableAcl acl = null;
 		
-		try {
-			acl = (MutableAcl) aclService.readAclById(new ObjectIdentityImpl(securedObject));
-		} catch (NotFoundException ex) {
-			acl = aclService.createAcl(new ObjectIdentityImpl(securedObject));
+		//we are goind to traverse the inheritance tree starting with the SecuredObject's class
+		Class superClass = securedObject.getClass();
+		while(! isTopParentClass(superClass)) {
+            if(isCglibWrapper(superClass)) {
+                superClass = superClass.getSuperclass();
+                continue;
+            }
+	        ObjectIdentityImpl identity = new ObjectIdentityImpl(superClass, securedObject.getId());
+
+	        try {
+	            acl = (MutableAcl) aclService.readAclById(identity);
+	        } catch (NotFoundException ex) {
+	            acl = aclService.createAcl(identity);
+	        }
+	        
+	        int authorityMask = 0;
+	        for (sk.seges.acris.security.rpc.domain.Permission authority : authorities) {
+	            authorityMask |= authority.getMask();
+            }
+
+	        boolean found = false;
+	        boolean exactMatch = false;
+	        int aceIndex = 0;
+	        for (AccessControlEntry entry : acl.getEntries()) {
+	            if (!entry.getSid().equals(sid)) {
+	                aceIndex++;
+	                continue;
+	            }
+	                
+	            Permission permission = entry.getPermission();
+
+	            if ((permission.getMask() & authorityMask) > 0) {
+	                found = true;
+	                if(permission.getMask() == authorityMask) {
+	                    exactMatch = true;
+	                }
+	                break;
+	            }
+	            aceIndex++;
+	        }
+
+	        if (!found) {
+	            acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
+	        } else {
+	            if(!exactMatch) {
+	                acl.deleteAce(aceIndex);
+	                acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
+	            }
+	        }
+
+	        aclService.updateAcl(acl);
+	        
+	        //now, move to the superclass
+	        superClass = superClass.getSuperclass();
 		}
-		
-		for (sk.seges.acris.security.rpc.domain.Permission authority : authorities) {
-
-			boolean found = false;
-
-			for (AccessControlEntry entry : acl.getEntries()) {
-				if (!entry.getSid().equals(sid)) {
-					continue;
-				}
-				
-				Permission permission = entry.getPermission();
-
-				if (permission.getMask() == authority.getMask()) {
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				acl.insertAce(0, getPermission(authority.getMask()),sid, true);
-			}
-		}
-
-		aclService.updateAcl(acl);
 	}
 	
 	private Permission getPermission(int mask) {
@@ -134,4 +226,12 @@ public class ACLManager {
 	public void setAclCache(AclCache aclCache) {
 		this.aclCache = aclCache;
 	}
+
+    private boolean isCglibWrapper(Class clazz) {
+        return clazz.getName().contains(CGLIB_CLASSNAME_SEPARATOR);
+    }
+    
+    private boolean isTopParentClass(Class clazz) {
+        return topParentClasses.contains(clazz);
+    }
 }
