@@ -72,6 +72,12 @@ public class BeanWrapperCreator {
 				if(method.isFinal()) {
 					continue;
 				}
+				if(method.isAbstract()) {
+					// TODO: handle abstract classes - when there is a wrapper
+					// over abstract class, do implement a method that will
+					// delegate to it but without the abstract modifier...
+					continue;
+				}
 
 				if(method.isPrivate() || method.isProtected()) {
 					continue;
@@ -147,17 +153,32 @@ public class BeanWrapperCreator {
 						
 			// create links with content object getters and setters
 			for (int i = 0; i < methods.length; i++) {
+				if(isExcludedMethod(methods[i])) {
+					// there was a method but was excluded
+					continue;
+				}
+
 				JMethod methode = methods[i];
-				source.println(methode.getReadableDeclaration() + " {");
-				source.indent();
 				if (methode.getName().startsWith("set")) { // setter
 					JParameter parameter = methode.getParameters()[0];
 					JMethod getter = RebindUtils.getGetter(classType, RebindUtils.toFieldName(methode.getName()));
+					if(getter == null) {
+						// this is not regular setter with getter counterpart.
+						// We don't generate wrapper methods for that.
+						methods[i] = null;
+						continue;
+					}
+					source.println(methode.getReadableDeclaration() + " {");
+					source.indent();
+
 					source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + getter.getName() + "();");
 					source.println("contenu." + methode.getName() + "("
 							+ parameter.getName() + ");");
 					source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, " + parameter.getName() + ");");
 				} else { // getter
+					source.println(methode.getReadableDeclaration() + " {");
+					source.indent();
+
 					source.println("return contenu." + methode.getName()
 							+ "();");
 				}
@@ -165,11 +186,16 @@ public class BeanWrapperCreator {
 				source.println("}");
 				source.println();
 			}
+			
 			// create the getAttribute method
 			source.println("public Object getAttribute(String attr) {");
 			source.indent();
 
 			for (int i = 0; i < methods.length; i++) {
+				if(isExcludedMethod(methods[i])) {
+					// there was a method but was excluded
+					continue;
+				}
 				String methodName = methods[i].getName();
 				JType returnType = methods[i].getReturnType();
 				if (isGetter(methods[i])) {
@@ -197,6 +223,11 @@ public class BeanWrapperCreator {
 					.println("public void setAttribute(String attr, Object value) {");
 			source.indent();
 			for (int i = 0; i < methods.length; i++) {
+				if(isExcludedMethod(methods[i])) {
+					// there was a method but was excluded
+					continue;
+				}
+
 				JMethod methode = methods[i];
 				if (isSetter(methode)) {
 					JType paramType = methode.getParameters()[0].getType();
@@ -216,6 +247,10 @@ public class BeanWrapperCreator {
 			source.println("}");
 			source.commit(logger);
 		}
+	}
+
+	private boolean isExcludedMethod(JMethod method) {
+		return method == null;
 	}
 
 	private boolean isGetter(JMethod methode) {
