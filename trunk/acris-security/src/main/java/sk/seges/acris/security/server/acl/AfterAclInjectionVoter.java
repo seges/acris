@@ -30,34 +30,32 @@ import sk.seges.acris.security.server.domain.acl.ACLSecurityID;
 
 public class AfterAclInjectionVoter implements AccessDecisionVoter {
 
-	private final String configAttribute;
-	
+    private final String configAttribute;
+
     private SidRetrievalStrategy sidRetrievalStrategy = new SidRetrievalStrategyImpl();
 
-	public AfterAclInjectionVoter(String configAttribute, Permission[] requirePermission) {
-		this.configAttribute = configAttribute;
-	}
-	
-	public boolean supports(ConfigAttribute attribute) {
+    public AfterAclInjectionVoter(String configAttribute, Permission[] requirePermission) {
+        this.configAttribute = configAttribute;
+    }
+
+    public boolean supports(ConfigAttribute attribute) {
         if ((attribute.getAttribute() != null) && attribute.getAttribute().equals(configAttribute)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
-	}
+    }
 
-	public boolean supports(Class clazz) {
+    public boolean supports(Class clazz) {
         return true;
-	}
+    }
 
     public void setSidRetrievalStrategy(SidRetrievalStrategy sidRetrievalStrategy) {
         Assert.notNull(sidRetrievalStrategy, "SidRetrievalStrategy required");
         this.sidRetrievalStrategy = sidRetrievalStrategy;
     }
 
-	public int vote(Authentication authentication, Object object,
-			ConfigAttributeDefinition config) {
+    public int vote(Authentication authentication, Object object, ConfigAttributeDefinition config) {
 
         int result = ACCESS_ABSTAIN;
 
@@ -68,72 +66,70 @@ public class AfterAclInjectionVoter implements AccessDecisionVoter {
 
             if (this.supports(attribute)) {
 
-		        Object[] args;
-		        Class[] params;
-		
-		        if (object instanceof MethodInvocation) {
-		            MethodInvocation invocation = (MethodInvocation) object;
-		            params = invocation.getMethod().getParameterTypes();
-		            args = invocation.getArguments();
-		        } else {
-		            JoinPoint jp = (JoinPoint) object;
-		            params = ((CodeSignature) jp.getStaticPart().getSignature()).getParameterTypes();
-		            args = jp.getArgs();
-		        }
-		        
-		
-		        Sid[] sids = sidRetrievalStrategy.getSids(authentication);
-		        
-		        int index = 0;
-		        for (Class<?> clazz : params) {
-		        	if (clazz.isAssignableFrom(DetachedCriteria.class)) {
-		        		Class<?> entityClazz = new DetachedCriteriaProcessor().getEntityClassForDetachedCriteria(((DetachedCriteria)args[index]));
-		        		createCriteria(((DetachedCriteria)args[index]), sids, entityClazz);
-		        	}
-		        	
-		        	index++;
-		        }
-		        
-		        return result;
+                Object[] args;
+                Class[] params;
+
+                if (object instanceof MethodInvocation) {
+                    MethodInvocation invocation = (MethodInvocation) object;
+                    params = invocation.getMethod().getParameterTypes();
+                    args = invocation.getArguments();
+                } else {
+                    JoinPoint jp = (JoinPoint) object;
+                    params = ((CodeSignature) jp.getStaticPart().getSignature()).getParameterTypes();
+                    args = jp.getArgs();
+                }
+
+                Sid[] sids = sidRetrievalStrategy.getSids(authentication);
+
+                int index = 0;
+                for (Class<?> clazz : params) {
+                    if (clazz.isAssignableFrom(DetachedCriteria.class)) {
+                        Class<?> entityClazz = new DetachedCriteriaProcessor().getEntityClassForDetachedCriteria(((DetachedCriteria) args[index]));
+                        createCriteria(((DetachedCriteria) args[index]), sids, entityClazz);
+                    }
+
+                    index++;
+                }
+
+                return result;
             }
         }
-        
-		return result;
-	}
-	
-	protected DetachedCriteria createCriteria(DetachedCriteria clazzCriteria, Sid[] sids, Class<?> clazz) {
 
-		//Create detached criteria with alias - name of the alias is not importat, only purpose
-		//is to not use this_ default alias
-		DetachedCriteria criteria = DetachedCriteria.forClass(ACLEntry.class, "aclEntry");
-		
-		//We just want to select objectIdentities
-		criteria.setProjection( Projections.alias( Projections.property(ACLEntry.OBJECT_IDENTITY_FIELD), "object_identity" ));
+        return result;
+    }
 
-		criteria.createCriteria(ACLEntry.OBJECT_IDENTITY_FIELD).
-		//select secured object id
-				add(Restrictions.sqlRestriction("{alias}." + ACLObjectIdentity.OBJECT_IDENTITY_ID_DB_FIELD + "=this_.id")).
-					createCriteria(ACLObjectIdentity.OBJECT_CLASS_FIELD).
-		//select secured object class
-						add(Restrictions.eq(ACLSecuredClass.CLASS_NAME_FIELD, clazz.getName()));
-		
-		//create disjunction of the principals
-		Junction junction = Expression.disjunction();
+    protected DetachedCriteria createCriteria(DetachedCriteria clazzCriteria, Sid[] sids, Class<?> clazz) {
 
-		criteria.createCriteria(ACLEntry.SID_FIELD).add(junction);
-		
-		for (Sid sid : sids) {
-			if (sid instanceof PrincipalSid) {
-				junction.add(Restrictions.eq(ACLSecurityID.SID_FIELD, ((PrincipalSid)sid).getPrincipal()));
-			}
-		}
-		
-		//combine sub-queries
-		clazzCriteria.add(
-				Subqueries.exists(criteria)
-		); 
-		
-		return clazzCriteria;
-	}
+        // Create detached criteria with alias - name of the alias is not
+        // importat, only purpose
+        // is to not use this_ default alias
+        DetachedCriteria criteria = DetachedCriteria.forClass(ACLEntry.class, "aclEntry");
+
+        // We just want to select objectIdentities
+        criteria.setProjection(Projections.alias(Projections.property(ACLEntry.OBJECT_IDENTITY_FIELD), "object_identity"));
+
+        criteria.createCriteria(ACLEntry.OBJECT_IDENTITY_FIELD).
+        // select secured object id
+                add(Restrictions.sqlRestriction("{alias}." + ACLObjectIdentity.OBJECT_IDENTITY_ID_DB_FIELD + "=this_.id")).createCriteria(
+                        ACLObjectIdentity.OBJECT_CLASS_FIELD).
+                // select secured object class
+                add(Restrictions.eq(ACLSecuredClass.CLASS_NAME_FIELD, clazz.getName()));
+
+        // create disjunction of the principals
+        Junction junction = Expression.disjunction();
+
+        for (Sid sid : sids) {
+            if (sid instanceof PrincipalSid) {
+                junction.add(Restrictions.eq(ACLSecurityID.SID_FIELD, ((PrincipalSid) sid).getPrincipal()));
+            }
+        }
+
+        criteria.createCriteria(ACLEntry.SID_FIELD).add(junction);
+
+        // combine sub-queries
+        clazzCriteria.add(Subqueries.exists(criteria));
+
+        return clazzCriteria;
+    }
 
 }

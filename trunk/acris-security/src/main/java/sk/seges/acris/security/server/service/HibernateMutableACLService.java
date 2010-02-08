@@ -36,8 +36,7 @@ public class HibernateMutableACLService extends HibernateACLService implements M
 		ACLObjectIdentity aclObjectIdentity = getAclObjectIdentity(objectIdentity);
 		// Check this object identity hasn't already been persisted
 		if (aclObjectIdentity != null) {
-			throw new AlreadyExistsException("Object identity '"
-					+ aclObjectIdentity + "' already exists");
+			throw new AlreadyExistsException("Object identity '" + aclObjectIdentity + "' already exists");
 		}
 
 		ACLSecuredClass aclClass = aclSecuredClassDao.loadOrCreate(objectIdentity.getJavaType());

@@ -88,7 +88,41 @@ public class ACLEntryDao extends AbstractHibernateCRUD<ACLEntry> implements IACL
 		}
     }
 
-	
+    protected static final String HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE_BY_CLASS = "from " + ACLEntry.class.getSimpleName() + 
+       " acl where" +
+       " acl." + ACLEntry.OBJECT_IDENTITY_FIELD + "." + ACLObjectIdentity.OBJECT_CLASS_FIELD + "." + ACLSecuredClass.CLASS_NAME_FIELD + "=:classname and " +
+       " acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.SID_FIELD + "=:sid and " + 
+       " acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.PRINCIPAL_FIELD + "=:principal";
+
+    @Transactional
+	public void deleteByClassnamAndSid(Class<? extends ISecuredObject> securedClass, Sid sid) {
+        List<ACLEntry> entries = findByClassnameAndSid(securedClass, sid);
+        
+        for (ACLEntry entry : entries) {
+            remove(entry);
+        }	    
+	}
+
+    @Transactional
+    public List<ACLEntry> findByClassnameAndSid(Class<? extends ISecuredObject> securedClass, Sid sid) {
+
+        Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
+        query.setParameter("classname", securedClass.getName());
+        
+        if (sid instanceof PrincipalSid) {
+            query.setParameter("sid", ((PrincipalSid)sid).getPrincipal());
+            query.setParameter("principal", true);
+        } else if (sid instanceof GrantedAuthoritySid) {
+            query.setParameter("sid", ((GrantedAuthoritySid)sid).getGrantedAuthority());
+            query.setParameter("principal", false);
+        } else {
+            throw new IllegalArgumentException("Not supported instance of Sid!!");
+        }
+        
+        List<ACLEntry> entries = (List<ACLEntry>)query.getResultList();
+        return entries;
+    }
+    
 	@Transactional
 	public void remove(ACLEntry aclEntry) {
 		entityManager.remove(aclEntry);

@@ -35,7 +35,7 @@ public class SessionRemoteServiceFilter implements Filter {
 				int index = payload.indexOf('\uffff');
 				if (index == 0) {
 					index = payload.indexOf('\uffff', index + 1);
-					sessionId = payload.substring(0, index);
+					sessionId = payload.substring(1, index);
 					SessionHandlerListener.accessManually(sessionId);
 					payload = payload.substring(index + 1);
 					bytes = payload.getBytes(encoding);

@@ -11,7 +11,11 @@ import sk.seges.sesam.dao.ICrudDAO;
 public interface IACLEntryDAO extends ICrudDAO<ACLEntry> {
 
     public List<ACLEntry> findByIdentityId(long aclObjectIdentity);
+    
+    public List<ACLEntry> findByClassnameAndSid(Class<? extends ISecuredObject> securedClass, Sid sid);
 
+    public void deleteByClassnamAndSid(Class<? extends ISecuredObject> securedClass, Sid sid);
+    
     public void deleteByIdentityIdAndSid(ISecuredObject securedObject, Sid sid);
 
 	public void remove(ACLEntry aclEntry);
