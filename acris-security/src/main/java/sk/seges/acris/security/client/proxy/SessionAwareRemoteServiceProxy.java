@@ -10,11 +10,11 @@ import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
 import com.google.gwt.user.client.rpc.impl.Serializer;
 import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader;
 
-public class SecureRemoteServiceProxy extends RemoteServiceProxy {
+public class SessionAwareRemoteServiceProxy extends RemoteServiceProxy {
 
 	private final ClientContextHolder sessionProvider;
 
-	protected SecureRemoteServiceProxy(String moduleBaseURL,
+	protected SessionAwareRemoteServiceProxy(String moduleBaseURL,
 			String remoteServiceRelativePath, String serializationPolicyName,
 			Serializer serializer) {
 		super(moduleBaseURL, remoteServiceRelativePath,
@@ -24,18 +24,18 @@ public class SecureRemoteServiceProxy extends RemoteServiceProxy {
 
 	}
 
-	private static long requestId = 0;
+	private static long uniqueRequestId = 0;
 	
 	@Override
 	protected <T> Request doInvoke(ResponseReader responseReader,
 			String methodName, int invocationCount, String requestData,
 			AsyncCallback<T> callback) {
 
-		long lastRequestID = requestId;
-		requestId++;
+		long lastUniqueRequestID = uniqueRequestId;
+		uniqueRequestId++;
 		
 		if (callback instanceof TrackingAsyncCallback<?>) {
-			((TrackingAsyncCallback<T>) callback).setRequestId(lastRequestID);
+			((TrackingAsyncCallback<T>) callback).setRequestId(lastUniqueRequestID);
 		}
 
 		String sessionID = "";

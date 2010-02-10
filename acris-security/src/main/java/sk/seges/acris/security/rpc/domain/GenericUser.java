@@ -19,7 +19,7 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
 
-import sk.seges.acris.security.rpc.authority.LazyGrantedAuthority;
+import sk.seges.acris.security.rpc.authority.GrantedAuthorityImpl;
 import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
@@ -145,7 +145,7 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 		
 		int i = 0;
 		for (String authority : authorities) {
-			LazyGrantedAuthority lazyGrantedAuthority = new LazyGrantedAuthority();
+			GrantedAuthorityImpl lazyGrantedAuthority = new GrantedAuthorityImpl();
 			lazyGrantedAuthority.setAuthority(authority);
 			grantedAuthorities[i++] = lazyGrantedAuthority;
 		}

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sk.seges.acris.security.client.IRuntimeRolesProvider;
+import sk.seges.acris.security.client.IRuntimePermissionProvider;
 import sk.seges.acris.security.rpc.domain.IUserPermission;
 import sk.seges.acris.security.rpc.to.ClientContext;
 import sk.seges.acris.security.rpc.to.ClientContextHolder;
@@ -22,15 +22,15 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author MPsenkova
  * 
  */
-public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
+public class RuntimeSecuredObjectCreator extends SecuredPanelCreator {
 
-	private static final String CLASSNAME_POSTFIX = "RuntimeSecurityWrapper";
+	private static final String CLASSNAME_POSTFIX = "_RuntimeSecured";
 
 	protected String getClassNamePostFix(){
 		return CLASSNAME_POSTFIX;
 	}	
 
-	public RuntimeSecuredPanelCreator(ISecuredAnnotationProcessor securedAnnotationProcessor) {
+	public RuntimeSecuredObjectCreator(ISecuredAnnotationProcessor securedAnnotationProcessor) {
 		super(securedAnnotationProcessor);
 	}
 	
@@ -43,7 +43,6 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 	 */
 	protected void generateOnLoadMethod(SourceWriter sourceWriter,
 			GeneratorContext context, JClassType classType) {
-		sourceWriter.println("@Override");
 		sourceWriter.println("public void onLoad() {");
 		sourceWriter.indent();
 		sourceWriter.println("super.onLoad();");
@@ -63,7 +62,7 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 		sourceWriter.println("return;");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		sourceWriter.println(List.class.getName()+"<String> myRoles = new "+ArrayList.class.getName() + "<String>();");
+		sourceWriter.println(List.class.getName()+"<String> userAuthorities = new "+ArrayList.class.getName() + "<String>();");
 		sourceWriter.println(List.class.getName()+"<String> fieldRoles = new "+ArrayList.class.getName() + "<String>();");		
 		sourceWriter.println("boolean isView = false;");
 		sourceWriter.println("boolean isEdit = false;");
@@ -73,20 +72,20 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 		
 		if(classAnnots != null && classAnnots.size() > 0){
 			for (String string : classAnnots) {
-				sourceWriter.println("myRoles.add(\""+ string+ "\");");
+				sourceWriter.println("userAuthorities.add(\""+ string+ "\");");
 			}
 		}
 
 		sourceWriter.println("if(getRoles() != null && getRoles().length > 0){");
 		sourceWriter.indent();
-		sourceWriter.println("myRoles.addAll("+Arrays.class.getName()+".asList(getRoles()));");
+		sourceWriter.println("userAuthorities.addAll("+Arrays.class.getName()+".asList(getRoles()));");
 		sourceWriter.outdent();
 		sourceWriter.println(RIGHT_BRACKET_FINISH);
 		sourceWriter.println();	
 
-		sourceWriter.println("if(myRoles != null && myRoles.size() > 0){");
+		sourceWriter.println("if(userAuthorities != null && userAuthorities.size() > 0){");
 		sourceWriter.indent();
-		sourceWriter.println("isView = hasRoleFromMyRoles(\""+VIEW +"\", myRoles);");
+		sourceWriter.println("isView = hasAuthorityForPermission(\""+VIEW +"\", userAuthorities);");
 		sourceWriter.outdent();
 		sourceWriter.println("}else{");
 		sourceWriter.indent();
@@ -118,7 +117,7 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 	}
 
 	protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) {
-		generateHasRoleFromMyRoles(sourceWriter);
+		generateHasAuthorityForPermission(sourceWriter);
 		sourceWriter.println();
 		generateSetPermission(sourceWriter);
 		sourceWriter.println();
@@ -131,7 +130,7 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 
 	protected String[] getInterfaces() {
 		return new String[]{
-			IRuntimeRolesProvider.class.getName()
+			IRuntimePermissionProvider.class.getName()
 		};
 	}
 
@@ -159,7 +158,7 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 		sourceWriter.println("fieldRoles = new "+ArrayList.class.getName() + "<String>();");
 		if(fieldAnnots != null){ 
 			if(fieldAnnots.size() <= 1){
-				sourceWriter.println("fieldRoles.addAll(myRoles);");
+				sourceWriter.println("fieldRoles.addAll(userAuthorities);");
 			}
 			for (String string : fieldAnnots) {
 				sourceWriter.println("fieldRoles.add(\""+ string +"\");");
@@ -167,11 +166,11 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 		}
 		sourceWriter.println("if (fieldRoles != null && fieldRoles.size() > 0) {");
 		sourceWriter.indent();
-		sourceWriter.println("isView = hasRoleFromMyRoles(\""+VIEW +"\", fieldRoles);");
+		sourceWriter.println("isView = hasAuthorityForPermission(\""+VIEW +"\", fieldRoles);");
 		sourceWriter.println("if( isView ){");
 		sourceWriter.indent();
 
-		sourceWriter.println("isEdit = hasRoleFromMyRoles(\""+EDIT +"\", fieldRoles);");
+		sourceWriter.println("isEdit = hasAuthorityForPermission(\""+EDIT +"\", fieldRoles);");
 		sourceWriter.println(param.getName() + ".setEnabled( isEdit );");
 		sourceWriter.outdent();
 		sourceWriter.println("} else if ( " + param.getName() + " != null ) { ");
@@ -187,8 +186,8 @@ public class RuntimeSecuredPanelCreator extends SecuredPanelCreator {
 	 * generates private function for checking if user has required role with permission
 	 * @param sourceWriter
 	 */
-	private void generateHasRoleFromMyRoles(SourceWriter sourceWriter){
-		sourceWriter.println("private boolean hasRoleFromMyRoles(String perm, "+ List.class.getName()+"<String> roles) {");
+	private void generateHasAuthorityForPermission(SourceWriter sourceWriter){
+		sourceWriter.println("private boolean hasAuthorityForPermission(String perm, "+ List.class.getName()+"<String> roles) {");
 		sourceWriter.indent();
 		sourceWriter.println("boolean myVisibility = false;");
 		sourceWriter.println("for (String role : roles) {");
