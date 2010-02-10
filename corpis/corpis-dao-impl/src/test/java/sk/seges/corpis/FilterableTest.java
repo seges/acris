@@ -19,13 +19,13 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.corpis.dao.IOrderDAO;
+import sk.seges.corpis.dao.IOrderTestDAO;
 import sk.seges.corpis.dataset.TestDataSetHelper;
-import sk.seges.corpis.domain.Location;
-import sk.seges.corpis.domain.Order;
-import sk.seges.corpis.domain.Street;
-import sk.seges.corpis.domain.User;
-import sk.seges.corpis.domain.VAT;
+import sk.seges.corpis.domain.LocationTest;
+import sk.seges.corpis.domain.OrderTest;
+import sk.seges.corpis.domain.StreetTest;
+import sk.seges.corpis.domain.UserTest;
+import sk.seges.corpis.domain.VATTest;
 import sk.seges.sesam.dao.BetweenExpression;
 import sk.seges.sesam.dao.Criterion;
 import sk.seges.sesam.dao.Filter;
@@ -45,47 +45,47 @@ public class FilterableTest {
 	private static final int ITEM_COUNT = 10;
 	
 	@Resource
-	private IOrderDAO orderDAO;
+	private IOrderTestDAO orderDAO;
 	@Resource
 	private TestDataSetHelper helper;
 	
-	private List<Order> dataSet;
+	private List<OrderTest> dataSet;
 	
 	@Before
 	public void setUp() {
-		dataSet = new LinkedList<Order>();
+		dataSet = new LinkedList<OrderTest>();
 
-		Street street = new Street();
+		StreetTest street = new StreetTest();
 		street.setName("za rozkami");
 		street.setNumber(15);
 		
-		Location birth = new Location();
+		LocationTest birth = new LocationTest();
 		birth.setCity("mrkvovce");
 		birth.setState("drundulakovo");
 		birth.setStreet(street);
 		
-		User user = new User();
+		UserTest user = new UserTest();
 		user.setLogin("franta");
 		user.setName("Frantisek Dobrota");
 		user.setPassword("atnarf");
 		user.setBirthplace(birth);
 		orderDAO.persistObject(user);
 		
-		VAT vat19 = new VAT();
+		VATTest vat19 = new VATTest();
 		vat19.setVat((short)19);
 		vat19.setValidFrom(new Date());
 		orderDAO.persistObject(vat19);
 		
 		for (int i = 0; i < ITEM_COUNT / 2; i++) {
-			Street s = new Street();
+			StreetTest s = new StreetTest();
 			s.setName(SOMEWHERE);
 			s.setNumber(i);
 			
-			Location l = new Location();
+			LocationTest l = new LocationTest();
 			l.setStreet(s);
 			l.setCity("somecity " + i);
 			
-			Order o = new Order();
+			OrderTest o = new OrderTest();
 			o.setUser(user);
 			o.setDeliveryLocation(l);
 			o.setOrdered(new Date());
@@ -97,15 +97,15 @@ public class FilterableTest {
 		}
 
 		for (int i = 0; i < ITEM_COUNT / 2; i++) {
-			Street s = new Street();
+			StreetTest s = new StreetTest();
 			s.setName(SOMEWHERE2);
 			s.setNumber(i);
 			
-			Location l = new Location();
+			LocationTest l = new LocationTest();
 			l.setStreet(s);
 			l.setCity("somecity " + i);
 			
-			Order o = new Order();
+			OrderTest o = new OrderTest();
 			o.setUser(user);
 			o.setDeliveryLocation(l);
 			o.setOrdered(new Date());
@@ -119,11 +119,11 @@ public class FilterableTest {
 	
 	@After
 	public void tearDown() {
-		helper.deleteAllInEntityHQL(Order.class.getName());
-		helper.deleteAllInEntityHQL(VAT.class.getName());
-		helper.deleteAllInEntityHQL(User.class.getName());
-		helper.deleteAllInEntityHQL(Location.class.getName());
-		helper.deleteAllInEntityHQL(Street.class.getName());
+		helper.deleteAllInEntityHQL(OrderTest.class.getName());
+		helper.deleteAllInEntityHQL(VATTest.class.getName());
+		helper.deleteAllInEntityHQL(UserTest.class.getName());
+		helper.deleteAllInEntityHQL(LocationTest.class.getName());
+		helper.deleteAllInEntityHQL(StreetTest.class.getName());
 		
 		dataSet.clear();
 	}
@@ -135,26 +135,26 @@ public class FilterableTest {
 		filterable.setValue("my");
 		p.setFilterable(filterable);
 		
-		PagedResult<List<Order>> filtered = orderDAO.findAll(p);
+		PagedResult<List<OrderTest>> filtered = orderDAO.findAll(p);
 		assertEquals("Unexpected number of filtered returned", 5, filtered.getResult().size());
 	}
 	
 	@Test
 	public void testFilterByStringAndNumberField() throws Exception {
 		Page p = new Page(0, 7);
-		SimpleExpression<String> filterable = Filter.eq("deliveryLocation.street.name");
+		SimpleExpression<String> filterable = Filter.eq("deliveryLocationTest.street.name");
 		filterable.setValue(SOMEWHERE);
 		p.setFilterable(filterable);
 		
-		PagedResult<List<Order>> filtered = orderDAO.findAll(p);
+		PagedResult<List<OrderTest>> filtered = orderDAO.findAll(p);
 		assertEquals("Unexpected number of filtered returned", ITEM_COUNT / 2, filtered.getResult().size());
-		for(Order order : filtered.getResult()) {
+		for(OrderTest order : filtered.getResult()) {
 			assertEquals(SOMEWHERE, order.getDeliveryLocation().getStreet().getName());
 		}
 		
-		SimpleExpression<Integer> filterable2 = Filter.eq("deliveryLocation.street.number");
+		SimpleExpression<Integer> filterable2 = Filter.eq("deliveryLocationTest.street.number");
 		filterable2.setValue(2);
-		SimpleExpression<String> filterable3 = Filter.eq("deliveryLocation.street.name");
+		SimpleExpression<String> filterable3 = Filter.eq("deliveryLocationTest.street.name");
 		filterable3.setValue(SOMEWHERE2);
 		Criterion filterableFinal = Filter.conjunction().add(
 				Filter.disjunction().add(filterable).add(filterable3)).add(filterable2);
@@ -162,7 +162,7 @@ public class FilterableTest {
 		
 		filtered = orderDAO.findAll(p);
 		assertEquals("Unexpected number of filtered returned", 2, filtered.getResult().size());
-		for(Order order : filtered.getResult()) {
+		for(OrderTest order : filtered.getResult()) {
 			if (!(order.getDeliveryLocation().getStreet().getName().equals(SOMEWHERE) || order
 					.getDeliveryLocation().getStreet().getName().equals(SOMEWHERE2))) {
 				fail("Neither " + SOMEWHERE + " nor " + SOMEWHERE2 + " in street name");
@@ -175,14 +175,14 @@ public class FilterableTest {
 	@Test
 	public void testNotAndBetween() throws Exception {
 		Page p = new Page(0, 7);
-		BetweenExpression<Integer> filterable = Filter.between("deliveryLocation.street.number");
+		BetweenExpression<Integer> filterable = Filter.between("deliveryLocationTest.street.number");
 		filterable.setLoValue(1);
 		filterable.setHiValue(3);
 		p.setFilterable(Filter.not(filterable));
 		
-		PagedResult<List<Order>> filtered = orderDAO.findAll(p);
+		PagedResult<List<OrderTest>> filtered = orderDAO.findAll(p);
 		assertEquals("Unexpected number of filtered returned", 4, filtered.getResult().size());
-		for (Order order : filtered.getResult()) {
+		for (OrderTest order : filtered.getResult()) {
 			if (!(order.getDeliveryLocation().getStreet().getNumber().equals(0) || order
 					.getDeliveryLocation().getStreet().getNumber().equals(4))) {
 				fail("Neither 0 nor 4 in street number");

@@ -17,13 +17,13 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.corpis.dao.IOrderDAO;
+import sk.seges.corpis.dao.IOrderTestDAO;
 import sk.seges.corpis.dataset.TestDataSetHelper;
-import sk.seges.corpis.domain.Location;
-import sk.seges.corpis.domain.Order;
-import sk.seges.corpis.domain.Street;
-import sk.seges.corpis.domain.User;
-import sk.seges.corpis.domain.VAT;
+import sk.seges.corpis.domain.LocationTest;
+import sk.seges.corpis.domain.OrderTest;
+import sk.seges.corpis.domain.StreetTest;
+import sk.seges.corpis.domain.UserTest;
+import sk.seges.corpis.domain.VATTest;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.SimpleExpression;
@@ -34,47 +34,47 @@ public class ProjectablesTest {
 	private static final int ITEM_COUNT = 10;
 	
 	@Resource
-	private IOrderDAO orderDAO;
+	private IOrderTestDAO orderDAO;
 	@Resource
 	private TestDataSetHelper helper;
 	
-	private List<Order> dataSet;
+	private List<OrderTest> dataSet;
 	
 	@Before
 	public void setUp() {
-		dataSet = new LinkedList<Order>();
+		dataSet = new LinkedList<OrderTest>();
 
-		Street street = new Street();
+		StreetTest street = new StreetTest();
 		street.setName("za rozkami");
 		street.setNumber(15);
 		
-		Location birth = new Location();
+		LocationTest birth = new LocationTest();
 		birth.setCity("mrkvovce");
 		birth.setState("drundulakovo");
 		birth.setStreet(street);
 		
-		User user = new User();
+		UserTest user = new UserTest();
 		user.setLogin("franta");
 		user.setName("Frantisek Dobrota");
 		user.setPassword("atnarf");
 		user.setBirthplace(birth);
 		orderDAO.persistObject(user);
 		
-		VAT vat19 = new VAT();
+		VATTest vat19 = new VATTest();
 		vat19.setVat((short)19);
 		vat19.setValidFrom(new Date());
 		orderDAO.persistObject(vat19);
 		
 		for (int i = 0; i < ITEM_COUNT; i++) {
-			Street s = new Street();
+			StreetTest s = new StreetTest();
 			s.setName("somewhere");
 			s.setNumber(i);
 			
-			Location l = new Location();
+			LocationTest l = new LocationTest();
 			l.setStreet(s);
 			l.setCity("somecity " + i);
 			
-			Order o = new Order();
+			OrderTest o = new OrderTest();
 			o.setUser(user);
 			o.setDeliveryLocation(l);
 			o.setOrdered(new Date());
@@ -88,11 +88,11 @@ public class ProjectablesTest {
 	
 	@After
 	public void tearDown() {
-		helper.deleteAllInEntityHQL(Order.class.getName());
-		helper.deleteAllInEntityHQL(VAT.class.getName());
-		helper.deleteAllInEntityHQL(User.class.getName());
-		helper.deleteAllInEntityHQL(Location.class.getName());
-		helper.deleteAllInEntityHQL(Street.class.getName());
+		helper.deleteAllInEntityHQL(OrderTest.class.getName());
+		helper.deleteAllInEntityHQL(VATTest.class.getName());
+		helper.deleteAllInEntityHQL(UserTest.class.getName());
+		helper.deleteAllInEntityHQL(LocationTest.class.getName());
+		helper.deleteAllInEntityHQL(StreetTest.class.getName());
 		
 		dataSet.clear();
 	}
@@ -100,12 +100,12 @@ public class ProjectablesTest {
 	@Test
 	public void testProjectableOnDirectField() throws Exception {
 		Page page = new Page(0, 0);
-		page.setProjectableResult(Order.class.getName());
+		page.setProjectableResult(OrderTest.class.getName());
 		page.addProjectable("ordered");
 		
-		List<Order> orders = orderDAO.findAll(page).getResult();
+		List<OrderTest> orders = orderDAO.findAll(page).getResult();
 		assertEquals(ITEM_COUNT, orders.size());
-		for(Order order : orders) {
+		for(OrderTest order : orders) {
 			assertNotNull(order.getOrdered());
 			assertNull(order.getDelivered());
 			assertNull(order.getUser());
@@ -114,7 +114,7 @@ public class ProjectablesTest {
 		page.addProjectable("delivered");
 		orders = orderDAO.findAll(page).getResult();
 		assertEquals(ITEM_COUNT, orders.size());
-		for(Order order : orders) {
+		for(OrderTest order : orders) {
 			assertNotNull(order.getOrdered());
 			assertNotNull(order.getDelivered());
 			assertNull(order.getUser());
@@ -124,12 +124,12 @@ public class ProjectablesTest {
 	@Test
 	public void testProjectableOnChainedFields() throws Exception {
 		Page page = new Page(0, 0);
-		page.setProjectableResult(Order.class.getName());
+		page.setProjectableResult(OrderTest.class.getName());
 		page.addProjectable("user.password");
 		
-		List<Order> orders = orderDAO.findAll(page).getResult();
+		List<OrderTest> orders = orderDAO.findAll(page).getResult();
 		assertEquals(ITEM_COUNT, orders.size());
-		for(Order order : orders) {
+		for(OrderTest order : orders) {
 			assertNotNull(order.getUser());
 			assertNotNull(order.getUser().getPassword());
 			assertNull(order.getOrdered());
@@ -138,12 +138,12 @@ public class ProjectablesTest {
 
 		// test complex projectable deep in object
 		page = new Page(0, 0);
-		page.setProjectableResult(Order.class.getName());
+		page.setProjectableResult(OrderTest.class.getName());
 		page.addProjectable("user.birthplace.street.name");
 		
 		orders = orderDAO.findAll(page).getResult();
 		assertEquals(ITEM_COUNT, orders.size());
-		for(Order order : orders) {
+		for(OrderTest order : orders) {
 			assertNotNull(order.getUser());
 			assertNotNull(order.getUser().getBirthplace().getStreet());
 			assertNotNull(order.getUser().getBirthplace().getStreet().getName());
@@ -159,7 +159,7 @@ public class ProjectablesTest {
 		
 		orders = orderDAO.findAll(page).getResult();
 		assertEquals(ITEM_COUNT, orders.size());
-		for(Order order : orders) {
+		for(OrderTest order : orders) {
 			assertNotNull(order.getUser());
 			assertNotNull(order.getUser().getBirthplace().getStreet());
 			assertNotNull(order.getUser().getBirthplace().getStreet().getName());
@@ -174,7 +174,7 @@ public class ProjectablesTest {
 	@Test
 	public void testProjectableOnVariousFieldsWithFilter() throws Exception {
 		Page page = new Page(0, 0);
-		page.setProjectableResult(Order.class.getName());
+		page.setProjectableResult(OrderTest.class.getName());
 		page.addProjectable("orderId");
 		page.addProjectable("user.birthplace.street.name");
 		page.addProjectable("ordered");
@@ -183,9 +183,9 @@ public class ProjectablesTest {
 		filterable.setValue("%my%");
 		page.setFilterable(filterable);
 		
-		List<Order> orders = orderDAO.findAll(page).getResult();
+		List<OrderTest> orders = orderDAO.findAll(page).getResult();
 		assertEquals(ITEM_COUNT, orders.size());
-		for(Order order : orders) {
+		for(OrderTest order : orders) {
 			assertNotNull(order.getOrdered());
 			assertNotNull(order.getOrderId());
 			assertNull(order.getDelivered());
