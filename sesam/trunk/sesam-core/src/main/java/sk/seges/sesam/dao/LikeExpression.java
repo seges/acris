@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * @author eldzi
  */
-public class LikeExpression<T extends Serializable> extends SimpleExpression<T> {
+public class LikeExpression<T extends Comparable<? extends Serializable>> extends SimpleExpression<T> {
 	private static final String LIKE = "like";
 	private static final long serialVersionUID = -8623109501033052L;
 

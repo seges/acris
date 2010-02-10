@@ -12,7 +12,7 @@ import java.io.Serializable;
  *            Type of value expression has to compare using operation for the
  *            property.
  */
-public class SimpleExpression<T extends Serializable> implements Criterion {
+public class SimpleExpression<T extends Comparable<? extends Serializable>> implements Criterion {
 	private static final long serialVersionUID = 8159534010141240168L;
 	
 	protected String property;

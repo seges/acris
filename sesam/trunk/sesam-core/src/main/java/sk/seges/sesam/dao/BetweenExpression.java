@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author eldzi
  *
  */
-public class BetweenExpression<T extends Serializable> extends SimpleExpression<T> {
+public class BetweenExpression<T extends Comparable<? extends Serializable>> extends SimpleExpression<T> {
 	private static final long serialVersionUID = -8218796834016497508L;
 
 	private T hiValue;
