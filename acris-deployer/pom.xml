@@ -89,7 +89,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gwt</groupId>
-			<artifactId>beans-binding</artifactId>
+			<artifactId>beansbinding</artifactId>
 		</dependency>
 
 		<!-- GWT dependencies -->
@@ -104,7 +104,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
-			<classifier>${platform}</classifier>
 		</dependency>
 	</dependencies>
 </project>
