@@ -24,39 +24,39 @@ public class Filter {
 		return new Conjunction();
 	}
 	
-	public static <T extends Serializable> BetweenExpression<T> between(String property) {
+	public static <T extends Comparable<? extends Serializable>> BetweenExpression<T> between(String property) {
 		return new BetweenExpression<T>(property, BETWEEN);
 	}
 	
-	public static <T extends Serializable> SimpleExpression<T> eq(String property) {
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> eq(String property) {
 		return new SimpleExpression<T>(property, EQ);
 	}
 	
-	public static <T extends Serializable> SimpleExpression<T> ge(String property) {
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> ge(String property) {
 		return new SimpleExpression<T>(property, GE);
 	}
 	
-	public static <T extends Serializable> SimpleExpression<T> gt(String property) {
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> gt(String property) {
 		return new SimpleExpression<T>(property, GT);
 	}
 	
-	public static <T extends Serializable> LikeExpression<T> ilike(String property) {
+	public static <T extends Comparable<? extends Serializable>> LikeExpression<T> ilike(String property) {
 		return new LikeExpression<T>(property, false);
 	}
 	
-	public static <T extends Serializable> SimpleExpression<T> le(String property) {
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> le(String property) {
 		return new SimpleExpression<T>(property, LE);
 	}
 
-	public static <T extends Serializable> LikeExpression<T> like(String property) {
+	public static <T extends Comparable<? extends Serializable>> LikeExpression<T> like(String property) {
 		return new LikeExpression<T>(property);
 	}
 	
-	public static <T extends Serializable> SimpleExpression<T> lt(String property) {
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> lt(String property) {
 		return new SimpleExpression<T>(property, LT);
 	}
 	
-	public static <T extends Serializable> SimpleExpression<T> ne(String property) {
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> ne(String property) {
 		return new SimpleExpression<T>(property, NE);
 	}
 	
