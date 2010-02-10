@@ -11,12 +11,14 @@ public class BeansBindingInit {
 
 	public static void init() {
 		
-		try {
-			GWT.create(BeansBindingInit.class);
-		} catch (Throwable t) {
-			GWT.log(t.getMessage(), t);
-		}
-		
-		GWTBeansBinding.init();
+	    if (GWT.isScript()) {
+			try {
+				GWT.create(BeansBindingInit.class);
+			} catch (Throwable t) {
+				GWT.log(t.getMessage(), t);
+			}
+	    }		
+
+	    GWTBeansBinding.init();
 	}
 }
