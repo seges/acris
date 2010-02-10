@@ -6,7 +6,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.DetachedCriteriaProcessor;
+import org.hibernate.criterion.DetachedCriteriaHelper;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Projections;
@@ -84,7 +84,7 @@ public class AfterAclInjectionVoter implements AccessDecisionVoter {
                 int index = 0;
                 for (Class<?> clazz : params) {
                     if (clazz.isAssignableFrom(DetachedCriteria.class)) {
-                        Class<?> entityClazz = new DetachedCriteriaProcessor().getEntityClassForDetachedCriteria(((DetachedCriteria) args[index]));
+                        Class<?> entityClazz = new DetachedCriteriaHelper().getDetachedCriteriaDomainObjectClass(((DetachedCriteria) args[index]));
                         createCriteria(((DetachedCriteria) args[index]), sids, entityClazz);
                     }
 

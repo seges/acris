@@ -41,13 +41,13 @@
 	</replace-with>
 
 	<generate-with class="sk.seges.acris.security.rebind.SecuredPanelGenerator">
-		<when-type-assignable class="sk.seges.acris.security.client.ISecuredPanel" />
+		<when-type-assignable class="sk.seges.acris.security.client.ISecuredObject" />
 	</generate-with>
 
 	<generate-with
-		class="sk.seges.acris.security.rebind.RuntimeSecuredPanelGenerator">
+		class="sk.seges.acris.security.rebind.RuntimeSecuredObjectGenerator">
 		<when-type-assignable
-			class="sk.seges.acris.security.client.IRuntimeSecuredPanel" />
+			class="sk.seges.acris.security.client.IRuntimeSecuredObject" />
 	</generate-with>
 
 </module>

@@ -15,7 +15,7 @@
  */
 package com.google.gwt.user.rebind.rpc;
 
-import sk.seges.acris.security.client.proxy.SecureRemoteServiceProxy;
+import sk.seges.acris.security.client.proxy.SessionAwareRemoteServiceProxy;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
@@ -32,6 +32,6 @@ public class SessionProxyCreator extends ProxyCreator {
 	}
 
 	protected Class<? extends RemoteServiceProxy> getProxySupertype() {
-		return SecureRemoteServiceProxy.class;
+		return SessionAwareRemoteServiceProxy.class;
 	}
 }

@@ -13,7 +13,7 @@ import sk.seges.sesam.domain.IDomainObject;
 @Entity
 public class UserPreferences implements IDomainObject<Long> {
 
-	private static final long serialVersionUID = -8116150257007023984L;
+	private static final long serialVersionUID = -2671953566571056404L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
