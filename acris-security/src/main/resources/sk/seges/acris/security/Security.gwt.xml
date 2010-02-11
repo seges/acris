@@ -36,10 +36,6 @@
 	</generate-with>
 
 	<!-- Security generators -->
-	<replace-with class="sk.seges.acris.security.client.context.ClientContextHolderImpl">
-		<when-type-is class="sk.seges.acris.security.rpc.to.ClientContextHolder" />
-	</replace-with>
-
 	<generate-with class="sk.seges.acris.security.rebind.SecuredPanelGenerator">
 		<when-type-assignable class="sk.seges.acris.security.client.ISecuredObject" />
 	</generate-with>
