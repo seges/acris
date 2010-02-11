@@ -34,6 +34,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	private void initializeService() {
         String auditTrailServiceURL = GWT.getModuleBaseURL() + "acris-service/logservice";
         auditTrailService = GWT.create(IAuditTrailService.class);
+        //TODO Initiaze session also
         ServiceDefTarget auditTrailServiceEndPoint = (ServiceDefTarget)auditTrailService;
         auditTrailServiceEndPoint.setServiceEntryPoint(auditTrailServiceURL);
 	}

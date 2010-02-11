@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import sk.seges.acris.recorder.rpc.domain.SessionLog;
 import sk.seges.acris.security.rpc.domain.GenericUser;
 import sk.seges.acris.security.rpc.domain.UserPreferences;
-import sk.seges.acris.security.rpc.to.ClientContext;
+import sk.seges.acris.security.rpc.session.ClientSession;
 
 @Service
 public class ProxyGenerator {
@@ -27,7 +27,7 @@ public class ProxyGenerator {
 //            ProxyManager.getInstance().generateProxyClass(User.class, additionalCode);
             ProxyManager.getInstance().generateProxyClass(GenericUser.class, additionalCode);
             ProxyManager.getInstance().generateProxyClass(UserPreferences.class, additionalCode);
-            ProxyManager.getInstance().generateProxyClass(ClientContext.class, additionalCode);
+            ProxyManager.getInstance().generateProxyClass(ClientSession.class, additionalCode);
 //            ProxyManager.getInstance().generateProxyClass(LazyGrantedAuthority.class, additionalCode);
 
         } catch (Exception e) {
