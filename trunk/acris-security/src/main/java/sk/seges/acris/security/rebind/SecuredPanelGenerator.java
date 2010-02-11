@@ -14,7 +14,7 @@ public class SecuredPanelGenerator extends AbstractGenerator {
 
 	public String doGenerate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {
-		SecuredPanelCreator securedPanelCreator = new SecuredPanelCreator(new SecuredAnnotationProcessor());
+		SecuredObjectCreator securedPanelCreator = new SecuredObjectCreator(new SecuredAnnotationProcessor());
 		return securedPanelCreator.doGenerate(logger, context, typeName, this.superclassName);
 	}
 }

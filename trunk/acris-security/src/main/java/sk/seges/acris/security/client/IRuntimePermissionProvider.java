@@ -11,5 +11,5 @@ public interface IRuntimePermissionProvider {
     void setPermission(IUserPermission role);
 	void setPermissions(IUserPermission[] roles);
 	
-	String[] getRoles();
+	String[] getPermissions();
 }

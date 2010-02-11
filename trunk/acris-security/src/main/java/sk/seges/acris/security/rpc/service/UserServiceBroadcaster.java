@@ -6,10 +6,8 @@ import java.util.Map;
 
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
 import sk.seges.acris.security.rpc.domain.GenericUser;
-import sk.seges.acris.security.rpc.to.ClientContext;
-import sk.seges.acris.security.rpc.to.ClientContextHolder;
+import sk.seges.acris.security.rpc.session.ClientSession;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
@@ -39,7 +37,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 	@Override
 	public void login(final String username, final String password, final String language,
-			final AsyncCallback<ClientContext> callback) {
+			final AsyncCallback<ClientSession> callback) {
 		int count = userServices.size();
 		
 		final CountHolder countHolder = new CountHolder();
@@ -51,7 +49,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 		final Iterator<IUserServiceAsync> userServiceIterator = userServices.values().iterator();
 		
-		userServiceIterator.next().login(username, password, language, new TrackingAsyncCallback<ClientContext>() {
+		userServiceIterator.next().login(username, password, language, new TrackingAsyncCallback<ClientSession>() {
 
 				@Override
 				public void onFailureCallback(Throwable caught) {
@@ -59,27 +57,25 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 
 				@Override
-				public void onSuccessCallback(ClientContext result) {
+				public void onSuccessCallback(ClientSession result) {
 					countHolder.count--;
-					ClientContextHolder clientContextHolder = GWT.create(ClientContextHolder.class);
-					clientContextHolder.setClientContext(result);
 					resendLoginRequest(username, password, language, callback, userServiceIterator, countHolder, result);
 				}
 			});
 	}
 	
-	private void notifyUser(final AsyncCallback<ClientContext> callback, CountHolder countHolder, ClientContext result) {
+	private void notifyUser(final AsyncCallback<ClientSession> callback, CountHolder countHolder, ClientSession result) {
 		if (countHolder.count == 0) {
 			callback.onSuccess(result);
 		}
 	}
 	
 	private void resendLoginRequest(final String username, final String password, final String language,
-			final AsyncCallback<ClientContext> callback, Iterator<IUserServiceAsync> userServiceIterator, 
-			final CountHolder countHolder, final ClientContext result) {
+			final AsyncCallback<ClientSession> callback, Iterator<IUserServiceAsync> userServiceIterator, 
+			final CountHolder countHolder, final ClientSession result) {
 
 		while(userServiceIterator.hasNext()) {
-			userServiceIterator.next().login(username, password, language, new TrackingAsyncCallback<ClientContext>() {
+			userServiceIterator.next().login(username, password, language, new TrackingAsyncCallback<ClientSession>() {
 	
 					@Override
 					public void onFailureCallback(Throwable caught) {
@@ -87,7 +83,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 					}
 	
 					@Override
-					public void onSuccessCallback(ClientContext result) {
+					public void onSuccessCallback(ClientSession result) {
 						countHolder.count--;
 						notifyUser(callback, countHolder, result);
 					}

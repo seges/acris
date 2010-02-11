@@ -6,8 +6,7 @@ import java.util.List;
 
 import sk.seges.acris.security.client.IRuntimePermissionProvider;
 import sk.seges.acris.security.rpc.domain.IUserPermission;
-import sk.seges.acris.security.rpc.to.ClientContext;
-import sk.seges.acris.security.rpc.to.ClientContextHolder;
+import sk.seges.acris.security.rpc.session.ClientSession;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -22,7 +21,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author MPsenkova
  * 
  */
-public class RuntimeSecuredObjectCreator extends SecuredPanelCreator {
+public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 
 	private static final String CLASSNAME_POSTFIX = "_RuntimeSecured";
 
@@ -47,84 +46,70 @@ public class RuntimeSecuredObjectCreator extends SecuredPanelCreator {
 		sourceWriter.indent();
 		sourceWriter.println("super.onLoad();");
 		sourceWriter.println("user = null;");
-		sourceWriter.println(ClientContextHolder.class.getSimpleName()
-				+ " cch = GWT.create(" + ClientContextHolder.class.getSimpleName()
-				+ ".class);");
-		sourceWriter.println(ClientContext.class.getSimpleName()
-				+ " ctxt = cch.getClientContext();");
-		sourceWriter.println("if (ctxt != null) {");
+		sourceWriter.println(ClientSession.class.getSimpleName() + " clientSession = getClientSession();");
+		sourceWriter.println("if (clientSession != null) {");
 		sourceWriter.indent();
-		sourceWriter.println("user = ctxt.getUser();");
+		sourceWriter.println("user = clientSession.getUser();");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		sourceWriter.println("if (user == null) {");
-		sourceWriter.indent();
-		sourceWriter.println("return;");
-		sourceWriter.outdent();
-		sourceWriter.println("}");
-		sourceWriter.println(List.class.getName()+"<String> userAuthorities = new "+ArrayList.class.getName() + "<String>();");
-		sourceWriter.println(List.class.getName()+"<String> fieldRoles = new "+ArrayList.class.getName() + "<String>();");		
-		sourceWriter.println("boolean isView = false;");
-		sourceWriter.println("boolean isEdit = false;");
+		sourceWriter.println(List.class.getName()+"<String> runtimeUserAuthorities = new "+ArrayList.class.getName() + "<String>();");
+		sourceWriter.println(List.class.getName()+"<String> fieldUserAuthorities = new "+ArrayList.class.getName() + "<String>();");
+		sourceWriter.println();
+		sourceWriter.println("boolean hasViewPermission = false;");
+		sourceWriter.println("boolean hasEditPermission = false;");
 
-		// checking visibility of whole panel
 		List<String> classAnnots = securedAnnotationProcessor.getListAuthoritiesForType(classType);
 		
+		//Add all security permissions from class secured annotation
 		if(classAnnots != null && classAnnots.size() > 0){
 			for (String string : classAnnots) {
-				sourceWriter.println("userAuthorities.add(\""+ string+ "\");");
+				sourceWriter.println("runtimeUserAuthorities.add(\""+ string+ "\");");
 			}
 		}
 
-		sourceWriter.println("if(getRoles() != null && getRoles().length > 0){");
+		//Add security permission defined in runtime
+		sourceWriter.println("if(getPermissions() != null && getPermissions().length > 0){");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.addAll("+Arrays.class.getName()+".asList(getRoles()));");
+		sourceWriter.println("runtimeUserAuthorities.addAll(" + Arrays.class.getName() + ".asList(getPermissions()));");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		sourceWriter.println();	
 
-		sourceWriter.println("if(userAuthorities != null && userAuthorities.size() > 0){");
+		sourceWriter.println("if(runtimeUserAuthorities != null && runtimeUserAuthorities.size() > 0){");
 		sourceWriter.indent();
-		sourceWriter.println("isView = hasAuthorityForPermission(\""+VIEW +"\", userAuthorities);");
+		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + VIEW + "\", runtimeUserAuthorities);");
 		sourceWriter.outdent();
 		sourceWriter.println("}else{");
 		sourceWriter.indent();
-		sourceWriter.println("isView = true;");
+		sourceWriter.println("hasViewPermission = true;");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		sourceWriter.println();
 
-		sourceWriter.println("if( !isView ){");
+		sourceWriter.println("if( !hasViewPermission ){");
 		sourceWriter.indent();
 		sourceWriter.println("this.setVisible(false);");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
  
-		JField[] globalVars = classType.getFields();
+		JField[] fields = classType.getFields();
 
-		// looping over every panel field
-		for (JField param : globalVars) {
+		for (JField field : fields) {
 			
-			List<String> paramAnnots = securedAnnotationProcessor.getListAuthoritiesForType(param);
+			List<String> fieldAnnotationAuthorities = securedAnnotationProcessor.getListAuthoritiesForType(field);
 
-			if (paramAnnots != null && paramAnnots.size() > 0) {
-				generateSourceForField(sourceWriter, paramAnnots, 
-						context, classType, param);
+			if (fieldAnnotationAuthorities != null && fieldAnnotationAuthorities.size() > 0) {
+				generateFieldSecurityRestrictions(sourceWriter, fieldAnnotationAuthorities, 
+						context, classType, field);
 			}
 		}
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 	}
 
 	protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) {
 		generateHasAuthorityForPermission(sourceWriter);
-		sourceWriter.println();
-		generateSetPermission(sourceWriter);
-		sourceWriter.println();
-		generateSetPermissions(sourceWriter);
-		sourceWriter.println();
-		generateGetRoles(sourceWriter);
-		sourceWriter.println();
+		generateInterfaceMethods(sourceWriter);
 		generateOnLoadMethod(sourceWriter, context, classType);
 	}
 
@@ -135,10 +120,10 @@ public class RuntimeSecuredObjectCreator extends SecuredPanelCreator {
 	}
 
 	
-	protected void generateGlobalVariables(SourceWriter sourceWriter) {
-		super.generateGlobalVariables(sourceWriter);
+	protected void generateClassFields(SourceWriter sourceWriter) {
+		super.generateClassFields(sourceWriter);
 		sourceWriter.println("private " + List.class.getName() + "<String>"
-				+ " roles = new " + ArrayList.class.getName() + "<String>();");
+				+ " userAuthorities = new " + ArrayList.class.getName() + "<String>();");
 	}
 
 	/**
@@ -150,104 +135,100 @@ public class RuntimeSecuredObjectCreator extends SecuredPanelCreator {
 	 * @param classType
 	 * @param param
 	 */
-	protected void generateSourceForField(SourceWriter sourceWriter,
-			List<String> fieldAnnots, GeneratorContext context,
+	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter,
+			List<String> fieldAnnotationAuthorities, GeneratorContext context,
 			JType classType, JField param) {
 		// check of view authority
 		sourceWriter.println();
-		sourceWriter.println("fieldRoles = new "+ArrayList.class.getName() + "<String>();");
-		if(fieldAnnots != null){ 
-			if(fieldAnnots.size() <= 1){
-				sourceWriter.println("fieldRoles.addAll(userAuthorities);");
+		sourceWriter.println("fieldUserAuthorities = new " + ArrayList.class.getName() + "<String>();");
+		if(fieldAnnotationAuthorities != null){ 
+			if(fieldAnnotationAuthorities.size() <= 1){
+				sourceWriter.println("fieldUserAuthorities.addAll(runtimeUserAuthorities);");
 			}
-			for (String string : fieldAnnots) {
-				sourceWriter.println("fieldRoles.add(\""+ string +"\");");
+			for (String fieldAnnotationAuthority : fieldAnnotationAuthorities) {
+				sourceWriter.println("fieldUserAuthorities.add(\"" + fieldAnnotationAuthority + "\");");
 			}
 		}
-		sourceWriter.println("if (fieldRoles != null && fieldRoles.size() > 0) {");
+		sourceWriter.println("if (fieldUserAuthorities != null && fieldUserAuthorities.size() > 0) {");
 		sourceWriter.indent();
-		sourceWriter.println("isView = hasAuthorityForPermission(\""+VIEW +"\", fieldRoles);");
-		sourceWriter.println("if( isView ){");
+		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + VIEW + "\", fieldUserAuthorities);");
+		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
 
-		sourceWriter.println("isEdit = hasAuthorityForPermission(\""+EDIT +"\", fieldRoles);");
-		sourceWriter.println(param.getName() + ".setEnabled( isEdit );");
+		sourceWriter.println("hasEditPermission = hasAuthorityForPermission(\"" + EDIT + "\", fieldUserAuthorities);");
+		sourceWriter.println(param.getName() + ".setEnabled( hasEditPermission );");
 		sourceWriter.outdent();
 		sourceWriter.println("} else if ( " + param.getName() + " != null ) { ");
 		sourceWriter.indent();
 		sourceWriter.println(param.getName() + ".setVisible(false);");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 	}
 	
 	/**
-	 * generates private function for checking if user has required role with permission
-	 * @param sourceWriter
+	 * generates private function for checking if user has required authority for specific permission
 	 */
 	private void generateHasAuthorityForPermission(SourceWriter sourceWriter){
-		sourceWriter.println("private boolean hasAuthorityForPermission(String perm, "+ List.class.getName()+"<String> roles) {");
+		sourceWriter.println("private boolean hasAuthorityForPermission(String permission, " + List.class.getName() + "<String> aggregatedUserAuthorities) {");
 		sourceWriter.indent();
-		sourceWriter.println("boolean myVisibility = false;");
-		sourceWriter.println("for (String role : roles) {");
+		sourceWriter.println("for (String userAuthority : aggregatedUserAuthorities) {");
 		sourceWriter.indent();
-		sourceWriter.println("if(user.hasAuthority(role+\"_\"+perm))");
+		sourceWriter.println("if (user != null && user.hasAuthority(userAuthority + \"_\" + permission))");
 		sourceWriter.indent();
-		sourceWriter.println("myVisibility = true;");
+		sourceWriter.println("return true;");
 		sourceWriter.outdent();
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
-		sourceWriter.println("return myVisibility;");
+		sourceWriter.println("}");
+		sourceWriter.println("return false;");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
+		sourceWriter.println();
 	}
 	
-	private void generateSetPermission(SourceWriter sourceWriter){
+	private void generateInterfaceMethods(SourceWriter sourceWriter){
 		sourceWriter.println("public void setPermission(" + IUserPermission.class.getName() + " userPermission) {");
 		sourceWriter.indent();
-		sourceWriter.println("roles.clear();");
-		sourceWriter.println("roles.add(userPermission.name());");
+		sourceWriter.println("userAuthorities.clear();");
+		sourceWriter.println("userAuthorities.add(userPermission.name());");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		sourceWriter.println("");
 		sourceWriter.println("public void setPermission(String userPermission) {");
 		sourceWriter.indent();
-		sourceWriter.println("roles.clear();");
-		sourceWriter.println("roles.add(userPermission);");
+		sourceWriter.println("userAuthorities.clear();");
+		sourceWriter.println("userAuthorities.add(userPermission);");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
-	}
-	
-	private void generateSetPermissions(SourceWriter sourceWriter){
+		sourceWriter.println("}");
+		sourceWriter.println();
 		sourceWriter.println("public void setPermissions(" + IUserPermission.class.getName() + "[] permissions) {");
 		sourceWriter.indent();
-		sourceWriter.println("roles.clear();");
+		sourceWriter.println("userAuthorities.clear();");
 		sourceWriter.println("for(" + IUserPermission.class.getName() + " userPermission : permissions) {");
 		sourceWriter.indent();
-		sourceWriter.println("roles.add(userPermission.name());");
+		sourceWriter.println("userAuthorities.add(userPermission.name());");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		sourceWriter.println();
 		sourceWriter.println("public void setPermissions(String[] permissions) {");
 		sourceWriter.indent();
 		sourceWriter.println("roles.clear();");
 		sourceWriter.println("for(String userPermission : permissions) {");
 		sourceWriter.indent();
-		sourceWriter.println("roles.add(userPermission);");
+		sourceWriter.println("userAuthorities.add(userPermission);");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);		
-	}
-		
-	private void generateGetRoles(SourceWriter sourceWriter){
-		sourceWriter.println("public String[] getRoles() {");
+		sourceWriter.println("}");		
+		sourceWriter.println();
+		sourceWriter.println("public String[] getPermissions() {");
 		sourceWriter.indent();
-		sourceWriter.println("return roles.toArray(new String[0]);");
+		sourceWriter.println("return userAuthorities.toArray(new String[0]);");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
+		sourceWriter.println();
 	}
 }

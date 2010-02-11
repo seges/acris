@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import sk.seges.acris.security.rpc.domain.GenericUser;
 import sk.seges.acris.security.rpc.service.IUserService;
-import sk.seges.acris.security.rpc.to.ClientContext;
+import sk.seges.acris.security.rpc.session.ClientSession;
 
 @Service
 public class UserService extends PersistentRemoteService implements IUserService {
@@ -37,7 +37,7 @@ public class UserService extends PersistentRemoteService implements IUserService
 //		super(lazyManager);
 //	}
 
-	public ClientContext login(String username, String password, String language/*, IUserDetail userDetail*/) {
+	public ClientSession login(String username, String password, String language/*, IUserDetail userDetail*/) {
 
 		UserDetails user = loginUserService.loginUser(username, password, language);
 		((GenericUser)user).setAuthorities(user.getAuthorities());
@@ -50,11 +50,11 @@ public class UserService extends PersistentRemoteService implements IUserService
 
 		HttpServletRequest request = ServletUtils.getRequest();
 		
-		ClientContext clientContext = new ClientContext();
-		clientContext.setSessionId(request.getSession(true).getId());
-		clientContext.setUser((GenericUser)user);
+		ClientSession clientSession = new ClientSession();
+		clientSession.setSessionId(request.getSession(true).getId());
+		clientSession.setUser((GenericUser)user);
 
-		return clientContext;
+		return clientSession;
 	}
 
 	protected String[] getUserAuthorities(UserDetails user) {

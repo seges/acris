@@ -2,13 +2,11 @@ package sk.seges.acris.security.rebind;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import sk.seges.acris.security.rpc.domain.GenericUser;
 import sk.seges.acris.security.rpc.domain.Permission;
-import sk.seges.acris.security.rpc.to.ClientContext;
-import sk.seges.acris.security.rpc.to.ClientContextHolder;
+import sk.seges.acris.security.rpc.session.ClientSession;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -27,11 +25,9 @@ import com.google.gwt.user.rebind.SourceWriter;
  * generates secured panel according to annotations in original panel, which is
  * replaced by secured panel
  */
-public class SecuredPanelCreator {
+public class SecuredObjectCreator {
 
 	private static final String CLASSNAME_POSTFIX = "SecurityWrapper";
-
-	protected static final String RIGHT_BRACKET_FINISH = "}";
 
 	protected static final String VIEW = Permission.VIEW.name();
 
@@ -48,7 +44,7 @@ public class SecuredPanelCreator {
 
 	protected ISecuredAnnotationProcessor securedAnnotationProcessor;
 	
-	public SecuredPanelCreator(ISecuredAnnotationProcessor securedAnnotationProcessor) {
+	public SecuredObjectCreator(ISecuredAnnotationProcessor securedAnnotationProcessor) {
 		this.securedAnnotationProcessor = securedAnnotationProcessor;
 	}
 	
@@ -119,7 +115,7 @@ public class SecuredPanelCreator {
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 		// generate global variables
 		sourceWriter.println();
-		generateGlobalVariables(sourceWriter);
+		generateClassFields(sourceWriter);
 		sourceWriter.println();
 		// generator constructor source code
 		generateConstructor(sourceWriter);
@@ -127,7 +123,7 @@ public class SecuredPanelCreator {
 		generateMethods(sourceWriter, context, classType);
 		// close generated class
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 		// commit generated class
 		context.commit(logger, printWriter);
 	}
@@ -144,9 +140,8 @@ public class SecuredPanelCreator {
 	 */
 	protected String[] getImports(){
 		return new String[] { GWT.class.getCanonicalName(),
-				ClientContext.class.getCanonicalName(),
-				GenericUser.class.getCanonicalName(),
-				ClientContextHolder.class.getCanonicalName()};
+				ClientSession.class.getCanonicalName(),
+				GenericUser.class.getCanonicalName()};
 	}
 
 	
@@ -174,19 +169,16 @@ public class SecuredPanelCreator {
 		sourceWriter.println("public void onLoad() {");
 		sourceWriter.indent();
 		sourceWriter.println("super.onLoad();");
+
 		sourceWriter.println("user = null;");
-		sourceWriter.println(ClientContextHolder.class.getSimpleName()
-				+ " cch = GWT.create(" + ClientContextHolder.class.getSimpleName()
-				+ ".class);");
-		sourceWriter.println(ClientContext.class.getSimpleName()
-				+ " ctxt = cch.getClientContext();");
-		sourceWriter.println("if (ctxt != null) {");
+		sourceWriter.println(ClientSession.class.getSimpleName() + " clientSession = getClientSession();");
+		sourceWriter.println("if (clientSession != null) {");
 		sourceWriter.indent();
-		sourceWriter.println("user = ctxt.getUser();");
+		sourceWriter.println("user = clientSession.getUser();");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		sourceWriter.println("boolean isView = false;");
-		sourceWriter.println("boolean isEdit = false;");
+		sourceWriter.println("boolean hasViewPermission = false;");
+		sourceWriter.println("boolean hasEditPermission = false;");
 
 		List<String> classRoles = new ArrayList<String>();
 
@@ -197,10 +189,10 @@ public class SecuredPanelCreator {
 			boolean useModifier = !securedAnnotationProcessor.isAuthorityPermission(classType);
 			sourceWriter.println("if (user != null) {");
 			sourceWriter.indent();
-			sourceWriter.println("isView = " + generateAuthConds(VIEW, classAnnots, useModifier) + ";");
+			sourceWriter.println("hasViewPermission = " + generateAuthConds(VIEW, classAnnots, useModifier) + ";");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
-			sourceWriter.println("if( !isView ){");
+			sourceWriter.println("if( !hasViewPermission ){");
 			sourceWriter.indent();
 			sourceWriter.println("this.setVisible(false);");
 			sourceWriter.outdent();
@@ -226,14 +218,14 @@ public class SecuredPanelCreator {
 					allAnnotations.addAll(classRoles);
 				}
 				
-				generateSourceForField(sourceWriter, allAnnotations, 
+				generateFieldSecurityRestrictions(sourceWriter, allAnnotations, 
 						context, classType, param, useModifier);
 			}
 		}
 		
 		
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 	}
 
 
@@ -247,31 +239,31 @@ public class SecuredPanelCreator {
 	 * @param param
 	 * @throws NotFoundException 
 	 */
-	protected void generateSourceForField(SourceWriter sourceWriter,
+	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter,
 			List<String> fieldAnnots, GeneratorContext context,
 			JType type, JField param, boolean useModifiers) throws NotFoundException {
 		// check of view authority
 		sourceWriter.println("if (user != null) {");
 		sourceWriter.indent();
-		sourceWriter.println("isView = " + generateAuthConds(VIEW, fieldAnnots, useModifiers) + ";");
+		sourceWriter.println("hasViewPermission = " + generateAuthConds(VIEW, fieldAnnots, useModifiers) + ";");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		sourceWriter.println("if( isView ){");
+		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
 		// focusable specific
 //		try {
 
 		if (type.isClassOrInterface() != null && ((JClassType)type).isAssignableTo(context.getTypeOracle().getType(
 				Focusable.class.getName()))) {
-			sourceWriter.println("isEdit = " + generateAuthConds(EDIT, fieldAnnots, useModifiers)+";");
-			sourceWriter.println(param.getName() + ".setEnabled( isEdit );");
+			sourceWriter.println("hasEditPermission = " + generateAuthConds(EDIT, fieldAnnots, useModifiers)+";");
+			sourceWriter.println(param.getName() + ".setEnabled(hasEditPermission);");
 		}
 		sourceWriter.outdent();
 		sourceWriter.println("} else if ( " + param.getName() + " != null ) { ");
 		sourceWriter.indent();
 		sourceWriter.println(param.getName() + ".setVisible(false);");
 		sourceWriter.outdent();
-		sourceWriter.println(RIGHT_BRACKET_FINISH);
+		sourceWriter.println("}");
 	}
 
 	/**
@@ -290,29 +282,25 @@ public class SecuredPanelCreator {
 		sourceWriter.println("}");
 	}
 
-	protected void generateGlobalVariables(SourceWriter sourceWriter) {
+	protected void generateClassFields(SourceWriter sourceWriter) {
 		sourceWriter.println("private " + GenericUser.class.getSimpleName()
 				+ " user;");
 	}
 	
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param modifier
-	 * @param fieldAnnots
-	 * @return
-	 */
 	private String generateAuthConds(String modifier, List<String> fieldAnnots, boolean useModifier) {
-		Iterator<String> it = fieldAnnots.iterator();
+
 		StringBuffer sb = new StringBuffer();
-		while (it.hasNext()) {
-			String string = it.next();
+		
+		int size = fieldAnnots.size();
+		
+		for (String userAuthority : fieldAnnots) {
+			size--;
 			if (useModifier) {
-				sb.append("(user.hasAuthority(\"" + string + "_" + modifier + "\"))");
+				sb.append("(user.hasAuthority(\"" + userAuthority + "_" + modifier + "\"))");
 			} else {
-				sb.append("(user.hasAuthority(\"" + string + "\"))");
+				sb.append("(user.hasAuthority(\"" + userAuthority + "\"))");
 			}
-			if (it.hasNext())
+			if (size > 0)
 				sb.append(" || \n");
 		}
 		return sb.toString();
