@@ -215,7 +215,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println();
 		sourceWriter.println("public void setPermissions(String[] permissions) {");
 		sourceWriter.indent();
-		sourceWriter.println("roles.clear();");
+		sourceWriter.println("userAuthorities.clear();");
 		sourceWriter.println("for(String userPermission : permissions) {");
 		sourceWriter.indent();
 		sourceWriter.println("userAuthorities.add(userPermission);");
