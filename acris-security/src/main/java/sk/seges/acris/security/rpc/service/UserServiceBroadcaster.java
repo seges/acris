@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
+import sk.seges.acris.security.client.proxy.SessionServiceDefTarget;
 import sk.seges.acris.security.rpc.domain.GenericUser;
 import sk.seges.acris.security.rpc.session.ClientSession;
 
@@ -49,7 +50,9 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 		final Iterator<IUserServiceAsync> userServiceIterator = userServices.values().iterator();
 		
-		userServiceIterator.next().login(username, password, language, new TrackingAsyncCallback<ClientSession>() {
+		final IUserServiceAsync userService = userServiceIterator.next();
+		
+		userService.login(username, password, language, new TrackingAsyncCallback<ClientSession>() {
 
 				@Override
 				public void onFailureCallback(Throwable caught) {
