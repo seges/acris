@@ -1,0 +1,187 @@
+#summary Examples of how to easily use AcrIS Binding - Part I
+#labels BeansBinding,Example
+
+= Introduction =
+
+From now on we will be providing you with a serie of examples where we would show you how to use AcrIS Binding.
+
+Let's get started with a simple form...
+
+= Simple form + Model-View-Presenter (MVP) Example =
+
+In this example we will show you how to bind a bean with a form without using lot of unnecessary binding code. We will use MVP pattern to separate logic from the view and to demonstrate where is the displaying part and where is the back-end part.
+
+Because it is first example in the row we will also inform you about necessary steps required to run binding code (Maven stuff, talks around,...)
+
+== Model ==
+
+Let's have a domain object of type *Customer* fields of which we want to display in a standard form. Our domain object has following structure (we pick only one particularly interesting field):
+
+{{{
+@Entity
+@Table
+public class Customer extends LightEntity implements IDomainObject<Integer> {
+	...
+
+	public static final String COMPANY = "company";
+
+	...
+	
+	@Embedded
+	private CompanyName company;
+
+	...
+}
+}}}
+
+{{{
+@Embeddable
+public class CompanyName extends LightEntity implements Serializable {
+	
+	public static final String NAME = "name";
+	
+	private static final byte NAME_LENGTH = 50;
+	
+	@Column(length = NAME_LENGTH)
+	private String name;
+
+	...
+}
+}}}
+
+This means we would like to bind a form to the nested "company" field. To start working with binding, add appropriate JAR to the project:
+
+{{{
+<dependency>
+	<groupId>sk.seges.acris</groupId>
+	<artifactId>acris-binding</artifactId>
+	<classifier>sources</classifier>
+	<version>${acris-os.version}</version>
+</dependency>
+<dependency>
+	<groupId>sk.seges.acris</groupId>
+	<artifactId>acris-binding</artifactId>
+	<version>${acris-os.version}</version>
+</dependency>
+}}}
+
+Maven snapshot repository is located at: http://acris.googlecode.com/svn/snapshot-repository
+
+== Presenter ==
+
+This is example presenter responsible for providing *CustomerDisplay* with the data. Implementation of CustomerDisplay, as you can expect, will be our standard form. Focus on the onBind method ...
+
+{{{
+public class OrderCustomerPresenter extends BasePresenter<CustomerDisplay> {
+	private final ValueHolder<Order> order;
+	
+	public OrderCustomerPresenter(CustomerDisplay display, ChocolateContext eventBus, final ValueHolder<Order> order) {
+		super(display, eventBus);
+		this.order = order;
+	}
+
+	@Override
+	protected void onBind() {
+		Order value = order.getValue();
+		if(value == null) {
+			throw new RuntimeException("There is no order presented");
+		}
+
+		// get the bean from the order
+		CustomerBase customer = value.getCustomer();
+		// create a wrapper for the bean
+		BeanWrapper<CustomerBase> customerWrapper = GWT.create(CustomerBase.class);
+		// feed the wrapper
+		customerWrapper.setContent(customer);
+		// feed the display with wrapper containing the bean
+		display.setValue((CustomerBase) customerWrapper);
+	}
+	
+	@Override
+	protected void onUnbind() {
+	}
+}
+}}}
+
+When you are working with AcrIS binding your object in the binding must be able to send change events to the world around and also allow others to listen to changes. As you can see our Customer object is not that kind of guy. But don't be bothered we have a mechanism for that - *BeanWrapper*.
+
+BeanWrapper is an interface but using BeanWrapperGenerator you are able to create a wrapper instance around your bean with all the "listening" stuff. Because our entities are all extending common interface we will define a rule:
+
+{{{
+<generate-with class="sk.seges.acris.rebind.bind.BeanWrapperGenerator">
+	<any>
+		<when-type-assignable class="net.sf.gilead.pojo.base.ILightEntity"/>
+	</any>
+</generate-with>
+}}}
+
+Now it is complete and we are prepared to create the visuals...
+
+== View ==
+
+Our CustomerDisplay interface is currently very simple:
+
+{{{
+public interface CustomerDisplay extends Display, HasValue<Customer> {
+}
+}}}
+
+It has just the ability to be fed by the bean - Customer.
+
+The interesting part is the implementation of the interface. We will call it OrderCustomerPanel because it displays "customer"-part of an order. Depending on your MVP implementation (common displays, presenters,...) there will be methods to implement. For this example we will show only relevant parts to the binding. It is also recommended to read AcrIS binding [BeansBinding documentation]:
+
+{{{
+@BindingFieldsBase(updateStrategy=UpdateStrategy.READ_WRITE, validationStrategy=ValidationStrategy.ON_SUBMIT)
+public class OrderCustomerPanel extends StandardForm implements CustomerDisplay, IBeanBindingHolder<Customer> {
+
+	// just annotate the text box and everything is bound
+	@BindingField(Customer.COMPANY + "." + CompanyName.NAME)
+	protected TextBox tbName = GWT.create(TextBox.class);
+	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasValue#getValue()
+	 */
+	@Override
+	public Customer getValue() {
+		// not important now to return a value, but if you want...
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
+	 */
+	@Override
+	public void setValue(Customer value, boolean fireEvents) {
+		// just delegate to setBean method
+		setBean(value);
+		if(fireEvents) {
+			ValueChangeEvent.fire(this, value);
+		}
+	}
+
+	@Override
+	public Customer getBean() {
+		// all code here will be replaced by generator
+		return null;
+	}
+
+	@Override
+	public void setBean(Customer bean) {
+		// all code here will be replaced by generator
+	}
+	
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		
+		// putting the text box to the form
+		getContainerWidget().addWidget("Company", tbName);
+	}
+}
+}}}
+
+Our panel must extend the StandardForm, IBeanBindingHolder and also the CustomerDisplay interface. After that you just need to annotate the text box representing the value of customer's company name and put the text box to the form...
+
+== Final word ==
+
+We have scratched the surface of bindings world and we will continue with other examples. AcrIS binding is evolving quickly and just in this very moment we see places were we can get rid of boilerplate code... stay in touch and feel free to ask questions in the discussion group.
