@@ -88,13 +88,13 @@ public class OrderCustomerPresenter extends BasePresenter<CustomerDisplay> {
 		}
 
 		// get the bean from the order
-		CustomerBase customer = value.getCustomer();
+		Customer customer = value.getCustomer();
 		// create a wrapper for the bean
-		BeanWrapper<CustomerBase> customerWrapper = GWT.create(CustomerBase.class);
+		BeanWrapper<Customer> customerWrapper = GWT.create(Customer.class);
 		// feed the wrapper
 		customerWrapper.setContent(customer);
 		// feed the display with wrapper containing the bean
-		display.setValue((CustomerBase) customerWrapper);
+		display.setValue((Customer) customerWrapper);
 	}
 	
 	@Override
