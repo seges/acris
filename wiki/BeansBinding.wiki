@@ -14,6 +14,13 @@ Sample:
 protected TextBox username = GWT.create(TextBox.class);
 }}}
 
+or accessing nested fields (User [this] -> Address [address] -> String [street]):
+
+{{{
+@BindingField(User.ADDRESS + "." + Address.STREET)
+protected TextBox userStreet = GWT.create(TextBox.class);
+}}}
+
   * *One-to-Many binding* - more complex binding type used to bind object with the list of objects represented in `ListBox` component.
 
 Sample:
