@@ -35,98 +35,98 @@
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>
-				<version>${sesam-os.version}</version>
+				<version>1.0.6-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>
-				<version>${sesam-os.version}</version>
+				<version>1.0.6-SNAPSHOT</version>
 				<classifier>sources</classifier>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-jgoodies</artifactId>
-				<version>${sesam.version}</version>
+				<version>1.0.5-SNAPSHOT</version>
 			</dependency>
 			
 			
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-aggregation</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-dao-api</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-dao-impl</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-domain</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>			
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-test</artifactId>
-				<version>${pom.version}</version>  
+				<version>1.0.4-SNAPSHOT</version>  
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-customer-domain</artifactId>
-				<version>${pom.version}</version> 
+				<version>1.0.4-SNAPSHOT</version> 
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-customer-domain</artifactId>
-				<version>${pom.version}</version> 
+				<version>1.0.4-SNAPSHOT</version> 
 				<classifier>sources</classifier>
 			</dependency>			
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-invoice-domain</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-invoice-aggregation</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-lang</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-lang</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 				<classifier>sources</classifier>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-news-domain</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-news-dao-api</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-properties-domain</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>corpis-properties-dao-api</artifactId>
-				<version>${pom.version}</version>
+				<version>1.0.4-SNAPSHOT</version>
 			</dependency>					
 		
 			<!-- Desktop part -->
