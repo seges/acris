@@ -13,7 +13,7 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
 @Table(name = "order_items")
-public class OrderItem implements IDomainObject<Long> {
+public class OrderItemTest implements IDomainObject<Long> {
 	private static final long serialVersionUID = -436866380493116237L;
 	
 	@Id
@@ -23,7 +23,7 @@ public class OrderItem implements IDomainObject<Long> {
 	private BigDecimal price;
 	private String description;
 	@ManyToOne
-	private VAT vat;
+	private VATTest vat;
 	
 	public Long getId() {
 		return id;
@@ -49,10 +49,10 @@ public class OrderItem implements IDomainObject<Long> {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public VAT getVat() {
+	public VATTest getVat() {
 		return vat;
 	}
-	public void setVat(VAT vat) {
+	public void setVat(VATTest vat) {
 		this.vat = vat;
 	}
 	@Override

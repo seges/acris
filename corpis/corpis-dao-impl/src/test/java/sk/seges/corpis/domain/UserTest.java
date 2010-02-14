@@ -12,7 +12,7 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
 @Table(name = "users")
-public class User implements IDomainObject<Long> {
+public class UserTest implements IDomainObject<Long> {
 	private static final long serialVersionUID = 1163764524617034015L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -21,7 +21,7 @@ public class User implements IDomainObject<Long> {
 	private String password;
 	private String name;
 	@ManyToOne(cascade = CascadeType.PERSIST)
-	private Location birthplace;
+	private LocationTest birthplace;
 
 	public Long getId() {
 		return id;
@@ -55,11 +55,11 @@ public class User implements IDomainObject<Long> {
 		this.name = name;
 	}
 
-	public Location getBirthplace() {
+	public LocationTest getBirthplace() {
 		return birthplace;
 	}
 
-	public void setBirthplace(Location birthplace) {
+	public void setBirthplace(LocationTest birthplace) {
 		this.birthplace = birthplace;
 	}
 

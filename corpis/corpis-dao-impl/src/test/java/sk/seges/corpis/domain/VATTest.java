@@ -12,7 +12,7 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
 @Table(name = "vats")
-public class VAT implements IDomainObject<Short> {
+public class VATTest implements IDomainObject<Short> {
 	private static final long serialVersionUID = -598285433434368847L;
 	@Id
 	private Short vat;

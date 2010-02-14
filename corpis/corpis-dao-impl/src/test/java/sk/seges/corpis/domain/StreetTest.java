@@ -16,7 +16,7 @@ import sk.seges.sesam.domain.IDomainObject;
  */
 @Entity
 @Table(name = "streets")
-public class Street implements IDomainObject<Long> {
+public class StreetTest implements IDomainObject<Long> {
 	private static final long serialVersionUID = -9210160769179857080L;
 	
 	@Id
@@ -59,7 +59,7 @@ public class Street implements IDomainObject<Long> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Street other = (Street) obj;
+		StreetTest other = (StreetTest) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;

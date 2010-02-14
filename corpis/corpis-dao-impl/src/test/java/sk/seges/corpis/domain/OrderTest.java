@@ -19,24 +19,24 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
 @Table(name = "orders")
-public class Order implements IDomainObject<Long> {
+public class OrderTest implements IDomainObject<Long> {
 	private static final long serialVersionUID = 2582167653817649406L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 	@ManyToOne
-	private User user;
+	private UserTest user;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date ordered;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date delivered;
 	@ManyToOne(cascade = CascadeType.PERSIST)
-	private Location deliveryLocation;
+	private LocationTest deliveryLocationTest;
 	private String orderId;
 
 	@OneToMany
-	private List<OrderItem> items = new LinkedList<OrderItem>();
+	private List<OrderItemTest> items = new LinkedList<OrderItemTest>();
 
 	public Long getId() {
 		return id;
@@ -46,11 +46,11 @@ public class Order implements IDomainObject<Long> {
 		this.id = id;
 	}
 
-	public User getUser() {
+	public UserTest getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(UserTest user) {
 		this.user = user;
 	}
 
@@ -62,19 +62,19 @@ public class Order implements IDomainObject<Long> {
 		this.ordered = ordered;
 	}
 
-	public Location getDeliveryLocation() {
-		return deliveryLocation;
+	public LocationTest getDeliveryLocation() {
+		return deliveryLocationTest;
 	}
 
-	public void setDeliveryLocation(Location location) {
-		this.deliveryLocation = location;
+	public void setDeliveryLocation(LocationTest location) {
+		this.deliveryLocationTest = location;
 	}
 
-	public List<OrderItem> getItems() {
+	public List<OrderItemTest> getItems() {
 		return items;
 	}
 
-	public void setItems(List<OrderItem> items) {
+	public void setItems(List<OrderItemTest> items) {
 		this.items = items;
 	}
 
@@ -96,7 +96,7 @@ public class Order implements IDomainObject<Long> {
 
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", location=" + (deliveryLocation == null ? "n/a" : deliveryLocation)
+		return "Order [id=" + id + ", location=" + (deliveryLocationTest == null ? "n/a" : deliveryLocationTest)
 				+ ", ordered=" + ordered + ", delivered = " + delivered + ", user=" + user + ", orderId = " + orderId + "]";
 	}
 }

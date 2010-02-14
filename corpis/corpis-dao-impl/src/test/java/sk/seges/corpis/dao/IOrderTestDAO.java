@@ -1,8 +1,8 @@
 package sk.seges.corpis.dao;
 
-import sk.seges.corpis.domain.Order;
+import sk.seges.corpis.domain.OrderTest;
 import sk.seges.sesam.dao.ICrudDAO;
 
-public interface IOrderDAO extends ICrudDAO<Order> {
+public interface IOrderTestDAO extends ICrudDAO<OrderTest> {
 	void persistObject(Object entity);
 }

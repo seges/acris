@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
-import sk.seges.corpis.domain.Order;
-import sk.seges.corpis.domain.User;
+import sk.seges.corpis.domain.OrderTest;
+import sk.seges.corpis.domain.UserTest;
 
 @Component
-public class OrderDAO extends AbstractHibernateCRUD<Order> implements IOrderDAO {
+public class OrderTestDAO extends AbstractHibernateCRUD<OrderTest> implements IOrderTestDAO {
 
-	protected OrderDAO() {
-		super(Order.class);
+	protected OrderTestDAO() {
+		super(OrderTest.class);
 	}
 
 	@PersistenceContext(unitName="corpisEntityManagerFactory")
@@ -24,15 +24,15 @@ public class OrderDAO extends AbstractHibernateCRUD<Order> implements IOrderDAO 
 	
 	@Override
 	@Transactional
-	public Order findEntity(Order entity) {
+	public OrderTest findEntity(OrderTest entity) {
 		return super.findEntity(entity);
 	}
 	
 	@Override
 	@Transactional
-	public Order persist(Order entity) {
+	public OrderTest persist(OrderTest entity) {
 		if(entity.getUser() != null) {
-			entity.setUser(entityManager.find(User.class, entity.getUser().getId()));
+			entity.setUser(entityManager.find(UserTest.class, entity.getUser().getId()));
 		}
 		return super.persist(entity);
 	}
