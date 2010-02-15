@@ -22,7 +22,27 @@ public class WebSettingsService extends PersistentRemoteService implements IWebS
 	protected String googleAnalyticsScript;
 
 
-	@Override
+	public Boolean getLocaleSensitiveServer() {
+        return localeSensitiveServer;
+    }
+
+
+    public void setLocaleSensitiveServer(Boolean localeSensitiveServer) {
+        this.localeSensitiveServer = localeSensitiveServer;
+    }
+
+
+    public String getGoogleAnalyticsScript() {
+        return googleAnalyticsScript;
+    }
+
+
+    public void setGoogleAnalyticsScript(String googleAnalyticsScript) {
+        this.googleAnalyticsScript = googleAnalyticsScript;
+    }
+
+
+    @Override
 	public WebSettings getWebSettings(String webId, String lang) {
 		WebSettings webSettings = new WebSettings();
 		webSettings.setWebId(webId);

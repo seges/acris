@@ -6,8 +6,8 @@ public class Pair<A, B> implements Serializable {
 
     private static final long serialVersionUID = -9196548177186460257L;
 
-    private A first;
-    private B second;
+    protected A first;
+    protected B second;
 
     public Pair() {}
 
