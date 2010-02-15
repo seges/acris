@@ -15,9 +15,9 @@
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
 	<properties>
-		<gwt.version>2.0.0-rc2</gwt.version>
+		<gwt.version>2.0.0</gwt.version>
 		<gwtx.version>1.5.3</gwtx.version>
-		<gwt-beans-binding.version>0.2.5-SNAPSHOT</gwt-beans-binding.version>
+		<gwt-beansbinding.version>0.3</gwt-beansbinding.version>
 
 		<gilead.version>1.2.3</gilead.version>
 		<gilead-hibernate-util.version>1.2.3</gilead-hibernate-util.version>
@@ -56,122 +56,92 @@
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
-				<version>${gwt.version}</version>
+				<version>2.0.0</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-servlet</artifactId>
-				<version>${gwt.version}</version>
+				<version>2.0.0</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-dev</artifactId>
-				<version>${gwt.version}</version>
-				<classifier>${platform}-libs</classifier>
-				<type>zip</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-dev</artifactId>
-				<version>${gwt.version}</version>
-				<classifier>${platform}</classifier>
+				<version>2.0.0</version>
 				<scope>provided</scope>
 			</dependency>
 
 			<!-- GWT beans binding -->
 			<dependency>
 				<groupId>org.gwt</groupId>
-				<artifactId>beans-binding</artifactId>
-				<version>${gwt-beans-binding.version}</version>
+				<artifactId>beansbinding</artifactId>
+				<version>0.3</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.code.gwtx</groupId>
 				<artifactId>gwtx</artifactId>
-				<version>${gwtx.version}</version>
+				<version>1.5.3</version>
 			</dependency>
 
 			<!-- GWT Widgets -->
 			<dependency>
 				<groupId>net.sf.gwt-widget</groupId>
 				<artifactId>gwt-sl</artifactId>
-				<version>${gwt-widgets-server.version}</version>
+				<version>1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.gwt-widget</groupId>
 				<artifactId>gwt-widgets</artifactId>
-				<version>${gwt-widgets-library.version}</version>
+				<version>0.2.0</version>
 			</dependency>
 
 			<!-- Gilead -->
 			<dependency>
 				<groupId>net.sf.gilead</groupId>
 				<artifactId>adapter-core</artifactId>
-				<version>${gilead.version}</version>
+				<version>1.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.gilead</groupId>
 				<artifactId>adapter4gwt</artifactId>
-				<version>${gilead.version}</version>
+				<version>1.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.gilead</groupId>
 				<artifactId>comet4gwt</artifactId>
-				<version>${gilead.version}</version>
+				<version>1.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sf.gilead</groupId>
 				<artifactId>hibernate-util</artifactId>
-				<version>${gilead-hibernate-util.version}</version>
+				<version>1.2.3</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>ejb3-persistence</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<!-- GWT event service -->
 			<dependency>
 				<groupId>de.novanic.gwteventservice</groupId>
 				<artifactId>gwteventservice</artifactId>
-				<version>${gwteventservice.version}</version>
+				<version>1.0.2</version>
 			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
 
 	<profiles>
-		<profile>
-			<id>gwt-dev-windows</id>
-			<properties>
-				<platform>windows</platform>
-			</properties>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-		</profile>
-		<profile>
-			<id>gwt-dev-mac</id>
-			<properties>
-				<platform>mac</platform>
-			</properties>
-			<activation>
-				<os>
-					<family>mac</family>
-				</os>
-			</activation>
-		</profile>
-		<profile>
-			<id>gwt-dev-linux</id>
-			<properties>
-				<platform>linux</platform>
-			</properties>
-			<activation>
-				<os>
-					<family>unix</family>
-					<name>linux</name>
-				</os>
-			</activation>
-		</profile>
-
 		<profile>
 			<id>gwt-client</id>
 			<dependencies>
@@ -188,14 +158,6 @@
 				<dependency>
 					<groupId>com.google.gwt</groupId>
 					<artifactId>gwt-dev</artifactId>
-					<classifier>${platform}-libs</classifier>
-					<type>zip</type>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-					<classifier>${platform}</classifier>
 					<scope>provided</scope>
 				</dependency>
 			</dependencies>
@@ -225,7 +187,7 @@
 										<artifactItem>
 											<groupId>com.google.gwt</groupId>
 											<artifactId>gwt-dev</artifactId>
-											<version>${gwt.version}</version>
+											<version>2.0.0</version>
 											<classifier>${platform}-libs</classifier>
 											<type>zip</type>
 											<overWrite>false</overWrite>
@@ -268,8 +230,9 @@
 						<mergedWebXml>war/WEB-INF/web.xml</mergedWebXml>
 						<webappDirectory>war</webappDirectory>
 						<soyc>false</soyc>
+						<disableCastChecking>true</disableCastChecking>
 						<!--disableClassMetadata>true</disableClassMetadata>
-						<disableCastChecking>true</disableCastChecking-->
+						<draftCompile>true</draftCompile-->
 					</configuration>
 					<executions>
 						<execution>
