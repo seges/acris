@@ -19,24 +19,24 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
 @Table(name = "orders")
-public class OrderTest implements IDomainObject<Long> {
+public class OrderTestDO implements IDomainObject<Long> {
 	private static final long serialVersionUID = 2582167653817649406L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 	@ManyToOne
-	private UserTest user;
+	private UserTestDO user;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date ordered;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date delivered;
 	@ManyToOne(cascade = CascadeType.PERSIST)
-	private LocationTest deliveryLocationTest;
+	private LocationTestDO deliveryLocationTest;
 	private String orderId;
 
 	@OneToMany
-	private List<OrderItemTest> items = new LinkedList<OrderItemTest>();
+	private List<OrderItemTestDO> items = new LinkedList<OrderItemTestDO>();
 
 	public Long getId() {
 		return id;
@@ -46,11 +46,11 @@ public class OrderTest implements IDomainObject<Long> {
 		this.id = id;
 	}
 
-	public UserTest getUser() {
+	public UserTestDO getUser() {
 		return user;
 	}
 
-	public void setUser(UserTest user) {
+	public void setUser(UserTestDO user) {
 		this.user = user;
 	}
 
@@ -62,19 +62,19 @@ public class OrderTest implements IDomainObject<Long> {
 		this.ordered = ordered;
 	}
 
-	public LocationTest getDeliveryLocation() {
+	public LocationTestDO getDeliveryLocation() {
 		return deliveryLocationTest;
 	}
 
-	public void setDeliveryLocation(LocationTest location) {
+	public void setDeliveryLocation(LocationTestDO location) {
 		this.deliveryLocationTest = location;
 	}
 
-	public List<OrderItemTest> getItems() {
+	public List<OrderItemTestDO> getItems() {
 		return items;
 	}
 
-	public void setItems(List<OrderItemTest> items) {
+	public void setItems(List<OrderItemTestDO> items) {
 		this.items = items;
 	}
 

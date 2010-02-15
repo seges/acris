@@ -101,7 +101,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
     @SuppressWarnings("unchecked")
     private Integer doGetCountByCriteria(DetachedCriteria criteria, Page requestedPage, Set<String> existingAliases, MutableBoolean addedFilterables) {
         criteria.setProjection(Projections.rowCount());
-        List<Integer> resultList;
+        List<Long> resultList;
 
         Criteria executable = criteria.getExecutableCriteria((Session) entityManager.getDelegate());
         if (requestedPage != null && existingAliases != null) {
@@ -115,7 +115,8 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
         if (resultList == null || resultList.size() == 0) {
             return 0;
         }
-        return resultList.get(0);
+        // FIXME: we cast it to Integer, changing it to long would imply changes to PagedResult and lot of code..
+        return resultList.get(0).intValue();
     }
 
     @SuppressWarnings("unchecked")

@@ -18,14 +18,14 @@ import sk.seges.sesam.domain.IDomainObject;
  */
 @Entity
 @Table(name = "locations")
-public class LocationTest implements IDomainObject<Long> {
+public class LocationTestDO implements IDomainObject<Long> {
 	private static final long serialVersionUID = -1805706327802594676L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 	@ManyToOne(cascade = CascadeType.PERSIST)
-	private StreetTest StreetTest;
+	private StreetTestDO street;
 	private String city;
 	private String state;
 
@@ -37,12 +37,12 @@ public class LocationTest implements IDomainObject<Long> {
 		this.id = id;
 	}
 
-	public StreetTest getStreet() {
-		return StreetTest;
+	public StreetTestDO getStreet() {
+		return street;
 	}
 
-	public void setStreet(StreetTest StreetTest) {
-		this.StreetTest = StreetTest;
+	public void setStreet(StreetTestDO StreetTest) {
+		this.street = StreetTest;
 	}
 
 	public String getCity() {
@@ -67,7 +67,7 @@ public class LocationTest implements IDomainObject<Long> {
 		int result = 1;
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((state == null) ? 0 : state.hashCode());
-		result = prime * result + ((StreetTest == null) ? 0 : StreetTest.hashCode());
+		result = prime * result + ((street == null) ? 0 : street.hashCode());
 		return result;
 	}
 
@@ -79,7 +79,7 @@ public class LocationTest implements IDomainObject<Long> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		LocationTest other = (LocationTest) obj;
+		LocationTestDO other = (LocationTestDO) obj;
 		if (city == null) {
 			if (other.city != null)
 				return false;
@@ -90,10 +90,10 @@ public class LocationTest implements IDomainObject<Long> {
 				return false;
 		} else if (!state.equals(other.state))
 			return false;
-		if (StreetTest == null) {
-			if (other.StreetTest != null)
+		if (street == null) {
+			if (other.street != null)
 				return false;
-		} else if (!StreetTest.equals(other.StreetTest))
+		} else if (!street.equals(other.street))
 			return false;
 		return true;
 	}
@@ -101,6 +101,6 @@ public class LocationTest implements IDomainObject<Long> {
 	@Override
 	public String toString() {
 		return "Location [city=" + city + ", id=" + id + ", state=" + state
-				+ ", StreetTest=" + (StreetTest == null ? "n/a" : StreetTest) + "]";
+				+ ", StreetTest=" + (street == null ? "n/a" : street) + "]";
 	}
 }
