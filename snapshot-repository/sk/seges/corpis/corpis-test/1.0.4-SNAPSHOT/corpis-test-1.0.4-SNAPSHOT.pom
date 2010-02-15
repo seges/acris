@@ -16,13 +16,17 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>ejb3-persistence</artifactId>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.slf4j</groupId>
+	        <artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 		
 		<dependency>

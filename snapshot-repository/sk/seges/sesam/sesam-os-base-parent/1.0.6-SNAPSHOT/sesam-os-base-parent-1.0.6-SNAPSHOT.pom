@@ -19,6 +19,30 @@
 
 	<url>http://www.seges.sk</url>
 
+	<scm>
+		<connection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-parent</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-parent</developerConnection>
+		<url>https://acris.googlecode.com/svn/trunk/acris-os-parent</url>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>acris-releases-repo</id>
+			<name>acris-releases-repo</name>
+			<url>https://acris.googlecode.com/svn/releases-repository/</url>
+		</repository>
+		<snapshotRepository>
+			<id>acris-snapshots-repo</id>
+			<name>acris-snapshots-repo</name>
+			<url>https://acris.googlecode.com/svn/snapshot-repository/</url>
+		</snapshotRepository>
+		<!-- Disabled until issues with maven are resolved and anyway it slows release process :) -->
+		<!--site>
+			<id>seges-maven-site</id>
+			<url>dav:https://local.seges.sk/sites/${repository.type}/${repository.project}/${pom.artifactId}/${pom.version}</url>
+		</site-->
+	</distributionManagement>
+
 	<repositories>
 		<repository>
 			<id>acris-snapshots-repo</id>
@@ -57,17 +81,16 @@
 		
 		<junit.version>4.4</junit.version>
 		<log4j.version>1.2.14</log4j.version>
-		<slf4j.version>1.5.6</slf4j.version>
+		<slf4j.version>1.5.8</slf4j.version>
 		
 		<spring.version>2.5.6</spring.version>
 		<spring-security.version>2.0.4</spring-security.version>
 
-		<!-- fixed hibernate for hibernate composite key criteria problem -->		
-		<hibernate.version>3.2.6-composite_id_fix</hibernate.version>
-		<hibernate-entitymanager.version>3.3.2.GA</hibernate-entitymanager.version>
-		<hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
-		<hibernate-commons-annotations.version>3.3.0.ga</hibernate-commons-annotations.version>
-		<hibernate-validator.version>4.0.0.GA</hibernate-validator.version>
+		<hibernate.version>3.5.0-CR-1</hibernate.version>
+		<hibernate-entitymanager.version>3.5.0-CR-1</hibernate-entitymanager.version>
+		<hibernate-annotations.version>3.5.0-CR-1</hibernate-annotations.version>
+		<hibernate-commons-annotations.version>3.2.0.Beta1</hibernate-commons-annotations.version>
+		<hibernate-validator.version>4.0.2.GA</hibernate-validator.version>
 	
 		<postgresql.version>8.4-701.jdbc4</postgresql.version>
 		<derby.version>10.4.2.0</derby.version>
@@ -82,7 +105,8 @@
 			
 			For JPA use org.hibernate:ejb3-persistence.
 		-->
-		<jpa.version>1.0.1.GA</jpa.version>
+		<jpa.version>1.0.2.GA</jpa.version>
+		<jpa-2.0.version>1.0.0-CR-1</jpa-2.0.version>
 		<validation-api.version>1.0.0.GA</validation-api.version>
 
 		<ehcache.version>1.5.0</ehcache.version>
@@ -136,8 +160,13 @@
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.5.8</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.5.6</version>
+				<version>1.5.8</version>
 			</dependency>
 			
 			<!-- Spring -->
@@ -215,7 +244,12 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>ejb3-persistence</artifactId>
-				<version>1.0.1.GA</version>
+				<version>1.0.2.GA</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.0-api</artifactId>
+				<version>1.0.0-CR-1</version>
 			</dependency>
 
 			<dependency>
@@ -227,34 +261,48 @@
 			<!-- Hibernate -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate</artifactId>
-				<version>3.2.6-composite_id_fix</version>
+				<artifactId>hibernate-core</artifactId>
+				<version>3.5.0-CR-1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>3.3.2.GA</version>
+				<version>3.5.0-CR-1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-annotations</artifactId>
-				<version>3.3.1.GA</version>
+				<version>3.5.0-CR-1</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.hibernate</groupId>
 						<artifactId>hibernate</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-commons-annotations</artifactId>
-				<version>3.3.0.ga</version>
+				<version>3.2.0.Beta1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>4.0.0.GA</version>
+				<version>4.0.2.GA</version>
 			</dependency>
 			
 			<!-- Databases -->
@@ -326,18 +374,21 @@
 				<groupId>org.apache.geronimo.specs</groupId>
 				<artifactId>geronimo-jms_1.1_spec</artifactId>
 				<version>1.1</version>
+				<scope>provided</scope>
 			</dependency>
 	
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
 				<version>5.2.0</version>
+				<scope>provided</scope>
 			</dependency>
 			
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
 				<artifactId>imq</artifactId>
 				<version>4.4</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.messaging.mq</groupId>
@@ -528,6 +579,17 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
 					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>install</preparationGoals>
+					<tagBase>
+						https://acris.googlecode.com/svn/tags/${pom.artifactId}
+					</tagBase>
 				</configuration>
 			</plugin>
 		</plugins>
