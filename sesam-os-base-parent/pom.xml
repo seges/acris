@@ -81,17 +81,16 @@
 		
 		<junit.version>4.4</junit.version>
 		<log4j.version>1.2.14</log4j.version>
-		<slf4j.version>1.5.6</slf4j.version>
+		<slf4j.version>1.5.8</slf4j.version>
 		
 		<spring.version>2.5.6</spring.version>
 		<spring-security.version>2.0.4</spring-security.version>
 
-		<!-- fixed hibernate for hibernate composite key criteria problem -->		
-		<hibernate.version>3.2.6-composite_id_fix</hibernate.version>
-		<hibernate-entitymanager.version>3.3.2.GA</hibernate-entitymanager.version>
-		<hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
-		<hibernate-commons-annotations.version>3.3.0.ga</hibernate-commons-annotations.version>
-		<hibernate-validator.version>4.0.0.GA</hibernate-validator.version>
+		<hibernate.version>3.5.0-CR-1</hibernate.version>
+		<hibernate-entitymanager.version>3.5.0-CR-1</hibernate-entitymanager.version>
+		<hibernate-annotations.version>3.5.0-CR-1</hibernate-annotations.version>
+		<hibernate-commons-annotations.version>3.2.0.Beta1</hibernate-commons-annotations.version>
+		<hibernate-validator.version>4.0.2.GA</hibernate-validator.version>
 	
 		<postgresql.version>8.4-701.jdbc4</postgresql.version>
 		<derby.version>10.4.2.0</derby.version>
@@ -106,7 +105,8 @@
 			
 			For JPA use org.hibernate:ejb3-persistence.
 		-->
-		<jpa.version>1.0.1.GA</jpa.version>
+		<jpa.version>1.0.2.GA</jpa.version>
+		<jpa-2.0.version>1.0.0-CR-1</jpa-2.0.version>
 		<validation-api.version>1.0.0.GA</validation-api.version>
 
 		<ehcache.version>1.5.0</ehcache.version>
@@ -158,6 +158,11 @@
 				<version>${log4j.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
@@ -241,6 +246,11 @@
 				<artifactId>ejb3-persistence</artifactId>
 				<version>${jpa.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.0-api</artifactId>
+				<version>${jpa-2.0.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>javax.validation</groupId>
@@ -251,7 +261,7 @@
 			<!-- Hibernate -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate</artifactId>
+				<artifactId>hibernate-core</artifactId>
 				<version>${hibernate.version}</version>
 			</dependency>
 			<dependency>
@@ -268,12 +278,26 @@
 						<groupId>org.hibernate</groupId>
 						<artifactId>hibernate</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-commons-annotations</artifactId>
 				<version>${hibernate-commons-annotations.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
