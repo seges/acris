@@ -63,11 +63,36 @@ There are few headless browsers which can interpret javascript and can create a 
 
 == HTML snapshot of the GWT web site == 
 
-HTMLUnit sounds like a good solution for our needs, but in one more abstract step back, the GWTTestCase seems like the best solution for grabbing HTML snapshot of the page.
+HTMLUnit sounds like a good solution for our needs, but in one more abstract step back, the GWTTestCase seems like the best solution for grabbing HTML snapshot of the page. For this purpose we created GWT offlinec generator project which is based on GWTTestCase and creates snapshot of the GWT application for all available tokens/niceUrls available in the database for the specified webId (unique identifier for the web site) and specified language.
 
+[http://acris.googlecode.com/svn/wiki/images/seo_offline_generator.png]
 
+How does it work?
+ # Offline content generator starts GWTTestCase as indenpendent java process.
+ # GWTTestCase starts GWT application in the headless browser (HtmlUnit) and navigates through the application tokens/niceUrls on by one on
+ # After each navigation to another token/niceUrl HTML content is taken from RootPanel and saved on the file system as the token filename (for niceUrl !en/template is created file *template* under the directory *en* with full offline HTML content)
+ # After HTML content is saved, content post processor is started with:
+   * *alters* responsible for modifying HTML tags like:
+     * anchors - link <a href="#!en/template">template</a> is replaced for <a href="www.synapso.sk/en/template">template</a>
+     * description - meta tag (located in head) is replaced with correct page decription, because in GWT navigation description is not updated, we have to alter this meta tag manually by post processor
+     * keywords - meta tag (located in head) is replaced with correct page keywords, because in GWT navigation keywords are not updated, we have to alter this meta tag manually by post processor
+     * title - tag (located in head) is replaced with correct title, because in GWT navigation title is not updated, we have to alter this tag manually by post processor
+     * links - update styles relative paths and images relative paths to the correct one
+  * *appenders* - responsible for adding new HTML tags like:
+     * Google analytics
+     * GWT meta tag properties
+  * *annihilators* - responsible for removing existing HTML tags
 
+== Niceurl links vs AJAX based links ==
 
+Applying post processor rules to the offline content we are moving from AJAX based links (`http://synapso.sk/#!en/template`) to the niceurl links (`http://synapso.sk/en/template`). Niceurl link will works without the problem because there is /en/template html file located on the files system. This file is contains complete offline version of the dynamic generated web page (for browsers without javascript support) and nocache GWT script for AJAX based features for the users with browsers with javascript support (thanks to the links post processor alter we are getting ../sk.seges.site.template.nocache.js for the file en/template so the links/paths are correct).
+
+FAQ:
+ # Q: How to avoid links like http://synapso.sk/en/template#!en/projekt when user comes to the page through the link http://synapso.sk/en/template and then clicks on the projekt menu item and AJAX based navigation is added at the end of the URL + fragment hash.
+   A: SWS internally rewrite/restart? rule from http://synapso.sk/en/template into  http://synapso.sk/#en/template. TODO: Provide example and SWS configuration.
+
+ # Q: So, when are the links in AJAX based format (with fragment) comes into account? 
+   A: Anytime when user AJAX based link (like `http://synapso.sk/#!en/template`) put somewhere in the another page or forum - generally said there exists somewhere in the internet backlink to the AJAX based web site. TODO: provide SWS rule with 301 status
 
 
 Anchor based rewrite:
