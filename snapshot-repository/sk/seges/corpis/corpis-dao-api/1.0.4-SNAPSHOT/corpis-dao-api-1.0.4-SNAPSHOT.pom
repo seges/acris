@@ -9,7 +9,7 @@
 		<groupId>sk.seges.corpis</groupId>
 		<artifactId>corpis-os</artifactId>
 		<version>1.0.4-SNAPSHOT</version>
-		<relativePath>../corpis-so/pom.xml</relativePath>
+		<relativePath>../corpis-os/pom.xml</relativePath>
 	</parent>
 
 	<description>Core interfaces to generalize access to database using JPA and ORM</description>
@@ -21,8 +21,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>ejb3-persistence</artifactId>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>
