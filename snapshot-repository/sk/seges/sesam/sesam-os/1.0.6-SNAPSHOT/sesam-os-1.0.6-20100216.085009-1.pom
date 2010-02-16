@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- The Basics -->
+	<groupId>sk.seges.sesam</groupId>
+	<artifactId>sesam-os</artifactId>
+	<version>1.0.6-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os-base-parent</artifactId>
+		<version>1.0.6-SNAPSHOT</version>
+	</parent>
+
+	<!-- More Project Information -->
+	<name>sesam</name>
+	<description>Meta Project for SESAM</description>
+
+	<developers>
+		<developer>
+			<id>eldzi</id>
+			<name>Ladislav Gazo</name>
+			<email>gazo@seges.sk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>Seges</organization>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>fat</id>
+			<name>Peter Simun</name>
+			<email>simun@seges.sk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>Seges</organization>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>mig</id>
+			<name>Michal Grosos</name>
+			<email>grosos@seges.sk</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>Seges</organization>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>../sesam-core</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>1.0.6-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>1.0.6-SNAPSHOT</version>
+				<classifier>sources</classifier>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
