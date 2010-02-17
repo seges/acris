@@ -25,7 +25,7 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     private UpdateStrategy updateStrategy;
     private BeanWrapper<T> beanWrapper;
 
-    private List<BindingFieldInfo> bindingFieldInfos = new ArrayList<BindingFieldInfo>();
+    protected List<BindingFieldInfo> bindingFieldInfos = new ArrayList<BindingFieldInfo>();
     
     public T getBean() {
     	return beanWrapper.getContent();
