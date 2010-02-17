@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 
+import sk.seges.acris.binding.client.holder.validation.ValidationHighligther;
+
 /**
  * Specify strategies associated with all bindings defined in UI form.
  * <p>Annotation is used for define: 
@@ -26,6 +28,7 @@ import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 @Retention(RUNTIME)
 public @interface BindingFieldsBase {
 	public ValidationStrategy validationStrategy() default ValidationStrategy.NEVER;
-
+	@SuppressWarnings("unchecked")
+	Class<? extends ValidationHighligther> validationHighlighter() default ValidationHighligther.class;
 	public UpdateStrategy updateStrategy() default UpdateStrategy.READ;
 }

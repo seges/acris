@@ -2,13 +2,18 @@ package sk.seges.acris.binding.rebind.binding;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.util.Set;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 
 import sk.seges.acris.binding.client.annotations.BindingField;
 import sk.seges.acris.binding.client.annotations.BindingFieldsBase;
+import sk.seges.acris.binding.client.annotations.ValidationStrategy;
 import sk.seges.acris.binding.client.holder.BindingHolder;
 import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
+import sk.seges.acris.binding.client.holder.validation.ValidatableBeanBinding;
+import sk.seges.acris.binding.client.holder.validation.ValidatableBindingHolder;
+import sk.seges.acris.binding.client.holder.validation.ValidationHighligther;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.RebindUtils;
@@ -28,8 +33,11 @@ import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+import com.google.gwt.validation.client.InvalidConstraint;
 
 public class BeanBindingCreator {
+
+	private static final String BINDING_HOLDER_VAR = "_bindingHolder";
 
 	private String bindingHolder = null;
 	
@@ -136,6 +144,7 @@ public class BeanBindingCreator {
 
 		generateConstructor(sourceWriter, classType, className);
 		getnerateBindingMethods(sourceWriter, bindingBeanClassType);
+		generateValidationMethods(sourceWriter, classType, bindingBeanClassType);
 		
 		//initialize binding form for all related creators
 		BindingCreatorFactory.setBindingHolder(bindingHolder);
@@ -150,6 +159,29 @@ public class BeanBindingCreator {
 		context.commit(logger, printWriter);
 
 		return packageName + "." + className;
+	}
+
+	private void generateValidationMethods(SourceWriter sw, JClassType classType, JClassType bindingBeanClassType) {
+		if(classType.isAssignableTo(typeOracle.findType(ValidatableBeanBinding.class.getName()))) {
+			BindingFieldsBase bindingFieldsBaseAnnotation = classType.getAnnotation(BindingFieldsBase.class);
+			if(bindingFieldsBaseAnnotation.validationStrategy() == null || ValidationStrategy.NEVER.equals(bindingFieldsBaseAnnotation.validationStrategy())) {
+				throw new RuntimeException("Pick relevant validation strategy if you implement validatable binding holder.");
+			}
+
+			sw.println("@Override");
+			sw.println("public void highlightConstraints(" + Set.class.getName() + "<" + InvalidConstraint.class.getName() + "<" + bindingBeanClassType.getSimpleSourceName() + ">> constraints) {");
+			sw.indent();
+			sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR + ").highlightConstraints(constraints);");
+			sw.outdent();
+			sw.println("}");
+			sw.println();
+			sw.println("@Override");
+			sw.println("public void clearHighlight() {");
+			sw.indent();
+			sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR + ").clearHighlight();");
+			sw.outdent();
+			sw.println("}");
+		}
 	}
 
 	private boolean getnerateBindingMethods(SourceWriter sourceWriter, JClassType beanClassType) {
@@ -185,7 +217,7 @@ public class BeanBindingCreator {
 
 	private void generateConstructor(SourceWriter sourceWriter, JClassType classType, String className) {
 
-		sourceWriter.println("private " + BindingHolder.class.getSimpleName() + " _bindingHolder;");
+		sourceWriter.println("private " + BindingHolder.class.getSimpleName() + " " + BINDING_HOLDER_VAR + ";");
 		
 		sourceWriter.println("public " + className + "() {");
 		sourceWriter.indent();
@@ -199,9 +231,23 @@ public class BeanBindingCreator {
 			updateStrategy = bindingFieldsBaseAnnotation.updateStrategy();
 		}
 
-		bindingHolder = "_bindingHolder";
-		sourceWriter.println(bindingHolder + " = new " + BindingHolder.class.getSimpleName() + "(" 
+		bindingHolder = BINDING_HOLDER_VAR;
+		String bindingHolderClassName;
+		boolean applyValidation = !ValidationStrategy.NEVER.equals(bindingFieldsBaseAnnotation.validationStrategy());
+		if(!applyValidation) {
+			bindingHolderClassName = BindingHolder.class.getSimpleName();
+		} else {
+			bindingHolderClassName = ValidatableBindingHolder.class.getName();
+		}
+		sourceWriter.println(bindingHolder + " = new " + bindingHolderClassName + "(" 
 				+ UpdateStrategy.class.getSimpleName() + "." + updateStrategy.toString() + ", getBeanWrapper());");
+		
+		if(applyValidation && !bindingFieldsBaseAnnotation.validationHighlighter().equals(ValidationHighligther.class)) {
+			// set highlighter from annotation
+			sourceWriter.println("((" + ValidatableBindingHolder.class.getName() + ")" + bindingHolder
+					+ ").setHighlighter(new " + bindingFieldsBaseAnnotation.validationHighlighter().getName()
+					+ "());");
+		}
 		
 		sourceWriter.outdent();
 		sourceWriter.println("}");

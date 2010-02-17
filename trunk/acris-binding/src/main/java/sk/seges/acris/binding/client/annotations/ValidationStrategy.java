@@ -17,5 +17,5 @@ package sk.seges.acris.binding.client.annotations;
  * @author fat
  */
 public enum ValidationStrategy {
-	NEVER, ON_SUBMIT, ON_LEAVE;
+	NEVER, ON_SUBMIT, ON_LEAVE, BOTH;
 }

@@ -24,6 +24,8 @@
 		<gwt-widgets-server.version>1.0</gwt-widgets-server.version>
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 		<gwteventservice.version>1.0.2</gwteventservice.version>
+		
+		<gwt-validation.version>1.1.0-SNAPSHOT</gwt-validation.version>
 	</properties>
 
 
@@ -152,6 +154,11 @@
 				<version>${gwteventservice.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-validation</artifactId>
+				<version>${gwt-validation.version}</version>		
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
