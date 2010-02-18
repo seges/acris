@@ -45,6 +45,8 @@ public class BeanBindingCreator {
 	
 	private JClassType bindingBeanClassType;
 	private String packageName;
+	
+	private boolean validationEnabled = false;
 
 	protected String getResultSuffix() {
 		return "_BindingWrapper";
@@ -136,6 +138,12 @@ public class BeanBindingCreator {
 
 		composer.setSuperclass(typeName);
 
+		validationEnabled = isValidationEnabled(classType.getAnnotation(BindingFieldsBase.class));
+		
+		if(validationEnabled) {
+			composer.addImplementedInterface(ValidatableBeanBinding.class.getName() + "<" + bindingBeanClassType.getName() + ">");
+		}
+		
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
@@ -144,7 +152,7 @@ public class BeanBindingCreator {
 
 		generateConstructor(sourceWriter, classType, className);
 		getnerateBindingMethods(sourceWriter, bindingBeanClassType);
-		generateValidationMethods(sourceWriter, classType, bindingBeanClassType);
+		generateValidationBeanBindingMethods(sourceWriter, classType, bindingBeanClassType);
 		
 		//initialize binding form for all related creators
 		BindingCreatorFactory.setBindingHolder(bindingHolder);
@@ -161,27 +169,33 @@ public class BeanBindingCreator {
 		return packageName + "." + className;
 	}
 
-	private void generateValidationMethods(SourceWriter sw, JClassType classType, JClassType bindingBeanClassType) {
-		if(classType.isAssignableTo(typeOracle.findType(ValidatableBeanBinding.class.getName()))) {
-			BindingFieldsBase bindingFieldsBaseAnnotation = classType.getAnnotation(BindingFieldsBase.class);
-			if(bindingFieldsBaseAnnotation.validationStrategy() == null || ValidationStrategy.NEVER.equals(bindingFieldsBaseAnnotation.validationStrategy())) {
-				throw new RuntimeException("Pick relevant validation strategy if you implement validatable binding holder.");
-			}
-
-			sw.println("@Override");
-			sw.println("public void highlightConstraints(" + Set.class.getName() + "<" + InvalidConstraint.class.getName() + "<" + bindingBeanClassType.getSimpleSourceName() + ">> constraints) {");
-			sw.indent();
-			sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR + ").highlightConstraints(constraints);");
-			sw.outdent();
-			sw.println("}");
-			sw.println();
-			sw.println("@Override");
-			sw.println("public void clearHighlight() {");
-			sw.indent();
-			sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR + ").clearHighlight();");
-			sw.outdent();
-			sw.println("}");
+	private void generateValidationBeanBindingMethods(SourceWriter sw, JClassType classType,
+			JClassType bindingBeanClassType) {
+		if (!validationEnabled) {
+			return;
 		}
+
+		sw.println("@Override");
+		sw.println("public void highlightConstraints(" + Set.class.getName() + "<"
+				+ InvalidConstraint.class.getName() + "<" + bindingBeanClassType.getSimpleSourceName()
+				+ ">> constraints) {");
+		sw.indent();
+		sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR
+				+ ").highlightConstraints(constraints);");
+		sw.outdent();
+		sw.println("}");
+		sw.println();
+		sw.println("@Override");
+		sw.println("public void clearHighlight() {");
+		sw.indent();
+		sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR
+				+ ").clearHighlight();");
+		sw.outdent();
+		sw.println("}");
+	}
+
+	private boolean isValidationEnabled(BindingFieldsBase bindingFieldsBaseAnnotation) {
+		return bindingFieldsBaseAnnotation.validationStrategy() != null && !ValidationStrategy.NEVER.equals(bindingFieldsBaseAnnotation.validationStrategy());
 	}
 
 	private boolean getnerateBindingMethods(SourceWriter sourceWriter, JClassType beanClassType) {
@@ -233,8 +247,8 @@ public class BeanBindingCreator {
 
 		bindingHolder = BINDING_HOLDER_VAR;
 		String bindingHolderClassName;
-		boolean applyValidation = !ValidationStrategy.NEVER.equals(bindingFieldsBaseAnnotation.validationStrategy());
-		if(!applyValidation) {
+
+		if(!validationEnabled) {
 			bindingHolderClassName = BindingHolder.class.getSimpleName();
 		} else {
 			bindingHolderClassName = ValidatableBindingHolder.class.getName();
@@ -242,7 +256,7 @@ public class BeanBindingCreator {
 		sourceWriter.println(bindingHolder + " = new " + bindingHolderClassName + "(" 
 				+ UpdateStrategy.class.getSimpleName() + "." + updateStrategy.toString() + ", getBeanWrapper());");
 		
-		if(applyValidation && !bindingFieldsBaseAnnotation.validationHighlighter().equals(ValidationHighligther.class)) {
+		if(validationEnabled && !bindingFieldsBaseAnnotation.validationHighlighter().equals(ValidationHighligther.class)) {
 			// set highlighter from annotation
 			sourceWriter.println("((" + ValidatableBindingHolder.class.getName() + ")" + bindingHolder
 					+ ").setHighlighter(new " + bindingFieldsBaseAnnotation.validationHighlighter().getName()
