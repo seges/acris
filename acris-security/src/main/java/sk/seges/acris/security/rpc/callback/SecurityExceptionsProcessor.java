@@ -1,4 +1,4 @@
-package sk.seges.acris.security.client.callback;
+package sk.seges.acris.security.rpc.callback;
 
 import sk.seges.acris.security.rpc.exception.AccessDeniedException;
 import sk.seges.acris.security.rpc.exception.SecurityException;

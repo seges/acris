@@ -1,9 +1,11 @@
-package sk.seges.acris.security.client;
+package sk.seges.acris.security.client.mediator;
+
+import sk.seges.acris.security.client.IManageableSecuredObject;
 
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ManageableSecurityProvider {
+public class ManageableSecurityMediator {
     
     public static void setVisible(Object manageableSecuredObject, Widget widget, boolean visible) {
         if(manageableSecuredObject instanceof IManageableSecuredObject) {

@@ -31,7 +31,7 @@
 
 	<!-- Session handling generators -->
 	<generate-with
-		class="sk.seges.acris.security.rebind.SessionServiceInterfaceProxyGenerator">
+		class="sk.seges.acris.security.rebind.SessionRemoteServiceProxyGenerator">
 		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
 	</generate-with>
 

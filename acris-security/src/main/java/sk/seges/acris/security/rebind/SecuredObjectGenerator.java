@@ -10,7 +10,7 @@ import com.google.gwt.core.ext.UnableToCompleteException;
  * generates secured panel according to annotations in original panel, which is
  * replaced by secured panel
  */
-public class SecuredPanelGenerator extends AbstractGenerator {
+public class SecuredObjectGenerator extends AbstractGenerator {
 
 	public String doGenerate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {

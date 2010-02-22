@@ -11,7 +11,9 @@ public class RuntimeSecuredObjectGenerator extends AbstractGenerator {
 	@Override
 	public String doGenerate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {
-		RuntimeSecuredObjectCreator runtimeSecuredObjectCreator = new RuntimeSecuredObjectCreator(new SecuredAnnotationProcessor());
-		return runtimeSecuredObjectCreator.doGenerate(logger, context, typeName, this.superclassName);
+		RuntimeSecuredObjectCreator runtimeSecuredObjectCreator = new RuntimeSecuredObjectCreator(
+				new SecuredAnnotationProcessor());
+		return runtimeSecuredObjectCreator.doGenerate(logger, context,
+				typeName, this.superclassName);
 	}
 }

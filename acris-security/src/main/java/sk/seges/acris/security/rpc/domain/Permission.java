@@ -3,7 +3,7 @@ package sk.seges.acris.security.rpc.domain;
 /**
  * <pre>
  * Permission used as a base stone in security. Each user authority is composed
- * from assigned Permission. For example: USER_MAINTENANCE_VIEW consists of VIEW
+ * from assigned Permission. For example: USER_MAINTENANCE_VIEW consists of PERMISSION_VIEW_NAME
  * permission.
  * </pre>
  * 
@@ -16,8 +16,8 @@ package sk.seges.acris.security.rpc.domain;
 public enum Permission {
 	EMPTY(0 << 0), VIEW(1 << 0), EDIT(1 << 1), CREATE(1 << 2), DELETE(1 << 3);
 
-	public static final String VIEW_PERMISSION = "VIEW";
-	public static final String EDIT_PERMISSION = "EDIT";
+	public static final String VIEW_PERMISSION = "PERMISSION_VIEW_NAME";
+	public static final String EDIT_PERMISSION = "PERMISSION_EDIT_NAME";
 	public static final String CREATE_PERMISSION = "CREATE";
 	public static final String DELETE_PERMISSION = "DELETE";
 

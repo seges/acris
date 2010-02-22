@@ -1,8 +1,8 @@
-package sk.seges.acris.security.client;
+package sk.seges.acris.security.client.mediator;
 
 import sk.seges.acris.security.rpc.domain.IUserPermission;
 
-public class RuntimeSecurityProvider {
+public class RuntimeSecurityMediator {
 
 	public static void setRuntimePermission(String permission, Object runtimeSecuredObject){
 		setRuntimePermissions(new String[] {permission}, runtimeSecuredObject);
@@ -13,14 +13,14 @@ public class RuntimeSecurityProvider {
 	}
 
 	public static void setRuntimePermissions(String[] permissions, Object runtimeSecuredObject){
-		if (runtimeSecuredObject instanceof IRuntimePermissionProvider) {
-			((IRuntimePermissionProvider)runtimeSecuredObject).setPermissions(permissions);
+		if (runtimeSecuredObject instanceof IRuntimePermissionMediator) {
+			((IRuntimePermissionMediator)runtimeSecuredObject).setPermissions(permissions);
 		}
 	}
 
 	public static void setRuntimePermissions(IUserPermission[] permissions, Object runtimeSecuredObject){
-		if (runtimeSecuredObject instanceof IRuntimePermissionProvider) {
-			((IRuntimePermissionProvider)runtimeSecuredObject).setPermissions(permissions);
+		if (runtimeSecuredObject instanceof IRuntimePermissionMediator) {
+			((IRuntimePermissionMediator)runtimeSecuredObject).setPermissions(permissions);
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package sk.seges.acris.security.rebind;
 
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
-import sk.seges.acris.core.rebind.RemoteServiceProviderCreator;
 import sk.seges.acris.core.rebind.RemoteServiceWrapperCreator;
 
 import com.google.gwt.core.ext.Generator;
@@ -12,26 +11,22 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.rpc.SessionProxyCreator;
 
-public class SessionServiceInterfaceProxyGenerator extends Generator {
+/**
+ * Generator used to create:
+ * <ul>
+ * <li>Session aware remote proxy service</li>
+ * <li>Session proxy automatically initialized using {@link RemoteServicePath} annotation</li>
+ * </ul>
+ * @author fat
+ *
+ */
+public class SessionRemoteServiceProxyGenerator extends Generator {
 
 	private static final String QUOTE = "'";
 
-	public SessionServiceInterfaceProxyGenerator() {
+	public SessionRemoteServiceProxyGenerator() {
 	}
 	
-	/**
-	 * @param logger
-	 * 			logger
-	 * @param ctx
-	 * 			context
-	 * @param requestedClass
-	 * 			class
-	 * 
-	 * @throws UnableToCompleteException
-	 * 			exception
-	 * 
-	 * @return client-side proxy class
-	 */
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext ctx,
 			String requestedClass) throws UnableToCompleteException {
@@ -52,20 +47,17 @@ public class SessionServiceInterfaceProxyGenerator extends Generator {
 			throw new UnableToCompleteException();
 		}
 
-		final SessionProxyCreator proxyCreator = new SessionProxyCreator(
-				remoteService);
-
-		final RemoteServiceProviderCreator providerCreator = new RemoteServiceProviderCreator(remoteService);
-		final RemoteServiceWrapperCreator wrapperCreator = new RemoteServiceWrapperCreator(remoteService);
-
 		final TreeLogger proxyLogger = logger.branch(TreeLogger.DEBUG,
 				"Generating client proxy for remote service interface '"
 						+ remoteService.getQualifiedSourceName() + QUOTE, null);
 
+		final SessionProxyCreator proxyCreator = new SessionProxyCreator(
+				remoteService);
+
 		String result = proxyCreator.create(proxyLogger, ctx);
 
 		if (remoteService.getAnnotation(RemoteServicePath.class) != null) {
-			/*String resultProvider = */providerCreator.create(proxyLogger, ctx);
+			final RemoteServiceWrapperCreator wrapperCreator = new RemoteServiceWrapperCreator(remoteService);
 			return wrapperCreator.create(proxyLogger, ctx);
 		}
 		
