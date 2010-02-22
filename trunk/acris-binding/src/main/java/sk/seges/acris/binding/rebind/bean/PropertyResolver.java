@@ -20,23 +20,29 @@ public class PropertyResolver {
 			throw new IntrospectionException("Binding property is null. Unable to resolve property.");
 		}
 
-		String[] props = property.split("\\.");
-
-		if (props.length != 2) {
+		int lastDotIndex = property.lastIndexOf(".");
+		
+		if (lastDotIndex == -1) {
 			throw new IntrospectionException("Incorrect property description " + property + ". Property should consits from listBeanReferenceProperty and listBeanProperty separated by dot. (e.g. program.name)");
 		}
 		
-		listBeanProperty = props[0];
-		listBeanReferenceProperty = props[1]; 
-		
+		listBeanProperty = property.substring(0, lastDotIndex);
+		listBeanReferenceProperty = property.substring(lastDotIndex + 1); 
 	}
 	
-	public JClassType resolveBeanPropertyClassType(JClassType classType) throws IntrospectionException {
-
-		JClassType listBeanClassType = RebindUtils.getDeclaredFieldClassType(classType, listBeanProperty);
+	public JClassType resolveBeanPropertyClassType(JClassType classType) throws IntrospectionException {		
+		return resolveClassType(classType, listBeanProperty);
+	}
+	
+	public JClassType resolveBeanReferencePropertyClassType(JClassType classType) throws IntrospectionException {
+		return resolveClassType(classType, listBeanProperty + "." + listBeanReferenceProperty);
+	}
+	
+	private JClassType resolveClassType(JClassType classType, String property) throws IntrospectionException {
+		JClassType listBeanClassType = RebindUtils.getDeclaredFieldClassType(classType, property);
 		
 		if (listBeanClassType == null) {
-			throw new IntrospectionException("Cannot find class type for property " + listBeanProperty + " in bean " + classType.getQualifiedSourceName());
+			throw new IntrospectionException("Cannot find class type for property " + property + " in bean " + classType.getQualifiedSourceName());
 		}	
 		
 		return listBeanClassType;
@@ -44,6 +50,10 @@ public class PropertyResolver {
 
 	public String getBeanProperty() {
 		return listBeanProperty;
+	}
+	
+	public String getBeanPropertyVariableName() {
+		return getBeanProperty().replaceAll("\\.", "_");
 	}
 	
 	public String getBeanPropertyReference() {

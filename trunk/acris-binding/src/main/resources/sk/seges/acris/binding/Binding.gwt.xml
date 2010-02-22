@@ -20,5 +20,9 @@
 	<!-- Binding generator for binding widget holders (e.g. panels, forms, ...) -->
 	<generate-with class="sk.seges.acris.binding.rebind.binding.BeanBindingGenerator">
     	<when-type-assignable class="sk.seges.acris.binding.client.holder.IBeanBindingHolder" />
-	</generate-with>		
+	</generate-with>
+	
+	<replace-with class="sk.seges.acris.binding.client.wrappers.EnumWrapper">
+    	<when-type-assignable class="java.lang.Enum" />
+	</replace-with>		
 </module>

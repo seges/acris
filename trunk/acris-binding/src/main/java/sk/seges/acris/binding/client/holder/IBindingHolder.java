@@ -2,6 +2,7 @@ package sk.seges.acris.binding.client.holder;
 
 import java.io.Serializable;
 
+import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 
 import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
@@ -26,7 +27,8 @@ public interface IBindingHolder<T extends Serializable> extends IBeanBindingHold
 			Widget targetWidget, String targetProperty,
 			BeanWrapper<? extends IDomainObject<?>> sourceObject);
 
-	public void addBinding(String sourceProperty, Widget targetWidget,
+	@SuppressWarnings("unchecked")
+	public Binding addBinding(String sourceProperty, Object targetWidget,
 			String targetProperty);
 
 	public void bind();

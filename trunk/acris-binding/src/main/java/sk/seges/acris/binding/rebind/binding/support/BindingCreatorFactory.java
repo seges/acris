@@ -29,7 +29,7 @@ public class BindingCreatorFactory {
 
 	static {
 		registerBindingCreator(new OneToOneBindingCreator());
-		registerBindingCreator(new OneToManyBindingCreator());
+		registerBindingCreator(new OneToManyBeansBindingCreator());
 		registerBindingCreator(new ManyToManyBindingCreator());
 	}
 	

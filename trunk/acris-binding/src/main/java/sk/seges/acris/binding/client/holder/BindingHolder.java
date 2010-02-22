@@ -6,15 +6,19 @@ import java.util.List;
 
 import org.gwt.beansbinding.core.client.AutoBinding;
 import org.gwt.beansbinding.core.client.BeanProperty;
+import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
+import org.gwt.beansbinding.ui.client.GWTBindings;
+import org.gwt.beansbinding.ui.client.ListBoxBinding;
 
 import sk.seges.acris.binding.client.annotations.BindingFieldInfo;
 import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
 
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class BindingHolder<T extends Serializable> implements IBindingHolder<T> {
@@ -26,6 +30,8 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     private BeanWrapper<T> beanWrapper;
 
     protected List<BindingFieldInfo> bindingFieldInfos = new ArrayList<BindingFieldInfo>();
+    
+    private List<BindingHolderListener<T>> listeners = new ArrayList<BindingHolderListener<T>>();
     
     public T getBean() {
     	return beanWrapper.getContent();
@@ -63,19 +69,41 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
      * Add one-to-one binding to the root binding group. Be sure you are not add x-to-many binding using
      * this method. For x-to-many binding you should you use addBindingGroup
      */
-    public void addBinding(String sourceProperty, Widget targetWidget, String targetProperty) {
+    @Override
+    public Binding addBinding(String sourceProperty, Object targetWidget, String targetProperty) {
     	addBindingFieldInfo(sourceProperty, targetWidget, targetProperty);
     	
-    	rootBinding.addBinding(createBinding(sourceProperty, targetWidget, targetProperty));
-	}
-
-	private AutoBinding<Object, Object, Object, Object> createBinding(String sourceProperty, Widget targetWidget,
-			String targetProperty) {
-		return Bindings.createAutoBinding(updateStrategy, beanWrapper,
-	    		BeanProperty.create(sourceProperty), targetWidget, BeanProperty.create(targetProperty));
+    	AutoBinding binding = createBinding(sourceProperty, targetWidget, targetProperty);
+		rootBinding.addBinding(binding);
+		return binding;
 	}
     
-    private BindingFieldInfo addBindingFieldInfo(String sourceProperty, Widget targetWidget, String targetProperty) {
+    public void addListBoxBinding(List<?> list, ListBox targetWidget, String itemTextProperty, String itemValueProperty) {
+    	ListBoxBinding ab = GWTBindings.createListBoxBinding(updateStrategy, list, targetWidget);
+    	if(itemTextProperty != null) {
+    		ab.setItemTextBinding(BeanProperty.create(itemTextProperty));
+    	}
+    	if(itemValueProperty != null) {
+    		ab.setItemValueBinding(BeanProperty.create(itemValueProperty));	
+    	}
+		ab.bind();
+    }
+    
+    @SuppressWarnings("unchecked")
+	public Binding addSelectedItemBinding(String sourceProperty, Object targetWidget) {
+    	final Binding selectionBinding = createBinding(sourceProperty, targetWidget, "selectedItem");
+    	selectionBinding.bind();
+    	return selectionBinding;
+    }
+
+	@SuppressWarnings("unchecked")
+	private AutoBinding createBinding(String sourceProperty, Object targetWidget,
+			String targetProperty) {
+		return Bindings.createAutoBinding(updateStrategy, beanWrapper, BeanProperty.create(sourceProperty),
+				targetWidget, BeanProperty.create(targetProperty));
+	}
+    
+    private BindingFieldInfo addBindingFieldInfo(String sourceProperty, Object targetWidget, String targetProperty) {
     	BindingFieldInfo bindingFieldInfo = new BindingFieldInfo();
     	bindingFieldInfo.setSourceProperty(sourceProperty);
     	bindingFieldInfo.setTargetProperty(targetProperty);
@@ -87,6 +115,9 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 
     public void bind() {
     	rootBinding.bind();
+    	for(BindingHolderListener<T> listener : listeners) {
+    		listener.bindingBecameBound(this);
+    	}
     }
     
     public void rebind() {
@@ -119,5 +150,13 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 				binding.bind();
 			}
 		}
+	}
+	
+	public void addListener(BindingHolderListener listener) {
+		listeners.add(listener);
+	}
+	
+	public static interface BindingHolderListener<B extends Serializable> {
+		void bindingBecameBound(BindingHolder<B> holder);
 	}
 }
