@@ -94,7 +94,7 @@ public class SecuredObjectCreator {
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
 		generateClassFields(sourceWriter);
-		generateOnLoadMethod(sourceWriter, context, classType);
+		generateMethods(sourceWriter, context, classType);
 
 		sourceWriter.outdent();
 		sourceWriter.println("}");
@@ -122,6 +122,10 @@ public class SecuredObjectCreator {
 		return null;
 	}
 	
+    protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) throws NotFoundException {
+    	generateOnLoadMethod(sourceWriter, context, classType);
+    }
+    
 	protected void generateOnLoadMethod(SourceWriter sourceWriter,
 			GeneratorContext context, JClassType classType) throws NotFoundException {
 		sourceWriter.println();
