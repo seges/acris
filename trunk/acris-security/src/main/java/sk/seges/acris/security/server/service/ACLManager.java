@@ -84,6 +84,8 @@ public class ACLManager {
             ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(superClass, securedObject.getId());
             aclCache.evictFromCache(objectIdentity);
             aclService.deleteAcl(objectIdentity, false);
+            
+            superClass = superClass.getSuperclass();
         }
 	}
 	

@@ -287,7 +287,7 @@ public class SecuredObjectCreator {
 				+ " user;");
 	}
 	
-	private String generateAuthConds(String modifier, List<String> fieldAnnots, boolean useModifier) {
+	protected String generateAuthConds(String modifier, List<String> fieldAnnots, boolean useModifier) {
 
 		StringBuffer sb = new StringBuffer();
 		
