@@ -267,6 +267,11 @@ public class BeanWrapperCreator {
 			source.println("@Override");
 			source.println("public boolean equals(Object obj) {");
 			source.indent();
+			source.println("if(obj instanceof BeanWrapper) {");
+			source.indent();
+			source.println("return equals(((BeanWrapper)obj).getContent());");
+			source.outdent();
+			source.println("}");  
 			source.println("if(" + CONTENU_FIELD + " != null) {");
 			source.indent();
 			source.println("return " + CONTENU_FIELD + ".equals(obj);");
