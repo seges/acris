@@ -53,7 +53,7 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 		try {
 			return generateImports(field, bindingFieldAnnotation);
 		} catch (IntrospectionException e) {
-			logger.log(Type.ERROR, e.getMessage());
+			logger.log(Type.ERROR, "Unable to generate imports, field = " + field + ", annotation = " + bindingFieldAnnotation, e);
 			throw new UnableToCompleteException();
 		}
 	}

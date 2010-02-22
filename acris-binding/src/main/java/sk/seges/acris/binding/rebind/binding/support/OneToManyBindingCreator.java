@@ -21,6 +21,7 @@ import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 
+@Deprecated
 class OneToManyBindingCreator extends AbstractBindingCreator<OneToMany> implements IBindingCreator<OneToMany> {
 
 	private PropertyResolver propertyResolver;
@@ -63,7 +64,7 @@ class OneToManyBindingCreator extends AbstractBindingCreator<OneToMany> implemen
 			propertyResolver = new PropertyResolver(bindingFieldAnnotation.value());
 			classType = propertyResolver.resolveBeanPropertyClassType(parentBeanClassType);
 		} catch (IntrospectionException e) {
-			logger.log(Type.ERROR, e.getMessage());
+			logger.log(Type.ERROR, "Unable to resolve = " + parentBeanClassType, e);
 			throw new UnableToCompleteException();
 		}
 
@@ -84,12 +85,9 @@ class OneToManyBindingCreator extends AbstractBindingCreator<OneToMany> implemen
 		try {
 			ILoaderCreator loaderCreator = getLoaderCreator(field);
 			loaderCreator.generateLoader(sourceWriter, classType, propertyResolver.getBeanPropertyReference(), 
-							field.getName(), beanProxyWrapper, "bg" + propertyTuple);
-		} catch (GeneratorException e) {
-			logger.log(Type.ERROR, e.getMessage());
-			throw new UnableToCompleteException();
-		} catch (IntrospectionException e) {
-			logger.log(Type.ERROR, e.getMessage());
+							field.getName(), beanProxyWrapper, "bg" + propertyTuple, field);
+		} catch (Exception e) {
+			logger.log(Type.ERROR, "Error generating loader", e);
 			throw new UnableToCompleteException();
 		}
 
@@ -121,7 +119,7 @@ class OneToManyBindingCreator extends AbstractBindingCreator<OneToMany> implemen
 		try {
 			propertyResolver = new PropertyResolver(bindingFieldAnnotation.value());
 		} catch (IntrospectionException e) {
-			logger.log(Type.ERROR, e.getMessage());
+			logger.log(Type.ERROR, "Unable to resolve property", e);
 			throw new UnableToCompleteException();
 		}
 

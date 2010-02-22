@@ -47,9 +47,9 @@ public class ValidatableBindingHolder<T extends Serializable> extends BindingHol
 						+ constraint.getPropertyPath());
 			}
 
-			Widget widget = info.getTargetWidget();
-			if (highlighter != null) {
-				highlighted.add(highlighter.highlight(widget, constraint));
+			Object widget = info.getTargetWidget();
+			if (highlighter != null && widget instanceof Widget) {
+				highlighted.add(highlighter.highlight((Widget)widget, constraint));
 			}
 		}
 	}

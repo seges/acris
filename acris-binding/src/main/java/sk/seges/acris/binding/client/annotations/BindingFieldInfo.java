@@ -2,13 +2,11 @@ package sk.seges.acris.binding.client.annotations;
 
 import org.gwt.beansbinding.core.client.Validator;
 
-import com.google.gwt.user.client.ui.Widget;
-
 public class BindingFieldInfo {
 	
 	private Object sourceObject;
 	private String sourceProperty;
-	private Widget targetWidget;
+	private Object targetWidget;
 	private String targetProperty;
 	private Validator<?> validator;
 
@@ -20,11 +18,11 @@ public class BindingFieldInfo {
 		this.sourceProperty = sourceProperty;
 	}
 
-	public Widget getTargetWidget() {
+	public Object getTargetWidget() {
 		return targetWidget;
 	}
 
-	public void setTargetWidget(Widget targetWidget) {
+	public void setTargetWidget(Object targetWidget) {
 		this.targetWidget = targetWidget;
 	}
 
