@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.dao.acl.IACLSecuredClassDAO;
@@ -15,7 +15,7 @@ import sk.seges.acris.security.server.domain.acl.ACLSecuredClass;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
-@Component
+@Repository
 public class ACLSecuredClassDao extends AbstractHibernateCRUD<ACLSecuredClass> implements IACLSecuredClassDAO {
 	public ACLSecuredClassDao() {
 		super(ACLSecuredClass.class);

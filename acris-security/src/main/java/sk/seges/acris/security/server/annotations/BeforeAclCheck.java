@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 
 import sk.seges.acris.security.rpc.domain.Permission;
 
-@Target({ElementType.METHOD})
 @Retention(RUNTIME)
+@Target(ElementType.METHOD)
 public @interface BeforeAclCheck {
-	  public abstract Permission value();
-	  public ACLCheckType checkType() default ACLCheckType.FIRST_PARAM;
+	  public Permission value();
+	  public BeforeAclCheckMode checkType() default BeforeAclCheckMode.FIRST_PARAMETER;
 }

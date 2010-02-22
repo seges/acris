@@ -60,7 +60,6 @@ public class SessionRemoteServiceFilter implements Filter {
 				String clientSessionId = sessionId;
 				sessionId = session.getId();
 				SessionHandlerListener.mapSessions(sessionId, clientSessionId);
-				System.out.println("!!!!!" + sessionId);
 			}
 			
 			return session;
@@ -80,7 +79,6 @@ public class SessionRemoteServiceFilter implements Filter {
 				String clientSessionId = sessionId;
 				sessionId = session.getId();
 				SessionHandlerListener.mapSessions(sessionId, clientSessionId);
-				System.out.println("!!!!!" + sessionId);
 			}
 			
 			return session;
@@ -115,17 +113,6 @@ public class SessionRemoteServiceFilter implements Filter {
 	public SessionRemoteServiceFilter() {
 	}
 	
-	/**
-	 * @param request
-	 * 			servlet request
-	 * @param response
-	 * 			servlet response
-	 * @param chain
-	 * 			filter chain - unused
-	 * 
-	 * @throws IOException exception
-	 * @throws ServletException exception
-	 */
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		HttpSession currentSession = ((HttpServletRequest) request).getSession();

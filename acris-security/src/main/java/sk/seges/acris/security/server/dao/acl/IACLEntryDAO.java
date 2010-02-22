@@ -14,7 +14,7 @@ public interface IACLEntryDAO extends ICrudDAO<ACLEntry> {
     
     public List<ACLEntry> findByClassnameAndSid(Class<? extends ISecuredObject> securedClass, Sid sid);
 
-    public void deleteByClassnamAndSid(Class<? extends ISecuredObject> securedClass, Sid sid);
+    public void deleteByClassnameAndSid(Class<? extends ISecuredObject> securedClass, Sid sid);
     
     public void deleteByIdentityIdAndSid(ISecuredObject securedObject, Sid sid);
 

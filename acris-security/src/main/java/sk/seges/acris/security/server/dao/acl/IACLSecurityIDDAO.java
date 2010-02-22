@@ -8,6 +8,4 @@ import sk.seges.sesam.dao.ICrudDAO;
 public interface IACLSecurityIDDAO extends ICrudDAO<ACLSecurityID> {
 
     public ACLSecurityID loadOrCreate(Sid sid);
-
-    public ACLSecurityID find(Sid sid);
 }

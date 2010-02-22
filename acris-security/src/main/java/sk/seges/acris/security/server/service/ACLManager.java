@@ -29,7 +29,6 @@ import sk.seges.acris.security.rpc.domain.ISecuredObject;
 import sk.seges.acris.security.server.annotations.RunAs;
 import sk.seges.acris.security.server.dao.acl.IACLEntryDAO;
 import sk.seges.acris.security.server.domain.acl.ACLEntry;
-import sk.seges.acris.security.server.permission.ExtendedPermission;
 
 @Component
 @Transactional(propagation=Propagation.REQUIRES_NEW)
@@ -116,7 +115,7 @@ public class ACLManager {
                 superClass = superClass.getSuperclass();
                 continue;
             }
-            aclEntryDao.deleteByClassnamAndSid(superClass, sid);
+            aclEntryDao.deleteByClassnameAndSid(superClass, sid);
             List<ACLEntry> entries = aclEntryDao.findByClassnameAndSid(superClass, sid);
             for(ACLEntry entry : entries) {
                 aclCache.evictFromCache(entry.getObjectIdentity());
@@ -218,8 +217,6 @@ public class ACLManager {
 			return BasePermission.WRITE;
 		} else if (mask == BasePermission.ADMINISTRATION.getMask()) {
 			return BasePermission.ADMINISTRATION;
-		} else if (mask == ExtendedPermission.SEARCH.getMask()) {
-			return ExtendedPermission.SEARCH;
 		}
 
 		return null;
