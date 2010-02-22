@@ -87,19 +87,40 @@ public class RebindUtils {
 	}
 	
 	/**
+	 * Searches class and all its superclasses for a property.
+	 * 
+	 * @param classType
+	 * @param property May contain dots
+	 * @return
+	 */
+	public static JField getDeclaredField(JClassType classType, String property) {
+		int dotIndex = property.indexOf(".");
+		if(dotIndex == -1) {
+			return getDeclaredDirectField(classType, property);
+		} else {
+			JField field = getDeclaredDirectField(classType, property.substring(0, dotIndex));
+			if(!(field.getType() instanceof JClassType)) {
+				throw new RuntimeException("Not of JClassType type = " + field);
+			}
+			return getDeclaredField((JClassType)field.getType(), property.substring(dotIndex + 1));
+		}
+	
+	}
+
+	/**
 	 * Searches class and all its superclasses for a field.
 	 * 
 	 * @param classType
 	 * @param fieldName
 	 * @return
 	 */
-	public static JField getDeclaredField(JClassType classType, String fieldName) {
+	public static JField getDeclaredDirectField(JClassType classType, String fieldName) {
 		JField field = classType.getField(fieldName);
 		JClassType superClass = classType.getSuperclass();
 		if(field == null && superClass != null) {
-			return getDeclaredField(superClass, fieldName);
+			return getDeclaredDirectField(superClass, fieldName);
 		}
-		return field;
+		return field;	
 	}
 	
 	/**
