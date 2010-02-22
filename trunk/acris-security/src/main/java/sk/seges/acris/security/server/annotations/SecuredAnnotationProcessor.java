@@ -15,12 +15,12 @@ import org.springframework.security.intercept.method.AbstractFallbackMethodDefin
 import sk.seges.acris.security.server.acl.RoleRunAsManagerImpl;
 import sk.seges.sesam.dao.PagedResult;
 
-public class SecuredMethodDefinitionSource extends AbstractFallbackMethodDefinitionSource {
+public class SecuredAnnotationProcessor extends AbstractFallbackMethodDefinitionSource {
 
-	protected Class[] annotationClasses = getAnnotationClasses();
+	protected Class<?>[] annotationClasses = getAnnotationClasses();
 	
-	protected Class[] getAnnotationClasses() {
-		return new Class[] {Secured.class, RunAs.class, AfterAclCheck.class, BeforeAclCheck.class};
+	protected Class<?>[] getAnnotationClasses() {
+		return new Class<?>[] {Secured.class, RunAs.class, AfterAclCheck.class, BeforeAclCheck.class};
 	}
 	                
 	protected ConfigAttributeDefinition findAttributes(Class clazz) {
@@ -65,9 +65,9 @@ public class SecuredMethodDefinitionSource extends AbstractFallbackMethodDefinit
     }
 
     protected void processBeforeAclCheckAnnotation(List<String> atributeTokens, BeforeAclCheck beforeAclCheck) {
-    	if (beforeAclCheck.checkType().equals(ACLCheckType.FIRST_PARAM)) {
+    	if (beforeAclCheck.checkType().equals(BeforeAclCheckMode.FIRST_PARAMETER)) {
     		atributeTokens.add("ACL_OBJECT_" + beforeAclCheck.value().name());
-    	} else if (beforeAclCheck.checkType().equals(ACLCheckType.ALL_PARAMS)) {
+    	} else if (beforeAclCheck.checkType().equals(BeforeAclCheckMode.ALL_SECURED_PARAMETERS)) {
     		atributeTokens.add("ACL_LIST_OBJECTS_" + beforeAclCheck.value().name());
     	}
     }

@@ -50,19 +50,6 @@ public class ACLEntryDao extends AbstractHibernateCRUD<ACLEntry> implements IACL
         return findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
     }
 
-    @Deprecated
-    public void deleteByIdentityIdAndSid(long aclObjectIdentity, long sid) {
-        DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(ACLEntry.OBJECT_IDENTITY_ID_FIELD, aclObjectIdentity));
-		criteria.add(Restrictions.eq(ACLEntry.SID_ID_FIELD, sid));
-
-        List<ACLEntry> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
-        
-        for (ACLEntry entry : entries) {
-        	remove(entry);
-        }
-    }
-
 	@SuppressWarnings("unchecked")
 	@Transactional
     public void deleteByIdentityIdAndSid(ISecuredObject securedObject, Sid sid) {
@@ -88,14 +75,8 @@ public class ACLEntryDao extends AbstractHibernateCRUD<ACLEntry> implements IACL
 		}
     }
 
-    protected static final String HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE_BY_CLASS = "from " + ACLEntry.class.getSimpleName() + 
-       " acl where" +
-       " acl." + ACLEntry.OBJECT_IDENTITY_FIELD + "." + ACLObjectIdentity.OBJECT_CLASS_FIELD + "." + ACLSecuredClass.CLASS_NAME_FIELD + "=:classname and " +
-       " acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.SID_FIELD + "=:sid and " + 
-       " acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.PRINCIPAL_FIELD + "=:principal";
-
     @Transactional
-	public void deleteByClassnamAndSid(Class<? extends ISecuredObject> securedClass, Sid sid) {
+	public void deleteByClassnameAndSid(Class<? extends ISecuredObject> securedClass, Sid sid) {
         List<ACLEntry> entries = findByClassnameAndSid(securedClass, sid);
         
         for (ACLEntry entry : entries) {

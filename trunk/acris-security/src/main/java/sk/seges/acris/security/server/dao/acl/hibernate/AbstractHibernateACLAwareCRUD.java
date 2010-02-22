@@ -11,12 +11,12 @@ import sk.seges.acris.security.rpc.domain.Permission;
 import sk.seges.acris.security.server.service.ACLManager;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
-public abstract class AbstractHibernateLoadACLAwareDAO<T extends ISecuredObject> extends AbstractHibernateCRUD<T> {
+public abstract class AbstractHibernateACLAwareCRUD<T extends ISecuredObject> extends AbstractHibernateCRUD<T> {
 
 	@Autowired
 	private ACLManager aclManager;
 	
-	public AbstractHibernateLoadACLAwareDAO(Class<T> clazz) {
+	public AbstractHibernateACLAwareCRUD(Class<T> clazz) {
 		super(clazz);
 	}
 
