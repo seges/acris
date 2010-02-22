@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -63,15 +64,23 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
     }
 
     public List<T> findByCriteria(DetachedCriteria criteria, Page page) {
-        return findByCriteria(criteria, page, null);
+        return findByCriteria(criteria, page, false);
+    }
+    
+    public List<T> findByCriteria(DetachedCriteria criteria, Page page, boolean cacheable) {
+        return findByCriteria(criteria, page, null, cacheable);
     }
     
     public List<T> findByCriteria(DetachedCriteria criteria, Page page, Set<String> existingAliases) {
-        return doFindByCriteria(criteria, page, existingAliases, true);
+        return findByCriteria(criteria, page, existingAliases, false);
+    }
+    
+    public List<T> findByCriteria(DetachedCriteria criteria, Page page, Set<String> existingAliases, boolean cacheable) {
+        return doFindByCriteria(criteria, page, existingAliases, true, cacheable);
     }
     
     @SuppressWarnings("unchecked")
-    private List<T> doFindByCriteria(DetachedCriteria criteria, Page page, Set<String> existingAliases, boolean addFilterables) {
+    private List<T> doFindByCriteria(DetachedCriteria criteria, Page page, Set<String> existingAliases, boolean addFilterables, boolean cacheable) {
         Criteria executable = criteria.getExecutableCriteria((Session) entityManager.getDelegate());
 
         if (existingAliases != null) {
@@ -87,6 +96,12 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
             // Restrict the selection only when page size has meaningful value.
             executable.setMaxResults(page.getPageSize());
         }
+        
+        executable.setCacheable(cacheable);
+        if(cacheable) {
+            executable.setCacheMode(CacheMode.NORMAL);
+        }
+        
         return executable.list();
     }
 
@@ -131,7 +146,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
         return findPagedResultByCriteria(createCriteria(), requestedPage);
     }
 
-    public PagedResult<List<T>> findPagedResultByCriteria(DetachedCriteria criteria, Page requestedPage) {
+    public PagedResult<List<T>> findPagedResultByCriteria(DetachedCriteria criteria, Page requestedPage, boolean cacheable) {
         Integer totalCount = null;
         // so we don't repeat aliases in one query - it is disallowed by
         // criteria definition
@@ -150,13 +165,17 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 
         existingAliases = new HashSet<String>();
         enrichCriteriaWithSortables(requestedPage, criteria);
-        List<T> list = doFindByCriteria(criteria, requestedPage, existingAliases, !addedFilterables.value);
+        List<T> list = doFindByCriteria(criteria, requestedPage, existingAliases, !addedFilterables.value, cacheable);
 
         if (retrieveAllResults(requestedPage)) {
             // we are not paging results, get total count from fetched list
             totalCount = list.size();
         }
         return new PagedResult<List<T>>(requestedPage, list, totalCount);
+    }
+    
+    public PagedResult<List<T>> findPagedResultByCriteria(DetachedCriteria criteria, Page requestedPage) {
+        return findPagedResultByCriteria(criteria, requestedPage, false);
     }
 
     private boolean retrieveAllResults(Page requestedPage) {
