@@ -20,7 +20,7 @@
 
     <bean id="writePermissions" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
         <property name="targetObject" ref="voterPermissions"/>
-        <property name="targetField" value="READ"/>
+        <property name="targetField" value="WRITE"/>
     </bean>
 
     <bean id="deletePermissions" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">

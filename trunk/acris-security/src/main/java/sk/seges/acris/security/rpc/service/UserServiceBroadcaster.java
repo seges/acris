@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
-import sk.seges.acris.security.client.proxy.SessionServiceDefTarget;
+import sk.seges.acris.security.client.session.SessionServiceDefTarget;
 import sk.seges.acris.security.rpc.domain.GenericUser;
 import sk.seges.acris.security.rpc.session.ClientSession;
 

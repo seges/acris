@@ -1,4 +1,4 @@
-package sk.seges.acris.security.client.proxy;
+package sk.seges.acris.security.client.session;
 
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
 import sk.seges.acris.security.rpc.session.ClientSession;

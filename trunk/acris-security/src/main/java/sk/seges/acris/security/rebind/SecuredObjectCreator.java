@@ -21,25 +21,18 @@ import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
-/**
- * generates secured panel according to annotations in original panel, which is
- * replaced by secured panel
- */
 public class SecuredObjectCreator {
 
-	private static final String CLASSNAME_POSTFIX = "SecurityWrapper";
+	private static final String SECURED_SOURCE_FILE_SUFIX = "SecurityWrapper";
 
-	protected static final String VIEW = Permission.VIEW.name();
+	protected static final String PERMISSION_VIEW_NAME = Permission.VIEW.name();
 
-	protected static final String EDIT = Permission.EDIT.name();
+	protected static final String PERMISSION_EDIT_NAME = Permission.EDIT.name();
 
-	/** Name of the superclass */
 	private String superclassName;
 	
-	/** Simple name of class to be generated */
 	protected String className = null;
 
-	/** Package name of class to be generated */
 	protected String packageName = null;
 
 	protected ISecuredAnnotationProcessor securedAnnotationProcessor;
@@ -51,48 +44,36 @@ public class SecuredObjectCreator {
 	public String doGenerate(TreeLogger logger, GeneratorContext context,
 			String typeName, String superclassName) throws UnableToCompleteException {
 		this.superclassName = superclassName;
+
 		final TypeOracle typeOracle = context.getTypeOracle();
 		assert typeOracle != null;
 		
 		try {
-			// get classType and save instance variables
 			JClassType classType = typeOracle.getType(typeName);
 			packageName = classType.getPackage().getName();
 			className = classType.getSimpleSourceName() + getClassNamePostFix();
 
-			// Generate class source code
+			//Generate secured class for specified classType
 			generateClass(logger, context, classType);
-		} catch (Exception e) {
-			// record to logger that Map generation threw an exception
-			logger.log(TreeLogger.ERROR, "PropertyMap ERROR!!!", e);
-		}
 
-		// return the fully qualifed name of the class generated
-		return packageName + "." + className;
+			return packageName + "." + className;
+		} catch (Exception e) {
+			logger.log(TreeLogger.ERROR, "Unable to generate security wrapper over the " + typeName, e);
+			throw new UnableToCompleteException();
+		}
 	}
 
-	/**
-	 * Generate source code for new class. Class extends <code>HashMap</code>.
-	 * 
-	 * @param logger
-	 *            Logger object
-	 * @param context
-	 *            Generator context
-	 * @throws NotFoundException 
-	 */
 	protected void generateClass(TreeLogger logger, GeneratorContext context,
 			JClassType classType) throws NotFoundException {
-		// get print writer that receives the source code
 		PrintWriter printWriter = null;
 		printWriter = context.tryCreate(logger, packageName, className);
-		// print writer if null, source code has ALREADY been generated, return
-		if (printWriter == null)
-			return;
-		// init composer, set class properties, create source writer
-		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(
-				packageName, className);
 
-		// add imports
+		if (printWriter == null) {
+			return;
+		}
+
+		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, className);
+
 		String[] imports = getImports();
 		if(imports != null){
 			for (String imp : imports) {
@@ -100,7 +81,6 @@ public class SecuredObjectCreator {
 			}
 		}
 		
-		//add implemented interfaces
 		String[] interfaces = getInterfaces();
 		if(interfaces != null){
 			for (String intf : interfaces) {
@@ -108,29 +88,22 @@ public class SecuredObjectCreator {
 			}
 		}
 
-		// add super class
 		composer.setSuperclass(this.superclassName);
 
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
-		// generate global variables
-		sourceWriter.println();
+
 		generateClassFields(sourceWriter);
-		sourceWriter.println();
-		// generator constructor source code
-		generateConstructor(sourceWriter);
-		sourceWriter.println();
-		generateMethods(sourceWriter, context, classType);
-		// close generated class
+		generateOnLoadMethod(sourceWriter, context, classType);
+
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		// commit generated class
+
 		context.commit(logger, printWriter);
 	}
-	
-	protected void generateMethods(SourceWriter sourceWriter,
-			GeneratorContext context, JClassType classType) throws NotFoundException{
-		generateOnLoadMethod(sourceWriter, context, classType);
+
+	protected void generateClassFields(SourceWriter sourceWriter) {
+		sourceWriter.println("private " + GenericUser.class.getSimpleName() + " user;");
 	}
 	
 	/**
@@ -145,26 +118,13 @@ public class SecuredObjectCreator {
 	}
 
 	
-	/**
-	 * 
-	 * @return array of names of interfaces, which need to be implemented
-	 * returns null if no interfaces
-	 */
 	protected String[] getInterfaces(){
 		return null;
 	}
 	
-	
-	/**
-	 * generate onLoad method, calls super onLoad at beginning
-	 * 
-	 * @param sourceWriter
-	 * @param context
-	 * @param classType
-	 * @throws NotFoundException 
-	 */
 	protected void generateOnLoadMethod(SourceWriter sourceWriter,
 			GeneratorContext context, JClassType classType) throws NotFoundException {
+		sourceWriter.println();
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void onLoad() {");
 		sourceWriter.indent();
@@ -189,7 +149,7 @@ public class SecuredObjectCreator {
 			boolean useModifier = !securedAnnotationProcessor.isAuthorityPermission(classType);
 			sourceWriter.println("if (user != null) {");
 			sourceWriter.indent();
-			sourceWriter.println("hasViewPermission = " + generateAuthConds(VIEW, classAnnots, useModifier) + ";");
+			sourceWriter.println("hasViewPermission = " + generateCheckUserAuthority(PERMISSION_VIEW_NAME, classAnnots, useModifier) + ";");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
 			sourceWriter.println("if( !hasViewPermission ){");
@@ -223,39 +183,25 @@ public class SecuredObjectCreator {
 			}
 		}
 		
-		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
-
-	/**
-	 * checks authorities according annotation of param and writes source
-	 * 
-	 * @param sourceWriter
-	 * @param annotation
-	 * @param context
-	 * @param classType
-	 * @param param
-	 * @throws NotFoundException 
-	 */
 	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter,
 			List<String> fieldAnnots, GeneratorContext context,
 			JType type, JField param, boolean useModifiers) throws NotFoundException {
-		// check of view authority
+
 		sourceWriter.println("if (user != null) {");
 		sourceWriter.indent();
-		sourceWriter.println("hasViewPermission = " + generateAuthConds(VIEW, fieldAnnots, useModifiers) + ";");
+		sourceWriter.println("hasViewPermission = " + generateCheckUserAuthority(PERMISSION_VIEW_NAME, fieldAnnots, useModifiers) + ";");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
-		// focusable specific
-//		try {
 
 		if (type.isClassOrInterface() != null && ((JClassType)type).isAssignableTo(context.getTypeOracle().getType(
 				Focusable.class.getName()))) {
-			sourceWriter.println("hasEditPermission = " + generateAuthConds(EDIT, fieldAnnots, useModifiers)+";");
+			sourceWriter.println("hasEditPermission = " + generateCheckUserAuthority(PERMISSION_EDIT_NAME, fieldAnnots, useModifiers)+";");
 			sourceWriter.println(param.getName() + ".setEnabled(hasEditPermission);");
 		}
 		sourceWriter.outdent();
@@ -266,47 +212,27 @@ public class SecuredObjectCreator {
 		sourceWriter.println("}");
 	}
 
-	/**
-	 * Generate source code for the default constructor. Create default
-	 * constructor, call super(), and insert all key/value pairs from the
-	 * resoruce bundle.
-	 * 
-	 * @param sourceWriter
-	 *            Source writer to output source code
-	 */
-	protected void generateConstructor(SourceWriter sourceWriter) {
-		sourceWriter.println("public " + className + "() { ");
-		sourceWriter.indent();
-		sourceWriter.println("super();");
-		sourceWriter.outdent();
-		sourceWriter.println("}");
-	}
-
-	protected void generateClassFields(SourceWriter sourceWriter) {
-		sourceWriter.println("private " + GenericUser.class.getSimpleName()
-				+ " user;");
-	}
-	
-	protected String generateAuthConds(String modifier, List<String> fieldAnnots, boolean useModifier) {
+	protected String generateCheckUserAuthority(String modifier, List<String> fieldUserAuthorities, boolean useModifier) {
 
 		StringBuffer sb = new StringBuffer();
 		
-		int size = fieldAnnots.size();
+		int size = fieldUserAuthorities.size();
 		
-		for (String userAuthority : fieldAnnots) {
+		for (String fieldUserAuthority : fieldUserAuthorities) {
 			size--;
 			if (useModifier) {
-				sb.append("(user.hasAuthority(\"" + userAuthority + "_" + modifier + "\"))");
+				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "_" + modifier + "\"))");
 			} else {
-				sb.append("(user.hasAuthority(\"" + userAuthority + "\"))");
+				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
 			}
-			if (size > 0)
+			if (size > 0) {
 				sb.append(" || \n");
+			}
 		}
 		return sb.toString();
 	}
 
 	protected String getClassNamePostFix(){
-		return CLASSNAME_POSTFIX;
+		return SECURED_SOURCE_FILE_SUFIX;
 	}	
 }

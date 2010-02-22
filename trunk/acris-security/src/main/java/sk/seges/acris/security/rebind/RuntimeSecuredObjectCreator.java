@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sk.seges.acris.security.client.IRuntimePermissionProvider;
+import sk.seges.acris.security.client.mediator.IRuntimePermissionMediator;
 import sk.seges.acris.security.rpc.domain.IUserPermission;
 import sk.seges.acris.security.rpc.session.ClientSession;
 
@@ -14,13 +14,6 @@ import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.rebind.SourceWriter;
 
-/**
- * generates secured panel according to annotations Secured in original panel, which is
- * replaced by secured panel
- * 
- * @author MPsenkova
- * 
- */
 public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 
 	private static final String CLASSNAME_POSTFIX = "_RuntimeSecured";
@@ -33,13 +26,6 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		super(securedAnnotationProcessor);
 	}
 	
-	/**
-	 * generate onLoad method, calls super onLoad at beginning
-	 * 
-	 * @param sourceWriter
-	 * @param context
-	 * @param classType
-	 */
 	protected void generateOnLoadMethod(SourceWriter sourceWriter,
 			GeneratorContext context, JClassType classType) {
 		sourceWriter.println("public void onLoad() {");
@@ -77,7 +63,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 
 		sourceWriter.println("if(runtimeUserAuthorities != null && runtimeUserAuthorities.size() > 0){");
 		sourceWriter.indent();
-		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + VIEW + "\", runtimeUserAuthorities);");
+		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + PERMISSION_VIEW_NAME + "\", runtimeUserAuthorities);");
 		sourceWriter.outdent();
 		sourceWriter.println("}else{");
 		sourceWriter.indent();
@@ -115,7 +101,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 
 	protected String[] getInterfaces() {
 		return new String[]{
-			IRuntimePermissionProvider.class.getName()
+			IRuntimePermissionMediator.class.getName()
 		};
 	}
 
@@ -126,15 +112,6 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 				+ " userAuthorities = new " + ArrayList.class.getName() + "<String>();");
 	}
 
-	/**
-	 * checks authorities according annotation of param and writes source
-	 * 
-	 * @param sourceWriter
-	 * @param annotation
-	 * @param context
-	 * @param classType
-	 * @param param
-	 */
 	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter,
 			List<String> fieldAnnotationAuthorities, GeneratorContext context,
 			JType classType, JField param) {
@@ -151,11 +128,11 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		}
 		sourceWriter.println("if (fieldUserAuthorities != null && fieldUserAuthorities.size() > 0) {");
 		sourceWriter.indent();
-		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + VIEW + "\", fieldUserAuthorities);");
+		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + PERMISSION_VIEW_NAME + "\", fieldUserAuthorities);");
 		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
 
-		sourceWriter.println("hasEditPermission = hasAuthorityForPermission(\"" + EDIT + "\", fieldUserAuthorities);");
+		sourceWriter.println("hasEditPermission = hasAuthorityForPermission(\"" + PERMISSION_EDIT_NAME + "\", fieldUserAuthorities);");
 		sourceWriter.println(param.getName() + ".setEnabled( hasEditPermission );");
 		sourceWriter.outdent();
 		sourceWriter.println("} else if ( " + param.getName() + " != null ) { ");
@@ -167,9 +144,6 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("}");
 	}
 	
-	/**
-	 * generates private function for checking if user has required authority for specific permission
-	 */
 	private void generateHasAuthorityForPermission(SourceWriter sourceWriter){
 		sourceWriter.println("private boolean hasAuthorityForPermission(String permission, " + List.class.getName() + "<String> aggregatedUserAuthorities) {");
 		sourceWriter.indent();

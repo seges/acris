@@ -105,7 +105,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
         // check of view authority
         sourceWriter.println("if (user != null) {");
         sourceWriter.indent();
-        sourceWriter.println("hasViewPermission = " + generateAuthConds(VIEW, fieldAnnots, useModifiers) + ";");
+        sourceWriter.println("hasViewPermission = " + generateCheckUserAuthority(PERMISSION_VIEW_NAME, fieldAnnots, useModifiers) + ";");
         sourceWriter.outdent();
         sourceWriter.println("}");
         sourceWriter.println("if(" + param.getName() + "==widget && hasViewPermission ) {");
@@ -180,7 +180,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
         // check of view authority
         sourceWriter.println("if (user != null) {");
         sourceWriter.indent();
-        sourceWriter.println("hasEditPermission = " + generateAuthConds(EDIT, fieldAnnots, useModifiers)+";");
+        sourceWriter.println("hasEditPermission = " + generateCheckUserAuthority(PERMISSION_EDIT_NAME, fieldAnnots, useModifiers)+";");
         sourceWriter.outdent();
         sourceWriter.println("}");
         sourceWriter.println("if(" + param.getName() + "==widget && hasEditPermission ){");

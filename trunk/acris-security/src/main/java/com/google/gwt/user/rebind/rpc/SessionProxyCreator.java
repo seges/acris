@@ -15,7 +15,7 @@
  */
 package com.google.gwt.user.rebind.rpc;
 
-import sk.seges.acris.security.client.proxy.SessionAwareRemoteServiceProxy;
+import sk.seges.acris.security.client.session.SessionAwareRemoteServiceProxy;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;

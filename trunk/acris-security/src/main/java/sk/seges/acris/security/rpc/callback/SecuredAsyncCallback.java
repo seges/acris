@@ -1,4 +1,4 @@
-package sk.seges.acris.security.client.callback;
+package sk.seges.acris.security.rpc.callback;
 
 //import com.google.gwt.user.client.rpc.AsyncCallback;
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;

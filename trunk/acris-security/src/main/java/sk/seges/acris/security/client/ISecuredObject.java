@@ -14,5 +14,6 @@ import sk.seges.acris.security.rpc.session.ClientSession;
  */
 public interface ISecuredObject {
 	void setClientSession(ClientSession clientSession);
+
 	ClientSession getClientSession();
 }
