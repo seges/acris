@@ -1,6 +1,7 @@
 package sk.seges.acris.security.rebind;
 
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
+import sk.seges.acris.core.rebind.RemoteServiceProviderCreator;
 import sk.seges.acris.core.rebind.RemoteServiceWrapperCreator;
 
 import com.google.gwt.core.ext.Generator;
@@ -57,6 +58,8 @@ public class SessionRemoteServiceProxyGenerator extends Generator {
 		String result = proxyCreator.create(proxyLogger, ctx);
 
 		if (remoteService.getAnnotation(RemoteServicePath.class) != null) {
+			RemoteServiceProviderCreator providerCreator = new RemoteServiceProviderCreator(remoteService);
+			providerCreator.create(proxyLogger, ctx);
 			final RemoteServiceWrapperCreator wrapperCreator = new RemoteServiceWrapperCreator(remoteService);
 			return wrapperCreator.create(proxyLogger, ctx);
 		}

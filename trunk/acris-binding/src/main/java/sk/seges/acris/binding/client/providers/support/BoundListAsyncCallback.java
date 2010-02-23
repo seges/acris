@@ -34,6 +34,8 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 	private final String itemTextProperty;
 	private final String itemValueProperty;
 
+	private final boolean wasEnabled;
+	
 	private List<T> listOfValues;
 
 	public BoundListAsyncCallback(BindingHolder<T> bindingHolder, String sourceProperty,
@@ -44,6 +46,8 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 		this.targetWidget = targetWidget;
 		this.itemTextProperty = itemTextProperty;
 		this.itemValueProperty = itemValueProperty;
+		
+		wasEnabled = targetWidget.isEnabled();
 	}
 
 	@Override
@@ -77,7 +81,9 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 
 		bindingHolder.addListBoxBinding(listOfValues, targetWidget, itemTextProperty, itemValueProperty);
 		bindingHolder.addSelectedItemBinding(sourceProperty, targetWidget);
-		targetWidget.setEnabled(true);
+		if(wasEnabled) {
+			targetWidget.setEnabled(true);
+		}
 	}
 
 	protected abstract BeanWrapper<T> createWrapper();

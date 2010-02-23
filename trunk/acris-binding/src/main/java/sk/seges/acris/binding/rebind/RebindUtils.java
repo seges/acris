@@ -170,6 +170,9 @@ public class RebindUtils {
 				}
 			}
 		}
+		if(classType.getSuperclass() != null) {
+			return getGenericsFromInterfaceType(classType.getSuperclass(), parametrizedType, position);
+		}
 		
 		throw new NotFoundException("Unable to find generics in type " + classType + ", where parametrized type is " + parametrizedType + " on position " + position);
 	}
