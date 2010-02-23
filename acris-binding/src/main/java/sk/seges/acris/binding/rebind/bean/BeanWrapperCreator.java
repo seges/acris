@@ -7,6 +7,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -351,15 +352,15 @@ public class BeanWrapperCreator {
 	}
 
 	private boolean isNotBean(JType type) {
-		JClassType list = typeOracle.findType(List.class.getCanonicalName());
+		JClassType collection = typeOracle.findType(Collection.class.getCanonicalName());
 		JClassType map = typeOracle.findType(Map.class.getCanonicalName());
 		
-		boolean isList = false, isMap = false;
+		boolean isCollection = false, isMap = false;
 		if(type instanceof JClassType) {
-			isList = ((JClassType) type).isAssignableTo(list);
+			isCollection = ((JClassType) type).isAssignableTo(collection);
 			isMap = ((JClassType) type).isAssignableTo(map);
 		}
-		return type.isPrimitive() != null || type.isEnum() != null || type.isArray() != null || isList
+		return type.isPrimitive() != null || type.isEnum() != null || type.isArray() != null || isCollection
 				|| isMap || type.getSimpleSourceName().equals("String")
 				|| type.getSimpleSourceName().equals("Byte") || type.getSimpleSourceName().equals("Short")
 				|| type.getSimpleSourceName().equals("Integer") || type.getSimpleSourceName().equals("Long")
