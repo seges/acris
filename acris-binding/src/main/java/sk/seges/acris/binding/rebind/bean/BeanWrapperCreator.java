@@ -21,6 +21,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
@@ -133,6 +134,7 @@ public class BeanWrapperCreator {
 			source
 					.println("public void setContent(Object " + CONTENU_FIELD + ") {");
 			source.indent();
+//			source.println("if(" + CONTENU_FIELD + "==null) { com.allen_sauer.gwt.log.client.Log.warn(\"setting null\", new RuntimeException(\"shit null\"));}");
 			source.println("this." + CONTENU_FIELD + " = (" + simpleName + ") " + CONTENU_FIELD + ";");
 			source.outdent();
 			source.println("}");
@@ -174,21 +176,20 @@ public class BeanWrapperCreator {
 						methods[i] = null;
 						continue;
 					}
-					if(isNotBean(parameter.getType()) || classType.findField(fieldName) == null) {
+					JField declaredField = findDeclaredField(classType, fieldName);
+					if(isNotBean(parameter.getType()) && declaredField != null) {
 						generateSetterForPrimitive(source, methode, parameter, getter);
-					} else {
+					} else if(declaredField != null){
 						generateSetterForBean(source, methode, parameter, getter);
 					}
 				} else { // getter
-					if(isNotBean(methode.getReturnType()) || classType.findField(fieldName) == null) {
+					JField declaredField = findDeclaredField(classType, fieldName);
+					if(isNotBean(methode.getReturnType()) &&  declaredField != null) {
 						generateGetterForPrimitive(source, methode);
-					} else {
+					} else if(declaredField != null) {
 						generateGetterForBean(source, methode);
 					}
 				}
-				source.outdent();
-				source.println("}");
-				source.println();
 			}
 			
 			// create the getAttribute method
@@ -289,12 +290,28 @@ public class BeanWrapperCreator {
 		}
 	}
 
+	private JField findDeclaredField(JClassType classType, String fieldName) {
+		JField field = classType.findField(fieldName);
+		if(field == null && classType.getSuperclass() != null) {
+			return findDeclaredField(classType.getSuperclass(), fieldName);
+		}
+		return field;
+	}
+	
 	private void generateGetterForPrimitive(SourceWriter source, JMethod methode) {
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
-
+		source.println("if(" + CONTENU_FIELD + " != null) {");
+		source.indent();
 		source.println("return " + CONTENU_FIELD + "." + methode.getName()
 				+ "();");
+		source.outdent();
+		source.println("}");
+		String field = defaultValue(methode.getReturnType());
+		source.println("return " + field + ";");
+		source.outdent();
+		source.println("}");
+		source.println();		
 	}
 
 	private String getBeanWrapperType(JType returnType) {
@@ -314,10 +331,17 @@ public class BeanWrapperCreator {
 		source.println("if(this." + field + " == null) {");
 		source.indent();
 		source.println("this." + field + " = (" + beanWrapperType + ") GWT.create(" + returnType.getQualifiedSourceName() + ".class);");
+		source.println("if(" + CONTENU_FIELD + " != null) {");
+		source.indent();
 		source.println("this." + field + ".setContent(" + CONTENU_FIELD + "." + methode.getName() + "());");
 		source.outdent();
 		source.println("}");
-		source.println("return (" + returnType.getQualifiedSourceName() + ")this." + field + ";");		
+		source.outdent();
+		source.println("}");
+		source.println("return (" + returnType.getQualifiedSourceName() + ")this." + field + ";");
+		source.outdent();
+		source.println("}");
+		source.println();
 	}
 
 	private void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter, JMethod getter) {
@@ -328,6 +352,9 @@ public class BeanWrapperCreator {
 		source.println(CONTENU_FIELD + "." + methode.getName() + "("
 				+ parameter.getName() + ");");
 		source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, " + parameter.getName() + ");");
+		source.outdent();
+		source.println("}");
+		source.println();		
 	}
 	
 	private void generateSetterForBean(SourceWriter source, JMethod methode, JParameter parameter, JMethod getter) {
@@ -349,18 +376,23 @@ public class BeanWrapperCreator {
 		source.println("}");
 		source.println("this." + field + ".setContent(" + parameter.getName() + ");");		
 		source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, " + parameter.getName() + ");");
+		source.outdent();
+		source.println("}");
+		source.println();		
 	}
 
 	private boolean isNotBean(JType type) {
 		JClassType collection = typeOracle.findType(Collection.class.getCanonicalName());
 		JClassType map = typeOracle.findType(Map.class.getCanonicalName());
+		JClassType number = typeOracle.findType(Number.class.getCanonicalName());
 		
-		boolean isCollection = false, isMap = false;
+		boolean isCollection = false, isMap = false, isNumber = false;
 		if(type instanceof JClassType) {
 			isCollection = ((JClassType) type).isAssignableTo(collection);
 			isMap = ((JClassType) type).isAssignableTo(map);
+			isNumber = ((JClassType) type).isAssignableTo(number);
 		}
-		return type.isPrimitive() != null || type.isEnum() != null || type.isArray() != null || isCollection
+		return type.isPrimitive() != null || type.isEnum() != null || type.isArray() != null || isCollection || isNumber
 				|| isMap || type.getSimpleSourceName().equals("String")
 				|| type.getSimpleSourceName().equals("Byte") || type.getSimpleSourceName().equals("Short")
 				|| type.getSimpleSourceName().equals("Integer") || type.getSimpleSourceName().equals("Long")
@@ -439,6 +471,30 @@ public class BeanWrapperCreator {
 		} else {
 			return "type not considered for the moment";
 		}*/
+	}
+	
+	public String defaultValue(JType type) {
+		if (type.getSimpleSourceName().equals("String")) {
+			return null;
+		} else if (type.getSimpleSourceName().equals("int")) {
+			return "0";
+		} else if (type.getSimpleSourceName().equals("byte")) {
+			return "Byte.valueOf(\"0\").byteValue()";
+		} else if (type.getSimpleSourceName().equals("short")) {
+			return "Short.valueOf(\"0\").shortValue()";
+		} else if (type.getSimpleSourceName().equals("long")) {
+			return "0L";
+		} else if (type.getSimpleSourceName().equals("float")) {
+			return "0f";
+		} else if (type.getSimpleSourceName().equals("double")) {
+			return "0d";
+		} else if (type.getSimpleSourceName().equals("boolean")) {
+			return "false";
+		} else if (type.getSimpleSourceName().equals("char")) {
+			return "''";
+		} else {
+			return "null";
+		}
 	}
 
 	public String castFromString(JType type, String value) {
