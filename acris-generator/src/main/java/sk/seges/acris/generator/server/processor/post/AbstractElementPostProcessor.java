@@ -23,6 +23,12 @@ public abstract class AbstractElementPostProcessor {
 	@SuppressWarnings("unchecked")
 	protected <T> T interateToNode(Node node, Class<T> nodeClass) {
 		NodeList nodeList = node.getChildren();
+		
+		if (nodeList == null) {
+			//Node does not have any child
+			return null;
+		}
+		
 		int size = nodeList.size();
 		
 		for (int i = 0; i < size; i++) {

@@ -156,7 +156,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			}
 		}
 		
-		StringFile file = new StringFile(dirFile, token.getNiceUrl());
+		StringFile file = new StringFile(dirFile, token.getNiceUrl() + File.separator + "index.html");
 
 		if (!file.exists()) {
 			try {
