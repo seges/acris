@@ -27,6 +27,8 @@ import sk.seges.sesam.dao.ICrudDAO;
 import sk.seges.sesam.dao.Junction;
 import sk.seges.sesam.dao.LikeExpression;
 import sk.seges.sesam.dao.NotExpression;
+import sk.seges.sesam.dao.NotNullExpression;
+import sk.seges.sesam.dao.NullExpression;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.dao.SimpleExpression;
@@ -342,6 +344,18 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
             parameterTypes = new Class[] { Criterion.class };
 
             parameters = new Object[] { retrieveRestriction(filterable.getCriterion(), criteria, existingAliases) };
+        } else if (filterable1 instanceof NullExpression) {
+        	NullExpression filterable = (NullExpression) filterable1;
+            parameterTypes = new Class[] { String.class };
+
+            String alias = createAliases(criteria, filterable.getProperty(), existingAliases);
+            parameters = new Object[] { alias };
+        } else if (filterable1 instanceof NotNullExpression) {
+        	NotNullExpression filterable = (NotNullExpression) filterable1;
+            parameterTypes = new Class[] { String.class };
+
+            String alias = createAliases(criteria, filterable.getProperty(), existingAliases);
+            parameters = new Object[] { alias };                        
         }
 
         try {

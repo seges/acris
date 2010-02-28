@@ -32,7 +32,7 @@ public class OrderTestDO implements IDomainObject<Long> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date delivered;
 	@ManyToOne(cascade = CascadeType.PERSIST)
-	private LocationTestDO deliveryLocationTest;
+	private LocationTestDO deliveryLocation;
 	private String orderId;
 
 	@OneToMany
@@ -63,11 +63,11 @@ public class OrderTestDO implements IDomainObject<Long> {
 	}
 
 	public LocationTestDO getDeliveryLocation() {
-		return deliveryLocationTest;
+		return deliveryLocation;
 	}
 
 	public void setDeliveryLocation(LocationTestDO location) {
-		this.deliveryLocationTest = location;
+		this.deliveryLocation = location;
 	}
 
 	public List<OrderItemTestDO> getItems() {
@@ -96,7 +96,7 @@ public class OrderTestDO implements IDomainObject<Long> {
 
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", location=" + (deliveryLocationTest == null ? "n/a" : deliveryLocationTest)
+		return "Order [id=" + id + ", location=" + (deliveryLocation == null ? "n/a" : deliveryLocation)
 				+ ", ordered=" + ordered + ", delivered = " + delivered + ", user=" + user + ", orderId = " + orderId + "]";
 	}
 }

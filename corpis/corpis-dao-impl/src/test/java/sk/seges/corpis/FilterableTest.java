@@ -29,6 +29,7 @@ import sk.seges.corpis.domain.VATTestDO;
 import sk.seges.sesam.dao.BetweenExpression;
 import sk.seges.sesam.dao.Criterion;
 import sk.seges.sesam.dao.Filter;
+import sk.seges.sesam.dao.NullExpression;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.dao.SimpleExpression;
@@ -84,6 +85,9 @@ public class FilterableTest {
 			LocationTestDO l = new LocationTestDO();
 			l.setStreet(s);
 			l.setCity("somecity " + i);
+			if(i == 2) {
+				l.setState("state" + i);
+			}
 			
 			OrderTestDO o = new OrderTestDO();
 			o.setUser(user);
@@ -104,6 +108,7 @@ public class FilterableTest {
 			LocationTestDO l = new LocationTestDO();
 			l.setStreet(s);
 			l.setCity("somecity " + i);
+			l.setState("state" + i);
 			
 			OrderTestDO o = new OrderTestDO();
 			o.setUser(user);
@@ -142,7 +147,7 @@ public class FilterableTest {
 	@Test
 	public void testFilterByStringAndNumberField() throws Exception {
 		Page p = new Page(0, 7);
-		SimpleExpression<String> filterable = Filter.eq("deliveryLocationTest.street.name");
+		SimpleExpression<String> filterable = Filter.eq("deliveryLocation.street.name");
 		filterable.setValue(SOMEWHERE);
 		p.setFilterable(filterable);
 		
@@ -152,9 +157,9 @@ public class FilterableTest {
 			assertEquals(SOMEWHERE, order.getDeliveryLocation().getStreet().getName());
 		}
 		
-		SimpleExpression<Integer> filterable2 = Filter.eq("deliveryLocationTest.street.number");
+		SimpleExpression<Integer> filterable2 = Filter.eq("deliveryLocation.street.number");
 		filterable2.setValue(2);
-		SimpleExpression<String> filterable3 = Filter.eq("deliveryLocationTest.street.name");
+		SimpleExpression<String> filterable3 = Filter.eq("deliveryLocation.street.name");
 		filterable3.setValue(SOMEWHERE2);
 		Criterion filterableFinal = Filter.conjunction().add(
 				Filter.disjunction().add(filterable).add(filterable3)).add(filterable2);
@@ -175,7 +180,7 @@ public class FilterableTest {
 	@Test
 	public void testNotAndBetween() throws Exception {
 		Page p = new Page(0, 7);
-		BetweenExpression<Integer> filterable = Filter.between("deliveryLocationTest.street.number");
+		BetweenExpression<Integer> filterable = Filter.between("deliveryLocation.street.number");
 		filterable.setLoValue(1);
 		filterable.setHiValue(3);
 		p.setFilterable(Filter.not(filterable));
@@ -188,5 +193,20 @@ public class FilterableTest {
 				fail("Neither 0 nor 4 in street number");
 			}
 		}
+	}
+	
+	@Test
+	public void testNullAndNotNull() throws Exception {
+		Page p = new Page(0, 10);
+		NullExpression filterable = Filter.isNull("deliveryLocation.state");
+		
+		p.setFilterable(filterable);
+		
+		PagedResult<List<OrderTestDO>> filtered = orderDAO.findAll(p);
+		assertEquals("Unexpected number of filtered returned", 4, filtered.getResult().size());
+		
+		p.setFilterable(Filter.isNotNull("deliveryLocation.state"));
+		filtered = orderDAO.findAll(p);
+		assertEquals("Unexpected number of filtered returned", 6, filtered.getResult().size());
 	}
 }
