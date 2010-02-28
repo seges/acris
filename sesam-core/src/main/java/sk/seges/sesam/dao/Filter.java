@@ -63,4 +63,12 @@ public class Filter {
 	public static NotExpression not(Criterion criterion) {
 		return new NotExpression(criterion);
 	}
+	
+	public static NullExpression isNull(String property) {
+		return new NullExpression(property);
+	}
+	
+	public static NotNullExpression isNotNull(String property) {
+		return new NotNullExpression(property);
+	}
 }

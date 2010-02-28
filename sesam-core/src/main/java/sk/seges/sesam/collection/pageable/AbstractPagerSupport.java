@@ -82,4 +82,12 @@ public abstract class AbstractPagerSupport {
 	public boolean isOnFirstPage() {
 		return page.getStartIndex() == 0;
 	}
+	
+	public int getCurrentPageNumber() {
+		return PagedList.getCurrentPageNumber(page);
+	}
+	
+	public int getLastPageNumber() {
+		return PagedList.getLastPageNumber(totalCount, page.getPageSize());
+	}
 }
