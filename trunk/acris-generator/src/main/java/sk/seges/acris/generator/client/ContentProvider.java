@@ -12,6 +12,7 @@ import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -134,8 +135,16 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 		int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 		if (runningRequestsCount == newRunningRequestsCount) {
 			//No new async request was started
+
 			RPCRequestTracker.getTracker().removeAllCallbacks();
-			callback.onSuccess(token);
+			new Timer() {
+
+				@Override
+				public void run() {
+					callback.onSuccess(token);
+				}
+				
+			}.schedule(5000);
 		}
 	}
 

@@ -23,7 +23,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private ContentProvider contentProvider;
 	private EntryPoint site;
 	private ValueWrapper count = new ValueWrapper();
-	private IGeneratorServiceAsync generatorService;
+	protected IGeneratorServiceAsync generatorService;
 	
 	public GwtTestGenerateOfflineContent() {
 		super();
@@ -64,9 +64,13 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	    count.value = 0;
 	    offlineContentProvider = new OfflineContentProvider(getModuleName(), generatorService);
 
-	    contentProvider = new ContentProvider(generatorService);
+	    contentProvider = getContentProvider();
 
 	    loadTokensForProcessing();
+	}
+
+	protected ContentProvider getContentProvider() {
+	    return new ContentProvider(generatorService);
 	}
 
 	private void loadTokensForProcessing() {

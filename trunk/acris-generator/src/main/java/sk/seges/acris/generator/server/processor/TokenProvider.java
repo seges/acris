@@ -109,7 +109,8 @@ public class TokenProvider {
 		}
 
 		try {
-			nextFile.writeTextToFile(generatorToken.getNiceUrl() + LANG_DELIMITER + generatorToken.getLanguage() + LANG_DELIMITER + generatorToken.getWebId());
+			nextFile.writeTextToFile(generatorToken.getLanguage()
+					+ LANG_DELIMITER + generatorToken.getWebId());
 		} catch (final IOException ioe) {
 			log.error("Unable to write content to the token file '" + nextFile.getAbsolutePath()
 					+ "'. Current token is " + generatorToken.getNiceUrl(), ioe);
@@ -148,12 +149,6 @@ public class TokenProvider {
 			return null;
 		}
 		
-		String niceurl = tokenizer.nextToken();
-
-		if (!tokenizer.hasMoreTokens()) {
-			return null;
-		}
-
 		String lang = tokenizer.nextToken();
 
 		if (!tokenizer.hasMoreTokens()) {
@@ -163,7 +158,6 @@ public class TokenProvider {
 		String webId = tokenizer.nextToken();
 
 		GeneratorToken lastGeneratorToken = new GeneratorToken();
-		lastGeneratorToken.setNiceUrl(niceurl);
 		lastGeneratorToken.setLanguage(lang);
 		lastGeneratorToken.setWebId(webId);
 
@@ -176,15 +170,4 @@ public class TokenProvider {
 			return name.startsWith(TOKEN_NAME);
 		}
 	}
-	
-	public static void main(String[] args) {
-        TokenProvider provider = new TokenProvider();
-
-        GeneratorToken token = new GeneratorToken();
-        token.setLanguage("en");
-        token.setWebId("ICM_WEB");
-        token.setNiceUrl("home");
-        
-        provider.setTokenForProcessing(token);
-    }
 }

@@ -27,7 +27,11 @@ public class HTMLNodeSplitter {
 
 	public String replaceBody(String htmlContent, String body) {
 		
-		body = getBody(body);
+		String bodyText = getBody(body);
+		
+		if (bodyText != null) {
+			body = bodyText;
+		}
 		
 		Node bodyNode = getTagInnerHtml(htmlContent, "body");
 		if (bodyNode == null) {

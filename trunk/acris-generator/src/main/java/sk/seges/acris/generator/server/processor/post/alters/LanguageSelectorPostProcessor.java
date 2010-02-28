@@ -1,5 +1,6 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
+import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TagNode;
 import org.htmlparser.nodes.TextNode;
@@ -21,6 +22,8 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 		
 	private String LANGUAGE_BAR_STYLE = "height: 32px; overflow-y: scroll";
 	
+    private static final Logger logger = Logger.getLogger(LanguageSelectorPostProcessor.class);
+
 	@Override
 	public boolean supports(Node node) {
 		if (node instanceof TagNode) {
@@ -43,7 +46,12 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 	public boolean process(Node node) {
 		
 		SelectTag languageSelector = interateToNode(node, SelectTag.class);
-
+		
+		if (languageSelector == null) {
+			logger.error("Language selector does not contains any options. Original HTML is " + node.toHtml());
+			return false;
+		}
+		
 		String style = ((TagNode)node).getAttribute(STYLE_ATTRIBUTE_NAME);
 		
 		if (style == null || style.length() == 0) {
