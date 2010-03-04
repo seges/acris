@@ -51,7 +51,7 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	private String password;
 
 	@CollectionOfElements(fetch=FetchType.EAGER)
-	private List<String> authorities;
+	protected List<String> authorities;
 
 	@OneToOne(cascade=CascadeType.ALL)
 	private UserPreferences userPreferences;
