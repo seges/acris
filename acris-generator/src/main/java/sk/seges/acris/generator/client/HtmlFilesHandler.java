@@ -12,13 +12,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * 
  * @author fat
  */
-public class OfflineContentProvider {
+public class HtmlFilesHandler {
 
 	private IGeneratorServiceAsync generatorService;
 
 	private String initialContentFilename;
 	
-	public OfflineContentProvider(String moduleName, IGeneratorServiceAsync generatorService) {
+	public HtmlFilesHandler(String moduleName, IGeneratorServiceAsync generatorService) {
 		
 		this.generatorService = generatorService;
 		

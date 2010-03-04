@@ -11,19 +11,21 @@ import sk.seges.acris.callbacks.client.RequestState;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class ContentProvider implements Iterator<GeneratorToken>{
+public class ContentInterceptor implements Iterator<GeneratorToken>{
 
 	private IGeneratorServiceAsync generatorService;
 	
 	private List<GeneratorToken> contents = new ArrayList<GeneratorToken>();
 	private Iterator<GeneratorToken> contentsIterator;
 
-	public ContentProvider(IGeneratorServiceAsync generatorService) {
+	public ContentInterceptor(IGeneratorServiceAsync generatorService) {
 		this.generatorService = generatorService;
 	}
 	
@@ -128,24 +130,30 @@ public class ContentProvider implements Iterator<GeneratorToken>{
 			
 		});
 
-		int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
+		final int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 
 		History.newItem(token.getNiceUrl());
 		
-		int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
-		if (runningRequestsCount == newRunningRequestsCount) {
-			//No new async request was started
+		DeferredCommand.addCommand(new Command() {
+			
+			@Override
+			public void execute() {
+				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
+				if (runningRequestsCount == newRunningRequestsCount) {
+					//No new async request was started
 
-			RPCRequestTracker.getTracker().removeAllCallbacks();
-			new Timer() {
-
-				@Override
-				public void run() {
-					callback.onSuccess(token);
+//					RPCRequestTracker.getTracker().removeAllCallbacks();
+//					new Timer() {
+//
+//						@Override
+//						public void run() {
+							callback.onSuccess(token);
+//						}
+//						
+//					}.schedule(5000);
 				}
-				
-			}.schedule(5000);
-		}
+			}
+		});
 	}
 
 	public String getContent() {
