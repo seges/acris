@@ -19,8 +19,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
     
-	private OfflineContentProvider offlineContentProvider;
-	private ContentProvider contentProvider;
+	private HtmlFilesHandler offlineContentProvider;
+	private ContentInterceptor contentProvider;
 	private EntryPoint site;
 	private ValueWrapper count = new ValueWrapper();
 	protected IGeneratorServiceAsync generatorService;
@@ -62,15 +62,15 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	    initializeService();
 	    
 	    count.value = 0;
-	    offlineContentProvider = new OfflineContentProvider(getModuleName(), generatorService);
+	    offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
 
 	    contentProvider = getContentProvider();
 
 	    loadTokensForProcessing();
 	}
 
-	protected ContentProvider getContentProvider() {
-	    return new ContentProvider(generatorService);
+	protected ContentInterceptor getContentProvider() {
+	    return new ContentInterceptor(generatorService);
 	}
 
 	private void loadTokensForProcessing() {
