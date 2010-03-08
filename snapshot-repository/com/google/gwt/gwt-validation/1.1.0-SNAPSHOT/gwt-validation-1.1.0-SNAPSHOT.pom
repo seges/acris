@@ -47,7 +47,6 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.0.0.GA</version>
 		</dependency>
-				
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -70,6 +69,18 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<excludes>
+						<exclude>**/emul/**/*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<sourceExcludes>
+						<sourceExclude>**/emul/**/*.java</sourceExclude>
+					</sourceExcludes>
 				</configuration>
 			</plugin>
 		</plugins>
