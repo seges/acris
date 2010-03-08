@@ -37,7 +37,7 @@ public class HTMLPostProcessing {
 	public HTMLPostProcessing() {
 	}
 
-	public boolean setProcessorContent(final String content, GeneratorToken token, DummyContentInfoProvider contentInfoProvider) {
+	public boolean setProcessorContent(final String content, GeneratorToken token, IContentInfoProvider contentInfoProvider) {
 		if (postProcessors == null || postProcessors.size() == 0) {
 			throw new RuntimeException("No HTML postprocessor registered.");
 		}
@@ -66,7 +66,7 @@ public class HTMLPostProcessing {
 		postProcessors = abstractPostProcessors.values();
 	}
 
-	private boolean processNodes(GeneratorToken token, DummyContentInfoProvider contentInfoProvider) throws ParserException {
+	private boolean processNodes(GeneratorToken token, IContentInfoProvider contentInfoProvider) throws ParserException {
 		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
 			elementPostProcessor.setPostProcessorPageId(token);
 			if (elementPostProcessor instanceof AbstractContentInfoPostProcessor) {

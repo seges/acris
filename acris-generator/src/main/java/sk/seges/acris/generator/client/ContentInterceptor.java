@@ -183,6 +183,10 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 		History.newItem(token.getNiceUrl());
 	}
 
+	public void setContent(String content) {
+		RootPanel.get().getElement().setInnerHTML(content);
+	}
+
 	public String getContent() {
 		return RootPanel.get().toString();	
 	}

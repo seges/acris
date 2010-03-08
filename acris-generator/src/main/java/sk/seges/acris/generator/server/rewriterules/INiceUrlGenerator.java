@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.server.rewriterules;
 
-import sk.seges.acris.generator.server.processor.DummyContentInfoProvider;
+import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 
 public interface INiceUrlGenerator {
 
@@ -8,5 +8,5 @@ public interface INiceUrlGenerator {
 
 	void clearRewriteFile(String lang);
 
-	void setContentInfoProvider(DummyContentInfoProvider contentInfoProvider);
+	void setContentInfoProvider(IContentInfoProvider contentInfoProvider);
 }
