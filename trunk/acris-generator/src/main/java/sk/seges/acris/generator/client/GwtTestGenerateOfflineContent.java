@@ -25,6 +25,13 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private ValueWrapper count = new ValueWrapper();
 	protected IGeneratorServiceAsync generatorService;
 	
+	/**
+	 * Default timeout for whole run of offline content generator
+	 * Suppose to be never expired because generator should finish
+	 * in correct way - by calling finalizeTest method.
+	 */
+	private static final int GENERATOR_TIMEOUT = 9940000;
+	
 	public GwtTestGenerateOfflineContent() {
 		super();
 	}
@@ -57,7 +64,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	 */
 	public void testLoadContent() {
 
-	    delayTestFinish(9940000);
+	    delayTestFinish(GENERATOR_TIMEOUT);
 
 	    initializeService();
 	    

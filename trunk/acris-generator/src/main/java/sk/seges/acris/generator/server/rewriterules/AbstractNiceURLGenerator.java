@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.server.processor.DummyContentInfoProvider;
+import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 
 public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
@@ -43,7 +43,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 	@Qualifier("legacy.url.redirect.file.location")
 	private String legacyRedirectFilePath;
 
-	private DummyContentInfoProvider contentInfoProvider;
+	private IContentInfoProvider contentInfoProvider;
 	
 	protected abstract String getDefaultRewriteRule();
 	protected abstract String getRewriteRule(String fromURL, String toURL);
@@ -237,7 +237,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		this.redirectCondition = redirectCondition;
 	}
 
-	public void setContentInfoProvider(DummyContentInfoProvider contentInfoProvider) {
+	public void setContentInfoProvider(IContentInfoProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
 	}
 }

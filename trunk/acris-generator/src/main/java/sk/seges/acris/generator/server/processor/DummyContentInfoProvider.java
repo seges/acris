@@ -3,12 +3,9 @@ package sk.seges.acris.generator.server.processor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 
-@Service
-public class DummyContentInfoProvider {
+public class DummyContentInfoProvider implements IContentInfoProvider {
 
 	public String findNiceurlForLanguage(String originalNiceUrl, String targetLanguage, String webId) {
 		return originalNiceUrl;

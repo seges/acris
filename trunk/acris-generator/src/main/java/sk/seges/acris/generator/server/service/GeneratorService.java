@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import sk.seges.acris.etc.Countries;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
-import sk.seges.acris.generator.server.processor.DummyContentInfoProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
+import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
 
@@ -40,9 +40,9 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	@Autowired
 	protected HTMLPostProcessing htmlPostProcessing;
 	
-	private DummyContentInfoProvider contentInfoProvider;
+	private IContentInfoProvider contentInfoProvider;
 	
-	public GeneratorService(DummyContentInfoProvider contentInfoProvider) {
+	public GeneratorService(IContentInfoProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
 	}
 	
@@ -129,11 +129,13 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	}
 	
 	@Override
-	public String getOfflineContentHtml(String headerFileName, String content,
+	public String getOfflineContentHtml(String entryPointFileName, String header, String content,
 			GeneratorToken token, String currentServerURL) {
 
-		String headerContent = readTextFromFile(headerFileName);
-		content = new HTMLNodeSplitter().replaceBody(headerContent, content);
+		String headerContent = readTextFromFile(entryPointFileName);
+		
+		String entryPoint = new HTMLNodeSplitter().replaceHeader(headerContent, header);
+		content = new HTMLNodeSplitter().replaceBody(entryPoint, content);
 
 		if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
 			return htmlPostProcessing.getHtml();	

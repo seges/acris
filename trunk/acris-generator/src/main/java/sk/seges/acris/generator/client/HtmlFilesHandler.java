@@ -4,6 +4,7 @@ import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -64,9 +65,15 @@ public class HtmlFilesHandler {
 				});
 	}
 
+	 public static native HeadElement getHeadElement() /*-{
+	    return $doc.getElementsByTagName("head")[0];
+	  }-*/;
+
 	public void getOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<String> callback) {
 		
-		generatorService.getOfflineContentHtml(initialContentFilename, content, token, currentServerURL, 
+		String header = getHeadElement().getInnerHTML();
+		
+		generatorService.getOfflineContentHtml(initialContentFilename, header, content, token, currentServerURL, 
 				new AsyncCallback<String>() {
 
 					public void onFailure(Throwable caught) {
