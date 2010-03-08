@@ -84,7 +84,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			public void onSuccess(List<GeneratorToken> result) {
 				if (contentProvider.hasNext()) {
-					//loadNextContent();
+					count.value = result.size();
 					loadEntryPointHTML();
 				} else {
 					fail("No tokens available for processing. Finishing", null);
@@ -116,8 +116,6 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			//we are done
 			return null;
 		}
-
-		count.value++;
 
 		final GeneratorToken generatorToken = contentProvider.next();
 		
@@ -166,13 +164,12 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			@Override
 			public void onSuccess(GeneratorToken result) {
-				saveContent(result);
-				loadNextContent();
+				saveAndLoadContent(result);
 			}
 		});
 	}
 	
-	private GeneratorToken saveContent(final GeneratorToken generatorToken) {
+	private GeneratorToken saveAndLoadContent(final GeneratorToken generatorToken) {
 		
 		String content = contentProvider.getContent();
 
@@ -181,7 +178,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		offlineContentProvider.getOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 				fail("Unable to get offline content for token " + generatorToken.getNiceUrl() + ". " + caught);
-				finalizeTest();
+				loadNextContent();
 			}
 	
 			public void onSuccess(String result) {
@@ -199,9 +196,11 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 					public void onFailure(Throwable caught) {
 						fail("Unable to write text to the file. ", caught);
+						loadNextContent();
 					}
 
 					public void onSuccess(Void result) {
+						loadNextContent();
 						if (finishTest) {
 							finalizeTest();
 						}
