@@ -11,6 +11,9 @@ import sk.seges.acris.callbacks.client.RequestState;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
@@ -105,15 +108,36 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 		contentsIterator.remove();
 	}
 	
+	private HandlerRegistration handler;
+	
  	public void loadContent(final GeneratorToken token, final AsyncCallback<GeneratorToken> callback) {
+ 		System.out.println("Loading content for niceurl " + token.getNiceUrl());
+		final Timer timer = new Timer() {
+
+			@Override
+			public void run() {
+		 		System.out.println("[ERROR] Loading not finished sucesfully for niceur " + token.getNiceUrl());
+				RPCRequestTracker.getTracker().removeAllCallbacks();
+				callback.onSuccess(token);
+			}
+			
+		};
+		timer.schedule(5000);
+
+		final ValueWrapper requestsCounter = new ValueWrapper();
+		
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
 			@Override
 			public void onProcessingFinished(RPCRequest request) {
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
+			 		System.out.println("Request failed for niceurl " + token.getNiceUrl());
 					callback.onFailure(request.getCaught());
 				} else {
+					requestsCounter.value--;
+			 		System.out.println("Request finished. Waiting for next " + requestsCounter.value + " requests for niceurl " + token.getNiceUrl());
 					if (request.getParentRequest() == null) {
+						timer.cancel();
 						RPCRequestTracker.getTracker().removeAllCallbacks();
 						callback.onSuccess(token);
 					}
@@ -132,28 +156,31 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 
 		final int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 
-		History.newItem(token.getNiceUrl());
-		
-		DeferredCommand.addCommand(new Command() {
+		handler = History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
-			public void execute() {
-				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
-				if (runningRequestsCount == newRunningRequestsCount) {
-					//No new async request was started
-
-//					RPCRequestTracker.getTracker().removeAllCallbacks();
-//					new Timer() {
-//
-//						@Override
-//						public void run() {
+			public void onValueChange(ValueChangeEvent<String> event) {
+				handler.removeHandler();
+				DeferredCommand.addCommand(new Command() {
+					
+					@Override
+					public void execute() {
+						int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
+						requestsCounter.value = newRunningRequestsCount - runningRequestsCount;
+						if (runningRequestsCount == newRunningRequestsCount) {
+					 		System.out.println("No new RPC request started for niceurl " + token.getNiceUrl());
+							//No new async request was started
+							timer.cancel();
+							RPCRequestTracker.getTracker().removeAllCallbacks();
 							callback.onSuccess(token);
-//						}
-//						
-//					}.schedule(5000);
-				}
+						} else {
+					 		System.out.println("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
+						}
+					}
+				});
 			}
 		});
+		History.newItem(token.getNiceUrl());
 	}
 
 	public String getContent() {

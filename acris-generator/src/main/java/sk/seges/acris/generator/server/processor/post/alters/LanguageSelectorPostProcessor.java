@@ -11,10 +11,9 @@ import org.htmlparser.util.NodeList;
 import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.WebSettings;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
 @Component
-public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor {
+public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProcessor {
 
 	private String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
 	private String CLASS_ATTRIBUTE_NAME = "class";
@@ -23,7 +22,7 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 	private String LANGUAGE_BAR_STYLE = "height: 32px; overflow-y: scroll";
 	
     private static final Logger logger = Logger.getLogger(LanguageSelectorPostProcessor.class);
-
+    
 	@Override
 	public boolean supports(Node node) {
 		if (node instanceof TagNode) {
@@ -68,7 +67,10 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 			String languageText = optionTag.getOptionText(); //English
 			String languageValue = optionTag.getValue(); //en
 			
-			WebSettings linkWebSettings = webSettingsService.getWebSettings(webSettings.getWebId(), languageValue);
+			if (languageValue == generatorToken.getLanguage()) {
+				continue;
+			}
+			WebSettings linkWebSettings = webSettingsService.getWebSettings(generatorToken.getWebId(), languageValue);
 
 			LinkTag linkTag = new LinkTag();
 			
@@ -78,8 +80,16 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 			nodeList.add(textNode);
 			linkTag.setChildren(nodeList);
 			
-			linkTag.setLink(linkWebSettings.getTopLevelDomain());
+			String translatedNiceUrl = contentInfoProvider.findNiceurlForLanguage(generatorToken.getNiceUrl(), languageValue, generatorToken.getWebId());
+			String url = linkWebSettings.getTopLevelDomain();
 			
+			if (translatedNiceUrl != null) {
+				if (!url.endsWith("/")) {
+					url += "/";
+				}
+				url += translatedNiceUrl;
+			}
+			linkTag.setLink(url);
 			languageLinksList.add(linkTag);
 			languageLinksList.add(new TextNode("<br/>"));
 		}

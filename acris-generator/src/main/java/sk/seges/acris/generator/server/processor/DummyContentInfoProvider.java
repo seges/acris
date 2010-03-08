@@ -8,7 +8,12 @@ import org.springframework.stereotype.Service;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 
 @Service
-public class ContentInfoProvider {
+public class DummyContentInfoProvider {
+
+	public String findNiceurlForLanguage(String originalNiceUrl, String targetLanguage, String webId) {
+		return originalNiceUrl;
+	}
+	
 	public String getContentKeywords(GeneratorToken token) {
 		return "Offline content generator, Google Web Toolkit, Acris framework, Seges ltd";
 	}

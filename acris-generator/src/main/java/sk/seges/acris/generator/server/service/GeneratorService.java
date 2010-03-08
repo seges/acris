@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import sk.seges.acris.etc.Countries;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
-import sk.seges.acris.generator.server.processor.ContentInfoProvider;
+import sk.seges.acris.generator.server.processor.DummyContentInfoProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
@@ -40,9 +40,9 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	@Autowired
 	protected HTMLPostProcessing htmlPostProcessing;
 	
-	private ContentInfoProvider contentInfoProvider;
+	private DummyContentInfoProvider contentInfoProvider;
 	
-	public GeneratorService(ContentInfoProvider contentInfoProvider) {
+	public GeneratorService(DummyContentInfoProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
 	}
 	
