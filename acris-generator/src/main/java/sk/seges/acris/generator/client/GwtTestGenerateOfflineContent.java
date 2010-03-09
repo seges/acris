@@ -12,6 +12,7 @@ import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -111,7 +112,6 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			}
 
 			public void onSuccess(String result) {
-				UIHelper.cleanUI();
 				RootPanel.get().getElement().setInnerHTML(result);
 				loadNextContent();
 			}

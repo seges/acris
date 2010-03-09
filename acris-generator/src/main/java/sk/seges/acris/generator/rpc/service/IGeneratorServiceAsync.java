@@ -6,7 +6,7 @@ package sk.seges.acris.generator.rpc.service;
 import java.util.List;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.util.Pair;
+import sk.seges.acris.util.Tuple;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -27,7 +27,7 @@ public interface IGeneratorServiceAsync {
 	/**
 	 * File provider services
 	 */
-	void readHtmlBodyFromFile(String filename, AsyncCallback<Pair<String, String>> callback);
+	void readHtmlBodyFromFile(String filename, AsyncCallback<Tuple<String, String>> callback);
 
 	void writeTextToFile(String content, GeneratorToken token, AsyncCallback<Void> callback);
 

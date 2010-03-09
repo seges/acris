@@ -21,7 +21,7 @@ import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
 import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
-import sk.seges.acris.util.Pair;
+import sk.seges.acris.util.Tuple;
 
 /**
  * @author fat
@@ -73,9 +73,9 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		return null;
  	}
 
-	public Pair<String, String> readHtmlBodyFromFile(String filename) {
+	public Tuple<String, String> readHtmlBodyFromFile(String filename) {
 		String content = readTextFromFile(filename);
-		return new Pair<String, String>(new HTMLNodeSplitter().getHeader(content), new HTMLNodeSplitter().getBody(content));
+		return new Tuple<String, String>(new HTMLNodeSplitter().getHeader(content), new HTMLNodeSplitter().getBody(content));
 	}
 	
 	public String readTextFromFile(String filename) {
