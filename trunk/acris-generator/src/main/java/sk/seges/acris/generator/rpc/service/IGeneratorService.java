@@ -6,7 +6,7 @@ package sk.seges.acris.generator.rpc.service;
 import java.util.List;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.util.Pair;
+import sk.seges.acris.util.Tuple;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -27,7 +27,7 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * File provider services
 	 */
-	Pair<String, String> readHtmlBodyFromFile(String filename);
+	Tuple<String, String> readHtmlBodyFromFile(String filename);
 
 	void writeTextToFile(String content, GeneratorToken token);
 

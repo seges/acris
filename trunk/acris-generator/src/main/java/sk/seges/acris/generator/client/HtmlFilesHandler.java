@@ -2,12 +2,13 @@ package sk.seges.acris.generator.client;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
-import sk.seges.acris.util.Pair;
+import sk.seges.acris.util.Tuple;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Loader for maintaining IO operations, e.g. loading entry point, saving
@@ -42,7 +43,7 @@ public class HtmlFilesHandler {
 	public void getEntryPointBodyHtml(final AsyncCallback<String> callback) {
 		
 		generatorService.readHtmlBodyFromFile(initialContentFilename,
-				new AsyncCallback<Pair<String, String>>() {
+				new AsyncCallback<Tuple<String, String>>() {
 
 					public void onFailure(Throwable caught) {
 						GWT.log(
@@ -52,7 +53,7 @@ public class HtmlFilesHandler {
 						callback.onFailure(caught);
 					}
 
-					public void onSuccess(Pair<String, String> result) {
+					public void onSuccess(Tuple<String, String> result) {
 						if (result == null) {
 							GWT.log(
 									"Unable to load default content. Please check entry html file: "
@@ -61,6 +62,7 @@ public class HtmlFilesHandler {
 									"Unable to load default content. Please check entry html file: "
 											+ initialContentFilename));
 						} else {
+							UIHelper.cleanUI();
 							Element el = getHeadElement();
 							el.setInnerHTML(el.getInnerHTML() + "\n" + result.getFirst());
 							callback.onSuccess(result.getSecond());
@@ -76,7 +78,9 @@ public class HtmlFilesHandler {
 	public void getOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<String> callback) {
 		
 		String header = getHeadElement().getInnerHTML();
-		
+
+		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
+
 		generatorService.getOfflineContentHtml(initialContentFilename, header, content, token, currentServerURL, 
 				new AsyncCallback<String>() {
 
