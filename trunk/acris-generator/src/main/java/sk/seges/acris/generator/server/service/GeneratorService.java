@@ -21,6 +21,7 @@ import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
 import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.io.StringFile;
+import sk.seges.acris.util.Pair;
 
 /**
  * @author fat
@@ -72,9 +73,9 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		return null;
  	}
 
-	public String readHtmlBodyFromFile(String filename) {
+	public Pair<String, String> readHtmlBodyFromFile(String filename) {
 		String content = readTextFromFile(filename);
-		return new HTMLNodeSplitter().getBody(content);
+		return new Pair<String, String>(new HTMLNodeSplitter().getHeader(content), new HTMLNodeSplitter().getBody(content));
 	}
 	
 	public String readTextFromFile(String filename) {
@@ -137,6 +138,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		String entryPoint = new HTMLNodeSplitter().replaceHeader(headerContent, header);
 		content = new HTMLNodeSplitter().replaceBody(entryPoint, content);
 
+		
 		if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
 			return htmlPostProcessing.getHtml();	
 		}

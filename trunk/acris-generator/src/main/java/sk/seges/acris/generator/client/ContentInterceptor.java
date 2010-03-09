@@ -116,7 +116,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 
 			@Override
 			public void run() {
-		 		System.out.println("[ERROR] Loading not finished sucesfully for niceur " + token.getNiceUrl());
+		 		System.out.println("[ERROR] Loading not finished sucesfully for niceurl " + token.getNiceUrl());
 				RPCRequestTracker.getTracker().removeAllCallbacks();
 				callback.onSuccess(token);
 			}

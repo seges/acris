@@ -2,8 +2,10 @@ package sk.seges.acris.generator.client;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
+import sk.seges.acris.util.Pair;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -38,9 +40,9 @@ public class HtmlFilesHandler {
 	}
 
 	public void getEntryPointBodyHtml(final AsyncCallback<String> callback) {
-
+		
 		generatorService.readHtmlBodyFromFile(initialContentFilename,
-				new AsyncCallback<String>() {
+				new AsyncCallback<Pair<String, String>>() {
 
 					public void onFailure(Throwable caught) {
 						GWT.log(
@@ -50,7 +52,7 @@ public class HtmlFilesHandler {
 						callback.onFailure(caught);
 					}
 
-					public void onSuccess(String result) {
+					public void onSuccess(Pair<String, String> result) {
 						if (result == null) {
 							GWT.log(
 									"Unable to load default content. Please check entry html file: "
@@ -59,7 +61,9 @@ public class HtmlFilesHandler {
 									"Unable to load default content. Please check entry html file: "
 											+ initialContentFilename));
 						} else {
-							callback.onSuccess(result);
+							Element el = getHeadElement();
+							el.setInnerHTML(el.getInnerHTML() + "\n" + result.getFirst());
+							callback.onSuccess(result.getSecond());
 						}
 					}
 				});

@@ -26,7 +26,7 @@ public class HTMLNodeSplitter {
 		return bodyNode.getChildren().toHtml();
 	}
 
-	protected String getHeader(String content) {
+	public String getHeader(String content) {
 		Node headerNode = getTagInnerHtml(content, "head");
 		if (headerNode == null) {
 			return null;
