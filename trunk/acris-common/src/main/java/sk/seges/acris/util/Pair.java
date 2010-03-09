@@ -2,7 +2,7 @@ package sk.seges.acris.util;
 
 import java.io.Serializable;
 
-public class Pair<A, B> implements Serializable {
+public class Pair<A extends Serializable, B extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = -9196548177186460257L;
 
@@ -16,7 +16,7 @@ public class Pair<A, B> implements Serializable {
         this.second = second;
     }
 
-    public static final <T1, T2> Pair<T1, T2> of(T1 first, T2 second) {
+    public static final <T1 extends Serializable, T2 extends Serializable> Pair<T1, T2> of(T1 first, T2 second) {
         return new Pair<T1, T2>(first, second);
     }
 
