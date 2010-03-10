@@ -14,6 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.springframework.security.GrantedAuthority;
@@ -24,7 +25,7 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="generic_users")
+@Table(name="generic_users", uniqueConstraints = @UniqueConstraint(columnNames = {GenericUser.USER_NAME_ATTRIBUTE, GenericUser.WEBID_ATTRIBUTE}))
 public class GenericUser implements IDomainObject<Long>, UserDetails {
 
 	private static final long serialVersionUID = 4295318098990134331L;
@@ -33,6 +34,7 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	public static final String PASSWORD_ATTRIBUTE = "password";
 	public static final String ENABLED_ATTRIBUTE = "enabled";
 	public static final String DESCRIPTION_ATTRIBUTE = "description";
+	public static final String WEBID_ATTRIBUTE = "webId";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,8 +51,9 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 
 	@Column
 	private String password;
+	
+	private String webId;
 
-	@CollectionOfElements(fetch=FetchType.EAGER)
 	protected List<String> authorities;
 
 	@OneToOne(cascade=CascadeType.ALL)
@@ -91,6 +94,14 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 		this.password = password;
 	}
 
+	public String getWebId() {
+		return webId;
+	}
+	
+	public void setWebId(String webId) {
+		this.webId = webId;
+	}
+	
 	public UserPreferences getUserPreferences() {
 		return userPreferences;
 	}
@@ -167,8 +178,8 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((webId == null) ? 0 : webId.hashCode());
 		return result;
 	}
 
@@ -186,6 +197,18 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 				return false;
 		} else if (!username.equals(other.username))
 			return false;
+		if (webId == null) {
+			if (other.webId != null)
+				return false;
+		} else if (!webId.equals(other.webId))
+			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "GenericUser [authorities=" + authorities + ", description=" + description + ", enabled="
+				+ enabled + ", id=" + id + ", password=" + password + ", userPreferences=" + userPreferences
+				+ ", username=" + username + ", webId=" + webId + "]";
 	}
 }
