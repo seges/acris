@@ -12,6 +12,7 @@ import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -65,6 +66,14 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	public void testLoadContent() {
 
 	    delayTestFinish(GENERATOR_TIMEOUT);
+
+		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			
+			@Override
+			public void onUncaughtException(Throwable e) {
+				System.out.println(e);
+			}
+		});
 
 	    initializeService();
 	    
