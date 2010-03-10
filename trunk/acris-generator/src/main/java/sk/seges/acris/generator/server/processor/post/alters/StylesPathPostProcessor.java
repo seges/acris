@@ -16,9 +16,10 @@ public class StylesPathPostProcessor extends AbstractPathPostProcessor {
 		
 		if (node instanceof StyleLinkTag) {
 			StyleLinkTag styleLinkTag = (StyleLinkTag)node;
-			return (isPathRelative(getPath(node)) &&
+			return (isPathRelative(getPath(node)) &&	
 					compareIgnoreCaseNullSafe(styleLinkTag.getRel(), STYLESHEET_REL) &&
-					compareIgnoreCaseNullSafe(styleLinkTag.getType(), CSS_TYPE));
+					(compareIgnoreCaseNullSafe(styleLinkTag.getType(), CSS_TYPE) ||
+					 compareIgnoreCaseNullSafe(styleLinkTag.getType(), null)));
 		}
 
 		return false;

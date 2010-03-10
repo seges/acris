@@ -9,6 +9,10 @@ import org.htmlparser.Node;
 public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostProcessor {
 
 	protected boolean compareIgnoreCaseNullSafe(String text1, String text2) {
+		if (text1 == null && text2 == null) {
+			return true;
+		}
+
 		if (text1 == null || text2 == null) {
 			return false;
 		}
