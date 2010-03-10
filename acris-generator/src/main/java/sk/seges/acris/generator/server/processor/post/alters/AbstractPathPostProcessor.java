@@ -56,7 +56,7 @@ public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostP
 		String pathPrefix = "";
 		
 		for (int i = 1; i < count; i++) {
-			pathPrefix = pathPrefix + ".." + File.separator;
+			pathPrefix = pathPrefix + "../";
 		}
 		
 		setPath(node, pathPrefix + getPath(node));
