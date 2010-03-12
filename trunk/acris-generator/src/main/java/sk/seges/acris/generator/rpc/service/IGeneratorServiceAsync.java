@@ -22,7 +22,7 @@ public interface IGeneratorServiceAsync {
 
 	void getLastProcessingToken(AsyncCallback<GeneratorToken> callback);
 
-	void getOfflineContentHtml(String entryPointFileName, String header, String content, GeneratorToken token, String currentServerURL, AsyncCallback<String> callback);
+	void getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL, AsyncCallback<String> callback);
 
 	/**
 	 * File provider services

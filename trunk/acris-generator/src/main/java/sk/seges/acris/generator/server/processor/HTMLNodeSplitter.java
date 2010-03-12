@@ -3,10 +3,12 @@ package sk.seges.acris.generator.server.processor;
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
+import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.BodyTag;
+import org.htmlparser.tags.CompositeTag;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
@@ -18,8 +20,13 @@ public class HTMLNodeSplitter {
 	public HTMLNodeSplitter() {
 	}
 
+	private String getNullSafeBody(String content) {
+		String body = getBody(content);
+		return body == null ? content : body;
+	}
+	
 	public String getBody(String content) {
-		Node bodyNode = getTagInnerHtml(content, "body");
+		Node bodyNode = getTagByName(content, "body");
 		if (bodyNode == null) {
 			return null;
 		}
@@ -27,7 +34,7 @@ public class HTMLNodeSplitter {
 	}
 
 	public String getHeader(String content) {
-		Node headerNode = getTagInnerHtml(content, "head");
+		Node headerNode = getTagByName(content, "head");
 		if (headerNode == null) {
 			return null;
 		}
@@ -60,7 +67,7 @@ public class HTMLNodeSplitter {
 			header = headerText;
 		}
 
-		Node headNode = getTagInnerHtml(htmlContent, "head");
+		Node headNode = getTagByName(htmlContent, "head");
 
 		if (headNode == null) {
 			return null;
@@ -78,6 +85,32 @@ public class HTMLNodeSplitter {
 		return getHtmlFromNode(headTag);
 	}
 	
+	private <T extends CompositeTag> T removeTagChildren(T tag) {
+		int size = tag.getChildCount();
+		for (int i = 0; i < size; i++) {
+			tag.removeChild(0);
+		}
+		return tag;
+	}
+	
+	private <T extends CompositeTag> String setInnerHtml(T tag, String html) {
+		TextNode bodyContent = new TextNode(html);
+		tag.getChildren().add(bodyContent);
+		
+		return getHtmlFromNode(tag);
+	}
+
+	public String replaceRootContent(String htmlContent, String rootContent) {
+		rootContent = getNullSafeBody(rootContent);
+		CompositeTag tag = getTagById(htmlContent, "rootContent");
+		if (tag == null) {
+			return replaceBody(htmlContent, rootContent);
+		}
+		
+		removeTagChildren(tag);
+		return setInnerHtml(tag, rootContent);
+	}
+	
 	public String replaceBody(String htmlContent, String body) {
 		
 		String bodyText = getBody(body);
@@ -86,7 +119,7 @@ public class HTMLNodeSplitter {
 			body = bodyText;
 		}
 		
-		Node bodyNode = getTagInnerHtml(htmlContent, "body");
+		Node bodyNode = getTagByName(htmlContent, "body");
 		if (bodyNode == null) {
 			return null;
 		}
@@ -102,7 +135,9 @@ public class HTMLNodeSplitter {
 		return getHtmlFromNode(bodyTag);
 	}
 	
-	private Node getTagInnerHtml(String content, String tagName) {
+	
+	@SuppressWarnings("unchecked")
+	private <T extends CompositeTag> T getTagByName(String content, String tagName) {
 		NodeFilter nodeFilter = new TagNameFilter(tagName);
 		Lexer lexer = new Lexer(content);
 		Parser parser = new Parser(lexer);
@@ -117,7 +152,28 @@ public class HTMLNodeSplitter {
 			return null;
 		}
 		
-		return nodes.elementAt(0);
+		Node node = nodes.elementAt(0);
+		return (T)node;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends CompositeTag> T getTagById(String content, String id) {
+		HasAttributeFilter nodeFilter = new HasAttributeFilter("id", id);
+		Lexer lexer = new Lexer(content);
+		Parser parser = new Parser(lexer);
+		NodeList nodes;
+		try {
+			nodes = parser.parse(nodeFilter);
+		} catch (ParserException e) {
+			throw new RuntimeException(e);
+		}
+
+		if (nodes == null) {
+			return null;
+		}
+		
+		Node node = nodes.elementAt(0);
+		return (T)node;
 	}
 
 }
