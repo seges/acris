@@ -13,7 +13,9 @@ import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
@@ -155,29 +157,23 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 		});
 
 		final int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
-
+		
 		handler = History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				handler.removeHandler();
-				DeferredCommand.addCommand(new Command() {
-					
-					@Override
-					public void execute() {
-						int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
-						requestsCounter.value = newRunningRequestsCount - runningRequestsCount;
-						if (runningRequestsCount == newRunningRequestsCount) {
-					 		System.out.println("No new RPC request started for niceurl " + token.getNiceUrl());
-							//No new async request was started
-							timer.cancel();
-							RPCRequestTracker.getTracker().removeAllCallbacks();
-							callback.onSuccess(token);
-						} else {
-					 		System.out.println("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
-						}
-					}
-				});
+				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
+				requestsCounter.value = newRunningRequestsCount - runningRequestsCount;
+				if (runningRequestsCount == newRunningRequestsCount) {
+			 		System.out.println("No new RPC request started for niceurl " + token.getNiceUrl());
+					//No new async request was started
+					timer.cancel();
+					RPCRequestTracker.getTracker().removeAllCallbacks();
+					callback.onSuccess(token);
+				} else {
+			 		System.out.println("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
+				}
 			}
 		});
 		History.newItem(token.getNiceUrl());

@@ -130,13 +130,14 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	}
 	
 	@Override
-	public String getOfflineContentHtml(String entryPointFileName, String header, String content,
+	public String getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content,
 			GeneratorToken token, String currentServerURL) {
 
 		String headerContent = readTextFromFile(entryPointFileName);
 		
 		String entryPoint = new HTMLNodeSplitter().replaceHeader(headerContent, header);
-		content = new HTMLNodeSplitter().replaceBody(entryPoint, content);
+		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
+		content = new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
 
 		
 		if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {

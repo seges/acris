@@ -22,7 +22,7 @@ public interface IGeneratorService extends RemoteService {
 
 	GeneratorToken getLastProcessingToken();
 
-	String getOfflineContentHtml(String entryPointFileName, String header, String content, GeneratorToken token, String currentServerURL);
+	String getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL);
 
 	/**
 	 * File provider services

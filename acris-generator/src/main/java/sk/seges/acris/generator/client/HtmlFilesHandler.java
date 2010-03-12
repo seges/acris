@@ -20,6 +20,7 @@ public class HtmlFilesHandler {
 	private IGeneratorServiceAsync generatorService;
 
 	private String initialContentFilename;
+	private String bodyContentWrapper;
 	
 	public HtmlFilesHandler(String moduleName, IGeneratorServiceAsync generatorService) {
 		
@@ -63,16 +64,23 @@ public class HtmlFilesHandler {
 						} else {
 							UIHelper.cleanUI();
 							Element el = getHeadElement();
-							el.setInnerHTML(el.getInnerHTML() + "\n" + result.getFirst());
+							String headerInnerHtml = el.getInnerHTML();
+
+							//TODO Ugly hack, whole string comparation fails. So it is sufficient
+							//to compare only first xx characters
+							if (!headerInnerHtml.contains(result.getFirst().substring(0, 50))) {
+								el.setInnerHTML(el.getInnerHTML() + "\n" + result.getFirst());
+							}
+							bodyContentWrapper = result.getSecond();
 							callback.onSuccess(result.getSecond());
 						}
 					}
 				});
 	}
 
-	 public static native HeadElement getHeadElement() /*-{
+	public static native HeadElement getHeadElement() /*-{
 	    return $doc.getElementsByTagName("head")[0];
-	  }-*/;
+	}-*/;
 
 	public void getOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<String> callback) {
 		
@@ -80,7 +88,7 @@ public class HtmlFilesHandler {
 
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
 
-		generatorService.getOfflineContentHtml(initialContentFilename, header, content, token, currentServerURL, 
+		generatorService.getOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, 
 				new AsyncCallback<String>() {
 
 					public void onFailure(Throwable caught) {
