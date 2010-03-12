@@ -160,13 +160,13 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		});
 
 		if (site == null) {
-			try {
+//			try {
 				site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
 				site.onModuleLoad();
-			} catch (RuntimeException ex) {
-				int a = 0;
-				int b = a;
-			}
+//			} catch (RuntimeException ex) {
+//				int a = 0;
+//				int b = a;
+//			}
 		}  else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
 			loadContentForToken(generatorToken);

@@ -95,6 +95,13 @@ public class HTMLNodeSplitter {
 	
 	private <T extends CompositeTag> String setInnerHtml(T tag, String html) {
 		TextNode bodyContent = new TextNode(html);
+		NodeList children = tag.getChildren();
+		
+		if (children == null) {
+			children = new NodeList();
+			tag.setChildren(children);
+		} 
+
 		tag.getChildren().add(bodyContent);
 		
 		return getHtmlFromNode(tag);

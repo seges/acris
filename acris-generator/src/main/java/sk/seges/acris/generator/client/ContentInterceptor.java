@@ -13,11 +13,7 @@ import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -176,7 +172,12 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 				}
 			}
 		});
-		History.newItem(token.getNiceUrl());
+//		try {
+			History.newItem(token.getNiceUrl());
+//		} catch (RuntimeException e) {
+//			int a = 0;
+//			int b = a;
+//		}
 	}
 
 	public void setContent(String content) {
