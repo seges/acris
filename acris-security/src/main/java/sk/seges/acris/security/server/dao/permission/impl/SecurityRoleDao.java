@@ -18,7 +18,7 @@ import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 @Component
 public class SecurityRoleDao extends AbstractHibernateCRUD<SecurityRole> implements ISecurityRoleDao {
 
-    @PersistenceContext(unitName = "hrOddelenieEntityManagerFactory")
+	@PersistenceContext(unitName = "acrisEntityManagerFactory")
     public void setEntityManager(EntityManager em) {
         super.setEntityManager(em);
     }

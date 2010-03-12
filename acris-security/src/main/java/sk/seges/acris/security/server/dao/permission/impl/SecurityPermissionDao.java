@@ -16,7 +16,7 @@ import sk.seges.sesam.dao.Page;
 @Component
 public class SecurityPermissionDao extends AbstractHibernateCRUD<SecurityPermission> implements ISecurityPermissionDao {
 
-    @PersistenceContext(unitName = "hrOddelenieEntityManagerFactory")
+	@PersistenceContext(unitName = "acrisEntityManagerFactory")
     public void setEntityManager(EntityManager em) {
         super.setEntityManager(em);
     }
