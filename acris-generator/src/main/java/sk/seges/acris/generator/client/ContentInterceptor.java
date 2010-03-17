@@ -172,6 +172,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 				}
 			}
 		});
+		
 //		try {
 			History.newItem(token.getNiceUrl());
 //		} catch (RuntimeException e) {

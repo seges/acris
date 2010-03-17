@@ -75,7 +75,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 	public Tuple<String, String> readHtmlBodyFromFile(String filename) {
 		String content = readTextFromFile(filename);
-		return new Tuple<String, String>(new HTMLNodeSplitter().getHeader(content), new HTMLNodeSplitter().getBody(content));
+		return new Tuple<String, String>(new HTMLNodeSplitter().getHeaderText(content), new HTMLNodeSplitter().getBody(content));
 	}
 	
 	public String readTextFromFile(String filename) {
@@ -135,7 +135,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 
 		String headerContent = readTextFromFile(entryPointFileName);
 		
-		String entryPoint = new HTMLNodeSplitter().replaceHeader(headerContent, header);
+		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
 		content = new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
 
