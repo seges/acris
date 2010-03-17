@@ -66,7 +66,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	public void testLoadContent() {
 
 	    delayTestFinish(GENERATOR_TIMEOUT);
-	    
+
+	    prepareEnvironment();
+
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			
 			@Override
@@ -82,10 +84,12 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	    offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
 
 	    contentProvider = getContentProvider();
-
+	    
 	    loadTokensForProcessing();
 	}
 
+	protected void prepareEnvironment() {};
+	
 	protected ContentInterceptor getContentProvider() {
 	    return new ContentInterceptor(generatorService);
 	}
@@ -134,6 +138,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		}
 
 		final GeneratorToken generatorToken = contentProvider.next();
+//		RPCRequestTracker.getTracker().removeAllCallbacks();
 		
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
@@ -160,13 +165,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		});
 
 		if (site == null) {
-//			try {
-				site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
-				site.onModuleLoad();
-//			} catch (RuntimeException ex) {
-//				int a = 0;
-//				int b = a;
-//			}
+			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
+			site.onModuleLoad();
 		}  else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
 			loadContentForToken(generatorToken);
@@ -238,9 +238,13 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 //		}
 		finalizeTest();
 	}
+
+	protected void finalizeEnvironment() {
+		UIHelper.cleanUI();
+	}
 	
 	private void finalizeTest() {
-		UIHelper.cleanUI();
+		finalizeEnvironment();
 		finishTest();
 	}
 }

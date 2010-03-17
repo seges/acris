@@ -5,7 +5,6 @@ import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
 import sk.seges.acris.util.Tuple;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -63,14 +62,16 @@ public class HtmlFilesHandler {
 											+ initialContentFilename));
 						} else {
 							UIHelper.cleanUI();
-							Element el = getHeadElement();
-							String headerInnerHtml = el.getInnerHTML();
+//							Element el = getHeadElement();
+//							String headerInnerHtml = el.getInnerHTML();
 
 							//TODO Ugly hack, whole string comparation fails. So it is sufficient
 							//to compare only first xx characters
-							if (!headerInnerHtml.contains(result.getFirst().substring(0, 50))) {
-								el.setInnerHTML(el.getInnerHTML() + "\n" + result.getFirst());
-							}
+//							if (!headerInnerHtml.contains(result.getFirst().substring(0, 50))) {
+//								el.appendChild(Document.get().createTextNode(""));
+//								el.setInnerHTML(el.getInnerHTML() + "\n" + result.getFirst());
+//							}
+							
 							bodyContentWrapper = result.getSecond();
 							callback.onSuccess(result.getSecond());
 						}
