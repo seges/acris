@@ -76,7 +76,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
 
             List<String> paramAnnots = securedAnnotationProcessor.getListAuthoritiesForType(param);
             
-            if (paramAnnots != null && paramAnnots.size() > 0) {
+            if (paramAnnots != null/* && paramAnnots.size() > 0*/) {
                 boolean useModifier = !securedAnnotationProcessor.isAuthorityPermission(param);
                 List<String> allAnnotations = new ArrayList<String>();
                 allAnnotations.addAll(paramAnnots);
@@ -85,7 +85,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
                 }
                 
                 generateFieldVisibilityRestriction(sourceWriter, allAnnotations, 
-                        context, classType, param, useModifier);
+                        context, param, useModifier);
             }
         }
         sourceWriter.println("widget.setVisible(true);");
@@ -101,7 +101,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
 
     protected void generateFieldVisibilityRestriction(SourceWriter sourceWriter,
             List<String> fieldAnnots, GeneratorContext context,
-            JType type, JField param, boolean useModifiers) throws NotFoundException {
+            JField param, boolean useModifiers) throws NotFoundException {
         // check of view authority
         sourceWriter.println("if (user != null) {");
         sourceWriter.indent();
@@ -111,7 +111,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
         sourceWriter.println("if(" + param.getName() + "==widget && hasViewPermission ) {");
         sourceWriter.indent();
         sourceWriter.println(param.getName() + ".setVisible(true);");
-        sourceWriter.println("return;");
+//        sourceWriter.println("return;");
         sourceWriter.outdent();
         sourceWriter.println("}");
     }
@@ -159,7 +159,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
                     }
                     
                     generateFieldEnabledFlagRestriction(sourceWriter, allAnnotations, 
-                            context, classType, param, useModifier);
+                            context, param, useModifier);
                 }
             }
         }
@@ -176,7 +176,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
 
     protected void generateFieldEnabledFlagRestriction(SourceWriter sourceWriter,
             List<String> fieldAnnots, GeneratorContext context,
-            JType type, JField param, boolean useModifiers) throws NotFoundException {
+            JField param, boolean useModifiers) throws NotFoundException {
         // check of view authority
         sourceWriter.println("if (user != null) {");
         sourceWriter.indent();
@@ -186,7 +186,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
         sourceWriter.println("if(" + param.getName() + "==widget && hasEditPermission ){");
         sourceWriter.indent();
         sourceWriter.println(param.getName() + ".setEnabled(true);");
-        sourceWriter.println("return;");
+//        sourceWriter.println("return;");
         sourceWriter.outdent();
         sourceWriter.println("}");
     }
