@@ -134,12 +134,12 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			GeneratorToken token, String currentServerURL) {
 
 		String headerContent = readTextFromFile(entryPointFileName);
+		String doctype = new HTMLNodeSplitter().readDoctype(headerContent);
 		
 		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
-		content = new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
+		content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
 
-		
 		if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
 			return htmlPostProcessing.getHtml();	
 		}

@@ -55,7 +55,7 @@ public class HTMLNodeSplitter {
 		while (topLevelNode.getPreviousSibling() != null) {
 			topLevelNode = topLevelNode.getPreviousSibling();
 		}
-		
+
 		String result = "";
 		
 		do {
@@ -119,6 +119,20 @@ public class HTMLNodeSplitter {
 		return false;
 	}
 	
+	public String readDoctype(String html) {
+		NodeIterator iterator = getNodeListIterator(html);
+		try {
+			if (iterator.hasMoreNodes()) {
+				Node firstNode = iterator.nextNode();
+				return firstNode.getText();
+			}
+		} catch (ParserException e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+		
+	}
+	
 	public String joinHeaders(String htmlContent, String header) {
 		HeadTag htmlHeadTag = getTagByName(htmlContent, "head");
 		HeadTag generatedHeadTag = getTagByName(header, "head");
@@ -145,7 +159,7 @@ public class HTMLNodeSplitter {
 				}
 			}
 		} catch (ParserException e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 		
 		return getHtmlFromNode(htmlHeadTag);
