@@ -95,6 +95,8 @@ FAQ:
    A: Anytime when user AJAX based link (like `http://synapso.sk/#!en/template`) put somewhere in the another page or forum - generally said there exists somewhere in the internet backlink to the AJAX based web site. TODO: provide SWS rule with 301 status
 
 
+[http://acris.googlecode.com/svn/wiki/images/generator_small.png]
+
 Anchor based rewrite:
 http://httpd.apache.org/docs/2.2/rewrite/rewrite_guide.html#redirectanchors
 
