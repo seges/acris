@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwt.beansbinding.core.client.Converter;
 import org.gwt.beansbinding.observablecollections.client.ObservableCollections;
 
 import sk.seges.acris.binding.client.holder.BindingHolder;
@@ -35,8 +36,8 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 	private final String itemValueProperty;
 
 	private final boolean wasEnabled;
-	
-	private List<T> listOfValues;
+
+	private List<BeanWrapper<T>> listOfValues;
 
 	public BoundListAsyncCallback(BindingHolder<T> bindingHolder, String sourceProperty,
 			ListBox targetWidget, String itemTextProperty, String itemValueProperty) {
@@ -46,7 +47,7 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 		this.targetWidget = targetWidget;
 		this.itemTextProperty = itemTextProperty;
 		this.itemValueProperty = itemValueProperty;
-		
+
 		wasEnabled = targetWidget.isEnabled();
 	}
 
@@ -55,24 +56,23 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 		GWT.log("Exception in bound list callback", arg0);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onSuccess(PagedResult<List<T>> arg0) {
 		if (listOfValues != null && listOfValues.size() > 0) {
 			// listOfValues.clear();
 		}
-		List<T> listOfWrappers = null;
+		List<BeanWrapper<T>> listOfWrappers = null;
 		if (listOfValues == null) {
-			listOfWrappers = new ArrayList<T>();
+			listOfWrappers = new ArrayList<BeanWrapper<T>>();
 		}
 		BeanWrapper<T> wrapper;
 		for (T result : arg0.getResult()) {
 			wrapper = createWrapper();
 			wrapper.setContent(result);
 			if (listOfValues == null) {
-				listOfWrappers.add((T) wrapper);
+				listOfWrappers.add(wrapper);
 			} else {
-				listOfValues.add((T) wrapper);
+				listOfValues.add(wrapper);
 			}
 		}
 		if (listOfValues == null) {
@@ -80,11 +80,28 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 		}
 
 		bindingHolder.addListBoxBinding(listOfValues, targetWidget, itemTextProperty, itemValueProperty);
-		bindingHolder.addSelectedItemBinding(sourceProperty, targetWidget);
-		if(wasEnabled) {
+		
+		// selection binding with converter between wrapper and bean
+		bindingHolder.addSelectedItemBinding(sourceProperty, targetWidget,
+				new Converter<T, BeanWrapper<T>>() {
+
+					@Override
+					public BeanWrapper<T> convertForward(T value) {
+						BeanWrapper<T> wrapper = createWrapper();
+						wrapper.setContent(value);
+						return wrapper;
+					}
+
+					@Override
+					public T convertReverse(BeanWrapper<T> value) {
+						return value.getContent();
+					}
+				});
+		if (wasEnabled) {
 			targetWidget.setEnabled(true);
 		}
 	}
 
 	protected abstract BeanWrapper<T> createWrapper();
+
 }

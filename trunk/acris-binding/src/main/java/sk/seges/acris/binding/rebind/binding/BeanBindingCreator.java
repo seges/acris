@@ -36,7 +36,8 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.validation.client.InvalidConstraint;
 
 public class BeanBindingCreator {
-
+	public static final String WRAPPER_SUFFIX = "BeanWrapper";
+	
 	private static final String BINDING_HOLDER_VAR = "_bindingHolder";
 
 	private String bindingHolder = null;
@@ -109,7 +110,8 @@ public class BeanBindingCreator {
 				GWT.class.getCanonicalName(),
 				BindingHolder.class.getCanonicalName(),
 				BeanWrapper.class.getCanonicalName(),
-				bindingBeanClassType.getQualifiedSourceName()};
+				bindingBeanClassType.getQualifiedSourceName(),
+				bindingBeanClassType.getQualifiedSourceName() + WRAPPER_SUFFIX};
 
 		//initialize binding context for all related creators
 		BindingCreatorFactory.setBindingContext(bindingBeanClassType, packageName);
@@ -219,7 +221,7 @@ public class BeanBindingCreator {
 		sourceWriter.indent();
 		sourceWriter.println("if (_beanWrapper == null) {");
 		sourceWriter.indent();
-		sourceWriter.println("_beanWrapper = GWT.create(" + beanClassType.getSimpleSourceName() + ".class);");
+		sourceWriter.println("_beanWrapper = GWT.create(" + beanClassType.getSimpleSourceName() + WRAPPER_SUFFIX + ".class);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("return _beanWrapper;");
