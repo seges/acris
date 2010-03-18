@@ -158,7 +158,7 @@ public class SecuredObjectCreator {
 			sourceWriter.println("}");
 			sourceWriter.println("if( !hasViewPermission ){");
 			sourceWriter.indent();
-			sourceWriter.println("this.setVisible(false);");
+			sourceWriter.println("super.setVisible(false);");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
 
@@ -174,7 +174,7 @@ public class SecuredObjectCreator {
 
 			List<String> paramAnnots = securedAnnotationProcessor.getListAuthoritiesForType(param);
 			
-			if (paramAnnots != null && paramAnnots.size() > 0) {
+			if (paramAnnots != null/* && paramAnnots.size() > 0*/) {
 				boolean useModifier = !securedAnnotationProcessor.isAuthorityPermission(param);
 				List<String> allAnnotations = new ArrayList<String>();
 				allAnnotations.addAll(paramAnnots);
@@ -183,7 +183,7 @@ public class SecuredObjectCreator {
 				}
 				
 				generateFieldSecurityRestrictions(sourceWriter, allAnnotations, 
-						context, classType, param, useModifier);
+						context, param, useModifier);
 			}
 		}
 		
@@ -193,7 +193,7 @@ public class SecuredObjectCreator {
 
 	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter,
 			List<String> fieldAnnots, GeneratorContext context,
-			JType type, JField param, boolean useModifiers) throws NotFoundException {
+			JField param, boolean useModifiers) throws NotFoundException {
 
 		sourceWriter.println("if (user != null) {");
 		sourceWriter.indent();
@@ -203,7 +203,7 @@ public class SecuredObjectCreator {
 		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
 
-		if (type.isClassOrInterface() != null && ((JClassType)type).isAssignableTo(context.getTypeOracle().getType(
+		if (param.getType().isClassOrInterface() != null && ((JClassType)param.getType()).isAssignableTo(context.getTypeOracle().getType(
 				Focusable.class.getName()))) {
 			sourceWriter.println("hasEditPermission = " + generateCheckUserAuthority(PERMISSION_EDIT_NAME, fieldAnnots, useModifiers)+";");
 			sourceWriter.println(param.getName() + ".setEnabled(hasEditPermission);");

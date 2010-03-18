@@ -41,6 +41,10 @@ public class ACLEntryDao extends AbstractHibernateCRUD<ACLEntry> implements IACL
 		" acl." + ACLEntry.OBJECT_IDENTITY_FIELD + "." + ACLObjectIdentity.OBJECT_CLASS_FIELD + "." + ACLSecuredClass.CLASS_NAME_FIELD + "=:classname and " +
 		" acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.SID_FIELD + "=:sid and " + 
 		" acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.PRINCIPAL_FIELD + "=:principal";
+    protected static final String HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE = "from " + ACLEntry.class.getSimpleName() + 
+        " acl where acl." + ACLEntry.OBJECT_IDENTITY_FIELD + "." + ACLObjectIdentity.OBJECT_CLASS_FIELD + "." + ACLSecuredClass.CLASS_NAME_FIELD + "=:classname and " +
+        " acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.SID_FIELD + "=:sid and " + 
+        " acl." + ACLEntry.SID_FIELD + "." + ACLSecurityID.PRINCIPAL_FIELD + "=:principal";
 
 	@Transactional
     public List<ACLEntry> findByIdentityId(long aclObjectIdentity) {
@@ -87,7 +91,7 @@ public class ACLEntryDao extends AbstractHibernateCRUD<ACLEntry> implements IACL
     @Transactional
     public List<ACLEntry> findByClassnameAndSid(Class<? extends ISecuredObject> securedClass, Sid sid) {
 
-        Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
+        Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE);
         query.setParameter("classname", securedClass.getName());
         
         if (sid instanceof PrincipalSid) {
