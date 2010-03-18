@@ -9,6 +9,7 @@ import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
+import org.gwt.beansbinding.core.client.Converter;
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.ui.client.GWTBindings;
 import org.gwt.beansbinding.ui.client.ListBoxBinding;
@@ -18,6 +19,7 @@ import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
 
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -90,8 +92,9 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     }
     
     @SuppressWarnings("unchecked")
-	public Binding addSelectedItemBinding(String sourceProperty, Object targetWidget) {
+	public Binding addSelectedItemBinding(String sourceProperty, Object targetWidget, Converter<?, ?> converter) {
     	final Binding selectionBinding = createBinding(sourceProperty, targetWidget, "selectedItem");
+    	selectionBinding.setConverter(converter);
     	selectionBinding.bind();
     	return selectionBinding;
     }

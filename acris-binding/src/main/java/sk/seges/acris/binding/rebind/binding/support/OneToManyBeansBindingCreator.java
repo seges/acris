@@ -14,6 +14,7 @@ import sk.seges.acris.binding.client.providers.support.BoundListAsyncCallback;
 import sk.seges.acris.binding.client.providers.support.LoaderInitializationHandler;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.bean.PropertyResolver;
+import sk.seges.acris.binding.rebind.binding.BeanBindingCreator;
 import sk.seges.acris.binding.rebind.loader.DefaultLoaderCreatorFactory;
 import sk.seges.acris.binding.rebind.loader.FieldSpecLoaderCreator;
 import sk.seges.acris.binding.rebind.loader.ILoaderCreator;
@@ -120,7 +121,7 @@ class OneToManyBeansBindingCreator extends AbstractBindingCreator<OneToMany> imp
 			sourceWriter.indent();
 			sourceWriter.println("protected BeanWrapper<" + classTypeName + "> createWrapper() {");
 			sourceWriter.indent();
-			sourceWriter.println("return GWT.create(" + classTypeName + ".class);");
+			sourceWriter.println("return GWT.create(" + classTypeName + BeanBindingCreator.WRAPPER_SUFFIX + ".class);");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
 			sourceWriter.outdent();
