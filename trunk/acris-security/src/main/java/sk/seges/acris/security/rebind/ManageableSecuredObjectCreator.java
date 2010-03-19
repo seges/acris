@@ -88,7 +88,9 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
                         context, param, useModifier);
             }
         }
+        sourceWriter.indent();
         sourceWriter.println("widget.setVisible(true);");
+        sourceWriter.outdent();
         sourceWriter.outdent();
         sourceWriter.println("} else {");
         sourceWriter.indent();
@@ -103,17 +105,12 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
             List<String> fieldAnnots, GeneratorContext context,
             JField param, boolean useModifiers) throws NotFoundException {
         // check of view authority
-        sourceWriter.println("if (user != null) {");
+        sourceWriter.println("if (" + param.getName() + "==widget && user != null) {");
         sourceWriter.indent();
         sourceWriter.println("hasViewPermission = " + generateCheckUserAuthority(PERMISSION_VIEW_NAME, fieldAnnots, useModifiers) + ";");
+        sourceWriter.println(param.getName() + ".setVisible(hasViewPermission);");
         sourceWriter.outdent();
-        sourceWriter.println("}");
-        sourceWriter.println("if(" + param.getName() + "==widget && hasViewPermission ) {");
-        sourceWriter.indent();
-        sourceWriter.println(param.getName() + ".setVisible(true);");
-//        sourceWriter.println("return;");
-        sourceWriter.outdent();
-        sourceWriter.println("}");
+        sourceWriter.println("} else ");
     }
 
     private void generateSetEnabledMethod(SourceWriter sourceWriter,
@@ -149,12 +146,12 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
                 
                 List<String> paramAnnots = securedAnnotationProcessor.getListAuthoritiesForType(param);
             
-                if (paramAnnots != null && paramAnnots.size() > 0) {
+                if (paramAnnots != null/* && paramAnnots.size() > 0*/) {
 
                     boolean useModifier = !securedAnnotationProcessor.isAuthorityPermission(param);
                     List<String> allAnnotations = new ArrayList<String>();
                     allAnnotations.addAll(paramAnnots);
-                    if((classRoles.size() > 0) && (paramAnnots.size() <= 1)){
+                    if((classRoles.size() > 0) && (paramAnnots.size() < 1)){
                         allAnnotations.addAll(classRoles);
                     }
                     
@@ -163,7 +160,9 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
                 }
             }
         }
+        sourceWriter.indent();
         sourceWriter.println("widget.setEnabled(true);");
+        sourceWriter.outdent();
         sourceWriter.outdent();
         sourceWriter.println("} else {");
         sourceWriter.indent();
@@ -178,17 +177,12 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
             List<String> fieldAnnots, GeneratorContext context,
             JField param, boolean useModifiers) throws NotFoundException {
         // check of view authority
-        sourceWriter.println("if (user != null) {");
+        sourceWriter.println("if (user != null && " + param.getName() + "==widget) {");
         sourceWriter.indent();
         sourceWriter.println("hasEditPermission = " + generateCheckUserAuthority(PERMISSION_EDIT_NAME, fieldAnnots, useModifiers)+";");
+        sourceWriter.println(param.getName() + ".setEnabled(hasEditPermission);");
         sourceWriter.outdent();
-        sourceWriter.println("}");
-        sourceWriter.println("if(" + param.getName() + "==widget && hasEditPermission ){");
-        sourceWriter.indent();
-        sourceWriter.println(param.getName() + ".setEnabled(true);");
-//        sourceWriter.println("return;");
-        sourceWriter.outdent();
-        sourceWriter.println("}");
+        sourceWriter.println("} else ");
     }
 
 }

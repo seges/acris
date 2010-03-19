@@ -178,7 +178,7 @@ public class SecuredObjectCreator {
 				boolean useModifier = !securedAnnotationProcessor.isAuthorityPermission(param);
 				List<String> allAnnotations = new ArrayList<String>();
 				allAnnotations.addAll(paramAnnots);
-				if((classRoles.size() > 0) && (paramAnnots.size() <= 1)){
+				if((classRoles.size() > 0) && (paramAnnots.size() < 1)){
 					allAnnotations.addAll(classRoles);
 				}
 				
