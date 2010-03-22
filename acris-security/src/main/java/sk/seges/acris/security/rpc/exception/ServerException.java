@@ -1,4 +1,4 @@
-package sk.seges.acris.security.server.exception;
+package sk.seges.acris.security.rpc.exception;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
