@@ -108,6 +108,10 @@
             <artifactId>acris-callbacks</artifactId>
             <classifier>sources</classifier>
         </dependency>
+        <dependency>
+            <groupId>sk.seges.acris</groupId>
+            <artifactId>acris-server-components</artifactId>
+        </dependency>
 
         <!-- Acris rebind dependencies -->
         <dependency>
