@@ -91,6 +91,7 @@ public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProces
 			}
 			linkTag.setLink(url);
 			languageLinksList.add(linkTag);
+			languageLinksList.add(new TextNode("</a>"));
 			languageLinksList.add(new TextNode("<br/>"));
 		}
 		
