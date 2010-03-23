@@ -37,7 +37,7 @@ public class SecurityRoleDao extends AbstractHibernateCRUD<SecurityRole> impleme
 //        return query.list();
 //    }
 
-    private static final String FIND_USER_PERMISSIONS_SQL = "select element from role_selectedpermissions  where role_id=:roleId";
+    private static final String FIND_USER_PERMISSIONS_SQL = "select selectedpermissions_element from role_selectedpermissions  where role_id=:roleId";
     
     @Transactional(propagation=Propagation.SUPPORTS)
     public List<String> findSelectedPermissions(Integer roleId) {
