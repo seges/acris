@@ -22,7 +22,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
     
 	private HtmlFilesHandler offlineContentProvider;
 	private ContentInterceptor contentProvider;
+	
 	private static EntryPoint site;
+	private static String webId;
+	
 	private ValueWrapper count = new ValueWrapper();
 	protected IGeneratorServiceAsync generatorService;
 	
@@ -139,7 +142,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		final GeneratorToken generatorToken = contentProvider.next();
 //		RPCRequestTracker.getTracker().removeAllCallbacks();
-		
+
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
 			@Override
@@ -164,7 +167,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			
 		});
 
-		if (site == null) {
+		if (site == null || (webId != null && webId != generatorToken.getWebId())) {
+			webId = generatorToken.getWebId();
 			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
 			site.onModuleLoad();
 		}  else {
@@ -193,7 +197,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private GeneratorToken saveAndLoadContent(final GeneratorToken generatorToken) {
 		
 		String content = contentProvider.getContent();
-
+	
+		System.out.println("Generating offline content for niceurl: " + generatorToken.getNiceUrl());
+//		System.out.println(content);
+		
 		final String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
 		
 		offlineContentProvider.getOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<String>() {
