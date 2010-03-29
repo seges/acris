@@ -10,6 +10,8 @@ import java.util.List;
 
 import net.sf.gilead.gwt.PersistentRemoteService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -41,6 +43,8 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	@Autowired
 	protected HTMLPostProcessing htmlPostProcessing;
 	
+	private static Log log = LogFactory.getLog(GeneratorService.class);
+
 	private IContentInfoProvider contentInfoProvider;
 	
 	public GeneratorService(IContentInfoProvider contentInfoProvider) {
@@ -133,8 +137,22 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	public String getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content,
 			GeneratorToken token, String currentServerURL) {
 
+		if (log.isDebugEnabled()) {
+			log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
+					token.getLanguage() + " and webId: " + token.getWebId());
+			log.debug("			entryPointFileName: " + entryPointFileName);
+			log.debug("			header: " + header);
+			log.debug("			contentWrapper: " + contentWrapper);
+			log.debug("			content: " + content);
+			log.debug("			currentServerURL: " + currentServerURL);
+		}
+		
 		String headerContent = readTextFromFile(entryPointFileName);
 		String doctype = new HTMLNodeSplitter().readDoctype(headerContent);
+
+		if (log.isDebugEnabled()) {
+			log.debug("			headerContent: " + headerContent);
+		}
 		
 		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
