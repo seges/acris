@@ -93,6 +93,8 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     
     @SuppressWarnings("unchecked")
 	public Binding addSelectedItemBinding(String sourceProperty, Object targetWidget, Converter<?, ?> converter) {
+    	addBindingFieldInfo(sourceProperty, targetWidget, "selectedItem");
+    	
     	final Binding selectionBinding = createBinding(sourceProperty, targetWidget, "selectedItem");
     	selectionBinding.setConverter(converter);
     	selectionBinding.bind();
