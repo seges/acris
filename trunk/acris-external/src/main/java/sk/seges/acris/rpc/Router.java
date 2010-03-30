@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
 /**
@@ -24,7 +23,10 @@ public class Router {
 	private final List<Route> routes;
 	private final ValueHolder<String> defaultHost;
 	private final ValueHolder<Integer> defaultPort;
+	private String[] skipHeaders;
 
+	private static final String HEADER_DELIMITER = ";";
+	
 	public Router(String fileName) throws FileNotFoundException {
 		this(new FileInputStream(new File(fileName)));
 	}
@@ -51,6 +53,8 @@ public class Router {
 				defaultHost.setValue(value);
 			} else if(key.equals("*default-port")) {
 				defaultPort.setValue(Integer.parseInt(value));
+			} else if (key.equals("*skip-headers")) {
+				skipHeaders = value.split(HEADER_DELIMITER);
 			} else if("".equals(value)) {
 				routes.add(new Route(key, defaultHost, defaultPort, null));
 			} else {
@@ -59,6 +63,20 @@ public class Router {
 		}
 	}
 
+	public boolean skipHeader(String headerName) {
+		if (skipHeaders == null) {
+			return false;
+		}
+		
+		for (String skipHeader : skipHeaders) {
+			if (skipHeader != null && skipHeader.equals(headerName)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	protected String getDefaultHost() {
 		return defaultHost.getValue();
 	}
@@ -78,48 +96,6 @@ public class Router {
 		return NO_ROUTE;
 	}
 
-	public static class ValueHolder<T> {
-		private T value;
-
-		public ValueHolder() {
-		}
-
-		public ValueHolder(T value) {
-			this.value = value;
-		}
-
-		public void setValue(T object) {
-			this.value = object;
-		}
-
-		public T getValue() {
-			return value;
-		}
-
-		@SuppressWarnings("unchecked")
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			final ValueHolder<T> other = (ValueHolder<T>) obj;
-			if (this.value != other.value && (this.value == null || !this.value.equals(other.value))) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
-		public int hashCode() {
-			int hash = 5;
-			hash = 97 * hash + (this.value != null ? this.value.hashCode() : 0);
-			return hash;
-		}
-	}
-	
 	public static void main(String[] args) {
         String line = ".*/fileDownload(.*)=/acris-server/fileDownload$1&webId=E14188588C4D6ACCCC65D30BEF939DD1A9C086BC";
         System.out.println(line.substring(0, line.indexOf('=')).trim());

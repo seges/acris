@@ -8,7 +8,6 @@ package sk.seges.acris.rpc;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import sk.seges.acris.rpc.Router.ValueHolder;
 
 /**
  * Specifies target parameters of a route.

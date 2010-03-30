@@ -28,8 +28,8 @@ public class RouterTest {
 
 		String requestURI = "/sk.seges.test.Me/service/cms";
 		route = new Route(".*sk\\.seges\\.test\\.Me(/service.*)",
-				new Router.ValueHolder<String>("localhost"),
-				new Router.ValueHolder<Integer>(8888), "$1");
+				new ValueHolder<String>("localhost"),
+				new ValueHolder<Integer>(8888), "$1");
 //		route.setRequestURI(requestURI);
 
 		assertEquals(route, router.getRoute(requestURI));

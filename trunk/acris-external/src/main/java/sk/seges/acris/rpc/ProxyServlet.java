@@ -243,7 +243,9 @@ public class ProxyServlet extends HttpServlet {
         String headerValue = connection.getHeaderField(h);
         while (headerName != null || headerValue != null) {
             if (headerName != null && headerValue != null) {
-                resp.addHeader(headerName, headerValue);
+                if (!router.skipHeader(headerName)) {
+                	resp.addHeader(headerName, headerValue);
+                }
             }
             h++;
             headerName = connection.getHeaderFieldKey(h);
