@@ -1,5 +1,5 @@
 package sk.seges.acris.generator.client;
 
-public class ValueWrapper {
+public class IntValueHolder {
 	int value;
 }

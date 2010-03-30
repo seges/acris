@@ -21,7 +21,7 @@ import sk.seges.acris.io.StringFile;
 @Component
 public class SpringPropertyProcessor implements BeanFactoryPostProcessor, ApplicationContextAware {
 
-	private static final String SETTING_PROPERTIES_FILE = /*StringFile.FILE_SEPARATOR + */"settings.properties";
+	private static final String SETTING_PROPERTIES_FILE = "generator.properties";
 	
 	private Properties properties;
 	
