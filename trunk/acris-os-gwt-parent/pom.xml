@@ -15,6 +15,8 @@
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
 	<properties>
+		<gwt.log.version>3.0.0</gwt.log.version>
+
 		<gwt.version>2.0.0</gwt.version>
 		<gwtx.version>1.5.3</gwtx.version>
 		<gwt-beansbinding.version>0.3</gwt-beansbinding.version>
@@ -73,7 +75,12 @@
 				<version>${gwt.version}</version>
 				<scope>provided</scope>
 			</dependency>
-
+			<!-- GWT log -->
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-log</artifactId>
+				<version>${gwt.log.version}</version>
+			</dependency>
 			<!-- GWT beans binding -->
 			<dependency>
 				<groupId>org.gwt</groupId>
