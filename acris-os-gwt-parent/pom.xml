@@ -267,9 +267,7 @@
 							<goals>
 								<goal>mergewebxml</goal>
 								<goal>generateAsync</goal>
-								<!--goal>i18n</goal-->
 								<goal>compile</goal>
-								<!-- goal>testGwt</goal-->
 							</goals>
 						</execution>
 					</executions>
