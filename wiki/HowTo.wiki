@@ -13,7 +13,7 @@
   * copy (or merge acris-os profile from) settings.xml to your maven home directory (~/.m2)
      * if you already have settings.xml copy the acris-os profile and activate it
   * cd acris-os-parent
-  * mvn clean install
+  * mvn -Dmaven.test.skip clean install
   * pray, a lot, for no error messages
 
 == Running from web container (tomcat) == 
