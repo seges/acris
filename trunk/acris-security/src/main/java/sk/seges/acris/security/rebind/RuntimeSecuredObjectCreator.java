@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import sk.seges.acris.security.client.mediator.IRuntimePermissionMediator;
-import sk.seges.acris.security.rpc.domain.IUserPermission;
 import sk.seges.acris.security.rpc.session.ClientSession;
+import sk.seges.acris.security.rpc.user_management.domain.IUserPermission;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;

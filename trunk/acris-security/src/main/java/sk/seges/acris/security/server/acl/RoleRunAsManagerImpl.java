@@ -17,24 +17,24 @@ import org.springframework.util.Assert;
 
 public class RoleRunAsManagerImpl implements RunAsManager, InitializingBean, IMuttableRunAsManager {
 
-    public static final String DEFAULT_ROLE_PREFIX = "ROLE_";
+    public static final String ROLE_PREFIX = "ROLE_";
 
     private String key;
-    private String rolePrefix = DEFAULT_ROLE_PREFIX;
-    private UserDetails tmpUser;
+    private String rolePrefix = ROLE_PREFIX;
+    private UserDetails runAsUser;
 
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(key, "A Key is required and should match that configured for the RunAsImplAuthenticationProvider");
     }
 
-    public void setRunAsUser(UserDetails user) {
-        tmpUser = user;
+    public void setRunAsUser(UserDetails runAsUser) {
+        this.runAsUser = runAsUser;
     }
 
     @SuppressWarnings("unchecked")
     public Authentication buildRunAs(Authentication authentication, Object object, ConfigAttributeDefinition config) {
         RunAsUserToken result = null;
-        if (tmpUser == null) {
+        if (runAsUser == null) {
             List<GrantedAuthority> newAuthorities = new Vector<GrantedAuthority>();
             Iterator<ConfigAttribute> iter = config.getConfigAttributes().iterator();
 
@@ -62,8 +62,8 @@ public class RoleRunAsManagerImpl implements RunAsManager, InitializingBean, IMu
             result = new RunAsUserToken(this.key, authentication.getPrincipal(), authentication.getCredentials(), newAuthoritiesAsArray, authentication
                     .getClass());
         } else {
-            result = new RunAsUserToken(key, tmpUser.getUsername(), tmpUser.getPassword(), tmpUser.getAuthorities(), authentication.getClass());
-            tmpUser = null;
+            result = new RunAsUserToken(key, runAsUser.getUsername(), runAsUser.getPassword(), runAsUser.getAuthorities(), authentication.getClass());
+            runAsUser = null;
         }
         return result;
     }

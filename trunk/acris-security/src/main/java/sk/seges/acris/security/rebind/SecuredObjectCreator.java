@@ -4,9 +4,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.seges.acris.security.rpc.domain.GenericUser;
-import sk.seges.acris.security.rpc.domain.Permission;
 import sk.seges.acris.security.rpc.session.ClientSession;
+import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
+import sk.seges.acris.security.rpc.user_management.domain.Permission;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;

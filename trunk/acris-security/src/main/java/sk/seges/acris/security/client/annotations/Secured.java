@@ -6,7 +6,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import sk.seges.acris.security.rpc.domain.Permission;
+import sk.seges.acris.security.rpc.user_management.domain.Permission;
 
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RUNTIME)
