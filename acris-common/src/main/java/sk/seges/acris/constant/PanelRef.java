@@ -15,4 +15,5 @@ public interface PanelRef {
 	public static final String SEARCH_PANEL = "searchPanel";
 	public static final String NEWS_PANEL = "newsPanel";
 	public static final String PAGER_LAYOUT = "layout.pager";
+	public static final String WIZARD_LAYOUT = "layout.wizard";
 }
