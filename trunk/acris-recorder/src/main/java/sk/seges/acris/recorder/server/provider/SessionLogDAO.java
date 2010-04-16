@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.recorder.rpc.domain.SessionLog;
-import sk.seges.acris.security.rpc.domain.GenericUser;
+import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 

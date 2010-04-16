@@ -9,9 +9,9 @@ import net.sf.gilead.proxy.xml.AdditionalCodeReader;
 import org.springframework.stereotype.Service;
 
 import sk.seges.acris.recorder.rpc.domain.SessionLog;
-import sk.seges.acris.security.rpc.domain.GenericUser;
-import sk.seges.acris.security.rpc.domain.UserPreferences;
 import sk.seges.acris.security.rpc.session.ClientSession;
+import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
+import sk.seges.acris.security.rpc.user_management.domain.UserPreferences;
 
 @Service
 public class ProxyGenerator {

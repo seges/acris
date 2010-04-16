@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import sk.seges.acris.security.rpc.domain.GenericUser;
+import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
 import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
