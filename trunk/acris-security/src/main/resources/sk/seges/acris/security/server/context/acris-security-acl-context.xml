@@ -39,13 +39,13 @@
         <constructor-arg ref="lookupStrategy" />
     </bean>
 
-    <bean id="hibernateMutableACLService"
+    <bean id="hibernateMutableAclService"
         class="sk.seges.acris.security.server.acl.service.HibernateMutableAclService">
         <!-- All the managers are autowired -->
         <property name="aclCache" ref="aclCache" />
     </bean>
 
-    <bean id="AclMaintainer" class="sk.seges.acris.security.server.acl.service.AclMaintainer">
+    <bean id="aclMaintainer" class="sk.seges.acris.security.server.acl.service.AclMaintainer">
         <property name="aclCache" ref="aclCache" />
     </bean>
 
