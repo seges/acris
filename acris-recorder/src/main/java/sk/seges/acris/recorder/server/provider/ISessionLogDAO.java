@@ -3,7 +3,7 @@ package sk.seges.acris.recorder.server.provider;
 import java.util.List;
 
 import sk.seges.acris.recorder.rpc.domain.SessionLog;
-import sk.seges.acris.security.rpc.domain.GenericUser;
+import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
 
 public interface ISessionLogDAO {
 	public SessionLog add(SessionLog log);
