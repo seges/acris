@@ -9,7 +9,7 @@
                            http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
  	<aop:config>
-    	<aop:pointcut id='serviceMethods' expression='@annotation(javax.annotation.RolesAc) || @annotation(sk.seges.acris.security.server.annotations.RunAs) || @annotation(sk.seges.acris.security.server.annotations.PreExecutionAclEvaluation) || @annotation(sk.seges.acris.security.server.annotations.PostExecutionAclEvaluation)'/>
+    	<aop:pointcut id='serviceMethods' expression='@annotation(javax.annotation.security.RolesAllowed) || @annotation(sk.seges.acris.security.server.annotation.RunAs) || @annotation(sk.seges.acris.security.server.annotation.PreExecutionAclEvaluation) || @annotation(sk.seges.acris.security.server.annotation.PostExecutionAclEvaluation)'/>
       	<aop:advisor advice-ref='objectManagerSecurity' pointcut-ref='serviceMethods' />
  	</aop:config>
 
