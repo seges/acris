@@ -1,6 +1,6 @@
 package sk.seges.acris.security.client.mediator;
 
-import sk.seges.acris.security.rpc.domain.IUserPermission;
+import sk.seges.acris.security.rpc.user_management.domain.IUserPermission;
 
 
 public interface IRuntimePermissionMediator {

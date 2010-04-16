@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import sk.seges.acris.security.rpc.domain.GenericUser;
 import sk.seges.acris.security.rpc.domain.ITransferableObject;
+import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
 
 /**
  * @author eldzi

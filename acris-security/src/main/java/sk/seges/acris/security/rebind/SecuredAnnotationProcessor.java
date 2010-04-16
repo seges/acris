@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.security.client.annotations.Secured;
-import sk.seges.acris.security.rpc.domain.Permission;
+import sk.seges.acris.security.rpc.user_management.domain.Permission;
 
 import com.google.gwt.core.ext.typeinfo.HasAnnotations;
 
