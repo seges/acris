@@ -10,6 +10,7 @@ import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
 import org.gwt.beansbinding.core.client.Converter;
+import org.gwt.beansbinding.core.client.Validator;
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.ui.client.GWTBindings;
 import org.gwt.beansbinding.ui.client.ListBoxBinding;
@@ -73,9 +74,19 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
      */
     @Override
     public Binding addBinding(String sourceProperty, Object targetWidget, String targetProperty) {
+    	return addBinding(sourceProperty, targetWidget, targetProperty, null, null);
+    }
+    
+    public Binding addBinding(String sourceProperty, Object targetWidget, String targetProperty, Converter<?, ?> converter, Validator<?> validator) {
     	addBindingFieldInfo(sourceProperty, targetWidget, targetProperty);
     	
     	AutoBinding binding = createBinding(sourceProperty, targetWidget, targetProperty);
+    	if(converter != null) {
+    		binding.setConverter(converter);
+    	}
+    	if(validator != null) {
+    		binding.setValidator(validator);
+    	}
 		rootBinding.addBinding(binding);
 		return binding;
 	}
