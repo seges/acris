@@ -80,7 +80,9 @@ public @interface BindingField {
 	 * the necessary object. Also can be used for localize text used by key 
 	 * represented by defaultValue.
 	 */
-	public Class<?> defaultValueConverter() default Converter.class;
+	public Class<?> converter() default Converter.class;
+	
+	public Class<?> validator() default Void.class;
 
 	/**
 	 * Not yet implemented. Supposed to create instance of the binding widget
