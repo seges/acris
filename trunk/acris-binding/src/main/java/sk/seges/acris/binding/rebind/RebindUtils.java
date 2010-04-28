@@ -60,6 +60,29 @@ public class RebindUtils {
 		return method;
 	}
 	
+	/**
+	 * recursively calls {@link RebindUtils#getGetter(JClassType, String)} to handle "more-dots strings"<br />
+	 * e.g.: address.street returns getAddress().getStreet
+	 * 
+	 * @param beanType
+	 * @param fieldName
+	 * @return string - chain of getter methods
+	 * @throws NotFoundException
+	 */
+	public static String getGetterForMoreDotsInBeanTable(JClassType beanType, String fieldName) throws NotFoundException{
+		JMethod method = null;
+		int dotIndex = fieldName.indexOf(".");
+		if(dotIndex == -1){
+			method = getGetter(beanType, fieldName);
+			if(method == null)
+				throw new NotFoundException();
+			return method.getName();
+		} else {
+			method = getGetter(beanType, fieldName.substring(0, dotIndex));
+			return method.getName()+"()." + getGetterForMoreDotsInBeanTable(method.getReturnType().isClass(), fieldName.substring(dotIndex+1));
+		}
+	}
+	
 	public static JMethod getSetter(JClassType beanType, String fieldName, JType fieldType) throws NotFoundException {
 		
 		JMethod method = null;
