@@ -17,18 +17,5 @@ import sk.seges.sesam.domain.IDomainObject;
  *            {@link IDomainObject} but we are supporting all
  *            {@link Serializable} objects for binding
  */
-public interface IBeanBindingHolder<T extends Serializable> {
-	/**
-	 * Bind values from bean to widgets or reload existing binding if there is
-	 * any.
-	 * 
-	 * @param bean
-	 *            values holder
-	 */
-	public void setBean(T bean);
-
-	/**
-	 * @return bean with bound values. Reflects values specified in UI widgets.
-	 */
-	public T getBean();
+public interface IBeanBindingHolder<T extends Serializable> extends IHasBean<T> {
 }
