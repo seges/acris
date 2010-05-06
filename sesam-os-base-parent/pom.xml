@@ -29,12 +29,12 @@
 		<repository>
 			<id>acris-releases-repo</id>
 			<name>acris-releases-repo</name>
-			<url>https://acris.googlecode.com/svn/releases-repository/</url>
+			<url>https://acris.googlecode.com/svn/releases-repository</url>
 		</repository>
 		<snapshotRepository>
 			<id>acris-snapshots-repo</id>
 			<name>acris-snapshots-repo</name>
-			<url>https://acris.googlecode.com/svn/snapshot-repository/</url>
+			<url>https://acris.googlecode.com/svn/snapshot-repository</url>
 		</snapshotRepository>
 		<!-- Disabled until issues with maven are resolved and anyway it slows release process :) -->
 		<!--site>
@@ -492,6 +492,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.0-beta-1</version>
 				<executions>
 					<execution>
 						<id>enforce-maven</id>
