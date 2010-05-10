@@ -6,8 +6,8 @@
 == Step 0 ==
 
 There are two ways:
-* use prepared keystore with Google & Sourceforge certificates -> in this case go to step 3
-* install key(s) manually -> maybe this is the case if you already have keystore for maven
+  * use prepared keystore with Google & Sourceforge certificates -> in this case go to step 3
+  * install key(s) manually -> maybe this is the case if you already have keystore for maven
 
 == Step 1 ==
 
