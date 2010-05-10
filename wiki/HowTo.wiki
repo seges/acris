@@ -12,6 +12,11 @@
   * Download sources from http://acris.googlecode.com/svn/trunk/
   * copy (or merge acris-os profile from) settings.xml to your maven home directory (~/.m2)
      * if you already have settings.xml copy the acris-os profile and activate it
+  * setup MAVEN_OPTS:
+    * in case of using prepared keystore use path to *acris-os-parent/acris.jceks* file
+    * for the environment of the operating system (the preferred way):
+      * in *Windows*: Start -> Control panel -> System -> Environment variables, put new key MAVEN_OPTS following values -Djavax.net.ssl.trustStore=c:\path\to\keystore\acris.jceks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.trustStoreType=jceks
+      * in *Linux*: in your home directory create file *.mavenrc* and put htere following value MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/acris.jceks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.trustStoreType=jceks
   * cd acris-os-parent
   * mvn -Dmaven.test.skip clean install
   * pray, a lot, for no error messages
