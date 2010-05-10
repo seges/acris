@@ -3,6 +3,12 @@
 
 = Prepare maven =
 
+== Step 0 ==
+
+There are two ways:
+* use prepared keystore with Google & Sourceforge certificates -> in this case go to step 3
+* install key(s) manually -> maybe this is the case if you already have keystore for maven
+
 == Step 1 ==
 
 Download Google certificate into your PC. Follow the guide below. Name the certificate file it e.g. *google.pem*.
@@ -30,15 +36,15 @@ We will follow with 3rd step - setting MAVEN_OPTS up. There are several ways how
 == Step 3 ==
 
 How to setup MAVEN_OPTS:
-
+    * in case of using prepared keystore use path to acris-os-parent/acris.jceks file
     * for the environment of the operating system (the preferred way):
-      * in *Windows*: Start -> Control panel -> System -> Environment variables, put new key MAVEN_OPTS following values -Djavax.net.ssl.trustStore=c:\path\to\keystore\trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks
-      * in *Linux*: in your home directory create file *.mavenrc* and put htere following value MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks
+      * in *Windows*: Start -> Control panel -> System -> Environment variables, put new key MAVEN_OPTS following values -Djavax.net.ssl.trustStore=c:\path\to\keystore\acris.jceks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.trustStoreType=jceks
+      * in *Linux*: in your home directory create file *.mavenrc* and put htere following value MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/acris.jceks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.trustStoreType=jceks
 
     * or you can set environment variable for specific case/terminal/environment:
-      * in Windows console set MAVEN_OPTS=-Djavax.net.ssl.trustStore=c:\path\to\keystore\trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks
-      * almost the same in Linux using export MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks"
-      * or using direct maven command with variable in Linux: MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/trust.jceks -Djavax.net.ssl.trustStorePassword=hesloKuKeystoru -Djavax.net.ssl.trustStoreType=jceks" mvn compile
+      * in Windows console set MAVEN_OPTS=-Djavax.net.ssl.trustStore=c:\path\to\keystore\acris.jceks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.trustStoreType=jceks
+      * almost the same in Linux using export MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/acris.jceks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.trustStoreType=jceks"
+      * or using direct maven command with variable in Linux: MAVEN_OPTS="-Djavax.net.ssl.trustStore=/path/to/keystore/acris.jceks -Djavax.net.ssl.trustStorePassword=password -Djavax.net.ssl.trustStoreType=jceks" mvn compile
 
 == Step 4 ==
 
