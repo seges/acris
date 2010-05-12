@@ -12,6 +12,10 @@
 	<inherits name="com.google.gwt.user.theme.standard.StandardResources"/>
 
 	<generate-with class="sk.seges.acris.binding.rebind.bean.BeanWrapperGenerator">
-    	<when-type-assignable class="sk.seges.acris.binding.samples.mocks.SimpleBean" />
+		<any>
+	    	<when-type-assignable class="sk.seges.acris.binding.client.samples.mocks.SimpleBeanBeanWrapper" />
+    		<when-type-assignable class="sk.seges.acris.binding.client.samples.mocks.CompanyBeanWrapper" />
+    	</any>
 	</generate-with>
+	
 </module>

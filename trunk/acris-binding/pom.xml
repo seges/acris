@@ -50,5 +50,16 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-validation</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>jsr250-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		
 	</dependencies>
 </project>
