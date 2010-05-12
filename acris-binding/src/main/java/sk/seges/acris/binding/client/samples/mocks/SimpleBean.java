@@ -2,8 +2,10 @@ package sk.seges.acris.binding.client.samples.mocks;
 
 import java.util.Date;
 
+import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
 
+@BeanWrapper
 public class SimpleBean implements IDomainObject<Long> {
 
 	private static final long serialVersionUID = -4200473134297879595L;
