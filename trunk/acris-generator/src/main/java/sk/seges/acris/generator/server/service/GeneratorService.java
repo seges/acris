@@ -185,13 +185,26 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			try {
 				if (!file.getParentFile().exists()) {
 					file.getParentFile().mkdirs();
+					if (log.isDebugEnabled()) {
+						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
+					}
 				}
-				file.createNewFile();
+				if (log.isDebugEnabled()) {
+					log.debug("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
+				}
+				if (!file.createNewFile()) {
+					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
+				}
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
 
+		if (log.isDebugEnabled()) {
+			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
+					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
+		}
+		
 		try {
 			file.writeTextToFile(content);
 		} catch (IOException e) {
