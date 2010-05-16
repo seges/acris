@@ -87,7 +87,7 @@ public class RebindUtils {
 		
 		JMethod method = null;
 		try {
-			method = beanType.getMethod("set" + getterSetterDeterminator(fieldName), null);
+			method = beanType.getMethod("set" + getterSetterDeterminator(fieldName), new JType[] { fieldType });
 		} catch (NotFoundException e) {
 			JClassType superClass = beanType.getSuperclass();
 			if(superClass != null) {
