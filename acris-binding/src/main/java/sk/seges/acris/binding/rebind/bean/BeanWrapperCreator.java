@@ -44,7 +44,8 @@ public class BeanWrapperCreator {
 	private TypeOracle typeOracle;
 	private String typeName;
 	private String superclassName;
-
+	private List<String> wrappedFields = new ArrayList<String>();
+	
 	public BeanWrapperCreator(TreeLogger logger, GeneratorContext context, String typeName,
 			String superclassName) {
 		this.superclassName = contentBeanName(superclassName);
@@ -55,6 +56,8 @@ public class BeanWrapperCreator {
 	}
 
 	public String createWrapper() {
+		wrappedFields.clear();
+		
 		JClassType classType, originalBeanType, originalType, objectType;
 		try {
 			originalType = typeOracle.getType(typeName);
@@ -148,6 +151,7 @@ public class BeanWrapperCreator {
 			// source.println("if(" + CONTENU_FIELD +
 			// "==null) { com.allen_sauer.gwt.log.client.Log.warn(\"setting null\", new RuntimeException(\"shit null\"));}");
 			source.println("this." + CONTENU_FIELD + " = (" + simpleName + ") " + CONTENU_FIELD + ";");
+			source.println("clearWrappers();");
 			source.outdent();
 			source.println("}");
 			source.println();
@@ -292,8 +296,20 @@ public class BeanWrapperCreator {
 			source.outdent();
 			source.println("}");
 
+			createClearWrappersMethod(source);
+			
 			source.commit(logger);
 		}
+	}
+
+	private void createClearWrappersMethod(SourceWriter source) {
+		source.println("private void clearWrappers() {");
+		source.indent();
+		for(String field : wrappedFields) {
+			source.println(field + " = null;");
+		}
+		source.outdent();
+		source.println("}");
 	}
 
 	private JField findDeclaredField(JClassType classType, String fieldName) {
@@ -348,6 +364,8 @@ public class BeanWrapperCreator {
 		source.outdent();
 		source.println("}");
 		source.println();
+		
+		wrappedFields.add(field);
 	}
 
 	private void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter,
