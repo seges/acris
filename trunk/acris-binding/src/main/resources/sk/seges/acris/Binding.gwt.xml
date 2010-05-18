@@ -5,7 +5,7 @@
 	
 	<!--  fill introspector's content with bean infos for all wrappers -->
     <generate-with
-		class="sk.seges.acris.rebind.bind.BeanWrapperIntrospectorGenerator">
+		class="sk.seges.acris.binding.rebind.binding.BeanWrapperIntrospectorGenerator">
 		<when-type-assignable
 			class="sk.seges.acris.bind.BeanWrapperIntrospector"/>
 	</generate-with>
