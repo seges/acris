@@ -1,0 +1,7 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+AcrIS is modern framework serving as a base for applications, web sites and portals. It provides various tools and libraries to ease daily development. Synapso is using AcrIS as a platform for building dynamic web sites.
+
+Goal of AcrIS is to provide GWT Enterprise components and tools that will stick with and extends the core GWT.
