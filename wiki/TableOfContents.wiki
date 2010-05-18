@@ -1,4 +1,5 @@
 #summary table of contents
+  * [Introduction]
   * Project
     * [HowTo How to setup a project for development]
     * [CodeStyle Code style conventions]
