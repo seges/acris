@@ -23,6 +23,17 @@
 			<artifactId>sesam-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		
 		<!-- GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>

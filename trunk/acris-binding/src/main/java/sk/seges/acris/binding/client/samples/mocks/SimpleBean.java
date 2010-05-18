@@ -2,6 +2,11 @@ package sk.seges.acris.binding.client.samples.mocks;
 
 import java.util.Date;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
 
@@ -15,11 +20,17 @@ public class SimpleBean implements IDomainObject<Long> {
 	public static final String COMPANY_ATTRIBUTE = "company";
 	public static final String DATE_ATTRIBUTE = "date";
 
+	
 	private Long id;
 
+	@NotNull
+	@Size(min = 5)
 	private String name;
+	@NotNull(groups = ContactCheck.class)
 	private String email;
+	@Valid
 	private Company company;
+	@Future
 	private Date date;
 
 	public String getName() {
