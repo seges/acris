@@ -1,0 +1,4 @@
+#summary table of contents
+  * [BeansBinding Beans binding]
+    * [BeansBindingInExamplesPart1 Example no.1]
+    * [BeansBindingInExamplesPart2 Form with validation]
