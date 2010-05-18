@@ -1,54 +1,79 @@
 package sk.seges.acris.binding.client.samples;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
+import org.gwt.beansbinding.core.client.util.GWTBeansBinding;
+import org.gwt.beansbinding.ui.client.adapters.HasHTMLAdapterProvider;
+import org.gwt.beansbinding.ui.client.adapters.HasTextAdapterProvider;
+import org.gwt.beansbinding.ui.client.adapters.ListBoxAdapterProvider;
 
+import sk.seges.acris.binding.client.holder.validation.ValidationMediator;
 import sk.seges.acris.binding.client.init.BeansBindingInit;
 import sk.seges.acris.binding.client.providers.CheckBoxAdapterProvider;
 import sk.seges.acris.binding.client.providers.DateBoxAdapterProvider;
-import sk.seges.acris.binding.client.providers.ListBoxAutoAdapterProvider;
 import sk.seges.acris.binding.client.providers.TextBoxBaseAdapterProvider;
+import sk.seges.acris.binding.client.samples.form.ExampleHighlighter;
 import sk.seges.acris.binding.client.samples.form.SimpleForm;
 import sk.seges.acris.binding.client.samples.mocks.Company;
+import sk.seges.acris.binding.client.samples.mocks.ContactCheck;
 import sk.seges.acris.binding.client.samples.mocks.SimpleBean;
+import sk.seges.acris.binding.client.samples.mocks.SimpleBeanBeanWrapper;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.validation.client.InvalidConstraint;
+import com.google.gwt.validation.client.interfaces.IValidator;
 
 public class FormSimpleBinding implements EntryPoint {
 
 	private Button selectedButton;
+	private VerticalPanel errorsPanel;
 	
 	@Override
 	public void onModuleLoad() {
 
 		BeansBindingInit.init();
+		GWTBeansBinding.init();
+		
+		BeanAdapterFactory.addProvider(new HasTextAdapterProvider());
+		BeanAdapterFactory.addProvider(new HasHTMLAdapterProvider());
+		BeanAdapterFactory.addProvider(new ListBoxAdapterProvider());
+		HasHTMLAdapterProvider.register(HTML.class);
 
 		BeanAdapterFactory.addProvider(new TextBoxBaseAdapterProvider());
-		BeanAdapterFactory.addProvider(new ListBoxAutoAdapterProvider());
 		BeanAdapterFactory.addProvider(new CheckBoxAdapterProvider());
 		BeanAdapterFactory.addProvider(new DateBoxAdapterProvider());
+		
+		errorsPanel = new VerticalPanel();
+		ExampleHighlighter.errorsPanel = errorsPanel;
 
 		final Button button1 = GWT.create(Button.class);
-		button1.setText("fat");
+		button1.setText("jozef");
 		RootPanel.get().add(button1);
 
 		final Button button2 = GWT.create(Button.class);
-		button2.setText("alik");
+		button2.setText("andre");
 		RootPanel.get().add(button2);
 
 		final Button button3 = GWT.create(Button.class);
-		button3.setText("eldzi");
+		button3.setText("svatozar");
 		RootPanel.get().add(button3);
 
 		final Button button4 = GWT.create(Button.class);
-		button4.setText("mig");
+		button4.setText("urpin");
 		RootPanel.get().add(button4);
+		
+		RootPanel.get().add(new Label("Errors:"));
+		RootPanel.get().add(errorsPanel);
 		
 		final SimpleForm simpleForm = GWT.create(SimpleForm.class);
 		RootPanel.get().add(simpleForm);
@@ -59,7 +84,32 @@ public class FormSimpleBinding implements EntryPoint {
 		submit.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				selectedButton.setText(simpleForm.getBean().getName());
+				if(selectedButton != null) {
+					selectedButton.setText(simpleForm.getBean().getName());
+				}
+				
+				IValidator<SimpleBean> validator = GWT.create(SimpleBeanBeanWrapper.class);
+				Set<InvalidConstraint<SimpleBean>> constraints = validator.validate(simpleForm.getBean());
+				ValidationMediator.highlightConstraints(simpleForm, constraints);
+			}
+		});
+		
+		final Button submitExtended = GWT.create(Button.class);
+		submitExtended.setText("Submit extended");
+		RootPanel.get().add(submitExtended);
+
+		submitExtended.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if(selectedButton != null) {
+					selectedButton.setText(simpleForm.getBean().getName());
+				}
+				
+				IValidator<SimpleBean> validator = GWT.create(SimpleBeanBeanWrapper.class);
+				
+				String[] groups = new String[] { ContactCheck.class.getName() };
+				Set<InvalidConstraint<SimpleBean>> constraints = validator.validate(simpleForm.getBean(), groups);
+				ValidationMediator.highlightConstraints(simpleForm, constraints);
 			}
 		});
 		
@@ -94,77 +144,66 @@ public class FormSimpleBinding implements EntryPoint {
 				selectedButton = button4;
 			}
 		});
+		
+		simpleForm.setBean(new SimpleBean());
 	}
 	
-	private SimpleBean fat;
-	
-	private SimpleBean createBean1() {
-		if (fat != null) {
-			return fat;
-		}
-		
-		fat = new SimpleBean();
-		fat.setName("fat");
-		fat.setEmail("simun [at] seges [dot] sk");
+	private SimpleBean createBean(String name, String mail, String companyName) {
+		SimpleBean fat = new SimpleBean();
+		fat.setName(name);
+		fat.setEmail(mail);
 		fat.setDate(new Date());
 		
 		Company company = new Company();
-		company.setName("Seges s.r.o.");
+		company.setName(companyName);
 		fat.setCompany(company);
 		
 		return fat;
 	}
+	
+	private SimpleBean bean1;
+	
+	private SimpleBean createBean1() {
+		if (bean1 != null) {
+			return bean1;
+		}
+		
+		bean1 = createBean("jozef", "jozef [at] seges [dot] sk", "Seges s.r.o.");		
+		return bean1;
+	}
 
-	private SimpleBean alik;
+	private SimpleBean bean2;
 	
 	private SimpleBean createBean2() {
-		if (alik != null) {
-			return alik;
+		if (bean2 != null) {
+			return bean2;
 		}
-		
-		alik = new SimpleBean();
-		alik.setName("alik");
-		alik.setEmail("alac [at] zfs [dot] sk");
-		
-		Company company = new Company();
-		company.setName("Zettaflops s.r.o");
-		alik.setCompany(company);
-		
-		return alik;
+	
+		bean2 = createBean("andre", "andre [at] zfs [dot] sk", "Zettaflops s.r.o");
+				
+		return bean2;
 	}
 
-	private SimpleBean eldzi;
+	private SimpleBean bean3;
 
 	private SimpleBean createBean3() {
-		if (eldzi != null) {
-			return eldzi;
+		if (bean3 != null) {
+			return bean3;
 		}
-		eldzi = new SimpleBean();
-		eldzi.setName("eldzi");
-		eldzi.setEmail("gazo [at] seges [dot] sk");
+		bean3 = createBean("svatozar", "svatozar [at] seges [dot] sk", "Seges s.r.o.");
 		
-		Company company = new Company();
-		company.setName("Seges s.r.o.");
-		eldzi.setCompany(company);
-		
-		return eldzi;
+		return bean3;
 	}
 
-	private SimpleBean mig;
+	private SimpleBean bean4;
 	
 	private SimpleBean createBean4() {
-		if (mig != null) {
-			return mig;
+		if (bean4 != null) {
+			return bean4;
 		}
 		
-		mig = new SimpleBean();
-		mig.setName("mig");
-		mig.setEmail("grosos [at] seges [dot] sk");
+		bean4 = createBean("urpin", "urpin [at] seges [dot] sk", "Seges s.r.o.");
 		
-		Company company = new Company();
-		company.setName("Seges s.r.o.");
-		mig.setCompany(company);
-		
-		return mig;
+		return bean4;
 	}
 }

@@ -6,6 +6,7 @@ import sk.seges.acris.binding.client.annotations.BindingField;
 import sk.seges.acris.binding.client.annotations.BindingFieldsBase;
 import sk.seges.acris.binding.client.annotations.BindingSpecLoader;
 import sk.seges.acris.binding.client.annotations.Generated;
+import sk.seges.acris.binding.client.annotations.ValidationStrategy;
 import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
 import sk.seges.acris.binding.client.samples.loaders.CompanyDataLoader;
 import sk.seges.acris.binding.client.samples.mocks.Company;
@@ -21,7 +22,7 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 
-@BindingFieldsBase(updateStrategy=UpdateStrategy.READ_WRITE)
+@BindingFieldsBase(updateStrategy=UpdateStrategy.READ_WRITE,validationStrategy=ValidationStrategy.ON_SUBMIT, validationHighlighter = ExampleHighlighter.class)
 public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<SimpleBean> {
 
 	protected final Label nameLabel = GWT.create(Label.class);
@@ -50,8 +51,8 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 	protected final CheckBox musicBluesCheckBox = GWT.create(CheckBox.class);
 	
 	protected final Label favoriteColorLabel = GWT.create(Label.class);
-	protected final RadioButton favoriteColorRedRadioButton = new RadioButton("RedColor");
-	protected final RadioButton favoriteColorBlueRadioButton = new RadioButton("BlueColor");
+	protected final RadioButton favoriteColorRedRadioButton = new RadioButton("group", "RedColor");
+	protected final RadioButton favoriteColorBlueRadioButton = new RadioButton("group", "BlueColor");
 
 	protected final Label descriptionLabel = GWT.create(Label.class);
 	protected final TextArea descriptionTextArea = GWT.create(TextArea.class);
