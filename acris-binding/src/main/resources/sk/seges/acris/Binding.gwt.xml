@@ -7,6 +7,6 @@
     <generate-with
 		class="sk.seges.acris.binding.rebind.binding.BeanWrapperIntrospectorGenerator">
 		<when-type-assignable
-			class="sk.seges.acris.bind.BeanWrapperIntrospector"/>
+			class="sk.seges.acris.binding.client.init.BeanWrapperIntrospector"/>
 	</generate-with>
 </module>
