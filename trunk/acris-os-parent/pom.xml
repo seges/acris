@@ -42,6 +42,7 @@
 		<module>../acris-binding</module>
 		<module>../acris-callbacks</module>
 		<module>../acris-client-core</module>
+		<module>../acris-json</module>	
 		<module>../acris-common</module>
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
