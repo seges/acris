@@ -3,7 +3,9 @@ package sk.seges.acris.json.client.sample;
 import org.gwttime.time.DateTime;
 
 import sk.seges.acris.json.client.IJsonizer;
+import sk.seges.acris.json.client.JsonizerBuilder;
 import sk.seges.acris.json.client.JsonizerProvider;
+import sk.seges.acris.json.client.deserialization.DateTimeDeserializer;
 import sk.seges.acris.json.client.sample.data.FooSampler;
 import sk.seges.acris.json.client.sample.data.SampleData;
 
@@ -29,8 +31,6 @@ public class SampleDataShowcase implements EntryPoint {
 
 	@Override
 	public void onModuleLoad() {
-
-		JsonizerProvider.init();
 
 		vp = new VerticalPanel();
 		RootPanel.get().add(vp);
@@ -73,8 +73,8 @@ public class SampleDataShowcase implements EntryPoint {
 
 		vp.clear();
 		editableJsonWritePanel = new EditableJsonWritePanel();
-		editableJsonWritePanel.writeln("JSON representation");
-		editableJsonWritePanel.writeln(" ");
+		editableJsonWritePanel.write("JSON representation");
+		editableJsonWritePanel.writep("(You can modify the ").writeb("blue").writelnp(" values as you want)");
 		editableJsonWritePanel.setJson(jsonString);
 		vp.add(editableJsonWritePanel);
 	}
@@ -82,9 +82,13 @@ public class SampleDataShowcase implements EntryPoint {
 	protected void jsonize() {
 		JSONValue value = JSONParser.parse(editableJsonWritePanel.getJson());
 
-		IJsonizer<SampleData> jsonnizer = GWT.create(JsonizerProvider.class);
-		SampleData data = new SampleData();
-		jsonnizer.jsonize(value, data);
+		JsonizerBuilder jsonizerBuilder = new JsonizerBuilder();
+		
+//		jsonizerBuilder.registerDeserializer(String.class, new StringDeserializer());
+		jsonizerBuilder.registerDeserializer(DateTime.class, new DateTimeDeserializer());
+
+		IJsonizer<SampleData> jsonnizer = jsonizerBuilder.create();
+		SampleData data = jsonnizer.fromJson(value, SampleData.class);
 
 		targetCodePanel.setWidgetText("data", data.getData());
 		targetCodePanel.setWidgetText("value", data.getFooSampler().getValue().toString());
