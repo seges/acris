@@ -1,11 +1,12 @@
 package sk.seges.acris.json.client.sample;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.gwttime.time.DateTime;
 
 import sk.seges.acris.json.client.IJsonizer;
 import sk.seges.acris.json.client.JsonizerBuilder;
-import sk.seges.acris.json.client.JsonizerProvider;
-import sk.seges.acris.json.client.deserialization.DateTimeDeserializer;
 import sk.seges.acris.json.client.sample.data.FooSampler;
 import sk.seges.acris.json.client.sample.data.SampleData;
 
@@ -65,7 +66,11 @@ public class SampleDataShowcase implements EntryPoint {
 		FooSampler fooSampler = new FooSampler();
 		fooSampler.setValue(new DateTime());
 
+		Collection<FooSampler> samples = new HashSet<FooSampler>();
+		samples.add(fooSampler);
+		
 		sampleData.setFooSampler(fooSampler);
+		sampleData.setSamples(samples);
 
 		SampleDataSerializer sds = new SampleDataSerializer();
 
@@ -84,9 +89,6 @@ public class SampleDataShowcase implements EntryPoint {
 
 		JsonizerBuilder jsonizerBuilder = new JsonizerBuilder();
 		
-//		jsonizerBuilder.registerDeserializer(String.class, new StringDeserializer());
-		jsonizerBuilder.registerDeserializer(DateTime.class, new DateTimeDeserializer());
-
 		IJsonizer<SampleData> jsonnizer = jsonizerBuilder.create();
 		SampleData data = jsonnizer.fromJson(value, SampleData.class);
 

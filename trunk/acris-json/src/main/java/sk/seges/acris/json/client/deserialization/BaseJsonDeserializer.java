@@ -11,34 +11,21 @@ public abstract class BaseJsonDeserializer<T> extends JsonDeserializer<T, JSONVa
 	protected static final String TEXT_PROPERTY_EXPRESSION = "$t";
 
 	protected String _deserialize(JSONValue jsonValue) {
+		if (jsonValue.isString() != null) {
+			return jsonValue.isString().stringValue();
+		}
+
 		JSONObject jsonObject = jsonValue.isObject();
 		
 		if (jsonObject == null) {
 			return null;
 		}
 		
-		if (jsonObject.isString() != null) {
-			return jsonObject.isString().stringValue();
-		}
-		
-		JSONObject jsonStringObject = jsonObject.isObject();
-
-		if (jsonStringObject == null) {
+		if (!jsonObject.containsKey(TEXT_PROPERTY_EXPRESSION)) {
 			return null;
 		}
 
-		JSONString jsonString1Try = jsonStringObject.isString();
-
-		if (jsonString1Try != null) {
-			return jsonString1Try.stringValue();
-		}
-
-		if (!jsonStringObject.containsKey(TEXT_PROPERTY_EXPRESSION)) {
-			return null;
-		}
-
-		JSONString jsonString = jsonStringObject.get(TEXT_PROPERTY_EXPRESSION)
-				.isString();
+		JSONString jsonString = jsonObject.get(TEXT_PROPERTY_EXPRESSION).isString();
 
 		if (jsonString == null) {
 			return null;
