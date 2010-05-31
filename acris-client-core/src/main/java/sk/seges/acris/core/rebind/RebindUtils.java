@@ -21,6 +21,7 @@ public class RebindUtils {
 		public Annotation[] annotations;
 		public boolean isPublic = false;
 		public JMethod setterMethod;
+		public JMethod getterMethod;
 	}
 	
 	/** Convert method getter/setter/isser to field name. */
@@ -98,7 +99,7 @@ public class RebindUtils {
 		}
 	}
 	
-	public static FieldDeclaration getSetter(JClassType beanType, String fieldName) throws NotFoundException {
+	public static FieldDeclaration getFieldDeclaration(JClassType beanType, String fieldName) throws NotFoundException {
 		FieldDeclaration fd = new FieldDeclaration();
 		
 		Field f;
@@ -135,6 +136,13 @@ public class RebindUtils {
 					fd.setterMethod = method;
 					break;
 				}
+			}
+			
+			try {
+				fd.getterMethod = getGetter(beanType, fieldName);
+			} catch (NotFoundException e) {
+				//No getter is defined. Nevermind, we will handle it in some mystical way.
+				fd.getterMethod = null;
 			}
 		}
 		
