@@ -14,7 +14,7 @@ import java.util.Map;
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
-import sk.seges.acris.binding.rebind.RebindUtils;
+import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.sesam.domain.IObservableObject;
 
 import com.google.gwt.core.client.GWT;

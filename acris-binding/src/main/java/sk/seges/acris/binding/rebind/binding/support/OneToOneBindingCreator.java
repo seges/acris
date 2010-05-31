@@ -3,7 +3,6 @@ package sk.seges.acris.binding.rebind.binding.support;
 import java.lang.annotation.Annotation;
 
 import org.gwt.beansbinding.core.client.Converter;
-import org.gwt.beansbinding.core.client.ConverterProvider;
 import org.gwt.beansbinding.core.client.Validator;
 
 import sk.seges.acris.binding.client.annotations.BindingField;

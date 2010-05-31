@@ -2,7 +2,7 @@ package sk.seges.acris.binding.rebind.bean;
 
 import java.beans.IntrospectionException;
 
-import sk.seges.acris.binding.rebind.RebindUtils;
+import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 

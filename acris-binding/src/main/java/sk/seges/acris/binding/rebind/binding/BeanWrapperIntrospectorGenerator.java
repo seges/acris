@@ -11,8 +11,8 @@ import java.util.List;
 
 import sk.seges.acris.binding.client.init.BeanWrapperIntrospector;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
-import sk.seges.acris.binding.rebind.RebindUtils;
 import sk.seges.acris.core.rebind.AbstractGenerator;
+import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;

@@ -1,4 +1,8 @@
-package sk.seges.acris.binding.rebind;
+package sk.seges.acris.core.rebind;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
@@ -11,6 +15,14 @@ import com.google.gwt.core.ext.typeinfo.NotFoundException;
  * @author eldzi
  */
 public class RebindUtils {
+	
+	public static class FieldDeclaration {
+		public JType type;
+		public Annotation[] annotations;
+		public boolean isPublic = false;
+		public JMethod setterMethod;
+	}
+	
 	/** Convert method getter/setter/isser to field name. */
 	public static String toFieldName(String methodName) {
 		int prefixLength = (methodName.startsWith("is") ? 2 : 3);
@@ -26,6 +38,9 @@ public class RebindUtils {
 	 * @return
 	 */
 	public static String getterSetterDeterminator(String fieldName) {
+		if (fieldName.length() == 1) {
+			return fieldName.toUpperCase();
+		}
 		return fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1, fieldName.length());
 	}
 	
@@ -83,6 +98,50 @@ public class RebindUtils {
 		}
 	}
 	
+	public static FieldDeclaration getSetter(JClassType beanType, String fieldName) throws NotFoundException {
+		FieldDeclaration fd = new FieldDeclaration();
+		
+		Field f;
+
+		try {
+			f = Class.forName(beanType.getQualifiedSourceName()).getDeclaredField(fieldName);
+		} catch (Exception e) {
+			try {
+				f = Class.forName(beanType.getQualifiedSourceName()).getField(fieldName);
+			} catch (Exception e1) {
+				f = null;
+			}
+		}
+		
+		if (f != null) {
+			fd.isPublic = (f.getModifiers() & Modifier.PUBLIC) == f.getModifiers();
+			fd.annotations = f.getAnnotations();
+		}
+
+		JField field = beanType.getField(fieldName);
+		
+		if (field == null) {
+			throw new NotFoundException("Unable to access field " + fieldName + " in " + beanType);
+		}
+		
+		fd.type = field.getType();
+		
+		if (!fd.isPublic) {
+			String setterName = "set" + getterSetterDeterminator(fieldName);
+			
+			for (JMethod method : beanType.getMethods()) {
+				if (method.getName().equals(setterName) && method.getParameters().length == 1) {
+					fd.type = method.getParameters()[0].getType();
+					fd.setterMethod = method;
+					break;
+				}
+			}
+		}
+		
+		
+		return fd;
+	}
+
 	public static JMethod getSetter(JClassType beanType, String fieldName, JType fieldType) throws NotFoundException {
 		
 		JMethod method = null;
