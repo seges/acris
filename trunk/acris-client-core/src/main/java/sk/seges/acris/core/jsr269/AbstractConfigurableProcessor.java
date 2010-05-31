@@ -48,8 +48,17 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		}
 
 		annotations = new HashSet<String>();
-		annotations.addAll(parse((String) prop.get("annotations")));
-		interfaces = parse((String) prop.get("interfaces"));
+		
+		String annotationsString = (String) prop.get("annotations");
+		if (annotationsString != null) {
+			annotations.addAll(parse(annotationsString));
+		}
+		
+		String interfacesString = (String) prop.get("interfaces");
+		
+		if (interfacesString != null) {
+			interfaces = parse(interfacesString);
+		}
 	}
 
 	protected abstract boolean processElement(Element element, RoundEnvironment roundEnv);
