@@ -1,32 +1,28 @@
-package sk.seges.acris.json.client.provider;
+package sk.seges.acris.json.client.deserialization;
+
 
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
-public abstract class BaseJsonAdapter<T> extends JsonAdapter<T, JSONValue> {
+public abstract class BaseJsonDeserializer<T> extends JsonDeserializer<T, JSONValue> {
 
 	protected static final String TEXT_PROPERTY_EXPRESSION = "$t";
 
-	protected String getStringValue(JSONValue jsonValue, String property) {
+	protected String _deserialize(JSONValue jsonValue) {
 		JSONObject jsonObject = jsonValue.isObject();
 		
 		if (jsonObject == null) {
 			return null;
 		}
 		
-		if (!jsonObject.containsKey(property)) {
-			return null;
-		}
-
-		JSONValue jsonObjectValue = jsonObject.get(property);
-
-		if (jsonObjectValue.isString() != null) {
-			return jsonObjectValue.isString().stringValue();
+		if (jsonObject.isString() != null) {
+			return jsonObject.isString().stringValue();
 		}
 		
-		JSONObject jsonStringObject = jsonObjectValue.isObject();
+		JSONObject jsonStringObject = jsonObject.isObject();
+
 		if (jsonStringObject == null) {
 			return null;
 		}

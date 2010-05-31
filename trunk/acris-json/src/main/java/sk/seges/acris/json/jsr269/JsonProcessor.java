@@ -17,8 +17,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.acris.core.jsr269.AbstractConfigurableProcessor;
-import sk.seges.acris.json.client.IJsonizer;
 import sk.seges.acris.json.client.annotation.JsonObject;
+import sk.seges.acris.json.client.data.IJsonObject;
 
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -53,7 +53,7 @@ public class JsonProcessor extends AbstractConfigurableProcessor {
 
 			pw.println("package " + packageName + ";");
 			pw.println();
-			pw.println("public interface " + simpleName + " extends " + IJsonizer.class.getCanonicalName() + "<"
+			pw.println("public interface " + simpleName + " extends " + IJsonObject.class.getCanonicalName() + "<"
 					+ fqnElement.toString() + "> {");
 			pw.println("}");
 			pw.flush();
