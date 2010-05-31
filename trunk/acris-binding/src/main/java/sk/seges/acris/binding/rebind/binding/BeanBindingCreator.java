@@ -16,11 +16,11 @@ import sk.seges.acris.binding.client.holder.validation.ValidatableBindingHolder;
 import sk.seges.acris.binding.client.holder.validation.ValidationHighligther;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.binding.rebind.GeneratorException;
-import sk.seges.acris.binding.rebind.RebindUtils;
 import sk.seges.acris.binding.rebind.binding.support.BindingCreatorFactory;
 import sk.seges.acris.binding.rebind.binding.support.IBindingCreator;
 import sk.seges.acris.binding.rebind.loader.DefaultLoaderCreatorFactory;
 import sk.seges.acris.binding.rebind.loader.EmptyLoaderCreator;
+import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;

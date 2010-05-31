@@ -12,7 +12,7 @@ import sk.seges.acris.binding.client.providers.support.AbstractBindingClickHandl
 import sk.seges.acris.binding.client.providers.support.AbstractBindingValueChangeHandlerAdapterProvider;
 import sk.seges.acris.binding.client.providers.support.generic.IBindingBeanAdapterProvider;
 import sk.seges.acris.binding.rebind.GeneratorException;
-import sk.seges.acris.binding.rebind.RebindUtils;
+import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
