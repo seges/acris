@@ -1,7 +1,9 @@
 package sk.seges.acris.json.client.sample;
 
+import sk.seges.acris.json.client.sample.data.FooSampler;
 import sk.seges.acris.json.client.sample.data.SampleData;
 
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
@@ -17,6 +19,20 @@ public class SampleDataSerializer implements IDataSerializer<SampleData> {
 		JSONObject sampleData = new JSONObject();
 		sampleData.put("data", data);
 		sampleData.put("fooSampler", foo);
+
+		if (sample.getSamples() != null) {
+			int index = 0;
+			JSONArray samplesArray = new JSONArray();
+			for (FooSampler sampler: sample.getSamples()) {
+				JSONObject fooSa = new JSONObject();
+				JSONString valueSa = new JSONString(sampler.getValue().toString());
+				fooSa.put("value", valueSa);
+				samplesArray.set(index++, fooSa);
+			}
+			
+			sampleData.put("samples", samplesArray);
+		}
+		
 		
 		return sampleData.toString();
 	}

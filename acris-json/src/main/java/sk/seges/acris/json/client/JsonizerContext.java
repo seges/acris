@@ -14,6 +14,26 @@ public class JsonizerContext {
 	private Map<String, JsonDeserializer<?, ? extends JSONValue>> jsonDeserializers = new HashMap<String, JsonDeserializer<?, ? extends JSONValue>>();
 	private Map<String, JsonSerializer<?, ? extends JSONValue>> jsonSerializers = new HashMap<String, JsonSerializer<?, ? extends JSONValue>>();
 
+	private Map<String, Map<String, Class<?>>> propertyMapping = new HashMap<String, Map<String, Class<?>>>();
+
+	public void registerPropertyType(Class<?> clazz, String property, Class<?> targetType) {
+		Map<String, Class<?>> classProperties = propertyMapping.get(clazz.getName());
+
+		if (classProperties == null) {
+			classProperties = new HashMap<String, Class<?>>();
+		}
+
+		classProperties.put(property, targetType);
+	}
+
+	public Class<?> getPropertyType(Class<?> clazz, String property) {
+		Map<String, Class<?>> classProperties = propertyMapping.get(clazz.getName());
+		if (classProperties == null) {
+			return null;
+		}
+		return classProperties.get(property);
+	}
+
 	public void registerInstanceCreator(Class<?> clazz, InstanceCreator<?> instanceCreator) {
 		instanceCreators.put(clazz.getName(), instanceCreator);
 	}

@@ -1,6 +1,26 @@
 package sk.seges.acris.json.client;
 
+import java.util.AbstractCollection;
+import java.util.AbstractList;
+import java.util.AbstractMap;
+import java.util.AbstractSequentialList;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+
+import org.gwttime.time.DateTime;
+
+import sk.seges.acris.json.client.deserialization.DateTimeDeserializer;
 import sk.seges.acris.json.client.deserialization.JsonDeserializer;
+import sk.seges.acris.json.client.instantiators.CollectionInstanceCreator;
+import sk.seges.acris.json.client.instantiators.MapInstanceCreator;
+import sk.seges.acris.json.client.instantiators.SequentialListInstanceCreator;
+import sk.seges.acris.json.client.instantiators.SortedMapInstanceCreator;
+import sk.seges.acris.json.client.instantiators.SortedSetInstanceCreator;
 import sk.seges.acris.json.client.serialization.JsonSerializer;
 
 import com.google.gwt.core.client.GWT;
@@ -12,8 +32,44 @@ public class JsonizerBuilder {
 
 	public <T> IJsonizer<T> create() {
 		IJsonizer<T> jsonizer = GWT.create(JsonizerProvider.class);
+
+		registerDefaultDeserializers();
+		registerDefaultInstantators();
+
 		jsonizer.setJsonizerContext(jsonizerContext);
 		return jsonizer;
+	}
+
+	private void registerDefaultDeserializers() {
+		registerDeserializer(DateTime.class, new DateTimeDeserializer());
+	}
+
+	private void registerDefaultInstantators() {
+		registerInstanceCreator(Collection.class, new CollectionInstanceCreator());
+		registerInstanceCreator(Set.class, new CollectionInstanceCreator());
+
+		registerInstanceCreator(SortedSet.class, new SortedSetInstanceCreator());
+
+		registerInstanceCreator(List.class, new CollectionInstanceCreator());
+
+		registerInstanceCreator(AbstractSet.class, new CollectionInstanceCreator());
+		registerInstanceCreator(AbstractCollection.class, new CollectionInstanceCreator());
+		registerInstanceCreator(AbstractList.class, new CollectionInstanceCreator());
+
+		registerInstanceCreator(AbstractSequentialList.class, new SequentialListInstanceCreator());
+
+		registerInstanceCreator(Map.class, new MapInstanceCreator());
+		registerInstanceCreator(AbstractMap.class, new MapInstanceCreator());
+
+		registerInstanceCreator(SortedMap.class, new SortedMapInstanceCreator());
+	}
+
+	public void registerPropertyType(Class<?> clazz, String property, Class<?> targetType) {
+		jsonizerContext.registerPropertyType(clazz, property, targetType);
+	}
+
+	public Class<?> getPropertyType(Class<?> clazz, String property) {
+		return jsonizerContext.getPropertyType(clazz, property);
 	}
 
 	public void registerInstanceCreator(Class<?> clazz, InstanceCreator<?> instanceCreator) {

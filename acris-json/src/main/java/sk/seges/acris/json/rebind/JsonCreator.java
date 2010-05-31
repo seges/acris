@@ -2,13 +2,13 @@ package sk.seges.acris.json.rebind;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.acris.core.rebind.RebindUtils.FieldDeclaration;
-import sk.seges.acris.json.client.IJsonizer;
 import sk.seges.acris.json.client.PrimitiveJsonizer;
 import sk.seges.acris.json.client.annotation.Field;
 import sk.seges.acris.json.client.context.DeserializationContext;
@@ -23,8 +23,11 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JParameterizedType;
+import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -73,19 +76,21 @@ public class JsonCreator {
 		JClassType[] types = type.getSubtypes();
 
 		sourceWriter.println("public " + Object.class.getSimpleName() + " fromJson(" + JSONValue.class.getSimpleName()
-				+ " jsonValue, " + Class.class.getSimpleName() + " clazz, DeserializationContext deserializationContext) {");
+				+ " jsonValue, " + Class.class.getSimpleName()
+				+ " clazz, DeserializationContext deserializationContext) {");
 		sourceWriter.indent();
 
 		for (JClassType JSONclassType : types) {
 			generateDeserialize(sourceWriter, JSONclassType);
 		}
 
-		sourceWriter.println("return null;");
+		sourceWriter.println("return super.fromJson(jsonValue, clazz, deserializationContext);");
 
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		
-		sourceWriter.println("public boolean supports(" + JSONValue.class.getSimpleName() + " jsonValue, " + Class.class.getSimpleName() + " clazz) {");
+
+		sourceWriter.println("public boolean supports(" + JSONValue.class.getSimpleName() + " jsonValue, "
+				+ Class.class.getSimpleName() + " clazz) {");
 		sourceWriter.indent();
 
 		sourceWriter.println("if (super.supports(jsonValue, clazz)) {");
@@ -161,8 +166,8 @@ public class JsonCreator {
 				Map<String, String> param = AnnotationHelper.getMembers(annotation);
 				if (param != null) {
 					for (Entry<String, String> paramEntry : param.entrySet()) {
-						sourceWriter.println("deserializationContext.putAttribute(\""
-								+ paramEntry.getKey() + "\",\"" + paramEntry.getValue() + "\");");
+						sourceWriter.println("deserializationContext.putAttribute(\"" + paramEntry.getKey() + "\",\""
+								+ paramEntry.getValue() + "\");");
 					}
 				}
 			}
@@ -170,129 +175,109 @@ public class JsonCreator {
 
 		sourceWriter.println("deserializationContext.setJsonizer(this);");
 
-		if (fd.isPublic) {
-			sourceWriter.println("data." + field.getName() + " = (" + field.getType().getQualifiedSourceName()
-					+ ")fromJson(jsonObject.get(\"" + fieldName + "\"), " + field.getType().getQualifiedSourceName()
-					+ ".class, deserializationContext);");
+		if (fd.type.isArray() != null) {
+
+		} else if (fd.type.isClassOrInterface() != null
+				&& fd.type.isClassOrInterface().isAssignableTo(typeOracle.findType(Collection.class.getName()))) {
+
+			sourceWriter.println(JSONValue.class.getSimpleName() + " jsonValue" + field.getName()
+					+ " = jsonObject.get(\"" + fieldName + "\");");
+			sourceWriter.println("if (jsonValue" + field.getName() + " != null) {");
+			sourceWriter.indent();
+
+			JType targetType = null;
+
+			sk.seges.acris.json.client.annotation.Type type = field
+					.getAnnotation(sk.seges.acris.json.client.annotation.Type.class);
+
+			if (type != null && type.value() != null) {
+				targetType = typeOracle.findType(type.value().getName());
+			}
+
+			if (targetType == null) {
+				JParameterizedType parametrizedType = fd.type.isParameterized();
+				if (parametrizedType != null && parametrizedType.getTypeArgs() != null
+						&& parametrizedType.getTypeArgs().length == 1) {
+					targetType = parametrizedType.getTypeArgs()[0];
+				}
+			}
+
+			if (targetType != null) {
+				sourceWriter.println(Class.class.getSimpleName() + "<?> targetClazz = " + targetType.getQualifiedSourceName()
+						+ ".class;");
+			} else {
+				sourceWriter.println(Class.class.getSimpleName() + "<?> targetClazz = jsonizerContext.getPropertyType("
+						+ toType.getQualifiedSourceName() + ".class, \"" + fieldName + "\");");
+			}
+
+			sourceWriter.println("if (targetClazz != null) {");
+			sourceWriter.indent();
+
+			sourceWriter.println(JSONArray.class.getSimpleName() + " jsonArray = jsonValue" + field.getName()
+					+ ".isArray();");
+			sourceWriter.println("if (jsonArray != null) {");
+			sourceWriter.indent();
+
+			generateSetter(sourceWriter, fd, field, "_fromJsonToCollection(jsonArray, targetClazz, "
+					+ Collection.class.getName() + ".class, null, deserializationContext)");
+			sourceWriter.outdent();
+			sourceWriter.println("} else {");
+			sourceWriter.indent();
+			generateSetter(sourceWriter, fd, field, "(" + Collection.class.getName()
+					+ ")fromJson(jsonValue" + field.getName() + ", targetClazz, deserializationContext)");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+			sourceWriter.outdent();
+			sourceWriter.println("} else {");
+			sourceWriter.indent();
+			generateSetter(sourceWriter, fd, field, "null");
+			sourceWriter.println("}");
+			sourceWriter.outdent();
+			sourceWriter.println("} else {");
+			generateSetter(sourceWriter, fd, field, "null");
+			sourceWriter.println("}");
 		} else {
-			sourceWriter.println("data." + fd.setterMethod.getName() + "((" + field.getType().getQualifiedSourceName()
+			generateSetter(sourceWriter, fd, field, "(" + field.getType().getQualifiedSourceName()
 					+ ")fromJson(jsonObject.get(\"" + fieldName + "\"), " + field.getType().getQualifiedSourceName()
-					+ ".class, deserializationContext));");
+					+ ".class, deserializationContext)");
 		}
 	}
 
-	// protected void finalizeEmptyField(JClassType toType, JField field, FieldDeclaration fd) {
-	// if (fd.isPublic) {
-	// sourceWriter.println("((" + toType.getQualifiedSourceName() + ")t)." + field.getName() +
-	// " = convertResultType(_result, " + toType.getName() + ".class);");
-	// } else {
-	// sourceWriter.println("((" + toType.getQualifiedSourceName() + ")t)." + fd.setterMethod.getName()
-	// + "(convertResultType(_result, " + toType.getName() + ".class));");
-	// }
-	// }
-
-	// protected boolean generateEmptyField(SourceWriter sourceWriter, JClassType toType, JClassType resultType,
-	// JField field, FieldDeclaration fd) {
-	//		
-	// if (!fd.isPublic && fd.getterMethod == null) {
-	// return false;
-	// }
-	//
-	// sourceWriter.println(resultType.getName() + " _result;");
-	//		
-	// if (fd.isPublic) {
-	// sourceWriter.println("if (((" + toType.getQualifiedSourceName() + ")t)." + field.getName() + " == null) {");
-	// } else {
-	// sourceWriter.println("if (((" + toType.getQualifiedSourceName() + ")t)." + fd.getterMethod.getName()
-	// + "() == null) {");
-	// }
-	//
-	// sourceWriter.indent();
-	// sourceWriter.println("");
-	//
-	// sourceWriter.println("_result =  + instantiateField(" + resultType.getName() + ".class);");
-	//		
-	// sourceWriter.outdent();
-	// sourceWriter.println("}");
-	//		
-	// return true;
-	// }
-	//
-	// protected boolean handleArrayField(SourceWriter sourceWriter, JClassType toType, JField field, FieldDeclaration
-	// fd)
-	// throws UnableToCompleteException {
-	// try {
-	// generateEmptyField(sourceWriter, toType, typeOracle.getType(ArrayList.class.getName()), field, fd);
-	//			
-	// sourceWriter.println("
-	// } catch (NotFoundException e) {
-	// logger.log(Type.ERROR,
-	// "ArrayList class could not be found on the classpath. Do not try to fix that, it's all broken and non repairable.");
-	// throw new UnableToCompleteException();
-	// }
-	// return false;
-	// }
-
-	// protected boolean handleCollectionField(SourceWriter sourceWriter, JClassType toType, JField field,
-	// FieldDeclaration fd) throws UnableToCompleteException {
-	// return false;
-	// }
-	//
-	// protected boolean handleMapField(SourceWriter sourceWriter, JClassType toType, JField field, FieldDeclaration fd)
-	// throws UnableToCompleteException {
-	// return false;
-	// }
-
-	// protected boolean handleIterableFields(SourceWriter sourceWriter, JClassType toType, JField field,
-	// FieldDeclaration fd) throws UnableToCompleteException {
-	//
-	// JSONArray jsonArray = jsonValue.isArray();
-	//		
-	// if (fd.type.isArray() != null) {
-	// return handleArrayField(sourceWriter, toType, field, fd);
-	// } else if (fd.type.isClass() != null) {
-	// try {
-	// if (fd.type.isClass().isAssignableFrom(typeOracle.getType(Collection.class.getName()))) {
-	// return handleCollectionField(sourceWriter, toType, field, fd);
-	// } else if (fd.type.isClass() != null
-	// && fd.type.isClass().isAssignableFrom(typeOracle.getType(Map.class.getName()))) {
-	// return handleMapField(sourceWriter, toType, field, fd);
-	// }
-	// } catch (NotFoundException e) {
-	// logger.log(Type.ERROR,
-	// "No Collection or/and Map interface is on the classpath. Something mystical happens.");
-	// throw new UnableToCompleteException();
-	// }
-	// }
-	//
-	// return false;
-	// }
+	protected void generateSetter(SourceWriter sourceWriter, FieldDeclaration fd, JField field, String set) {
+		if (fd.isPublic) {
+			sourceWriter.println("data." + field.getName() + " = " + set + ";");
+		} else {
+			sourceWriter.println("data." + fd.setterMethod.getName() + "(" + set + ");");
+		}
+	}
 
 	protected void generateSupports(SourceWriter sourceWriter, JClassType classType) throws UnableToCompleteException {
 		JClassType toType;
 
 		try {
-			toType = RebindUtils.getGenericsFromInterfaceType(classType,
-					typeOracle.findType(IJsonObject.class.getName()), 0);
+			toType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IJsonObject.class
+					.getName()), 0);
 		} catch (NotFoundException e) {
 			logger.log(Type.ERROR, "Unable to extract generic type class from interface");
 			throw new UnableToCompleteException();
 		}
-		
-		sourceWriter.println("if (jsonValue.isObject() != null  && clazz.getName().equals(" + toType.getQualifiedSourceName() + ".class.getName())) {");
+
+		sourceWriter.println("if (jsonValue.isObject() != null  && clazz.getName().equals("
+				+ toType.getQualifiedSourceName() + ".class.getName())) {");
 		sourceWriter.indent();
 		sourceWriter.println("return true;");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
-	
-	protected void generateDeserialize(SourceWriter sourceWriter, JClassType classType) throws UnableToCompleteException {
+
+	protected void generateDeserialize(SourceWriter sourceWriter, JClassType classType)
+			throws UnableToCompleteException {
 
 		JClassType toType;
 
 		try {
-			toType = RebindUtils.getGenericsFromInterfaceType(classType,
-					typeOracle.findType(IJsonObject.class.getName()), 0);
+			toType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IJsonObject.class
+					.getName()), 0);
 		} catch (NotFoundException e) {
 			logger.log(Type.ERROR, "Unable to extract generic type class from interface");
 			throw new UnableToCompleteException();
@@ -316,7 +301,8 @@ public class JsonCreator {
 		sourceWriter.println("");
 		sourceWriter.println("JSONObject jsonObject = jsonValue.isObject();");
 
-		sourceWriter.println(toType.getQualifiedSourceName() + " data = new " + toType.getQualifiedSourceName() + "();");
+		sourceWriter
+				.println(toType.getQualifiedSourceName() + " data = new " + toType.getQualifiedSourceName() + "();");
 
 		for (JField field : toType.getFields()) {
 			generateField(sourceWriter, toType, field);
@@ -338,10 +324,10 @@ public class JsonCreator {
 	}
 
 	protected String[] getImports() {
-		return new String[] { GWT.class.getCanonicalName(), JSONValue.class.getCanonicalName(),
-				JSONObject.class.getCanonicalName(), JsonDeserializer.class.getCanonicalName(),
-				Map.class.getCanonicalName(), DeserializationContext.class.getCanonicalName(),
-				HashMap.class.getCanonicalName(), };
+		return new String[] { GWT.class.getCanonicalName(), JSONArray.class.getCanonicalName(),
+				JSONValue.class.getCanonicalName(), JSONObject.class.getCanonicalName(),
+				JsonDeserializer.class.getCanonicalName(), Map.class.getCanonicalName(),
+				DeserializationContext.class.getCanonicalName(), HashMap.class.getCanonicalName(), };
 	}
 
 	protected SourceWriter getSourceWriter(String packageName, String beanClassName) {
@@ -358,7 +344,6 @@ public class JsonCreator {
 		}
 
 		composerFactory.setSuperclass(PrimitiveJsonizer.class.getCanonicalName());
-		// composerFactory.addImplementedInterface(IJsonizer.class.getCanonicalName());
 
 		return composerFactory.createSourceWriter(context, printWriter);
 	}
