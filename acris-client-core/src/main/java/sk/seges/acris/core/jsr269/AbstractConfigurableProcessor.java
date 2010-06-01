@@ -2,6 +2,7 @@ package sk.seges.acris.core.jsr269;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -77,12 +78,25 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				processElement(element, roundEnv);
 			}
 		} else {
+			for (String annotation : this.annotations) {
+				try {
+					Set<? extends Element> els = roundEnv.getElementsAnnotatedWith((Class<Annotation>)Class.forName(annotation));
+					for (Element element : els) {
+						if (!element.getKind().equals(ElementKind.CLASS) && !element.getKind().equals(ElementKind.INTERFACE)) {
+							continue;
+						}
+						elements.add(element);
+					}
+				} catch (ClassNotFoundException e) {
+					processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to process find annotation " + annotation);
+				}
+			}
 			for (Element element : roundEnv.getRootElements()) {
 				if (!element.getKind().equals(ElementKind.CLASS) && !element.getKind().equals(ElementKind.INTERFACE)) {
 					continue;
 				}
 				TypeElement typeElement = (TypeElement) element;
-				if (hasAnnotation(typeElement) || isAssignable(typeElement)) {
+				if (isAssignable(typeElement)) {
 					elements.add(element);
 				}
 			}

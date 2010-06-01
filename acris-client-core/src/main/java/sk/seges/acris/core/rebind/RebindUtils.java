@@ -105,10 +105,10 @@ public class RebindUtils {
 		Field f;
 
 		try {
-			f = Class.forName(beanType.getQualifiedSourceName()).getDeclaredField(fieldName);
+			f = Class.forName(beanType.getQualifiedBinaryName()).getDeclaredField(fieldName);
 		} catch (Exception e) {
 			try {
-				f = Class.forName(beanType.getQualifiedSourceName()).getField(fieldName);
+				f = Class.forName(beanType.getQualifiedBinaryName()).getField(fieldName);
 			} catch (Exception e1) {
 				f = null;
 			}
