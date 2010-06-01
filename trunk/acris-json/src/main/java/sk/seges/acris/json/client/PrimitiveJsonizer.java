@@ -20,6 +20,12 @@ public abstract class PrimitiveJsonizer<T> implements IJsonizer<T> {
 		return (T) fromJson(jsonValue, clazz, deserializationContext);
 	}
 
+	public T fromJson(JSONValue jsonValue, T instance) {
+		DeserializationContext deserializationContext = new DeserializationContext();
+		deserializationContext.setJsonizer(this);
+		return fromJson(jsonValue, instance, deserializationContext);
+	}
+	
 	@Override
 	public T fromJson(String json, Class<T> clazz) {
 		return fromJson(JSONParser.parse(json), clazz);
@@ -74,17 +80,16 @@ public abstract class PrimitiveJsonizer<T> implements IJsonizer<T> {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Collection<T> _fromJsonToCollection(JSONArray jsonArray, Class<T> clazz, Class<Collection<?>> collectionClazz, 
-			Collection<T> result, DeserializationContext deserializationContext) {
+	public <S extends Collection<T>> S _fromJsonToCollection(JSONArray jsonArray, Class<T> clazz, Class<S> collectionClazz, 
+			S result, DeserializationContext deserializationContext) {
 		if (result == null) {
-			InstanceCreator<Collection<?>> instanceCreator = jsonizerContext.getInstanceCreator(collectionClazz);
+			InstanceCreator<S> instanceCreator = jsonizerContext.getInstanceCreator(collectionClazz);
 
 			if (instanceCreator == null) {
 				return null;
 			}
 			
-			result = (Collection<T>) instanceCreator.createInstance(collectionClazz);
+			result = instanceCreator.createInstance(collectionClazz);
 			
 			if (result == null) {
 				return null;

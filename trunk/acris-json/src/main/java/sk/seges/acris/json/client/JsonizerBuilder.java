@@ -40,11 +40,11 @@ public class JsonizerBuilder {
 		return jsonizer;
 	}
 
-	private void registerDefaultDeserializers() {
+	protected void registerDefaultDeserializers() {
 		registerDeserializer(DateTime.class, new DateTimeDeserializer());
 	}
 
-	private void registerDefaultInstantators() {
+	protected void registerDefaultInstantators() {
 		registerInstanceCreator(Collection.class, new CollectionInstanceCreator());
 		registerInstanceCreator(Set.class, new CollectionInstanceCreator());
 

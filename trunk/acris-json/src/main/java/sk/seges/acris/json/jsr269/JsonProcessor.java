@@ -11,6 +11,7 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
@@ -41,13 +42,28 @@ public class JsonProcessor extends AbstractConfigurableProcessor {
 	@Override
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
 		try {
+			
 			Name fqnElement = ((TypeElement) element).getQualifiedName();
+			
+			String packageName = fqnElement.toString().substring(0, fqnElement.toString().lastIndexOf("."));
+			
+			Element enclosingElement = element.getEnclosingElement();
+			while (enclosingElement != null) {
+				if (!enclosingElement.getKind().equals(ElementKind.CLASS) && !enclosingElement.getKind().equals(ElementKind.INTERFACE)) {
+					enclosingElement = null;
+				} else {
+					String enclosingName = ((TypeElement) enclosingElement).getQualifiedName().toString();
+					packageName = enclosingName.substring(0, enclosingName.lastIndexOf("."));
+					enclosingElement = enclosingElement.getEnclosingElement();
+				}
+			}
+//			Name fqnSimpleName = ((TypeElement) element).getSimpleName();
+			
+//			String packageName = fqnElement.toString().substring(0, fqnElement.toString().lastIndexOf(".")) + ".json";
+//			packageName = packageName.toLowerCase();
+			String simpleName = fqnElement.toString().replace(packageName, "").replace(".", "") + "Jsonizer";
 
-			String fqn = fqnElement.toString() + "Jsonizer";
-			String packageName = fqn.substring(0, fqn.lastIndexOf("."));
-			String simpleName = element.getSimpleName() + "Jsonizer";
-
-			JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(fqn, element);
+			JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(packageName + "." + simpleName, element);
 			OutputStream os = createSourceFile.openOutputStream();
 			PrintWriter pw = new PrintWriter(os);
 

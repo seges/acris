@@ -8,7 +8,7 @@ import java.util.Map;
 public class AnnotationHelper {
 
 	public static Map<String, String> getMembers(Annotation annotation) {
-		Map params = new HashMap<String, String>();
+		Map<String, String> params = new HashMap<String, String>();
 
 		for (Method method : annotation.annotationType().getDeclaredMethods()) {
 			try {
