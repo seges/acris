@@ -79,12 +79,47 @@ public class JsonCreator {
 				+ " jsonValue, " + Class.class.getSimpleName()
 				+ " clazz, DeserializationContext deserializationContext) {");
 		sourceWriter.indent();
+		sourceWriter.println("if (jsonValue == null) {");
+		sourceWriter.indent();
+		sourceWriter.println("return null;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+
+		// Using deserializator
+		sourceWriter.println(JsonDeserializer.class.getSimpleName() + "<?, " + JSONValue.class.getSimpleName()
+				+ "> deserializer = jsonizerContext." + "getDeserializer(clazz);");
+
+		sourceWriter.println("if (deserializer != null) {");
+		sourceWriter.indent();
+		sourceWriter.println("return deserializer.deserialize(jsonValue, deserializationContext);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+
+		for (JClassType JSONclassType : types) {
+			generateInstantiate(sourceWriter, JSONclassType);
+		}
+
+		sourceWriter.println("return super.fromJson(jsonValue, clazz, deserializationContext);");
+
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+
+		sourceWriter.println("public " + Object.class.getSimpleName() + " fromJson(" + JSONValue.class.getSimpleName()
+				+ " jsonValue, " + Object.class.getSimpleName()
+				+ " instance, DeserializationContext deserializationContext) {");
+		sourceWriter.indent();
+
+		sourceWriter.println("if (jsonValue == null) {");
+		sourceWriter.indent();
+		sourceWriter.println("return null;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 
 		for (JClassType JSONclassType : types) {
 			generateDeserialize(sourceWriter, JSONclassType);
 		}
 
-		sourceWriter.println("return super.fromJson(jsonValue, clazz, deserializationContext);");
+		sourceWriter.println("return super.fromJson(jsonValue, instance.getClass(), deserializationContext);");
 
 		sourceWriter.outdent();
 		sourceWriter.println("}");
@@ -203,8 +238,8 @@ public class JsonCreator {
 			}
 
 			if (targetType != null) {
-				sourceWriter.println(Class.class.getSimpleName() + "<?> targetClazz = " + targetType.getQualifiedSourceName()
-						+ ".class;");
+				sourceWriter.println(Class.class.getSimpleName() + "<?> targetClazz = "
+						+ targetType.getQualifiedSourceName() + ".class;");
 			} else {
 				sourceWriter.println(Class.class.getSimpleName() + "<?> targetClazz = jsonizerContext.getPropertyType("
 						+ toType.getQualifiedSourceName() + ".class, \"" + fieldName + "\");");
@@ -218,13 +253,16 @@ public class JsonCreator {
 			sourceWriter.println("if (jsonArray != null) {");
 			sourceWriter.indent();
 
-			generateSetter(sourceWriter, fd, field, "_fromJsonToCollection(jsonArray, targetClazz, "
-					+ Collection.class.getName() + ".class, null, deserializationContext)");
+			JClassType classType = (JClassType) fd.type;
+
+			generateSetter(sourceWriter, fd, field, "(" + classType.getQualifiedSourceName()
+					+ ")_fromJsonToCollection(jsonArray, targetClazz, " + classType.getQualifiedSourceName()
+					+ ".class, null, deserializationContext)");
 			sourceWriter.outdent();
 			sourceWriter.println("} else {");
 			sourceWriter.indent();
-			generateSetter(sourceWriter, fd, field, "(" + Collection.class.getName()
-					+ ")fromJson(jsonValue" + field.getName() + ", targetClazz, deserializationContext)");
+			generateSetter(sourceWriter, fd, field, "(" + classType.getQualifiedSourceName() + ")fromJson(jsonValue"
+					+ field.getName() + ", targetClazz, deserializationContext)");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
 			sourceWriter.outdent();
@@ -243,6 +281,7 @@ public class JsonCreator {
 		}
 	}
 
+	// TODO, reuse existing instances
 	protected void generateSetter(SourceWriter sourceWriter, FieldDeclaration fd, JField field, String set) {
 		if (fd.isPublic) {
 			sourceWriter.println("data." + field.getName() + " = " + set + ";");
@@ -270,6 +309,28 @@ public class JsonCreator {
 		sourceWriter.println("}");
 	}
 
+	protected void generateInstantiate(SourceWriter sourceWriter, JClassType classType)
+			throws UnableToCompleteException {
+		JClassType toType;
+
+		try {
+			toType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IJsonObject.class
+					.getName()), 0);
+		} catch (NotFoundException e) {
+			logger.log(Type.ERROR, "Unable to extract generic type class from interface");
+			throw new UnableToCompleteException();
+		}
+
+		sourceWriter.println("if (jsonValue.isObject() != null && clazz.getName().equals("
+				+ toType.getQualifiedSourceName() + ".class.getName())) {");
+		sourceWriter.indent();
+		sourceWriter
+				.println(toType.getQualifiedSourceName() + " data = new " + toType.getQualifiedSourceName() + "();");
+		sourceWriter.println("return fromJson(jsonValue, data, deserializationContext);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
+
 	protected void generateDeserialize(SourceWriter sourceWriter, JClassType classType)
 			throws UnableToCompleteException {
 
@@ -283,7 +344,7 @@ public class JsonCreator {
 			throw new UnableToCompleteException();
 		}
 
-		sourceWriter.println("if (jsonValue.isObject() != null && clazz.getName().equals("
+		sourceWriter.println("if (jsonValue.isObject() != null && instance.getClass().getName().equals("
 				+ toType.getQualifiedSourceName() + ".class.getName())) {");
 		sourceWriter.indent();
 
@@ -301,8 +362,8 @@ public class JsonCreator {
 		sourceWriter.println("");
 		sourceWriter.println("JSONObject jsonObject = jsonValue.isObject();");
 
-		sourceWriter
-				.println(toType.getQualifiedSourceName() + " data = new " + toType.getQualifiedSourceName() + "();");
+		sourceWriter.println(toType.getQualifiedSourceName() + " data = (" + toType.getQualifiedSourceName()
+				+ ")instance;");
 
 		for (JField field : toType.getFields()) {
 			generateField(sourceWriter, toType, field);

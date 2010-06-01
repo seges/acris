@@ -2,15 +2,12 @@ package sk.seges.acris.json.client.sample;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.gwttime.time.DateTime;
 
 import sk.seges.acris.json.client.IJsonizer;
 import sk.seges.acris.json.client.JsonizerBuilder;
-import sk.seges.acris.json.client.sample.EditableJsonWritePanel;
-import sk.seges.acris.json.client.sample.SampleDataSerializer;
-import sk.seges.acris.json.client.sample.SampleImages;
-import sk.seges.acris.json.client.sample.WritePanel;
 import sk.seges.acris.json.client.sample.data.FooSampler;
 import sk.seges.acris.json.client.sample.data.SampleData;
 
@@ -26,8 +23,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class SampleDataShowcase implements EntryPoint {
-
+public class ListDataShowCase implements EntryPoint {
 	private VerticalPanel vp;
 
 	private WritePanel targetCodePanel;
@@ -72,8 +68,11 @@ public class SampleDataShowcase implements EntryPoint {
 
 		Collection<FooSampler> samples = new HashSet<FooSampler>();
 		samples.add(fooSampler);
-		
-		sampleData.setFooSampler(fooSampler);
+
+		fooSampler = new FooSampler();
+		fooSampler.setValue(new DateTime().minus(124312));
+		samples.add(fooSampler);
+
 		sampleData.setSamples(samples);
 
 		SampleDataSerializer sds = new SampleDataSerializer();
@@ -82,8 +81,7 @@ public class SampleDataShowcase implements EntryPoint {
 
 		vp.clear();
 		editableJsonWritePanel = new EditableJsonWritePanel();
-		editableJsonWritePanel.write("JSON representation");
-		editableJsonWritePanel.writep("(You can modify the ").writeb("blue").writelnp(" values as you want)");
+		editableJsonWritePanel.write("JSON representation ").writep("(You can modify the ").writeb("blue").writelnp(" values as you want)");
 		editableJsonWritePanel.setJson(jsonString);
 		vp.add(editableJsonWritePanel);
 	}
@@ -97,7 +95,16 @@ public class SampleDataShowcase implements EntryPoint {
 		SampleData data = jsonnizer.fromJson(value, SampleData.class);
 
 		targetCodePanel.setWidgetText("data", data.getData());
-		targetCodePanel.setWidgetText("value", data.getFooSampler().getValue().toString());
+		
+		int i = 1;
+		
+		Iterator<FooSampler> it = data.getSamples().iterator();
+		
+		while (it.hasNext()) {
+			FooSampler fooSampler = it.next();
+			targetCodePanel.setWidgetText("value" + i, fooSampler.getValue().toString());
+			i++;
+		}
 	}
 
 	protected WritePanel createCodePanel() {
@@ -107,19 +114,35 @@ public class SampleDataShowcase implements EntryPoint {
 		wp.indent();
 		wp.writeln(" ");
 		wp.writelng("@Field");
-		wp.writep("private ").write("String data = ").writeb("\"").addLabelWidgetb("data").writeb("\"").writeln(";");
+		wp.writep("private ").write("String ").writeb("data ").write("= ").writeb("\"").addLabelWidgetb("data").writeb("\"").writeln(";");
 		wp.writeln(" ");
 		wp.writelng("@Field");
-		wp.writep("private ").write("FooSampler fooSampler = ").writeg("@JsonObject ").writep("public class ").writeln(
-				"FooSampler { ");
+		wp.writep("private ").write("Collection<FooSampler> ").writeb(" fooSampler ").write("= ").writep("new ").writeln("HashSet<FooSample>() {");
+		wp.indent();
+		wp.writeln(" ");
+		wp.writelng("@JsonObject");
+		wp.writep("public class ").writeln("FooSampler { ");
 		wp.indent();
 		wp.writeln(" ");
 		wp.writelng("@Field");
 		wp.writeg("@DateTimePattern").write("(").writeb("\"y-M-d'T'H:m:s.SSSZ\"").writeln(")");
-		wp.writep("private ").write("DateTime value = ").writeb("\"").addLabelWidgetb("value").writeb("\"")
+		wp.writep("private ").write("DateTime value = ").writeb("\"").addLabelWidgetb("value1").writeb("\"")
 				.writeln(";");
 		wp.outdent();
 		wp.writeln("}");
+		wp.writeln(" ");
+		wp.writelng("@JsonObject");
+		wp.writep("public class ").writeln("FooSampler { ");
+		wp.indent();
+		wp.writeln(" ");
+		wp.writelng("@Field");
+		wp.writeg("@DateTimePattern").write("(").writeb("\"y-M-d'T'H:m:s.SSSZ\"").writeln(")");
+		wp.writep("private ").write("DateTime value = ").writeb("\"").addLabelWidgetb("value2").writeb("\"")
+				.writeln(";");
+		wp.outdent();
+		wp.writeln("}");
+		wp.outdent();
+		wp.writeln("};");
 		wp.outdent();
 		wp.writeln("}");
 

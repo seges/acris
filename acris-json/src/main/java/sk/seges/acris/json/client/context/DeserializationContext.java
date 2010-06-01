@@ -10,8 +10,9 @@ public class DeserializationContext {
 	private Map<String, String> attributes = new HashMap<String, String>();
 	private IJsonizer<?> jsonizer;
 
-	public IJsonizer<?> getJsonizer() {
-		return jsonizer;
+	@SuppressWarnings("unchecked")
+	public <T> IJsonizer<T> getJsonizer() {
+		return (IJsonizer<T>) jsonizer;
 	}
 
 	public void setJsonizer(IJsonizer<?> jsonizer) {

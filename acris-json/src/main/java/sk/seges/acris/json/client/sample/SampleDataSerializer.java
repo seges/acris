@@ -13,8 +13,11 @@ public class SampleDataSerializer implements IDataSerializer<SampleData> {
 		JSONString data = new JSONString(sample.getData());
 		
 		JSONObject foo = new JSONObject();
-		JSONString value = new JSONString(sample.getFooSampler().getValue().toString());
-		foo.put("value", value);
+		
+		if (sample.getFooSampler() != null) {
+			JSONString value = new JSONString(sample.getFooSampler().getValue().toString());
+			foo.put("value", value);
+		}
 		
 		JSONObject sampleData = new JSONObject();
 		sampleData.put("data", data);
