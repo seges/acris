@@ -8,14 +8,13 @@ import sk.seges.acris.json.client.IJsonizer;
 public class DeserializationContext {
 
 	private Map<String, String> attributes = new HashMap<String, String>();
-	private IJsonizer<?> jsonizer;
+	private IJsonizer jsonizer;
 
-	@SuppressWarnings("unchecked")
-	public <T> IJsonizer<T> getJsonizer() {
-		return (IJsonizer<T>) jsonizer;
+	public IJsonizer getJsonizer() {
+		return jsonizer;
 	}
 
-	public void setJsonizer(IJsonizer<?> jsonizer) {
+	public void setJsonizer(IJsonizer jsonizer) {
 		this.jsonizer = jsonizer;
 	}
 

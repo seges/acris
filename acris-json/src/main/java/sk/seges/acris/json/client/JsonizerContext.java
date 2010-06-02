@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sk.seges.acris.json.client.deserialization.JsonDeserializer;
+import sk.seges.acris.json.client.extension.Extension;
+import sk.seges.acris.json.client.extension.ExtensionPoint;
+import sk.seges.acris.json.client.extension.ExtensionProfile;
 import sk.seges.acris.json.client.serialization.JsonSerializer;
 
 import com.google.gwt.json.client.JSONValue;
@@ -14,8 +17,14 @@ public class JsonizerContext {
 	private Map<String, JsonDeserializer<?, ? extends JSONValue>> jsonDeserializers = new HashMap<String, JsonDeserializer<?, ? extends JSONValue>>();
 	private Map<String, JsonSerializer<?, ? extends JSONValue>> jsonSerializers = new HashMap<String, JsonSerializer<?, ? extends JSONValue>>();
 
+	private ExtensionProfile extensionProfile = new ExtensionProfile();
+	
 	private Map<String, Map<String, Class<?>>> propertyMapping = new HashMap<String, Map<String, Class<?>>>();
-
+	
+	public void declare(Class<? extends ExtensionPoint> extendedType, Class<? extends Extension> extensionType) {
+		extensionProfile.declare(extendedType, extensionType);
+	}
+	
 	public void registerPropertyType(Class<?> clazz, String property, Class<?> targetType) {
 		Map<String, Class<?>> classProperties = propertyMapping.get(clazz.getName());
 

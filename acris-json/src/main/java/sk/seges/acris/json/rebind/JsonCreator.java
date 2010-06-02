@@ -9,8 +9,9 @@ import java.util.Map.Entry;
 
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.acris.core.rebind.RebindUtils.FieldDeclaration;
-import sk.seges.acris.json.client.PrimitiveJsonizer;
+import sk.seges.acris.json.client.ExtentableJsonizer;
 import sk.seges.acris.json.client.annotation.Field;
+import sk.seges.acris.json.client.annotation.JsonObject;
 import sk.seges.acris.json.client.context.DeserializationContext;
 import sk.seges.acris.json.client.data.IJsonObject;
 import sk.seges.acris.json.client.deserialization.JsonDeserializer;
@@ -75,6 +76,16 @@ public class JsonCreator {
 
 		JClassType[] types = type.getSubtypes();
 
+		//Pointer name Resolver
+		sourceWriter.println("protected String getDefaultPointName(" + Class.class.getSimpleName() + "<?> type) {");
+		sourceWriter.indent();
+		for (JClassType JSONclassType : types) {
+			generatePointNameResolver(sourceWriter, JSONclassType);
+		}
+		sourceWriter.println("return null;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+
 		sourceWriter.println("public " + Object.class.getSimpleName() + " fromJson(" + JSONValue.class.getSimpleName()
 				+ " jsonValue, " + Class.class.getSimpleName()
 				+ " clazz, DeserializationContext deserializationContext) {");
@@ -84,7 +95,7 @@ public class JsonCreator {
 		sourceWriter.println("return null;");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-
+		
 		// Using deserializator
 		sourceWriter.println(JsonDeserializer.class.getSimpleName() + "<?, " + JSONValue.class.getSimpleName()
 				+ "> deserializer = jsonizerContext." + "getDeserializer(clazz);");
@@ -255,9 +266,19 @@ public class JsonCreator {
 
 			JClassType classType = (JClassType) fd.type;
 
+			sourceWriter.println(classType.getQualifiedSourceName() + " _jsonCollection = (" + classType.getQualifiedSourceName() + ")createInstance(" + classType.getQualifiedSourceName() + ".class);");
+			sourceWriter.println("if (_jsonCollection == null) {");
+			sourceWriter.indent();
+			if (!classType.isDefaultInstantiable()) {
+				sourceWriter.println("throw new " + RuntimeException.class.getCanonicalName() + "(\"Unable to create instance of " + classType.getQualifiedSourceName() + " class.\");"); 	
+			} else {
+				sourceWriter.println("_jsonCollection = new " +  classType.getQualifiedSourceName() + "();");
+			}
+			sourceWriter.println("");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
 			generateSetter(sourceWriter, fd, field, "(" + classType.getQualifiedSourceName()
-					+ ")_fromJsonToCollection(jsonArray, targetClazz, " + classType.getQualifiedSourceName()
-					+ ".class, null, deserializationContext)");
+					+ ")fromJson(jsonArray, targetClazz, _jsonCollection, deserializationContext)");
 			sourceWriter.outdent();
 			sourceWriter.println("} else {");
 			sourceWriter.indent();
@@ -305,6 +326,45 @@ public class JsonCreator {
 				+ toType.getQualifiedSourceName() + ".class.getName())) {");
 		sourceWriter.indent();
 		sourceWriter.println("return true;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
+
+	protected void generatePointNameResolver(SourceWriter sourceWriter, JClassType classType)
+		throws UnableToCompleteException {
+
+		JClassType toType;
+
+		try {
+			toType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IJsonObject.class
+					.getName()), 0);
+		} catch (NotFoundException e) {
+			logger.log(Type.ERROR, "Unable to extract generic type class from interface");
+			throw new UnableToCompleteException();
+		}
+
+		JsonObject jsonAnnotation = toType.getAnnotation(JsonObject.class);
+		if (jsonAnnotation == null) {
+			return;
+		}
+		
+		String value = jsonAnnotation.value();
+		String group = jsonAnnotation.group();
+		
+		if (value == null || value.length() == 0) {
+			return;
+		}
+		
+		String result = value;
+		
+		if (group != null && group.length() > 0) {
+			result = group + "$" + result;
+		}
+		
+		sourceWriter.println("if (type.getName().equals("
+				+ toType.getQualifiedSourceName() + ".class.getName())) {");
+		sourceWriter.indent();
+		sourceWriter.println("return \"" + result + "\"");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
@@ -404,7 +464,7 @@ public class JsonCreator {
 			composerFactory.addImport(importName);
 		}
 
-		composerFactory.setSuperclass(PrimitiveJsonizer.class.getCanonicalName());
+		composerFactory.setSuperclass(ExtentableJsonizer.class.getCanonicalName());
 
 		return composerFactory.createSourceWriter(context, printWriter);
 	}
