@@ -21,7 +21,17 @@ public class ExtensionProfile {
 	}
 	
 	public List<ExtensionDescription> getExtensionDescriptions(Class<? extends ExtensionPoint> extendedType) {
-		return Collections.unmodifiableList(extensions.get(extendedType));
+		List<ExtensionDescription> extensionRes = extensions.get(extendedType);
+		if (extensionRes != null) {
+			return Collections.unmodifiableList(extensionRes);
+		}
+		
+		return null;
+	}
+
+	public void declare(Class<? extends ExtensionPoint> extendedType, ExtensionDescription extensionDescription) {
+		extensionDescription.setExtendedClass(extendedType);
+		register(extendedType, extensionDescription);
 	}
 	
 	public void declare(Class<? extends ExtensionPoint> extendedType, Class<? extends Extension> extensionType) {

@@ -7,7 +7,26 @@ public class ExtensionDescription {
 	private Class<? extends ExtensionPoint> extendedClass;
 
 	private String pointName;
-	
+
+	/**
+	 * Specifies whether the extension type can be repeated within its parent extension point.
+	 */
+	private boolean repeatable = false;
+
+	public static ExtensionDescription getDefaultDescription(Class<? extends Extension> extensionClass) {
+		ExtensionDescription extensionDescription = new ExtensionDescription();
+		extensionDescription.setExtensionClass(extensionClass);
+		return extensionDescription;
+	}
+
+	public void setRepeatable(boolean repeatable) {
+		this.repeatable = repeatable;
+	}
+
+	final public boolean isRepeatable() {
+		return repeatable;
+	}
+
 	public String getPointName() {
 		return pointName;
 	}
