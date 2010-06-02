@@ -69,4 +69,8 @@ public class JsonizerContext {
 	public <T, S extends JSONValue> JsonSerializer<T, S> getSerializer(Class<T> targetClass) {
 		return (JsonSerializer<T, S>) jsonSerializers.get(targetClass.getName());
 	}
+
+	public ExtensionProfile getExtensionProfile() {
+		return extensionProfile;
+	}
 }

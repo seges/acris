@@ -9,12 +9,13 @@ import java.util.Map.Entry;
 
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.acris.core.rebind.RebindUtils.FieldDeclaration;
-import sk.seges.acris.json.client.ExtentableJsonizer;
+import sk.seges.acris.json.client.ExtendableJsonizer;
 import sk.seges.acris.json.client.annotation.Field;
 import sk.seges.acris.json.client.annotation.JsonObject;
 import sk.seges.acris.json.client.context.DeserializationContext;
 import sk.seges.acris.json.client.data.IJsonObject;
 import sk.seges.acris.json.client.deserialization.JsonDeserializer;
+import sk.seges.acris.json.client.extension.ExtensionPoint;
 import sk.seges.acris.json.rebind.util.AnnotationHelper;
 
 import com.google.gwt.core.client.GWT;
@@ -102,7 +103,18 @@ public class JsonCreator {
 
 		sourceWriter.println("if (deserializer != null) {");
 		sourceWriter.indent();
-		sourceWriter.println("return deserializer.deserialize(jsonValue, deserializationContext);");
+		sourceWriter.println("Object result = deserializer.deserialize(jsonValue, deserializationContext);");
+		sourceWriter.println("");
+		
+		sourceWriter.println("if (result != null && (result instanceof " + ExtensionPoint.class.getSimpleName() + ") && jsonValue != null && jsonValue.isObject() != null) {");
+		sourceWriter.indent();
+		sourceWriter.println("return fromJson(jsonValue.isObject(), clazz, (" + ExtensionPoint.class.getSimpleName() + ")result, deserializationContext);");
+		sourceWriter.outdent();
+		sourceWriter.println("} else {");
+		sourceWriter.indent();
+		sourceWriter.println("return result;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
@@ -163,6 +175,10 @@ public class JsonCreator {
 		return "Jsonizer";
 	}
 
+	protected void generateExtendablePostProcessing(SourceWriter sourceWriter) {
+		sourceWriter.println("fromJson(");
+	}
+	
 	protected boolean validateFieldDeclaration(FieldDeclaration fd) {
 		if (!fd.isPublic && fd.setterMethod == null) {
 			return false;
@@ -415,7 +431,26 @@ public class JsonCreator {
 
 		sourceWriter.println("if (deserializer != null) {");
 		sourceWriter.indent();
-		sourceWriter.println("return deserializer.deserialize(jsonValue, deserializationContext);");
+		sourceWriter.println("Object result = deserializer.deserialize(jsonValue, deserializationContext);");
+		sourceWriter.println("");
+		
+		try {
+			if (toType.isAssignableTo(typeOracle.getType(ExtensionPoint.class.getName()))) {
+				sourceWriter.println("if (result != null && jsonValue != null && jsonValue.isObject() != null) {");
+				sourceWriter.indent();
+				sourceWriter.println("return fromJson(jsonValue.isObject(), " + toType.getQualifiedSourceName() + ".class, (" + toType.getQualifiedSourceName() + ")result, deserializationContext);");
+				sourceWriter.outdent();
+				sourceWriter.println("} else {");
+				sourceWriter.indent();
+				sourceWriter.println("return result;");
+				sourceWriter.outdent();
+				sourceWriter.println("}");
+			} else {
+				sourceWriter.println("return result;");
+			}
+		} catch (NotFoundException e) {
+			sourceWriter.println("return result;");
+		}
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
@@ -429,6 +464,8 @@ public class JsonCreator {
 			generateField(sourceWriter, toType, field);
 		}
 
+		JClassType returnType = toType;
+		
 		toType = toType.getSuperclass();
 
 		while (toType != null) {
@@ -439,7 +476,23 @@ public class JsonCreator {
 			toType = toType.getSuperclass();
 		}
 
-		sourceWriter.println("return data;");
+		try {
+			if (returnType.isAssignableTo(typeOracle.getType(ExtensionPoint.class.getName()))) {
+				sourceWriter.println("if (data instanceof " + ExtensionPoint.class.getSimpleName() + ") {");
+				sourceWriter.indent();
+				sourceWriter.println("return fromJson(jsonValue.isObject(), " + returnType.getQualifiedSourceName() + ".class, data, deserializationContext);");
+				sourceWriter.outdent();
+				sourceWriter.println("} else {");
+				sourceWriter.indent();
+				sourceWriter.println("return data;");
+				sourceWriter.outdent();
+				sourceWriter.println("}");
+			} else {
+				sourceWriter.println("return data;");
+			}
+		} catch (NotFoundException e) {
+			sourceWriter.println("return data;");
+		}
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
@@ -448,7 +501,8 @@ public class JsonCreator {
 		return new String[] { GWT.class.getCanonicalName(), JSONArray.class.getCanonicalName(),
 				JSONValue.class.getCanonicalName(), JSONObject.class.getCanonicalName(),
 				JsonDeserializer.class.getCanonicalName(), Map.class.getCanonicalName(),
-				DeserializationContext.class.getCanonicalName(), HashMap.class.getCanonicalName(), };
+				DeserializationContext.class.getCanonicalName(), HashMap.class.getCanonicalName(),
+				ExtensionPoint.class.getCanonicalName()};
 	}
 
 	protected SourceWriter getSourceWriter(String packageName, String beanClassName) {
@@ -464,7 +518,7 @@ public class JsonCreator {
 			composerFactory.addImport(importName);
 		}
 
-		composerFactory.setSuperclass(ExtentableJsonizer.class.getCanonicalName());
+		composerFactory.setSuperclass(ExtendableJsonizer.class.getCanonicalName());
 
 		return composerFactory.createSourceWriter(context, printWriter);
 	}

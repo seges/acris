@@ -12,9 +12,11 @@ import sk.seges.acris.json.client.extension.ExtensionProfile;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 
-public abstract class ExtentableJsonizer extends PrimitiveJsonizer {
+public abstract class ExtendableJsonizer extends PrimitiveJsonizer {
 	
-	public <E extends Extension, S extends ExtensionPoint> S fromJson(JSONObject jsonObject, Class<S> type, S s, ExtensionProfile extensionProfile, DeserializationContext deserializationContext) {
+	public <E extends Extension, S extends ExtensionPoint> S fromJson(JSONObject jsonObject, Class<S> type, S s, DeserializationContext deserializationContext) {
+
+		ExtensionProfile extensionProfile = jsonizerContext.getExtensionProfile();
 		
 		if (extensionProfile == null) {
 			return s;
