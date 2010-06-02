@@ -9,25 +9,25 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
-public abstract class PrimitiveJsonizer<T> implements IJsonizer<T> {
+public abstract class PrimitiveJsonizer implements IJsonizer {
 
 	protected JsonizerContext jsonizerContext;
 
 	@Override
-	public T fromJson(JSONValue jsonValue, Class<T> clazz) {
+	public <T> T fromJson(JSONValue jsonValue, Class<T> clazz) {
 		DeserializationContext deserializationContext = new DeserializationContext();
 		deserializationContext.setJsonizer(this);
-		return (T) fromJson(jsonValue, clazz, deserializationContext);
+		return fromJson(jsonValue, clazz, deserializationContext);
 	}
 
-	public T fromJson(JSONValue jsonValue, T instance) {
+	public <T> T fromJson(JSONValue jsonValue, T instance) {
 		DeserializationContext deserializationContext = new DeserializationContext();
 		deserializationContext.setJsonizer(this);
 		return fromJson(jsonValue, instance, deserializationContext);
 	}
-	
+
 	@Override
-	public T fromJson(String json, Class<T> clazz) {
+	public <T> T fromJson(String json, Class<T> clazz) {
 		return fromJson(JSONParser.parse(json), clazz);
 	}
 
@@ -37,11 +37,16 @@ public abstract class PrimitiveJsonizer<T> implements IJsonizer<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T fromJson(JSONValue jsonValue, Class<T> clazz, DeserializationContext deserializationContext) {
+	public <T> T fromJson(JSONValue jsonValue, Class<T> clazz, DeserializationContext deserializationContext) {
 		return (T) _fromJson(jsonValue, clazz, deserializationContext);
 	}
 
-	public Object _fromJson(JSONValue jsonValue, Class<T> clazz, DeserializationContext deserializationContext) {
+	@SuppressWarnings("unchecked")
+	public <T> T __fromJson(JSONValue jsonValue, Class<?> clazz, DeserializationContext deserializationContext) {
+		return (T) _fromJson(jsonValue, (Class<T>)clazz, deserializationContext);
+	}
+
+	public <T> Object _fromJson(JSONValue jsonValue, Class<T> clazz, DeserializationContext deserializationContext) {
 
 		JsonDeserializer<T, JSONValue> deserializer = jsonizerContext.getDeserializer(clazz);
 		if (deserializer != null) {
@@ -80,32 +85,39 @@ public abstract class PrimitiveJsonizer<T> implements IJsonizer<T> {
 		return null;
 	}
 
-	public <S extends Collection<T>> S _fromJsonToCollection(JSONArray jsonArray, Class<T> clazz, Class<S> collectionClazz, 
-			S result, DeserializationContext deserializationContext) {
-		if (result == null) {
-			InstanceCreator<S> instanceCreator = jsonizerContext.getInstanceCreator(collectionClazz);
+	protected <T, S extends Collection<T>> S createInstance(Class<S> collectionClazz) {
+		InstanceCreator<S> instanceCreator = jsonizerContext.getInstanceCreator(collectionClazz);
 
-			if (instanceCreator == null) {
-				return null;
-			}
-			
-			result = instanceCreator.createInstance(collectionClazz);
-			
-			if (result == null) {
-				return null;
-			}
+		if (instanceCreator == null) {
+			return null;
+		}
+
+		return instanceCreator.createInstance(collectionClazz);
+	}
+	
+	public <Z, S extends Collection<Z>> S fromJson(JSONArray jsonArray, Class<Z> clazz, S result,
+			DeserializationContext deserializationContext) {
+		
+		if (result == null) {
+			return null;
 		}
 
 		for (int i = 0; i < jsonArray.size(); i++) {
-			T t = fromJson(jsonArray.get(i), clazz, deserializationContext);
+			Z t = fromJson(jsonArray.get(i), clazz, deserializationContext);
 			result.add(t);
 		}
 
 		return result;
 	}
-	
+
+	public <T, S extends Collection<T>> S fromJson(JSONArray jsonArray, Class<T> clazz,
+			Class<S> collectionClazz, DeserializationContext deserializationContext) {
+
+		return fromJson(jsonArray, clazz, createInstance(collectionClazz), deserializationContext);
+	}
+
 	@Override
-	public boolean supports(JSONValue jsonValue, Class<T> clazz) {
+	public <T> boolean supports(JSONValue jsonValue, Class<T> clazz) {
 		if (jsonValue.isNull() != null) {
 			return true;
 		}

@@ -30,8 +30,8 @@ public class JsonizerBuilder {
 
 	private JsonizerContext jsonizerContext = new JsonizerContext();
 
-	public <T> IJsonizer<T> create() {
-		IJsonizer<T> jsonizer = GWT.create(JsonizerProvider.class);
+	public IJsonizer create() {
+		IJsonizer jsonizer = GWT.create(JsonizerProvider.class);
 
 		registerDefaultDeserializers();
 		registerDefaultInstantators();

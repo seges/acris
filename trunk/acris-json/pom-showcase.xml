@@ -74,6 +74,7 @@
 							<name>.factorypath</name>
 							<content><![CDATA[<factorypath>
 		  <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-json/${pom.version}/acris-json-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
+		  <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-json/${pom.version}/acris-json-${pom.version}-sources.jar" enabled="true" runInBatchMode="false"/>
 		  </factorypath>
 		  ]]>
 							</content>

@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Target( { ElementType.TYPE })
 @Retention(RUNTIME)
 public @interface JsonObject {
-
+	String value() default "";
+	String group() default "";
 }

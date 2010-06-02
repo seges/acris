@@ -93,7 +93,7 @@ public class SampleDataShowcase implements EntryPoint {
 
 		JsonizerBuilder jsonizerBuilder = new JsonizerBuilder();
 		
-		IJsonizer<SampleData> jsonnizer = jsonizerBuilder.create();
+		IJsonizer jsonnizer = jsonizerBuilder.create();
 		SampleData data = jsonnizer.fromJson(value, SampleData.class);
 
 		targetCodePanel.setWidgetText("data", data.getData());
