@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>org</groupId>
 			<artifactId>gwt-time</artifactId>
-			<version>1.0.0-alfa</version>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Acris dependencies -->
