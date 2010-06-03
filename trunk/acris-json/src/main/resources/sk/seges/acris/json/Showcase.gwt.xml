@@ -1,6 +1,0 @@
-<module>
-	<inherits name="sk.seges.acris.json.JSON" />
-
-	<entry-point class="sk.seges.acris.json.client.sample.ListDataShowCase" />
-
-</module>
