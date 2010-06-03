@@ -75,6 +75,10 @@ public class JsonCreator {
 
 		SourceWriter sourceWriter = getSourceWriter(packageName, className);
 
+		if (sourceWriter == null) {
+			return packageName + "." + className;
+		}
+
 		JClassType[] types = type.getSubtypes();
 
 		//Pointer name Resolver
@@ -238,7 +242,7 @@ public class JsonCreator {
 		sourceWriter.println("deserializationContext.setJsonizer(this);");
 
 		if (fd.type.isArray() != null) {
-
+			//TODO - what about arrays?
 		} else if (fd.type.isClassOrInterface() != null
 				&& fd.type.isClassOrInterface().isAssignableTo(typeOracle.findType(Collection.class.getName()))) {
 
