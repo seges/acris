@@ -21,7 +21,7 @@ public class ExtensionProfile {
 	}
 	
 	public List<ExtensionDescription> getExtensionDescriptions(Class<? extends ExtensionPoint> extendedType) {
-		List<ExtensionDescription> extensionRes = extensions.get(extendedType);
+		List<ExtensionDescription> extensionRes = extensions.get(extendedType.getName());
 		if (extensionRes != null) {
 			return Collections.unmodifiableList(extensionRes);
 		}

@@ -8,8 +8,6 @@ import java.lang.annotation.Target;
 
 @Target( { ElementType.FIELD })
 @Retention(RUNTIME)
-public @interface Field {
-	String value() default "";
-
-	boolean optional() default true;
+public @interface NumberPattern {
+	String value();
 }
