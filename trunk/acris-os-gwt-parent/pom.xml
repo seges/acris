@@ -242,7 +242,7 @@
 						<execution>
 							<goals>
 								<goal>mergewebxml</goal>
-								<goal>generateAsync</goal>
+								<!--goal>generateAsync</goal-->
 								<goal>compile</goal>
 							</goals>
 						</execution>
