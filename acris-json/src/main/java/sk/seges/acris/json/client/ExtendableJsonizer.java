@@ -23,7 +23,13 @@ public abstract class ExtendableJsonizer extends PrimitiveJsonizer {
 		}
 		
 		List<ExtensionDescription> extensionDescriptions = extensionProfile.getExtensionDescriptions(type);
-		
+
+		if (extensionDescriptions == null) {
+			//let's try to determine extensions for a type
+			s.declareExtensions(extensionProfile);
+			extensionDescriptions = extensionProfile.getExtensionDescriptions(type);
+		}
+
 		if (extensionDescriptions == null) {
 			//no extension points defines
 			return s;
@@ -33,7 +39,7 @@ public abstract class ExtendableJsonizer extends PrimitiveJsonizer {
 			String pointName = extensionDescription.getPointName();
 			if (pointName == null || pointName.length() == 0) {
 				//no json extension point name defined
-				pointName = getDefaultPointName(type);
+				pointName = getDefaultPointName(extensionDescription.getExtensionClass());
 			}
 			
 			if (pointName != null) {
@@ -48,8 +54,10 @@ public abstract class ExtendableJsonizer extends PrimitiveJsonizer {
 							}
 						}
 					} else {
-						Extension result = __fromJson(jsonExtensionPoint, extensionDescription.getExtensionClass(), deserializationContext);
-						s.setExtension(result);
+						Extension result = fromJson(jsonExtensionPoint, extensionDescription.getExtensionClass(), deserializationContext);
+						if (result != null) {
+							s.setExtension(result);
+						}
 					}
 				}
 			}

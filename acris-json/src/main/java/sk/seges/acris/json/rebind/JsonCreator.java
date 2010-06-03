@@ -281,7 +281,7 @@ public class JsonCreator {
 			sourceWriter.indent();
 
 			JClassType classType = (JClassType) fd.type;
-
+			
 			sourceWriter.println(classType.getQualifiedSourceName() + " _jsonCollection = (" + classType.getQualifiedSourceName() + ")createInstance(" + classType.getQualifiedSourceName() + ".class);");
 			sourceWriter.println("if (_jsonCollection == null) {");
 			sourceWriter.indent();
@@ -312,9 +312,24 @@ public class JsonCreator {
 			generateSetter(sourceWriter, fd, field, "null");
 			sourceWriter.println("}");
 		} else {
-			generateSetter(sourceWriter, fd, field, "(" + field.getType().getQualifiedSourceName()
-					+ ")fromJson(jsonObject.get(\"" + fieldName + "\"), " + field.getType().getQualifiedSourceName()
-					+ ".class, deserializationContext)");
+			String nonPrimitiveClassName = field.getType().getQualifiedSourceName();
+			
+			if (field.getType().isPrimitive() != null) {
+				nonPrimitiveClassName = field.getType().isPrimitive().getQualifiedBoxedSourceName();
+			}
+
+			sourceWriter.println("_jsonResult = fromJson(jsonObject.get(\"" + fieldName + "\"), " + nonPrimitiveClassName
+					+ ".class, deserializationContext);");
+
+			if (field.getType().isPrimitive() != null) {
+				sourceWriter.println("if (_jsonResult != null) {");
+				sourceWriter.indent();
+				generateSetter(sourceWriter, fd, field, "(" + nonPrimitiveClassName + ")_jsonResult");
+				sourceWriter.println("}");
+				sourceWriter.outdent();
+			} else {
+				generateSetter(sourceWriter, fd, field, "(" + nonPrimitiveClassName + ")_jsonResult");
+			}
 		}
 	}
 
@@ -380,7 +395,7 @@ public class JsonCreator {
 		sourceWriter.println("if (type.getName().equals("
 				+ toType.getQualifiedSourceName() + ".class.getName())) {");
 		sourceWriter.indent();
-		sourceWriter.println("return \"" + result + "\"");
+		sourceWriter.println("return \"" + result + "\";");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
@@ -455,7 +470,8 @@ public class JsonCreator {
 		sourceWriter.println("}");
 
 		sourceWriter.println("");
-		sourceWriter.println("JSONObject jsonObject = jsonValue.isObject();");
+		sourceWriter.println(JSONObject.class.getSimpleName() + " jsonObject = jsonValue.isObject();");
+		sourceWriter.println("Object _jsonResult;");
 
 		sourceWriter.println(toType.getQualifiedSourceName() + " data = (" + toType.getQualifiedSourceName()
 				+ ")instance;");

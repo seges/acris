@@ -68,13 +68,13 @@ public abstract class PrimitiveJsonizer implements IJsonizer {
 			} else if (clazz.getName().equals(Short.class.getName())) {
 				return doubleValue.shortValue();
 			} else if (clazz.getName().equals(Integer.class.getName())) {
-				return doubleValue.byteValue();
+				return doubleValue.intValue();
 			} else if (clazz.getName().equals(Long.class.getName())) {
 				return doubleValue.longValue();
 			} else if (clazz.getName().equals(Float.class.getName())) {
 				return doubleValue.floatValue();
 			} else if (clazz.getName().equals(Double.class.getName())) {
-				return doubleValue.floatValue();
+				return doubleValue.doubleValue();
 			}
 		}
 
