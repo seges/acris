@@ -70,6 +70,7 @@
                             <name>.factorypath</name>
                             <content><![CDATA[<factorypath>
           <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
+		  <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
           </factorypath>
           ]]>
                             </content>
