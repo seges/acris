@@ -154,7 +154,7 @@ public class SourceState {
 
 Many deserializers are registered by default in json builder and are automatically provided to the jsonization process. Of course, you can define your own deserializer in case of you cannot add @JSONObject annotation to the specific objects.
 
-Let's see the example and imagine that we have an Source object and we cannot added an annotation here. Source object has SourceState (it should be interface, class, whatever) field/property.
+Let's see the example and imagine that we have an Source object and we cannot add an annotation here. Source object has SourceState (it should be interface, class, whatever) field/property.
 
 {{{
 public class Source  {
@@ -228,7 +228,7 @@ public class Feed {
 }
 }}}
 
-Unfortunatelly, acris-json has set of instantiators (ufff), for example ListInstanceCreator.
+Fortunatelly, acris-json has set of instantiators (ufff), for example ListInstanceCreator.
 {{{
 public class ListInstanceCreator implements InstanceCreator<List<?>> {
 
@@ -240,7 +240,7 @@ public class ListInstanceCreator implements InstanceCreator<List<?>> {
 }
 }}}
 
-This will create an ArrayList as a reference instance for List. So if you want to create different object for Lists just create your own instance creator. And do NOT forget to register it in jsonizer builder.
+This will create an ArrayList as a reference instance for List. So if you want to create different instance for Lists just create your own instance creator. And do NOT forget to register it in jsonizer builder.
 
 {{{
 JsonizerBuilder jsonizerBuilder = new JsonizerBuilder();
@@ -249,8 +249,8 @@ IJsonizer jsonnizer = jsonizerBuilder.create();
 jsonnizer.fromJson(...);
 }}}
 
-Cool ... now we are closer from manual robotic-like programmer to the clever programmer who writes nice code in easy a efficent way. Just imagine that you want to deserialize Google API JSON responses with hundreds of data structures in manual way? Huh, sounds interesting? I believe that someone will do it or just did it, but I don't ... I will use acris-json project and it will save me a thoundsands of lines and when I will modify my code after one year I will be able to maintain it without breaking the existing functionality. What about you?
+Cool ... now we are much closer from manual robotic-like programmer to the clever programmer who writes nice code in easy and efficent way. Just imagine that you want to deserialize Google API JSON data with hundreds of data structures in manual way? Huh, sounds interesting? I believe that someone will do it or just did it, but I don't ... I will use acris-json project and it will save me a thoundsands of lines and when I will modify my code after one year I will be able to maintain it without breaking the existing functionality. What about you?
 
 == Extensible points & extensions ==
 
-Still haven't enough information about using acris-json project? You will get more and more but now, it's friday and I'm going to be thirsty :)
+Still haven't enough information about using acris-json project? You will get more and more but not now, it's friday and I'm going to be little bit thirsty :)
