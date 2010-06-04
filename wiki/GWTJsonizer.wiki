@@ -3,7 +3,7 @@
 
 = Project motivation =
 
-Firstly, lets talk in a few sentences about the motivation for creating this project and about core AcrIS ideas behind this project. Those, who is motivated enought, can skip this short intro and continue with reading the next chapter.
+Firstly, let's talk in a few sentences about the motivation for creating this project and about core AcrIS ideas behind this project. Those, who is motivated enough, can skip this short intro and continue with reading the next chapter.
 I'm not going to talk about what [http://www.json.org/ JSON] is but in a short sentence JSON are data in specific format like this:
 {{{
 {
@@ -15,7 +15,7 @@ I'm not going to talk about what [http://www.json.org/ JSON] is but in a short s
   }
 }
 }}}
-Now, if you are GWT developer (and if you are not, then go away :) ) you probably want to deserialize JSON data representation with peace of code like this (I did not try to compile it, but it should be in this way):
+Now, if you are GWT developer (and if you are not, then go away :) ) you probably want to deserialize JSON data representation with piece of code like this (I did not try to compile it, but it should be in this way):
 Firstly we should define some data structure for holding the data.
 {{{
 public class Feed {
@@ -82,7 +82,7 @@ if (value.isObject() != null) {
 return null;
 }}}
 
-Pretty easy, isn't it ? :) Just, few lines of code which are a quite a lot errorprone and we completly in conflict with DRY & KISS princpiples. Lets try to make little bit easier and more maintenable. In a first step, add JSON annotation into a data structure in order to define mapping fields.
+Pretty easy, isn't it ? :) Just "few" lines of code which are quite a lot of errorprone and we are completly in conflict with DRY & KISS principles. Lets try to make it little bit easier and more maintenable. In a first step, add JSON annotation into a data structure in order to define mapping fields.
 
 {{{
 @JsonObject
