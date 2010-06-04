@@ -17,5 +17,6 @@
     * [SeparateClientAndServer Separating client and server]
     * [TrackingAsyncCallback Tracking asynchronous calls]
     * [GWTEmulation Emulation of non-acceptable classes for GWT]
+    * [GWTJsonizer JSON deserialization using annotations]
   * User interaction
     * [UserEventRecording Recording user actions]
