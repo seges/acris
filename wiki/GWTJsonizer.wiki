@@ -152,7 +152,7 @@ public class SourceState {
 
 == Custom deserializer ==
 
-Many deserializers are registered by default in json builder and are automatically provided to the jsonization process. Of course, you can define your own deserializer in case of you cannot add @JSONObject annotation to the specific objects.
+Many deserializers are registered by default in json builder and are automatically provided to the jsonization process. Of course, you can define your own deserializer in case when you cannot add @JSONObject annotation to the specific objects.
 
 Let's see the example and imagine that we have an Source object and we cannot add an annotation here. Source object has SourceState (it should be interface, class, whatever) field/property.
 
@@ -174,10 +174,6 @@ Source class cannot be deserialized because it is not a JSON object so we can cr
 
 {{{
 public class SourceDeserializer extends JsonDeserializer<Source, JSONValue> {
-
-	protected SourceState fromJson(SourceState state, JSONValue s, DeserializationContext context) {
-		return state;
-	}
 
 	@Override
 	public Source deserialize(JSONValue s, DeserializationContext context) {
