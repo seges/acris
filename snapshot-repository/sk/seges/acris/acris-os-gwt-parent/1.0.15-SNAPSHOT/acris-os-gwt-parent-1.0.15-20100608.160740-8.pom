@@ -1,0 +1,278 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+	<groupId>sk.seges.acris</groupId>
+	<artifactId>acris-os-gwt-parent</artifactId>
+	<version>1.0.15-SNAPSHOT</version>
+	<name>AcrIS Google Web Toolkit Parent</name>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os-base-parent</artifactId>
+		<version>1.0.6-SNAPSHOT</version>
+	</parent>
+
+	<!-- TODO: why do we have gilead-hibernate-util.version -->
+	<properties>
+		<gwt.log.version>3.0.0</gwt.log.version>
+
+		<gwt.version>2.0.0</gwt.version>
+		<gwtx.version>1.5.3</gwtx.version>
+		<gwt-beansbinding.version>0.3</gwt-beansbinding.version>
+
+		<gilead.version>1.2.3</gilead.version>
+		<gilead-hibernate-util.version>1.2.3</gilead-hibernate-util.version>
+		<gwt-widgets-server.version>1.0</gwt-widgets-server.version>
+		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
+		<gwteventservice.version>1.0.2</gwteventservice.version>
+		
+		<gwt-validation.version>1.1.0-SNAPSHOT</gwt-validation.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- GWT dependencies -->
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-user</artifactId>
+				<version>2.0.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-servlet</artifactId>
+				<version>2.0.0</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-dev</artifactId>
+				<version>2.0.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<!-- GWT log -->
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-log</artifactId>
+				<version>3.0.0</version>
+			</dependency>
+			<!-- GWT beans binding -->
+			<dependency>
+				<groupId>org.gwt</groupId>
+				<artifactId>beansbinding</artifactId>
+				<version>0.3</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gwtx</groupId>
+				<artifactId>gwtx</artifactId>
+				<version>1.5.3</version>
+			</dependency>
+
+			<!-- GWT Widgets -->
+			<dependency>
+				<groupId>net.sf.gwt-widget</groupId>
+				<artifactId>gwt-sl</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gwt-widget</groupId>
+				<artifactId>gwt-widgets</artifactId>
+				<version>0.2.0</version>
+			</dependency>
+
+			<!-- Gilead -->
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>adapter-core</artifactId>
+				<version>1.2.3</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>ejb3-persistence</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>adapter4gwt</artifactId>
+				<version>1.2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>comet4gwt</artifactId>
+				<version>1.2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.gilead</groupId>
+				<artifactId>hibernate-util</artifactId>
+				<version>1.2.3</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>ejb3-persistence</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<!-- GWT event service -->
+			<dependency>
+				<groupId>de.novanic.gwteventservice</groupId>
+				<artifactId>gwteventservice</artifactId>
+				<version>1.0.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-validation</artifactId>
+				<version>1.1.0-SNAPSHOT</version>		
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<profiles>
+		<profile>
+			<id>gwt-client</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-user</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-servlet</artifactId>
+					<scope>runtime</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-dev</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>unpackGwtLib</id>
+			<activation>
+				<property>
+					<name>unpackGwtLib</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpackGwtLib</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>com.google.gwt</groupId>
+											<artifactId>gwt-dev</artifactId>
+											<version>2.0.0</version>
+											<classifier>${platform}-libs</classifier>
+											<type>zip</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${settings.localRepository}/com/google/gwt/gwt-dev/${gwt.version}
+											</outputDirectory>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>gwt-maven-plugin</artifactId>
+					<version>1.2</version>
+
+					<configuration>
+						<gwtVersion>${gwt.version}</gwtVersion>
+						<logLevel>INFO</logLevel>
+						<port>8890</port>
+						<modules>
+							<module>${gwt.client.module}</module>
+						</modules>
+						<runTarget>${gwt.client.module}/${gwt.client.html}</runTarget>
+
+						<!-- style>DETAILED</style--><!-- use OBF for prod -->
+						<style>OBF</style><!-- use OBF for prod -->
+						<noServer>false</noServer>
+						<extraJvmArgs>-Xmx724M -Xss16M -Dfile.encoding=utf-8
+						</extraJvmArgs>
+						<debugPort>8990</debugPort>
+						<shellServletMappingURL>/gwt-shell-servlet
+						</shellServletMappingURL>
+						<mergedWebXml>war/WEB-INF/web.xml</mergedWebXml>
+						<webappDirectory>war</webappDirectory>
+						<soyc>false</soyc>
+						<disableCastChecking>true</disableCastChecking>
+						<!--disableClassMetadata>true</disableClassMetadata>
+						<draftCompile>true</draftCompile-->
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>mergewebxml</goal>
+								<!--goal>generateAsync</goal-->
+								<goal>compile</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<configuration>
+						<wtpversion>2.0</wtpversion>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
