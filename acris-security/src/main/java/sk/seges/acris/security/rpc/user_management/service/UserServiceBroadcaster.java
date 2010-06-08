@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
-import sk.seges.acris.security.client.session.SessionServiceDefTarget;
 import sk.seges.acris.security.rpc.session.ClientSession;
 import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
 
@@ -63,6 +62,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				public void onSuccessCallback(ClientSession result) {
 					countHolder.count--;
 					resendLoginRequest(username, password, language, callback, userServiceIterator, countHolder, result);
+					callback.onSuccess(result);
 				}
 			});
 	}
