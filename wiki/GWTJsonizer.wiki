@@ -247,6 +247,44 @@ jsonnizer.fromJson(...);
 
 Cool ... now we are much closer from manual robotic-like programmer to the clever programmer who writes nice code in easy and efficent way. Just imagine that you want to deserialize Google API JSON data with hundreds of data structures in manual way? Huh, sounds interesting? I believe that someone will do it or just did it, but I don't ... I will use acris-json project and it will save me a thoundsands of lines and when I will modify my code after one year I will be able to maintain it without breaking the existing functionality. What about you?
 
+== Handling complex data structures into simple fields ==
+
+Sometimes it's usefull to deserialize JSON string into simpliers data structures than original JSON data structures. Sounds little bit confusing but it's not. If you have JSON input from our example above and if you are not interested in whole Title (represents as TextConstruct) object but you just need a value of the title you can simplify your data structures like this.
+{{{
+{
+  'feed': {
+    'entry': [
+      {'title': {'type': 'text', '$t': 'Some Text'}},
+      {'title': {'type': 'text', '$t': 'Some More Text'}}
+    ]
+  }
+}
+}}}
+{{{
+@JsonObject
+public class Feed {
+
+       @JsonObject
+       public static class Entry {
+
+              @ComplexField({
+                         @Field("title"), 
+                         @Field("$t")})
+              public String value
+       }
+
+       @Field("entry")
+       public List<Entry> entries;
+}
+}}}
+
+You see the difference? ComplexField groups more simple fields and maps $t value from title object into String field value; In other words it can be translated like:
+{{{
+value = jsonEntryObject.get("title").get("$t");
+}}}
+
+ComplexField allows you to group more that 2 @Fields so you can simplify your data structures in case you don't need to map full data structure as it is defined.
+
 == Extensible points & extensions ==
 
 Still haven't enough information about using acris-json project? You will get more and more but not now, it's friday and I'm going to be little bit thirsty :)
