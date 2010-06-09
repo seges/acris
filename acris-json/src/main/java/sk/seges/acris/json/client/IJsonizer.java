@@ -15,6 +15,8 @@ public interface IJsonizer {
 
 	<T> T fromJson(String json, Class<T> clazz);
 
+	<T> T fromJson(String json, String field, Class<T> clazz);
+
 	<T> T fromJson(JSONValue jsonValue, T instance, DeserializationContext deserializationContext);
 
 	<T> T fromJson(JSONValue jsonValue, Class<T> clazz, DeserializationContext deserializationContext);

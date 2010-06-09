@@ -6,6 +6,7 @@ import sk.seges.acris.json.client.context.DeserializationContext;
 import sk.seges.acris.json.client.deserialization.JsonDeserializer;
 
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
@@ -30,7 +31,34 @@ public abstract class PrimitiveJsonizer implements IJsonizer {
 	public <T> T fromJson(String json, Class<T> clazz) {
 		return fromJson(JSONParser.parse(json), clazz);
 	}
+	
+	@Override
+	public <T> T fromJson(String json, String field, Class<T> clazz) {
+		JSONValue value = JSONParser.parse(json);
+		if (value == null || value.isObject() == null) {
+			return null;
+		}
+		return fromJson(value.isObject().get(field), clazz);
+	}
 
+	protected JSONValue get(JSONObject jsonObject, String[] fields) {
+		
+		if (fields == null || fields.length == 0) {
+			return null;
+		}
+		
+		JSONValue result = jsonObject.get(fields[0]);
+		
+		for (int i = 1; i < fields.length; i++) {
+			
+			if (result != null && result.isObject() != null) {
+				result = result.isObject().get(fields[i]);
+			}
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public void setJsonizerContext(JsonizerContext jsonizerContext) {
 		this.jsonizerContext = jsonizerContext;

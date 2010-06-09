@@ -2,14 +2,17 @@ package sk.seges.acris.json.rebind;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.acris.core.rebind.RebindUtils.FieldDeclaration;
 import sk.seges.acris.json.client.ExtendableJsonizer;
+import sk.seges.acris.json.client.annotation.ComplexField;
 import sk.seges.acris.json.client.annotation.Field;
 import sk.seges.acris.json.client.annotation.JsonObject;
 import sk.seges.acris.json.client.context.DeserializationContext;
@@ -195,11 +198,66 @@ public class JsonCreator {
 		return true;
 	}
 
-	protected void generateField(SourceWriter sourceWriter, JClassType toType, JField field)
-			throws UnableToCompleteException {
+	protected String[] getFieldName(JField field) {
+		Field fieldAnnotation = field.getAnnotation(Field.class);
+		if (fieldAnnotation != null) {
+			return new String[] {getFieldName(fieldAnnotation, field)};
+		}
+		ComplexField complexFieldAnnotation = field.getAnnotation(ComplexField.class);
+		if (complexFieldAnnotation == null) {
+			return new String[0];
+		}
+		
+		List<String> result = new ArrayList<String>();
+		
+		for (Field subField : complexFieldAnnotation.value()) {
+			result.add(getFieldName(subField, field));
+		}
+		
+		return result.toArray(new String[0]);
+	}
+
+	protected String getFieldName(Field fieldAnnotation, JField field) {
+
+		String fieldName = fieldAnnotation.value();
+
+		if (fieldName == null || fieldName.length() == 0) {
+			fieldName = field.getName();
+		}
+
+		if (fieldAnnotation.group() != null && fieldAnnotation.group().length() > 0) {
+			fieldName = fieldAnnotation.group() + "$" + fieldName;
+		}
+		
+		return fieldName;
+	}
+	
+	protected boolean supportsField(JField field) {
+		
 		Field fieldAnnotation = field.getAnnotation(Field.class);
 
-		if (fieldAnnotation == null) {
+		ComplexField complexFieldAnnotation = field.getAnnotation(ComplexField.class);
+
+		return (fieldAnnotation != null || complexFieldAnnotation != null);
+	}
+	
+	private String generateSubFieldsAccess(String[] fields, String jsonObject) {
+		String accessor = "get(" + jsonObject + ", new String[] {";
+		
+		for (int i = 0; i < fields.length; i++) {
+			if (i > 0) {
+				accessor += ",";
+			}
+			accessor += "\"" + fields[i] + "\""; 
+		}
+		
+		return accessor + "})";
+	}
+	
+	protected void generateField(SourceWriter sourceWriter, JClassType toType, JField field)
+			throws UnableToCompleteException {
+
+		if (!supportsField(field)) {
 			return;
 		}
 
@@ -218,13 +276,7 @@ public class JsonCreator {
 					+ " has not valid field definition");
 			return;
 		}
-
-		String fieldName = fieldAnnotation.value();
-
-		if (fieldName == null || fieldName.length() == 0) {
-			fieldName = field.getName();
-		}
-
+		
 		sourceWriter.println("deserializationContext = new " + DeserializationContext.class.getSimpleName() + "();");
 
 		if (fd.annotations != null) {
@@ -241,13 +293,15 @@ public class JsonCreator {
 
 		sourceWriter.println("deserializationContext.setJsonizer(this);");
 
+		String[] fieldNames = getFieldName(field);
+
 		if (fd.type.isArray() != null) {
 			//TODO - what about arrays?
 		} else if (fd.type.isClassOrInterface() != null
 				&& fd.type.isClassOrInterface().isAssignableTo(typeOracle.findType(Collection.class.getName()))) {
 
 			sourceWriter.println(JSONValue.class.getSimpleName() + " jsonValue" + field.getName()
-					+ " = jsonObject.get(\"" + fieldName + "\");");
+					+ " = " + generateSubFieldsAccess(fieldNames, "jsonObject") + ";");
 			sourceWriter.println("if (jsonValue" + field.getName() + " != null) {");
 			sourceWriter.indent();
 
@@ -273,7 +327,7 @@ public class JsonCreator {
 						+ targetType.getQualifiedSourceName() + ".class;");
 			} else {
 				sourceWriter.println(Class.class.getSimpleName() + "<?> targetClazz = jsonizerContext.getPropertyType("
-						+ toType.getQualifiedSourceName() + ".class, \"" + fieldName + "\");");
+						+ toType.getQualifiedSourceName() + ".class, \"" + fieldNames + "\");");
 			}
 
 			sourceWriter.println("if (targetClazz != null) {");
@@ -322,7 +376,7 @@ public class JsonCreator {
 				nonPrimitiveClassName = field.getType().isPrimitive().getQualifiedBoxedSourceName();
 			}
 
-			sourceWriter.println("_jsonResult = fromJson(jsonObject.get(\"" + fieldName + "\"), " + nonPrimitiveClassName
+			sourceWriter.println("_jsonResult = fromJson(" + generateSubFieldsAccess(fieldNames, "jsonObject") + ", " + nonPrimitiveClassName
 					+ ".class, deserializationContext);");
 
 			if (field.getType().isPrimitive() != null) {

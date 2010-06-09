@@ -35,6 +35,19 @@ public class JsonizerContext {
 		classProperties.put(property, targetType);
 	}
 
+	public Class<?> getPropertyType(Class<?> clazz, String[] properties) {
+		Class<?> currentClass = clazz;
+		
+		for (String property : properties) {
+			if (currentClass == null) {
+				return null;
+			}
+			currentClass = getPropertyType(currentClass, property);
+		}
+		
+		return currentClass;
+	}
+	
 	public Class<?> getPropertyType(Class<?> clazz, String property) {
 		Map<String, Class<?>> classProperties = propertyMapping.get(clazz.getName());
 		if (classProperties == null) {
