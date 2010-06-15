@@ -43,6 +43,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -207,6 +208,8 @@ public class ProxyServlet extends HttpServlet {
 
         connection.setDoInput(true);
 
+        propagateCookies(req, connection);
+        
         InputStream in = req.getInputStream();
         // setDoOutput to true with change the method from GET to POST so only do it if the method is POST already.
         // POST is the method that has content anyway
@@ -258,6 +261,22 @@ public class ProxyServlet extends HttpServlet {
         resp.flushBuffer();
     }
 
+    private void propagateCookies(HttpServletRequest request, URLConnection connection) {
+    	Cookie[] cookies = request.getCookies();
+    	if(cookies == null) {
+    		return;
+    	}
+    	StringBuilder value = new StringBuilder();
+    	for(int i = 0; i < cookies.length; i++) {
+    		Cookie cookie = cookies[i];
+    		value.append(cookie.getName() + "=" + cookie.getValue());
+    		if(i != cookies.length - 1) {
+    			value.append(";");
+    		}
+    	}
+    	connection.setRequestProperty("Cookie", value.toString());
+    }
+    
     /**
      * Copy all of in to out.
      *
