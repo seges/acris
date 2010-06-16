@@ -8,6 +8,7 @@ public interface PanelRef {
     public static final String FLOW_LAYOUT_PANEL = "flowLP";
     public static final String DECK_LAYOUT_PANEL = "deckLP";
     public static final String MENU_LAYOUT_PANEL = "menuLP";
+    public static final String SECURED_MENU_LAYOUT_PANEL = "secMenuLP";
 	public static final String UNAVAILABLE_PANEL = "unavailableP";
 	public static final String POPOUT_LOGIN_PANEL = "popoutLoginP";
 	public static final String LANGUAGE_SELECTOR_PANEL = "langSelPanel";
