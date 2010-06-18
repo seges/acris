@@ -10,11 +10,12 @@
 	<inherits name='net.sf.gilead.Adapter4Gwt15'/>
 	<inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/>
 
+	<inherits name='sk.seges.acris.security.Rpc' />
+	<inherits name='sk.seges.acris.security.client.Session' />
 	<!-- Spring emulation -->
 	<inherits name='sk.seges.acris.security.rpc.Spring' />
 
 	<source path="client" />
-	<source path="rpc" />
 
 	<!-- Gilead dynamic proxy classes -->
 	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
@@ -27,12 +28,6 @@
 
 	<generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
 		<when-type-assignable class="sk.seges.acris.security.rpc.domain.ITransferableObject" />
-	</generate-with>
-
-	<!-- Session handling generators -->
-	<generate-with
-		class="sk.seges.acris.security.rebind.SessionRemoteServiceProxyGenerator">
-		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
 	</generate-with>
 
 	<!-- Security generators -->
