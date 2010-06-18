@@ -38,6 +38,43 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 		this.directFields = directFields;
 	}
 
+	private boolean isEmbedded(String alias) {
+		return alias.contains(AbstractHibernateCRUD.EMBEDDED_FIELD_DELIM);
+	}
+
+	/**
+	 * Replace all "-" {@link AbstractHibernateCRUD#EMBEDDED_FIELD_DELIM} <strong>--></strong> "_"
+	 * {@link AbstractHibernateCRUD#ALIAS_CHAIN_DELIM} in alias.
+	 * <p>
+	 * Example:
+	 * <br>
+	 * <code>user_mailTemplate-toUser_mailTemplate-commonStuff-mailAddress.city</code> -->
+	 * <code>user_mailTemplate_toUser_mailTemplate_commonStuff_mailAddress.city</code>
+	 * <p>
+	 * Special case is when alias ends with embedded delimiter. It's replaced
+	 * with "." {@link AbstractHibernateCRUD#FIELD_DELIM}
+	 * <p>
+	 * Example: 
+	 * <br>
+	 * <code>user_mailTemplate-toUser_mailTemplate-subject</code> -->
+	 * <code>user_mailTemplate_toUser_mailTemplate.subject</code>
+	 * 
+	 * @param source
+	 * @return
+	 */
+	private String convertAliasWithEmbeddedFields(String source) {
+		int embeddedFieldDelimLastIndex = source.lastIndexOf(AbstractHibernateCRUD.EMBEDDED_FIELD_DELIM);
+		int fieldDelimLastIndex = source.lastIndexOf(AbstractHibernateCRUD.FIELD_DELIM);
+
+		if (embeddedFieldDelimLastIndex > fieldDelimLastIndex) {
+			source = source.substring(0, embeddedFieldDelimLastIndex) + AbstractHibernateCRUD.FIELD_DELIM
+					+ source.substring(embeddedFieldDelimLastIndex + 1);
+		}
+		return source.replaceAll(AbstractHibernateCRUD.EMBEDDED_FIELD_DELIM, "\\"
+				+ AbstractHibernateCRUD.ALIAS_CHAIN_DELIM);
+
+	}
+
 	public Object transformTuple(final Object[] tuple, String[] aliases) {
 		final Object resultInst;
 
@@ -46,8 +83,11 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 				setters = new Setter[aliases.length];
 				for (int i = 0; i < aliases.length; i++) {
 					String alias = aliases[i];
-					if(alias == null) {
+					if (alias == null) {
 						alias = directFields[i];
+					}
+					if (isEmbedded(alias)) {
+						alias = convertAliasWithEmbeddedFields(alias);
 					}
 					// go by chain and find the last setter from the alias
 					new FieldChainResolver<Class<?>>() {
@@ -78,8 +118,11 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 			for (int i = 0; i < aliases.length; i++) {
 				if (setters[i] != null) {
 					String alias = aliases[i];
-					if(alias == null) {
+					if (alias == null) {
 						alias = directFields[i];
+					}
+					if (isEmbedded(alias)) {
+						alias = convertAliasWithEmbeddedFields(alias);
 					}
 					// go by chain and reconstruct object graph for only
 					// projected fields. Also create chained objects along the
@@ -87,8 +130,7 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 					new FieldChainResolver<Object>() {
 
 						@Override
-						protected Object initializeResult() throws InstantiationException,
-								IllegalAccessException {
+						protected Object initializeResult() throws InstantiationException, IllegalAccessException {
 							return resultInst;
 						}
 
@@ -145,8 +187,8 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 	private static abstract class FieldChainResolver<R> {
 		protected abstract R initializeResult() throws InstantiationException, IllegalAccessException;
 
-		protected abstract R executeForIntermediateField(String field, R result)
-				throws InstantiationException, IllegalAccessException;
+		protected abstract R executeForIntermediateField(String field, R result) throws InstantiationException,
+				IllegalAccessException;
 
 		protected abstract void executeForLastField(int i, String field, R result);
 

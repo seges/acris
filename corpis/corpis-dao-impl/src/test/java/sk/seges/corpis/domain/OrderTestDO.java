@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,6 +38,10 @@ public class OrderTestDO implements IDomainObject<Long> {
 
 	@OneToMany
 	private List<OrderItemTestDO> items = new LinkedList<OrderItemTestDO>();
+
+	@Embedded
+	private MailTemplateTestEmbeddable mailTemplate;
+
 
 	public Long getId() {
 		return id;
@@ -85,18 +90,27 @@ public class OrderTestDO implements IDomainObject<Long> {
 	public void setDelivered(Date delivered) {
 		this.delivered = delivered;
 	}
-	
+
 	public String getOrderId() {
 		return orderId;
 	}
-	
+
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
 
+	public MailTemplateTestEmbeddable getMailTemplate() {
+		return mailTemplate;
+	}
+
+	public void setMailTemplate(MailTemplateTestEmbeddable mailTemplate) {
+		this.mailTemplate = mailTemplate;
+	}
+
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", location=" + (deliveryLocation == null ? "n/a" : deliveryLocation)
-				+ ", ordered=" + ordered + ", delivered = " + delivered + ", user=" + user + ", orderId = " + orderId + "]";
+		return "Order [id=" + id + ", location=" + (deliveryLocation == null ? "n/a" : deliveryLocation) + ", ordered="
+				+ ordered + ", delivered = " + delivered + ", user=" + user + ", orderId = " + orderId + "]";
 	}
+
 }

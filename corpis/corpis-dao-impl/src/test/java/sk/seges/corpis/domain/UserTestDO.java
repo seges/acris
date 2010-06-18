@@ -1,6 +1,7 @@
 package sk.seges.corpis.domain;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +23,9 @@ public class UserTestDO implements IDomainObject<Long> {
 	private String name;
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private LocationTestDO birthplace;
+	
+	@Embedded
+	private MailTemplateTestEmbeddable mailTemplate;
 
 	public Long getId() {
 		return id;
@@ -61,6 +65,14 @@ public class UserTestDO implements IDomainObject<Long> {
 
 	public void setBirthplace(LocationTestDO birthplace) {
 		this.birthplace = birthplace;
+	}
+	
+	public MailTemplateTestEmbeddable getMailTemplate() {
+		return mailTemplate;
+	}
+
+	public void setMailTemplate(MailTemplateTestEmbeddable mailTemplate) {
+		this.mailTemplate = mailTemplate;
 	}
 
 	@Override
