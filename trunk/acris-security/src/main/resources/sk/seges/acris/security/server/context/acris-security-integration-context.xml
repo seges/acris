@@ -14,5 +14,7 @@
 
 	<beans:import resource="acris-security-generic-dao-authentication-context.xml"/>
 	<beans:import resource="acris-security-http-session-context.xml"/>
-    <beans:import resource="acris-security-role-voter-context.xml"/>
+    <beans:import resource="acris-security-voter-context.xml"/>
+    
+    <context:component-scan base-package="sk.seges.acris.security.server.acl" />
 </beans:beans>
