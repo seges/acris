@@ -14,7 +14,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
 
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
@@ -24,16 +23,17 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="generic_users", uniqueConstraints = @UniqueConstraint(columnNames = {GenericUser.USER_NAME_ATTRIBUTE, GenericUser.WEBID_ATTRIBUTE}))
+@Table(name = "generic_users")
 public class GenericUser implements IDomainObject<Long>, UserDetails {
 
 	private static final long serialVersionUID = 4295318098990134331L;
-	
+
 	public static final String USER_NAME_ATTRIBUTE = "username";
 	public static final String PASSWORD_ATTRIBUTE = "password";
 	public static final String ENABLED_ATTRIBUTE = "enabled";
 	public static final String DESCRIPTION_ATTRIBUTE = "description";
-	public static final String WEBID_ATTRIBUTE = "webId";
+
+	public static final String ROLE_PREFIX = "ROLE_";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -53,16 +53,12 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 
 	@Transient
 	protected List<String> authorities;
-	
-	@Column
-	private String webId;
 
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	private UserPreferences userPreferences;
-	
-	public GenericUser() {	
-	}
-	
+
+	public GenericUser() {}
+
 	public String getDescription() {
 		return description;
 	}
@@ -95,14 +91,6 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 		this.password = password;
 	}
 
-	public String getWebId() {
-		return webId;
-	}
-	
-	public void setWebId(String webId) {
-		this.webId = webId;
-	}
-	
 	public UserPreferences getUserPreferences() {
 		return userPreferences;
 	}
@@ -118,7 +106,7 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public boolean isAccountNonExpired() {
 		return enabled;
 	}
@@ -132,11 +120,11 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	}
 
 	public boolean hasAuthority(String authority) {
-		
+
 		if (authorities != null) {
-			return authorities.contains(authority);
+			return authorities.contains(ROLE_PREFIX + authority);
 		}
-		
+
 		return false;
 	}
 
@@ -152,22 +140,22 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 		if (authorities == null) {
 			return new GrantedAuthority[0];
 		}
-		
+
 		GrantedAuthority[] grantedAuthorities = new GrantedAuthority[authorities.size()];
-		
+
 		int i = 0;
 		for (String authority : authorities) {
 			GrantedAuthorityImpl lazyGrantedAuthority = new GrantedAuthorityImpl();
 			lazyGrantedAuthority.setAuthority(authority);
 			grantedAuthorities[i++] = lazyGrantedAuthority;
 		}
-		
+
 		return grantedAuthorities;
 	}
 
 	public void setAuthorities(GrantedAuthority[] authorities) {
 		this.authorities = new ArrayList<String>();
-		
+
 		if (authorities != null) {
 			for (GrantedAuthority authority : authorities) {
 				this.authorities.add(authority.getAuthority());
@@ -180,7 +168,6 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		result = prime * result + ((webId == null) ? 0 : webId.hashCode());
 		return result;
 	}
 
@@ -198,11 +185,6 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 				return false;
 		} else if (!username.equals(other.username))
 			return false;
-		if (webId == null) {
-			if (other.webId != null)
-				return false;
-		} else if (!webId.equals(other.webId))
-			return false;
 		return true;
 	}
 
@@ -210,6 +192,6 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	public String toString() {
 		return "GenericUser [authorities=" + authorities + ", description=" + description + ", enabled="
 				+ enabled + ", id=" + id + ", password=" + password + ", userPreferences=" + userPreferences
-				+ ", username=" + username + ", webId=" + webId + "]";
+				+ ", username=" + username + "]";
 	}
 }

@@ -11,8 +11,13 @@
                         http://www.springframework.org/schema/security/spring-security-2.0.2.xsd
                         http://www.springframework.org/schema/aop 
                         http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-
-	<beans:import resource="acris-security-generic-dao-authentication-context.xml"/>
-	<beans:import resource="acris-security-http-session-context.xml"/>
-    <beans:import resource="acris-security-role-voter-context.xml"/>
+	
+	<beans:bean id="httpSessionContextIntegrationFilter" class="org.springframework.security.context.HttpSessionContextIntegrationFilter"/>
+	   
+	<beans:bean id="springSecurityFilterChain" class="org.springframework.security.util.FilterChainProxy">
+        <filter-chain-map path-type="ant">
+            <filter-chain pattern="/**" filters="httpSessionContextIntegrationFilter"/>
+        </filter-chain-map>
+    </beans:bean>
+    
 </beans:beans>
