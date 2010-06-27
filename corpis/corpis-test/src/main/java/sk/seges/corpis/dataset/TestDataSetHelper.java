@@ -16,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 public class TestDataSetHelper {
-	@PersistenceContext
+	public static final String TEST_ENTITY_MANAGER_FACTORY = "corpisTestEntityManagerFactory";
+	
+	@PersistenceContext(unitName = TEST_ENTITY_MANAGER_FACTORY)
 	protected EntityManager entityManager;
 	
 	@Transactional

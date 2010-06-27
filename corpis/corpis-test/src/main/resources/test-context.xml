@@ -9,6 +9,8 @@
 	<context:component-scan base-package="sk.seges.corpis" />
 	<tx:annotation-driven />
 	
+	<alias name="corpisEntityManagerFactory" alias="corpisTestEntityManagerFactory"/>
+	
 	<bean id="corpisEntityManagerFactory"
 		class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
 		<property name="persistenceUnitName" value="testPU" />
