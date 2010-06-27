@@ -3,6 +3,7 @@ package sk.seges.acris.security.rpc.user_management.service;
 import sk.seges.acris.security.rpc.exception.ServerException;
 import sk.seges.acris.security.rpc.session.ClientSession;
 import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
+import sk.seges.acris.security.rpc.user_management.domain.LoginToken;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -29,7 +30,7 @@ public interface IUserService extends RemoteService {
 	 *            "en_US")
 	 * @return ClientSession with logged user and session id
 	 */
-	ClientSession login(String username, String password, String language) throws ServerException;
+	ClientSession login(LoginToken token) throws ServerException;
 
 	/**
 	 * Logs out current logged user.

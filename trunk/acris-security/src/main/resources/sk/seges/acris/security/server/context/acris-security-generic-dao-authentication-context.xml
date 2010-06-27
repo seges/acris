@@ -31,9 +31,4 @@
 			</beans:list>
 		</beans:property>
 	</beans:bean>
-
-	<beans:bean id="loginUserService" class="sk.seges.acris.security.server.user_management.service.user.LoginUserService">
-		<beans:property name="authenticationManager" ref="authenticationManager"/>
-	</beans:bean>
-    
 </beans:beans>

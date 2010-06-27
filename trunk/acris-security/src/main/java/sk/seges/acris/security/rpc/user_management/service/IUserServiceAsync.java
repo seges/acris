@@ -3,6 +3,7 @@ package sk.seges.acris.security.rpc.user_management.service;
 import sk.seges.acris.security.rpc.exception.ServerException;
 import sk.seges.acris.security.rpc.session.ClientSession;
 import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
+import sk.seges.acris.security.rpc.user_management.domain.LoginToken;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -31,8 +32,7 @@ public interface IUserServiceAsync {
 	 *            Asynchronous GWT callback with client session filled with user
 	 *            and sessionid as a result
 	 */
-	void login(String username, String password, String language,
-			AsyncCallback<ClientSession> callback) throws ServerException;
+	void login(LoginToken token, AsyncCallback<ClientSession> callback) throws ServerException;
 
 	/**
 	 * Logs out current logged user.

@@ -1,61 +1,35 @@
 package sk.seges.acris.security.server.user_management.service.user;
 
-import javax.servlet.http.HttpServletRequest;
-
-import net.sf.gilead.gwt.PersistentRemoteService;
-
-import org.gwtwidgets.server.spring.ServletUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
-import sk.seges.acris.security.rpc.session.ClientSession;
-import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
-import sk.seges.acris.security.rpc.user_management.service.IUserService;
+import sk.seges.acris.security.rpc.exception.ServerException;
+import sk.seges.acris.security.rpc.user_management.domain.LoginToken;
+import sk.seges.acris.security.rpc.user_management.domain.UserPasswordLoginToken;
 
-@Service
-public class UserService extends PersistentRemoteService implements IUserService {
+/**
+ * Standard user service using {@link UserPasswordLoginToken} to log the user in
+ * (and out). The service uses Spring's DAO authentication provider.
+ * 
+ * The behaviour of fetching authorities can be altered by:
+ * <ul>
+ * <li>providing specific implementation of generic user DAO (bean name is
+ * 'genericUserDao'). By aliasing the bean name to the specific implementation
+ * you are able to provide authorities for the user with own DAO.</li>
+ * <li>providing own chain of authentication providers</li>
+ * </ul>
+ * 
+ * @author fat
+ * @author ladislav.gazo
+ */
+public class UserService extends AbstractUserService {
 
-	@Autowired
-	@Qualifier("loginUserService")
-	private LoginUserService loginUserService;
-
-//	@Autowired
-//	private ISessionLogDAO sessionLogDao;
+	// @Autowired
+	// private ISessionLogDAO sessionLogDao;
 
 	private static final long serialVersionUID = 4347689255879212323L;
-
-//	@Autowired
-//	private IGenericUserDao genericUserDao;
-
-//	@Autowired
-//	public UserService(@Qualifier("acrisHibernateBeanManager") PersistentBeanManager lazyManager) {
-//		super(lazyManager);
-//	}
-
-	public ClientSession login(String username, String password, String language/*, IUserDetail userDetail*/) {
-
-		UserDetails user = loginUserService.loginUser(username, password, language);
-		((GenericUser)user).setAuthorities(user.getAuthorities());
-
-//		if (userDetail instanceof SessionLog) {
-//			SessionLog sessionLog = (SessionLog)userDetail;
-//			sessionLog.setUser((GenericUser)user);
-//			sessionLogDao.add(sessionLog);
-//		}
-
-		HttpServletRequest request = ServletUtils.getRequest();
-		
-		ClientSession clientSession = new ClientSession();
-		clientSession.setSessionId(request.getSession(true).getId());
-		clientSession.setUser((GenericUser)user);
-
-		return clientSession;
-	}
 
 	protected String[] getUserAuthorities(UserDetails user) {
 		GrantedAuthority[] granthedAuthorities = user.getAuthorities();
@@ -67,30 +41,29 @@ public class UserService extends PersistentRemoteService implements IUserService
 			authorities[i++] = grantedAuthority.getAuthority();
 		}
 		return authorities;
-	}	
-
-	public void logout() {
-		loginUserService.logout();
 	}
 
-//	@Secured(RolePermissions.USER_MAINTENANCE_ROLE_PERMISSION_READ)
-	public GenericUser getLoggedUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		if (authentication == null) {
-			return null;
-		}
-		
-		if (authentication.getPrincipal() == null) {
-			return null;
-		}
-		
-		return (GenericUser)authentication.getPrincipal();
+	@Override
+	protected Authentication createAuthenticationToken(LoginToken token) throws ServerException {
+		assert (token instanceof UserPasswordLoginToken);
+		UserPasswordLoginToken loginToken = (UserPasswordLoginToken) token;
+		return new UsernamePasswordAuthenticationToken(loginToken.getUsername(), loginToken.getPassword());
 	}
 
-//	@Override
-//	public List<String> getAuditTrailedLoggedUsernames() {
-//		sessionLogDao.loadUsers();
-//		return null;
-//	}
+	// @Override
+	// protected void postProcessLogin(ClientSession clientSession) {
+	// super.postProcessLogin(clientSession);
+
+	// if (userDetail instanceof SessionLog) {
+	// SessionLog sessionLog = (SessionLog)userDetail;
+	// sessionLog.setUser((GenericUser)user);
+	// sessionLogDao.add(sessionLog);
+	// }
+	// }
+
+	// @Override
+	// public List<String> getAuditTrailedLoggedUsernames() {
+	// sessionLogDao.loadUsers();
+	// return null;
+	// }
 }
