@@ -8,7 +8,7 @@ import org.htmlparser.util.DefaultParserFeedback;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.ParserException;
 
-public class LanguageSelectorPostProcessorTest {
+public class LanguageSelectorPostProcessorLauncher {
 	protected Parser parser;
 	protected Node node[];
 	protected int nodeCount;
@@ -40,7 +40,7 @@ public class LanguageSelectorPostProcessorTest {
 	}
 
 	public static void main(String[] args) {
-		LanguageSelectorPostProcessorTest languageSelectorPostProcessorTest = new LanguageSelectorPostProcessorTest();
+		LanguageSelectorPostProcessorLauncher languageSelectorPostProcessorTest = new LanguageSelectorPostProcessorLauncher();
 		languageSelectorPostProcessorTest.process();
 	}
 }
