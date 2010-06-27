@@ -122,7 +122,7 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	public boolean hasAuthority(String authority) {
 
 		if (authorities != null) {
-			return authorities.contains(ROLE_PREFIX + authority);
+			return authorities.contains(authority) || authorities.contains(ROLE_PREFIX + authority);
 		}
 
 		return false;

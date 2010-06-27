@@ -23,11 +23,15 @@ public class ClientSession implements ITransferableObject {
 	private Map<String, Serializable> session;
 	
 
-	private Map<String, Serializable> getSession() {
+	public Map<String, Serializable> getSession() {
 		if(session == null) {
 			session = new HashMap<String, Serializable>();
 		}
 		return session;
+	}
+	
+	public void setSession(Map<String, Serializable> session) {
+		this.session = session;
 	}
 
 	public String getSessionId() {
