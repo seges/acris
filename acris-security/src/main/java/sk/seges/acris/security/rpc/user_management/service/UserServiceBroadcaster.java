@@ -49,17 +49,32 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * service determines the specific instance of {@link GenericUser} to be
  * returned to the client. So there are several user services but only one
  * instance of {@link ClientSession} will be returned. If you specify primary
- * endpoint (using {@link #setPrimaryEntryPoint(String)}) you also specify which
+ * entry point (using {@link #setPrimaryEntryPoint(String)} or setting key
+ * {@link #PRIMARY_ENTRY_POINT} in {@link ClientSession}) you also specify which
  * user service is the primary one. Into its user information all authorities
  * from all user services will be merged.
+ * </p>
+ * <p>
+ * Setting primary entry point through ClientSession's key allows you to
+ * decouple and postpone the setting of the entry point until it is needed.
+ * Using {@link #setPrimaryEntryPoint(String)} forces you initialize the
+ * broadcaster (and user services) in the time of setting - it can break e.g.
+ * correct code splitting.
  * </p>
  * 
  * @author fat
  * @author ladislav.gazo
  */
 public class UserServiceBroadcaster implements IUserServiceAsync {
+	public static final String PRIMARY_ENTRY_POINT = "primaryEntryPoint";
+
 	private Map<String, IUserServiceAsync> userServices = new HashMap<String, IUserServiceAsync>();
 	private String primaryEntryPoint;
+	private ClientSession clientSession;
+
+	public void setClientSession(ClientSession clientSession) {
+		this.clientSession = clientSession;
+	}
 
 	public void addUserService(IUserServiceAsync userService) {
 		ServiceDefTarget subscriptionEndpoint = (ServiceDefTarget) userService;
@@ -107,15 +122,19 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 						failures.toArray(throwables);
 						callback.onFailure(new BroadcastingException(throwables));
 					} else {
-						if (primaryEntryPoint != null) {
+						String resolvedPrimaryEntryPoint = (primaryEntryPoint != null ? primaryEntryPoint
+								: (clientSession != null && clientSession.get(PRIMARY_ENTRY_POINT) != null ? (String) clientSession
+										.get(PRIMARY_ENTRY_POINT)
+										: null));
+						if (resolvedPrimaryEntryPoint != null) {
 							// merge authorities from all services to one set
-							ClientSession primaryResult = successes.get(primaryEntryPoint);
+							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
 							GenericUser user = primaryResult.getUser();
 							Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 							add(user.getAuthorities(), authorities);
 
 							for (Entry<String, ClientSession> entry : successes.entrySet()) {
-								if (!primaryEntryPoint.equals(entry.getKey())) {
+								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
 									add(entry.getValue().getUser().getAuthorities(), authorities);
 								}
 							}
