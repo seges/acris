@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.seges.corpis.dao.IOrderTestDAO;
 import sk.seges.corpis.dataset.TestDataSetHelper;
 import sk.seges.corpis.domain.LocationTestDO;
+import sk.seges.corpis.domain.MailTemplateTestEmbeddable;
 import sk.seges.corpis.domain.OrderTestDO;
 import sk.seges.corpis.domain.StreetTestDO;
 import sk.seges.corpis.domain.UserTestDO;
@@ -70,12 +71,20 @@ public class FilterableTest {
 		user.setName("Frantisek Dobrota");
 		user.setPassword("atnarf");
 		user.setBirthplace(birth);
+		
+		MailTemplateTestEmbeddable mailTemplate = new MailTemplateTestEmbeddable();
+		mailTemplate.setSubject("ProzacAuthorized-Store");
+		mailTemplate.setMailBody("Winner Frantisek Dobrota! 70% max discounts.");
+		user.setMailTemplate(mailTemplate);
+		
 		orderDAO.persistObject(user);
 		
 		VATTestDO vat19 = new VATTestDO();
 		vat19.setVat((short)19);
 		vat19.setValidFrom(new Date());
 		orderDAO.persistObject(vat19);
+		
+
 		
 		for (int i = 0; i < ITEM_COUNT / 2; i++) {
 			StreetTestDO s = new StreetTestDO();
@@ -96,6 +105,11 @@ public class FilterableTest {
 			o.setDelivered(new Date());
 			o.setOrderId("myid-" + i);
 
+			mailTemplate = new MailTemplateTestEmbeddable();
+			mailTemplate.setSubject("ViagraAuthorized-Store");
+			mailTemplate.setMailBody("Discount marathon continues! 80% off. collective presidential USS differs");
+			o.setMailTemplate(mailTemplate);
+			
 			o = orderDAO.persist(o);
 			dataSet.add(o);
 		}
@@ -208,5 +222,35 @@ public class FilterableTest {
 		p.setFilterable(Filter.isNotNull("deliveryLocation.state"));
 		filtered = orderDAO.findAll(p);
 		assertEquals("Unexpected number of filtered returned", 6, filtered.getResult().size());
+	}
+	
+	@Test
+	public void testFilterByStringEmbeddedField() throws Exception {
+		Page p = new Page(0, 7);
+		SimpleExpression<String> filterable = Filter.eq("mailTemplate.subject");
+		filterable.setValue("ViagraAuthorized-Store");
+		p.setFilterable(filterable);
+		
+		PagedResult<List<OrderTestDO>> filtered = orderDAO.findAll(p);
+		assertEquals("Unexpected number of filtered returned", ITEM_COUNT / 2, filtered.getResult().size());
+		
+		filterable.setValue("ZoloftAuthorized-Store");
+		filtered = orderDAO.findAll(p);
+		assertEquals("Unexpected number of filtered returned", 0, filtered.getResult().size());
+	}
+	
+	@Test
+	public void testFilterBySimpleEmbeddedField() throws Exception {
+		Page p = new Page(0, 20);
+		SimpleExpression<String> filterable = Filter.ilike("user.mailTemplate.subject");
+		filterable.setValue("ProzacAuthorized-Store");
+		p.setFilterable(filterable);
+		
+		PagedResult<List<OrderTestDO>> filtered = orderDAO.findAll(p);
+		assertEquals("Unexpected number of filtered returned", ITEM_COUNT, filtered.getResult().size());
+		
+		filterable.setValue("SertralinAuthorized-Store");
+		filtered = orderDAO.findAll(p);
+		assertEquals("Unexpected number of filtered returned", 0, filtered.getResult().size());
 	}
 }

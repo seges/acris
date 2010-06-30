@@ -23,6 +23,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.property.Getter;
 import org.hibernate.property.PropertyAccessor;
 import org.hibernate.property.PropertyAccessorFactory;
@@ -46,9 +47,11 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	public static final String ALIAS_CHAIN_DELIM = "_";
 	public static final String FIELD_DELIM = ".";
 	public static final String EMBEDDED_FIELD_DELIM = "-";
+	public static final String COLON = ":";
 	private Map<String, Method> preparedCriterions = null;
 
 	private final Class<T> clazz;
+	private Set<Class<?>> embedableClassSet;
 
 	protected AbstractHibernateCRUD(Class<T> clazz) {
 		this.clazz = clazz;
@@ -165,12 +168,12 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		Integer totalCount = null;
 		// so we don't repeat aliases in one query - it is disallowed by
 		// criteria definition
-		Set<String> existingAliases;
+		Set<String> existingAliases = new HashSet<String>();
 		MutableBoolean addedFilterables = new MutableBoolean();
 
 		if (!retrieveAllResults(requestedPage)) {
 			// select count only when paging
-			existingAliases = new HashSet<String>();
+//			existingAliases = new HashSet<String>();
 			totalCount = doGetCountByCriteria(criteria, requestedPage, existingAliases, addedFilterables);
 
 			// clear count from criteria
@@ -178,7 +181,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 		}
 
-		existingAliases = new HashSet<String>();
+//		existingAliases = new HashSet<String>();
 		enrichCriteriaWithSortables(requestedPage, criteria);
 		List<T> list = doFindByCriteria(criteria, requestedPage, existingAliases, !addedFilterables.value, cacheable);
 
@@ -216,20 +219,20 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 					+ " for projectables.");
 		}
 
-		String[] directFields = createAliasesForProjectables(list, criteria, enhanceProjectablesWithEmbeddables(
-				requestedPage.getProjectables(), projectableResultClass), existingAliases);
+		String[] directFields = createAliasesForProjectables(list, criteria,
+				enhanceProjectablesWithEmbeddables(requestedPage.getProjectables(), projectableResultClass),
+				existingAliases);
 		criteria.setProjection(list).setResultTransformer(
 				new ChainedFieldsTransformer(projectableResultClass, directFields));
 	}
 
-	private Set<Class<?>> findEmbeddableClasses() {
+	private void findEmbeddableClasses() {
 		Metamodel metamodel = entityManager.getEntityManagerFactory().getMetamodel();
 		Set<EmbeddableType<?>> embeddableTypeSet = metamodel.getEmbeddables();
-		Set<Class<?>> embedableClassSet = new HashSet<Class<?>>();
+		embedableClassSet = new HashSet<Class<?>>();
 		for (EmbeddableType<?> embeddableType : embeddableTypeSet) {
 			embedableClassSet.add(embeddableType.getJavaType());
 		}
-		return embedableClassSet;
 	}
 
 	/**
@@ -249,38 +252,39 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	private List<String> enhanceProjectablesWithEmbeddables(List<String> projectableList,
 			Class<?> projectableResultClass) {
 		PropertyAccessor propertyAccessor = PropertyAccessorFactory.getPropertyAccessor("field");
-		Set<Class<?>> embedableClassSet = findEmbeddableClasses();
 
 		List<String> projectables = new ArrayList<String>();
 		for (String projectable : projectableList) {
-			projectables.add(addEmbeddedDelimsToProjectable(projectable, projectableResultClass, embedableClassSet,
-					propertyAccessor));
+			projectables.add(addEmbeddedDelimsToProperty(projectable, projectableResultClass, propertyAccessor));
 		}
 		return projectables;
 	}
 
-	private String addEmbeddedDelimsToProjectable(String projectable, Class<?> projecktableResultClass,
-			Set<Class<?>> embedableClassSet, PropertyAccessor propertyAccessor) {
+	private String addEmbeddedDelimsToProperty(String property, Class<?> resultClass, PropertyAccessor propertyAccessor) {
 
-		Class<?> clazz = projecktableResultClass;
-		StringBuilder newProjectable = new StringBuilder(projectable.length());
-		int fieldIndex = projectable.indexOf(FIELD_DELIM);
+		if (embedableClassSet == null) {
+			findEmbeddableClasses();
+		}
+
+		Class<?> clazz = resultClass;
+		StringBuilder newProperty = new StringBuilder(property.length());
+		int fieldIndex = property.indexOf(FIELD_DELIM);
 		String fieldName;
 		Getter getter;
 		while (fieldIndex > -1) {
-			fieldName = projectable.substring(0, fieldIndex);
+			fieldName = property.substring(0, fieldIndex);
 			getter = propertyAccessor.getGetter(clazz, fieldName);
 			clazz = getter.getReturnType();
 			if (embedableClassSet.contains(clazz)) {
-				newProjectable.append(fieldName + EMBEDDED_FIELD_DELIM);
+				newProperty.append(fieldName + EMBEDDED_FIELD_DELIM);
 			} else {
-				newProjectable.append(fieldName + FIELD_DELIM);
+				newProperty.append(fieldName + FIELD_DELIM);
 			}
-			projectable = projectable.substring(fieldIndex + 1);
-			fieldIndex = projectable.indexOf(FIELD_DELIM);
+			property = property.substring(fieldIndex + 1);
+			fieldIndex = property.indexOf(FIELD_DELIM);
 		}
-		newProjectable.append(projectable);
-		return newProjectable.toString();
+		newProperty.append(property);
+		return newProperty.toString();
 	}
 
 	/**
@@ -295,6 +299,11 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	 * Aliases for it will be = user, user__birthplace, user__birthplace__street
 	 * 
 	 * Projection will be = user__birthplace__street.number
+	 * 
+	 * <p>
+	 * Because bug in hibernate HHH-817 alias can't have the same name as property 
+	 * 
+	 * 
 	 * 
 	 * @param list
 	 * @param criteria
@@ -323,7 +332,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 					property = alias;
 				}
 
-				list.add(Projections.property(property), alias);
+				list.add(Projections.property(property), alias + COLON);
 			}
 			i++;
 		}
@@ -436,24 +445,42 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		if (filterable == null) {
 			return;
 		}
-		criteria.add(retrieveRestriction(filterable, criteria, existingAliases));
+		Class<?> resultClass = null;
+		String className = null;
+		try {
+			if (criteria instanceof CriteriaImpl) {
+				className = ((CriteriaImpl) criteria).getEntityOrClassName();
+				resultClass = Class.forName(className);
+			}
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Unable to recreate class with string " + className
+					+ " for filterables.");
+		}
+		
+		criteria.add(retrieveRestriction(filterable, criteria, existingAliases, resultClass));
 	}
 
 	/**
 	 * @param existingAliases
+	 * @param resultClass
 	 * @param filterable
 	 * @return
 	 */
 	private Criterion retrieveRestriction(sk.seges.sesam.dao.Criterion filterable1, Criteria criteria,
-			Set<String> existingAliases) {
+			Set<String> existingAliases, Class<?> resultClass) {
 		Class<?>[] parameterTypes = null;
 		Object[] parameters = null;
+
+		PropertyAccessor propertyAccessor = PropertyAccessorFactory.getPropertyAccessor("field");
 
 		if (filterable1 instanceof BetweenExpression<?>) {
 			BetweenExpression<?> filterable = (BetweenExpression<?>) filterable1;
 			parameterTypes = new Class[] { String.class, Object.class, Object.class };
 
-			String alias = createAliases(criteria, filterable.getProperty(), existingAliases);
+			String alias = createAliases(criteria,
+					addEmbeddedDelimsToProperty(filterable.getProperty(), resultClass, propertyAccessor),
+					existingAliases);
+			alias = replaceAllEmbeddedFieldDelimsWithFieldDelims(alias);
 			parameters = new Object[] { alias, filterable.getLoValue(), filterable.getHiValue() };
 		} else if (filterable1 instanceof LikeExpression<?>) {
 			LikeExpression<?> filterable = (LikeExpression<?>) filterable1;
@@ -465,8 +492,10 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 				throw new RuntimeException(
 						"Unable to get hibernate match mode based on mode = " + filterable.getMode(), e);
 			}
-			String alias = createAliases(criteria, filterable.getProperty(), existingAliases);
-
+			String alias = createAliases(criteria,
+					addEmbeddedDelimsToProperty(filterable.getProperty(), resultClass, propertyAccessor),
+					existingAliases);
+			alias = replaceAllEmbeddedFieldDelimsWithFieldDelims(alias);
 			if (value instanceof String) {
 				parameterTypes = new Class[] { String.class, String.class, MatchMode.class };
 				parameters = new Object[] { alias, (String) value, mode };
@@ -481,34 +510,44 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			parameterTypes = new Class[] { String.class, Object.class };
 
 			Comparable<? extends Serializable> value = filterable.getValue();
-			String alias = createAliases(criteria, filterable.getProperty(), existingAliases);
+			String alias = createAliases(criteria,
+					addEmbeddedDelimsToProperty(filterable.getProperty(), resultClass, propertyAccessor),
+					existingAliases);
+			alias = replaceAllEmbeddedFieldDelimsWithFieldDelims(alias);
 			parameters = new Object[] { alias, value };
 		} else if (filterable1 instanceof NotExpression) {
 			NotExpression filterable = (NotExpression) filterable1;
 			parameterTypes = new Class[] { Criterion.class };
 
-			parameters = new Object[] { retrieveRestriction(filterable.getCriterion(), criteria, existingAliases) };
+			parameters = new Object[] { retrieveRestriction(filterable.getCriterion(), criteria, existingAliases,
+					resultClass) };
 		} else if (filterable1 instanceof NullExpression) {
 			NullExpression filterable = (NullExpression) filterable1;
 			parameterTypes = new Class[] { String.class };
 
-			String alias = createAliases(criteria, filterable.getProperty(), existingAliases);
+			String alias = createAliases(criteria,
+					addEmbeddedDelimsToProperty(filterable.getProperty(), resultClass, propertyAccessor),
+					existingAliases);
+			alias = replaceAllEmbeddedFieldDelimsWithFieldDelims(alias);
 			parameters = new Object[] { alias };
 		} else if (filterable1 instanceof NotNullExpression) {
 			NotNullExpression filterable = (NotNullExpression) filterable1;
 			parameterTypes = new Class[] { String.class };
 
-			String alias = createAliases(criteria, filterable.getProperty(), existingAliases);
+			String alias = createAliases(criteria,
+					addEmbeddedDelimsToProperty(filterable.getProperty(), resultClass, propertyAccessor),
+					existingAliases);
+			alias = replaceAllEmbeddedFieldDelimsWithFieldDelims(alias);
 			parameters = new Object[] { alias };
 		}
-
+		
 		try {
 			Method criterion = extractCriterionMethod(filterable1, parameterTypes);
 			Criterion criterionInst = (Criterion) criterion.invoke(null, parameters);
 			if (filterable1 instanceof Junction) {
 				for (sk.seges.sesam.dao.Criterion juncted : ((Junction) filterable1).getJunctions()) {
 					((org.hibernate.criterion.Junction) criterionInst).add(retrieveRestriction(juncted, criteria,
-							existingAliases));
+							existingAliases, resultClass));
 				}
 			}
 			return criterionInst;

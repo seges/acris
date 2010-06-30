@@ -220,16 +220,19 @@ public class ProjectablesTest {
 	@Test
 	public void testProjectableOnVariousFieldsWithFilter() throws Exception {
 		Page page = new Page(0, 0);
+		List<OrderTestDO> orders;
+		SimpleExpression<String> filterable;
+		
 		page.setProjectableResult(OrderTestDO.class.getName());
 		page.addProjectable("orderId");
 		page.addProjectable("user.birthplace.street.name");
 		page.addProjectable("ordered");
-
-		SimpleExpression<String> filterable = Filter.ilike("orderId");
+		
+		filterable = Filter.ilike("orderId");
 		filterable.setValue("%my%");
 		page.setFilterable(filterable);
 
-		List<OrderTestDO> orders = orderDAO.findAll(page).getResult();
+		orders = orderDAO.findAll(page).getResult();
 		assertEquals(ITEM_COUNT, orders.size());
 		for (OrderTestDO order : orders) {
 			assertNotNull(order.getOrdered());
@@ -237,6 +240,25 @@ public class ProjectablesTest {
 			assertNull(order.getDelivered());
 			assertNotNull(order.getUser());
 		}
+		
+		
+		
+		page = new Page(0, 0);
+		page.setProjectableResult(OrderTestDO.class.getName());
+		page.addProjectable("user.login");
+
+		filterable = Filter.eq("user.login");
+		filterable.setValue("franta");
+		page.setFilterable(filterable);
+
+		orders = orderDAO.findAll(page).getResult();
+		assertEquals(ITEM_COUNT, orders.size());
+		for (OrderTestDO order : orders) {
+			assertNotNull(order.getUser().getLogin());
+			assertNull(order.getUser().getName());
+			assertNull(order.getDelivered());
+		}
+		
 	}
 
 	@Test

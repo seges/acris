@@ -43,7 +43,7 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 	}
 
 	/**
-	 * Replace all "-" {@link AbstractHibernateCRUD#EMBEDDED_FIELD_DELIM} <strong>--></strong> "_"
+	 * Replace all "-" {@link AbstractHibernateCRUD#EMBEDDED_FIELD_DELIM} with "_"
 	 * {@link AbstractHibernateCRUD#ALIAS_CHAIN_DELIM} in alias.
 	 * <p>
 	 * Example:
@@ -74,6 +74,10 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 				+ AbstractHibernateCRUD.ALIAS_CHAIN_DELIM);
 
 	}
+	
+	private String removeAllColons(String source) {
+		return source.replace(AbstractHibernateCRUD.COLON, "");
+	}
 
 	public Object transformTuple(final Object[] tuple, String[] aliases) {
 		final Object resultInst;
@@ -89,6 +93,8 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 					if (isEmbedded(alias)) {
 						alias = convertAliasWithEmbeddedFields(alias);
 					}
+					alias = removeAllColons(alias);
+					
 					// go by chain and find the last setter from the alias
 					new FieldChainResolver<Class<?>>() {
 
@@ -124,6 +130,9 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 					if (isEmbedded(alias)) {
 						alias = convertAliasWithEmbeddedFields(alias);
 					}
+					alias = removeAllColons(alias);
+					
+					
 					// go by chain and reconstruct object graph for only
 					// projected fields. Also create chained objects along the
 					// path if necessary.
