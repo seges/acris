@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-gwt-parent</artifactId>
-	<version>1.0.16-SNAPSHOT</version>
+	<version>1.0.16</version>
 	<name>AcrIS Google Web Toolkit Parent</name>
 
 	<parent>
@@ -141,6 +141,19 @@
 				<artifactId>gwt-validation</artifactId>
 				<version>${gwt-validation.version}</version>		
 			</dependency>
+
+			<dependency>
+	                        <groupId>org.htmlparser</groupId>
+	                        <artifactId>htmlparser</artifactId>
+        	                <version>2.0-20100701</version>
+	                </dependency>
+
+			<dependency>
+		        	<groupId>org</groupId>
+				<artifactId>gwt-time</artifactId>
+				<version>1.0.0-20100701</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 
@@ -288,4 +301,10 @@
 			</plugin>
 		</plugins>
 	</build>
+
+  <scm>
+    <connection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.0.16</connection>
+    <developerConnection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.0.16</developerConnection>
+    <url>https://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.0.16</url>
+  </scm>
 </project>
