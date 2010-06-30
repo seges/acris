@@ -20,9 +20,9 @@
 	<url>http://www.seges.sk</url>
 
 	<scm>
-		<connection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-parent</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-parent</developerConnection>
-		<url>https://acris.googlecode.com/svn/trunk/acris-os-parent</url>
+		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</developerConnection>
+		<url>https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</url>
 	</scm>
 
 	<distributionManagement>
@@ -590,7 +590,7 @@
 				<configuration>
 					<preparationGoals>install</preparationGoals>
 					<tagBase>
-						https://acris.googlecode.com/svn/tags/${pom.artifactId}
+						https://acris.googlecode.com/svn/sesam/tags/${pom.artifactId}
 					</tagBase>
 				</configuration>
 			</plugin>
