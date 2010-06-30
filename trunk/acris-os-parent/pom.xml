@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.0.15-SNAPSHOT</version>
+		<version>1.0.15</version>
 	</parent>
 
 	<repositories>
@@ -54,8 +54,8 @@
 	<properties>
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
-		<corpis-os.version>1.0.4-SNAPSHOT</corpis-os.version>
-		<sesam-os.version>1.0.6-SNAPSHOT</sesam-os.version>
+		<corpis-os.version>1.0.4</corpis-os.version>
+		<sesam-os.version>1.0.6</sesam-os.version>
 	</properties>
 	
 	<dependencyManagement>
