@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.0.6-SNAPSHOT</version>
+		<version>1.0.6</version>
 	</parent>
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
@@ -27,7 +27,7 @@
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 		<gwteventservice.version>1.0.2</gwteventservice.version>
 		
-		<gwt-validation.version>1.1.0-SNAPSHOT</gwt-validation.version>
+		<gwt-validation.version>1.1.0-r81</gwt-validation.version>
 	</properties>
 
 	<dependencyManagement>
@@ -270,6 +270,17 @@
 					<artifactId>maven-eclipse-plugin</artifactId>
 					<configuration>
 						<wtpversion>2.0</wtpversion>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<preparationGoals>install</preparationGoals>
+						<tagBase>
+							https://acris.googlecode.com/svn/tags/${pom.artifactId}
+						</tagBase>
 					</configuration>
 				</plugin>
 			</plugins>
