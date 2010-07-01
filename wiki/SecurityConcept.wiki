@@ -19,7 +19,7 @@ Current implementation uses Spring Security for the server. The client uses anno
 
 Let's define logical components of the security:
   * *user* - when talking about a user it is usually meant class *GenericUser* and its derivatives. The result of successful authentification is GenericUser with filled authorities
-  * *authority* - a string token representing "what the user can do".
+  * *authority* - a string token representing "what the user is allowed to do".
   * *user service* - an implementation of IUserService interface responsible for filling the user with a set of authorities
 
 Because authority is not that friendly string as you might expect let's discuss its structure. Some constraints put by Spring Security framework resulted in using constant prefix ROLE.
@@ -32,5 +32,5 @@ This authority says that a user is allowed to see but not modify everything rega
   * *permission* - VIEW - fine-grained specification whether user can see, edit,... or whatever do based on the logic of the grant. Currently there are four permissions defined in *Permission* enumeration.
 
 To finish the concept of authentication client side and also server side needs some input values like username, password,... User service:
-  * evaluates client's request for authentication based on an implementation of login token (represented by the interface *LoginToke*),
+  * evaluates client's request for authentication based on an implementation of login token (represented by the interface *LoginToken*),
   * validates the request by transforming to Authentication (Spring's interface) implementation passed to a chain of authentication providers
