@@ -10,5 +10,6 @@ list="acris-os-gwt-parent"
 for project in $list ; do
 	echo "Creating $project/$1"
 	mkdir -p $project/$1
+	svn add $project/$1
 done
 
