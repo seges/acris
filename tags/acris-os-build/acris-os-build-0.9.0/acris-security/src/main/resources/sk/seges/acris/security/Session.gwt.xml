@@ -1,0 +1,5 @@
+<module>
+	<inherits name='sk.seges.acris.security.Rpc' />
+	<inherits name='sk.seges.acris.security.rpc.Spring' />
+    <inherits name='sk.seges.acris.security.client.Session' />
+</module>

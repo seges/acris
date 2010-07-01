@@ -1,0 +1,17 @@
+package sk.seges.acris.json.rebind;
+
+import com.google.gwt.core.ext.Generator;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+
+public class JsonGenerator extends Generator {
+
+	@Override
+	public String generate(TreeLogger logger, GeneratorContext context, String typeName)
+			throws UnableToCompleteException {
+		JsonCreator creator = new JsonCreator();
+		return creator.generate(logger, context, typeName);
+	}
+
+}

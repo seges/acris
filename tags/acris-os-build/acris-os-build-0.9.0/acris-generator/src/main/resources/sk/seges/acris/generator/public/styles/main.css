@@ -1,0 +1,995 @@
+.historyIFrame {
+  display: none;
+}
+
+body {
+	background-color: #FFFFFF;
+	margin: 0px;
+	padding: 0px;
+	text-align: left;
+	width: 100%;
+	font-size: 12px;
+	font-family: Verdana Reg;
+}
+
+hr {
+	border-top: 1px dashed #666666;
+	color: white;
+}
+
+.subscriptionForm-format {
+	clear: none;
+}
+
+.subscriptionForm-button {
+	margin-top: 15px;
+}
+
+.acris-cmp-num-captcha-textResult {
+	float: left;
+}
+
+.olea-cart-overview-panel {
+	font-family: Verdana;
+	color: #76787b;
+}
+
+strong {
+	font-weight: bolder;
+}
+
+em {
+	font-variant: small-caps;
+}
+
+.contentWrapper {
+	width: 976px;
+	margin-left: auto;
+	margin-right: 10px;
+	text-align: left;
+}
+
+#header {
+	/*background: url('../images/headerBorder.png') bottom left repeat-x;*/
+	text-align: left;
+	margin: 0px;
+	padding: 0px;
+}
+
+#rootWrapper {
+	border-left: 25px solid #FFFFFF;
+}
+
+#logo {
+	float: left;
+	padding-bottom: 15px;
+}
+
+#footer {
+	text-align: left;
+	border-left: 25px solid #e8e9eb;
+}
+
+#shopZone {
+	float: right;
+	padding-top: 32px;
+}
+
+#shopZone img {
+	vertical-align: middle;
+}
+
+#rootContent {
+	margin-left: 5px;
+}
+
+#updateDate {
+	margin-left: 5px;
+	background-color: #f2f2f2;
+	width: 210px;
+	padding-bottom: 15px;
+	color: #b2b3b6;
+	font-size: 11px;
+	padding-left: 10px;
+}
+
+#menu {
+	float: left;
+	font-size: 12px;
+	width: 180px;
+}
+
+#menu ul {
+	margin: 0px;
+	padding: 0px;
+	padding-left: 15px;
+}
+
+#menu ul li {
+	padding: 5px;
+	list-style-type: none;
+	padding-left: 15px;
+/*	background-image: url('../images/greenarrow.gif');*/
+/*	background-repeat: no-repeat;*/
+/*	background-position: 1% 50%;*/
+	font-size: 12pt;
+}
+
+#menu ul li a {
+	color: #506C5D;
+	text-decoration: none;
+}
+
+#menu ul li:hover {
+/*	background-image: url('../images/overcircle.png');
+	background-repeat: no-repeat;
+	background-position: 1% 50%;*/
+}
+
+#menu ul li a:hover {
+	color: #61bb98;
+}
+
+#content, .menuChocolatePanel {
+/*	background: url('../images/contentBorder.png') top left repeat-y;*/
+	background-color: #FFFFFF;
+	float: left;
+	padding: 20px;
+	font-family: Verdana;
+	font-size: 12px;
+	width: 95%;
+}
+
+.menuChocolatePanel > div > table, .documentContent {
+	width: 180px;
+}
+
+#content {
+	background-color: #FFFFFF;
+	width: 100%;
+}
+
+.compositeMenuPanel {
+	width: 180px;
+	background-color: #A4E0F8;
+}
+
+.menuimage > tbody > tr > td:first-child {
+	width: 180px;
+	/*
+	background-color: #A4E0F8;
+	*/
+}
+
+.horizontalMenuPanel {
+	width: 180px;
+}
+
+a {
+	text-decoration: none;
+}
+
+h1 {
+	font-family: Verdana;
+	font-size: 18px;
+	color: #00499E;
+	font-weight: bold;
+}
+
+h2, .homeChocolatePanel-newsLabel, .homeChocolatePanel-title, .panel-title {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #00499E;
+	font-weight: bold;
+}
+
+.panel-title {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.products-title {
+	margin-left: 20px;
+}
+
+.products-upper-spacer {
+	padding-bottom: 50px;
+}
+
+.products-lower-spacer {
+    padding-bottom: 10px;
+}
+
+.products-separator {
+    border-top: 1px solid #5ac694;
+}
+
+.news, .newsItemPanel {
+	font-family: Verdana;
+	font-size: 16px;
+	color: #506C5D;
+	padding-top: 10px;
+	padding-bottom: 15px;
+}
+
+.newsBody {
+	clear: both;
+	padding: 10px;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #595959;
+}
+
+.newsSubject, .newsDateCreated, .newsItemPanel .gwt-Label {
+	font-family: Verdana;
+	font-size: 15px;
+	color: #61bb98;
+	float: left;
+	font-weight: normal;
+}
+
+.partner {
+	text-align: center;
+	padding-top: 25px;
+}
+
+.partner a img {
+	border: none;
+}
+
+.partners {
+	background: url('../images/border.png') top left no-repeat;
+}
+
+.productInfo {
+	padding-top: 15px;
+}
+
+.productImage {
+	float: left;
+}
+
+.productName {
+	font-family: Verdana;
+	font-size: 16px;
+	color: #111111;
+}
+
+.productDetail {
+	font-family: Verdana;
+	font-size: 12px;
+	color: #000000;
+}
+
+.productDetail ul {
+	margin: 0px;
+	padding: 0px;
+}
+
+.productDetail ul li {
+	list-style-type: none;
+	padding-left: 18px;
+	background-image: url('../images/greenarrow.gif');
+	background-repeat: no-repeat;
+	background-position: 1% 50%;
+}
+
+.productRelated {
+
+}
+
+.projectInfo {
+	padding-top: 15px;
+}
+
+.projectImage {
+	float: left;
+}
+
+.productDescription {
+	float: right;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #000000;
+}
+
+.cartImage {
+	border: none;
+}
+
+.categoryTable {
+	color: #506C5D;
+	font-size: 11px;
+	font-family: Verdana;
+}
+
+.categoryTableNameLabel {
+	font-size: 14px;
+	color: #506C5D;
+	margin-top: 10px;
+	padding-bottom: 8px;
+	border-bottom: 4px solid #4EC09F;
+	magin-bottom: 5px;
+}
+
+.categoryTableHeaderLabel {
+	text-align: center;
+	font-size: 9pt;
+	color: #506C5D;
+}
+
+.categoryTableProductQuantityHeaderLabel {
+	width: 95px;
+}
+
+.categoryTableProductNameHeaderLabel {
+}
+
+.categoryTablePriceHeaderLabel {
+	width: 65px;
+}
+
+.categoryTableProductNameValueLabel, .categoryTablePriceValueLabel {
+	font-size: 9pt;
+	color: #76787b;
+	text-decoration: none;
+}
+
+.categoryTablePriceValueLabel {
+    width: 50px;
+}
+
+
+.categoryTableProductNumerValueLabel a, .categoryTableProductNumerValueLabel a:active, .categoryTableProductNumerValueLabel a:visited,a.categoryTableProductNumerValueLabel, a.categoryTableProductNumerValueLabel:active, a.categoryTableProductNumerValueLabel:visited  {
+    font-size: 9pt;
+    color: #76787b;
+    text-decoration: none;
+
+}
+
+.categoryTableProductNumerValueLabel a:hover, a.categoryTableProductNumerValueLabel:hover {
+    font-size: 9pt;
+    color: #61bb98;
+    text-decoration: none;
+}
+
+.cartButtonImage {
+	margin-left: 7px;
+}
+
+/********** Dialog ************/
+
+.gwt-DialogBox .Caption {
+	margin: 0px;
+}
+
+.acris-cmp-dialog {
+	z-index: 700;
+	border: 2px solid lightgrey;
+	background-color: white;
+}
+
+.acris-cmp-dialog .Caption {
+	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: #dff0e8;
+	border-bottom: 2px solid lightgrey;
+}
+
+.acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-content {
+	padding: 10px;
+}
+
+/******** End of Dialog ********/
+
+.voipac-home-product {
+	text-align: center;
+}
+
+.gwt-acris-shadow-input-text, .gwt-acris-shadow-password-input-text, .gwt-acris-shadow-list-box, .gwt-acris-shadow-button {
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+.menuPadding {
+	padding-top: 30px;
+}
+
+.logoutTabLink {
+	padding: 5px 5px 0px 15px;
+}
+
+.loggedUserLabel {
+	padding-top: 0px;
+	padding-left: 16px;
+	font-size: x-small;
+	color: #83D2B4;
+}
+
+.olea-eshop-title {
+	font-family: Verdana;
+	font-size: 14px;
+	color: #76787b;
+	padding-bottom: 20px;
+	text-transform: uppercase;
+	width: 60%;
+/*	float: left;*/
+}
+
+.olea-eshop-categoryLinkProductName a {
+	font-family: Verdana;
+	font-size: 14px;
+	text-decoration: none;
+	color: #76787b;
+	line-height: 1.5em;
+}
+
+.olea-eshop-categoryLinkProductName a:hover, .categoryTableProductNameValueLabel:hover {
+	color: #61bb98;
+}
+
+.olea-eshop-priceCheckBox {
+	float: right;
+}
+
+.olea-eshop-priceLabel {
+	float: right;
+	text-align: right;
+	line-height: 1.5em;
+}
+
+.olea-eshop-orderItemProductName, .olea-eshop-orderItemProductName a, .olea-eshop-orderItemProductName:active, .olea-eshop-orderItemProductName a:active, .olea-eshop-orderItemProductName:visited, .olea-eshop-orderItemProductName a:visited {
+    font-size: 9pt;
+    color: #76787b;
+    text-decoration: none;
+}
+
+.olea-eshop-orderItemProductName:hover, .olea-eshop-orderItemProductName a:hover {
+    font-size: 9pt;
+    color: #61bb98;
+    text-decoration: none;
+}
+
+.olea-eshop-cartHeader {
+	border-bottom: 1px solid #4EC09F;
+	margin-bottom: 5px;
+	padding-bottom: 15px;
+	margin-top: 40px;
+}
+
+.orderViewSummaryPanel {
+/*	border-top: 1px solid #4EC09F;*/
+/*	margin-top: 10px;*/
+	line-height: 1.5em;
+}
+
+.orderViewTotalPanel {
+	border-top: 1px solid #4EC09F;
+	padding-top: 10px;
+}
+
+.olea-order-subtitle-addition {
+	padding-top: 4px;
+	margin-left: 2px;
+}
+
+.olea-eshop-totalPriceLabel {
+	width: 550px;
+}
+
+.orderViewButtonPanel {
+	padding-top: 15px;
+}
+
+.olea-login-registractionLink, olea-login-password_recovery-link {
+  clear: both;
+}
+
+.olea-eshop-checkoutLink, .olea-eshop-backLink, .loginPFieldsW, .olea-login-registractionLink a, .olea-table-link, .olea-table-link a, olea-login-password_recovery-link a {
+	font-family: Verdana;
+	font-size: 14px;
+	text-decoration: none;
+	color: #76787b;
+	line-height: 1.5em;
+}
+
+.olea-eshop-checkoutLink:hover, .olea-eshop-backLink:hover, .olea-login-registractionLink a:hover, .olea-table-link:hover, .olea-table-link a:hover, olea-login-password_recovery-link:hover {
+	cursor: pointer;
+	color: #61bb98;
+}
+
+.olea-login-registractionLink, olea-login-password_recovery-link {
+	padding-top: 5px;
+}
+
+.oiCountPTBCountW {
+	float: left;
+}
+
+.olea-eshop-refreshImage {
+	float: left;
+	padding-left: 10px;
+	paddint-top: 2px;
+	cursor: pointer;
+}
+
+.homeChocolatePanel-partnersPanel {
+	float: right;
+	width: 137px;
+}
+
+.homeChocolatePanel-contentWrapper {
+	float: left;
+	width: 75%;
+}
+
+.olea-eshop-completeKitButton {
+    font-family: Verdana;
+    font-size: 14px;
+    text-decoration: none;
+    text-align: center;
+    color: #76787b;
+    line-height: 1.5em;
+    border: none;
+    background: white;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.olea-eshop-completeKitButton:active {
+    font-family: Verdana;
+    font-size: 14px;
+    text-decoration: none;
+    text-align: center;
+    color: #76787b;
+    line-height: 1.5em;
+    border: none;
+    background: white;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.olea-order-title, .olea-order-summary-title {
+	margin-top: 20px;
+	margin-bottom: 5px;
+	border-bottom: 1px solid #4EC09F;
+    font-family: Verdana;
+    font-size: 14px;
+    text-decoration: none;
+    color: #76787b;
+    line-height: 1.5em;
+    font-weight: bold;
+}
+
+.olea-order-subtitle, .olea-order-summary-subtitle, .olea-panel-title {
+    font-family: Verdana;
+    font-size: 14px;
+    text-decoration: none;
+    color: #76787b;
+    line-height: 1.5em;
+    font-weight: bold;
+}
+
+.olea-order-text, .olea-order-summary-text {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.olea-order-summary-address-panel {
+	width: 320px;
+}
+
+.olea-payment-panel {
+	border-top: 1px solid #4EC09F;
+	padding-top: 10px;
+}
+
+.olea-payment-panel-title {
+    font-family: Verdana;
+    font-size: 14px;
+    text-decoration: none;
+    color: #76787b;
+    line-height: 1.5em;
+    float: left;
+}
+
+.olea-payment-panel-paypal {
+	padding-left: 10px;
+}
+
+.olea-payment-panel-tatrapay {
+	padding-left: 10px;
+}
+
+.payPanel-payButtonsPanel {
+	float: left;
+}
+
+/****** Validation ******/
+
+.gwt-TextBox-error {
+	background-color: #ffbaba;
+}
+
+/****** End of Validation ********/
+
+/****** Option pane *********/
+
+.acris-cmp-errorPane .acris-cmp-errorStack .acris-cmp-error {
+	padding-bottom: 4px;
+}
+
+/****** End of option pane *******/
+
+.advancedTableSelectedRow {
+	font-size: 12px;
+	font-family: Verdana;
+}
+
+.advancedTableHeader {
+	background-color: #FFFFFF;
+	font-size: 12px;
+	font-family: Verdana;
+	border-bottom: 1px solid #4EC09F;
+}
+
+.advancedTableRow {
+	font-size: 12px;
+	font-family: Verdana;
+}
+
+.olea-offers-offerNumberHeader, .olea-offers-offerDescripionHeader, .olea-offers-offerDateHeader,
+.olea-offers-offerTotalHeader, .olea-offers-offerDownloadHeader, .olea-offers-offerDeleteHeader {
+	border-bottom: 1px solid #4EC09F;
+	padding-right: 10px;
+}
+
+.olea-offers-offerNumberHeader {
+	width: 120px;
+}
+
+.olea-offers-offerDescripionHeader {
+	/*width: 250px;*/
+}
+
+.olea-offers-offerDateHeader {
+	width: 150px;
+}
+
+.olea-offers-offerTotalHeader {
+	width: 150px;
+}
+
+.olea-offers-offerDownloadHeader {
+	width: 90px;
+}
+
+.olea-offers-offerDeleteHeader {
+	width: 120px;
+}
+
+.olea-customers-customerIdHeader, .olea-customers-customerCompanyNameHeader, .olea-customers-customerPersonHeader,
+.olea-customers-customerCountryHeader, .olea-customers-customerOrdersHeader, .olea-customers-customerOffersHeader {
+	border-bottom: 1px solid #4EC09F;
+}
+
+.olea-customers-customerIdHeader {
+	width: 80px;
+}
+
+.olea-customers-customerCompanyNameHeader {
+	width: 180px;
+}
+
+.olea-customers-customerPersonHeader {
+	width: 160px;
+}
+
+.olea-customers-customerCountryHeader {
+	width: 150px;
+}
+
+.olea-customers-customerOrdersHeader {
+	width: 80px;
+}
+
+.olea-customers-customerOffersHeader {
+	width: 80px;
+}
+
+.olea-customers-table {
+
+}
+
+.olea-table-row {
+	height: 30px;
+	border: 1px solid red;
+}
+
+.olea-orders-offerNumberColumn {
+	width: 120px;
+}
+
+.olea-orders-orderDateColumn {
+	width: 180px;
+}
+
+.olea-orders-orderDeliveryColumn {
+	width: 120px;
+}
+
+.olea-orders-orderTrackingNumberColumn {
+	width: 90px;
+}
+
+.olea-orders-orderTotalColumn {
+	width: 130px;
+}
+
+.olea-orders-orderStatusColumn {
+	width: 120px;
+}
+
+.olea-orders-orderDeleteColumn {
+	width: 120px;
+}
+
+.olea-orders-offerNumberHeader, .olea-orders-orderDateHeader, .olea-orders-orderDeliveryHeader, .olea-orders-orderTrackingNumberHeader,
+.olea-orders-orderTotalHeader, .olea-orders-orderStatusHeader, .olea-orders-orderDeleteHeader {
+	border-bottom: 1px solid #4EC09F;
+	padding-right: 10px;
+}
+
+.olea-orders-offerNumberHeader{
+	text-align: left;
+}
+.products-productCategoryTopBorder {
+	border-bottom: 1px solid black;
+}
+
+.products-productCategoryBottomBorder {
+	border-bottom: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+}
+
+.products-productCategoryTopBorderHover {
+    border-bottom: 1px solid #61bb98;
+}
+
+.products-productCategoryBottomBorderHover {
+    border-bottom: 1px solid #61bb98;
+    border-left: 1px solid #61bb98;
+    border-right: 1px solid #61bb98;
+}
+
+.products-productCategoryLabel {
+    display: inline;
+    font-family: Verdana;
+    font-size: 14px;
+    text-decoration: none;
+    color: #76787b;
+    line-height: 1.5em;
+    margin-left: 20px;
+}
+
+.products-productCategoryHyperlink {
+	display: inline;
+	position: relative;
+    top: 10px;
+	background-color: white;
+	margin-left: 20px;
+}
+
+.products-productCategoryHyperlink a {
+	display: inline;
+	font-family: Verdana;
+	font-size: 14px;
+	text-decoration: none;
+	color: #76787b;
+	line-height: 1.5em;
+}
+
+.products-productCategoryHyperlink a:hover {
+	display: inline;
+	color: #61bb98;
+}
+
+.products-productPanel {
+	position: relative;
+    bottom: -100px;
+    margin-top: -80px;
+}
+
+.products-productPanel img {
+    border: none;
+}
+
+.products-productLabel {
+    font-family: Verdana;
+    font-size: 12px;
+    text-decoration: none;
+    color: #76787b;
+    line-height: 1.5em;
+}
+
+.products-productLink {
+	position: relative;
+	bottom: -100px;
+	margin-top: -80px;
+}
+
+.products-productLink img {
+	border: none;
+}
+
+.products-productLink a {
+	font-family: Verdana;
+	font-size: 12px;
+	text-decoration: none;
+	color: #76787b;
+	line-height: 1.5em;
+}
+
+.products-productLink a:hover {
+	color: #61bb98;
+}
+
+.products-productLinkPanel, .products-productLinkPanelHover {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.products-productLinkPanelHover .products-productLink a, .products-productLinkPanelHover .products-productPanel .products-productLabel {
+	color: #61bb98;
+}
+
+.products-productImage-outer[class] {
+    display: table;
+}
+
+.products-productImage-middle {
+    position: absolute;
+    top: 50%;
+}
+
+.products-productImage-middle[class] {
+    display: table-cell;
+    vertical-align: middle;
+    position: static;
+}
+
+.products-productImage-inner {
+    position: relative;
+    top: -50%;
+}
+
+.products-productImage-inner[class] {
+    position: static;
+}
+
+.products-productCategoryPanel {
+	margin-bottom: 30px;
+	float: left;
+	padding-bottom: 70px;
+}
+
+.voipac-subscribeForm {
+  float: left;
+  width: 350px;
+}
+
+.voipac-unsubscribeForm {
+  float: right;
+  width: 350px;
+}
+
+.subscriptionForm-email {
+  width: 350px;
+}
+
+.subscriptionForm-text {
+  width: 350px;
+  height: 75px;
+}
+
+.pass-rec-pan-name-field {
+    width: 148px;
+}
+
+.wrapperPanel {
+	text-align: left;
+	margin: 0px auto;
+	padding: 0px;
+	border:0;
+	width: 944px;
+}
+
+.headerPanel {
+	margin: 15px 0 20px 0;
+}
+
+.leftPanel {
+	float: left;
+	width: 180px;
+	background-color: white;
+}
+
+.contentPanel {
+	float: left;
+	width: 530px;
+}
+
+.rightPanel {
+	float: right;
+	width: 160px;
+}
+
+.rightDottedPanel {
+	width: 18px;
+	height:1120px;
+	border-left: 1px dashed #666666;
+}
+
+.leftDottedPanel {
+	width: 2px;
+	height:1120px;
+	float: right;
+	background-image: url(../images/goodwill-dot.jpg);
+	margin-left: 5px;
+}
+
+.headingFont {
+	font-family: Verdana; font-size: 14px; font-weight: bold; color: #00499E;
+}
+
+div.menuChocolatePanel .captionFont {
+	font-family: Verdana; font-size: 12px; font-weight: bold; color: #00499E;
+}
+
+.captionFontAlternate {
+	font-family: Verdana; font-size: 12px; color: #00499E;
+}
+
+.titleFont {
+	font-family: Verdana; font-size: 11px; color: #666666; font-weight: bold;
+}
+
+.menuFont {
+	font-family: Arial; 
+	font-weight: bold; 
+	font-size: 12px; 
+	color: #FFFFFF;
+}
+
+.menuFont a{
+	font-family: Arial; 
+	font-weight: bold; 
+	font-size: 12px; 
+	color: #FFFFFF;
+}
+
+.menuFont a:hover {
+	border:1px solid white ; 
+}
+
+.about-html-buttons {
+	font-size: 16px;
+}
+
+.about-html-buttons a:hover {
+	border:1px solid white ;
+}
+
+.embeddedHeading {
+	font-family: Verdana; font-weight: bold; font-size: 12px; color: white;
+}
+
+.embeddedFont {
+	font-family: Verdana; font-size: 11px; color: white;
+}
+
+.embeddedFontAlternate {
+	font-family: Georgia; font-weight: bold; font-size: 15px; color: white;
+}

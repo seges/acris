@@ -1,0 +1,180 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-os-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-deployer</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>AcrIS Deployer</name>
+
+	<properties>
+		<gwt.client.module>sk.seges.acris.demo.Binding</gwt.client.module>
+		<gwt.client.html>Binding.html</gwt.client.html>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<outputDirectory>${project.build.directory}/../war/WEB-INF/lib/</outputDirectory>
+					<overWriteReleases>true</overWriteReleases>
+					<overWriteSnapshots>true</overWriteSnapshots>
+					<overWriteIfNewer>true</overWriteIfNewer>
+					<excludeTransitive>false</excludeTransitive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.bsc.maven</groupId>
+				<artifactId>maven-processor-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>process</id>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<phase>generate-sources</phase>
+					</execution>
+
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<additionalConfig>
+						<file>
+							<name>.factorypath</name>
+							<content><![CDATA[<factorypath>
+		  <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
+		  <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-json/${pom.version}/acris-json-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
+		  <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
+
+		  </factorypath>
+		  ]]>
+							</content>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.jdt.apt.core.prefs</name>
+							<content><![CDATA[
+		  eclipse.preferences.version=1
+		  org.eclipse.jdt.apt.aptEnabled=true
+		  org.eclipse.jdt.apt.genSrcDir=${jsr269.generated.dir}
+		  org.eclipse.jdt.apt.reconcileEnabled=true
+		   ]]>
+							</content>
+						</file>
+					</additionalConfig>
+
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+	    <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+        </dependency>
+        
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-binding</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-binding</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-json</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-json</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-svn-post-commit</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gwtx</groupId>
+			<artifactId>gwtx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.gwt</groupId>
+			<artifactId>beansbinding</artifactId>
+		</dependency>
+
+		<!-- GWT dependencies -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+		</dependency>
+	</dependencies>
+</project>

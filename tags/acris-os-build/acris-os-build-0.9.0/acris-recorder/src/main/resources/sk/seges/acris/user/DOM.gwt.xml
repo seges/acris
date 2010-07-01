@@ -1,0 +1,35 @@
+<module>
+	<inherits name="com.google.gwt.core.Core"/>
+	<inherits name="com.google.gwt.dom.DOM"/>
+	<inherits name="com.google.gwt.user.UserAgent"/>
+
+	<replace-with class="com.google.gwt.user.client.impl.DOMIDImplOpera">
+		<when-type-is class="com.google.gwt.user.client.impl.DOMImpl"/> 
+		<when-property-is name="user.agent" value="opera"/>
+	</replace-with>
+
+	<replace-with class="com.google.gwt.user.client.impl.DOMIDImplSafari">
+		<when-type-is class="com.google.gwt.user.client.impl.DOMImpl"/> 
+		<when-property-is name="user.agent" value="safari"/>
+	</replace-with>
+
+	<replace-with class="com.google.gwt.user.client.impl.DOMIDImplIE8">
+		<when-type-is class="com.google.gwt.user.client.impl.DOMImpl"/> 
+		<when-property-is name="user.agent" value="ie8"/>
+	</replace-with>
+
+	<replace-with class="com.google.gwt.user.client.impl.DOMIDImplIE6">
+		<when-type-is class="com.google.gwt.user.client.impl.DOMImpl"/> 
+		<when-property-is name="user.agent" value="ie6"/>
+	</replace-with>
+
+	<replace-with class="com.google.gwt.user.client.impl.DOMIDImplMozilla">
+		<when-type-is class="com.google.gwt.user.client.impl.DOMImpl"/> 
+		<when-property-is name="user.agent" value="gecko1_8"/>
+	</replace-with>
+
+	<replace-with class="com.google.gwt.user.client.impl.DOMIDImplMozillaOld">
+		<when-type-is class="com.google.gwt.user.client.impl.DOMImpl"/> 
+		<when-property-is name="user.agent" value="gecko"/>
+	</replace-with>
+</module> 

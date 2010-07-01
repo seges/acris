@@ -1,0 +1,32 @@
+<module>
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+
+	<!-- Sesam dependency -->
+	<inherits name='sk.seges.sesam.Core'/>
+
+	<!-- Acris dependencies -->
+	<inherits name='sk.seges.acris.Callbacks'/>
+	<inherits name="sk.seges.acris.Security" />
+	
+	<!-- Gilead dependencies -->
+	<inherits name='net.sf.gilead.Adapter4Gwt15'/>
+	<inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/>
+
+	<inherits name='com.google.gwt.query.Query'/>
+	<inherits name='com.googlecode.gwtx.Java' />
+
+	<inherits name="de.novanic.eventservice.GWTEventService"/>
+	
+	<source path='client' />
+	<source path='rpc' />
+    
+    <generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
+        <when-type-is class="sk.seges.acris.recorder.rpc.domain.SessionLog" />
+    </generate-with>
+
+    <generate-with class="net.sf.gilead.proxy.gwt.Gwt15ProxyGenerator">
+        <when-type-is class="sk.seges.acris.recorder.rpc.domain.AuditLog" />
+    </generate-with>
+
+</module>
