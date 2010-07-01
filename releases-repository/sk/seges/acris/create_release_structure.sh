@@ -5,7 +5,7 @@ if [ ${#@} -ne 1 ] ; then
 	exit 42
 fi
 
-list="acris-os-build acris-benchmark acris-binding acris-callbacks acris-client-core acris-json acris-common acris-external acris-generator acris-recorder acris-security acris-server-components"
+list="acris-os-build acris-os-parent acris-benchmark acris-binding acris-callbacks acris-client-core acris-json acris-common acris-external acris-generator acris-recorder acris-security acris-server-components"
 
 for project in $list ; do
 	echo "Creating $project/$1"
