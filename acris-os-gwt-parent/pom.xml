@@ -27,7 +27,7 @@
 		<gwteventservice.version>1.0.2</gwteventservice.version>
 		
 		<gwt-validation.version>1.1.0-r81</gwt-validation.version>
-		<gwt-query.version>1.0.0-20100701</gwt-query.version>
+		<gwt-query.version>1.0-20100701</gwt-query.version>
 		<gwt-time.version>1.0.0-20100701</gwt-time.version>
 
 		<htmlparser.version>2.0-20100701</htmlparser.version>
