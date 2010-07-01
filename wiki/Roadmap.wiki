@@ -2,7 +2,7 @@
 
 = Important milestones in our life =
 
-|| 1.0.0-rc1 || 30.6.2010 || Release Candidate 1 ||
-|| 1.0.0     || 20.7.2010 || Release ||
-|| 1.0.1     || TBD       || Bugfixing ||
-|| 1.1.0     || TBD       || Next Features release ||
+|| 0.9.0 || 01.07.2010 || Release Candidate 1 ||
+|| 1.0.0 || 20.07.2010 || Release ||
+|| 1.0.1 || TBD        || Bugfixing ||
+|| 1.1.0 || TBD        || Next Features release ||
