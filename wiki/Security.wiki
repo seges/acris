@@ -1,5 +1,5 @@
 #summary Description of the concept, architecture and implementation of acris-security
-#labels security
+#labels Security
 
 = Introduction =
 
