@@ -7,27 +7,17 @@
   * Add acris-security dependency
 {{{
 			<dependency>
-
 				<groupId>sk.seges.acris</groupId>
-
 				<artifactId>acris-security</artifactId>
-
 				<version>${acris-os.version}</version>
-
 			</dependency>
 
 			<dependency>
-
 				<groupId>sk.seges.acris</groupId>
-
 				<artifactId>acris-security</artifactId>
-
 				<version>${acris-os.version}</version>
-
 				<classifier>sources</classifier>
-
 			</dependency>
-
 }}}
 
 = Client =
