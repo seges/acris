@@ -1,0 +1,22 @@
+#summary How to create AcrIS-enabled project
+#labels Project
+
+= Introduction =
+
+AcrIS is Maven-based project but that doesn't mean it is impossible to use Ant or other build tools... but following examples will use [http://maven.apache.org Maven]
+
+= One-module project =
+
+  * Create new project e.g. using {{{mvn archetype:generate -DarchetypeArtifactId=maven-archetype-quickstart}}}
+    * http://maven.apache.org/archetype/maven-archetype-plugin/usage.html
+  * inherit from acris-os-gwt-parent - put the following entry in your project's pom.xml
+{{{
+    <parent>
+        <groupId>sk.seges.acris</groupId>
+        <artifactId>acris-os-gwt-parent</artifactId>
+        <version>1.0.18</version>
+    </parent>
+}}}
+  * ...
+
+= Multi-module enterprise project =
