@@ -1,0 +1,44 @@
+#summary Steps needed to start with acris-security in minutes
+#labels Security
+
+= Project =
+
+  * Setup a project like described in ProjectQuickStart.
+  * Add acris-security dependency
+{{{
+			<dependency>
+
+				<groupId>sk.seges.acris</groupId>
+
+				<artifactId>acris-security</artifactId>
+
+				<version>${acris-os.version}</version>
+
+			</dependency>
+
+			<dependency>
+
+				<groupId>sk.seges.acris</groupId>
+
+				<artifactId>acris-security</artifactId>
+
+				<version>${acris-os.version}</version>
+
+				<classifier>sources</classifier>
+
+			</dependency>
+
+}}}
+
+= Client =
+
+  * in your GWT module inherit:
+{{{
+<inherits name='sk.seges.acris.Security'/>
+}}}
+  * create a Panel and implement {{{ISecuredObject}}}
+  * annotate the panel with {{{@sk.seges.acris.security.client.annotations.Secured}}} annotation
+
+= Server =
+
+ * TBD.
