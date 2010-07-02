@@ -1,7 +1,8 @@
 #summary table of contents
   * [Introduction]
   * Project
-    * [HowTo How to setup a project for development]
+    * [ProjectQuickStart Quick-start AcrIS project]
+    * [HowTo Build AcrIS from sources]
     * [CodeStyle Code style conventions]
     * [Releasing Release process]
     * [SVNPostCommitHook How SVN postcommit hook works]
@@ -13,6 +14,7 @@
     * [AcrisWeb Navigation and layout]
     * [AcrisSEO SEO]
   * [Security Security]
+    * [SecurityQuickStart Quick-start]
     * [SecurityConcept Concept]
   * Tools
     * [Benchmarking Benchmarking]
