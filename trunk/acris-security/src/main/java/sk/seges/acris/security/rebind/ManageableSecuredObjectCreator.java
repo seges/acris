@@ -40,6 +40,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
 
     protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) throws NotFoundException {
         generateOnLoadMethod(sourceWriter, context, classType);
+        generateSecurityCheck(sourceWriter, context, classType);
         generateSetVisibleMethod(sourceWriter, context, classType);
         generateSetEnabledMethod(sourceWriter, context, classType);
     }

@@ -11,7 +11,7 @@
                         http://www.springframework.org/schema/security/spring-security-2.0.2.xsd
                         http://www.springframework.org/schema/aop 
                         http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-
+                        
 	<beans:bean id="daoAuthenticationProvider"
 		class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
 		<custom-authentication-provider />
@@ -19,8 +19,10 @@
 	</beans:bean>
 
 	<beans:bean id="userDetailsService" class="sk.seges.acris.security.server.user_management.service.user.HibernateUserService">
-		<beans:property name="genericUserDao" ref="genericUserDao"/>
+		<beans:property name="genericUserDao" ref="userWithAuthoritiesDao"/>
 	</beans:bean>
+	
+	<beans:bean id="userWithAuthoritiesDao" class="sk.seges.acris.security.server.user_management.dao.user.impl.UserWithAuthoritiesDao" />
 
 	<authentication-provider user-service-ref="userDetailsService" />
     

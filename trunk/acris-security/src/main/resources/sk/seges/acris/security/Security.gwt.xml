@@ -11,7 +11,7 @@
 	<inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/>
 
 	<inherits name='sk.seges.acris.security.Rpc' />
-	<inherits name='sk.seges.acris.security.client.Session' />
+	<inherits name='sk.seges.acris.security.Session' />
 	<!-- Spring emulation -->
 	<inherits name='sk.seges.acris.security.rpc.Spring' />
 
@@ -23,6 +23,7 @@
 		    <when-type-is class="sk.seges.acris.security.rpc.user_management.domain.UserPreferences" />
         	<when-type-is class="sk.seges.acris.security.rpc.user_management.domain.RolePermission" />
 			<when-type-is class="sk.seges.acris.security.rpc.user_management.domain.GenericUser" />
+<!--			<when-type-is class="sk.seges.acris.security.rpc.user_management.domain.UserWithAuthorities" />-->
 		</any>
 	</generate-with>
 

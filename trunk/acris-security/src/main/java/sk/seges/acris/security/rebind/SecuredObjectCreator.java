@@ -14,7 +14,6 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.client.ui.Focusable;
@@ -124,6 +123,7 @@ public class SecuredObjectCreator {
 	
     protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) throws NotFoundException {
     	generateOnLoadMethod(sourceWriter, context, classType);
+    	generateSecurityCheck(sourceWriter, context, classType);
     }
     
 	protected void generateOnLoadMethod(SourceWriter sourceWriter,
@@ -133,7 +133,15 @@ public class SecuredObjectCreator {
 		sourceWriter.println("public void onLoad() {");
 		sourceWriter.indent();
 		sourceWriter.println("super.onLoad();");
+		sourceWriter.println("check();");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
 
+	protected void generateSecurityCheck(SourceWriter sourceWriter,
+			GeneratorContext context, JClassType classType) throws NotFoundException {
+		sourceWriter.println("private void check() {");
+		sourceWriter.indent();
 		sourceWriter.println("user = null;");
 		sourceWriter.println(ClientSession.class.getSimpleName() + " clientSession = getClientSession();");
 		sourceWriter.println("if (clientSession != null) {");
@@ -190,7 +198,7 @@ public class SecuredObjectCreator {
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
-
+	
 	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter,
 			List<String> fieldAnnots, GeneratorContext context,
 			JField param, boolean useModifiers) throws NotFoundException {
