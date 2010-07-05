@@ -118,11 +118,20 @@
             <groupId>sk.seges.acris</groupId>
             <artifactId>acris-client-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>sk.seges.acris</groupId>
+            <artifactId>acris-client-core</artifactId>
+            <classifier>sources</classifier>
+        </dependency>
 
-        <!-- just because of annotation processor -->
         <dependency>
             <groupId>sk.seges.acris</groupId>
             <artifactId>acris-binding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>sk.seges.acris</groupId>
+            <artifactId>acris-binding</artifactId>
+            <classifier>sources</classifier>
         </dependency>
 
         <!-- GWT dependencies -->
@@ -230,16 +239,25 @@
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
-
+		<dependency>
+			<groupId>org.slf4j</groupId>
+	        <artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		
         <!-- Gilead -->
         <dependency>
             <groupId>net.sf.gilead</groupId>
             <artifactId>adapter4gwt</artifactId>
         </dependency>
+		<dependency>
+			<groupId>net.sf.gilead</groupId>
+			<artifactId>hibernate-util</artifactId>
+		</dependency>        
 
         <!-- GWT-SL -->
         <dependency>

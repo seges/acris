@@ -12,6 +12,7 @@ import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.user.rebind.SourceWriter;
 
 public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
@@ -93,10 +94,11 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("}");
 	}
 
-	protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) {
+	protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) throws NotFoundException {
 		generateHasAuthorityForPermission(sourceWriter);
 		generateInterfaceMethods(sourceWriter);
 		generateOnLoadMethod(sourceWriter, context, classType);
+		generateSecurityCheck(sourceWriter, context, classType);
 	}
 
 	protected String[] getInterfaces() {
