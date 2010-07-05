@@ -1,6 +1,10 @@
 #summary Steps needed to start with acris-security in minutes
 #labels Security
 
+= Introduction =
+
+  * showcase: http://acris.googlecode.com/svn/trunk/acris-security-showcase
+
 = Project =
 
   * Setup a project like described in ProjectQuickStart.
