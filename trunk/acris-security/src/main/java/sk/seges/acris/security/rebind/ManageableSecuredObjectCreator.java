@@ -3,6 +3,7 @@ package sk.seges.acris.security.rebind;
 import java.util.ArrayList;
 import java.util.List;
 
+import sk.seges.acris.security.client.CheckableSecuredObject;
 import sk.seges.acris.security.client.IManageableSecuredObject;
 import sk.seges.acris.security.rpc.session.ClientSession;
 
@@ -28,7 +29,7 @@ public class ManageableSecuredObjectCreator extends SecuredObjectCreator {
 
     protected String[] getInterfaces() {
         return new String[] {
-            IManageableSecuredObject.class.getName()
+            IManageableSecuredObject.class.getName(), CheckableSecuredObject.class.getCanonicalName()
         };
     }
     
