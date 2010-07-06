@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import sk.seges.acris.security.client.CheckableSecuredObject;
 import sk.seges.acris.security.client.mediator.IRuntimePermissionMediator;
 import sk.seges.acris.security.rpc.session.ClientSession;
 import sk.seges.acris.security.rpc.user_management.domain.IUserPermission;
@@ -103,7 +104,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 
 	protected String[] getInterfaces() {
 		return new String[]{
-			IRuntimePermissionMediator.class.getName()
+			IRuntimePermissionMediator.class.getName(), CheckableSecuredObject.class.getCanonicalName()
 		};
 	}
 
