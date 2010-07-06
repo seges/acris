@@ -10,18 +10,18 @@
   * Setup a project like described in ProjectQuickStart.
   * Add acris-security dependency
 {{{
-			<dependency>
-				<groupId>sk.seges.acris</groupId>
-				<artifactId>acris-security</artifactId>
-				<version>${acris-os.version}</version>
-			</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security</artifactId>
+			<version>${acris-os.version}</version>
+		</dependency>
 
-			<dependency>
-				<groupId>sk.seges.acris</groupId>
-				<artifactId>acris-security</artifactId>
-				<version>${acris-os.version}</version>
-				<classifier>sources</classifier>
-			</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security</artifactId>
+			<version>${acris-os.version}</version>
+			<classifier>sources</classifier>
+		</dependency>
 }}}
   * for development with GWT embedded jetty there is also the dependency on jetty-plus & postgreSQL driver:
 {{{
@@ -95,4 +95,53 @@ public class CustomerPanel extends SecuredComposite {
 
 = Server =
 
- * TBD.
+ * modify web.xml
+   * add acris-security session filter and handler
+{{{
+	<filter>
+		<filter-name>SessionFilter</filter-name>
+		<filter-class>sk.seges.acris.security.server.SessionRemoteServiceFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SessionFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<listener>
+		<listener-class>sk.seges.acris.security.server.SessionHandlerListener</listener-class>
+	</listener>
+}}}
+  * map dispatcher to handle services
+{{{
+	<servlet>
+		<servlet-name>service</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>service</servlet-name>
+		<url-pattern>/sk.seges.acris.security.showcase.Showcase/showcase-service/*</url-pattern>
+	</servlet-mapping>
+}}}
+  * create service servlet context in WEB-INF/service-servlet.xml , it needs to be empty
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+</beans>
+}}}
+  * for GWT embedded Jetty create *jetty-web.xml* with required JNDI [http://acris.googlecode.com/svn/trunk/acris-security-showcase/war/WEB-INF/jetty-web.xml entries]
+  * acris-security stores user information in database by default, we will use available user with authorities, JPA, Hibernate, Gilead and Spring.
+  * create [http://acris.googlecode.com/svn/trunk/acris-security-showcase/src/main/resources/META-INF/persistence.xml persistence.xml] and map UserWithAuthorities and UserPreferences
+  * create Spring XML configuration [http://acris.googlecode.com/svn/trunk/acris-security-showcase/src/main/resources/sk/seges/acris/security/showcase/acris-security-showcase-server-context.xml acris-security-showcase-server-context.xml] for server application. It is the basis of all beans especially service beans.
+    * it imports acris-security-generic-user-context.xml - all default services, DAOs, domain objects will be injected
+    * it also imports persistence configuration context [http://acris.googlecode.com/svn/trunk/acris-security-showcase/src/main/resources/sk/seges/acris/security/showcase/acris-security-showcase-server-persistence-context.xml acris-security-showcase-server-persistence-context.xml] to separate persistence configuration from logic
+      * you don't need to change it much unless you have own setup. Don't forget to setup *correct DB server name, database, user and password* in JNDI definition in jetty-web.xml
+    * it aliases {{{acrisSecurityBeanManager}}} to your current one {{{<alias name="showcaseHibernateBeanManager" alias="acrisSecurityBeanManager"/>}}}
+    * wire everything with service dispatcher in [http://acris.googlecode.com/svn/trunk/acris-security-showcase/src/main/resources/sk/seges/acris/security/showcase/gwt-url-mapping.xml gwt-url-mapping.xml]
+
+= IDE =
+
+Finally you can compile the project, create IDE description (for Eclipse {{{mvn eclipse:eclipse}}}), use GWT Eclipse plugin and [http://mojo.codehaus.org/gwt-maven-plugin/user-guide/comfortable_debugging.html debug comfortably].
