@@ -23,6 +23,25 @@
 				<classifier>sources</classifier>
 			</dependency>
 }}}
+  * for development with GWT embedded jetty there is also the dependency on jetty-plus & postgreSQL driver:
+{{{
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-plus</artifactId>
+			<version>6.1.24</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty-naming</artifactId>
+			<version>6.1.24</version>
+		</dependency>
+
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>8.4-701.jdbc4</version>
+		</dependency>
+}}}
 
 = Client =
 
@@ -30,8 +49,49 @@
 {{{
 <inherits name='sk.seges.acris.Security'/>
 }}}
-  * create a Panel and implement {{{ISecuredObject}}}
-  * annotate the panel with {{{@sk.seges.acris.security.client.annotations.Secured}}} annotation
+  * create a panel and implement {{{ISecuredObject}}}
+    * you can use prepared {{{SecuredComposite}}}
+{{{
+public class CustomerPanel extends SecuredComposite {
+}}}
+  * put some fields into it
+{{{
+	@UiField
+	@Secured(Authorities.SECURITY_MANAGEMENT)
+	protected TextBox securityID;
+}}}
+    * annotate the panel with {{{@sk.seges.acris.security.client.annotations.Secured}}} annotation if you want to propagate authorities to all fields without typing it
+  * instantiate the panel
+{{{
+    	CustomerPanel customerPanel = GWT.create(CustomerPanel.class);
+    	customerPanel.setClientSession(clientSession);
+}}}
+  * instantiate user service and log in
+{{{
+	// standard user service
+	final IUserServiceAsync userService = GWT.create(IUserService.class);
+	SessionServiceDefTarget endpoint = (SessionServiceDefTarget) userService;
+	endpoint.setServiceEntryPoint("showcase-service/userService");
+	endpoint.setSession(clientSession);
+}}}
+  * log-in logic
+{{{
+	userService.login(new UserPasswordLoginToken(username.getText(), password.getText(), null),
+			new AsyncCallback<ClientSession>() {
+				@Override
+				public void onSuccess(ClientSession result) {
+					// copy the information about user and session
+					// so secured components can rely on it
+					clientSession.setSessionId(result.getSessionId());
+					clientSession.setUser(result.getUser());
+					loggedInCmd.execute();
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					GWT.log("Login failure", caught);
+				}
+			});
+}}}
 
 = Server =
 
