@@ -6,3 +6,20 @@
 || 1.0.0 || 20.07.2010 || Release ||
 || 1.0.1 || TBD        || Bugfixing ||
 || 1.1.0 || TBD        || Next Features release ||
+
+= Steps for the release =
+
+  * refactor names to be aligned with convention
+  * documentation
+    * architecture (with pictures)
+    * review whole wiki
+  * examples
+    * project "from scratch"
+  * blog posts
+    * 4 ahead for every week
+  * step-by-step guide
+    * acris-binding
+    * acris-security
+    * no-server mode project (enterprise setup)
+    * project setup & development
+  * ~~prerelease 0.9.0~~
