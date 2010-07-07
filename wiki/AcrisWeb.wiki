@@ -1,5 +1,5 @@
 #summary Project to create websites with GWT - WORK IN PROGRESS
-#labels website,webflow,Phase-QA
+#labels website,webflow,Phase-QA,ToBeOpenSourced
 
 <wiki:toc max_depth="2" />
 
