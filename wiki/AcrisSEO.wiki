@@ -1,4 +1,4 @@
-#summary Crawlable and indexable GWT page
+#summary Crawlable and indexable GWT page - TO BE OPEN-SOURCED
 #labels ToBeOpenSourced,website,Phase-QA
 
 = Introduction =
