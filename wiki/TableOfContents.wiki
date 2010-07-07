@@ -10,9 +10,6 @@
   * [BeansBinding Beans binding]
     * [BeansBindingInExamplesPart1 Example no.1]
     * [BeansBindingInExamplesPart2 Form with validation]
-  * Web
-    * [AcrisWeb Navigation and layout]
-    * [AcrisSEO SEO]
   * [Security Security]
     * [SecurityQuickStart Quick-start]
     * [SecurityConcept Concept]
@@ -25,3 +22,6 @@
     * [GWTJsonizer JSON deserialization using annotations]
   * User interaction
     * [UserEventRecording Recording user actions]
+  * Web
+    * [AcrisWeb Navigation and layout]
+    * [AcrisSEO SEO]
