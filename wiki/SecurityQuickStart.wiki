@@ -57,10 +57,10 @@ public class CustomerPanel extends SecuredComposite {
   * put some fields into it
 {{{
 	@UiField
-	@Secured(Authorities.SECURITY_MANAGEMENT)
+	@Secured(Grants.SECURITY_MANAGEMENT)
 	protected TextBox securityID;
 }}}
-    * annotate the panel with {{{@sk.seges.acris.security.client.annotations.Secured}}} annotation if you want to propagate authorities to all fields without typing it
+    * annotate the panel with {{{@sk.seges.acris.security.client.annotations.Secured}}} annotation if you want to propagate grants to all fields without typing it
   * instantiate the panel
 {{{
     	CustomerPanel customerPanel = GWT.create(CustomerPanel.class);
