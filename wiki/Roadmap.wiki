@@ -22,4 +22,5 @@
     * acris-security
     * no-server mode project (enterprise setup)
     * project setup & development
+  * integrate security UI components
   * ~~prerelease 0.9.0~~
