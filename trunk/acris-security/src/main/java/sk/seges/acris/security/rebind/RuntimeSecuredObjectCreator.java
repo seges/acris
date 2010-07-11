@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import sk.seges.acris.security.client.CheckableSecuredObject;
-import sk.seges.acris.security.client.mediator.IRuntimePermissionMediator;
+import sk.seges.acris.security.client.mediator.IRuntimeAuthorityMediator;
 import sk.seges.acris.security.rpc.session.ClientSession;
 import sk.seges.acris.security.rpc.user_management.domain.IUserPermission;
 
@@ -104,7 +104,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 
 	protected String[] getInterfaces() {
 		return new String[]{
-			IRuntimePermissionMediator.class.getName(), CheckableSecuredObject.class.getCanonicalName()
+			IRuntimeAuthorityMediator.class.getName(), CheckableSecuredObject.class.getCanonicalName()
 		};
 	}
 
@@ -165,6 +165,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 	}
 	
 	private void generateInterfaceMethods(SourceWriter sourceWriter){
+		sourceWriter.println("@Override");
 		sourceWriter.println("public void setPermission(" + IUserPermission.class.getName() + " userPermission) {");
 		sourceWriter.indent();
 		sourceWriter.println("userAuthorities.clear();");
@@ -172,13 +173,17 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("");
-		sourceWriter.println("public void setPermission(String userPermission) {");
+		
+		sourceWriter.println("@Override");
+		sourceWriter.println("public void setGrant(String grant) {");
 		sourceWriter.indent();
 		sourceWriter.println("userAuthorities.clear();");
-		sourceWriter.println("userAuthorities.add(userPermission);");
+		sourceWriter.println("userAuthorities.add(grant);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println();
+		
+		sourceWriter.println("@Override");
 		sourceWriter.println("public void setPermissions(" + IUserPermission.class.getName() + "[] permissions) {");
 		sourceWriter.indent();
 		sourceWriter.println("userAuthorities.clear();");
@@ -190,18 +195,22 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println();
-		sourceWriter.println("public void setPermissions(String[] permissions) {");
+		
+		sourceWriter.println("@Override");
+		sourceWriter.println("public void setGrants(String[] grants) {");
 		sourceWriter.indent();
 		sourceWriter.println("userAuthorities.clear();");
-		sourceWriter.println("for(String userPermission : permissions) {");
+		sourceWriter.println("for(String grant : grants) {");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.add(userPermission);");
+		sourceWriter.println("userAuthorities.add(grant);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.outdent();
 		sourceWriter.println("}");		
 		sourceWriter.println();
-		sourceWriter.println("public String[] getPermissions() {");
+		
+		sourceWriter.println("@Override");
+		sourceWriter.println("public String[] getAuthorities() {");
 		sourceWriter.indent();
 		sourceWriter.println("return userAuthorities.toArray(new String[0]);");
 		sourceWriter.outdent();
