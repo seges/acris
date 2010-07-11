@@ -2,14 +2,15 @@ package sk.seges.acris.security.client.mediator;
 
 import sk.seges.acris.security.rpc.user_management.domain.IUserPermission;
 
+public interface IRuntimeAuthorityMediator {
 
-public interface IRuntimePermissionMediator {
+	void setGrant(String grant);
+    void setGrants(String[] grants);
 
-	void setPermission(String role);
-    void setPermissions(String[] roles);
-
+    @Deprecated
     void setPermission(IUserPermission role);
+    @Deprecated
 	void setPermissions(IUserPermission[] roles);
 	
-	String[] getPermissions();
+	String[] getGrants();
 }
