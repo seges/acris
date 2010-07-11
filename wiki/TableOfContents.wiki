@@ -13,6 +13,8 @@
   * [Security Security]
     * [SecurityQuickStart Quick-start]
     * [SecurityConcept Concept]
+    * [SecurityClient Client]
+    * [SecurityServer Server]
   * Tools
     * [Benchmarking Benchmarking]
     * [GileadSupport Gilead support]

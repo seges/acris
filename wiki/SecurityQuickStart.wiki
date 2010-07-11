@@ -56,7 +56,6 @@ public class CustomerPanel extends SecuredComposite {
 }}}
   * put some fields into it
 {{{
-	@UiField
 	@Secured(Grants.SECURITY_MANAGEMENT)
 	protected TextBox securityID;
 }}}

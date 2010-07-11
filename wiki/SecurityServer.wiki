@@ -1,0 +1,12 @@
+#summary Security on the server side
+#labels Security
+
+= Server security =
+
+  * Contexts
+  * about available contexts and the _api_ package
+  * user service and default spring-security authentication provider used
+  * extending authentication provider
+  * own user service
+  * complex "user" with role
+  * filters, sessions, listeners
