@@ -31,7 +31,7 @@ By simply annotating the object you tell {{{BeanWrapperProcessor}}} to process t
 
 To enable the processor put these Maven plugings to the project containing the objects to be wrapped:
 
- {{{
+{{{
              <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
@@ -85,11 +85,11 @@ To enable the processor put these Maven plugings to the project containing the o
                     </additionalConfig>
                 </configuration>
             </plugin>
- }}}
+}}}
  
- If you already have an annotation on your object you can instruct the processor to accept it. Create {{{/META-INF/bean-wrapper.properties}}} file and put there something like this:
+If you already have an annotation on your object you can instruct the processor to accept it. Create {{{/META-INF/bean-wrapper.properties}}} file and put there something like this:
  
- {{{
+{{{
 annotations=javax.persistence.Entity
 interfaces=
 }}}
@@ -105,6 +105,7 @@ public interface BlogPostBeanWrapper
 		extends
 			sk.seges.acris.binding.client.wrappers.BeanWrapper<your.package.BlogPost> {
 }
+}}}
 
 = Generating the wrapper =
 
