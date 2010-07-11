@@ -98,7 +98,8 @@ public class BeanWrapperCreator {
 				}
 
 				for (JMethod allMethod : allMethods) {
-					if (allMethod.getReadableDeclaration().compareTo(method.getReadableDeclaration()) == 0) {
+					if (RebindUtils.getComparableMethodDeclaration(allMethod).compareTo(
+							RebindUtils.getComparableMethodDeclaration(method)) == 0) {
 						found = true;
 					}
 				}
