@@ -8,6 +8,7 @@
     * [SVNPostCommitHook How SVN postcommit hook works]
     * [Roadmap Roadmap]
   * [BeansBinding Beans binding]
+    * [BeansBindingQuickStart Quick-start]
     * [BeansBindingInExamplesPart1 Example no.1]
     * [BeansBindingInExamplesPart2 Form with validation]
     * [BeanWrappers Bean wrappers]

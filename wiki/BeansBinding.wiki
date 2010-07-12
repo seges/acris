@@ -5,8 +5,6 @@
 
 Project acris-binding represents extension to the gwt-beansbinding library and is focused to binding Beans with GWT UI widgets.
 
-*EXAMPLE* A showcase with sources of using acris-binding can be found in the [http://acris.googlecode.com/svn/trunk/acris-deployer acris-deployer project] or you can try it on the [http://acris-gwt.appspot.com/sk.seges.acris.demo.Binding/Binding.html AppEngine].
-
 Currently we are supporting 3 types of bindings:
   * *One-to-One binding* - the most simplest type used to bind simple value to the widget that can hold only simple value (e.g. `TextBox`, `CheckBox`, ...)
 
