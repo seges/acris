@@ -9,19 +9,19 @@
 
 = Steps for the release 1.0 =
 
-  * refactor names to be aligned with convention
+  * ~~refactor names to be aligned with convention~~
   * documentation
     * architecture (with pictures)
-    * review whole wiki
+    * ~~review whole wiki~~
   * examples
-    * project "from scratch"
+    * ~~project "from scratch"~~
   * blog posts
     * 4 ahead for every week
   * step-by-step guide
     * acris-binding
-    * acris-security
+    * ~~acris-security~~
     * no-server mode project (enterprise setup)
-    * project setup & development
+    * ~~project setup & development~~
   * integrate security UI components
   * ~~prerelease 0.9.0~~
 
