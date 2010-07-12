@@ -49,23 +49,7 @@ public class CompanyName extends LightEntity implements Serializable {
 }
 }}}
 
-This means we would like to bind a form to the nested "company" field. To start working with binding, add the appropriate JAR to the project:
-
-{{{
-<dependency>
-	<groupId>sk.seges.acris</groupId>
-	<artifactId>acris-binding</artifactId>
-	<classifier>sources</classifier>
-	<version>${acris-os.version}</version>
-</dependency>
-<dependency>
-	<groupId>sk.seges.acris</groupId>
-	<artifactId>acris-binding</artifactId>
-	<version>${acris-os.version}</version>
-</dependency>
-}}}
-
-Maven snapshot repository is located at: http://acris.googlecode.com/svn/snapshot-repository
+This means we would like to bind a form to the nested "company" field. To start working with binding check [BeansBindingQuickStart quick-start].
 
 == Presenter ==
 
