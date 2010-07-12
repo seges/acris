@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import net.sf.gilead.pojo.java5.LightEntity;
 
@@ -30,10 +31,11 @@ import sk.seges.sesam.domain.IDomainObject;
 @SequenceGenerator(name = "role_id_seq", sequenceName = "role_id_seq", initialValue = 1)
 public class SecurityRole extends LightEntity implements IDomainObject<Integer> {
 
-	public static final String PERMISSION = "USER_ROLE";
+	public static final String GRANT = "USER_ROLE";
 
 	private static final long serialVersionUID = 5356058807001610271L;
 	public static final String A_NAME = "name";
+	public static final String A_SELECTED_AUTHORITIES = "selectedAuthorites";
 
 	public SecurityRole() {}
 
@@ -48,7 +50,7 @@ public class SecurityRole extends LightEntity implements IDomainObject<Integer> 
 
 	@CollectionOfElements(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
-	private List<String> selectedPermissions;
+	private List<String> selectedAuthorities;
 
 	public Integer getId() {
 		return id;
@@ -74,12 +76,28 @@ public class SecurityRole extends LightEntity implements IDomainObject<Integer> 
 		this.description = description;
 	}
 
+	/**
+	 * @deprecated Use {@link #getSelectedAuthorities()} instead
+	 */
+	@Transient
 	public List<String> getSelectedPermissions() {
-		return selectedPermissions;
+		return getSelectedAuthorities();
 	}
 
+	public List<String> getSelectedAuthorities() {
+		return selectedAuthorities;
+	}
+
+	/**
+	 * @deprecated Use {@link #setSelectedAuthorities(List<String>)} instead
+	 */
+	@Transient
 	public void setSelectedPermissions(List<String> securityPermissions) {
-		this.selectedPermissions = securityPermissions;
+		setSelectedAuthorities(securityPermissions);
+	}
+
+	public void setSelectedAuthorities(List<String> securityPermissions) {
+		this.selectedAuthorities = securityPermissions;
 	}
 
 	@Override
