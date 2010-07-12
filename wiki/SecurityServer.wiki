@@ -55,7 +55,7 @@ Consider this chapter as a "proven" configuration of GWT-RPC services with acris
 	</servlet-mapping>
 }}}
 
-NOTE: you also need an empty Spring context prefixed with the name of the DispatcherServlet defined in the servlet-name tag in the form <servlet-name>-servlet.xml located in the WEB-INF directory
+NOTE: you also need an empty Spring context prefixed with the name of the DispatcherServlet defined in the servlet-name tag in the form &lt;servlet-name&gt;-servlet.xml located in the WEB-INF directory
 
 Because we are using Gilead to transfer persistent objects from Hibernate the mapping definition is enriched with Gilead service exporter:
 
@@ -92,14 +92,14 @@ The most general contexts are using:
 
 Deeper you go you will get more space to configure things in your own way and composing various predefined aspects: authentication providers, user services, ACL, role voters, session handling, user services...
 There are predefined "API" contexts and they are located in the package *sk.seges.acris.security.server.context.api* modeling common use-cases:
-  * acris-security-generic-user-context.xml - this one is your one-line hero. It includes everything, you just need to point *jdbc/acris-security* JNDI resource to correct database.
-  * acris-security-custom-user-dao-context.xml - allows you to define your custom DAO fetching user by a name from the database. Define a bean under *genericAuthenticationDao* name you like, it must implement {{{IGenericUserDao}}} interface
-  * acris-security-custom-authentication-context.xml - useful in the case you would like to define your own chain of authentication providers (like supporting authentication against LDAP). You have to define:
+  * {{{acris-security-generic-user-context.xml}}} - this one is your one-line hero. It includes everything, you just need to point *jdbc/acris-security* JNDI resource to correct database.
+  * {{{acris-security-custom-user-dao-context.xml}}} - allows you to define your custom DAO fetching user by a name from the database. Define a bean under *genericAuthenticationDao* name you like, it must implement {{{IGenericUserDao}}} interface
+  * {{{acris-security-custom-authentication-context.xml}}} - useful in the case you would like to define your own chain of authentication providers (like supporting authentication against LDAP). You have to define:
     * bean with name *acrisSecurityEntityManagerFactory* pointing to your entity manager factory where required security persistent objects are stored
     * *dataSource* bean pointing to a {{{javax.sql.DataSource}}} pointing to the database where persistent objects are stored
     * *authenticationManager* bean defining the chain of authentication providers
     * and by the requirements of your authentication implementation maybe a *user service*
-  * acris-security-custom-object-definition-context.xml - *TBW.*
+  * {{{acris-security-custom-object-definition-context.xml}}} - *TBW.*
 
 = Interesting objects =
 
@@ -107,7 +107,7 @@ Under the term "security" you would imagine various combinations of approaches, 
 
 == SecurityRole ==
 
-Security role serves as the holder of authorities for specific user (or any other entity). It is the entity grouping authorities but the security mechanism is not dependent on it directly (nor the user). Security role might be used in a custom user service implementation where you can model user <-> role <-> authority relation. An entity joining user with {{{SecurityRole}}} will be operated with the custom user service on. There are at least two approaches how to use it in meaningful way:
+Security role serves as the holder of authorities for specific user (or any other entity). It is the entity grouping authorities but the security mechanism is not dependent on it directly (nor the user). Security role might be used in a custom user service implementation where you can model user &lt;-&gt; role &lt;-&gt; authority relation. An entity joining user with {{{SecurityRole}}} will be operated with the custom user service on. There are at least two approaches how to use it in meaningful way:
   * extend {{{SecurityRole}}} and provide an association to the user object (probably also a class extending from {{{GenericUser}}})
   * implement standalone entity joining user object class and {{{SecurityRole}}} - usually when you need to provide additional information e.g. for which web application in which role a user is in
 
