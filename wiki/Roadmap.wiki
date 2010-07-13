@@ -30,3 +30,4 @@
   * open-source acris-web and make it available for general usage
   * finish acris-recorder
   * finish radio and check box binding
+  * open-source Jasper reporting integration with GWT
