@@ -19,11 +19,11 @@ public class CustomerPanel extends SecuredComposite {
 	private static CustomerViewUiBinder uiBinder = GWT.create(CustomerViewUiBinder.class);
 
 	@UiField
-	@Secured(value = Authorities.SECURITY_MANAGEMENT, permission = Permission.CREATE)
+	@Secured(value = Grants.SECURITY_MANAGEMENT, permission = Permission.CREATE)
 	protected TextBox name;
 	
 	@UiField
-	@Secured(Authorities.SECURITY_MANAGEMENT)
+	@Secured(Grants.SECURITY_MANAGEMENT)
 	protected TextBox securityID;
 
 	public CustomerPanel() {

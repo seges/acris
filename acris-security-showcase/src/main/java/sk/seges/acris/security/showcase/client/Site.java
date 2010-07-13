@@ -1,5 +1,6 @@
 package sk.seges.acris.security.showcase.client;
 
+import sk.seges.acris.security.client.mediator.RuntimeSecurityMediator;
 import sk.seges.acris.security.client.session.SessionServiceDefTarget;
 import sk.seges.acris.security.rpc.session.ClientSession;
 import sk.seges.acris.security.rpc.user_management.service.IUserService;
@@ -15,31 +16,37 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author ladislav.gazo
  */
 public class Site implements EntryPoint {
-	
-    public void onModuleLoad() {
-    	RootPanel root = RootPanel.get();
-    	final FlowPanel container = new FlowPanel();
-    	root.add(container);
-    	
-    	// application-wide client session filled with logged in user
-    	final ClientSession clientSession = new ClientSession();
-    	
-    	// standard user service
-    	final IUserServiceAsync userService = GWT.create(IUserService.class);
-    	SessionServiceDefTarget endpoint = (SessionServiceDefTarget) userService;
+
+	public void onModuleLoad() {
+		RootPanel root = RootPanel.get();
+		final FlowPanel container = new FlowPanel();
+		root.add(container);
+
+		// application-wide client session filled with logged in user
+		final ClientSession clientSession = new ClientSession();
+
+		// standard user service
+		final IUserServiceAsync userService = GWT.create(IUserService.class);
+		SessionServiceDefTarget endpoint = (SessionServiceDefTarget) userService;
 		endpoint.setServiceEntryPoint("showcase-service/userService");
 		endpoint.setSession(clientSession);
-    	
-		// simple login panel with a command responsible for showing secured panel
+
+		// simple login panel with a command responsible for showing secured
+		// panel
 		LoginPanel login = new LoginPanel(userService, clientSession, new Command() {
 			@Override
 			public void execute() {
-		    	CustomerPanel customerPanel = GWT.create(CustomerPanel.class);
-		    	customerPanel.setClientSession(clientSession);
-		    	container.add(customerPanel);		
+				CustomerPanel customerPanel = GWT.create(CustomerPanel.class);
+				customerPanel.setClientSession(clientSession);
+				container.add(customerPanel);
+				
+				MenuItem item = GWT.create(MenuItem.class);
+				item.setClientSession(clientSession);
+				RuntimeSecurityMediator.setGrant(Grants.SECURITY_MANAGEMENT, item);
+				container.add(item);
 			}
 		});
-		
+
 		container.add(login);
-    }
+	}
 }
