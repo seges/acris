@@ -150,7 +150,3 @@ public class CompanyDataLoader implements IAsyncDataLoader<List<Company>> {
 	}
 }
 }}}
-=== ProxyBeans maching algorithm ===
-
-== Adapter providers == 
- ** 
