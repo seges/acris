@@ -18,17 +18,15 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 Only the release 1.0.0 is an exception.
 
   * ~~refactor names to be aligned with convention~~
-  * documentation
-    * architecture (with pictures)
+  * ~~documentation~~
     * ~~review whole wiki~~
-  * examples
+  * ~~examples~~
     * ~~project "from scratch"~~
   * blog posts
     * 4 ahead for every week
   * step-by-step guide
-    * acris-binding
+    * ~~acris-binding~~
     * ~~acris-security~~
-    * no-server mode project (enterprise setup)
+    * no-server mode project (enterprise setup) + architecture
     * ~~project setup & development~~
-  * integrate security UI components
   * ~~prerelease 0.9.0~~
