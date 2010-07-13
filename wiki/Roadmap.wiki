@@ -4,8 +4,8 @@
 
 || 0.9.0 || 01.07.2010 || Release Candidate 1 ||
 || 1.0.0 || 20.07.2010 || Release ||
-|| 1.0.1 || TBD        || Bugfixing ||
-|| 1.1.0 || TBD        || Next Features release ||
+|| 1.0.1 || TBD        || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.0.1 Bugfixing] ||
+|| 1.1.0 || TBD        || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.0 Next Features release] ||
 
 = Steps for the release 1.0 =
 
@@ -26,8 +26,10 @@
   * ~~prerelease 0.9.0~~
 
 = Steps for the next release =
+
+[http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.0 Check out all features here]
+
+Additional features:
   * prepare offline generator showcase, fix the open issues related to offline generator and finish the wiki - prepare public article
   * open-source acris-web and make it available for general usage
   * finish acris-recorder
-  * finish radio and check box binding
-  * open-source Jasper reporting integration with GWT
