@@ -141,7 +141,7 @@ public class SecuredObjectCreator {
 	protected void generateSecurityCheck(SourceWriter sourceWriter, GeneratorContext context,
 			JClassType classType) throws NotFoundException {
 		sourceWriter.println("@Override");
-		sourceWriter.println("public final void check() {");
+		sourceWriter.println("public void check() {");
 		sourceWriter.indent();
 		sourceWriter.println("user = null;");
 		sourceWriter.println(ClientSession.class.getSimpleName() + " clientSession = getClientSession();");

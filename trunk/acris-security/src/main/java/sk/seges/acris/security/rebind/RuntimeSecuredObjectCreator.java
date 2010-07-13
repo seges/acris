@@ -40,8 +40,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("user = clientSession.getUser();");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		sourceWriter.println(List.class.getName()+"<String> runtimeUserAuthorities = new "+ArrayList.class.getName() + "<String>();");
-		sourceWriter.println(List.class.getName()+"<String> fieldUserAuthorities = new "+ArrayList.class.getName() + "<String>();");
+		sourceWriter.println(List.class.getName()+"<String> runtimeUserGrants = new "+ArrayList.class.getName() + "<String>();");
 		sourceWriter.println();
 		sourceWriter.println("boolean hasViewPermission = false;");
 		sourceWriter.println("boolean hasEditPermission = false;");
@@ -51,21 +50,21 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		//Add all security permissions from class secured annotation
 		if(classAnnots != null && classAnnots.size() > 0){
 			for (String string : classAnnots) {
-				sourceWriter.println("runtimeUserAuthorities.add(\""+ string+ "\");");
+				sourceWriter.println("runtimeUserGrants.add(\""+ string+ "\");");
 			}
 		}
 
 		//Add security permission defined in runtime
-		sourceWriter.println("if(getPermissions() != null && getPermissions().length > 0){");
+		sourceWriter.println("if(getGrants() != null && getGrants().length > 0){");
 		sourceWriter.indent();
-		sourceWriter.println("runtimeUserAuthorities.addAll(" + Arrays.class.getName() + ".asList(getPermissions()));");
+		sourceWriter.println("runtimeUserGrants.addAll(" + Arrays.class.getName() + ".asList(getGrants()));");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println();	
 
-		sourceWriter.println("if(runtimeUserAuthorities != null && runtimeUserAuthorities.size() > 0){");
+		sourceWriter.println("if(runtimeUserGrants != null && runtimeUserGrants.size() > 0){");
 		sourceWriter.indent();
-		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + PERMISSION_VIEW_NAME + "\", runtimeUserAuthorities);");
+		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + PERMISSION_VIEW_NAME + "\", runtimeUserGrants);");
 		sourceWriter.outdent();
 		sourceWriter.println("}else{");
 		sourceWriter.indent();
@@ -112,7 +111,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 	protected void generateClassFields(SourceWriter sourceWriter) {
 		super.generateClassFields(sourceWriter);
 		sourceWriter.println("private " + List.class.getName() + "<String>"
-				+ " userAuthorities = new " + ArrayList.class.getName() + "<String>();");
+				+ " userGrants = new " + ArrayList.class.getName() + "<String>();");
 	}
 
 	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter,
@@ -120,22 +119,22 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 			JType classType, JField param) {
 		// check of view authority
 		sourceWriter.println();
-		sourceWriter.println("fieldUserAuthorities = new " + ArrayList.class.getName() + "<String>();");
+		sourceWriter.println("fieldUserGrants = new " + ArrayList.class.getName() + "<String>();");
 		if(fieldAnnotationAuthorities != null){ 
 			if(fieldAnnotationAuthorities.size() <= 1){
-				sourceWriter.println("fieldUserAuthorities.addAll(runtimeUserAuthorities);");
+				sourceWriter.println("fieldUserGrants.addAll(runtimeUserGrants);");
 			}
 			for (String fieldAnnotationAuthority : fieldAnnotationAuthorities) {
-				sourceWriter.println("fieldUserAuthorities.add(\"" + fieldAnnotationAuthority + "\");");
+				sourceWriter.println("fieldUserGrants.add(\"" + fieldAnnotationAuthority + "\");");
 			}
 		}
-		sourceWriter.println("if (fieldUserAuthorities != null && fieldUserAuthorities.size() > 0) {");
+		sourceWriter.println("if (fieldUserGrants != null && fieldUserGrants.size() > 0) {");
 		sourceWriter.indent();
-		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + PERMISSION_VIEW_NAME + "\", fieldUserAuthorities);");
+		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + PERMISSION_VIEW_NAME + "\", fieldUserGrants);");
 		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
 
-		sourceWriter.println("hasEditPermission = hasAuthorityForPermission(\"" + PERMISSION_EDIT_NAME + "\", fieldUserAuthorities);");
+		sourceWriter.println("hasEditPermission = hasAuthorityForPermission(\"" + PERMISSION_EDIT_NAME + "\", fieldUserGrants);");
 		sourceWriter.println(param.getName() + ".setEnabled( hasEditPermission );");
 		sourceWriter.outdent();
 		sourceWriter.println("} else if ( " + param.getName() + " != null ) { ");
@@ -148,11 +147,11 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 	}
 	
 	private void generateHasAuthorityForPermission(SourceWriter sourceWriter){
-		sourceWriter.println("private boolean hasAuthorityForPermission(String permission, " + List.class.getName() + "<String> aggregatedUserAuthorities) {");
+		sourceWriter.println("private boolean hasAuthorityForPermission(String permission, " + List.class.getName() + "<String> aggregatedUserGrants) {");
 		sourceWriter.indent();
-		sourceWriter.println("for (String userAuthority : aggregatedUserAuthorities) {");
+		sourceWriter.println("for (String userGrant : aggregatedUserGrants) {");
 		sourceWriter.indent();
-		sourceWriter.println("if (user != null && user.hasAuthority(userAuthority + \"_\" + permission))");
+		sourceWriter.println("if (user != null && user.hasAuthority(userGrant + \"_\" + permission))");
 		sourceWriter.indent();
 		sourceWriter.println("return true;");
 		sourceWriter.outdent();
@@ -168,8 +167,8 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void setPermission(" + IUserPermission.class.getName() + " userPermission) {");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.clear();");
-		sourceWriter.println("userAuthorities.add(userPermission.name());");
+		sourceWriter.println("userGrants.clear();");
+		sourceWriter.println("userGrants.add(userPermission.name());");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("");
@@ -177,8 +176,8 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void setGrant(String grant) {");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.clear();");
-		sourceWriter.println("userAuthorities.add(grant);");
+		sourceWriter.println("userGrants.clear();");
+		sourceWriter.println("userGrants.add(grant);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println();
@@ -186,10 +185,10 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void setPermissions(" + IUserPermission.class.getName() + "[] permissions) {");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.clear();");
+		sourceWriter.println("userGrants.clear();");
 		sourceWriter.println("for(" + IUserPermission.class.getName() + " userPermission : permissions) {");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.add(userPermission.name());");
+		sourceWriter.println("userGrants.add(userPermission.name());");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.outdent();
@@ -199,10 +198,10 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void setGrants(String[] grants) {");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.clear();");
+		sourceWriter.println("userGrants.clear();");
 		sourceWriter.println("for(String grant : grants) {");
 		sourceWriter.indent();
-		sourceWriter.println("userAuthorities.add(grant);");
+		sourceWriter.println("userGrants.add(grant);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.outdent();
@@ -210,9 +209,9 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println();
 		
 		sourceWriter.println("@Override");
-		sourceWriter.println("public String[] getAuthorities() {");
+		sourceWriter.println("public String[] getGrants() {");
 		sourceWriter.indent();
-		sourceWriter.println("return userAuthorities.toArray(new String[0]);");
+		sourceWriter.println("return userGrants.toArray(new String[0]);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println();
