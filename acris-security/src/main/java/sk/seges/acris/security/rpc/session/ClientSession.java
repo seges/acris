@@ -7,8 +7,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.security.userdetails.UserDetails;
+
 import sk.seges.acris.security.rpc.domain.ITransferableObject;
-import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
 
 /**
  * @author eldzi
@@ -42,11 +43,12 @@ public class ClientSession implements ITransferableObject {
 		getSession().put(SESSION_ID_ATTRIBUTE, sessionId);
 	}
 
-	public GenericUser getUser() {
-		return (GenericUser)getSession().get(USER_ATTRIBUTE);
+	@SuppressWarnings("unchecked")
+	public <T extends UserDetails> T getUser() {
+		return (T)getSession().get(USER_ATTRIBUTE);
 	}
 
-	public void setUser(GenericUser user) {
+	public <T extends UserDetails> void setUser(T user) {
 		getSession().put(USER_ATTRIBUTE, user);
 	}
 	

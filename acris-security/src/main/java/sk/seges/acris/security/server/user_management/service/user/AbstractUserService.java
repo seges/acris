@@ -11,6 +11,7 @@ import org.springframework.security.AuthenticationManager;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.context.SecurityContextImpl;
+import org.springframework.security.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.rpc.exception.SecurityException;
@@ -99,7 +100,7 @@ public abstract class AbstractUserService extends PersistentRemoteService implem
 
 		ClientSession clientSession = createClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
-		clientSession.setUser((GenericUser) auth.getPrincipal());
+		clientSession.setUser((UserDetails)auth.getPrincipal());
 
 		postProcessLogin(clientSession);
 		return clientSession;
