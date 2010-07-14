@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import sk.seges.sesam.dao.PagedResult;
 public class SecurityPermissionService implements ISecurityPermissionServiceExt {
 
     @Autowired
+    @Qualifier(value = "SecurityPermissionDao")
     private ISecurityPermissionDao securityPermissionDao;
     
     public ISecurityPermissionDao getRolePermissionDao() {
