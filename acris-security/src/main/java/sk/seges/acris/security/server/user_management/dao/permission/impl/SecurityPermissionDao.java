@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import sk.seges.acris.security.rpc.user_management.domain.SecurityPermission;
@@ -14,6 +15,7 @@ import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
 @Component
+@Qualifier(value = "SecurityPermissionDao")
 public class SecurityPermissionDao extends AbstractHibernateCRUD<SecurityPermission> implements ISecurityPermissionDao {
 
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")

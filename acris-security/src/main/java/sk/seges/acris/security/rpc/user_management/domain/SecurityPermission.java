@@ -25,6 +25,7 @@ public class SecurityPermission extends LightEntity implements IDomainObject<Int
     public static final String A_PARENT = "parent";
     public static final String A_ID = "id";
     public static final String A_WEBID = "webId";
+    public static final String A_PERMISSION = "permission";
     
     @Id
     @GeneratedValue(generator="permission_id_seq")

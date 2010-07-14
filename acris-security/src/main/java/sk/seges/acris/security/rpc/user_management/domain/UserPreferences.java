@@ -36,4 +36,8 @@ public class UserPreferences implements IDomainObject<Long> {
 	public Long getId() {
 		return id;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }
