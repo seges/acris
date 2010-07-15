@@ -2,6 +2,7 @@
   * [Introduction]
   * Project
     * [ProjectQuickStart Quick-start AcrIS project]
+    * [ProjectSupport Project structures description]
     * [HowTo Build AcrIS from sources]
     * [CodeStyle Code style conventions]
     * [Releasing Release process]

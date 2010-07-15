@@ -27,6 +27,6 @@ Only the release 1.0.0 is an exception.
   * step-by-step guide
     * ~~acris-binding~~
     * ~~acris-security~~
-    * no-server mode project (enterprise setup) + architecture
+    * ~~no-server mode project (enterprise setup) + architecture~~
     * ~~project setup & development~~
   * ~~prerelease 0.9.0~~
