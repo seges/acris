@@ -42,7 +42,7 @@ Usually the project consist either of 3 or 5 (or of course more) projects from s
   * 3 - {{{client-war}}}, {{{rpc}}}, {{{server-war}}}
     * simple setup where you don't want to reuse parts of client or server in other projects (or subprojects)
     * {{{rpc}}} is a synonym for shared components (e.g. service interfaces, domain objects) common for both sides
-  * 5 - {{{client-war}}}, {{{client}}}, {{{rpc}}}, {{{server}}}, {{{server-war}}]
+  * 5 - {{{client-war}}}, {{{client}}}, {{{rpc}}}, {{{server}}}, {{{server-war}}}
     * relevant logic is within {{{client}}}, {{{rpc}}} and {{{server}}} projects and {{{client-war}}} and {{{server-war}}} serve as projects that allow you to develop and deploy that part of the project
     * useful when you plan to share {{{client}}} or {{{server}}} in different pojects
     * you can of course have multiple "client" or "server" projects, they only describe the structure
