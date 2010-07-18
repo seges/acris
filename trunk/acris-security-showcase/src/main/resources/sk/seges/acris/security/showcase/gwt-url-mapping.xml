@@ -17,6 +17,7 @@
 		<property name="mappings">
 			<map>
 				<entry key="/userService" value-ref="userService" />
+				<entry key="/customerService" value-ref="RPCCustomerService" />
 			</map>
 		</property>
 	</bean>

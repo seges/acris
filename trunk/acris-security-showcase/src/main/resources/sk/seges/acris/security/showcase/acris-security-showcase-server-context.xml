@@ -6,7 +6,7 @@
                      http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
 
 	<context:annotation-config />
-	<context:component-scan base-package="sk.seges.acris.security.showcase.service" />
+	<context:component-scan base-package="sk.seges.acris.security.showcase.server" />
 
 	<import resource="acris-security-showcase-server-persistence-context.xml" />
 	<import

@@ -12,4 +12,6 @@
 
     <entry-point class="sk.seges.acris.security.showcase.client.Site"/>
     
+    <source path="client" />
+    <source path="shared" />
 </module>
