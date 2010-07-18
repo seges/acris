@@ -1,0 +1,19 @@
+.step {
+	background-color: gray;
+}
+
+.success {
+	background-color: green;
+}
+
+.failure {
+	background-color: red;
+}
+
+.step, .success, .failure {
+	min-width: 4px;
+	height: 20px;
+	
+	border: lightgrey 1px solid;
+	float: left;
+}
