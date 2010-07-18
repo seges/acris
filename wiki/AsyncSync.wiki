@@ -54,3 +54,7 @@ userService.login(token, new TrackingAsyncCallback<ClientSession>() {
 				}
 			});
 }}}
+
+= Example =
+
+You can find showcase for using semaphores and dynamic GUI notification in [http://acris.googlecode.com/svn/trunk/acris-client-core-showcase/ acris-client-core-showcase]
