@@ -27,9 +27,9 @@ Because authority is not that friendly string as you might expect let's discuss 
 Example authority: {{{ROLE_ordermanagement_VIEW}}}
 
 This authority says that a user is allowed to see but not modify everything regarding some order management logic. You might notice 3 parts of the authority:
-  * *authority prefix* - already mentioned constraint of the framework to identify the authority
+  * *authority prefix* - already mentioned constraint of the framework to identify the authority, defined in {{{SecurityConstants.AUTH_PREFIX}}}
   * *grant* - "ordermanagement" - friendly representation of the authority describing what for it is
-  * *permission* - VIEW - fine-grained specification whether user can see, edit,... or whatever do based on the logic of the grant. Currently there are four permissions defined in *Permission* enumeration.
+  * *permission* - VIEW - fine-grained specification whether user can see, edit,... or whatever do based on the logic of the grant. Currently there are four permissions defined in *Permission* enumeration, with suffix constants like {{{Permission.VIEW_SUFFIX}}}.
 
 To finish the concept of authentication client side and also server side needs some input values like username, password,... User service:
   * evaluates client's request for authentication based on an implementation of login token (represented by the interface *LoginToken*),
