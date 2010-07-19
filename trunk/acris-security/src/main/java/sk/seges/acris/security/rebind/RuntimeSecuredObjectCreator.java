@@ -28,11 +28,9 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		super(securedAnnotationProcessor);
 	}
 	
-	protected void generateOnLoadMethod(SourceWriter sourceWriter,
-			GeneratorContext context, JClassType classType) {
-		sourceWriter.println("public void onLoad() {");
-		sourceWriter.indent();
-		sourceWriter.println("super.onLoad();");
+	@Override
+	protected void generateSecurityCheckBody(SourceWriter sourceWriter, GeneratorContext context,
+			JClassType classType) throws NotFoundException {
 		sourceWriter.println("user = null;");
 		sourceWriter.println(ClientSession.class.getSimpleName() + " clientSession = getClientSession();");
 		sourceWriter.println("if (clientSession != null) {");
@@ -73,9 +71,9 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("}");
 		sourceWriter.println();
 
-		sourceWriter.println("if( !hasViewPermission ){");
+		sourceWriter.println("if(this.isVisible() != hasViewPermission){");
 		sourceWriter.indent();
-		sourceWriter.println("this.setVisible(false);");
+		sourceWriter.println("this.setVisible(hasViewPermission);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
  
@@ -90,10 +88,8 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 						context, classType, field);
 			}
 		}
-		sourceWriter.outdent();
-		sourceWriter.println("}");
 	}
-
+	
 	protected void generateMethods(SourceWriter sourceWriter, GeneratorContext context, JClassType classType) throws NotFoundException {
 		generateHasAuthorityForPermission(sourceWriter);
 		generateInterfaceMethods(sourceWriter);
@@ -131,17 +127,22 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.println("if (fieldUserGrants != null && fieldUserGrants.size() > 0) {");
 		sourceWriter.indent();
 		sourceWriter.println("hasViewPermission = hasAuthorityForPermission(\"" + PERMISSION_VIEW_NAME + "\", fieldUserGrants);");
+		
+		sourceWriter.println("if ( " + param.getName() + " != null ) { ");
+		sourceWriter.indent();
+		
+		checkFieldVisibility(sourceWriter, param);
+		
 		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
-
 		sourceWriter.println("hasEditPermission = hasAuthorityForPermission(\"" + PERMISSION_EDIT_NAME + "\", fieldUserGrants);");
 		sourceWriter.println(param.getName() + ".setEnabled( hasEditPermission );");
 		sourceWriter.outdent();
-		sourceWriter.println("} else if ( " + param.getName() + " != null ) { ");
-		sourceWriter.indent();
-		sourceWriter.println(param.getName() + ".setVisible(false);");
+		sourceWriter.println("}");
+		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
+		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}

@@ -33,7 +33,11 @@ public class GenericUser implements IDomainObject<Long>, UserDetails {
 	public static final String ENABLED_ATTRIBUTE = "enabled";
 	public static final String DESCRIPTION_ATTRIBUTE = "description";
 
-	public static final String ROLE_PREFIX = "ROLE_";
+	/**
+	 * @deprecated Use {@link SecurityConstants#AUTH_PREFIX}
+	 */
+	@Deprecated
+	public static final String ROLE_PREFIX = SecurityConstants.AUTH_PREFIX;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

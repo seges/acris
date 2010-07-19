@@ -41,12 +41,13 @@ public class SecurityRoleDao extends AbstractHibernateCRUD<SecurityRole> impleme
 	// return query.list();
 	// }
 
-	private static final String FIND_USER_PERMISSIONS_SQL = "select selectedpermissions_element from role_selectedauthorities where role_id=:roleId";
+	private static final String FIND_USER_AUTHORITIES_SQL = "select selectedauthorities_element from role_selectedauthorities where role_id=:roleId";
 
+	@SuppressWarnings("unchecked")
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public List<String> findSelectedPermissions(Integer roleId) {
 		Session hibernateSession = (Session) entityManager.getDelegate();
-		SQLQuery query = hibernateSession.createSQLQuery(FIND_USER_PERMISSIONS_SQL);
+		SQLQuery query = hibernateSession.createSQLQuery(FIND_USER_AUTHORITIES_SQL);
 		query.setParameter("roleId", roleId);
 		return query.list();
 	}

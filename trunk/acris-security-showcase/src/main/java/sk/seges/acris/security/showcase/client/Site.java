@@ -1,6 +1,10 @@
 package sk.seges.acris.security.showcase.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sk.seges.acris.security.client.mediator.RuntimeSecurityMediator;
+import sk.seges.acris.security.client.mediator.SecurityMediator;
 import sk.seges.acris.security.client.session.SessionServiceDefTarget;
 import sk.seges.acris.security.rpc.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.rpc.exception.SecurityException;
@@ -9,6 +13,7 @@ import sk.seges.acris.security.rpc.user_management.service.IUserService;
 import sk.seges.acris.security.rpc.user_management.service.IUserServiceAsync;
 import sk.seges.acris.security.showcase.shared.CustomerService;
 import sk.seges.acris.security.showcase.shared.CustomerServiceAsync;
+import sk.seges.acris.security.showcase.shared.Grants;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -19,6 +24,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author ladislav.gazo
@@ -44,6 +50,8 @@ public class Site implements EntryPoint {
 		endpoint.setServiceEntryPoint("showcase-service/customerService");
 		endpoint.setSession(clientSession);
 
+		final List<Widget> checkables = new ArrayList<Widget>();
+		
 		// simple login panel with a command responsible for showing secured
 		// panel
 		LoginPanel login = new LoginPanel(userService, clientSession, new Command() {
@@ -57,19 +65,22 @@ public class Site implements EntryPoint {
 				item.setClientSession(clientSession);
 				RuntimeSecurityMediator.setGrant(Grants.SECURITY_MANAGEMENT, item);
 				container.add(item);
+				
+				checkables.add(customerPanel);
+				checkables.add(item);
 			}
 		});
 
 		container.add(login);
 
-		Button customerButton = new Button("Get customer", new ClickHandler() {
+		Button customerButton = new Button("Get customer if permitted", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				customerService.getCustomerName(new SecuredAsyncCallback<String>() {
 
 					@Override
 					public void onSuccessCallback(String arg0) {
-						DialogBox db = new DialogBox();
+						DialogBox db = new DialogBox(true);
 						db.setText(arg0);
 						db.center();
 					}
@@ -83,5 +94,16 @@ public class Site implements EntryPoint {
 		});
 
 		container.add(customerButton);
+		
+		Button recheckButton = new Button("Check security again", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				for(Widget checkable : checkables) {
+					SecurityMediator.checkSecuredWidget(checkable);
+				}
+			}
+		});
+
+		container.add(recheckButton);
 	}
 }

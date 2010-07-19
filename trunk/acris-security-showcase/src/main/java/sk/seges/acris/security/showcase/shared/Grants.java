@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.acris.security.showcase.client;
+package sk.seges.acris.security.showcase.shared;
 
 /**
  * @author ladislav.gazo
