@@ -15,7 +15,7 @@ public class MenuItem extends SecuredComposite implements IRuntimeSecuredObject 
 	protected Label text;
 	
 	public MenuItem() {
-		text = new Label("Secured item");
+		text = new Label("Secured item in runtime");
 		initWidget(text);
 	}
 }

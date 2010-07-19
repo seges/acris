@@ -143,6 +143,13 @@ public class SecuredObjectCreator {
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void check() {");
 		sourceWriter.indent();
+		generateSecurityCheckBody(sourceWriter, context, classType);
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
+	
+	protected void generateSecurityCheckBody(SourceWriter sourceWriter, GeneratorContext context,
+			JClassType classType) throws NotFoundException {
 		sourceWriter.println("user = null;");
 		sourceWriter.println(ClientSession.class.getSimpleName() + " clientSession = getClientSession();");
 		sourceWriter.println("if (clientSession != null) {");
@@ -170,6 +177,10 @@ public class SecuredObjectCreator {
 			sourceWriter.indent();
 			sourceWriter.println("super.setVisible(false);");
 			sourceWriter.outdent();
+			sourceWriter.println("} else {");
+			sourceWriter.indent();
+			sourceWriter.println("super.setVisible(true);");
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 
 			for (String string : classAnnots) {
@@ -195,23 +206,26 @@ public class SecuredObjectCreator {
 				generateFieldSecurityRestrictions(sourceWriter, allAnnotations, context, param, useModifier);
 			}
 		}
-
-		sourceWriter.outdent();
-		sourceWriter.println("}");
 	}
 
 	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter, List<String> fieldAnnots,
 			GeneratorContext context, JField param, boolean useModifiers) throws NotFoundException {
-
+		sourceWriter.println("// securing field " + param.getName());
+		
 		sourceWriter.println("if (user != null) {");
 		sourceWriter.indent();
 		sourceWriter.println("hasViewPermission = "
 				+ generateCheckUserAuthority(PERMISSION_VIEW_NAME, fieldAnnots, useModifiers) + ";");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
+		
+		sourceWriter.println("if ( " + param.getName() + " != null ) { ");
+		sourceWriter.indent();
+		
+		checkFieldVisibility(sourceWriter, param);
+		
 		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
-
 		if (param.getType().isClassOrInterface() != null
 				&& ((JClassType) param.getType()).isAssignableTo(context.getTypeOracle().getType(
 						Focusable.class.getName()))) {
@@ -220,13 +234,20 @@ public class SecuredObjectCreator {
 			sourceWriter.println(param.getName() + ".setEnabled(hasEditPermission);");
 		}
 		sourceWriter.outdent();
-		sourceWriter.println("} else if ( " + param.getName() + " != null ) { ");
-		sourceWriter.indent();
-		sourceWriter.println(param.getName() + ".setVisible(false);");
+		sourceWriter.println("}");
+		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
+	protected void checkFieldVisibility(SourceWriter sourceWriter, JField param) {
+		sourceWriter.println("if ( " + param.getName() + ".isVisible() != hasViewPermission ) { ");
+		sourceWriter.indent();
+		sourceWriter.println(param.getName() + ".setVisible(hasViewPermission);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
+	
 	protected String generateCheckUserAuthority(String modifier, List<String> fieldUserAuthorities,
 			boolean useModifier) {
 
