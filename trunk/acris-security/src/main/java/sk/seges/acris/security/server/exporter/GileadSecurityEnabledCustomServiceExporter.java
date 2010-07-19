@@ -3,12 +3,12 @@ package sk.seges.acris.security.server.exporter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
+import sk.seges.acris.rpc.GileadGWTCustomPolicyRPCServiceExporter;
 
 import com.google.gwt.user.server.rpc.RPCRequest;
 
-public class SecurityEnabledServiceExporter extends GWTRPCServiceExporter {
-	private static final long serialVersionUID = -7035893923368347819L;
+public class GileadSecurityEnabledCustomServiceExporter extends GileadGWTCustomPolicyRPCServiceExporter {
+	private static final long serialVersionUID = 1759593198059109709L;
 
 	@Override
 	protected String handleInvocationTargetException(InvocationTargetException e, Object service, Method targetMethod,
