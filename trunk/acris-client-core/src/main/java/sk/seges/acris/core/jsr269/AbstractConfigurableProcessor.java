@@ -102,7 +102,8 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 			}
 		}
 
-		return true;
+		//Return false in order to run other processors
+		return false;
 	}
 
 	private boolean hasAnnotation(TypeElement typeElement) {
