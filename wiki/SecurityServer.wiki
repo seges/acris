@@ -101,6 +101,11 @@ There are predefined "API" contexts and they are located in the package *sk.sege
     * and by the requirements of your authentication implementation maybe a *user service*
   * {{{acris-security-custom-object-definition-context.xml}}} - *TBW.*
 
+= Annotating service methods =
+
+  * using {{{javax.annotation.security.RolesAllowed}}} or {{{org.springframework.security.annotation.Secured}}}
+  * authority is specified WITHOUT the authority prefix {{{SecurityConstants.AUTH_PREFIX}}}
+
 = Interesting objects =
 
 Under the term "security" you would imagine various combinations of approaches, use-cases and steps needed for your application scenario. Before extending acris-security with your own one maybe you would find something from existing components useful.
@@ -124,4 +129,8 @@ A helper entity connected with {{{GenericUser}}} holding configuration informati
   * own user service
     * {{{AbstractUserService}}}
   * complex "user" with role
-  
+
+= Security exporters =
+
+  * propagating security exceptions
+  * *TBW.*
