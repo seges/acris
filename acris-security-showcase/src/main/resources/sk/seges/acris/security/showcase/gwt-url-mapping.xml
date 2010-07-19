@@ -5,7 +5,7 @@
 
 	<import resource="acris-security-showcase-server-context.xml" />
 
-	<bean id="serviceExporter" class="org.gwtwidgets.server.spring.gilead.GileadRPCServiceExporter" scope="prototype">
+	<bean id="serviceExporter" class="sk.seges.acris.security.server.exporter.GileadSecurityEnabledServiceExporter" scope="prototype">
         <property name="beanManager" ref="showcaseHibernateBeanManager" />
     </bean>
 
