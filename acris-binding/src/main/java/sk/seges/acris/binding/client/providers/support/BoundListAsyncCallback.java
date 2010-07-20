@@ -68,7 +68,7 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 		BeanWrapper<T> wrapper;
 		for (T result : arg0.getResult()) {
 			wrapper = createWrapper();
-			wrapper.setContent(result);
+			wrapper.setBeanWrapperContent(result);
 			if (listOfValues == null) {
 				listOfWrappers.add(wrapper);
 			} else {
@@ -88,13 +88,13 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 					@Override
 					public BeanWrapper<T> convertForward(T value) {
 						BeanWrapper<T> wrapper = createWrapper();
-						wrapper.setContent(value);
+						wrapper.setBeanWrapperContent(value);
 						return wrapper;
 					}
 
 					@Override
 					public T convertReverse(BeanWrapper<T> value) {
-						return value.getContent();
+						return value.getBeanWrapperContent();
 					}
 				});
 		if (wasEnabled) {

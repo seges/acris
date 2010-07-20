@@ -76,7 +76,7 @@ class OneToManyBindingCreator extends AbstractBindingCreator<OneToMany> implemen
 		String beanProxyWrapper = propertyTuple + BindingProxyWraperCreator.WRAPPER_SUFFIX;
 		
 		sourceWriter.println(getFirstLowerCase(beanProxyWrapper) + ".setTargetWrapper(getBeanWrapper());");
-//		sourceWriter.println(getFirstLowerCase(beanProxyWrapper) + ".setContent(" + classType.getSimpleSourceName().toLowerCase() + ");");
+//		sourceWriter.println(getFirstLowerCase(beanProxyWrapper) + ".setBeanWrapperContent(" + classType.getSimpleSourceName().toLowerCase() + ");");
 		sourceWriter.println("");
 		sourceWriter.println("final BindingGroup bg" + propertyTuple + " = " + bindingHolder + ".addBindingGroup(\"value\", " +
 				field.getName() + ", \"" + getWidgetBindingAdapterProperty(field) + "\", " + getFirstLowerCase(beanProxyWrapper) + ");");

@@ -42,9 +42,11 @@ public class CompanyPage extends Composite {
 	DivElement name;
 
 	public CompanyPage(Company company) {
-
 		initWidget(uiBinder.createAndBindUi(this));
-
+		setCompany(company);
+	}
+	
+	public void setCompany(Company company) {
 		name.setInnerText(company.getName());
 		products.setInnerHTML(company.getProducts());
 		founded.setInnerHTML(company.getFounded() == null ? "" : company.getFounded().toString());

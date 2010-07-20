@@ -205,7 +205,7 @@ public class BeanBindingCreator {
 		sourceWriter.println("");
 		sourceWriter.println("public void setBean(" + beanClassType.getSimpleSourceName() + " bean) {");
 		sourceWriter.indent();
-		sourceWriter.println("getBeanWrapper().setContent(bean);");
+		sourceWriter.println("getBeanWrapper().setBeanWrapperContent(bean);");
 		sourceWriter.println(bindingHolder + ".setBean(bean);");
 		sourceWriter.println("super.setBean(bean);");
 		sourceWriter.outdent();
@@ -213,7 +213,7 @@ public class BeanBindingCreator {
 		sourceWriter.println("");
 		sourceWriter.println("public " + beanClassType.getSimpleSourceName() + " getBean() {");
 		sourceWriter.indent();
-		sourceWriter.println("return getBeanWrapper().getContent();");
+		sourceWriter.println("return getBeanWrapper().getBeanWrapperContent();");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("");

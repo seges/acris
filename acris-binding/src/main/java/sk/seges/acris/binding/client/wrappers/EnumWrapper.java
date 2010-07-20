@@ -17,15 +17,15 @@ public class EnumWrapper implements BeanWrapper<Enum<?>>, Serializable {
 	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#getAttribute(java.lang.String)
 	 */
 	@Override
-	public Object getAttribute(String attr) {
+	public Object getBeanAttribute(String attr) {
 		return null;
 	}
 
 	/* (non-Javadoc)
-	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#getContent()
+	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#getBeanWrapperContent()
 	 */
 	@Override
-	public Enum<?> getContent() {
+	public Enum<?> getBeanWrapperContent() {
 		return __content;
 	}
 
@@ -33,16 +33,16 @@ public class EnumWrapper implements BeanWrapper<Enum<?>>, Serializable {
 	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#setAttribute(java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void setAttribute(String attr, Object value) {
+	public void setBeanAttribute(String attr, Object value) {
 	// TODO Auto-generated method stub
 
 	}
 
 	/* (non-Javadoc)
-	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#setContent(java.lang.Object)
+	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#setBeanWrapperContent(java.lang.Object)
 	 */
 	@Override
-	public void setContent(Enum<?> content) {
+	public void setBeanWrapperContent(Enum<?> content) {
 		__content = content;
 	}
 
