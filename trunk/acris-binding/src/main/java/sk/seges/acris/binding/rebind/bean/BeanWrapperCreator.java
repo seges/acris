@@ -14,6 +14,7 @@ import java.util.Map;
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
+import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.sesam.domain.IObservableObject;
 
@@ -31,74 +32,77 @@ import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-import com.google.gwt.validation.rebind.InterfaceTypeNameStrategy;
 import com.google.gwt.validation.rebind.TypeStrategy;
 
 /**
  * @author eldzi
+ * @author fat
  */
 public class BeanWrapperCreator {
-	
-	protected static final String WRAPPER_IMPL_SUFFIX = "Wrapper";
-	protected static final String WRAPPER_XXX = "Wrapper___xxx";
-	protected static final String CONTENU_FIELD = "contenu";
-	
+
+	protected static final String WRAPPER_IMPL_SUFFIX = "Impl";
+	protected static final String NESTED_BEAN_WRAPPER = "__nested";
+	protected static final String BEAN_WRAPPER_CONTENT = "__content";
+
 	protected TreeLogger logger;
 	protected GeneratorContext context;
 	protected TypeOracle typeOracle;
+
 	protected String typeName;
 	protected String superclassName;
-	protected List<String> wrappedFields = new ArrayList<String>();
-	
+	private List<String> wrappedFields = new ArrayList<String>();
+
 	private TypeStrategy typeStrategy;
-	
-	public BeanWrapperCreator(TreeLogger logger, GeneratorContext context, String typeName,
-			String superclassName, TypeStrategy typeStrategy) {
-		this.superclassName = contentBeanName(superclassName);
+
+	protected JClassType beanType;
+	protected JClassType classType;
+
+	public BeanWrapperCreator(TreeLogger logger, GeneratorContext context, String typeName, TypeStrategy typeStrategy) {
 		this.logger = logger;
 		this.context = context;
 		this.typeOracle = context.getTypeOracle();
 		this.typeName = typeName;
-		
+		this.typeStrategy = typeStrategy;
+		typeStrategy.setGeneratorContext(context);
 	}
 
-	protected TypeStrategy getTypeNameStategy() {
-		TypeStrategy typeStrategy = new InterfaceTypeNameStrategy(BeanWrapper.class, "BeanWrapper");
-		typeStrategy.setGeneratorContext(context);
-		String beanTypeName = typeStrategy.getBeanTypeName(typeName);
+	/**
+	 * @param typeName
+	 * @return
+	 */
+	protected String suggestSuperclass(String typeName) {
+		return beanType.getQualifiedSourceName();
 	}
-	
+
 	public String createWrapper() throws UnableToCompleteException {
 
 		wrappedFields.clear();
-		
+
 		//Trying to find type name on the class path (This is the class processed by GWT.create(typeName))
-		JClassType originalType;
-		
 		try {
-			originalType = typeOracle.getType(typeName);
+			classType = typeOracle.getType(typeName);
 		} catch (NotFoundException e) {
 			logger.log(TreeLogger.ERROR, "Unable to find type name = " + typeName, e);
 			throw new UnableToCompleteException();
 		}
 
 		String beanTypeName = typeStrategy.getBeanTypeName(typeName);
-		
+
 		if (beanTypeName == null) {
 			logger.log(TreeLogger.ERROR, "Unable to extract bean from type " + typeName);
 			throw new UnableToCompleteException();
 		}
 
-		JClassType originalBeanType;
-
 		try {
-			originalBeanType = typeOracle.getType(beanTypeName);
+			beanType = typeOracle.getType(beanTypeName);
 		} catch (NotFoundException e) {
 			logger.log(TreeLogger.ERROR, "Undefined bean type (" + beanTypeName + " cannot be found on the classpath)", e);
 			throw new UnableToCompleteException();
 		}
 
-		JClassType classType = originalBeanType;
+		this.superclassName = suggestSuperclass(typeName);
+
+		JClassType processingType = beanType;
 
 		JClassType objectType;
 
@@ -109,15 +113,17 @@ public class BeanWrapperCreator {
 			throw new UnableToCompleteException();
 		}
 
-		SourceWriter source = getSourceWriter(originalType);
+		SourceWriter source = getSourceWriter(classType);
+
+		if (source == null) {
+			return classType.getParameterizedQualifiedSourceName() + getWrapperResultSuffix();
+		}
 
 		List<JMethod> allMethods = new ArrayList<JMethod>();
 
-		while (classType != null && !classType.equals(objectType)) {
-			// logger.log(TreeLogger.WARN, "Creating bean wrapper " +
-			// classType.getParameterizedQualifiedSourceName());
+		while (processingType != null && !processingType.equals(objectType)) {
 
-			JMethod[] methods = classType.getMethods();
+			JMethod[] methods = processingType.getMethods();
 			boolean found = false;
 			for (JMethod method : methods) {
 				if (!(isGetter(method) || isSetter(method))) {
@@ -138,8 +144,7 @@ public class BeanWrapperCreator {
 				}
 
 				for (JMethod allMethod : allMethods) {
-					if (RebindUtils.getComparableMethodDeclaration(allMethod).compareTo(
-							RebindUtils.getComparableMethodDeclaration(method)) == 0) {
+					if (RebindUtils.getComparableMethodDeclaration(allMethod).compareTo(RebindUtils.getComparableMethodDeclaration(method)) == 0) {
 						found = true;
 					}
 				}
@@ -150,209 +155,226 @@ public class BeanWrapperCreator {
 				}
 			}
 
-			classType = classType.getSuperclass();
+			processingType = processingType.getSuperclass();
 		}
 
-		String simpleName = contentBeanName(originalType.getSimpleSourceName());
+		String simpleName = beanType.getSimpleSourceName();
 		JMethod[] methods = allMethods.toArray(new JMethod[0]);
 
 		try {
-			createWrapper(methods, simpleName, source, originalBeanType);
+			createWrapper(methods, simpleName, source, beanType);
 		} catch (NotFoundException e) {
 			throw new RuntimeException(e);
 		}
 
-		return originalType.getParameterizedQualifiedSourceName() + getWrapperResultSuffix();
+		return classType.getParameterizedQualifiedSourceName() + getWrapperResultSuffix();
 	}
 
 	protected String getWrapperResultSuffix() {
 		return WRAPPER_IMPL_SUFFIX;
 	}
-	
-	protected String getWrapperInterfaceSuffix() {
-		return WRAPPER_SUFFIX;
-	}
-	
-	private String contentBeanName(String originalType) {
-		return originalType.substring(0, originalType.lastIndexOf(getWrapperInterfaceSuffix()));
-	}
 
-	public void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType)
-			throws NotFoundException {
-		if (source != null) {
-			source.indent();
-			if (superclassName == null) {
-				source.println("private " + simpleName + " " + CONTENU_FIELD + ";");
-			} else {
-				// initialize new instance by default
-				// usually this happen when there is Gilead proxied domain
-				// object
-				source.println("private " + simpleName + " " + CONTENU_FIELD + " = GWT.create(" + simpleName
-						+ ".class);");
-			}
-			source.println();
-			source.println("private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);");
-			source.println();
-			source.println("public void setContent(" + simpleName + " " + CONTENU_FIELD + ") {");
-			source.indent();
-			// source.println("if(" + CONTENU_FIELD +
-			// "==null) { com.allen_sauer.gwt.log.client.Log.warn(\"setting null\", new RuntimeException(\"shit null\"));}");
-			source.println("this." + CONTENU_FIELD + " = (" + simpleName + ") " + CONTENU_FIELD + ";");
-			source.println("clearWrappers();");
-			source.outdent();
-			source.println("}");
-			source.println();
-			source.println("public " + simpleName + " getContent() {");
-			source.indent();
-			source.println("return this." + CONTENU_FIELD + ";");
-			source.outdent();
-			source.println("}");
-
-			source.println("public void addPropertyChangeListener(PropertyChangeListener listener) {");
-			source.indent();
-			source.println("pcs.addPropertyChangeListener(listener);");
-			source.outdent();
-			source.println("}");
-
-			source.println("public void removePropertyChangeListener(PropertyChangeListener listener) {");
-			source.indent();
-			source.println("pcs.removePropertyChangeListener(listener);");
-			source.outdent();
-			source.println("}");
-			source.println();
-
-			// create links with content object getters and setters
-			for (int i = 0; i < methods.length; i++) {
-				if (isExcludedMethod(methods[i])) {
-					// there was a method but was excluded
-					continue;
-				}
-
-				JMethod methode = methods[i];
-				String fieldName = RebindUtils.toFieldName(methode.getName());
-				if (methode.getName().startsWith("set")) { // setter
-					JParameter parameter = methode.getParameters()[0];
-					JMethod getter = RebindUtils.getGetter(classType, fieldName);
-					if (getter == null) {
-						// this is not regular setter with getter counterpart.
-						// We don't generate wrapper methods for that.
-						methods[i] = null;
-						continue;
-					}
-					JField declaredField = findDeclaredField(classType, fieldName);
-					if (isNotBean(parameter.getType()) && declaredField != null) {
-						generateSetterForPrimitive(source, methode, parameter, getter);
-					} else if (declaredField != null) {
-						generateSetterForBean(source, methode, parameter, getter);
-					}
-				} else { // getter
-					JField declaredField = findDeclaredField(classType, fieldName);
-					if (isNotBean(methode.getReturnType()) && declaredField != null) {
-						generateGetterForPrimitive(source, methode);
-					} else if (declaredField != null) {
-						generateGetterForBean(source, methode);
-					}
-				}
-			}
-
-			// create the getAttribute method
-			source.println("public Object getAttribute(String attr) {");
-			source.indent();
-
-			for (int i = 0; i < methods.length; i++) {
-				if (isExcludedMethod(methods[i])) {
-					// there was a method but was excluded
-					continue;
-				}
-				String methodName = methods[i].getName();
-				JType returnType = methods[i].getReturnType();
-				if (isGetter(methods[i])) {
-					source.println("if (attr.equals(\"" + RebindUtils.toFieldName(methodName) + "\")) {");
-					source.indent();
-					source.println("return " + castToString(returnType, "this." + methodName + "()") + ";");
-					source.outdent();
-					source.print("} else ");
-				}
-			}
-			source.println("{");
-			source.indent();
-			source.println("return null;");
-			source.outdent();
-			source.println("}");
-			source.outdent();
-			source.println("}");
-			source.println();
-			// create the set attribute method
-			source.println("public void setAttribute(String attr, Object value) {");
-			source.indent();
-			for (int i = 0; i < methods.length; i++) {
-				if (isExcludedMethod(methods[i])) {
-					// there was a method but was excluded
-					continue;
-				}
-
-				JMethod methode = methods[i];
-				if (isSetter(methode)) {
-					JType paramType = methode.getParameters()[0].getType();
-					source.println("if (attr.equals(\"" + RebindUtils.toFieldName(methode.getName())
-							+ "\")) { ");
-					source.indent();
-					source.println("this." + methode.getName() + "(" + castFromString(paramType, "value")
-							+ ");");
-					source.outdent();
-					source.print("} else ");
-				}
-			}
-			source.println("{");
-			source.println("}");
-			source.outdent();
-			source.println("}");
-
-			source.println("@Override");
-			source.println("public int hashCode() {");
-			source.indent();
-			source.println("if(" + CONTENU_FIELD + " != null) {");
-			source.indent();
-			source.println("return " + CONTENU_FIELD + ".hashCode();");
-			source.outdent();
-			source.println("} else {");
-			source.indent();
-			source.println("return super.hashCode();");
-			source.outdent();
-			source.println("}");
-			source.outdent();
-			source.println("}");
-
-			source.println("@Override");
-			source.println("public boolean equals(Object obj) {");
-			source.indent();
-			source.println("if(obj instanceof BeanWrapper) {");
-			source.indent();
-			source.println("return equals(((BeanWrapper)obj).getContent());");
-			source.outdent();
-			source.println("}");
-			source.println("if(" + CONTENU_FIELD + " != null) {");
-			source.indent();
-			source.println("return " + CONTENU_FIELD + ".equals(obj);");
-			source.outdent();
-			source.println("} else {");
-			source.indent();
-			source.println("return super.equals(obj);");
-			source.outdent();
-			source.println("}");
-			source.outdent();
-			source.println("}");
-
-			createClearWrappersMethod(source);
-			
-			source.commit(logger);
+	public void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType) throws NotFoundException {
+		source.indent();
+		if (superclassName == null) {
+			source.println("private " + simpleName + " " + BEAN_WRAPPER_CONTENT + ";");
+		} else {
+			// initialize new instance by default
+			// usually this happen when there is Gilead proxied domain
+			// object
+			source.println("private " + simpleName + " " + BEAN_WRAPPER_CONTENT + " = GWT.create(" + simpleName + ".class);");
 		}
+		source.println();
+
+		generatePropertyChangeSupportMethods(source, simpleName);
+
+		// create links with content object getters and setters
+		for (int i = 0; i < methods.length; i++) {
+			if (isExcludedMethod(methods[i])) {
+				// there was a method but was excluded
+				continue;
+			}
+
+			JMethod beanMethod = methods[i];
+
+			String fieldName = RebindUtils.toFieldName(beanMethod.getName());
+
+			if (beanMethod.getName().startsWith("set")) { // setter
+				JParameter parameter = beanMethod.getParameters()[0];
+				JMethod getter = RebindUtils.getGetter(classType, fieldName);
+				if (getter == null) {
+					// this is not regular setter with getter counterpart.
+					// We don't generate wrapper methods for that.
+					methods[i] = null;
+					continue;
+				}
+				//JField declaredField = findDeclaredField(classType, fieldName);
+				if (isNotBean(parameter.getType()) /* && declaredField != null */) {
+					generateSetterForPrimitive(source, beanMethod, parameter, getter);
+				} else /* if (declaredField != null) */{
+					generateSetterForBean(source, beanMethod, parameter, getter);
+				}
+			} else { // getter
+				//JField declaredField = findDeclaredField(classType, fieldName);
+				if (isNotBean(beanMethod.getReturnType()) /* && declaredField != null */) {
+					generateGetterForPrimitive(source, beanMethod);
+				} else /* if (declaredField != null) */{
+					generateGetterForBean(source, beanMethod);
+				}
+			}
+		}
+
+		generateWrapperMethods(source, simpleName, methods);
+
+		generateGetBeanAttributes(source, methods);
+		generateSetBeanAttributes(source, methods);
+
+		generateHashcode(source);
+		generateEquals(source);
+
+		generateClearWrappersMethod(source);
+
+		source.commit(logger);
 	}
 
-	private void createClearWrappersMethod(SourceWriter source) {
+	protected void generateSetBeanAttributes(SourceWriter source, JMethod[] methods) {
+		// create the set attribute method
+		source.println("public void setBeanAttribute(String attr, Object value) {");
+		source.indent();
+		for (int i = 0; i < methods.length; i++) {
+			if (isExcludedMethod(methods[i])) {
+				// there was a method but was excluded
+				continue;
+			}
+
+			JMethod methode = methods[i];
+			if (isSetter(methode)) {
+				JType paramType = methode.getParameters()[0].getType();
+				source.println("if (attr.equals(\"" + RebindUtils.toFieldName(methode.getName()) + "\")) { ");
+				source.indent();
+				source.println("this." + methode.getName() + "(" + castFromString(paramType, "value") + ");");
+				source.outdent();
+				source.print("} else ");
+			}
+		}
+		source.println("{");
+		source.println("}");
+		source.outdent();
+		source.println("}");
+
+	}
+
+	protected void generateGetBeanAttributes(SourceWriter source, JMethod[] methods) {
+		// create the getAttribute method
+		source.println("public Object getBeanAttribute(String attr) {");
+		source.indent();
+
+		for (int i = 0; i < methods.length; i++) {
+			if (isExcludedMethod(methods[i])) {
+				// there was a method but was excluded
+				continue;
+			}
+			String methodName = methods[i].getName();
+			JType returnType = methods[i].getReturnType();
+			if (isGetter(methods[i])) {
+				source.println("if (attr.equals(\"" + RebindUtils.toFieldName(methodName) + "\")) {");
+				source.indent();
+				source.println("return " + castToString(returnType, "this." + methodName + "()") + ";");
+				source.outdent();
+				source.print("} else ");
+			}
+		}
+		source.println("{");
+		source.indent();
+		source.println("return null;");
+		source.outdent();
+		source.println("}");
+		source.outdent();
+		source.println("}");
+		source.println();
+
+	}
+
+	protected String getRawWrapperType() {
+		return BeanWrapper.class.getName();
+	}
+
+	protected void generateEquals(SourceWriter source) {
+		source.println("@Override");
+		source.println("public boolean equals(Object obj) {");
+		source.indent();
+		source.println("if(obj instanceof " + getRawWrapperType() + ") {");
+		source.indent();
+		source.println("return equals(((" + getRawWrapperType() + ")obj).getBeanWrapperContent());");
+		source.outdent();
+		source.println("}");
+		source.println("if(" + BEAN_WRAPPER_CONTENT + " != null) {");
+		source.indent();
+		source.println("return " + BEAN_WRAPPER_CONTENT + ".equals(obj);");
+		source.outdent();
+		source.println("} else {");
+		source.indent();
+		source.println("return super.equals(obj);");
+		source.outdent();
+		source.println("}");
+		source.outdent();
+		source.println("}");
+	}
+
+	protected void generateHashcode(SourceWriter source) {
+		source.println("@Override");
+		source.println("public int hashCode() {");
+		source.indent();
+		source.println("if(" + BEAN_WRAPPER_CONTENT + " != null) {");
+		source.indent();
+		source.println("return " + BEAN_WRAPPER_CONTENT + ".hashCode();");
+		source.outdent();
+		source.println("} else {");
+		source.indent();
+		source.println("return super.hashCode();");
+		source.outdent();
+		source.println("}");
+		source.outdent();
+		source.println("}");
+	}
+
+	protected void generateWrapperMethods(SourceWriter source, String simpleName, JMethod[] methods) throws NotFoundException {
+		source.println("public void setBeanWrapperContent(" + simpleName + " " + BEAN_WRAPPER_CONTENT + ") {");
+		source.indent();
+		source.println("this." + BEAN_WRAPPER_CONTENT + " = (" + simpleName + ") " + BEAN_WRAPPER_CONTENT + ";");
+		source.println("clearWrappers();");
+		source.outdent();
+		source.println("}");
+		source.println();
+		source.println("public " + simpleName + " getBeanWrapperContent() {");
+		source.indent();
+		source.println("return this." + BEAN_WRAPPER_CONTENT + ";");
+		source.outdent();
+		source.println("}");
+	}
+
+	private void generatePropertyChangeSupportMethods(SourceWriter source, String simpleName) {
+		source.println("private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);");
+		source.println();
+
+		source.println("public void addPropertyChangeListener(PropertyChangeListener listener) {");
+		source.indent();
+		source.println("pcs.addPropertyChangeListener(listener);");
+		source.outdent();
+		source.println("}");
+
+		source.println("public void removePropertyChangeListener(PropertyChangeListener listener) {");
+		source.indent();
+		source.println("pcs.removePropertyChangeListener(listener);");
+		source.outdent();
+		source.println("}");
+		source.println();
+	}
+
+	private void generateClearWrappersMethod(SourceWriter source) {
 		source.println("private void clearWrappers() {");
 		source.indent();
-		for(String field : wrappedFields) {
+		for (String field : wrappedFields) {
 			source.println(field + " = null;");
 		}
 		source.outdent();
@@ -370,9 +392,9 @@ public class BeanWrapperCreator {
 	protected void generateGetterForPrimitive(SourceWriter source, JMethod methode) {
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
-		source.println("if(" + CONTENU_FIELD + " != null) {");
+		source.println("if(" + BEAN_WRAPPER_CONTENT + " != null) {");
 		source.indent();
-		source.println("return " + CONTENU_FIELD + "." + methode.getName() + "();");
+		source.println("return " + BEAN_WRAPPER_CONTENT + "." + methode.getName() + "();");
 		source.outdent();
 		source.println("}");
 		String field = defaultValue(methode.getReturnType());
@@ -382,27 +404,30 @@ public class BeanWrapperCreator {
 		source.println();
 	}
 
-	private String getBeanWrapperType(JType returnType) {
-		return BeanWrapper.class.getName() + "<" + returnType.getQualifiedSourceName() + ">";
+	protected String getWrapperType(JType returnType) {
+		return getRawWrapperType() + "<" + returnType.getQualifiedSourceName() + ">";
+	}
+
+	protected String getWrapperClassName(String beanClassName) {
+		return beanClassName + BeanWrapperProcessor.BEAN_WRAPPER_SUFFIX;
 	}
 
 	protected void generateGetterForBean(SourceWriter source, JMethod methode) {
 		String field = RebindUtils.toFieldName(methode.getName());
 		JType returnType = methode.getReturnType();
 
-		field = field + WRAPPER_XXX;
-		String beanWrapperType = getBeanWrapperType(returnType);
-		source.println("private " + beanWrapperType + " " + field + ";");
+		field = field + NESTED_BEAN_WRAPPER;
+		String wrapperType = getWrapperType(returnType);
+		source.println("private " + wrapperType + " " + field + ";");
 
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 		source.println("if(this." + field + " == null) {");
 		source.indent();
-		source.println("this." + field + " = (" + beanWrapperType + ") GWT.create("
-				+ returnType.getQualifiedSourceName() + WRAPPER_SUFFIX + ".class);");
-		source.println("if(" + CONTENU_FIELD + " != null) {");
+		source.println("this." + field + " = (" + wrapperType + ") GWT.create(" + getWrapperClassName(returnType.getQualifiedSourceName()) + ".class);");
+		source.println("if(" + BEAN_WRAPPER_CONTENT + " != null) {");
 		source.indent();
-		source.println("this." + field + ".setContent(" + CONTENU_FIELD + "." + methode.getName() + "());");
+		source.println("this." + field + ".setBeanWrapperContent(" + BEAN_WRAPPER_CONTENT + "." + methode.getName() + "());");
 		source.outdent();
 		source.println("}");
 		source.outdent();
@@ -411,47 +436,40 @@ public class BeanWrapperCreator {
 		source.outdent();
 		source.println("}");
 		source.println();
-		
+
 		wrappedFields.add(field);
 	}
 
-	protected void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter,
-			JMethod getter) {
+	protected void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter, JMethod getter) {
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 
-		source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + getter.getName()
-				+ "();");
-		source.println(CONTENU_FIELD + "." + methode.getName() + "(" + parameter.getName() + ");");
-		source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, "
-				+ parameter.getName() + ");");
+		source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + getter.getName() + "();");
+		source.println(BEAN_WRAPPER_CONTENT + "." + methode.getName() + "(" + parameter.getName() + ");");
+		source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, " + parameter.getName() + ");");
 		source.outdent();
 		source.println("}");
 		source.println();
 	}
 
-	protected void generateSetterForBean(SourceWriter source, JMethod methode, JParameter parameter,
-			JMethod getter) {
-		String field = RebindUtils.toFieldName(methode.getName()) + WRAPPER_XXX;
+	protected void generateSetterForBean(SourceWriter source, JMethod methode, JParameter parameter, JMethod getter) {
+		String field = RebindUtils.toFieldName(methode.getName()) + NESTED_BEAN_WRAPPER;
 		JType returnType = parameter.getType();
 
-		String beanWrapperType = getBeanWrapperType(returnType);
+		String wrapperType = getWrapperType(returnType);
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 
-		source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + CONTENU_FIELD + "."
-				+ getter.getName() + "();");
-		source.println(CONTENU_FIELD + "." + methode.getName() + "(" + parameter.getName() + ");");
+		source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + BEAN_WRAPPER_CONTENT + "." + getter.getName() + "();");
+		source.println(BEAN_WRAPPER_CONTENT + "." + methode.getName() + "(" + parameter.getName() + ");");
 
 		source.println("if(this." + field + " == null) {");
 		source.indent();
-		source.println("this." + field + " = (" + beanWrapperType + ") GWT.create("
-				+ returnType.getQualifiedSourceName() + WRAPPER_SUFFIX + ".class);");
+		source.println("this." + field + " = (" + wrapperType + ") GWT.create(" + getWrapperClassName(returnType.getQualifiedSourceName()) + ".class);");
 		source.outdent();
 		source.println("}");
-		source.println("this." + field + ".setContent(" + parameter.getName() + ");");
-		source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, "
-				+ parameter.getName() + ");");
+		source.println("this." + field + ".setBeanWrapperContent(" + parameter.getName() + ");");
+		source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, " + parameter.getName() + ");");
 		source.outdent();
 		source.println("}");
 		source.println();
@@ -468,14 +486,11 @@ public class BeanWrapperCreator {
 			isMap = ((JClassType) type).isAssignableTo(map);
 			isNumber = ((JClassType) type).isAssignableTo(number);
 		}
-		return type.isPrimitive() != null || type.isEnum() != null || type.isArray() != null || isCollection
-				|| isNumber || isMap || type.getSimpleSourceName().equals("String")
-				|| type.getSimpleSourceName().equals("Byte") || type.getSimpleSourceName().equals("Short")
-				|| type.getSimpleSourceName().equals("Integer") || type.getSimpleSourceName().equals("Long")
-				|| type.getSimpleSourceName().equals("Boolean") || type.getSimpleSourceName().equals("Float")
-				|| type.getSimpleSourceName().equals("Double") || type.getSimpleSourceName().equals("Number")
-				|| type.getSimpleSourceName().equals("Character")
-				|| type.getSimpleSourceName().equals("Date")
+		return type.isPrimitive() != null || type.isEnum() != null || type.isArray() != null || isCollection || isNumber || isMap
+				|| type.getSimpleSourceName().equals("String") || type.getSimpleSourceName().equals("Byte") || type.getSimpleSourceName().equals("Short")
+				|| type.getSimpleSourceName().equals("Integer") || type.getSimpleSourceName().equals("Long") || type.getSimpleSourceName().equals("Boolean")
+				|| type.getSimpleSourceName().equals("Float") || type.getSimpleSourceName().equals("Double") || type.getSimpleSourceName().equals("Number")
+				|| type.getSimpleSourceName().equals("Character") || type.getSimpleSourceName().equals("Date")
 				|| type.getSimpleSourceName().equals("Timestamp");
 	}
 
@@ -484,8 +499,7 @@ public class BeanWrapperCreator {
 	}
 
 	private boolean isGetter(JMethod methode) {
-		return (methode.getName().startsWith("get") || methode.getName().startsWith("is"))
-				&& methode.getParameters().length == 0;
+		return (methode.getName().startsWith("get") || methode.getName().startsWith("is")) && methode.getParameters().length == 0;
 	}
 
 	private boolean isSetter(JMethod methode) {
@@ -493,21 +507,14 @@ public class BeanWrapperCreator {
 	}
 
 	protected String[] getImports() {
-		return new String[] {
-				BeanWrapper.class.getCanonicalName(), 
-				IObservableObject.class.getCanonicalName(), 
-				PropertyChangeSupport.class.getCanonicalName(),
-				PropertyChangeListener.class.getCanonicalName(), 
-				GWT.class.getCanonicalName()
-		};
+		return new String[] {BeanWrapper.class.getCanonicalName(), IObservableObject.class.getCanonicalName(), PropertyChangeSupport.class.getCanonicalName(),
+				PropertyChangeListener.class.getCanonicalName(), GWT.class.getCanonicalName()};
 	}
 
 	protected String[] getImplementedInterfaces() {
-		return new String[] {
-				HasPropertyChangeSupport.class.getCanonicalName()
-		};
+		return new String[] {HasPropertyChangeSupport.class.getCanonicalName()};
 	}
-	
+
 	private String[] addUniqueToArray(String[] elements, String element) {
 		List<String> elementsList = new ArrayList<String>();
 
@@ -519,12 +526,13 @@ public class BeanWrapperCreator {
 		}
 		elementsList.add(element);
 
-		return elementsList.toArray(new String[]{});
+		return elementsList.toArray(new String[] {});
 	}
-	
+
 	protected String getSuperclassName() {
 		return superclassName;
 	}
+
 	/**
 	 * SourceWriter instantiation. Return null if the resource already exist.
 	 * 
@@ -536,17 +544,17 @@ public class BeanWrapperCreator {
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, simpleName);
 
 		composer.setSuperclass(getSuperclassName());
-		
+
 		String[] interfaces = getImplementedInterfaces();
 		interfaces = addUniqueToArray(interfaces, classType.getSimpleSourceName());
 
 		for (String interfaceName : interfaces) {
 			composer.addImplementedInterface(interfaceName);
 		}
-		
+
 		String[] imports = getImports();
 		imports = addUniqueToArray(imports, classType.getQualifiedSourceName());
-		
+
 		for (String importName : imports) {
 			composer.addImport(importName);
 		}
@@ -555,8 +563,8 @@ public class BeanWrapperCreator {
 
 		if (printWriter == null) {
 			return null;
-		} 
-		
+		}
+
 		return composer.createSourceWriter(context, printWriter);
 	}
 

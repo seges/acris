@@ -37,7 +37,7 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     private List<BindingHolderListener<T>> listeners = new ArrayList<BindingHolderListener<T>>();
     
     public T getBean() {
-    	return beanWrapper.getContent();
+    	return beanWrapper.getBeanWrapperContent();
     }
     
     public BindingHolder(UpdateStrategy updateStrategy, BeanWrapper<T> beanWrapper) {
@@ -158,7 +158,7 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 			reloadBindings = true;
 		}
 		
-		beanWrapper.setContent(bean);
+		beanWrapper.setBeanWrapperContent(bean);
 
 		if (reloadBindings) {
 			rootBinding.bind();

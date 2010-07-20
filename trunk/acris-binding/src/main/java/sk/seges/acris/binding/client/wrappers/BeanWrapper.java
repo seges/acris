@@ -32,13 +32,13 @@ public interface BeanWrapper<T> extends IObservableObject {
 	 * {@link NullPointerException} are thrown because bean wrapper over the
 	 * null object is not valid.
 	 */
-	void setContent(T content);
+	void setBeanWrapperContent(T content);
 
 	/**
 	 * User can obtain original bean from bean wrapper with set values using
 	 * this method.
 	 */
-	T getContent();
+	T getBeanWrapperContent();
 
 	/**
 	 * Method will delegate request to read method for appropriate property in
@@ -54,7 +54,7 @@ public interface BeanWrapper<T> extends IObservableObject {
 	 * @code content.getName();}
 	 * </pre>
 	 */
-	Object getAttribute(String attr);
+	Object getBeanAttribute(String attr);
 
 	/**
 	 * Method will delegate request to write method for appropriate property in
@@ -70,5 +70,5 @@ public interface BeanWrapper<T> extends IObservableObject {
 	 * @code content.setName("test");}
 	 * </pre>
 	 */
-	void setAttribute(String attr, Object value);
+	void setBeanAttribute(String attr, Object value);
 }
