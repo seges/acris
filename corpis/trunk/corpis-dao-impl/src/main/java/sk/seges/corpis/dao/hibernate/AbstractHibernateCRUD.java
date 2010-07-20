@@ -173,7 +173,6 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 
 		if (!retrieveAllResults(requestedPage)) {
 			// select count only when paging
-//			existingAliases = new HashSet<String>();
 			totalCount = doGetCountByCriteria(criteria, requestedPage, existingAliases, addedFilterables);
 
 			// clear count from criteria
@@ -181,7 +180,6 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 		}
 
-//		existingAliases = new HashSet<String>();
 		enrichCriteriaWithSortables(requestedPage, criteria);
 		List<T> list = doFindByCriteria(criteria, requestedPage, existingAliases, !addedFilterables.value, cacheable);
 
@@ -255,7 +253,9 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 
 		List<String> projectables = new ArrayList<String>();
 		for (String projectable : projectableList) {
-			projectables.add(addEmbeddedDelimsToProperty(projectable, projectableResultClass, propertyAccessor));
+			if (projectable != null) {
+				projectables.add(addEmbeddedDelimsToProperty(projectable, projectableResultClass, propertyAccessor));
+			}
 		}
 		return projectables;
 	}
