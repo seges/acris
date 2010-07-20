@@ -6,6 +6,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSequentialList;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.SortedSet;
 
 import org.gwttime.time.DateTime;
 
+import sk.seges.acris.json.client.deserialization.DateDeserializer;
 import sk.seges.acris.json.client.deserialization.DateTimeDeserializer;
 import sk.seges.acris.json.client.deserialization.DoubleDeserializer;
 import sk.seges.acris.json.client.deserialization.IntegerDeserializer;
@@ -44,6 +46,7 @@ public class JsonizerBuilder {
 	}
 
 	protected void registerDefaultDeserializers() {
+		registerDeserializer(Date.class, new DateDeserializer());
 		registerDeserializer(DateTime.class, new DateTimeDeserializer());
 		registerDeserializer(Double.class, new DoubleDeserializer());
 		registerDeserializer(Integer.class, new IntegerDeserializer());

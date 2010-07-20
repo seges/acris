@@ -20,6 +20,7 @@ import sk.seges.sesam.domain.IObservableObject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -30,43 +31,82 @@ import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+import com.google.gwt.validation.rebind.InterfaceTypeNameStrategy;
+import com.google.gwt.validation.rebind.TypeStrategy;
 
 /**
  * @author eldzi
  */
 public class BeanWrapperCreator {
-	private static final String WRAPPER_IMPL_SUFFIX = "Wrapper";
-	private static final String WRAPPER_SUFFIX = "BeanWrapper";
-	private static final String WRAPPER_XXX = "Wrapper___xxx";
-	private static final String CONTENU_FIELD = "contenu";
-	private TreeLogger logger;
-	private GeneratorContext context;
-	private TypeOracle typeOracle;
-	private String typeName;
-	private String superclassName;
-	private List<String> wrappedFields = new ArrayList<String>();
+	
+	protected static final String WRAPPER_IMPL_SUFFIX = "Wrapper";
+	protected static final String WRAPPER_XXX = "Wrapper___xxx";
+	protected static final String CONTENU_FIELD = "contenu";
+	
+	protected TreeLogger logger;
+	protected GeneratorContext context;
+	protected TypeOracle typeOracle;
+	protected String typeName;
+	protected String superclassName;
+	protected List<String> wrappedFields = new ArrayList<String>();
+	
+	private TypeStrategy typeStrategy;
 	
 	public BeanWrapperCreator(TreeLogger logger, GeneratorContext context, String typeName,
-			String superclassName) {
+			String superclassName, TypeStrategy typeStrategy) {
 		this.superclassName = contentBeanName(superclassName);
 		this.logger = logger;
 		this.context = context;
 		this.typeOracle = context.getTypeOracle();
 		this.typeName = typeName;
+		
 	}
 
-	public String createWrapper() {
+	protected TypeStrategy getTypeNameStategy() {
+		TypeStrategy typeStrategy = new InterfaceTypeNameStrategy(BeanWrapper.class, "BeanWrapper");
+		typeStrategy.setGeneratorContext(context);
+		String beanTypeName = typeStrategy.getBeanTypeName(typeName);
+	}
+	
+	public String createWrapper() throws UnableToCompleteException {
+
 		wrappedFields.clear();
 		
-		JClassType classType, originalBeanType, originalType, objectType;
+		//Trying to find type name on the class path (This is the class processed by GWT.create(typeName))
+		JClassType originalType;
+		
 		try {
 			originalType = typeOracle.getType(typeName);
-			classType = originalBeanType = typeOracle.getType(contentBeanName(originalType
-					.getQualifiedSourceName()));
-			objectType = typeOracle.getType(Object.class.getName());
 		} catch (NotFoundException e) {
 			logger.log(TreeLogger.ERROR, "Unable to find type name = " + typeName, e);
-			return null;
+			throw new UnableToCompleteException();
+		}
+
+		String beanTypeName = typeStrategy.getBeanTypeName(typeName);
+		
+		if (beanTypeName == null) {
+			logger.log(TreeLogger.ERROR, "Unable to extract bean from type " + typeName);
+			throw new UnableToCompleteException();
+		}
+
+		JClassType originalBeanType;
+
+		try {
+			originalBeanType = typeOracle.getType(beanTypeName);
+		} catch (NotFoundException e) {
+			logger.log(TreeLogger.ERROR, "Undefined bean type (" + beanTypeName + " cannot be found on the classpath)", e);
+			throw new UnableToCompleteException();
+		}
+
+		JClassType classType = originalBeanType;
+
+		JClassType objectType;
+
+		try {
+			objectType = typeOracle.getType(Object.class.getName());
+		} catch (NotFoundException e) {
+			logger.log(TreeLogger.ERROR, "Undefined bean type (" + beanTypeName + " cannot be found on the classpath)", e);
+			throw new UnableToCompleteException();
 		}
 
 		SourceWriter source = getSourceWriter(originalType);
@@ -111,8 +151,6 @@ public class BeanWrapperCreator {
 			}
 
 			classType = classType.getSuperclass();
-			// logger.log(TreeLogger.WARN, "Super is bean wrapper " +
-			// classType);
 		}
 
 		String simpleName = contentBeanName(originalType.getSimpleSourceName());
@@ -124,11 +162,19 @@ public class BeanWrapperCreator {
 			throw new RuntimeException(e);
 		}
 
-		return originalType.getParameterizedQualifiedSourceName() + WRAPPER_IMPL_SUFFIX;
+		return originalType.getParameterizedQualifiedSourceName() + getWrapperResultSuffix();
 	}
 
+	protected String getWrapperResultSuffix() {
+		return WRAPPER_IMPL_SUFFIX;
+	}
+	
+	protected String getWrapperInterfaceSuffix() {
+		return WRAPPER_SUFFIX;
+	}
+	
 	private String contentBeanName(String originalType) {
-		return originalType.substring(0, originalType.lastIndexOf(WRAPPER_SUFFIX));
+		return originalType.substring(0, originalType.lastIndexOf(getWrapperInterfaceSuffix()));
 	}
 
 	public void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType)
@@ -321,7 +367,7 @@ public class BeanWrapperCreator {
 		return field;
 	}
 
-	private void generateGetterForPrimitive(SourceWriter source, JMethod methode) {
+	protected void generateGetterForPrimitive(SourceWriter source, JMethod methode) {
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 		source.println("if(" + CONTENU_FIELD + " != null) {");
@@ -340,7 +386,7 @@ public class BeanWrapperCreator {
 		return BeanWrapper.class.getName() + "<" + returnType.getQualifiedSourceName() + ">";
 	}
 
-	private void generateGetterForBean(SourceWriter source, JMethod methode) {
+	protected void generateGetterForBean(SourceWriter source, JMethod methode) {
 		String field = RebindUtils.toFieldName(methode.getName());
 		JType returnType = methode.getReturnType();
 
@@ -369,7 +415,7 @@ public class BeanWrapperCreator {
 		wrappedFields.add(field);
 	}
 
-	private void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter,
+	protected void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter,
 			JMethod getter) {
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
@@ -384,7 +430,7 @@ public class BeanWrapperCreator {
 		source.println();
 	}
 
-	private void generateSetterForBean(SourceWriter source, JMethod methode, JParameter parameter,
+	protected void generateSetterForBean(SourceWriter source, JMethod methode, JParameter parameter,
 			JMethod getter) {
 		String field = RebindUtils.toFieldName(methode.getName()) + WRAPPER_XXX;
 		JType returnType = parameter.getType();
@@ -433,7 +479,7 @@ public class BeanWrapperCreator {
 				|| type.getSimpleSourceName().equals("Timestamp");
 	}
 
-	private boolean isExcludedMethod(JMethod method) {
+	protected boolean isExcludedMethod(JMethod method) {
 		return method == null;
 	}
 
@@ -446,57 +492,79 @@ public class BeanWrapperCreator {
 		return methode.getName().startsWith("set") && methode.getParameters().length == 1;
 	}
 
+	protected String[] getImports() {
+		return new String[] {
+				BeanWrapper.class.getCanonicalName(), 
+				IObservableObject.class.getCanonicalName(), 
+				PropertyChangeSupport.class.getCanonicalName(),
+				PropertyChangeListener.class.getCanonicalName(), 
+				GWT.class.getCanonicalName()
+		};
+	}
+
+	protected String[] getImplementedInterfaces() {
+		return new String[] {
+				HasPropertyChangeSupport.class.getCanonicalName()
+		};
+	}
+	
+	private String[] addUniqueToArray(String[] elements, String element) {
+		List<String> elementsList = new ArrayList<String>();
+
+		for (String el : elements) {
+			if (el.equals(element)) {
+				return elements;
+			}
+			elementsList.add(el);
+		}
+		elementsList.add(element);
+
+		return elementsList.toArray(new String[]{});
+	}
+	
+	protected String getSuperclassName() {
+		return superclassName;
+	}
 	/**
 	 * SourceWriter instantiation. Return null if the resource already exist.
 	 * 
 	 * @return sourceWriter
 	 */
-	public SourceWriter getSourceWriter(JClassType classType) {
+	protected SourceWriter getSourceWriter(JClassType classType) {
 		String packageName = classType.getPackage().getName();
-		String simpleName = classType.getSimpleSourceName() + WRAPPER_IMPL_SUFFIX;
+		String simpleName = classType.getSimpleSourceName() + getWrapperResultSuffix();
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, simpleName);
-		composer.setSuperclass(superclassName);
-		composer.addImplementedInterface(classType.getSimpleSourceName());
-		composer.addImplementedInterface(HasPropertyChangeSupport.class.getCanonicalName());
-		composer.addImport(BeanWrapper.class.getCanonicalName());
-		composer.addImport(IObservableObject.class.getCanonicalName());
-		composer.addImport(PropertyChangeSupport.class.getCanonicalName());
-		composer.addImport(PropertyChangeListener.class.getCanonicalName());
-		composer.addImport(GWT.class.getCanonicalName());
-		composer.addImport(classType.getQualifiedSourceName());
+
+		composer.setSuperclass(getSuperclassName());
+		
+		String[] interfaces = getImplementedInterfaces();
+		interfaces = addUniqueToArray(interfaces, classType.getSimpleSourceName());
+
+		for (String interfaceName : interfaces) {
+			composer.addImplementedInterface(interfaceName);
+		}
+		
+		String[] imports = getImports();
+		imports = addUniqueToArray(imports, classType.getQualifiedSourceName());
+		
+		for (String importName : imports) {
+			composer.addImport(importName);
+		}
 
 		PrintWriter printWriter = context.tryCreate(logger, packageName, simpleName);
+
 		if (printWriter == null) {
 			return null;
-		} else {
-			SourceWriter sw = composer.createSourceWriter(context, printWriter);
-			return sw;
-		}
+		} 
+		
+		return composer.createSourceWriter(context, printWriter);
 	}
 
-	public String castToString(JType type, String value) {
+	protected String castToString(JType type, String value) {
 		return value;
-		/*
-		 * if (type.getSimpleSourceName().equals("String")) { return value; }
-		 * else if (type.getSimpleSourceName().equals("int")) { return
-		 * "Integer.toString(" + value + ")"; } else if
-		 * (type.getSimpleSourceName().equals("byte")) { return "Byte.toString("
-		 * + value + ")"; } else if (type.getSimpleSourceName().equals("short"))
-		 * { return "Short.toString(" + value + ")"; } else if
-		 * (type.getSimpleSourceName().equals("long")) { return "Long.toString("
-		 * + value + ")"; } else if (type.getSimpleSourceName().equals("float"))
-		 * { return "Float.toString(" + value + ")"; } else if
-		 * (type.getSimpleSourceName().equals("double")) { return
-		 * "Double.toString(" + value + ")"; } else if
-		 * (type.getSimpleSourceName().equals("boolean")) { return
-		 * "Boolean.toString(" + value + ")"; } else if
-		 * (type.getSimpleSourceName().equals("char")) { return
-		 * "Character.toString(" + value + ")"; } else { return
-		 * "type not considered for the moment"; }
-		 */
 	}
 
-	public String defaultValue(JType type) {
+	protected String defaultValue(JType type) {
 		if (type.getSimpleSourceName().equals("String")) {
 			return null;
 		} else if (type.getSimpleSourceName().equals("int")) {
@@ -520,7 +588,7 @@ public class BeanWrapperCreator {
 		}
 	}
 
-	public String castFromString(JType type, String value) {
+	protected String castFromString(JType type, String value) {
 		if (type.isPrimitive() != null) {
 			JPrimitiveType primitiveType = type.isPrimitive();
 			return "(" + primitiveType.getQualifiedBoxedSourceName() + ")" + value;
