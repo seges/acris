@@ -1,0 +1,11 @@
+<module>
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+	<inherits name='com.google.gwt.junit.JUnit'/>
+
+	<inherits name="sk.seges.acris.Callbacks"/>
+	<inherits name="sk.seges.acris.Common"/>
+
+	<source path='client' />
+	<source path='rpc' />
+</module>

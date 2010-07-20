@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				           http://www.springframework.org/schema/context
+				           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                           http://www.springframework.org/schema/security
+                           http://www.springframework.org/schema/security/spring-security-2.0.2.xsd
+                           http://www.springframework.org/schema/webflow-config
+                           http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+                           http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+    <import resource="classpath:sk/seges/acris/security/server/context/acris-security-acl-voters-context.xml" />
+    <import resource="classpath:sk/seges/acris/security/server/context/acris-security-permissions-context.xml" />
+    <import resource="classpath:sk/seges/acris/security/server/context/acris-security-user-permissions-context.xml" />
+
+    <bean id="runAsManager"
+        class="sk.seges.acris.security.server.acl.RoleRunAsManagerImpl">
+        <property name="key" value="secretRunAsKey" />
+    </bean>
+
+    <bean id="runAsAuthenticationProvider"
+        class="org.springframework.security.runas.RunAsImplAuthenticationProvider">
+        <security:custom-authentication-provider />
+        <property name="key" value="secretRunAsKey" />
+    </bean>
+
+    <bean id="auditLogger"
+        class="org.springframework.security.acls.domain.ConsoleAuditLogger" />
+
+    <bean id="aclService"
+        class="org.springframework.security.acls.jdbc.JdbcAclService">
+        <constructor-arg ref="dataSource" />
+        <constructor-arg ref="lookupStrategy" />
+    </bean>
+
+    <bean id="hibernateMutableAclService"
+        class="sk.seges.acris.security.server.acl.service.HibernateMutableAclService">
+        <!-- All the managers are autowired -->
+        <property name="aclCache" ref="aclCache" />
+    </bean>
+
+    <bean id="aclMaintainer" class="sk.seges.acris.security.server.acl.service.AclMaintainer">
+        <property name="aclCache" ref="aclCache" />
+    </bean>
+
+    <bean id="lookupStrategy"
+        class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+        <constructor-arg ref="dataSource" />
+        <constructor-arg ref="aclCache" />
+        <constructor-arg ref="aclAuthorizationStrategy" />
+        <constructor-arg>
+            <bean
+                class="org.springframework.security.acls.domain.ConsoleAuditLogger" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="aclCache" class="sk.seges.acris.security.server.util.DummyAclCache">
+    </bean>
+
+    <!--
+        bean id="aclCache"
+        class="org.springframework.security.acls.jdbc.EhCacheBasedAclCache">
+        <constructor-arg> <bean
+        class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager"> <bean
+        class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+        </property> <property name="cacheName" value="aclCache"/>
+        </bean> </constructor-arg> </bean
+    -->
+
+    <bean id="aclAuthorizationStrategy"
+        class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
+        <constructor-arg>
+            <list>
+                <ref bean="takeOwnershipAuthority" />
+                <ref bean="modifyAuditingAuthority" />
+                <ref bean="generalChangesAuthority" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="objectManagerSecurity"
+        class="org.springframework.security.intercept.method.aopalliance.MethodSecurityInterceptor"
+        autowire="byType">
+        <property name="accessDecisionManager" ref="businessAccessDecisionManager" />
+        <property name="afterInvocationManager" ref="afterInvocationManager" />
+        <property name="objectDefinitionSource" ref="objectDefinitionSource" />
+        <property name="authenticationManager" ref="authenticationManager" />
+        <property name="runAsManager" ref="runAsManager" />
+    </bean>
+
+    <bean id="methodRoleVoter" class="org.springframework.security.vote.RoleVoter" />
+
+    <bean id="businessAccessDecisionManager" class="org.springframework.security.vote.UnanimousBased">
+        <property name="allowIfAllAbstainDecisions" value="true" />
+        <property name="decisionVoters">
+            <list>
+                <ref bean="methodRoleVoter" />
+                <ref bean="aclObjectReadVoter" />
+                <ref bean="aclObjectWriteVoter" />
+                <ref bean="aclObjectDeleteVoter" />
+                <ref bean="aclEntryListReadVoter" />
+                <ref bean="aclEntryListWriteVoter" />
+                <ref bean="aclEntryListDeleteVoter" />
+                <ref bean="afterAclInjectionCollectionReadVoter" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="afterInvocationManager"
+        class="org.springframework.security.afterinvocation.AfterInvocationProviderManager">
+        <property name="providers">
+            <list>
+                <ref bean="afterAclRead" />
+                <ref bean="afterAclCollectionRead" />
+            </list>
+        </property>
+    </bean>
+
+</beans>
