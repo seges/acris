@@ -12,21 +12,3 @@
 All bugs, improvements and feature requests are handled by *issue tracker*. You can always click on the link to the release to see the list of issues.
 
 *Use appropriate template* when submitting an issue.
-
-= Steps for the release 1.0.0 =
-
-Only the release 1.0.0 is an exception.
-
-  * ~~refactor names to be aligned with convention~~
-  * ~~documentation~~
-    * ~~review whole wiki~~
-  * ~~examples~~
-    * ~~project "from scratch"~~
-  * blog posts
-    * 4 ahead for every week
-  * step-by-step guide
-    * ~~acris-binding~~
-    * ~~acris-security~~
-    * ~~no-server mode project (enterprise setup) + architecture~~
-    * ~~project setup & development~~
-  * ~~prerelease 0.9.0~~
