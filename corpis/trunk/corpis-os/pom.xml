@@ -3,7 +3,7 @@
 
 	<groupId>sk.seges.corpis</groupId>
 	<artifactId>corpis-os</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -80,10 +80,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-  <scm>
-    <connection>scm:svn:https://acris.googlecode.com/svn/corpis/tags/corpis-os-build/corpis-os-build-1.0.5</connection>
-    <developerConnection>scm:svn:https://acris.googlecode.com/svn/corpis/tags/corpis-os-build/corpis-os-build-1.0.5</developerConnection>
-    <url>https://acris.googlecode.com/svn/corpis/tags/corpis-os-build/corpis-os-build-1.0.5</url>
-  </scm>
 </project>
