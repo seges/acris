@@ -108,7 +108,7 @@ public class BindingProxyWraperCreator {
 		
 		sourceWriter.println("if (" + listBeanClassType.getSimpleSourceName().toLowerCase() + ".get" + getFirstUpperCase(listBeanProperty) + "().equals(" + listBeanProperty + "_property)) {");
 		sourceWriter.indent();
-		sourceWriter.println("_targetBean.setAttribute(\"" + bindingProperty + "\", " + listBeanClassType.getSimpleSourceName().toLowerCase() + ");");
+		sourceWriter.println("_targetBean.setBeanAttribute(\"" + bindingProperty + "\", " + listBeanClassType.getSimpleSourceName().toLowerCase() + ");");
 		sourceWriter.println("break;");
 		sourceWriter.outdent();
 		sourceWriter.println("}");

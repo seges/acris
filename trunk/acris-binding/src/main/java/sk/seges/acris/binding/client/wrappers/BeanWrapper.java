@@ -61,7 +61,7 @@ public interface BeanWrapper<T> extends IObservableObject {
 	 * wrapped bean.
 	 * 
 	 * <pre>
-	 * @code setAttribute("name","test")}
+	 * @code setBeanAttribute("name","test")}
 	 * </pre>
 	 * 
 	 * will call:
