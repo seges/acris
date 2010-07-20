@@ -1,0 +1,8 @@
+<module>
+	<inherits name="sk.seges.acris.json.JSON" />
+
+	<source path="facebook"/>
+
+	<entry-point class="sk.seges.acris.json.client.facebook.ShowFacebookData" />
+
+</module>

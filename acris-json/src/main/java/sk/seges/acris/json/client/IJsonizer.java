@@ -12,7 +12,7 @@ public interface IJsonizer {
 	<T> T fromJson(JSONValue jsonValue, T instance);
 
 	<T> T fromJson(JSONValue jsonValue, Class<T> clazz);
-
+ 
 	<T> T fromJson(String json, Class<T> clazz);
 
 	<T> T fromJson(String json, String field, Class<T> clazz);
