@@ -39,6 +39,8 @@ import sk.seges.acris.core.jsr269.AbstractConfigurableProcessor;
 public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 	private static final String DEFAULT_CONFIG_FILE_LOCATION = "/META-INF/bean-wrapper.properties";
 
+	public static final String BEAN_WRAPPER_SUFFIX = "BeanWrapper";
+	
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
@@ -55,9 +57,9 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 		try {
 			Name fqnElement = ((TypeElement) element).getQualifiedName();
 
-			String fqn = fqnElement.toString() + "BeanWrapper";
+			String fqn = fqnElement.toString() + BEAN_WRAPPER_SUFFIX;
 			String packageName = fqn.substring(0, fqn.lastIndexOf("."));
-			String simpleName = element.getSimpleName() + "BeanWrapper";
+			String simpleName = element.getSimpleName() + BEAN_WRAPPER_SUFFIX;
 
 			JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(fqn, element);
 			OutputStream os = createSourceFile.openOutputStream();
