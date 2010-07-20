@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-parent</artifactId>	
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>AcrIS Parent</name>
 
 	<parent>
@@ -216,10 +216,4 @@
 	      		</plugin>
 		</plugins>
 	</build>
-
-  <scm>
-    <connection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.0.0</connection>
-    <developerConnection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.0.0</developerConnection>
-    <url>https://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.0.0</url>
-  </scm>
 </project>
