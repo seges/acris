@@ -5,7 +5,8 @@
 || 0.9.0 || 01.07.2010 || Release Candidate 1 ||
 || 1.0.0 || 20.07.2010 || Release ||
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.0.1 1.0.1] || TBD        || Bugfixing ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.0 1.1.0] || TBD        ||  Next Features release ||
+|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.0 1.1.0] || TBD        ||  Hladný Hadík release ||
+|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.2.0 1.2.0] || TBD        ||  Malý Macík release ||
 
 = Organization of the development =
 
