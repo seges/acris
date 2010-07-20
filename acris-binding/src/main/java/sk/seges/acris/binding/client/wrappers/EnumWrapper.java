@@ -30,7 +30,7 @@ public class EnumWrapper implements BeanWrapper<Enum<?>>, Serializable {
 	}
 
 	/* (non-Javadoc)
-	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#setAttribute(java.lang.String, java.lang.Object)
+	 * @see sk.seges.acris.binding.client.wrappers.BeanWrapper#setBeanAttribute(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public void setBeanAttribute(String attr, Object value) {
