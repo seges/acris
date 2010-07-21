@@ -7,6 +7,7 @@ import java.util.Set;
 import net.sf.gilead.pojo.java5.LightEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.Authentication;
 import org.springframework.security.acls.AccessControlEntry;
 import org.springframework.security.acls.MutableAcl;
@@ -50,6 +51,7 @@ public class AclMaintainer {
 	private MutableAclService aclService;
 
 	@Autowired
+	@Qualifier(value = "aclRecordDao")
 	private IAclRecordDao aclEntryDao;
 	
     protected AclCache aclCache;

@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.acls.sid.GrantedAuthoritySid;
 import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
@@ -24,6 +25,7 @@ import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
 @Repository
+@Qualifier(value = "aclRecordDao")
 public class AclRecordDao extends AbstractHibernateCRUD<AclEntry> implements IAclRecordDao {
 
 	public AclRecordDao() {

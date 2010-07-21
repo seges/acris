@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.acls.AccessControlEntry;
 import org.springframework.security.acls.Acl;
 import org.springframework.security.acls.AclService;
@@ -23,14 +24,14 @@ import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
 import org.springframework.security.util.FieldUtils;
 
-import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
 import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
+import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
 import sk.seges.acris.security.server.acl.dao.IAclSecuredClassDescriptionDao;
 import sk.seges.acris.security.server.acl.dao.IAclSidDao;
-import sk.seges.acris.security.server.acl.domain.AclSid;
 import sk.seges.acris.security.server.acl.domain.AclEntry;
 import sk.seges.acris.security.server.acl.domain.AclSecuredClassDescription;
 import sk.seges.acris.security.server.acl.domain.AclSecuredObjectIdentity;
+import sk.seges.acris.security.server.acl.domain.AclSid;
 
 
 public class HibernateAclService implements AclService {
@@ -44,6 +45,7 @@ public class HibernateAclService implements AclService {
     protected AuditLogger auditLogger;
 
 	@Autowired
+	@Qualifier(value = "aclRecordDao")
 	protected IAclRecordDao aclEntryDao;
 
 	@Autowired
