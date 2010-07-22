@@ -101,7 +101,7 @@ public class AclMaintainer {
                 continue;
             }
 	        ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(superClass, securedObject.getId());
-	        aclEntryDao.deleteByIdentityIdAndSid(securedObject, sid);
+	        aclEntryDao.deleteByIdentityIdAndSid(securedObject, sid, superClass.getName());
 	        aclCache.evictFromCache(objectIdentity);
 	        aclService.readAclById(objectIdentity); //update cache
 	        

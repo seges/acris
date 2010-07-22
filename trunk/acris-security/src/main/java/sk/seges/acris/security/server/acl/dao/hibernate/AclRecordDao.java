@@ -56,13 +56,17 @@ public class AclRecordDao extends AbstractHibernateCRUD<AclEntry> implements IAc
         return findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
     }
 
-	@SuppressWarnings("unchecked")
 	@Transactional
     public void deleteByIdentityIdAndSid(ISecuredObject securedObject, Sid sid) {
-
+		deleteByIdentityIdAndSid(securedObject, sid, securedObject.getClass().getName());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+    public void deleteByIdentityIdAndSid(ISecuredObject securedObject, Sid sid, String className) {
 		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
 		query.setParameter("objectIdentityId", securedObject.getId());
-		query.setParameter("classname", securedObject.getClass().getName());
+		query.setParameter("classname", className);
 		
 		if (sid instanceof PrincipalSid) {
 			query.setParameter("sid", ((PrincipalSid)sid).getPrincipal());
