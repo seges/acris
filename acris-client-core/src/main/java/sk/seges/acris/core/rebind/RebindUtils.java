@@ -287,37 +287,37 @@ public class RebindUtils {
 	 * superclass
 	 */
 	public static JClassType getGenericsFromSuperclassType(JClassType classType,
-			JClassType[] parametrizedTypes, int position) throws NotFoundException {
+			/*JClassType[] parametrizedTypes, */int position) throws NotFoundException {
 		JClassType superclassType = classType.getSuperclass();
 
 		if (superclassType == null) {
-			String parametrizedTypesText = "[";
+//			String parametrizedTypesText = "[";
+//
+//			int index = 0;
+//			for (JClassType parametrizedType : parametrizedTypes) {
+//				if (index > 0) {
+//					parametrizedTypesText += ", ";
+//				}
+//				parametrizedTypesText += parametrizedType.getQualifiedSourceName();
+//				index++;
+//			}
 
-			int index = 0;
-			for (JClassType parametrizedType : parametrizedTypes) {
-				if (index > 0) {
-					parametrizedTypesText += ", ";
-				}
-				parametrizedTypesText += parametrizedType.getQualifiedSourceName();
-				index++;
-			}
-
-			parametrizedTypesText += "]";
+//			parametrizedTypesText += "]";
 
 			throw new NotFoundException("Unable to find generics in type " + classType
-					+ ", where parametrized types are " + parametrizedTypesText + " on position " + position);
+					+ /*", where parametrized types are " + parametrizedTypesText +*/ " on position " + position);
 		}
 
 		if (superclassType instanceof JParameterizedType) {
 			JParameterizedType paramType = (JParameterizedType) superclassType;
-			for (JClassType parametrizedType : parametrizedTypes) {
-				if (paramType.getErasedType().equals(parametrizedType.getErasedType())) {
+//			for (JClassType parametrizedType : parametrizedTypes) {
+//				if (paramType.getErasedType().equals(parametrizedType.getErasedType())) {
 					return paramType.getTypeArgs()[position];
-				}
-			}
+//				}
+//			}
 		}
 
-		return getGenericsFromSuperclassType(superclassType, parametrizedTypes, position);
+		return getGenericsFromSuperclassType(superclassType/*, parametrizedTypes*/, position);
 	}
 
 	public static String getComparableMethodDeclaration(JMethod method) {
