@@ -10,6 +10,9 @@
 	<!-- BeansBinding should inherit from GWTx so it is not necessary to inherit also from GWTx -->
 	<inherits name='org.gwt.beansbinding.BeansBinding' />
 
+	<!-- Validation -->
+	<inherits name="com.google.gwt.validation.Validation"/>
+
 	<source path="client"/>
 	
 	<!-- Beans binding initialization -->
@@ -25,4 +28,12 @@
 	<replace-with class="sk.seges.acris.binding.client.wrappers.EnumWrapper">
     	<when-type-assignable class="java.lang.Enum" />
 	</replace-with>		
+
+	<!--  fill introspector's content with bean infos for all wrappers -->
+    <generate-with
+		class="sk.seges.acris.binding.rebind.binding.BeanWrapperIntrospectorGenerator">
+		<when-type-assignable
+			class="sk.seges.acris.binding.client.init.BeanWrapperIntrospector"/>
+	</generate-with>
+
 </module>

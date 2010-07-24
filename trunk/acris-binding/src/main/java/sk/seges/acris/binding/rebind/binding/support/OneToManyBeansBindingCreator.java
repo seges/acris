@@ -7,6 +7,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.BindingGroup;
 
+import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.acris.binding.client.annotations.BindingField;
 import sk.seges.acris.binding.client.annotations.BindingSpecLoader;
 import sk.seges.acris.binding.client.providers.annotations.OneToMany;
@@ -14,7 +15,6 @@ import sk.seges.acris.binding.client.providers.support.BoundListAsyncCallback;
 import sk.seges.acris.binding.client.providers.support.LoaderInitializationHandler;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.bean.PropertyResolver;
-import sk.seges.acris.binding.rebind.binding.BeanBindingCreator;
 import sk.seges.acris.binding.rebind.loader.DefaultLoaderCreatorFactory;
 import sk.seges.acris.binding.rebind.loader.FieldSpecLoaderCreator;
 import sk.seges.acris.binding.rebind.loader.ILoaderCreator;
@@ -22,8 +22,8 @@ import sk.seges.acris.binding.rebind.loader.StaticListLoaderCreator;
 import sk.seges.sesam.dao.ICallback;
 import sk.seges.sesam.dao.PagedResult;
 
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.TreeLogger.Type;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 
@@ -116,12 +116,12 @@ class OneToManyBeansBindingCreator extends AbstractBindingCreator<OneToMany> imp
 		if(loaderName != null) {
 			String callbackName = loaderName + "Callback";
 			
-			sourceWriter.println("final " + ICallback.class.getName() + "<PagedResult<List<" + classTypeName + ">>> " + callbackName + " = new " + BoundListAsyncCallback.class.getName() + "<" + classTypeName + ">(" + bindingHolder + ", \"" + targetBeanProperty + "\", "
+			sourceWriter.println("final " + ICallback.class.getName() + "<" + PagedResult.class.getSimpleName() + "<" + List.class.getSimpleName() + "<" + classTypeName + ">>> " + callbackName + " = new " + BoundListAsyncCallback.class.getName() + "<" + classTypeName + ">(" + bindingHolder + ", \"" + targetBeanProperty + "\", "
 					+ field.getName() + ", " + itemText + ", " + itemValue + ") {");
 			sourceWriter.indent();
-			sourceWriter.println("protected BeanWrapper<" + classTypeName + "> createWrapper() {");
+			sourceWriter.println("protected " + BeanWrapper.class.getSimpleName() + "<" + classTypeName + "> createWrapper() {");
 			sourceWriter.indent();
-			sourceWriter.println("return GWT.create(" + classTypeName + BeanBindingCreator.WRAPPER_SUFFIX + ".class);");
+			sourceWriter.println("return GWT.create(" + namingStrategy.getBeanWrapperName(classTypeName) + ".class);");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
 			sourceWriter.outdent();

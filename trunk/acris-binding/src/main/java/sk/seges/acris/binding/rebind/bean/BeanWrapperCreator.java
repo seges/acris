@@ -15,6 +15,7 @@ import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
+import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.sesam.domain.IObservableObject;
 
@@ -23,7 +24,6 @@ import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
@@ -32,7 +32,6 @@ import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-import com.google.gwt.validation.rebind.TypeStrategy;
 
 /**
  * @author eldzi
@@ -40,7 +39,6 @@ import com.google.gwt.validation.rebind.TypeStrategy;
  */
 public class BeanWrapperCreator {
 
-	protected static final String WRAPPER_IMPL_SUFFIX = "Impl";
 	protected static final String NESTED_BEAN_WRAPPER = "__nested";
 	protected static final String BEAN_WRAPPER_CONTENT = "__content";
 
@@ -52,12 +50,12 @@ public class BeanWrapperCreator {
 	protected String superclassName;
 	private List<String> wrappedFields = new ArrayList<String>();
 
-	private TypeStrategy typeStrategy;
+	private BindingNamingStrategy typeStrategy;
 
 	protected JClassType beanType;
 	protected JClassType classType;
 
-	public BeanWrapperCreator(TreeLogger logger, GeneratorContext context, String typeName, TypeStrategy typeStrategy) {
+	public BeanWrapperCreator(TreeLogger logger, GeneratorContext context, String typeName, BindingNamingStrategy typeStrategy) {
 		this.logger = logger;
 		this.context = context;
 		this.typeOracle = context.getTypeOracle();
@@ -116,7 +114,7 @@ public class BeanWrapperCreator {
 		SourceWriter source = getSourceWriter(classType);
 
 		if (source == null) {
-			return classType.getParameterizedQualifiedSourceName() + getWrapperResultSuffix();
+			return typeStrategy.getBeanWrapperImplementationName(classType.getParameterizedQualifiedSourceName());
 		}
 
 		List<JMethod> allMethods = new ArrayList<JMethod>();
@@ -167,11 +165,7 @@ public class BeanWrapperCreator {
 			throw new RuntimeException(e);
 		}
 
-		return classType.getParameterizedQualifiedSourceName() + getWrapperResultSuffix();
-	}
-
-	protected String getWrapperResultSuffix() {
-		return WRAPPER_IMPL_SUFFIX;
+		return typeStrategy.getBeanWrapperImplementationName(classType.getParameterizedQualifiedSourceName());
 	}
 
 	public void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType) throws NotFoundException {
@@ -381,14 +375,6 @@ public class BeanWrapperCreator {
 		source.println("}");
 	}
 
-	private JField findDeclaredField(JClassType classType, String fieldName) {
-		JField field = classType.findField(fieldName);
-		if (field == null && classType.getSuperclass() != null) {
-			return findDeclaredField(classType.getSuperclass(), fieldName);
-		}
-		return field;
-	}
-
 	protected void generateGetterForPrimitive(SourceWriter source, JMethod methode) {
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
@@ -540,7 +526,7 @@ public class BeanWrapperCreator {
 	 */
 	protected SourceWriter getSourceWriter(JClassType classType) {
 		String packageName = classType.getPackage().getName();
-		String simpleName = classType.getSimpleSourceName() + getWrapperResultSuffix();
+		String simpleName = typeStrategy.getBeanWrapperImplementationName(classType.getSimpleSourceName());
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, simpleName);
 
 		composer.setSuperclass(getSuperclassName());

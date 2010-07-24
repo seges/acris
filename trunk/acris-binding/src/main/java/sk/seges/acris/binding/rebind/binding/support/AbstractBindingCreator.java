@@ -4,6 +4,7 @@ import java.beans.IntrospectionException;
 import java.lang.annotation.Annotation;
 
 import sk.seges.acris.binding.client.annotations.BindingField;
+import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -35,7 +36,12 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 	protected String packageName;
 	protected JClassType parentBeanClassType;
 	protected String bindingHolder;
-	
+
+	/**
+	 * Naming strategy.
+	 */
+	protected BindingNamingStrategy namingStrategy;
+
 	protected AbstractBindingCreator() {
 	}
 	
@@ -64,8 +70,9 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 		this.sourceWriter = sourceWriter;
 		this.logger = logger;
 	}
-
-	void setBindingContext(JClassType parentBeanClassType, String packageName) {
+	
+	void setBindingContext(JClassType parentBeanClassType, String packageName, BindingNamingStrategy namingStrategy) {
+		this.namingStrategy = namingStrategy;
 		this.packageName = packageName;
 		this.parentBeanClassType = parentBeanClassType;
 	}
@@ -106,7 +113,7 @@ abstract class AbstractBindingCreator<T extends Annotation> implements IBindingC
 		BindingComponent bindingComponent = getBindingComponent(classType);
 		
 		if (bindingComponent == null) {
-			logger.log(Type.ERROR, "Unable to find binding component for " + classType.getQualifiedSourceName() + ". Did you forgot to create an adapter provider?");
+			logger.log(Type.ERROR, "Unable to find binding component for " + (classType == null ? "null" : classType.getQualifiedSourceName()) + ". Did you forgot to create an adapter provider?");
 			throw new UnableToCompleteException();
 		}
 		
