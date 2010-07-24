@@ -6,12 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sk.seges.acris.binding.client.providers.support.AbstractBindingChangeHandlerAdapterProvider;
-import sk.seges.acris.binding.client.providers.support.AbstractBindingChangeListenerAdapterProvider;
-import sk.seges.acris.binding.client.providers.support.AbstractBindingClickHandlerAdapterProvider;
-import sk.seges.acris.binding.client.providers.support.AbstractBindingValueChangeHandlerAdapterProvider;
 import sk.seges.acris.binding.client.providers.support.generic.IBindingBeanAdapterProvider;
 import sk.seges.acris.binding.rebind.GeneratorException;
+import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
 import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -32,20 +29,19 @@ public class BindingCreatorFactory {
 		registerBindingCreator(new OneToManyBeansBindingCreator());
 		registerBindingCreator(new ManyToManyBindingCreator());
 	}
-	
+
 	private static Map<String, BindingComponent> supportedTypes;
 
 	public static BindingComponent getBindingComponent(JClassType classType) {
 		return supportedTypes.get(classType.getQualifiedSourceName());
 	}
 
-	public static AbstractBindingCreator<? extends Annotation> getBindingCreator(
-			JField field) throws UnableToCompleteException {
+	public static AbstractBindingCreator<? extends Annotation> getBindingCreator(JField field) throws UnableToCompleteException {
 
 		if (field == null) {
 			return null;
 		}
-		
+
 		for (AbstractBindingCreator<? extends Annotation> abstractBindingCreator : bindingCreators) {
 			if (abstractBindingCreator.isSupported(field)) {
 				return abstractBindingCreator;
@@ -61,9 +57,9 @@ public class BindingCreatorFactory {
 		}
 	}
 
-	public static void setBindingContext(JClassType parentBeanClassType, String packageName) {
+	public static void setBindingContext(JClassType parentBeanClassType, String packageName, BindingNamingStrategy namingStrategy) {
 		for (AbstractBindingCreator<? extends Annotation> abstractBindingCreator : bindingCreators) {
-			abstractBindingCreator.setBindingContext(parentBeanClassType, packageName);
+			abstractBindingCreator.setBindingContext(parentBeanClassType, packageName, namingStrategy);
 		}
 	}
 
@@ -71,15 +67,13 @@ public class BindingCreatorFactory {
 		for (AbstractBindingCreator<? extends Annotation> abstractBindingCreator : bindingCreators) {
 			abstractBindingCreator.setBindingHolder(bindingHolderField);
 		}
-	}	
-	
-	static void registerBindingCreator(
-			AbstractBindingCreator<? extends Annotation> bindingCreator) {
+	}
+
+	static void registerBindingCreator(AbstractBindingCreator<? extends Annotation> bindingCreator) {
 		bindingCreators.add(bindingCreator);
 	}
 
-	public static <M extends Annotation> void fillSupportedTypes(TypeOracle typeOracle)
-			throws GeneratorException {
+	public static <M extends Annotation> void fillSupportedTypes(TypeOracle typeOracle) throws GeneratorException {
 
 		if (supportedTypes != null) {
 			return;
@@ -89,11 +83,9 @@ public class BindingCreatorFactory {
 
 		JClassType type = null;
 		try {
-			type = typeOracle.getType(IBindingBeanAdapterProvider.class
-					.getName());
+			type = typeOracle.getType(IBindingBeanAdapterProvider.class.getName());
 		} catch (NotFoundException e) {
-			throw new GeneratorException("Cannot find class "
-					+ IBindingBeanAdapterProvider.class.getName(), e);
+			throw new GeneratorException("Cannot find class " + IBindingBeanAdapterProvider.class.getName(), e);
 		}
 
 		JClassType[] types = type.getSubtypes();
@@ -104,19 +96,22 @@ public class BindingCreatorFactory {
 			supportedAnnotations.add(bindingCreator.getSupportedClass());
 		}
 
-		JClassType changeHandlerClassType = typeOracle
-			.findType(AbstractBindingChangeHandlerAdapterProvider.class
-					.getName());
-		JClassType valueChangeHandlerClassType = typeOracle
-			.findType(AbstractBindingValueChangeHandlerAdapterProvider.class
-					.getName());
-		JClassType depProviderClassType = typeOracle
-				.findType(AbstractBindingChangeListenerAdapterProvider.class
-						.getName());
-		JClassType clickHandlerClassType = typeOracle
-			.findType(AbstractBindingClickHandlerAdapterProvider.class
-				.getName());
+//		ClassFinder classFinder = new ClassFinder();
+//		Vector<Class<?>> bindingAdapterProviders = classFinder.findSubclasses(IBindingBeanAdapterProvider.class.getName());
 
+//		JClassType changeHandlerClassType = typeOracle.findType(AbstractBindingChangeHandlerAdapterProvider.class.getName());
+//		JClassType valueChangeHandlerClassType = typeOracle.findType(AbstractBindingValueChangeHandlerAdapterProvider.class.getName());
+//		JClassType depProviderClassType = typeOracle.findType(AbstractBindingChangeListenerAdapterProvider.class.getName());
+//		JClassType clickHandlerClassType = typeOracle.findType(AbstractBindingClickHandlerAdapterProvider.class.getName());
+
+//		JClassType[] bindingAdapterProviderClassTypes = new JClassType[bindingAdapterProviders.size()];
+//		
+//		int i = 0;
+//		for (Class<?> clazz : bindingAdapterProviders) {
+//			bindingAdapterProviderClassTypes[i] = typeOracle.findType(clazz.getName());
+//			i++;
+//		}
+		
 		for (JClassType classType : types) {
 			if (classType.isAbstract()) {
 				continue;
@@ -129,29 +124,22 @@ public class BindingCreatorFactory {
 			}
 
 			JClassType widgetClassType = null;
-//TODO
 			try {
-				widgetClassType = RebindUtils.getGenericsFromSuperclassType(
-						classType, new JClassType[] { valueChangeHandlerClassType, changeHandlerClassType,
-								depProviderClassType, clickHandlerClassType }, 0);
+//				widgetClassType = RebindUtils.getGenericsFromSuperclassType(classType, new JClassType[] {valueChangeHandlerClassType, changeHandlerClassType,
+//						depProviderClassType, clickHandlerClassType}, 0);
+				widgetClassType = RebindUtils.getGenericsFromSuperclassType(classType, 0);
 
-				supportedTypes.put(widgetClassType.getQualifiedSourceName(),
-						new BindingComponent(property,
-								getBindingType(classType)));
+				supportedTypes.put(widgetClassType.getQualifiedSourceName(), new BindingComponent(property, getBindingType(classType)));
 			} catch (NotFoundException e) {
-				System.out
-						.println("Cannot extract generics from superclass of class "
-								+ classType.getQualifiedSourceName());
+				System.out.println("Cannot extract generics from superclass of class " + classType.getQualifiedSourceName());
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private static Class<? extends Annotation> getBindingType(
-			JClassType classType) {
+	private static Class<? extends Annotation> getBindingType(JClassType classType) {
 		for (AbstractBindingCreator<? extends Annotation> bindingCreator : bindingCreators) {
-			Class<? extends Annotation> clazz = bindingCreator
-					.getSupportedClass();
+			Class<? extends Annotation> clazz = bindingCreator.getSupportedClass();
 
 			if (classType.getAnnotation(clazz) != null) {
 				return clazz;
@@ -161,11 +149,9 @@ public class BindingCreatorFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <M extends Annotation> String getBindingProperty(
-			JClassType classType) {
+	private static <M extends Annotation> String getBindingProperty(JClassType classType) {
 		for (AbstractBindingCreator<? extends Annotation> bindingCreator : bindingCreators) {
-			Annotation annotation = classType.getAnnotation(bindingCreator
-					.getSupportedClass());
+			Annotation annotation = classType.getAnnotation(bindingCreator.getSupportedClass());
 			if (annotation == null) {
 				continue;
 			}
