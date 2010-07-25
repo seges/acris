@@ -150,3 +150,20 @@ public class CompanyDataLoader implements IAsyncDataLoader<List<Company>> {
 	}
 }
 }}}
+
+=== Adapter providers ===
+
+When you are binding model with UI components, you have to register adapter providers in order to bound values to/from UI components. For example, if you are going to bind String value with TextBox, you have to register TextBoxBaseAdapterProvider which obtain value from TextBox component and set it into String value and also provides binding in another direction - get String value and sets it into UI component after each value change.
+
+So, the manual registration should looks like this:
+{{{
+BeanAdapterFactory.addProvider(new TextFieldAdapterProvider());
+}}}
+
+You have also another posibility - register all available adapter providers in one step:
+{{{
+AdaptersRegistration registration = GWT.create(AdaptersRegistration.class);
+registration.registerAllAdapters();
+}}}
+
+In this way, you don't have to register every adapter provider manually, but it should have a performance loss in case of many adapater providers.
