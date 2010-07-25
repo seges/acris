@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata xsi:schemaLocation="http://maven.apache.org/METADATA/1.0.0 http://maven.apache.org/xsd/metadata-1.0.0.xsd" xmlns="http://maven.apache.org/METADATA/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<metadata>
   <groupId>sk.seges.acris</groupId>
   <artifactId>acris-security</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <versioning>
     <versions>
       <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.1-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20100627160946</lastUpdated>
+    <lastUpdated>20100725162553</lastUpdated>
   </versioning>
 </metadata>
