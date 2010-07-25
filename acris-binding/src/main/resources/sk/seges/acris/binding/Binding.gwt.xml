@@ -36,4 +36,10 @@
 			class="sk.seges.acris.binding.client.init.BeanWrapperIntrospector"/>
 	</generate-with>
 
+	<!-- Adapter registrator -->
+    <generate-with
+		class="sk.seges.acris.binding.rebind.binding.registration.AdapterRegistrationGenerator">
+		<when-type-assignable
+			class="sk.seges.acris.binding.client.init.AdaptersRegistration"/>
+	</generate-with>
 </module>

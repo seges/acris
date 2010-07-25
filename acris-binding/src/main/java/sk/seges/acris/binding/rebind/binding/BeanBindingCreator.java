@@ -1,7 +1,8 @@
 package sk.seges.acris.binding.rebind.binding;
 
-import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
@@ -15,6 +16,7 @@ import sk.seges.acris.binding.client.holder.validation.ValidatableBeanBinding;
 import sk.seges.acris.binding.client.holder.validation.ValidatableBindingHolder;
 import sk.seges.acris.binding.client.holder.validation.ValidationHighligther;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
+import sk.seges.acris.binding.rebind.AbstractCreator;
 import sk.seges.acris.binding.rebind.GeneratorException;
 import sk.seges.acris.binding.rebind.binding.support.BindingCreatorFactory;
 import sk.seges.acris.binding.rebind.binding.support.IBindingCreator;
@@ -24,28 +26,21 @@ import sk.seges.acris.binding.rebind.loader.EmptyLoaderCreator;
 import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.validation.client.InvalidConstraint;
 
-public class BeanBindingCreator {
+public class BeanBindingCreator extends AbstractCreator {
 
 	private static final String BINDING_HOLDER_VAR = "_bindingHolder";
 
 	private String bindingHolder = null;
 
-	private TypeOracle typeOracle;
-
 	private JClassType bindingBeanClassType;
-	private String packageName;
 
 	private boolean validationEnabled = false;
 
@@ -62,55 +57,20 @@ public class BeanBindingCreator {
 		DefaultLoaderCreatorFactory.setDefaultLoaderCreator(EmptyLoaderCreator.class);
 	}
 
-	public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
+	protected String getOutputSimpleName() {
+		return namingStrategy.getBeansBinderName(classType.getSimpleSourceName());
+	}
 
-		setDefaultLoaderCreator();
-
-		this.typeOracle = context.getTypeOracle();
-
-		assert typeOracle != null;
-
-		JClassType classType = null;
-		try {
-			classType = typeOracle.getType(typeName);
-		} catch (NotFoundException e) {
-			logger.log(Type.ERROR, "Unable to find classtype for " + typeName);
-			throw new UnableToCompleteException();
-		}
-
-		packageName = classType.getPackage().getName();
-
-		try {
-			bindingBeanClassType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IBeanBindingHolder.class.getName()), 0);
-		} catch (NotFoundException e) {
-			logger.log(Type.ERROR, "Unable to extract generic type class from interface");
-			throw new UnableToCompleteException();
-		}
-
-		String className = namingStrategy.getBeansBinderName(classType.getSimpleSourceName());
-
-		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, className);
-
-		PrintWriter printWriter = null;
-		printWriter = context.tryCreate(logger, packageName, className);
-
-		if (printWriter == null) {
-			return packageName + "." + className;
-		}
-
-		try {
-			BindingCreatorFactory.fillSupportedTypes(context.getTypeOracle());
-		} catch (GeneratorException e) {
-			logger.log(Type.ERROR, e.getMessage());
-			throw new UnableToCompleteException();
-		}
-
+	protected String[] getImports() throws UnableToCompleteException {
 		String[] imports = new String[] {UpdateStrategy.class.getCanonicalName(), GWT.class.getCanonicalName(), BindingHolder.class.getCanonicalName(),
 				BeanWrapper.class.getCanonicalName(), bindingBeanClassType.getQualifiedSourceName(),
 				namingStrategy.getBeanWrapperName(bindingBeanClassType.getQualifiedSourceName())};
 
-		//initialize binding context for all related creators
-		BindingCreatorFactory.setBindingContext(bindingBeanClassType, packageName, namingStrategy);
+		List<String> result = new ArrayList<String>();
+
+		for (String importName : imports) {
+			result.add(importName);
+		}
 
 		//Adding biding specific imports
 		for (JField field : classType.getFields()) {
@@ -125,30 +85,56 @@ public class BeanBindingCreator {
 				String[] bindingImports = bindingGenerator.getImports(field, bindingFieldAnnotation);
 
 				for (String imp : bindingImports) {
-					composer.addImport(imp);
+					result.add(imp);
 				}
 			}
 		}
 
-		for (String imp : imports) {
-			composer.addImport(imp);
+		return result.toArray(new String[] {});
+	}
+
+	protected String[] getImplementedInterfaces() {
+		if (validationEnabled) {
+			return new String[] {ValidatableBeanBinding.class.getName() + "<" + bindingBeanClassType.getName() + ">"};
 		}
 
-		composer.setSuperclass(typeName);
+		return new String[] {};
+	}
+
+	protected String getSuperclassName() {
+		return typeName;
+	}
+
+	@Override
+	protected void initialize() throws UnableToCompleteException {
+		try {
+			bindingBeanClassType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IBeanBindingHolder.class.getName()), 0);
+		} catch (NotFoundException e) {
+			logger.log(Type.ERROR, "Unable to extract generic type class from interface");
+			throw new UnableToCompleteException();
+		}
 
 		validationEnabled = isValidationEnabled(classType.getAnnotation(BindingFieldsBase.class));
 
-		if (validationEnabled) {
-			composer.addImplementedInterface(ValidatableBeanBinding.class.getName() + "<" + bindingBeanClassType.getName() + ">");
-		}
+		setDefaultLoaderCreator();
 
-		SourceWriter sourceWriter = null;
-		sourceWriter = composer.createSourceWriter(context, printWriter);
+		try {
+			BindingCreatorFactory.fillSupportedTypes(context.getTypeOracle());
+		} catch (GeneratorException e) {
+			logger.log(Type.ERROR, e.getMessage());
+			throw new UnableToCompleteException();
+		}
+	}
+
+	protected void doGenerate(SourceWriter sourceWriter) throws UnableToCompleteException {
+
+		//initialize binding context for all related creators
+		BindingCreatorFactory.setBindingContext(bindingBeanClassType, packageName, namingStrategy);
 
 		//initialize generator context for all related creators
 		BindingCreatorFactory.setGeneratorContext(context, sourceWriter, logger);
 
-		generateConstructor(sourceWriter, classType, className);
+		generateConstructor(sourceWriter, classType);
 		getnerateBindingMethods(sourceWriter, bindingBeanClassType);
 		generateValidationBeanBindingMethods(sourceWriter, classType, bindingBeanClassType);
 
@@ -158,13 +144,6 @@ public class BeanBindingCreator {
 		generateFields(sourceWriter, classType);
 
 		generateOnLoadMethod(sourceWriter, classType);
-
-		sourceWriter.outdent();
-		sourceWriter.println("}");
-
-		context.commit(logger, printWriter);
-
-		return packageName + "." + className;
 	}
 
 	private void generateValidationBeanBindingMethods(SourceWriter sw, JClassType classType, JClassType bindingBeanClassType) {
@@ -223,11 +202,11 @@ public class BeanBindingCreator {
 		return true;
 	}
 
-	private void generateConstructor(SourceWriter sourceWriter, JClassType classType, String className) {
+	private void generateConstructor(SourceWriter sourceWriter, JClassType classType) {
 
 		sourceWriter.println("private " + BindingHolder.class.getSimpleName() + " " + BINDING_HOLDER_VAR + ";");
 
-		sourceWriter.println("public " + className + "() {");
+		sourceWriter.println("public " + getOutputSimpleName() + "() {");
 		sourceWriter.indent();
 		sourceWriter.println("super();");
 

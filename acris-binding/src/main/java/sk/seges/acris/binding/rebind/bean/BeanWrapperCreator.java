@@ -5,7 +5,6 @@ package sk.seges.acris.binding.rebind.bean;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,13 +14,14 @@ import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
+import sk.seges.acris.binding.rebind.AbstractCreator;
 import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.sesam.domain.IObservableObject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -29,39 +29,26 @@ import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * @author eldzi
  * @author fat
  */
-public class BeanWrapperCreator {
+public class BeanWrapperCreator extends AbstractCreator {
 
 	protected static final String NESTED_BEAN_WRAPPER = "__nested";
 	protected static final String BEAN_WRAPPER_CONTENT = "__content";
 
-	protected TreeLogger logger;
-	protected GeneratorContext context;
-	protected TypeOracle typeOracle;
-
-	protected String typeName;
 	protected String superclassName;
 	private List<String> wrappedFields = new ArrayList<String>();
 
 	private BindingNamingStrategy typeStrategy;
 
 	protected JClassType beanType;
-	protected JClassType classType;
 
-	public BeanWrapperCreator(TreeLogger logger, GeneratorContext context, String typeName, BindingNamingStrategy typeStrategy) {
-		this.logger = logger;
-		this.context = context;
-		this.typeOracle = context.getTypeOracle();
-		this.typeName = typeName;
+	public BeanWrapperCreator(BindingNamingStrategy typeStrategy) {
 		this.typeStrategy = typeStrategy;
-		typeStrategy.setGeneratorContext(context);
 	}
 
 	/**
@@ -72,17 +59,19 @@ public class BeanWrapperCreator {
 		return beanType.getQualifiedSourceName();
 	}
 
-	public String createWrapper() throws UnableToCompleteException {
+	protected String getOutputSimpleName() {
+		return typeStrategy.getBeanWrapperImplementationName(classType.getSimpleSourceName());
+	}
+
+	@Override
+	protected void initialize() throws UnableToCompleteException {
+		typeStrategy.setGeneratorContext(context);
+		this.superclassName = suggestSuperclass(typeName);
+	}
+	
+	protected void doGenerate(SourceWriter sourceWriter) throws UnableToCompleteException {
 
 		wrappedFields.clear();
-
-		//Trying to find type name on the class path (This is the class processed by GWT.create(typeName))
-		try {
-			classType = typeOracle.getType(typeName);
-		} catch (NotFoundException e) {
-			logger.log(TreeLogger.ERROR, "Unable to find type name = " + typeName, e);
-			throw new UnableToCompleteException();
-		}
 
 		String beanTypeName = typeStrategy.getBeanTypeName(typeName);
 
@@ -98,8 +87,6 @@ public class BeanWrapperCreator {
 			throw new UnableToCompleteException();
 		}
 
-		this.superclassName = suggestSuperclass(typeName);
-
 		JClassType processingType = beanType;
 
 		JClassType objectType;
@@ -109,12 +96,6 @@ public class BeanWrapperCreator {
 		} catch (NotFoundException e) {
 			logger.log(TreeLogger.ERROR, "Undefined bean type (" + beanTypeName + " cannot be found on the classpath)", e);
 			throw new UnableToCompleteException();
-		}
-
-		SourceWriter source = getSourceWriter(classType);
-
-		if (source == null) {
-			return typeStrategy.getBeanWrapperImplementationName(classType.getParameterizedQualifiedSourceName());
 		}
 
 		List<JMethod> allMethods = new ArrayList<JMethod>();
@@ -160,12 +141,11 @@ public class BeanWrapperCreator {
 		JMethod[] methods = allMethods.toArray(new JMethod[0]);
 
 		try {
-			createWrapper(methods, simpleName, source, beanType);
+			createWrapper(methods, simpleName, sourceWriter, beanType);
 		} catch (NotFoundException e) {
-			throw new RuntimeException(e);
+			logger.log(Type.ERROR, "Unable to create wrapper for bean " + beanTypeName, e);
+			throw new UnableToCompleteException();
 		}
-
-		return typeStrategy.getBeanWrapperImplementationName(classType.getParameterizedQualifiedSourceName());
 	}
 
 	public void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType) throws NotFoundException {
@@ -494,64 +474,15 @@ public class BeanWrapperCreator {
 
 	protected String[] getImports() {
 		return new String[] {BeanWrapper.class.getCanonicalName(), IObservableObject.class.getCanonicalName(), PropertyChangeSupport.class.getCanonicalName(),
-				PropertyChangeListener.class.getCanonicalName(), GWT.class.getCanonicalName()};
+				PropertyChangeListener.class.getCanonicalName(), GWT.class.getCanonicalName(), classType.getQualifiedSourceName()};
 	}
 
 	protected String[] getImplementedInterfaces() {
-		return new String[] {HasPropertyChangeSupport.class.getCanonicalName()};
-	}
-
-	private String[] addUniqueToArray(String[] elements, String element) {
-		List<String> elementsList = new ArrayList<String>();
-
-		for (String el : elements) {
-			if (el.equals(element)) {
-				return elements;
-			}
-			elementsList.add(el);
-		}
-		elementsList.add(element);
-
-		return elementsList.toArray(new String[] {});
+		return new String[] {HasPropertyChangeSupport.class.getCanonicalName(), classType.getSimpleSourceName()};
 	}
 
 	protected String getSuperclassName() {
 		return superclassName;
-	}
-
-	/**
-	 * SourceWriter instantiation. Return null if the resource already exist.
-	 * 
-	 * @return sourceWriter
-	 */
-	protected SourceWriter getSourceWriter(JClassType classType) {
-		String packageName = classType.getPackage().getName();
-		String simpleName = typeStrategy.getBeanWrapperImplementationName(classType.getSimpleSourceName());
-		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, simpleName);
-
-		composer.setSuperclass(getSuperclassName());
-
-		String[] interfaces = getImplementedInterfaces();
-		interfaces = addUniqueToArray(interfaces, classType.getSimpleSourceName());
-
-		for (String interfaceName : interfaces) {
-			composer.addImplementedInterface(interfaceName);
-		}
-
-		String[] imports = getImports();
-		imports = addUniqueToArray(imports, classType.getQualifiedSourceName());
-
-		for (String importName : imports) {
-			composer.addImport(importName);
-		}
-
-		PrintWriter printWriter = context.tryCreate(logger, packageName, simpleName);
-
-		if (printWriter == null) {
-			return null;
-		}
-
-		return composer.createSourceWriter(context, printWriter);
 	}
 
 	protected String castToString(JType type, String value) {
