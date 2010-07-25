@@ -66,6 +66,16 @@ public class BeanWrapperCreator extends AbstractCreator {
 	@Override
 	protected void initialize() throws UnableToCompleteException {
 		typeStrategy.setGeneratorContext(context);
+
+		String beanTypeName = typeStrategy.getBeanTypeName(typeName);
+
+		try {
+			beanType = typeOracle.getType(beanTypeName);
+		} catch (NotFoundException e) {
+			logger.log(TreeLogger.ERROR, "Undefined bean type (" + beanTypeName + " cannot be found on the classpath)", e);
+			throw new UnableToCompleteException();
+		}
+
 		this.superclassName = suggestSuperclass(typeName);
 	}
 	
@@ -77,13 +87,6 @@ public class BeanWrapperCreator extends AbstractCreator {
 
 		if (beanTypeName == null) {
 			logger.log(TreeLogger.ERROR, "Unable to extract bean from type " + typeName);
-			throw new UnableToCompleteException();
-		}
-
-		try {
-			beanType = typeOracle.getType(beanTypeName);
-		} catch (NotFoundException e) {
-			logger.log(TreeLogger.ERROR, "Undefined bean type (" + beanTypeName + " cannot be found on the classpath)", e);
 			throw new UnableToCompleteException();
 		}
 
@@ -148,7 +151,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		}
 	}
 
-	public void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType) throws NotFoundException {
+	protected void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType) throws NotFoundException {
 		source.indent();
 		if (superclassName == null) {
 			source.println("private " + simpleName + " " + BEAN_WRAPPER_CONTENT + ";");
