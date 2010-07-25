@@ -25,10 +25,10 @@ public class BeanWrapperGenerator extends Generator {
 	 */
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context, String typeClass) throws UnableToCompleteException {
-		DefaultBindingNamingStrategy typeStrategy = new DefaultBindingNamingStrategy(
-				new InterfaceTypeNameStrategy(BeanWrapper.class, BeanWrapperProcessor.BEAN_WRAPPER_SUFFIX));
-		BeanWrapperCreator binder = new BeanWrapperCreator(logger, context, typeClass, typeStrategy);
-		String className = binder.createWrapper();
+		DefaultBindingNamingStrategy typeStrategy = new DefaultBindingNamingStrategy(new InterfaceTypeNameStrategy(BeanWrapper.class,
+				BeanWrapperProcessor.BEAN_WRAPPER_SUFFIX));
+		BeanWrapperCreator binder = new BeanWrapperCreator(typeStrategy);
+		String className = binder.generate(logger, context, typeClass);
 		return className;
 	}
 }
