@@ -107,12 +107,16 @@ public class BeanBindingCreator extends AbstractCreator {
 
 	@Override
 	protected void initialize() throws UnableToCompleteException {
+
 		try {
 			bindingBeanClassType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IBeanBindingHolder.class.getName()), 0);
 		} catch (NotFoundException e) {
 			logger.log(Type.ERROR, "Unable to extract generic type class from interface");
 			throw new UnableToCompleteException();
 		}
+
+		//initialize binding context for all related creators
+		BindingCreatorFactory.setBindingContext(bindingBeanClassType, packageName, namingStrategy);
 
 		validationEnabled = isValidationEnabled(classType.getAnnotation(BindingFieldsBase.class));
 
@@ -127,9 +131,6 @@ public class BeanBindingCreator extends AbstractCreator {
 	}
 
 	protected void doGenerate(SourceWriter sourceWriter) throws UnableToCompleteException {
-
-		//initialize binding context for all related creators
-		BindingCreatorFactory.setBindingContext(bindingBeanClassType, packageName, namingStrategy);
 
 		//initialize generator context for all related creators
 		BindingCreatorFactory.setGeneratorContext(context, sourceWriter, logger);
