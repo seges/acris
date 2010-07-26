@@ -13,6 +13,7 @@
     * [BeansBindingInExamplesPart1 Example no.1]
     * [BeansBindingInExamplesPart2 Form with validation]
     * [BeanWrappers Bean wrappers]
+    * [BeansBindingCollections Collections]
   * [Security Security]
     * [SecurityQuickStart Quick-start]
     * [SecurityConcept Concept]
