@@ -3,4 +3,4 @@
 
 = Architecture by example =
 
-[http://acris.googlecode.com/wiki/images/listboxbinding.png]
+[http://acris.googlecode.com/svn/wiki/images/listboxbinding.png]
