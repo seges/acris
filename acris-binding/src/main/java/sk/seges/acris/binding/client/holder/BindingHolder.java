@@ -32,6 +32,8 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     private UpdateStrategy updateStrategy;
     private BeanWrapper<T> beanWrapper;
 
+    private List<Binding> selectionGroup = new ArrayList<Binding>();
+
     protected List<BindingFieldInfo> bindingFieldInfos = new ArrayList<BindingFieldInfo>();
     
     private List<BindingHolderListener<T>> listeners = new ArrayList<BindingHolderListener<T>>();
@@ -109,6 +111,7 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     	final Binding selectionBinding = createBinding(sourceProperty, targetWidget, "selectedItem");
     	selectionBinding.setConverter(converter);
     	selectionBinding.bind();
+	selectionGroup.add(selectionBinding);
     	return selectionBinding;
     }
 
@@ -155,6 +158,9 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 			for (BindingGroup binding : asyncbindingGroups) {
 				binding.unbind();
 			}
+			for(Binding binding : selectionGroup) {
+				binding.unbind();
+			}
 			reloadBindings = true;
 		}
 		
@@ -165,6 +171,9 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 			for (BindingGroup binding : asyncbindingGroups) {
 				binding.bind();
 			}
+			for(Binding binding : selectionGroup) {
+				binding.bind();
+			}	
 		}
 	}
 	
