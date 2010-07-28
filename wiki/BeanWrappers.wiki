@@ -130,3 +130,7 @@ Bean wrapper generator has to be enabled in your GWT module:
 		</any>
 	</generate-with>
 }}}
+
+= Introspecting beans and wrappers =
+
+*TBW.*
