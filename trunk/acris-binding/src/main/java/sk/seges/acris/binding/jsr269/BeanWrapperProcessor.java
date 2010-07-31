@@ -6,8 +6,11 @@ package sk.seges.acris.binding.jsr269;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Generated;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -18,10 +21,13 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
@@ -91,6 +97,7 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 			TypeElement typeElement = (TypeElement) element;
 
 			Name beanElementName = ((TypeElement) element).getQualifiedName();
+			
 			String beanPackageName = beanElementName.toString().substring(0, beanElementName.toString().lastIndexOf("."));
 
 			Element enclosingElement = element.getEnclosingElement();
@@ -120,17 +127,18 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 			pw.println("@" + Generated.class.getCanonicalName() + "(\"" + BeanWrapperProcessor.class.getCanonicalName() + "\")");
 			pw.println("public interface " + simpleName + " extends " + BeanWrapper.class.getCanonicalName() + "<" + beanElementName.toString() + "> {");
 			pw.println();
-			//			pw.println("	public static " + SimpleClassMetaDescriptor.class.getSimpleName() + " " + BEAN_CLASS_NAME + " = null;");
 
 			TypeElement el = typeElement;
 
-			writeFieldsFromClass(pw, beanElementName.toString(), el);
+			HashSet<String> types = new HashSet<String>();
+			
+			writeFieldsFromClass(types, pw, el);
 
 			while (el.getSuperclass() != null) {
 				if (el.getSuperclass() instanceof DeclaredType) {
 					el = (TypeElement) ((DeclaredType) el.getSuperclass()).asElement();
 
-					writeFieldsFromClass(pw, beanElementName.toString(), el);
+					writeFieldsFromClass(types, pw, el);
 				} else {
 					break;
 				}
@@ -166,17 +174,17 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 		return new String[] {BeanWrapper.class.getName(), SimpleClassMetaDescriptor.class.getName(), PropertyMetaDescriptor.class.getName()};
 	}
 
-//	private TypeMirror getMethodReturnType(String name, Element classElement) {
-//		List<ExecutableElement> methods = ElementFilter.methodsIn(classElement.getEnclosedElements());
-//
-//		for (ExecutableElement method : methods) {
-//			if (method.toString().equals(name)) {
-//				return method.getReturnType();
-//			}
-//		}
-//
-//		return null;
-//	}
+	private TypeMirror getMethodReturnType(String name, Element classElement) {
+		List<ExecutableElement> methods = ElementFilter.methodsIn(classElement.getEnclosedElements());
+
+		for (ExecutableElement method : methods) {
+			if (method.toString().equals(name)) {
+				return method.getReturnType();
+			}
+		}
+
+		return null;
+	}
 
 	private String createConstant(String name) {
 
@@ -193,7 +201,12 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 		return result.toUpperCase();
 	}
 
-	private void writeFieldsFromClass(PrintWriter pw, String beanQualifiedName, Element element) {
+	private void writeFieldsFromClass(Set<String> types, PrintWriter pw, Element element) {
+		writeFieldsFromClass(types, pw, element, "", 1);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void writeFieldsFromClass(Set<String> types, PrintWriter pw, Element element, String prefix, int level) {
 		List<? extends Element> fieldsOfClass = ElementFilter.fieldsIn(element.getEnclosedElements());
 
 		for (Element fieldElement : fieldsOfClass) {
@@ -201,22 +214,61 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 				continue;
 			}
 
-			//			TypeMirror typeMirror = fieldElement.asType();
-			//			String fieldName = fieldElement.getSimpleName().toString();
-			//			if (fieldName.length() > 0) {
-			//				String getter = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + "()";
-			//				TypeMirror returnType = getMethodReturnType(getter, element);
-			//				if (returnType != null) {
-			//					typeMirror = returnType;
-			//				}
-			//			}
+			TypeMirror typeMirror = fieldElement.asType();
+			String fieldName = fieldElement.getSimpleName().toString();
+			if (fieldName.length() > 0) {
+				String getter = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + "()";
+				TypeMirror returnType = getMethodReturnType(getter, element);
+				if (returnType != null) {
+					typeMirror = returnType;
+				}
+			}
 
-			pw.println("	public static " + String.class.getSimpleName() + " " + createConstant(fieldElement.getSimpleName().toString()) + " = \""
-					+ fieldElement.getSimpleName() + "\";");
+			String fieldSimpleName = fieldElement.getSimpleName().toString();
 
-			//			pw.println("	public static " + PropertyMetaDescriptor.class.getSimpleName() + "<" + beanQualifiedName + ", " + TypeUtils.toTypeString(typeMirror)
-			//					+ "> " + fieldElement.getSimpleName() + " = null;");
-			pw.println();
+			boolean interfaceGenerated = false;
+			
+			if (!types.contains(fieldSimpleName)) {
+				//cycle not detected
+				if (!typeMirror.getKind().isPrimitive()) {
+					if ( typeMirror.getKind() == TypeKind.DECLARED ) {
+						final Element classElement = ((DeclaredType)typeMirror).asElement();
+						TypeElement classTypeElement = (TypeElement) classElement;
+						for (String annotationName : annotations) {
+							try {
+								Annotation annotation = classTypeElement.getAnnotation((Class<Annotation>)Class.forName(annotationName));
+								if (annotation != null) {
+									//this is supported bean wrapper class
+										types.add(fieldSimpleName);
+										pw.println(indent("public static interface " + createConstant(fieldSimpleName) + " {", level));
+										writeFieldsFromClass(types, pw, classTypeElement, prefix + fieldElement.getSimpleName() + ".", level + 1);
+										pw.println(indent("}", level));
+										pw.println();
+										interfaceGenerated = true;
+										break;
+								}
+							} catch (ClassNotFoundException e) {
+								processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find annotation " + annotationName + " on the class path", element);
+							}
+						}
+					}
+				}
+			}
+
+			if (!interfaceGenerated) {
+				pw.println(indent("public static " + String.class.getSimpleName() + " " + createConstant(fieldSimpleName) + " = \""
+						+ prefix + fieldElement.getSimpleName() + "\";", level));
+				pw.println();
+			}
 		}
+	}
+
+	private String indent(String text, int level) {
+		String result = "";
+		
+		for (int i = 0; i < level; i++) {
+			result += "	";
+		}
+		return result + text;
 	}
 }

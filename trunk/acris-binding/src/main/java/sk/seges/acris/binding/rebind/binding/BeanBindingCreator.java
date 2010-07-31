@@ -175,11 +175,16 @@ public class BeanBindingCreator extends AbstractCreator {
 	private boolean getnerateBindingMethods(SourceWriter sourceWriter, JClassType beanClassType) {
 		sourceWriter.println("private " + BeanWrapper.class.getSimpleName() + "<" + beanClassType.getSimpleSourceName() + "> _beanWrapper;");
 		sourceWriter.println("");
-		sourceWriter.println("public void setBean(" + beanClassType.getSimpleSourceName() + " bean) {");
+		sourceWriter.println("public void setBean(" + beanClassType.getSimpleSourceName() + " __bean) {");
 		sourceWriter.indent();
-		sourceWriter.println("getBeanWrapper().setBeanWrapperContent(bean);");
-		sourceWriter.println(bindingHolder + ".setBean(bean);");
-		sourceWriter.println("super.setBean(bean);");
+		sourceWriter.println("if (__bean == null) {");
+		sourceWriter.indent();
+		sourceWriter.println("return;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		sourceWriter.println("getBeanWrapper().setBeanWrapperContent(__bean);");
+		sourceWriter.println(bindingHolder + ".setBean(__bean);");
+		sourceWriter.println("super.setBean(__bean);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("");

@@ -16,6 +16,7 @@ import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
 import sk.seges.acris.binding.rebind.AbstractCreator;
 import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
+import sk.seges.acris.binding.rebind.introspection.IntrospectionDelegateCreator;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.sesam.domain.IObservableObject;
 
@@ -25,6 +26,7 @@ import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JMethodHelper;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -56,7 +58,8 @@ public class BeanWrapperCreator extends AbstractCreator {
 	 * @return
 	 */
 	protected String suggestSuperclass(String typeName) {
-		return beanType.getQualifiedSourceName();
+//		return beanType.getQualifiedSourceName();
+		return null;
 	}
 
 	protected String getOutputSimpleName() {
@@ -78,7 +81,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 
 		this.superclassName = suggestSuperclass(typeName);
 	}
-	
+
 	protected void doGenerate(SourceWriter sourceWriter) throws UnableToCompleteException {
 
 		wrappedFields.clear();
@@ -101,6 +104,8 @@ public class BeanWrapperCreator extends AbstractCreator {
 			throw new UnableToCompleteException();
 		}
 
+//		new IntrospectionDelegateCreator().generateBeanInfoConnection(sourceWriter, getOutputSimpleName(), beanTypeName);
+		
 		List<JMethod> allMethods = new ArrayList<JMethod>();
 
 		while (processingType != null && !processingType.equals(objectType)) {
@@ -381,16 +386,42 @@ public class BeanWrapperCreator extends AbstractCreator {
 		return beanClassName + BeanWrapperProcessor.BEAN_WRAPPER_SUFFIX;
 	}
 
+	protected void generateGetterForSimpleBean(SourceWriter source, JMethod methode) {
+		source.println(methode.getReadableDeclaration() + " {");
+		source.indent();
+		source.println("return " + BEAN_WRAPPER_CONTENT + "." + methode.getName() + "();");
+		source.outdent();
+		source.println("}");
+		source.println();
+	}
+
 	protected void generateGetterForBean(SourceWriter source, JMethod methode) {
 		String field = RebindUtils.toFieldName(methode.getName());
 		JType returnType = methode.getReturnType();
 
+		String resultName = getWrapperClassName(returnType.getQualifiedSourceName());
+
+		try {
+			typeOracle.getType(resultName);
+		} catch (NotFoundException e) {
+			generateGetterForPrimitive(source, methode);
+			return;
+		}
+		
 		field = field + NESTED_BEAN_WRAPPER;
 		String wrapperType = getWrapperType(returnType);
 		source.println("private " + wrapperType + " " + field + ";");
 
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType) + " {");
+//		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
+		
+		source.println("if (" + BEAN_WRAPPER_CONTENT + "." + methode.getName() + "() == null) {");
+		source.indent();
+		source.println("return null;");
+		source.outdent();
+		source.println("}");
+		
 		source.println("if(this." + field + " == null) {");
 		source.indent();
 		source.println("this." + field + " = (" + wrapperType + ") GWT.create(" + getWrapperClassName(returnType.getQualifiedSourceName()) + ".class);");
@@ -401,7 +432,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		source.println("}");
 		source.outdent();
 		source.println("}");
-		source.println("return (" + returnType.getQualifiedSourceName() + ")this." + field + ";");
+		source.println("return this." + field + ";");
 		source.outdent();
 		source.println("}");
 		source.println();
@@ -425,9 +456,26 @@ public class BeanWrapperCreator extends AbstractCreator {
 		String field = RebindUtils.toFieldName(methode.getName()) + NESTED_BEAN_WRAPPER;
 		JType returnType = parameter.getType();
 
+		String resultName = getWrapperClassName(returnType.getQualifiedSourceName());
+
+		try {
+			typeOracle.getType(resultName);
+		} catch (NotFoundException e) {
+			generateSetterForPrimitive(source, methode, parameter, getter);
+			return;
+		}
+
 		String wrapperType = getWrapperType(returnType);
+
+//		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, 0) + " {");
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
+
+		source.println("if (" + parameter.getName() + " == null) {");
+		source.indent();
+		source.println("return;");
+		source.outdent();
+		source.println("}");
 
 		source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + BEAN_WRAPPER_CONTENT + "." + getter.getName() + "();");
 		source.println(BEAN_WRAPPER_CONTENT + "." + methode.getName() + "(" + parameter.getName() + ");");
