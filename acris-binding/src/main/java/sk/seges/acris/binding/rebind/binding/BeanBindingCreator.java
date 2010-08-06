@@ -106,7 +106,7 @@ public class BeanBindingCreator extends AbstractCreator {
 	}
 
 	@Override
-	protected void initialize() throws UnableToCompleteException {
+	protected boolean initialize() throws UnableToCompleteException {
 
 		try {
 			bindingBeanClassType = RebindUtils.getGenericsFromInterfaceType(classType, typeOracle.findType(IBeanBindingHolder.class.getName()), 0);
@@ -118,7 +118,13 @@ public class BeanBindingCreator extends AbstractCreator {
 		//initialize binding context for all related creators
 		BindingCreatorFactory.setBindingContext(bindingBeanClassType, packageName, namingStrategy);
 
-		validationEnabled = isValidationEnabled(classType.getAnnotation(BindingFieldsBase.class));
+		BindingFieldsBase bindingFieldsBaseAnnotation = classType.getAnnotation(BindingFieldsBase.class);
+		
+		if (bindingFieldsBaseAnnotation == null) {
+			return false;
+		}
+		
+		validationEnabled = isValidationEnabled(bindingFieldsBaseAnnotation);
 
 		setDefaultLoaderCreator();
 
@@ -128,6 +134,8 @@ public class BeanBindingCreator extends AbstractCreator {
 			logger.log(Type.ERROR, e.getMessage());
 			throw new UnableToCompleteException();
 		}
+		
+		return true;
 	}
 
 	protected void doGenerate(SourceWriter sourceWriter) throws UnableToCompleteException {
