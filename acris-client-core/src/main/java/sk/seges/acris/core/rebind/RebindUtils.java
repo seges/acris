@@ -253,6 +253,34 @@ public class RebindUtils {
 	}
 
 	/**
+	 * Tries to find parametrized type in interface hierarchy of a class.
+	 * 
+	 * @param classType
+	 *            A class having parametrized interface.
+	 * @param parametrizedType
+	 *            Interface where parametrized type is present.
+	 * @param position
+	 *            Position in a list of parametrized types in interface.
+	 * @return Generics type in interface implemented by a class type or null if not found
+	 */
+	private static JClassType getGenericsFromInterfaceHierarchy(JClassType classType, JClassType parametrizedType,
+			int position) {
+		for (JClassType type : classType.getImplementedInterfaces()) {
+			if (type instanceof JParameterizedType) {
+				JParameterizedType paramType = (JParameterizedType) type;
+				if (paramType.getErasedType().equals(parametrizedType.getErasedType())) {
+					return paramType.getTypeArgs()[position];
+				}
+			}
+			// seach parent interfaces
+			JClassType result = getGenericsFromInterfaceHierarchy(type, parametrizedType, position);
+			if (result != null) 
+				return result;
+		}	
+		return null;
+	}
+	
+	/**
 	 * Tries to find parametrized type in interface of a class.
 	 * 
 	 * @param classType
@@ -266,14 +294,10 @@ public class RebindUtils {
 	 */
 	public static JClassType getGenericsFromInterfaceType(JClassType classType, JClassType parametrizedType,
 			int position) throws NotFoundException {
-		for (JClassType type : classType.getImplementedInterfaces()) {
-			if (type instanceof JParameterizedType) {
-				JParameterizedType paramType = (JParameterizedType) type;
-				if (paramType.getErasedType().equals(parametrizedType.getErasedType())) {
-					return paramType.getTypeArgs()[position];
-				}
-			}
-		}
+		JClassType type = getGenericsFromInterfaceHierarchy(classType, parametrizedType, position);
+		if (type != null)
+			return type;
+		
 		if (classType.getSuperclass() != null) {
 			return getGenericsFromInterfaceType(classType.getSuperclass(), parametrizedType, position);
 		}
