@@ -43,6 +43,7 @@ protected TextBox customerName = GWT.create(TextBox.class);
 }}}
 
  * Use a new apapter providers registration
+
 {{{
 import sk.seges.acris.binding.client.init.AdaptersRegistration;
 ...
