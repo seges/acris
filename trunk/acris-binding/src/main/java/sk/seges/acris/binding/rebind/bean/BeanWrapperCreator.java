@@ -16,7 +16,6 @@ import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
 import sk.seges.acris.binding.rebind.AbstractCreator;
 import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
-import sk.seges.acris.binding.rebind.introspection.IntrospectionDelegateCreator;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.sesam.domain.IObservableObject;
 
@@ -67,7 +66,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 	}
 
 	@Override
-	protected void initialize() throws UnableToCompleteException {
+	protected boolean initialize() throws UnableToCompleteException {
 		typeStrategy.setGeneratorContext(context);
 
 		String beanTypeName = typeStrategy.getBeanTypeName(typeName);
@@ -80,6 +79,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		}
 
 		this.superclassName = suggestSuperclass(typeName);
+		return true;
 	}
 
 	protected void doGenerate(SourceWriter sourceWriter) throws UnableToCompleteException {
@@ -437,9 +437,13 @@ public class BeanWrapperCreator extends AbstractCreator {
 		source.println("}");
 		source.println();
 
-		wrappedFields.add(field);
+		addWrappedField(field);
 	}
 
+	protected void addWrappedField(String field) {
+		wrappedFields.add(field);
+	}
+	
 	protected void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter, JMethod getter) {
 		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();

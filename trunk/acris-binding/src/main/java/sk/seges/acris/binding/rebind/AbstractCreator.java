@@ -46,7 +46,9 @@ public abstract class AbstractCreator {
 
 		packageName = classType.getPackage().getName();
 
-		initialize();
+		if (!initialize()) {
+			return typeName;
+		}
 		
 		SourceWriter sourceWriter = getSourceWriter(getOutputPackage(), getOutputSimpleName());
 		
@@ -61,8 +63,8 @@ public abstract class AbstractCreator {
 		return getOutputPackage() + "." + getOutputSimpleName();
 	}
 
-	protected void initialize()throws UnableToCompleteException {
-		
+	protected boolean initialize() throws UnableToCompleteException {
+		return true;
 	}
 	
 	protected abstract void doGenerate(SourceWriter sourceWriter) throws UnableToCompleteException;
