@@ -9,7 +9,7 @@ In three (+1 optional) steps you get a form with validation!
 
 = Setup =
 
-Let's suppose (and we already have them) two POJOs: [http://acris.googlecode.com/svn/trunk/acris-binding/src/main/java/sk/seges/acris/binding/client/samples/mocks/SimpleBean.java SimpleBean] and [http://acris.googlecode.com/svn/trunk/acris-binding/src/main/java/sk/seges/acris/binding/client/samples/mocks/Company.java Company]
+Let's suppose (and we already have them) two POJOs: [http://acris.googlecode.com/svn/trunk/acris-deployer/src/main/java/sk/seges/acris/binding/client/samples/mocks/SimpleBean.java SimpleBean] and [http://acris.googlecode.com/svn/trunk/acris-deployer/src/main/java/sk/seges/acris/binding/client/samples/mocks/Company.java Company]
 
 To be able to use them for binding we need to get wrappers for them. Because we are smart and don't want to write boilerplate code we use acris-binding for that purpose.
 
@@ -81,4 +81,4 @@ Here we just receive a bean from the form {{{simpleForm.getBean()}}} and execute
 
 Maybe you noticed optional attribute in the form binding annotation. Yes, its purpose is to choose one lovely component responsible for highlighting invalid constraints - usually by changing a color or showing a dialog.
 
-For the purpose of the showcase we have one [http://acris.googlecode.com/svn/trunk/acris-binding/src/main/java/sk/seges/acris/binding/client/samples/form/ExampleHighlighter.java example highlighter].
+For the purpose of the showcase we have one [http://acris.googlecode.com/svn/trunk/acris-deployer/src/main/java/sk/seges/acris/binding/client/samples/form/ExampleHighlighter.java example highlighter].
