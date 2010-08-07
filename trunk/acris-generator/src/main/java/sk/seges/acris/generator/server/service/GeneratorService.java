@@ -146,6 +146,23 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			log.debug("			content: " + content);
 			log.debug("			currentServerURL: " + currentServerURL);
 		}
+
+		log.error("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
+				token.getLanguage() + " and webId: " + token.getWebId());
+		log.error("			entryPointFileName: " + entryPointFileName);
+		log.error("			header: " + header);
+		log.error("			contentWrapper: " + contentWrapper);
+		log.error("			content: " + content);
+		log.error("			currentServerURL: " + currentServerURL);
+
+		System.out.println("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
+				token.getLanguage() + " and webId: " + token.getWebId());
+		System.out.println("			entryPointFileName: " + entryPointFileName);
+		System.out.println("			header: " + header);
+		System.out.println("			contentWrapper: " + contentWrapper);
+		System.out.println("			content: " + content);
+		System.out.println("			currentServerURL: " + currentServerURL);
+
 		
 		String headerContent = readTextFromFile(entryPointFileName);
 		String doctype = new HTMLNodeSplitter().readDoctype(headerContent);
@@ -153,7 +170,10 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		if (log.isDebugEnabled()) {
 			log.debug("			headerContent: " + headerContent);
 		}
-		
+
+		log.error("			headerContent: " + headerContent);
+		System.out.println("			headerContent: " + headerContent);
+
 		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
 		content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
@@ -188,10 +208,14 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 					if (log.isDebugEnabled()) {
 						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
 					}
+					log.error("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
+					System.out.println("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
 				}
 				if (log.isDebugEnabled()) {
 					log.debug("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
 				}
+				log.error("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
+				System.out.println("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
 				if (!file.createNewFile()) {
 					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
 				}
@@ -204,7 +228,11 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
 					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
 		}
+		log.error("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
+				token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
 		
+		System.out.println("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
+				token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
 		try {
 			file.writeTextToFile(content);
 		} catch (IOException e) {
