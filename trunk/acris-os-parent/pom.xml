@@ -4,6 +4,7 @@
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-parent</artifactId>	
 	<version>1.0.1-SNAPSHOT</version>
+	
 	<name>AcrIS Parent</name>
 
 	<parent>
@@ -40,6 +41,7 @@
 		<module>../acris-binding</module>
 		<module>../acris-callbacks</module>
 		<module>../acris-client-core</module>
+		<!--module>../acris-widgets</module-->
 		<module>../acris-json</module>	
 		<module>../acris-common</module>
 		<module>../acris-external</module>
@@ -53,7 +55,9 @@
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
 		<corpis-os.version>1.0.5</corpis-os.version>
-		<sesam-os.version>1.0.6</sesam-os.version>
+		
+		<sesam-os.version>1.0.7-SNAPSHOT</sesam-os.version>
+	
 	</properties>
 	
 	<dependencyManagement>
@@ -77,6 +81,11 @@
 				<version>${sesam-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-spring</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
 
 			<!-- Acris dependencies -->
 			<dependency>
@@ -90,6 +99,17 @@
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-widgets</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-widgets</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
