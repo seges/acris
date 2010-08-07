@@ -1,0 +1,43 @@
+#summary Best GWT practices using MVP pattern and acris
+
+= History =
+
+When Google starts creating a new project for translating Java code into !JavaScript I was little bit sceptic. I've always knew that Google has very inovative approaches for solving the problems and they are still comming with a something epochal, but this goal was something different. Something that I wasn't fully identified with. I thought that !JavaScript and Java principles were so different that is not possible to create working port from one language to another at least for:
+ * *threads* - how they will handle java multithread code in a single thread !JavaScript?
+ * *filesystem* - almost whole java is tightly bound to *io* package which is not possible to use in the javascript
+ * *reflection* - how they will use reflection (in a static !JavaScript) which is the most used technique in each bigger java framework?
+This were only few ideas that comes into my mind and there is for sure a lot of more. But the time was moving and framework gets bigger and bigger and then I just wanted to try it if is already doing what Google promises.
+
+It has to be a *rocket sience* to achieve translating java language into javascript - _I thought_ - but it will be a huge step forward for web 2.0 development (and also a wet and unspoken dream of each java developer). I've just wanted to be a part of this and started with first experiments with *GWT*. Year 2008 was written and GWT actual version was 1.4 and after short time I was completly addicted to Google Web Toolkit. Any other web platform seem to me as a non effective way of developing the web application (of course there exists many other perfect platforms which I was using before - mostly JSF & !IceFaces - but GWT completly fits my needs and the way of developing with GWT was completly natural for me).
+
+Three years of development with GWT in a daily basis are gone and there are few big applications in a production, created by me and by the team I was part of. After 3 years it brings fruits to me and it's time to collect the fruits in a form of the best practices, which can be used by every Google Web Toolkit developer.
+
+= Best practices =
+
+OK, stop talking, just tell us the best practices so we can decide if they are usefull or not. 
+In a short answer I have to say that I will completly follow up the principles proposed by *Ray Ryan* on *Google I/O 2009* and add something new to his proposals - and whats more, I have and working examples for you, not only the theory, so do no hesitate to start with them.
+
+Just to sum up what Ryan was saying:
+ * use *MVP* (*Model-View-Presenter*) pattern for preciselly spliting your code into three parts (data which are going to be displayed - *model* - forms and the screens with the UI widgets - *view* - and the logic somewhere between them - *presenter*)
+ * use *event bus* in order to to interconnect these components and as a communication channel between presenters.
+ * use *command pattern* and *dispatch service* as midlayer between client and server 
+ * use *dependency injection* for loose coupling between your presenters and application parts
+You probably know the diagrams presented by Ray identifying the process of loosely coupled elements. Looks cool, isn't it? :) Yes, of course, in a theory, but what about the reality?
+
+[http://acris.googlecode.com/svn/wiki/images/mvp_coupling_small.png]
+
+I dig into the MVP pattern paradigm and found few implementations for Google Web Toolkit. I'm not going to discuss here which MVP implementation is the best ([http://code.google.com/p/mvp4g/ mvp4g], [http://code.google.com/p/gwt-presenter/ gwt-presenter] or [http://code.google.com/p/gwt-platform/ gwt-platform]) this was well done by [http://borglin.net/gwt-project/?page_id=10 Andreas Borglin pages] and for my projects and for the presentation purposes I've choose the [http://code.google.com/p/gwt-platform/ gwt-platform] created by Philippe Beaudoin and  Christian Goudreau (thank you guys for the great work on this project). Note that I'm not saying that other MVP implementations are bad and you can choose another one if you one, it's still the MVP and this article is about the additional value of the MVP, so the concrete implementation really does not matter.
+
+= So, how is the reality looks like? =
+
+Let's firstly take a look on MVP pattern.
+[http://acris.googlecode.com/svn/wiki/images/mvp_small.png]
+
+Core of the each application is the domain model with some persistent entities.
+
+[http://acris.googlecode.com/svn/wiki/images/acris_binding_small.png]
+
+[http://acris.googlecode.com/svn/wiki/images/mvp_acris_small.png]
+
+[http://acris.googlecode.com/svn/wiki/images/security_steps_small.png]
+
