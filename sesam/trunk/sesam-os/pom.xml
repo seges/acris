@@ -53,6 +53,7 @@
 
 	<modules>
 		<module>../sesam-core</module>
+		<module>../sesam-spring</module>
 	</modules>
 
 	<dependencyManagement>
@@ -68,6 +69,24 @@
 				<version>${pom.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>sesam-spring</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 </project>
