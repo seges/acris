@@ -177,7 +177,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 
 		handler = History.addValueChangeHandler(valueChangeHandler);
 		
-	    if (!token.getNiceUrl().equals(History.getToken())) {
+	    if (token.getNiceUrl().equals(History.getToken())) {
 			Log.error("Loading already loaded niceurl " + token.getNiceUrl());
 			valueChangeHandler.onValueChange(null);
 	    } else {

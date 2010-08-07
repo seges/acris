@@ -39,6 +39,11 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-spring</artifactId>
+		</dependency>
 		<!-- Acris client dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
@@ -90,7 +95,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
