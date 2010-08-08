@@ -9,8 +9,8 @@ import sk.seges.acris.binding.client.annotations.Generated;
 import sk.seges.acris.binding.client.annotations.ValidationStrategy;
 import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
 import sk.seges.acris.binding.client.samples.loaders.CompanyDataLoader;
-import sk.seges.acris.binding.client.samples.mocks.Company;
 import sk.seges.acris.binding.client.samples.mocks.SimpleBean;
+import sk.seges.acris.binding.client.samples.mocks.SimpleBeanBeanWrapper;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -22,24 +22,28 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 
-@BindingFieldsBase(updateStrategy=UpdateStrategy.READ_WRITE,validationStrategy=ValidationStrategy.ON_SUBMIT, validationHighlighter = ExampleHighlighter.class)
+@BindingFieldsBase(updateStrategy = UpdateStrategy.READ_WRITE, validationStrategy = ValidationStrategy.ON_SUBMIT, validationHighlighter = ExampleHighlighter.class)
 public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<SimpleBean> {
 
 	protected final Label nameLabel = GWT.create(Label.class);
-	@BindingField(SimpleBean.NAME_ATTRIBUTE)
+
+	@BindingField(SimpleBeanBeanWrapper.NAME)
 	protected final TextBox nameField = GWT.create(TextBox.class);
 
 	protected final Label emailLabel = GWT.create(Label.class);
-	@BindingField(SimpleBean.EMAIL_ATTRIBUTE)
+
+	@BindingField(SimpleBeanBeanWrapper.EMAIL)
 	protected final TextBox emailField = GWT.create(TextBox.class);
 
 	protected final Label companyLabel = GWT.create(Label.class);
-	@BindingField(SimpleBean.COMPANY_ATTRIBUTE + "." + Company.NAME_ATTRIBUTE)
+
+	@BindingField(SimpleBeanBeanWrapper.COMPANY.NAME)
 	@BindingSpecLoader(CompanyDataLoader.class)
 	protected final ListBox companyListBox = GWT.create(ListBox.class);
 
 	protected final Label birthdayLabel = GWT.create(Label.class);
-	@BindingField(SimpleBean.DATE_ATTRIBUTE)
+
+	@BindingField(SimpleBeanBeanWrapper.DATE)
 	protected final DateBox birthdayDateBox = GWT.create(DateBox.class);
 
 	protected final Label timeLabel = GWT.create(Label.class);
@@ -49,7 +53,7 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 	protected final CheckBox musicClassicalCheckBox = GWT.create(CheckBox.class);
 	protected final CheckBox musicRockCheckBox = GWT.create(CheckBox.class);
 	protected final CheckBox musicBluesCheckBox = GWT.create(CheckBox.class);
-	
+
 	protected final Label favoriteColorLabel = GWT.create(Label.class);
 	protected final RadioButton favoriteColorRedRadioButton = new RadioButton("group", "RedColor");
 	protected final RadioButton favoriteColorBlueRadioButton = new RadioButton("group", "BlueColor");
@@ -59,42 +63,42 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 
 	public SimpleForm() {
 	}
-	
+
 	@Override
 	protected void onLoad() {
 		super.onLoad();
-		
+
 		initLabels();
-		
+
 		nameField.setWidth("90%");
 		companyListBox.setWidth("90%");
 		emailField.setWidth("90%");
 		birthdayDateBox.setWidth("90%");
 		timeListBox.setWidth("90%");
 		descriptionTextArea.setWidth("90%");
-		
+
 		addWidget(nameLabel, nameField);
 		addWidget(emailLabel, emailField);
 		addWidget(companyLabel, companyListBox);
 		addWidget(birthdayLabel, birthdayDateBox);
 		addWidget(timeLabel, timeListBox);
-		
+
 		FlowPanel musicPanel = new FlowPanel();
 		musicPanel.add(musicClassicalCheckBox);
 		musicPanel.add(musicRockCheckBox);
 		musicPanel.add(musicBluesCheckBox);
 		addWidget(musicLabel, musicPanel);
-		
+
 		FlowPanel favoriteColorPanel = new FlowPanel();
 		favoriteColorPanel.add(favoriteColorBlueRadioButton);
 		favoriteColorPanel.add(favoriteColorRedRadioButton);
-		
+
 		addWidget(favoriteColorLabel, favoriteColorPanel);
 		addWidget(descriptionLabel, descriptionTextArea);
-		
+
 		setWidth("320px");
 	}
-	
+
 	private void initLabels() {
 		setTitle("Simple Form");
 		nameLabel.setText("Name:");
@@ -109,7 +113,7 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 		musicClassicalCheckBox.setText("Classical");
 		musicRockCheckBox.setText("Rock");
 		musicBluesCheckBox.setText("Blues");
-		
+
 		favoriteColorBlueRadioButton.setText("Blue");
 		favoriteColorRedRadioButton.setText("Red");
 	}
@@ -118,7 +122,7 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 	@Generated
 	public void setBean(SimpleBean bean) {
 	}
-	
+
 	@Override
 	@Generated
 	public SimpleBean getBean() {

@@ -12,7 +12,7 @@ import org.gwt.beansbinding.ui.client.adapters.BeanAdapterBase;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 
-public class BeanWrapperProvider implements BeanAdapterProvider {
+public class BeanWrapperAdapterProvider implements BeanAdapterProvider {
 
 	public static final class BeanWrapperAdapter extends BeanAdapterBase {
 
@@ -87,7 +87,14 @@ public class BeanWrapperProvider implements BeanAdapterProvider {
 	private static final String WRAPPER_SUFFIX = "BeanWrapperImpl";
 
 	protected boolean isSupportedClass(Class<?> type) {
-		return type.getName().endsWith(WRAPPER_SUFFIX);
-		//		return type.isAssignableFrom(BeanWrapper.class);
+		if (type == null) {
+			return false;
+		}
+
+		if (type.getName().endsWith(WRAPPER_SUFFIX)) {
+			return true;
+		}
+		
+		return isSupportedClass(type.getSuperclass());
 	}
 }

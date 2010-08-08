@@ -13,6 +13,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 
 
@@ -28,6 +29,8 @@ public class ShowFacebookData implements EntryPoint {
 		RootPanel.get().add(buttonF);
 		Button buttonG = new Button("Google");
 		RootPanel.get().add(buttonG);
+		
+		RootPanel.get().add(new HTML("<br/><b style='font-size: 14px'>Keep in mind, that all data are fetched from Facebook using JSON and are displayed using GWT UIBinder on the browser!!! No iFrames just REST like Facebook webservices!<br/><br/>Choose your button to get the JSON working.</b>"));
 		
 		buttonF.addClickHandler(new ClickHandler() {
 			

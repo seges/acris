@@ -77,7 +77,7 @@ public class ValidatorDelegateGenerator extends AbstractGenerator {
 		SourceWriter source = getSourceWriter(classType, beanTypeName);
 		
 		if(source != null) {
-			generateBeanInfoConnection(source, classType, beanTypeName, getFullReturnName());
+			//generateBeanInfoConnection(source, classType, beanTypeName, getFullReturnName());
 			
 			// generate real validation class for the object
 			ValidatorGenerator delegatedGen = new BeanWrapperDrivenValidatorGenerator();
@@ -99,7 +99,7 @@ public class ValidatorDelegateGenerator extends AbstractGenerator {
 		return getFullReturnName();
 	}
 	
-	private void generateBeanInfoConnection(SourceWriter source, JType type, String mainBean, String delegatedFullName) {
+	/*private void generateBeanInfoConnection(SourceWriter source, JType type, String mainBean, String delegatedFullName) {
 		final String gwtBeanInfo = "com.googlecode.gwtx.java.introspection.client.GwtBeanInfo";
 		
 		source.println("static {");
@@ -129,7 +129,7 @@ public class ValidatorDelegateGenerator extends AbstractGenerator {
 		source.println("}");
 		source.outdent();
 		source.println("}");
-	}
+	}*/
 
 	private String getFullReturnName() {
 		return classType.getPackage().getName() + "." + getSimpleReturnName();
