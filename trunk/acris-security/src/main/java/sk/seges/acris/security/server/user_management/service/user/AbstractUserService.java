@@ -3,7 +3,7 @@
  */
 package sk.seges.acris.security.server.user_management.service.user;
 
-import net.sf.gilead.gwt.PersistentRemoteService;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
@@ -29,7 +29,7 @@ import sk.seges.acris.security.rpc.user_management.service.IUserService;
  * 
  * @author ladislav.gazo
  */
-public abstract class AbstractUserService extends PersistentRemoteService implements IUserService {
+public abstract class AbstractUserService extends RemoteServiceServlet implements IUserService {
 	private static final long serialVersionUID = -4227745445378198727L;
 
 	private AuthenticationManager authenticationManager;
