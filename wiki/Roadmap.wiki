@@ -17,7 +17,7 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 =Release notes 1.0.1=
 
 ==Features==
- * bean wrapper reworked. It is not necessary to register beans into introspector and bean wrappers should extends any superclass. This allows you to bind beanwrappers with any UI library like smartGWT or ExtGWT without modifying your domain model
+ * bean wrapper reworked. It is not necessary to register beans into introspector and bean wrappers should extends any superclass. This allows you to bind beanwrappers with any UI library like smartGWT or ExtGWT without modifying your domain model (this is also related to a BeanWrapperAdapterProvider)
  * registering all adapter providers in a one step
  * type safe beans binding using annotations (also nested binding is supported in a completly typesafe way)
 
@@ -26,6 +26,7 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 
 ==Improvements==
  * Improved list box binding (selection in list change handled properly)
+ * Gilead dependency from UserService removed
 
 =Migration guide from 1.0.0 to 1.0.1=
  * Use typesafe annotations instead of string values
