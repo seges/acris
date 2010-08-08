@@ -12,8 +12,6 @@ public class Company implements Serializable {
 	
 	private static final long serialVersionUID = -117411635160866461L;
 
-	public static final String NAME_ATTRIBUTE = "name";
-	
 	@NotNull(groups = ContactCheck.class)
 	@Size(min = 3, groups = ContactCheck.class)
 	private String name;

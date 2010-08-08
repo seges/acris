@@ -15,12 +15,6 @@ public class SimpleBean implements IDomainObject<Long> {
 
 	private static final long serialVersionUID = -4200473134297879595L;
 
-	public static final String NAME_ATTRIBUTE = "name";
-	public static final String EMAIL_ATTRIBUTE = "email";
-	public static final String COMPANY_ATTRIBUTE = "company";
-	public static final String DATE_ATTRIBUTE = "date";
-
-	
 	private Long id;
 
 	@NotNull

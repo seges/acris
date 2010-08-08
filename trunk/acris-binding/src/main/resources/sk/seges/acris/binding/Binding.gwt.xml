@@ -30,11 +30,11 @@
 	</replace-with>		
 
 	<!--  fill introspector's content with bean infos for all wrappers -->
-    <generate-with
+    <!-- generate-with
 		class="sk.seges.acris.binding.rebind.binding.BeanWrapperIntrospectorGenerator">
 		<when-type-assignable
 			class="sk.seges.acris.binding.client.init.BeanWrapperIntrospector"/>
-	</generate-with>
+	</generate-with-->
 
 	<!-- Adapter registrator -->
     <generate-with

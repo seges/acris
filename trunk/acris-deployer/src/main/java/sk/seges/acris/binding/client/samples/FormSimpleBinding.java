@@ -5,15 +5,11 @@ import java.util.Set;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
 import org.gwt.beansbinding.core.client.util.GWTBeansBinding;
-import org.gwt.beansbinding.ui.client.adapters.HasHTMLAdapterProvider;
-import org.gwt.beansbinding.ui.client.adapters.HasTextAdapterProvider;
-import org.gwt.beansbinding.ui.client.adapters.ListBoxAdapterProvider;
 
 import sk.seges.acris.binding.client.holder.validation.ValidationMediator;
+import sk.seges.acris.binding.client.init.AdaptersRegistration;
 import sk.seges.acris.binding.client.init.BeansBindingInit;
-import sk.seges.acris.binding.client.providers.CheckBoxAdapterProvider;
-import sk.seges.acris.binding.client.providers.DateBoxAdapterProvider;
-import sk.seges.acris.binding.client.providers.TextBoxBaseAdapterProvider;
+import sk.seges.acris.binding.client.providers.wrapper.BeanWrapperAdapterProvider;
 import sk.seges.acris.binding.client.samples.form.ExampleHighlighter;
 import sk.seges.acris.binding.client.samples.form.SimpleForm;
 import sk.seges.acris.binding.client.samples.mocks.Company;
@@ -26,7 +22,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,15 +39,16 @@ public class FormSimpleBinding implements EntryPoint {
 		BeansBindingInit.init();
 		GWTBeansBinding.init();
 		
-		BeanAdapterFactory.addProvider(new HasTextAdapterProvider());
-		BeanAdapterFactory.addProvider(new HasHTMLAdapterProvider());
-		BeanAdapterFactory.addProvider(new ListBoxAdapterProvider());
-		HasHTMLAdapterProvider.register(HTML.class);
+//		BeanAdapterFactory.addProvider(new HasTextAdapterProvider());
+//		BeanAdapterFactory.addProvider(new HasHTMLAdapterProvider());
+//		BeanAdapterFactory.addProvider(new ListBoxAdapterProvider());
+//		HasHTMLAdapterProvider.register(HTML.class);
 
-		BeanAdapterFactory.addProvider(new TextBoxBaseAdapterProvider());
-		BeanAdapterFactory.addProvider(new CheckBoxAdapterProvider());
-		BeanAdapterFactory.addProvider(new DateBoxAdapterProvider());
-		
+		AdaptersRegistration registration = GWT.create(AdaptersRegistration.class);
+		registration.registerAllAdapters();
+
+		BeanAdapterFactory.addProvider(new BeanWrapperAdapterProvider());
+
 		errorsPanel = new VerticalPanel();
 		ExampleHighlighter.errorsPanel = errorsPanel;
 
