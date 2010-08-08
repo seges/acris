@@ -51,22 +51,22 @@ AdaptersRegistration registration = GWT.create(AdaptersRegistration.class);
 registration.registerAllAdapters();
 }}}
 
- * Register adapter provider for beanWrapper
+ * Register adapter provider for bean wrapper
 
 {{{
 import sk.seges.acris.binding.client.providers.wrapper.BeanWrapperAdapterProvider;
 ...
-
 BeanAdapterFactory.addProvider(new BeanWrapperAdapterProvider());
 }}}
 
-This adapter provider replaces introspection from gwtx and provides values from bean using bean wrapper (e.g. reflection for javascript). BeanWrapperAdapterProvider is also used for validator delegates and for each extension of the BeanWrapper implementation.
+This adapter provider replaces introspection from gwtx and provides values from bean using bean wrapper (e.g. reflection for javascript). !BeanWrapperAdapterProvider is also used for validator delegates and for each extension of the !BeanWrapper implementation.
+
 *Why is this used for?*
-Previously bean wrapper implementation was extending original bean so it was possible to reuse introspection beans from the original type and enable introspection for each super class. In current version, bean wrapper implementation superclass can vary (in order to ensure integration with third party UI libraries) and the introspection bean cannot be delegated anymore.
+Previously, the bean wrapper implementation was extending original bean so it was possible to reuse introspection beans from the original type and enable introspection for each super class. In current version, bean wrapper implementation superclass can vary (in order to ensure integration with third party UI libraries) and the introspection bean cannot be delegated anymore.
 
- * Remove beanManager from UserService. User service is not anymore dependend on gilead RemotePersistentService so beanManager is not necesary
+ * Remove beanManager from !UserService. User service is no more dependend on gilead !RemotePersistentService so beanManager is not necesary
 
-Original user service definition:
+Original user service definition (version 1.0.0):
 
 {{{
 <bean name="userService" class="sk.seges.acris.security.server.user_management.service.user.UserService">
@@ -78,7 +78,7 @@ Original user service definition:
 </bean>
 }}}
 
-New user service definition:
+New user service definition (version 1.0.1):
 
 {{{
 <bean name="userService" class="sk.seges.acris.security.server.user_management.service.user.UserService">
