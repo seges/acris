@@ -31,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.corpis.dao.AbstractJPADAO;
 import sk.seges.sesam.dao.BetweenExpression;
-import sk.seges.sesam.dao.ICrudDAO;
 import sk.seges.sesam.dao.Junction;
 import sk.seges.sesam.dao.LikeExpression;
 import sk.seges.sesam.dao.NotExpression;
@@ -43,27 +42,21 @@ import sk.seges.sesam.dao.SimpleExpression;
 import sk.seges.sesam.dao.SortInfo;
 import sk.seges.sesam.domain.IDomainObject;
 
-public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends AbstractJPADAO implements ICrudDAO<T> {
+public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends AbstractJPADAO<T> {
 	public static final String ALIAS_CHAIN_DELIM = "_";
 	public static final String FIELD_DELIM = ".";
 	public static final String EMBEDDED_FIELD_DELIM = "-";
 	public static final String COLON = ":";
 	private Map<String, Method> preparedCriterions = null;
 
-	private final Class<T> clazz;
 	private Set<Class<?>> embedableClassSet;
 
 	protected AbstractHibernateCRUD(Class<T> clazz) {
-		this.clazz = clazz;
+		super(clazz);
 	}
 
 	protected DetachedCriteria createCriteria() {
 		return DetachedCriteria.forClass(clazz);
-	}
-
-	@Override
-	public T findEntity(T entity) {
-		return entityManager.find(clazz, entity.getId());
 	}
 
 	/**
@@ -584,25 +577,6 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			criteria.addOrder(sortable.isAscending() ? Order.asc(sortable.getColumn()) : Order.desc(sortable
 					.getColumn()));
 		}
-	}
-
-	@Transactional
-	@Override
-	public T merge(T entity) {
-		return entityManager.merge(entity);
-	}
-
-	@Transactional
-	@Override
-	public T persist(T entity) {
-		entityManager.persist(entity);
-		return entity;
-	}
-
-	@Transactional
-	@Override
-	public void remove(T entity) {
-		entityManager.remove(entity);
 	}
 
 	private static class MutableBoolean {
