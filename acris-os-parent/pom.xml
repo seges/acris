@@ -41,7 +41,7 @@
 		<module>../acris-binding</module>
 		<module>../acris-callbacks</module>
 		<module>../acris-client-core</module>
-		<!--module>../acris-widgets</module-->
+		<module>../acris-widgets</module>
 		<module>../acris-json</module>	
 		<module>../acris-common</module>
 		<module>../acris-external</module>
@@ -49,15 +49,21 @@
 		<module>../acris-recorder</module>
 		<module>../acris-security</module>
 		<module>../acris-server-components</module>
+		<module>../acris-showcase</module>
 	</modules>
 	
 	<properties>
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
-		<corpis-os.version>1.0.5</corpis-os.version>
+		<corpis-os.version>1.0.6-SNAPSHOT</corpis-os.version>
 		
 		<sesam-os.version>1.0.7-SNAPSHOT</sesam-os.version>
 	
+
+		<gwt-gin.version>1.0-r137</gwt-gin.version>
+		<guice.version>2.0</guice.version>
+		<gwtp.version>0.3-SNAPSHOT</gwtp.version>
+		<javax.inject.version>1</javax.inject.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -216,6 +222,37 @@
 				<artifactId>adapter4gwt</artifactId>
 				<version>${gilead.version}</version>
 			</dependency>
+
+			<!-- DI dependencies -->
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-gin</artifactId>
+				<version>${gwt-gin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.guice</groupId>
+				<artifactId>guice</artifactId>
+				<version>${guice.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.guice</groupId>
+				<artifactId>guice-servlet</artifactId>
+				<version>${guice.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>${javax.inject.version}</version>
+			</dependency>
+
+			<!-- MVP dependency -->
+			<dependency>
+				<groupId>com.philbeaudoin</groupId>
+				<artifactId>gwtp</artifactId>
+				<version>${gwtp.version}</version>
+			</dependency>
+
+
 		</dependencies>
 	</dependencyManagement>
 	
