@@ -1,8 +1,11 @@
 package sk.seges.acris.binding.client.holder;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.gwt.beansbinding.core.client.AutoBinding;
 import org.gwt.beansbinding.core.client.BeanProperty;
@@ -20,23 +23,25 @@ import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
 
-import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class BindingHolder<T extends Serializable> implements IBindingHolder<T> {
+public class BindingHolder<T> implements IBindingHolder<T> {
 	
 	protected List<BindingGroup> asyncbindingGroups = new ArrayList<BindingGroup>();
 	protected BindingGroup rootBinding = new BindingGroup();
 	
     private UpdateStrategy updateStrategy;
     private BeanWrapper<T> beanWrapper;
-
+    
     private List<Binding> selectionGroup = new ArrayList<Binding>();
-
+    
     protected List<BindingFieldInfo> bindingFieldInfos = new ArrayList<BindingFieldInfo>();
     
     private List<BindingHolderListener<T>> listeners = new ArrayList<BindingHolderListener<T>>();
+    
+    private Map<String, Set<BindingFieldInfo>> tmpCheckBoxGroups = new HashMap<String, Set<BindingFieldInfo>>();
     
     public T getBean() {
     	return beanWrapper.getBeanWrapperContent();
@@ -80,6 +85,18 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     }
     
     public Binding addBinding(String sourceProperty, Object targetWidget, String targetProperty, Converter<?, ?> converter, Validator<?> validator) {
+    	if(targetWidget instanceof CheckBox) {
+    		String group = ((CheckBox)targetWidget).getName();
+    		Set<BindingFieldInfo> set = tmpCheckBoxGroups.get(group);
+    		if(set == null) {
+    			set = new HashSet<BindingFieldInfo>();
+    			tmpCheckBoxGroups.put(group, set);
+    		}
+    		set.add(addBindingFieldInfo(sourceProperty, targetWidget, targetProperty));
+    		
+    		return null;
+    	}
+    	
     	addBindingFieldInfo(sourceProperty, targetWidget, targetProperty);
     	
     	AutoBinding binding = createBinding(sourceProperty, targetWidget, targetProperty);
@@ -93,7 +110,7 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 		return binding;
 	}
     
-    public void addListBoxBinding(List<?> list, ListBox targetWidget, String itemTextProperty, String itemValueProperty) {
+    public ListBoxBinding addListBoxBinding(List<?> list, ListBox targetWidget, String itemTextProperty, String itemValueProperty) {
     	ListBoxBinding ab = GWTBindings.createListBoxBinding(updateStrategy, list, targetWidget);
     	if(itemTextProperty != null) {
     		ab.setItemTextBinding(BeanProperty.create(itemTextProperty));
@@ -102,6 +119,7 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     		ab.setItemValueBinding(BeanProperty.create(itemValueProperty));	
     	}
 		ab.bind();
+		return ab;
     }
     
     @SuppressWarnings("unchecked")
@@ -111,8 +129,13 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
     	final Binding selectionBinding = createBinding(sourceProperty, targetWidget, "selectedItem");
     	selectionBinding.setConverter(converter);
     	selectionBinding.bind();
-	selectionGroup.add(selectionBinding);
+    	selectionGroup.add(selectionBinding);
     	return selectionBinding;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public void removeSelectedItemBinding(Binding selectionBinding) {
+    	selectionGroup.remove(selectionBinding);
     }
 
 	@SuppressWarnings("unchecked")
@@ -167,13 +190,10 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 		beanWrapper.setBeanWrapperContent(bean);
 
 		if (reloadBindings) {
-			rootBinding.bind();
+			bind();
 			for (BindingGroup binding : asyncbindingGroups) {
 				binding.bind();
 			}
-			for(Binding binding : selectionGroup) {
-				binding.bind();
-			}	
 		}
 	}
 	
@@ -181,7 +201,7 @@ public class BindingHolder<T extends Serializable> implements IBindingHolder<T> 
 		listeners.add(listener);
 	}
 	
-	public static interface BindingHolderListener<B extends Serializable> {
+	public static interface BindingHolderListener<B> {
 		void bindingBecameBound(BindingHolder<B> holder);
 	}
 }

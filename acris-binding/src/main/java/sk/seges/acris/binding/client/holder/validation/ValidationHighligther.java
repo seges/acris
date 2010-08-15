@@ -12,7 +12,7 @@ import com.google.gwt.validation.client.InvalidConstraint;
  * Validation highlighter defines a widget responsible for highlighting invalid
  * constraint as the result of bean validation.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  * 
  * @param <T>
  *            Bean type that is validated

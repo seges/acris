@@ -3,12 +3,13 @@
  */
 package sk.seges.acris.binding.client.providers.support;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.Converter;
 import org.gwt.beansbinding.observablecollections.client.ObservableCollections;
+import org.gwt.beansbinding.ui.client.ListBoxBinding;
 
 import sk.seges.acris.binding.client.holder.BindingHolder;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
@@ -27,7 +28,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * @param <T>
  *            Type of domain object contained in the list.
  */
-public abstract class BoundListAsyncCallback<T extends Serializable> implements
+public abstract class BoundListAsyncCallback<T> implements
 		ICallback<PagedResult<List<T>>> {
 	private final BindingHolder<T> bindingHolder;
 	private final String sourceProperty;
@@ -35,9 +36,12 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 	private final String itemTextProperty;
 	private final String itemValueProperty;
 
-	private final boolean wasEnabled;
+	private boolean wasEnabled;
 
 	private List<BeanWrapper<T>> listOfValues;
+	
+	private ListBoxBinding binding;
+	private Binding selectedItemBinding;
 
 	public BoundListAsyncCallback(BindingHolder<T> bindingHolder, String sourceProperty,
 			ListBox targetWidget, String itemTextProperty, String itemValueProperty) {
@@ -58,8 +62,11 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 
 	@Override
 	public void onSuccess(PagedResult<List<T>> arg0) {
+		if(selectedItemBinding != null) {
+			bindingHolder.removeSelectedItemBinding(selectedItemBinding);
+		}
 		if (listOfValues != null && listOfValues.size() > 0) {
-			// listOfValues.clear();
+			listOfValues = null;
 		}
 		List<BeanWrapper<T>> listOfWrappers = null;
 		if (listOfValues == null) {
@@ -79,16 +86,20 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 			listOfValues = ObservableCollections.observableList(listOfWrappers);
 		}
 
-		bindingHolder.addListBoxBinding(listOfValues, targetWidget, itemTextProperty, itemValueProperty);
+		binding = bindingHolder.addListBoxBinding(listOfValues, targetWidget, itemTextProperty, itemValueProperty);
 		
 		// selection binding with converter between wrapper and bean
-		bindingHolder.addSelectedItemBinding(sourceProperty, targetWidget,
+		selectedItemBinding = bindingHolder.addSelectedItemBinding(sourceProperty, targetWidget,
 				new Converter<T, BeanWrapper<T>>() {
 
 					@Override
 					public BeanWrapper<T> convertForward(T value) {
 						BeanWrapper<T> wrapper = createWrapper();
-						wrapper.setBeanWrapperContent(value);
+						if(value instanceof BeanWrapper<?>) {
+							wrapper.setBeanWrapperContent(((BeanWrapper<T>)value).getBeanWrapperContent());
+						} else {
+							wrapper.setBeanWrapperContent(value);
+						}
 						return wrapper;
 					}
 
@@ -97,6 +108,8 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 						return value.getBeanWrapperContent();
 					}
 				});
+		selectedItemBinding.refreshAndNotify();
+		
 		if (wasEnabled) {
 			targetWidget.setEnabled(true);
 		}
@@ -104,4 +117,7 @@ public abstract class BoundListAsyncCallback<T extends Serializable> implements
 
 	protected abstract BeanWrapper<T> createWrapper();
 
+	public void setWasEnabled(boolean wasEnabled) {
+		this.wasEnabled = wasEnabled;
+	}
 }

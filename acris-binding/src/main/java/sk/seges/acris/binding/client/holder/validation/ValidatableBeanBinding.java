@@ -15,7 +15,7 @@ import com.google.gwt.validation.client.InvalidConstraint;
  * components would have access to highlighting - especially usefull for
  * on-demand validation from form dialogs.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public interface ValidatableBeanBinding<T extends Serializable> {
 	/**

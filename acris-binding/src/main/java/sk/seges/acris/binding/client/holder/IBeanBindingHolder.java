@@ -17,5 +17,5 @@ import sk.seges.sesam.domain.IDomainObject;
  *            {@link IDomainObject} but we are supporting all
  *            {@link Serializable} objects for binding
  */
-public interface IBeanBindingHolder<T extends Serializable> extends IHasBean<T> {
+public interface IBeanBindingHolder<T> extends IHasBean<T> {
 }
