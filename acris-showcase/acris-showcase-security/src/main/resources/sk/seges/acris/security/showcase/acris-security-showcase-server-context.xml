@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/jee
+                     http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="sk.seges.acris.security.showcase.server" />
+
+	<import resource="acris-security-showcase-server-persistence-context.xml" />
+	<import
+		resource="classpath:sk/seges/acris/security/server/context/api/acris-security-generic-user-context.xml" />
+
+	<alias name="showcaseHibernateBeanManager" alias="acrisSecurityBeanManager"/>
+	
+</beans>
