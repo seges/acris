@@ -1,156 +1,14 @@
-<?xml version="1.0" encoding="windows-1250"?>
-<settings>
-	<servers><!-- This part is optional. Only if you have access to deploy artefacts. -->
-                <server>
-                        <id>acris-snapshots-repo</id>
-                        <username>simun@seges.sk</username>
-                        <password>ku6ZX2pq7NJ7</password>
-                </server>
-                <server>
-                        <id>acris-releases-repo</id>
-                        <username>simun@seges.sk</username>
-                        <password>ku6ZX2pq7NJ7</password>
-                </server>
-		<server>
-			<id>galileo</id>
-			<username>psimun</username>
-			<password>dvsk</password>
-		</server>
-		<server>
-			<id>DTASnapshots</id>
-			<username>psimun</username>
-			<password>dvsk</password>
-		</server>
-		<server>
-			<id>DTASnapshotPlugins</id>
-			<username>psimun</username>
-			<password>dvsk</password>
-		</server>
-                <server>
-                        <id>acris-snapshots-repo</id>
-                        <username>simun@seges.sk</username>
-                        <password>ku6ZX2pq7NJ7</password>
-                </server>
-                <server>
-                        <id>acris-releases-repo</id>
-                        <username>simun@seges.sk</username>
-                        <password>ku6ZX2pq7NJ7</password>
-                </server>
-
-		<server>
-			<id>central</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>snapshots</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>seges-releases-repo</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>seges-snapshots-repo</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>seges-plugin-releases-repo</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>seges-plugin-snapshots-repo</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>seges-private-releases-repo</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>seges-private-snapshots-repo</id>
-			<username>fat</username>
-			<password>{DESede}6FVkWs7ClqTFBxDqn98vvw==</password>
-		</server>
-		<server>
-			<id>seges-maven-site</id>
-			<username>fat</username>
-			<password>Bealikerr</password>
-		</server>
-	</servers>
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	<activeProfiles>
+		<activeProfile>acris-os</activeProfile>
+	</activeProfiles>
 
 	<profiles>
 		<profile>
-			<id>DVSK_Nexus</id>
-			<repositories>
-				<repository>
-					<id>galileo</id>
-					<url>http://192.168.10.40/nexus/content/groups/public</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>acris-snapshots-repo</id>
-					<url>http://acris.googlecode.com/svn/snapshot-repository/</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</repository>
-				<repository>
-					<id>acris-releases-repo</id>
-					<url>http://acris.googlecode.com/svn/releases-repository/</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-				</repository>
-
-				<repository>
-					<id>gilead-snapshots-repo</id>
-					<url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-snapshots-repo</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</repository>
-				<repository>
-					<id>gilead-releases-repo</id>
-					<url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-				</repository>
-
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-			        	<id>galileo-plugins</id>
-				          <url>http://192.168.10.40/nexus/content/groups/public</url>
-				          <snapshots>
-					            <enabled>true</enabled>
-				          </snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-		<profile>
-			<id>seges</id>
+			<id>acris-os</id>
+			
 			<repositories>
 				<repository>
 					<id>acris-snapshots-repo</id>
@@ -194,101 +52,29 @@
 					</releases>
 				</repository>
 
-				<!--
-					Our all necessary libraries with SNAPSHOT versions, like
-					acris-json, date-time library, etc. These are not located in any
-					public repository
-				-->
 				<repository>
-					<id>YouTubeReleases</id>
-					<url>http://gwt-youtube-api.googlecode.com/svn/releases-repository
-					</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-				</repository>
-				<repository>
-				        <id>guice-maven</id>
-            				<name>guice maven</name>
-            				<url>http://guice-maven.googlecode.com/svn/trunk</url>
-				</repository>
-				<!--
-					Our all necessary libraries with SNAPSHOT versions, like
-					acris-json, date-time library, etc. These are not located in any
-					public repository
-				-->
-				<repository>
-					<id>YouTubeSnapshots</id>
-					<url>http://gwt-youtube-api.googlecode.com/svn/snapshots-repository
-					</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
+					<id>jboss-repo</id>
+					<url>http://repository.jboss.com/maven2</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
-				</repository>
-				<!-- GWT resources -->
-				<!--
-					You can use standard maven repository
-					(http://repo1.maven.org/maven2/) but there is no maven-metadata.xml
-					for GWT libraries, so you cannot use version range (Current state
-					for date: 11th of June, 2010)
-				-->
-				<repository>
-					<id>JBossRepository</id>
-					<url>http://repository.jboss.org/maven2</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>central</id>
-					<url>https://local.seges.sk/artifactory/seges-releases</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>snapshots</id>
-					<url>https://local.seges.sk/artifactory/seges-snapshots</url>
 					<releases>
-						<enabled>false</enabled>
+						<enabled>true</enabled>
 					</releases>
 				</repository>
 			</repositories>
 
 			<pluginRepositories>
 				<pluginRepository>
-					<id>central</id>
-					<url>https://local.seges.sk/artifactory/seges-plugin-releases</url>
+					<id>maven-annotation-plugin-repo</id>
+					<url>http://maven-annotation-plugin.googlecode.com/svn/trunk/mavenrepo</url>
 					<snapshots>
 						<enabled>false</enabled>
 					</snapshots>
 				</pluginRepository>
 				<pluginRepository>
-					<id>snapshots</id>
-					<url>https://local.seges.sk/artifactory/seges-plugin-snapshots
-					</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</pluginRepository>
-				<pluginRepository>
-					<id>jboss</id>
-					<url>http://repository.jboss.org/maven2</url>
-				</pluginRepository>
-				<pluginRepository>
-					<!-- JSR269 processor plugin -->
-					<id>maven-annotation-plugin</id>
-					<url>http://maven-annotation-plugin.googlecode.com/svn/trunk/mavenrepo
-					</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
+					<id>acris-plugins-snapshots-repo</id>
+					<url>http://acris.googlecode.com/svn/snapshot-plugins-repository</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
@@ -296,18 +82,4 @@
 			</pluginRepositories>
 		</profile>
 	</profiles>
-
-	<activeProfiles>
-		<activeProfile>DVSK_Nexus</activeProfile>
-	</activeProfiles>
-
-	<mirrors>
-		<mirror>
-			<id>galileo</id>
-			<name>DVSK Nexus Repository</name>
-			<url>http://192.168.10.40/nexus/content/groups/public</url>
-			<mirrorOf>galileo</mirrorOf>
-		</mirror>
-	</mirrors>
-
 </settings>
