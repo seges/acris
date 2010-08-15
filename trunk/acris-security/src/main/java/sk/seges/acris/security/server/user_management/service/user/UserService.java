@@ -37,7 +37,6 @@ public class UserService extends AbstractUserService {
 
 		int i = 0;
 		for (GrantedAuthority grantedAuthority : granthedAuthorities) {
-			System.out.println(grantedAuthority.getAuthority());
 			authorities[i++] = grantedAuthority.getAuthority();
 		}
 		return authorities;
