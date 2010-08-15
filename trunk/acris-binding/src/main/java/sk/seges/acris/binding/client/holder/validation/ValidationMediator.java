@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.validation.client.InvalidConstraint;
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class ValidationMediator {
 	@SuppressWarnings("unchecked")

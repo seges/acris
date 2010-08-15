@@ -11,7 +11,7 @@ package sk.seges.acris.binding.client.holder.validation;
  * invalid constraint on the property is resolved. Highlighted widget has such
  * means for that.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public interface HighlightedWidget {
 	/**

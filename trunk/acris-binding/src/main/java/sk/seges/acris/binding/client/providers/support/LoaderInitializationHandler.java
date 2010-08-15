@@ -39,9 +39,13 @@ public class LoaderInitializationHandler<T> implements BindingHolderListener {
 	 * org.gwt.beansbinding.core.client.BindingListener#bindingBecameBound(org
 	 * .gwt.beansbinding.core.client.Binding)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void bindingBecameBound(BindingHolder binding) {
-		if (widget instanceof FocusWidget) {
+		if(callback instanceof BoundListAsyncCallback && widget instanceof FocusWidget) {
+			((BoundListAsyncCallback) callback).setWasEnabled(((FocusWidget) widget).isEnabled());
+		}
+		if (widget instanceof FocusWidget && !((FocusWidget) widget).isEnabled()) {
 			((FocusWidget) widget).setEnabled(false);
 		}
 		loader.load(Page.ALL_RESULTS_PAGE, callback);

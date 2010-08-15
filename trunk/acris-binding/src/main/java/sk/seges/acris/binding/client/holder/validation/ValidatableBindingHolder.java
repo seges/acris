@@ -22,7 +22,7 @@ import com.google.gwt.validation.client.InvalidConstraint;
  * gwt-validation framework and JSR-303. It facilitates validation of a widget
  * but doesn't define specific graphical representation.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class ValidatableBindingHolder<T extends Serializable> extends BindingHolder<T> implements ValidatableBeanBinding<T> {
 	private ValidationHighligther<T> highlighter;
