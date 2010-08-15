@@ -31,6 +31,13 @@
 		<gwt-time.version>1.0.0-20100701</gwt-time.version>
 
 		<htmlparser.version>2.0-20100701</htmlparser.version>
+		<gwt-output-style>OBF</gwt-output-style>
+
+		<gwt-gin.version>1.0-r137</gwt-gin.version>
+		<guice.version>2.0</guice.version>
+		<gwtp.version>0.3-SNAPSHOT</gwtp.version>
+		<javax.inject.version>1</javax.inject.version>
+
 	</properties>
 
 	<dependencyManagement>
@@ -163,6 +170,36 @@
 				<artifactId>gwt-time</artifactId>
 				<version>${gwt-time.version}</version>
 			</dependency>
+
+			<!-- DI dependencies -->
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-gin</artifactId>
+				<version>${gwt-gin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.guice</groupId>
+				<artifactId>guice</artifactId>
+				<version>${guice.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.guice</groupId>
+				<artifactId>guice-servlet</artifactId>
+				<version>${guice.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>${javax.inject.version}</version>
+			</dependency>
+
+			<!-- MVP dependency -->
+			<dependency>
+				<groupId>com.philbeaudoin</groupId>
+				<artifactId>gwtp</artifactId>
+				<version>${gwtp.version}</version>
+			</dependency>
+
 			
 		</dependencies>
 	</dependencyManagement>
@@ -248,7 +285,7 @@
 						<runTarget>${gwt.client.module}/${gwt.client.html}</runTarget>
 
 						<!-- style>DETAILED</style--><!-- use OBF for prod -->
-						<style>OBF</style><!-- use OBF for prod -->
+						<style>${gwt-output-style}</style><!-- use OBF for prod -->
 						<noServer>false</noServer>
 						<extraJvmArgs>-Xmx724M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs>
