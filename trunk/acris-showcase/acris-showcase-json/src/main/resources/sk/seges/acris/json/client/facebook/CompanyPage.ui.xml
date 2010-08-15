@@ -1,0 +1,254 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<g:HTMLPanel>
+
+		<div class="" id="blueBar"></div>
+		<div id="globalContainer">
+			<div id="c4c44aef22caaa2cc76c8f">
+				<div id="pageHead">
+					<h1 id="pageLogo">
+						<a title="Home" href="#"></a>
+					</h1>
+					<div id="jewelCase">
+						<div id="requestsWrapper" class="jewel">
+							<a rel="ignore" accesskey="3" href="#" title="Friend requests"
+								id="jewelRequest" class="jewelToggler">
+							</a>
+						</div>
+						<div id="mailWrapper" class="jewel">
+							<a rel="ignore" accesskey="4" href="#" title="Messages" id="jewelMail"
+								class="jewelToggler">
+							</a>
+						</div>
+						<div class="jewel" id="notificationsWrapper">
+							<a rel="ignore" accesskey="5" href="#" title="Notifications"
+								id="jewelAlert" class="jewelToggler">
+							</a>
+						</div>
+					</div>
+					<div id="headNavOut">
+						<div id="headNavIn">
+							<form action="#" id="navSearch" method="get">
+								<div id="u965019_2" class="uiTypeahead">
+									<div class="wrap">
+										<span class="uiSearchInput textInput">
+											<input type="text" title="Search" value="Search"
+												spellcheck="false" autocomplete="off" accesskey="/"
+												placeholder="Search" name="q" id="q"
+												class="inputtext DOMControl_placeholder" />
+											<button title="Search" type="submit">
+											</button>
+										</span>
+									</div>
+								</div>
+							</form>
+							<ul id="pageNav">
+								<li>
+									<a accesskey="1" href="#">Home</a>
+								</li>
+								<li>
+									<a accesskey="2" href="#">Profile</a>
+								</li>
+								<li></li>
+								<li id="navAccount">
+									<a href="#" rel="ignore" id="navAccountLink">
+										Account
+										<img height="1" width="1"
+											src="http://static.ak.fbcdn.net/rsrc.php/z12E0/hash/8q2anwu7.gif"
+											class="img" />
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="fb_content clearfix" id="content">
+				<div>
+					<div class="profile_top_wash">
+						<div class="profile_color_bar">
+							<div id="pagelet_above_html"></div>
+							<div class="left_column_container">
+								<div class="left_column" id="left_column">
+									<div id="pagelet_profile_photo">
+										<div id="c4c44aef23ae63150a57ba">
+											<div class="profileimage" id="profileimage">
+												<a href="#">
+													<g:Image ui:field="image" />
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="pagelet_top_bar">
+							<div id="c4c44aef23b8cc0df242e4">
+								<div class="top_bar" id="profile_top_bar">
+									<div class="profile_top_bar_container">
+										<div class="profile_name_and_status">
+											<h1 id="profile_name">
+												<div ui:field="name"></div>
+											</h1>
+										</div>
+										<div class="tabs_wrapper clearfix">
+											<ul class="tabs" id="profile_tabs">
+												<li view="wall">
+													<a href="#" class="tab_link profile_tab">
+														<div class="app_tab_header">
+															<div class="app_tab_title">Wall</div>
+														</div>
+													</a>
+												</li>
+												<li view="info" class="selected">
+													<a href="#" class="tab_link profile_tab">
+														<div class="app_tab_header">
+															<div class="app_tab_title">Info</div>
+														</div>
+													</a>
+												</li>
+												<li view="app_102530516453169">
+													<a href="#" class="tab_link profile_tab">
+														<div class="app_tab_header">
+															<div class="app_tab_title">Search Stories</div>
+														</div>
+													</a>
+												</li>
+												<li view="photos">
+													<a href="#" class="tab_link profile_tab">
+														<div class="app_tab_header">
+															<div class="app_tab_title">Photos</div>
+														</div>
+													</a>
+												</li>
+												<li view="box_3">
+													<a href="#" class="tab_link profile_tab">
+														<div class="app_tab_header">
+															<div class="app_tab_title">Boxes</div>
+														</div>
+													</a>
+												</li>
+												<li view="app_2392950137">
+													<a href="#" class="tab_link profile_tab">
+														<div class="app_tab_header">
+															<div class="app_tab_title">Video</div>
+														</div>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab_content profile_bottom_wash" id="tab_content">
+					<div class="profile_bottom_container">
+						<div class="right_column_container clearfix">
+							<div class="right_column" id="right_column">
+								<div id="pagelet_tab_content">
+									<div id="c4c44aef2402717d2427e8">
+										<div id="tab_canvas">
+											<div>
+												<div class="info_tab" id="info_tab">
+													<div id="info_edit_sections">
+														<div class="info_section" id="info_section_basic">
+															<div class="section_header" id="info_section_header_basic">
+																<h3 class="clearfix">
+																	<span>Basic Info</span>
+																	<div class="divider"><br/></div>
+																</h3>
+															</div>
+															<div class="profile_info_container clearfix">
+																<div class="profile_info" id="info_section_info_basic">
+																	<dl class="info">
+																		<dt>Founded:</dt>
+																		<dd>
+																			<span ui:field='founded'></span>
+																		</dd>
+																	</dl>
+																</div>
+															</div>
+														</div>
+														<div class="info_section" id="info_section_detailed">
+															<div class="section_header" id="info_section_header_detailed">
+																<h3 class="clearfix">
+																	<span>Detailed info</span>
+																	<div class="divider"><br/>
+																	</div>
+																</h3>
+															</div>
+															<div class="profile_info_container clearfix">
+																<div class="profile_info" id="info_section_info_detailed">
+																	<dl class="info">
+																		<dt>Website:</dt>
+																		<dd>
+																			<div ui:field='website'></div>
+																		</dd>
+																		<dt>Company Overview:</dt>
+																		<dd>
+																			<div ui:field='overview'></div>
+																		</dd>
+																		<dt>Mission:</dt>
+																		<dd>
+																			<span ui:field='mission'></span>
+																		</dd>
+																		<dt>Products:</dt>
+																		<dd>
+																			<span ui:field='products'></span>
+																		</dd>
+																		<dt>Facebook Page:</dt>
+																		<dd>
+																			<span ui:field='fbpage'></span>
+																		</dd>
+																	</dl>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="pageFooter">
+			<div id="contentCurve"></div>
+			<div id="footerContainer" class="clearfix">
+				<div class="lfloat">
+					<div class="uiTextSubtitle">
+						<span title="HPHP - 192 - 10.144.4.102 - 1273080">Facebook (c) 2010
+					</span>
+						·
+						<a title="Use Facebook in another language." href="#" rel="dialog">English
+							(UK)</a>
+					</div>
+				</div>
+				<div class="uiTextSubtitle rfloat">
+					<a
+						title="Read our blog, discover the resource centre and find job opportunities."
+						accesskey="8" href="#">About</a>
+					·
+					<a title="Advertise on Facebook" href="#">Advertising</a>
+					·
+					<a title="Develop on our platform." href="#">Developers</a>
+					·
+					<a title="Learn about your privacy and Facebook." href="#">Privacy</a>
+					·
+					<a title="Review our terms of service." accesskey="9" href="#">Terms</a>
+					·
+					<a title="Visit our Help Centre." accesskey="0" href="#">Help</a>
+				</div>
+			</div>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder>

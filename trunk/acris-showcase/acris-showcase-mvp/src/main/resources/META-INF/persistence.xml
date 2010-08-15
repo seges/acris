@@ -1,0 +1,27 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+
+	<persistence-unit name="mvp" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+		<class>sk.seges.acris.security.rpc.user_management.domain.GenericUser</class>
+		<class>sk.seges.acris.security.rpc.user_management.domain.UserPreferences</class>
+
+		<properties>
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
+			<property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver" />
+			<property name="hibernate.connection.url" value="jdbc:derby:/config-db02;create=true" />
+			
+			<!-- props -->
+			<property name="hibernate.max_fetch_depth" value="1" />
+			<property name="hibernate.cache.show_sql" value="true" />
+			<property name="hibernate.cache.use_second_level_cache" value="true" />
+
+			<!-- stats -->
+			<property name="hibernate.generate_statistics" value="true" />
+			<property name="hibernate.cache.use_structured_entries" value="true" />
+		</properties>
+	</persistence-unit>
+</persistence>

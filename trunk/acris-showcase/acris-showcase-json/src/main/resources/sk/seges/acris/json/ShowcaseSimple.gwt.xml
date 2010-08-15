@@ -1,0 +1,8 @@
+<module>
+	<inherits name="sk.seges.acris.json.JSON" />
+
+	<source path="samples"/>
+	
+	<entry-point class="sk.seges.acris.json.client.samples.SampleDataShowcase" />
+
+</module>
