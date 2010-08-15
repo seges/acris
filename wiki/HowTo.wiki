@@ -11,7 +11,7 @@
 == Steps ==
   * Download sources from http://acris.googlecode.com/svn/trunk/
   * copy (or merge acris-os profile from) settings.xml to your maven home directory (~/.m2)
-     * if you already have settings.xml copy the acris-os profile and activate it
+     * if you already have [https://acris.googlecode.com/svn/trunk/settings.xml settings.xml] copy the acris-os profile and activate it
   * setup MAVEN_OPTS:
     * in case of using prepared keystore use path to *acris-os-parent/acris.jceks* file
     * for the environment of the operating system (the preferred way):
@@ -25,9 +25,9 @@
 
 Following step are related to acris-binding showcase project (other projects are analogical)
 
-  * cd acris-binding
-  * mvn -f pom-showcase.xml package 
-  * deploy on tomcat - copy acris-binding-1.0.0-SNAPSHOT.war from target directory to your CATALINA_HOME/webapps
+  * cd acris-showcase/acris-showcase-binding
+  * mvn clean package 
+  * deploy on tomcat - copy acris-showcase-binding-1.0.0-SNAPSHOT.war from target directory to your CATALINA_HOME/webapps
   * start tomcat - CATALINA_HOME/bin/start.bat
 
 == Running from eclipse == 
@@ -35,14 +35,8 @@ Following step are related to acris-binding showcase project (other projects are
 Following step are related to acris-binding showcase project (other projects are analogical)
 
   * install GEP from <a href="http://code.google.com/intl/sk-SK/appengine/docs/java/tools/eclipse.html">http://code.google.com/intl/sk-SK/appengine/docs/java/tools/eclipse.html</a>
-  * cd acris-binding
-  * mvn -f pom-showcase.xml gwt:eclipse
-  * file sk.seges.acris.binding.Showcase.launch will be created
-  * copy sk.seges.acris.binding.Showcase.launch into WORKSPACE/.metadata/.plugins/org.eclipse.debug.core directory
-  * restart (or start if it is not runnig) eclipse
-  * enable Google Web Toolkit support on the acris-binding project
-[http://acris.googlecode.com/svn/wiki/images/gep_project_support.PNG]
-  * set sk.seges.acris.binding.Showcase as program argument in launch configuration
-  * launch created Web application launcher to get development mode running
+  * cd acris-showcase/acris-showcase-binding
+  * mvn eclise:clean eclipse:eclipse and import project into your eclipse workspace
+  * right click on Showcase.gwt.xml file (located in acris-showcase-binding\src\main\resources\sk\seges\acris\binding\ directory) and Run as webapplication
   * open following URL in your browser (change port, if you had specified different port):
-http://localhost:8888/sk.seges.acris.binding.Showcase/Showcase.html?gwt.codesvr=192.168.145.82:9997
+http://localhost:8888/sk.seges.acris.binding.Showcase/Showcase.html?gwt.codesvr=localhost:9997
