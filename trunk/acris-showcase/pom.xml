@@ -15,7 +15,7 @@
 	</parent>
 
 	<!-- More Project Information -->
-	<name>acris=showcase-build</name>
+	<name>Acris showcase build</name>
 	<description>Build Project for Acris showcases</description>
 
 	<modules>
