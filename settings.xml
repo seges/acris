@@ -53,6 +53,18 @@
 				</repository>
 
 				<repository>
+            				<id>guice-maven</id>
+            				<name>guice maven</name>
+            				<url>http://guice-maven.googlecode.com/svn/trunk</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+				
+				<repository>
 					<id>jboss-repo</id>
 					<url>http://repository.jboss.com/maven2</url>
 					<snapshots>
