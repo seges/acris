@@ -241,6 +241,9 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 									//this is supported bean wrapper class
 										types.add(fieldSimpleName);
 										pw.println(indent("public static interface " + createConstant(fieldSimpleName) + " {", level));
+										pw.println();
+										pw.println(indent("public static " + String.class.getSimpleName() + " THIS = \"" + prefix + fieldElement.getSimpleName() + "\";", level + 1));
+										pw.println();
 										writeFieldsFromClass(types, pw, classTypeElement, prefix + fieldElement.getSimpleName() + ".", level + 1);
 										pw.println(indent("}", level));
 										pw.println();
