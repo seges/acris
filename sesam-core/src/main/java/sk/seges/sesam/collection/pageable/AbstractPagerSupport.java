@@ -16,6 +16,10 @@ public abstract class AbstractPagerSupport {
 	protected int resultSize;
 	protected int totalCount;
 
+	public boolean isPageSet() {
+		return page != null;
+	}
+	
 	public void setValue(Page page, int resultSize, int totalCount) {
 		this.page = page;
 		this.resultSize = resultSize;
