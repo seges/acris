@@ -1,0 +1,13 @@
+#summary Description of conditional binding
+#labels BeansBinding
+
+= Example =
+
+{{{
+Binding.alter(panel).enable(panel.perilLevelBox).when(ForestBeanWrapper.TIGERS_IN_VICINITY)
+				.isNotNull();
+}}}
+
+= Concept of operation =
+
+[http://acris.googlecode.com/svn/wiki/images/conditional_binding_concept.png]
