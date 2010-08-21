@@ -104,6 +104,15 @@
 				<configuration>
 					<additionalConfig>
 						<file>
+							<name>.settings/com.google.gdt.eclipse.core.prefs</name>
+							<content>
+								eclipse.preferences.version=1
+								jarsExcludedFromWebInfLib=
+								warSrcDir=target/${artifactId}-${version}
+								warSrcDirIsOutput=true
+							</content>
+						</file>
+						<file>
 							<name>.factorypath</name>
 							<content><![CDATA[
 								<factorypath>
@@ -142,18 +151,6 @@
 						<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
 						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
 					</classpathContainers>
-
-					<additionalConfig>
-						<file>
-							<name>.settings/com.google.gdt.eclipse.core.prefs</name>
-							<content>
-								eclipse.preferences.version=1
-								jarsExcludedFromWebInfLib=
-								warSrcDir=target/${artifactId}-${version}
-								warSrcDirIsOutput=true
-							</content>
-						</file>
-					</additionalConfig>
 
 					<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
 					<wtpversion>2.0</wtpversion>
