@@ -84,6 +84,7 @@ public class BindingHolder<T> implements IBindingHolder<T> {
     	return addBinding(sourceProperty, targetWidget, targetProperty, null, null);
     }
     
+    @Override
     public Binding addBinding(String sourceProperty, Object targetWidget, String targetProperty, Converter<?, ?> converter, Validator<?> validator) {
     	if(targetWidget instanceof CheckBox) {
     		String group = ((CheckBox)targetWidget).getName();
