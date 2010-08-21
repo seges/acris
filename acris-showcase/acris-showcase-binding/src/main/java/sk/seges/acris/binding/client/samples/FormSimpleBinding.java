@@ -5,6 +5,9 @@ import java.util.Set;
 
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
 import org.gwt.beansbinding.core.client.util.GWTBeansBinding;
+import org.gwt.beansbinding.ui.client.adapters.HasHTMLAdapterProvider;
+import org.gwt.beansbinding.ui.client.adapters.HasTextAdapterProvider;
+import org.gwt.beansbinding.ui.client.adapters.ListBoxAdapterProvider;
 
 import sk.seges.acris.binding.client.holder.validation.ValidationMediator;
 import sk.seges.acris.binding.client.init.AdaptersRegistration;
@@ -22,6 +25,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -39,10 +43,10 @@ public class FormSimpleBinding implements EntryPoint {
 		BeansBindingInit.init();
 		GWTBeansBinding.init();
 		
-//		BeanAdapterFactory.addProvider(new HasTextAdapterProvider());
-//		BeanAdapterFactory.addProvider(new HasHTMLAdapterProvider());
-//		BeanAdapterFactory.addProvider(new ListBoxAdapterProvider());
-//		HasHTMLAdapterProvider.register(HTML.class);
+		BeanAdapterFactory.addProvider(new HasTextAdapterProvider());
+		BeanAdapterFactory.addProvider(new HasHTMLAdapterProvider());
+		BeanAdapterFactory.addProvider(new ListBoxAdapterProvider());
+		HasHTMLAdapterProvider.register(HTML.class);
 
 		AdaptersRegistration registration = GWT.create(AdaptersRegistration.class);
 		registration.registerAllAdapters();
