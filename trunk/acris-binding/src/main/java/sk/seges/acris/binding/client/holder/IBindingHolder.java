@@ -2,6 +2,8 @@ package sk.seges.acris.binding.client.holder;
 
 import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
+import org.gwt.beansbinding.core.client.Converter;
+import org.gwt.beansbinding.core.client.Validator;
 
 import sk.seges.acris.binding.client.wrappers.BeanProxyWrapper;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
@@ -28,6 +30,8 @@ public interface IBindingHolder<T> extends IBeanBindingHolder<T> {
 	@SuppressWarnings("unchecked")
 	public Binding addBinding(String sourceProperty, Object targetWidget,
 			String targetProperty);
+	
+	Binding addBinding(String sourceProperty, Object targetWidget, String targetProperty, Converter<?, ?> converter, Validator<?> validator);
 
 	public void bind();
 
