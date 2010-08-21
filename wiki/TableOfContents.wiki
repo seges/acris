@@ -14,6 +14,7 @@
     * [BeansBindingInExamplesPart2 Form with validation]
     * [BeanWrappers Bean wrappers]
     * [BeansBindingCollections Collections]
+    * [BeansBindingConditional Conditions]
   * [Security Security]
     * [SecurityQuickStart Quick-start]
     * [SecurityConcept Concept]
