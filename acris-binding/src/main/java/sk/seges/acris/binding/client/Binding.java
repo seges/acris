@@ -131,7 +131,7 @@ public class Binding {
 		public abstract void instantiateBinding();
 	}
 
-	public static abstract class WidgetOperation<FWT> extends Operation implements HasPropertyChangeSupport {
+	public static abstract class WidgetOperation extends Operation implements HasPropertyChangeSupport {
 		protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 		public WidgetOperation(BindingConfiguration configuration, Object widget) {
@@ -177,7 +177,7 @@ public class Binding {
 		}
 	}
 
-	public static class Enable extends WidgetOperation<HasEnabled> {
+	public static class Enable extends WidgetOperation {
 		public static final String ENABLED = "enabled";
 
 		private boolean enabled;
@@ -231,7 +231,7 @@ public class Binding {
 
 	}
 
-	public static class Visible extends WidgetOperation<HasVisible> {
+	public static class Visible extends WidgetOperation {
 		public static final String VISIBLE = "visible";
 
 		private boolean visible;
