@@ -211,8 +211,8 @@ public class BeanWrapperCreator extends AbstractCreator {
 		generateGetBeanAttributes(source, methods);
 		generateSetBeanAttributes(source, methods);
 
-		generateHashcode(source);
-		generateEquals(source);
+//		generateHashcode(source);
+//		generateEquals(source);
 
 		generateClearWrappersMethod(source);
 

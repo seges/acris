@@ -3,7 +3,6 @@
  */
 package sk.seges.acris.binding.client;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -11,15 +10,18 @@ import org.gwt.beansbinding.core.client.AutoBinding;
 import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
+import org.gwt.beansbinding.core.client.Converter;
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.holder.ConfigurableBinding;
 import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
 import sk.seges.acris.binding.client.providers.support.widget.HasEnabled;
+import sk.seges.acris.binding.client.providers.support.widget.HasVisible;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 
 import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * @author ladislav.gazo
@@ -39,7 +41,7 @@ public class Binding {
 
 		private Object sourceObject;
 		private String targetField;
-		private Condition condition;
+		private Condition<Boolean> condition;
 		private Operation operation;
 
 		public BindingConfiguration(BindingActions<?> actions) {
@@ -51,7 +53,7 @@ public class Binding {
 			this.targetField = targetField;
 		}
 
-		public void setCondition(Condition condition) {
+		public void setCondition(Condition<Boolean> condition) {
 			this.condition = condition;
 		}
 
@@ -71,7 +73,7 @@ public class Binding {
 			return targetField;
 		}
 
-		public Condition getCondition() {
+		public Condition<Boolean> getCondition() {
 			return condition;
 		}
 
@@ -110,6 +112,15 @@ public class Binding {
 			}
 			throw new RuntimeException("The widget must have methods to enable and disable it");
 		}
+
+		public Visible visible(Object widget) {
+			if (widget instanceof UIObject || widget instanceof HasVisible) {
+				Visible visible = new Visible(configuration, widget);
+				configuration.setOperation(visible);
+				return visible;
+			}
+			throw new RuntimeException("The widget must have methods to set visibility");
+		}
 	}
 
 	public static abstract class Operation extends AbstractConfigurable {
@@ -120,17 +131,15 @@ public class Binding {
 		public abstract void instantiateBinding();
 	}
 
-	public static class Enable extends Operation implements HasPropertyChangeSupport {
-		public static final String ENABLED = "enabled";
+	public static abstract class WidgetOperation<FWT> extends Operation implements HasPropertyChangeSupport {
+		protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-		private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-		private boolean enabled;
-
-		public Enable(BindingConfiguration configuration, Object widget) {
+		public WidgetOperation(BindingConfiguration configuration, Object widget) {
 			super(configuration);
 			configuration.setSourceObject(widget);
 		}
+
+		protected abstract void setupBinding(BindingGroup group, Converter<Object, Boolean> converter);
 
 		public Target when(String field) {
 			return new Target(configuration, field);
@@ -146,6 +155,37 @@ public class Binding {
 			pcs.removePropertyChangeListener(listener);
 		}
 
+		@Override
+		public void instantiateBinding() {
+			BindingGroup group = new BindingGroup();
+
+			Converter<Object, Boolean> converter = new Converter<Object, Boolean>() {
+				@Override
+				public Object convertReverse(Boolean value) {
+					return null;
+				}
+
+				@Override
+				public Boolean convertForward(Object value) {
+					return configuration.getCondition().evaluate(value);
+				}
+			};
+
+			setupBinding(group, converter);
+
+			configuration.actions.getBinding().getHolder().manageBindingGroup(group);
+		}
+	}
+
+	public static class Enable extends WidgetOperation<HasEnabled> {
+		public static final String ENABLED = "enabled";
+
+		private boolean enabled;
+
+		public Enable(BindingConfiguration configuration, Object widget) {
+			super(configuration, widget);
+		}
+
 		public boolean isEnabled() {
 			return enabled;
 		}
@@ -157,62 +197,90 @@ public class Binding {
 		}
 
 		@Override
-		public void instantiateBinding() {
-			BindingGroup group = new BindingGroup();
-
+		protected void setupBinding(BindingGroup group, Converter<Object, Boolean> converter) {
 			if (configuration.getSourceObject() instanceof FocusWidget) {
+				BeanProperty<Object, Object> beanValueSourceProperty = BeanProperty
+						.<Object, Object> create(configuration.getTargetField());
+
 				BeanProperty<FocusWidget, Boolean> enabledSourceProperty = BeanProperty
-						.<FocusWidget, Boolean> create("enabled");
-				BeanProperty<Enable, Boolean> enabledTargetProperty = BeanProperty
-						.<Enable, Boolean> create(ENABLED);
+						.<FocusWidget, Boolean> create(ENABLED);
 
-				AutoBinding<FocusWidget, Boolean, Enable, Boolean> enabledBinding = Bindings
-						.createAutoBinding(UpdateStrategy.READ_WRITE, (FocusWidget) configuration
-								.getSourceObject(), enabledSourceProperty, this, enabledTargetProperty);
-				group.addBinding(enabledBinding);
+				BeanWrapper<?> sourceObject = configuration.actions.getBinding().getBeanWrapper();
+				AutoBinding<Object, Object, FocusWidget, Boolean> binding = Bindings.createAutoBinding(
+						UpdateStrategy.READ, sourceObject, beanValueSourceProperty,
+						(FocusWidget) configuration.getSourceObject(), enabledSourceProperty);
+
+				binding.setConverter(converter);
+				group.addBinding(binding);
 			} else if (configuration.getSourceObject() instanceof HasEnabled) {
+				BeanProperty<Object, Object> beanValueSourceProperty = BeanProperty
+						.<Object, Object> create(configuration.getTargetField());
+
 				BeanProperty<HasEnabled, Boolean> enabledSourceProperty = BeanProperty
-						.<HasEnabled, Boolean> create("enabled");
-				BeanProperty<Enable, Boolean> enabledTargetProperty = BeanProperty
-						.<Enable, Boolean> create(ENABLED);
+						.<HasEnabled, Boolean> create(ENABLED);
 
-				AutoBinding<HasEnabled, Boolean, Enable, Boolean> enabledBinding = Bindings
-						.createAutoBinding(UpdateStrategy.READ_WRITE, (HasEnabled) configuration
-								.getSourceObject(), enabledSourceProperty, this, enabledTargetProperty);
-				group.addBinding(enabledBinding);
-			} else {
-				throw new RuntimeException("Source object must be FocusWidget or HasEnabled");
+				BeanWrapper<?> sourceObject = configuration.actions.getBinding().getBeanWrapper();
+				AutoBinding<Object, Object, HasEnabled, Boolean> binding = Bindings.createAutoBinding(
+						UpdateStrategy.READ, sourceObject, beanValueSourceProperty,
+						(HasEnabled) configuration.getSourceObject(), enabledSourceProperty);
+
+				binding.setConverter(converter);
+				group.addBinding(binding);
 			}
+		}
 
-			BeanProperty<Object, Object> beanValueSourceProperty = BeanProperty
-					.<Object, Object> create(configuration.getTargetField());
-			BeanProperty<Condition, Object> conditionValueTargetProperty = BeanProperty
-					.<Condition, Object> create(Condition.VALUE);
+	}
 
-			BeanWrapper<?> sourceObject = configuration.actions.getBinding().getBeanWrapper();
-			AutoBinding<Object, Object, Condition, Object> conditionBinding = Bindings.createAutoBinding(
-					UpdateStrategy.READ_WRITE, sourceObject, beanValueSourceProperty, configuration
-							.getCondition(), conditionValueTargetProperty);
-			group.addBinding(conditionBinding);
+	public static class Visible extends WidgetOperation<HasVisible> {
+		public static final String VISIBLE = "visible";
 
-			BeanProperty<Enable, Boolean> operationSourceProperty = BeanProperty
-					.<Enable, Boolean> create(Enable.ENABLED);
-			BeanProperty<Condition, Boolean> operationTargetProperty = BeanProperty
-					.<Condition, Boolean> create(Condition.RESULT);
-			AutoBinding<Enable, Boolean, Condition, Boolean> operationBinding = Bindings.createAutoBinding(
-					UpdateStrategy.READ_WRITE, this, operationSourceProperty, configuration.getCondition(),
-					operationTargetProperty);
-			// AutoBinding<Condition, Boolean, Enable, Boolean> operationBinding
-			// = Bindings.createAutoBinding(
-			// UpdateStrategy.READ_WRITE, configuration.getCondition(),
-			// operationTargetProperty, this,
-			// operationSourceProperty);
+		private boolean visible;
 
-			group.addBinding(operationBinding);
+		public Visible(BindingConfiguration configuration, Object widget) {
+			super(configuration, widget);
+		}
 
-			group.bind();
+		public boolean isVisible() {
+			return visible;
+		}
 
-			configuration.actions.getBinding().getHolder().manageBindingGroup(group);
+		public void setVisible(boolean visible) {
+			boolean oldValue = this.visible;
+			this.visible = visible;
+			pcs.firePropertyChange(VISIBLE, oldValue, visible);
+		}
+
+		@Override
+		protected void setupBinding(BindingGroup group, Converter<Object, Boolean> converter) {
+			if (configuration.getSourceObject() instanceof UIObject) {
+				BeanProperty<Object, Object> beanValueSourceProperty = BeanProperty
+						.<Object, Object> create(configuration.getTargetField());
+
+				BeanProperty<UIObject, Boolean> enabledSourceProperty = BeanProperty
+						.<UIObject, Boolean> create(VISIBLE);
+
+				BeanWrapper<?> sourceObject = configuration.actions.getBinding().getBeanWrapper();
+				AutoBinding<Object, Object, UIObject, Boolean> binding = Bindings.createAutoBinding(
+						UpdateStrategy.READ, sourceObject, beanValueSourceProperty,
+						(UIObject) configuration.getSourceObject(), enabledSourceProperty);
+
+				binding.setConverter(converter);
+				group.addBinding(binding);
+			} else if (configuration.getSourceObject() instanceof HasVisible) {
+				BeanProperty<Object, Object> beanValueSourceProperty = BeanProperty
+						.<Object, Object> create(configuration.getTargetField());
+
+				BeanProperty<HasVisible, Boolean> enabledSourceProperty = BeanProperty
+						.<HasVisible, Boolean> create(VISIBLE);
+
+				BeanWrapper<?> sourceObject = configuration.actions.getBinding().getBeanWrapper();
+				AutoBinding<Object, Object, HasVisible, Boolean> binding = Bindings.createAutoBinding(
+						UpdateStrategy.READ, sourceObject, beanValueSourceProperty,
+						(HasVisible) configuration.getSourceObject(), enabledSourceProperty);
+
+				binding.setConverter(converter);
+				group.addBinding(binding);
+			}
 		}
 	}
 
@@ -227,65 +295,55 @@ public class Binding {
 			configuration.setCondition(new NotNull());
 			configuration.instantiate();
 		}
-	}
 
-	public static abstract class Condition implements HasPropertyChangeSupport {
-		public static final String VALUE = "value";
-		public static final String RESULT = "result";
-		private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-		private Boolean result;
-		protected Object value;
-
-		protected abstract void evaluate();
-
-		public Condition() {
-			addPropertyChangeListener(new PropertyChangeListener() {
-				
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if(VALUE.equals(evt.getPropertyName())) {
-						evaluate();
-					}
-				}
-			});
+		public void isNotEmpty() {
+			configuration.setCondition(new NotEmpty());
+			configuration.instantiate();
 		}
 		
-		@Override
-		public void addPropertyChangeListener(PropertyChangeListener listener) {
-			pcs.addPropertyChangeListener(listener);
+		public void matches(Condition<Boolean> condition) {
+			configuration.setCondition(condition);
+			configuration.instantiate();
 		}
-
-		@Override
-		public void removePropertyChangeListener(PropertyChangeListener listener) {
-			pcs.removePropertyChangeListener(listener);
-		}
-
-		public final Boolean isResult() {
-			return result;
-		}
-
-		public final void setResult(Boolean result) {
-			Boolean oldValue = this.result;
-			this.result = result;
-			pcs.firePropertyChange(RESULT, oldValue, result);
-		}
-
-		public final Object getValue() {
-			return value;
-		}
-
-		public final void setValue(Object value) {
-			Object oldValue = this.value;
-			this.value = value;
-			pcs.firePropertyChange(VALUE, oldValue, value);
+		
+		public void equalTo(Object equalValue) {
+			configuration.setCondition(new Equals(equalValue));
+			configuration.instantiate();
 		}
 	}
 
-	public static class NotNull extends Condition {
+	public static interface Condition<R> {
+		R evaluate(Object value);
+	}
+
+	public static class NotNull implements Condition<Boolean> {
 		@Override
-		protected void evaluate() {
-			setResult(value != null && value.toString().length() > 0);
+		public Boolean evaluate(Object value) {
+			return (value != null);
+		}
+	}
+
+	public static class NotEmpty implements Condition<Boolean> {
+		@Override
+		public Boolean evaluate(Object value) {
+			return (value != null && value.toString().length() > 0);
+		}
+	}
+	
+	public static class Equals implements Condition<Boolean> {
+		private Object equalValue;
+		
+		public Equals(Object equalValue) {
+			super();
+			this.equalValue = equalValue;
+		}
+
+		@Override
+		public Boolean evaluate(Object value) {
+			if(value == null && equalValue == null) {
+				return true;
+			}
+			return (value != null && value.equals(equalValue));
 		}
 	}
 }
