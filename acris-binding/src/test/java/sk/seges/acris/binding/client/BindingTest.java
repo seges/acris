@@ -3,6 +3,7 @@
  */
 package sk.seges.acris.binding.client;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.PropertyChangeListener;
@@ -11,6 +12,7 @@ import java.lang.reflect.Method;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.core.client.ext.BeanAdapterFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sk.seges.acris.binding.client.holder.BindingHolder;
@@ -31,23 +33,27 @@ import com.google.gwt.user.client.ui.HasValue;
  */
 public class BindingTest {
 	@Test
-//	@Ignore
+	@Ignore
 	public void testBindingChain() throws Exception {
-		BeanAdapterFactory.addProvider(new sk.seges.acris.binding.client.providers.HasEnabledAdapterProvider());
+		BeanAdapterFactory
+				.addProvider(new sk.seges.acris.binding.client.providers.HasEnabledAdapterProvider());
 		BeanAdapterFactory.addProvider(new BeanWrapperAdapterProvider());
-		
+
 		Forest forest = new Forest();
 		ForestBeanWrapper wrapper = new ForestBeanWrapperImpl();
 		wrapper.setBeanWrapperContent(forest);
 
-		MockForestConfigurationPanel panel = new MockForestConfigurationPanel(UpdateStrategy.READ_WRITE, wrapper);
-		panel.setEnabled(false);
+		MockForestConfigurationPanel panel = new MockForestConfigurationPanel(UpdateStrategy.READ_WRITE,
+				wrapper);
+		panel.perilLevelBox.setEnabled(false);
 
 		Binding.alter(panel).enable(panel.perilLevelBox).when(ForestBeanWrapper.TIGERS_IN_VICINITY)
 				.isNotNull();
 
 		wrapper.setBeanAttribute(ForestBeanWrapper.TIGERS_IN_VICINITY, 7);
-		assertTrue(panel.isEnabled());
+		assertTrue(panel.perilLevelBox.isEnabled());
+		wrapper.setBeanAttribute(ForestBeanWrapper.TIGERS_IN_VICINITY, null);
+		assertFalse(panel.perilLevelBox.isEnabled());
 	}
 
 	public class Forest {
@@ -100,7 +106,7 @@ public class BindingTest {
 
 	public static class BeanWrapperImpl<T> implements BeanWrapper<T> {
 		private T contentBean;
-		private final PropertyChangeSupport pcs = new PropertyChangeSupport(this); 
+		private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 		@Override
 		public Object getBeanAttribute(String attr) {
@@ -122,13 +128,25 @@ public class BindingTest {
 		public void setBeanAttribute(String attr, Object value) {
 			try {
 				Object oldValue = getBeanAttribute(attr);
-				
-				Class<?>[] attrs = new Class[] { value.getClass() };
-				Method m = contentBean.getClass().getMethod(
-						"set" + RebindUtils.getterSetterDeterminator(attr), attrs);
+
+				String setter = "set" + RebindUtils.getterSetterDeterminator(attr);
+
+				Class<?>[] attrs = null;
+				if (value != null) {
+					attrs = new Class[] { value.getClass() };
+				} else {
+					for (Method method : contentBean.getClass().getMethods()) {
+						if (method.getName().equals(setter)) {
+							attrs = method.getParameterTypes();
+							break;
+						}
+					}
+				}
+
+				Method m = contentBean.getClass().getMethod(setter, attrs);
 				Object[] values = new Object[] { value };
 				m.invoke(contentBean, values);
-				
+
 				pcs.firePropertyChange(attr, oldValue, value);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -153,14 +171,17 @@ public class BindingTest {
 	}
 
 	public class MockTextBox implements HasEnabled, HasValue<String> {
+		private boolean enabled = true;
 
 		@Override
 		public boolean isEnabled() {
-			return false;
+			return enabled;
 		}
 
 		@Override
-		public void setEnabled(boolean enabled) {}
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
+		}
 
 		@Override
 		public String getValue() {
@@ -183,16 +204,14 @@ public class BindingTest {
 
 	}
 
-	public class MockForestConfigurationPanel extends BindingHolder<Forest> implements IBindingHolder<Forest>, ConfigurableBinding<Forest>,
-			HasEnabled {
+	public class MockForestConfigurationPanel extends BindingHolder<Forest> implements
+			IBindingHolder<Forest>, ConfigurableBinding<Forest> {
 		private BeanWrapper<Forest> beanWrapper;
-		
+
 		public MockForestConfigurationPanel(UpdateStrategy updateStrategy, BeanWrapper<Forest> beanWrapper) {
 			super(updateStrategy, beanWrapper);
 			this.beanWrapper = beanWrapper;
 		}
-
-		private boolean enabled = true;
 
 		protected MockTextBox perilLevelBox = new MockTextBox();
 		protected MockTextBox tigersInVicinityBox = new MockTextBox();
@@ -203,21 +222,8 @@ public class BindingTest {
 		}
 
 		@Override
-		public boolean isEnabled() {
-			return enabled;
-		}
-
-		@Override
-		public void setEnabled(boolean enabled) {
-			this.enabled = enabled;
-		}
-
-		@Override
 		public BeanWrapper<Forest> getBeanWrapper() {
 			return beanWrapper;
 		}
-
-
-
 	}
 }

@@ -79,6 +79,7 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 		descriptionTextArea.setWidth("90%");
 
 		Binding.alter(this).enable(descriptionTextArea).when(SimpleBeanBeanWrapper.EMAIL).isNotNull();
+		Binding.alter(this).visible(birthdayDateBox).when(SimpleBeanBeanWrapper.NAME).equalTo("andre");
 		
 		addWidget(nameLabel, nameField);
 		addWidget(emailLabel, emailField);

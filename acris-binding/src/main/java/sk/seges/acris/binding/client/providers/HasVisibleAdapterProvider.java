@@ -8,21 +8,21 @@ import org.gwt.beansbinding.core.client.ext.BeanAdapter;
 import org.gwt.beansbinding.ui.client.adapters.BeanAdapterBase;
 
 import sk.seges.acris.binding.client.providers.support.generic.HandlerBindingAdapterProvider;
-import sk.seges.acris.binding.client.providers.support.widget.HasEnabled;
+import sk.seges.acris.binding.client.providers.support.widget.HasVisible;
 
 import com.google.gwt.event.shared.HasHandlers;
-import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * @author ladislav.gazo
  */
 @SuppressWarnings("unchecked")
-public class HasEnabledAdapterProvider extends HandlerBindingAdapterProvider {
-	private static final String ENABLED = "enabled";
+public class HasVisibleAdapterProvider extends HandlerBindingAdapterProvider {
+	private static final String VISIBLE = "visible";
 
 	@Override
 	public String getBindingWidgetProperty() {
-		return ENABLED;
+		return VISIBLE;
 	}
 
 	@Override
@@ -32,13 +32,13 @@ public class HasEnabledAdapterProvider extends HandlerBindingAdapterProvider {
 
 	@Override
 	protected Object getValue(HasHandlers widget) {
-		if (widget instanceof FocusWidget) {
-			return ((FocusWidget) widget).isEnabled();
+		if (widget instanceof UIObject) {
+			return ((UIObject) widget).isVisible();
 		}
-		if (widget instanceof HasEnabled) {
-			return ((HasEnabled) widget).isEnabled();
+		if (widget instanceof HasVisible) {
+			return ((HasVisible) widget).isVisible();
 		}
-		throw new RuntimeException("Neither FocusWidget nor HasEnabled was provided");
+		throw new RuntimeException("Neither UIObject nor HasEnabled was provided");
 	}
 
 	@Override
@@ -46,23 +46,23 @@ public class HasEnabledAdapterProvider extends HandlerBindingAdapterProvider {
 		Object convertedValue = t == null ? false : ConverterProvider.defaultConvert(t, Boolean.class);
 		
 		if (convertedValue instanceof Boolean) {
-			if (widget instanceof FocusWidget) {
-				((FocusWidget) widget).setEnabled((Boolean) convertedValue);
+			if (widget instanceof UIObject) {
+				((UIObject) widget).setVisible((Boolean) convertedValue);
 				return;
 			}
-			if (widget instanceof HasEnabled) {
-				((HasEnabled) widget).setEnabled((Boolean) convertedValue);
+			if (widget instanceof HasVisible) {
+				((HasVisible) widget).setVisible((Boolean) convertedValue);
 				return;
 			}
 		}
 
-		throw new RuntimeException("Neither FocusWidget nor HasEnabled are able to consume "
+		throw new RuntimeException("Neither UIObject nor HasEnabled are able to consume "
 				+ (t != null ? t.getClass() : "N/A") + " values = " + t);
 	}
 
 	@Override
 	public Class getBindingWidgetClasses() {
-		return FocusWidget.class;
+		return UIObject.class;
 	}
 
 	@Override
@@ -70,18 +70,17 @@ public class HasEnabledAdapterProvider extends HandlerBindingAdapterProvider {
 		return Adapter.class;
 	}
 
-	@Override
 	public boolean providesAdapter(Class type, String property) {
 		return isSupportedClass(type) && property.intern() == getBindingWidgetProperty();
 	}
 
 	protected boolean isSupportedClass(Class type) {
-		if (type == FocusWidget.class) {
+		if (type == UIObject.class) {
 			return true;
 		}
 
 //		for (Class iface : type.getInterfaces()) {
-//			if (iface == HasEnabled.class) {
+//			if (iface == HasVisible.class) {
 //				return true;
 //			}
 //		}
@@ -97,19 +96,19 @@ public class HasEnabledAdapterProvider extends HandlerBindingAdapterProvider {
 
 	public static class Adapter extends BeanAdapterBase {
 		private final HasHandlers widget;
-		private final HasEnabledAdapterProvider provider;
+		private final HasVisibleAdapterProvider provider;
 
-		public Adapter(String property, HasHandlers widget, HasEnabledAdapterProvider provider) {
+		public Adapter(String property, HasHandlers widget, HasVisibleAdapterProvider provider) {
 			super(property);
 			this.widget = widget;
 			this.provider = provider;
 		}
 
-		public Boolean isEnabled() {
+		public Boolean isVisible() {
 			return (Boolean) provider.getValue(widget);
 		}
 
-		public void setEnabled(Boolean t) {
+		public void setVisible(Boolean t) {
 			provider.setValue(widget, t);
 		}
 
