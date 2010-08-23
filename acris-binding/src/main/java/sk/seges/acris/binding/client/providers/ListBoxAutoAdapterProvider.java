@@ -13,7 +13,8 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 @OneToMany
 public class ListBoxAutoAdapterProvider extends AbstractBindingChangeHandlerAdapterProvider<ListBox, Object> {
-
+	private static final String PROPERTY_SELECTED_ITEM = "selectedItem";
+	
 	protected String getValue(ListBox list) {
 		int index = list.getSelectedIndex();
 
@@ -62,5 +63,10 @@ public class ListBoxAutoAdapterProvider extends AbstractBindingChangeHandlerAdap
 	@Override
 	public boolean isSupportSuperclass() {
 		return false;
+	}
+	
+	@Override
+	public String getBindingWidgetProperty() {
+		return PROPERTY_SELECTED_ITEM;
 	}
 }

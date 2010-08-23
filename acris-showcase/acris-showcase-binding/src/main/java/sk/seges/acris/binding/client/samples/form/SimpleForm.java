@@ -2,6 +2,7 @@ package sk.seges.acris.binding.client.samples.form;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 
+import sk.seges.acris.binding.client.Binding;
 import sk.seges.acris.binding.client.annotations.BindingField;
 import sk.seges.acris.binding.client.annotations.BindingFieldsBase;
 import sk.seges.acris.binding.client.annotations.BindingSpecLoader;
@@ -77,6 +78,8 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 		timeListBox.setWidth("90%");
 		descriptionTextArea.setWidth("90%");
 
+		Binding.alter(this).enable(descriptionTextArea).when(SimpleBeanBeanWrapper.EMAIL).isNotNull();
+		
 		addWidget(nameLabel, nameField);
 		addWidget(emailLabel, emailField);
 		addWidget(companyLabel, companyListBox);

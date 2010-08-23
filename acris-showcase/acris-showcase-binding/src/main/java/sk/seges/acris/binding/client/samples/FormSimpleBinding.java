@@ -47,7 +47,7 @@ public class FormSimpleBinding implements EntryPoint {
 		BeanAdapterFactory.addProvider(new HasHTMLAdapterProvider());
 		BeanAdapterFactory.addProvider(new ListBoxAdapterProvider());
 		HasHTMLAdapterProvider.register(HTML.class);
-
+		
 		AdaptersRegistration registration = GWT.create(AdaptersRegistration.class);
 		registration.registerAllAdapters();
 
@@ -179,7 +179,7 @@ public class FormSimpleBinding implements EntryPoint {
 			return bean2;
 		}
 	
-		bean2 = createBean("andre", "andre [at] zfs [dot] sk", "Zettaflops s.r.o");
+		bean2 = createBean("andre", null, "Zettaflops s.r.o");
 				
 		return bean2;
 	}
