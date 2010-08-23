@@ -24,4 +24,9 @@ public abstract class AbstractBindingValueChangeHandlerAdapterProvider<M extends
 		}
 		throw new IllegalArgumentException("Source does not support value change events");
 	}
+	
+	@Override
+	public String getBindingWidgetProperty() {
+		return PROPERTY_VALUE;
+	}
 }

@@ -22,4 +22,9 @@ public abstract class AbstractBindingChangeHandlerAdapterProvider<M extends HasC
 		}
 		throw new IllegalArgumentException("Source does not support change events");
 	}
+	
+	@Override
+	public String getBindingWidgetProperty() {
+		return PROPERTY_VALUE;
+	}
 }

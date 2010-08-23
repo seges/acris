@@ -3,6 +3,8 @@ package sk.seges.acris.binding.client.providers.wrapper;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 
 import org.gwt.beansbinding.core.client.PropertyResolutionException;
@@ -14,8 +16,8 @@ import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 
 public class BeanWrapperAdapterProvider implements BeanAdapterProvider {
 
-	public static final class BeanWrapperAdapter extends BeanAdapterBase {
-
+	public static final class BeanWrapperAdapter extends BeanAdapterBase implements PropertyChangeListener {
+		private Object cachedValue;
 		private BeanWrapper<?> beanWrapper;
 
 		public BeanWrapperAdapter(BeanWrapper<?> beanWrapper, String property) {
@@ -33,10 +35,20 @@ public class BeanWrapperAdapterProvider implements BeanAdapterProvider {
 
 		@Override
 		protected void listeningStarted() {
+			cachedValue = getValue();
+			beanWrapper.addPropertyChangeListener(this);
 		}
 
 		@Override
 		protected void listeningStopped() {
+			beanWrapper.removePropertyChangeListener(this);
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			Object oldValue = cachedValue;
+			cachedValue = getValue();
+			firePropertyChange(oldValue, cachedValue);
 		}
 	}
 
@@ -45,19 +57,20 @@ public class BeanWrapperAdapterProvider implements BeanAdapterProvider {
 			throw new IllegalArgumentException();
 		}
 
-		if (source instanceof BeanWrapper) {
+		if (source instanceof BeanWrapper<?>) {
 			return new BeanWrapperAdapter((BeanWrapper<?>) source, property);
 		}
 		throw new IllegalArgumentException("Source does not support change events");
 	}
 
 	private static String globalProperty = "value";
-	
+
 	public boolean providesAdapter(Class<?> type, String property) {
 		boolean supports = isSupportedClass(type);
-		
+
 		if (supports) {
-			PropertyDescriptor[] pds = getBeanInfo(new BeanWrapperAdapter(null, "temp")).getPropertyDescriptors();
+			PropertyDescriptor[] pds = getBeanInfo(new BeanWrapperAdapter(null, "temp"))
+					.getPropertyDescriptors();
 
 			for (PropertyDescriptor pd : pds) {
 				if (pd.getName().equals(globalProperty)) {
@@ -66,7 +79,7 @@ public class BeanWrapperAdapterProvider implements BeanAdapterProvider {
 				}
 			}
 		}
-		
+
 		return supports;
 	}
 
@@ -76,7 +89,8 @@ public class BeanWrapperAdapterProvider implements BeanAdapterProvider {
 		try {
 			return Introspector.getBeanInfo(object.getClass());
 		} catch (IntrospectionException ie) {
-			throw new PropertyResolutionException("Exception while introspecting " + object.getClass().getName(), ie);
+			throw new PropertyResolutionException("Exception while introspecting "
+					+ object.getClass().getName(), ie);
 		}
 	}
 
@@ -94,7 +108,7 @@ public class BeanWrapperAdapterProvider implements BeanAdapterProvider {
 		if (type.getName().endsWith(WRAPPER_SUFFIX)) {
 			return true;
 		}
-		
+
 		return isSupportedClass(type.getSuperclass());
 	}
 }

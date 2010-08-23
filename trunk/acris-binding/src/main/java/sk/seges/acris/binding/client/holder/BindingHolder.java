@@ -205,4 +205,9 @@ public class BindingHolder<T> implements IBindingHolder<T> {
 	public static interface BindingHolderListener<B> {
 		void bindingBecameBound(BindingHolder<B> holder);
 	}
+
+	@Override
+	public void manageBindingGroup(BindingGroup group) {
+		asyncbindingGroups.add(group);
+	}
 }

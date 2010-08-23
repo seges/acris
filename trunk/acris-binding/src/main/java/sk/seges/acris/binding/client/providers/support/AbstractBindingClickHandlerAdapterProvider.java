@@ -22,4 +22,9 @@ public abstract class AbstractBindingClickHandlerAdapterProvider<M extends HasCl
 		}
 		throw new IllegalArgumentException("Source does not support click events");
 	}
+	
+	@Override
+	public String getBindingWidgetProperty() {
+		return PROPERTY_VALUE;
+	}
 }

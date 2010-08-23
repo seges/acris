@@ -11,8 +11,6 @@ import com.google.gwt.event.shared.HasHandlers;
 
 public abstract class HandlerBindingAdapterProvider<M extends HasHandlers, T, V extends EventHandler> implements IBindingBeanAdapterProvider<M> {
 
-	public static final String PROPERTY_VALUE = "value";
-	
 	protected abstract T getValue(M widget);
 	protected abstract void setValue(M widget, T t);
 	
@@ -73,10 +71,6 @@ public abstract class HandlerBindingAdapterProvider<M extends HasHandlers, T, V 
 
 	public Class<?> getAdapterClass(Class<?> type) {
 		return isSupportedClass(type) ? ChangeHandlerAdapter.class : null;
-	}
-
-	public String getBindingWidgetProperty() {
-		return PROPERTY_VALUE;
 	}
 
 	protected boolean isSupportedClass(Class<?> type) {
