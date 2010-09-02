@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"> 
+
+    <bean id="permissionFactory" class="org.springframework.security.acls.domain.DefaultPermissionFactory">
+    </bean>
+
+    <bean id="readPermissions" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+         <property name="targetObject" ref="voterPermissions"/>
+         <property name="targetField" value="READ"/>
+    </bean>
+
+    <bean id="writePermissions" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="targetObject" ref="voterPermissions"/>
+        <property name="targetField" value="WRITE"/>
+    </bean>
+
+    <bean id="deletePermissions" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="targetObject" ref="voterPermissions"/>
+        <property name="targetField" value="DELETE"/>
+    </bean>
+
+</beans>
