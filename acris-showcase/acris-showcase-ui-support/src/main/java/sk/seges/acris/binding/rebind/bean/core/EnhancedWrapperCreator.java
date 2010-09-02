@@ -53,8 +53,8 @@ public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
 				JMethod setter = RebindUtils.getSetter(beanType, fieldName, method.getReturnType());
 
 				if (setter != null) {
-					if (method.getReturnType().isClass() != null) {
-						JClassType classType = method.getReturnType().isClass();
+					if (method.getReturnType().isClassOrInterface() != null) {
+						JClassType classType = method.getReturnType().isClassOrInterface();
 
 						if (hasBeanWrapper(classType)) {
 							source.println("if (" + method.getName() + "() != null && " + BEAN_WRAPPER_CONTENT + "." + method.getName() + "() == null) {");
@@ -91,7 +91,7 @@ public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
 	
 	@Override
 	protected void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter, JMethod getter) {
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
 		source.indent();
 
 		source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + getter.getName() + "();");
@@ -106,7 +106,7 @@ public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
 
 	@Override
 	protected void generateGetterForPrimitive(SourceWriter source, JMethod methode) {
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
 		source.indent();
 		getAttributeGetter(source, RebindUtils.toFieldName(methode.getName()), 
 				methode.getReturnType().getSimpleSourceName(), methode.getReturnType().getQualifiedSourceName());
@@ -132,7 +132,7 @@ public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
 		String wrapperType = getWrapperType(returnType);
 
 		//		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, 0) + " {");
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
 		source.indent();
 
 		source.println("if (" + parameter.getName() + " == null) {");
@@ -185,7 +185,7 @@ public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
 		String wrapperType = getWrapperType(returnType);
 		source.println("private " + wrapperType + " " + field + ";");
 
-		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType) + " {");
+		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, false, false, false, false, true) + " {");
 		//		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 

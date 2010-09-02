@@ -1,6 +1,6 @@
 package sk.seges.acris.mvp.client.action;
 
-import sk.seges.acris.mvp.client.presenter.ErrorPresenter;
+import sk.seges.acris.mvp.client.presenter.core.ErrorPresenter;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;

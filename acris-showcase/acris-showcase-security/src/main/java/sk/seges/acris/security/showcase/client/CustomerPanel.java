@@ -2,7 +2,7 @@ package sk.seges.acris.security.showcase.client;
 
 import sk.seges.acris.security.client.annotations.Secured;
 import sk.seges.acris.security.client.ui.SecuredComposite;
-import sk.seges.acris.security.rpc.user_management.domain.Permission;
+import sk.seges.acris.security.shared.user_management.domain.Permission;
 import sk.seges.acris.security.showcase.shared.Grants;
 
 import com.google.gwt.core.client.GWT;

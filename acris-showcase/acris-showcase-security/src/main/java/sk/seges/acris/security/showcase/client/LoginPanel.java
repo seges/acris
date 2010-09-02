@@ -3,9 +3,9 @@
  */
 package sk.seges.acris.security.showcase.client;
 
-import sk.seges.acris.security.rpc.session.ClientSession;
-import sk.seges.acris.security.rpc.user_management.domain.UserPasswordLoginToken;
-import sk.seges.acris.security.rpc.user_management.service.IUserServiceAsync;
+import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
+import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

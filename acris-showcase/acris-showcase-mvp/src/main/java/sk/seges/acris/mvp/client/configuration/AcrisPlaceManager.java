@@ -1,6 +1,6 @@
 package sk.seges.acris.mvp.client.configuration;
 
-import sk.seges.acris.mvp.client.presenter.UserMaintenancePresenter.UserMaintenanceProxy;
+import sk.seges.acris.mvp.client.presenter.user.LoginPresenter.LoginProxy;
 
 import com.google.inject.Inject;
 import com.philbeaudoin.gwtp.mvp.client.EventBus;
@@ -13,7 +13,7 @@ public class AcrisPlaceManager extends PlaceManagerImpl {
 	private final Proxy<?> defaultProxy;
 
 	@Inject
-	public AcrisPlaceManager(EventBus eventBus, TokenFormatter tokenFormatter, UserMaintenanceProxy defaultProxy) {
+	public AcrisPlaceManager(EventBus eventBus, TokenFormatter tokenFormatter, LoginProxy defaultProxy) {
 		super(eventBus, tokenFormatter);
 		this.defaultProxy = defaultProxy;
 	}

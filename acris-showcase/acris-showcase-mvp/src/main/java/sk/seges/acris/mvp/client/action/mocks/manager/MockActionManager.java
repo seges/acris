@@ -4,7 +4,7 @@ import sk.seges.acris.mvp.client.action.ActionManager;
 import sk.seges.acris.mvp.client.action.DefaultAsyncCallback;
 import sk.seges.acris.mvp.client.action.mocks.core.MockActionHandler;
 import sk.seges.acris.mvp.client.action.mocks.registrator.MockRegistrator;
-import sk.seges.acris.mvp.client.presenter.ErrorPresenter;
+import sk.seges.acris.mvp.client.presenter.core.ErrorPresenter;
 
 import com.google.inject.Inject;
 import com.philbeaudoin.gwtp.dispatch.client.DispatchAsync;

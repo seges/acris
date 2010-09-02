@@ -88,14 +88,20 @@
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security</artifactId>
+			<artifactId>acris-security-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security</artifactId>
+			<artifactId>acris-security-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
+		
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		
 		<!-- required for Jetty JNDI support - Jetty embedded in GWT doesn't contain 
 			it -->
 		<dependency>
