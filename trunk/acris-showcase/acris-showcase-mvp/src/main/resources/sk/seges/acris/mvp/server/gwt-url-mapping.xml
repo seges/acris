@@ -3,17 +3,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 						http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<import resource="persistence-context.xml" />
-	<import resource="gilead-configuration.xml" />
-
-	<bean id="serviceExporter" class="org.gwtwidgets.server.spring.gilead.GileadRPCServiceExporter" scope="prototype">
-		<property name="beanManager" ref="dtaHibernateBeanManager" />
-	</bean>
-
-	<bean id="configurableExporterFactory" class="sk.seges.acris.rpc.ConfigurableRPCServiceExporterFactory" />
+	<import resource="security-server-context.xml" />
+	<import resource="common-server-context.xml" />
+	<import resource="dispatch-context.xml" />
 
 	<bean id="urlMapping" class="org.gwtwidgets.server.spring.GWTHandler">
-		<property name="serviceExporterFactory" ref="configurableExporterFactory" />
+		<!-- property name="serviceExporterFactory" ref="configurableExporterFactory" /-->
 		<property name="mappings">
 			<map>
 				<entry key="/command" value-ref="gileadDefaultDispatchServlet" />

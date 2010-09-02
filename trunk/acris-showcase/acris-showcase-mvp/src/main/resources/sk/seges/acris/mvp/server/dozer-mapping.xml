@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>sk.seges.acris.security.server.user_management.domain.twig.spring.SpringTwigGenericUser</class-a>
+		<class-b>sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO</class-b>
+	</mapping>
+
+	<mapping>
+		<class-a>sk.seges.acris.security.server.user_management.domain.twig.TwigUserPreferences</class-a>
+		<class-b>sk.seges.acris.security.shared.user_management.domain.dto.UserPreferencesDTO</class-b>
+	</mapping>
+
+</mappings>

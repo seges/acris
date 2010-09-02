@@ -4,8 +4,10 @@
 	<inherits name="com.google.gwt.i18n.I18N" />
 
 	<!-- Acris dependency -->
+	<inherits name="sk.seges.acris.security.Session" />
+ 	<inherits name="sk.seges.acris.security.Spring" />
 	<inherits name="sk.seges.acris.Security" />
-
+ 
 	<!-- GIN for dependency injection -->
 	<inherits name="com.google.gwt.inject.Inject" />
 
