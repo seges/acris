@@ -8,6 +8,8 @@
     * [Releasing Release process]
     * [SVNPostCommitHook How SVN postcommit hook works]
     * [Roadmap Roadmap]
+    * [Migration Migration guide]
+      * [Migration1.0.1 From version 1.0.0 to 1.0.1]
   * [BeansBinding Beans binding]
     * [BeansBindingQuickStart Quick-start]
     * [BeansBindingInExamplesPart1 Example no.1]
@@ -33,3 +35,8 @@
   * Web
     * [AcrisWeb Navigation and layout]
     * [AcrisSEO SEO]
+  * App engine integration
+    * [AppEngineDatanucleus Datanucleus integration - JDO/JPA with maven]
+    * [AppEngineSpring Spring with appengine]
+    * [AppEngineMaven GAE/GEP with maven]
+    * [AppEngineSecurity Acris security on appengine]
