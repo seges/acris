@@ -2,6 +2,11 @@
 #labels Phase-Implementation,Phase-Design
 
 = Enhancing classes =
+//TODO
+add description
+
+//TODO
+add final project setup, pom.xml, persistence.xml, javax.persistence.spi.PersistenceProvider
 
 == File enhancing within JAR file ==
 === Problem ===
