@@ -1,6 +1,0 @@
-<module>
-	<inherits name='sk.seges.acris.binding.client.Wrappers' />
-	<inherits name='sk.seges.acris.core.Core' />
-	
-    <source path='rpc'/>
-</module>
