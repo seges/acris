@@ -32,9 +32,11 @@ java.io.!FileNotFoundException: file:\C:\m2\sk\seges\acris\acris-security\1.0.1-
 va:556)
         at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:535)
 }}}
+
 === Solution ===
 
 Solution is little bit tricky :) You have change default behaviour which tries to override existing file but rather generate enhanced classes into classes directory. So application will have enhanced files on the classpath without overriding the existing one.
+
 {{{
 <plugin>
 	<groupId>org.datanucleus</groupId>
@@ -55,6 +57,7 @@ Solution is little bit tricky :) You have change default behaviour which tries t
         ...
 </plugin>
 }}}
+
 === Interested reading ===
 [http://brainpicks.wordpress.com/2010/05/04/runtime-enhancement-with-jdo-and-datanucleus/ Runtime Enhancement with JDO and Datanucleus]
 
@@ -63,7 +66,8 @@ Solution is little bit tricky :) You have change default behaviour which tries t
 Enhancer is not able to resolve classes on your classpath but classes are located on the classpath. This produces following failure:
 
 Class "sk.seges.acris.mvp.client.action.DefaultAsyncCallback" was not found in the CLASSPATH. Please check your specification and your CLASSPATH.
-org.datanucleus.exceptions.ClassNotResolvedException: Class "sk.seges.acris.mvp.client.action.DefaultAsyncCallback" was not found in the CLASSPATH. {{{
+org.datanucleus.exceptions.ClassNotResolvedException: Class "sk.seges.acris.mvp.client.action.DefaultAsyncCallback" was not found in the CLASSPATH. 
+{{{
 Please check your specification and your CLASSPATH.
         at org.datanucleus.JDOClassLoaderResolver.classForName(JDOClassLoaderResolver.java:247)
         at org.datanucleus.JDOClassLoaderResolver.classForName(JDOClassLoaderResolver.java:412)
@@ -79,7 +83,9 @@ Please check your specification and your CLASSPATH.
         at org.datanucleus.maven.AbstractEnhancerMojo.enhance(AbstractEnhancerMojo.java:210)
         at org.datanucleus.maven.AbstractEnhancerMojo.executeDataNucleusTool(AbstractEnhancerMojo.java:81)
         at org.datanucleus.maven.AbstractDataNucleusMojo.execute(AbstractDataNucleusMojo.java:119)
+
 }}}
+
 === Solution ===
 Do not set provided scope on your classpath for gwt-user dependency. This is in coflict with correct [http://mojo.codehaus.org/gwt-maven-plugin/user-guide/setup.html maven GWT setup] but anyway, provided scope leads to plugin crash. After setting up the compile scope, enhancer plugin works correctly.
 
