@@ -119,12 +119,12 @@ public class BeanWrapperCreator extends AbstractCreator {
 				if (method.isFinal()) {
 					continue;
 				}
-				if (method.isAbstract()) {
-					// TODO: handle abstract classes - when there is a wrapper
-					// over abstract class, do implement a method that will
-					// delegate to it but without the abstract modifier...
-					continue;
-				}
+//				if (method.isAbstract()) {
+//					// TODO: handle abstract classes - when there is a wrapper
+//					// over abstract class, do implement a method that will
+//					// delegate to it but without the abstract modifier...
+//					continue;
+//				}
 
 				if (method.isPrivate() || method.isProtected()) {
 					continue;
@@ -145,20 +145,22 @@ public class BeanWrapperCreator extends AbstractCreator {
 			processingType = processingType.getSuperclass();
 		}
 
-		String simpleName = beanType.getSimpleSourceName();
 		JMethod[] methods = allMethods.toArray(new JMethod[0]);
 
 		try {
-			createWrapper(methods, simpleName, sourceWriter, beanType);
+			createWrapper(methods, sourceWriter, beanType);
 		} catch (NotFoundException e) {
 			logger.log(Type.ERROR, "Unable to create wrapper for bean " + beanTypeName, e);
 			throw new UnableToCompleteException();
 		}
 	}
 
-	protected void createWrapper(JMethod[] methods, String simpleName, SourceWriter source, JClassType classType) throws NotFoundException {
+	protected void createWrapper(JMethod[] methods, SourceWriter source, JClassType classType) throws NotFoundException {
 		source.indent();
-		if (superclassName == null) {
+		
+		String simpleName = classType.getSimpleSourceName();
+		
+		if (superclassName == null || classType.isInterface() != null || classType.isAbstract()) {
 			source.println("private " + simpleName + " " + BEAN_WRAPPER_CONTENT + ";");
 		} else {
 			// initialize new instance by default
@@ -211,8 +213,8 @@ public class BeanWrapperCreator extends AbstractCreator {
 		generateGetBeanAttributes(source, methods);
 		generateSetBeanAttributes(source, methods);
 
-//		generateHashcode(source);
-//		generateEquals(source);
+		generateHashcode(source);
+		generateEquals(source, methods);
 
 		generateClearWrappersMethod(source);
 
@@ -281,7 +283,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		return BeanWrapper.class.getName();
 	}
 
-	protected void generateEquals(SourceWriter source) {
+	protected void generateEquals(SourceWriter source, JMethod[] methods) throws NotFoundException {
 		source.println("@Override");
 		source.println("public boolean equals(Object obj) {");
 		source.indent();
@@ -364,7 +366,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 	}
 
 	protected void generateGetterForPrimitive(SourceWriter source, JMethod methode) {
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
 		source.indent();
 		source.println("if(" + BEAN_WRAPPER_CONTENT + " != null) {");
 		source.indent();
@@ -387,7 +389,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 	}
 
 	protected void generateGetterForSimpleBean(SourceWriter source, JMethod methode) {
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
 		source.indent();
 		source.println("return " + BEAN_WRAPPER_CONTENT + "." + methode.getName() + "();");
 		source.outdent();
@@ -412,7 +414,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		String wrapperType = getWrapperType(returnType);
 		source.println("private " + wrapperType + " " + field + ";");
 
-		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType) + " {");
+		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, false, false, false, false, true) + " {");
 //		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 		
@@ -445,7 +447,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 	}
 	
 	protected void generateSetterForPrimitive(SourceWriter source, JMethod methode, JParameter parameter, JMethod getter) {
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
 		source.indent();
 
 		source.println(parameter.getType().getQualifiedSourceName() + " oldValue = " + getter.getName() + "();");
@@ -472,7 +474,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		String wrapperType = getWrapperType(returnType);
 
 //		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, 0) + " {");
-		source.println(methode.getReadableDeclaration() + " {");
+		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
 		source.indent();
 
 		source.println("if (" + parameter.getName() + " == null) {");

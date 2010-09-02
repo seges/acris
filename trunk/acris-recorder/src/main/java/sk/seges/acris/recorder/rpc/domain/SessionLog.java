@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
@@ -38,7 +38,7 @@ public class SessionLog implements /*IUserDetail, */IDomainObject<Long> {
 	private int version;
 
 	@ManyToOne
-	private GenericUser user;
+	private GenericUserDTO user;
 
 	@org.hibernate.annotations.CollectionOfElements
 	private List<String> tokensTracker;
@@ -442,11 +442,11 @@ public class SessionLog implements /*IUserDetail, */IDomainObject<Long> {
 		return true;
 	}
 
-	public GenericUser getUser() {
+	public GenericUserDTO getUser() {
 		return user;
 	}
 
-	public void setUser(GenericUser user) {
+	public void setUser(GenericUserDTO user) {
 		this.user = user;
 	}
 }

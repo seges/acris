@@ -16,11 +16,9 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import javax.tools.Diagnostic.Kind;
 
 public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
@@ -127,7 +125,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		}
 
 		for (String iface : interfaces) {
-			if (isAssignableFrom(typeElement, iface)) {
+			if (ProcessorUtils.isAssignableFrom(typeElement, iface)) {
 				return true;
 			}
 		}
@@ -139,47 +137,6 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		processingEnv.getMessager().printMessage(Kind.MANDATORY_WARNING, msg);
 	}
 
-	private boolean isAssignableFrom(TypeElement typeElement, String type) {
-		boolean result;
-
-		result = isOfType(typeElement, type);
-		if (result == true) {
-			return true;
-		}
-
-		List<? extends TypeMirror> interfaces2 = typeElement.getInterfaces();
-		TypeMirror superclass = typeElement.getSuperclass();
-
-		result = isAssignable(superclass, type);
-		if (result == true) {
-			return true;
-		}
-
-		for (TypeMirror mirror : interfaces2) {
-			if (isAssignable(mirror, type)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isAssignable(TypeMirror mirror, String type) {
-		if (mirror instanceof DeclaredType) {
-			DeclaredType dt = (DeclaredType) mirror;
-			TypeElement dte = (TypeElement) dt.asElement();
-
-			if (isOfType(dte, type)) {
-				return true;
-			} else {
-				return isAssignableFrom(dte, type);
-			}
-		}
-		return false;
-	}
-
-	private boolean isOfType(TypeElement te, String type) {
-		return te.getQualifiedName().equals(type);
-	}
 
 	private InputStream getInputStreamForResource(String resource) {
 		String pkg = getPackage(resource);

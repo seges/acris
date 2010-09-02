@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.recorder.rpc.domain.SessionLog;
-import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTOBeanWrapper;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
@@ -42,10 +43,10 @@ public class SessionLogDAO extends AbstractHibernateCRUD<SessionLog> implements 
 	}
 
 	private static final String LOAD_BY_USERNAME = "select distinct sessionLog." + 
-		SessionLog.USER_ATTRIBUTE + "." + GenericUser.USER_NAME_ATTRIBUTE + " from " + SessionLog.class.getName() + " sessionLog";
+		SessionLog.USER_ATTRIBUTE + "." + GenericUserDTOBeanWrapper.USERNAME + " from " + SessionLog.class.getName() + " sessionLog";
 
 	@Override
-	public List<GenericUser> loadUsers() {
+	public List<GenericUserDTO> loadUsers() {
 		Query query = entityManager.createQuery(LOAD_BY_USERNAME); 
 		return query.getResultList();
 	}

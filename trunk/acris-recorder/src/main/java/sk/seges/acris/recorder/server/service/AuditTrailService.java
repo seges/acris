@@ -3,11 +3,7 @@ package sk.seges.acris.recorder.server.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.gilead.core.PersistentBeanManager;
-import net.sf.gilead.gwt.PersistentRemoteService;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import sk.seges.acris.recorder.rpc.domain.AuditLog;
@@ -21,11 +17,13 @@ import sk.seges.acris.recorder.rpc.transfer.StringMapper;
 import sk.seges.acris.recorder.server.dao.IAuditLogDAO;
 import sk.seges.acris.recorder.server.provider.ISessionLogDAO;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 /**
  * @author PSimun
  */
 @Service
-public class AuditTrailService extends PersistentRemoteService implements IAuditTrailService {
+public class AuditTrailService extends RemoteServiceServlet implements IAuditTrailService {
 
 	private static final long serialVersionUID = 4268680646784670671L;
 
@@ -35,10 +33,10 @@ public class AuditTrailService extends PersistentRemoteService implements IAudit
 	@Autowired
 	private ISessionLogDAO sessionLogDAO;
 
-	@Autowired
-	public AuditTrailService(@Qualifier("persistentBeanManager") PersistentBeanManager lazyManager) {
-		super(lazyManager);
-	}
+//	@Autowired
+//	public AuditTrailService(@Qualifier("persistentBeanManager") PersistentBeanManager lazyManager) {
+//		super(lazyManager);
+//	}
 		
 	@Override
 	public void logUserActivity(int event) {

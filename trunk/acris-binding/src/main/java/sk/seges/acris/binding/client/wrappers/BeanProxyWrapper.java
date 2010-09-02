@@ -30,7 +30,7 @@ import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
  * by binding property</li>
  * </ul>
  * 
- * @author fat
+ * @author Peter Simun
  * 
  * @param <M>
  *            Type of the binding bean wrapped into the {@link BeanWrapper}.
