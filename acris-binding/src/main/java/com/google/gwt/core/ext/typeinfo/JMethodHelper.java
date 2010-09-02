@@ -9,8 +9,32 @@ public class JMethodHelper extends JMethod {
 		this.method = method;
 	}
 
+	public String getReadableDeclaration(String returnType, boolean noAccess, boolean noNative, boolean noStatic, boolean noFinal, boolean noAbstract) {
+		int bits = getModifierBits();
+		if (noAccess) {
+			bits &= ~(TypeOracle.MOD_PUBLIC | TypeOracle.MOD_PRIVATE | TypeOracle.MOD_PROTECTED);
+		}
+		if (noNative) {
+			bits &= ~TypeOracle.MOD_NATIVE;
+		}
+		if (noStatic) {
+			bits &= ~TypeOracle.MOD_STATIC;
+		}
+		if (noFinal) {
+			bits &= ~TypeOracle.MOD_FINAL;
+		}
+		if (noAbstract) {
+			bits &= ~TypeOracle.MOD_ABSTRACT;
+		}
+		return getReadableDeclarationForBits(returnType, bits);
+	}
+
 	public String getReadableDeclaration(String returnType) {
-		String[] names = TypeOracle.modifierBitsToNames(getModifierBits());
+		return getReadableDeclarationForBits(returnType, getModifierBits());
+	}
+	
+	public String getReadableDeclarationForBits(String returnType, int bits) {
+		String[] names = TypeOracle.modifierBitsToNames(bits);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < names.length; i++) {
 			sb.append(names[i]);
@@ -39,7 +63,7 @@ public class JMethodHelper extends JMethod {
 			} else {
 				needComma = true;
 			}
-			
+
 			if (index == i) {
 				sb.append(paramType);
 			} else {

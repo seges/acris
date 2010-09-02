@@ -190,46 +190,6 @@
 				</dependency>
 			</dependencies>
 		</profile>
-		<profile>
-			<id>unpackGwtLib</id>
-			<activation>
-				<property>
-					<name>unpackGwtLib</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>unpackGwtLib</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>com.google.gwt</groupId>
-											<artifactId>gwt-dev</artifactId>
-											<version>${gwt.version}</version>
-											<classifier>${platform}-libs</classifier>
-											<type>zip</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>${settings.localRepository}/com/google/gwt/gwt-dev/${gwt.version}
-											</outputDirectory>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 	</profiles>
 
 	<build>
