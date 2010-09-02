@@ -1,8 +1,10 @@
 package sk.seges.acris.mvp.client.configuration;
 
 import sk.seges.acris.mvp.client.configuration.smartgwt.SmartGWTViews;
-import sk.seges.acris.mvp.client.presenter.ErrorPresenter;
-import sk.seges.acris.mvp.client.presenter.UserMaintenancePresenter;
+import sk.seges.acris.mvp.client.presenter.core.ErrorPresenter;
+import sk.seges.acris.mvp.client.presenter.user.LoginPresenter;
+import sk.seges.acris.mvp.client.presenter.user.UserMaintenancePresenter;
+import sk.seges.acris.security.shared.session.ClientSession;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
@@ -15,6 +17,8 @@ import com.philbeaudoin.gwtp.mvp.client.proxy.ProxyFailureHandler;
 @GinModules({DefaultDispatchModule.class, AcrisModule.class, SmartGWTViews.class})
 public interface AcrisGinjector extends Ginjector {
 
+	ClientSession getClientSession();
+
 	PlaceManager getPlaceManager();
 
 	EventBus getEventBus();
@@ -22,6 +26,8 @@ public interface AcrisGinjector extends Ginjector {
 	ProxyFailureHandler getProxyFailureHandler();
 
 	Provider<ErrorPresenter> getErrorPresenter();
+
+	Provider<LoginPresenter> getLoginPresenter();
 
 	Provider<UserMaintenancePresenter> getUserMaintenancePresenter();
 }

@@ -5,9 +5,9 @@ import java.util.List;
 
 import sk.seges.acris.mvp.client.action.mocks.core.MockActionHandler;
 import sk.seges.acris.mvp.client.action.mocks.factory.UsersFactory;
-import sk.seges.acris.mvp.shared.action.FetchUsersAction;
-import sk.seges.acris.mvp.shared.result.FetchUsersResult;
-import sk.seges.acris.security.rpc.user_management.domain.GenericUser;
+import sk.seges.acris.mvp.shared.action.user.FetchUsersAction;
+import sk.seges.acris.mvp.shared.result.user.FetchUsersResult;
+import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.sesam.dao.PagedResult;
 
 import com.google.inject.Inject;
@@ -20,10 +20,10 @@ public class MockFetchUsersActionHandler extends MockActionHandler<FetchUsersAct
 	
 	@Override
 	public FetchUsersResult execute(FetchUsersAction action) {
-		GenericUser user = UsersFactory.createMockUser(1L, "test", "test");
+		UserData user = UsersFactory.createMockUser(1L, "test", "test");
 
-		PagedResult<List<GenericUser>> pagedUsers = new PagedResult<List<GenericUser>>();
-		List<GenericUser> users = new ArrayList<GenericUser>();
+		PagedResult<List<UserData>> pagedUsers = new PagedResult<List<UserData>>();
+		List<UserData> users = new ArrayList<UserData>();
 		users.add(user);
 		pagedUsers.setResult(users);
 

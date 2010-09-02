@@ -6,7 +6,7 @@
 		<servlet-name>svnhook</servlet-name>
 		<servlet-class>sk.seges.svn.hooks.SVNHookServlet</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>svnhook</servlet-name>
 		<url-pattern>/svnhook</url-pattern>
@@ -14,7 +14,7 @@
 
 	<filter>
 		<filter-name>SessionFilter</filter-name>
-		<filter-class>sk.seges.acris.security.server.SessionRemoteServiceFilter</filter-class>
+		<filter-class>sk.seges.acris.security.server.core.SessionRemoteServiceFilter</filter-class>
 	</filter>
 
 	<filter-mapping>
@@ -23,7 +23,7 @@
 	</filter-mapping>
 
 	<listener>
-		<listener-class>sk.seges.acris.security.server.SessionHandlerListener</listener-class>
+		<listener-class>sk.seges.acris.security.server.core.SessionHandlerListener</listener-class>
 	</listener>
 
 	<servlet>
@@ -36,4 +36,8 @@
 		<servlet-name>service</servlet-name>
 		<url-pattern>/sk.seges.acris.demo.MVP/service/*</url-pattern>
 	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>Showcase.html</welcome-file>
+	</welcome-file-list>
 </web-app>

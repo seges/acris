@@ -1,6 +1,5 @@
 package sk.seges.acris.mvp.server.dispatch;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,9 +16,9 @@ public class GileadDefaultDispatchServlet extends DefaultDispatchServlet {
 	private static final long serialVersionUID = 942525344309880460L;
 
 	@Autowired
-	public GileadDefaultDispatchServlet(final Dispatch dispatch, ServletConfig servletConfig) throws ServletException {
+	public GileadDefaultDispatchServlet(final Dispatch dispatch/*, ServletConfig servletConfig*/) throws ServletException {
 		super(dispatch);
-		init(servletConfig);
+//		init(servletConfig);
 	}
 
 	@Override

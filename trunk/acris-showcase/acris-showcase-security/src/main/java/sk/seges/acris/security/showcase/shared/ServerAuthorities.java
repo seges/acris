@@ -1,6 +1,6 @@
 package sk.seges.acris.security.showcase.shared;
 
-import sk.seges.acris.security.rpc.user_management.domain.Permission;
+import sk.seges.acris.security.shared.user_management.domain.Permission;
 
 /**
  * @author ladislav.gazo

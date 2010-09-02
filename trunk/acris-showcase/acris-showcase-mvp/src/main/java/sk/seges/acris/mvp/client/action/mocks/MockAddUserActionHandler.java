@@ -3,8 +3,8 @@ package sk.seges.acris.mvp.client.action.mocks;
 import com.google.inject.Inject;
 
 import sk.seges.acris.mvp.client.action.mocks.core.MockActionHandler;
-import sk.seges.acris.mvp.shared.action.AddUserAction;
-import sk.seges.acris.mvp.shared.result.AddUserResult;
+import sk.seges.acris.mvp.shared.action.user.AddUserAction;
+import sk.seges.acris.mvp.shared.result.user.AddUserResult;
 
 public class MockAddUserActionHandler extends MockActionHandler<AddUserAction, AddUserResult> {
 
