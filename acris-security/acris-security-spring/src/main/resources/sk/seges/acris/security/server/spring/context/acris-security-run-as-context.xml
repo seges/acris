@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/security
+                        http://www.springframework.org/schema/security/spring-security-2.0.2.xsd">
+
+	<beans:bean id="runAsManager"
+		class="sk.seges.acris.security.server.spring.runas.RoleRunAsManagerImpl">
+		<beans:property name="key" value="secretRunAsKey" />
+	</beans:bean>
+
+	<beans:bean id="runAsAuthenticationProvider"
+		class="org.springframework.security.runas.RunAsImplAuthenticationProvider">
+		<custom-authentication-provider />
+		<beans:property name="key" value="secretRunAsKey" />
+	</beans:bean>
+</beans:beans>
