@@ -33,15 +33,43 @@ I dig into the MVP pattern paradigm and found few implementations for Google Web
 Let's firstly take a look on MVP pattern.
 [http://acris.googlecode.com/svn/wiki/images/mvp_small.png]
 
+Core of the each application is the model which represents application specific domain data and differs between the applications. But there are some parts of the domain area which you can find in each bigger application. I think it's not surprise to you that I'm talking about *users*, so I will explain you the model part of the MVP pattern on the users which I took from acris-security project.
 
-Core of the each application is the domain model with some persistent entities.
+[http://acris.googlecode.com/svn/wiki/images/user_model_lr_small.png]
 
-[http://acris.googlecode.com/svn/wiki/images/user_model_small.png]
+The colors in the diagram are not there beacause it is fancy and super cool, but they helps us to identify which classes are used on *client (green)* part of the application, which are used on the *server (yellow)* side and which are the *common (red)* classes. As you can see from the diagram we will use the DTO's as lightweight version of the persistent entities, but both of the implements the same interface so we can all the time working the interfaces to have the code clear. So for example, service layer will works only with UserData interface:
+{{{
+@GenDispatch
+public class PersistUser {
+  @In(1) UserData user;
+  @Out(1) UserData user;
+}
+
+public UserData persist(UserData entity);
+
+}}}
+Service method input is the transparently converted from !GenericUserDTO into !TwigGenericUser and return method is converted in oposite direction, from !TwigGenericUser into !GenericUserDTO automaticly using dozer. Ok, so far, so good - this is our domain model, now the question is how acris is extending the model?
+
+== Model acris extension ==
+
+Now if you are many of your DTO's used in your client application, you probably want to:
+ * display the data in UI :)
+ * use beans binding as a inteligent solution for data propagation
+ * validate data that comes from UI
+
+The plan is fine, but there are some issues that should be solved to have all this tasks working:
+ * your domain model is pretty dependend on your UI library, because for example SmartGWT can work with Record interface, ExtGWT (GXT) can work with !ModelData interface and etc. so you have to ensure that your model will implements this interfaces and that, whole application is highly dependend on your UI library, which is definitely bad idea. This is the reason for the *[http://code.google.com/p/acris/wiki/BeanWrappers bean wrappers]*, which wrapps your model classes and add the specific behaviour (like setAttribute method) to them in a *completly transparent* way. In this way you can achieve that your model will not be dependend on UI library and you can switch the UI library without touching your model classes.
+ * probably you know great gwt-beansbinding library which allows you to use beans binding in GWT applications. If yes, then you will be maybe interested into [http://code.google.com/p/acris/wiki/BeansBinding acris-binding] which allows you the same binding using the annotations. Only problem with beansbinding is that you have to implement !HasPropertyChangeSupport interface in your model and properly fires the property change events. This complicates situation little bit because it's pretty hard to maintain such things (and the number of interfaces in your model is still growing) and on the other hand, they should be *generated* so it is not necessary to write them. Second reasond for [http://code.google.com/p/acris/wiki/BeanWrappers bean wrappers].
+ * and the third reason consist in validation itself. Here comes into place next great project [http://code.google.com/p/gwt-validation/ gwt-validation] which requires to have implemented IValidatable interface in your model. It is still possible to do it manually or it should be done in a fully automatic and transparent way using the bean wrappers. 
+
+So the bean wrappers wraps your model and added specific support to it, like ModelData, IValidation, HasPropertyChangeSupport, etc. This process is ilustrated on the following diagram in model column.
+
+[http://acris.googlecode.com/svn/wiki/images/mvp_acris_small.png]
 
 [http://acris.googlecode.com/svn/wiki/images/mvp_usecase.png]
 
-[http://acris.googlecode.com/svn/wiki/images/acris_binding_small.png]
+[http://acris.googlecode.com/svn/wiki/images/mvp_user_maint_small.png]
 
-[http://acris.googlecode.com/svn/wiki/images/mvp_acris_small.png]
+[http://acris.googlecode.com/svn/wiki/images/acris_binding_small.png]
 
 [http://acris.googlecode.com/svn/wiki/images/security_steps_small.png]
