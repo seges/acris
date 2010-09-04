@@ -33,11 +33,15 @@ I dig into the MVP pattern paradigm and found few implementations for Google Web
 Let's firstly take a look on MVP pattern.
 [http://acris.googlecode.com/svn/wiki/images/mvp_small.png]
 
+
 Core of the each application is the domain model with some persistent entities.
+
+[http://acris.googlecode.com/svn/wiki/images/user_model_small.png]
+
+[http://acris.googlecode.com/svn/wiki/images/mvp_usecase.png]
 
 [http://acris.googlecode.com/svn/wiki/images/acris_binding_small.png]
 
 [http://acris.googlecode.com/svn/wiki/images/mvp_acris_small.png]
 
 [http://acris.googlecode.com/svn/wiki/images/security_steps_small.png]
-
