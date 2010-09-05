@@ -50,7 +50,7 @@ public UserData persist(UserData entity);
 }}}
 Service method input is the transparently converted from !GenericUserDTO into !TwigGenericUser and return method is converted in oposite direction, from !TwigGenericUser into !GenericUserDTO automaticly using dozer. Ok, so far, so good - this is our domain model, now the question is how acris is extending the model?
 
-== Model acris extension ==
+== Model extension ==
 
 Now if you are many of your DTO's used in your client application, you probably want to:
  * display the data in UI :)
@@ -64,12 +64,75 @@ The plan is fine, but there are some issues that should be solved to have all th
 
 So the bean wrappers wraps your model and added specific support to it, like ModelData, IValidation, HasPropertyChangeSupport, etc. This process is ilustrated on the following diagram in model column.
 
+[http://acris.googlecode.com/svn/wiki/images/mvp_acris_model_small.png]
+
+=== Creating bean wrapper ===
+
+You have few possibilities how to create bean wrapper for your bean (model data class):
+ * annotate your model class with @BeanWrapper annotation
+{{{
+@BeanWrapper
+public class GenericUserDTO implements UserData {
+...
+}
+}}}
+ * implement marker interface !ITransferableObject or domain interface !IDomainObject
+{{{
+public class GenericUserDTO implements UserData, ITransferableObject {
+...
+}
+}}}
+ * create external configuration with all classes listed in getClasses method
+{{{
+public class CustomBeanWrapperConfiguration extends DefaultBeanWrapperConfiguration {
+	@Override
+	public ClassDescriptor[] getClasses() {
+		return new ClassDescriptor[] {
+				new ClassResourceDescriptor(GenericUserDTO.class)
+		};
+	}
+}
+}}} 
+ and change override default configuration in META-INF/bean-wrapper.properties file:
+{{{
+configuration=sk.seges.acris.binding.jsr269.CustomBeanWrapperConfiguration
+}}}
+
+By fulfilling one the steps above you will see the bean wrapper interface in the target/gernerated interface.
+
+{{{
+UserData user = ...; //fetched user from service
+ListGridRecord record = GWT.create(GenericUserDTOBeanWrapper.class)
+}}}
+
+== Presenter extension ==
+
+[http://acris.googlecode.com/svn/wiki/images/mvp_acris_presenter_small.png]
+
+Cancel support
+
+== View extension ==
+
+[http://acris.googlecode.com/svn/wiki/images/mvp_acris_view_small.png]
+
+= Overall view =
+
 [http://acris.googlecode.com/svn/wiki/images/mvp_acris_small.png]
+
+[http://acris.googlecode.com/svn/wiki/images/acris_binding_small.png]
+
+[http://acris.googlecode.com/svn/wiki/images/security_steps_small.png]
+
+= Demo application =
 
 [http://acris.googlecode.com/svn/wiki/images/mvp_usecase.png]
 
 [http://acris.googlecode.com/svn/wiki/images/mvp_user_maint_small.png]
 
-[http://acris.googlecode.com/svn/wiki/images/acris_binding_small.png]
+= Hosting on appengine =
 
-[http://acris.googlecode.com/svn/wiki/images/security_steps_small.png]
+= Migrating possibilities =
+
+== Migrate to RDBMS system ==
+
+== Migrate to different UI library ==
