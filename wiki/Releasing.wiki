@@ -95,6 +95,8 @@ Execute *mvn deploy* optionally with -Dmaven.test.skip in project you want to de
 
 = Release =
 
+To deploy to Sonatype (and later to be compliant with Maven central) artifacts need to be signed. Follow the guide on how to create a PGP key and use it with Maven GPG plugin - http://www.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/
+
 == sesam-os-base-parent release ==
 
   * prepare directory structure
