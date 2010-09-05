@@ -110,6 +110,6 @@ Good:
 	<groupId>com.google.gwt</groupId>
 	<artifactId>gwt-user</artifactId>
 	<version>${gwt.version}</version>
-	<scope>compils</scope>
+	<scope>compile</scope>
 </dependency>
 }}}
