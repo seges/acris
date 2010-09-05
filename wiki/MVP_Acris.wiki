@@ -52,8 +52,8 @@ Service method input is the transparently converted from !GenericUserDTO into !T
 
 == Model extension ==
 
-Now if you are many of your DTO's used in your client application, you probably want to:
- * display the data in UI :)
+Now if you have many of your DTO's used in your client application, you probably want to:
+ * display them somewhere in UI :)
  * use beans binding as a inteligent solution for data propagation
  * validate data that comes from UI
 
@@ -98,18 +98,73 @@ public class CustomBeanWrapperConfiguration extends DefaultBeanWrapperConfigurat
 configuration=sk.seges.acris.binding.jsr269.CustomBeanWrapperConfiguration
 }}}
 
-By fulfilling one the steps above you will see the bean wrapper interface in the target/gernerated interface.
+By fulfilling one of these steps above you can use generated bean wrapper interface. Following code snippet shows integration with smartGWT
 
 {{{
 UserData user = ...; //fetched user from service
-ListGridRecord record = GWT.create(GenericUserDTOBeanWrapper.class)
+BeanWrapper userWrapper = GWT.create(GenericUserDTOBeanWrapper.class);
+userWrapper.setBeanWrapperContent(user);
+ListGrid grid = ...; //grid initialization
+grid.getDataAsRecordList().add((ListGridRecord)record);
 }}}
+
+*TODO add ext gwt sample here*
+
+This allows you to display data in *smartGWT grid* without extending the record class. The  logic should be *carefully splitted* into model, view and presenter parts and code snippet is used just like an example.
 
 == Presenter extension ==
 
+Presenter is used to:
+ * handle whole business logic of your application
+ * contacting the server using dispatch servlet
+ * interact with views
+
+Communication between presenters is realized *strictly* through the *eventbus* by firing the *events* and communication between presenter and view is used by *registering the handlers* into view (through local eventbuses - GWT handler manager). Using this approach
+you can achieve completly *loose coupling strategy* between code parts.
+
+=== Interaction between presenter & view ===
+{{{
+public class LoginPresenter extends PresenterImpl<LoginDisplay, LoginProxy> implements LoginEventHandler {
+
+        ...
+
+	public interface LoginDisplay extends View {
+
+		HandlerRegistration addLoginHandler(LoginEventHandler handler);
+
+		void showValidationErrors(Set<InvalidConstraint<UserData>> constraints);
+	}
+
+	@Override
+	protected void onBind() {
+		super.onBind();
+		registerHandler(getView().addLoginHandler(this));
+	}
+
+	@Override
+	public void onLogin(LoginEvent loginEvent) {
+               ...
+        }
+}
+}}}
+
+You are registering your LoginEventHandler into the view in the onBind method (and handler is deregistered in onUnbind method, so we are preventing any memory leaks) and handles login event in your presenter code. This event is fired in the view (probably after submit button). This code splitting is very important and allows you to have clean code, which is maintanable, reusable and testable - this is important factor in agile way of development.
+
+Do you remember the bean wrappers? They can perfectly helps us with the bean validation process (following JSR303 specification).
+
+{{{
+IBeanWrapper<UserData> userWrapper = loginEvent.getResult();
+Set<InvalidConstraint<UserData>> constraints = ((IValidator<UserData>)userWrapper).validate(userWrapper);
+if (constraints.size() > 0) {
+   getView().showValidationErrors(constraints);
+} else {
+   //do login
+}
+}}}
+
 [http://acris.googlecode.com/svn/wiki/images/mvp_acris_presenter_small.png]
 
-Cancel support
+*TODO Cancel support*
 
 == View extension ==
 
