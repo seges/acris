@@ -1,4 +1,5 @@
 #summary Migration guide.
+#labels Migration,Releasing
 
 Page describes how to migrate between next released versions. Currently there are following possibilites:
  * Migrate from version 1.0.0 to version 1.0.1 - follow details [Migration1_0_1 here]
