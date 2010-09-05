@@ -8,6 +8,7 @@
     * [Releasing Release process]
     * [SVNPostCommitHook How SVN postcommit hook works]
     * [Roadmap Roadmap]
+    * [AnnotationProcessing Setting up the annotation processing support JSR269]
     * [Migration Migration guide]
       * [Migration1.0.1 From version 1.0.0 to 1.0.1]
   * [BeansBinding Beans binding]
