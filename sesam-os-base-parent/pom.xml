@@ -12,17 +12,25 @@
 	<name>sesam-base-parent</name>
 	<description>Meta Parent for all projects developed and using maven requiring default configuration.</description>
 
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
 	<organization>
 		<name>Seges s.r.o.</name>
 		<url>http://www.seges.sk</url>
 	</organization>
 
-	<url>http://www.seges.sk</url>
+	<url>http://acris.googlecode.com</url>
 
 	<scm>
+		<url>http://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</url>
 		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</connection>
 		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</developerConnection>
-		<url>https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</url>
 	</scm>
 
 	<distributionManagement>
@@ -36,14 +44,12 @@
 			<name>acris-snapshots-repo</name>
 			<url>https://acris.googlecode.com/svn/snapshot-repository</url>
 		</snapshotRepository>
-		<!-- Disabled until issues with maven are resolved and anyway it slows release process :) -->
-		<!--site>
-			<id>seges-maven-site</id>
-			<url>dav:https://local.seges.sk/sites/${repository.type}/${repository.project}/${pom.artifactId}/${pom.version}</url>
-		</site-->
 	</distributionManagement>
 
 	<properties>
+		<!-- from Sonatype -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
 		<jsr269.generated.dir>target/generated</jsr269.generated.dir>
 	
 		<maven.version>[2.1.0,)</maven.version>
@@ -588,12 +594,27 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
+					<mavenExecutorId>forked-path</mavenExecutorId>
 					<preparationGoals>install</preparationGoals>
 					<tagBase>
 						https://acris.googlecode.com/svn/sesam/tags/${pom.artifactId}
 					</tagBase>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 		</plugins>
 	</build>
 	
@@ -618,6 +639,47 @@
 					</plugin>
 				</plugins>
 			</reporting>			
+		</profile>
+		
+		<profile>
+			<id>sonatype-release-profile</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+<!--						<version>2.7</version>-->
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+<!--						<version>1.1</version>-->
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>
