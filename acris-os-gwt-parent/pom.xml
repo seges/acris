@@ -4,13 +4,46 @@
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-gwt-parent</artifactId>
 	<version>1.0.19-SNAPSHOT</version>
-	<name>AcrIS Google Web Toolkit Parent</name>
 
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.7-SNAPSHOT</version>
 	</parent>
+	
+	<name>AcrIS Google Web Toolkit Parent</name>
+	<description>
+		Meta project defining GWT project defaults and allowing to build a new GWT maven based project easily.
+	</description>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<url>http://acris.googlecode.com</url>
+
+	<scm>
+		<url>http://code.google.com/p/acris/source</url>
+		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
+	</scm>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
 	<properties>
@@ -230,20 +263,6 @@
 								<goal>mergewebxml</goal>
 								<!--goal>generateAsync</goal-->
 								<goal>compile</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>jar</goal>
 							</goals>
 						</execution>
 					</executions>

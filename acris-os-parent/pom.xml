@@ -5,7 +5,6 @@
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-parent</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
-	<name>AcrIS Parent</name>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
@@ -13,28 +12,31 @@
 		<version>1.0.19-SNAPSHOT</version>
 	</parent>
 
-	<repositories>
-		<repository>
-			<id>acris-snapshots-repo</id>
-			<url>http://acris.googlecode.com/svn/snapshot-repository/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>acris-releases-repo</id>
-			<url>http://acris.googlecode.com/svn/releases-repository/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
+	<name>AcrIS Parent</name>
+	<url>http://acris.googlecode.com</url>
+	<description>
+		AcrIS is a modern framework serving as a base for applications, 
+		web sites and portals. It provides various tools and libraries 
+		to ease daily development. Build on top of Google web toolkit 
+		and provides sophisticated solution for security, beans binding, 
+		JSON protocol and usefull project skelets integrated with maven, 
+		hibernate, spring and gilead. You will get a prepared solution 
+		in box ready to use in your own project.
+	</description>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>http://code.google.com/p/acris/source</url>
+		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
+	</scm>
 
 	<modules>
 		<module>../acris-benchmark</module>
@@ -49,7 +51,7 @@
 		<module>../acris-recorder</module>
 		<module>../acris-security</module>
 		<module>../acris-server-components</module>
-		<module>../acris-showcase</module>
+<!--		<module>../acris-showcase</module>-->
 	</modules>
 
 	<properties>
