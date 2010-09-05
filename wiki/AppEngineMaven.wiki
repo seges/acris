@@ -1,4 +1,6 @@
+#summary GAE/GEP integration with maven and eclipse
 #labels Appengine,Maven,Eclipse
+
 Change default output directory and add webapp as source directory
 {{{
 <build>
