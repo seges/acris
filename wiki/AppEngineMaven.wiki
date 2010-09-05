@@ -56,6 +56,7 @@ GWT maven configuration (building GWT sources with maven)
 		</execution>
 	</executions>
 </plugin>
+}}}
 
 Copying dependencies into webapp directory:
 {{{
