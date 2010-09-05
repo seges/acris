@@ -1,5 +1,5 @@
 #summary Datanucleus setup used on appengine
-#labels Phase-Implementation,Phase-Design
+#labels Phase-Implementation,Phase-Design,Appengine
 
 = Enhancing classes =
 //TODO
