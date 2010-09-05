@@ -1,4 +1,5 @@
 #summary Migration guide from 1.0.0 to 1.0.1
+#labels Migration,Releasing
 
  * sonatype repository definition in settings.xml - for AcrIS artifacts we use Sonatype's OSS maven repository from now on. In the future all releases will be synced to Maven Central.
 {{{
