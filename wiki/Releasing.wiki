@@ -100,3 +100,7 @@ Execute *mvn deploy* optionally with -Dmaven.test.skip in project you want to de
 == acris-os ==
 
   * similar steps as sesam-os
+
+https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+https://issues.sonatype.org/browse/OSSRH-713
+https://oss.sonatype.org/index.html#welcome
