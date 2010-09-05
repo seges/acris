@@ -11,6 +11,14 @@
 			
 			<repositories>
 				<repository>
+					<id>acris-sonatype</id>
+					<url>https://oss.sonatype.org/content/groups/staging</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>				 
+
+				<repository>
 					<id>acris-snapshots-repo</id>
 					<url>http://acris.googlecode.com/svn/snapshot-repository/</url>
 					<snapshots>
