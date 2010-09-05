@@ -9,12 +9,33 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.7-SNAPSHOT</version>
 	</parent>
 
 	<!-- More Project Information -->
 	<name>CorpIS Parent</name>
 	<description>Parent project for CorpIS</description>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<organization>
+		<name>Seges s.r.o.</name>
+		<url>http://www.seges.sk</url>
+	</organization>
+
+	<url>http://acris.googlecode.com</url>
+
+	<scm>
+		<url>http://acris.googlecode.com/svn/corpis/trunk</url>
+		<connection>scm:svn:https://acris.googlecode.com/svn/corpis/trunk</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/corpis/trunk</developerConnection>
+	</scm>
 	
 	<modules>
 		<module>../corpis-test</module>
@@ -28,6 +49,21 @@
 	
 		<sesam-os.version>1.0.7-SNAPSHOT</sesam-os.version>
 	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>install</preparationGoals>
+					<tagBase>
+						https://acris.googlecode.com/svn/corpis/tags/${pom.artifactId}
+					</tagBase>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>
