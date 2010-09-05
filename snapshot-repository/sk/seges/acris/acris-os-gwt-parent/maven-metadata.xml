@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata xsi:schemaLocation="http://maven.apache.org/METADATA/1.0.0 http://maven.apache.org/xsd/metadata-1.0.0.xsd" xmlns="http://maven.apache.org/METADATA/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<metadata>
   <groupId>sk.seges.acris</groupId>
   <artifactId>acris-os-gwt-parent</artifactId>
   <version>1.0.15-SNAPSHOT</version>
   <versioning>
     <versions>
       <version>1.0.15-SNAPSHOT</version>
+      <version>1.0.19-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20100615092108</lastUpdated>
+    <lastUpdated>20100905100056</lastUpdated>
   </versioning>
 </metadata>
