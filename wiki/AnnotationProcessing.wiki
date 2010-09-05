@@ -1,5 +1,5 @@
 #summary Setting up the JSR269 support with maven and eclipse
-#labels Phase-Implementation,Phase-Deploy
+#labels Phase-Implementation,Phase-Deploy,AnnotationProcessing,SourceGenerators
 
 We are using maven annotation plugin (aka maven-processor-plugin) for supporting JSR269 processor in the java compilation time. Annotation processors replaces old APT technology and is introduced with JDK6 compiler.
 
