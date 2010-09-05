@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>sk.seges.acris</groupId>
+  <artifactId>acris-os-gwt-parent</artifactId>
+  <version>1.0.19-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20100905.100056</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20100905100057</lastUpdated>
+  </versioning>
+</metadata>
