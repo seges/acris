@@ -1,4 +1,5 @@
 #summary Best GWT practices using MVP pattern and acris
+#labels Security,Bingind,Validation,AppEngine,MVP
 
 = History =
 
@@ -162,13 +163,82 @@ if (constraints.size() > 0) {
 }
 }}}
 
+*TODO add validation rules here*
+
 [http://acris.googlecode.com/svn/wiki/images/mvp_acris_presenter_small.png]
 
 *TODO Cancel support*
 
 == View extension ==
 
-[http://acris.googlecode.com/svn/wiki/images/mvp_acris_view_small.png]
+Now comes the most interesting part - *the View* - where you can finally prosper from the acris benefits. Maybe you noticed that acris is primarily focused on annotations a can perfectly reuse them in view for:
+ * binding beans with the UI components
+ * securing the UI components
+
+Let's see the implementation of the binding and the most simplest example is our login form.
+
+{{{
+@BindingFieldsBase(updateStrategy = UpdateStrategy.READ_WRITE, validationStrategy = ValidationStrategy.ON_SUBMIT)
+public class LoginSmartForm extends TwoColumnSmartForm<UserData> {
+
+	@BindingField(UserDataBeanWrapper.USERNAME)
+	protected final TextItem username = GWT.create(TextItem.class);
+
+	@BindingField(UserDataBeanWrapper.PASSWORD)
+	protected final PasswordItem password = GWT.create(PasswordItem.class);
+
+	public LoginSmartForm() {
+		setWidth(400);
+	}
+
+	@Override
+	protected void prepareFields() {
+		addFormRow(true, withLabel("username", username));
+		addFormRow(true, withLabel("description", password));
+	}
+}
+}}}
+
+For this small form you saved maybe only the few lines of code, but think about the binding with the much more complicated form. And what are another benefits from binding using annotations?
+
+ * *much less error prone code writing* - using generated metadata which allows you to bind to properties which reflects the reality (not hand written constants). Did you noteced that UserDataBeanWrapper class with USERNAME and PASSWORD constants? They are generated from UserData class (which has setter/getter for these 2 properties) and are regenerated after each change in UserData so it will warn you that you have compile error in the code whe you change the UserData class property which is used in beans binding. This allows you to write changes propagation from beans into UI component and back from UI component into bean which is completly safe on 1 line of code.
+ * *cleaner code* containing only the important LOCs without the code which does not have any business value. Accepting this way of coding you will write maintainable code which can easily extended anytime in the future without any complications.
+ * *maintain the code* without touching the code - this, little bit strange affirmation, is talking about that kind of situation where you want to for example convert values before they are displayed in the UI - e.g. using the converters. You will just change the annotation and your code remains the same. I'm pretty sure that you experienced situations when you wanted to change only small think in your code and you accidentally introduced a new bug there. This way should prevent you to do that.
+
+Now creating an login event, mentioned above is pretty easy. Just 2 lines of code:
+
+{{{
+submit.addClickHandler(new ClickHandler() {
+	
+	@Override
+	public void onClick(ClickEvent event) {
+		LoginEvent loginEvent = new LoginEvent(loginForm.getBean());
+		fireEvent(loginEvent);
+	}
+});
+}}}
+
+Event is fired, presenter will catch it, validates the input and if everything goes without the problems, send request to the server with your credentials in order to log the user into the application.
+
+Maybe the final think that you are missing is how will presenter listen to the events and how will be registered in the view. Again the simple answer:
+{{{
+@Override
+public HandlerRegistration addLoginHandler(LoginEventHandler handler) {
+	return addHandler(handler, LoginEvent.getType());
+}
+}}}
+
+This will registers presenter's handler into the view's local eventbus and after the !LoginEvent is fired, presenter's handler is notified.
+
+If you look on the image below, you will see one more thing there: the security integration with view. This the most fency stuff because just using the annotation acris allows you to keep your server side security in a consistent way with your client view. This means if the user is not allowed to maintain other users, he will be not able to:
+ * fetch users from server, delete users, modify users, create users (server side security)
+ * see all screens related to user maintenance (client side security)
+Both securities goes hand-by-hand because if there will be no client side security there will be the empty screens without any data (because server side security does not allows user to fetch the data from the server, but the screen will be displayed) so each professional application should count also with the security propagation into client/view. And this everything is done using acris-security.
+{{{
+...TODO...
+}}}
+
+http://acris.googlecode.com/svn/wiki/images/mvp_acris_view_small.png]
 
 = Overall view =
 
