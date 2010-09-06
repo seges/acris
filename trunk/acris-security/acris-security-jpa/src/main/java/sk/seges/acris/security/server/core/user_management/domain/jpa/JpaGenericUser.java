@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -17,7 +16,6 @@ import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@MappedSuperclass
 @Table(name = "generic_users")
 public class JpaGenericUser extends GenericUserDTO {
 

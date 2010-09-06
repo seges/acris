@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.acris.binding.client.processor.DBPropertyConverter;
-import sk.seges.acris.binding.client.processor.POJOPropertyConverter;
+import sk.seges.acris.binding.client.processor.PojoPropertyConverter;
 import sk.seges.sesam.domain.IDomainObject;
 
-@BeanWrapper(beanPropertyConverter = {POJOPropertyConverter.class, DBPropertyConverter.class})
+@BeanWrapper(beanPropertyConverter = {PojoPropertyConverter.class, DBPropertyConverter.class})
 public interface AclSecuredObjectIdentity extends IDomainObject<Long> {
 
 	void setId(Long id);

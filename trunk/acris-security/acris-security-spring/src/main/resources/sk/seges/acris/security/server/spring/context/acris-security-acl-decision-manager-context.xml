@@ -15,7 +15,7 @@
                            http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
                            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
 
-	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-context.xml"/>
+	<import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-context.xml"/>
     
     <bean id="businessAccessDecisionManager" class="org.springframework.security.vote.UnanimousBased">
         <property name="allowIfAllAbstainDecisions" value="true" />

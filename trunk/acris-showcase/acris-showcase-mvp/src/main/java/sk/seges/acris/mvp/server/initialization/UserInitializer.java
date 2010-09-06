@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.mvp.server.service.IUserMaintenanceService;
 import sk.seges.acris.mvp.shared.security.Grants;
+import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.user_management.domain.dto.UserPreferencesDTO;
@@ -21,6 +22,7 @@ public class UserInitializer implements IUserInitializer {
 	@Autowired
 	private IUserMaintenanceService userMaintenanceService;
 
+	@RunAs(Grants.USER_MAINTENANCE)
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void initialize() {
 		if (userMaintenanceService.findAll(Page.ALL_RESULTS_PAGE).getTotalResultCount() == 0) {
@@ -34,6 +36,7 @@ public class UserInitializer implements IUserInitializer {
 			List<String> authorities = new ArrayList<String>();
 			authorities.add(SecurityConstants.AUTH_PREFIX + Grants.USER_MAINTENANCE);
 			user.setUserAuthorities(authorities);
+			
 			UserPreferencesDTO userPreferencesDTO = new UserPreferencesDTO();
 			userPreferencesDTO.setId(1L);
 			user.setUserPreferences(userPreferencesDTO);
@@ -46,6 +49,10 @@ public class UserInitializer implements IUserInitializer {
 			user.setPassword("Test");
 			user.setEnabled(true);
 			user.setDescription("test");
+
+			authorities = new ArrayList<String>();
+			authorities.add("test");
+			user.setUserAuthorities(authorities);
 
 			userPreferencesDTO = new UserPreferencesDTO();
 			userPreferencesDTO.setId(2L);

@@ -3,4 +3,6 @@
 <module>
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="sk.seges.acris.security.Security" />
+	<inherits name='sk.seges.acris.security.Session' />
+	<inherits name='sk.seges.acris.security.Rebind' />
 </module>

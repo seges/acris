@@ -17,4 +17,12 @@ public interface UserData extends IMutableDomainObject<Long> {
 	String getUsername();
 
 	void setUsername(String username);
+
+	String getPassword();
+
+	void setPassword(String password);
+
+	boolean isEnabled();
+
+	void setEnabled(boolean enabled);
 }

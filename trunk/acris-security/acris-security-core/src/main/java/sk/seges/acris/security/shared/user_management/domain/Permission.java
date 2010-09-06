@@ -13,7 +13,7 @@ package sk.seges.acris.security.shared.user_management.domain;
  * 
  * @author fat
  */
-public enum Permission {
+public enum Permission implements IPermission {
 	EMPTY(0 << 0), VIEW(1 << 0), EDIT(1 << 1), CREATE(1 << 2), DELETE(1 << 3);
 
 	/**

@@ -4,7 +4,7 @@
 package sk.seges.acris.binding.client.annotations;
 
 import sk.seges.acris.binding.client.processor.IBeanPropertyConverter;
-import sk.seges.acris.binding.client.processor.POJOPropertyConverter;
+import sk.seges.acris.binding.client.processor.PojoPropertyConverter;
 
 /**
  * @author eldzi
@@ -12,5 +12,5 @@ import sk.seges.acris.binding.client.processor.POJOPropertyConverter;
 public @interface BeanWrapper {
 
 	//Do not rename the name, see BeanWrapperProcessor for the reference of that
-	Class<? extends IBeanPropertyConverter>[] beanPropertyConverter() default {POJOPropertyConverter.class};
+	Class<? extends IBeanPropertyConverter>[] beanPropertyConverter() default {PojoPropertyConverter.class};
 }

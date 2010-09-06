@@ -14,7 +14,7 @@
                            http://www.springframework.org/schema/webflow-config
                            http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd"> 
 
-	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-voters-context.xml"/>
+	<import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-voters-context.xml"/>
 
     <bean id="afterAclInjectionCollectionReadVoter" class="sk.seges.acris.security.server.spring.acl.vote.hibernate.HibernateAclInjectorVoter">
         <constructor-arg value="AFTER_ACL_INJECT_COLLECTION_READ"/>

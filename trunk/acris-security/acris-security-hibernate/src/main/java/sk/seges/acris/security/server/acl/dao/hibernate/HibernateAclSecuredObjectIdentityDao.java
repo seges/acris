@@ -7,7 +7,6 @@ import javax.persistence.PersistenceContext;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
 import sk.seges.acris.security.server.acl.domain.JpaAclSecuredObjectIdentity;
@@ -16,7 +15,6 @@ import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdenti
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
-@Component
 public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<JpaAclSecuredObjectIdentity> implements
 		IAclObjectIdentityDao<JpaAclSecuredObjectIdentity> {
 

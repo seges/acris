@@ -21,11 +21,11 @@
 	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-context.xml" />
 	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-object-definitions-context.xml" />
 	
-	<context:component-scan base-package="sk.seges.acris.security" />
+	<context:component-scan base-package="sk.seges.acris.security.server" />
 	
 	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/acris-security" resource-ref="true" />
 
-	<beans:bean name="userService" class="sk.seges.acris.security.server.user_management.service.user.UserService">
+	<beans:bean name="userService" class="sk.seges.acris.security.server.spring.user_management.service.user.UserService">
 		<beans:property name="authenticationManager" ref="authenticationManager" />
 		<beans:property name="sessionIDGenerator">
 			<beans:bean class="sk.seges.acris.security.server.core.session.HttpSessionIDGenerator" />
