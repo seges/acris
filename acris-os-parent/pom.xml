@@ -51,7 +51,7 @@
 		<module>../acris-recorder</module>
 		<module>../acris-security</module>
 		<module>../acris-server-components</module>
-<!--		<module>../acris-showcase</module>-->
+		<module>../acris-showcase</module>
 	</modules>
 
 	<properties>
