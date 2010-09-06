@@ -1,0 +1,1 @@
+http://yuml.me/diagram/scruffy/usecase/[User]-(Login), [User]-(Logout) , (Login)<(Add new user) , (Login)<(Fetch users)
