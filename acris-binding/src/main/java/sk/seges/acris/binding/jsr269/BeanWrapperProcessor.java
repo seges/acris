@@ -35,7 +35,7 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import sk.seges.acris.binding.client.processor.IBeanPropertyConverter;
-import sk.seges.acris.binding.client.processor.POJOPropertyConverter;
+import sk.seges.acris.binding.client.processor.PojoPropertyConverter;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.core.jsr269.AbstractConfigurableProcessor;
 import sk.seges.acris.core.jsr269.ProcessorUtils;
@@ -446,7 +446,7 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 		}
 
 		if (converterInstances.size() == 0) {
-			converterInstances.add(new POJOPropertyConverter());
+			converterInstances.add(new PojoPropertyConverter());
 		}
 		
 		writeFieldsFromClass(classConstantsCache, hierarchyTypes, pw, element, converterInstances, prefix, level);

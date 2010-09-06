@@ -2,7 +2,10 @@ package sk.seges.acris.mvp.server.service.dozer;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+
 import sk.seges.acris.mvp.server.service.IUserMaintenanceService;
+import sk.seges.acris.mvp.shared.security.Grants;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
@@ -36,6 +39,7 @@ public class DozerUserMaintenanceService implements IUserMaintenanceService {
 	}
 
 	@Override
+	@RolesAllowed(Grants.USER_MAINTENANCE)
 	public PagedResult<List<UserData>> findAll(Page requestedPage) {
 		requestedPage = dozer.convert(requestedPage);
 		return dozer.convert(service.findAll(requestedPage));

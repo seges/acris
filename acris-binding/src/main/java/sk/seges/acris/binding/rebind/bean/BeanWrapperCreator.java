@@ -47,7 +47,8 @@ public class BeanWrapperCreator extends AbstractCreator {
 	private BindingNamingStrategy typeStrategy;
 
 	protected JClassType beanType;
-
+	private String outputSimpleName;
+	
 	public BeanWrapperCreator(BindingNamingStrategy typeStrategy) {
 		this.typeStrategy = typeStrategy;
 	}
@@ -61,8 +62,15 @@ public class BeanWrapperCreator extends AbstractCreator {
 		return null;
 	}
 
+	private String ensureOutputSimpleName() {
+		if (outputSimpleName == null) {
+			outputSimpleName = typeStrategy.getBeanWrapperImplementationName(classType.getSimpleSourceName());
+		}
+		return outputSimpleName;
+	}
+	
 	protected String getOutputSimpleName() {
-		return typeStrategy.getBeanWrapperImplementationName(classType.getSimpleSourceName());
+		return ensureOutputSimpleName();
 	}
 
 	@Override
@@ -213,9 +221,6 @@ public class BeanWrapperCreator extends AbstractCreator {
 		generateGetBeanAttributes(source, methods);
 		generateSetBeanAttributes(source, methods);
 
-		generateHashcode(source);
-		generateEquals(source, methods);
-
 		generateClearWrappersMethod(source);
 
 		source.commit(logger);
@@ -281,45 +286,6 @@ public class BeanWrapperCreator extends AbstractCreator {
 
 	protected String getRawWrapperType() {
 		return BeanWrapper.class.getName();
-	}
-
-	protected void generateEquals(SourceWriter source, JMethod[] methods) throws NotFoundException {
-		source.println("@Override");
-		source.println("public boolean equals(Object obj) {");
-		source.indent();
-		source.println("if(obj instanceof " + getRawWrapperType() + ") {");
-		source.indent();
-		source.println("return equals(((" + getRawWrapperType() + ")obj).getBeanWrapperContent());");
-		source.outdent();
-		source.println("}");
-		source.println("if(" + BEAN_WRAPPER_CONTENT + " != null) {");
-		source.indent();
-		source.println("return " + BEAN_WRAPPER_CONTENT + ".equals(obj);");
-		source.outdent();
-		source.println("} else {");
-		source.indent();
-		source.println("return super.equals(obj);");
-		source.outdent();
-		source.println("}");
-		source.outdent();
-		source.println("}");
-	}
-
-	protected void generateHashcode(SourceWriter source) {
-		source.println("@Override");
-		source.println("public int hashCode() {");
-		source.indent();
-		source.println("if(" + BEAN_WRAPPER_CONTENT + " != null) {");
-		source.indent();
-		source.println("return " + BEAN_WRAPPER_CONTENT + ".hashCode();");
-		source.outdent();
-		source.println("} else {");
-		source.indent();
-		source.println("return super.hashCode();");
-		source.outdent();
-		source.println("}");
-		source.outdent();
-		source.println("}");
 	}
 
 	protected void generateWrapperMethods(SourceWriter source, String simpleName, JMethod[] methods) throws NotFoundException {

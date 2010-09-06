@@ -1,6 +1,8 @@
 package sk.seges.acris.mvp.client.event;
 
+import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.mvp.client.event.LoginEvent.LoginEventHandler;
+import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -28,20 +30,13 @@ public class LoginEvent extends GwtEvent<LoginEventHandler> {
 		return getType();
 	}
 
-	private String username;
+	private UserData user;
 
-	private String password;
-
-	public LoginEvent(String username, String password) {
-		this.username = username;
-		this.password = password;
+	public LoginEvent(UserData user) {
+		this.user = user;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public String getPassword() {
-		return password;
+	public UserData getUser() {
+		return user;
 	}
 }

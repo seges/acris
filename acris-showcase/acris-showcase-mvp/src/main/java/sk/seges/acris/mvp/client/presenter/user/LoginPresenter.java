@@ -63,7 +63,7 @@ public class LoginPresenter extends PresenterImpl<LoginDisplay, LoginProxy> impl
 
 	@Override
 	public void onLogin(LoginEvent event) {
-		actionManager.execute(new LoginAction(event.getUsername(), event.getPassword()), new DefaultAsyncCallback<LoginResult>() {
+		actionManager.execute(new LoginAction(event.getUser().getUsername(), event.getUser().getPassword()), new DefaultAsyncCallback<LoginResult>() {
 
 			@Override
 			public void onSuccess(LoginResult result) {

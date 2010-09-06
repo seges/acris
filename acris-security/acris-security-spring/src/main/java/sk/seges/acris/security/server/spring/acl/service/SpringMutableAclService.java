@@ -17,7 +17,6 @@ import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
@@ -26,7 +25,6 @@ import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdenti
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 
-@Service
 public class SpringMutableAclService extends SpringAclService implements MutableAclService {
 
 	@Transactional

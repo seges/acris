@@ -17,8 +17,8 @@
 		<beans:property name="userDetailsService" ref="userDetailsService"/>
 	</beans:bean>
 
-	<beans:bean id="userDetailsService" class="sk.seges.acris.security.server.user_management.service.user.HibernateUserService">
-		<beans:property name="genericUserDao" ref="genericAuthenticationDao"/>
+	<beans:bean id="userDetailsService" class="sk.seges.acris.security.server.spring.user_management.service.SpringUserService">
+        <beans:constructor-arg ref="genericAuthenticationDao" />
 	</beans:bean>
 
 	<authentication-provider user-service-ref="userDetailsService" />

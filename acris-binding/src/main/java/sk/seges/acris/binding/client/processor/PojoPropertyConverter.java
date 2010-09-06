@@ -1,9 +1,9 @@
 package sk.seges.acris.binding.client.processor;
 
 
-public class POJOPropertyConverter implements IBeanPropertyConverter {
+public class PojoPropertyConverter implements IBeanPropertyConverter {
 
-	public POJOPropertyConverter() {	
+	public PojoPropertyConverter() {	
 	}
 	
 	@Override

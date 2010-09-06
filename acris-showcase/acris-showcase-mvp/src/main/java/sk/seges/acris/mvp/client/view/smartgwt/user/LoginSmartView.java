@@ -2,10 +2,13 @@ package sk.seges.acris.mvp.client.view.smartgwt.user;
 
 import sk.seges.acris.mvp.client.event.LoginEvent;
 import sk.seges.acris.mvp.client.event.LoginEvent.LoginEventHandler;
+import sk.seges.acris.mvp.client.form.smartgwt.LoginSmartForm;
 import sk.seges.acris.mvp.client.model.ModelAdapter;
 import sk.seges.acris.mvp.client.presenter.user.LoginPresenter.LoginDisplay;
 import sk.seges.acris.mvp.client.view.core.adapter.smartgwt.SmartViewImpl;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
@@ -13,13 +16,9 @@ import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.types.VisibilityMode;
-import com.smartgwt.client.widgets.form.DynamicForm;
-import com.smartgwt.client.widgets.form.fields.ButtonItem;
-import com.smartgwt.client.widgets.form.fields.PasswordItem;
-import com.smartgwt.client.widgets.form.fields.SpacerItem;
-import com.smartgwt.client.widgets.form.fields.TextItem;
-import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
-import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
@@ -28,26 +27,25 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class LoginSmartView extends SmartViewImpl implements LoginDisplay {
 
-	private final HLayout panelcontainer;
+	private final VLayout panelcontainer;
 
-	private TextItem username;
-	private PasswordItem password;
-	private ButtonItem submit;
+	private final LoginSmartForm loginForm;
+	private final Button submit;
 	
 	@Inject
 	public LoginSmartView(ModelAdapter modelAdapter) {
-		panelcontainer = new HLayout();
-		panelcontainer.setWidth100();
-		panelcontainer.setHeight100();
-		panelcontainer.setAlign(Alignment.CENTER);
+		panelcontainer = new VLayout();
+		panelcontainer.setWidth("95%");
+		panelcontainer.setHeight("95%");
+		panelcontainer.setAlign(VerticalAlignment.CENTER);
 		
-		VLayout container = new VLayout();
+		HLayout container = new HLayout();
 
 		panelcontainer.setMembers(container);
 		
-		container.setWidth100();
-		container.setHeight100();
-		container.setAlign(VerticalAlignment.CENTER);
+		container.setWidth("95%");
+		container.setHeight("95%");
+		container.setAlign(Alignment.CENTER);
 
 		SectionStack sectionStack = new SectionStack();
 		sectionStack.setWidth(320);
@@ -56,10 +54,7 @@ public class LoginSmartView extends SmartViewImpl implements LoginDisplay {
 		sectionStack.setAnimateSections(true);
 		sectionStack.setOverflow(Overflow.HIDDEN);
 
-		DynamicForm form = new DynamicForm();
-
-		HLayout navLayout = new HLayout();
-		navLayout.setMembers(form);
+		VLayout navLayout = new VLayout();
 
 		SectionStackSection summarySection = new SectionStackSection();
 		summarySection.setTitle("Login");
@@ -68,26 +63,14 @@ public class LoginSmartView extends SmartViewImpl implements LoginDisplay {
 
 		sectionStack.setSections(summarySection);
 
-		form.setAutoFocus(true);
-		form.setNumCols(3);
-		form.setWidth(300);
+		loginForm = GWT.create(LoginSmartForm.class);
+		loginForm.setBean(new GenericUserDTO());
 
-		username = new TextItem();
-		username.setTitle("Username");
-		username.setSelectOnFocus(true);
-		username.setStartRow(true);
-
-		password = new PasswordItem();
-		password.setTitle("Password");
-		password.setWrapTitle(false);
-		password.setStartRow(true);
-
-		submit = new ButtonItem();
+		submit = new Button();
 		submit.setTitle("Submit");
-		submit.setStartRow(false);
 		submit.setWidth(80);
 
-		form.setFields(new SpacerItem(), username, password, submit);
+		navLayout.setMembers(loginForm, submit);
 
 		container.setMembers(sectionStack);
 		
@@ -99,7 +82,7 @@ public class LoginSmartView extends SmartViewImpl implements LoginDisplay {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				LoginEvent loginEvent = new LoginEvent((String)username.getValue(), (String)password.getValue());
+				LoginEvent loginEvent = new LoginEvent(loginForm.getBean());
 				fireEvent(loginEvent);
 			}
 		});
