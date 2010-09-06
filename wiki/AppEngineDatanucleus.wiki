@@ -63,7 +63,7 @@ Solution is little bit tricky :) You have change default behaviour which tries t
 </plugin>
 }}}
 
-=== Interested reading ===
+=== Interesting reading ===
 [http://brainpicks.wordpress.com/2010/05/04/runtime-enhancement-with-jdo-and-datanucleus/ Runtime Enhancement with JDO and Datanucleus]
 
 == Integration datanucleus with maven ==
