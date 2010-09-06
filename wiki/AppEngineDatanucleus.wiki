@@ -40,7 +40,7 @@ va:556)
 
 === Solution ===
 
-Solution is little bit tricky :) You have change default behaviour which tries to override existing file but rather generate enhanced classes into classes directory. So application will have enhanced files on the classpath without overriding the existing one.
+Solution is little bit tricky :) You have to change default behaviour, which tries to override existing file, but rather generate enhanced classes into target output directory. So application will have enhanced files available on the classpath without overriding the existing files (jars).
 
 {{{
 <plugin>
