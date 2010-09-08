@@ -23,6 +23,14 @@ AcrIS is Maven-based project but that doesn't mean it is impossible to use Ant o
 {{{
 	<repositories>
 		<repository>
+			<id>acris-sonatype</id>
+			<url>https://oss.sonatype.org/content/groups/staging</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
 			<id>acris-releases-repo</id>
   			<url>http://acris.googlecode.com/svn/releases-repository/</url>
 			<snapshots>
