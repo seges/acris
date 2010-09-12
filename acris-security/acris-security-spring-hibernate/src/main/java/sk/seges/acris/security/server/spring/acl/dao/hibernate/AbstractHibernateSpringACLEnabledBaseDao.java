@@ -2,8 +2,8 @@ package sk.seges.acris.security.server.spring.acl.dao.hibernate;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.acl.dao.hibernate.AbstractHibernateACLEnabledBaseDao;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
+import sk.seges.acris.security.server.core.acl.dao.hibernate.AbstractHibernateACLEnabledBaseDao;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 
 public abstract class AbstractHibernateSpringACLEnabledBaseDao<T extends ISecuredObject> extends AbstractHibernateACLEnabledBaseDao<T> {

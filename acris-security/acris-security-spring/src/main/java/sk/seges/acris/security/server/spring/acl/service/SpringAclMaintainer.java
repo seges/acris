@@ -19,7 +19,6 @@ import org.springframework.security.acls.objectidentity.ObjectIdentityImpl;
 import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
 import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,7 @@ import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.sesam.domain.IDomainObject;
 
-@Component
+//@Component
 @Transactional(propagation=Propagation.REQUIRES_NEW)
 public class SpringAclMaintainer implements AclManager {
 

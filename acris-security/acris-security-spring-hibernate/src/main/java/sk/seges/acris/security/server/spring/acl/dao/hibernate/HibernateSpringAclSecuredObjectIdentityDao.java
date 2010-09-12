@@ -3,8 +3,8 @@ package sk.seges.acris.security.server.spring.acl.dao.hibernate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.acl.dao.hibernate.HibernateAclSecuredObjectIdentityDao;
-import sk.seges.acris.security.server.acl.domain.JpaAclSecuredObjectIdentity;
+import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclSecuredObjectIdentity;
+import sk.seges.acris.security.server.core.acl.dao.hibernate.HibernateAclSecuredObjectIdentityDao;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 
 @Component

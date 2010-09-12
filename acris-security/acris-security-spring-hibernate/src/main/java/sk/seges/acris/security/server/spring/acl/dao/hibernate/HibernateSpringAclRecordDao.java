@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.acl.dao.hibernate.HibernateAclRecordDao;
+import sk.seges.acris.security.server.core.acl.dao.hibernate.HibernateAclRecordDao;
 import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.shared.domain.ISecuredObject;

@@ -100,6 +100,9 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 
 	@Override
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
+		
+		PrintWriter pw = null;
+		
 		try {
 			TypeElement typeElement = (TypeElement) element;
 
@@ -122,7 +125,7 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 
 			JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(beanPackageName + "." + simpleName, element);
 			OutputStream os = createSourceFile.openOutputStream();
-			PrintWriter pw = new PrintWriter(os);
+			pw = new PrintWriter(os);
 
 			pw.println("package " + beanPackageName + ";");
 			pw.println();
@@ -160,10 +163,13 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 
 			pw.println("}");
 			pw.flush();
-			pw.close();
 
 		} catch (IOException e) {
 			processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to process element = ", element);
+		} finally {
+			if (pw != null) {
+				pw.close();
+			}
 		}
 
 		return true;

@@ -6,6 +6,8 @@ import org.springframework.util.Assert;
 
 import sk.seges.acris.security.server.core.acl.domain.dto.AclSidDTO;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
+import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
+import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 /**
  * The table ACL_SID essentially lists all the users in our systems
@@ -25,6 +27,8 @@ public class SpringAclSidDTO extends AclSidDTO implements SpringAclSid {
 
 		if (authentication.getPrincipal() instanceof UserDetails) {
 			setSid(((UserDetails) authentication.getPrincipal()).getUsername());
+		} else if (authentication.getPrincipal() instanceof UserData) {
+			setSid(new SpringUserAdapter((UserData)authentication.getPrincipal()).getUsername());
 		} else {
 			setSid(authentication.getPrincipal().toString());
 		}

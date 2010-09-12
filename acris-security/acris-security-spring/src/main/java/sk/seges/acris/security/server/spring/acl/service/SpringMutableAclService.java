@@ -24,6 +24,8 @@ import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescrip
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
+import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 public class SpringMutableAclService extends SpringAclService implements MutableAclService {
 
@@ -163,6 +165,8 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 		Sid recipient;
 		if (auth.getPrincipal() instanceof UserDetails) {
 			recipient = new PrincipalSid(((UserDetails) auth.getPrincipal()).getUsername());
+		} else if (auth.getPrincipal() instanceof UserData) {
+			recipient = new PrincipalSid(new SpringUserAdapter((UserData)auth.getPrincipal()).getUsername());
 		} else {
 			recipient = new PrincipalSid(auth.getPrincipal().toString());
 		}

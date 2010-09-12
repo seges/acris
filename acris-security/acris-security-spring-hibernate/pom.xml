@@ -43,6 +43,10 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-spring-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-security-hibernate</artifactId>
 		</dependency>
 

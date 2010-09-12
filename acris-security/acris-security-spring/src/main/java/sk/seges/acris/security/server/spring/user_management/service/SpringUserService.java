@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.user_management.dao.user.IGenericUserDao;
+import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 public class SpringUserService implements UserDetailsService {
@@ -22,6 +23,10 @@ public class SpringUserService implements UserDetailsService {
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException, DataAccessException {
-		return (UserDetails) genericUserDao.findByUsername(userName);
+		UserData userData = genericUserDao.findByUsername(userName);
+		if (userData instanceof UserDetails) {
+			return (UserDetails) userData;
+		}
+		return new SpringUserAdapter(userData);
 	}
 }
