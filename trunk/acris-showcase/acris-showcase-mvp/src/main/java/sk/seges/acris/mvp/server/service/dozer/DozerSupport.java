@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.dozer.Mapper;
 
+import sk.seges.acris.security.server.user_management.domain.twig.TwigGenericUser;
 import sk.seges.acris.security.server.user_management.domain.twig.TwigUserPreferences;
-import sk.seges.acris.security.server.user_management.domain.twig.spring.SpringTwigGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.user_management.domain.dto.UserPreferencesDTO;
 import sk.seges.sesam.dao.PagedResult;
@@ -23,7 +23,7 @@ public class DozerSupport {
 	private Mapper mapper;
 	
 	public DozerSupport(Mapper mapper) {
-		addMapping(GenericUserDTO.class, SpringTwigGenericUser.class);
+		addMapping(GenericUserDTO.class, TwigGenericUser.class);
 		addMapping(UserPreferencesDTO.class, TwigUserPreferences.class);
 		this.mapper = mapper;
 	}

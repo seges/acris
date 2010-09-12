@@ -9,7 +9,7 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import sk.seges.acris.security.server.spring.user_management.domain.SpringGenericUser;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
 @Component
 public class DBInitializer {
@@ -20,7 +20,7 @@ public class DBInitializer {
 	@PostConstruct
 	public void initialize() {
 		SecurityContextHolder.getContext().setAuthentication(
-				new AnonymousAuthenticationToken("initialization", new SpringGenericUser(), new GrantedAuthority[] {new GrantedAuthorityImpl("dump")}));
+				new AnonymousAuthenticationToken("initialization", new GenericUserDTO(), new GrantedAuthority[] {new GrantedAuthorityImpl("dump")}));
 		userInitializer.initialize();
 	}
 }

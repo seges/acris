@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.seges.acris.security.server.user_management.dao.appengine.AbstractTwigCrud;
+import sk.seges.acris.security.server.user_management.dao.twig.AbstractTwigCrud;
 import sk.seges.acris.security.server.user_management.dao.user.IGenericUserDao;
-import sk.seges.acris.security.server.user_management.domain.twig.spring.SpringTwigGenericUser;
+import sk.seges.acris.security.server.user_management.domain.twig.TwigGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserDataBeanWrapper;
@@ -18,10 +18,10 @@ import sk.seges.sesam.dao.SimpleExpression;
 
 import com.vercer.engine.persist.ObjectDatastore;
 
-public class TwigUserDao extends AbstractTwigCrud<SpringTwigGenericUser> implements IGenericUserDao<SpringTwigGenericUser> {
+public class TwigUserDao extends AbstractTwigCrud<UserData> implements IGenericUserDao<UserData> {
 
 	public TwigUserDao(ObjectDatastore datastore) {
-		super(datastore, SpringTwigGenericUser.class);
+		super(datastore, TwigGenericUser.class);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class TwigUserDao extends AbstractTwigCrud<SpringTwigGenericUser> impleme
 	}
 
 	@Override
-	public SpringTwigGenericUser collectUserAuthorities(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public UserData collectUserAuthorities(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		List<String> authorities = new ArrayList<String>();
 
 		if (addMode && user.getUserAuthorities() != null) {
@@ -58,7 +58,7 @@ public class TwigUserDao extends AbstractTwigCrud<SpringTwigGenericUser> impleme
 
 		user.setUserAuthorities(authorities);
 
-		return (SpringTwigGenericUser) user;
+		return user;
 	}
 
 	private List<String> extractAuthorities(List<?> userPermissions) {

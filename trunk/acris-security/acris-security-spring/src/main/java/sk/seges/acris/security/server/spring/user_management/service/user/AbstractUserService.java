@@ -3,6 +3,7 @@
  */
 package sk.seges.acris.security.server.spring.user_management.service.user;
 
+import org.apache.log4j.Logger;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.AuthenticationManager;
@@ -15,6 +16,7 @@ import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.session.SessionIDGenerator;
+import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserService;
@@ -35,6 +37,8 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 
 	private SessionIDGenerator sessionIDGenerator;
 
+	private Logger log = Logger.getLogger(AbstractUserService.class);
+	
 	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
@@ -99,7 +103,20 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 
 		ClientSession clientSession = createClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
-		clientSession.setUser((UserData)auth.getPrincipal());
+		
+		if (auth.getPrincipal() instanceof SpringUserAdapter) {
+			SpringUserAdapter adapter = (SpringUserAdapter)auth.getPrincipal();
+			clientSession.setUser(adapter.getUser());
+		} else if (auth.getPrincipal() instanceof UserData) {
+			UserData userData = (UserData)auth.getPrincipal();
+			clientSession.setUser(userData);
+		} else {
+			if (auth.getPrincipal() == null) {
+				log.warn("Null principal in the security context. Invalid state occured. Please provider valid principal.");
+			} else {
+				log.warn("Unsupported type of the principal. Class " + auth.getPrincipal().getClass().getCanonicalName() + " is not supported!");
+			}
+		}
 
 		postProcessLogin(clientSession);
 		return clientSession;

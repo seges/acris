@@ -97,11 +97,11 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-jpa</artifactId>
+			<artifactId>acris-security-hibernate</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-jpa</artifactId>
+			<artifactId>acris-security-hibernate</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>

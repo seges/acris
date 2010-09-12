@@ -226,29 +226,24 @@
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
-				<artifactId>acris-security-appengine</artifactId>
-				<version>${pom.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${pom.groupId}</groupId>
-				<artifactId>acris-security-appengine</artifactId>
-				<classifier>sources</classifier>
-				<version>${pom.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${pom.groupId}</groupId>
-				<artifactId>acris-security-jpa</artifactId>
-				<version>${pom.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${pom.groupId}</groupId>
-				<artifactId>acris-security-jpa</artifactId>
-				<classifier>sources</classifier>
+				<artifactId>acris-security-hibernate</artifactId>
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-security-hibernate</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-jpa</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-jpa</artifactId>
+				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
