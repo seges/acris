@@ -39,7 +39,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class BeanWrapperCreator extends AbstractCreator {
 
 	protected static final String NESTED_BEAN_WRAPPER = "__nested";
-	protected static final String BEAN_WRAPPER_CONTENT = "__content";
+	protected static final String BEAN_WRAPPER_CONTENT = "beanWrapperContent";
 
 	protected String superclassName;
 	private List<String> wrappedFields = new ArrayList<String>();
@@ -219,14 +219,14 @@ public class BeanWrapperCreator extends AbstractCreator {
 		generateWrapperMethods(source, simpleName, methods);
 
 		generateGetBeanAttributes(source, methods);
-		generateSetBeanAttributes(source, methods);
+		generateSetBeanAttributes(source, methods, simpleName);
 
 		generateClearWrappersMethod(source);
 
 		source.commit(logger);
 	}
 
-	protected void generateSetBeanAttributes(SourceWriter source, JMethod[] methods) {
+	protected void generateSetBeanAttributes(SourceWriter source, JMethod[] methods, String simpleName) {
 		// create the set attribute method
 		source.println("public void setBeanAttribute(String attr, Object value) {");
 		source.indent();
@@ -246,7 +246,12 @@ public class BeanWrapperCreator extends AbstractCreator {
 				source.print("} else ");
 			}
 		}
-		source.println("{");
+		source.println("if (attr.equals(\"" + BEAN_WRAPPER_CONTENT + "\")) {");
+		source.indent();
+		source.println("this." + BEAN_WRAPPER_CONTENT + " = (" + simpleName + ") value;");
+		source.outdent();
+		source.println("} else ");
+		source.print("{");
 		source.println("}");
 		source.outdent();
 		source.println("}");
@@ -273,7 +278,13 @@ public class BeanWrapperCreator extends AbstractCreator {
 				source.print("} else ");
 			}
 		}
-		source.println("{");
+		
+		source.println("if (attr.equals(\"" + BEAN_WRAPPER_CONTENT + "\")) {");
+		source.indent();
+		source.println("return " + BEAN_WRAPPER_CONTENT + ";");
+		source.outdent();
+		source.println("} else ");
+		source.print("{");
 		source.indent();
 		source.println("return null;");
 		source.outdent();
@@ -291,8 +302,10 @@ public class BeanWrapperCreator extends AbstractCreator {
 	protected void generateWrapperMethods(SourceWriter source, String simpleName, JMethod[] methods) throws NotFoundException {
 		source.println("public void setBeanWrapperContent(" + simpleName + " " + BEAN_WRAPPER_CONTENT + ") {");
 		source.indent();
+		source.println(simpleName + " oldValue = this." + BEAN_WRAPPER_CONTENT + ";");
 		source.println("this." + BEAN_WRAPPER_CONTENT + " = (" + simpleName + ") " + BEAN_WRAPPER_CONTENT + ";");
 		source.println("clearWrappers();");
+		source.println("pcs.firePropertyChange(BeanWrapper.CONTENT, oldValue, "+ BEAN_WRAPPER_CONTENT + ");");
 		source.outdent();
 		source.println("}");
 		source.println();
