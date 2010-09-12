@@ -24,7 +24,7 @@ import sk.seges.sesam.domain.IObservableObject;
  * @author eldzi
  */
 public interface BeanWrapper<T> extends IObservableObject {
-	public static final String CONTENT = "content";
+	public static final String CONTENT = "beanWrapperContent";
 	
 	/**
 	 * Used for setting wrapped content. BeanWrapper delegates all get and set
