@@ -51,7 +51,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 
 	private Set<Class<?>> embedableClassSet;
 
-	protected AbstractHibernateCRUD(Class<T> clazz) {
+	protected AbstractHibernateCRUD(Class<? extends T> clazz) {
 		super(clazz);
 	}
 

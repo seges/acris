@@ -16,9 +16,9 @@ public abstract class AbstractJPADAO<T extends IDomainObject<?>> implements IJPA
 
 	protected EntityManager entityManager;
 
-	protected Class<T> clazz;
+	protected Class<? extends T> clazz;
 
-    protected AbstractJPADAO(Class<T> clazz) {
+    protected AbstractJPADAO(Class<? extends T> clazz) {
         this.clazz = clazz;
     }
 
