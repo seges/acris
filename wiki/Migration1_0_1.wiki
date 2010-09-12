@@ -186,8 +186,6 @@ Each interface has:
  * ~~sk.seges.acris.security.server.core.user_management.dao.user~~ replaced by __sk.seges.acris.security.server.core.user_management.dao.user__
  * ~~sk.seges.acris.security.server.core.user_management.dao.user.impl~~ replaced by 
 
-}}}
-
 == Gilead implementation ==
 
 == Hibernate implementation ==
