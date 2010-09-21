@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sk.seges.acris.mvp.server.service.core.AbstractCRUDService;
 import sk.seges.acris.mvp.shared.security.Grants;
 import sk.seges.acris.security.server.core.annotation.PostExecutionAclEvaluation;
-import sk.seges.acris.security.server.user_management.dao.user.IGenericUserDao;
+import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.sesam.dao.ICrudDAO;
 import sk.seges.sesam.dao.Page;
