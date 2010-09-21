@@ -42,7 +42,8 @@ import sk.seges.sesam.dao.SimpleExpression;
 import sk.seges.sesam.dao.SortInfo;
 import sk.seges.sesam.domain.IDomainObject;
 
-public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends AbstractJPADAO<T> {
+public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends AbstractJPADAO<T> implements IHibernateFinderDAO<T> {
+
 	public static final String ALIAS_CHAIN_DELIM = "_";
 	public static final String FIELD_DELIM = ".";
 	public static final String EMBEDDED_FIELD_DELIM = "-";
