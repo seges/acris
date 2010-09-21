@@ -1,9 +1,9 @@
-package sk.seges.acris.security.server.user_management.service.permission;
+package sk.seges.acris.security.server.core.user_management.service.permission;
 
 import java.io.Serializable;
 import java.util.List;
 
-import sk.seges.acris.security.server.user_management.dao.permission.ISecurityRoleDao;
+import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityRoleDao;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleDataBeanWrapper;
 import sk.seges.acris.security.shared.user_management.service.IRoleService;

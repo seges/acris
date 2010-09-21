@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.user_management.dao.permission.ISecurityPermissionDao;
-import sk.seges.acris.security.server.user_management.service.permission.SecurityPermissionService;
+import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityPermissionDao;
+import sk.seges.acris.security.server.core.user_management.service.permission.SecurityPermissionService;
 import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
@@ -17,7 +17,7 @@ import sk.seges.sesam.dao.PagedResult;
 public class SpringSecurityPermissionService extends SecurityPermissionService {
 
 	@Autowired
-	public SpringSecurityPermissionService(@Qualifier(value = "SecurityPermissionDao") ISecurityPermissionDao securityPermissionDao) {
+	public SpringSecurityPermissionService(@Qualifier(value = "securityPermissionDao") ISecurityPermissionDao<HierarchyPermission> securityPermissionDao) {
 		super(securityPermissionDao);
 	}
 

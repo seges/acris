@@ -1,25 +1,27 @@
-package sk.seges.acris.security.shared.user_management.domain.gilead;
+package sk.seges.acris.security.shared.core.user_management.domain.jpa.gilead;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.sf.gilead.pojo.base.ILightEntity;
-import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaGenericUser;
+import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserWithAuthorities;
 
 @Entity
-public class GileadGenericUser extends JpaGenericUser implements ILightEntity {
+@Table(name = "user_with_authorities")
+public class GileadJpaUserWithAuthorities extends JpaUserWithAuthorities implements ILightEntity {
 
-	private static final long serialVersionUID = -1271180330099642463L;
+	private static final long serialVersionUID = -5827961597276260668L;
 
-	@Transient
-	protected Map<String, String> _proxyInformations;
-
-	public GileadGenericUser() {	
+	public GileadJpaUserWithAuthorities() {	
 	}
 	
+	protected Map<String, String> _proxyInformations;
+
+	@Transient
 	public Map<String, String> getProxyInformations() {
 		return _proxyInformations;
 	}
@@ -42,6 +44,7 @@ public class GileadGenericUser extends JpaGenericUser implements ILightEntity {
 		}
 	}
 
+	@Transient
 	public String getProxyInformation(String property) {
 		if (_proxyInformations != null) {
 			return _proxyInformations.get(property);
@@ -50,6 +53,7 @@ public class GileadGenericUser extends JpaGenericUser implements ILightEntity {
 		}
 	}
 
+	@Transient
 	public String getDebugString() {
 		if (_proxyInformations != null) {
 			return _proxyInformations.toString();

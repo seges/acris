@@ -10,13 +10,14 @@ import javax.persistence.UniqueConstraint;
 
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSidBeanWrapper;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 /**
  * The table ACL_SID essentially lists all the users in our systems
  */
 @Entity
 @Table(name = "ACL_SID", uniqueConstraints = {@UniqueConstraint(columnNames = {AclSidBeanWrapper.SID, AclSidBeanWrapper.PRINCIPAL})})
-public class JpaAclSid implements AclSid {
+public class JpaAclSid implements AclSid, IMutableDomainObject<Long> {
 
 	private static final long serialVersionUID = 3753027336787453941L;
 

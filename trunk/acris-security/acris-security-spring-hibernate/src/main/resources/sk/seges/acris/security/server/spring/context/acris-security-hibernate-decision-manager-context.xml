@@ -16,6 +16,7 @@
                            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
 
 	<import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-context.xml"/>
+	<import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-hibernate-voters-context.xml"/>
 
     <bean id="businessAccessDecisionManager" class="org.springframework.security.vote.UnanimousBased">
         <property name="allowIfAllAbstainDecisions" value="true" />

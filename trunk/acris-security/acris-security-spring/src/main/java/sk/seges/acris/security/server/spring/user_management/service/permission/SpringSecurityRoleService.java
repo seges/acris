@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.user_management.dao.permission.ISecurityRoleDao;
-import sk.seges.acris.security.server.user_management.service.permission.SecurityRoleService;
+import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityRoleDao;
+import sk.seges.acris.security.server.core.user_management.service.permission.SecurityRoleService;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;

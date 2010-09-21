@@ -21,7 +21,7 @@
 	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-http-session-context.xml"/>
     <beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-role-voter-context.xml"/>
 	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-context.xml" />
-	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-object-definitions-context.xml" />
+	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-object-annotation-injection.xml" />
 	
 	<context:component-scan base-package="sk.seges.acris.security.server.spring" />
 	

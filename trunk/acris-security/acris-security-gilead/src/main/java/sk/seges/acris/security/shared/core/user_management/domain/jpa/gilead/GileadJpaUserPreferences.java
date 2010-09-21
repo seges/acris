@@ -1,32 +1,32 @@
-package sk.seges.acris.security.shared.user_management.domain.gilead;
+package sk.seges.acris.security.shared.core.user_management.domain.jpa.gilead;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.sf.gilead.pojo.base.ILightEntity;
-import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserWithAuthorities;
+import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserPreferences;
 
 @Entity
-@Table(name = "user_with_authorities")
-public class GileadUserWithAuthorities extends JpaUserWithAuthorities implements ILightEntity {
+public class GileadJpaUserPreferences extends JpaUserPreferences implements
+		ILightEntity {
 
-	private static final long serialVersionUID = -5827961597276260668L;
+	private static final long serialVersionUID = -1271180330099642463L;
 
-	public GileadUserWithAuthorities() {	
+	public GileadJpaUserPreferences() {	
 	}
 	
 	@Transient
 	protected Map<String, String> _proxyInformations;
 
+	@Transient
 	public Map<String, String> getProxyInformations() {
 		return _proxyInformations;
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setProxyInformations(Map informations) {
 		_proxyInformations = informations;
 	}
@@ -52,6 +52,7 @@ public class GileadUserWithAuthorities extends JpaUserWithAuthorities implements
 		}
 	}
 
+	@Transient
 	public String getDebugString() {
 		if (_proxyInformations != null) {
 			return _proxyInformations.toString();

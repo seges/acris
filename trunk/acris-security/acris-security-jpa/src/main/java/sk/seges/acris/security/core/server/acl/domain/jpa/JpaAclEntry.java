@@ -14,10 +14,11 @@ import sk.seges.acris.security.server.core.acl.domain.api.AclEntryBeanWrapper;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.server.core.acl.domain.dto.AclEntryDTO;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 @Entity
 @Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", AclEntryBeanWrapper.DB_ACE_ORDER})})
-public class JpaAclEntry extends AclEntryDTO {
+public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Long> {
 
 	private static final long serialVersionUID = -7561144169564944658L;
 

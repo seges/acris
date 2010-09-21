@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import sk.seges.acris.security.server.core.acl.domain.dto.AclSecuredClassDescriptionDTO;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 /**
  * Each class from the system whose objects we wish to secure must be registered in the ACLSecuredClass and uniquely
@@ -16,7 +17,7 @@ import sk.seges.acris.security.server.core.acl.domain.dto.AclSecuredClassDescrip
  */
 @Entity
 @Table(name = "ACL_SECURED_CLASS_DESCRIPTION", uniqueConstraints = { @UniqueConstraint(columnNames = { "class" }) })
-public class JpaAclSecuredClassDescription extends AclSecuredClassDescriptionDTO {
+public class JpaAclSecuredClassDescription extends AclSecuredClassDescriptionDTO implements IMutableDomainObject<Long> {
 	
 	
 	private static final long serialVersionUID = 1392972668729469987L;

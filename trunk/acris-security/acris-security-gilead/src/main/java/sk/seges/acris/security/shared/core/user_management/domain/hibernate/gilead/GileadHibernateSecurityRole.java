@@ -1,4 +1,4 @@
-package sk.seges.acris.security.shared.user_management.domain.gilead;
+package sk.seges.acris.security.shared.core.user_management.domain.hibernate.gilead;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,16 +8,16 @@ import javax.persistence.Transient;
 import net.sf.gilead.pojo.base.ILightEntity;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateSecurityRole;
 
-public class GileadSecurityRole extends HibernateSecurityRole implements ILightEntity {
+public class GileadHibernateSecurityRole extends HibernateSecurityRole implements ILightEntity {
 
 	private static final long serialVersionUID = 4604073809450162943L;
 
-	public GileadSecurityRole() {	
+	public GileadHibernateSecurityRole() {	
 	}
 	
-	@Transient
 	protected Map<String, String> _proxyInformations;
 
+	@Transient
 	public Map<String, String> getProxyInformations() {
 		return _proxyInformations;
 	}
@@ -40,6 +40,7 @@ public class GileadSecurityRole extends HibernateSecurityRole implements ILightE
 		}
 	}
 
+	@Transient
 	public String getProxyInformation(String property) {
 		if (_proxyInformations != null) {
 			return _proxyInformations.get(property);
@@ -48,6 +49,7 @@ public class GileadSecurityRole extends HibernateSecurityRole implements ILightE
 		}
 	}
 
+	@Transient
 	public String getDebugString() {
 		if (_proxyInformations != null) {
 			return _proxyInformations.toString();
@@ -55,5 +57,4 @@ public class GileadSecurityRole extends HibernateSecurityRole implements ILightE
 			return null;
 		}
 	}
-
 }

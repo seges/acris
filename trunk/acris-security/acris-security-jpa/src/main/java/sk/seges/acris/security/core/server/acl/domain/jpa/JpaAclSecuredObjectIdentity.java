@@ -15,6 +15,7 @@ import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdenti
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityBeanWrapper;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.server.core.acl.domain.dto.AclSecuredObjectIdentityDTO;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 /**
  * Represents every secured object in the system
@@ -23,7 +24,7 @@ import sk.seges.acris.security.server.core.acl.domain.dto.AclSecuredObjectIdenti
 @Entity
 @Table(name = "ACL_SECURED_OBJECT_IDENTITY", uniqueConstraints = {@UniqueConstraint(columnNames = {AclSecuredObjectIdentityBeanWrapper.DB_OBJECT_ID_CLASS.THIS,
 		AclSecuredObjectIdentityBeanWrapper.DB_OBJECT_ID_IDENTITY})})
-public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO {
+public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO implements IMutableDomainObject<Long> {
 
 	//	public static final String A_CLASS_ID = "objectIdClass.id";
 	//	public static final String A_OBJECT_IDENTITY_ID = "objectIdIdentity";
