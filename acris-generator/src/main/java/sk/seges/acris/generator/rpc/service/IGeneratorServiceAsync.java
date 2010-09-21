@@ -14,15 +14,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author fat
  */
 public interface IGeneratorServiceAsync {
+
 	/**
 	 * Offline content generator service
 	 */
-	void saveContent(GeneratorToken token,
-			String contentText, AsyncCallback<Boolean> callback);
+	void saveContent(GeneratorToken token, String contentText, AsyncCallback<Boolean> callback);
 
 	void getLastProcessingToken(AsyncCallback<GeneratorToken> callback);
 
-	void getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL, AsyncCallback<String> callback);
+	void getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL,
+			AsyncCallback<String> callback);
 
 	/**
 	 * File provider services

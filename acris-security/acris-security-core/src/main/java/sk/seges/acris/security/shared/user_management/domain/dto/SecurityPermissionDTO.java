@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
-public class SecurityPermissionDTO implements HierarchyPermission {
+public class SecurityPermissionDTO implements HierarchyPermission, IMutableDomainObject<Integer> {
 
 	private static final long serialVersionUID = -8053014688760726531L;
 

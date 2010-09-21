@@ -1,4 +1,4 @@
-package sk.seges.acris.security.server.user_management.dao.user;
+package sk.seges.acris.security.server.core.user_management.dao.user;
 
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;

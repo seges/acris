@@ -1,4 +1,4 @@
-package sk.seges.acris.security.server.user_management.dao.permission;
+package sk.seges.acris.security.server.core.user_management.dao.permission;
 
 import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
 import sk.seges.sesam.dao.ICrudDAO;

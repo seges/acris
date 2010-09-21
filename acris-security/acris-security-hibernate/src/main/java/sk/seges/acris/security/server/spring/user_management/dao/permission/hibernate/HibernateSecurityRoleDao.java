@@ -10,14 +10,14 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
-import sk.seges.acris.security.server.user_management.dao.permission.ISecurityRoleDao;
+import sk.seges.acris.security.server.core.user_management.dao.permission.hibernate.IHibernateSecurityRoleDao;
 import sk.seges.acris.security.server.utils.CastUtils;
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaSecurityRole;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
-public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<JpaSecurityRole> implements ISecurityRoleDao<JpaSecurityRole> {
+public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> implements IHibernateSecurityRoleDao<RoleData> {
 
 	@Override
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")
@@ -27,6 +27,10 @@ public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<JpaSecurityR
 
 	protected HibernateSecurityRoleDao() {
 		super(JpaSecurityRole.class);
+	}
+
+	protected HibernateSecurityRoleDao(Class<? extends RoleData> clazz) {
+		super(clazz);
 	}
 
 	private static final String FIND_USER_AUTHORITIES_SQL = "select selectedauthorities_element from role_selectedauthorities where role_id=:roleId";

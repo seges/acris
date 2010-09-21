@@ -12,7 +12,7 @@ public abstract class AbstractHibernateACLEnabledBaseDao<T extends ISecuredObjec
 
 	private AclManager aclManager;
 
-	public AbstractHibernateACLEnabledBaseDao(AclManager aclManager, Class<T> clazz) {
+	public AbstractHibernateACLEnabledBaseDao(AclManager aclManager, Class<? extends T> clazz) {
 		super(clazz);
 	}
 

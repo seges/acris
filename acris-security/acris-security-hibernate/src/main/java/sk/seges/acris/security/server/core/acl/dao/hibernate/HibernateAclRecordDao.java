@@ -28,6 +28,10 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		super(JpaAclEntry.class);
 	}
 
+	protected HibernateAclRecordDao(Class<? extends JpaAclEntry> clazz) {
+		super(clazz);
+	}
+
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")
 	public void setEntityManager(EntityManager entityManager) {
 		super.setEntityManager(entityManager);

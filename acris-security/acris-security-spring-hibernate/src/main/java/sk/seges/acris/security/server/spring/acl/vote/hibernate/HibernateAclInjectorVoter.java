@@ -10,7 +10,7 @@ import org.springframework.security.acls.Permission;
 import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
 
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
+import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclEntry;
 import sk.seges.acris.security.server.core.acl.domain.api.AclEntryBeanWrapper;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescriptionBeanWrapper;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityBeanWrapper;
@@ -29,7 +29,7 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
         // Create detached criteria with alias - name of the alias is not
         // importat, only purpose
         // is to not use this_ default alias
-        DetachedCriteria criteria = DetachedCriteria.forClass(AclEntry.class, "aclEntry");
+        DetachedCriteria criteria = DetachedCriteria.forClass(JpaAclEntry.class, "aclEntry");
 
         // We just want to select objectIdentities
         criteria.setProjection(Projections.alias(Projections.property(AclEntryBeanWrapper.OBJECT_IDENTITY.THIS), "object_identity"));
