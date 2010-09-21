@@ -13,8 +13,8 @@ import sk.seges.acris.mvp.server.service.IUserMaintenanceService;
 import sk.seges.acris.mvp.server.service.UserMaintenanceService;
 import sk.seges.acris.mvp.server.service.dozer.DozerSupport;
 import sk.seges.acris.mvp.server.service.dozer.DozerUserMaintenanceService;
+import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.SpringUserService;
-import sk.seges.acris.security.server.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 import com.vercer.engine.persist.ObjectDatastore;

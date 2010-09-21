@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.dao.twig.AbstractTwigCrud;
-import sk.seges.acris.security.server.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.domain.twig.TwigGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
