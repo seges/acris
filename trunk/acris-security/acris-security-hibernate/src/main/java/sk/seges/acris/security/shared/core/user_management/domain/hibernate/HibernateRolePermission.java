@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CollectionOfElements;
@@ -19,7 +21,7 @@ import org.hibernate.annotations.FetchMode;
 import sk.seges.acris.security.shared.user_management.domain.dto.RolePermissionDTO;
 
 @Entity
-@Table(name="rolepermisson")
+@Table(name="rolepermission")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="DISC", discriminatorType=DiscriminatorType.INTEGER)
 public class HibernateRolePermission extends RolePermissionDTO {
@@ -37,6 +39,7 @@ public class HibernateRolePermission extends RolePermissionDTO {
 
 	@CollectionOfElements(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
+//	@JoinTable(name="rolepermisson_userpermissions", joinColumns=@JoinColumn(name="rolepermission_permission"))
 	public List<String> getUserPermissions() {
 		return super.getUserPermissions();
 	}
