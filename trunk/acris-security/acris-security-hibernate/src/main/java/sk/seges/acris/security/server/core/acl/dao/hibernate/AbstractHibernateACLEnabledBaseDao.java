@@ -14,6 +14,7 @@ public abstract class AbstractHibernateACLEnabledBaseDao<T extends ISecuredObjec
 
 	public AbstractHibernateACLEnabledBaseDao(AclManager aclManager, Class<? extends T> clazz) {
 		super(clazz);
+		this.aclManager = aclManager;
 	}
 
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")
