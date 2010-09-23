@@ -188,6 +188,8 @@ Each interface has:
 
 == Gilead implementation ==
 
+[https://acris.googlecode.com/svn/wiki/yuml/gilead_security.png]
+
 == Hibernate implementation ==
 
 == JPA implementation ==
