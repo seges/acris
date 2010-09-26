@@ -12,6 +12,7 @@ import org.hibernate.criterion.Restrictions;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.hibernate.IHibernateSecurityRoleDao;
 import sk.seges.acris.security.server.utils.CastUtils;
+import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateSecurityRole;
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaSecurityRole;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
@@ -26,7 +27,7 @@ public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> im
 	}
 
 	protected HibernateSecurityRoleDao() {
-		super(JpaSecurityRole.class);
+		super(HibernateSecurityRole.class);
 	}
 
 	protected HibernateSecurityRoleDao(Class<? extends RoleData> clazz) {
