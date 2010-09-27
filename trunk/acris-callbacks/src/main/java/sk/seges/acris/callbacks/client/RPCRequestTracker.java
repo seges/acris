@@ -63,7 +63,7 @@ public class RPCRequestTracker {
 	void resetProcessingRequest(RPCRequest processingRequest) {
 		if (!processingRequest.equals(this.getProcessingRequest())) {
 			throw new IllegalArgumentException(
-					"Processing 2 paralel requests?. Thats impossible in JS. Check the bugs, man.");
+					"Processing 2 parallel requests?. That's impossible in JS. Check the bugs, man.");
 		}
 		this.processingRequest = null;
 	}
