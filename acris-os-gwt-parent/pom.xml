@@ -59,7 +59,7 @@
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 		<gwteventservice.version>1.0.2</gwteventservice.version>
 		
-		<gwt-validation.version>1.1.0-r81</gwt-validation.version>
+		<gwt-validation.version>1.1.0-r82</gwt-validation.version>
 		<gwt-query.version>1.0-20100701</gwt-query.version>
 		<gwt-time.version>1.0.0-20100701</gwt-time.version>
 
