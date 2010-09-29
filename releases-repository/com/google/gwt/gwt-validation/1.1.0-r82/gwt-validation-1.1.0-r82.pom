@@ -4,7 +4,7 @@
 	<groupId>com.google.gwt</groupId>
 	<artifactId>gwt-validation</artifactId>
 	<name>GWT validation</name>
-	<version>1.1.0-r81</version>
+	<version>1.1.0-r82</version>
 	<description>GWT validation based on JSR303</description>
 	<properties>
 		<gwtVersion>2.0.0</gwtVersion>
