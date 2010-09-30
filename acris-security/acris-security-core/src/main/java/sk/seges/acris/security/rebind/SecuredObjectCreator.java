@@ -18,6 +18,7 @@ import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -41,8 +42,8 @@ public class SecuredObjectCreator {
 		this.securedAnnotationProcessor = securedAnnotationProcessor;
 	}
 
-	public String doGenerate(TreeLogger logger, GeneratorContext context, String typeName,
-			String superclassName) throws UnableToCompleteException {
+	public String doGenerate(TreeLogger logger, GeneratorContext context, String typeName, String superclassName)
+			throws UnableToCompleteException {
 		this.superclassName = superclassName;
 
 		final TypeOracle typeOracle = context.getTypeOracle();
@@ -126,8 +127,8 @@ public class SecuredObjectCreator {
 		generateSecurityCheck(sourceWriter, context, classType);
 	}
 
-	protected void generateOnLoadMethod(SourceWriter sourceWriter, GeneratorContext context,
-			JClassType classType) throws NotFoundException {
+	protected void generateOnLoadMethod(SourceWriter sourceWriter, GeneratorContext context, JClassType classType)
+			throws NotFoundException {
 		sourceWriter.println();
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void onLoad() {");
@@ -138,8 +139,8 @@ public class SecuredObjectCreator {
 		sourceWriter.println("}");
 	}
 
-	protected void generateSecurityCheck(SourceWriter sourceWriter, GeneratorContext context,
-			JClassType classType) throws NotFoundException {
+	protected void generateSecurityCheck(SourceWriter sourceWriter, GeneratorContext context, JClassType classType)
+			throws NotFoundException {
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void check() {");
 		sourceWriter.indent();
@@ -147,9 +148,9 @@ public class SecuredObjectCreator {
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
-	
-	protected void generateSecurityCheckBody(SourceWriter sourceWriter, GeneratorContext context,
-			JClassType classType) throws NotFoundException {
+
+	protected void generateSecurityCheckBody(SourceWriter sourceWriter, GeneratorContext context, JClassType classType)
+			throws NotFoundException {
 		sourceWriter.println("user = null;");
 		sourceWriter.println(ClientSession.class.getSimpleName() + " clientSession = getClientSession();");
 		sourceWriter.println("if (clientSession != null) {");
@@ -211,31 +212,32 @@ public class SecuredObjectCreator {
 	protected void generateFieldSecurityRestrictions(SourceWriter sourceWriter, List<String> fieldAnnots,
 			GeneratorContext context, JField param, boolean useModifiers) throws NotFoundException {
 		sourceWriter.println("// securing field " + param.getName());
-		
+
 		sourceWriter.println("if (user != null) {");
 		sourceWriter.indent();
 		sourceWriter.println("hasViewPermission = "
 				+ generateCheckUserAuthority(PERMISSION_VIEW_NAME, fieldAnnots, useModifiers) + ";");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		
+
 		sourceWriter.println("if ( " + param.getName() + " != null ) { ");
 		sourceWriter.indent();
-		
+
 		checkFieldVisibility(sourceWriter, param);
-		
+
 		sourceWriter.println("if( hasViewPermission ){");
 		sourceWriter.indent();
 		if (param.getType().isClassOrInterface() != null
-				&& ((JClassType) param.getType()).isAssignableTo(context.getTypeOracle().getType(
-						Focusable.class.getName()))) {
+				&& (((JClassType) param.getType()).isAssignableTo(context.getTypeOracle().getType(
+						Focusable.class.getName())) || ((JClassType) param.getType()).isAssignableTo(context
+						.getTypeOracle().getType(DateBox.class.getName())))) {
 			sourceWriter.println("hasEditPermission = "
 					+ generateCheckUserAuthority(PERMISSION_EDIT_NAME, fieldAnnots, useModifiers) + ";");
 			sourceWriter.println(param.getName() + ".setEnabled(hasEditPermission);");
 		}
 		sourceWriter.outdent();
 		sourceWriter.println("}");
-		
+
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
@@ -247,9 +249,8 @@ public class SecuredObjectCreator {
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
-	
-	protected String generateCheckUserAuthority(String modifier, List<String> fieldUserAuthorities,
-			boolean useModifier) {
+
+	protected String generateCheckUserAuthority(String modifier, List<String> fieldUserAuthorities, boolean useModifier) {
 
 		StringBuffer sb = new StringBuffer();
 
