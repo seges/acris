@@ -17,7 +17,7 @@ import com.google.gwt.validation.client.InvalidConstraint;
  * @param <T>
  *            Bean type that is validated
  */
-public interface ValidationHighligther<T extends Serializable> {
+public interface ValidationHighligther<S, T extends Serializable> {
 	/**
 	 * Highlights the widgets invalid constraint.
 	 * 
@@ -28,5 +28,5 @@ public interface ValidationHighligther<T extends Serializable> {
 	 *            message or property name.
 	 * @return Widget that replaced the original one (if any).
 	 */
-	HighlightedWidget highlight(Widget widget, InvalidConstraint<T> constraint);
+	HighlightedWidget highlight(S widget, InvalidConstraint<T> constraint);
 }

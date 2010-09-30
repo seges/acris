@@ -189,6 +189,10 @@ public class BeanBindingCreator extends AbstractCreator {
 		sw.println("}");
 	}
 
+	protected Class<?> getValidatorBindingHolderClass() {
+		return ValidatableBindingHolder.class;
+	}
+	
 	private void generateValidationBeanBindingMethods(SourceWriter sw, JClassType classType,
 			JClassType bindingBeanClassType) {
 		if (!validationEnabled) {
@@ -200,7 +204,7 @@ public class BeanBindingCreator extends AbstractCreator {
 				+ InvalidConstraint.class.getName() + "<" + bindingBeanClassType.getSimpleSourceName()
 				+ ">> constraints) {");
 		sw.indent();
-		sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR
+		sw.println("((" + getValidatorBindingHolderClass().getName() + ")" + BINDING_HOLDER_VAR
 				+ ").highlightConstraints(constraints);");
 		sw.outdent();
 		sw.println("}");
@@ -208,7 +212,7 @@ public class BeanBindingCreator extends AbstractCreator {
 		sw.println("@Override");
 		sw.println("public void clearHighlight() {");
 		sw.indent();
-		sw.println("((" + ValidatableBindingHolder.class.getName() + ")" + BINDING_HOLDER_VAR
+		sw.println("((" + getValidatorBindingHolderClass().getName() + ")" + BINDING_HOLDER_VAR
 				+ ").clearHighlight();");
 		sw.outdent();
 		sw.println("}");
@@ -269,7 +273,7 @@ public class BeanBindingCreator extends AbstractCreator {
 		if (!validationEnabled) {
 			bindingHolderClassName = BindingHolder.class.getSimpleName();
 		} else {
-			bindingHolderClassName = ValidatableBindingHolder.class.getName();
+			bindingHolderClassName = getValidatorBindingHolderClass().getName();
 		}
 		sourceWriter.println(bindingHolder + " = new " + bindingHolderClassName + "("
 				+ UpdateStrategy.class.getSimpleName() + "." + updateStrategy.toString()
@@ -278,7 +282,7 @@ public class BeanBindingCreator extends AbstractCreator {
 		if (validationEnabled
 				&& !bindingFieldsBaseAnnotation.validationHighlighter().equals(ValidationHighligther.class)) {
 			// set highlighter from annotation
-			sourceWriter.println("((" + ValidatableBindingHolder.class.getName() + ")" + bindingHolder
+			sourceWriter.println("((" + getValidatorBindingHolderClass().getName() + ")" + bindingHolder
 					+ ").setHighlighter(new " + bindingFieldsBaseAnnotation.validationHighlighter().getName()
 					+ "());");
 		}

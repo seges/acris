@@ -17,7 +17,7 @@ import com.google.gwt.validation.client.InvalidConstraint;
  * @author ladislav.gazo
  *
  */
-public class ExampleHighlighter<T extends Serializable> implements ValidationHighligther<T> {
+public class ExampleHighlighter<T extends Serializable> implements ValidationHighligther<Widget, T> {
 	public static VerticalPanel errorsPanel;
 	
 	@Override
