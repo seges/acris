@@ -14,7 +14,6 @@ import sk.seges.acris.binding.client.annotations.BindingFieldInfo;
 import sk.seges.acris.binding.client.holder.BindingHolder;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.validation.client.InvalidConstraint;
 
 /**
@@ -24,15 +23,15 @@ import com.google.gwt.validation.client.InvalidConstraint;
  * 
  * @author ladislav.gazo
  */
-public class ValidatableBindingHolder<T extends Serializable> extends BindingHolder<T> implements ValidatableBeanBinding<T> {
-	private ValidationHighligther<T> highlighter;
+public class ValidatableBindingHolder<S, T extends Serializable> extends BindingHolder<T> implements ValidatableBeanBinding<T> {
+	private ValidationHighligther<S, T> highlighter;
 	private List<HighlightedWidget> highlighted = new ArrayList<HighlightedWidget>();
 
 	public ValidatableBindingHolder(UpdateStrategy updateStrategy, BeanWrapper<T> beanWrapper) {
 		super(updateStrategy, beanWrapper);
 	}
 
-	public void setHighlighter(ValidationHighligther<T> highlighter) {
+	public void setHighlighter(ValidationHighligther<S, T> highlighter) {
 		this.highlighter = highlighter;
 	}
 
@@ -48,8 +47,8 @@ public class ValidatableBindingHolder<T extends Serializable> extends BindingHol
 			}
 
 			Object widget = info.getTargetWidget();
-			if (highlighter != null && widget instanceof Widget) {
-				highlighted.add(highlighter.highlight((Widget)widget, constraint));
+			if (highlighter != null) {
+				highlighted.add(highlighter.highlight((S)widget, constraint));
 			}
 		}
 	}
