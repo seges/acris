@@ -124,9 +124,6 @@ public class BeanWrapperCreator extends AbstractCreator {
 				if (!(isGetter(method) || isSetter(method))) {
 					continue;
 				}
-				if (method.isFinal()) {
-					continue;
-				}
 //				if (method.isAbstract()) {
 //					// TODO: handle abstract classes - when there is a wrapper
 //					// over abstract class, do implement a method that will
