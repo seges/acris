@@ -4,20 +4,20 @@
 = Prepare maven =
 
 As of AcrIS 1.0.1 version deployment of artifacts consists of two repositories:
-  * Googlecode's SVN based one
-  * Sonatype OSS free repository
+  * Sonatype OSS free repository (Maven release)
+  * Googlecode's SVN based one (Manual release)
 
-Because we don't want to polute SVN history too much and because SVN is not the right maven repository management we started to migrate artifacts to Sonatype's. As of version 1.0.1 all AcrIS related artifacts will reside in Sonatype's. Other artifacts (SeSAM and CorpIS) will remain in Googlecode's as their release is not made that often. In the future all artifacts will be at Sonatype and synced to Maven Central.
+Because we don't want to polute SVN history too much and because SVN is not the right maven repository management we migrated artifacts to Sonatype's. As of version 1.0.1 all AcrIS related artifacts (AcrIS, SeSAM, CorpIS) will reside in Sonatype's. Other artifacts we built for our purposes (external libraries) will remain in Googlecode's as their release is not made that often. In the future all artifacts will be at Sonatype and synced to Maven Central.
 
 == Step 0 ==
 
 There are two ways:
-  * use prepared keystore with Sonatype & Google & Sourceforge certificates -> in this case go to step 3
+  * use prepared keystore with Sonatype & Sourceforge certificates -> in this case go to step 3
   * install key(s) manually -> maybe this is the case if you already have keystore for maven
 
 == Step 1 ==
 
-Download Sonatype and Google certificates into your PC. For every downloaded certificate execute following guide below. Name the certificate file e.g. *google.pem*.
+Download Sonatype into your PC. For every downloaded certificate execute following guide below. Name the certificate file e.g. *sonatype.pem*.
 
 [http://acris.googlecode.com/svn/wiki/images/certificateExportGuide.png]
 
@@ -25,7 +25,7 @@ Download Sonatype and Google certificates into your PC. For every downloaded cer
 
 Following command will import the certificate and asks for a password used to authorize the access to the keystore (and for our example we will use: *keystorePassword*):
 
-    * {{{keytool -v -alias mavenGoogle -import -file google.pem -keystore trust.jceks -storetype jceks}}}
+    * {{{keytool -v -alias sonatype -import -file sonatype.pem -keystore trust.jceks -storetype jceks}}}
 
 This will create *trust.jceks* on your filesystem. Place it whereever you can find it because it will be needed by Maven!
 
@@ -97,30 +97,25 @@ Execute *mvn deploy* optionally with -Dmaven.test.skip in project you want to de
 
 To deploy to Sonatype (and later to be compliant with Maven central) artifacts need to be signed. Follow the guide on how to create a PGP key and use it with Maven GPG plugin - http://www.sonatype.com/people/2010/01/how-to-generate-pgp-signatures-with-maven/
 
-== sesam-os-base-parent release ==
+== Steps ==
 
-  * prepare directory structure
-    * use script in https://acris.googlecode.com/svn/releases-repository/sk/seges/sesam/create_base-parent_release_structure.sh
   * {{{mvn release:prepare -DautoVersionSubmodules=true}}}
   * {{{mvn release:perform}}}
   * {{{mvn release:clean}}}
 
-== sesam-os ==
+== Base projects release ==
 
-  * go to trunk directory, build pom.xml should be there
-  * prepare directory structure
-    * use script in https://acris.googlecode.com/svn/releases-repository/sk/seges/sesam/create_release_structure.sh
+  * like: sesam-os-base-parent & acris-os-gwt-parent
+  * go to project directory and execute Steps
+
+== Other then base projects ==
+
+  * projects: sesam-os, corpis-os, acris-os
+
+  * go to *trunk* directory not parent, build pom.xml should be there
   * {{{mvn release:prepare -DautoVersionSubmodules=true}}}
   * {{{mvn release:perform}}}
   * {{{mvn release:clean}}}
-
-== corpis-os ==
-
-  * similar steps as sesam-os
-
-== acris-os ==
-
-  * similar steps as sesam-os
 
 = Information regarding Sonatype repository =
 
