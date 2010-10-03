@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.0.7-SNAPSHOT</version>
+		<version>1.0.7</version>
 	</parent>
 
 	<!-- More Project Information -->
@@ -47,7 +47,7 @@
 		<repository.type>java</repository.type>
 		<repository.project>corpis</repository.project>
 	
-		<sesam-os.version>1.0.7-SNAPSHOT</sesam-os.version>
+		<sesam-os.version>1.0.7</sesam-os.version>
 	</properties>
 
 	<build>
