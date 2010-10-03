@@ -6,6 +6,7 @@ package sk.seges.acris.security.shared.session;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import sk.seges.acris.security.shared.domain.ITransferableObject;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
@@ -60,5 +61,15 @@ public class ClientSession implements ITransferableObject {
 			return null;
 		}
 		return (T) session.get(key);
+	}
+
+	public void merge(ClientSession value) {
+		for(Entry<String, Serializable> entry : value.getSession().entrySet()) {
+			if(session.containsKey(entry.getKey())) {
+				continue;
+			}
+			
+			session.put(entry.getKey(), entry.getValue());
+		}
 	}
 }
