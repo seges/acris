@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.0.7-SNAPSHOT</version>
+		<version>1.0.7</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -31,19 +31,6 @@
 		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/</connection>
 		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
 	</scm>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Nexus Release Repository</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
 	<properties>
