@@ -3,12 +3,12 @@
 	<groupId>sk.seges.corpis</groupId>
 	<artifactId>corpis-dao-impl</artifactId>
 	<name>CorpIS DAO Implementation</name>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>1.0.6</version>
 	
 	<parent>
 		<groupId>sk.seges.corpis</groupId>
 		<artifactId>corpis-os</artifactId>
-		<version>1.0.6-SNAPSHOT</version>
+		<version>1.0.6</version>
 		<relativePath>../corpis-os/pom.xml</relativePath>
 	</parent>
 	
