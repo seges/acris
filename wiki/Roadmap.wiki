@@ -18,9 +18,11 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 =Release notes 1.0.1=
 
 ==Features==
+ * security generalized - it is possible to have AcrIS security running on top of Hibernate, Spring, Gilead, AppEngine,... and all dependencies are clearly separated
  * bean wrapper reworked. It is not necessary to register beans into introspector and bean wrappers should extends any superclass. This allows you to bind beanwrappers with any UI library like smartGWT or ExtGWT without modifying your domain model (this is also related to a !BeanWrapperAdapterProvider)
  * registering all adapter providers in a one step
  * type safe beans binding using annotations (also nested binding is supported in a completly typesafe way)
+ * moved Maven repository to Sonatype
 
 ==Bug fixes==
  * Fixes in beans binding (more stable code)
