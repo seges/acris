@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-gwt-parent</artifactId>
-	<version>1.0.19-SNAPSHOT</version>
+	<version>1.0.19</version>
 
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
@@ -27,9 +27,9 @@
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
-		<url>http://code.google.com/p/acris/source</url>
-		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
+		<url>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.0.19</url>
+		<connection>scm:svn:http://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.0.19</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.0.19</developerConnection>
 	</scm>
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
