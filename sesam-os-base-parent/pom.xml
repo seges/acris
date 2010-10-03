@@ -5,7 +5,7 @@
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
 	<artifactId>sesam-os-base-parent</artifactId>
-	<version>1.0.7-SNAPSHOT</version>
+	<version>1.0.7</version>
 	<packaging>pom</packaging>
 
 	<!-- More Project Information -->
@@ -28,22 +28,22 @@
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
-		<url>http://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</url>
-		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</developerConnection>
+		<url>http://acris.googlecode.com/svn/sesam/tags/sesam-os-base-parent/sesam-os-base-parent-1.0.7</url>
+		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-base-parent/sesam-os-base-parent-1.0.7</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-base-parent/sesam-os-base-parent-1.0.7</developerConnection>
 	</scm>
 
 	<distributionManagement>
-		<repository>
-			<id>acris-releases-repo</id>
-			<name>acris-releases-repo</name>
-			<url>https://acris.googlecode.com/svn/releases-repository</url>
-		</repository>
 		<snapshotRepository>
-			<id>acris-snapshots-repo</id>
-			<name>acris-snapshots-repo</name>
-			<url>https://acris.googlecode.com/svn/snapshot-repository</url>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
 	</distributionManagement>
 
 	<properties>
