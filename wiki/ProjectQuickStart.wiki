@@ -16,39 +16,17 @@ AcrIS is Maven-based project but that doesn't mean it is impossible to use Ant o
     <parent>
         <groupId>sk.seges.acris</groupId>
         <artifactId>acris-os-gwt-parent</artifactId>
-        <version>1.0.18</version>
+        <version>1.0.19</version>
     </parent>
 }}}
-    * put AcrIS repository
-{{{
-	<repositories>
-		<repository>
-			<id>acris-sonatype</id>
-			<url>https://oss.sonatype.org/content/groups/staging</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-
-		<repository>
-			<id>acris-releases-repo</id>
-  			<url>http://acris.googlecode.com/svn/releases-repository/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-}}}
+    * use _settings.xml_ from http://acris.googlecode.com/svn/trunk/settings.xml as a repository source information
     * add handy properties
 {{{
 	<properties>
 		<gwt.client.module>sk.seges.acris.security.showcase.Site</gwt.client.module>
 		<gwt.client.html>Site.html</gwt.client.html>
 		
-		<acris-os.version>0.9.0</acris-os.version>
+		<acris-os.version>1.0.1</acris-os.version>
 	</properties>
 }}}
     * configure Maven plugins relevant for GWT
@@ -89,28 +67,14 @@ This project setup is more in the level of recommendation then exact steps becau
     <parent>
         <groupId>sk.seges.acris</groupId>
         <artifactId>acris-os-gwt-parent</artifactId>
-        <version>1.0.18</version>
+        <version>1.0.19</version>
     </parent>
 }}}
-    * define repository
-{{{
-	<repositories>
-		<repository>
-			<id>acris-releases-repo</id>
-  			<url>http://acris.googlecode.com/svn/releases-repository/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-}}}
+    * use _settings.xml_ from http://acris.googlecode.com/svn/trunk/settings.xml as a repository source information
     * add handy properties
 {{{
 	<properties>
-		<acris-os.version>0.9.0</acris-os.version>
+		<acris-os.version>1.0.1</acris-os.version>
 	</properties>
 }}}
     * define dependencies in {{{dependencyManagement}}} you need
