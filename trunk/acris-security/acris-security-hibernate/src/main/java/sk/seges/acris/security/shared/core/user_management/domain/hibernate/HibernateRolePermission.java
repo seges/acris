@@ -39,7 +39,7 @@ public class HibernateRolePermission extends RolePermissionDTO {
 
 	@CollectionOfElements(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
-//	@JoinTable(name="rolepermisson_userpermissions", joinColumns=@JoinColumn(name="rolepermission_permission"))
+//	@JoinTable(name="rolepermission_userpermissions", joinColumns=@JoinColumn(name="rolepermission_permission"))
 	public List<String> getUserPermissions() {
 		return super.getUserPermissions();
 	}

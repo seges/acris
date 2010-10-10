@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import sk.seges.acris.security.shared.user_management.domain.dto.RolePermissionDTO;
 
 @Entity
-@Table(name="rolepermisson")
+@Table(name="rolepermission")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="DISC", discriminatorType=DiscriminatorType.INTEGER)
 public class JpaRolePermission extends RolePermissionDTO {

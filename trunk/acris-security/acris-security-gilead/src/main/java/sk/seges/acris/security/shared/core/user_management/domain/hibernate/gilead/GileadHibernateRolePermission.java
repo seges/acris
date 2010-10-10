@@ -11,7 +11,7 @@ import net.sf.gilead.pojo.base.ILightEntity;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateRolePermission;
 
 @Entity
-@Table(name="rolepermisson")
+@Table(name="rolepermission")
 public class GileadHibernateRolePermission extends HibernateRolePermission implements ILightEntity {
 
 	private static final long serialVersionUID = -5827961597276260668L;
