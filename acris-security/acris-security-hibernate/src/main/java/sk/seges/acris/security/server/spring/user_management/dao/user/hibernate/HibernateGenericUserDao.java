@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
@@ -24,7 +25,7 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> imp
 	public HibernateGenericUserDao() {
 		super(HibernateGenericUser.class);
 	}
-
+	
 	public <T extends UserData> HibernateGenericUserDao(Class<T> clazz) {
 		super(clazz);
 	}
@@ -62,11 +63,13 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> imp
 	}
 
 	@Override
+	@Transactional
 	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, false));
 	}
 	
 	@Override
+	@Transactional
 	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, addMode));
 	}
