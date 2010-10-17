@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -44,6 +46,7 @@ public class HibernateGenericUser extends GenericUserDTO {
 	
 	@CollectionOfElements
 	@Fetch(FetchMode.SUBSELECT)
+	@JoinTable(name = "generic_users_userauthorities", joinColumns = @JoinColumn(name = "generic_users_id"))
 	public List<String> getUserAuthorities() {
 		return authorities;
 	}
