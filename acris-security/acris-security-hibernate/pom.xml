@@ -25,12 +25,6 @@
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-dao-impl</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-tx</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- Acris dependencies -->
