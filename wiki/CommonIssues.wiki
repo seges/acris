@@ -1,0 +1,132 @@
+#summary Contains common development problems/exceptions and their solutions.
+
+= Migration from Gilead 1.2.3 to Gilead 1.3.2 =
+
+== Casting HashMap ==
+
+You can get following exception while migrating:
+{{{
+java.lang.RuntimeException: java.lang.ClassCastException: java.util.HashMap cannot be cast to net.sf.gilead.pojo.gwt.IGwtSerializableParameter
+}}}
+
+=== Solution ===
+
+ProxyStore should have defined proxy serializer in the correct way, so you have to change original instantiating from:
+{{{
+StatelessProxyStore proxyStore = new StatelessProxyStore();
+}}}
+
+into:
+{{{
+StatelessProxyStore proxyStore = new StatelessProxyStore();
+proxyStore .setProxySerializer(new GwtProxySerialization());
+persistentBeanManager.setProxyStore(proxyStore );
+}}}
+
+or using spring XML configuration:
+{{{
+<bean id="proxyStore"
+	class="net.sf.gilead.core.store.stateless.StatelessProxyStore">
+	<property name="proxySerializer">  
+		<bean class="net.sf.gilead.core.serialization.GwtProxySerialization"/>
+	</property>
+</bean> 
+}}}
+
+== LightEntity super class ==
+
+Change LightEntity super class from
+{{{
+net.sf.gilead.pojo.gwt15.LightEntity
+}}}
+
+into:
+{{{
+net.sf.gilead.pojo.gwt.LightEntity
+}}}
+
+Or new ILightEntity implementation
+{{{
+protected Map<String, IGwtSerializableParameter> _proxyInformations;
+
+protected Map<String, Boolean> _initializationMap;
+
+public void addProxyInformation(String property, Object proxyInfo) {
+	if (_proxyInformations == null) {
+		_proxyInformations = new HashMap<String, IGwtSerializableParameter>();
+	}
+	_proxyInformations.put(property, (IGwtSerializableParameter) proxyInfo);
+}
+
+public void removeProxyInformation(String property) {
+	if (_proxyInformations != null) {
+		_proxyInformations.remove(property);
+	}
+}
+
+@Transient
+public Object getProxyInformation(String property) {
+	if (_proxyInformations != null) {
+		return _proxyInformations.get(property);
+	} else {
+		return null;
+	}
+}
+
+@Transient
+public String getDebugString() {
+	if (_proxyInformations != null) {
+		return _proxyInformations.toString();
+	} else {
+                return null;
+	}
+}
+
+@Transient
+public boolean isInitialized(String property) {
+	if (_initializationMap == null) {
+		return true;
+	}
+
+	Boolean initialized = _initializationMap.get(property);
+	if (initialized == null) {
+		return true;
+	}
+	return initialized.booleanValue();
+}
+
+public void setInitialized(String property, boolean initialized) {
+	if (_initializationMap == null) {
+		_initializationMap = new HashMap<String, Boolean>();
+	}
+	_initializationMap.put(property, initialized);
+}
+
+@Transient
+public Object getUnderlyingValue() {
+	return this;
+}
+}}}
+
+== GWT module naming change ==
+
+Change original GWT module from
+{{{
+<inherits name='net.sf.gilead.Adapter4Gwt15'/>
+}}}
+
+into:
+
+{{{
+<inherits name='net.sf.gilead.Gilead4Gwt'/>
+}}}
+
+== Gilead projects naming change ==
+~~adapter-core~~ -> gilead-core
+
+~~hibernate-util~~ -> gilead-hibernate
+
+~~adapter4gwt~~ -> gilead4gwt
+
+All libraries can be obtained from 
+https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo/net/sf/gilead/
