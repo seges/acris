@@ -10,3 +10,5 @@
 ~~GWT 2.0.0~~ -> GWT 2.0.4
 
 See the [http://code.google.com/p/acris/wiki/CommonIssues migration guide]
+
+Related to [http://code.google.com/p/acris/issues/detail?id=21 issue 21]
