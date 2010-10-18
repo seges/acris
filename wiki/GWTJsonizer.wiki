@@ -150,6 +150,22 @@ public class SourceState {
 }
 }}}
 
+
+== Project setup ==
+
+In order to reach complex code generator capabilities, you have to setup [http://code.google.com/p/acris/wiki/AnnotationProcessing Annotation processors aka JSR 269] properly. Annotation processors will generate code from @JSONObject annotation, so you don't have to write it. Of course, you have also another possibility - to write the code by your hand.
+
+For example annotation processor will generate following code for SourceState class.
+
+{{{
+package ...;
+
+public interface SourceStateJsonizer extends sk.seges.acris.json.client.data.IJsonObject<SourceState> {
+}
+}}}
+
+Class wiil be located in the same package as original class in the /target/generated directory. So, if you don't want to use annotation processor, just write this class by yourself.
+
 == Custom deserializer ==
 
 Many deserializers are registered by default in json builder and are automatically provided to the jsonization process. Of course, you can define your own deserializer in case when you cannot add @JSONObject annotation to the specific objects.
