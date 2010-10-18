@@ -130,3 +130,11 @@ into:
 
 All libraries can be obtained from 
 https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo/net/sf/gilead/
+
+= Simultaneously Fetch Multiple Bags =
+
+When an entity has more than one non-lazy association that might be interpreted as a bag (e.g., java.util.List or java.util.Collection properties annotated with @CollectionOfElements or @OneToMany or @ManyToMany and not annotated with @IndexColumn) hibernate will fail to fetch the entity correctly. 
+
+== Solution ==
+
+[http://www.jroller.com/eyallupu/entry/hibernate_exception_simultaneously_fetch_multiple Use the Set, Luke]
