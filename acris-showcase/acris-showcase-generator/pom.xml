@@ -3,11 +3,10 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-showcase-parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-showcase-generator</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>AcrIS Generator Showcase</name>
 
