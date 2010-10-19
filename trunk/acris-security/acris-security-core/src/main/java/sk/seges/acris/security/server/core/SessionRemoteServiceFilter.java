@@ -49,10 +49,13 @@ public class SessionRemoteServiceFilter implements Filter {
 
 		@Override
 		public HttpSession getSession() {
-			HttpSession session = SessionHandlerListener.getSession(sessionId);
+			HttpSession session = null;
+			if(null != sessionId && !sessionId.isEmpty()) {
+				session = SessionHandlerListener.getSession(sessionId);
 			
-			if (session != null) {
-				return session;
+				if (session != null) {
+					return session;
+				}
 			}
 			
 			session = super.getSession();
@@ -60,6 +63,9 @@ public class SessionRemoteServiceFilter implements Filter {
 			if (session != null) {
 				String clientSessionId = sessionId;
 				sessionId = session.getId();
+				if(null == clientSessionId || clientSessionId.isEmpty()) {
+					clientSessionId = sessionId;
+				}
 				SessionHandlerListener.mapSessions(sessionId, clientSessionId);
 			}
 			
@@ -68,10 +74,13 @@ public class SessionRemoteServiceFilter implements Filter {
 		
 		@Override
 		public HttpSession getSession(boolean create) {
-			HttpSession session = SessionHandlerListener.getSession(sessionId);
+			HttpSession session = null;
+			if(null != sessionId && !sessionId.isEmpty()) {
+				session = SessionHandlerListener.getSession(sessionId);
 			
-			if (session != null) {
-				return session;
+				if (session != null) {
+					return session;
+				}
 			}
 
 			session = super.getSession(create);
@@ -79,6 +88,9 @@ public class SessionRemoteServiceFilter implements Filter {
 			if (session != null) {
 				String clientSessionId = sessionId;
 				sessionId = session.getId();
+				if(null == clientSessionId || clientSessionId.isEmpty()) {
+					clientSessionId = sessionId;
+				}
 				SessionHandlerListener.mapSessions(sessionId, clientSessionId);
 			}
 			

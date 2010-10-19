@@ -2,7 +2,7 @@ package sk.seges.acris.security.server.core;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -16,9 +16,9 @@ public class SessionHandlerListener implements HttpSessionListener {
 
 	private static final Logger log = Logger.getLogger(SessionHandlerListener.class.getCanonicalName());
 
-	private static Map<String, HttpSession> activeSession = new HashMap<String, HttpSession>();
-	private static Map<String, Long> lastSessionAccessTimes = new HashMap<String, Long>();
-	private static Map<String, String> sessionsMappings = new HashMap<String, String>();
+	private static Map<String, HttpSession> activeSession = new Hashtable<String, HttpSession>();
+	private static Map<String, Long> lastSessionAccessTimes = new Hashtable<String, Long>();
+	private static Map<String, String> sessionsMappings = new Hashtable<String, String>();
 
 	private static final String DEFAULT_TIMEOUT = "DEFAULT_TIMEOUT";
 
