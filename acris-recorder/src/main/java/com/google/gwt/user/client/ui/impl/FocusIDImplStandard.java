@@ -2,7 +2,7 @@ package com.google.gwt.user.client.ui.impl;
 
 import com.google.gwt.user.client.Element;
 
-public class FocusIDImplOld extends FocusImplOld {
+public class FocusIDImplStandard extends FocusImplStandard {
 	  @Override
 	  public native Element createFocusable() /*-{
 	    // Use the infamous 'hidden input' trick to make a div effectively

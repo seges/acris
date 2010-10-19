@@ -9,7 +9,7 @@ import sk.seges.acris.security.server.spring.exception.SecurityExceptionFactory;
 import sk.seges.acris.security.shared.exception.ServerException;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RPCCopy;
+import com.google.gwt.user.server.rpc.RPC;
 import com.google.gwt.user.server.rpc.RPCRequest;
 
 /**
@@ -29,7 +29,7 @@ public class SecurityEnabledExporterLogic {
 	}
 
 	private static String encodeResponseForFailure(RPCRequest rpcRequest, Throwable cause) throws SerializationException{
-		return RPCCopy.getInstance().encodeResponseForFailure(rpcRequest.getMethod(), cause, rpcRequest
+		return RPC.encodeResponseForFailure(rpcRequest.getMethod(), cause, rpcRequest
 				.getSerializationPolicy());
 	}
 }

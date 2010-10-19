@@ -63,8 +63,16 @@
 			<artifactId>acris-common</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 
-		<!-- Acris server dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-server-components</artifactId>
@@ -98,7 +106,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 		
 		<!-- Testing -->
@@ -116,8 +123,7 @@
 		<!-- Gilead -->
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
-			<artifactId>adapter4gwt</artifactId>
-			<version>${gilead.version}</version>
+			<artifactId>gilead4gwt</artifactId>
 		</dependency>
 
 		<!-- HTML parser -->

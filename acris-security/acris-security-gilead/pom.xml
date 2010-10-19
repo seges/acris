@@ -126,11 +126,11 @@
 		<!-- Gilead -->
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
-			<artifactId>adapter4gwt</artifactId>
+			<artifactId>gilead4gwt</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
-			<artifactId>hibernate-util</artifactId>
+			<artifactId>gilead-hibernate</artifactId>
 		</dependency>
 
 		<!-- GWT-SL -->

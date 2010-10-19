@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<artifactId>acris-security-parent</artifactId>
 	<version>1.0.2-SNAPSHOT</version>
-	<name>AcrIS Showcase Parent</name>
+	<name>AcrIS Security Parent</name>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>

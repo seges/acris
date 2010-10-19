@@ -4,10 +4,13 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 
 public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostProcessor {
 
+	private static final Logger log = Logger.getLogger(AbstractPathPostProcessor.class);
+	
 	protected boolean compareIgnoreCaseNullSafe(String text1, String text2) {
 		if (text1 == null && text2 == null) {
 			return true;
@@ -21,11 +24,18 @@ public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostP
 	}
 	
 	protected boolean isPathRelative(String path) {
-		
+
+		if (path == null) {
+			log.warn("Checking for null path. Probably invalid HTML tag is processed.");
+		}
+
 		URI url;
 		try {
 			url = new URI(path);
 		} catch (URISyntaxException e) {
+			if (log.isDebugEnabled()) {
+				log.debug("Invalid path " + path + ". Considering it as relative.");
+			}
 			return true;
 		}
 		boolean result = url.isAbsolute();
@@ -40,6 +50,7 @@ public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostP
 	
 	@Override
 	public boolean process(Node node) {
+		
 		String niceUrl = generatorToken.getNiceUrl(); 
 		if (File.separatorChar != '/')
 			niceUrl = niceUrl.replace(File.separatorChar, '/');

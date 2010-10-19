@@ -29,7 +29,7 @@ public class LocaleGwtPropertyPostProcessor extends AbstractElementPostProcessor
 
 		MetaTag tag = new MetaTag();
 		tag.setAttribute(NAME_ATTRIBUTE_NAME, "\"" + GWT_PROPERTY_NAME + "\"");
-		tag.setAttribute(CONTENT_ATTRIBUTE_NAME, LOCALE_PROPERTY_VALUE + webSettings.getLang());
+		tag.setAttribute(CONTENT_ATTRIBUTE_NAME, LOCALE_PROPERTY_VALUE + generatorToken.getLanguage());
 
 		headChildNodes.add(tag);
 		

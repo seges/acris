@@ -25,7 +25,11 @@ public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 	@Override
 	protected String getPath(Node node) {
 		ScriptTag scriptTag = (ScriptTag)node;
-		return scriptTag.getAttribute(SRC);
+		String path = scriptTag.getAttribute(SRC);
+		if (path != null && path.length() > 0) {
+			return path;
+		}
+		return scriptTag.getAttribute(SRC.toLowerCase());
 	}
 
 	@Override

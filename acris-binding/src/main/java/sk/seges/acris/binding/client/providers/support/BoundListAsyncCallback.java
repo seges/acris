@@ -3,6 +3,7 @@
  */
 package sk.seges.acris.binding.client.providers.support;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * @param <T>
  *            Type of domain object contained in the list.
  */
-public abstract class BoundListAsyncCallback<T> implements
+public abstract class BoundListAsyncCallback<T extends Serializable> implements
 		ICallback<PagedResult<List<T>>> {
 	private final BindingHolder<T> bindingHolder;
 	private final String sourceProperty;

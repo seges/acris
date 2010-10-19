@@ -1,11 +1,14 @@
 package sk.seges.acris.mvp.client.view.core.adapter.smartgwt;
 
+import java.util.Set;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.validation.client.InvalidConstraint;
 import com.philbeaudoin.gwtp.mvp.client.ViewImpl;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 
@@ -37,5 +40,10 @@ public abstract class SmartViewImpl extends ViewImpl {
 		if (handlerManager != null) {
 			handlerManager.fireEvent(event);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <Z> Set<InvalidConstraint<Z>> castSet(Set<?> set, Class<Z> type) {
+		return (Set<InvalidConstraint<Z>>) set;
 	}
 }

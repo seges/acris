@@ -55,31 +55,31 @@ public class JpaUserWithAuthoritiesDao implements IGenericUserDao<JpaUserWithAut
 	}
 
 	@Override
-	public JpaUserWithAuthorities merge(JpaUserWithAuthorities entity) {
+	public UserData persist(UserData entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public JpaUserWithAuthorities persist(JpaUserWithAuthorities entity) {
+	public UserData merge(UserData entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void remove(JpaUserWithAuthorities entity) {
+	public void remove(UserData entity) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
-	public PagedResult<List<JpaUserWithAuthorities>> findAll(Page requestedPage) {
+	public PagedResult<List<UserData>> findAll(Page requestedPage) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public JpaUserWithAuthorities findEntity(JpaUserWithAuthorities entity) {
+	public UserData findEntity(UserData entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}

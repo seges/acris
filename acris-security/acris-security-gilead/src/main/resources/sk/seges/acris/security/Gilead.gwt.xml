@@ -3,7 +3,7 @@
 <module>
 
 	<!-- Gilead dependencies -->
-	<inherits name='net.sf.gilead.Adapter4Gwt15'/>
+	<inherits name='net.sf.gilead.Gilead4Gwt'/>
 	<inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/>
 
 	<source path="gilead.client" />

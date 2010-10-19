@@ -65,7 +65,16 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	}
 
 	public List<String> getAvailableNiceurls(String lang, String webId) {
-		return contentInfoProvider.getAvailableNiceurls(lang, webId);
+		List<String> result = contentInfoProvider.getAvailableNiceurls(lang, webId);
+		
+		if (log.isDebugEnabled()) {
+			log.debug("Available tokens for webId: " + webId + " and language " + lang);
+			for (String niceUrl: result) {
+				log.debug(niceUrl);
+			}
+		}
+		
+		return result;
 	}
 
 	public String getDomainForLanguage(String webId, String language) {
@@ -84,7 +93,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	
 	public String readTextFromFile(String filename) {
 
-		URL url;
+		URL url = null;
 		
 		if (filename.startsWith("http://")) {
 			try {
@@ -93,10 +102,6 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 				throw new RuntimeException("Unable to load file: " + filename);
 			}
 	
-			if (url == null) {
-				throw new RuntimeException("File or directory should exists: " + filename);
-			}
-
 			try {
 				return readTextFromURL(url);
 			} catch (IOException e) {
@@ -137,6 +142,10 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	public String getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content,
 			GeneratorToken token, String currentServerURL) {
 
+		if (content != null) {
+			content = content.replaceAll("<br></br>","<br/>");
+		}
+		
 		if (log.isDebugEnabled()) {
 			log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
 					token.getLanguage() + " and webId: " + token.getWebId());
@@ -147,32 +156,12 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			log.debug("			currentServerURL: " + currentServerURL);
 		}
 
-		log.error("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
-				token.getLanguage() + " and webId: " + token.getWebId());
-		log.error("			entryPointFileName: " + entryPointFileName);
-		log.error("			header: " + header);
-		log.error("			contentWrapper: " + contentWrapper);
-		log.error("			content: " + content);
-		log.error("			currentServerURL: " + currentServerURL);
-
-		System.out.println("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
-				token.getLanguage() + " and webId: " + token.getWebId());
-		System.out.println("			entryPointFileName: " + entryPointFileName);
-		System.out.println("			header: " + header);
-		System.out.println("			contentWrapper: " + contentWrapper);
-		System.out.println("			content: " + content);
-		System.out.println("			currentServerURL: " + currentServerURL);
-
-		
 		String headerContent = readTextFromFile(entryPointFileName);
 		String doctype = new HTMLNodeSplitter().readDoctype(headerContent);
 
 		if (log.isDebugEnabled()) {
 			log.debug("			headerContent: " + headerContent);
 		}
-
-		log.error("			headerContent: " + headerContent);
-		System.out.println("			headerContent: " + headerContent);
 
 		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
@@ -188,10 +177,6 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 	@Override
 	public void writeTextToFile(String content, GeneratorToken token) {
 		File dirFile = new File(getOfflineContentTargetPath(token));
-
-		if (dirFile == null) {
-			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
-		}
 
 		if (!dirFile.exists()) {
 			if (!dirFile.mkdirs()) {

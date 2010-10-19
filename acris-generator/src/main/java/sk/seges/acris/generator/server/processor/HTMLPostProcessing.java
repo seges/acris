@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.PrototypicalNodeFactory;
@@ -26,6 +27,8 @@ import sk.seges.acris.generator.server.processor.post.alters.AbstractContentInfo
 @Component
 public class HTMLPostProcessing {
 
+	private static final Logger log = Logger.getLogger(HTMLPostProcessing.class);
+	
 	@Autowired
 	private ApplicationContext applicationContext;
 
@@ -76,6 +79,12 @@ public class HTMLPostProcessing {
 		
 		while (nodeIterator.hasMoreNodes()) {
 			Node node = nodeIterator.nextNode();
+
+			if (node != null) {
+				if (log.isDebugEnabled()) {
+					log.debug("Processing node " + node.toString());
+				}
+			}
 
 			rootNodes.add(node);
 

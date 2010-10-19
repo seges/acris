@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.0.18</version>
+		<version>1.0.20-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -17,8 +17,8 @@
 		<repository.project>acris-showcase</repository.project>
 
 		<!-- base versions -->
-		<corpis-os.version>1.0.6-SNAPSHOT</corpis-os.version>
-		<sesam-os.version>1.0.7-SNAPSHOT</sesam-os.version>
+		<corpis-os.version>1.0.7-SNAPSHOT</corpis-os.version>
+		<sesam-os.version>1.0.8-SNAPSHOT</sesam-os.version>
 
 		<!-- DI -->
 		<gwt-gin.version>1.0-r137</gwt-gin.version>
@@ -46,17 +46,17 @@
 		<jdo.version>3.0</jdo.version>
 
 		<!-- persistence layer -->
-		<javax.persistence.version>1.0</javax.persistence.version>
 		<hsqldb.version>1.8.0.4</hsqldb.version>
 		<derby.version>10.6.1.0</derby.version>
 		<postgres.version>8.4-701.jdbc4</postgres.version>
+		<jpa.version>1.0.0-CR-1</jpa.version>
 
 		<!-- other -->
 		<slft4j.version>1.5.8</slft4j.version>
 		<jetty.version>6.1.24</jetty.version>
 		<commons-codec.version>1.4</commons-codec.version>
 		<asm.version>3.1</asm.version>
-		<spring.version>3.0.1.RELEASE</spring.version>
+		<spring.version>3.0.4.RELEASE</spring.version>
 		<dozer.version>5.2.2</dozer.version>
 	</properties>
 
@@ -508,9 +508,13 @@
 				<version>${javax.inject.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>javax.persistence</groupId>
-				<artifactId>persistence-api</artifactId>
-				<version>${javax.persistence.version}</version>
+
+				<groupId>org.hibernate.javax.persistence</groupId>
+
+				<artifactId>hibernate-jpa-2.0-api</artifactId>
+
+				<version>${jpa.version}</version>
+
 			</dependency>
 
 			<!-- MVP dependency -->

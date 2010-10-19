@@ -21,7 +21,11 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 
 	@Override
 	public boolean process(Node node) {
-		((LinkTag)node).setLink(webSettings.getTopLevelDomain() + "/" + ((LinkTag)node).getLink().substring(1));
+		if (webSettings.getTopLevelDomain() == null) {
+			((LinkTag)node).setLink("/" + ((LinkTag)node).getLink().substring(1));
+		} else {
+			((LinkTag)node).setLink(webSettings.getTopLevelDomain() + "/" + ((LinkTag)node).getLink().substring(1));
+		}
 		return true;
 	}
 }

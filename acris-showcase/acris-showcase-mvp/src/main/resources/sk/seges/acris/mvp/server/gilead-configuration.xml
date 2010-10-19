@@ -12,7 +12,12 @@
 	<import resource="common-server-context.xml" />
 	<import resource="dispatch-context.xml" />
 	
-	<bean id="proxyStore" class="net.sf.gilead.core.store.stateless.StatelessProxyStore" />
+ 	<bean id="proxyStore"
+ 		class="net.sf.gilead.core.store.stateless.StatelessProxyStore">
+ 		<property name="proxySerializer">  
+ 			<bean class="net.sf.gilead.core.serialization.GwtProxySerialization"/>
+ 		</property>
+ 	</bean> 
 
 	<bean id="persistenceUtil" class="net.sf.gilead.core.hibernate.jpa.HibernateJpaUtil">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />

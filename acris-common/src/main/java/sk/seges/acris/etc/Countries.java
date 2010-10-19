@@ -3,6 +3,7 @@ package sk.seges.acris.etc;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public enum Countries {
     AFGHANISTAN("AFGHANISTAN", false, 5, "en", "af", "af"),
     ALBANIA("ALBANIA", false, 6, "sq", "AL", "al"),

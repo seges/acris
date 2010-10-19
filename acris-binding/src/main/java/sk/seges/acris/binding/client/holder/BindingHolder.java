@@ -1,5 +1,6 @@
 package sk.seges.acris.binding.client.holder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,13 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.gwt.beansbinding.core.client.AutoBinding;
+import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
 import org.gwt.beansbinding.core.client.Converter;
 import org.gwt.beansbinding.core.client.Validator;
-import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.ui.client.GWTBindings;
 import org.gwt.beansbinding.ui.client.ListBoxBinding;
 
@@ -27,7 +28,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class BindingHolder<T> implements IBindingHolder<T> {
+public class BindingHolder<T extends Serializable> implements IBindingHolder<T> {
 	
 	protected List<BindingGroup> asyncbindingGroups = new ArrayList<BindingGroup>();
 	protected BindingGroup rootBinding = new BindingGroup();
@@ -202,7 +203,7 @@ public class BindingHolder<T> implements IBindingHolder<T> {
 		listeners.add(listener);
 	}
 	
-	public static interface BindingHolderListener<B> {
+	public static interface BindingHolderListener<B extends Serializable> {
 		void bindingBecameBound(BindingHolder<B> holder);
 	}
 

@@ -24,20 +24,4 @@
         <property name="entityManagerFactory" ref="acrisEntityManagerFactory" />
     </bean>
 
-    <bean id="acrisProxyStore" class="net.sf.gilead.core.store.stateless.StatelessProxyStore" />
-
-	<bean id="showcasePersistenceUtil" class="net.sf.gilead.core.hibernate.jpa.HibernateJpaUtil">
-        <property name="entityManagerFactory" ref="acrisEntityManagerFactory" />
-    </bean>
-
-	<bean id="showcaseHibernateBeanManager"
-		class="sk.seges.acris.rpc.PersistentBeanManager">
-		<property name="persistenceUtil" ref="showcasePersistenceUtil" />
-		<property name="proxyStore" ref="acrisProxyStore" />
-<!--		<property name="classMapper" ref="showcaseProxyClassMapper" />        -->
-	</bean>
-	
-	<bean id="showcaseProxyClassMapper" class="net.sf.gilead.core.beanlib.mapper.ProxyClassMapper">
-		<property name="persistenceUtil" ref="showcasePersistenceUtil" />
-	</bean>
 </beans>

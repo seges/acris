@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.0.7</version>
+		<version>1.0.8-SNAPSHOT</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -32,17 +32,15 @@
 		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
 	</scm>
 
-	<!-- TODO: why do we have gilead-hibernate-util.version -->
 	<properties>
 		<gwt.log.version>3.0.0</gwt.log.version>
 
-		<gwt.version>2.0.0</gwt.version>
+		<gwt.version>2.0.4</gwt.version>
 		<gwtx.version>1.5.3</gwtx.version>
 		<gwt-beansbinding.version>0.3</gwt-beansbinding.version>
 
-		<gilead.version>1.2.3</gilead.version>
-		<gilead-hibernate-util.version>1.2.3</gilead-hibernate-util.version>
-		<gwt-widgets-server.version>1.0</gwt-widgets-server.version>
+		<gilead.version>1.3.2</gilead.version>
+		<gwt-widgets-server.version>1.1</gwt-widgets-server.version>
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 		<gwteventservice.version>1.0.2</gwteventservice.version>
 		
@@ -52,6 +50,8 @@
 
 		<htmlparser.version>2.0-20100701</htmlparser.version>
 		<gwt-output-style>OBF</gwt-output-style>
+
+		<beanlib-hibernate.version>5.0.2beta</beanlib-hibernate.version>
 
 	</properties>
 
@@ -109,7 +109,7 @@
 			<!-- Gilead -->
 			<dependency>
 				<groupId>net.sf.gilead</groupId>
-				<artifactId>adapter-core</artifactId>
+				<artifactId>gilead-core</artifactId>
 				<version>${gilead.version}</version>
 				<exclusions>
 					<exclusion>
@@ -124,11 +124,27 @@
 						<groupId>org.hibernate</groupId>
 						<artifactId>ejb3-persistence</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
+				<groupId>net.sf.beanlib</groupId>
+				<artifactId>beanlib-hibernate</artifactId>
+				<version>${beanlib-hibernate.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
 				<groupId>net.sf.gilead</groupId>
-				<artifactId>adapter4gwt</artifactId>
+				<artifactId>gilead4gwt</artifactId>
 				<version>${gilead.version}</version>
 			</dependency>
 			<dependency>
@@ -138,8 +154,8 @@
 			</dependency>
 			<dependency>
 				<groupId>net.sf.gilead</groupId>
-				<artifactId>hibernate-util</artifactId>
-				<version>${gilead-hibernate-util.version}</version>
+				<artifactId>gilead-hibernate</artifactId>
+				<version>${gilead.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.hibernate</groupId>
@@ -152,6 +168,10 @@
 					<exclusion>
 						<groupId>org.hibernate</groupId>
 						<artifactId>ejb3-persistence</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.jboss.ejb3</groupId>
+						<artifactId>jboss-ejb3-core</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -230,7 +250,7 @@
 						<runTarget>${gwt.client.module}/${gwt.client.html}</runTarget>
 
 						<!-- style>DETAILED</style--><!-- use OBF for prod -->
-						<style>${gwt-output-style}</style><!-- use OBF for prod -->
+						<style>OBF</style><!-- use OBF for prod -->
 						<noServer>false</noServer>
 						<extraJvmArgs>-Xmx724M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs>

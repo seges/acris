@@ -45,6 +45,13 @@ public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
 		source.println("public " + simpleName + " getBeanWrapperContent() {");
 		source.indent();
 
+		source.println("if (this." + BEAN_WRAPPER_CONTENT + " == null) {");
+		source.indent();
+		source.println("return null;");
+		source.outdent();
+		source.println("}");
+		source.println("");
+
 		for (JMethod method : methods) {
 			if (method.getName().startsWith("get")) {
 

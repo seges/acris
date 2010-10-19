@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +23,15 @@ public class TokenProvider {
 	private static final String TOKEN_DIRECTORY = "tokens";
 	private static final String TOKEN_NAME = "token_";
 	private static final String LANG_DELIMITER = " ";
-	private static final String PATH_PREFIX = System.getProperty("java.io.tmpdir") + File.separator;
 
 	private static final Logger log = Logger.getLogger(TokenProvider.class);
 
 	private static final long MAX_PROCESSING_TIME = 120 * 10 * 60 * 1000; // 10 mins
 
+	@Autowired
+	@Qualifier("offline.content.temp.directory")
+	private String tokensDirectory;
+	
 	public TokenProvider() {
 
 	}
@@ -41,8 +46,12 @@ public class TokenProvider {
 		return tokens.get(tokens.size() - 1);
 	}
 
+	protected String getPathPrefix() {
+		return tokensDirectory + File.separator;
+	}
+	
 	private ArrayList<Integer> getSortedTokenFiles() {
-		File tokensDirectory = new File(PATH_PREFIX + TOKEN_DIRECTORY);
+		File tokensDirectory = new File(getPathPrefix() + TOKEN_DIRECTORY);
 
 		if (!tokensDirectory.exists()) {
 			log.warn("Tokens directory '" + tokensDirectory + "' does not exists. There is no token to be processed");
@@ -83,13 +92,13 @@ public class TokenProvider {
 	public synchronized void setTokenForProcessing(final GeneratorToken generatorToken) {
 		int currentFileIndex = getLastNumberForProcessing() + 1;
 
-		final StringFile nextFile = new StringFile(PATH_PREFIX + TOKEN_DIRECTORY, TOKEN_NAME + currentFileIndex);
+		final StringFile nextFile = new StringFile(getPathPrefix() + TOKEN_DIRECTORY, TOKEN_NAME + currentFileIndex);
 
 		if (log.isInfoEnabled()) {
-			log.info("Creating file '" + nextFile.getAbsolutePath() + "' for nice url '" + generatorToken.getNiceUrl() + "'");
+			log.info("Creating file '" + nextFile.getAbsolutePath() + "' for webid '" + generatorToken.getWebId() + "'");
 		}
 
-		final File tokensDir = new File(PATH_PREFIX + TOKEN_DIRECTORY);
+		final File tokensDir = new File(getPathPrefix() + TOKEN_DIRECTORY);
 		if (!tokensDir.exists() && !tokensDir.mkdirs()) {
 			log.error("Unable to create directory structure fot the file '" + nextFile.getAbsolutePath()
 					+ "'. Current niceurl is " + generatorToken.getNiceUrl());
@@ -98,12 +107,12 @@ public class TokenProvider {
 
 		try {
 			if (!nextFile.createNewFile()) {
-				log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current niceurl is "
-								+ generatorToken.getNiceUrl());
+				log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current webId is "
+								+ generatorToken.getWebId());
 				return;
 			}
 		} catch (final IOException ioe) {
-			log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current niceurl is " + generatorToken.getNiceUrl(),
+			log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current webId is " + generatorToken.getWebId(),
 					ioe);
 			return;
 		}
@@ -124,7 +133,7 @@ public class TokenProvider {
 			return null;
 		}
 
-		StringFile tokenFile = new StringFile(PATH_PREFIX + TOKEN_DIRECTORY, TOKEN_NAME + tokens.get(0).toString());
+		StringFile tokenFile = new StringFile(getPathPrefix() + TOKEN_DIRECTORY, TOKEN_NAME + tokens.get(0).toString());
 
 		String generatorToken = null;
 

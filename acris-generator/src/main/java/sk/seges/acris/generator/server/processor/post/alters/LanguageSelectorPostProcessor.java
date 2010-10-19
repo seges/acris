@@ -10,7 +10,7 @@ import org.htmlparser.tags.SelectTag;
 import org.htmlparser.util.NodeList;
 import org.springframework.stereotype.Component;
 
-import sk.seges.acris.generator.server.WebSettings;
+import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 
 @Component
 public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProcessor {
@@ -70,7 +70,8 @@ public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProces
 			if (languageValue == generatorToken.getLanguage()) {
 				continue;
 			}
-			WebSettings linkWebSettings = webSettingsService.getWebSettings(generatorToken.getWebId(), languageValue);
+			
+			WebSettingsData linkWebSettings = webSettingsService.getWebSettings(generatorToken.getWebId());
 
 			LinkTag linkTag = new LinkTag();
 			
@@ -82,6 +83,11 @@ public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProces
 			
 			String translatedNiceUrl = contentInfoProvider.findNiceurlForLanguage(generatorToken.getNiceUrl(), languageValue, generatorToken.getWebId());
 			String url = linkWebSettings.getTopLevelDomain();
+			
+			if (url == null) {
+				logger.warn("Web " + generatorToken.getWebId() + " doesn't have set top level domain. Using empty URL!");
+				url = "";
+			}
 			
 			if (translatedNiceUrl != null) {
 				if (!url.endsWith("/")) {

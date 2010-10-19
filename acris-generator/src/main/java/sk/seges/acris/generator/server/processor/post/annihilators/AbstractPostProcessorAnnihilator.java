@@ -20,7 +20,11 @@ public abstract class AbstractPostProcessorAnnihilator extends AbstractElementPo
 	public boolean process(Node node) {
 
 		NodeList nodeList = node.getChildren();
-
+		
+		if (nodeList == null) {
+			return false;
+		}
+		
 		int size = nodeList.size();
 		
 		int removeIndex = -1;

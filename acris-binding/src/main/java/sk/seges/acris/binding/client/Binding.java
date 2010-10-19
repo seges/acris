@@ -5,13 +5,14 @@ package sk.seges.acris.binding.client;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
 import org.gwt.beansbinding.core.client.AutoBinding;
+import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
 import org.gwt.beansbinding.core.client.Converter;
-import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.holder.ConfigurableBinding;
@@ -29,7 +30,7 @@ import com.google.gwt.user.client.ui.UIObject;
 public class Binding {
 
 	@SuppressWarnings("unchecked")
-	public static <T> BindingActions<T> alter(IBeanBindingHolder<T> binding) {
+	public static <T extends Serializable> BindingActions<T> alter(IBeanBindingHolder<T> binding) {
 		if (!(binding instanceof ConfigurableBinding<?>)) {
 			throw new RuntimeException("Provide configurable binding please");
 		}
@@ -91,7 +92,7 @@ public class Binding {
 		}
 	}
 
-	public static class BindingActions<T> {
+	public static class BindingActions<T extends Serializable> {
 		private final ConfigurableBinding<T> binding;
 		private final BindingConfiguration configuration;
 

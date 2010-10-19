@@ -3,7 +3,9 @@
  */
 package sk.seges.acris.binding.client;
 
-public class Forest {
+import java.io.Serializable;
+
+public class Forest implements Serializable {
 	private boolean perilLevel;
 	private Integer tigersInVicinity;
 	private Integer lionsInVicinity;

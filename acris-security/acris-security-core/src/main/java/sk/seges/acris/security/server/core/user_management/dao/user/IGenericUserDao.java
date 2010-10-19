@@ -5,7 +5,7 @@ import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.sesam.dao.ICrudDAO;
 
-public interface IGenericUserDao<T extends UserData> extends ICrudDAO<T> {
+public interface IGenericUserDao<T extends UserData> extends ICrudDAO<UserData> {
 
 	UserData findByUsername(String username);
 

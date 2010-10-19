@@ -45,7 +45,7 @@
 
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
-			<artifactId>adapter-core</artifactId>
+			<artifactId>gilead-core</artifactId>
 		</dependency>
         
 		<dependency>

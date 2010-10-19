@@ -1,5 +1,7 @@
 package sk.seges.acris.binding.client.holder;
 
+import java.io.Serializable;
+
 import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Converter;
@@ -11,7 +13,7 @@ import sk.seges.sesam.domain.IDomainObject;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public interface IBindingHolder<T> extends IBeanBindingHolder<T> {
+public interface IBindingHolder<T extends Serializable> extends IBeanBindingHolder<T> {
 
 	public T getBean();
 
