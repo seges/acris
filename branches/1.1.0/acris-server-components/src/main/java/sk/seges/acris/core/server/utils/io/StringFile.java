@@ -1,4 +1,4 @@
-package sk.seges.acris.io;
+package sk.seges.acris.core.server.utils.io;
 
 import java.io.BufferedReader;
 import java.io.File;

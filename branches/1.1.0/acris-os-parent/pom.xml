@@ -197,6 +197,17 @@
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-crypto</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-crypto</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-recorder</artifactId>
 				<version>${pom.version}</version>

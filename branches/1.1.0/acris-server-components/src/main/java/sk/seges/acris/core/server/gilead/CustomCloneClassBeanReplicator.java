@@ -1,4 +1,4 @@
-package sk.seges.acris.gilead;
+package sk.seges.acris.core.server.gilead;
 
 import java.lang.reflect.Modifier;
 

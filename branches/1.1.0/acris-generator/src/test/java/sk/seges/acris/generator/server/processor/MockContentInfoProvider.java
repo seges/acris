@@ -5,7 +5,7 @@ import java.util.List;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 
-public class DummyContentInfoProvider implements IContentInfoProvider {
+public class MockContentInfoProvider implements IContentInfoProvider {
 
 	public String findNiceurlForLanguage(String originalNiceUrl, String targetLanguage, String webId) {
 		return originalNiceUrl;

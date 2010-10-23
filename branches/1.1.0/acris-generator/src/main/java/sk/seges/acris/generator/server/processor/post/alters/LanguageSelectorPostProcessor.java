@@ -8,12 +8,15 @@ import org.htmlparser.tags.LinkTag;
 import org.htmlparser.tags.OptionTag;
 import org.htmlparser.tags.SelectTag;
 import org.htmlparser.util.NodeList;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
 public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProcessor {
+
+	public LanguageSelectorPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	private String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
 	private String CLASS_ATTRIBUTE_NAME = "class";

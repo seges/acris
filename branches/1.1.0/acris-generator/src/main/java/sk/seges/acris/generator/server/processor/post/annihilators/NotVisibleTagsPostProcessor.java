@@ -2,12 +2,15 @@ package sk.seges.acris.generator.server.processor.post.annihilators;
 
 import org.htmlparser.Node;
 import org.htmlparser.Tag;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.processor.utils.CSSStyleDetector;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
 public class NotVisibleTagsPostProcessor extends AbstractPostProcessorAnnihilator {
+
+	public NotVisibleTagsPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	@Override
 	protected boolean supportsParent(Node node) {

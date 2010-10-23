@@ -1,8 +1,7 @@
 package sk.seges.acris.generator.server.spring;
 
-import java.io.FileInputStream;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -14,29 +13,29 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
-import org.springframework.stereotype.Component;
 
-import sk.seges.acris.io.StringFile;
+import sk.seges.sesam.spring.config.AdvancedPropertyPlaceholderConfigurer;
 
-@Component
-public class SpringPropertyProcessor implements BeanFactoryPostProcessor, ApplicationContextAware {
+public class SpringBeanPropertyRegister extends AdvancedPropertyPlaceholderConfigurer implements BeanFactoryPostProcessor, ApplicationContextAware {
 
-	private static final String SETTING_PROPERTIES_FILE = "generator.properties";
-	
 	private Properties properties;
 	
 	private ApplicationContext context;
 	
-	public SpringPropertyProcessor() {
-		properties = new Properties();
-		try {
-			properties.load(new FileInputStream(StringFile.getFileDescriptor(SETTING_PROPERTIES_FILE)));
-		} catch (Exception e) {
-			properties = null;
-		}
+	public SpringBeanPropertyRegister() {
+	}
+
+	@Override
+	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties props)
+			throws BeansException {
+		super.processProperties(beanFactoryToProcess, props);
+		properties = props;
 	}
 	
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		
+		super.postProcessBeanFactory(beanFactory);
+		
 		if (properties == null) {
 			return;
 		}

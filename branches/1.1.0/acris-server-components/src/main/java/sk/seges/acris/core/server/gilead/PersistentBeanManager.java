@@ -1,4 +1,4 @@
-package sk.seges.acris.rpc;
+package sk.seges.acris.core.server.gilead;
 
 import java.util.Arrays;
 import java.util.Collection;

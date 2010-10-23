@@ -8,16 +8,10 @@ import java.util.Collections;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
+import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.io.StringFile;
 
-@Component
-@Scope("prototype")
 public class TokenProvider {
 
 	private static final String TOKEN_DIRECTORY = "tokens";
@@ -28,12 +22,10 @@ public class TokenProvider {
 
 	private static final long MAX_PROCESSING_TIME = 120 * 10 * 60 * 1000; // 10 mins
 
-	@Autowired
-	@Qualifier("offline.content.temp.directory")
 	private String tokensDirectory;
-	
-	public TokenProvider() {
 
+	public TokenProvider(String tokensDirectory) {
+		this.tokensDirectory = tokensDirectory;
 	}
 
 	private int getLastNumberForProcessing() {
@@ -49,7 +41,7 @@ public class TokenProvider {
 	protected String getPathPrefix() {
 		return tokensDirectory + File.separator;
 	}
-	
+
 	private ArrayList<Integer> getSortedTokenFiles() {
 		File tokensDirectory = new File(getPathPrefix() + TOKEN_DIRECTORY);
 
@@ -59,8 +51,7 @@ public class TokenProvider {
 		}
 
 		if (!tokensDirectory.isDirectory()) {
-			log.warn("Tokens directory '" + tokensDirectory
-					+ "' is not valid directory. There is no token to be processed");
+			log.warn("Tokens directory '" + tokensDirectory + "' is not valid directory. There is no token to be processed");
 			return null;
 		}
 
@@ -75,11 +66,10 @@ public class TokenProvider {
 
 		for (File tokenFile : tokenFiles) {
 			if (System.currentTimeMillis() - tokenFile.lastModified() > MAX_PROCESSING_TIME) {
-				log.info("Token '" + tokenFile.getName() + "' is older then maximum processing time ("
-						+ MAX_PROCESSING_TIME + " ms) and will be deleted");
+				log.info("Token '" + tokenFile.getName() + "' is older then maximum processing time (" + MAX_PROCESSING_TIME + " ms) and will be deleted");
 				tokenFile.delete();
 			} else {
-				String tokenFileName = tokenFile.getName().replaceAll(TOKEN_NAME, ""); 
+				String tokenFileName = tokenFile.getName().replaceAll(TOKEN_NAME, "");
 				tokens.add(Integer.valueOf(tokenFileName));
 			}
 		}
@@ -100,29 +90,25 @@ public class TokenProvider {
 
 		final File tokensDir = new File(getPathPrefix() + TOKEN_DIRECTORY);
 		if (!tokensDir.exists() && !tokensDir.mkdirs()) {
-			log.error("Unable to create directory structure fot the file '" + nextFile.getAbsolutePath()
-					+ "'. Current niceurl is " + generatorToken.getNiceUrl());
+			log.error("Unable to create directory structure fot the file '" + nextFile.getAbsolutePath() + "'. Current niceurl is "
+					+ generatorToken.getNiceUrl());
 			return;
 		}
 
 		try {
 			if (!nextFile.createNewFile()) {
-				log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current webId is "
-								+ generatorToken.getWebId());
+				log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current webId is " + generatorToken.getWebId());
 				return;
 			}
 		} catch (final IOException ioe) {
-			log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current webId is " + generatorToken.getWebId(),
-					ioe);
+			log.error("Unable to create empty file '" + nextFile.getAbsolutePath() + "'. Current webId is " + generatorToken.getWebId(), ioe);
 			return;
 		}
 
 		try {
-			nextFile.writeTextToFile(generatorToken.getLanguage()
-					+ LANG_DELIMITER + generatorToken.getWebId());
+			nextFile.writeTextToFile(generatorToken.getLanguage() + LANG_DELIMITER + generatorToken.getWebId());
 		} catch (final IOException ioe) {
-			log.error("Unable to write content to the token file '" + nextFile.getAbsolutePath()
-					+ "'. Current token is " + generatorToken.getNiceUrl(), ioe);
+			log.error("Unable to write content to the token file '" + nextFile.getAbsolutePath() + "'. Current token is " + generatorToken.getNiceUrl(), ioe);
 		}
 	}
 
@@ -153,11 +139,11 @@ public class TokenProvider {
 		}
 
 		StringTokenizer tokenizer = new StringTokenizer(generatorToken, LANG_DELIMITER);
-		
+
 		if (!tokenizer.hasMoreTokens()) {
 			return null;
 		}
-		
+
 		String lang = tokenizer.nextToken();
 
 		if (!tokenizer.hasMoreTokens()) {

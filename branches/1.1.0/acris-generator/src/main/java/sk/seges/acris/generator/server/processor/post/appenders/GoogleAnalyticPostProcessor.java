@@ -3,12 +3,15 @@ package sk.seges.acris.generator.server.processor.post.appenders;
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.HeadTag;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
 public class GoogleAnalyticPostProcessor extends AbstractElementPostProcessor {
+
+	public GoogleAnalyticPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	@Override
 	public boolean supports(Node node) {

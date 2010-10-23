@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.server.processor.IContentInfoProvider;
@@ -23,26 +21,24 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
 	protected static final Logger log = Logger.getLogger(AbstractNiceURLGenerator.class);
 
-	@Autowired
-	@Qualifier("url.redirect.single.file")
 	protected Boolean redirectSingleFile;
 
-	@Autowired
-	@Qualifier("url.redirect.condition")
 	protected Boolean redirectCondition;
 	
-	@Autowired
-	@Qualifier("url.redirect.file.location")
 	private String redirectFilePath;
 
-	@Autowired
-	@Qualifier("legacy.url.redirect.single.file")
 	private Boolean legacyRedirectSingleFile;
 
-	@Autowired
-	@Qualifier("legacy.url.redirect.file.location")
 	private String legacyRedirectFilePath;
 
+	protected AbstractNiceURLGenerator(String redirectFilePath, Boolean redirectCondition, Boolean redirectSingleFile, String legacyRedirectFilePath, Boolean legacyRedirectSingleFile) {
+		this.redirectFilePath = redirectFilePath;
+		this.redirectCondition = redirectCondition;
+		this.redirectSingleFile = redirectSingleFile;
+		this.legacyRedirectFilePath = legacyRedirectFilePath;
+		this.legacyRedirectSingleFile = legacyRedirectSingleFile;
+	}
+	
 	private IContentInfoProvider contentInfoProvider;
 	
 	protected abstract String getDefaultRewriteRule();

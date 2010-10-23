@@ -2,13 +2,17 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.ScriptTag;
-import org.springframework.stereotype.Component;
 
-@Component
+import sk.seges.acris.site.shared.service.IWebSettingsService;
+
 public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 
 	private static final String SRC = "SRC";
 	private static final String JS_TYPE = "text/javascript";
+
+	public ScriptsPathPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	@Override
 	public boolean supports(Node node) {

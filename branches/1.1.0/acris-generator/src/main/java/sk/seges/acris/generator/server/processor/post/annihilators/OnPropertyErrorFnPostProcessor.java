@@ -1,9 +1,12 @@
 package sk.seges.acris.generator.server.processor.post.annihilators;
 
-import org.springframework.stereotype.Component;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
 public class OnPropertyErrorFnPostProcessor extends AbstractMetaTagPostProcessor {
+
+	public OnPropertyErrorFnPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	private static final String ON_PROPERTY_ERROR_META_TAG_NAME = "gwt:onPropertyErrorFn";
 

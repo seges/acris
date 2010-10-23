@@ -7,8 +7,13 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 
+import sk.seges.acris.site.shared.service.IWebSettingsService;
+
 public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostProcessor {
 
+	protected AbstractPathPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 	private static final Logger log = Logger.getLogger(AbstractPathPostProcessor.class);
 	
 	protected boolean compareIgnoreCaseNullSafe(String text1, String text2) {
@@ -52,9 +57,10 @@ public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostP
 	public boolean process(Node node) {
 		
 		String niceUrl = generatorToken.getNiceUrl(); 
-		if (File.separatorChar != '/')
+		if (File.separatorChar != '/') {
 			niceUrl = niceUrl.replace(File.separatorChar, '/');
-
+		}
+		
 		//count number of directories in the path. If the niceurl/token is
 		//en/project than there are 2 directories: en and project so we
 		//have to add ../../ prefix into the path

@@ -17,9 +17,7 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
-import org.springframework.stereotype.Component;
 
-@Component
 public class HTMLNodeSplitter {
 
 	public HTMLNodeSplitter() {

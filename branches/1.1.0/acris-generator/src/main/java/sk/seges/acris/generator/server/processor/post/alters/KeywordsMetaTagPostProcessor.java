@@ -1,9 +1,12 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
-import org.springframework.stereotype.Component;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
 public class KeywordsMetaTagPostProcessor extends AbstractMetaTagPostProcessor {
+
+	public KeywordsMetaTagPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	private static final String KEYWORDS_TAG_NAME = "keywords";
 

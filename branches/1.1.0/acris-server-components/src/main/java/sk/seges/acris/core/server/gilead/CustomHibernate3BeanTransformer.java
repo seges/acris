@@ -1,4 +1,4 @@
-package sk.seges.acris.gilead;
+package sk.seges.acris.core.server.gilead;
 
 import net.sf.beanlib.hibernate3.Hibernate3BeanTransformer;
 import net.sf.beanlib.hibernate3.Hibernate3BlobReplicator;

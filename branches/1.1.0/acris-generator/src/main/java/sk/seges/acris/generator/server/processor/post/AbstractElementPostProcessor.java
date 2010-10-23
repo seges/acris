@@ -2,7 +2,6 @@ package sk.seges.acris.generator.server.processor.post;
 
 import org.htmlparser.Node;
 import org.htmlparser.util.NodeList;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
@@ -10,7 +9,6 @@ import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public abstract class AbstractElementPostProcessor {
 
-	@Autowired
 	protected IWebSettingsService webSettingsService;
 
 	public abstract boolean supports(Node node);
@@ -20,6 +18,10 @@ public abstract class AbstractElementPostProcessor {
 	protected WebSettingsData webSettings;
 	protected GeneratorToken generatorToken;
 
+	protected AbstractElementPostProcessor(IWebSettingsService webSettingsService) {
+		this.webSettingsService = webSettingsService;
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected <T> T interateToNode(Node node, Class<T> nodeClass) {
 		NodeList nodeList = node.getChildren();

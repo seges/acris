@@ -1,7 +1,6 @@
-package sk.seges.acris.rpc;
+package sk.seges.acris.core.server.gilead;
 
 import net.sf.gilead.core.store.stateless.StatelessProxyStore;
-import sk.seges.acris.gilead.CloneLazyKiller;
 
 public class ClonePersistentBeanManager extends PersistentBeanManager {
 
