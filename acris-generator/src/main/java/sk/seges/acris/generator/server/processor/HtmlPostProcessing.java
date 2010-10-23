@@ -3,9 +3,6 @@ package sk.seges.acris.generator.server.processor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
@@ -15,29 +12,23 @@ import org.htmlparser.lexer.Lexer;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.AbstractContentInfoPostProcessor;
 
-@Component
-public class HTMLPostProcessing {
+public class HtmlPostProcessing {
 
-	private static final Logger log = Logger.getLogger(HTMLPostProcessing.class);
+	private static final Logger log = Logger.getLogger(HtmlPostProcessing.class);
 	
-	@Autowired
-	private ApplicationContext applicationContext;
-
 	private Collection<AbstractElementPostProcessor> postProcessors;
 
 	private NodeIterator nodeIterator;
 	private List<Node> rootNodes;
 
-	public HTMLPostProcessing() {
+	public HtmlPostProcessing(Collection<AbstractElementPostProcessor> postProcessors) {
+		this.postProcessors = postProcessors;
 	}
 
 	public boolean setProcessorContent(final String content, GeneratorToken token, IContentInfoProvider contentInfoProvider) {
@@ -59,14 +50,6 @@ public class HTMLPostProcessing {
 		} catch (ParserException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@PostConstruct
-	protected void registerPostProcessors() {
-		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext
-				.getBeansOfType(AbstractElementPostProcessor.class);
-		postProcessors = abstractPostProcessors.values();
 	}
 
 	private boolean processNodes(GeneratorToken token, IContentInfoProvider contentInfoProvider) throws ParserException {

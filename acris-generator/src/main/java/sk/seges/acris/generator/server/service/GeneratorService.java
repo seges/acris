@@ -12,43 +12,43 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import sk.seges.acris.etc.Countries;
+import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
-import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
+import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
 import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 import sk.seges.acris.generator.server.processor.TokenProvider;
-import sk.seges.acris.io.StringFile;
 import sk.seges.acris.util.Tuple;
 
 /**
- * @author fat
+ * @author psimun
  *
  */
 public class GeneratorService extends PersistentRemoteService implements IGeneratorService {
 
 	private static final long serialVersionUID = 6944837756691206504L;
 	
-	@Autowired
+//	@Autowired
 	protected TokenProvider tokenProvider;
 
-	@Autowired
-	@Qualifier("offline.content.taget.path")
+//	@Autowired
+//	@Qualifier("offline.content.taget.path")
 	protected String offlineContentTargetPath;
 
-	@Autowired
-	protected HTMLPostProcessing htmlPostProcessing;
+	protected HtmlPostProcessing htmlPostProcessing;
 	
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
 	private IContentInfoProvider contentInfoProvider;
 	
-	public GeneratorService(IContentInfoProvider contentInfoProvider) {
+	public GeneratorService(HtmlPostProcessing htmlPostProcessing, String offlineContentTargetPath, TokenProvider tokenProvider,
+			IContentInfoProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
+		this.htmlPostProcessing = htmlPostProcessing;
+		this.offlineContentTargetPath = offlineContentTargetPath;
+		this.tokenProvider = tokenProvider;
 	}
 	
 	public GeneratorToken getLastProcessingToken() {
@@ -76,15 +76,6 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		
 		return result;
 	}
-
-	public String getDomainForLanguage(String webId, String language) {
-		for (Countries country: Countries.values()) {
-			if (language.equals(country.getLang())) {
-				return country.getDomain();
-			}
-		}
-		return null;
- 	}
 
 	public Tuple<String, String> readHtmlBodyFromFile(String filename) {
 		String content = readTextFromFile(filename);

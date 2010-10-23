@@ -1,0 +1,6 @@
+<module>
+	<inherits name='sk.seges.acris.crypto.Crypto' />
+	
+	<source path="crypto"/>
+	
+</module>

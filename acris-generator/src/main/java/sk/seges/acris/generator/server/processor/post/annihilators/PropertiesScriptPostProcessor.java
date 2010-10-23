@@ -3,10 +3,14 @@ package sk.seges.acris.generator.server.processor.post.annihilators;
 import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.ScriptTag;
-import org.springframework.stereotype.Component;
 
-@Component
+import sk.seges.acris.site.shared.service.IWebSettingsService;
+
 public class PropertiesScriptPostProcessor extends AbstractPostProcessorAnnihilator {
+
+	public PropertiesScriptPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	protected boolean supportsParent(Node node) {
 		return (node instanceof HeadTag);	

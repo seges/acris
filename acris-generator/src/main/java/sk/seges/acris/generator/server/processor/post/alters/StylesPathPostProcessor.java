@@ -1,15 +1,24 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
+/**
+ * Relativize path in the stylesheet
+ * 
+ * @author psimun
+ *
+ */
 public class StylesPathPostProcessor extends AbstractPathPostProcessor {
 
 	private static final String STYLESHEET_REL = "stylesheet";
 	private static final String CSS_TYPE = "text/css";
+
+	public StylesPathPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 	
 	@Override
 	public boolean supports(Node node) {

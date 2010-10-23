@@ -1,9 +1,13 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
-import org.springframework.stereotype.Component;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
+
 public class DescriptionMetaTagPostProcessor extends AbstractMetaTagPostProcessor {
+
+	public DescriptionMetaTagPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	private static final String DESCRIPTION_TAG_NAME = "description";
 

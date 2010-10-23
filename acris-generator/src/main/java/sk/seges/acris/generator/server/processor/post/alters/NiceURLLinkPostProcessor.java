@@ -2,12 +2,15 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.LinkTag;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
 public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
+
+	public NiceURLLinkPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	@Override
 	public boolean supports(Node node) {

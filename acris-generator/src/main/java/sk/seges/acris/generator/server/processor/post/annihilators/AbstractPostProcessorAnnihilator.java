@@ -4,13 +4,17 @@ import org.htmlparser.Node;
 import org.htmlparser.util.NodeList;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public abstract class AbstractPostProcessorAnnihilator extends AbstractElementPostProcessor {
 
+	protected AbstractPostProcessorAnnihilator(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
+
 	protected abstract boolean supportsParent(Node node);
 	protected abstract boolean supportsNode(Node node);
-	
-	
+		
 	@Override
 	public boolean supports(Node node) {
 		return supportsParent(node);

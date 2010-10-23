@@ -4,12 +4,15 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
 import org.htmlparser.util.NodeList;
-import org.springframework.stereotype.Component;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-@Component
 public class LocaleGwtPropertyPostProcessor extends AbstractElementPostProcessor {
+
+	public LocaleGwtPropertyPostProcessor(IWebSettingsService webSettingsService) {
+		super(webSettingsService);
+	}
 
 	private static final String NAME_ATTRIBUTE_NAME = "name";
 	private static final String CONTENT_ATTRIBUTE_NAME = "content";

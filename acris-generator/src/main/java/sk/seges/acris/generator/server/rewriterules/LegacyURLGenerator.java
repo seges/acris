@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LegacyURLGenerator {
+	
 	private final AbstractNiceURLGenerator niceURLGenerator;
 
 	private final Boolean legacyRedirectSingleFile;

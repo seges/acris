@@ -1,13 +1,13 @@
 package sk.seges.acris.generator.server.rewriterules;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-@Component
-@Scope("prototype")
-@Qualifier(value="sun-pattern-cond")
 public class SunConditionalNiceURLGenerator extends AbstractNiceURLGenerator {
+
+	public SunConditionalNiceURLGenerator(String redirectFilePath, Boolean redirectCondition, Boolean redirectSingleFile, String legacyRedirectFilePath,
+			Boolean legacyRedirectSingleFile) {
+		super(redirectFilePath, redirectCondition, redirectSingleFile, legacyRedirectFilePath, legacyRedirectSingleFile);
+	}
+
 
 	protected String getDefaultRewriteRule() {
 		return "<If not restarted and $uri =~ \"^/\" and $uri !~ \"^/.+\">" + NEW_LINE
