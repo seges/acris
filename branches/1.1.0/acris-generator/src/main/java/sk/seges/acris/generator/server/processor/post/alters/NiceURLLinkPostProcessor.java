@@ -15,9 +15,7 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 	@Override
 	public boolean supports(Node node) {
 		if (node instanceof LinkTag) {
-			if (((LinkTag)node).getLink().startsWith("#")) {
-				return true;
-			}
+			return (((LinkTag)node).getLink().startsWith("#"));
 		}
 		return false;
 	}
@@ -27,7 +25,11 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 		if (webSettings.getTopLevelDomain() == null) {
 			((LinkTag)node).setLink("/" + ((LinkTag)node).getLink().substring(1));
 		} else {
-			((LinkTag)node).setLink(webSettings.getTopLevelDomain() + "/" + ((LinkTag)node).getLink().substring(1));
+			String url = webSettings.getTopLevelDomain();
+			if (!url.endsWith("/")) {
+				url += "/";
+			}
+			((LinkTag)node).setLink(url + ((LinkTag)node).getLink().substring(1));
 		}
 		return true;
 	}

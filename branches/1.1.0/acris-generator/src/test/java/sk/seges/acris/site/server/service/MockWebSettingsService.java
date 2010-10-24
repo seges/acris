@@ -1,7 +1,7 @@
 package sk.seges.acris.site.server.service;
 
+import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
-import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public class MockWebSettingsService implements IWebSettingsService {
@@ -12,11 +12,22 @@ public class MockWebSettingsService implements IWebSettingsService {
 
 	protected String googleAnalyticsScript;
 
-	public MockWebSettingsService(String googleAnalyticsScript, Boolean localeSensitiveServer) {
+	protected IWebSettingsBuilder webSettingsBuilder;
+	
+	public MockWebSettingsService(IWebSettingsBuilder webSettingsBuilder, String googleAnalyticsScript, Boolean localeSensitiveServer) {
+		this.webSettingsBuilder = webSettingsBuilder;
 		this.googleAnalyticsScript = googleAnalyticsScript;
 		this.localeSensitiveServer = localeSensitiveServer;
 	}
 
+	public void setWebSettingsBuilder(IWebSettingsBuilder webSettingsBuilder) {
+		this.webSettingsBuilder = webSettingsBuilder;
+	}
+
+	public IWebSettingsBuilder getWebSettingsBuilder() {
+		return webSettingsBuilder;
+	}
+	
 	public Boolean getLocaleSensitiveServer() {
 		return localeSensitiveServer;
 	}
@@ -35,15 +46,7 @@ public class MockWebSettingsService implements IWebSettingsService {
 
 	@Override
 	public WebSettingsData getWebSettings(String webId) {
-		WebSettingsData webSettings = new WebSettingsDTO();
-		webSettings.setWebId(webId);
-		webSettings.setLanguage("en");
-
-		webSettings.setTopLevelDomain("http://" + webId + "/");
-
-		webSettings.setAnalyticsScriptData(googleAnalyticsScript);
-
-		return webSettings;
+		return webSettingsBuilder.getWebSettings(webId, localeSensitiveServer, googleAnalyticsScript);
 	}
 
 	@Override

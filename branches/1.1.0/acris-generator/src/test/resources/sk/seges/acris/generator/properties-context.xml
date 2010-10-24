@@ -17,6 +17,12 @@
                            http://www.springframework.org/schema/jee 
                            http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"> 
 
-    <context:component-scan base-package="sk.seges.acris.generator.server" />
+    <bean class="sk.seges.acris.generator.server.spring.SpringBeanPropertyRegister">
+		<property name="locations">
+			<list>
+            	<value>classpath:sk/seges/acris/generator/generator.properties</value>
+        	</list>
+        </property>
+    </bean>
 
 </beans>

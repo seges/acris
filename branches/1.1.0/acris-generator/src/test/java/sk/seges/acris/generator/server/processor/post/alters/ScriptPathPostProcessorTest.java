@@ -16,13 +16,13 @@ public class ScriptPathPostProcessorTest extends AbstractTest {
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/scriptpath/";
 
 	@Test
-	public void testTitlePostProcessor() {
+	public void testScriptPathPostProcessor() {
 		runTest(HTML_FILE_DIRECTORY + "1_test_scriptpath_input.html", 
 				HTML_FILE_DIRECTORY + "1_test_scriptpath_result.html");
 	}
 
 	@Test
-	public void testMissingTitlePostProcessor() {
+	public void testNestedScriptPathPostProcessor() {
 		GeneratorToken token = new GeneratorToken();
 		token.setLanguage("en");
 		token.setNiceUrl("lang/en/test");
