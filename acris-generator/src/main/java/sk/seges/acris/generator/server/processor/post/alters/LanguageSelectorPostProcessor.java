@@ -99,11 +99,14 @@ public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProces
 				url += translatedNiceUrl;
 			}
 			linkTag.setLink(url);
+			languageLinksList.add(new TextNode("\t\t"));
 			languageLinksList.add(linkTag);
 			languageLinksList.add(new TextNode("</a>"));
 			languageLinksList.add(new TextNode("<br/>"));
 		}
 		
+		languageLinksList.add(new TextNode("\t"));
+
 		node.setChildren(languageLinksList);
 		
 		return true;

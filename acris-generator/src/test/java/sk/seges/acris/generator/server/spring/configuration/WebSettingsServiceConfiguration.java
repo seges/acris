@@ -11,6 +11,8 @@ import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
+import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
+import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 
@@ -28,8 +30,13 @@ public class WebSettingsServiceConfiguration {
 	}
 
 	@Bean
+	public IWebSettingsBuilder webSettingsBuilder() {
+		return new DefaultWebSettingsBuilder();
+	}
+	
+	@Bean
 	public IWebSettingsService webSettingsService() {
-		return new MockWebSettingsService(MOCK_ANALYTICS_SCRIPT, false);
+		return new MockWebSettingsService(webSettingsBuilder(), MOCK_ANALYTICS_SCRIPT, false);
 	}
 	
 	@Bean
