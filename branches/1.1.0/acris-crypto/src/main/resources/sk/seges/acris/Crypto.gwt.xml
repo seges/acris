@@ -1,6 +1,5 @@
 <module>
-	<inherits name='sk.seges.acris.crypto.Crypto' />
+	<inherits name='com.google.gwt.user.User' />
 	
-	<source path="crypto"/>
-	
+	<source path="crypto"/>	
 </module>

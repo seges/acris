@@ -8,8 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import net.sf.gilead.gwt.PersistentRemoteService;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,15 +24,12 @@ import sk.seges.acris.util.Tuple;
  * @author psimun
  *
  */
-public class GeneratorService extends PersistentRemoteService implements IGeneratorService {
+public class GeneratorService implements IGeneratorService {
 
 	private static final long serialVersionUID = 6944837756691206504L;
 	
-//	@Autowired
 	protected TokenProvider tokenProvider;
 
-//	@Autowired
-//	@Qualifier("offline.content.taget.path")
 	protected String offlineContentTargetPath;
 
 	protected HtmlPostProcessing htmlPostProcessing;
@@ -184,14 +179,11 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 					if (log.isDebugEnabled()) {
 						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
 					}
-					log.error("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
-					System.out.println("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
 				}
 				if (log.isDebugEnabled()) {
 					log.debug("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
 				}
-				log.error("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
-				System.out.println("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
+
 				if (!file.createNewFile()) {
 					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
 				}
@@ -204,11 +196,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
 					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
 		}
-		log.error("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-				token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
-		
-		System.out.println("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-				token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
+
 		try {
 			file.writeTextToFile(content);
 		} catch (IOException e) {
