@@ -57,6 +57,7 @@
 		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
 		<module>../acris-callbacks</module>
+		<module>../acris-crypto</module>
 		<module>../acris-client-core</module>
 		<module>../acris-widgets</module>
 		<module>../acris-json</module>
