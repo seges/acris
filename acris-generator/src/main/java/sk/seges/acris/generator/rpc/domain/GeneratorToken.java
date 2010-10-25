@@ -10,6 +10,8 @@ public class GeneratorToken implements Serializable {
 	private String webId;
 	private String niceUrl;
 
+	public static final String DEFAULT_TOKEN = "";
+	
 	public GeneratorToken() {	
 	}
 	

@@ -38,9 +38,12 @@ public class GeneratorService implements IGeneratorService {
 
 	private IContentInfoProvider contentInfoProvider;
 	
-	public GeneratorService(HtmlPostProcessing htmlPostProcessing, String offlineContentTargetPath, TokenProvider tokenProvider,
+	private String indexFileName;
+	
+	public GeneratorService(HtmlPostProcessing htmlPostProcessing, String offlineContentTargetPath, String indexFileName, TokenProvider tokenProvider,
 			IContentInfoProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
+		this.indexFileName = indexFileName;
 		this.htmlPostProcessing = htmlPostProcessing;
 		this.offlineContentTargetPath = offlineContentTargetPath;
 		this.tokenProvider = tokenProvider;
@@ -160,17 +163,12 @@ public class GeneratorService implements IGeneratorService {
 		return content;
 	}
 
-	@Override
-	public void writeTextToFile(String content, GeneratorToken token) {
-		File dirFile = new File(getOfflineContentTargetPath(token));
-
-		if (!dirFile.exists()) {
-			if (!dirFile.mkdirs()) {
-				throw new RuntimeException("Directory " + dirFile.getAbsolutePath() + " cannot be created.");
-			}
-		}
-		
-		StringFile file = new StringFile(dirFile, token.getNiceUrl() + File.separator + "index.html");
+	protected StringFile createDefaultFile(File dirFile) {
+		return createFile(dirFile, indexFileName);
+	}
+	
+	protected StringFile createFile(File dirFile, String filename) {
+		StringFile file = new StringFile(dirFile, filename);
 
 		if (!file.exists()) {
 			try {
@@ -192,6 +190,21 @@ public class GeneratorService implements IGeneratorService {
 			}
 		}
 
+		return file;
+	}
+	
+	@Override
+	public void writeTextToFile(String content, GeneratorToken token) {
+		File dirFile = new File(getOfflineContentTargetPath(token));
+
+		if (!dirFile.exists()) {
+			if (!dirFile.mkdirs()) {
+				throw new RuntimeException("Directory " + dirFile.getAbsolutePath() + " cannot be created.");
+			}
+		}
+		
+		StringFile file = createFile(dirFile, token.getNiceUrl() + File.separator + "index.html");
+
 		if (log.isDebugEnabled()) {
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
 					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
@@ -201,6 +214,24 @@ public class GeneratorService implements IGeneratorService {
 			file.writeTextToFile(content);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}		
+		}
+		
+		if (contentInfoProvider.isDefaultContent(token)) {
+			
+			token.setNiceUrl(GeneratorToken.DEFAULT_TOKEN);
+
+			file = createDefaultFile(dirFile);
+
+			if (log.isDebugEnabled()) {
+				log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
+						token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
+			}
+
+			try {
+				file.writeTextToFile(content);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

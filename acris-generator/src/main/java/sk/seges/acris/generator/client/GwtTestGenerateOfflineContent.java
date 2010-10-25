@@ -217,7 +217,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		return generatorToken;
 	}
 	
-	protected void processGeneratedContent(String offlineContent, GeneratorToken token, final boolean finishTest) {
+	protected void processGeneratedContent(String offlineContent, final GeneratorToken token, final boolean finishTest) {
 		generatorService.writeTextToFile(offlineContent, token,
 				new AsyncCallback<Void>() {
 
@@ -234,7 +234,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 					}
 				});
 	}
-	
+
 	private void failure(String msg, Throwable caught) {
 		GWT.log(msg, caught);
 		finalizeTest();

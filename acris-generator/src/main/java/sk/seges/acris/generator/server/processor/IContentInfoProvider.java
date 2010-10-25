@@ -16,5 +16,7 @@ public interface IContentInfoProvider {
 	
 	boolean exists(GeneratorToken token);
 	
+	boolean isDefaultContent(GeneratorToken token);
+	
 	List<String> getAvailableNiceurls(String lang, String webId);
 }
