@@ -30,4 +30,9 @@ public class MockContentInfoProvider implements IContentInfoProvider {
 	public List<String> getAvailableNiceurls(String lang, String webId) {
 		return new ArrayList<String>();
 	}
+
+	@Override
+	public boolean isDefaultContent(GeneratorToken token) {
+		return false;
+	}
 }
