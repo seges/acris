@@ -151,16 +151,29 @@ public class GeneratorService implements IGeneratorService {
 		if (log.isDebugEnabled()) {
 			log.debug("			headerContent: " + headerContent);
 		}
-
+		
 		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
 		content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
 
+		String result = content;
+		
 		if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
-			return htmlPostProcessing.getHtml();	
+			result = htmlPostProcessing.getHtml();	
 		}
 
-		return content;
+		if (contentInfoProvider.isDefaultContent(token)) {
+			token.setNiceUrl(GeneratorToken.DEFAULT_TOKEN);
+			entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
+			entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
+			content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
+
+			if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
+				writeDefaultContentTextToFile(htmlPostProcessing.getHtml(), token);
+			}
+		}
+
+		return result;
 	}
 
 	protected StringFile createDefaultFile(File dirFile) {
@@ -192,6 +205,23 @@ public class GeneratorService implements IGeneratorService {
 
 		return file;
 	}
+
+	protected void writeDefaultContentTextToFile(String content, GeneratorToken token) {
+		File dirFile = new File(getOfflineContentTargetPath(token));
+
+		StringFile file = createDefaultFile(dirFile);
+
+		if (log.isDebugEnabled()) {
+			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
+					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
+		}
+
+		try {
+			file.writeTextToFile(content);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	@Override
 	public void writeTextToFile(String content, GeneratorToken token) {
@@ -214,24 +244,6 @@ public class GeneratorService implements IGeneratorService {
 			file.writeTextToFile(content);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}
-		
-		if (contentInfoProvider.isDefaultContent(token)) {
-			
-			token.setNiceUrl(GeneratorToken.DEFAULT_TOKEN);
-
-			file = createDefaultFile(dirFile);
-
-			if (log.isDebugEnabled()) {
-				log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-						token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
-			}
-
-			try {
-				file.writeTextToFile(content);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
 		}
 	}
 }

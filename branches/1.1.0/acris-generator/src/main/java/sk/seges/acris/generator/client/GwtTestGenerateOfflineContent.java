@@ -20,27 +20,26 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
-    
+
 	private HtmlFilesHandler offlineContentProvider;
 	private ContentInterceptor contentProvider;
-	
+
 	private static EntryPoint site;
 	private static String webId;
-	
+
 	private IntValueHolder count = new IntValueHolder();
 	protected IGeneratorServiceAsync generatorService;
-	
+
 	/**
-	 * Default timeout for whole run of offline content generator
-	 * Suppose to be never expired because generator should finish
-	 * in correct way - by calling finalizeTest method.
+	 * Default timeout for whole run of offline content generator Suppose to be never expired because generator should
+	 * finish in correct way - by calling finalizeTest method.
 	 */
 	private static final int GENERATOR_TIMEOUT = 9940000;
-	
+
 	public GwtTestGenerateOfflineContent() {
 		super();
 	}
-	
+
 	public String getModuleName() {
 		return "sk.seges.acris.generator.Generator";
 	}
@@ -50,58 +49,58 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 
 	protected abstract EntryPoint getEntryPoint(String webId, String lang);
-	
+
 	protected abstract String getGeneratorServiceURL();
-	
+
 	private void initializeService() {
 		generatorService = (IGeneratorServiceAsync) GWT.create(IGeneratorService.class);
 		ServiceDefTarget generatorEndpoint = (ServiceDefTarget) generatorService;
 		generatorEndpoint.setServiceEntryPoint(getGeneratorServiceURL());
 	}
-	
+
 	/**
 	 * Parse a URL and return a map of query parameters. If a parameter is supplied without =value, it will be defined
 	 * as null.
 	 * 
-	 * @param url
-	 *            the full or partial (ie, only location.search) URL to parse
+	 * @param url the full or partial (ie, only location.search) URL to parse
 	 * @return the map of parameter names to values
 	 */
 	public void testLoadContent() {
 
-	    delayTestFinish(GENERATOR_TIMEOUT);
+		delayTestFinish(GENERATOR_TIMEOUT);
 
-	    prepareEnvironment();
+		prepareEnvironment();
 
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-			
+
 			@Override
 			public void onUncaughtException(Throwable e) {
 				Log.debug("Uncaught exception", e);
 				finishTest();
 			}
 		});
-		
-	    initializeService();
-	    
-	    count.value = 0;
-	    offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
 
-	    contentProvider = getContentProvider();
-	    
-	    loadTokensForProcessing();
+		initializeService();
+
+		count.value = 0;
+		offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
+
+		contentProvider = getContentProvider();
+
+		loadTokensForProcessing();
 	}
 
-	protected void prepareEnvironment() {};
-	
+	protected void prepareEnvironment() {
+	};
+
 	protected ContentInterceptor getContentProvider() {
-	    return new ContentInterceptor(generatorService);
+		return new ContentInterceptor(generatorService);
 	}
 
 	private void loadTokensForProcessing() {
 
 		//Load last token for processing
-	    contentProvider.loadTokensForProcessing(new AsyncCallback<List<GeneratorToken>>() {
+		contentProvider.loadTokensForProcessing(new AsyncCallback<List<GeneratorToken>>() {
 
 			public void onFailure(Throwable caught) {
 				failure("Unable to obtain current content. Please check the log and connectivity on the RPC server side", caught);
@@ -118,7 +117,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		});
 
 	}
-	
+
 	private void loadEntryPointHTML() {
 
 		//Load entry point
@@ -134,7 +133,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			}
 		});
 	}
-    
+
 	private GeneratorToken loadNextContent() {
 		if (!contentProvider.hasNext()) {
 			//we are done
@@ -164,21 +163,21 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			@Override
 			public void onResponseReceived(RPCRequest request) {
 			}
-			
+
 		});
 
 		if (site == null || (webId != null && webId != generatorToken.getWebId())) {
 			webId = generatorToken.getWebId();
 			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
 			site.onModuleLoad();
-		}  else {
+		} else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
 			loadContentForToken(generatorToken);
 		}
 
 		return generatorToken;
 	}
-	
+
 	private void loadContentForToken(GeneratorToken generatorToken) {
 		contentProvider.loadContent(generatorToken, new AsyncCallback<GeneratorToken>() {
 
@@ -193,46 +192,46 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			}
 		});
 	}
-	
+
 	private GeneratorToken saveAndLoadContent(final GeneratorToken generatorToken) {
-		
+
 		String content = contentProvider.getContent();
-	
+
 		Log.debug("Generating offline content for niceurl: " + generatorToken.getNiceUrl());
 
 		final String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
-		
+
 		offlineContentProvider.getOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<String>() {
+
 			public void onFailure(Throwable caught) {
 				failure("Unable to get offline content for token " + generatorToken.getNiceUrl() + ". ", caught);
 				loadNextContent();
 			}
-	
+
 			public void onSuccess(String result) {
 				count.value--;
-				processGeneratedContent(result, generatorToken, count.value == 0);
+				saveGeneratedContent(result, generatorToken, count.value == 0);
 			}
 		});
-		
+
 		return generatorToken;
 	}
-	
-	protected void processGeneratedContent(String offlineContent, final GeneratorToken token, final boolean finishTest) {
-		generatorService.writeTextToFile(offlineContent, token,
-				new AsyncCallback<Void>() {
 
-					public void onFailure(Throwable caught) {
-						failure("Unable to write text to the file. ", caught);
-						loadNextContent();
-					}
+	protected void saveGeneratedContent(String offlineContent, final GeneratorToken token, final boolean finishTest) {
+		generatorService.writeTextToFile(offlineContent, token, new AsyncCallback<Void>() {
 
-					public void onSuccess(Void result) {
-						loadNextContent();
-						if (finishTest) {
-							finalizeTest();
-						}
-					}
-				});
+			public void onFailure(Throwable caught) {
+				failure("Unable to write text to the file. ", caught);
+				loadNextContent();
+			}
+
+			public void onSuccess(Void result) {
+				loadNextContent();
+				if (finishTest) {
+					finalizeTest();
+				}
+			}
+		});
 	}
 
 	private void failure(String msg, Throwable caught) {
@@ -243,7 +242,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	protected void finalizeEnvironment() {
 		UIHelper.cleanUI();
 	}
-	
+
 	private void finalizeTest() {
 		finalizeEnvironment();
 		finishTest();
