@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
+import sk.seges.acris.generator.server.service.GeneratorTokenWrapper;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostProcessor {
@@ -67,7 +67,12 @@ public abstract class AbstractPathPostProcessor extends AbstractContentInfoPostP
 		//have to add ../../ prefix into the path
 		int count = niceUrl.split("/").length + 1;
 		
-		if (count <= 1 || GeneratorToken.DEFAULT_TOKEN.equals(niceUrl)) {
+		boolean defaultToken = false;
+		
+		if (generatorToken instanceof GeneratorTokenWrapper) {
+			defaultToken = ((GeneratorTokenWrapper)generatorToken).isDefault();
+		}
+		if (count <= 1 || defaultToken) {
 			return true; //no special processing necessary 
 		}
 		
