@@ -163,13 +163,14 @@ public class GeneratorService implements IGeneratorService {
 		}
 
 		if (contentInfoProvider.isDefaultContent(token)) {
-			token.setNiceUrl(GeneratorToken.DEFAULT_TOKEN);
+			GeneratorTokenWrapper tokenWrapper = new GeneratorTokenWrapper(token);
+			tokenWrapper.setDefault(true);
 			entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 			entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
 			content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
 
-			if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
-				writeDefaultContentTextToFile(htmlPostProcessing.getHtml(), token);
+			if (htmlPostProcessing.setProcessorContent(content, tokenWrapper, contentInfoProvider)) {
+				writeDefaultContentTextToFile(htmlPostProcessing.getHtml(), tokenWrapper);
 			}
 		}
 
