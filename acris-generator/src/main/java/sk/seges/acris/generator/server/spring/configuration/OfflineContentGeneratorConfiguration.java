@@ -160,7 +160,12 @@ public class OfflineContentGeneratorConfiguration {
 	public AbstractElementPostProcessor metaTagPostProcessor() {
 		return new MetaTagPostProcessor(webSettingsService);
 	}
-	
+
+	@Bean
+	public AbstractElementPostProcessor metaTagAppenderPostProcessor() {
+		return new sk.seges.acris.generator.server.processor.post.appenders.MetaTagPostProcessor(webSettingsService);
+	}
+
 	@Bean
 	public HtmlPostProcessing htmlPostProcessing() {
 		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
