@@ -15,6 +15,7 @@ import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagP
 import sk.seges.acris.generator.server.processor.post.alters.ImagesSourcePostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.MetaTagPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsPathPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.StylesPathPostProcessor;
@@ -153,6 +154,11 @@ public class OfflineContentGeneratorConfiguration {
 	@Bean
 	public AbstractElementPostProcessor localeGwtPropertyPostProcessor() {
 		return new LocaleGwtPropertyPostProcessor(webSettingsService);
+	}
+	
+	@Bean
+	public AbstractElementPostProcessor metaTagPostProcessor() {
+		return new MetaTagPostProcessor(webSettingsService);
 	}
 	
 	@Bean

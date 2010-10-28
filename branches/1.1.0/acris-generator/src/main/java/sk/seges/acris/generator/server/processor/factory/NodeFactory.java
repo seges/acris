@@ -4,7 +4,7 @@ import org.htmlparser.Tag;
 
 
 public class NodeFactory {
-
+	
 	public static <T extends Tag> T getTagWithClosing(Class<T> clazz) {
 
 		T tag;
