@@ -11,8 +11,7 @@ public abstract class AbstractMetaTagPostProcessor extends AbstractContentInfoPo
 		super(webSettingsService);
 	}
 
-	protected static final String NAME_ATTRIBUTE_NAME = "name";
-	protected static final String CONTENT_ATTRIBUTE_NAME = "content";
+	public static final String NAME_ATTRIBUTE_NAME = "name";
 
 	protected abstract String getMetaTagName();
 	protected abstract String getMetaTagContent();
