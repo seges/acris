@@ -42,7 +42,7 @@ public class MetaTagPostProcessor extends AbstractContentInfoPostProcessor {
 				metaTag = new MetaTag();
 				metaTag.getAttributesEx().add(new Attribute(" " + AbstractMetaTagPostProcessor.NAME_ATTRIBUTE_NAME, metaData.getType().getName(), '"'));
 				String content = metaData.getContent();
-				metaTag.getAttributesEx().add(new Attribute (" content", content == null ? "" : content));
+				metaTag.getAttributesEx().add(new Attribute (" content", content == null ? "" : content, '"'));
 
 				metaTag.setEmptyXmlTag(true);
 				appendChild(node, metaTag);
