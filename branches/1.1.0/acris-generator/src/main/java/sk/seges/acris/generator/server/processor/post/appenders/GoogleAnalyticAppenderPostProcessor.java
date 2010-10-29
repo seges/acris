@@ -7,9 +7,9 @@ import org.htmlparser.tags.HeadTag;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class GoogleAnalyticPostProcessor extends AbstractElementPostProcessor {
+public class GoogleAnalyticAppenderPostProcessor extends AbstractElementPostProcessor {
 
-	public GoogleAnalyticPostProcessor(IWebSettingsService webSettingsService) {
+	public GoogleAnalyticAppenderPostProcessor(IWebSettingsService webSettingsService) {
 		super(webSettingsService);
 	}
 

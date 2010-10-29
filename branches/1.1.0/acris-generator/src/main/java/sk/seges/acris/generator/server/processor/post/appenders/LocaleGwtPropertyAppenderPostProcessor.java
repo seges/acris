@@ -8,9 +8,9 @@ import org.htmlparser.util.NodeList;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class LocaleGwtPropertyPostProcessor extends AbstractElementPostProcessor {
+public class LocaleGwtPropertyAppenderPostProcessor extends AbstractElementPostProcessor {
 
-	public LocaleGwtPropertyPostProcessor(IWebSettingsService webSettingsService) {
+	public LocaleGwtPropertyAppenderPostProcessor(IWebSettingsService webSettingsService) {
 		super(webSettingsService);
 	}
 

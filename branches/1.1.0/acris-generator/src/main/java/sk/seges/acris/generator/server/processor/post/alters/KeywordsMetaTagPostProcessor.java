@@ -8,7 +8,7 @@ public class KeywordsMetaTagPostProcessor extends AbstractMetaTagPostProcessor {
 		super(webSettingsService);
 	}
 
-	private static final String KEYWORDS_TAG_NAME = "keywords";
+	public static final String KEYWORDS_TAG_NAME = "keywords";
 
 	@Override
 	protected String getMetaTagName() {
