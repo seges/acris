@@ -10,9 +10,9 @@ import sk.seges.acris.generator.server.processor.post.alters.AbstractContentInfo
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class TitlePostProcessor extends AbstractContentInfoPostProcessor {
+public class TitleAppenderPostProcessor extends AbstractContentInfoPostProcessor {
 
-	public TitlePostProcessor(IWebSettingsService webSettingsService) {
+	public TitleAppenderPostProcessor(IWebSettingsService webSettingsService) {
 		super(webSettingsService);
 	}
 

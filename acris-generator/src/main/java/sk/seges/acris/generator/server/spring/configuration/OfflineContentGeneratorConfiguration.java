@@ -26,8 +26,11 @@ import sk.seges.acris.generator.server.processor.post.annihilators.NotVisibleTag
 import sk.seges.acris.generator.server.processor.post.annihilators.OnLoadErrorFnPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.OnPropertyErrorFnPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.PropertiesScriptPostProcessor;
-import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticPostProcessor;
-import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropertyPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropertyAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.rewriterules.INiceUrlGenerator;
 import sk.seges.acris.generator.server.rewriterules.SunConditionalNiceURLGenerator;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
@@ -148,12 +151,12 @@ public class OfflineContentGeneratorConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor googleAnalyticPostProcessor() {
-		return new GoogleAnalyticPostProcessor(webSettingsService);
+		return new GoogleAnalyticAppenderPostProcessor(webSettingsService);
 	}
 	
 	@Bean
 	public AbstractElementPostProcessor localeGwtPropertyPostProcessor() {
-		return new LocaleGwtPropertyPostProcessor(webSettingsService);
+		return new LocaleGwtPropertyAppenderPostProcessor(webSettingsService);
 	}
 	
 	@Bean
@@ -163,7 +166,17 @@ public class OfflineContentGeneratorConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor metaTagAppenderPostProcessor() {
-		return new sk.seges.acris.generator.server.processor.post.appenders.MetaTagPostProcessor(webSettingsService);
+		return new MetaTagAppenderPostProcessor(webSettingsService);
+	}
+
+	@Bean
+	public AbstractElementPostProcessor keywordsMetaTagAppenderPostProcessor() {
+		return new KeywordsMetaTagAppenderPostProcessor(webSettingsService);
+	}
+
+	@Bean
+	public AbstractElementPostProcessor descriptionMetaTagAppenderPostProcessor() {
+		return new DescriptionMetaTagAppenderPostProcessor(webSettingsService);
 	}
 
 	@Bean

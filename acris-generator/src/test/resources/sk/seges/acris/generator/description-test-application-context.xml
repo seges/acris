@@ -10,5 +10,5 @@
 
 	<context:annotation-config/>
 	
-	<bean class="sk.seges.acris.generator.server.spring.configuration.MetaTagAppendTestConfiguration" />
+	<bean class="sk.seges.acris.generator.server.spring.configuration.DescriptionTestConfiguration" />
 </beans>

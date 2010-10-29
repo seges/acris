@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Import;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.MetaTagPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 @Import({WebSettingsServiceConfiguration.class})
@@ -21,6 +22,6 @@ public class MetaTagAppendTestConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor metaTagAppenderPostProcessor() {
-		return new sk.seges.acris.generator.server.processor.post.appenders.MetaTagPostProcessor(webSettingsService);
+		return new MetaTagAppenderPostProcessor(webSettingsService);
 	}
 }

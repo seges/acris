@@ -34,4 +34,13 @@ public class MetaTagPostProcessorTest extends AbstractTest {
 				HTML_FILE_DIRECTORY + "2_test_metatags_result.html");
 		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(webSettingsBuilder);
 	}
+	
+	@Test
+	public void testMetaDataAppendPostProcessor() {
+		IWebSettingsBuilder webSettingsBuilder = ((MockWebSettingsService)webSettingsService).getWebSettingsBuilder();
+		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(new MetaTagWebSettingsBuilder());
+		runTest(HTML_FILE_DIRECTORY + "3_test_metatag_append_input.html", 
+				HTML_FILE_DIRECTORY + "3_test_metatag_append_result.html");
+		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(webSettingsBuilder);
+	}	
 }

@@ -5,23 +5,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.TitlePostProcessor;
-import sk.seges.acris.generator.server.processor.post.appenders.TitleAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.ImagesSourcePostProcessor;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 @Import({WebSettingsServiceConfiguration.class})
-public class TitleTestConfiguration {
+public class ImagePathTestConfiguration {
 
 	@Autowired
 	private IWebSettingsService webSettingsService;
 	
 	@Bean
-	public AbstractElementPostProcessor titlePostProcessor() {
-		return new TitlePostProcessor(webSettingsService);
-	}
-
-	@Bean
-	public AbstractElementPostProcessor titlePostProcessorAppender() {
-		return new TitleAppenderPostProcessor(webSettingsService);
+	public AbstractElementPostProcessor imagesSourcePostProcessor() {
+		return new ImagesSourcePostProcessor(webSettingsService);
 	}
 }

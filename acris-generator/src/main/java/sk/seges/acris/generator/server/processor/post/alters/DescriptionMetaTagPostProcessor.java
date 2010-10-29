@@ -9,7 +9,7 @@ public class DescriptionMetaTagPostProcessor extends AbstractMetaTagPostProcesso
 		super(webSettingsService);
 	}
 
-	private static final String DESCRIPTION_TAG_NAME = "description";
+	public static final String DESCRIPTION_TAG_NAME = "description";
 
 	@Override
 	protected String getMetaTagName() {
