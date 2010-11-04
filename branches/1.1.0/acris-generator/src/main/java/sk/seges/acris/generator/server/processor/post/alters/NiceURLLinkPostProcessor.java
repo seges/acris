@@ -23,14 +23,24 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 	@Override
 	public boolean process(Node node) {
 		if (webSettings.getTopLevelDomain() == null) {
-			((LinkTag)node).setLink("/" + ((LinkTag)node).getLink().substring(1));
+			((LinkTag)node).setLink("/" + getLink(((LinkTag)node).getLink()));
 		} else {
 			String url = webSettings.getTopLevelDomain();
 			if (!url.endsWith("/")) {
 				url += "/";
 			}
-			((LinkTag)node).setLink(url + ((LinkTag)node).getLink().substring(1));
+			((LinkTag)node).setLink(url + getLink(((LinkTag)node).getLink()));
 		}
 		return true;
+	}
+	
+	protected String getLink(String link) {
+		if (defaultToken == null) {
+			return link.substring(1);
+		}
+		if (link.substring(1).toLowerCase().equals(defaultToken.getNiceUrl().toLowerCase())) {
+			return "";
+		}
+		return link.substring(1);
 	}
 }

@@ -13,6 +13,11 @@ public class TestResultsCleaner {
 			Field unitTestShellField  = JUnitShell.class.getDeclaredField("unitTestShell");
 			unitTestShellField.setAccessible(true);
 			JUnitShell unitShell = (JUnitShell)unitTestShellField.get(null);
+			//If the unit shell is still not created, do nothing
+			//This could be done when the test case is run first time
+			if (unitShell == null) {
+				return;
+			}
 			Field lastLaunchFailedField = JUnitShell.class.getDeclaredField("lastLaunchFailed");
 			lastLaunchFailedField.setAccessible(true);
 			
@@ -29,6 +34,7 @@ public class TestResultsCleaner {
 		
 		List<TestInfo[]> testInfos = JUnitShell.getMessageQueue().getTestBlocks();
 
+		//Removing previous results in order to run the test again
 		for (TestInfo[] testInfoList : testInfos) {
 			for (TestInfo testInfo : testInfoList) {
 				JUnitShell.getMessageQueue().removeResults(testInfo);

@@ -35,4 +35,9 @@ public class MockContentInfoProvider implements IContentInfoProvider {
 	public boolean isDefaultContent(GeneratorToken token) {
 		return false;
 	}
+
+	@Override
+	public GeneratorToken getDefaultContent(String webId, String lang) {
+		return new GeneratorToken();
+	}
 }

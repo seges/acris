@@ -53,8 +53,11 @@ public class HtmlPostProcessing {
 	}
 
 	private boolean processNodes(GeneratorToken token, IContentInfoProvider contentInfoProvider) throws ParserException {
+		
+		GeneratorToken defaultGeneratorToken = contentInfoProvider.getDefaultContent(token.getWebId(), token.getLanguage());
+		
 		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-			elementPostProcessor.setPostProcessorPageId(token);
+			elementPostProcessor.setPostProcessorPageId(token, defaultGeneratorToken);
 			if (elementPostProcessor instanceof AbstractContentInfoPostProcessor) {
 				((AbstractContentInfoPostProcessor)elementPostProcessor).setContentInfoProvider(contentInfoProvider);
 			}
