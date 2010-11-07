@@ -60,11 +60,13 @@
 		<module>../acris-crypto</module>
 		<module>../acris-client-core</module>
 		<module>../acris-widgets</module>
+		<module>../acris-widgets-beantable</module>
 		<module>../acris-json</module>
 		<module>../acris-common</module>
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
 		<module>../acris-recorder</module>
+		<module>../acris-reporting</module>
 		<module>../acris-security</module>
 		<module>../acris-site</module>
 		<!--module>../acris-showcase</module-->
@@ -79,6 +81,9 @@
 		<sesam-os.version>1.1.0-SNAPSHOT</sesam-os.version>
 
 		<jpa-2.0-api.version>1.0.0-CR-1</jpa-2.0-api.version>
+		<jasper.version>3.7.3</jasper.version>
+		<jasperserver.version>3.7.0</jasperserver.version>
+
 	</properties>
 
 	<dependencyManagement>
@@ -343,6 +348,30 @@
 				<groupId>org.hibernate.javax.persistence</groupId>
 				<artifactId>hibernate-jpa-2.0-api</artifactId>
 				<version>${jpa-2.0-api.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>net.sf.jasperreports</groupId>
+				<artifactId>jasperreports</artifactId>
+				<version>${jasper.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
+				<artifactId>jasperserver-api-metadata</artifactId>
+				<version>${jasperserver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.jaspersoft.jasperserver</groupId>
+				<artifactId>jasperserver-ireport-plugin</artifactId>
+				<version>${jasperserver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.jaspersoft.jasperserver</groupId>
+				<artifactId>jasperserver-common-ws</artifactId>
+				<version>${jasperserver.version}</version>
 			</dependency>
 
 		</dependencies>

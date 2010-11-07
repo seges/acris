@@ -1,3 +1,5 @@
 <module>
 	<inherits name='com.google.gwt.user.User'/>
+	
+	<stylesheet src="acris-styles/widgets.css" />
 </module>

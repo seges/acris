@@ -1,0 +1,17 @@
+<module>
+	<inherits name='sk.seges.acris.widget.Widgets'/>
+	
+	<stylesheet src="acris-styles/widgets-beantable.css" />
+	
+	<generate-with
+		class="sk.seges.acris.widget.rebind.table.BeanTableSpecGenerator">
+		<when-type-assignable
+			class="sk.seges.acris.widget.client.table.BeanTableSpec"/>
+	</generate-with>
+	
+    <generate-with
+        class="sk.seges.acris.widget.rebind.filterpanel.ConjunctiveFilterPanelSpecGenerator">
+        <when-type-assignable
+            class="sk.seges.acris.widget.client.filterpanel.FilterPanelSpec"/>
+    </generate-with>
+</module>
