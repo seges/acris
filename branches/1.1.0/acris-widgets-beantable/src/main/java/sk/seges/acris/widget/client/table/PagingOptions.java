@@ -275,7 +275,7 @@ public class PagingOptions extends Composite {
 			});
 		}
 		// Create the loading image
-		loadingImage = new Image("scrollTableLoading.gif");
+		loadingImage = new Image("acris-images/scrollTableLoading.gif");
 		loadingImage.setVisible(false);
 
 		// Create the error label
