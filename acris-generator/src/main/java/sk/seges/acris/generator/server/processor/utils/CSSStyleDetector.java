@@ -40,7 +40,11 @@ public class CSSStyleDetector {
 	}
 	
 	public String getStyleValue(String key) {
-		return tagStyles.get(key.toLowerCase());
+		String result = tagStyles.get(key.toLowerCase());
+		if (result == null) {
+			return null;
+		}		
+		return result.toLowerCase().trim();
 	}
 	
 	private static final String VISIBILITY = "visibility";
