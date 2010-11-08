@@ -19,7 +19,7 @@ public class PropertiesScriptPostProcessor extends AbstractPostProcessorAnnihila
 	protected boolean supportsNode(Node node) {
 		if (node instanceof ScriptTag) {
 			String jsSource = ((ScriptTag)node).getAttribute("src");
-			return (jsSource != null && jsSource.toLowerCase().indexOf("properties.js") > 0); 
+			return (jsSource != null && jsSource.toLowerCase().indexOf("properties.js") >= 0); 
 		}
 		
 		return false;
