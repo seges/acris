@@ -90,6 +90,12 @@ public class ReportDescriptionService extends PersistentRemoteService implements
 		LOG.info("result = " + result.getTotalResultCount());
 		//return result;
 		return reportDescriptionDao.findAll(requestedPage);
+	}
+
+	@Override
+	@Transactional
+	public List<ReportDescription> findByName(String name) {
+		return reportDescriptionDao.findByName(name);
 	}	
 
 }

@@ -43,10 +43,6 @@ import sk.seges.acris.reporting.rpc.service.IReportingService;
 @Service
 public class ReportingService implements IReportingService {
 
-	private static final String USERNAMEPASSWORD = "hruser";
-
-	private static final String REPORTING_URL = "/reporting";
-
 	private static final String REPORTS_DIR = "reports";
 
 	private static final long serialVersionUID = -7961507798873119425L;
@@ -54,7 +50,7 @@ public class ReportingService implements IReportingService {
 	private static final Logger LOG = Logger.getLogger(ReportingService.class);
 
 	@Autowired
-	private ConfigurationProvider servletDirectoryConfigurer;
+	private ConfigurationProvider configuration;
 
 	@Autowired
 	@Qualifier("reportDescriptionService")
@@ -62,9 +58,9 @@ public class ReportingService implements IReportingService {
 
 	@Transactional
 	@Override
-	public String exportReportToHtml(Long reportId, Map<String, Object> parameters) {
-		ReportDescription report = reportDescriptionService.findById(reportId);
-		WSClient client = new WSClient(getReportingUrl() + "/services/repository", USERNAMEPASSWORD, USERNAMEPASSWORD);
+	public String exportReportToHtml(Long reportDescriptionId, Map<String, Object> parameters) {
+		ReportDescription report = reportDescriptionService.findById(reportDescriptionId);
+		WSClient client = new WSClient(configuration.getJasperServerUrl() + "/services/repository", configuration.getJasperServerUser(), configuration.getJasperServerPassword());
 		try {
 //			parameters.put(Argument.RUN_OUTPUT_IMAGES_URI, "/images");
 			JasperPrint print = client.runReport(report.getReportUrl(), parameters);
@@ -92,13 +88,13 @@ public class ReportingService implements IReportingService {
 
 	@Override
 	@Transactional
-	public String exportReport(Long reportId, String exportType, Map<String, Object> parameters, String web_id) {
+	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters, String web_id) {
 
-		ReportDescription report = reportDescriptionService.findById(reportId);
+		ReportDescription report = reportDescriptionService.findById(reportDescriptionId);
 		String params = "";
 		params += generateParamsString(parameters);
 
-		String urlPath = generateCompleteReportUrl(exportType, report, params, USERNAMEPASSWORD, USERNAMEPASSWORD);
+		String urlPath = generateCompleteReportUrl(exportType, report, params, configuration.getJasperServerUser(), configuration.getJasperServerPassword());
 		try {
 			URL url = new URL(urlPath);
 			URLConnection connection = url.openConnection();
@@ -128,7 +124,7 @@ public class ReportingService implements IReportingService {
 			if (proxyIn != null) {
 				String fileName = "report" + "_" + new Date().getTime() + "." + exportType.toLowerCase();
 				String reportDir = REPORTS_DIR;
-				String directory = servletDirectoryConfigurer.resolveRootDirectoryPath(web_id) + "/"
+				String directory = configuration.resolveRootDirectoryPath(web_id) + "/"
 						+ reportDir;
 				File d = new File(directory);
 				if (!d.exists() || !d.isDirectory()) {
@@ -165,7 +161,7 @@ public class ReportingService implements IReportingService {
 	protected String generateCompleteReportUrl(String exportType, ReportDescription report, String params,
 			String username, String password) {
 		params += "&j_username=" + username + "&j_password=" + password;
-		String prefix = getReportingUrl();
+		String prefix = configuration.getJasperServerUrl();
 		String parameters = "/flow.html?_flowId=viewReportFlow&ndefined=&standAlone=true&ParentFolderUri=";
 		String reportUrl = report.getReportUrl();
 		if (!reportUrl.startsWith("/"))
@@ -178,12 +174,6 @@ public class ReportingService implements IReportingService {
 		String urlPath = prefix + parameters + parentUrl
 				+ "&reportUnit=" + reportUrl;
 		return urlPath + "&output=" + exportType + params;
-	}
-
-	protected String getReportingUrl() {
-		HttpServletRequest req = ServletUtils.getRequest();
-		String prefix = req.getScheme() + "://" + req.getLocalName() + ":" + req.getLocalPort() + REPORTING_URL;
-		return prefix;
 	}
 
 	/**
