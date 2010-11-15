@@ -11,6 +11,8 @@ import com.google.gwt.user.client.rpc.RemoteService;
 public interface IReportDescriptionService extends RemoteService {
 
 	ReportDescription findById(Long reportId);
+	
+	List<ReportDescription> findByName(String name);
 
 	ReportDescription persist(ReportDescription report);
 

@@ -1,8 +1,11 @@
 package sk.seges.acris.reporting.rpc.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
@@ -27,8 +30,16 @@ public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescriptio
 	 */
 	public ReportDescription findById(Long id) {
 		DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq("id", id));
+		criteria.add(Restrictions.eq(ReportDescription.ID_ATTR, id));
 		return findUniqueResultByCriteria(criteria);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ReportDescription> findByName(String name) {
+		DetachedCriteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(ReportDescription.NAME_ATTR, name));
+		return criteria.getExecutableCriteria((Session) entityManager.getDelegate()).list();
 	}
 
 }

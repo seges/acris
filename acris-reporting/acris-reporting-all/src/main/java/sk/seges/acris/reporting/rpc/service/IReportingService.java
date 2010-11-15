@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  */
 public interface IReportingService extends RemoteService {
 
-	String exportReport(Long reportId, String exportType, Map<String, Object> parameters, String webId);
+	String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters, String webId);
 	
-	String exportReportToHtml(Long reportId, Map<String, Object> parameters);
+	String exportReportToHtml(Long reportDescriptionId, Map<String, Object> parameters);
 }

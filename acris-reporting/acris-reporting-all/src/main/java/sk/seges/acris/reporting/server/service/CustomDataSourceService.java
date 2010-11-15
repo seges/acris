@@ -3,6 +3,7 @@ package sk.seges.acris.reporting.server.service;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRRuntimeException;
 import sk.seges.acris.reporting.server.datasource.CustomDataSource;
 
 import com.jaspersoft.jasperserver.api.metadata.jasperreports.service.ReportDataSourceService;
@@ -39,13 +40,15 @@ public class CustomDataSourceService<T> implements ReportDataSourceService {
 	 * additional parameters can be set via setExtendedReportParameterValues
 	 * 
 	 */
+	@Override
+	@SuppressWarnings("unchecked")
 	public final void setReportParameterValues(Map parameters) {
 		
 		try {
 			this.setExtendedReportParameterValues(parameters);
 			parameters.put(JRParameter.REPORT_DATA_SOURCE, customDataSource);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new JRRuntimeException("Unable to set report parameter values", ex);
 		}
 	}
 	
@@ -57,10 +60,11 @@ public class CustomDataSourceService<T> implements ReportDataSourceService {
 	 * @param Map
 	 *            of parameters of report
 	 */
-	protected void setExtendedReportParameterValues(Map parameters) throws Exception {
+	protected void setExtendedReportParameterValues(Map<String, Object> parameters) throws Exception {
 		return;
 	}
 
+	@Override
 	public void closeConnection() {
 	// TODO: add connection close support. do not need this...
 	}

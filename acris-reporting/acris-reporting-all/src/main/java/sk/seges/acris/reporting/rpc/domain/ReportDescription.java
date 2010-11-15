@@ -29,6 +29,7 @@ import sk.seges.sesam.domain.IDomainObject;
 public class ReportDescription extends LightEntity implements IDomainObject<Long> {
 
 	private static final long serialVersionUID = 3793554325796093693L;
+	public static final String ID_ATTR = "id";
 	public static final String NAME_ATTR = "name";
 	public static final String DESCRIPTION_ATTR = "description";
 	public static final String OWNER_ATTR = "owner";

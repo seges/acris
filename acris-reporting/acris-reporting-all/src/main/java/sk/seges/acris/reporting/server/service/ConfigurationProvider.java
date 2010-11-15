@@ -10,4 +10,7 @@ import java.io.File;
  */
 public interface ConfigurationProvider {
 	File resolveRootDirectoryPath(String webId);
+	String getJasperServerUrl();
+	String getJasperServerUser();
+	String getJasperServerPassword();
 }

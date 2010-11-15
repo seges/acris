@@ -12,5 +12,5 @@ import sk.seges.sesam.dao.PagedResult;
 public interface IReportDescriptionDao extends ICrudDAO<ReportDescription> {
 	PagedResult<List<ReportDescription>> findPagedResultByCriteria(DetachedCriteria criteria, Page page);
 	ReportDescription findById(Long id);
-
+	List<ReportDescription> findByName(String name);
 }
