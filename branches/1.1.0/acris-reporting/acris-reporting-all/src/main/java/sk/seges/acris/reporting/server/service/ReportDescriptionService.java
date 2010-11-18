@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.reporting.rpc.dao.IReportDescriptionDao;
-import sk.seges.acris.reporting.rpc.domain.ReportDescription;
 import sk.seges.acris.reporting.rpc.domain.ReportParameter;
-import sk.seges.acris.reporting.rpc.service.IReportDescriptionService;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
+import sk.seges.acris.reporting.shared.service.IReportDescriptionService;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 
@@ -33,8 +33,8 @@ public class ReportDescriptionService extends PersistentRemoteService implements
 	
 	@Override
 	@Transactional
-	public ReportDescription findById(Long reportId) {
-		ReportDescription report = reportDescriptionDao.findById(reportId);
+	public ReportDescriptionData findById(Long reportId) {
+		ReportDescriptionData report = reportDescriptionDao.findById(reportId);
 		Hibernate.initialize(report.getParametersList());
 		List<ReportParameter> orderedParameters = report.getParametersList();
 		Collections.sort(orderedParameters);
@@ -44,7 +44,7 @@ public class ReportDescriptionService extends PersistentRemoteService implements
 
 	@Override
 	@Transactional
-	public ReportDescription persist(ReportDescription report) {
+	public ReportDescriptionData persist(ReportDescriptionData report) {
 		report.setCreationDate(new Date());
 		return reportDescriptionDao.persist(report);
 	}
@@ -52,11 +52,11 @@ public class ReportDescriptionService extends PersistentRemoteService implements
 	@Override
 	@Transactional
 	public void remove(Long id) {
-		ReportDescription report = reportDescriptionDao.findById(id);
+		ReportDescriptionData report = reportDescriptionDao.findById(id);
 		reportDescriptionDao.remove(report);
 	}
 
-	public Long merge(ReportDescription report) {
+	public Long merge(ReportDescriptionData report) {
 		filterRemoved(report.getParametersList());
 		return reportDescriptionDao.merge(report).getId();
 	}
@@ -77,16 +77,16 @@ public class ReportDescriptionService extends PersistentRemoteService implements
 	}
 
 	@Transactional
-	public PagedResult<List<ReportDescription>> findReports(DetachedCriteria criteria, Page requestedPage) {
+	public PagedResult<List<ReportDescriptionData>> findReports(DetachedCriteria criteria, Page requestedPage) {
 		if (criteria == null)
-			criteria = DetachedCriteria.forClass(ReportDescription.class);
+			criteria = DetachedCriteria.forClass(ReportDescriptionData.class);
 		return reportDescriptionDao.findPagedResultByCriteria(criteria, requestedPage);
 	}
 
 	@Override
 	@Transactional
-	public PagedResult<List<ReportDescription>> findAllReports(Page requestedPage) {
-		PagedResult<List<ReportDescription>> result = findReports(null, requestedPage);
+	public PagedResult<List<ReportDescriptionData>> findAllReports(Page requestedPage) {
+		PagedResult<List<ReportDescriptionData>> result = findReports(null, requestedPage);
 		LOG.info("result = " + result.getTotalResultCount());
 		//return result;
 		return reportDescriptionDao.findAll(requestedPage);
@@ -94,7 +94,7 @@ public class ReportDescriptionService extends PersistentRemoteService implements
 
 	@Override
 	@Transactional
-	public List<ReportDescription> findByName(String name) {
+	public List<ReportDescriptionData> findByName(String name) {
 		return reportDescriptionDao.findByName(name);
 	}	
 

@@ -1,4 +1,4 @@
-package sk.seges.acris.reporting.rpc.domain;
+package sk.seges.acris.reporting.shared.domain.api;
 
 /**
  * types of exported report - same as in jasperserver

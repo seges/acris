@@ -1,8 +1,9 @@
 package sk.seges.acris.reporting.client.panel.maintainance;
 
 import sk.seges.acris.reporting.rpc.domain.ReportDescription;
-import sk.seges.acris.reporting.rpc.service.IReportDescriptionServiceAsync;
-import sk.seges.acris.reporting.rpc.service.IReportingServiceAsync;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
+import sk.seges.acris.reporting.shared.service.IReportDescriptionServiceAsync;
+import sk.seges.acris.reporting.shared.service.IReportingServiceAsync;
 import sk.seges.acris.widget.client.Cleaner;
 import sk.seges.acris.widget.client.Dialog;
 import sk.seges.acris.widget.client.WidgetFactory;
@@ -195,7 +196,7 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 				dialog.addOptions(OptionsFactory.createOKCancelOptions(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						ReportDescription report = rep.getActualReport();
+						ReportDescriptionData report = rep.getActualReport();
 						servicePersist(dialog, report);
 					}
 				}));
@@ -216,7 +217,7 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		};
 	}
 
-	protected Dialog createDownloadDialog(final ReportDescription report) {
+	protected Dialog createDownloadDialog(final ReportDescriptionData report) {
 		ReportExportDialogCreator red = new ReportExportDialogCreator(reportingService);
 		final Dialog dialog = red.createReportExportDialog(report, null, parameterTypeSelector, webId);
 		return dialog;
@@ -236,29 +237,29 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		});
 	}
 
-	protected void servicePersist(final Dialog dialog, ReportDescription report) {
-		reportService.persist(report, new AsyncCallback<ReportDescription>() {
+	protected void servicePersist(final Dialog dialog, ReportDescriptionData report) {
+		reportService.persist(report, new AsyncCallback<ReportDescriptionData>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				GWT.log("cannot save report", caught);
 			}
 
 			@Override
-			public void onSuccess(ReportDescription result) {
+			public void onSuccess(ReportDescriptionData result) {
 				fireEvent(new ReportViewEvent(dialog, result.getId()));
 			}
 		});
 	}
 
 	protected void serviceFindById() {
-		reportService.findById(selectedReport.getId(), new AsyncCallback<ReportDescription>() {
+		reportService.findById(selectedReport.getId(), new AsyncCallback<ReportDescriptionData>() {
 			@Override
 			public void onFailure(Throwable arg0) {
 				GWT.log("Cannot find selected report = " + selectedReport.getId(), arg0);
 			}
 
 			@Override
-			public void onSuccess(ReportDescription arg0) {
+			public void onSuccess(ReportDescriptionData arg0) {
 				final Dialog dialog = createDownloadDialog(arg0);
 				dialog.center();
 				dialog.show();
@@ -266,7 +267,7 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		});
 	}
 
-	protected void serviceMerge(final Dialog dialog, final ReportDescription report) {
+	protected void serviceMerge(final Dialog dialog, final ReportDescriptionData report) {
 		reportService.merge(report, new AsyncCallback<Long>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -280,7 +281,7 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		});
 	}
 
-	protected void createDialogForExport(ReportDescription report) {
+	protected void createDialogForExport(ReportDescriptionData report) {
 		final Dialog dialog = WidgetFactory.dialog();
 		final ReportEditPanel rep = new ReportEditPanel();
 		dialog.setCaption(report.getName());
@@ -288,7 +289,7 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		dialog.addOptions(OptionsFactory.createOKCancelOptions(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				ReportDescription report = rep.getActualReport();
+				ReportDescriptionData report = rep.getActualReport();
 				serviceMerge(dialog, report);
 			}
 		}));
@@ -298,14 +299,14 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 	}
 
 	protected void serviceFindAndCreateExportDialog() {
-		reportService.findById(selectedReport.getId(), new AsyncCallback<ReportDescription>() {
+		reportService.findById(selectedReport.getId(), new AsyncCallback<ReportDescriptionData>() {
 			@Override
 			public void onFailure(Throwable arg0) {
 				GWT.log("Cannot export", arg0);
 			}
 
 			@Override
-			public void onSuccess(ReportDescription arg0) {
+			public void onSuccess(ReportDescriptionData arg0) {
 				createDialogForExport(arg0);
 			}
 		});

@@ -1,7 +1,7 @@
 package sk.seges.acris.reporting.client.panel.maintainance;
 
 import sk.seges.acris.reporting.rpc.domain.ReportDescription;
-import sk.seges.acris.reporting.rpc.service.IReportDescriptionServiceAsync;
+import sk.seges.acris.reporting.shared.service.IReportDescriptionServiceAsync;
 import sk.seges.acris.widget.client.table.BeanTableSpec;
 import sk.seges.acris.widget.client.table.SpecColumn;
 import sk.seges.acris.widget.client.table.SpecLoader;

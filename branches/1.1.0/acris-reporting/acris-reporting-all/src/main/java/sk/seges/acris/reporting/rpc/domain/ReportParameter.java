@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 import net.sf.gilead.pojo.java5.LightEntity;
-import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
 /**
  * parameters for reports
@@ -19,7 +19,7 @@ import sk.seges.sesam.domain.IDomainObject;
  */
 @Entity
 @SequenceGenerator(name = "report_param_id_seq", sequenceName = "report_param_id_seq", initialValue = 1)
-public class ReportParameter extends LightEntity implements IDomainObject<Long>, Comparable<ReportParameter> {
+public class ReportParameter extends LightEntity implements ReportParameterData, Comparable<ReportParameter> {
 
 	private static final long serialVersionUID = 6868805794198135658L;
 
@@ -40,70 +40,86 @@ public class ReportParameter extends LightEntity implements IDomainObject<Long>,
 
 	private Boolean hidden;
 
-	@ManyToOne
+	@ManyToOne(targetEntity = ReportParameter.class)
 	@JoinColumn(name = "parent_id", nullable = true)
-	private ReportParameter parent;
+	private ReportParameterData parent;
 
+	@Override
 	public Long getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setParent(ReportParameter parent) {
+	@Override
+	public void setParent(ReportParameterData parent) {
 		this.parent = parent;
 	}
 
-	public ReportParameter getParent() {
+	@Override
+	public ReportParameterData getParent() {
 		return parent;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	@Override
 	public String getClassName() {
 		return className;
 	}
 
+	@Override
 	public void setClassName(String className) {
 		this.className = className;
 	}
 
+	@Override
 	public void setHidden(Boolean hidden) {
 		this.hidden = hidden;
 	}
 
+	@Override
 	public Boolean getHidden() {
 		return hidden;
 	}
 
+	@Override
 	public void setDisplayedName(String displayedName) {
 		this.displayedName = displayedName;
 	}
 
+	@Override
 	public String getDisplayedName() {
 		return displayedName;
 	}
 
+	@Override
 	public void setOrderNumber(Integer orderNumber) {
 		this.orderNumber = orderNumber;
 	}
 
+	@Override
 	public Integer getOrderNumber() {
 		return orderNumber;
 	}

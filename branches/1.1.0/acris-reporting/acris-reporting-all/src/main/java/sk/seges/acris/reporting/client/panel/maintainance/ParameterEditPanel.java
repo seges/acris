@@ -2,8 +2,8 @@ package sk.seges.acris.reporting.client.panel.maintainance;
 
 import java.util.Arrays;
 
-import sk.seges.acris.reporting.rpc.domain.EReportParameterType;
 import sk.seges.acris.reporting.rpc.domain.ReportParameter;
+import sk.seges.acris.reporting.shared.domain.api.EReportParameterType;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
 
 import com.google.gwt.core.client.GWT;

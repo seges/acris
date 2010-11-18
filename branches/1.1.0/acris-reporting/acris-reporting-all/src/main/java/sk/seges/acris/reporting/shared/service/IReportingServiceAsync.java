@@ -1,4 +1,4 @@
-package sk.seges.acris.reporting.rpc.service;
+package sk.seges.acris.reporting.shared.service;
 
 import java.util.Map;
 

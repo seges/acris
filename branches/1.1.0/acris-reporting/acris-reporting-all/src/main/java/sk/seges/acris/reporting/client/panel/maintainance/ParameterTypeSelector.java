@@ -4,8 +4,8 @@ import sk.seges.acris.reporting.client.panel.parameter.AbstractTypePanel;
 import sk.seges.acris.reporting.client.panel.parameter.CheckBoxTypePanel;
 import sk.seges.acris.reporting.client.panel.parameter.DateTypePanel;
 import sk.seges.acris.reporting.client.panel.parameter.StringTypePanel;
-import sk.seges.acris.reporting.rpc.domain.EReportParameterType;
 import sk.seges.acris.reporting.rpc.domain.ReportParameter;
+import sk.seges.acris.reporting.shared.domain.api.EReportParameterType;
 
 import com.google.gwt.core.client.GWT;
 
