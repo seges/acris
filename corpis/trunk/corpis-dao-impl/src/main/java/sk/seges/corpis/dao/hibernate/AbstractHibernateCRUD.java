@@ -421,7 +421,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 				continue;
 			}
 			orig = chain.substring(0, index);
-			criteria.createAlias(replaceAllEmbeddedFieldDelimsWithFieldDelims(orig), aliased);
+			criteria.createAlias(replaceAllEmbeddedFieldDelimsWithFieldDelims(orig), aliased, Criteria.LEFT_JOIN);
 			existingAliases.add(aliased);
 
 			lastIndex = index + 1;
