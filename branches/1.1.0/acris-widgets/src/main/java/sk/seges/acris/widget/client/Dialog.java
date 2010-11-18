@@ -1,8 +1,8 @@
-/**
- * 
- */
 package sk.seges.acris.widget.client;
 
+import sk.seges.acris.widget.client.event.DialogInitializeEvent;
+import sk.seges.acris.widget.client.handler.DialogInitializeHandler;
+import sk.seges.acris.widget.client.handler.HasDialogInitializeHandlers;
 import sk.seges.acris.widget.client.optionpane.OptionsPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,13 +14,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Universial popup dialog capable of displaying content widget with/without
+ * Universal popup dialog capable of displaying content widget with/without
  * title. Title can be either string caption or widget also. All styles are
- * inherited from GWT dialog box and extended by own.
+ * inherited from GWT dialog box and extended by own styles.
  * 
  * @author ladislav.gazo
  */
-public class Dialog extends DialogBox implements FormHolder {
+public class Dialog extends DialogBox implements FormHolder, HasDialogInitializeHandlers {
+
 	private static final String STYLE_DIALOG = "acris-cmp-dialog";
 	private static final String STYLE_DIALOG_CONTENT_WRAPPER = "acris-cmp-dialogContentWrapper";
 	private static final String STYLE_CONTENT = "acris-cmp-content";
@@ -31,16 +32,16 @@ public class Dialog extends DialogBox implements FormHolder {
 
 	private FlowPanel dialogContentWrapper;
 	private OptionsPanel options;
-	
+
 	private ClickHandler hidingClickHandler;
-	
+
 	public Dialog() {
 		super();
 		init();
 	}
 
 	private ClickHandler getHidingClickHandler() {
-		if(hidingClickHandler == null) {
+		if (hidingClickHandler == null) {
 			hidingClickHandler = new ClickHandler() {
 
 				@Override
@@ -51,7 +52,7 @@ public class Dialog extends DialogBox implements FormHolder {
 		}
 		return hidingClickHandler;
 	}
-	
+
 	public Dialog(boolean autoHide, boolean modal) {
 		super(autoHide, modal);
 		init();
@@ -66,22 +67,20 @@ public class Dialog extends DialogBox implements FormHolder {
 		addStyleName(STYLE_DIALOG);
 		dialogContentWrapper.setStyleName(STYLE_DIALOG_CONTENT_WRAPPER);
 	}
-	
-	private void init() {
 
+	private void init() {
 		dialogContentWrapper = new FlowPanel();
 		setStyles();
 		options = new OptionsPanel();
 	}
 
 	private boolean initialized = false;
-	
-	
+
 	@Override
 	protected void onLoad() {
 		super.onLoad();
 
-		if(!initialized) {
+		if (!initialized) {
 			if (content != null) {
 				dialogContentWrapper.add(content);
 			}
@@ -89,37 +88,37 @@ public class Dialog extends DialogBox implements FormHolder {
 				dialogContentWrapper.add(options);
 				options.add(new Cleaner());
 			}
-	
+
 			if (caption != null) {
 				// only message title should be draggable
 				setText(caption);
-				if(! dialogContentWrapper.isAttached()) {
-				    add(dialogContentWrapper);
+				if (!dialogContentWrapper.isAttached()) {
+					add(dialogContentWrapper);
 				}
 			} else if (captionWidget != null) {
 				setHTML(DOM.getInnerHTML(captionWidget.getElement()));
-				if(! dialogContentWrapper.isAttached()) {
-				    add(dialogContentWrapper);
+				if (!dialogContentWrapper.isAttached()) {
+					add(dialogContentWrapper);
 				}
 			} else {
-			    if(! dialogContentWrapper.isAttached()) {
-			        add(dialogContentWrapper);
-			    }
+				if (!dialogContentWrapper.isAttached()) {
+					add(dialogContentWrapper);
+				}
 			}
 			initialized = true;
 		}
 	}
-	
+
 	public void clearOptions() {
 		options.clearOptions();
 	}
-	
+
 	public void reinitialize() {
 		initialized = false;
 		dialogContentWrapper.clear();
 		onLoad();
 	}
-	
+
 	/**
 	 * Add an option to the list of options. Usually it is a button at least
 	 * closing the dialog.
@@ -131,16 +130,18 @@ public class Dialog extends DialogBox implements FormHolder {
 	}
 
 	/**
-	 * Add an option to the list of options with hiding click listener. Usually it is a button at least
-	 * closing the dialog.
+	 * Add an option to the list of options with hiding click listener. Usually
+	 * it is a button at least closing the dialog.
 	 * 
 	 * @param option
-	 * @param addHideAction If true dialog hiding click listener will be bundled with option.
+	 * @param addHideAction
+	 *            If true dialog hiding click listener will be bundled with
+	 *            option.
 	 */
 	public void addOption(Widget option, ClickHandler hidingClickHandler) {
 		options.addOption(option, hidingClickHandler);
 	}
-	
+
 	/**
 	 * Add an option to the list of options. The widget will not get a click
 	 * handler closing the dialog. Usually it is a button at least closing the
@@ -151,7 +152,7 @@ public class Dialog extends DialogBox implements FormHolder {
 	public void addOptionWithoutHiding(Widget option) {
 		options.addOption(option, null);
 	}
-	
+
 	/**
 	 * Add a set of options to the existing list of options.
 	 * 
@@ -171,7 +172,7 @@ public class Dialog extends DialogBox implements FormHolder {
 	public void addOptionSeparator() {
 		options.addOptionSeparator();
 	}
-	
+
 	/**
 	 * Set widget displayed in the dialog title. Either widget or string caption
 	 * can be set, not both.
@@ -180,8 +181,7 @@ public class Dialog extends DialogBox implements FormHolder {
 	 */
 	public void setCaptionWidget(Widget captionWidget) {
 		if (captionWidget != null) {
-			throw new IllegalArgumentException(
-					"Cannot set widget caption when string caption is already set");
+			throw new IllegalArgumentException("Cannot set widget caption when string caption is already set");
 		}
 		this.captionWidget = captionWidget;
 	}
@@ -194,8 +194,7 @@ public class Dialog extends DialogBox implements FormHolder {
 	 */
 	public void setCaption(String caption) {
 		if (captionWidget != null) {
-			throw new IllegalArgumentException(
-					"Cannot set string caption when widget caption is already set");
+			throw new IllegalArgumentException("Cannot set string caption when widget caption is already set");
 		}
 		this.caption = caption;
 	}
@@ -207,14 +206,20 @@ public class Dialog extends DialogBox implements FormHolder {
 	 */
 	public void setContent(Widget content) {
 		this.content = content;
-		content.addStyleName(STYLE_CONTENT);
+		this.content.addStyleName(STYLE_CONTENT);
+		this.fireEvent(new DialogInitializeEvent());
 	}
-	
+
 	@Override
 	public void show() {
 		int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
-	    int top = (Window.getClientHeight() - getOffsetHeight()) >> 1;
-	    setPopupPosition(Math.max(Window.getScrollLeft() + left, 0), Math.max(Window.getScrollTop() + top, 0));
+		int top = (Window.getClientHeight() - getOffsetHeight()) >> 1;
+		setPopupPosition(Math.max(Window.getScrollLeft() + left, 0), Math.max(Window.getScrollTop() + top, 0));
 		super.show();
+	}
+
+	@Override
+	public void addDialogInitializeHandler(DialogInitializeHandler handler) {
+		addHandler(handler, DialogInitializeEvent.getType());
 	}
 }
