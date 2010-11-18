@@ -9,10 +9,11 @@ import java.util.Map;
 import sk.seges.acris.core.client.util.JavascriptUtils;
 import sk.seges.acris.reporting.client.panel.parameter.AbstractTypePanel;
 import sk.seges.acris.reporting.client.panel.parameter.IParameterTypePanel;
-import sk.seges.acris.reporting.rpc.domain.EReportExportType;
-import sk.seges.acris.reporting.rpc.domain.ReportDescription;
 import sk.seges.acris.reporting.rpc.domain.ReportParameter;
-import sk.seges.acris.reporting.rpc.service.IReportingServiceAsync;
+import sk.seges.acris.reporting.shared.domain.api.EReportExportType;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
+import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
+import sk.seges.acris.reporting.shared.service.IReportingServiceAsync;
 import sk.seges.acris.widget.client.Dialog;
 import sk.seges.acris.widget.client.WidgetFactory;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
@@ -46,7 +47,7 @@ public class ReportExportDialogCreator {
 	private Image loadingImage = new Image("scrollTableLoading.gif");
 	protected SimplePanel imagePanel;
 	protected String webId;
-	private Map<ReportParameter, String> predefinedParams;
+	private Map<ReportParameterData, String> predefinedParams;
 
 	public ReportExportDialogCreator() {}
 
@@ -54,7 +55,7 @@ public class ReportExportDialogCreator {
 		this.reportingService = reportingService;
 	}
 
-	public Dialog createReportExportDialog(ReportDescription report, Map<ReportParameter, String> predefinedParams,
+	public Dialog createReportExportDialog(ReportDescriptionData report, Map<ReportParameterData, String> predefinedParams,
 			ParameterTypeSelector parameterTypeSelector, String webId) {
 		this.webId = webId;
 		this.predefinedParams = predefinedParams;
@@ -64,7 +65,7 @@ public class ReportExportDialogCreator {
 
 	private Panel downloadPanel;
 	
-	void init(ReportDescription report, Map<ReportParameter, String> predefinedParams,
+	void init(ReportDescriptionData report, Map<ReportParameterData, String> predefinedParams,
 			ParameterTypeSelector parameterTypeSelector) {
 		dialog = WidgetFactory.dialog();
 		dialog.setModal(false);
@@ -89,7 +90,7 @@ public class ReportExportDialogCreator {
 		dialog.addOption(WidgetFactory.hackWidget(imagePanel));
 	}
 
-	private Button createExportButton(final ReportDescription report, final Panel downloadPanel) {
+	private Button createExportButton(final ReportDescriptionData report, final Panel downloadPanel) {
 		return WidgetFactory.button(reportingMessages.export(), new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -106,7 +107,7 @@ public class ReportExportDialogCreator {
 					paramsMap.put(w.getReportParameter().getName(), s);
 				}
 				if (predefinedParams.size() > 0) {
-					for (ReportParameter predefParam : predefinedParams.keySet()) {
+					for (ReportParameterData predefParam : predefinedParams.keySet()) {
 						paramsMap.put(predefParam.getName(), predefinedParams.get(predefParam));
 					}
 				}
@@ -121,14 +122,15 @@ public class ReportExportDialogCreator {
 					errorDialog.setWidth("400px");
 					errorDialog.center();
 					errorDialog.show();
-				} else
+				} else {
 					doExport(report, downloadPanel, paramsMap);
+				}
 			}
 		});
 	}
 
-	private FlowPanel createDownloadDialogContent(final ReportDescription report,
-			Map<ReportParameter, String> predefinedParams, ParameterTypeSelector parameterTypeSelector) {
+	private FlowPanel createDownloadDialogContent(final ReportDescriptionData report,
+			Map<ReportParameterData, String> predefinedParams, ParameterTypeSelector parameterTypeSelector) {
 		FlowPanel contentPanel = GWT.create(FlowPanel.class);
 		Label desc = new Label(report.getDescription());
 		contentPanel.add(desc);
@@ -200,7 +202,7 @@ public class ReportExportDialogCreator {
 	}
 
 	/**/
-	protected void doExport(final ReportDescription report, final Panel downloadPanel, Map<String, Object> paramsMap) {
+	protected void doExport(final ReportDescriptionData report, final Panel downloadPanel, Map<String, Object> paramsMap) {
 		// if (EReportExportType.HTML.equals(exportTypeListBox.getValue())) {
 		// reportingService.exportReportToHtml(report.getId(), paramsMap, new
 		// AsyncCallback<String>() {

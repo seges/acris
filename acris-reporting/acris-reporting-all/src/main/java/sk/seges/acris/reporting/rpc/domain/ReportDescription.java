@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import net.sf.gilead.pojo.java5.LightEntity;
-import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 
 /**
  * domain object for store basic information about report and link to report from jasperserver
@@ -26,7 +26,7 @@ import sk.seges.sesam.domain.IDomainObject;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @SequenceGenerator(name = "report_desc_id_seq", sequenceName = "report_desc_id_seq", initialValue = 1)
-public class ReportDescription extends LightEntity implements IDomainObject<Long> {
+public class ReportDescription extends LightEntity implements ReportDescriptionData {
 
 	private static final long serialVersionUID = 3793554325796093693L;
 	public static final String ID_ATTR = "id";
@@ -47,40 +47,52 @@ public class ReportDescription extends LightEntity implements IDomainObject<Long
 	
 	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY)
 	private List<ReportParameter> parametersList = null;
-	
+
+	@Override
 	public Long getId() {
 		return id;
 	}
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
+	@Override
 	public String getName() {
 		return name;
 	}
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
+	@Override
 	public String getDescription() {
 		return description;
 	}
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	@Override
 	public Date getCreationDate() {
 		return creationDate;
 	}
+	@Override
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+	@Override
 	public void setReportUrl(String reportUrl) {
 		this.reportUrl = reportUrl;
 	}
+	@Override
 	public String getReportUrl() {
 		return reportUrl;
 	}
+	@Override
 	public void setParametersList(List<ReportParameter> parametersList) {
 		this.parametersList = parametersList;
 	}
+	@Override
 	public List<ReportParameter> getParametersList() {
 		return parametersList;
 	}

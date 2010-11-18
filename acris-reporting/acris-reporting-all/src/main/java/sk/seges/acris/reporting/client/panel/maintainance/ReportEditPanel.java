@@ -7,6 +7,7 @@ import java.util.Map;
 
 import sk.seges.acris.reporting.rpc.domain.ReportDescription;
 import sk.seges.acris.reporting.rpc.domain.ReportParameter;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.widget.client.ElementFlowPanel;
 
 import com.google.gwt.core.client.GWT;
@@ -49,7 +50,7 @@ public class ReportEditPanel extends Composite {
 	protected FlowPanel paramsArea = GWT.create(FlowPanel.class);
 
 	private Map<ParameterEditPanel, Widget> parameters = new HashMap<ParameterEditPanel, Widget>();
-	private ReportDescription report = new ReportDescription();
+	private ReportDescriptionData report = new ReportDescription();
 	
 	public ReportEditPanel() {
 		initWidget(container);
@@ -135,8 +136,8 @@ public class ReportEditPanel extends Composite {
 	}
 	
 	
-	public ReportDescription getActualReport() {
-		ReportDescription report = this.report;
+	public ReportDescriptionData getActualReport() {
+		ReportDescriptionData report = this.report;
 
 		report.setName(nameText.getText());
 		report.setDescription(descText.getText());
@@ -162,7 +163,7 @@ public class ReportEditPanel extends Composite {
 	}
 	
 
-	public void setActualReport(ReportDescription report) {
+	public void setActualReport(ReportDescriptionData report) {
 		this.report = report;
 		nameText.setText(report.getName());
 		descText.setText(report.getDescription());

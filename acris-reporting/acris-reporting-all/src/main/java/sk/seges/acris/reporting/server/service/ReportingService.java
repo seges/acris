@@ -29,9 +29,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.reporting.rpc.domain.ReportDescription;
-import sk.seges.acris.reporting.rpc.service.IReportDescriptionService;
-import sk.seges.acris.reporting.rpc.service.IReportingService;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
+import sk.seges.acris.reporting.shared.service.IReportDescriptionService;
+import sk.seges.acris.reporting.shared.service.IReportingService;
 
 /**
  * communication with jasper server <br />
@@ -59,7 +59,7 @@ public class ReportingService implements IReportingService {
 	@Transactional
 	@Override
 	public String exportReportToHtml(Long reportDescriptionId, Map<String, Object> parameters) {
-		ReportDescription report = reportDescriptionService.findById(reportDescriptionId);
+		ReportDescriptionData report = reportDescriptionService.findById(reportDescriptionId);
 		WSClient client = new WSClient(configuration.getJasperServerUrl() + "/services/repository", configuration.getJasperServerUser(), configuration.getJasperServerPassword());
 		try {
 //			parameters.put(Argument.RUN_OUTPUT_IMAGES_URI, "/images");
@@ -90,7 +90,7 @@ public class ReportingService implements IReportingService {
 	@Transactional
 	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters, String web_id) {
 
-		ReportDescription report = reportDescriptionService.findById(reportDescriptionId);
+		ReportDescriptionData report = reportDescriptionService.findById(reportDescriptionId);
 		String params = "";
 		params += generateParamsString(parameters);
 
@@ -158,7 +158,7 @@ public class ReportingService implements IReportingService {
 		return params;
 	}
 
-	protected String generateCompleteReportUrl(String exportType, ReportDescription report, String params,
+	protected String generateCompleteReportUrl(String exportType, ReportDescriptionData report, String params,
 			String username, String password) {
 		params += "&j_username=" + username + "&j_password=" + password;
 		String prefix = configuration.getJasperServerUrl();

@@ -11,10 +11,11 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import sk.seges.acris.reporting.rpc.domain.ReportDescription;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
 @Component
-public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescription> implements IReportDescriptionDao {
+public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescriptionData> implements IReportDescriptionDao {
 
 	protected ReportDescriptionDao() {
 		super(ReportDescription.class);
@@ -28,7 +29,7 @@ public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescriptio
 	/* (non-Javadoc)
 	 * @see sk.seges.hroddelenie.dao.reporting.IReportDescription#findById(java.lang.Long)
 	 */
-	public ReportDescription findById(Long id) {
+	public ReportDescriptionData findById(Long id) {
 		DetachedCriteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(ReportDescription.ID_ATTR, id));
 		return findUniqueResultByCriteria(criteria);
@@ -36,7 +37,7 @@ public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescriptio
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ReportDescription> findByName(String name) {
+	public List<ReportDescriptionData> findByName(String name) {
 		DetachedCriteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(ReportDescription.NAME_ATTR, name));
 		return criteria.getExecutableCriteria((Session) entityManager.getDelegate()).list();
