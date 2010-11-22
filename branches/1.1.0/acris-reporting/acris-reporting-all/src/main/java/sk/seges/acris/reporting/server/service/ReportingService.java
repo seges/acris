@@ -1,5 +1,6 @@
 package sk.seges.acris.reporting.server.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -95,6 +96,10 @@ public class ReportingService implements IReportingService {
 		params += generateParamsString(parameters);
 
 		String urlPath = generateCompleteReportUrl(exportType, report, params, configuration.getJasperServerUser(), configuration.getJasperServerPassword());
+		if(LOG.isDebugEnabled()) {
+			LOG.debug("Complete url = " + urlPath);
+		}
+		
 		try {
 			URL url = new URL(urlPath);
 			URLConnection connection = url.openConnection();
@@ -113,7 +118,10 @@ public class ReportingService implements IReportingService {
 				proxyIn = httpConnection.getErrorStream();
 				code = httpConnection.getResponseCode();
 				if (code != HttpServletResponse.SC_OK) {
-					throw new Exception("Status code from export " + code);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					copy(proxyIn, baos);
+					baos.close();
+					throw new Exception("Status code from export " + code + ", content = " + baos.toString());
 				}
 			}
 
@@ -124,13 +132,16 @@ public class ReportingService implements IReportingService {
 			if (proxyIn != null) {
 				String fileName = "report" + "_" + new Date().getTime() + "." + exportType.toLowerCase();
 				String reportDir = REPORTS_DIR;
-				String directory = configuration.resolveRootDirectoryPath(web_id) + "/"
+				String directory = configuration.resolveRootDirectoryPath(web_id) + File.separator
 						+ reportDir;
 				File d = new File(directory);
 				if (!d.exists() || !d.isDirectory()) {
 					d.mkdir();
 				}
 				String filePath = directory + File.separator + fileName;
+				if(LOG.isDebugEnabled()) {
+					LOG.debug("Report output = " + filePath);
+				}
 
 				File f = new File(filePath);
 				FileOutputStream fos = new FileOutputStream(f);
