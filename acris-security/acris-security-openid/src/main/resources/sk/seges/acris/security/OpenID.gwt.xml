@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<inherits name='sk.seges.acris.Core' />
+
+	<source path="client" />
+</module>
