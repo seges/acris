@@ -3,7 +3,7 @@ package sk.seges.acris.generator.server.processor.post;
 import org.htmlparser.Node;
 import org.htmlparser.util.NodeList;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 

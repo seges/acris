@@ -12,12 +12,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import sk.seges.acris.core.server.utils.io.StringFile;
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.rpc.service.IGeneratorService;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
 import sk.seges.acris.generator.server.processor.IContentInfoProvider;
 import sk.seges.acris.generator.server.processor.TokenProvider;
+import sk.seges.acris.generator.server.service.persist.api.DataPersister;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.service.IGeneratorService;
 import sk.seges.acris.util.Tuple;
 
 /**
@@ -37,11 +38,13 @@ public class GeneratorService implements IGeneratorService {
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
 	private IContentInfoProvider contentInfoProvider;
+	private DataPersister dataPersister;
 	
 	private String indexFileName;
 	
-	public GeneratorService(HtmlPostProcessing htmlPostProcessing, String offlineContentTargetPath, String indexFileName, TokenProvider tokenProvider,
+	public GeneratorService(DataPersister dataPersister, HtmlPostProcessing htmlPostProcessing, String offlineContentTargetPath, String indexFileName, TokenProvider tokenProvider,
 			IContentInfoProvider contentInfoProvider) {
+		this.dataPersister = dataPersister;
 		this.contentInfoProvider = contentInfoProvider;
 		this.indexFileName = indexFileName;
 		this.htmlPostProcessing = htmlPostProcessing;
@@ -177,74 +180,23 @@ public class GeneratorService implements IGeneratorService {
 		return result;
 	}
 
-	protected StringFile createDefaultFile(File dirFile) {
-		return createFile(dirFile, indexFileName);
-	}
-	
-	protected StringFile createFile(File dirFile, String filename) {
-		StringFile file = new StringFile(dirFile, filename);
-
-		if (!file.exists()) {
-			try {
-				if (!file.getParentFile().exists()) {
-					file.getParentFile().mkdirs();
-					if (log.isDebugEnabled()) {
-						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
-					}
-				}
-				if (log.isDebugEnabled()) {
-					log.debug("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
-				}
-
-				if (!file.createNewFile()) {
-					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
-				}
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		return file;
-	}
-
 	protected void writeDefaultContentTextToFile(String content, GeneratorToken token) {
-		File dirFile = new File(getOfflineContentTargetPath(token));
-
-		StringFile file = createDefaultFile(dirFile);
-
 		if (log.isDebugEnabled()) {
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
+					token.getLanguage() + " ] for " + token.getWebId());
 		}
 
-		try {
-			file.writeTextToFile(content);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		dataPersister.writeTextToFile(getOfflineContentTargetPath(token), indexFileName, content);
 	}
 	
 	@Override
 	public void writeTextToFile(String content, GeneratorToken token) {
-		File dirFile = new File(getOfflineContentTargetPath(token));
-
-		if (!dirFile.exists()) {
-			if (!dirFile.mkdirs()) {
-				throw new RuntimeException("Directory " + dirFile.getAbsolutePath() + " cannot be created.");
-			}
-		}
-		
-		StringFile file = createFile(dirFile, token.getNiceUrl() + File.separator + "index.html");
 
 		if (log.isDebugEnabled()) {
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
+					token.getLanguage() + " ] for " + token.getWebId());
 		}
 
-		try {
-			file.writeTextToFile(content);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		dataPersister.writeTextToFile(getOfflineContentTargetPath(token), token.getNiceUrl() + File.separator + "index.html", content);
 	}
 }

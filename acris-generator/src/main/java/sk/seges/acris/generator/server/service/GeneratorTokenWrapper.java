@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.server.service;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public class GeneratorTokenWrapper extends GeneratorToken {
 
