@@ -9,5 +9,5 @@
 	<inherits name="sk.seges.acris.Common"/>
 
 	<source path='client' />
-	<source path='rpc' />
+	<source path='shared' />
 </module>
