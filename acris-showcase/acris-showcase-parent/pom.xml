@@ -22,7 +22,7 @@
 		<smartgwt.version>2.2</smartgwt.version>
 		<gxt-version>2.1.0</gxt-version>
 
-		<gwtp.version>0.3-SNAPSHOT</gwtp.version>
+		<gwtp.version>0.5-334-4ef53f345d8d</gwtp.version>
 
 		<!-- datanucleus -->
 		<!-- gae.version>1.3.5</gae.version> <orm.version>1.0.7.final</orm.version> 
@@ -176,12 +176,24 @@
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-ui-support</artifactId>
 				<version>${pom.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-dev</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-ui-support</artifactId>
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-dev</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
@@ -311,9 +323,15 @@
 
 			<!-- MVP dependency -->
 			<dependency>
-				<groupId>com.philbeaudoin</groupId>
+				<groupId>com.gwtplatform</groupId>
 				<artifactId>gwtp</artifactId>
 				<version>${gwtp.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-dev</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- UI libraries -->
