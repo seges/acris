@@ -5,8 +5,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
