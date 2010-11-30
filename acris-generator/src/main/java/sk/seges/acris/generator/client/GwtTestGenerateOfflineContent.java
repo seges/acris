@@ -6,9 +6,9 @@ import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.rpc.service.IGeneratorService;
-import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.service.IGeneratorService;
+import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -50,13 +50,13 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 	protected abstract EntryPoint getEntryPoint(String webId, String lang);
 
-	protected abstract String getGeneratorServiceURL();
+	protected abstract IGeneratorServiceAsync getGeneratorService();
 
-	private void initializeService() {
-		generatorService = (IGeneratorServiceAsync) GWT.create(IGeneratorService.class);
-		ServiceDefTarget generatorEndpoint = (ServiceDefTarget) generatorService;
-		generatorEndpoint.setServiceEntryPoint(getGeneratorServiceURL());
-	}
+//	private void initializeService() {
+//		generatorService = (IGeneratorServiceAsync) GWT.create(IGeneratorService.class);
+//		ServiceDefTarget generatorEndpoint = (ServiceDefTarget) generatorService;
+//		generatorEndpoint.setServiceEntryPoint(getGeneratorServiceURL());
+//	}
 
 	/**
 	 * Parse a URL and return a map of query parameters. If a parameter is supplied without =value, it will be defined
@@ -80,7 +80,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			}
 		});
 
-		initializeService();
+		generatorService = getGeneratorService();
 
 		count.value = 0;
 		offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);

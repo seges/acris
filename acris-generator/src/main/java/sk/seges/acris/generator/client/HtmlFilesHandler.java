@@ -1,7 +1,7 @@
 package sk.seges.acris.generator.client;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 import sk.seges.acris.util.Tuple;
 
 import com.google.gwt.core.client.GWT;
