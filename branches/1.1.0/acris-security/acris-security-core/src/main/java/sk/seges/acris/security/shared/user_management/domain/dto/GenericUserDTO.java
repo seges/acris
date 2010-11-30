@@ -6,7 +6,7 @@ import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
 
-public class GenericUserDTO implements UserData {
+public class GenericUserDTO implements UserData<Long> {
 
 	private static final long serialVersionUID = 6311173194141382224L;
 

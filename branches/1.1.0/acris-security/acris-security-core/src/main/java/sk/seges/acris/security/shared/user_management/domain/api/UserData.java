@@ -6,7 +6,7 @@ import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 @BeanWrapper
-public interface UserData extends IMutableDomainObject<Long> {
+public interface UserData<E> extends IMutableDomainObject<E> {
 
 	boolean hasAuthority(String authority);
 
