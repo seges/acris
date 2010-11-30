@@ -35,6 +35,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JDummyClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JMethodInstancer;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.JTypeParameter;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
@@ -135,7 +136,7 @@ public class BeanTableSpecCreator {
 			JTypeParameter[] jtypeParameters = new JTypeParameter[0];
 			for (JField field : beanType.getFields()) {
 				if (!field.isTransient() && !field.isStatic()) {
-					JMethod method = new JMethod(dummy, field.getName(), annotations, jtypeParameters);
+					JMethod method = JMethodInstancer.instanceMethod(dummy, field.getName(), annotations, jtypeParameters);
 					listOfMethods.add(method);
 				}
 			}
