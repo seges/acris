@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import sk.seges.acris.core.server.utils.io.StringFile;
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public class TokenProvider {
 

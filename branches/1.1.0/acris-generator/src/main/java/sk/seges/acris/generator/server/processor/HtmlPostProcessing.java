@@ -13,10 +13,10 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.AbstractContentInfoPostProcessor;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public class HtmlPostProcessing {
 

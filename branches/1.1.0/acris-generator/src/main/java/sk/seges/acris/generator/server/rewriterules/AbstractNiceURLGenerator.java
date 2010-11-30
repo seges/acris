@@ -12,8 +12,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.server.processor.IContentInfoProvider;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 

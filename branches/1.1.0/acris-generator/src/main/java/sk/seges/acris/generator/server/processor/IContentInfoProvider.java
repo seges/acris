@@ -2,7 +2,7 @@ package sk.seges.acris.generator.server.processor;
 
 import java.util.List;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public interface IContentInfoProvider {
 
