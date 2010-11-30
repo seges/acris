@@ -108,8 +108,8 @@ public class RoleRunAsManagerImpl implements RunAsManager, InitializingBean, IMu
      * 
      * @return always <code>true</code>
      */
-    @SuppressWarnings("unchecked")
-    public boolean supports(Class clazz) {
+    @SuppressWarnings("rawtypes")
+	public boolean supports(Class clazz) {
         return true;
     }
 

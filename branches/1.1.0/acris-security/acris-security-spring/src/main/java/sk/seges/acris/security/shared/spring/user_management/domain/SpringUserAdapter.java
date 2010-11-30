@@ -7,18 +7,18 @@ import org.springframework.security.userdetails.UserDetails;
 
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
-public class SpringUserAdapter implements UserDetails, UserData {
+public class SpringUserAdapter<E> implements UserDetails, UserData<E> {
 
 	private static final long serialVersionUID = 5904509684815616154L;
 
 	private SpringAuthoritiesSupport springSupport;
 	
-	public SpringUserAdapter(UserData userData) {
+	public SpringUserAdapter(UserData<E> userData) {
 		assert userData != null;
 		springSupport = new SpringAuthoritiesSupport(userData);
 	}
 	
-	public UserData getUser() {
+	public UserData<E> getUser() {
 		return springSupport.getUser();
 	}
 	
@@ -61,13 +61,14 @@ public class SpringUserAdapter implements UserDetails, UserData {
 	}
 
 	@Override
-	public void setId(Long t) {
+	public void setId(E t) {
 		springSupport.getUser().setId(t);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Long getId() {
-		return springSupport.getUser().getId();
+	public E getId() {
+		return (E) springSupport.getUser().getId();
 	}
 
 	@Override
