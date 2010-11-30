@@ -79,14 +79,14 @@
 		<module>../acris-showcase-callbacks</module>
 		<module>../acris-showcase-client-core</module>
 		<module>../acris-showcase-generator</module>
-		<module>../acris-showcase-json</module>
-		<module>../acris-showcase-mvp</module>
+		<module>../acris-showcase-json</module-->
+		<!--module>../acris-showcase-mvp</module>
 		<module>../acris-showcase-recorder</module>
 		<module>../acris-showcase-security</module>
 		<module>../acris-showcase-widgets</module>
 		<module>../acris-showcase-ui-support</module>
 		<module>../acris-showcase-svn-post-commit</module>
-		<module>../acris-showcase-deployer</module>
+		<!--module>../acris-showcase-deployer</module-->
 	</modules>
 
 	<build>
