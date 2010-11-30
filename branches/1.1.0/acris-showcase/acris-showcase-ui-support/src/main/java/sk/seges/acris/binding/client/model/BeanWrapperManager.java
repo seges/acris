@@ -7,7 +7,7 @@ import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 
 /**
  * Used for handle cyclic dependencies
- * @author fat
+ * @author Peter Simun (simun@seges.sk)
  */
 public class BeanWrapperManager {
 

@@ -50,5 +50,19 @@
 			<artifactId>gxt</artifactId>
 		</dependency>
 
+		<!-- MVP -->
+		<dependency>
+			<groupId>com.gwtplatform</groupId>
+			<artifactId>gwtp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.guice</groupId>
+			<artifactId>guice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.guice</groupId>
+			<artifactId>guice-servlet</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>
