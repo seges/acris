@@ -293,25 +293,6 @@ public class JDummyClassType extends JClassType {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.google.gwt.core.ext.typeinfo.JClassType#getOverridableMethodsOnSuperclassesAndThisClass(java.util.Map)
-	 */
-	@Override
-	protected void getOverridableMethodsOnSuperclassesAndThisClass(Map<String, JMethod> methodsBySignature) {
-	// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see com.google.gwt.core.ext.typeinfo.JClassType#getOverridableMethodsOnSuperinterfacesAndMaybeThisInterface(java.util.Map)
-	 */
-	@Override
-	protected void getOverridableMethodsOnSuperinterfacesAndMaybeThisInterface(
-			Map<String, JMethod> methodsBySignature) {
-	// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
 	 * @see com.google.gwt.core.ext.typeinfo.JClassType#getPackage()
 	 */
 	@Override
@@ -399,15 +380,6 @@ public class JDummyClassType extends JClassType {
 	public JClassType isInterface() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.google.gwt.core.ext.typeinfo.JClassType#isLocalType()
-	 */
-	@Override
-	public boolean isLocalType() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	/* (non-Javadoc)
@@ -593,6 +565,24 @@ public class JDummyClassType extends JClassType {
 	@Override
 	public String getQualifiedBinaryName() {
 		return null;
+	}
+
+	@Override
+	public JMethod[] getInheritableMethods() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void getInheritableMethodsOnSuperclassesAndThisClass(Map<String, JMethod> methodsBySignature) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void getInheritableMethodsOnSuperinterfacesAndMaybeThisInterface(Map<String, JMethod> methodsBySignature) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
