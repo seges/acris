@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <module>
-	<inherits name="com.google.gwt.user.User" />
 	<inherits name="sk.seges.acris.security.Security" />
-	<inherits name='sk.seges.acris.security.Session' />
-	<inherits name='sk.seges.acris.security.Rebind' />
 </module>
