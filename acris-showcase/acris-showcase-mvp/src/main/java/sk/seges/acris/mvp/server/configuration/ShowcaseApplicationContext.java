@@ -34,8 +34,8 @@ public class ShowcaseApplicationContext {
 
 	@Bean
 	@SuppressWarnings("unchecked")
-	public IGenericUserDao<UserData> genericUserDao() {
-		return (IGenericUserDao<UserData>)((IGenericUserDao<?>) new TwigUserDao(objectDatastore()));
+	public IGenericUserDao<UserData<?>> genericUserDao() {
+		return (IGenericUserDao<UserData<?>>)((IGenericUserDao<?>) new TwigUserDao(objectDatastore()));
 	}
 	
 	@Bean

@@ -14,7 +14,7 @@ import com.google.gwt.core.client.GWT;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
 @BindingFieldsBase(updateStrategy = UpdateStrategy.READ_WRITE, validationStrategy = ValidationStrategy.ON_SUBMIT, validationHighlighter = ExampleHighlighter.class)
-public class UserMaintenanceSmartForm extends SmartGWTLayoutForm<UserData> {
+public class UserMaintenanceSmartForm extends SmartGWTLayoutForm<UserData<?>> {
 
 	@BindingField(GenericUserDTOBeanWrapper.USERNAME)
 	private final TextItem userName = GWT.create(TextItem.class);

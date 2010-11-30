@@ -12,8 +12,8 @@ import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginTo
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserService;
 
-import com.philbeaudoin.gwtp.dispatch.server.ExecutionContext;
-import com.philbeaudoin.gwtp.dispatch.shared.ActionException;
+import com.gwtplatform.dispatch.server.ExecutionContext;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 @Component
 public class LoginActionHandler extends DefaultActionHandler<LoginAction, LoginResult> {
@@ -32,7 +32,7 @@ public class LoginActionHandler extends DefaultActionHandler<LoginAction, LoginR
 	@Override
 	public LoginResult execute(LoginAction action, ExecutionContext context) throws ActionException {
 		ClientSession session = userDetailsService.login(new UserPasswordLoginToken(action.getUsername(), action.getPassword(), ""));
-		UserData userData = dozer.convert(session.getUser());
+		UserData<?> userData = dozer.convert(session.getUser());
 		session.setUser(userData);
 		return new LoginResult(session);
 	}

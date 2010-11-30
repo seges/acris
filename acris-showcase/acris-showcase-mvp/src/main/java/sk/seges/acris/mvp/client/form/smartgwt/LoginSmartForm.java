@@ -15,7 +15,7 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 
 
 @BindingFieldsBase(updateStrategy = UpdateStrategy.READ_WRITE, validationStrategy = ValidationStrategy.ON_SUBMIT)
-public class LoginSmartForm extends TwoColumnSmartForm<UserData> {
+public class LoginSmartForm extends TwoColumnSmartForm<UserData<?>> {
 
 	@BindingField(UserDataBeanWrapper.USERNAME)
 	protected final TextItem username = GWT.create(TextItem.class);

@@ -2,7 +2,7 @@ package sk.seges.acris.mvp.shared.action.core;
 
 import sk.seges.sesam.dao.Page;
 
-import com.philbeaudoin.gwtp.dispatch.shared.Result;
+import com.gwtplatform.dispatch.shared.Result;
 
 public abstract class AbstractPageAction<R extends Result> extends AbstractAction<R> {
 

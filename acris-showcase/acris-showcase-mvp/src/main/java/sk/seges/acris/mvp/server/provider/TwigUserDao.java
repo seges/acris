@@ -18,14 +18,14 @@ import sk.seges.sesam.dao.SimpleExpression;
 
 import com.vercer.engine.persist.ObjectDatastore;
 
-public class TwigUserDao extends AbstractTwigCrud<UserData> implements IGenericUserDao<UserData> {
+public class TwigUserDao extends AbstractTwigCrud<UserData<Long>> implements IGenericUserDao<UserData<Long>> {
 
 	public TwigUserDao(ObjectDatastore datastore) {
 		super(datastore, TwigGenericUser.class);
 	}
 
 	@Override
-	public UserData findByUsername(String username) {
+	public UserData<Long> findByUsername(String username) {
 		Page page = new Page(0, Page.ALL_RESULTS);
 		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(UserDataBeanWrapper.USERNAME);
 		eq.setValue(username);
@@ -34,12 +34,12 @@ public class TwigUserDao extends AbstractTwigCrud<UserData> implements IGenericU
 	}
 
 	@Override
-	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
+	public UserData<Long> persist(UserData<Long> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, false));
 	}
 
 	@Override
-	public UserData collectUserAuthorities(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public UserData<Long> collectUserAuthorities(UserData<Long> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		List<String> authorities = new ArrayList<String>();
 
 		if (addMode && user.getUserAuthorities() != null) {
@@ -77,7 +77,7 @@ public class TwigUserDao extends AbstractTwigCrud<UserData> implements IGenericU
 	}
 
 	@Override
-	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public UserData<Long> persist(UserData<Long> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, false));
 	}
 }

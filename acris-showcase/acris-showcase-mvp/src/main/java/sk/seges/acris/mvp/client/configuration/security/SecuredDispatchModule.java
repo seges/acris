@@ -4,12 +4,10 @@ import sk.seges.acris.security.shared.session.ClientSession;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.philbeaudoin.gwtp.dispatch.client.DefaultExceptionHandler;
-import com.philbeaudoin.gwtp.dispatch.client.DispatchAsync;
-import com.philbeaudoin.gwtp.dispatch.client.ExceptionHandler;
-import com.philbeaudoin.gwtp.dispatch.client.SecurityCookieAccessor;
-import com.philbeaudoin.gwtp.dispatch.client.SecurityCookieAccessorImpl;
-import com.philbeaudoin.gwtp.dispatch.client.gin.AbstractDispatchModule;
+import com.gwtplatform.dispatch.client.DefaultExceptionHandler;
+import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.client.ExceptionHandler;
+import com.gwtplatform.dispatch.client.SecurityCookieAccessor;
 
 public class SecuredDispatchModule extends AbstractDispatchModule {
 

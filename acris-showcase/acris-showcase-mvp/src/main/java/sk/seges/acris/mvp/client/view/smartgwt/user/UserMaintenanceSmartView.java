@@ -3,11 +3,11 @@ package sk.seges.acris.mvp.client.view.smartgwt.user;
 import java.util.List;
 
 import sk.seges.acris.mvp.client.i18n.UserMessages;
-import sk.seges.acris.mvp.client.model.ModelAdapter;
 import sk.seges.acris.mvp.client.presenter.user.UserMaintenancePresenter.UserMaintenanceDisplay;
-import sk.seges.acris.mvp.client.view.core.adapter.smartgwt.SmartViewImpl;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTOBeanWrapper;
+import sk.seges.acris.showcase.client.model.ModelAdapter;
+import sk.seges.acris.showcase.client.view.core.adapter.smartgwt.SmartViewImpl;
 import sk.seges.sesam.dao.PagedResult;
 
 import com.google.gwt.core.client.GWT;
@@ -62,8 +62,8 @@ public class UserMaintenanceSmartView extends SmartViewImpl implements UserMaint
 	}
 
 	@Override
-	public void setData(PagedResult<List<UserData>> users) {
-		ListGridRecord[] records = modelAdapter.convertUsersForGrid(users.getResult());
+	public void setData(PagedResult<List<UserData<?>>> users) {
+		ListGridRecord[] records = modelAdapter.convertDataForGrid(users.getResult());
 		grid.setData(records);
 	}
 }

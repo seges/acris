@@ -5,17 +5,17 @@ import sk.seges.acris.mvp.client.action.mocks.MockFetchUsersActionHandler;
 import sk.seges.acris.mvp.client.configuration.AcrisModule;
 import sk.seges.acris.mvp.client.configuration.security.SecuredDispatchModule;
 import sk.seges.acris.mvp.client.configuration.smartgwt.SmartGWTViews;
-import sk.seges.acris.mvp.client.presenter.core.ErrorPresenter;
 import sk.seges.acris.mvp.client.presenter.user.LoginPresenter;
 import sk.seges.acris.mvp.client.presenter.user.UserMaintenancePresenter;
 import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.showcase.client.presenter.core.ErrorPresenter;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.inject.Provider;
-import com.philbeaudoin.gwtp.mvp.client.EventBus;
-import com.philbeaudoin.gwtp.mvp.client.proxy.PlaceManager;
-import com.philbeaudoin.gwtp.mvp.client.proxy.ProxyFailureHandler;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
 
 /**
  * MockGinjector should not extends AcrisGinjector. Following exception occurs:

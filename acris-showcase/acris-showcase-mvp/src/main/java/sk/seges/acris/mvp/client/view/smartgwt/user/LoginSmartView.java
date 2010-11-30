@@ -3,10 +3,10 @@ package sk.seges.acris.mvp.client.view.smartgwt.user;
 import sk.seges.acris.mvp.client.event.LoginEvent;
 import sk.seges.acris.mvp.client.event.LoginEvent.LoginEventHandler;
 import sk.seges.acris.mvp.client.form.smartgwt.LoginSmartForm;
-import sk.seges.acris.mvp.client.model.ModelAdapter;
 import sk.seges.acris.mvp.client.presenter.user.LoginPresenter.LoginDisplay;
-import sk.seges.acris.mvp.client.view.core.adapter.smartgwt.SmartViewImpl;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.showcase.client.model.ModelAdapter;
+import sk.seges.acris.showcase.client.view.core.adapter.smartgwt.SmartViewImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;

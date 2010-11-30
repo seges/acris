@@ -1,10 +1,10 @@
 package sk.seges.acris.mvp.client.action.mocks;
 
-import com.google.inject.Inject;
-
-import sk.seges.acris.mvp.client.action.mocks.core.MockActionHandler;
 import sk.seges.acris.mvp.shared.action.user.AddUserAction;
 import sk.seges.acris.mvp.shared.result.user.AddUserResult;
+import sk.seges.acris.showcase.client.action.mocks.core.MockActionHandler;
+
+import com.google.inject.Inject;
 
 public class MockAddUserActionHandler extends MockActionHandler<AddUserAction, AddUserResult> {
 

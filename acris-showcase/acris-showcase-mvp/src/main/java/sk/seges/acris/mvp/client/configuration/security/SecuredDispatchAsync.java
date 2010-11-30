@@ -6,13 +6,14 @@ import sk.seges.acris.security.shared.session.ClientSession;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.philbeaudoin.gwtp.dispatch.client.DispatchAsync;
-import com.philbeaudoin.gwtp.dispatch.client.DispatchService;
-import com.philbeaudoin.gwtp.dispatch.client.DispatchServiceAsync;
-import com.philbeaudoin.gwtp.dispatch.client.ExceptionHandler;
-import com.philbeaudoin.gwtp.dispatch.client.SecurityCookieAccessor;
-import com.philbeaudoin.gwtp.dispatch.shared.Action;
-import com.philbeaudoin.gwtp.dispatch.shared.Result;
+import com.gwtplatform.dispatch.client.DispatchAsync;
+import com.gwtplatform.dispatch.client.DispatchRequest;
+import com.gwtplatform.dispatch.client.DispatchService;
+import com.gwtplatform.dispatch.client.DispatchServiceAsync;
+import com.gwtplatform.dispatch.client.ExceptionHandler;
+import com.gwtplatform.dispatch.client.SecurityCookieAccessor;
+import com.gwtplatform.dispatch.shared.Action;
+import com.gwtplatform.dispatch.shared.Result;
 
 public class SecuredDispatchAsync implements DispatchAsync {
 
@@ -34,7 +35,7 @@ public class SecuredDispatchAsync implements DispatchAsync {
 		else this.baseUrl = entryPointUrl;
 	}
 
-	public <A extends Action<R>, R extends Result> void execute(final A action, final AsyncCallback<R> callback) {
+	public <A extends Action<R>, R extends Result> DispatchRequest execute(final A action, final AsyncCallback<R> callback) {
 		((ServiceDefTarget) realService).setServiceEntryPoint(baseUrl + action.getServiceName());
 
 		String securityCookie = securityCookieAccessor.getCookieContent();
@@ -65,5 +66,4 @@ public class SecuredDispatchAsync implements DispatchAsync {
 
 		callback.onFailure(caught);
 	}
-
 }

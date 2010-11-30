@@ -6,7 +6,7 @@ import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
 public class UsersFactory {
 	
-	public static final UserData createMockUser(Long id, String name, String password) {
+	public static final UserData<?> createMockUser(Long id, String name, String password) {
 		GenericUserDTO user = new GenericUserDTO();
 		user.setDescription("Mock user");
 		user.setPassword(password);

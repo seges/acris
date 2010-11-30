@@ -1,17 +1,15 @@
 package sk.seges.acris.mvp.client.view.smartgwt.user;
 
-import sk.seges.acris.mvp.client.view.core.adapter.smartgwt.SmartViewImpl;
+import sk.seges.acris.showcase.client.view.core.adapter.smartgwt.SmartViewImpl;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
-import com.smartgwt.client.widgets.layout.VLayout;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.smartgwt.client.widgets.tab.TabSet;
-import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.FormItem;
-import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.SectionItem;
+import com.smartgwt.client.widgets.layout.VLayout;
+import com.smartgwt.client.widgets.tab.Tab;
+import com.smartgwt.client.widgets.tab.TabSet;
 
 
 public class AddUserView extends SmartViewImpl {

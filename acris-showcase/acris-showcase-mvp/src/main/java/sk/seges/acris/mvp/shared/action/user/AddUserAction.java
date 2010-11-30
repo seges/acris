@@ -12,13 +12,13 @@ public class AddUserAction extends AbstractAction<AddUserResult> {
 	private AddUserAction() {
 	}
 
-	private UserData user;
+	private UserData<?> user;
 
-	public AddUserAction(UserData user) {
+	public AddUserAction(UserData<?> user) {
 		this.user = user;
 	}
 
-	public UserData getUser() {
+	public UserData<?> getUser() {
 		return user;
 	}
 }
