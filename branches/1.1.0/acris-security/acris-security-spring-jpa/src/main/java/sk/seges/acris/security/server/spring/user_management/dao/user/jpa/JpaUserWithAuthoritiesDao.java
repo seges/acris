@@ -11,7 +11,6 @@ import javax.persistence.PersistenceContext;
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserWithAuthorities;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserDataBeanWrapper;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.sesam.dao.Page;
@@ -30,58 +29,58 @@ public class JpaUserWithAuthoritiesDao implements IGenericUserDao<JpaUserWithAut
 	}
 
 	@Override
-	public UserData collectUserAuthorities(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public UserData findByUsername(String username) {
-		return (UserData) entityManager
+	public JpaUserWithAuthorities findByUsername(String username) {
+		return (JpaUserWithAuthorities) entityManager
 				.createQuery("from " + JpaUserWithAuthorities.class.getName() + " where " + UserDataBeanWrapper.USERNAME + " = :username")
 				.setParameter("username", username).getSingleResult();
 	}
 
 	@Override
-	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
+	public JpaUserWithAuthorities persist(JpaUserWithAuthorities entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public JpaUserWithAuthorities merge(JpaUserWithAuthorities entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public UserData persist(UserData entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public UserData merge(UserData entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void remove(UserData entity) {
+	public void remove(JpaUserWithAuthorities entity) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public PagedResult<List<UserData>> findAll(Page requestedPage) {
+	public PagedResult<List<JpaUserWithAuthorities>> findAll(Page requestedPage) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public UserData findEntity(UserData entity) {
+	public JpaUserWithAuthorities findEntity(JpaUserWithAuthorities entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public JpaUserWithAuthorities persist(JpaUserWithAuthorities user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JpaUserWithAuthorities persist(JpaUserWithAuthorities user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JpaUserWithAuthorities collectUserAuthorities(JpaUserWithAuthorities user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder,
+			boolean addMode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
