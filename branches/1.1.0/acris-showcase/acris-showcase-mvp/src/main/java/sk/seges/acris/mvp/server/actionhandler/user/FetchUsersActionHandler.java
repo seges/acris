@@ -9,8 +9,8 @@ import sk.seges.acris.mvp.shared.action.user.FetchUsersAction;
 import sk.seges.acris.mvp.shared.result.user.FetchUsersResult;
 import sk.seges.sesam.dao.Page;
 
-import com.philbeaudoin.gwtp.dispatch.server.ExecutionContext;
-import com.philbeaudoin.gwtp.dispatch.shared.ActionException;
+import com.gwtplatform.dispatch.server.ExecutionContext;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 @Component
 public class FetchUsersActionHandler extends DefaultActionHandler<FetchUsersAction, FetchUsersResult> {

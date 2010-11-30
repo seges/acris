@@ -7,8 +7,7 @@ import org.gwtwidgets.server.spring.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.philbeaudoin.gwtp.dispatch.server.Dispatch;
-import com.philbeaudoin.gwtp.dispatch.server.spring.DefaultDispatchServlet;
+import com.gwtplatform.dispatch.server.Dispatch;
 
 @Component
 public class GileadDefaultDispatchServlet extends DefaultDispatchServlet {

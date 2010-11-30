@@ -5,7 +5,7 @@ import java.util.List;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.sesam.dao.PagedResult;
 
-import com.philbeaudoin.gwtp.dispatch.shared.Result;
+import com.gwtplatform.dispatch.shared.Result;
 
 public class FetchUsersResult implements Result {
 
@@ -18,13 +18,13 @@ public class FetchUsersResult implements Result {
 	private FetchUsersResult() {
 	}
 
-	private PagedResult<List<UserData>> users;
+	private PagedResult<List<UserData<?>>> users;
 
-	public FetchUsersResult(PagedResult<List<UserData>> users) {
+	public FetchUsersResult(PagedResult<List<UserData<?>>> users) {
 		this.users = users;
 	}
 
-	public PagedResult<List<UserData>> getUsers() {
+	public PagedResult<List<UserData<?>>> getUsers() {
 		return users;
 	}
 }

@@ -235,12 +235,6 @@
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>acris-showcase-ui-support</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>${groupId}</groupId>
@@ -257,9 +251,7 @@
 		<!-- javax persistence API -->
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
-
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
-
 		</dependency>
 
 		<!-- MVP dependencies -->
@@ -268,14 +260,8 @@
 			<artifactId>gwt-gin</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.philbeaudoin</groupId>
+			<groupId>com.gwtplatform</groupId>
 			<artifactId>gwtp</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- Guice dependencies -->

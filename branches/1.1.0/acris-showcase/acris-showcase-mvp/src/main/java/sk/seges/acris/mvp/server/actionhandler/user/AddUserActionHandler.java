@@ -8,8 +8,8 @@ import sk.seges.acris.mvp.server.service.IUserMaintenanceService;
 import sk.seges.acris.mvp.shared.action.user.AddUserAction;
 import sk.seges.acris.mvp.shared.result.user.AddUserResult;
 
-import com.philbeaudoin.gwtp.dispatch.server.ExecutionContext;
-import com.philbeaudoin.gwtp.dispatch.shared.ActionException;
+import com.gwtplatform.dispatch.server.ExecutionContext;
+import com.gwtplatform.dispatch.shared.ActionException;
 
 @Component
 public class AddUserActionHandler extends DefaultActionHandler<AddUserAction, AddUserResult> {

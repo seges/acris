@@ -1,6 +1,5 @@
 package sk.seges.acris.mvp.client.event;
 
-import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.mvp.client.event.LoginEvent.LoginEventHandler;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
@@ -30,13 +29,13 @@ public class LoginEvent extends GwtEvent<LoginEventHandler> {
 		return getType();
 	}
 
-	private UserData user;
+	private UserData<?> user;
 
-	public LoginEvent(UserData user) {
+	public LoginEvent(UserData<?> user) {
 		this.user = user;
 	}
 
-	public UserData getUser() {
+	public UserData<?> getUser() {
 		return user;
 	}
 }

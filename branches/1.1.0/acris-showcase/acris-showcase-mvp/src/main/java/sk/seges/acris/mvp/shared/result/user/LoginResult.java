@@ -2,7 +2,7 @@ package sk.seges.acris.mvp.shared.result.user;
 
 import sk.seges.acris.security.shared.session.ClientSession;
 
-import com.philbeaudoin.gwtp.dispatch.shared.Result;
+import com.gwtplatform.dispatch.shared.Result;
 
 public class LoginResult implements Result {
 

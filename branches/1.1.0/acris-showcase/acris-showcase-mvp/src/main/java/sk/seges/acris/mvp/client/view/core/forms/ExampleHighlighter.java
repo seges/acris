@@ -21,6 +21,7 @@ import com.smartgwt.client.widgets.form.fields.FormItem;
 public class ExampleHighlighter<T extends Serializable> implements ValidationHighligther<FormItem, T> {
 	public static VerticalPanel errorsPanel;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public HighlightedWidget highlight(FormItem widget, InvalidConstraint<T> constraint) {
 
@@ -44,6 +45,7 @@ public class ExampleHighlighter<T extends Serializable> implements ValidationHig
 			this.widget = widget;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void removeHighlight() {
 			Map<String, String> errors = widget.getForm().getErrors();

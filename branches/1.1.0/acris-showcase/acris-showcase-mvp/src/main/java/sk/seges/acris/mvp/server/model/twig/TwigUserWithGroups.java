@@ -8,7 +8,9 @@ import sk.seges.acris.mvp.shared.model.api.UserGroupData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 
-public class TwigUserWithGroups implements UserGroupData, UserData {
+public class TwigUserWithGroups implements UserGroupData, UserData<Long> {
+
+	private static final long serialVersionUID = 7914689115202380134L;
 
 	@Override
 	public void setId(Long t) {

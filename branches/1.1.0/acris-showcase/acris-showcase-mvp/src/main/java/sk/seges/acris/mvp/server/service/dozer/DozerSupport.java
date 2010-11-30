@@ -39,6 +39,7 @@ public class DozerSupport {
 		addMapping(sourceClass, destinationClass, true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T, S> List<T> convert(List<S> s) {
 		if (s == null) {
 			return null;
@@ -54,6 +55,7 @@ public class DozerSupport {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T, S> PagedResult<T> convert(PagedResult<S> s) {
 		PagedResult<T> result = new PagedResult<T>();
 		result.setResult((T)convert(s.getResult()));
@@ -62,6 +64,7 @@ public class DozerSupport {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T, S> Set<T> convert(Set<S> s) {
 		if (s == null) {
 			return null;
@@ -77,6 +80,7 @@ public class DozerSupport {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T, S> T convert(S s) {
 		if (s == null) {
 			return null;

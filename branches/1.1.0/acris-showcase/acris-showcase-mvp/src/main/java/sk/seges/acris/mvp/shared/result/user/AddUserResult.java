@@ -2,7 +2,7 @@ package sk.seges.acris.mvp.shared.result.user;
 
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
-import com.philbeaudoin.gwtp.dispatch.shared.Result;
+import com.gwtplatform.dispatch.shared.Result;
 
 public class AddUserResult implements Result {
 
@@ -15,13 +15,13 @@ public class AddUserResult implements Result {
 	private AddUserResult() {
 	}
 
-	private UserData user;
+	private UserData<?> user;
 
-	public AddUserResult(UserData user) {
+	public AddUserResult(UserData<?> user) {
 		this.user = user;
 	}
 
-	public UserData getUser() {
+	public UserData<?> getUser() {
 		return user;
 	}
 }

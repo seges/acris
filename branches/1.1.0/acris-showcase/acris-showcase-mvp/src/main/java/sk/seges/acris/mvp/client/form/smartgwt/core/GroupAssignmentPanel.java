@@ -1,7 +1,5 @@
 package sk.seges.acris.mvp.client.form.smartgwt.core;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import sk.seges.acris.mvp.shared.model.api.GroupData;
@@ -15,7 +13,6 @@ import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
-import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.layout.HStack;
 import com.smartgwt.client.widgets.layout.VStack;
 

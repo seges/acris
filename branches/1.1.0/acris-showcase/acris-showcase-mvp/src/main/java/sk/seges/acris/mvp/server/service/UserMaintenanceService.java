@@ -17,49 +17,49 @@ import sk.seges.sesam.dao.PagedResult;
 
 import com.vercer.engine.persist.ObjectDatastore;
 
-public class UserMaintenanceService extends AbstractCRUDService<UserData> implements IUserMaintenanceService {
+public class UserMaintenanceService extends AbstractCRUDService<UserData<?>> implements IUserMaintenanceService {
 
-	private IGenericUserDao<UserData> userDao;
+	private IGenericUserDao<UserData<?>> userDao;
 	
 	@Autowired
-	public UserMaintenanceService(ObjectDatastore datastore, IGenericUserDao<UserData> userDao) {
+	public UserMaintenanceService(ObjectDatastore datastore, IGenericUserDao<UserData<?>> userDao) {
 		super();
 		this.userDao = userDao;
 	}
 	
 	@Override
-	protected ICrudDAO<UserData> getDao() {
+	protected ICrudDAO<UserData<?>> getDao() {
 		return userDao;
 	}
 	
 	@Override
 	@RolesAllowed(Grants.USER_MAINTENANCE)
 	@PostExecutionAclEvaluation
-	public UserData persist(UserData entity) {
+	public UserData<?> persist(UserData<?> entity) {
 		return super.persist(entity);
 	}
 
 	@Override
 	@RolesAllowed(Grants.USER_MAINTENANCE)
-	public UserData merge(UserData entity) {
+	public UserData<?> merge(UserData<?> entity) {
 		return super.merge(entity);
 	}
 
 	@Override
 	@RolesAllowed(Grants.USER_MAINTENANCE)
-	public void remove(UserData entity) {
+	public void remove(UserData<?> entity) {
 		super.remove(entity);
 	}
 
 	@Override
 	@RolesAllowed(Grants.USER_MAINTENANCE)
-	public PagedResult<List<UserData>> findAll(Page requestedPage) {
+	public PagedResult<List<UserData<?>>> findAll(Page requestedPage) {
 		return super.findAll(requestedPage);
 	}
 
 	@Override
 	@RolesAllowed(Grants.USER_MAINTENANCE)
-	public UserData findEntity(UserData entity) {
+	public UserData<?> findEntity(UserData<?> entity) {
 		return super.findEntity(entity);
 	}
 }

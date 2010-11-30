@@ -1,6 +1,6 @@
 package sk.seges.acris.mvp.client.configuration.production;
 
-import sk.seges.acris.mvp.client.action.ActionManager;
+import sk.seges.acris.showcase.client.action.ActionManager;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 

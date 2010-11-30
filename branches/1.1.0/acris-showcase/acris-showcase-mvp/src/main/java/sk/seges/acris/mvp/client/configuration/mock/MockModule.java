@@ -1,9 +1,9 @@
 package sk.seges.acris.mvp.client.configuration.mock;
 
-import sk.seges.acris.mvp.client.action.ActionManager;
 import sk.seges.acris.mvp.client.action.mocks.MockAddUserActionHandler;
 import sk.seges.acris.mvp.client.action.mocks.MockFetchUsersActionHandler;
-import sk.seges.acris.mvp.client.action.mocks.manager.MockActionManager;
+import sk.seges.acris.showcase.client.action.ActionManager;
+import sk.seges.acris.showcase.client.action.mocks.manager.MockActionManager;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Singleton;
