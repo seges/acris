@@ -12,7 +12,7 @@ import com.vercer.engine.persist.annotation.Embed;
 import com.vercer.engine.persist.annotation.Key;
 import com.vercer.engine.persist.annotation.Store;
 
-public class TwigGenericUser implements UserData {
+public class TwigGenericUser implements UserData<Long> {
 
 	private static final long serialVersionUID = 8007659656583555159L;
 
