@@ -8,8 +8,8 @@ import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
