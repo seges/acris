@@ -6,9 +6,9 @@ import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import sk.seges.acris.core.server.utils.io.StringFile;
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
 import sk.seges.acris.generator.server.processor.IContentInfoProvider;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public abstract class AbstractTest {
