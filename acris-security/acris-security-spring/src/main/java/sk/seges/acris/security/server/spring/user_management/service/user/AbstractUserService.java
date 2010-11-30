@@ -105,10 +105,10 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
 		
 		if (auth.getPrincipal() instanceof SpringUserAdapter) {
-			SpringUserAdapter adapter = (SpringUserAdapter)auth.getPrincipal();
+			SpringUserAdapter<?> adapter = (SpringUserAdapter<?>)auth.getPrincipal();
 			clientSession.setUser(adapter.getUser());
 		} else if (auth.getPrincipal() instanceof UserData) {
-			UserData userData = (UserData)auth.getPrincipal();
+			UserData<?> userData = (UserData<?>)auth.getPrincipal();
 			clientSession.setUser(userData);
 		} else {
 			if (auth.getPrincipal() == null) {
@@ -137,7 +137,7 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 	 */
 	@Override
 //	@Secured(RolePermissions.USER_MAINTENANCE_ROLE_PERMISSION_READ)
-	public UserData getLoggedUser() {
+	public UserData<?> getLoggedUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (authentication == null) {
@@ -148,6 +148,6 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 			return null;
 		}
 		
-		return (UserData)authentication.getPrincipal();
+		return (UserData<?>)authentication.getPrincipal();
 	}
 }

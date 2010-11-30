@@ -15,15 +15,15 @@ public class SpringUserService implements UserDetailsService {
 
 	private static final long serialVersionUID = 8634166450216274971L;
 
-	protected IGenericUserDao<UserData> genericUserDao;
+	protected IGenericUserDao<UserData<?>> genericUserDao;
 
-	public SpringUserService(IGenericUserDao<UserData> genericUserDao) {
+	public SpringUserService(IGenericUserDao<UserData<?>> genericUserDao) {
 		this.genericUserDao = genericUserDao;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException, DataAccessException {
-		UserData userData = genericUserDao.findByUsername(userName);
+		UserData<?> userData = genericUserDao.findByUsername(userName);
 		if (userData instanceof UserDetails) {
 			return (UserDetails) userData;
 		}

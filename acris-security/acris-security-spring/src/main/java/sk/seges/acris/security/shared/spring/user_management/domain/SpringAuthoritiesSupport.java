@@ -12,20 +12,21 @@ import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 public class SpringAuthoritiesSupport implements Serializable {
 
 	private static final long serialVersionUID = -274900627165199081L;
-	private UserData user;
+	private UserData<?> user;
 
 	public SpringAuthoritiesSupport() {
 	}
 
-	public void setUser(UserData user) {
+	public void setUser(UserData<?> user) {
 		this.user = user;
 	}
 
-	public UserData getUser() {
-		return user;
+	@SuppressWarnings("unchecked")
+	public <E> UserData<E> getUser() {
+		return (UserData<E>) user;
 	}
 
-	public SpringAuthoritiesSupport(UserData user) {
+	public SpringAuthoritiesSupport(UserData<?> user) {
 		this.user = user;
 	}
 
