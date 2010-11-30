@@ -1,5 +1,8 @@
 <module>
 	<inherits name='sk.seges.acris.widget.Widgets'/>
+	<inherits name='com.google.gwt.gen2.table.Table'/>
+	<inherits name='com.google.gwt.gen2.picker.Picker' />
+	<inherits name='sk.seges.sesam.Core' />
 	
 	<stylesheet src="acris-styles/widgets-beantable.css" />
 	
@@ -14,4 +17,6 @@
         <when-type-assignable
             class="sk.seges.acris.widget.client.filterpanel.FilterPanelSpec"/>
     </generate-with>
+    <inherits name="com.google.gwt.gen2.picker.Picker"/>
+    <inherits name="com.google.gwt.gen2.picker.Picker"/>
 </module>
