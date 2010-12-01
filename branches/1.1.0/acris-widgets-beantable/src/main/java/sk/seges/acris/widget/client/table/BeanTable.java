@@ -44,7 +44,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.gen2.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.FixedWidthFlexTable;
