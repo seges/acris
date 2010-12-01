@@ -8,10 +8,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.gen2.picker.client.SliderBar;
 import com.google.gwt.gen2.picker.client.SliderBar.LabelFormatter;
 import com.google.gwt.gen2.table.client.PagingScrollTable;
-import com.google.gwt.gen2.table.client.PagingOptions.Css;
-import com.google.gwt.gen2.table.client.PagingOptions.PagingOptionsMessages;
-import com.google.gwt.gen2.table.client.PagingOptions.PagingOptionsResources;
-import com.google.gwt.gen2.table.client.PagingOptions.PagingOptionsStyle;
 import com.google.gwt.gen2.table.event.client.PageChangeEvent;
 import com.google.gwt.gen2.table.event.client.PageChangeHandler;
 import com.google.gwt.gen2.table.event.client.PageCountChangeEvent;
@@ -20,15 +16,12 @@ import com.google.gwt.gen2.table.event.client.PageLoadEvent;
 import com.google.gwt.gen2.table.event.client.PageLoadHandler;
 import com.google.gwt.gen2.table.event.client.PagingFailureEvent;
 import com.google.gwt.gen2.table.event.client.PagingFailureHandler;
-import com.google.gwt.gen2.widgetbase.client.WidgetCss;
 import com.google.gwt.i18n.client.Messages;
-import com.google.gwt.i18n.client.Messages.DefaultMessage;
-import com.google.gwt.libideas.resources.client.ImageResource;
-import com.google.gwt.libideas.resources.client.ImmutableResourceBundle;
-import com.google.gwt.libideas.resources.client.CssResource.ClassName;
-import com.google.gwt.libideas.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.libideas.resources.client.ImageResource.RepeatStyle;
-import com.google.gwt.libideas.resources.client.ImmutableResourceBundle.Resource;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -66,7 +59,7 @@ public class TreeTablePagingOptions extends Composite {
 	 * The class names indicate the default gwt names for these styles. <br>
 	 * 
 	 */
-	public static interface Css extends WidgetCss {
+	public static interface Css extends CssResource {
 		/**
 		 * Widget style name.
 		 * 
@@ -106,38 +99,38 @@ public class TreeTablePagingOptions extends Composite {
 	/**
 	 * Resources used.
 	 */
-	public interface PagingOptionsStyle extends ImmutableResourceBundle {
+	public interface PagingOptionsStyle extends ClientBundle {
 		/**
 		 * The css file.
 		 */
-		@Resource("com/google/gwt/gen2/widgetbase/public/PagingOptions.css")
+		@Source("com/google/gwt/gen2/widgetbase/public/PagingOptions.css")
 		Css css();
 
-		@Resource("firstPage.png")
+		@Source("firstPage.png")
 		ImageResource firstPage();
 
-		@Resource("firstPageDisabled.png")
+		@Source("firstPageDisabled.png")
 		ImageResource firstPageDisabled();
 
-		@Resource("lastPage.png")
+		@Source("lastPage.png")
 		ImageResource lastPage();
 
-		@Resource("lastPageDisabled.png")
+		@Source("lastPageDisabled.png")
 		ImageResource lastPageDisabled();
 
-		@Resource("nextPage.png")
+		@Source("nextPage.png")
 		ImageResource nextPage();
 
-		@Resource("nextPageDisabled.png")
+		@Source("nextPageDisabled.png")
 		ImageResource nextPageDisabled();
 
-		@Resource("previousPage.png")
+		@Source("previousPage.png")
 		ImageResource previousPage();
 
-		@Resource("previousPageDisabled.png")
+		@Source("previousPageDisabled.png")
 		ImageResource previousPageDisabled();
 
-		@Resource("headerBackground.png")
+		@Source("headerBackground.png")
 		@ImageOptions(repeatStyle = RepeatStyle.Horizontal)
 		ImageResource pagingBackground();
 	}	

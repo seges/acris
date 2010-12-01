@@ -1,11 +1,11 @@
 package sk.seges.acris.widget.client.table;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.gen2.table.client.PagingOptions;
 import com.google.gwt.gen2.table.client.TreeTable;
-import com.google.gwt.libideas.resources.client.ImageResource;
-import com.google.gwt.libideas.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.libideas.resources.client.ImageResource.RepeatStyle;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.CssResource.ClassName;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
@@ -47,22 +47,22 @@ public class TreeTableController extends TreeTablePagingOptions {
 	 * Resources used.
 	 */
 	public interface TreeTableControllerStyle extends PagingOptionsStyle {
-		@Resource("com/google/gwt/gen2/widgetbase/public/TreeTableController.css")
+		@Source("com/google/gwt/gen2/widgetbase/public/TreeTableController.css")
 		Css css();
 
-		@Resource("closeTree.png")
+		@Source("closeTree.png")
 		ImageResource closeTree();
 
-		@Resource("openTree.png")
+		@Source("openTree.png")
 		ImageResource openTree();
 
-		@Resource("treeView.png")
+		@Source("treeView.png")
 		ImageResource treeView();
 
-		@Resource("tableView.png")
+		@Source("tableView.png")
 		ImageResource tableView();
 
-		@Resource("headerBackground.png")
+		@Source("headerBackground.png")
 		@ImageOptions(repeatStyle = RepeatStyle.Horizontal)
 		ImageResource pagingBackground();
 	}
