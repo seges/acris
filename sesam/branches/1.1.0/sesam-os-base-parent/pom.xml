@@ -5,7 +5,7 @@
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
 	<artifactId>sesam-os-base-parent</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<packaging>pom</packaging>
 
 	<!-- More Project Information -->
@@ -28,9 +28,9 @@
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
-		<url>http://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</url>
-		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk/sesam-os-base-parent</developerConnection>
+		<url>http://acris.googlecode.com/svn/sesam/tags/sesam-os-base-parent/sesam-os-base-parent-1.1.0</url>
+		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-base-parent/sesam-os-base-parent-1.1.0</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-base-parent/sesam-os-base-parent-1.1.0</developerConnection>
 	</scm>
 
 	<distributionManagement>
