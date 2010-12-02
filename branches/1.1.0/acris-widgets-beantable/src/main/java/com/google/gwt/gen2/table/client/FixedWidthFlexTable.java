@@ -111,7 +111,7 @@ public class FixedWidthFlexTable extends FlexTable {
      * @return the column's TD element
      */
     protected Element getRawElement(int row, int column) {
-      return super.getElement(row + 1, column);
+      return super.getRawElement(row + 1, column);
     }
   }
 
@@ -146,7 +146,7 @@ public class FixedWidthFlexTable extends FlexTable {
      * @return the row element
      */
     protected Element getRawElement(int row) {
-      return super.getElement(row + 1);
+      return super.getRawElement(row + 1);
     }
   }
 
