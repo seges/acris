@@ -10,7 +10,7 @@ import com.google.gwt.core.client.GWT;
 
 public class OfflineGenerator extends GwtTestGenerateOfflineContent {
 
-	private MockGinjector mockGinjector = GWT.create(MockGinjector.class);
+	private MockGinjector mockGinjector;
 	
 	@Override
 	public String getModuleName() {
@@ -24,6 +24,9 @@ public class OfflineGenerator extends GwtTestGenerateOfflineContent {
 
 	@Override
 	protected IGeneratorServiceAsync getGeneratorService() {
+		if (mockGinjector == null) {
+			mockGinjector = GWT.create(MockGinjector.class);
+		}
 		return mockGinjector.getGeneratorService();
 	}
 }
