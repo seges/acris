@@ -105,8 +105,7 @@ public class URLUtils {
 	}
 	
 	private static String replaceLocale(String href, int localeIndex, String currentLocale, String targetLanguage) {
-		int localeLength = currentLocale.length();
-		return href.substring(0, localeIndex + QUERY_LOCALE.length()) + targetLanguage + href.substring(localeIndex + QUERY_LOCALE.length() + localeLength); 
+		return href.substring(0, localeIndex + QUERY_LOCALE.length()) + targetLanguage + href.substring(localeIndex + QUERY_LOCALE.length() + targetLanguage.length()); 
 	}
 	
 	public static void main(String[] args) {
