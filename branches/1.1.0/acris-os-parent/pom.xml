@@ -83,6 +83,8 @@
 		<jpa-2.0-api.version>1.0.0-CR-1</jpa-2.0-api.version>
 		<jasper.version>3.7.3</jasper.version>
 		<jasperserver.version>3.7.0</jasperserver.version>
+		
+		<openid4java.version>0.9.5</openid4java.version>
 
 	</properties>
 
@@ -302,6 +304,17 @@
 			</dependency>
 			<dependency>
 				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-openid</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-openid</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
 				<artifactId>acris-server-components</artifactId>
 				<version>${pom.version}</version>
 			</dependency>
@@ -374,7 +387,14 @@
 				<version>${jasperserver.version}</version>
 			</dependency>
 
-		</dependencies>
+			<!-- OpenID4Java consumer -->
+			<dependency>
+	        	<groupId>org.openid4java</groupId>
+	        	<artifactId>openid4java-consumer</artifactId>
+	        	<version>${openid4java.version}</version>
+        	</dependency>
+
+</dependencies>
 	</dependencyManagement>
 
 	<build>
