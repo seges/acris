@@ -4,8 +4,8 @@ import sk.seges.acris.showcase.client.i18n.ShowcaseMessages;
 import sk.seges.acris.showcase.client.presenter.FailureHandler;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
-import com.gwtplatform.mvp.client.EventBus;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
 import com.gwtplatform.mvp.client.annotations.ProxyStandard;

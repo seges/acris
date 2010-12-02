@@ -5,8 +5,12 @@
 
 	<inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
 
+	<inherits name="com.allen_sauer.gwt.log.gwt-log" />
+
 	<!-- Acris dependency -->
 	<inherits name="sk.seges.acris.Core" />
+	<inherits name="sk.seges.acris.Common" />
+	<inherits name="sk.seges.acris.Callbacks"/>
 	<inherits name="sk.seges.acris.Widgets" />
 	<inherits name="sk.seges.acris.Showcase" />
 	<inherits name="sk.seges.acris.Generator" />
@@ -32,14 +36,6 @@
 	<!-- Using black theme -->
 	<inherits name="com.smartgwt.SmartGwt" />
 	<inherits name="com.smartclient.theme.enterprise.Enterprise"/>
-
-	<!-- Binding generator for binding widget holders (e.g. panels, forms, ...) -->
-	<generate-with class="sk.seges.acris.binding.rebind.bean.smartgwt.SmartGWTRecordWrapperGenerator">
-		<all>
-			<when-type-assignable class="sk.seges.acris.binding.client.wrappers.BeanWrapper" />
-	   		<when-property-is name="widgets" value="smartgwt" />
-	   	</all>
-	</generate-with>
 
 	<source path="client" />
 	<source path="shared" />

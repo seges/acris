@@ -5,8 +5,8 @@ import java.util.Set;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.validation.client.InvalidConstraint;
 import com.gwtplatform.mvp.client.ViewImpl;
@@ -14,13 +14,13 @@ import com.smartgwt.client.widgets.form.fields.FormItem;
 
 public abstract class SmartViewImpl extends ViewImpl {
 
-	private HandlerManager handlerManager;
+	private SimpleEventBus handlerManager;
 
-	HandlerManager ensureHandlers() {
-		return handlerManager == null ? handlerManager = new HandlerManager(this) : handlerManager;
+	SimpleEventBus ensureHandlers() {
+		return handlerManager == null ? handlerManager = new SimpleEventBus() : handlerManager;
 	}
 
-	HandlerManager getHandlerManager() {
+	SimpleEventBus getHandlerManager() {
 		return handlerManager;
 	}
 
