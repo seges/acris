@@ -12,14 +12,6 @@
 		<relativePath>../acris-server-parent</relativePath>
 	</parent>
 
-	<!-- TODO -->
-	<repositories>
-		<repository>
-			<id>twig</id>
-			<url>http://mvn.twig-persist.googlecode.com/hg</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 
 		<!-- GWT dependencies -->

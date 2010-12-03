@@ -11,13 +11,6 @@
 		<relativePath>../acris-security-parent</relativePath>
 	</parent>
 
-	<repositories>
-		<repository>
-			<id>twig</id>
-			<url>http://mvn.twig-persist.googlecode.com/hg</url>
-		</repository>
-	</repositories>
-	
 	<dependencies>
 
 		<!-- GWT dependencies -->

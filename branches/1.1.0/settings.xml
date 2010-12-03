@@ -98,6 +98,12 @@
             				<name>DataNucleus Repository</name>
             				<url>http://www.datanucleus.org/downloads/maven2</url>
         			</repository>
+				<repositories>
+					<repository>
+						<id>twig</id>
+						<url>http://mvn.twig-persist.googlecode.com/hg</url>
+					</repository>
+				</repositories>
 			</repositories>
 
 			<pluginRepositories>
