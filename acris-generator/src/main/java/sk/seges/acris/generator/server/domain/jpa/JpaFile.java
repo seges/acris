@@ -12,18 +12,19 @@ public class JpaFile implements FileData {
 
 	private static final long serialVersionUID = -85528865636910575L;
 
-	private String id;
+	private Long id;
 	private String content;
+	private String path;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Override
-	public void setId(String t) {
+	public void setId(Long t) {
 		this.id = t;
 	}
 
 	@Override
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -35,5 +36,15 @@ public class JpaFile implements FileData {
 	@Override
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	@Override
+	public String getpath() {
+		return path;
+	}
+
+	@Override
+	public void setPath(String path) {
+		this.path = path;
 	}
 }
