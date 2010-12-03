@@ -34,8 +34,8 @@
 
 	<scm>
 		<url>http://code.google.com/p/acris/source</url>
-		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
+		<connection>scm:svn:http://acris.googlecode.com/svn/branches/1.1.0</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/branches/1.1.0</developerConnection>
 	</scm>
 
 	<profiles>
@@ -77,9 +77,9 @@
 	<properties>
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
-		<corpis-os.version>1.1.0-SNAPSHOT</corpis-os.version>
+		<corpis-os.version>1.1.0</corpis-os.version>
 		
-		<sesam-os.version>1.1.0-SNAPSHOT</sesam-os.version>
+		<sesam-os.version>1.1.0</sesam-os.version>
 
 		<jpa-2.0-api.version>1.0.0-CR-1</jpa-2.0-api.version>
 		<jasper.version>3.7.3</jasper.version>
