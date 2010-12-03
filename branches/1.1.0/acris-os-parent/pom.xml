@@ -69,6 +69,7 @@
 		<module>../acris-reporting</module>
 		<module>../acris-security</module>
 		<module>../acris-site</module>
+		<module>../acris-server</module>
 		<!--module>../acris-showcase</module-->
 		<module>../acris-server-components</module>
 	</modules>
@@ -82,10 +83,12 @@
 
 		<jpa-2.0-api.version>1.0.0-CR-1</jpa-2.0-api.version>
 		<jasper.version>3.7.3</jasper.version>
-		<jasperserver.version>3.7.0</jasperserver.version>
 		
+		<jasperserver.version>3.7.0</jasperserver.version>
 		<openid4java.version>0.9.5</openid4java.version>
 
+
+		<twig.version>1.0.3</twig.version>
 	</properties>
 
 	<dependencyManagement>
@@ -94,6 +97,11 @@
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-dao-impl</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-dao-api</artifactId>
 				<version>${corpis-os.version}</version>
 			</dependency>
 
@@ -356,6 +364,11 @@
 				<artifactId>acris-site-spring</artifactId>
 				<version>${pom.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-server-appengine</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.hibernate.javax.persistence</groupId>
@@ -364,37 +377,69 @@
 			</dependency>
 			
 			<dependency>
+				
 				<groupId>net.sf.jasperreports</groupId>
+				
 				<artifactId>jasperreports</artifactId>
+				
 				<version>${jasper.version}</version>
+			
 			</dependency>
 
+
 			<dependency>
+
 				<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
+
 				<artifactId>jasperserver-api-metadata</artifactId>
+
 				<version>${jasperserver.version}</version>
+
 			</dependency>
 
+
 			<dependency>
+
 				<groupId>com.jaspersoft.jasperserver</groupId>
+
 				<artifactId>jasperserver-ireport-plugin</artifactId>
+
 				<version>${jasperserver.version}</version>
+
 			</dependency>
+
 
 			<dependency>
 				<groupId>com.jaspersoft.jasperserver</groupId>
+
 				<artifactId>jasperserver-common-ws</artifactId>
+
 				<version>${jasperserver.version}</version>
+
 			</dependency>
+
+
 
 			<!-- OpenID4Java consumer -->
-			<dependency>
-	        	<groupId>org.openid4java</groupId>
-	        	<artifactId>openid4java-consumer</artifactId>
-	        	<version>${openid4java.version}</version>
-        	</dependency>
 
-</dependencies>
+			<dependency>
+
+		        	<groupId>org.openid4java</groupId>
+
+		        	<artifactId>openid4java-consumer</artifactId>
+
+		        	<version>${openid4java.version}</version>
+ 
+		       	</dependency>
+
+			<!-- Twig -->
+			<dependency>
+				<groupId>com.vercer.engine.persist</groupId>
+				<artifactId>twig-persist</artifactId>
+				<version>${twig.version}</version>
+			</dependency>
+
+		</dependencies>
 	</dependencyManagement>
 
 	<build>
