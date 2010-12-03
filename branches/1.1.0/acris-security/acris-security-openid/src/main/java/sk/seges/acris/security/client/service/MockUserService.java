@@ -55,4 +55,10 @@ public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 	public void setServiceEntryPoint(String address) {
 		// TODO Auto-generated method stub
 	}
+
+	@Override
+	public String getSerializationPolicyName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
