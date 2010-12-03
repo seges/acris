@@ -32,6 +32,10 @@ public class OpenIDLoginPresenter extends LoginPresenter {
 		this.consumerService = consumerService;
 	}
 
+	/**
+	 * Authenticates an OpenID identifier and opens the discovered provider's login url in a popup. 
+	 * @param identifier
+	 */
 	public void authenticate(String identifier) {
 		consumerService.authenticate(identifier, getModuleUrl(), new AsyncCallback<OpenIDUser>() {
 
@@ -56,6 +60,10 @@ public class OpenIDLoginPresenter extends LoginPresenter {
 		});
 	}
 
+	/**
+	 * Verifies a response from an OpenID provider and calls login on boradcaster.
+	 * @param callback
+	 */
 	public void verify(final AsyncCallback<ClientSession> callback) {
 		final String mode = Window.Location.getParameter("openid.mode");
 

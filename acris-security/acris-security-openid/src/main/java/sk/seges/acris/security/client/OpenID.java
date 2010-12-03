@@ -27,6 +27,11 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+/**
+ * Simple entry point with OpenID login dialog which sends session id to desired url on successful login.
+ *  
+ * @author Martin
+ */
 public class OpenID implements EntryPoint {
 
 	private LoginMessages loginMessages = (LoginMessages) GWT.create(LoginMessages.class);
@@ -38,6 +43,7 @@ public class OpenID implements EntryPoint {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onModuleLoad() {
+		// define a callback that receives a login result
 		final AsyncCallback<ClientSession> callback = new SecuredAsyncCallback<ClientSession>() {
 
 			@Override
