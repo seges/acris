@@ -34,15 +34,6 @@
 		</developer>
 	</developers>
 
-	<developers>
-		<developer>
-			<id>ladislav.gazo</id>
-			<email>ladislav.gazo@gmail.com</email>
-			<name>Ladislav Gazo</name>
-			<organization>Seges</organization>
-		</developer>
-	</developers>
-
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
