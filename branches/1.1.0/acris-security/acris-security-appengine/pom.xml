@@ -40,7 +40,6 @@
 		<dependency>
 			<groupId>com.vercer.engine.persist</groupId>
 			<artifactId>twig-persist</artifactId>
-			<version>1.0.3</version>
 		</dependency>
 
 	</dependencies>
