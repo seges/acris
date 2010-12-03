@@ -17,7 +17,7 @@ public class DatabasePersister implements DataPersister {
 	@Override
 	public void writeTextToFile(String directory, String filename, String content) {
 		FileData file = fileDao.getEntityInstance();
-		file.setId(directory + File.separator + filename);
+		file.setPath(directory + File.separator + filename);
 		file.setContent(content);
 		fileDao.merge(file);
 	}
