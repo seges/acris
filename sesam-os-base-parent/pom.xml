@@ -34,6 +34,15 @@
 		</developer>
 	</developers>
 
+	<developers>
+		<developer>
+			<id>ladislav.gazo</id>
+			<email>ladislav.gazo@gmail.com</email>
+			<name>Ladislav Gazo</name>
+			<organization>Seges</organization>
+		</developer>
+	</developers>
+
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
@@ -657,10 +666,6 @@
 					<plugin>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>2.7</version>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
 					</plugin>
 				</plugins>
 			</reporting>			
