@@ -1,0 +1,7 @@
+<module>
+	<!-- GWT basic inherit -->	
+	<inherits name='com.google.gwt.user.User' />
+	
+	<!-- Acris domain inherit -->
+	<inherits name='sk.seges.acris.domain.Domain' />	
+</module>

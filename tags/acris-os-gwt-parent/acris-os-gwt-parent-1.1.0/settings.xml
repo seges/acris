@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	<activeProfiles>
+		<activeProfile>acris-os</activeProfile>
+	</activeProfiles>
+
+	<profiles>
+		<profile>
+			<id>acris-os</id>
+			
+			<repositories>
+				<repository>
+					<id>acris-sonatype</id>
+					<url>https://oss.sonatype.org/content/groups/staging</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>				 
+
+				<repository>
+					<id>acris-snapshots-repo</id>
+					<url>http://acris.googlecode.com/svn/snapshot-repository/</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+				</repository>
+				<repository>
+					<id>acris-releases-repo</id>
+					<url>http://acris.googlecode.com/svn/releases-repository/</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+
+				<repository>
+					<id>gilead-snapshots-repo</id>
+					<url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-snapshots-repo</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+				</repository>
+				<repository>
+					<id>gilead-releases-repo</id>
+					<url>https://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+
+				<repository>
+            				<id>guice-maven</id>
+            				<name>guice maven</name>
+            				<url>http://guice-maven.googlecode.com/svn/trunk</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+				
+				<repository>
+					<id>jboss-repo</id>
+					<url>http://repository.jboss.com/maven2</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+				<repository>
+					<id>maven-gae-plugin-repo</id>
+  					<name>Maven Google App Engine Repository</name>
+					<url>http://maven-gae-plugin.googlecode.com/svn/repository/</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+ 				<repository>
+          				<id>DataNucleus_Repos2</id>
+            				<name>DataNucleus Repository</name>
+            				<url>http://www.datanucleus.org/downloads/maven2</url>
+        			</repository>
+				<repositories>
+					<repository>
+						<id>twig</id>
+						<url>http://mvn.twig-persist.googlecode.com/hg</url>
+					</repository>
+				</repositories>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>maven-annotation-plugin-repo</id>
+					<url>http://maven-annotation-plugin.googlecode.com/svn/trunk/mavenrepo</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>acris-plugins-snapshots-repo</id>
+					<url>http://acris.googlecode.com/svn/snapshot-plugins-repository</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>DataNucleus</id>
+            				<url>http://www.datanucleus.org/downloads/maven2/</url>
+        			</pluginRepository>
+			</pluginRepositories>
+		</profile>
+	</profiles>
+</settings>

@@ -1,0 +1,13 @@
+<module>
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+	<inherits name='com.google.gwt.junit.JUnit'/>
+
+	<inherits name="com.allen_sauer.gwt.log.gwt-log" />
+
+	<inherits name="sk.seges.acris.Callbacks"/>
+	<inherits name="sk.seges.acris.Common"/>
+
+	<source path='client' />
+	<source path='shared' />
+</module>
