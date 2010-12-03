@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sk.seges.acris.core.client.util.JavascriptUtils;
+import sk.seges.acris.core.client.util.JavaScriptUtils;
 import sk.seges.acris.reporting.client.panel.parameter.AbstractTypePanel;
 import sk.seges.acris.reporting.client.panel.parameter.IParameterTypePanel;
 import sk.seges.acris.reporting.rpc.domain.ReportParameter;
@@ -195,7 +195,7 @@ public class ReportExportDialogCreator {
 			@Override
 			public void onClick(ClickEvent arg0) {
 //				downloadAnchor.setHref(exportPath);
-				JavascriptUtils.getURL(exportPath);
+				JavaScriptUtils.getURL(exportPath);
 			}
 		})));
 		return anchorPanel;
