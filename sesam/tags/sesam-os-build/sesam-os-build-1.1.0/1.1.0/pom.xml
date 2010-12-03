@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- The Basics -->
+	<groupId>sk.seges.sesam</groupId>
+	<artifactId>sesam-os-build</artifactId>
+	<version>1.1.0</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os</artifactId>
+		<version>1.1.0</version>
+		<relativePath>sesam-os</relativePath>
+	</parent>
+
+	<!-- More Project Information -->
+	<name>sesam-os-build</name>
+	<description>Build Project for SESAM</description>
+
+	<modules>
+		<module>sesam-os</module>
+	</modules>
+
+</project>
