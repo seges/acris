@@ -5,6 +5,7 @@
 	<inherits name="com.google.gwt.i18n.I18N" />
 
 	<inherits name='sk.seges.acris.Core' />
+	<inherits name='sk.seges.acris.Binding' />
 	<inherits name='sk.seges.acris.Callbacks' />
 
 	<inherits name='sk.seges.acris.security.Session' />
