@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 
 import net.sf.gilead.pojo.java5.LightEntity;
@@ -46,6 +47,7 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 	private String reportUrl;
 	
 	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY)
+	@OrderBy(ReportParameter.ORDER_NUMBER)
 	private List<ReportParameter> parametersList = null;
 
 	@Override

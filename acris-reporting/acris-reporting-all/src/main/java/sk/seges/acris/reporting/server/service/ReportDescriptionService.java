@@ -1,7 +1,6 @@
 package sk.seges.acris.reporting.server.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -36,9 +35,6 @@ public class ReportDescriptionService extends PersistentRemoteService implements
 	public ReportDescriptionData findById(Long reportId) {
 		ReportDescriptionData report = reportDescriptionDao.findById(reportId);
 		Hibernate.initialize(report.getParametersList());
-		List<ReportParameter> orderedParameters = report.getParametersList();
-		Collections.sort(orderedParameters);
-		report.setParametersList(orderedParameters);
 		return report;
 	}
 
