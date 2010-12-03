@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- The Basics -->
+	<groupId>sk.seges.sesam</groupId>
+	<artifactId>sesam-os</artifactId>
+	<version>1.1.0</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os-base-parent</artifactId>
+		<version>1.1.4</version>
+	</parent>
+
+	<!-- More Project Information -->
+	<name>sesam</name>
+	<description>Meta Project for SESAM</description>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+        <scm>
+		<url>http://acris.googlecode.com/svn/sesam/tags/sesam-os-build/sesam-os-build-1.1.0/1.1.0</url>
+		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-build/sesam-os-build-1.1.0/1.1.0</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-build/sesam-os-build-1.1.0/1.1.0</developerConnection>
+	</scm>
+
+
+	<modules>
+		<module>../sesam-core</module>
+		<module>../sesam-spring</module>
+	</modules>
+
+        <build>
+                <plugins>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-release-plugin</artifactId>
+                                <configuration>
+                                        <preparationGoals>install</preparationGoals>
+                                        <tagBase>
+                                                https://acris.googlecode.com/svn/sesam/tags/${pom.artifactId}
+                                        </tagBase>
+                                </configuration>
+                        </plugin>
+                </plugins>
+        </build>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>${pom.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>sesam-spring</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
