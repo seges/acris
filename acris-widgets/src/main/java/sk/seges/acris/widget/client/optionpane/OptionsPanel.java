@@ -6,6 +6,7 @@ import sk.seges.acris.widget.client.WidgetFactory;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -34,7 +35,7 @@ public class OptionsPanel extends FlowPanel {
 	 * @param option
 	 * @param addHideAction If true dialog hiding click listener will be bundled with option.
 	 */
-	public void addOption(Widget optionWidget, ClickHandler hidingClickHanler) {
+	public HandlerRegistration addOption(Widget optionWidget, ClickHandler hidingClickHanler) {
 		// FIXME: tmp hack...
 		Widget option = optionWidget;
 		if(option instanceof Button) {
@@ -46,18 +47,22 @@ public class OptionsPanel extends FlowPanel {
 		option.addStyleName(STYLE_OPTION);
 		add(option);
 
+		HandlerRegistration registration = null;
+		
 		if (hidingClickHanler != null) {
 			if((optionWidget instanceof HasClickHandlers)) {
-				((HasClickHandlers)optionWidget).addClickHandler(hidingClickHanler);
+				registration = ((HasClickHandlers)optionWidget).addClickHandler(hidingClickHanler);
 			}else {
 				GWT.log("Widget does not implement " + HasClickHandlers.class.getName(), null);
 			}
 		}
 		addCleaner();
+
+		return registration;
 	}
 	
-	public void addOption(Widget option) {
-		addOption(option, null);
+	public HandlerRegistration addOption(Widget option) {
+		return addOption(option, null);
 	}
 
 	/**
