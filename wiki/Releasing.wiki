@@ -117,6 +117,20 @@ To deploy to Sonatype (and later to be compliant with Maven central) artifacts n
   * {{{mvn release:perform}}}
   * {{{mvn release:clean}}}
 
+== Close the release ==
+
+  * Log in to 
+  * select appropriate groupId in Staging repositories
+  * select staging release and Close it
+
+== Releasing a branch ==
+
+When you are trying to release from a branch, be aware of the following:
+
+  * check the setup of SCM information in the poms - connection and delveopers connection
+  * if you are releasing non base parent projects you might experience that prepare phase fails. After that happen modify release.properties file's key _scm.url_ to match the root of the branch, e.g.: scm.url=scm\:svn\:https\://acris.googlecode.com/svn/branches/1.1.0
+  * if you are releasing base parents, close the staging release in Sonatype. That is a good check that following release of the non-base project will work
+
 = Information regarding Sonatype repository =
 
 https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
