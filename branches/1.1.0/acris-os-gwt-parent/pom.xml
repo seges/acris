@@ -28,8 +28,8 @@
 
 	<scm>
 		<url>http://code.google.com/p/acris/source</url>
-		<connection>scm:svn:http://acris.googlecode.com/svn/branches/1.1.0</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/branches/1.1.0</developerConnection>
+		<connection>scm:svn:http://acris.googlecode.com/svn/branches/1.1.0/acris-os-gwt-parent</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/branches/1.1.0/acris-os-gwt-parent</developerConnection>
 	</scm>
 
 	<properties>
