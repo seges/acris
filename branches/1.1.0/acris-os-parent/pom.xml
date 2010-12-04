@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-parent</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1-SNAPSHOT</version>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
@@ -33,9 +33,9 @@
 	</licenses>
 
 	<scm>
-		<url>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.1.0/source</url>
-		<connection>scm:svn:http://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.1.0/1.1.0</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.1.0/1.1.0</developerConnection>
+		<url>http://code.google.com/p/acris/source</url>
+		<connection>scm:svn:http://acris.googlecode.com/svn/branches/1.1.0</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/branches/1.1.0</developerConnection>
 	</scm>
 
 	<profiles>
