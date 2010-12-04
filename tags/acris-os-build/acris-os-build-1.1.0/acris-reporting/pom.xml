@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>acris-reporting-build</artifactId>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-reporting-parent</artifactId>
+		<version>1.1.0</version>
+		<relativePath>acris-reporting-parent</relativePath>
+	</parent>
+
+	<!-- More Project Information -->
+	<name>Acris Reporting build</name>
+	<description>Build Project for Acris Reporting</description>
+
+	<modules>
+		<module>acris-reporting-parent</module>
+	</modules>
+
+</project>

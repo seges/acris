@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+	<artifactId>acris-site-parent</artifactId>
+	<name>AcrIS Site Parent</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-os-parent</artifactId>
+		<version>1.1.0</version>
+		<relativePath>../../acris-os-parent</relativePath>
+	</parent>
+
+	<modules>
+		<module>../acris-site-core</module>
+		<module>../acris-site-jpa</module>
+		<module>../acris-site-gilead</module>
+		<module>../acris-site-hibernate</module>
+		<module>../acris-site-spring</module>
+	</modules>
+
+</project>

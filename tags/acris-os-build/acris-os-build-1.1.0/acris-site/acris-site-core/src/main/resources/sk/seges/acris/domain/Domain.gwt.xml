@@ -1,0 +1,6 @@
+<module>
+	<inherits name='sk.seges.corpis.Domain' />
+
+	<!-- Making shared package public -->
+	<source path="shared" />
+</module>
