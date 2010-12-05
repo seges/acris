@@ -20,6 +20,7 @@
 		<module>../acris-security-spring</module>
 		<module>../acris-security-spring-jpa</module>
 		<module>../acris-security-spring-hibernate</module>
+		<module>../acris-security-openid</module>
 	</modules>
 
 </project>
