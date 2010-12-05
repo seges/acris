@@ -131,6 +131,12 @@ When you are trying to release from a branch, be aware of the following:
   * if you are releasing non base parent projects you might experience that prepare phase fails. After that happen modify release.properties file's key _scm.url_ to match the root of the branch, e.g.: scm.url=scm\:svn\:https\://acris.googlecode.com/svn/branches/1.1.0
   * if you are releasing base parents, close the staging release in Sonatype. That is a good check that following release of the non-base project will work
 
+== When you forget to include a module into the release ==
+
+  * e.g. it is not in parent pom
+  * mvn source:jar javadoc:jar gpg:sign repository:bundle-create
+  * use Sonatype console - Staging Upload - where you upload the bundle
+
 = Information regarding Sonatype repository =
 
 https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
