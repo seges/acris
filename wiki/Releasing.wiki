@@ -134,6 +134,7 @@ When you are trying to release from a branch, be aware of the following:
 == When you forget to include a module into the release ==
 
   * e.g. it is not in parent pom
+  * go to the tagged source tree, e.g. target/checkout directly to the module you want to release again, or download a tag
   * mvn source:jar javadoc:jar gpg:sign repository:bundle-create
   * use Sonatype console - Staging Upload - where you upload the bundle
 
