@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -40,9 +41,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class LoginView extends Composite implements LoginDisplay {
 
-	private final DockPanel dock = new DockPanel();
-
 	private LoginMessages loginMessages = (LoginMessages) GWT.create(LoginMessages.class);
+	
+	private final DockPanel dock = new DockPanel();
 
 	private final Label message = new Label();
 	private final Label errorMessage = new Label();
@@ -581,5 +582,11 @@ public class LoginView extends Composite implements LoginDisplay {
 	@Override
 	public void showMessage(String message) {
 		Window.alert(message);
+	}
+
+	@Override
+	public void displayMessage(String message) {
+		RootPanel.get().clear();
+		RootPanel.get().add(new Label(message));
 	}
 }
