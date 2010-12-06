@@ -9,6 +9,7 @@ import sk.seges.acris.core.client.util.JavaScriptUtils;
 import sk.seges.acris.security.client.handler.HasOpenIDLoginHandlers;
 import sk.seges.acris.security.client.handler.LoginHandler;
 import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
+import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.shared.IOpenIDConsumerServiceAsync;
 import sk.seges.acris.security.shared.data.OpenIDUser;
 import sk.seges.acris.security.shared.session.ClientSession;
@@ -16,11 +17,14 @@ import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
 import sk.seges.acris.util.Pair;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class OpenIDLoginPresenter extends LoginPresenter {
 
+	private LoginMessages loginMessages = (LoginMessages) GWT.create(LoginMessages.class);
+	
 	public interface OpenIDLoginDisplay extends LoginDisplay, HasOpenIDLoginHandlers {
 	}
 
@@ -80,6 +84,7 @@ public class OpenIDLoginPresenter extends LoginPresenter {
 					map.put(key, (String[]) value.toArray(new String[value.size()]));
 				}
 
+				display.displayMessage(loginMessages.loginProgress());
 				consumerService.verify(href, map, new AsyncCallback<String>() {
 
 					@Override

@@ -12,4 +12,5 @@ public interface LoginMessages extends Messages {
     public String invalidCredentials(String username);
     public String loginFailedTitle();
     public String loginSuccessfulTitle();
+    public String loginProgress();
 }

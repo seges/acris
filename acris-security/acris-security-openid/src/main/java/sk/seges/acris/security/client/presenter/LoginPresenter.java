@@ -24,6 +24,8 @@ public class LoginPresenter {
 		void setSelectedLanguage(String selectedLanguage);
 
 		void setRememberMeMode(boolean rememberMeAware);
+		
+		void displayMessage(String message);
 
 		void showMessage(String message);
 	}
