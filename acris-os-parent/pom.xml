@@ -125,249 +125,249 @@
 
 			<!-- Acris dependencies -->
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-binding</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-binding</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-widgets</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-widgets</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-callbacks</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-callbacks</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-common</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-common</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-client-core</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-client-core</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-generator</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-generator</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-json</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-json</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-crypto</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-crypto</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-recorder</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-recorder</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-core</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-core</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-appengine</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-appengine</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-hibernate</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-hibernate</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-jpa</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-jpa</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-gilead</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-gilead</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-spring</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-spring</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-spring-hibernate</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-spring-jpa</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-openid</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-openid</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-server-components</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-server-components</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-core</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-core</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-jpa</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-jpa</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-hibernate</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-spring</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-server-appengine</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>

@@ -306,7 +306,7 @@
 				<configuration>
 					<preparationGoals>install</preparationGoals>
 					<tagBase>
-						https://acris.googlecode.com/svn/tags/${pom.artifactId}
+						https://acris.googlecode.com/svn/tags/${project.artifactId}
 					</tagBase>
 				</configuration>
 			</plugin>
