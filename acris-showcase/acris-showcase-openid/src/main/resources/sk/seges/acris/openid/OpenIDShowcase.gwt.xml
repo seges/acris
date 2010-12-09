@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module>
+	<inherits name='sk.seges.acris.security.OpenID' />
+	
+	<stylesheet src="styles/styles.css" />
+	
+    <entry-point class="sk.seges.acris.openid.client.OpenIDShowcase" />
+	
+	<source path="client" />
+</module>
