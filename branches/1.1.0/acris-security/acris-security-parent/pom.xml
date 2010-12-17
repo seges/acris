@@ -21,6 +21,7 @@
 		<module>../acris-security-spring-jpa</module>
 		<module>../acris-security-spring-hibernate</module>
 		<module>../acris-security-openid</module>
+		<module>../acris-security-ui</module>
 	</modules>
 
 </project>

@@ -46,22 +46,9 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>1.3-SNAPSHOT</version>
 				<configuration>
 					<hostedWebapp>${project.build.directory}/${artifactId}-${version}</hostedWebapp>
 					<webappDirectory>${project.build.directory}/${artifactId}-${version}</webappDirectory>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>1.3-SNAPSHOT</version>
-				<configuration>
-					<hostedWebapp>target/${artifactId}-${version}</hostedWebapp>
-					<webappDirectory>target/${artifactId}-${version}</webappDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -169,6 +156,7 @@
 			<artifactId>acris-showcase-binding</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>acris-showcase-callbacks</artifactId>
@@ -178,6 +166,7 @@
 			<artifactId>acris-showcase-callbacks</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+-->
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>acris-showcase-client-core</artifactId>
@@ -205,6 +194,7 @@
 			<artifactId>acris-showcase-json</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>acris-showcase-mvp</artifactId>
@@ -221,6 +211,25 @@
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>acris-showcase-recorder</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-widgets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-widgets</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+-->
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-openid</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-openid</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 		<!--dependency> <groupId>${groupId}</groupId> <artifactId>acris-showcase-security</artifactId> 
@@ -233,15 +242,6 @@
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>acris-showcase-svn-post-commit</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${groupId}</groupId>
-			<artifactId>acris-showcase-widgets</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${groupId}</groupId>
-			<artifactId>acris-showcase-widgets</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 

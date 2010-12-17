@@ -83,6 +83,7 @@
 		<module>../acris-showcase-json</module>
 		<!--module>../acris-showcase-mvp</module-->
 		<module>../acris-showcase-recorder</module>
+		<module>../acris-showcase-openid</module>
 		<module>../acris-showcase-security</module>
 		<module>../acris-showcase-widgets</module>
 		<module>../acris-showcase-ui-support</module>
@@ -270,6 +271,17 @@
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-recorder</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>acris-showcase-openid</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>acris-showcase-openid</artifactId>
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>

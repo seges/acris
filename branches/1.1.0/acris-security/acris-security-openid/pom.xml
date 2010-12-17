@@ -13,6 +13,12 @@
 	</parent>
 
 	<dependencies>
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-dao-impl</artifactId>
+		</dependency>
+
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
@@ -32,6 +38,10 @@
 			<artifactId>acris-security-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-hibernate</artifactId>
+		</dependency>
 
 		<!-- GWT dependencies -->
 		<dependency>
@@ -43,7 +53,7 @@
 			<artifactId>gwt-servlet</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
+		
 		<!-- Other dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -61,7 +71,7 @@
 		<!-- OpenID4Java consumer -->
 		<dependency>
 			<groupId>org.openid4java</groupId>
-			<artifactId>openid4java-consumer</artifactId>
+			<artifactId>openid4java-nodeps</artifactId>
 		</dependency>
 	</dependencies>
 </project>

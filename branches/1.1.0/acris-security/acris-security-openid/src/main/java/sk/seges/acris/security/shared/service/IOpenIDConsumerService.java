@@ -1,4 +1,4 @@
-package sk.seges.acris.security.shared;
+package sk.seges.acris.security.shared.service;
 
 import java.util.Map;
 

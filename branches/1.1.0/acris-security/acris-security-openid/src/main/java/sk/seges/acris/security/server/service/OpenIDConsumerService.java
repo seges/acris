@@ -1,14 +1,12 @@
-package sk.seges.acris.security.server;
+package sk.seges.acris.security.server.service;
 
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.openid4java.OpenIDException;
-import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
@@ -17,26 +15,32 @@ import org.openid4java.message.AuthRequest;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
 
-import sk.seges.acris.security.shared.IOpenIDConsumerService;
+import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.shared.data.OpenIDUser;
+import sk.seges.acris.security.shared.service.IOpenIDConsumerService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
 
 public class OpenIDConsumerService extends RemoteServiceServlet implements IOpenIDConsumerService {
 
 	private static final long serialVersionUID = 530902889319575560L;
 	private Logger log = Logger.getLogger(OpenIDConsumerService.class);
 	private ConsumerManager manager;
+	private ServerSessionProvider sessionProvider;
+
+	@Inject
+	public OpenIDConsumerService(ConsumerManager manager, ServerSessionProvider sessionProvider) {
+		this.manager = manager;
+		this.sessionProvider = sessionProvider;
+	}
 
 	private ConsumerManager getManager() {
-		if (manager == null) {
-			try {
-				manager = new ConsumerManager();
-			} catch (ConsumerException e) {
-				log.error("Error while creating openID consumer manager", e);
-			}
-		}
 		return manager;
+	}
+
+	private HttpSession getSession() {
+		return sessionProvider.getSession(true);
 	}
 
 	@Override
@@ -50,8 +54,7 @@ public class OpenIDConsumerService extends RemoteServiceServlet implements IOpen
 			DiscoveryInformation discovered = getManager().associate(discoveries);
 
 			// store the discovery information in the user's session
-			HttpServletRequest threadLocalRequest = getThreadLocalRequest();
-			HttpSession session = threadLocalRequest.getSession();
+			HttpSession session = getSession();
 			session.setAttribute("openid-disc", discovered);
 
 			// obtain a AuthRequest message to be sent to the OpenID provider
@@ -94,8 +97,7 @@ public class OpenIDConsumerService extends RemoteServiceServlet implements IOpen
 			ParameterList response = new ParameterList(parameterMap);
 
 			// retrieve the previously stored discovery information
-			HttpServletRequest threadLocalRequest = getThreadLocalRequest();
-			HttpSession session = threadLocalRequest.getSession();
+			HttpSession session = getSession();
 			DiscoveryInformation discovered = (DiscoveryInformation) session.getAttribute("openid-disc");
 
 			// verify the response; ConsumerManager needs to be the same
