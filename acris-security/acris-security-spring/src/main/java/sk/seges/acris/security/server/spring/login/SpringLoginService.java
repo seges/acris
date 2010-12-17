@@ -1,50 +1,62 @@
-/**
- * 
- */
-package sk.seges.acris.security.server.spring.user_management.service.user;
+package sk.seges.acris.security.server.spring.login;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.Authentication;
-import org.springframework.security.AuthenticationException;
 import org.springframework.security.AuthenticationManager;
+import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.context.SecurityContextImpl;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.userdetails.UserDetails;
 
+import sk.seges.acris.security.server.core.login.api.LoginService;
+import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
+import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.service.IUserService;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * User service base for various implementations using acris-security logic. It
- * allows you to use own LoginToken, Authentication token, enrich client session
- * or enforce own session ID generation policy.
+ * Standard user service using {@link UserPasswordLoginToken} to log the user in
+ * (and out). The service uses Spring's DAO authentication provider. The
+ * behaviour of fetching authorities can be altered by:
+ * <ul>
+ * <li>providing specific implementation of generic user DAO (bean name is
+ * 'genericUserDao'). By aliasing the bean name to the specific implementation
+ * you are able to provide authorities for the user with own DAO.</li>
+ * <li>providing own chain of authentication providers</li>
+ * </ul>
  * 
+ * @author fat
  * @author ladislav.gazo
  */
-public abstract class AbstractUserService extends RemoteServiceServlet implements IUserService {
-	private static final long serialVersionUID = -4227745445378198727L;
+public class SpringLoginService implements LoginService {
 
 	private AuthenticationManager authenticationManager;
 
 	private SessionIDGenerator sessionIDGenerator;
 
-	private Logger log = Logger.getLogger(AbstractUserService.class);
-	
-	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+	private Logger log = Logger.getLogger(SpringLoginService.class);
+
+	public SpringLoginService(AuthenticationManager authenticationManager, SessionIDGenerator sessionIDGenerator) {
 		this.authenticationManager = authenticationManager;
+		this.sessionIDGenerator = sessionIDGenerator;
 	}
 
-	public void setSessionIDGenerator(SessionIDGenerator sessionIDGenerator) {
-		this.sessionIDGenerator = sessionIDGenerator;
+	protected String[] getUserAuthorities(UserDetails user) {
+		GrantedAuthority[] granthedAuthorities = user.getAuthorities();
+		String[] authorities = new String[granthedAuthorities.length];
+
+		int i = 0;
+		for (GrantedAuthority grantedAuthority : granthedAuthorities) {
+			authorities[i++] = grantedAuthority.getAuthority();
+		}
+		return authorities;
 	}
 
 	/**
@@ -58,7 +70,11 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 	 * @return Spring-security's Authentication token.
 	 * @throws ServerException
 	 */
-	protected abstract Authentication createAuthenticationToken(LoginToken token) throws ServerException;
+	protected Authentication createAuthenticationToken(LoginToken token) throws ServerException {
+		assert (token instanceof UserPasswordLoginToken);
+		UserPasswordLoginToken loginToken = (UserPasswordLoginToken) token;
+		return new UsernamePasswordAuthenticationToken(loginToken.getUsername(), loginToken.getPassword());
+	}
 
 	/**
 	 * Allows to extend client session instance with custom one (usually
@@ -78,17 +94,9 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 	 * 
 	 * @param clientSession
 	 */
-	protected void postProcessLogin(ClientSession clientSession) {}
+	protected void postProcessLogin(ClientSession clientSession) {
+	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * sk.seges.acris.security.rpc.user_management.service.IUserService#login
-	 * (sk.seges.acris.security.rpc.user_management.domain.LoginToken)
-	 */
-	@Override
-	@Transactional
 	public ClientSession login(LoginToken token) throws ServerException {
 		Authentication auth;
 		try {
@@ -103,51 +111,31 @@ public abstract class AbstractUserService extends RemoteServiceServlet implement
 
 		ClientSession clientSession = createClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
-		
+
 		if (auth.getPrincipal() instanceof SpringUserAdapter) {
-			SpringUserAdapter<?> adapter = (SpringUserAdapter<?>)auth.getPrincipal();
+			SpringUserAdapter<?> adapter = (SpringUserAdapter<?>) auth.getPrincipal();
 			clientSession.setUser(adapter.getUser());
 		} else if (auth.getPrincipal() instanceof UserData) {
-			UserData<?> userData = (UserData<?>)auth.getPrincipal();
+			UserData<?> userData = (UserData<?>) auth.getPrincipal();
 			clientSession.setUser(userData);
 		} else {
 			if (auth.getPrincipal() == null) {
-				log.warn("Null principal in the security context. Invalid state occured. Please provider valid principal.");
+				log.warn("Null principal in the security context. Invalid state occured. Please provide valid principal.");
 			} else {
-				log.warn("Unsupported type of the principal. Class " + auth.getPrincipal().getClass().getCanonicalName() + " is not supported!");
+				log.warn("Unsupported type of the principal. Class "
+						+ auth.getPrincipal().getClass().getCanonicalName() + " is not supported!");
 			}
 		}
 
 		postProcessLogin(clientSession);
 		return clientSession;
 	}
-	
-	/*
-	 * (non-Javadoc)
+
+	/**
 	 * @see sk.seges.acris.security.rpc.user_management.service.IUserService#logout()
 	 */
 	@Override
 	public void logout() {
 		SecurityContextHolder.clearContext();
-	}
-	
-	/*(
-	 * (non-Javadoc)
-	 * @see sk.seges.acris.security.rpc.user_management.service.IUserService#getLoggedUser()
-	 */
-	@Override
-//	@Secured(RolePermissions.USER_MAINTENANCE_ROLE_PERMISSION_READ)
-	public UserData<?> getLoggedUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		if (authentication == null) {
-			return null;
-		}
-		
-		if (authentication.getPrincipal() == null) {
-			return null;
-		}
-		
-		return (UserData<?>)authentication.getPrincipal();
 	}
 }

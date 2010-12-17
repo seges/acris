@@ -11,8 +11,4 @@ public class JavaScriptUtils {
     public static native JavaScriptObject openFile(String url)/*-{
         return $wnd.open(url)
     }-*/;
-    
-	public static native String encodeURIComponent(String uri) /*-{
-		return encodeURIComponent(uri);
-	}-*/;
 }

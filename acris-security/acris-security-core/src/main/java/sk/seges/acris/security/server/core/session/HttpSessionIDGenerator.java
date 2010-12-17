@@ -3,10 +3,6 @@
  */
 package sk.seges.acris.security.server.core.session;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.gwtwidgets.server.spring.ServletUtils;
-
 import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 
@@ -17,6 +13,13 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
  * @author ladislav.gazo
  */
 public class HttpSessionIDGenerator implements SessionIDGenerator {
+
+	private ServerSessionProvider sessionProvider;
+
+	public HttpSessionIDGenerator(ServerSessionProvider sessionProvider) {
+		this.sessionProvider = sessionProvider;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -26,7 +29,6 @@ public class HttpSessionIDGenerator implements SessionIDGenerator {
 	 */
 	@Override
 	public String generate(LoginToken token) {
-		HttpServletRequest request = ServletUtils.getRequest();
-		return request.getSession(true).getId();
+		return sessionProvider.getSession(true).getId();
 	}
 }
