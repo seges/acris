@@ -1,27 +1,17 @@
 package sk.seges.acris.security.client.view;
 
-import java.util.EventListener;
-
 import sk.seges.acris.security.client.event.LoginEvent;
 import sk.seges.acris.security.client.handler.LoginHandler;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
-import sk.seges.acris.security.shared.util.LoginConstants;
 import sk.seges.acris.util.Pair;
-import sk.seges.acris.util.URLUtils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.user.client.Cookies;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -42,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class LoginView extends Composite implements LoginDisplay {
 
 	private LoginMessages loginMessages = (LoginMessages) GWT.create(LoginMessages.class);
-	
+
 	private final DockPanel dock = new DockPanel();
 
 	private final Label message = new Label();
@@ -68,20 +58,6 @@ public class LoginView extends Composite implements LoginDisplay {
 	private CheckBox rememberMeCheckbox;
 
 	private boolean initialized = false;
-
-	/**
-	 * The current LoginValidator. Defaults to a validator that simply checks if
-	 * the username and password are not empty.
-	 */
-	private LoginValidator validator = new LoginValidator() {
-		public boolean validateUsername(final String username) {
-			return username.trim().length() > 0;
-		}
-
-		public boolean validatePassword(final String password) {
-			return password.trim().length() > 0;
-		}
-	};
 
 	/**
 	 * Creates a new Login Panel.
@@ -128,17 +104,35 @@ public class LoginView extends Composite implements LoginDisplay {
 	}
 
 	@Override
-	public void setSelectedLanguage(String selectedLanguage) {
-		this.selectedLanguage = selectedLanguage;
+	public Pair<String, String> getSelectedLanguage() {
+		if (languageBox != null) {
+			return enabledLanguages[languageBox.getSelectedIndex()];
+		}
+		throw new RuntimeException("Language selection support disabled - enabled languages not specified.");
 	}
 
 	@Override
-	public void setRememberMeMode(boolean rememberMeAware) {
+	public void setSelectedLanguage(String language) {
+		this.selectedLanguage = language;
+
+		if (language != null && !language.isEmpty() && enabledLanguages != null) {
+			int languageCount = enabledLanguages.length;
+			for (int i = 0; i < languageCount; ++i) {
+				if (language.equals(languageBox.getValue(i))) {
+					languageBox.setSelectedIndex(i);
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void setRememberMeEnabled(boolean enabled) {
 		if (this.rememberMeAware != null && grid != null) {
 			throw new IllegalArgumentException(
 					"Remember me component is already set. Unable to set this component twice!");
 		}
-		this.rememberMeAware = rememberMeAware;
+		this.rememberMeAware = enabled;
 	}
 
 	@Override
@@ -151,17 +145,6 @@ public class LoginView extends Composite implements LoginDisplay {
 	}
 
 	protected void initComponents() {
-		String language = Cookies.getCookie(LoginConstants.LANGUAGE_COOKIE_NAME);
-		String localeName = LocaleInfo.getCurrentLocale().getLocaleName();
-		if (language != null && localeName != null && !language.equals(localeName)) {
-			String url = URLUtils.transformURLToRequiredLocale(Location.getHref(), Location.getHostName(), null,
-					localeName, language);
-			if (!Location.getHref().equals(url)) {
-				Location.assign(url);
-			}
-		}
-
-		setVisible(false);
 		loginButton.setText(loginMessages.loginButton());
 
 		VerticalPanel vp = getContainer();
@@ -229,64 +212,10 @@ public class LoginView extends Composite implements LoginDisplay {
 		cellFormatter.setHorizontalAlignment(rowCounter, 1, HasAlignment.ALIGN_RIGHT);
 		cellFormatter.addStyleName(0, 1, "acris-LoginPanel-formatter-row-first");
 
-		usernameLabel.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				username.setFocus(true);
-			}
-		});
-
-		passwordLabel.addClickHandler(new ClickHandler() {
-
-			public void onClick(final ClickEvent event) {
-				password.setFocus(true);
-			}
-		});
-
-		readCookies();
-
-		final LoginKeyboardListener keyboardListener = new LoginKeyboardListener();
-		username.addKeyUpHandler(keyboardListener);
-		password.addKeyUpHandler(keyboardListener);
-
-		final LoginChangeListener loginChangeListener = new LoginChangeListener();
-		username.addChangeHandler(loginChangeListener);
-		password.addChangeHandler(loginChangeListener);
-
-		loginButton.addClickHandler(new ClickHandler() {
-			public void onClick(final ClickEvent event) {
-				login();
-			}
-		});
-
 		loginButton.setEnabled(false);
 		loginButton.getParent().addStyleName("login-Button-disabled");
 
 		setStyleNames();
-	}
-
-	private void readCookies() {
-		String language = Cookies.getCookie(LoginConstants.LANGUAGE_COOKIE_NAME);
-		String loginName = Cookies.getCookie(LoginConstants.LOGINNAME_COOKIE_NAME);
-		String loginPassword = Cookies.getCookie(LoginConstants.LOGINPASSWORD_COOKIE_NAME);
-		if (language != null && !language.isEmpty() && enabledLanguages != null) {
-			int languageCount = enabledLanguages.length;
-			for (int i = 0; i < languageCount; ++i) {
-				if (language.equals(languageBox.getValue(i))) {
-					languageBox.setSelectedIndex(i);
-					break;
-				}
-			}
-		}
-		if (null != loginName && !loginName.isEmpty() && loginPassword != null && !loginPassword.isEmpty()) {
-			username.setText(loginName);
-			password.setText(loginPassword);
-			if (rememberMeAware) {
-				rememberMeCheckbox.setValue(true);
-			}
-			login();
-		} else {
-			setVisible(true);
-		}
 	}
 
 	private int initLanguageBox(Pair<String, String>[] enabledLanguages, int rowCounter) {
@@ -305,17 +234,6 @@ public class LoginView extends Composite implements LoginDisplay {
 		languageBox.setSelectedIndex(selectedIndex);
 		grid.setWidget(rowCounter, 0, languageLabel);
 		grid.setWidget(rowCounter, 1, languageBox);
-
-		languageBox.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				selectedLanguage = getSelectedLanguage().getFirst();
-				Cookies.setCookie(LoginConstants.LANGUAGE_COOKIE_NAME, selectedLanguage);
-				Location.assign(URLUtils.transformURLToRequiredLocale(Location.getHref(), Location.getHostName(), null,
-						LocaleInfo.getCurrentLocale().getLocaleName(), selectedLanguage));
-			}
-		});
 
 		return rowCounter + 1;
 	}
@@ -359,37 +277,16 @@ public class LoginView extends Composite implements LoginDisplay {
 	}
 
 	/**
-	 * Check the username and password fields and enable/disable the login
+	 * Checks the username and password fields and enables/disables the login
 	 * button.
 	 */
+	@Override
 	public void updateLoginEnabled() {
-		loginButton.setEnabled(validator.validateUsername(username.getText())
-				&& validator.validatePassword(password.getText()));
 		if (loginButton.isEnabled()) {
 			loginButton.getParent().removeStyleName("login-Button-disabled");
 		} else {
 			loginButton.getParent().addStyleName("login-Button-disabled");
 		}
-	}
-
-	/**
-	 * Trigger a login event. This is the equivalent of the user clicking the
-	 * Login button.
-	 */
-	public void login() {
-		if (Boolean.TRUE.equals(rememberMeAware)) {
-			if (Boolean.TRUE.equals(rememberMeCheckbox.getValue())) {
-				Cookies.setCookie(LoginConstants.LOGINNAME_COOKIE_NAME, username.getText());
-				Cookies.setCookie(LoginConstants.LOGINPASSWORD_COOKIE_NAME, username.getText());
-				try {
-					Cookies.setCookie(LoginConstants.LANGUAGE_COOKIE_NAME, getSelectedLanguage().getFirst());
-				} catch (RuntimeException ignored) {
-				}
-			}
-		}
-		loginButton.setEnabled(false);
-		this.fireEvent(new LoginEvent(getUsername(), getPassword(),
-				(null != languageBox ? getSelectedLanguage() : null)));
 	}
 
 	/**
@@ -417,10 +314,12 @@ public class LoginView extends Composite implements LoginDisplay {
 	 * 
 	 * @return the username currently entered.
 	 */
+	@Override
 	public String getUsername() {
 		return username.getText();
 	}
 
+	@Override
 	public void setUsername(String name) {
 		username.setText(name);
 	}
@@ -430,26 +329,14 @@ public class LoginView extends Composite implements LoginDisplay {
 	 * 
 	 * @return the password currently entered.
 	 */
+	@Override
 	public String getPassword() {
 		return password.getText();
 	}
 
+	@Override
 	public void setPassword(String pass) {
 		password.setText(pass);
-	}
-
-	public Pair<String, String> getSelectedLanguage() {
-		if (null != languageBox) {
-			return enabledLanguages[languageBox.getSelectedIndex()];
-		}
-		throw new RuntimeException("Language selection support disabled - enabled languages not specified.");
-	}
-
-	public boolean getRememberMeValue() {
-		if (rememberMeAware) {
-			return rememberMeCheckbox.getValue();
-		}
-		throw new RuntimeException("Remember me support disabled.");
 	}
 
 	/**
@@ -472,18 +359,55 @@ public class LoginView extends Composite implements LoginDisplay {
 		this.errorMessage.setText(message != null ? message : "");
 	}
 
-	/**
-	 * Set the callback to validate the username and password fields. If these
-	 * fields fail validation the Login button will be disabled.
-	 * 
-	 * @param validator
-	 *            callaback to check the username and password.
-	 */
-	public void setLoginValidator(final LoginValidator validator) {
-		if (validator == null) {
-			throw new IllegalArgumentException("The LoginValidator cannot be set to null.");
-		}
-		this.validator = validator;
+	@Override
+	public HandlerRegistration addLoginHandler(LoginHandler handler) {
+		return addHandler(handler, LoginEvent.getType());
+	}
+
+	@Override
+	public Widget asWidget() {
+		return this;
+	}
+
+	@Override
+	public void displayMessage(String message) {
+		RootPanel.get().clear();
+		RootPanel.get().add(new Label(message));
+	}
+
+	@Override
+	public void showMessage(String message) {
+		Window.alert(message);
+	}
+
+	@Override
+	public HandlerRegistration addLoginButtonHandler(ClickHandler handler) {
+		return loginButton.addClickHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addUsernameKeyHandler(KeyUpHandler handler) {
+		return username.addKeyUpHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addPasswordKeyHandler(KeyUpHandler handler) {
+		return password.addKeyUpHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addUsernameChangeHandler(ChangeHandler handler) {
+		return username.addChangeHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addPasswordChangeHandler(ChangeHandler handler) {
+		return password.addChangeHandler(handler);
+	}
+
+	@Override
+	public HandlerRegistration addLanguageHandler(ChangeHandler handler) {
+		return languageBox.addChangeHandler(handler);
 	}
 
 	@Override
@@ -493,100 +417,28 @@ public class LoginView extends Composite implements LoginDisplay {
 		if (Boolean.TRUE.equals(rememberMeAware)) {
 			rememberMeCheckbox.setValue(false);
 		}
-		clearLoginCookies();
-		setVisible(true);
 	}
 
-	private void clearLoginCookies() {
-		Cookies.removeCookie(LoginConstants.LOGINNAME_COOKIE_NAME);
-		Cookies.removeCookie(LoginConstants.LOGINPASSWORD_COOKIE_NAME);
-		Cookies.removeCookie(LoginConstants.LANGUAGE_COOKIE_NAME);
-	}
-
-	/**
-	 * Callback for a login attempt.
-	 */
-	public static interface LoginListener extends EventListener {
-		/**
-		 * Fired when the user tries to login. This happens either when the user
-		 * presses the submit button or presses the enter key.
-		 * 
-		 * @param loginPanel
-		 *            the origin of the event.
-		 */
-		public void onSubmit(LoginEvent loginEvent);
-	}
-
-	/**
-	 * Callback to check the acceptablity of the the username and password
-	 * fields. Use this to check minimum required length or required case of the
-	 * user's crenditials.
-	 */
-	public static interface LoginValidator {
-		/**
-		 * Check the username for validity.
-		 * 
-		 * @param username
-		 *            the currently entered username.
-		 * @return true if this is a possibly valid username, else false.
-		 */
-		public boolean validateUsername(String username);
-
-		/**
-		 * Check the password for validity.
-		 * 
-		 * @param password
-		 *            the currently entered password.
-		 * @return true if this is a possibly valid password, else false.
-		 */
-		public boolean validatePassword(String password);
-	}
-
-	/**
-	 * Listen for key presses and update the login button.
-	 */
-	private class LoginKeyboardListener implements KeyUpHandler {
-
-		@Override
-		public void onKeyUp(KeyUpEvent event) {
-			updateLoginEnabled();
-			if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-				if (loginButton.isEnabled()) {
-					login();
-				}
-			}
+	@Override
+	public boolean getRememberMe() {
+		if (rememberMeAware) {
+			return rememberMeCheckbox.getValue();
 		}
-	}
-
-	/**
-	 * Listen for changes and update the login button.
-	 */
-	private class LoginChangeListener implements ChangeHandler {
-
-		@Override
-		public void onChange(ChangeEvent event) {
-			updateLoginEnabled();
-		}
+		throw new RuntimeException("Remember me support disabled.");
 	}
 
 	@Override
-	public void addLoginHandler(LoginHandler handler) {
-		addHandler(handler, LoginEvent.getType());
+	public void setRemeberMe(boolean rememberMe) {
+		rememberMeCheckbox.setValue(rememberMe);
 	}
 
 	@Override
-	public Widget asWidget() {
-		return this;
+	public boolean isLoginEnabled() {
+		return loginButton.isEnabled();
 	}
 
 	@Override
-	public void showMessage(String message) {
-		Window.alert(message);
-	}
-
-	@Override
-	public void displayMessage(String message) {
-		RootPanel.get().clear();
-		RootPanel.get().add(new Label(message));
+	public void setLoginEnabled(boolean enabled) {
+		loginButton.setEnabled(enabled);
 	}
 }
