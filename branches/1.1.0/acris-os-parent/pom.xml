@@ -89,6 +89,7 @@
 
 
 		<twig.version>1.0.3</twig.version>
+		<guice.version>2.0</guice.version>
 	</properties>
 
 	<dependencyManagement>
@@ -388,47 +389,35 @@
 			</dependency>
 			
 			<dependency>
-				
-				<groupId>net.sf.jasperreports</groupId>
-				
+				<groupId>net.sf.jasperreports</groupId>	
 				<artifactId>jasperreports</artifactId>
-				
 				<version>${jasper.version}</version>
-			
 			</dependency>
 
-
 			<dependency>
-
 				<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
-
 				<artifactId>jasperserver-api-metadata</artifactId>
-
 				<version>${jasperserver.version}</version>
-
 			</dependency>
-
 
 			<dependency>
 
 				<groupId>com.jaspersoft.jasperserver</groupId>
-
 				<artifactId>jasperserver-ireport-plugin</artifactId>
-
 				<version>${jasperserver.version}</version>
-
 			</dependency>
-
 
 			<dependency>
 				<groupId>com.jaspersoft.jasperserver</groupId>
-
 				<artifactId>jasperserver-common-ws</artifactId>
-
 				<version>${jasperserver.version}</version>
-
 			</dependency>
 
+			<dependency>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+  				<version>${guice.version}</version>
+			</dependency>
 
 
 			<!-- OpenID4Java consumer -->
