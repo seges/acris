@@ -270,17 +270,6 @@
 				<version>${pom.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
-				<artifactId>acris-security-ui</artifactId>
-				<version>${pom.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${pom.groupId}</groupId>
-				<artifactId>acris-security-ui</artifactId>
-				<classifier>sources</classifier>
-				<version>${pom.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>sk.seges.acris</groupId>
 				<artifactId>acris-generator</artifactId>
 				<version>${pom.version}</version>
