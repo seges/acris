@@ -73,5 +73,9 @@
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java-nodeps</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+		</dependency>
 	</dependencies>
 </project>
