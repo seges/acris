@@ -224,6 +224,17 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-ui</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-ui</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-recorder</artifactId>
 				<version>${project.version}</version>
