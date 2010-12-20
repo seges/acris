@@ -2,6 +2,9 @@ package sk.seges.acris.security.shared.util;
 
 public class LoginConstants {
 
+	// Session ID string
+	public static final String ACRIS_SESSION_ID_STRING = "acris.sessionid";
+
 	// Login token name
 	public static final String LOGIN_TOKEN_NAME = "login.token.name";
 

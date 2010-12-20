@@ -10,7 +10,7 @@ import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
-import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
+import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
 import sk.seges.acris.security.shared.util.LoginConstants;
 import sk.seges.acris.util.Pair;
@@ -77,7 +77,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 		void setPassword(String pass);
 	}
 
-	protected UserServiceBroadcaster broadcaster;
+	protected IUserServiceAsync broadcaster;
 
 	protected String redirectUrl;
 
@@ -113,11 +113,11 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 		this.validator = validator;
 	}
 
-	public LoginPresenter(D display, UserServiceBroadcaster broadcaster, String redirectUrl) {
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl) {
 		this(display, broadcaster, redirectUrl, null, false);
 	}
 
-	public LoginPresenter(D display, UserServiceBroadcaster broadcaster, String redirectUrl,
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled) {
 		super(display);
 
@@ -286,15 +286,15 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 
 		if (enabledLanguages != null) {
 			registerHandler(display.addLanguageHandler(new ChangeHandler() {
-	
+
 				@Override
 				public void onChange(ChangeEvent event) {
 					String selectedLanguage = display.getSelectedLanguage().getFirst();
 					display.setSelectedLanguage(selectedLanguage);
 					Cookies.setCookie(LoginConstants.LANGUAGE_COOKIE_NAME, selectedLanguage);
 					unbind();
-					Location.assign(URLUtils.transformURLToRequiredLocale(Location.getHref(), Location.getHostName(), null,
-							LocaleInfo.getCurrentLocale().getLocaleName(), selectedLanguage));
+					Location.assign(URLUtils.transformURLToRequiredLocale(Location.getHref(), Location.getHostName(),
+							null, LocaleInfo.getCurrentLocale().getLocaleName(), selectedLanguage));
 				}
 			}));
 		}
@@ -323,7 +323,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 
 	protected void handleSuccessfulLogin(ClientSession result) {
 		String query = "?";
-		query += "acris.sessionid=" + result.getSessionId();
+		query += LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result.getSessionId();
 		doRedirect(redirectUrl + query);
 	}
 }
