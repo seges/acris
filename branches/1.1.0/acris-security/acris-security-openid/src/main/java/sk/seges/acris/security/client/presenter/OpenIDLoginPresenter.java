@@ -63,9 +63,8 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
 					handleSuccessfulLogin(result);
 				} else {
 					superBind(parent);
-
-					readLoginCookies();
 					registerHandlers(this);
+					readLoginCookies();
 				}
 			}
 

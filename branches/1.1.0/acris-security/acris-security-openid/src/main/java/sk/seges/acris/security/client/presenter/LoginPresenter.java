@@ -163,9 +163,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 		};
 
 		superBind(parent);
-
-		readLoginCookies();
 		registerHandlers(securedCallback);
+		readLoginCookies();
 	}
 
 	protected void setLocaleFromCookies() {
@@ -322,6 +321,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 	}
 
 	protected void handleSuccessfulLogin(ClientSession result) {
+		display.setUsername("");
+		display.setPassword("");
 		String query = "?";
 		query += LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result.getSessionId();
 		doRedirect(redirectUrl + query);
