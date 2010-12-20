@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -83,7 +84,7 @@ public class LoginView extends Composite implements LoginDisplay {
 		initWidget(dock);
 	}
 
-	protected VerticalPanel getContainer() {
+	protected Panel getContainer() {
 		return new VerticalPanel();
 	}
 
@@ -115,12 +116,14 @@ public class LoginView extends Composite implements LoginDisplay {
 	public void setSelectedLanguage(String language) {
 		this.selectedLanguage = language;
 
-		if (language != null && !language.isEmpty() && enabledLanguages != null) {
-			int languageCount = enabledLanguages.length;
-			for (int i = 0; i < languageCount; ++i) {
-				if (language.equals(languageBox.getValue(i))) {
-					languageBox.setSelectedIndex(i);
-					break;
+		if (languageBox != null) {
+			if (language != null && !language.isEmpty() && enabledLanguages != null) {
+				int languageCount = enabledLanguages.length;
+				for (int i = 0; i < languageCount; ++i) {
+					if (language.equals(languageBox.getValue(i))) {
+						languageBox.setSelectedIndex(i);
+						break;
+					}
 				}
 			}
 		}
@@ -147,8 +150,8 @@ public class LoginView extends Composite implements LoginDisplay {
 	protected void initComponents() {
 		loginButton.setText(loginMessages.loginButton());
 
-		VerticalPanel vp = getContainer();
-		vp.setTitle(loginMessages.loginTitle());
+		Panel container = getContainer();
+		container.setTitle(loginMessages.loginTitle());
 		usernameLabel.setText(loginMessages.usernamePrompt());
 		passwordLabel.setText(loginMessages.passwordPrompt());
 
@@ -165,7 +168,7 @@ public class LoginView extends Composite implements LoginDisplay {
 		dock.setHeight("100%");
 
 		SimplePanel vpWrapper = new SimplePanel();
-		Widget vpParent = vp.getParent() != null ? vp.getParent() : vp;
+		Widget vpParent = container.getParent() != null ? container.getParent() : container;
 		while (vpParent.getParent() != null) {
 			vpParent = vpParent.getParent();
 		}
@@ -173,9 +176,9 @@ public class LoginView extends Composite implements LoginDisplay {
 		vpWrapper.add(vpParent);
 		dock.add(vpWrapper, DockPanel.CENTER);
 
-		vp.add(message);
-		vp.add(errorMessage);
-		vp.add(grid);
+		container.add(message);
+		container.add(errorMessage);
+		container.add(grid);
 
 		int rowCounter = 0;
 
@@ -228,7 +231,6 @@ public class LoginView extends Composite implements LoginDisplay {
 			languageBox.addItem(enabledLanguage.getSecond(), enabledLanguage.getFirst());
 			if (enabledLanguage.getFirst() != null && enabledLanguage.getFirst().equals(selectedLanguage)) {
 				selectedIndex = i;
-				break;
 			}
 		}
 		languageBox.setSelectedIndex(selectedIndex);

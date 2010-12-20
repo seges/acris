@@ -10,6 +10,14 @@ public interface BaseDisplay {
 	 */
 	Widget asWidget();
 	
+	void setHeight(String height);
+	
+	void setWidth(String width);
+	
+	void addStyleName(String className);
+	
+	void setStyleName(String className);
+	
 	/**
 	 * Hides the display and displays a message instead.
 	 * @param message
