@@ -15,7 +15,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 
-	
 	@Override
 	public void login(LoginToken token, AsyncCallback<ClientSession> callback) throws ServerException {
 		if (token instanceof OpenIDLoginToken) {
