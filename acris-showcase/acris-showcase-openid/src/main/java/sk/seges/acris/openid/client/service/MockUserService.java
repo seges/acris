@@ -37,11 +37,6 @@ public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 	}
 
 	@Override
-	public void getLoggedUser(AsyncCallback<UserData> callback) throws ServerException {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public String getServiceEntryPoint() {
 		return "/user";
 	}
