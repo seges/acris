@@ -85,7 +85,7 @@
 		<jasper.version>3.7.3</jasper.version>
 		
 		<jasperserver.version>3.7.0</jasperserver.version>
-		<openid4java.version>0.9.5</openid4java.version>
+		<openid4java.version>0.9.6-SNAPSHOT</openid4java.version>
 
 
 		<twig.version>1.0.3</twig.version>
