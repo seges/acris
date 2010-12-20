@@ -7,7 +7,7 @@ import sk.seges.acris.security.shared.service.IOpenIDConsumerService;
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 
-public class GuiceServletModule extends ServletModule {
+public class ShowcaseGuiceServletModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {

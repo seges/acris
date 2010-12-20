@@ -16,8 +16,6 @@
  */
 package sk.seges.acris.openid.server.service;
 
-import sk.seges.acris.security.server.service.GuiceModule;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
@@ -26,6 +24,6 @@ public class ServletContextListener extends GuiceServletContextListener {
 
 	@Override
 	protected Injector getInjector() {
-		return Guice.createInjector(new GuiceServletModule(), new GuiceModule());
+		return Guice.createInjector(new ShowcaseGuiceServletModule(), new ShowcaseGuiceModule());
 	}
 }

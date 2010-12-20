@@ -6,6 +6,4 @@
 	<stylesheet src="styles/styles.css" />
 	
     <entry-point class="sk.seges.acris.openid.client.OpenIDShowcase" />
-	
-	<source path="client" />
 </module>
