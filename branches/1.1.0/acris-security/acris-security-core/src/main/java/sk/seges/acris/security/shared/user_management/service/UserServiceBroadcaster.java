@@ -14,6 +14,7 @@ import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -89,12 +90,6 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	@Override
-	public void getLoggedUser(AsyncCallback<UserData> callback) {
-		throw new IllegalArgumentException(
-				"Not supported method in broadcast mode. Please, call method separatelly on specific user service.");
-	}
-
-	@Override
 	public void login(final LoginToken token, final AsyncCallback<ClientSession> callback) {
 		final int count = userServices.size();
 
@@ -120,8 +115,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 					} else {
 						String resolvedPrimaryEntryPoint = (primaryEntryPoint != null ? primaryEntryPoint
 								: (clientSession != null && clientSession.get(PRIMARY_ENTRY_POINT) != null ? (String) clientSession
-										.get(PRIMARY_ENTRY_POINT)
-										: null));
+										.get(PRIMARY_ENTRY_POINT) : null));
 						if (resolvedPrimaryEntryPoint != null) {
 							// merge authorities from all services to one set
 							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
@@ -154,8 +148,8 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		signalLoginServices(token, semaphore, failures, successes);
 	}
 
-	private void signalLoginServices(final LoginToken token, final Semaphore semaphore,
-			final List<Throwable> failures, final Map<String, ClientSession> successes) {
+	private void signalLoginServices(final LoginToken token, final Semaphore semaphore, final List<Throwable> failures,
+			final Map<String, ClientSession> successes) {
 		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
 			userServiceEntry.getValue().login(token, new TrackingAsyncCallback<ClientSession>() {
 				@Override
