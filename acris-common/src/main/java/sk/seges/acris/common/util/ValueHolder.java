@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.acris.util;
+package sk.seges.acris.common.util;
 
 public class ValueHolder<T> {
 	private T value;

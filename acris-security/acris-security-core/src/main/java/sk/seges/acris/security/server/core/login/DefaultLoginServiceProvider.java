@@ -9,14 +9,14 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 
 public class DefaultLoginServiceProvider implements LoginServiceProvider {
 
-	private Map<LoginToken, LoginService> serviceMap = new HashMap<LoginToken, LoginService>();
+	private Map<Class<? extends LoginToken>, LoginService> serviceMap = new HashMap<Class<? extends LoginToken>, LoginService>();
 
 	@Override
 	public LoginService getLoginService(LoginToken token) {
-		return serviceMap.get(token);
+		return serviceMap.get(token.getClass());
 	}
 
-	public void registerLoginService(LoginToken token, LoginService service) {
+	public void registerLoginService(Class<? extends LoginToken> token, LoginService service) {
 		serviceMap.put(token, service);
 	}
 }

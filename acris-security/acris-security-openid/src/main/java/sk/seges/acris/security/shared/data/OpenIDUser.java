@@ -10,6 +10,9 @@ public class OpenIDUser implements Serializable {
 	private String redirectUrl;
 	private Map<?, ?> params;
 
+	public OpenIDUser() {	
+	}
+	
 	public String getRedirectUrl() {
 		return redirectUrl;
 	}

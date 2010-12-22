@@ -1,4 +1,4 @@
-package sk.seges.acris.util;
+package sk.seges.acris.common.util;
 
 public class URLUtils {
 	private static final String PROTOCOL_SEPARATOR = "://";

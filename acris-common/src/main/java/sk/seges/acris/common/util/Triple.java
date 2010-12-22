@@ -1,23 +1,25 @@
-package sk.seges.acris.util;
+package sk.seges.acris.common.util;
 
 import java.io.Serializable;
 
-public class Pair<A, B> implements Serializable {
+public class Triple<A, B, C> implements Serializable {
 
-    private static final long serialVersionUID = -9196548177186460257L;
+    private static final long serialVersionUID = -6018412714686416852L;
 
-    protected A first;
-    protected B second;
+    private A first;
+    private B second;
+    private C third;
 
-    public Pair() {}
+    public Triple() {}
 
-    public Pair(A first, B second) {
+    public Triple(A first, B second, C third) {
         this.first = first;
         this.second = second;
+        this.third = third;
     }
 
-    public static final <T1, T2> Pair<T1, T2> of(T1 first, T2 second) {
-        return new Pair<T1, T2>(first, second);
+    public static final <T1, T2, T3> Triple<T1, T2, T3> of(T1 first, T2 second, T3 third) {
+        return new Triple<T1, T2, T3>(first, second, third);
     }
 
     public void setFirst(A first) {
@@ -36,15 +38,25 @@ public class Pair<A, B> implements Serializable {
         return second;
     }
 
+    public C getThird() {
+        return third;
+    }
+
+    public void setThird(C third) {
+        this.third = third;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((first == null) ? 0 : first.hashCode());
         result = prime * result + ((second == null) ? 0 : second.hashCode());
+        result = prime * result + ((third == null) ? 0 : third.hashCode());
         return result;
     }
 
-
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -52,7 +64,7 @@ public class Pair<A, B> implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Pair other = (Pair) obj;
+        Triple other = (Triple) obj;
         if (first == null) {
             if (other.first != null)
                 return false;
@@ -63,19 +75,12 @@ public class Pair<A, B> implements Serializable {
                 return false;
         } else if (!second.equals(other.second))
             return false;
+        if (third == null) {
+            if (other.third != null)
+                return false;
+        } else if (!third.equals(other.third))
+            return false;
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Pair<" + getClass(first) + ", " + getClass(second) + "> (" + first + ", " + second + ")";
-    }
-
-    private Class getClass(Object o) {
-        if(o != null) {
-            return o.getClass();
-        }
-
-        return null;
-    }
 }

@@ -233,4 +233,10 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 			return causes;
 		}
 	}
+
+	@Override
+	public void getLoggedUser(AsyncCallback<UserData<?>> callback) throws ServerException {
+		throw new IllegalArgumentException(
+		"Method not supported in broadcast mode. Please call method separately on specific user service.");
+	}
 }

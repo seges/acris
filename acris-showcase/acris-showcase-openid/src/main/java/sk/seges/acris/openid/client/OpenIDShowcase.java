@@ -1,5 +1,6 @@
 package sk.seges.acris.openid.client;
 
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.openid.client.service.MockUserService;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
@@ -7,7 +8,6 @@ import sk.seges.acris.security.client.view.OpenIDLoginView;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerService;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerServiceAsync;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
-import sk.seges.acris.util.Pair;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

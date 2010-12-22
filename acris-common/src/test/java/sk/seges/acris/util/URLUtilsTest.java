@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import sk.seges.acris.common.util.URLUtils;
+
 /**
  * @author eldzi
  */
