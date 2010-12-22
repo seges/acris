@@ -1,7 +1,7 @@
 package sk.seges.acris.security.client.event;
 
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.handler.LoginHandler;
-import sk.seges.acris.util.Pair;
 
 import com.google.gwt.event.shared.GwtEvent;
 

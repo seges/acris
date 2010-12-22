@@ -1,10 +1,10 @@
 package sk.seges.acris.security.client.view;
 
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.event.LoginEvent;
 import sk.seges.acris.security.client.handler.LoginHandler;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
-import sk.seges.acris.util.Pair;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -52,11 +52,11 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	private Pair<String, String>[] enabledLanguages;
 	private String selectedLanguage;
-	private ListBox languageBox;
+	private ListBox languageBox = GWT.create(ListBox.class);
 	private Label languageLabel;
 
 	private Boolean rememberMeAware;
-	private CheckBox rememberMeCheckbox;
+	private CheckBox rememberMeCheckbox = GWT.create(CheckBox.class);
 
 	private boolean initialized = false;
 
@@ -222,7 +222,6 @@ public class LoginView extends Composite implements LoginDisplay {
 	}
 
 	private int initLanguageBox(Pair<String, String>[] enabledLanguages, int rowCounter) {
-		languageBox = new ListBox();
 		languageLabel = new Label(loginMessages.languagePrompt());
 		int selectedIndex = 0;
 		int length = enabledLanguages.length;
@@ -241,7 +240,7 @@ public class LoginView extends Composite implements LoginDisplay {
 	}
 
 	private int initRememberMeBox(int rowCounter) {
-		rememberMeCheckbox = new CheckBox(loginMessages.rememberMePrompt());
+		rememberMeCheckbox.setText(loginMessages.rememberMePrompt());
 		grid.setWidget(rowCounter, 1, rememberMeCheckbox);
 		return rowCounter + 1;
 	}

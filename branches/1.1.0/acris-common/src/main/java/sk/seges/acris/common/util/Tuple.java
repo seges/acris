@@ -1,4 +1,4 @@
-package sk.seges.acris.util;
+package sk.seges.acris.common.util;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package sk.seges.acris.etc;
+package sk.seges.acris.common.etc;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.event.OpenIDLoginEvent;
 import sk.seges.acris.security.client.handler.HasOpenIDLoginHandlers;
 import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
@@ -19,7 +20,6 @@ import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
 import sk.seges.acris.security.shared.util.LoginConstants;
-import sk.seges.acris.util.Pair;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

@@ -7,7 +7,9 @@ import sk.seges.acris.security.server.core.login.api.LoginServiceProvider;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserService;
 import sk.seges.acris.security.shared.util.LoginConstants;
 
@@ -18,6 +20,7 @@ public class UserService implements IUserService {
 
 	public UserService(LoginServiceProvider loginServiceProvider, ServerSessionProvider sessionProvider) {
 		this.loginServiceProvider = loginServiceProvider;
+		this.sessionProvider = sessionProvider;
 	}
 
 	@Override
@@ -40,5 +43,10 @@ public class UserService implements IUserService {
 
 		loginServiceProvider.getLoginService(token).logout();
 		session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
+	}
+	
+	public UserData<?> getLoggedUser() {
+		LoginService loginService = loginServiceProvider.getLoginService(new UserPasswordLoginToken());
+		return loginService.getLoggedUser();
 	}
 }

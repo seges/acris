@@ -5,8 +5,8 @@ package sk.seges.acris.generator.shared.service;
 
 import java.util.List;
 
+import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.util.Tuple;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 

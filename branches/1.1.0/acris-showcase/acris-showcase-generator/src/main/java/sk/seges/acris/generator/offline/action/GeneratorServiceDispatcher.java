@@ -2,6 +2,7 @@ package sk.seges.acris.generator.offline.action;
 
 import java.util.List;
 
+import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsAction;
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsResult;
 import sk.seges.acris.generator.shared.action.GetLastProcessingTokenAction;
@@ -18,7 +19,6 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 import sk.seges.acris.showcase.client.action.ActionManager;
 import sk.seges.acris.showcase.client.action.DefaultAsyncCallback;
-import sk.seges.acris.util.Tuple;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;

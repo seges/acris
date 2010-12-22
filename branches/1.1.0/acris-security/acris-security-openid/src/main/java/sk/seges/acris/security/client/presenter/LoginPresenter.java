@@ -1,5 +1,7 @@
 package sk.seges.acris.security.client.presenter;
 
+import sk.seges.acris.common.util.Pair;
+import sk.seges.acris.common.util.URLUtils;
 import sk.seges.acris.security.client.event.LoginEvent;
 import sk.seges.acris.security.client.handler.HasLoginHandlers;
 import sk.seges.acris.security.client.handler.LoginHandler;
@@ -13,8 +15,6 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
 import sk.seges.acris.security.shared.util.LoginConstants;
-import sk.seges.acris.util.Pair;
-import sk.seges.acris.util.URLUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;

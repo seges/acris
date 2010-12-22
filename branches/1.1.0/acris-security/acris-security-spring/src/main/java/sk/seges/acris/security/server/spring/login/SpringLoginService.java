@@ -9,6 +9,7 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.context.SecurityContextImpl;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
@@ -97,6 +98,7 @@ public class SpringLoginService implements LoginService {
 	protected void postProcessLogin(ClientSession clientSession) {
 	}
 
+	@Transactional
 	public ClientSession login(LoginToken token) throws ServerException {
 		Authentication auth;
 		try {
@@ -137,5 +139,19 @@ public class SpringLoginService implements LoginService {
 	@Override
 	public void logout() {
 		SecurityContextHolder.clearContext();
+	}
+	
+	public UserData<?> getLoggedUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication == null) {
+			return null;
+		}
+		
+		if (authentication.getPrincipal() == null) {
+			return null;
+		}
+		
+		return (UserData<?>)authentication.getPrincipal();
 	}
 }

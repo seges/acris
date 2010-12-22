@@ -29,8 +29,6 @@
 
 	<beans:bean name="userService" class="sk.seges.acris.security.server.spring.user_management.service.user.UserService">
 		<beans:property name="authenticationManager" ref="authenticationManager" />
-		<beans:property name="sessionIDGenerator">
-			<beans:bean class="sk.seges.acris.security.server.core.session.HttpSessionIDGenerator" />
-		</beans:property>
+		<beans:property name="sessionIDGenerator" ref="sessionIDGenerator" />
 	</beans:bean>
 </beans:beans>
