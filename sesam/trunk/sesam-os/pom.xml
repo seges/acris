@@ -29,6 +29,7 @@
 	<modules>
 		<module>../sesam-core</module>
 		<module>../sesam-spring</module>
+		<module>../sesam-jndi</module>
 	</modules>
 
 	<dependencyManagement>
