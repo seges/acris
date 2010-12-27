@@ -1,5 +1,0 @@
-<module>
-	<inherits name="com.google.gwt.user.User"/>
-    <inherits name='com.google.gwt.junit.JUnit' />
-	<inherits name="sk.seges.acris.generator.Generator"/>
-</module>
