@@ -27,7 +27,7 @@
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
-		<url>http://code.google.com/p/acris/source</url>
+		<url>http://acris.googlecode.com/svn/trunk/</url>
 		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/</connection>
 		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
 	</scm>
