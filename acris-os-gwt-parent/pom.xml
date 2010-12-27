@@ -27,9 +27,9 @@
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
-		<url>http://acris.googlecode.com/svn/trunk/</url>
-		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://acris.googlecode.com/svn/trunk/acris-os-gwt-parent</url>
+		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/acris-os-gwt-parent</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-gwt-parent</developerConnection>
 	</scm>
 
 	<!-- TODO: why do we have gilead-hibernate-util.version -->
