@@ -40,8 +40,8 @@
 	<profiles>
 		<profile>
 			<id>showcase</id>
-			<activeByDefault>false</activeByDefault>
 			<activation>
+				<activeByDefault>false</activeByDefault>
 				<property>
 					<name>showcase</name>
 					<value>true</value>
