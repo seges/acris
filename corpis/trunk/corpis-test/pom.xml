@@ -3,12 +3,12 @@
 	<groupId>sk.seges.corpis</groupId>
 	<artifactId>corpis-test</artifactId>
 	<name>CorpIS Test</name>
-	<version>1.0.7</version>
+	<version>1.0.8-SNAPSHOT</version>
 	
 	<parent>
 		<groupId>sk.seges.corpis</groupId>
 		<artifactId>corpis-os</artifactId>
-		<version>1.0.7</version>
+		<version>1.0.8-SNAPSHOT</version>
 		<relativePath>../corpis-os/pom.xml</relativePath>
 	</parent>
 
