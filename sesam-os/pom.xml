@@ -25,6 +25,11 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+        <scm>
+		<url>http://acris.googlecode.com/svn/sesam/trunk</url>
+		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk</developerConnection>
+	</scm>
 
 	<modules>
 		<module>../sesam-core</module>
