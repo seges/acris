@@ -1,0 +1,52 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<!-- Acris dependency -->
+	<inherits name="sk.seges.acris.security.Session" />
+ 	<inherits name="sk.seges.acris.security.Spring" />
+	<inherits name="sk.seges.acris.Security" />
+ 
+	<!-- GIN for dependency injection -->
+	<inherits name="com.google.gwt.inject.Inject" />
+
+	<!-- Beans binding -->
+	<inherits name='sk.seges.acris.Binding' />
+
+	<!-- MVP -->
+	<inherits name="com.philbeaudoin.gwtp.mvp.Mvp" />
+	<inherits name="com.philbeaudoin.gwtp.dispatch.Dispatch" />
+
+	<define-configuration-property name="gin.ginjector" is-multi-valued="false" />
+	<set-configuration-property name="gin.ginjector" value="sk.seges.acris.mvp.client.configuration.production.ProductionGinjector" />
+
+	<!-- Binding generator for beans binding -->
+	<generate-with class="sk.seges.acris.binding.rebind.binding.BeanBindingGenerator">
+		<when-type-assignable class="sk.seges.acris.binding.client.holder.IBeanBindingHolder" />
+	</generate-with>
+
+	<define-property name="widgets" values="smartgwt, extgwt, acris" />
+	<set-property name="widgets" value="smartgwt" />
+	
+	<extend-property name="locale" values="en" />
+
+	<!-- SmartGWT framework -->
+	<!-- Using black theme -->
+	<inherits name="com.smartgwt.SmartGwt" />
+	<inherits name="com.smartclient.theme.enterprise.Enterprise"/>
+
+	<!-- Binding generator for binding widget holders (e.g. panels, forms, ...) -->
+	<generate-with class="sk.seges.acris.binding.rebind.bean.smartgwt.SmartGWTRecordWrapperGenerator">
+		<all>
+			<when-type-assignable class="sk.seges.acris.binding.client.wrappers.BeanWrapper" />
+	   		<when-property-is name="widgets" value="smartgwt" />
+	   	</all>
+	</generate-with>
+
+	<source path="client" />
+	<source path="shared" />
+
+	<entry-point class="sk.seges.acris.mvp.client.HolyBridge" />
+
+</module>
