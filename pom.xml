@@ -9,7 +9,7 @@
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
 		<version>1.0.2-SNAPSHOT</version>
-		<relativePath>acris-os-parent</relativePath>
+		<relativePath>acris-os-parent/pom.xml</relativePath>
 	</parent>
 
 	<name>AcrIS OS Build</name>
