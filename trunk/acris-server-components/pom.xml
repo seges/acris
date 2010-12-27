@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
-		<version>1.0.2-SNAPSHOT</version>
+		<version>1.0.2</version>
 		<relativePath>../acris-os-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-server-components</artifactId>
 	<name>AcrIS Server Components</name>
 	<packaging>jar</packaging>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2</version>
 
 	<dependencies>
 		<dependency>
