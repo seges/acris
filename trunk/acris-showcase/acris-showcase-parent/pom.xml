@@ -17,8 +17,8 @@
 		<repository.project>acris-showcase</repository.project>
 
 		<!-- base versions -->
-		<corpis-os.version>1.0.7-SNAPSHOT</corpis-os.version>
-		<sesam-os.version>1.0.8-SNAPSHOT</sesam-os.version>
+		<corpis-os.version>1.0.7</corpis-os.version>
+		<sesam-os.version>1.0.8</sesam-os.version>
 
 		<!-- DI -->
 		<gwt-gin.version>1.0-r137</gwt-gin.version>
