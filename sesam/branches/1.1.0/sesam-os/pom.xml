@@ -35,6 +35,8 @@
 	<modules>
 		<module>../sesam-core</module>
 		<module>../sesam-spring</module>
+		<module>../sesam-annotations-support</module>
+		<module>../sesam-annotation-processors</module>
 	</modules>
 
         <build>
