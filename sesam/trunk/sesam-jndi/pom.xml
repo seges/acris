@@ -12,11 +12,4 @@
 		<version>1.0.9-SNAPSHOT</version>
 		<relativePath>../sesam-os/pom.xml</relativePath> 
 	</parent>
-	
-	<dependencies>	
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
-		</dependency>
-	</dependencies>
 </project>
