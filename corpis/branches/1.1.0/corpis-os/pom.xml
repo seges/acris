@@ -50,6 +50,10 @@
 		<module>../corpis-test</module>
 		<module>../corpis-dao-api</module>
 		<module>../corpis-dao-impl</module>
+		<module>../corpis-import-export-api</module>
+		<module>../corpis-import-export</module>
+		<module>../corpis-payment-api</module>
+		<module>../corpis-payment</module>
 	</modules>
 
 	<properties>
@@ -57,6 +61,8 @@
 		<repository.project>corpis</repository.project>
 	
 		<sesam-os.version>1.1.0</sesam-os.version>
+		
+		<bouncycastle.version>1.45</bouncycastle.version>
 	</properties>
 
 	<build>
@@ -67,7 +73,7 @@
 				<configuration>
 					<preparationGoals>install</preparationGoals>
 					<tagBase>
-						https://acris.googlecode.com/svn/corpis/tags/${pom.artifactId}
+						https://acris.googlecode.com/svn/corpis/tags/${project.artifactId}
 					</tagBase>
 				</configuration>
 			</plugin>
@@ -89,22 +95,53 @@
 			</dependency>
 			
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-dao-api</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-dao-impl</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>		
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-test</artifactId>
-				<version>${pom.version}</version>  
+				<version>${project.version}</version>  
 				<scope>test</scope>
 			</dependency>
-			
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-import-export-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-import-export</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-payment-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-payment</artifactId>
+				<version>${project.version}</version>
+			</dependency>		
+		
+			<dependency>
+			    <groupId>org.bouncycastle</groupId>
+			    <artifactId>bcprov-jdk16</artifactId>
+			    <version>${bouncycastle.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.bouncycastle</groupId>
+			    <artifactId>bcpg-jdk16</artifactId>
+			    <version>${bouncycastle.version}</version>
+			</dependency>
+		
 			<dependency>
 				<groupId>dumbster</groupId>
 				<artifactId>dumbster</artifactId>
