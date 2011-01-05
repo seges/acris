@@ -6,45 +6,39 @@ package sk.seges.corpis.ie.server.domain;
 /**
  * @author ladislav.gazo
  */
-public class CSVHandlerContext {
-	private final int row;
-	private final String webId;
-	private final String language;
-	private final Long parentContentId;
-	private final Long templateId;
+public class CSVHandlerContext extends CopyOfCSVHandlerContext {
+	private static final String WEB_ID = "webId";
+	private static final String LANGUAGE = "language";
+	private static final String PARENT_CONTENT_ID = "parentContentId";
+	private static final String TEMPLATE_ID = "templateId";
 
 	public CSVHandlerContext(int row, String webId, String language, Long parentContentId, Long templateId) {
 		super();
-		this.row = row;
-		this.webId = webId;
-		this.language = language;
-		this.parentContentId = parentContentId;
-		this.templateId = templateId;
-	}
-
-	public int getRow() {
-		return row;
+		contextMap.put(WEB_ID, webId);
+		contextMap.put(LANGUAGE, language);
+		contextMap.put(PARENT_CONTENT_ID, parentContentId);
+		contextMap.put(TEMPLATE_ID, templateId);
 	}
 
 	public String getWebId() {
-		return webId;
+		return get(WEB_ID);
 	}
 
 	public String getLanguage() {
-		return language;
+		return get(LANGUAGE);
 	}
 
 	public Long getParentContentId() {
-		return parentContentId;
+		return get(PARENT_CONTENT_ID);
 	}
 
 	public Long getTemplateId() {
-		return templateId;
+		return get(TEMPLATE_ID);
 	}
 
 	@Override
 	public String toString() {
-		return "CSVHandlerContext [language=" + language + ", parentContentId=" + parentContentId + ", row="
-				+ row + ", templateId=" + templateId + ", webId=" + webId + "]";
+		return "CSVHandlerContext [language=" + getLanguage() + ", parentContentId=" + getParentContentId()
+				+ ", row=" + getRow() + ", templateId=" + getTemplateId() + ", webId=" + getWebId() + "]";
 	}
 }
