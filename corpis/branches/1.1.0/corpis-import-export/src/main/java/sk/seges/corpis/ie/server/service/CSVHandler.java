@@ -5,7 +5,7 @@ package sk.seges.corpis.ie.server.service;
 
 import java.util.List;
 
-import sk.seges.corpis.ie.server.domain.CopyOfCSVHandlerContext;
+import sk.seges.corpis.ie.server.domain.CSVHandlerContext;
 import sk.seges.corpis.ie.server.domain.CsvEntry;
 import sk.seges.corpis.ie.shared.domain.ImportExportViolation;
 
@@ -14,7 +14,7 @@ import sk.seges.corpis.ie.shared.domain.ImportExportViolation;
  *
  * @param <T> CSV entry object
  */
-public interface CSVHandler<T extends CsvEntry, C extends CopyOfCSVHandlerContext> {
+public interface CSVHandler<T extends CsvEntry, C extends CSVHandlerContext> {
 	List<ImportExportViolation> handle(C context, T entry);
 
 	Class<T> getHandledCsvEntryClass();

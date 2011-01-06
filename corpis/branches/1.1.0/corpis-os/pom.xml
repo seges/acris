@@ -77,6 +77,9 @@
 					</tagBase>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -146,6 +149,12 @@
 				<groupId>dumbster</groupId>
 				<artifactId>dumbster</artifactId>
 				<version>1.6.1</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>net.sf.opencsv</groupId>
+				<artifactId>opencsv</artifactId>
+				<version>1.8.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

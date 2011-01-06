@@ -9,12 +9,12 @@ import java.util.Map.Entry;
 /**
  * @author ladislav.gazo
  */
-public class CopyOfCSVHandlerContext {
+public class CSVHandlerContext {
 	private static final String ROW = "row";
 	
 	protected Map<String, Object> contextMap;
 	
-	public void injectInto(CopyOfCSVHandlerContext context) {
+	public void injectInto(CSVHandlerContext context) {
 		for(Entry<String, Object> entry : contextMap.entrySet()) {
 			if(context.contextMap.containsKey(entry.getKey())) {
 				continue;
