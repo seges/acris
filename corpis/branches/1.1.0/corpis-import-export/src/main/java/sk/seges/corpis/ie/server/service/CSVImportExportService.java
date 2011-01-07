@@ -14,7 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sk.seges.corpis.ie.server.domain.CSVHandlerContext;
+import sk.seges.corpis.ie.server.domain.RowBasedHandlerContext;
 import sk.seges.corpis.ie.server.domain.CsvEntry;
 import sk.seges.corpis.ie.shared.domain.ImportExportViolation;
 import au.com.bytecode.opencsv.bean.CsvToBean;
@@ -32,9 +32,9 @@ public abstract class CSVImportExportService {
 
 	protected abstract String detectFormat();
 
-	protected abstract String getDestination(CSVHandlerContext contextTemplate);
+	protected abstract String getDestination(RowBasedHandlerContext contextTemplate);
 
-	protected abstract CSVHandlerContext instantiateContext();
+	protected abstract RowBasedHandlerContext instantiateContext();
 
 	public CSVImportExportService(Map<String, CSVHandler<?, ?>> handlerMapping) {
 		super();
@@ -52,7 +52,7 @@ public abstract class CSVImportExportService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ImportExportViolation> importCSV(CSVHandlerContext contextTemplate) {
+	public List<ImportExportViolation> importCSV(RowBasedHandlerContext contextTemplate) {
 		List<ImportExportViolation> violations = new ArrayList<ImportExportViolation>();
 
 		CSVHandler handler = handlerMapping.get(detectFormat());
@@ -77,7 +77,7 @@ public abstract class CSVImportExportService {
 		// one for header and one for not starting at 0
 		int i = 2;
 		for (CsvEntry entry : entries) {
-			CSVHandlerContext newContext = instantiateContext();
+			RowBasedHandlerContext newContext = instantiateContext();
 			contextTemplate.injectInto(newContext);
 			newContext.setRow(i);
 			violations.addAll(handler.handle(newContext, entry));

@@ -3,18 +3,21 @@
  */
 package sk.seges.corpis.ie.server.domain;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
  * @author ladislav.gazo
  */
-public class CSVHandlerContext {
-	private static final String ROW = "row";
-	
+public class HandlerContext {
 	protected Map<String, Object> contextMap;
 	
-	public void injectInto(CSVHandlerContext context) {
+	public HandlerContext() {
+		contextMap = new HashMap<String, Object>();
+	}
+	
+	public void injectInto(HandlerContext context) {
 		for(Entry<String, Object> entry : contextMap.entrySet()) {
 			if(context.contextMap.containsKey(entry.getKey())) {
 				continue;
@@ -22,15 +25,6 @@ public class CSVHandlerContext {
 			
 			context.contextMap.put(entry.getKey(), entry.getValue());
 		}
-
-	}
-	
-	public Integer getRow() {
-		return (Integer) contextMap.get(ROW);
-	}
-	
-	public void setRow(Integer row) {
-		contextMap.put(ROW, row);
 	}
 	
 	@SuppressWarnings("unchecked")

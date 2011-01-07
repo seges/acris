@@ -38,6 +38,12 @@
 			<groupId>net.sf.gilead</groupId>
 			<artifactId>gilead-core</artifactId>
 			<version>${gilead.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>				
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
