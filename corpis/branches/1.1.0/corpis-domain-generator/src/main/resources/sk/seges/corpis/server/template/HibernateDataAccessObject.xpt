@@ -1,0 +1,35 @@
+«IMPORT sculptormetamodel»
+
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+«EXTENSION sk::seges::corpis::server::extension::helper»
+
+«DEFINE dataEntity FOR Entity»
+	«FILE javaFileName(getServerDaoHibernatePackage() + ".Hibernate" + name + "DaoBase")»
+package «getServerDaoHibernatePackage()»;
+		
+import «getServerDomainHibernatePackage()».Hibernate«name»;
+import «getServerDaoPackage()».«name»DaoBase;
+import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+public class Hibernate«name»DaoBase extends AbstractHibernateCRUD<Hibernate«name»> implements «name»DaoBase<Hibernate«name»> {
+	public Hibernate«name»DaoBase() {
+		super(Hibernate«name».class);
+	}
+	
+	protected Hibernate«name»DaoBase(Class<? extends Hibernate«name»> clazz) {
+		super(clazz);
+	}
+
+	@PersistenceContext(unitName = "«getEntityManagerFactoryName()»")
+	public void setEntityManager(EntityManager entityManager) {
+		super.setEntityManager(entityManager);
+	}
+
+	«REM»«EXPAND attribute FOREACH attributes»
+	«EXPAND reference FOREACH references»«ENDREM»
+}
+	«ENDFILE»
+«ENDDEFINE»

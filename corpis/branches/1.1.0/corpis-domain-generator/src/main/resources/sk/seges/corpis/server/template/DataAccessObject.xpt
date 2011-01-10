@@ -1,0 +1,19 @@
+«IMPORT sculptormetamodel»
+
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+«EXTENSION sk::seges::corpis::server::extension::helper»
+
+«DEFINE dataEntity FOR Entity»
+	«FILE javaFileName(getServerDaoPackage() + "." + name + "DaoBase")»
+package «getServerDaoPackage()»;
+		
+import «getDomainPackage()».«name»Data;
+import sk.seges.sesam.dao.ICrudDAO;
+
+public interface «name»DaoBase<T extends «name»Data<?>> extends ICrudDAO<T> {
+	«REM»«EXPAND attribute FOREACH attributes»
+	«EXPAND reference FOREACH references»«ENDREM»
+}
+	«ENDFILE»
+«ENDDEFINE»

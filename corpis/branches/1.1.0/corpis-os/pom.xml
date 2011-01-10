@@ -106,7 +106,18 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-dao-impl</artifactId>
 				<version>${project.version}</version>
-			</dependency>		
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-generator</artifactId>
+				<version>${project.version}</version>
+			</dependency>					
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-generator-import</artifactId>
+				<version>${project.version}</version>
+				<scope>import</scope>
+			</dependency>						
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-test</artifactId>
@@ -156,6 +167,7 @@
 				<artifactId>opencsv</artifactId>
 				<version>1.8.1</version>
 			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 
