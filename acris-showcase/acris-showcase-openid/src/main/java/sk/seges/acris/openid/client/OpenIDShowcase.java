@@ -1,6 +1,7 @@
 package sk.seges.acris.openid.client;
 
 import sk.seges.acris.common.util.Pair;
+import sk.seges.acris.openid.client.presenter.ShowcasePresenter;
 import sk.seges.acris.openid.client.service.MockUserService;
 import sk.seges.acris.openid.client.view.ShowcaseView;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter;
@@ -42,7 +43,7 @@ public class OpenIDShowcase implements EntryPoint {
 
 		OpenIDLoginDisplay display = GWT.create(ShowcaseView.class);
 
-		OpenIDLoginPresenter presenter = new OpenIDLoginPresenter(display, broadcaster, redirectUrl, languages,
+		OpenIDLoginPresenter presenter = new ShowcasePresenter(display, broadcaster, redirectUrl, languages,
 				rememberMeAware, consumerService);
 
 		SimplePanel overlay = new SimplePanel();

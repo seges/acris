@@ -9,6 +9,7 @@ import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.exception.SecurityException;
+import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
@@ -26,7 +27,6 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -133,38 +133,74 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	@Override
 	public void bind(final HasWidgets parent) {
 		setLocaleFromCookies();
-
-		AsyncCallback<String> securedCallback = new SecuredAsyncCallback<String>() {
-
-			@Override
-			public void onSuccessCallback(String result) {
-				if (result != null) {
-					handleSuccessfulLogin(result);
-				}
-			}
-
-			@Override
-			public void onOtherException(Throwable e) {
-				if (e instanceof BroadcastingException) {
-					for (Throwable t : ((BroadcastingException) e).getCauses()) {
-						GWT.log("Broadcaster received an error", t);
-					}
-				} else {
-					GWT.log("Exception occured", e);
-				}
-				handleFailedLogin();
-			}
-
-			@Override
-			public void onSecurityException(SecurityException e) {
-				GWT.log("Security exception occured", e);
-				handleFailedLogin();
-			}
-		};
-
 		superBind(parent);
-		registerHandlers(securedCallback);
 		readLoginCookies();
+		registerHandlers();
+
+		AsyncCallback<String> stringCallback = null;
+		AsyncCallback<ClientSession> clientCallback = null;
+
+		if (redirectUrl != null) {
+			stringCallback = new SecuredAsyncCallback<String>() {
+
+				@Override
+				public void onSuccessCallback(String result) {
+					if (result != null) {
+						ClientSession resultSession = new ClientSession();
+						resultSession.setSessionId(result);
+						handleSuccessfulLogin(resultSession);
+					}
+				}
+
+				@Override
+				public void onOtherException(Throwable e) {
+					if (e instanceof BroadcastingException) {
+						for (Throwable t : ((BroadcastingException) e).getCauses()) {
+							GWT.log("Broadcaster received an error", t);
+						}
+					} else {
+						GWT.log("Exception occured", e);
+					}
+					handleFailedLogin();
+				}
+
+				@Override
+				public void onSecurityException(SecurityException e) {
+					GWT.log("Security exception occured", e);
+					handleFailedLogin();
+				}
+			};
+		} else {
+			clientCallback = new SecuredAsyncCallback<ClientSession>() {
+
+				@Override
+				public void onSuccessCallback(ClientSession result) {
+					if (result != null) {
+						handleSuccessfulLogin(result);
+					}
+				}
+
+				@Override
+				public void onOtherException(Throwable e) {
+					if (e instanceof BroadcastingException) {
+						for (Throwable t : ((BroadcastingException) e).getCauses()) {
+							GWT.log("Broadcaster received an error", t);
+						}
+					} else {
+						GWT.log("Exception occured", e);
+					}
+					handleFailedLogin();
+				}
+
+				@Override
+				public void onSecurityException(SecurityException e) {
+					GWT.log("Security exception occured", e);
+					handleFailedLogin();
+				}
+			};
+		}
+
+		registerLoginHandlers(stringCallback != null ? stringCallback : clientCallback);
 	}
 
 	protected void setLocaleFromCookies() {
@@ -176,6 +212,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 					localeName, language);
 			if (!Location.getHref().equals(url)) {
 				unbind();
+				RootPanel.get().clear();
 				Location.assign(url);
 			}
 		}
@@ -238,17 +275,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		return new UserPasswordLoginToken(username, password, language);
 	}
 
-	protected void registerHandlers(final AsyncCallback<String> securedCallback) {
-		LoginHandler loginHandler = new LoginHandler() {
-
-			@Override
-			public void onSubmit(LoginEvent loginEvent) {
-				doLogin(constructLoginToken(loginEvent), securedCallback);
-			}
-		};
-
-		registerHandler(addLoginHandler(loginHandler));
-
+	protected void registerHandlers() {
 		registerHandler(display.addLoginButtonHandler(new ClickHandler() {
 
 			@Override
@@ -295,6 +322,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 					display.setSelectedLanguage(selectedLanguage);
 					Cookies.setCookie(LoginConstants.LANGUAGE_COOKIE_NAME, selectedLanguage);
 					unbind();
+					RootPanel.get().clear();
 					Location.assign(URLUtils.transformURLToRequiredLocale(Location.getHref(), Location.getHostName(),
 							null, LocaleInfo.getCurrentLocale().getLocaleName(), selectedLanguage));
 				}
@@ -302,14 +330,25 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		}
 	}
 
-	protected void doLogin(LoginToken token, AsyncCallback<String> callback) {
-		broadcaster.authenticate(token, callback);
+	protected void registerLoginHandlers(final AsyncCallback<?> callback) {
+		LoginHandler loginHandler = new LoginHandler() {
+
+			@Override
+			public void onSubmit(LoginEvent loginEvent) {
+				doLogin(constructLoginToken(loginEvent), callback);
+			}
+		};
+
+		registerHandler(addLoginHandler(loginHandler));
 	}
 
-	protected void doRedirect(String redirectUrl) {
-		unbind();
-		RootPanel.get().clear();
-		Window.Location.replace(redirectUrl);
+	@SuppressWarnings("unchecked")
+	protected void doLogin(LoginToken token, AsyncCallback<?> callback) {
+		if (redirectUrl != null) {
+			broadcaster.authenticate(token, (AsyncCallback<String>) callback);
+		} else {
+			broadcaster.login(token, (AsyncCallback<ClientSession>) callback);
+		}
 	}
 
 	protected void handleFailedLogin() {
@@ -324,17 +363,24 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		Cookies.removeCookie(LoginConstants.LOGINPASSWORD_COOKIE_NAME);
 	}
 
-	protected void handleSuccessfulLogin(String result) {
+	protected void handleSuccessfulLogin(ClientSession result) {
 		display.setUsername("");
 		display.setPassword("");
 
-		String query = "";
-		if (GWT.isProdMode()) {
-			query = "?" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result;
-		} else {
-			query = "?gwt.codesvr=127.0.0.1:9997&" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result;
+		unbind();
+
+		if (redirectUrl != null) {
+			String query = "";
+			if (GWT.isProdMode()) {
+				query = "?" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result.getSessionId();
+			} else {
+				query = "?gwt.codesvr=127.0.0.1:9997&" + LoginConstants.ACRIS_SESSION_ID_STRING + "="
+						+ result.getSessionId();
+			}
+
+			RootPanel.get().clear();
+			Location.replace(redirectUrl + query);
 		}
-		doRedirect(redirectUrl + query);
 	}
 
 	@Override
