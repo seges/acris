@@ -1,4 +1,4 @@
-package sk.seges.sesam.core.jsr269;
+package sk.seges.sesam.core.pap;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -24,8 +24,10 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-public abstract class AnnotationTest {
+import sk.seges.sesam.core.pap.utils.ClassFinder;
 
+public abstract class AnnotationTest {
+ 
 	private static final String TEST_SOURCE_FOLDER = "src/test/java";
 	private static final String MAIN_SOURCE_FOLDER = "src/main/java";
 	protected static final String SOURCE_FILE_SUFFIX = ".java";
@@ -232,6 +234,10 @@ public abstract class AnnotationTest {
 	protected static void assertCompilationSuccessful(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
 		assert (diagnostics != null);
 
+		for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
+			System.out.println(diagnostic.toString());
+		}
+		
 		for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
 			assertFalse("Expected no errors", diagnostic.getKind().equals(Kind.ERROR));
 		}

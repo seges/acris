@@ -5,8 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,17 +23,20 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
+import sk.seges.sesam.core.pap.api.SubProcessor;
+import sk.seges.sesam.core.pap.builder.NameTypesBuilder;
+import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.model.InputClass;
 import sk.seges.sesam.core.pap.model.InputClass.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.InputClass.OutputClass;
-import sk.seges.sesam.core.pap.model.TypedClass;
 import sk.seges.sesam.core.pap.model.TypedClass.TypeParameter;
-import sk.seges.sesam.core.pap.model.api.Type;
+import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
@@ -41,29 +45,96 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	public static final String CONFIG_FILE_LOCATION = "configLocation";
 	protected static final String PATH_SEPARATOR = "/";
 
-	protected enum ConfigurationType {
-		PROCESSING_ANNOTATIONS("annotations"), 
-		PROCESSING_INTERFACES("interfaces"), 
+	protected interface ConfigurationType {
+
+		String getKey();
 		
-		OUTPUT_INHERITORS("inheritors"), 
-		OUTPUT_SUPERCLASS("superClass");
+		boolean isAditive();
+		
+		ElementKind getKind();
+	}
+	
+	protected enum DefaultConfigurationType implements ConfigurationType {
+		PROCESSING_ANNOTATIONS("annotations", true, ElementKind.CLASS), 
+		PROCESSING_INTERFACES("interfaces", true, ElementKind.CLASS), 
+		
+		OUTPUT_INTERFACES("inheritors", true, ElementKind.CLASS), 
+		OUTPUT_SUPERCLASS("superClass", true, ElementKind.CLASS);
 		
 		private String key;
+		private boolean aditive;
+		private ElementKind kind;
 		
-		ConfigurationType(String key) {
+		DefaultConfigurationType(String key, boolean aditive, ElementKind kind) {
 			this.key = key;
+			this.aditive = aditive;
+			this.kind = kind;
 		}
 		
+		@Override
+		public boolean isAditive() {
+			return aditive;
+		}
+		
+		@Override
+		public ElementKind getKind() {
+			return kind;
+		}
+				
 		public String getKey() {
 			return key;
 		}
 	}
 
-	public static final Class<?> THIS = TypedClass.class;
-
-	private Map<ConfigurationType, Set<String>> configurationParameters = new HashMap<ConfigurationType, Set<String>>();
+	private Map<ConfigurationType, Set<NamedType>> configurationParameters = new HashMap<ConfigurationType, Set<NamedType>>();
+	private Map<String, Set<SubProcessor<?>>> subProcessors = new HashMap<String, Set<SubProcessor<?>>>();
 	
-	protected Set<Element> elements = new HashSet<Element>();
+	protected Set<Element> processingElements = new HashSet<Element>();
+
+	protected boolean hasSubProcessor(TypeElement element) {
+		return subProcessors.get(element.getQualifiedName().toString()) != null;
+	}
+	
+	protected Type[] getSubProcessorImports() {
+		List<Type> types = new ArrayList<Type>();
+		for (Set<SubProcessor<?>> subProcessorSet : subProcessors.values()) {
+			for (SubProcessor<?> subProcessor: subProcessorSet) {
+				addUnique(types, subProcessor.getImports());
+			}
+		}
+		return types.toArray(new Type[] {});
+	}
+	
+	protected void initSubProcessors(ProcessingEnvironment processingEnv) {
+		for (Set<SubProcessor<?>> subProcessorSet : subProcessors.values()) {
+			for (SubProcessor<?> subProcessor: subProcessorSet) {
+				subProcessor.init(processingEnv);
+			}
+		}
+	}
+
+	protected boolean processSubProcessor(PrintWriter printWriter, NamedType outputClass, TypeElement element, TypeElement subElement) {
+		Set<SubProcessor<?>> subProcessorSet = subProcessors.get(subElement.getQualifiedName().toString());
+
+		boolean result = true;
+		
+		for (SubProcessor<?> subProcessor: subProcessorSet) {
+			result |= subProcessor.process(printWriter, outputClass, element, subElement);
+		}
+		
+		return result;
+	}
+
+	protected void registerSubProcessor(Class<?> clazz, SubProcessor<?> subProcessor) {
+		Set<SubProcessor<?>> processors = subProcessors.get(clazz.getName());
+
+		if (processors == null) {
+			processors = new HashSet<SubProcessor<?>>();
+			subProcessors.put(clazz.getName(), processors);
+		}
+		
+		processors.add(subProcessor);
+	}
 
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
@@ -84,10 +155,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 			throw new RuntimeException("Unable to initialize.", e);
 		}
 
-		for (ConfigurationType configurationType: ConfigurationType.values()) {
+		for (ConfigurationType configurationType: DefaultConfigurationType.values()) {
 			String configurationString = (String) prop.get(configurationType.getKey());
 			if (configurationString != null) {
-				Set<String> configurationValues = new HashSet<String>();
+				Set<NamedType> configurationValues = new HashSet<NamedType>();
 				parse(configurationValues, configurationString);
 				configurationParameters.put(configurationType, configurationValues);
 			}
@@ -112,7 +183,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return source;
 	}
 
-	protected <T> List<T> addUnique(List<T> source, List<T> additions) {
+	protected <T> List<T> addUnique(List<T> source, Collection<T> additions) {
 		if (additions != null) {
 			for (T addClass : additions) {
 				addUnique(source, addClass);
@@ -130,33 +201,33 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return source;
 	}
 
-	protected AnnotatedElement[] getAllImports() {
-		List<AnnotatedElement> imports = new ArrayList<AnnotatedElement>();
+	protected NamedType[] getAllImports(TypeElement typeElement) {
+		List<NamedType> imports = new ArrayList<NamedType>();
 
-		addUnique(imports, getImports());
-		addUnique(imports, getMergedConfiguration(ConfigurationType.OUTPUT_SUPERCLASS));
-		addUnique(imports, getMergedConfiguration(ConfigurationType.OUTPUT_INHERITORS));
+		addUnique(imports, toTypes(getImports()));
+		addUnique(imports, getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement));
+		addUnique(imports, getMergedConfiguration(DefaultConfigurationType.OUTPUT_INTERFACES, typeElement));
 
-		return imports.toArray(new AnnotatedElement[] {});
+		return imports.toArray(new NamedType[] {});
 	}
 
 	protected ElementKind getElementKind() {
 		return ElementKind.CLASS;
 	}
 	
-	protected AnnotatedElement[] getImports() {
-		return new AnnotatedElement[] { };
+	protected Type[] getImports() {
+		return new Type[] { };
 	}
 
-	protected final OutputClass[] getClassNames(Element element) {
-
-		String packageName = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName().toString();
-		String simpleName = element.getSimpleName().toString();
-
-		return getTargetClassNames(new InputClass(packageName, simpleName));
+	protected NameTypes getNameTypes() {
+		return new NameTypesBuilder(processingEnv.getElementUtils());
+	}
+	
+	protected final NamedType[] getClassNames(Element element) {
+		return getTargetClassNames(getNameTypes().toType(element));
 	}
 
-	protected abstract OutputClass[] getTargetClassNames(InputClass inputClass);
+	protected abstract NamedType[] getTargetClassNames(MutableType mutableType);
 
 	protected PrintWriter initializePrintWriter(OutputStream os) {
 		FormattedPrintWriter pw = new FormattedPrintWriter(os);
@@ -170,76 +241,71 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				kind.equals(ElementKind.ENUM));
 	}
 	
-	private AnnotatedElement[] mergeClassArray(AnnotatedElement[] classes, Set<String> classNames) {
-		List<AnnotatedElement> result = new ArrayList<AnnotatedElement>();
+	private NamedType[] mergeClassArray(Type[] classes, Set<NamedType> classNames) {
+		List<NamedType> result = new ArrayList<NamedType>();
 
-		addUnique(result, classes);
-
-		if (classNames != null) {
-			for (String annotationString: classNames) {
-				try {
-					result.add((Class<?>)Class.forName(annotationString));
-				} catch (ClassNotFoundException e) {
-					processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find annotation " + annotationString + " on the classpath");
-				}
-			}
-		}
+		addUnique(result, toTypes(classes));
+		addUnique(result, classNames);
 		
-		return result.toArray(new AnnotatedElement[] {});		
+		return result.toArray(new NamedType[] {});		
 	}
 	
-	protected AnnotatedElement[] getConfigurationTypes(ConfigurationType type) {
-		return new AnnotatedElement[] {
+	protected Type[] getConfigurationTypes(ConfigurationType type, TypeElement typeElement) {
+		if (type instanceof DefaultConfigurationType) {
+			return getConfigurationTypes((DefaultConfigurationType)type, typeElement);
+		}
+		return new Type[] {
 		};
 	}
 
-	final protected AnnotatedElement[] getMergedConfiguration(ConfigurationType type) {
-		return mergeClassArray(getConfigurationTypes(type), configurationParameters.get(ConfigurationType.PROCESSING_INTERFACES));
+	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
+		return new Type[] {
+		};
+	}
+
+	final protected NamedType[] getMergedConfiguration(ConfigurationType type, TypeElement typeElement) {
+		return mergeClassArray(getConfigurationTypes(type, typeElement), configurationParameters.get(type));
 	}
 
 	protected boolean isSupportedAnnotation(Annotation annotation) {
 		return true;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.annotation.processing.AbstractProcessor#process(java.util.Set,
-	 * javax.annotation.processing.RoundEnvironment)
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		if (roundEnv.processingOver()) {
 			// finally process gathered elements and create java files
-			for (Element element : elements) {
+			for (Element element : processingElements) {
 				processElement(element, roundEnv);
 			}
 		} else {
-			for (AnnotatedElement annotation : getMergedConfiguration(ConfigurationType.PROCESSING_ANNOTATIONS)) {
-				Class<Annotation> annotationClass = null;
-				if (annotation instanceof Class) {
-					annotationClass = (Class<Annotation>)annotation;
-				}
+			for (NamedType annotationType : getMergedConfiguration(DefaultConfigurationType.PROCESSING_ANNOTATIONS, null)) {
+				Class<Annotation> annotationClass;
+				try {
+					annotationClass = (Class<Annotation>) Class.forName(annotationType.getQualifiedName());
 				
-				if (annotationClass != null) {
-					Set<? extends Element> els = roundEnv.getElementsAnnotatedWith(annotationClass);
-					for (Element element : els) {
-						if (isSupportedKind(element.getKind())) {
-							if (isSupportedAnnotation(element.getAnnotation(annotationClass))) {
-								elements.add(element);
+					if (annotationClass != null) {
+						Set<? extends Element> els = roundEnv.getElementsAnnotatedWith(annotationClass);
+						for (Element element : els) {
+							if (isSupportedKind(element.getKind())) {
+								if (isSupportedAnnotation(element.getAnnotation(annotationClass))) {
+									processingElements.add(element);
+								}
 							}
 						}
+					} else {
+						processingEnv.getMessager().printMessage(Kind.ERROR, "Invalid annotation definition " + annotationType.getQualifiedName());
 					}
-				} else {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "Invalid annotation definition " + annotation.toString());
+				} catch (ClassNotFoundException e) {
+					processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find annotation class " + annotationType.getQualifiedName());
 				}
 			}
 			for (Element element : roundEnv.getRootElements()) {
 				if (isSupportedKind(element.getKind())) {
 					TypeElement typeElement = (TypeElement) element;
 					if (isAssignable(typeElement)) {
-						elements.add(element);
+						processingElements.add(element);
 					}
 				}
 			}
@@ -254,7 +320,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		CANONICAL, SIMPLE, QUALIFIED;
 	}
 
-	private String toString(TypeParameter typeParameter, InputClass inputClass, ClassSerializer serializer) {
+	private String toString(TypeParameter typeParameter, NamedType inputClass, ClassSerializer serializer) {
 		String result = "";
 		
 		if (typeParameter.getVariable() != null) {
@@ -265,7 +331,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 			if (typeParameter.getVariable() != null) {
 				result += "extends ";
 			}
-			if (typeParameter.getBounds().equals(THIS)) {
+			if (typeParameter.getBounds().equals(NamedType.THIS)) {
 				result += toString(inputClass, serializer);
 			} else {
 				result += toString(inputClass, typeParameter.getBounds(), serializer, true);
@@ -278,11 +344,12 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return result;
 	}
 
-	private String toString(Type clazz, ClassSerializer serializer) {
+	private String toString(NamedType clazz, ClassSerializer serializer) {
 		switch (serializer) {
 		case CANONICAL:
-		case QUALIFIED:
 			return clazz.getCanonicalName();
+		case QUALIFIED:
+			return clazz.getQualifiedName();
 		case SIMPLE:
 			return clazz.getSimpleName();
 		}
@@ -301,26 +368,20 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return null;
 	}
 	
-	private String getCanonicalName(InputClass inputClass, AnnotatedElement annotatedElement, boolean typed) {
-		return toString(inputClass, annotatedElement, ClassSerializer.CANONICAL, typed);
+	private String getCanonicalName(NamedType inputClass, NamedType type, boolean typed) {
+		return toString(inputClass, type, ClassSerializer.CANONICAL, typed);
 	}
 
-	private String getSimpleName(InputClass inputClass, AnnotatedElement annotatedElement, boolean typed) {
-		return toString(inputClass, annotatedElement, ClassSerializer.SIMPLE, typed);
+	private String getSimpleName(NamedType inputClass, NamedType type, boolean typed) {
+		return toString(inputClass, type, ClassSerializer.SIMPLE, typed);
 	}
 
-	private String getQualifiedName(InputClass inputClass, AnnotatedElement annotatedElement, boolean typed) {
-		return toString(inputClass, annotatedElement, ClassSerializer.QUALIFIED, typed);
+	@SuppressWarnings("unused")
+	private String getQualifiedName(InputClass inputClass, NamedType type, boolean typed) {
+		return toString(inputClass, type, ClassSerializer.QUALIFIED, typed);
 	}
 
-	private String toString(InputClass inputClass, AnnotatedElement annotatedElement, ClassSerializer serializer, boolean typed) {
-		if (annotatedElement instanceof java.lang.reflect.Type) {
-			return toString(inputClass, (java.lang.reflect.Type)annotatedElement, serializer, typed);
-		}
-		throw new IllegalArgumentException("Not supported annotated element " + annotatedElement.toString());
-	}
-	
-	private String toString(InputClass inputClass, java.lang.reflect.Type type, ClassSerializer serializer, boolean typed) {
+	private String toString(NamedType inputClass, Type type, ClassSerializer serializer, boolean typed) {
 		if (type instanceof Class) {
 			return toString((Class<?>)type, serializer);
 		}
@@ -351,8 +412,8 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 			return resultName + types;
 		}
 		
-		if (type instanceof Type) {
-			return toString((Type)type, serializer);
+		if (type instanceof NamedType) {
+			return toString((NamedType)type, serializer);
 		}
 		
 		throw new IllegalArgumentException("Not supported annotation element " + type.toString());
@@ -364,9 +425,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
 		TypeElement typeElement = (TypeElement) element;
 
-		OutputClass[] outputNames = getClassNames(element);
+		NamedType[] outputNames = getClassNames(element);
+		NamedType inputClass = getNameTypes().toType(typeElement);
 		
-		for (OutputClass outputName: outputNames) {
+		for (NamedType outputName: outputNames) {
 			try {
 				JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(outputName.getCanonicalName(), element);
 				OutputStream os = createSourceFile.openOutputStream();
@@ -374,21 +436,21 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				pw.println("package " + outputName.getPackageName() + ";");
 				pw.println();
 	
-				for (AnnotatedElement importClass : getAllImports()) {
-					pw.println("import " + getCanonicalName(outputName, importClass, false) + ";");
+				for (NamedType importType : getAllImports(typeElement)) {
+					pw.println("import " + getCanonicalName(outputName, importType, false) + ";");
 				}
 	
 				pw.println();
 				
 				writeClassAnnotations(pw, element);
 
-				pw.print("public " + getElementKind().name().toLowerCase() + " " + toString(outputName, outputName, ClassSerializer.SIMPLE, true));
+				pw.print("public " + getElementKind().name().toLowerCase() + " " + toString(inputClass, outputName, ClassSerializer.SIMPLE, true));
 	
-				if (getElementKind().equals(ElementKind.CLASS) && getMergedConfiguration(ConfigurationType.OUTPUT_SUPERCLASS).length == 1) {
-					pw.print(" extends " + getSimpleName(outputName, getMergedConfiguration(ConfigurationType.OUTPUT_SUPERCLASS)[0], true));
+				if (getElementKind().equals(ElementKind.CLASS) && getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement).length == 1) {
+					pw.print(" extends " + getSimpleName(outputName, getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement)[0], true));
 				}
 	
-				if (getMergedConfiguration(ConfigurationType.OUTPUT_INHERITORS).length > 0) {
+				if (getMergedConfiguration(DefaultConfigurationType.OUTPUT_INTERFACES, typeElement).length > 0) {
 					boolean supportedType = false;
 					
 					if (getElementKind().equals(ElementKind.CLASS)) {
@@ -401,11 +463,11 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	
 					if (supportedType) {
 						int i = 0;
-						for (AnnotatedElement interfaceClass : getMergedConfiguration(ConfigurationType.OUTPUT_INHERITORS)) {
+						for (NamedType type : getMergedConfiguration(DefaultConfigurationType.OUTPUT_INTERFACES, typeElement)) {
 							if (i > 0) {
 								pw.print(", ");
 							}
-							pw.print(getSimpleName(outputName, interfaceClass, true));
+							pw.print(getSimpleName(inputClass, type, true));
 							i++;
 						}
 					}
@@ -431,52 +493,79 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	/**
 	 * This method should be overrided
 	 */
-	protected void processElement(TypeElement element, OutputClass outputName, RoundEnvironment roundEnv, PrintWriter pw) {	}
+	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {	}
 	
 	protected boolean supportProcessorChain() {
 		//Return true in order to run other processors
 		return true;
 	}
 	
-	private Map<ConfigurationType, List<String>> cachedConfiguration = new HashMap<ConfigurationType, List<String>>();
+	private Map<ConfigurationType, List<NamedType>> cachedConfiguration = new HashMap<ConfigurationType, List<NamedType>>();
+
+	private List<NamedType> toTypes(Type[] javaTypes) {
+		List<NamedType> result = new ArrayList<NamedType>();
+		for (Type javaType: javaTypes) {
+			result.add(getNameTypes().toType(javaType));
+		}
+		return result;
+	}
 	
-	private List<String> ensureConfiguration(ConfigurationType type) {
-		List<String> cachedValue = cachedConfiguration.get(type);
+	private List<NamedType> ensureConfiguration(ConfigurationType type, TypeElement typeElement) {
+		List<NamedType> cachedValue = cachedConfiguration.get(type);
 		
 		if (cachedValue == null) {
-			cachedValue = new ArrayList<String>();
+			cachedValue = new ArrayList<NamedType>();
 			
-			for (AnnotatedElement clazz: getMergedConfiguration(type)) {
-				cachedValue.add(getQualifiedName(null, clazz, false));
+			for (NamedType clazz: getMergedConfiguration(type, typeElement)) {
+				cachedValue.add(clazz);
 			}
 
 			cachedConfiguration.put(type, cachedValue);
 		}
 		return cachedValue;
 	}
-	
-	protected boolean hasAnnotation(TypeElement typeElement) {
-		if (ensureConfiguration(ConfigurationType.PROCESSING_ANNOTATIONS).size() == 0) {
-			return false;
+
+	@SuppressWarnings("unchecked")
+	protected static <T extends Annotation> T hasAnnotation(List<NamedType> types, TypeElement typeElement, Elements elements, NameTypes nameTypes) {
+		if (types == null || types.size() == 0) {
+			return null;
 		}
 
 		List<? extends AnnotationMirror> annotationMirrors = typeElement.getAnnotationMirrors();
 		for (AnnotationMirror mirror : annotationMirrors) {
-			String mirrorFqn = ((TypeElement) mirror.getAnnotationType().asElement()).getQualifiedName().toString();
-			if (ensureConfiguration(ConfigurationType.PROCESSING_ANNOTATIONS).contains(mirrorFqn)) {
-				return true;
+			Element element = mirror.getAnnotationType().asElement();
+			NamedType inputClass = nameTypes.toType(element);
+			if (types.contains(inputClass)) {
+				try {
+					Class<Annotation> annotationClass = (Class<Annotation>) Class.forName(inputClass.getQualifiedName());
+				
+					if (annotationClass != null) {
+						return (T) typeElement.getAnnotation(annotationClass);
+					}
+				} catch (ClassNotFoundException e) {
+					return null;
+				}
 			}
 		}
-		return false;
+		return null;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	protected <T extends Annotation> T hasAnnotation(TypeElement typeElement) {
+		List<NamedType> configuration = ensureConfiguration(DefaultConfigurationType.PROCESSING_ANNOTATIONS, typeElement);
+		
+		Annotation annotation = hasAnnotation(configuration, typeElement, processingEnv.getElementUtils(), getNameTypes());
+		return (T)annotation;
 	}
 
 	private boolean isAssignable(TypeElement typeElement) {
-		if (ensureConfiguration(ConfigurationType.PROCESSING_INTERFACES).size() == 0) {
+		if (ensureConfiguration(DefaultConfigurationType.PROCESSING_INTERFACES, typeElement).size() == 0) {
 			return false;
 		}
 
-		for (String iface : ensureConfiguration(ConfigurationType.PROCESSING_INTERFACES)) {
-			if (ProcessorUtils.isAssignableFrom(typeElement, iface)) {
+		for (NamedType type : ensureConfiguration(DefaultConfigurationType.PROCESSING_INTERFACES, typeElement)) {
+			if (ProcessorUtils.isAssignableFrom(typeElement, type)) {
 				return true;
 			}
 		}
@@ -526,7 +615,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		}
 	}
 
-	private Set<String> parse(Set<String> result, String line) {
+	private Set<NamedType> parse(Set<NamedType> result, String line) {
 		if (line == null || line.length() == 0) {
 			return null;
 		}
@@ -535,7 +624,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		String name;
 		while (tokenizer.hasMoreElements()) {
 			name = tokenizer.nextToken().trim();
-			result.add(name);
+			result.add(getNameTypes().toType(name));
 		}
 		return result;
 	}

@@ -12,9 +12,14 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+import javax.lang.model.util.Types;
+
+import sk.seges.sesam.core.pap.model.api.NamedType;
 
 
 public class ProcessorUtils {
@@ -115,8 +120,30 @@ public class ProcessorUtils {
 		
 		return (T)returnValue;
 	}
+
+	public static ExecutableElement getMethodByReturnType(TypeElement typeElement, TypeElement returnType, Types types) {
+		List<ExecutableElement> methods = ElementFilter.methodsIn(typeElement.getEnclosedElements());
+		
+		for (ExecutableElement method : methods) {
+			if (method.getReturnType() != null) {
+				//
+				if (method.getReturnType().getKind().equals(TypeKind.TYPEVAR)) {
+					TypeVariable typeVariable = (TypeVariable)method.getReturnType();
+					if (types.isAssignable(returnType.asType(), typeVariable.getUpperBound())) {
+						return method;
+					}
+				} else {
+					if (types.isAssignable(returnType.asType(), method.getReturnType())) {
+						return method;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
 	
-	public static ExecutableElement getMethodByParameterType(String name, Element classElement, int paramIndex, TypeMirror parameter) {
+	public static ExecutableElement getMethodByParameterType(String name, Element classElement, int paramIndex, TypeMirror parameter, Types types) {
 		
 		assert name != null;
 		assert classElement != null;
@@ -135,7 +162,7 @@ public class ProcessorUtils {
 			
 			VariableElement variableElement = method.getParameters().get(paramIndex);
 			
-			if (isAssignable(variableElement.asType(), parameter)) {
+			if (types.isAssignable(variableElement.asType(), parameter)) {
 				return method;
 			}
 		}
@@ -146,7 +173,7 @@ public class ProcessorUtils {
 	/**
 	 * Method determines whether typeElement implements or extends type
 	 */
-	public static boolean isAssignableFrom(TypeElement typeElement, String type) {
+	public static boolean isAssignableFrom(TypeElement typeElement, NamedType type) {
 		assert typeElement != null;
 		assert type != null;
 		
@@ -173,19 +200,7 @@ public class ProcessorUtils {
 		return false;
 	}
 
-	public static boolean isAssignable(TypeMirror mirror, TypeMirror type) {
-		assert mirror != null;
-		assert type != null;
-		
-		if (!(type instanceof DeclaredType)) {
-			return type.equals(mirror);
-		}
-		DeclaredType declaredType = (DeclaredType)type;
-		TypeElement dte = (TypeElement) declaredType.asElement();
-		return isAssignable(mirror, dte.getQualifiedName().toString());
-	}
-	
-	public static boolean isAssignable(TypeMirror mirror, String type) {
+	public static boolean isAssignable(TypeMirror mirror, NamedType type) {
 		assert mirror != null;
 		assert type != null;
 
@@ -202,8 +217,8 @@ public class ProcessorUtils {
 		return false;
 	}
 
-	public static boolean isOfType(TypeElement te, String type) {
-		return te.getQualifiedName().toString().equals(type);
+	public static boolean isOfType(TypeElement te, NamedType type) {
+		return te.getQualifiedName().getClass().toString().equals(type.getQualifiedName());
 	}
 
 	public static boolean hasMethod(String name, Element classElement) {
