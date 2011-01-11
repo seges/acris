@@ -16,19 +16,20 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 
 	@Override
-	public void login(LoginToken token, AsyncCallback<ClientSession> callback) throws ServerException {
+	public void authenticate(LoginToken token, AsyncCallback<String> callback) throws ServerException {
 		if (token instanceof OpenIDLoginToken) {
-			ClientSession session = new ClientSession();
-			session.setSessionId("test");
-			callback.onSuccess(session);
+			callback.onSuccess("test");
 		} else if (token instanceof UserPasswordLoginToken
 				&& ((UserPasswordLoginToken) token).getUsername().equals("test")) {
-			ClientSession session = new ClientSession();
-			session.setSessionId("test");
-			callback.onSuccess(session);
+			callback.onSuccess("test");
 		} else {
 			callback.onFailure(new SecurityException("Unsupported login token"));
 		}
+	}
+
+	@Override
+	public void login(LoginToken token, AsyncCallback<ClientSession> callback) throws ServerException {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -60,6 +61,5 @@ public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 	@Override
 	public void getLoggedUser(AsyncCallback<UserData<?>> callback) throws ServerException {
 		// TODO Auto-generated method stub
-		
 	}
 }

@@ -140,18 +140,4 @@ public class SpringLoginService implements LoginService {
 	public void logout() {
 		SecurityContextHolder.clearContext();
 	}
-	
-	public UserData<?> getLoggedUser() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		if (authentication == null) {
-			return null;
-		}
-		
-		if (authentication.getPrincipal() == null) {
-			return null;
-		}
-		
-		return (UserData<?>)authentication.getPrincipal();
-	}
 }

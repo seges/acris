@@ -17,6 +17,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface IUserServiceAsync {
 
 	/**
+	 * Logs in and returns sessionId only, using URL redirection.
+	 * @param token
+	 * @param callback
+	 */
+	void authenticate(LoginToken token, AsyncCallback<String> callback) throws ServerException;
+	
+	/**
 	 * Authenticate user represented with username and his credentials. Service
 	 * method also set selected language to user preferences
 	 * 

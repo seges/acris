@@ -13,6 +13,9 @@ import com.google.gwt.core.ext.GeneratorContext;
  * LinkedHashMap of thirdPartyGenerators
  */
 public class GeneratorChain {
+	
+	static GeneratorContext context = null;
+	
 	static LinkedList<AbstractGenerator> customGenerators;
 	
 	static LinkedList<AbstractGenerator> replacers;

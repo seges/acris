@@ -9,7 +9,6 @@ import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.exception.SecurityException;
-import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
@@ -31,10 +30,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RootPanel;
 
-public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
+public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> implements HasLoginHandlers {
 
-	public interface LoginDisplay extends BaseDisplay, HasLoginHandlers {
+	public interface LoginDisplay extends BaseDisplay {
 
 		HandlerRegistration addLoginButtonHandler(ClickHandler handler);
 
@@ -134,10 +134,10 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 	public void bind(final HasWidgets parent) {
 		setLocaleFromCookies();
 
-		AsyncCallback<ClientSession> securedCallback = new SecuredAsyncCallback<ClientSession>() {
+		AsyncCallback<String> securedCallback = new SecuredAsyncCallback<String>() {
 
 			@Override
-			public void onSuccessCallback(ClientSession result) {
+			public void onSuccessCallback(String result) {
 				if (result != null) {
 					handleSuccessfulLogin(result);
 				}
@@ -198,7 +198,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 			}
 		}
 		display.setLoginEnabled(false);
-		display.fireEvent(new LoginEvent(display.getUsername(), display.getPassword(),
+		fireEvent(new LoginEvent(display.getUsername(), display.getPassword(),
 				(enabledLanguages != null ? display.getSelectedLanguage() : null)));
 	}
 
@@ -225,26 +225,29 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 		}
 	}
 
-	protected void registerHandlers(final AsyncCallback<ClientSession> securedCallback) {
+	protected LoginToken constructLoginToken(LoginEvent loginEvent) {
+		String username = loginEvent.getUsername();
+		String password = loginEvent.getPassword();
+		String language = null;
+		try {
+			language = loginEvent.getLanguage().getFirst();
+		} catch (Exception ignore) {
+			// language support disabled
+		}
+
+		return new UserPasswordLoginToken(username, password, language);
+	}
+
+	protected void registerHandlers(final AsyncCallback<String> securedCallback) {
 		LoginHandler loginHandler = new LoginHandler() {
 
 			@Override
 			public void onSubmit(LoginEvent loginEvent) {
-				String username = loginEvent.getUsername();
-				String password = loginEvent.getPassword();
-				String language = null;
-				try {
-					language = loginEvent.getLanguage().getFirst();
-				} catch (Exception ignore) {
-					// language support disabled
-				}
-
-				UserPasswordLoginToken token = new UserPasswordLoginToken(username, password, language);
-				doLogin(token, securedCallback);
+				doLogin(constructLoginToken(loginEvent), securedCallback);
 			}
 		};
 
-		registerHandler(display.addLoginHandler(loginHandler));
+		registerHandler(addLoginHandler(loginHandler));
 
 		registerHandler(display.addLoginButtonHandler(new ClickHandler() {
 
@@ -299,12 +302,13 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 		}
 	}
 
-	protected void doLogin(LoginToken token, AsyncCallback<ClientSession> callback) {
-		broadcaster.login(token, callback);
+	protected void doLogin(LoginToken token, AsyncCallback<String> callback) {
+		broadcaster.authenticate(token, callback);
 	}
 
 	protected void doRedirect(String redirectUrl) {
 		unbind();
+		RootPanel.get().clear();
 		Window.Location.replace(redirectUrl);
 	}
 
@@ -320,11 +324,21 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> {
 		Cookies.removeCookie(LoginConstants.LOGINPASSWORD_COOKIE_NAME);
 	}
 
-	protected void handleSuccessfulLogin(ClientSession result) {
+	protected void handleSuccessfulLogin(String result) {
 		display.setUsername("");
 		display.setPassword("");
-		String query = "?";
-		query += LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result.getSessionId();
+
+		String query = "";
+		if (GWT.isProdMode()) {
+			query = "?" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result;
+		} else {
+			query = "?gwt.codesvr=127.0.0.1:9997&" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result;
+		}
 		doRedirect(redirectUrl + query);
+	}
+
+	@Override
+	public HandlerRegistration addLoginHandler(LoginHandler handler) {
+		return addHandler(LoginEvent.getType(), handler);
 	}
 }

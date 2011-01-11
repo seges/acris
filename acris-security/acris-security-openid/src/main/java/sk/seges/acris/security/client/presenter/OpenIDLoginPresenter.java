@@ -15,7 +15,6 @@ import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.data.OpenIDUser;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerServiceAsync;
-import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
@@ -30,9 +29,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 
-public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
+public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> implements HasOpenIDLoginHandlers {
 
-	public interface OpenIDLoginDisplay extends LoginDisplay, HasOpenIDLoginHandlers {
+	public interface OpenIDLoginDisplay extends LoginDisplay {
 
 		HandlerRegistration addOpenIDButtonHandler(ClickHandler handler, String style);
 	}
@@ -55,10 +54,10 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
 	public void bind(final HasWidgets parent) {
 		setLocaleFromCookies();
 
-		AsyncCallback<ClientSession> securedCallback = new SecuredAsyncCallback<ClientSession>() {
+		AsyncCallback<String> securedCallback = new SecuredAsyncCallback<String>() {
 
 			@Override
-			public void onSuccessCallback(ClientSession result) {
+			public void onSuccessCallback(String result) {
 				if (result != null) {
 					handleSuccessfulLogin(result);
 				} else {
@@ -91,7 +90,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
 	}
 
 	@Override
-	protected void registerHandlers(AsyncCallback<ClientSession> securedCallback) {
+	protected void registerHandlers(AsyncCallback<String> securedCallback) {
 		super.registerHandlers(securedCallback);
 
 		OpenIDLoginHandler openIDLoginHandler = new OpenIDLoginHandler() {
@@ -102,7 +101,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
 			}
 		};
 
-		registerHandler(display.addOpenIDLoginHandler(openIDLoginHandler));
+		registerHandler(addOpenIDLoginHandler(openIDLoginHandler));
 
 		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.GOOGLE_IDENTIFIER),
 				"acris-login-google-button"));
@@ -155,7 +154,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
 	 * 
 	 * @param callback
 	 */
-	protected void verify(final AsyncCallback<ClientSession> callback) {
+	protected void verify(final AsyncCallback<String> callback) {
 		final String mode = Window.Location.getParameter("openid.mode");
 
 		if (mode != null) {
@@ -206,7 +205,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				display.fireEvent(new OpenIDLoginEvent(identifier));
+				fireEvent(new OpenIDLoginEvent(identifier));
 			}
 		};
 	}
@@ -225,4 +224,9 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> {
 												}
 												}
 												}-*/;
+
+	@Override
+	public HandlerRegistration addOpenIDLoginHandler(OpenIDLoginHandler handler) {
+		return addHandler(OpenIDLoginEvent.getType(), handler);
+	}
 }

@@ -64,7 +64,7 @@ public class SessionRemoteServiceFilter implements Filter {
 				String clientSessionId = sessionId;
 				sessionId = session.getId();
 				if(null == clientSessionId || clientSessionId.isEmpty()) {
-					clientSessionId = sessionId;
+					return session;
 				}
 				SessionHandlerListener.mapSessions(sessionId, clientSessionId);
 			}
@@ -89,7 +89,7 @@ public class SessionRemoteServiceFilter implements Filter {
 				String clientSessionId = sessionId;
 				sessionId = session.getId();
 				if(null == clientSessionId || clientSessionId.isEmpty()) {
-					clientSessionId = sessionId;
+					return session;
 				}
 				SessionHandlerListener.mapSessions(sessionId, clientSessionId);
 			}

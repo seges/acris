@@ -2,9 +2,9 @@ package sk.seges.acris.openid.client;
 
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.openid.client.service.MockUserService;
+import sk.seges.acris.openid.client.view.ShowcaseView;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
-import sk.seges.acris.security.client.view.OpenIDLoginView;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerService;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerServiceAsync;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
@@ -40,24 +40,15 @@ public class OpenIDShowcase implements EntryPoint {
 
 		String redirectUrl = GWT.getModuleBaseURL() + "Redirect.html";
 
-		OpenIDLoginDisplay display = GWT.create(OpenIDLoginView.class);
+		OpenIDLoginDisplay display = GWT.create(ShowcaseView.class);
 
 		OpenIDLoginPresenter presenter = new OpenIDLoginPresenter(display, broadcaster, redirectUrl, languages,
 				rememberMeAware, consumerService);
 
-		show(presenter);
-	}
-
-	private void show(OpenIDLoginPresenter presenter) {
 		SimplePanel overlay = new SimplePanel();
 		overlay.addStyleName("acris-login-overlay");
-
-		SimplePanel wrapper = new SimplePanel();
-		wrapper.addStyleName("acris-login-panel-wrapper");
-
 		RootPanel.get().add(overlay);
-		RootPanel.get().add(wrapper);
 
-		presenter.bind(wrapper);
+		presenter.bind(RootPanel.get());
 	}
 }

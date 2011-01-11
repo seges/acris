@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import sk.seges.acris.core.rebind.GenPredicGroup.EOperator;
 import sk.seges.acris.core.rebind.GeneratorPredicate.EPredicts;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -379,8 +380,9 @@ public abstract class AbstractGenerator extends Generator {
 	 */
 	public String generate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {
-		if (GeneratorChain.customGenerators == null) {
+		if (GeneratorChain.customGenerators == null || GeneratorChain.context != context) {
 			fillUpGeneratorChainMap(logger, context);
+			GeneratorChain.context = context;
 			
 //			new RemoteServiceGinInjectorGenerator().generate(logger, context, RemoteServiceDefinition.class.getCanonicalName());
 		}

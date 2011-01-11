@@ -6,5 +6,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public interface SessionServiceDefTarget extends ServiceDefTarget {
 
+	ClientSession getSession();
+	
 	void setSession(ClientSession clientSession);
 }
