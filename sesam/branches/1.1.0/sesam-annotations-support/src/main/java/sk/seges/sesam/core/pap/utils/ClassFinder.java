@@ -1,4 +1,4 @@
-package sk.seges.sesam.core.jsr269;
+package sk.seges.sesam.core.pap.utils;
 
 import java.io.File;
 import java.io.FileFilter;

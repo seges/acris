@@ -5,7 +5,7 @@ package sk.seges.sesam.pap.model;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,9 +29,8 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.model.InputClass;
-import sk.seges.sesam.core.pap.model.InputClass.OutputClass;
-import sk.seges.sesam.core.pap.model.TypedClass;
+import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
 import sk.seges.sesam.model.metadata.annotation.strategy.PojoPropertyConverter;
@@ -81,12 +80,12 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected AnnotatedElement[] getConfigurationTypes(ConfigurationType type) {
+	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
 		switch (type) {
 			case PROCESSING_ANNOTATIONS:
-				return new AnnotatedElement[] { MetaModel.class };
+				return new Type[] { MetaModel.class };
 		}
-		return super.getConfigurationTypes(type);
+		return super.getConfigurationTypes(type, typeElement);
 	}
 	
 	@Override
@@ -95,8 +94,8 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected OutputClass[] getTargetClassNames(InputClass inputClass) {
-		return new OutputClass[] { 
+	protected NamedType[] getTargetClassNames(MutableType inputClass) {
+		return new NamedType[] { 
 				inputClass.addClassSufix(META_MODEL_SUFFIX)
 		};
 	}
@@ -107,7 +106,7 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected void processElement(TypeElement element, OutputClass outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
+	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 		HashSet<String> hierarchyTypes = new HashSet<String>();
 		Set<String> classConstantsCache = new HashSet<String>();
 
@@ -159,7 +158,7 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 				count = 2;
 				setterMethodName = setterMethodName + simpleMethodName.substring(IS_PREFIX.length());
 			}
-			ExecutableElement setterMethod = ProcessorUtils.getMethodByParameterType(setterMethodName, element, 0, method.getReturnType());
+			ExecutableElement setterMethod = ProcessorUtils.getMethodByParameterType(setterMethodName, element, 0, method.getReturnType(), processingEnv.getTypeUtils());
 			if (setterMethod == null) {
 				//setter method is not accessible
 				continue;
@@ -277,20 +276,20 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 			Set<ModelPropertyConverter> converterInstances, String prefix, int level) {
 		final Element classElement = declaredType.asElement();
 		TypeElement classTypeElement = (TypeElement) classElement;
-		for (AnnotatedElement annotationElement : getMergedConfiguration(ConfigurationType.PROCESSING_ANNOTATIONS)) {
+		for (sk.seges.sesam.core.pap.model.api.NamedType type : getMergedConfiguration(DefaultConfigurationType.PROCESSING_ANNOTATIONS, classTypeElement)) {
 
-			Class<Annotation> annotationClass = null;
+			Class<Annotation> annotationClass;
+			try {
+				annotationClass = (Class<Annotation>) Class.forName(type.getQualifiedName());
 			
-			if (annotationElement instanceof Class) {
-				annotationClass = (Class<Annotation>)annotationElement;
-			} else if (annotationElement instanceof TypedClass) {
-				annotationClass = (Class<Annotation>)((TypedClass)annotationElement).getTypedClass();
-			}
-
-			Annotation annotation = classTypeElement.getAnnotation(annotationClass);
-			if (annotation != null) {
-				//this is supported meta model class
-				return writeHierarchy(classConstantsCache, hierarchyTypes, pw, classTypeElement, property, converterInstances, prefix, level);
+				Annotation annotation = classTypeElement.getAnnotation(annotationClass);
+				if (annotation != null) {
+					//this is supported meta model class
+					return writeHierarchy(classConstantsCache, hierarchyTypes, pw, classTypeElement, property, converterInstances, prefix, level);
+				}
+			} catch (ClassNotFoundException e) {
+				processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find annotation class " + type.getQualifiedName());
+				e.printStackTrace();
 			}
 		}
 		

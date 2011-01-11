@@ -1,12 +1,11 @@
 package sk.seges.sesam.core.pap.model;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.InputClass.HasTypeParameters;
+import sk.seges.sesam.core.pap.model.api.NamedType;
 
-public class TypedClass implements AnnotatedElement, HasTypeParameters {
+public class TypedClass implements HasTypeParameters {
 	
 	public interface TypeParameter {
 
@@ -14,12 +13,11 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 		
 		String getVariable();
 
-		AnnotatedElement getBounds();
-
+		Type getBounds();
 	}
-	
+
 	public static class TypeParameterBuilder {
-		public static TypeParameterClass get(String variable, AnnotatedElement bounds) {
+		public static TypeParameterClass get(String variable, Type bounds) {
 			return new TypeParameterClass(variable, bounds);
 		}
 
@@ -27,26 +25,25 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 			return new TypeParameterClass(variable);
 		}
 
-		public static TypeParameterClass get(AnnotatedElement bounds) {
+		public static TypeParameterClass get(Type bounds) {
 			return new TypeParameterClass(bounds);
 		}
-		
 	}
 	
 	static class TypeParameterClass implements TypeParameter {
 
 		private String variable;
-		private AnnotatedElement bounds;
+		private Type bounds;
 		
 		public TypeParameterClass(String variable) {
 			this.variable = variable;
 		}
 
-		public TypeParameterClass(AnnotatedElement bounds) {
+		public TypeParameterClass(Type bounds) {
 			this.bounds = bounds;
 		}
 
-		public TypeParameterClass(String variable, AnnotatedElement bounds) {
+		public TypeParameterClass(String variable, Type bounds) {
 			this(variable);
 			this.bounds = bounds;
 		}
@@ -57,7 +54,7 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 		}
 
 		@Override
-		public AnnotatedElement getBounds() {
+		public Type getBounds() {
 			return bounds;
 		}
 		
@@ -73,7 +70,7 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 					result += "extends ";
 				}
 				
-				if (getBounds().equals(AbstractConfigurableProcessor.THIS)) {
+				if (getBounds().equals(NamedType.THIS)) {
 					result += "_THIS_";
 				} else {
 					if (getBounds() instanceof Class) {
@@ -89,12 +86,11 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 
 	}
 	
-	private Class<?> clazz;
-
+	private NamedType namedType;
 	private TypeParameter[] typeParameters;
 	
 	public TypedClass(Class<?> clazz, Class<?>... classes) {
-		this.clazz = clazz;
+		this.namedType = new InputClass(clazz.getPackage().getName(), clazz.getSimpleName());
 		if (classes != null) {
 			typeParameters = new TypeParameter[classes.length];
 			for (int i = 0; i < classes.length; i++) {
@@ -102,37 +98,27 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 			}
 		}
 	}
-	
+
+	public TypedClass(Class<?> clazz, NamedType... classes) {
+		this.namedType = new InputClass(clazz.getPackage().getName(), clazz.getSimpleName());
+		if (classes != null) {
+			typeParameters = new TypeParameter[classes.length];
+			for (int i = 0; i < classes.length; i++) {
+				typeParameters[i] = new TypeParameterClass(classes[i]);
+			}
+		}
+	}
+
 	public TypedClass(Class<?> clazz, TypeParameter... typeParameters) {
-		this.clazz = clazz;
+		this.namedType = new InputClass(clazz.getPackage().getName(), clazz.getSimpleName());
 		this.typeParameters = typeParameters;
 	}
-	
-	@Override
-	public boolean isAnnotationPresent(
-			Class<? extends Annotation> annotationClass) {
-		return clazz.isAnnotationPresent(annotationClass);
+
+	public TypedClass(NamedType type, TypeParameter... typeParameters) {
+		this.namedType = type;
+		this.typeParameters = typeParameters;
 	}
 
-	@Override
-	public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-		return clazz.getAnnotation(annotationClass);
-	}
-
-	@Override
-	public Annotation[] getAnnotations() {
-		return clazz.getAnnotations();
-	}
-
-	@Override
-	public Annotation[] getDeclaredAnnotations() {
-		return clazz.getDeclaredAnnotations();
-	}
-
-	public Class<?> getTypedClass() {
-		return clazz;
-	}
-	
 	public TypeParameter[] getTypeParameters() {
 		return typeParameters;
 	}
@@ -141,13 +127,21 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 		return new TypedClass(clazz, classes);
 	}
 
+	public static TypedClass get(Class<?> clazz, NamedType... classes) {
+		return new TypedClass(clazz, classes);
+	}
+
 	public static TypedClass get(Class<?> clazz, TypeParameter... typeParameters) {
 		return new TypedClass(clazz, typeParameters);
 	}
-	
+
+	public static TypedClass get(NamedType type, TypeParameter... typeParameters) {
+		return new TypedClass(type, typeParameters);
+	}
+
 	public String toString() {
 		
-		String resultName = getTypedClass().getCanonicalName();
+		String resultName = getCanonicalName();
 		
 		if (getTypeParameters() == null || getTypeParameters().length == 0) {
 			return resultName;
@@ -158,11 +152,21 @@ public class TypedClass implements AnnotatedElement, HasTypeParameters {
 	
 	@Override
 	public String getCanonicalName() {
-		return clazz.getCanonicalName();
+		return namedType.getCanonicalName();
 	}
 	
 	@Override
 	public String getSimpleName() {
-		return clazz.getSimpleName();
+		return namedType.getSimpleName();
+	}
+
+	@Override
+	public String getQualifiedName() {
+		return namedType.getQualifiedName();
+	}
+
+	@Override
+	public String getPackageName() {
+		return namedType.getPackageName();
 	}
 }
