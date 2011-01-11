@@ -4,6 +4,9 @@
 «EXTENSION extensions::properties»
 «EXTENSION sk::seges::corpis::server::extension::helper»
 
+«DEFINE dataEntity FOR BasicType»
+«ENDDEFINE»
+
 «DEFINE dataEntity FOR Entity»
 	«FILE javaFileName(getServerDaoHibernatePackage() + ".Hibernate" + name + "DaoBase")»
 package «getServerDaoHibernatePackage()»;

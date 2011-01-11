@@ -1,0 +1,76 @@
+«IMPORT sculptormetamodel»
+
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+
+«DEFINE dto FOR BasicType»
+	«FILE javaFileName(getDomainPackage() + ".dto." + name + "Dto")»
+package «getDomainPackage()».dto;
+		
+import «getDomainPackage()».«name»Data;
+
+public class «name»Dto «IF hasSuperClass()» extends «getExtendsClassName()»Dto«ENDIF» implements «name»Data {
+	«EXPAND dtoAttribute FOREACH attributes»
+	«EXPAND dtoReference FOREACH references»
+}
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE dto FOR Entity»
+	«FILE javaFileName(getDomainPackage() + ".dto." + name + "Dto")»
+package «getDomainPackage()».dto;
+		
+import «getDomainPackage()».«name»Data;
+
+public class «name»Dto «IF hasSuperClass()» extends «extends.name»Dto«ENDIF» implements «name»Data<«getIdAttributeType(this)»> {
+	«EXPAND templates::DomainObject::serialVersionUID»
+	
+	«EXPAND dtoAttribute FOREACH attributes»
+	«EXPAND dtoReference FOREACH references»
+}
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE dtoAttribute FOR Attribute»
+	private «getTypeName()» «name»;
+	«EXPAND propertyDtoGetter»
+	«EXPAND propertyDtoSetter»
+«ENDDEFINE»
+
+«DEFINE propertyDtoGetter FOR Attribute»
+	public «getTypeName()» «getGetAccessor()»() {
+		return «name»;
+	}
+«ENDDEFINE»
+
+«DEFINE propertyDtoSetter FOR Attribute»
+	public void set«name.toFirstUpper()»(«getTypeName()» «name») {
+		this.«name» = «name»;
+	}
+«ENDDEFINE»
+
+«DEFINE dtoReference FOR Reference»
+	«IF many»
+	private «getCollectionInterfaceType()»<«getTypeName()»Data> «name»;
+	
+	@Override
+	public «getCollectionInterfaceType()»<«getTypeName()»Data> «getGetAccessor()»() {
+		return «name»;
+	}
+	@Override
+	public void set«name.toFirstUpper()»(«getCollectionInterfaceType()»<«getTypeName()»Data> «name») {
+		this.«name» = «name»;
+	}	
+	«ELSE»
+	private «getTypeName()»Data «name»;
+	
+	@Override
+	public «getTypeName()»Data «getGetAccessor()»() {
+		return «name»;
+	}
+	@Override
+	public void set«name.toFirstUpper()»(«getTypeName()»Data «name») {
+		this.«name» = «name»;
+	}
+	«ENDIF»
+«ENDDEFINE»

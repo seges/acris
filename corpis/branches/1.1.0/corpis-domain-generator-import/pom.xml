@@ -14,13 +14,6 @@
 	<description>Domain generator Import</description>
 	
 	<dependencies>
-			<dependency>
-				<groupId>sk.seges.corpis</groupId>
-				<artifactId>corpis-domain-generator</artifactId>
-				<version>${project.version}</version>
-<!--				<scope>provided</scope>-->
-			</dependency>
-	
 			<!-- generator -->
 			<dependency>
 				<groupId>org.fornax.cartridges</groupId>

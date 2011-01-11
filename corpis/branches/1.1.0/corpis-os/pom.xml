@@ -50,6 +50,8 @@
 		<module>../corpis-test</module>
 		<module>../corpis-dao-api</module>
 		<module>../corpis-dao-impl</module>
+		<module>../corpis-domain-generator-import</module>
+		<module>../corpis-domain-generator</module>
 		<module>../corpis-import-export-api</module>
 		<module>../corpis-annotation-processors</module>
 		<module>../corpis-import-export</module>
@@ -85,56 +87,7 @@
 	</build>
 
 	<dependencyManagement>
-		<dependencies>			
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-dao-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-dao-impl</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-domain-generator</artifactId>
-				<version>${project.version}</version>
-			</dependency>					
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-domain-generator-import</artifactId>
-				<version>${project.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>						
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-test</artifactId>
-				<version>${project.version}</version>  
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-dao-api-processor</artifactId>
-				<version>${pom.version}</version>  
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-import-export-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>			
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-import-export</artifactId>
-				<version>${project.version}</version>
-			</dependency>			
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-payment</artifactId>
-				<version>${project.version}</version>
-			</dependency>		
-			<!-- Sesam dependencies -->
+		<dependencies>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>
@@ -157,9 +110,61 @@
 				<version>${project.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>
+			</dependency>
+						
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-dao-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-dao-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-domain-generator</artifactId>
+				<version>${project.version}</version>
+			</dependency>					
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-domain-generator-import</artifactId>
+				<version>${project.version}</version>
+				<scope>import</scope>
+			</dependency>						
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-test</artifactId>
+				<version>${project.version}</version>  
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-dao-api-processor</artifactId>
+				<version>${pom.version}</version>  
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-import-export-api</artifactId>
+				<version>${project.version}</version>
 			</dependency>			
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-import-export</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-payment-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-payment</artifactId>
+				<version>${project.version}</version>
+			</dependency>		
 		
-			<!--  Other dependencies -->
 			<dependency>
 			    <groupId>org.bouncycastle</groupId>
 			    <artifactId>bcprov-jdk16</artifactId>

@@ -17,3 +17,6 @@ public interface «name»DaoBase<T extends «name»Data<?>> extends ICrudDAO<T> 
 }
 	«ENDFILE»
 «ENDDEFINE»
+
+«DEFINE dataEntity FOR BasicType»
+«ENDDEFINE»

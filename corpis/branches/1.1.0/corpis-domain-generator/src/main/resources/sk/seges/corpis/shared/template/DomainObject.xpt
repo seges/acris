@@ -1,0 +1,59 @@
+«IMPORT sculptormetamodel»
+
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+
+«DEFINE dataEntity FOR Entity»
+	«FILE javaFileName(getDomainPackage() + "." + name + "Data")»
+package «getDomainPackage()»;
+		
+import sk.seges.sesam.domain.IMutableDomainObject;
+
+public interface «name»Data<K> extends «IF hasSuperClass()»«getExtendsClassName()»Data<K>, «ENDIF»IMutableDomainObject<K>{
+	«EXPAND attribute FOREACH attributes»
+	«EXPAND reference FOREACH references»
+}
+	«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE dataEntity FOR BasicType»
+	«FILE javaFileName(getDomainPackage() + "." + name + "Data")»
+package «getDomainPackage()»;
+		
+public interface «name»Data «IF hasSuperClass()» extends «getExtendsClassName()»Data«ENDIF» {
+	«EXPAND attribute FOREACH attributes»
+	«EXPAND reference FOREACH references»
+}
+	«ENDFILE»
+«ENDDEFINE»
+
+
+«DEFINE attribute FOR Attribute»
+	static final String «name.toUpperCase()» = "«name»";
+
+	«IF this.name == "id"»
+	«ELSE»
+		«EXPAND propertyGetter»
+		«EXPAND propertySetter»
+	«ENDIF»
+«ENDDEFINE»
+
+«DEFINE propertyGetter FOR Attribute»
+	«getTypeName()» «getGetAccessor()»();
+«ENDDEFINE»
+
+«DEFINE propertySetter FOR Attribute»
+	void set«name.toFirstUpper()»(«getTypeName()» «name»);
+«ENDDEFINE»
+
+«DEFINE reference FOR Reference»
+	static final String «name.toUpperCase()» = "«name»";
+	
+	«IF many»
+	«getCollectionInterfaceType()»<«getTypeName()»Data> «getGetAccessor()»();
+	void set«name.toFirstUpper()»(«getCollectionInterfaceType()»<«getTypeName()»Data> «name»);
+	«ELSE»
+	«getTypeName()»Data «getGetAccessor()»();
+	void set«name.toFirstUpper()»(«getTypeName()»Data «name»);	
+	«ENDIF»
+«ENDDEFINE»
