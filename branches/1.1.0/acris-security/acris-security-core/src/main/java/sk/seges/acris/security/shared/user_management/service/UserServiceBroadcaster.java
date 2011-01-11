@@ -380,6 +380,10 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 							// merge authorities from all services to one set
 							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
 							UserData<?> user = primaryResult.getUser();
+							if (!checkUser(user, callback)) {
+								return;
+							}
+
 							List<String> authorities = new ArrayList<String>();
 							add(user.getUserAuthorities(), authorities);
 
@@ -390,12 +394,25 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 								}
 							}
 							user.setUserAuthorities(authorities);
-							callback.onSuccess(primaryResult.getUser());
+							callback.onSuccess(user);
 						} else {
+							UserData<?> user = successes.values().iterator().next().getUser();
+							if (!checkUser(user, callback)) {
+								return;
+							}
+
 							callback.onSuccess(successes.values().iterator().next().getUser());
 						}
 					}
 				}
+			}
+
+			private boolean checkUser(UserData<?> user, AsyncCallback<UserData<?>> callback) {
+				if (user == null) {
+					callback.onFailure(new BroadcastingException("User is null"));
+					return false;
+				}
+				return true;
 			}
 
 			private <T> void add(List<T> userAuthorities, List<T> allAuthorities) {
@@ -435,6 +452,10 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		private static final long serialVersionUID = 6497048424054217121L;
 
 		private Throwable[] causes;
+
+		public BroadcastingException(String message) {
+			super(message);
+		}
 
 		public BroadcastingException(Throwable[] causes) {
 			super("Unable to login in all user services");

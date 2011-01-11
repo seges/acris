@@ -15,6 +15,7 @@ import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.data.OpenIDUser;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerServiceAsync;
+import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
@@ -26,8 +27,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> implements HasOpenIDLoginHandlers {
 
@@ -54,54 +57,85 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	public void bind(final HasWidgets parent) {
 		setLocaleFromCookies();
 
-		AsyncCallback<String> securedCallback = new SecuredAsyncCallback<String>() {
+		AsyncCallback<String> stringCallback = null;
+		AsyncCallback<ClientSession> clientCallback = null;
 
-			@Override
-			public void onSuccessCallback(String result) {
-				if (result != null) {
-					handleSuccessfulLogin(result);
-				} else {
-					superBind(parent);
-					registerHandlers(this);
-					readLoginCookies();
-				}
-			}
+		if (redirectUrl != null) {
+			stringCallback = new SecuredAsyncCallback<String>() {
 
-			@Override
-			public void onOtherException(Throwable e) {
-				if (e instanceof BroadcastingException) {
-					for (Throwable t : ((BroadcastingException) e).getCauses()) {
-						GWT.log("Broadcaster received an error", t);
+				@Override
+				public void onSuccessCallback(String result) {
+					if (result != null) {
+						ClientSession resultSession = new ClientSession();
+						resultSession.setSessionId(result);
+						handleSuccessfulLogin(resultSession);
+					} else {
+						superBind(parent);
+						readLoginCookies();
+						registerHandlers();
+						registerLoginHandlers(this);
 					}
-				} else {
-					GWT.log("Exception occured", e);
 				}
-				handleFailedLogin();
-			}
 
-			@Override
-			public void onSecurityException(SecurityException e) {
-				GWT.log("Security exception occured", e);
-				handleFailedLogin();
-			}
-		};
+				@Override
+				public void onOtherException(Throwable e) {
+					if (e instanceof BroadcastingException) {
+						for (Throwable t : ((BroadcastingException) e).getCauses()) {
+							GWT.log("Broadcaster received an error", t);
+						}
+					} else {
+						GWT.log("Exception occured", e);
+					}
+					handleFailedLogin();
+				}
 
-		verify(securedCallback);
+				@Override
+				public void onSecurityException(SecurityException e) {
+					GWT.log("Security exception occured", e);
+					handleFailedLogin();
+				}
+			};
+		} else {
+			clientCallback = new SecuredAsyncCallback<ClientSession>() {
+
+				@Override
+				public void onSuccessCallback(ClientSession result) {
+					if (result != null) {
+						handleSuccessfulLogin(result);
+					} else {
+						superBind(parent);
+						readLoginCookies();
+						registerHandlers();
+						registerLoginHandlers(this);
+					}
+				}
+
+				@Override
+				public void onOtherException(Throwable e) {
+					if (e instanceof BroadcastingException) {
+						for (Throwable t : ((BroadcastingException) e).getCauses()) {
+							GWT.log("Broadcaster received an error", t);
+						}
+					} else {
+						GWT.log("Exception occured", e);
+					}
+					handleFailedLogin();
+				}
+
+				@Override
+				public void onSecurityException(SecurityException e) {
+					GWT.log("Security exception occured", e);
+					handleFailedLogin();
+				}
+			};
+		}
+
+		verify(stringCallback != null ? stringCallback : clientCallback);
 	}
 
 	@Override
-	protected void registerHandlers(AsyncCallback<String> securedCallback) {
-		super.registerHandlers(securedCallback);
-
-		OpenIDLoginHandler openIDLoginHandler = new OpenIDLoginHandler() {
-
-			@Override
-			public void onSubmit(OpenIDLoginEvent openIDLoginEvent) {
-				authenticate(openIDLoginEvent.getIdentifier());
-			}
-		};
-
-		registerHandler(addOpenIDLoginHandler(openIDLoginHandler));
+	protected void registerHandlers() {
+		super.registerHandlers();
 
 		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.GOOGLE_IDENTIFIER),
 				"acris-login-google-button"));
@@ -117,6 +151,21 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.MYOPENID_IDENTIFIER),
 				"acris-login-myopenid-button"));
+	}
+
+	@Override
+	protected void registerLoginHandlers(AsyncCallback<?> callback) {
+		super.registerLoginHandlers(callback);
+
+		OpenIDLoginHandler openIDLoginHandler = new OpenIDLoginHandler() {
+
+			@Override
+			public void onSubmit(OpenIDLoginEvent openIDLoginEvent) {
+				authenticate(openIDLoginEvent.getIdentifier());
+			}
+		};
+
+		registerHandler(addOpenIDLoginHandler(openIDLoginHandler));
 	}
 
 	/**
@@ -154,7 +203,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	 * 
 	 * @param callback
 	 */
-	protected void verify(final AsyncCallback<String> callback) {
+	protected void verify(final AsyncCallback<?> callback) {
 		final String mode = Window.Location.getParameter("openid.mode");
 
 		if (mode != null) {
@@ -194,9 +243,26 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	@Override
-	protected void doRedirect(String redirectUrl) {
-		closePopup(redirectUrl);
-		super.doRedirect(redirectUrl);
+	protected void handleSuccessfulLogin(ClientSession result) {
+		display.setUsername("");
+		display.setPassword("");
+
+		unbind();
+
+		String query = "";
+		if (redirectUrl != null) {
+			if (GWT.isProdMode()) {
+				query = "?" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result.getSessionId();
+			} else {
+				query = "?gwt.codesvr=127.0.0.1:9997&" + LoginConstants.ACRIS_SESSION_ID_STRING + "="
+						+ result.getSessionId();
+			}
+
+			closePopup(redirectUrl != null ? redirectUrl + query : null);
+			
+			RootPanel.get().clear();
+			Location.replace(redirectUrl + query);
+		}
 	}
 
 	private ClickHandler createButtonHandler(final String identifier) {
@@ -215,15 +281,15 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	private native void closePopup(String url) /*-{
-												if ($wnd.name == 'openIDPopup')
-												{
-												$wnd.close();
-												if (url && $wnd.opener && !$wnd.opener.closed)
-												{
-												$wnd.opener.location.replace(url);
-												}
-												}
-												}-*/;
+		if ($wnd.name == 'openIDPopup')
+		{
+			$wnd.close();
+			if (url && $wnd.opener && !$wnd.opener.closed)
+			{
+				$wnd.opener.location.replace(url);
+			}
+		}
+	}-*/;
 
 	@Override
 	public HandlerRegistration addOpenIDLoginHandler(OpenIDLoginHandler handler) {

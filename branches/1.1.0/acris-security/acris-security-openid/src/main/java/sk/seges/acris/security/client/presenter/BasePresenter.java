@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 
 public abstract class BasePresenter<D extends BaseDisplay> extends SimpleEventBus {
 
@@ -23,7 +25,12 @@ public abstract class BasePresenter<D extends BaseDisplay> extends SimpleEventBu
 	 * @param parent
 	 */
 	public void bind(HasWidgets parent) {
-		parent.add(display.asWidget());
+		Widget widget = display.asWidget();
+		if (widget instanceof DialogBox) {
+			((DialogBox) widget).center();
+		} else {
+			parent.add(display.asWidget());
+		}
 	}
 
 	/**

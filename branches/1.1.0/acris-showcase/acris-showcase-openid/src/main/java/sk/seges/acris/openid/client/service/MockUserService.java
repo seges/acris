@@ -29,7 +29,18 @@ public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 
 	@Override
 	public void login(LoginToken token, AsyncCallback<ClientSession> callback) throws ServerException {
-		// TODO Auto-generated method stub
+		if (token instanceof OpenIDLoginToken) {
+			ClientSession session = new ClientSession();
+			session.setSessionId("test");
+			callback.onSuccess(session);
+		} else if (token instanceof UserPasswordLoginToken
+				&& ((UserPasswordLoginToken) token).getUsername().equals("test")) {
+			ClientSession session = new ClientSession();
+			session.setSessionId("test");
+			callback.onSuccess(session);
+		} else {
+			callback.onFailure(new SecurityException("Unsupported login token"));
+		}
 	}
 
 	@Override
