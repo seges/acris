@@ -13,8 +13,8 @@ import javax.lang.model.element.TypeElement;
 import sk.seges.corpis.core.shared.annotation.dao.DataAccessObject;
 import sk.seges.corpis.core.shared.annotation.dao.DataAccessObject.Provider;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.model.TypedClass;
-import sk.seges.sesam.core.pap.model.TypedClass.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.InputClass.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.InputClass.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
@@ -48,10 +48,22 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 		return new DefaultPackageValidatorProvider();
 	}
 	
+	@Override
+	protected Type[] getImports() {
+		return new Type[] {
+			NamedType.THIS
+		};
+	}
+	
 	public static NamedType getOutputClass(MutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
 		PackageValidator packageValidator = packageValidatorProvider.get(inputClass);
-		packageValidator.moveTo(LocationType.SERVER).moveTo(LayerType.DAO).
-				setType(packageValidator.isValid() ? LayerType.DAO.getName() + "." + ImplementationType.API.getName() : ImplementationType.API.getName());
+		packageValidator.moveTo(LocationType.SERVER).moveTo(LayerType.DAO);
+		
+		if (packageValidator.isValid()) {
+			packageValidator.moveTo(ImplementationType.API);
+		} else {
+			packageValidator.setType(LayerType.DAO.getName() + "." + ImplementationType.API.getName());
+		}
 
 		return inputClass.changePackage(packageValidator.toString())
 										  .addClassPrefix(DAO_API_CLASS_PREFIX)
@@ -75,7 +87,7 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 			};
 		case OUTPUT_INTERFACES:
 			return new Type[] {
-					TypedClass.get(ICrudDAO.class, NamedType.THIS)
+					TypedClassBuilder.get(ICrudDAO.class, NamedType.THIS)
 			};
 		}
 		return super.getConfigurationTypes(type, typeElement);
