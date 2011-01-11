@@ -95,7 +95,7 @@ public abstract class AnnotationTest {
 		assertEquals(expectedContent.length, outputContent.length);
 		
 		for (int i = 0; i < expectedContent.length; i++) {
-			assertEquals(expectedContent[i], outputContent[i].trim());
+			assertEquals(expectedContent[i].trim(), outputContent[i].trim());
 		}
 	}
 

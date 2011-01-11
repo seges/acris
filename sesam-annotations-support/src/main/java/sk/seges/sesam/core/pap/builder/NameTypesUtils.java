@@ -9,17 +9,17 @@ import javax.lang.model.util.Elements;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.model.InputClass;
-import sk.seges.sesam.core.pap.model.InputClass.TypedOutputClass;
-import sk.seges.sesam.core.pap.model.TypedClass.TypeParameter;
-import sk.seges.sesam.core.pap.model.TypedClass.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.InputClass.TypeParameter;
+import sk.seges.sesam.core.pap.model.InputClass.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.InputClass.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
-public class NameTypesBuilder implements NameTypes {
+public class NameTypesUtils implements NameTypes {
 
 	private Elements elements;
 	
-	public NameTypesBuilder(Elements elements) {
+	public NameTypesUtils(Elements elements) {
 		this.elements = elements;
 	}
 	
@@ -93,32 +93,8 @@ public class NameTypesBuilder implements NameTypes {
 				}
 
 				PackageElement packageElement = elements.getPackageOf(typeElement);
-				return new TypedOutputClass(packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), parameters);
+				return TypedClassBuilder.get(packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), parameters);
 
-//			if (typeElement.getTypeParameters() != null && typeElement.getTypeParameters().size() > 0) {
-//				TypeParameter[] parameters = new TypeParameter[typeElement.getTypeParameters().size()];
-//				int i = 0;
-//				for (TypeParameterElement typeParameterElement: typeElement.getTypeParameters()) {
-//					List<? extends TypeMirror> bounds = typeParameterElement.getBounds();
-//					
-//					NamedType boundsType = null;
-//					
-//					if (bounds != null && bounds.size() > 0) {
-//						TypeMirror typeMirror = bounds.get(0);
-//						if (typeMirror != null) {
-//							Element element = processingEnv.getTypeUtils().asElement(typeMirror);
-//							if (element.getKind().equals(TypeKind.DECLARED)) {
-//								String qualifiedName = ((TypeElement)element).getQualifiedName().toString();
-////								qualifiedName = qualifiedName.replace("THIS", inputClass.getCanonicalName());
-//								boundsType = toType(qualifiedName);
-//							}
-//						}
-//					}
-//					
-//					parameters[i] = TypeParameterBuilder.get(typeParameterElement.getGenericElement() == null ? null : typeParameterElement.getGenericElement().toString(), 
-//							boundsType);
-//					i++;
-//				}
 			} else {
 				return toType(typeElement);
 			}

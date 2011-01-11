@@ -29,6 +29,7 @@ public abstract class ImplementationProcessor extends AbstractConfigurableProces
 			if (interfaceElement.getKind().equals(ElementKind.INTERFACE)) {
 				processSubProcessor(pw, outputName, element, (TypeElement)interfaceElement);
 			}
+			pw.println();
 		}
 	}
 }

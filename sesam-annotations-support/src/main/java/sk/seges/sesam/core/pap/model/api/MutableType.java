@@ -1,7 +1,7 @@
 package sk.seges.sesam.core.pap.model.api;
 
 import sk.seges.sesam.core.pap.model.InputClass.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.TypedClass.TypeParameter;
+import sk.seges.sesam.core.pap.model.InputClass.TypeParameter;
 
 public interface MutableType extends NamedType {
 

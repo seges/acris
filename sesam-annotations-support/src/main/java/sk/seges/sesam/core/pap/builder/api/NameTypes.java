@@ -9,9 +9,14 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public interface NameTypes {
 
+	public enum ClassSerializer {
+		CANONICAL, SIMPLE, QUALIFIED;
+	}
+
 	MutableType toType(Element element);
 	
 	NamedType toType(Type javaType);
 
 	NamedType toType(String className);
+
 }
