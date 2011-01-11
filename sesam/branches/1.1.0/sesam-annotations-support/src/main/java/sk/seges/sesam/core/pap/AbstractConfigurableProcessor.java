@@ -30,11 +30,9 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
 import sk.seges.sesam.core.pap.api.SubProcessor;
-import sk.seges.sesam.core.pap.builder.NameTypesBuilder;
+import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
-import sk.seges.sesam.core.pap.model.InputClass;
-import sk.seges.sesam.core.pap.model.InputClass.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.TypedClass.TypeParameter;
+import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
@@ -220,7 +218,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	}
 
 	protected NameTypes getNameTypes() {
-		return new NameTypesBuilder(processingEnv.getElementUtils());
+		return new NameTypesUtils(processingEnv.getElementUtils());
 	}
 	
 	protected final NamedType[] getClassNames(Element element) {
@@ -315,109 +313,6 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	}
 
 	protected void writeClassAnnotations(PrintWriter pw, Element el) {}
-
-	enum ClassSerializer {
-		CANONICAL, SIMPLE, QUALIFIED;
-	}
-
-	private String toString(TypeParameter typeParameter, NamedType inputClass, ClassSerializer serializer) {
-		String result = "";
-		
-		if (typeParameter.getVariable() != null) {
-			result += typeParameter.getVariable() + " ";
-		}
-		
-		if (typeParameter.getBounds() != null) {
-			if (typeParameter.getVariable() != null) {
-				result += "extends ";
-			}
-			if (typeParameter.getBounds().equals(NamedType.THIS)) {
-				result += toString(inputClass, serializer);
-			} else {
-				result += toString(inputClass, typeParameter.getBounds(), serializer, true);
-			}
-		}
-		
-		if (result.length() == 0) {
-			throw new IllegalArgumentException("Invalid type parameter");
-		}
-		return result;
-	}
-
-	private String toString(NamedType clazz, ClassSerializer serializer) {
-		switch (serializer) {
-		case CANONICAL:
-			return clazz.getCanonicalName();
-		case QUALIFIED:
-			return clazz.getQualifiedName();
-		case SIMPLE:
-			return clazz.getSimpleName();
-		}
-		return null;
-	}
-
-	private String toString(Class<?> clazz, ClassSerializer serializer) {
-		switch (serializer) {
-		case CANONICAL:
-			return clazz.getCanonicalName();
-		case QUALIFIED:
-			return clazz.getName();
-		case SIMPLE:
-			return clazz.getSimpleName();
-		}
-		return null;
-	}
-	
-	private String getCanonicalName(NamedType inputClass, NamedType type, boolean typed) {
-		return toString(inputClass, type, ClassSerializer.CANONICAL, typed);
-	}
-
-	private String getSimpleName(NamedType inputClass, NamedType type, boolean typed) {
-		return toString(inputClass, type, ClassSerializer.SIMPLE, typed);
-	}
-
-	@SuppressWarnings("unused")
-	private String getQualifiedName(InputClass inputClass, NamedType type, boolean typed) {
-		return toString(inputClass, type, ClassSerializer.QUALIFIED, typed);
-	}
-
-	private String toString(NamedType inputClass, Type type, ClassSerializer serializer, boolean typed) {
-		if (type instanceof Class) {
-			return toString((Class<?>)type, serializer);
-		}
-		
-		if (type instanceof HasTypeParameters) {
-			HasTypeParameters hasTypeClass = (HasTypeParameters)type;
-			
-			String resultName = toString(hasTypeClass, serializer);
-			
-			if (!typed || hasTypeClass.getTypeParameters() == null || hasTypeClass.getTypeParameters().length == 0) {
-				return resultName;
-			}
-			
-			String types = "<";
-			
-			int i = 0;
-			
-			for (TypeParameter typeParameter: hasTypeClass.getTypeParameters()) {
-				if (i > 0) {
-					types += ", ";
-				}
-				types += toString(typeParameter, inputClass, ClassSerializer.CANONICAL);
-				i++;
-			}
-			
-			types += ">";
-			
-			return resultName + types;
-		}
-		
-		if (type instanceof NamedType) {
-			return toString((NamedType)type, serializer);
-		}
-		
-		throw new IllegalArgumentException("Not supported annotation element " + type.toString());
-	}
 	
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
 
@@ -437,17 +332,19 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				pw.println();
 	
 				for (NamedType importType : getAllImports(typeElement)) {
-					pw.println("import " + getCanonicalName(outputName, importType, false) + ";");
+					pw.println("import " + importType.toString(inputClass, ClassSerializer.CANONICAL, false) + ";");
 				}
 	
 				pw.println();
 				
 				writeClassAnnotations(pw, element);
 
-				pw.print("public " + getElementKind().name().toLowerCase() + " " + toString(inputClass, outputName, ClassSerializer.SIMPLE, true));
-	
-				if (getElementKind().equals(ElementKind.CLASS) && getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement).length == 1) {
-					pw.print(" extends " + getSimpleName(outputName, getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement)[0], true));
+				pw.print("public " + getElementKind().name().toLowerCase() + " " + outputName.toString(inputClass, ClassSerializer.SIMPLE, true));
+				
+				NamedType[] superClassTypes = getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement);
+				
+				if (getElementKind().equals(ElementKind.CLASS) && superClassTypes.length == 1) {
+					pw.print(" extends " + superClassTypes[0].toString(outputName, ClassSerializer.SIMPLE, true));
 				}
 	
 				if (getMergedConfiguration(DefaultConfigurationType.OUTPUT_INTERFACES, typeElement).length > 0) {
@@ -467,7 +364,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 							if (i > 0) {
 								pw.print(", ");
 							}
-							pw.print(getSimpleName(inputClass, type, true));
+							pw.print(type.toString(inputClass, ClassSerializer.SIMPLE, true));
 							i++;
 						}
 					}
