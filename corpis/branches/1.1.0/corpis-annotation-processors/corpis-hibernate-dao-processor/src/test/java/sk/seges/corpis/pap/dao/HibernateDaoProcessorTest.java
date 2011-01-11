@@ -20,7 +20,6 @@ public class HibernateDaoProcessorTest extends AnnotationTest {
 	@Test
 	public void testMockEntityDao() {
 		assertCompilationSuccessful(compileTestCase(MockEntity.class, JpaMockEntity.class));
-		assertOutput(getResourceFile(MockEntity.class), getOutputFile(MockEntity.class));
 		assertOutput(getResourceFile(JpaMockEntity.class), getOutputFile(JpaMockEntity.class));
 	}
  
@@ -34,7 +33,7 @@ public class HibernateDaoProcessorTest extends AnnotationTest {
 
 	private File getOutputFile(Class<?> clazz) {
 		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = DaoApiProcessor.getOutputClass(inputClass, new DefaultPackageValidatorProvider());
+		NamedType outputClass = HibernateDaoProcessor.getOutputClass(inputClass, new DefaultPackageValidatorProvider());
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 

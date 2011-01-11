@@ -13,7 +13,7 @@ public class CrudSubProcessor extends AbstractSubProcessor<ICrudDAO<?>>  {
 	@Override
 	public boolean process(PrintWriter printWriter, NamedType outputName, TypeElement element, TypeElement subElement) {
 		printWriter.println("public " + outputName.getSimpleName() + "() {");
-		printWriter.println("super(" + element.getQualifiedName().toString() + ".class);");
+		printWriter.println("super(" + element.getSimpleName().toString() + ".class);");
 		printWriter.println("}");
 		return true;
 	}

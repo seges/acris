@@ -25,9 +25,9 @@ import sk.seges.corpis.core.shared.annotation.dao.DataAccessObject;
 import sk.seges.corpis.core.shared.annotation.dao.DataAccessObject.Provider;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.core.pap.ImplementationProcessor;
-import sk.seges.sesam.core.pap.model.TypedClass;
-import sk.seges.sesam.core.pap.model.TypedClass.TypeParameter;
-import sk.seges.sesam.core.pap.model.TypedClass.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.InputClass.TypeParameter;
+import sk.seges.sesam.core.pap.model.InputClass.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.InputClass.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
@@ -100,8 +100,13 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 
 	public static NamedType getOutputClass(MutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
 		PackageValidator packageValidator = packageValidatorProvider.get(inputClass);
-		packageValidator.moveTo(LocationType.SERVER).moveTo(LayerType.DAO).
-				setType(packageValidator.isValid() ? LayerType.DAO.getName() + "." + ImplementationType.HIBERNATE.getName() : ImplementationType.HIBERNATE.getName());
+		packageValidator.moveTo(LocationType.SERVER).moveTo(LayerType.DAO);
+		
+		if (packageValidator.isValid()) {
+			packageValidator.moveTo(ImplementationType.HIBERNATE);
+		} else {
+			packageValidator.setType(LayerType.DAO.getName() + "." + ImplementationType.HIBERNATE.getName());
+		}
 
 		return inputClass.changePackage(packageValidator.toString())
 										  .addClassPrefix(DAO_API_CLASS_PREFIX)
@@ -173,7 +178,9 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 			addUnique(imports, getNameTypes().toType(interfaceElement));
 			addUnique(imports, getNameTypes().toType(getInterfaceElement(interfaceElement, null)));
 		}
-		
+
+		addUnique(imports, NamedType.THIS);
+
 		return imports.toArray(new Type[] {});
 	}
 	
@@ -243,20 +250,23 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 			TypeParameter[] typeParameters = new TypeParameter[interfaceTypeElement.getTypeParameters().size()];
 			int i = 0;
 			for (TypeParameterElement typeParameterElement: interfaceTypeElement.getTypeParameters()) {
-				//TODO if is assignable
-				typeParameters[i++] = TypeParameterBuilder.get(getNameTypes().toType(interfaceElement));
+				if (processingEnv.getTypeUtils().isAssignable(typeParameterElement.asType(), interfaceElement.asType())) {
+					typeParameters[i++] = TypeParameterBuilder.get(getNameTypes().toType(interfaceElement));
+				} else {
+					typeParameters[i++] = TypeParameterBuilder.get(getNameTypes().toType(typeParameterElement));
+				}
 			}
 			return new Type[] {
-				TypedClass.get(getNameTypes().toType(interfaceTypeElement), typeParameters)
+				TypedClassBuilder.get(getNameTypes().toType(interfaceTypeElement), typeParameters)
 			};
 		case OUTPUT_SUPERCLASS:
 			if (interfaceElement != null) {
 				return new Type[] {
-					TypedClass.get(AbstractHibernateCRUD.class, getNameTypes().toType(interfaceElement))
+						TypedClassBuilder.get(AbstractHibernateCRUD.class, getNameTypes().toType(interfaceElement))
 				};
 			}
 			return new Type[] {
-				TypedClass.get(AbstractHibernateCRUD.class, NamedType.THIS)
+					TypedClassBuilder.get(AbstractHibernateCRUD.class, NamedType.THIS)
 			};
 		}
 		return super.getConfigurationTypes(type, typeElement);

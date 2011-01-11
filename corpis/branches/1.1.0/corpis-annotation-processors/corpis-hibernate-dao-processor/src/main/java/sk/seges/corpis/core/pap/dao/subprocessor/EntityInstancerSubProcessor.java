@@ -27,8 +27,8 @@ public class EntityInstancerSubProcessor extends AbstractSubProcessor<IEntityIns
 			return false;
 		}
 		printWriter.println("@Override");
-		printWriter.println("public " + element.toString() + " " + method.toString() + "{");
-		printWriter.println("return new " + element.toString() + "();");
+		printWriter.println("public " + element.getSimpleName().toString() + " " + method.toString() + "{");
+		printWriter.println("return new " + element.getSimpleName().toString() + "();");
 		printWriter.println("}");
 
 		return true;
