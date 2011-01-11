@@ -1,8 +1,6 @@
 package sk.seges.acris.security.client.view;
 
 import sk.seges.acris.common.util.Pair;
-import sk.seges.acris.security.client.event.LoginEvent;
-import sk.seges.acris.security.client.handler.LoginHandler;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 
@@ -57,8 +55,6 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	private Boolean rememberMeAware;
 	private CheckBox rememberMeCheckbox = GWT.create(CheckBox.class);
-
-	private boolean initialized = false;
 
 	/**
 	 * Creates a new Login Panel.
@@ -140,11 +136,7 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	@Override
 	protected void onLoad() {
-		super.onLoad();
-		if (!initialized) {
-			initComponents();
-			initialized = true;
-		}
+		initComponents();
 	}
 
 	protected void initComponents() {
@@ -358,11 +350,6 @@ public class LoginView extends Composite implements LoginDisplay {
 	 */
 	public void setErrorMessage(final String message) {
 		this.errorMessage.setText(message != null ? message : "");
-	}
-
-	@Override
-	public HandlerRegistration addLoginHandler(LoginHandler handler) {
-		return addHandler(handler, LoginEvent.getType());
 	}
 
 	@Override

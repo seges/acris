@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.HasWidgets;
 
-public abstract class BasePresenter<D extends BaseDisplay> {
+public abstract class BasePresenter<D extends BaseDisplay> extends SimpleEventBus {
 
 	protected D display;
 

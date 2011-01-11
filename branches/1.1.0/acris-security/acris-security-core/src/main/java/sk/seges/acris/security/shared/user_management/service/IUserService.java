@@ -17,6 +17,13 @@ import com.google.gwt.user.client.rpc.RemoteService;
 public interface IUserService extends RemoteService {
 
 	/**
+	 * Logs in and returns sessionId only, using URL redirection.
+	 * @param token
+	 * @return
+	 */
+	String authenticate(LoginToken token) throws ServerException;
+	
+	/**
 	 * Authenticate user represented with username and his credentials. Service
 	 * method also set selected language to user preferences
 	 * 

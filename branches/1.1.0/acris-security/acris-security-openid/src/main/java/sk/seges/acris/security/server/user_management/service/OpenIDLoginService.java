@@ -61,9 +61,4 @@ public class OpenIDLoginService implements LoginService {
 	@Override
 	public void logout() {
 	}
-
-	@Override
-	public UserData<?> getLoggedUser() {
-		return null;
-	}
 }

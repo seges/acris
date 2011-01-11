@@ -84,6 +84,15 @@
 			<artifactId>acris-callbacks</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-common</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 
 		<!-- Acris rebind dependencies -->
 		<dependency>

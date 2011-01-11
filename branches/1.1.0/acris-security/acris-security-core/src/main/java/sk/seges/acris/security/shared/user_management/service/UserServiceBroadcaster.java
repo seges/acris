@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.core.client.component.semaphore.Semaphore;
 import sk.seges.acris.core.client.component.semaphore.SemaphoreEvent;
 import sk.seges.acris.core.client.component.semaphore.SemaphoreListener;
+import sk.seges.acris.security.client.session.SessionServiceDefTarget;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
@@ -63,15 +65,12 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @author ladislav.gazo
  */
 public class UserServiceBroadcaster implements IUserServiceAsync {
+
 	public static final String PRIMARY_ENTRY_POINT = "primaryEntryPoint";
 
 	private Map<String, IUserServiceAsync> userServices = new HashMap<String, IUserServiceAsync>();
-	private String primaryEntryPoint;
 	private ClientSession clientSession;
-
-	public void setClientSession(ClientSession clientSession) {
-		this.clientSession = clientSession;
-	}
+	private String primaryEntryPoint;
 
 	public void addUserService(IUserServiceAsync userService) {
 		ServiceDefTarget subscriptionEndpoint = (ServiceDefTarget) userService;
@@ -85,12 +84,32 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		userServices.put(entryPoint, userService);
 	}
 
+	public void setClientSession(ClientSession clientSession) {
+		this.clientSession = clientSession;
+	}
+
 	public void setPrimaryEntryPoint(String primaryEntryPoint) {
 		this.primaryEntryPoint = primaryEntryPoint;
 	}
 
+	private String resolvePrimaryEntryPoint() {
+		return (primaryEntryPoint != null ? primaryEntryPoint : (clientSession != null
+				&& clientSession.get(PRIMARY_ENTRY_POINT) != null ? (String) clientSession.get(PRIMARY_ENTRY_POINT)
+				: null));
+	}
+
 	@Override
-	public void login(final LoginToken token, final AsyncCallback<ClientSession> callback) {
+	public void authenticate(LoginToken token, final AsyncCallback<String> callback) throws ServerException {
+		authenticatedLogin(token, callback, null);
+	}
+
+	@Override
+	public void login(final LoginToken token, final AsyncCallback<ClientSession> callback) throws ServerException {
+		authenticatedLogin(token, null, callback);
+	}
+
+	private void authenticatedLogin(final LoginToken token, final AsyncCallback<String> stringCallback,
+			final AsyncCallback<ClientSession> clientCallback) {
 		final int count = userServices.size();
 
 		if (count == 0) {
@@ -105,34 +124,47 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		semaphore.raise(count);
 
 		semaphore.addListener(new SemaphoreListener() {
+
 			@Override
 			public void change(SemaphoreEvent event) {
 				if (event.getCount() == event.getStates()[0] + event.getStates()[1]) {
 					if (event.getStates()[1] > 0) {
 						Throwable[] throwables = new Throwable[failures.size()];
 						failures.toArray(throwables);
-						callback.onFailure(new BroadcastingException(throwables));
-					} else {
-						String resolvedPrimaryEntryPoint = (primaryEntryPoint != null ? primaryEntryPoint
-								: (clientSession != null && clientSession.get(PRIMARY_ENTRY_POINT) != null ? (String) clientSession
-										.get(PRIMARY_ENTRY_POINT) : null));
-						if (resolvedPrimaryEntryPoint != null) {
-							// merge authorities from all services to one set
-							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
-							UserData user = primaryResult.getUser();
-							List<String> authorities = new ArrayList<String>();
-							add(user.getUserAuthorities(), authorities);
 
-							for (Entry<String, ClientSession> entry : successes.entrySet()) {
-								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
-									add(entry.getValue().getUser().getUserAuthorities(), authorities);
-									primaryResult.merge(entry.getValue());
-								}
-							}
-							user.setUserAuthorities(authorities);
-							callback.onSuccess(primaryResult);
+						if (stringCallback != null) {
+							stringCallback.onFailure(new BroadcastingException(throwables));
 						} else {
-							callback.onSuccess(successes.values().iterator().next());
+							clientCallback.onFailure(new BroadcastingException(throwables));
+						}
+					} else {
+						String resolvedPrimaryEntryPoint = resolvePrimaryEntryPoint();
+						if (resolvedPrimaryEntryPoint != null) {
+							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
+							if (stringCallback != null) {
+								stringCallback.onSuccess(primaryResult.getSessionId());
+							} else {
+								// merge authorities from all services to one
+								// set
+								UserData<?> user = primaryResult.getUser();
+								List<String> authorities = new ArrayList<String>();
+								add(user.getUserAuthorities(), authorities);
+
+								for (Entry<String, ClientSession> entry : successes.entrySet()) {
+									if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
+										add(entry.getValue().getUser().getUserAuthorities(), authorities);
+										primaryResult.merge(entry.getValue());
+									}
+								}
+								user.setUserAuthorities(authorities);
+								clientCallback.onSuccess(primaryResult);
+							}
+						} else {
+							if (stringCallback != null) {
+								stringCallback.onSuccess(successes.values().iterator().next().getSessionId());
+							} else {
+								clientCallback.onSuccess(successes.values().iterator().next());
+							}
 						}
 					}
 				}
@@ -145,13 +177,84 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 			}
 		});
 
-		signalLoginServices(token, semaphore, failures, successes);
+		signalLoginServices(token, semaphore, failures, successes, stringCallback != null ? true : false);
+	}
+
+	private Pair<String, IUserServiceAsync> resolvePrimaryService() {
+		if (userServices.size() == 0) {
+			return null;
+		}
+		String primaryEntryPoint = resolvePrimaryEntryPoint();
+
+		if (primaryEntryPoint == null) {
+			Entry<String, IUserServiceAsync> primaryEntry = userServices.entrySet().iterator().next();
+			return new Pair<String, IUserServiceAsync>(primaryEntry.getKey(), primaryEntry.getValue());
+		}
+		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
+			if (userServiceEntry.getKey().equals(primaryEntryPoint)) {
+				return new Pair<String, IUserServiceAsync>(userServiceEntry.getKey(), userServiceEntry.getValue());
+			}
+		}
+
+		Entry<String, IUserServiceAsync> primaryEntry = userServices.entrySet().iterator().next();
+		return new Pair<String, IUserServiceAsync>(primaryEntry.getKey(), primaryEntry.getValue());
 	}
 
 	private void signalLoginServices(final LoginToken token, final Semaphore semaphore, final List<Throwable> failures,
-			final Map<String, ClientSession> successes) {
-		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
-			userServiceEntry.getValue().login(token, new TrackingAsyncCallback<ClientSession>() {
+			final Map<String, ClientSession> successes, final boolean authentication) {
+		final Pair<String, IUserServiceAsync> primaryServicePair = resolvePrimaryService();
+
+		if (authentication) {
+			primaryServicePair.getSecond().authenticate(token, new TrackingAsyncCallback<String>() {
+
+				@Override
+				public void onFailureCallback(Throwable cause) {
+					failures.add(cause);
+					semaphore.signal(1);
+				}
+
+				@Override
+				public void onSuccessCallback(String result) {
+					ClientSession resultSession = new ClientSession();
+					resultSession.setSessionId(result);
+					successes.put(primaryServicePair.getFirst(), resultSession);
+					semaphore.signal(0);
+
+					final String sessionId = result;
+
+					for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
+						if (!userServiceEntry.getKey().equals(primaryServicePair.getFirst())) {
+							if (userServiceEntry.getValue() instanceof SessionServiceDefTarget) {
+								ClientSession session = ((SessionServiceDefTarget) userServiceEntry.getValue())
+										.getSession();
+								if (session != null) {
+									session.setSessionId(sessionId);
+								}
+							}
+
+							userServiceEntry.getValue().authenticate(token, new TrackingAsyncCallback<String>() {
+
+								@Override
+								public void onFailureCallback(Throwable cause) {
+									failures.add(cause);
+									semaphore.signal(1);
+								}
+
+								@Override
+								public void onSuccessCallback(String result) {
+									ClientSession resultSession = new ClientSession();
+									resultSession.setSessionId(result);
+									successes.put(userServiceEntry.getKey(), resultSession);
+									semaphore.signal(0);
+								}
+							});
+						}
+					}
+				}
+			});
+		} else {
+			primaryServicePair.getSecond().login(token, new TrackingAsyncCallback<ClientSession>() {
+
 				@Override
 				public void onFailureCallback(Throwable cause) {
 					failures.add(cause);
@@ -160,8 +263,36 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 				@Override
 				public void onSuccessCallback(ClientSession result) {
-					successes.put(userServiceEntry.getKey(), result);
+					successes.put(primaryServicePair.getFirst(), result);
 					semaphore.signal(0);
+
+					final String sessionId = result.getSessionId();
+
+					for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
+						if (!userServiceEntry.getKey().equals(primaryServicePair.getFirst())) {
+							if (userServiceEntry.getValue() instanceof SessionServiceDefTarget) {
+								ClientSession session = ((SessionServiceDefTarget) userServiceEntry.getValue())
+										.getSession();
+								if (session != null) {
+									session.setSessionId(sessionId);
+								}
+							}
+
+							userServiceEntry.getValue().login(token, new TrackingAsyncCallback<ClientSession>() {
+								@Override
+								public void onFailureCallback(Throwable cause) {
+									failures.add(cause);
+									semaphore.signal(1);
+								}
+
+								@Override
+								public void onSuccessCallback(ClientSession result) {
+									successes.put(userServiceEntry.getKey(), result);
+									semaphore.signal(0);
+								}
+							});
+						}
+					}
 				}
 			});
 		}
@@ -219,6 +350,87 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		signalLogoutServices(semaphore, failures, successes);
 	}
 
+	@Override
+	public void getLoggedUser(final AsyncCallback<UserData<?>> callback) throws ServerException {
+		final int count = userServices.size();
+
+		if (count == 0) {
+			throw new IllegalArgumentException(
+					"No user service was registered. Please register user service in order to execute this method.");
+		}
+
+		final List<Throwable> failures = new ArrayList<Throwable>();
+		final Map<String, ClientSession> successes = new HashMap<String, ClientSession>();
+
+		final Semaphore semaphore = new Semaphore(2);
+		semaphore.raise(count);
+
+		semaphore.addListener(new SemaphoreListener() {
+
+			@Override
+			public void change(SemaphoreEvent event) {
+				if (event.getCount() == event.getStates()[0] + event.getStates()[1]) {
+					if (event.getStates()[1] > 0) {
+						Throwable[] throwables = new Throwable[failures.size()];
+						failures.toArray(throwables);
+						callback.onFailure(new BroadcastingException(throwables));
+					} else {
+						String resolvedPrimaryEntryPoint = resolvePrimaryEntryPoint();
+						if (resolvedPrimaryEntryPoint != null) {
+							// merge authorities from all services to one set
+							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
+							UserData<?> user = primaryResult.getUser();
+							List<String> authorities = new ArrayList<String>();
+							add(user.getUserAuthorities(), authorities);
+
+							for (Entry<String, ClientSession> entry : successes.entrySet()) {
+								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
+									add(entry.getValue().getUser().getUserAuthorities(), authorities);
+									primaryResult.merge(entry.getValue());
+								}
+							}
+							user.setUserAuthorities(authorities);
+							callback.onSuccess(primaryResult.getUser());
+						} else {
+							callback.onSuccess(successes.values().iterator().next().getUser());
+						}
+					}
+				}
+			}
+
+			private <T> void add(List<T> userAuthorities, List<T> allAuthorities) {
+				for (T authority : userAuthorities) {
+					allAuthorities.add(authority);
+				}
+			}
+		});
+
+		signalUserServices(semaphore, failures, successes);
+	}
+
+	private void signalUserServices(final Semaphore semaphore, final List<Throwable> failures,
+			final Map<String, ClientSession> successes) {
+		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
+
+			userServiceEntry.getValue().getLoggedUser(new AsyncCallback<UserData<?>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					failures.add(caught);
+					semaphore.signal(1);
+				}
+
+				@Override
+				public void onSuccess(UserData<?> result) {
+					ClientSession session = new ClientSession();
+					session.setUser(result);
+					successes.put(userServiceEntry.getKey(), session);
+					semaphore.signal(0);
+				}
+			});
+		}
+	}
+
 	public static class BroadcastingException extends ServerException {
 		private static final long serialVersionUID = 6497048424054217121L;
 
@@ -232,11 +444,5 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		public Throwable[] getCauses() {
 			return causes;
 		}
-	}
-
-	@Override
-	public void getLoggedUser(AsyncCallback<UserData<?>> callback) throws ServerException {
-		throw new IllegalArgumentException(
-		"Method not supported in broadcast mode. Please call method separately on specific user service.");
 	}
 }

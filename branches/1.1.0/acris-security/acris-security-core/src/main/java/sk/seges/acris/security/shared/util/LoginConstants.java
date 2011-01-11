@@ -3,11 +3,14 @@ package sk.seges.acris.security.shared.util;
 public class LoginConstants {
 
 	// Session ID string
-	public static final String ACRIS_SESSION_ID_STRING = "acris.sessionid";
+	public static final String ACRIS_SESSION_ID_STRING = "sessionid";
 
 	// Login token name
 	public static final String LOGIN_TOKEN_NAME = "login.token.name";
 
+	// Logged in user name
+	public static final String LOGGED_USER_NAME = "logged.user.name";
+	
 	// Cookies
 	public static final String LANGUAGE_COOKIE_NAME = "acris-languageCookie";
 	public static final String LOGINNAME_COOKIE_NAME = "acris-loginNameCookie";

@@ -1,7 +1,5 @@
 package sk.seges.acris.security.client.view;
 
-import sk.seges.acris.security.client.event.OpenIDLoginEvent;
-import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
 
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -16,11 +14,6 @@ public class OpenIDLoginView extends LoginView implements OpenIDLoginDisplay {
 
 	public OpenIDLoginView() {
 		super();
-	}
-
-	@Override
-	public HandlerRegistration addOpenIDLoginHandler(OpenIDLoginHandler handler) {
-		return addHandler(handler, OpenIDLoginEvent.getType());
 	}
 
 	@Override

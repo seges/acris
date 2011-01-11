@@ -35,7 +35,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 				serializationPolicyName, serializer);
 	}
 
-	protected ClientSession getSession() {
+	public ClientSession getSession() {
 		return clientSession;
 	}
 
