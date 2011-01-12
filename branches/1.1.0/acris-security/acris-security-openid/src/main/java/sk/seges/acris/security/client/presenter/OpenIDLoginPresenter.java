@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -170,33 +171,36 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 	/**
 	 * Authenticates an OpenID identifier and opens the discovered provider's
-	 * login url in a popup.
+	 * endpoint url in a popup.
 	 * 
 	 * @param identifier
 	 */
-	protected void authenticate(String identifier) {
+	protected void authenticate(final String identifier) {
 		consumerService.authenticate(identifier, getModuleUrl(), new AsyncCallback<OpenIDUser>() {
 
 			@Override
+			public void onFailure(Throwable caught) {
+				Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+				display.showMessage("Authentication failed, exception: " + caught.getLocalizedMessage());
+			}
+			
+			@Override
 			public void onSuccess(OpenIDUser result) {
 				if (result != null) {
+					Cookies.setCookie(LoginConstants.OPENID_COOKIE_NAME, identifier);
 					String url = result.getRedirectUrl();
 					url += "&openid.ns.ui=" + URL.encodeQueryString("http://specs.openid.net/extensions/ui/1.0");
 					url += "&openid.ui.mode=" + URL.encodeQueryString("popup");
-					Window.open(url, "openIDPopup", "width = 500," + "height = 540," + "left = 200," + "top = 200,"
+					Window.open(url, "openIDPopup", "width = 500," + "height = 500," + "left = 200," + "top = 200,"
 							+ "resizable = yes," + "scrollbars = no," + "status = no," + "toolbar = no");
 				} else {
+					Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
 					display.showMessage("Authentication failed, OpenID provider not found");
 				}
 			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				display.showMessage("Authentication failed, exception: " + caught.getLocalizedMessage());
-			}
 		});
 	}
-
+	
 	/**
 	 * Verifies a response from an OpenID provider and calls login on
 	 * broadcaster.
@@ -204,10 +208,11 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	 * @param callback
 	 */
 	protected void verify(final AsyncCallback<?> callback) {
-		final String mode = Window.Location.getParameter("openid.mode");
+		final String mode = Location.getParameter("openid.mode");
 
 		if (mode != null) {
-			if (mode.equals("cancel")) {
+			if (mode.equals("cancel") || mode.equals("setup_needed")) {
+				Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
 				closePopup(null);
 			} else if (mode.equals("id_res") && Window.Location.getParameter("openid.response_nonce") != null) {
 				final String href = Window.Location.getHref();
@@ -224,6 +229,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 					@Override
 					public void onFailure(Throwable caught) {
+						Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
 						unbind();
 						closePopup(null);
 						callback.onFailure(new sk.seges.acris.security.shared.exception.SecurityException(
@@ -238,6 +244,11 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 				});
 			}
 		} else {
+			// auto login
+			String identifier = Cookies.getCookie(LoginConstants.OPENID_COOKIE_NAME);
+			if (identifier != null) {
+				authenticate(identifier);
+			}
 			callback.onSuccess(null);
 		}
 	}

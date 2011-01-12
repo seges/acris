@@ -15,6 +15,7 @@ public class LoginConstants {
 	public static final String LANGUAGE_COOKIE_NAME = "acris-languageCookie";
 	public static final String LOGINNAME_COOKIE_NAME = "acris-loginNameCookie";
 	public static final String LOGINPASSWORD_COOKIE_NAME = "acris-loginPasswordCookie";
+	public static final String OPENID_COOKIE_NAME = "acris-openIdCookie";
 
 	// OpenID Identifiers
 	public static final String GOOGLE_IDENTIFIER = "https://www.google.com/accounts/o8/id";
