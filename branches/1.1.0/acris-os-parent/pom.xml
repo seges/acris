@@ -90,6 +90,8 @@
 
 		<twig.version>1.0.3</twig.version>
 		<guice.version>2.0</guice.version>
+
+		<htmlparser.version>2.0-20100701</htmlparser.version>
 	</properties>
 
 	<dependencyManagement>
@@ -437,6 +439,18 @@
 				<groupId>com.vercer.engine.persist</groupId>
 				<artifactId>twig-persist</artifactId>
 				<version>${twig.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.htmlparser</groupId>
+				<artifactId>htmlparser</artifactId>
+		        	<version>${htmlparser.version}</version> 
+				<exclusions>
+					<exclusion>
+						<groupId>com.sun</groupId>
+						<artifactId>tools</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 		</dependencies>
