@@ -19,6 +19,9 @@ package sk.seges.acris.showcase.deployer.server.appengine;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.util.HttpFetcher;
 
+import sk.seges.acris.openid.server.session.servlet.GuiceServerSessionProvider;
+import sk.seges.acris.security.server.core.session.ServerSessionProvider;
+
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.inject.AbstractModule;
@@ -32,6 +35,7 @@ public class AppEngineGuiceModule extends AbstractModule {
 	protected void configure() {
 		bind(HttpFetcher.class).to(AppEngineHttpFetcher.class).in(Scopes.SINGLETON);
 		bind(ConsumerManager.class).to(AppengineConsumerManager.class).in(Scopes.SINGLETON);
+		bind(ServerSessionProvider.class).to(GuiceServerSessionProvider.class).in(Scopes.SINGLETON);
 	}
 
 	@Provides
