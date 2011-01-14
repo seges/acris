@@ -132,13 +132,8 @@ This is what you have to take care about in the process method. You can identify
 
 ==How to run the processor?==
 
-If you want to use maven, see the Maven integration section.
+If you want to use maven, see the Maven integration section.\\
 If you want to use eclipse, see the [AnnotationProcessing_Eclipse Eclipse integration section].
-[TODO place both ways, also plugin integration and also native integration]
-
-==Where is the INFO message going to be displayed?==
-
-[TODO place an image here]
 
 ==Processors possiblities==
 
