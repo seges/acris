@@ -113,7 +113,7 @@ The rule is to implement javax.annotation.processing.Processor in order to have 
 method, etc. Or even better, you can extend from sk.seges.sesam.core.pap.AbstractConfigurableProcessor, which has really complex possibilities:
  * with loading the configuration properties dedicated to the processor (so developers can configure your annotation processors if you want),
  * better fillers implementation (with autoidentation - isn't it better when you can read generated code and it is idented correctly?)
- * much easier output creation process - this could be very helpful if you are new to JSR269 and want to create basic annotation processor without deep knowledge of the DeclaredTypes, TypeElements, ElementVisitors, etc.
+ * much easier output creation process - this could be very helpful if you are new to JSR269 and want to create basic annotation processor without deep knowledge of the !DeclaredTypes, !TypeElements, !ElementVisitors, etc.
 
 Then process method implementation - this is the main method when your implementation should be located. But firstly you have know something about invoking the processors, because the process method should be (and will be) invoked more 
 
@@ -128,7 +128,7 @@ finished - the unclaimed state.
  * if next file is generated using the processors, then 1st round is reexecuted on this newly generated files
  * and finally processors are invoked once again in order to cleanup the resources and complete the work (after that generated files are compiled into the bytecode)
 
-This is what you have to take care about in the process method. You can identify the rounding phase using the RoundEnvironment interface (or to be more precise, you can use roundEnv.processingOver()). Set of elements which comes as first parameter hold all the java classes which are annotated with supported annotation (note: if the supportedAnnotationType is "*" then the input set is empty and you have to fetch all java classes in your own)
+This is what you have to take care about in the process method. You can identify the rounding phase using the !RoundEnvironment interface (or to be more precise, you can use roundEnv.processingOver()). Set of elements which comes as first parameter hold all the java classes which are annotated with supported annotation (note: if the supportedAnnotationType is "*" then the input set is empty and you have to fetch all java classes in your own)
 
 ==How to run the processor?==
 
@@ -151,12 +151,12 @@ A processor can’t
 ==API you should know==
 
 Firstly you have understand basics behind the java language API:
- * Type in the java programming language is represented by interface  javax.lang.model.type.TypeMirror and can be primitive types, declared types (class and interface types), array types, type variables, and the null type. Upon this concrete type specific implementation exists, for example PrimitiveType, DeclaredType, ArrayType, etc.
+ * Type in the java programming language is represented by interface  javax.lang.model.type.TypeMirror and can be primitive types, declared types (class and interface types), array types, type variables, and the null type. Upon this concrete type specific implementation exists, for example !PrimitiveType, !DeclaredType, !ArrayType, etc.
 Types should by compared using TypeMirror.getKind().equals(TypeKind) - do not use instanceof methods for checking the concrete implementation
 
 For types manipulation you can use util class javax.lang.model.util.Types, which can be use in order to determine whether one type is assignable to another, unboxing the objects, or boxing the promitive types, etc. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getTypeUtils()
 
- * Program element is defined by javax.lang.model.element.Element and it must not necessarily be the class or interface. It can be a method for example (javax.lang.model.element.ExecutableElement). Analogous to the Type, elements should be compared using ElementKind and for manipulation is javax.lang.model.util.Elements interface used. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getElementUtils()
+ * Program element is defined by javax.lang.model.element.Element and it must not necessarily be the class or interface. It can be a method for example (javax.lang.model.element.ExecutableElement). Analogous to the Type, elements should be compared using !ElementKind and for manipulation is javax.lang.model.util.Elements interface used. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getElementUtils()
 
  * More advanced selectors are implemented in javax.lang.model.util.ElementFilter and are used to select just the elements of interest.
 
