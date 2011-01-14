@@ -132,7 +132,7 @@ This is what you have to take care about in the process method. You can identify
 
 ==How to run the processor?==
 
-If you want to use maven, see the Maven integration section.
+If you want to use maven, see the [AnnotationProcessing Maven integration] section.
 
 If you want to use eclipse, see the [AnnotationProcessing_Eclipse Eclipse integration section].
 
