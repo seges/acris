@@ -1,6 +1,6 @@
 #summary How to add OpenID login support to your web app.
 
-= OpenID Login =
+= Introduction =
 
 In this guide we will talk about how to use the projects acris-security-core, acris-security-openid and acris-security-ui to integrate both classic username/password and OpenID based login methods, for example through Google or Yahoo, into your Java web application. 
 
