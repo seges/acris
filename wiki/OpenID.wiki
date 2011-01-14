@@ -19,3 +19,35 @@ In your module's gwt.xml file, add the following inherit:
 	<inherits name='sk.seges.acris.security.OpenID' />
 </module>
 }}}
+
+
+Since we are using google-guice for dependency injection, we will need this in our web.xml:
+
+{{{
+<web-app>
+  <filter>
+        <filter-name>guiceFilter</filter-name>
+    	<filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    	<filter-name>guiceFilter</filter-name>
+    	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <listener>
+    	<listener-class>sk.seges.acris.openid.server.service.ServletContextListener</listener-class>
+  </listener>
+
+</web-app>
+}}}
+
+Here we simply enable guice filtering for all requests and inject our guice modules, ShowcaseGuiceServletModule and ShowcaseGuiceModule. Note that we are using guice servlet injection here, this way we can provide a different implementation for certain classes. Google's app engine environment, for example, needs such special implementations.
+
+
+To be able to use guice dependency injection in servlets, we need two things. First, all server calls will be sent to GuiceRemoteServiceServlet, found in acris-security-openid. This servlet will intercept every call, get the service instance we are trying to access and inject it with whatever dependencies we have defined in our guice modules. This also means that all services injected in this way don't need to extend RemoteServiceServlet, since we are not accessing them directly. Second, all services we want to inject with guice dependencies must be mapped to the same entry point url as the GuiceRemoteServiceServlet, in this case "GWT.rpc".
+
+
+= Classes =
+
+huhu
