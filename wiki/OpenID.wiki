@@ -2,14 +2,20 @@
 
 = OpenID Login =
 
-In this guide we will talk about how to use our projects acris-security-openid and acris-security-ui to integrate both classic username/password and OpenID based login methods, for example through Google or Yahoo, into your Java web application.
+In this guide we will talk about how to use the projects acris-security-openid and acris-security-ui to integrate both classic username/password and OpenID based login methods, for example through Google or Yahoo, into your Java web application.
 
 For more information about what OpenID is visit http://openid.net.
 
 
-= Details =
+= Setup =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+An example entry point can be found in the acris-showcase-openid project, which showcases setting up a guice servlet and a mock user service to demonstrate logging in through Google, Yahoo, Aol, Seznam, MyOpenID, or by using a classic login method. Let's go over it in detail.
+
+
+In your module's gwt.xml file, add the following inherit:
+
+{{{
+<module>
+	<inherits name='sk.seges.acris.security.OpenID' />
+</module>
+}}}
