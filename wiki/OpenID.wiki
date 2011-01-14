@@ -2,7 +2,7 @@
 
 = OpenID Login =
 
-In this guide we will talk about how to use our projects acris-security-openid and acris-security-ui to integrate both classic username/password and OpenID based login, for example through Google or Yahoo, into your Java web application.
+In this guide we will talk about how to use our projects acris-security-openid and acris-security-ui to integrate both classic username/password and OpenID based login methods, for example through Google or Yahoo, into your Java web application.
 
 For more information about what OpenID is visit http://openid.net.
 
