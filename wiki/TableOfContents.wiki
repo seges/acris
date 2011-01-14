@@ -8,7 +8,6 @@
     * [Releasing Release process]
     * [SVNPostCommitHook How SVN postcommit hook works]
     * [Roadmap Roadmap]
-    * [AnnotationProcessing Setting up the annotation processing support JSR269]
     * [Migration Migration guide]
       * [Migration1_0_1 From version 1.0.0 to 1.0.1]
       * [Migration1_1_0 From version 1.0.1 to 1.1.0]
@@ -38,6 +37,8 @@
   * Web
     * [AcrisWeb Navigation and layout]
     * [AcrisSEO SEO]
+  * Platform
+    * [CodeGenerationPlatform Generate application skelet]
   * App engine integration
     * [AppEngineDatanucleus Datanucleus integration - JDO/JPA with maven]
     * [AppEngineSpring Spring with appengine]
