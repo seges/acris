@@ -2,11 +2,11 @@
 
 =Code generation platform=
 
-There was a dream - generate almost whole application from the model definition, implement custom or specific bussiness logic, sell the product for a big money and be rich :-). This dream has also the name - it's model driven architecture and there are plenty of the implementations somewhere in the space. This document is kind of evaluation of multiple different approaches reaching the same goal and respecting DRY principles. 
+There was a dream - to generate skelet of the application from the model definition, implement custom or specific bussiness logic, sell the product for a big money and be rich :-). This dream has also the name - it's model driven architecture and there are plenty of the implementations somewhere in the space. This article is kind of evaluation of multiple different approaches reaching the same goal and respecting DRY principles. 
 
-First evaluated approach will be Annotation processing tools that comes with Java 1.5 and plugable annotation processing (JSR269) that comes with Java 1.6. These techniques are used to auto generate java classes based on specified annotations. The perfect example is well known framemework hibernate. The hibernate team is still developing new and new annotation processors and they are building a new platform over the JPA or validation annotations - they are calling it metamodel. Lets see the example:
+First evaluated approach will be Annotation processing tools that comes with Java 1.5 and plugable annotation processing (JSR269) that comes with Java 1.6. These techniques are used to auto generate java classes based on specified annotations. The perfect example is well known framemework - hibernate. The hibernate team is still developing new and new annotation processors and they are building a new platform over the JPA and validation annotations - they are calling it a metamodel. Lets see the example:
 
-If you will annotate your domain class with @javax.persistence.Entity annotation than Jpa metamodel generator/processor starts his hard work. He will generate all meta classes in order to reach typesafe query writing. This stuff is really amazing and with the IDE integration you will get a powerfull way of developing - new java classes will be generated right after you are create your domain class.
+If you will annotate your domain class with @javax.persistence.Entity annotation then Jpa metamodel generator/processor starts his hard work. He will generate all meta classes in order to reach typesafe query writing. This stuff is really amazing and with the IDE integration you will get a powerfull way of writing a code - new java classes will be generated right after you are creating your domain class.
 
 {{{
 @Entity
@@ -25,7 +25,7 @@ public class Order {
 }
 }}}
 
-The processor is started based on the @javax.persistence.Entity annotation and will produce Order_ class with definitions of the fields which allows you to write your queries without any hardcoded Strings and also in a type safe way.
+The processor is executed based on the @javax.persistence.Entity annotation and will produce Order_ class with definitions of the fields which allows you to write your queries without any hardcoded strings and also in a type safe way.
 
 {{{
 @StaticMetamodel(Order.class)
@@ -37,7 +37,7 @@ public class Order_ {
 }
 }}}
 
-Currently hibernate also generates validation metamodel based on validation annotation, but this is the same story. So what to do when you want to write your own processor?
+Currently hibernate also generates validation metamodel based on validation annotation, but it is the same story. So what to do when you want to write your own processor?
 
 ==Writing own annotation (or reuse the existing)==
 
@@ -57,10 +57,11 @@ public @interface TransferObject {
 }}}
 
 Annotation name is TransferObject and:
- * it can be defined over the type - class, interface or enumeration
- * annotation is visible only in source java file and will not be the part of the compiled class file (this means that annotation could not be accessed using java reflection API, but the annotation processor can see it)
+ * it can be defined over the type (ElementType.TYPE) - class, interface or enumeration
+ * annotation is visible only in source java file (RetentionPolicy.SOURCE) and will not be the part of the compiled class file (this means that annotation could not be accessed using java reflection API, but the annotation processor can see it)
 
 ==Basic annotation processor==
+
 {{{
 package sk.seges.corpis.core.pap.transfer;
  
@@ -88,7 +89,7 @@ public class TransferObjectProcessor extends AbstractProcessor {
 }
 }}}
 
-Annotation @SupportedAnnotationTypes is describing which annotations are registered with this annotation processor. Then annotation processor is started when class with this annotation is compiled. So we did not write there @sk.seges.corpis.platform.annotation.TransferObject ? The answer is: because it is String and thus it is not refactoring aware and more error prone. Preferably you can override getSupportedAnnotationTypes method instead
+Annotation @SupportedAnnotationTypes is describing which annotations are registered with the annotation processor. Then annotation processor is executed when class with this annotation is compiled by java/eclipse compiler. So, why we did not write there @sk.seges.corpis.platform.annotation.TransferObject? The answer is: because it is String and thus it is not refactoring aware and it is more error prone. Preferably you can rather override getSupportedAnnotationTypes method instead
 (Why the Sun developers did not use Class<?> attribute instead of String one?)
 
 {{{
@@ -100,19 +101,25 @@ public Set<String> getSupportedAnnotationTypes() {
 }
 }}}
 
-The rule is to implement javax.annotation.processing.Processor in order to have valid annotation processor. Or better, you can extends javax.annotation.processing.AbstractProcessor which has very basic implementation of initialiation method, etc. Or even better, you can extend from sk.seges.sesam.core.pap.AbstractConfigurableProcessor, which has really complex possibilities:
- * with loading the configuration properties dedicated to the processor (so developers can configure your annotation processors if you want),
+Basic rule is to implement javax.annotation.processing.Processor interface in order to have valid annotation processor. Or better, you can extends javax.annotation.processing.AbstractProcessor which has very basic implementation of initialiation method (btw. here are annotations like @SupportedAnnotationTypes transformed to their method equivalents). Or even better, you can extend from sk.seges.sesam.core.pap.AbstractConfigurableProcessor, which has really complex possibilities like:
+ * loading the configuration properties dedicated to the processor (so developers can configure your annotation processors if you want),
  * better fillers implementation (with autoidentation - isn't it better when you can read generated code and it is idented correctly?)
  * much easier output creation process - this could be very helpful if you are new to JSR269 and want to create basic annotation processor without deep knowledge of the !DeclaredTypes, !TypeElements, !ElementVisitors, etc.
 
-Then process method implementation - this is the main method when your implementation should be located. But firstly you have know something about invoking the processors, because the process method should be (and will be) invoked more than once on each processor. Why?
-Because Java is clever :-):
- * first round is executed when compiler parses sources. Then it collects annotations from the source files, determine the available processors and the executes the processors they are supporting the approriate annotation
- * then is process method executed (1st round). Here is very important what your process method returns (whather true or false). If the return value is true then no further attempt to execute another processor associated with this annotation is done. In this state the processors are claimed and no subsequent annotation processor is asked for processing the annotation. Otherwise the false value allows other processors to be executed after your processing is finished - the unclaimed state.
- * if next file is generated using the processors, then 1st round is reexecuted on this newly generated files
- * and finally processors are invoked once again in order to cleanup the resources and complete the work (after that generated files are compiled into the bytecode)
+Then process method implementation - this is the main method where your implementation should be located. But firstly you have to know something about invoking the processors, because the process method should be (and will be) invoked more than once on each processor. Why?
+Because Java is clever :-)
 
-This is what you have to take care about in the process method. You can identify the rounding phase using the !RoundEnvironment interface (or to be more precise, you can use roundEnv.processingOver()). Set of elements which comes as first parameter hold all the java classes which are annotated with supported annotation (note: if the supportedAnnotationType is "*" then the input set is empty and you have to fetch all java classes in your own)
+[http://acris.googlecode.com/svn/wiki/images/pap_eclipse_output.png]
+(Processor is invoked twice)
+
+ * first round is executed when compiler parses the sources. Then it collects annotations from the source files, determine the available processors and the executes the processors that are supporting the approriate annotation
+ * then process method is executed (1st round). Here is very important what your process method returns (whather true or false). If the return value is true then no further attempt to execute another processor associated with this annotation is done. In this state the processors are claimed and no subsequent annotation processor is asked for processing the annotation. Otherwise, the false value allows other processors to be executed after your processing is finished - the unclaimed state.
+ * if next file is generated using the processors, then 1st round is reexecuted on this newly generated files
+ * and finally processors are invoked once again in order to cleanup the resources and complete the work (after that, generated files are compiled into the bytecode)
+
+This is what you have to take care about in the process method. You can identify the rounding phase using the !RoundEnvironment interface (or to be more precise, you can use roundEnv.processingOver() method). 
+
+Set of elements which comes as first parameter holds all the java classes which are annotated with supported annotation (note: if the supportedAnnotationType is asterix `"*"` then the input set is empty and you have to fetch annotated java classes in your own)
 
 ==How to run the processor?==
 
@@ -135,11 +142,11 @@ A processor can’t
 ==API you should know==
 
 Firstly you have understand basics behind the java language API:
- * Type in the java programming language is represented by interface  javax.lang.model.type.TypeMirror and can be primitive types, declared types (class and interface types), array types, type variables, and the null type. Upon this concrete type specific implementation exists, for example !PrimitiveType, !DeclaredType, !ArrayType, etc.
+ * Type in the java programming language is represented by interface  javax.lang.model.type.TypeMirror and can be primitive type, declared type (class and interface type), array type, type variable, and the null type. Upon this concrete type specific implementation exists, for example !PrimitiveType, !DeclaredType, !ArrayType, etc.
 Types should by compared using TypeMirror.getKind().equals(TypeKind) - do not use instanceof methods for checking the concrete implementation
-For types manipulation you can use util class javax.lang.model.util.Types, which can be use in order to determine whether one type is assignable to another, unboxing the objects, or boxing the promitive types, etc. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getTypeUtils()
+For types manipulation you can use util class javax.lang.model.util.Types, which can be used in order to determine whether one type is assignable to another type, objects unboxing, or boxing the primitive types, etc. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getTypeUtils()
 
- * Program element is defined by javax.lang.model.element.Element and it must not necessarily be the class or interface. It can be a method for example (javax.lang.model.element.ExecutableElement). Analogous to the Type, elements should be compared using !ElementKind and for manipulation is javax.lang.model.util.Elements interface used. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getElementUtils()
+ * Piece of code is defined by javax.lang.model.element.Element and it must not necessarily be the class or interface. It can be a method for example (javax.lang.model.element.ExecutableElement). Analogous to the Type, elements should be compared using !ElementKind and for manipulation is javax.lang.model.util.Elements interface used. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getElementUtils()
 
  * More advanced selectors are implemented in javax.lang.model.util.ElementFilter and are used to select just the elements of interest.
 
@@ -152,3 +159,5 @@ List<ExecutableElement> fs = methodsIn(someClass.getEnclosedElements());
 ==Testing==
 
 ==Processor pitfalls==
+
+==  ==
