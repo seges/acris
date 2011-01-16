@@ -4,12 +4,12 @@
 
 In this guide we will talk about how to use the projects acris-security-core, acris-security-openid and acris-security-ui to integrate both classic username/password and OpenID based login methods, for example through Google or Yahoo, into your Java web application. 
 
-So what we want to do is to provide users with a user interface where they can enter a username and password and log in normally through our local user service, or instead select from a list of OpenID providers, open a popup window and log in through a chosen provider. This UI will exist in a lightweight GWT module, which will only handle the login process, after which it will redirect the browser to a url with another module which then processes this login information.
+So what we want to do is to provide users with a user interface where they can enter a username and password and log in normally through our local user service, or instead select from a list of OpenID providers, open a popup window and log in through the chosen provider. This UI will exist in a lightweight GWT module, which will only handle the login process, after which it will redirect the browser to a url with another module which then processes this login information.
 
-For more information about what OpenID is visit http://openid.net.
+For more information about OpenID visit http://openid.net.
 The projects also use the openid4java library, for more info visit http://code.google.com/p/openid4java.
 
-An example entry point can be found in the acris-showcase-openid project, which showcases setting up a guice servlet and a mock user service to demonstrate logging in through Google, Yahoo, Aol, Seznam, MyOpenID, or by using a classic login method. Let's go over it in detail.
+An example entry point can be found in the acris-showcase-openid project, which showcases setting up a guice servlet and a mock user service to demonstrate logging in through Google, Yahoo, Aol, Seznam and MyOpenID, or by using a classic login method. Let's go over it in detail.
 
 
 = Configuration =
@@ -23,7 +23,7 @@ In your module's gwt.xml file, add the following inherit:
 }}}
 
 
-Since we are using google-guice for dependency injection, we will need this in our web.xml:
+Since we are using google-guice for dependency injection in this example, we will need this in our web.xml:
 
 {{{
 <web-app>
@@ -46,14 +46,48 @@ Since we are using google-guice for dependency injection, we will need this in o
 
 Here we simply enable guice filtering for all requests and inject our guice modules, !ShowcaseGuiceServletModule and !ShowcaseGuiceModule. Note that we are using guice servlet injection here, this way we can provide a different implementation for certain classes. Google's app engine environment, for example, needs such special implementations.
 
-To be able to use guice dependency injection in servlets, we need two things. First, all server calls will be sent to !GuiceRemoteServiceServlet, found in acris-security-openid. This servlet will intercept every call, get the service instance we are trying to access and inject it with whatever dependencies we have defined in our guice modules. This also means that all services injected in this way don't need to extend !RemoteServiceServlet, since we are not accessing them directly. Second, all services we want to inject with guice dependencies must be mapped to the same entry point url as the !GuiceRemoteServiceServlet, in this case "GWT.rpc".
+To be able to use guice dependency injection in servlets, we need two things. 
+First, all server calls will be sent to !GuiceRemoteServiceServlet, found in acris-security-openid. This servlet will intercept every call, get the service instance we are trying to access and inject it with whatever dependencies we have defined in our guice modules. This also means that all services injected in this way don't need to extend !RemoteServiceServlet, since we are not calling them directly. Second, all services we want to inject with guice dependencies must be mapped to the same entry point url as the !GuiceRemoteServiceServlet, in this case "GWT.rpc".
+
 
 = Classes =
+
+For a classic username/password login method, use:
+
+*LoginPresenter, LoginView*
+
+Based on the MVP pattern, we have a presenter class which handles all the logic and a display interface with a view class that displays a user interface that displays a user name and password fields and a login button. The basic !LoginPresenter only needs to be provided with a view, user service broadcaster and redirect url like this: 
+
+{{{
+UserServiceBroadcaster broadcaster = new UserServiceBroadcaster();
+broadcaster.addUserService(new MockUserService());
+
+String redirectUrl = GWT.getModuleBaseURL() + "Redirect.html";
+
+LoginDisplay display = GWT.create(LoginView.class);
+
+LoginPresenter presenter = new LoginPresenter(display, broadcaster, redirectUrl);
+}}}
+
+Note that in this example we use url redirection for logging in by sending the session id in the query string, but the presenter also supports custom logins without redirection (pass null for 'redirectUrl' in the constructor).
+Then you onle need to bind the presenter to a panel:
+
+{{{
+presenter.bind(RootPanel.get());
+}}}
+
+This will register all necessary handles and display the associated view, in this case by adding it to RootPanel.
+
 
 *OpenIDConsumerService*
 
 Acts as an OpenID consumer which sends discovery, authentication and verification requests to an OpenID provider like Google. Uses openid4java library.
 
-*OpenIDLoginPresenter*
+
+*OpenIDLoginPresenter, OpenIDLoginView*
 
 Based on the MVP pattern, provides an OpenIDLoginDisplay user interface that displays a user name and password fields, a login button, as well as 5 buttons with predefined OpenID provider endpoints, which open popup windows where the user can log in by providing an OpenID identifier. The presenter handles all the logic, registers/deregisters handlers and is also responsible for the final redirection to the desired url.
+
+
+
+
