@@ -54,7 +54,7 @@ First, all server calls will be sent to !GuiceRemoteServiceServlet, found in acr
 
 For a classic username/password login method, use:
 
-*LoginPresenter, LoginView*
+*!LoginPresenter, !LoginView*
 
 Based on the MVP pattern, we have a presenter class which handles all the logic and a display interface with a view class that displays a user interface that displays a user name and password fields and a login button. The basic !LoginPresenter only needs to be provided with a view, user service broadcaster and redirect url like this: 
 
@@ -76,7 +76,7 @@ Then you onle need to bind the presenter to a panel:
 presenter.bind(RootPanel.get());
 }}}
 
-This will register all necessary handles and display the associated view, in this case by adding it to RootPanel.
+This will register all necessary handlers and display the associated view, in this case by adding it to RootPanel.
 
 
 *OpenIDConsumerService*
@@ -86,8 +86,6 @@ Acts as an OpenID consumer which sends discovery, authentication and verificatio
 
 *OpenIDLoginPresenter, OpenIDLoginView*
 
-Based on the MVP pattern, provides an OpenIDLoginDisplay user interface that displays a user name and password fields, a login button, as well as 5 buttons with predefined OpenID provider endpoints, which open popup windows where the user can log in by providing an OpenID identifier. The presenter handles all the logic, registers/deregisters handlers and is also responsible for the final redirection to the desired url.
-
-
+In addition to the user name and password fields and a login button, adds 5 buttons with predefined OpenID provider endpoints, which open popup windows where the user can log in by providing an OpenID identifier. The presenter handles all the logic, including discovery, authentication, verification, as well as the final redirection to the desired url.
 
 
