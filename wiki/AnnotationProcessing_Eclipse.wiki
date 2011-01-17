@@ -1,4 +1,5 @@
 #summary How to setup annotation processors with eclipse
+#labels Eclipse,JSR269,Codeplatform
 
 =Eclipse configuration=
 
@@ -26,4 +27,17 @@ Show log error view from *Window -> Show view -> Error log* and here are located
 [http://acris.googlecode.com/svn/wiki/images/pap_eclipse_output.png]
 
 We are done.
+
 Happy coding :-)
+
+==Eclipse compiler pitfalls==
+
+You probably know that eclipse has own compiler in order to reach inceremental build. This custom compilation process is perfectly fine but it has some drawbacks. They have to reach the same behavious as the java compiler, otherwise it's fail. An currently it is little bit fail, because there are some cases that are not working in eclipse but in standard java compiler does. For example, lets try to gain all classes from the specified package:
+ * With the java compiler it is not a problem with following code:
+{{{
+Elements elements = processingEnv.getElementUtils();
+TypeElement typeElement = Elements.getTypeElement(SomeClass.class.getCanonicalName());			
+List<? extends Element> enclosedElements = Elements.getPackageOf(typeElement).getEnclosedElements();
+}}}
+It returns all classes in the package
+ * but with the eclipse compiler it is a problem, it returns an empty list
