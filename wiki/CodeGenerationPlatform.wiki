@@ -25,7 +25,7 @@ public class Order {
 }
 }}}
 
-The processor is executed based on the @javax.persistence.Entity annotation and will produce Order_ class with definitions of the fields which allows you to write your queries without any hardcoded strings and also in a type safe way.
+The processor is executed based on the @javax.persistence.Entity annotation and will produce `Order_` class with definitions of the fields which allows you to write your queries without any hardcoded strings and also in a type safe way.
 
 {{{
 @StaticMetamodel(Order.class)
@@ -56,9 +56,9 @@ public @interface TransferObject {
 }
 }}}
 
-Annotation name is TransferObject and:
- * it can be defined over the type (ElementType.TYPE) - class, interface or enumeration
- * annotation is visible only in source java file (RetentionPolicy.SOURCE) and will not be the part of the compiled class file (this means that annotation could not be accessed using java reflection API, but the annotation processor can see it)
+Annotation name is !TransferObject and:
+ * it can be defined over the type (!ElementType.TYPE) - class, interface or enumeration
+ * annotation is visible only in source java file (!RetentionPolicy.SOURCE) and will not be the part of the compiled class file (this means that annotation could not be accessed using java reflection API, but the annotation processor can see it)
 
 ==Basic annotation processor==
 
@@ -89,7 +89,7 @@ public class TransferObjectProcessor extends AbstractProcessor {
 }
 }}}
 
-Annotation @SupportedAnnotationTypes is describing which annotations are registered with the annotation processor. Then annotation processor is executed when class with this annotation is compiled by java/eclipse compiler. So, why we did not write there @sk.seges.corpis.platform.annotation.TransferObject? The answer is: because it is String and thus it is not refactoring aware and it is more error prone. Preferably you can rather override getSupportedAnnotationTypes method instead
+Annotation @!SupportedAnnotationTypes is describing which annotations are registered with the annotation processor. Then annotation processor is executed when class with this annotation is compiled by java/eclipse compiler. So, why we did not write there @sk.seges.corpis.platform.annotation.!TransferObject? The answer is: because it is String and thus it is not refactoring aware and it is more error prone. Preferably you can rather override getSupportedAnnotationTypes method instead
 (Why the Sun developers did not use Class<?> attribute instead of String one?)
 
 {{{
@@ -101,7 +101,7 @@ public Set<String> getSupportedAnnotationTypes() {
 }
 }}}
 
-Basic rule is to implement javax.annotation.processing.Processor interface in order to have valid annotation processor. Or better, you can extends javax.annotation.processing.AbstractProcessor which has very basic implementation of initialiation method (btw. here are annotations like @SupportedAnnotationTypes transformed to their method equivalents). Or even better, you can extend from sk.seges.sesam.core.pap.AbstractConfigurableProcessor, which has really complex possibilities like:
+Basic rule is to implement javax.annotation.processing.Processor interface in order to have valid annotation processor. Or better, you can extends javax.annotation.processing.!AbstractProcessor which has very basic implementation of initialiation method (btw. here are annotations like @!SupportedAnnotationTypes transformed to their method equivalents). Or even better, you can extend from sk.seges.sesam.core.pap.!AbstractConfigurableProcessor, which has really complex possibilities like:
  * loading the configuration properties dedicated to the processor (so developers can configure your annotation processors if you want),
  * better fillers implementation (with autoidentation - isn't it better when you can read generated code and it is idented correctly?)
  * much easier output creation process - this could be very helpful if you are new to JSR269 and want to create basic annotation processor without deep knowledge of the !DeclaredTypes, !TypeElements, !ElementVisitors, etc.
@@ -110,6 +110,7 @@ Then process method implementation - this is the main method where your implemen
 Because Java is clever :-)
 
 [http://acris.googlecode.com/svn/wiki/images/pap_eclipse_output.png]
+
 (Processor is invoked twice)
 
  * first round is executed when compiler parses the sources. Then it collects annotations from the source files, determine the available processors and the executes the processors that are supporting the approriate annotation
@@ -125,7 +126,7 @@ Set of elements which comes as first parameter holds all the java classes which 
 
 If you want to use maven, see the [AnnotationProcessing Maven integration] section.
 
-If you want to use eclipse, see the [AnnotationProcessing_Eclipse Eclipse integration section].
+If you want to use eclipse, see the [AnnotationProcessing_Eclipse Eclipse integration] section.
 
 ==Processors possiblities==
 
@@ -142,13 +143,13 @@ A processor can’t
 ==API you should know==
 
 Firstly you have understand basics behind the java language API:
- * Type in the java programming language is represented by interface  javax.lang.model.type.TypeMirror and can be primitive type, declared type (class and interface type), array type, type variable, and the null type. Upon this concrete type specific implementation exists, for example !PrimitiveType, !DeclaredType, !ArrayType, etc.
-Types should by compared using TypeMirror.getKind().equals(TypeKind) - do not use instanceof methods for checking the concrete implementation
-For types manipulation you can use util class javax.lang.model.util.Types, which can be used in order to determine whether one type is assignable to another type, objects unboxing, or boxing the primitive types, etc. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getTypeUtils()
+ * Type in the java programming language is represented by interface  javax.lang.model.type.!TypeMirror and can be primitive type, declared type (class and interface type), array type, type variable, and the null type. Upon this concrete type specific implementation exists, for example !PrimitiveType, !DeclaredType, !ArrayType, etc.
+Types should by compared using !TypeMirror.getKind().equals(!TypeKind) - do not use instanceof methods for checking the concrete implementation
+For types manipulation you can use util class javax.lang.model.util.Types, which can be used in order to determine whether one type is assignable to another type, objects unboxing, or boxing the primitive types, etc. Instance of this interface can be obtained by javax.annotation.processing.!ProcessingEnvironment.getTypeUtils()
 
- * Piece of code is defined by javax.lang.model.element.Element and it must not necessarily be the class or interface. It can be a method for example (javax.lang.model.element.ExecutableElement). Analogous to the Type, elements should be compared using !ElementKind and for manipulation is javax.lang.model.util.Elements interface used. Instance of this interface can be obtained by javax.annotation.processing.ProcessingEnvironment.getElementUtils()
+ * Piece of code is defined by javax.lang.model.element.Element and it must not necessarily be the class or interface. It can be a method for example (javax.lang.model.element.!ExecutableElement). Analogous to the Type, elements should be compared using !ElementKind and for manipulation is javax.lang.model.util.Elements interface used. Instance of this interface can be obtained by javax.annotation.processing.!ProcessingEnvironment.getElementUtils()
 
- * More advanced selectors are implemented in javax.lang.model.util.ElementFilter and are used to select just the elements of interest.
+ * More advanced selectors are implemented in javax.lang.model.util.!ElementFilter and are used to select just the elements of interest.
 
 {{{
 import static javax.lang.model.util.ElementFilter.*;
