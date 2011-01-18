@@ -80,12 +80,14 @@
 		<spring.version>3.0.4.RELEASE</spring.version>
 		<spring-security.version>2.0.4</spring-security.version>
 
-		<hibernate.version>3.5.1-Final</hibernate.version>
-		<hibernate-entitymanager.version>3.5.1-Final</hibernate-entitymanager.version>
-		<hibernate-annotations.version>3.5.1-Final</hibernate-annotations.version>
+		<hibernate.version>3.6.0.Final</hibernate.version>
+		<hibernate-entitymanager.version>3.6.0.Final</hibernate-entitymanager.version>
+		<!-- since 3.6.0 it was merged into core -->
+		<hibernate-annotations.version>3.5.6-Final</hibernate-annotations.version>
 		<hibernate-commons-annotations.version>3.2.0.Final</hibernate-commons-annotations.version>
-		<hibernate-validator.version>4.0.2.GA</hibernate-validator.version>
-	
+		<hibernate-validator.version>4.1.0.Final</hibernate-validator.version>
+		<hibernate-search.version>3.3.0.Final</hibernate-search.version>
+
 		<postgresql.version>8.4-701.jdbc4</postgresql.version>
 		<derby.version>10.4.2.0</derby.version>
 		<hsqldb.version>1.8.0.7</hsqldb.version>
@@ -307,7 +309,26 @@
 				<artifactId>hibernate-validator</artifactId>
 				<version>${hibernate-validator.version}</version>
 			</dependency>
-			
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-search</artifactId>
+				<version>${hibernate-search.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.hibernate</groupId>
+						<artifactId>ejb3-persistence</artifactId>
+					</exclusion>
+				</exclusions>				
+			</dependency>
+		
 			<!-- Databases -->
 			
 			<!-- PostgreSQL -->
