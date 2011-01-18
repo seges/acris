@@ -50,6 +50,7 @@
 		<module>../corpis-test</module>
 		<module>../corpis-dao-api</module>
 		<module>../corpis-dao-impl</module>
+		<module>../corpis-domain-api</module>
 		<module>../corpis-domain-generator-import</module>
 		<module>../corpis-domain-generator</module>
 		<module>../corpis-import-export-api</module>
