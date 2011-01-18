@@ -83,8 +83,8 @@ public class JpaParticipant extends ParticipantDto {
 
 	@OneToOne(targetEntity = JpaCustomerBase.class)
 	@Override
-	public JpaCustomerBase getCustomer() {
-		return (JpaCustomerBase) super.getCustomer();
+	public CustomerBaseData getCustomer() {
+		return super.getCustomer();
 	}
 ...
 }
@@ -97,8 +97,8 @@ public class JpaCustomerBase extends CustomerBaseDto<Integer> {
     ...
 	@AttributeOverride(name = JpaCompanyName.COMPANY_NAME, column = @Column(unique = true, nullable = true))
 	@Embedded
-	public JpaCompanyName getCompany() {
-		return (JpaCompanyName) company;
+	public CompanyNameData getCompany() {
+		return super.getCompany();
 	}
     ...
 }
@@ -112,11 +112,13 @@ public class JpaCustomerBase extends CustomerBaseDto<Integer> {
 
 {{{
 @Entity
-public class HibernateCustomerBase extends JpaCustomerBase {
+public class HibernateCustomerBase extends CustomerBaseDto {
     ...
+	@AttributeOverride(name = JpaCompanyName.COMPANY_NAME, column = @Column(unique = true, nullable = true))
+	@Embedded
 	@Override
-	public HibernateCompanyName getCompany() {
-		return (HibernateCompanyName) super.getCompany();
+	public CompanyNameData getCompany() {
+		return super.getCompany();
 	}
     ...
 }
@@ -125,11 +127,11 @@ public class HibernateCustomerBase extends JpaCustomerBase {
 
 {{{
 @Embeddable
-public class Address extends JpaAddress {
+public class Address extends AddressDto {
     ...
 	@ManyToOne(targetEntity = HibernateCountry.class)
-	public HibernateCountry getCountry() {
-		return (Country) country;
+	public CountryDto getCountry() {
+		return super.getCountry();
 	}
     ...
 }
