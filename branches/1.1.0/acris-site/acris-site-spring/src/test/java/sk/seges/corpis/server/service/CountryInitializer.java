@@ -11,7 +11,7 @@ import sk.seges.corpis.shared.service.ICountryService;
 
 public class CountryInitializer {
 
-	private ICountryDao<CountryData> countryDao;
+	private ICountryDao<CountryData<?>> countryDao;
 
 	private ICountryService countryService;
 	

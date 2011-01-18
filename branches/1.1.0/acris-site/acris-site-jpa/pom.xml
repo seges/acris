@@ -42,7 +42,7 @@
 			<artifactId>acris-site-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
+		
 		<!-- JPA dependencies -->
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>

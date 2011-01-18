@@ -74,6 +74,16 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-domain-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-domain-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>		
+		
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>

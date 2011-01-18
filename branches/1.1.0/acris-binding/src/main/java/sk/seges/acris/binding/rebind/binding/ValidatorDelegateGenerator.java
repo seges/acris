@@ -3,21 +3,17 @@
  */
 package sk.seges.acris.binding.rebind.binding;
 
-import java.beans.Introspector;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
 
-import sk.seges.acris.binding.client.init.BeanWrapperIntrospector;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.acris.core.rebind.AbstractGenerator;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -36,7 +32,7 @@ import com.google.gwt.validation.rebind.ValidatorGenerator;
  * chain if necessary (what is the case when there is e.g. bean wrapper
  * generator on top of domain object and you want to do a validation also).
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class ValidatorDelegateGenerator extends AbstractGenerator {
 	private static final String InvalidConstraintSN = InvalidConstraint.class.getSimpleName();

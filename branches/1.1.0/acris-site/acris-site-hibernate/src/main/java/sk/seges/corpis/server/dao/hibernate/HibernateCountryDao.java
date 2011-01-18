@@ -6,7 +6,7 @@ import sk.seges.corpis.shared.domain.api.CountryData;
 import sk.seges.corpis.shared.domain.jpa.JpaCountry;
 
 
-public class HibernateCountryDao extends AbstractHibernateCRUD<CountryData> implements ICountryDao<CountryData> {
+public class HibernateCountryDao extends AbstractHibernateCRUD<CountryData<?>> implements ICountryDao<CountryData<?>> {
 
 	public HibernateCountryDao() {
 		super(JpaCountry.class);

@@ -1,12 +1,5 @@
 package sk.seges.corpis.server.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import sk.seges.corpis.shared.domain.api.CountryData;
-import sk.seges.corpis.shared.domain.dto.CountryDTO;
 
 
 public enum Countries {
