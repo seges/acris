@@ -1,0 +1,9 @@
+<module>
+    <!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name='sk.seges.acris.Common' />
+<!--    <inherits name='sk.seges.acris.Security' />-->
+    
+    <source path='domain' />
+    <source path='service' />
+    
+</module>

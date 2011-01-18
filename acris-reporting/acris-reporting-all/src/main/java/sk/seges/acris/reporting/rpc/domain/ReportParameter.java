@@ -22,8 +22,6 @@ import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 public class ReportParameter extends LightEntity implements ReportParameterData, Comparable<ReportParameter> {
 
 	private static final long serialVersionUID = 6868805794198135658L;
-	public static final String ORDER_NUMBER = "orderNumber";
-
 	@Id
 	@GeneratedValue(generator="report_param_id_seq")
 	@Column(name = "parameter_id")

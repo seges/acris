@@ -17,6 +17,7 @@ import javax.persistence.SequenceGenerator;
 
 import net.sf.gilead.pojo.java5.LightEntity;
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
+import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
 /**
  * domain object for store basic information about report and link to report from jasperserver
@@ -30,11 +31,8 @@ import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 public class ReportDescription extends LightEntity implements ReportDescriptionData {
 
 	private static final long serialVersionUID = 3793554325796093693L;
-	public static final String ID_ATTR = "id";
-	public static final String NAME_ATTR = "name";
 	public static final String DESCRIPTION_ATTR = "description";
 	public static final String OWNER_ATTR = "owner";
-	public static final String CREATION_DATE_ATTR = "creationDate";
 	public static final String PARAMETERS_ATTR = "parametersList";
 
 	@Id
@@ -47,8 +45,8 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 	private String reportUrl;
 	
 	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY)
-	@OrderBy(ReportParameter.ORDER_NUMBER)
-	private List<ReportParameter> parametersList = null;
+	@OrderBy(ReportParameterData.ORDER_NUMBER)
+	private List<ReportParameterData> parametersList = null;
 
 	@Override
 	public Long getId() {
@@ -91,11 +89,11 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 		return reportUrl;
 	}
 	@Override
-	public void setParametersList(List<ReportParameter> parametersList) {
+	public void setParametersList(List<ReportParameterData> parametersList) {
 		this.parametersList = parametersList;
 	}
 	@Override
-	public List<ReportParameter> getParametersList() {
+	public List<ReportParameterData> getParametersList() {
 		return parametersList;
 	}
 	

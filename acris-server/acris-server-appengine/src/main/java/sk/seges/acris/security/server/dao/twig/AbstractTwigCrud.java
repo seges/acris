@@ -145,6 +145,7 @@ public abstract class AbstractTwigCrud<T extends IMutableDomainObject<Long>> imp
 
 	@Override
 	public void remove(T entity) {
+		datastore.associate(entity);
 		datastore.delete(entity);
 	}
 
