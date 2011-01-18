@@ -39,7 +39,7 @@ public class OpenIDShowcase implements EntryPoint {
 
 		boolean rememberMeAware = true;
 
-		String redirectUrl = GWT.getModuleBaseURL() + "Redirect.html";
+		String redirectUrl = "/sk.seges.acris.demo.Reporting/Reporting.html"; //GWT.getModuleBaseURL() + "Redirect.html";
 
 		OpenIDLoginDisplay display = GWT.create(ShowcaseView.class);
 

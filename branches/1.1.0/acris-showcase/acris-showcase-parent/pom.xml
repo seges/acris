@@ -49,6 +49,7 @@
 		<jetty.version>6.1.24</jetty.version>
 		<commons-codec.version>1.4</commons-codec.version>
 		<asm.version>3.1</asm.version>
+		<cglib.version>2.2</cglib.version>
 		<dozer.version>5.2.2</dozer.version>
 	</properties>
 
@@ -82,6 +83,7 @@
 		<module>../acris-showcase-generator</module>
 		<module>../acris-showcase-json</module>
 		<!--module>../acris-showcase-mvp</module-->
+		<module>../acris-showcase-reporting</module>
 		<module>../acris-showcase-recorder</module>
 		<module>../acris-showcase-openid</module>
 		<module>../acris-showcase-security</module>
@@ -205,6 +207,17 @@
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-binding</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>acris-showcase-reporting</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>acris-showcase-reporting</artifactId>
 				<classifier>sources</classifier>
 				<version>${pom.version}</version>
 			</dependency>
@@ -455,6 +468,12 @@
 				<version>${javamail.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>${cglib.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>asm</groupId>
 				<artifactId>asm</artifactId>

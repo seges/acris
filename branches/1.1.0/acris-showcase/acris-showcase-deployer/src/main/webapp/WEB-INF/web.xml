@@ -12,6 +12,29 @@
 		<url-pattern>/svnhook</url-pattern>
 	</servlet-mapping>
 
+	<context-param>
+		<param-name>contextClass</param-name>
+		<param-value>
+          org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+      </param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>sk.seges.acris.reporting.server.configuration.GWTUrlMappingConfiguration</param-value>
+	</context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+	<listener>
+	<!-- support for spring request scope -->
+          <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+   </listener>
+	<servlet-mapping>
+		<servlet-name>service</servlet-name>
+		<url-pattern>/sk.seges.acris.demo.Reporting/showcase-service/*</url-pattern>
+	</servlet-mapping>
+
+
 	<filter>
 		<filter-name>SessionFilter</filter-name>
 		<filter-class>sk.seges.acris.security.server.core.SessionRemoteServiceFilter</filter-class>
@@ -26,9 +49,28 @@
 		<listener-class>sk.seges.acris.security.server.core.SessionHandlerListener</listener-class>
 	</listener>
 
+<!--	<servlet>-->
+<!--		<servlet-name>service</servlet-name>-->
+<!--		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>-->
+<!--		<load-on-startup>1</load-on-startup>-->
+<!--	</servlet>-->
 	<servlet>
 		<servlet-name>service</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<init-param>
+          <param-name>contextClass</param-name>
+          <param-value>
+              org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+          </param-value>
+      </init-param>
+      <!-- Again, config locations must consist of one or more comma- or space-delimited
+           and fully-qualified @Configuration classes -->
+      <init-param>
+          <param-name>contextConfigLocation</param-name>
+          <param-value>sk.seges.acris.reporting.server.configuration.EmptyConfiguration</param-value>
+      </init-param>		
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
