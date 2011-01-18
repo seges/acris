@@ -102,7 +102,7 @@
 			For JPA use org.hibernate:ejb3-persistence.
 		-->
 		<jpa.version>1.0.2.GA</jpa.version>
-		<jpa-2.0.version>1.0.0-CR-1</jpa-2.0.version>
+		<jpa-2.0.version>1.0.0.Final</jpa-2.0.version>
 		<validation-api.version>1.0.0.GA</validation-api.version>
 
 		<ehcache.version>1.5.0</ehcache.version>
