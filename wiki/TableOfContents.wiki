@@ -41,6 +41,7 @@
     * [CodeGenerationPlatform Generate application skelet]
       * [AnnotationProcessing Annotation processing maven integration]
       * [AnnotationProcessing_Eclipse Annotation processing eclipse integration]
+    * [PortableObjects Writing portable application]
   * App engine integration
     * [AppEngineDatanucleus Datanucleus integration - JDO/JPA with maven]
     * [AppEngineSpring Spring with appengine]
