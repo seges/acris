@@ -130,7 +130,7 @@ public class HibernateCustomerBase extends CustomerBaseDto {
 public class Address extends AddressDto {
     ...
 	@ManyToOne(targetEntity = HibernateCountry.class)
-	public CountryDto getCountry() {
+	public CountryData getCountry() {
 		return super.getCountry();
 	}
     ...
