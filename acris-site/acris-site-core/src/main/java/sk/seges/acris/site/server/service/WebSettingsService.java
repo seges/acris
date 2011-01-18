@@ -7,12 +7,12 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import sk.seges.acris.domain.shared.domain.api.HasWebIdBeanWrapper;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData.MetaData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 import sk.seges.corpis.shared.domain.api.CountryData;
+import sk.seges.corpis.shared.domain.api.HasWebId;
 import sk.seges.corpis.shared.service.ICountryService;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
@@ -51,7 +51,8 @@ public class WebSettingsService implements IWebSettingsService {
 	@Override
 	public WebSettingsData getWebSettings(String webId) {
 		Page page = new Page(0, 1);
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HasWebIdBeanWrapper.WEB_ID);
+		// TODO: switch to @BeanWrapper
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HasWebId.WEB_ID);
 		eq.setValue(webId);
 		page.setFilterable(eq);
 		List<WebSettingsData> result = webSettingsDao.findAll(page).getResult();

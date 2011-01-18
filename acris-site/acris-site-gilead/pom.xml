@@ -84,15 +84,15 @@
 		</dependency>
 
 		<!-- Acris dependencies -->
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-core</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>sk.seges.acris</groupId>-->
+<!--			<artifactId>acris-site-core</artifactId>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>sk.seges.acris</groupId>-->
+<!--			<artifactId>acris-site-core</artifactId>-->
+<!--			<classifier>sources</classifier>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-site-jpa</artifactId>

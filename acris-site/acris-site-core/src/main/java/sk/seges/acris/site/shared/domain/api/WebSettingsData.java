@@ -5,9 +5,9 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
-import sk.seges.acris.domain.shared.domain.api.HasLanguage;
-import sk.seges.acris.domain.shared.domain.api.HasWebId;
 import sk.seges.corpis.shared.domain.api.CountryData;
+import sk.seges.corpis.shared.domain.api.HasLanguage;
+import sk.seges.corpis.shared.domain.api.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 

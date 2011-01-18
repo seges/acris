@@ -140,7 +140,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		AsyncCallback<String> stringCallback = null;
 		AsyncCallback<ClientSession> clientCallback = null;
 
-		if (redirectUrl != null) {
+		if (redirectUrl != null && !redirectUrl.isEmpty()) {
 			stringCallback = new SecuredAsyncCallback<String>() {
 
 				@Override
@@ -344,7 +344,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 
 	@SuppressWarnings("unchecked")
 	protected void doLogin(LoginToken token, AsyncCallback<?> callback) {
-		if (redirectUrl != null) {
+		if (redirectUrl != null && !redirectUrl.isEmpty()) {
 			broadcaster.authenticate(token, (AsyncCallback<String>) callback);
 		} else {
 			broadcaster.login(token, (AsyncCallback<ClientSession>) callback);
@@ -369,7 +369,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 
 		unbind();
 
-		if (redirectUrl != null) {
+		if (redirectUrl != null && !redirectUrl.isEmpty()) {
 			String query = "";
 			if (GWT.isProdMode()) {
 				query = "?" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result.getSessionId();

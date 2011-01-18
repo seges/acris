@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.1.0</version>
+		<version>1.1.1-SNAPSHOT</version>
 
 	</parent>
 
@@ -77,11 +77,10 @@
 	<properties>
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
-		<corpis-os.version>1.1.0</corpis-os.version>
+		<corpis-os.version>1.1.1-SNAPSHOT</corpis-os.version>
 		
-		<sesam-os.version>1.1.0</sesam-os.version>
+		<sesam-os.version>1.1.1-SNAPSHOT</sesam-os.version>
 
-		<jpa-2.0-api.version>1.0.0-CR-1</jpa-2.0-api.version>
 		<jasper.version>3.7.3</jasper.version>
 		
 		<jasperserver.version>3.7.0</jasperserver.version>
@@ -106,6 +105,17 @@
 				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-dao-api</artifactId>
 				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-api</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-api</artifactId>
+				<version>${corpis-os.version}</version>
+				<classifier>sources</classifier>
 			</dependency>
 
 			<!-- Sesam dependencies -->
@@ -385,16 +395,11 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.hibernate.javax.persistence</groupId>
-				<artifactId>hibernate-jpa-2.0-api</artifactId>
-				<version>${jpa-2.0-api.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>net.sf.jasperreports</groupId>	
+				<groupId>net.sf.jasperreports</groupId>
 				<artifactId>jasperreports</artifactId>
 				<version>${jasper.version}</version>
 			</dependency>
+
 
 			<dependency>
 				<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
@@ -403,7 +408,6 @@
 			</dependency>
 
 			<dependency>
-
 				<groupId>com.jaspersoft.jasperserver</groupId>
 				<artifactId>jasperserver-ireport-plugin</artifactId>
 				<version>${jasperserver.version}</version>
@@ -422,11 +426,17 @@
 			</dependency>
 
 
+
 			<!-- OpenID4Java consumer -->
+
 			<dependency>
+
 		        	<groupId>org.openid4java</groupId>
+
 		        	<artifactId>openid4java-consumer</artifactId>
-		        	<version>${openid4java.version}</version> 
+
+		        	<version>${openid4java.version}</version>
+ 
 		       	</dependency>
 			<dependency>
 		        	<groupId>org.openid4java</groupId>

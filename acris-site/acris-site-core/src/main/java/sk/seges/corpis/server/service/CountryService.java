@@ -5,7 +5,7 @@ import java.util.List;
 
 import sk.seges.corpis.server.dao.ICountryDao;
 import sk.seges.corpis.shared.domain.api.CountryData;
-import sk.seges.corpis.shared.domain.api.CountryDataBeanWrapper;
+import sk.seges.corpis.shared.domain.dto.CountryDto;
 import sk.seges.corpis.shared.service.ICountryService;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
@@ -26,10 +26,12 @@ public class CountryService implements ICountryService {
 	@Override
 	public CountryData findByCountry(String country) {
 		Page page = new Page(0, 1);
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(CountryDataBeanWrapper.COUNTRY);
+		
+		// TODO: switch to @BeanWrapper
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(CountryData.COUNTRY);
 		eq.setValue(country);
 		page.setFilterable(eq);
-		List<CountryData> result = countryDao.findAll(page).getResult();
+		List<CountryData<?>> result = countryDao.findAll(page).getResult();
 		if (result.size() == 0) {
 			return null;
 		}

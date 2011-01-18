@@ -113,8 +113,8 @@ public class BeanTableSpecCreator {
 			};
 		}
 
-		beanType = ((com.google.gwt.core.ext.typeinfo.JParameterizedType) classType.getImplementedInterfaces()[0])
-				.getTypeArgs()[0];
+		beanType = ((com.google.gwt.core.ext.typeinfo.JParameterizedType) classType
+				.getImplementedInterfaces()[0]).getTypeArgs()[0];
 		beanTypeName = beanType.getQualifiedSourceName();
 //		loaderParams = classType.getAnnotation(SpecLoader.class);
 
@@ -137,8 +137,6 @@ public class BeanTableSpecCreator {
 		}
 		return getFullReturnName();
 	}
-	
-	
 
 	private JMethod[] retrieveMethodsFromBeanIfNeeded(JMethod[] methods) {
 		if (methods == null || methods.length == 0) {
@@ -148,7 +146,8 @@ public class BeanTableSpecCreator {
 			JTypeParameter[] jtypeParameters = new JTypeParameter[0];
 			for (JField field : beanType.getFields()) {
 				if (!field.isTransient() && !field.isStatic()) {
-					JMethod method = JMethodInstancer.instanceMethod(dummy, field.getName(), annotations, jtypeParameters);
+					JMethod method = JMethodInstancer.instanceMethod(dummy, field.getName(), annotations,
+							jtypeParameters);
 					listOfMethods.add(method);
 				}
 			}
@@ -205,13 +204,16 @@ public class BeanTableSpecCreator {
 	}
 
 	private String getDynamicTranslatorInitialization(Class<? extends ConstantsWithLookup>[] messagesClasses) {
-		if (messagesClasses == null || messagesClasses.length < 1 || (messagesClasses.length == 1)
-				&& (ConstantsWithLookup.class.getCanonicalName().equals(messagesClasses[0].getCanonicalName())))
+		if (messagesClasses == null
+				|| messagesClasses.length < 1
+				|| (messagesClasses.length == 1)
+				&& (ConstantsWithLookup.class.getCanonicalName()
+						.equals(messagesClasses[0].getCanonicalName())))
 			return null;
 		StringBuffer classes = null;
 		for (Class<? extends ConstantsWithLookup> messagesClass : messagesClasses) {
-			String classConstructor = "(" + messagesClass.getName() + ") GWT.create(" + messagesClass.getName()
-					+ ".class)";
+			String classConstructor = "(" + messagesClass.getName() + ") GWT.create("
+					+ messagesClass.getName() + ".class)";
 			if (classes == null) {
 				classes = new StringBuffer(classConstructor);
 			} else {
@@ -291,14 +293,18 @@ public class BeanTableSpecCreator {
 		String propertyField = null;
 		JType fieldType = null;
 		boolean hasAssociation = field.contains(DOT_STRING);
-		if (hasAssociation) {
-			String directField = field.substring(0, field.indexOf(DOT_STRING));
-			propertyField = field.substring(field.indexOf(DOT_STRING) + 1);
-			field = directField;
+		try {
+			if (hasAssociation) {
+				String directField = field.substring(0, field.indexOf(DOT_STRING));
+				propertyField = field.substring(field.indexOf(DOT_STRING) + 1);
+				field = directField;
 
-			fieldType = RebindUtils.getDeclaredFieldType(beanType, specColumn.field());
-		} else {
-			fieldType = RebindUtils.getDeclaredField(beanType, field).getType();
+				fieldType = RebindUtils.getDeclaredFieldType(beanType, specColumn.field());
+			} else {
+				fieldType = RebindUtils.getDeclaredFieldType(beanType, field);
+			}
+		} catch (NotFoundException e) {
+			throw new RuntimeException("Unable to retrieve type for field = " + field, e);
 		}
 
 		JMethod getter = null;
@@ -315,8 +321,8 @@ public class BeanTableSpecCreator {
 
 		if (dynamicTranslatorInit != null && dynamicTranslatorInit.length() > 1)
 			source.println("	" + dynamicTranslatorInit);
-		source.println("columnDefinition = new AbstractColumnDefinition<" + beanTypeName + ", " + propertyValueType
-				+ ">() {");
+		source.println("columnDefinition = new AbstractColumnDefinition<" + beanTypeName + ", "
+				+ propertyValueType + ">() {");
 		source.println("	@Override");
 		source.println("	public " + propertyValueType + " getCellValue(" + beanTypeName + " rowValue) {");
 		if (!hasAssociation) {
@@ -324,7 +330,8 @@ public class BeanTableSpecCreator {
 		} else {
 			String propertyFieldGetter = null;
 			try {
-				propertyFieldGetter = RebindUtils.getGetterForMoreDotsInBeanTable(beanType, specColumn.field());
+				propertyFieldGetter = RebindUtils.getGetterForMoreDotsInBeanTable(beanType, specColumn
+						.field());
 			} catch (NotFoundException e) {
 				throw new RuntimeException("Unable to retrieve getter for field = " + field, e);
 			}
@@ -344,8 +351,9 @@ public class BeanTableSpecCreator {
 		source.println();
 		source.println("};");
 
-		source.println("columnDefinition.setColumnProperty(DomainObjectProperty.TYPE, new DomainObjectProperty(\""
-				+ field + (propertyField == null ? "" : "." + propertyField) + "\"));");
+		source
+				.println("columnDefinition.setColumnProperty(DomainObjectProperty.TYPE, new DomainObjectProperty(\""
+						+ field + (propertyField == null ? "" : "." + propertyField) + "\"));");
 
 		if (specColumn != null) {
 			if (specColumn.filterWidgetType() != null && !specColumn.filterWidgetType().equals(Widget.class)) {
@@ -356,32 +364,38 @@ public class BeanTableSpecCreator {
 				source.println("filterable = Filter." + filterOperation + "(\"" + field
 						+ (propertyField == null ? "" : "." + propertyField) + "\");");
 				if (specColumn.filterWidgetType().equals(EnumListBoxWithValue.class)) {
-					String enumValues = Arrays.class.getName() + ".asList(" + fieldType.getQualifiedSourceName()
-							+ ".values())";
+					String enumValues = Arrays.class.getName() + ".asList("
+							+ fieldType.getQualifiedSourceName() + ".values())";
 					if (isTranslatable) {
 						source.println(Map.class.getName() + "<" + fieldType.getQualifiedSourceName()
 								+ ", String> enumMap = new " + HashMap.class.getName() + "<"
 								+ fieldType.getQualifiedSourceName() + ", String>();");
-						source.println("for(" + fieldType.getQualifiedSourceName() + " enum1 : " + enumValues + ") {");
+						source.println("for(" + fieldType.getQualifiedSourceName() + " enum1 : " + enumValues
+								+ ") {");
 						source.indentln("enumMap.put(enum1, dynamicTranslator.translate(enum1.name()));");
 						source.println("}");
 						enumValues = "enumMap";
 					}
-					source.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterEnumProperty("
-							+ specColumn.filterWidgetType().getName() + ".class, filterable, "
-							+ fieldType.getQualifiedSourceName() + ".class, " + enumValues + "));");
+					source
+							.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterEnumProperty("
+									+ specColumn.filterWidgetType().getName()
+									+ ".class, filterable, "
+									+ fieldType.getQualifiedSourceName() + ".class, " + enumValues + "));");
 
 				} else {
-					source.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterProperty("
-							+ specColumn.filterWidgetType().getName() + ".class, filterable));");
+					source
+							.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterProperty("
+									+ specColumn.filterWidgetType().getName() + ".class, filterable));");
 				}
 			}
 			if (specColumn.editor() != null && !specColumn.editor().equals(CellEditor.class)) {
-				source.println("columnDefinition.setCellEditor(new " + specColumn.editor().getCanonicalName() + "());");
+				source.println("columnDefinition.setCellEditor(new " + specColumn.editor().getCanonicalName()
+						+ "());");
 			}
-			
+
 			if (specColumn.renderer() != null && !specColumn.renderer().equals(CellRenderer.class)) {
-				source.println("columnDefinition.setCellRenderer(new " + specColumn.renderer().getCanonicalName() + "());");
+				source.println("columnDefinition.setCellRenderer(new "
+						+ specColumn.renderer().getCanonicalName() + "());");
 			}
 		}
 
@@ -433,8 +447,8 @@ public class BeanTableSpecCreator {
 		PrintWriter printWriter = context.tryCreate(logger, packageName, simpleName);
 		if (logger.isLoggable(Type.DEBUG)) {
 			logger.log(Type.DEBUG, "Creating source writer for " + beanTypeName + ", onlySpec = " + onlySpec
-					+ ", classType = " + classType + ", packageName = " + packageName + ", simpleName = " + simpleName
-					+ ", printWriter = " + printWriter);
+					+ ", classType = " + classType + ", packageName = " + packageName + ", simpleName = "
+					+ simpleName + ", printWriter = " + printWriter);
 		}
 		if (printWriter == null) {
 			return null;

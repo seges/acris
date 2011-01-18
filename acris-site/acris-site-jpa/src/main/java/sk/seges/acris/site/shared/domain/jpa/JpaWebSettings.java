@@ -12,9 +12,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.acris.domain.shared.domain.api.DBConstraints;
 import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
 import sk.seges.corpis.shared.domain.api.CountryData;
+import sk.seges.corpis.shared.domain.api.DBConstraints;
 import sk.seges.corpis.shared.domain.jpa.JpaCountry;
 
 @Entity
