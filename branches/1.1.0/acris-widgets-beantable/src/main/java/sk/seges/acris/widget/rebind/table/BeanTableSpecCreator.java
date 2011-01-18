@@ -15,9 +15,10 @@ import sk.seges.acris.callbacks.client.CallbackAdapter;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
 import sk.seges.acris.widget.client.i18n.DynamicTranslator;
+import sk.seges.acris.widget.client.loader.FreeServiceAwareLoader;
 import sk.seges.acris.widget.client.table.BeanTable;
+import sk.seges.acris.widget.client.table.FreeSpecLoader;
 import sk.seges.acris.widget.client.table.SpecColumn;
-import sk.seges.acris.widget.client.table.SpecLoader;
 import sk.seges.acris.widget.client.table.SpecParams;
 import sk.seges.acris.widget.client.table.BeanTable.DomainObjectProperty;
 import sk.seges.acris.widget.client.table.BeanTable.FilterEnumProperty;
@@ -45,6 +46,7 @@ import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.CellRenderer;
 import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.i18n.client.ConstantsWithLookup;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -62,7 +64,7 @@ public class BeanTableSpecCreator {
 	private String typeName;
 
 	private JClassType classType;
-	private SpecLoader loaderParams;
+//	private SpecLoader loaderParams;
 	private SpecParams specParams;
 	private JClassType beanType;
 	private String beanTypeName;
@@ -74,6 +76,14 @@ public class BeanTableSpecCreator {
 		this.typeName = typeName;
 	}
 
+	protected JClassType getClassType() {
+		return this.classType;
+	}
+	
+	protected String getBeanTypeName() {
+		return this.beanTypeName;
+	}
+	
 	public String createSpec() {
 		try {
 			classType = typeOracle.getType(typeName);
@@ -106,7 +116,7 @@ public class BeanTableSpecCreator {
 		beanType = ((com.google.gwt.core.ext.typeinfo.JParameterizedType) classType.getImplementedInterfaces()[0])
 				.getTypeArgs()[0];
 		beanTypeName = beanType.getQualifiedSourceName();
-		loaderParams = classType.getAnnotation(SpecLoader.class);
+//		loaderParams = classType.getAnnotation(SpecLoader.class);
 
 		SourceWriter source = getSourceWriter(classType, specParams.onlySpec());
 
@@ -127,6 +137,8 @@ public class BeanTableSpecCreator {
 		}
 		return getFullReturnName();
 	}
+	
+	
 
 	private JMethod[] retrieveMethodsFromBeanIfNeeded(JMethod[] methods) {
 		if (methods == null || methods.length == 0) {
@@ -229,16 +241,29 @@ public class BeanTableSpecCreator {
 		}
 	}
 
-	private void putLoaderInitialization(SourceWriter source, String affectedBean) {
+	/**
+	 * override this, if special ServiceAwareLoader is needed
+	 * @param source
+	 * @param affectedBean
+	 */
+	protected void putLoaderInitialization(SourceWriter source, String affectedBean) {
+		FreeSpecLoader loaderParams = classType.getAnnotation(FreeSpecLoader.class);
 		if (loaderParams != null) {
 			String loaderClassName = loaderParams.serviceClass().getName();
 
-			source.println("	" + affectedBean + "setLoader(new ServiceAwareLoader<List<" + beanTypeName + ">, "
-					+ loaderClassName + ">(\"" + loaderParams.serviceChocolate() + "\") {");
+			source.println("	" + affectedBean + "setLoader(new "+FreeServiceAwareLoader.class.getCanonicalName()+"<List<" + beanTypeName + ">, "
+					//+ loaderClassName + "Async>(\"" + loaderParams.serviceChocolate() + "\") {"); - acrisova
+					+ loaderClassName + "Async>() {"); //acris-os
 			source.println("		@Override");
-			source.println("		protected void load(" + loaderClassName + " service, Page page,");
+			source.println("		protected void load(" + loaderClassName + "Async service, Page page,");
 			source.println("				CallbackAdapter<PagedResult<List<" + beanTypeName + ">>> callback) {");
 			source.println("			service." + loaderParams.loaderMethodName() + "(page, callback);");
+			source.println("		}");
+			source.println("		@Override");
+			source.println("		protected "+ loaderClassName +"Async getService() {");
+			source.println("			" + loaderClassName + "Async service = GWT.create("+loaderClassName+".class);");
+			source.println("			(("+ServiceDefTarget.class.getCanonicalName()+")service).setServiceEntryPoint(\""+loaderParams.serviceEntryPoint()+"\");");
+			source.println("			return service;");
 			source.println("		}");
 			source.println("	});");
 			source.println();
@@ -382,9 +407,10 @@ public class BeanTableSpecCreator {
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, simpleName);
 
 		composer.addImport(List.class.getCanonicalName());
-		if (loaderParams != null) {
-			composer.addImport("sk.seges.acris.loader.ServiceAwareLoader");
-		}
+//		if (loaderParams != null) {
+//			//composer.addImport("sk.seges.acris.loader.ServiceAwareLoader");
+//			composer.addImport(FreeServiceAwareLoader.class.getCanonicalName());
+//		}
 		composer.addImport(DomainObjectProperty.class.getCanonicalName());
 		composer.addImport(CallbackAdapter.class.getCanonicalName());
 		composer.addImport(BeanTable.class.getCanonicalName());
