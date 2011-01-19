@@ -98,12 +98,23 @@
             				<name>DataNucleus Repository</name>
             				<url>http://www.datanucleus.org/downloads/maven2</url>
         			</repository>
-				<repositories>
-					<repository>
-						<id>twig</id>
-						<url>http://mvn.twig-persist.googlecode.com/hg</url>
-					</repository>
-				</repositories>
+				<repository>
+					<id>twig</id>
+					<url>http://mvn.twig-persist.googlecode.com/hg</url>
+				</repository>
+
+ 				<repository>
+          				<id>fornax-release</id>
+					<url>http://www.fornax-platform.org/archiva/repository/releases</url>
+        			</repository>
+ 				<repository>
+          				<id>fornax-snapshot</id>
+					<url>http://www.fornax-platform.org/archiva/repository/snapshots</url>
+        			</repository>
+ 				<repository>
+          				<id>fornax-migration-releases</id>
+					<url>https://fornax.itemis.de/nexus/content/repositories/migration-releases</url>
+        			</repository>
 			</repositories>
 
 			<pluginRepositories>
