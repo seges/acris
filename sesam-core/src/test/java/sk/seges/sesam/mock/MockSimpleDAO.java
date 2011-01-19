@@ -47,4 +47,10 @@ public class MockSimpleDAO implements IFinderDAO<Integer> {
 		return null;
 	}
 
+	@Override
+	public Integer findUnique(Page requestedPage) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
