@@ -176,7 +176,7 @@ public class ChainedFieldsTransformer implements ResultTransformer {
 		return resultInst;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public List transformList(List collection) {
 		return collection;
 	}

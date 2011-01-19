@@ -18,6 +18,8 @@
 				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-domain-generator-import</artifactId>
 				<scope>import</scope>
+				<type>pom</type>
+				<version>${corpis-os.version}</version>
 			</dependency>	
 	</dependencies>
 	

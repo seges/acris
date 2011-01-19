@@ -169,6 +169,14 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		return findPagedResultByCriteria(createCriteria(), requestedPage);
 	}
 
+	public T findUnique(Page requestedPage) {
+		 PagedResult<List<T>> resultList = findAll(requestedPage);
+		 if (resultList == null || resultList.getResult() == null || resultList.getResult().size() != 1) {
+			 return null;
+		 }
+		 return resultList.getResult().get(0);
+	}
+
 	public PagedResult<List<T>> findPagedResultByCriteria(DetachedCriteria criteria, Page requestedPage,
 			boolean cacheable) {
 		Integer totalCount = null;

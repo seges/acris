@@ -128,12 +128,13 @@
 				<artifactId>corpis-domain-generator</artifactId>
 				<version>${project.version}</version>
 			</dependency>					
-			<dependency>
+			<!--dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-domain-generator-import</artifactId>
 				<version>${project.version}</version>
 				<scope>import</scope>
-			</dependency>						
+				<type>pom</type>
+			</dependency-->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-test</artifactId>

@@ -15,7 +15,7 @@
 
 	<modules>
 		<module>corpis-dao-api-processor</module>
-		<module>corpis-hibernate-dao-processor</module>
+		<module>corpis-dao-implementation-processor</module>
 		<module>corpis-service-processor</module>
 	</modules>
 </project>
