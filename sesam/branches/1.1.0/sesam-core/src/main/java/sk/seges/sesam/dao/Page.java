@@ -94,8 +94,9 @@ public class Page implements Serializable {
 		return filterable;
 	}
 	
-	public void setFilterable(Criterion filterable) {
+	public Page setFilterable(Criterion filterable) {
 		this.filterable = filterable;
+		return this;
 	}
 
 	public List<String> getProjectables() {
