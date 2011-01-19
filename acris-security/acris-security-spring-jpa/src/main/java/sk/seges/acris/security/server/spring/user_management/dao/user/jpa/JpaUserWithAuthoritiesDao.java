@@ -83,4 +83,10 @@ public class JpaUserWithAuthoritiesDao implements IGenericUserDao<JpaUserWithAut
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public JpaUserWithAuthorities findUnique(Page requestedPage) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
