@@ -19,7 +19,7 @@
 				<artifactId>corpis-domain-generator-import</artifactId>
 				<scope>import</scope>
 				<type>pom</type>
-				<version>${corpis-os.version}</version>
+				<version>${project.version}</version>
 			</dependency>	
 	</dependencies>
 	
