@@ -344,10 +344,14 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 
 	@SuppressWarnings("unchecked")
 	protected void doLogin(LoginToken token, AsyncCallback<?> callback) {
-		if (redirectUrl != null && !redirectUrl.isEmpty()) {
-			broadcaster.authenticate(token, (AsyncCallback<String>) callback);
+		if (broadcaster != null) {
+			if (redirectUrl != null && !redirectUrl.isEmpty()) {
+				broadcaster.authenticate(token, (AsyncCallback<String>) callback);
+			} else {
+				broadcaster.login(token, (AsyncCallback<ClientSession>) callback);
+			}
 		} else {
-			broadcaster.login(token, (AsyncCallback<ClientSession>) callback);
+			callback.onFailure(new BroadcastingException("Broadcaster is null."));
 		}
 	}
 

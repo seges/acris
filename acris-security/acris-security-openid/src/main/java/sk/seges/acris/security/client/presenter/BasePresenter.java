@@ -3,6 +3,8 @@ package sk.seges.acris.security.client.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -25,9 +27,15 @@ public abstract class BasePresenter<D extends BaseDisplay> extends SimpleEventBu
 	 * @param parent
 	 */
 	public void bind(HasWidgets parent) {
-		Widget widget = display.asWidget();
+		final Widget widget = display.asWidget();
 		if (widget instanceof DialogBox) {
-			((DialogBox) widget).center();
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+				@Override
+				public void execute() {
+					((DialogBox) widget).center();
+				}
+			});
 		} else {
 			parent.add(display.asWidget());
 		}

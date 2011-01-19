@@ -17,6 +17,7 @@ import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerServiceAsync;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
 import sk.seges.acris.security.shared.util.LoginConstants;
@@ -26,7 +27,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -180,27 +180,28 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+				// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
 				display.showMessage("Authentication failed, exception: " + caught.getLocalizedMessage());
 			}
-			
+
 			@Override
 			public void onSuccess(OpenIDUser result) {
 				if (result != null) {
-					Cookies.setCookie(LoginConstants.OPENID_COOKIE_NAME, identifier);
+					// Cookies.setCookie(LoginConstants.OPENID_COOKIE_NAME,
+					// identifier);
 					String url = result.getRedirectUrl();
 					url += "&openid.ns.ui=" + URL.encodeQueryString("http://specs.openid.net/extensions/ui/1.0");
 					url += "&openid.ui.mode=" + URL.encodeQueryString("popup");
 					Window.open(url, "openIDPopup", "width = 500," + "height = 500," + "left = 200," + "top = 200,"
 							+ "resizable = yes," + "scrollbars = no," + "status = no," + "toolbar = no");
 				} else {
-					Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+					// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
 					display.showMessage("Authentication failed, OpenID provider not found");
 				}
 			}
 		});
 	}
-	
+
 	/**
 	 * Verifies a response from an OpenID provider and calls login on
 	 * broadcaster.
@@ -212,7 +213,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 		if (mode != null) {
 			if (mode.equals("cancel") || mode.equals("setup_needed")) {
-				Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+				// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
 				closePopup(null);
 			} else if (mode.equals("id_res") && Window.Location.getParameter("openid.response_nonce") != null) {
 				final String href = Window.Location.getHref();
@@ -229,7 +230,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 					@Override
 					public void onFailure(Throwable caught) {
-						Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+						// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
 						unbind();
 						closePopup(null);
 						callback.onFailure(new sk.seges.acris.security.shared.exception.SecurityException(
@@ -239,16 +240,20 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 					@Override
 					public void onSuccess(String result) {
 						OpenIDLoginToken token = new OpenIDLoginToken(result);
+						String email = parameterMap.get("openid.ext1.value.email").get(0);
+						token.setEmail(email);
+						token.setProvider(OpenIDProvider.GOOGLE);
 						doLogin(token, callback);
 					}
 				});
 			}
 		} else {
 			// auto login
-			String identifier = Cookies.getCookie(LoginConstants.OPENID_COOKIE_NAME);
-			if (identifier != null) {
-				authenticate(identifier);
-			}
+			// String identifier =
+			// Cookies.getCookie(LoginConstants.OPENID_COOKIE_NAME);
+			// if (identifier != null) {
+			// authenticate(identifier);
+			// }
 			callback.onSuccess(null);
 		}
 	}
@@ -270,7 +275,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 			}
 
 			closePopup(redirectUrl != null ? redirectUrl + query : null);
-			
+
 			RootPanel.get().clear();
 			Location.replace(redirectUrl + query);
 		}
@@ -292,15 +297,15 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	private native void closePopup(String url) /*-{
-		if ($wnd.name == 'openIDPopup')
-		{
-			$wnd.close();
-			if (url && $wnd.opener && !$wnd.opener.closed)
-			{
-				$wnd.opener.location.replace(url);
-			}
-		}
-	}-*/;
+												if ($wnd.name == 'openIDPopup')
+												{
+												$wnd.close();
+												if (url && $wnd.opener && !$wnd.opener.closed)
+												{
+												$wnd.opener.location.replace(url);
+												}
+												}
+												}-*/;
 
 	@Override
 	public HandlerRegistration addOpenIDLoginHandler(OpenIDLoginHandler handler) {
