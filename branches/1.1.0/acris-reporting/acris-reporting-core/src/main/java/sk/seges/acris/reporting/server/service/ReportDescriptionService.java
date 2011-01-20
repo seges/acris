@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.reporting.rpc.dao.IReportDescriptionDao;
 import sk.seges.acris.reporting.rpc.dao.IReportParameterDao;
@@ -36,7 +35,6 @@ public class ReportDescriptionService implements IReportDescriptionService {
 	}
 
 	@Override
-	@Transactional
 	public ReportDescriptionData findById(Long reportId) {
 		ReportDescriptionData report = reportDescriptionDao.getEntityInstance();
 		report.setId(reportId);
@@ -45,13 +43,13 @@ public class ReportDescriptionService implements IReportDescriptionService {
 	}
 
 	@Override
-	@Transactional
 	public ReportDescriptionData persist(ReportDescriptionData report) {
 		report.setId(System.currentTimeMillis());
 		report.setCreationDate(new Date());
 		if (report.getParametersList() != null
 				&& !report.getParametersList().isEmpty()) {
-			report.setParametersList(revertParameterList(report.getParametersList()));
+			report.setParametersList(revertParameterListAndSetId(report
+					.getParametersList()));
 		}
 		ReportDescriptionData result = convert(reportDescriptionDao
 				.persist(revert(report)));
@@ -59,15 +57,19 @@ public class ReportDescriptionService implements IReportDescriptionService {
 	}
 
 	@Override
-	@Transactional
 	public void remove(Long id) {
 		ReportDescriptionData report = findById(id);
 		reportDescriptionDao.remove(revert(report));
 	}
 
 	public Long merge(ReportDescriptionData report) {
-//		filterRemoved(report.getParametersList());
-//		report = revert(report);
+		// filterRemoved(report.getParametersList());
+		// report = revert(report);
+		if (report.getParametersList() != null
+				&& !report.getParametersList().isEmpty()) {
+			report.setParametersList(revertParameterListAndSetId(report
+					.getParametersList()));
+		}
 		return reportDescriptionDao.merge(revert(report)).getId();
 	}
 
@@ -86,19 +88,7 @@ public class ReportDescriptionService implements IReportDescriptionService {
 
 	}
 
-//	@Transactional
-//	public PagedResult<List<ReportDescriptionData>> findReports(
-//			DetachedCriteria criteria, Page requestedPage) {
-//		// if (criteria == null) {
-//		// criteria = DetachedCriteria.forClass(ReportDescriptionData.class);
-//		// }
-//		// return reportDescriptionDao.findPagedResultByCriteria(criteria,
-//		// requestedPage);
-//		return null;
-//	}
-
 	@Override
-	@Transactional
 	public PagedResult<List<ReportDescriptionData>> findAllReports(
 			Page requestedPage) {
 		PagedResult<List<ReportDescriptionData>> findAll = reportDescriptionDao
@@ -107,15 +97,11 @@ public class ReportDescriptionService implements IReportDescriptionService {
 	}
 
 	@Override
-	@Transactional
 	public List<ReportDescriptionData> findByName(String name) {
-		// List<ReportDescriptionData> report = reportDescriptionDao
-		// .findByName(name);
-		// return report;
+		// TODO Auto-generated method stub
 		return null;
-
 	}
-
+	
 	// TODO replace this part by dozer or something...
 
 	/**
@@ -176,15 +162,16 @@ public class ReportDescriptionService implements IReportDescriptionService {
 		List<ReportDescriptionData> resultList = pagedResult.getResult();
 		List<ReportDescriptionData> dtos = new ArrayList<ReportDescriptionData>();
 		for (ReportDescriptionData reportDescriptionData : resultList) {
-			ReportDescriptionData res = convert(reportDescriptionData); 
+			ReportDescriptionData res = convert(reportDescriptionData);
 			if (reportDescriptionData.getParametersList() != null
 					&& !reportDescriptionData.getParametersList().isEmpty()) {
-				res.setParametersList(convertParameterList(reportDescriptionData.getParametersList()));
+				res.setParametersList(convertParameterList(reportDescriptionData
+						.getParametersList()));
 			}
 			dtos.add(res);
 		}
-		return new PagedResult<List<ReportDescriptionData>>(pagedResult
-				.getPage(), dtos, pagedResult.getTotalResultCount());
+		return new PagedResult<List<ReportDescriptionData>>(
+				pagedResult.getPage(), dtos, pagedResult.getTotalResultCount());
 	}
 
 	/**
@@ -236,13 +223,36 @@ public class ReportDescriptionService implements IReportDescriptionService {
 		return result;
 	}
 
-	private List<ReportParameterData> revertParameterList(List<ReportParameterData> origParamsList) {
+	private List<ReportParameterData> revertParameterList(
+			List<ReportParameterData> origParamsList) {
 		if (origParamsList == null) {
 			return null;
 		}
 		List<ReportParameterData> newParamsList = new ArrayList<ReportParameterData>();
 		for (ReportParameterData param : origParamsList) {
-			param = revert(param); //reportParameterDao.persist(revert(param));
+			param = revert(param); // reportParameterDao.persist(revert(param));
+			if (param != null) {
+				newParamsList.add(param);
+			}
+		}
+		return newParamsList;
+	}
+
+	private List<ReportParameterData> revertParameterListAndSetId(
+			List<ReportParameterData> origParamsList) {
+		if (origParamsList == null) {
+			return null;
+		}
+		List<ReportParameterData> newParamsList = new ArrayList<ReportParameterData>();
+		int i = 0;
+		for (ReportParameterData param : origParamsList) {
+			param = revert(param); // reportParameterDao.persist(revert(param));
+			if (param.getId() == null || param.getId() < 1) {
+				param.setId(System.currentTimeMillis()+(i++));
+//				param = reportParameterDao.persist(revert(param));
+//			} else {
+//				param = reportParameterDao.merge(revert(param));
+			}
 			if (param != null) {
 				newParamsList.add(param);
 			}

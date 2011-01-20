@@ -51,7 +51,6 @@ public class ReportEditPanel extends Composite {
 
 	private Map<ParameterEditPanel, Widget> parameters = new HashMap<ParameterEditPanel, Widget>();
 	private ReportDescriptionData report = new ReportDescriptionDTO();
-	private long reportParameterId = 0;
 	
 	public ReportEditPanel() {
 		initWidget(container);
@@ -154,10 +153,6 @@ public class ReportEditPanel extends Composite {
 			}
 			for (ParameterEditPanel parameterPanel : parameters.keySet()) {
 				ReportParameterData rp = parameterPanel.getReportParameter();
-				if (rp.getId() == null) {
-					reportParameterId = reportParameterId + 1;
-					rp.setId(reportParameterId);
-				}
 				origParams.add(rp);
 			}
 		} else {
@@ -178,9 +173,6 @@ public class ReportEditPanel extends Composite {
 		paramsArea.clear();
 		if (report.getParametersList() != null && report.getParametersList().size() > 0) {
 			for (ReportParameterData param : report.getParametersList()) {
-				if (param.getId() > reportParameterId) {
-					reportParameterId = param.getId();
-				}
 				final ParameterEditPanel pp = new ParameterEditPanel();
 				pp.initComponents(param);
 				FlowPanel hp = new FlowPanel();

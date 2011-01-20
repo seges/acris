@@ -8,8 +8,6 @@ import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
 import com.google.appengine.api.datastore.Text;
-import com.vercer.engine.persist.annotation.Activate;
-import com.vercer.engine.persist.annotation.Child;
 import com.vercer.engine.persist.annotation.Embed;
 import com.vercer.engine.persist.annotation.Key;
 import com.vercer.engine.persist.annotation.Type;
@@ -26,8 +24,8 @@ public class TwigReportDescription implements ReportDescriptionData {
 	private Date creationDate;
 	private String reportUrl;
 
-	private @Embed //@Child @Activate(0)
-	List<TwigReportParameter> parametersList = null;
+	private @Embed
+	List<TwigReportParameter> parametersList;
 
 	public TwigReportDescription() {
 	}

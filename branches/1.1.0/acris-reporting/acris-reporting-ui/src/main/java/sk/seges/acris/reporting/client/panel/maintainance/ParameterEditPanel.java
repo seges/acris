@@ -60,25 +60,25 @@ public class ParameterEditPanel extends Composite {
 		flexT.setWidget(1, 3, paramHiddenCheckBox);
 		flexT.getFlexCellFormatter().setColSpan(1, 3, 2);
 
-		Label parentParamIdLabel = new Label("parent id");
-		flexT.setWidget(2, 0, parentParamIdLabel);
-		parentIdTextBox.setWidth(ReportEditPanel.TEXTBOX_WIDTH);
-		flexT.setWidget(2, 1, parentIdTextBox);
-		
-		Label orderNumber = new Label("Order nr.");
-		flexT.setWidget(3, 0, orderNumber);
-		flexT.setWidget(3, 1, paramOrderNumber);
+//		Label parentParamIdLabel = new Label("parent id");
+//		flexT.setWidget(2, 0, parentParamIdLabel);
+//		parentIdTextBox.setWidth(ReportEditPanel.TEXTBOX_WIDTH);
+//		flexT.setWidget(2, 1, parentIdTextBox);
+//		
+//		Label orderNumber = new Label("Order nr.");
+//		flexT.setWidget(3, 0, orderNumber);
+//		flexT.setWidget(3, 1, paramOrderNumber);
 		
 		Label paramTypeLabel = new Label(reportingMessages.parameterType());
-		flexT.setWidget(4, 0, paramTypeLabel);
-		flexT.setWidget(4, 1, paramTypeListBox);
+		flexT.setWidget(2, 0, paramTypeLabel);
+		flexT.setWidget(2, 1, paramTypeListBox);
 		
 		
 		Label paramDescLabel = new Label(reportingMessages.description());
-		flexT.setWidget(5, 0, paramDescLabel);
+		flexT.setWidget(3, 0, paramDescLabel);
 		paramDescTextArea.setWidth(ReportEditPanel.TEXTAREA_WIDTH);
-		flexT.setWidget(5, 1, paramDescTextArea);
-		flexT.getFlexCellFormatter().setColSpan(5, 1, 5);
+		flexT.setWidget(3, 1, paramDescTextArea);
+		flexT.getFlexCellFormatter().setColSpan(4, 1, 5);
 
 		container.add(flexT);
 	}

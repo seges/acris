@@ -185,6 +185,7 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 													}
 												}
 											});
+							areYouSureDialog.addStyleName("acris-reporting-remove-report");
 							areYouSureDialog.show();
 							areYouSureDialog.center();
 

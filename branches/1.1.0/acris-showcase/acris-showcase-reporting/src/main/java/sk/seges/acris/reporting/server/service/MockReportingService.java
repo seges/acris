@@ -8,6 +8,11 @@ import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.service.IReportDescriptionService;
 import sk.seges.acris.reporting.shared.service.IReportingService;
 
+/**
+ * Mock Service for exporting reports
+ * @author psenicka
+ *
+ */
 public class MockReportingService implements IReportingService {
 	
 	private static final Logger LOG = Logger
@@ -26,7 +31,7 @@ public class MockReportingService implements IReportingService {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Exporting report: " + report.getName());
 		}
-		return "reports/gtug4.pdf";
+		return report.getReportUrl();
 	}
 
 	@Override
