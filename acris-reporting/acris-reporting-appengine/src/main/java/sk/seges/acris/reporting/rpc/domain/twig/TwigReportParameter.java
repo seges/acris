@@ -2,14 +2,11 @@ package sk.seges.acris.reporting.rpc.domain.twig;
 
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
-import com.vercer.engine.persist.annotation.Key;
-
 public class TwigReportParameter implements ReportParameterData {
 
 	private static final long serialVersionUID = 2892837119494217776L;
 
-	private @Key
-	Long id;
+	private	Long id;
 
 	private Integer orderNumber;
 
@@ -24,7 +21,7 @@ public class TwigReportParameter implements ReportParameterData {
 	private Boolean hidden;
 
 	private ReportParameterData parent;
-
+	
 	public TwigReportParameter() {
 	}
 
@@ -107,5 +104,4 @@ public class TwigReportParameter implements ReportParameterData {
 	public Long getId() {
 		return id;
 	}
-
 }
