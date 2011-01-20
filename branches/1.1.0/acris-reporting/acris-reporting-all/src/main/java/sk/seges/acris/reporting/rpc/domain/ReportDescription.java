@@ -44,7 +44,7 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 	private Date creationDate;
 	private String reportUrl;
 	
-	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY)
+	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY, targetEntity = ReportParameter.class)
 	@OrderBy(ReportParameterData.ORDER_NUMBER)
 	private List<ReportParameterData> parametersList = null;
 
