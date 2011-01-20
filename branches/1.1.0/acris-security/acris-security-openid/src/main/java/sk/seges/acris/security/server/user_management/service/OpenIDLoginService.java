@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
@@ -27,7 +26,8 @@ public class OpenIDLoginService implements LoginService {
 
 	private Logger log = Logger.getLogger(OpenIDLoginService.class);
 
-	public OpenIDLoginService(IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao, SessionIDGenerator sessionIDGenerator) {
+	public OpenIDLoginService(IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao,
+			SessionIDGenerator sessionIDGenerator) {
 		this.openIDUserDao = openIDUserDao;
 		this.sessionIDGenerator = sessionIDGenerator;
 	}
@@ -36,15 +36,14 @@ public class OpenIDLoginService implements LoginService {
 		Page page = new Page(0, 1);
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>("id", identifier, Filter.EQ));
 		List<HasOpenIDIdentifier> result = openIDUserDao.findAll(page).getResult();
-		
+
 		if (result.size() > 0) {
-			return (UserData<?>) result.get(0);
+			return (UserData<?>) result.get(0).getUser();
 		}
 		return null;
 	}
 
 	@Override
-	@Transactional
 	public ClientSession login(LoginToken token) throws AuthenticationException {
 		ClientSession clientSession = new ClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));

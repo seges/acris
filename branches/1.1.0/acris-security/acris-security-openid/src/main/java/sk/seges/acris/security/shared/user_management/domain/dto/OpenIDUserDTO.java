@@ -1,6 +1,7 @@
 package sk.seges.acris.security.shared.user_management.domain.dto;
 
 import sk.seges.acris.security.shared.user_management.domain.api.HasOpenIDIdentifier;
+import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 public class OpenIDUserDTO implements HasOpenIDIdentifier {
@@ -10,6 +11,10 @@ public class OpenIDUserDTO implements HasOpenIDIdentifier {
 	private UserData<?> user;
 
 	private String identifier;
+
+	private String email;
+
+	private OpenIDProvider provider;
 
 	@Override
 	public UserData<?> getUser() {
@@ -29,5 +34,25 @@ public class OpenIDUserDTO implements HasOpenIDIdentifier {
 	@Override
 	public void setId(String identifier) {
 		this.identifier = identifier;
+	}
+
+	@Override
+	public String getEmail() {
+		return email;
+	}
+
+	@Override
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Override
+	public OpenIDProvider getProvider() {
+		return provider;
+	}
+
+	@Override
+	public void setProvider(OpenIDProvider provider) {
+		this.provider = provider;
 	}
 }
