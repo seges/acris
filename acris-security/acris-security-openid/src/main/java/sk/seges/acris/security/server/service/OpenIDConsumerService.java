@@ -102,7 +102,7 @@ public class OpenIDConsumerService extends RemoteServiceServlet implements IOpen
 
 			// verify the response; ConsumerManager needs to be the same
 			// (static) instance used to place the authentication request
-			VerificationResult verification = manager.verify(queryString, response, discovered);
+			VerificationResult verification = getManager().verify(queryString, response, discovered);
 
 			// examine the verification result and extract the verified
 			// identifier

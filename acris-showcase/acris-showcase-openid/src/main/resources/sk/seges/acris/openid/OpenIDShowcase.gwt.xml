@@ -5,5 +5,8 @@
 	
 	<stylesheet src="styles/styles.css" />
 	
+	<extend-property name="locale" values="en, sk" />
+	<set-property-fallback name="locale" value="en" />
+	
     <entry-point class="sk.seges.acris.openid.client.OpenIDShowcase" />
 </module>
