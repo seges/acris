@@ -4,6 +4,8 @@
 
 In this guide we will talk about how to use the projects acris-security-core, acris-security-openid and acris-security-ui to integrate both classic username/password and OpenID based login methods, for example through Google or Yahoo, into your Java web application. 
 
+[http://acris.googlecode.com/svn/wiki/images/open_id_login_dialog.png]
+
 So what we want to do is to provide users with a user interface where they can enter a username and password and log in normally through our local user service, or instead select from a list of OpenID providers, open a popup window and log in through the chosen provider. This UI will exist in a lightweight GWT module, which will only handle the login process, after which it will redirect the browser to a url with another module which then processes this login information.
 
 When communicating with the OpenID provider, three steps are necessary. First, discovery on the provider's web site for the end point URL. This URL must be the base of any OpenID authentication request. Second, authentication of the user at the provider. No specific ID's are sent, we let the user enter all information. During the authentication process, we ask the user to share the e-mail address with us, which we then use for identification. Third is verification of a positive or negative answer from the provider, plus a check if the request for authentication really came from us.
@@ -13,7 +15,7 @@ Note that our login module is also responsible for verification. This means that
 For more information about OpenID visit http://openid.net.
 The projects also use the openid4java library, for more info visit http://code.google.com/p/openid4java.
 
-An example entry point can be found in the acris-showcase-openid project, which showcases setting up a guice servlet and a mock user service to demonstrate logging in through Google, Yahoo, Aol, Seznam and MyOpenID, or by using a classic login method. Let's go over it in detail.
+An example entry point can be found in the [http://acris.googlecode.com/svn/branches/1.1.0/acris-showcase/acris-showcase-openid/ acris-showcase-openid project], which showcases setting up a guice servlet and a mock user service to demonstrate logging in through Google, Yahoo, Aol, Seznam and MyOpenID, or by using a classic login method. Let's go over it in detail.
 
 
 = Configuration =
@@ -48,27 +50,26 @@ Since we are using google-guice for dependency injection in this example, we wil
 </web-app>
 }}}
 
-Here we simply enable guice filtering for all requests and inject our guice modules, !ShowcaseGuiceServletModule and !ShowcaseGuiceModule. Note that we are using guice servlet injection here, this way we can provide a different implementation for certain classes. Google's app engine environment, for example, needs such special implementations.
+Here we simply enable guice filtering for all requests and inject our guice modules, [http://acris.googlecode.com/svn/branches/1.1.0/acris-showcase/acris-showcase-openid/src/main/java/sk/seges/acris/openid/server/service/ShowcaseGuiceServletModule.java ShowcaseGuiceServletModule] and [http://acris.googlecode.com/svn/branches/1.1.0/acris-showcase/acris-showcase-openid/src/main/java/sk/seges/acris/openid/server/service/ShowcaseGuiceModule.java ShowcaseGuiceModule]. Note that we are using guice servlet injection here, this way we can provide a different implementation for certain classes. Google's app engine environment, for example, needs such special implementations.
 
 To be able to use guice dependency injection in servlets, we need two things. 
-First, all server calls will be sent to !GuiceRemoteServiceServlet, found in acris-security-openid. This servlet will intercept every call, get the service instance we are trying to access and inject it with whatever dependencies we have defined in our guice modules. This also means that all services injected in this way don't need to extend !RemoteServiceServlet, since we are not calling them directly. Second, all services we want to inject with guice dependencies must be mapped to the same entry point url as the !GuiceRemoteServiceServlet, in this case "GWT.rpc".
+First, all server calls will be sent to [http://acris.googlecode.com/svn/branches/1.1.0/acris-security/acris-security-openid/src/main/java/sk/seges/acris/security/server/service/GuiceRemoteServiceServlet.java GuiceRemoteServiceServlet], found in acris-security-openid. This servlet will intercept every call, get the service instance we are trying to access and inject it with whatever dependencies we have defined in our guice modules. This also means that all services injected in this way don't need to extend !RemoteServiceServlet, since we are not calling them directly. Second, all services we want to inject with guice dependencies must be mapped to the same entry point url as the [http://acris.googlecode.com/svn/branches/1.1.0/acris-security/acris-security-openid/src/main/java/sk/seges/acris/security/server/service/GuiceRemoteServiceServlet.java GuiceRemoteServiceServlet], in this case "GWT.rpc".
 
 
 = Client =
 
-*!LoginPresenter, !LoginView*
+*[http://acris.googlecode.com/svn/branches/1.1.0/acris-security/acris-security-openid/src/main/java/sk/seges/acris/security/client/presenter/LoginPresenter.java LoginPresenter], [http://acris.googlecode.com/svn/branches/1.1.0/acris-security/acris-security-ui/src/main/java/sk/seges/acris/security/client/view/LoginView.java LoginView]*
 
-Use for a classic username/password login method. Based on the MVP pattern, we have a presenter class which handles all the logic and a display interface with a view class that displays a user interface that displays a user name and password fields and a login button. The basic !LoginPresenter only needs to be provided with a view, user service broadcaster and redirect url like this: 
+Use for a classic username/password login method. Based on the MVP pattern, we have a presenter class which handles all the logic and a display interface with a view class that displays a user interface that displays a user name and password fields and a login button. The basic [http://acris.googlecode.com/svn/branches/1.1.0/acris-security/acris-security-openid/src/main/java/sk/seges/acris/security/client/presenter/LoginPresenter.java LoginPresenter] only needs to be provided with a view, user service broadcaster and redirect url like this: 
 
 {{{
-UserServiceBroadcaster broadcaster = new UserServiceBroadcaster();
-broadcaster.addUserService(new MockUserService());
+IUserServiceAsync userService = new MockUserService();
 
 String redirectUrl = GWT.getModuleBaseURL() + "Redirect.html";
 
 LoginDisplay display = GWT.create(LoginView.class);
 
-LoginPresenter presenter = new LoginPresenter(display, broadcaster, redirectUrl);
+LoginPresenter presenter = new LoginPresenter(display, userService, redirectUrl);
 }}}
 
 Note that in this example we use url redirection for logging in by sending the session id in the query string, but the presenter also supports custom logins without redirection (pass null for 'redirectUrl' in the constructor).
@@ -102,7 +103,7 @@ languages[1] = new Pair<String, String>("en", "english");
 
 boolean rememberMeAware = true;
 
-OpenIDLoginPresenter presenter = new OpenIDLoginPresenter(display, broadcaster, redirectUrl, languages,
+OpenIDLoginPresenter presenter = new OpenIDLoginPresenter(display, userService, redirectUrl, languages,
 				rememberMeAware, consumerService);
 }}}
 
@@ -114,6 +115,6 @@ OpenIDLoginPresenter presenter = new OpenIDLoginPresenter(display, broadcaster, 
 Manages OpenID communications with an OpenID Provider. Provided by the openid4java library. Needs special overrides for app engine, that is why it is injected.
 
 
-*!ServerSessionProvider*
+*[http://acris.googlecode.com/svn/branches/1.1.0/acris-security/acris-security-core/src/main/java/sk/seges/acris/security/server/core/session/ServerSessionProvider.java ServerSessionProvider]*
 
-Provider interface for the server session. The example app uses guice to provide the session through !GuiceServerSessionProvider, for a spring session use !SpringServerSessionProvider.
+Provider interface for the server session. The example app uses guice to provide the session through [http://acris.googlecode.com/svn/branches/1.1.0/acris-showcase/acris-showcase-openid/src/main/java/sk/seges/acris/openid/server/session/servlet/GuiceServerSessionProvider.java GuiceServerSessionProvider], for a spring session use [http://acris.googlecode.com/svn/branches/1.1.0/acris-security/acris-security-core/src/main/java/sk/seges/acris/security/server/core/session/spring/SpringServerSessionProvider.java SpringServerSessionProvider].
