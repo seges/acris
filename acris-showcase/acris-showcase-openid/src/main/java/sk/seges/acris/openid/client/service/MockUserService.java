@@ -73,4 +73,9 @@ public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 	public void getLoggedUser(AsyncCallback<UserData<?>> callback) throws ServerException {
 		// TODO Auto-generated method stub
 	}
+
+	@Override
+	public void getLoggedUserName(AsyncCallback<String> callback) throws ServerException {
+		// TODO Auto-generated method stub
+	}
 }

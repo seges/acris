@@ -18,11 +18,12 @@ public interface IUserService extends RemoteService {
 
 	/**
 	 * Logs in and returns sessionId only, using URL redirection.
+	 * 
 	 * @param token
 	 * @return
 	 */
 	String authenticate(LoginToken token) throws ServerException;
-	
+
 	/**
 	 * Authenticate user represented with username and his credentials. Service
 	 * method also set selected language to user preferences
@@ -50,4 +51,6 @@ public interface IUserService extends RemoteService {
 	 *         logged return value is null
 	 */
 	UserData<?> getLoggedUser() throws ServerException;
+
+	String getLoggedUserName() throws ServerException;
 }

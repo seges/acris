@@ -14,5 +14,5 @@ public interface IOpenIDUserServiceAsync {
 
 	void findProvidersByUserName(String userName, AsyncCallback<List<OpenIDProvider>> callback);
 
-	void saveUserByIdentifiers(UserData<?> user, Map<String, Object> identifiers, AsyncCallback<Void> callback);
+	void saveUserByIdentifiers(String userName, Map<String, Object> identifiers, AsyncCallback<Void> callback);
 }

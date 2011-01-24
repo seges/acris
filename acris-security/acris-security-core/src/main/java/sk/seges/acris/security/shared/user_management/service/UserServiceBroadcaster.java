@@ -425,6 +425,81 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		signalUserServices(semaphore, failures, successes);
 	}
 
+	@Override
+	public void getLoggedUserName(final AsyncCallback<String> callback) throws ServerException {
+		final int count = userServices.size();
+
+		if (count == 0) {
+			throw new IllegalArgumentException(
+					"No user service was registered. Please register user service in order to execute this method.");
+		}
+
+		final List<Throwable> failures = new ArrayList<Throwable>();
+		final Map<String, ClientSession> successes = new HashMap<String, ClientSession>();
+
+		final Semaphore semaphore = new Semaphore(2);
+		semaphore.raise(count);
+
+		semaphore.addListener(new SemaphoreListener() {
+
+			@Override
+			public void change(SemaphoreEvent event) {
+				if (event.getCount() == event.getStates()[0] + event.getStates()[1]) {
+					if (event.getStates()[1] > 0) {
+						Throwable[] throwables = new Throwable[failures.size()];
+						failures.toArray(throwables);
+						callback.onFailure(new BroadcastingException(throwables));
+					} else {
+						String resolvedPrimaryEntryPoint = resolvePrimaryEntryPoint();
+						if (resolvedPrimaryEntryPoint != null) {
+							// merge authorities from all services to one set
+							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
+							UserData<?> user = primaryResult.getUser();
+							if (!checkUser(user, callback)) {
+								return;
+							}
+
+							List<String> authorities = new ArrayList<String>();
+							add(user.getUserAuthorities(), authorities);
+
+							for (Entry<String, ClientSession> entry : successes.entrySet()) {
+								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
+									add(entry.getValue().getUser().getUserAuthorities(), authorities);
+									primaryResult.merge(entry.getValue());
+								}
+							}
+							user.setUserAuthorities(authorities);
+							callback.onSuccess(user.getUsername());
+						} else {
+							UserData<?> user = successes.values().iterator().next().getUser();
+							if (!checkUser(user, callback)) {
+								return;
+							}
+
+							callback.onSuccess(successes.values().iterator().next().getUser().getUsername());
+						}
+					}
+				}
+			}
+
+			private boolean checkUser(UserData<?> user, AsyncCallback<String> callback) {
+				if (user == null) {
+					callback.onFailure(new BroadcastingException("User is null"));
+					return false;
+				}
+				return true;
+			}
+
+			private <T> void add(List<T> userAuthorities, List<T> allAuthorities) {
+				for (T authority : userAuthorities) {
+					allAuthorities.add(authority);
+				}
+			}
+		});
+
+		signalUserServices(semaphore, failures, successes);
+	}
+
 	private void signalUserServices(final Semaphore semaphore, final List<Throwable> failures,
 			final Map<String, ClientSession> successes) {
 		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
