@@ -63,11 +63,11 @@ public class BeanTableSpecCreator {
 	private TypeOracle typeOracle;
 	private String typeName;
 
-	private JClassType classType;
+	protected JClassType classType;
 //	private SpecLoader loaderParams;
-	private SpecParams specParams;
-	private JClassType beanType;
-	private String beanTypeName;
+	protected SpecParams specParams;
+	protected JClassType beanType;
+	protected String beanTypeName;
 
 	public BeanTableSpecCreator(TreeLogger logger, GeneratorContext context, String typeName) {
 		this.logger = logger;
@@ -253,18 +253,24 @@ public class BeanTableSpecCreator {
 		if (loaderParams != null) {
 			String loaderClassName = loaderParams.serviceClass().getName();
 
-			source.println("	" + affectedBean + "setLoader(new "+FreeServiceAwareLoader.class.getCanonicalName()+"<List<" + beanTypeName + ">, "
-					//+ loaderClassName + "Async>(\"" + loaderParams.serviceChocolate() + "\") {"); - acrisova
-					+ loaderClassName + "Async>() {"); //acris-os
+			source.println("	" + affectedBean + "setLoader(new "
+					+ FreeServiceAwareLoader.class.getCanonicalName() + "<List<" + beanTypeName + ">, "
+					// + loaderClassName + "Async>(\"" +
+					// loaderParams.serviceChocolate() + "\") {"); - acrisova
+					+ loaderClassName + "Async>() {"); // acris-os
 			source.println("		@Override");
-			source.println("		protected void load(" + loaderClassName + "Async service, Page page,");
-			source.println("				CallbackAdapter<PagedResult<List<" + beanTypeName + ">>> callback) {");
+			source.println("		protected void load(" + loaderClassName + "Async service, "
+					+ Page.class.getName() + " page,");
+			source.println("				" + CallbackAdapter.class.getName() + "<" + PagedResult.class.getName()
+					+ "<List<" + beanTypeName + ">>> callback) {");
 			source.println("			service." + loaderParams.loaderMethodName() + "(page, callback);");
 			source.println("		}");
 			source.println("		@Override");
-			source.println("		protected "+ loaderClassName +"Async getService() {");
-			source.println("			" + loaderClassName + "Async service = GWT.create("+loaderClassName+".class);");
-			source.println("			(("+ServiceDefTarget.class.getCanonicalName()+")service).setServiceEntryPoint(\""+loaderParams.serviceEntryPoint()+"\");");
+			source.println("		protected " + loaderClassName + "Async getService() {");
+			source.println("			" + loaderClassName + "Async service = GWT.create(" + loaderClassName
+					+ ".class);");
+			source.println("			((" + ServiceDefTarget.class.getCanonicalName()
+					+ ")service).setServiceEntryPoint(\"" + loaderParams.serviceEntryPoint() + "\");");
 			source.println("			return service;");
 			source.println("		}");
 			source.println("	});");
