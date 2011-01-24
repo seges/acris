@@ -31,6 +31,9 @@ public class «name»Dto «IF hasSuperClass()» extends «extends.name»Dto«END
 	«ENDFILE»
 «ENDDEFINE»
 
+«DEFINE dto FOR Enum»
+«ENDDEFINE»
+
 «DEFINE dtoAttribute FOR Attribute»
 	private «getTypeName()» «name»;
 	«EXPAND propertyDtoGetter»
@@ -50,7 +53,18 @@ public class «name»Dto «IF hasSuperClass()» extends «extends.name»Dto«END
 «ENDDEFINE»
 
 «DEFINE dtoReference FOR Reference»
-	«IF many»
+	«IF to.isSimpleEnum()»
+	private «getTypeName()» «name»;
+	
+	@Override
+	public «getTypeName()» «getGetAccessor()»() {
+		return «name»;
+	}
+	@Override
+	public void set«name.toFirstUpper()»(«getTypeName()» «name») {
+		this.«name» = «name»;
+	}
+	«ELSEIF many»
 	private «getCollectionInterfaceType()»<«getTypeName()»Data> «name»;
 	
 	@Override

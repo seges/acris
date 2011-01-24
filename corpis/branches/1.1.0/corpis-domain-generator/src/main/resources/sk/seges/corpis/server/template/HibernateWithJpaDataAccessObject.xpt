@@ -4,6 +4,9 @@
 «EXTENSION extensions::properties»
 «EXTENSION sk::seges::corpis::server::extension::helper»
 
+«DEFINE dataEntity FOR Enum»
+«ENDDEFINE»
+
 «DEFINE dataEntity FOR BasicType»
 «ENDDEFINE»
 
@@ -29,6 +32,11 @@ public class Hibernate«name»DaoBase extends AbstractHibernateCRUD<Jpa«name»>
 	@PersistenceContext(unitName = "«getEntityManagerFactoryName()»")
 	public void setEntityManager(EntityManager entityManager) {
 		super.setEntityManager(entityManager);
+	}
+
+	@Override
+	public Jpa«name» getEntityInstance() {
+		return new Jpa«name»();
 	}
 
 	«REM»«EXPAND attribute FOREACH attributes»

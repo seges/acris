@@ -27,6 +27,10 @@ public interface «name»Data «IF hasSuperClass()» extends «getExtendsClassNa
 	«ENDFILE»
 «ENDDEFINE»
 
+«DEFINE dataEntity FOR Enum»
+	«EXPAND templates::DomainObject::domainObject»
+«ENDDEFINE»
+
 
 «DEFINE attribute FOR Attribute»
 	static final String «name.toUpperCase()» = "«name»";
@@ -49,7 +53,10 @@ public interface «name»Data «IF hasSuperClass()» extends «getExtendsClassNa
 «DEFINE reference FOR Reference»
 	static final String «name.toUpperCase()» = "«name»";
 	
-	«IF many»
+	«IF to.isSimpleEnum()»
+	«getTypeName()» «getGetAccessor()»();
+	void set«name.toFirstUpper()»(«getTypeName()» «name»);	
+	«ELSEIF many»
 	«getCollectionInterfaceType()»<«getTypeName()»Data> «getGetAccessor()»();
 	void set«name.toFirstUpper()»(«getCollectionInterfaceType()»<«getTypeName()»Data> «name»);
 	«ELSE»

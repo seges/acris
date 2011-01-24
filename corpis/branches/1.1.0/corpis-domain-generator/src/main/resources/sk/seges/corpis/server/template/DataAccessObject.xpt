@@ -10,8 +10,9 @@ package «getServerDaoPackage()»;
 		
 import «getDomainPackage()».«name»Data;
 import sk.seges.sesam.dao.ICrudDAO;
+import sk.seges.sesam.dao.IEntityInstancer;
 
-public interface «name»DaoBase<T extends «name»Data<?>> extends ICrudDAO<T> {
+public interface «name»DaoBase<T extends «name»Data<?>> extends ICrudDAO<T>, IEntityInstancer<T> {
 	«REM»«EXPAND attribute FOREACH attributes»
 	«EXPAND reference FOREACH references»«ENDREM»
 }
@@ -19,4 +20,7 @@ public interface «name»DaoBase<T extends «name»Data<?>> extends ICrudDAO<T> 
 «ENDDEFINE»
 
 «DEFINE dataEntity FOR BasicType»
+«ENDDEFINE»
+
+«DEFINE dataEntity FOR Enum»
 «ENDDEFINE»
