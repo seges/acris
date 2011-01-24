@@ -57,4 +57,12 @@ public class UserService implements IUserService {
 
 		return user;
 	}
+
+	@Override
+	public String getLoggedUserName() throws ServerException {
+		HttpSession session = sessionProvider.getSession();
+		UserData<?> user = (UserData<?>) session.getAttribute(LoginConstants.LOGGED_USER_NAME);
+
+		return user.getUsername();
+	}
 }

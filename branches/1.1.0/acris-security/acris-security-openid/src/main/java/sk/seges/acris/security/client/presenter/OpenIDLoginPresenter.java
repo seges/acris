@@ -169,6 +169,10 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		registerHandler(addOpenIDLoginHandler(openIDLoginHandler));
 	}
 
+	protected OpenIDLoginToken constructOpenIDLoginToken(String identifier, String email, OpenIDProvider provider) {
+		return new OpenIDLoginToken(identifier, email, provider);
+	}
+
 	/**
 	 * Authenticates an OpenID identifier and opens the discovered provider's
 	 * endpoint url in a popup.
@@ -239,11 +243,9 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 					@Override
 					public void onSuccess(String result) {
-						OpenIDLoginToken token = new OpenIDLoginToken(result);
-						String email = parameterMap.get("openid.ext1.value.email").get(0);
-						token.setEmail(email);
-						token.setProvider(OpenIDProvider.GOOGLE);
-						doLogin(token, callback);
+						List<String> emails = parameterMap.get("openid.ext1.value.email");
+						String email = emails != null ? emails.get(0) : null;
+						doLogin(constructOpenIDLoginToken(result, email, getProviderFromURL(href)), callback);
 					}
 				});
 			}
@@ -279,6 +281,22 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 			RootPanel.get().clear();
 			Location.replace(redirectUrl + query);
 		}
+	}
+
+	private OpenIDProvider getProviderFromURL(String url) {
+		if (url.contains("google.com")) {
+			return OpenIDProvider.GOOGLE;
+		} else if (url.contains("yahoo.com")) {
+			return OpenIDProvider.YAHOO;
+		} else if (url.contains("seznam.cz")) {
+			return OpenIDProvider.SEZNAM;
+		} else if (url.contains("myopenid.com")) {
+			return OpenIDProvider.MYOPENID;
+		} else if (url.contains("aol.com")) {
+			return OpenIDProvider.AOL;
+		}
+
+		return null;
 	}
 
 	private ClickHandler createButtonHandler(final String identifier) {

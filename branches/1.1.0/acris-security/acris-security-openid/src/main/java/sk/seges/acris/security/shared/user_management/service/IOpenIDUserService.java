@@ -14,5 +14,5 @@ public interface IOpenIDUserService extends RemoteService {
 
 	List<OpenIDProvider> findProvidersByUserName(String userName);
 
-	void saveUserByIdentifiers(UserData<?> user, Map<String, Object> identifiers);
+	void saveUserByIdentifiers(String userName, Map<String, Object> identifiers);
 }

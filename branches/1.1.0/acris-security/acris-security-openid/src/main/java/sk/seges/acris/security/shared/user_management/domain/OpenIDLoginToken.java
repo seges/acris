@@ -17,10 +17,6 @@ public class OpenIDLoginToken implements LoginToken {
 		this(null, null, null);
 	}
 
-	public OpenIDLoginToken(String identifier) {
-		this(identifier, null, null);
-	}
-
 	public OpenIDLoginToken(String identifier, String email, OpenIDProvider provider) {
 		this.identifier = identifier;
 		this.email = email;

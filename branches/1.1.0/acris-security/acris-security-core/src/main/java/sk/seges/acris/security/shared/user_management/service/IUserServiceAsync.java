@@ -18,11 +18,12 @@ public interface IUserServiceAsync {
 
 	/**
 	 * Logs in and returns sessionId only, using URL redirection.
+	 * 
 	 * @param token
 	 * @param callback
 	 */
 	void authenticate(LoginToken token, AsyncCallback<String> callback) throws ServerException;
-	
+
 	/**
 	 * Authenticate user represented with username and his credentials. Service
 	 * method also set selected language to user preferences
@@ -58,4 +59,6 @@ public interface IUserServiceAsync {
 	 *            user is logged in
 	 */
 	void getLoggedUser(AsyncCallback<UserData<?>> callback) throws ServerException;
+
+	void getLoggedUserName(AsyncCallback<String> callback) throws ServerException;
 }
