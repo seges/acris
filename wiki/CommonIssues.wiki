@@ -138,3 +138,13 @@ When an entity has more than one non-lazy association that might be interpreted 
 == Solution ==
 
 [http://www.jroller.com/eyallupu/entry/hibernate_exception_simultaneously_fetch_multiple Use the Set, Luke]
+
+= UnsupportedOperationException in AbstractList =
+
+Let's have a test case where we are working with Hibernate. The test creates a list of items using {{{Arrays.asList}}} method. If we persist such list and retrieve it later, the list will be wrapped into {{{PersistentBag}}} (or any PersistentSomething class of Hibernate). In case we are trying to put/remove an item from such bag we might get an {{{UnsupportedOperationException}}} on add or remove methods of the bag.
+
+== Solution ==
+
+It is because {{{Arrays.asList}}} creates internal list implementation {{{Arrays$ArrayList}}} that is different from {{{java.util.ArrayList}}}. It doesn't have methods to add or remove at specific index overriden. When Hibernate tries to add/remove to specific index it delegates the call to {{{Arrays$ArrayList}}} which throws the exception.
+
+So don't use {{{Arrays.asList}}} or wrap it e.g. using new {{{java.util.ArrayList(collection)}}}.
