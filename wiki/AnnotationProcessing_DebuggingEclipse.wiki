@@ -1,0 +1,29 @@
+#summary How to debug annotation processors using eclipse
+
+= Debugging annotation processor (eclipse based) =
+
+This tooks me almost 8 hours in order to get everything working correctly. Many times I though that I'm the only one who wants annotation processors gets debuggable. I was crawling almost whole internet, many tutorials, many sample projects, 
+
+And what was the problem?
+ * You have to write an Eclipse plugin to faciliate debugging
+*What? Eclipse plugin? Never write one*
+ * 
+
+
+The "OSGI way" seems to be to make all your dependencies available as OSGI
+bundles, either wrapping the original JAR or just inserting the MANIFEST.MF
+into the JAR.  All local modules would be there directly in your workspace,
+and 3rd party dependencies in the PDE target platform.
+
+
+http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.jdt.doc.isv/reference/extension-points/org_eclipse_jdt_apt_core_annotationProcessorFactory.html
+
+http://help.eclipse.org/helios/basic/tocView.jsp?toc=/org.eclipse.jdt.doc.isv/toc.xml
+
+
+http://vimeo.com/8875862
+http://vimeo.com/8876702
+
+http://www.angelikalanger.com/Conferences/Slides/JavaAnnotationProcessing-JSpring-2008.pdf
+
+http://www.vogella.de/articles/EclipseJarToPlugin/article.html
