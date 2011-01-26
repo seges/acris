@@ -76,4 +76,12 @@ public class TextParseSupport {
 		}
 		return null;
 	}
+	
+	public String findMessageForEnum(Enum<?> enumeration) {
+		if(enumeration == null) {
+			return null;
+		}
+		ResourceBundle bundle = getBundle(enumeration.getClass().getName());
+		return bundle.getString(enumeration.name());
+	}
 }
