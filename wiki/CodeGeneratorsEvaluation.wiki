@@ -11,3 +11,152 @@ Comparison to PAP + usecases
   * what if you cannot annotate a class/interface?
     * PAP is useless? how to achieve this goal in PAP?
     * how to achieve it in MWE? -> custom DSL, sculptor DSL modification -> relatively easy? compare it against creating a mechanism of loading additional project-specific info into PAP
+
+==== PAP Model =====
+
+{{{
+@DistributionChannelModel.Package("sk.seges.acris.distribution")
+public interface DistributionChannelModel {
+
+	/** to be moved to framework */
+	public @interface Package {
+		String value() default "";
+	}
+
+	public @interface Module {}
+	public @interface Hint {
+		String value() default "";
+	}
+
+	public @interface ValueObject {}
+	public @interface DomainInterface {}
+	public @interface DomainInterfaceSpec {
+		PersistenceType[] generateDao();
+	}
+
+	public @interface DataTransferObject {}
+	public @interface Enumeration {}
+	public @interface PersistentObject {
+		public enum PersistenceType {
+			HIBERNATE, JPA, TWIG
+		}
+
+		PersistenceType[] value();
+	}
+
+	/** real definition. */
+	@Module
+	interface shared {
+
+		@Enumeration
+		interface DistributionState {
+			void CREATED();
+			void READY();
+			void DISTRIBUTED();
+		}
+
+		@DomainInterface
+		@DomainInterfaceSpec(generateDao = PersistenceType.HIBERNATE)
+		@DataTransferObject
+		@PersistentObject(PersistenceType.JPA)
+		interface DistributionItem {
+			DistributionState state();
+		}
+
+		@DomainInterface
+		@DomainInterfaceSpec(generateDao = PersistenceType.HIBERNATE)
+		@DataTransferObject
+		@PersistentObject(PersistenceType.JPA)
+		interface DistributionChannel {
+			String webId();
+			String name();
+			String parameters();
+
+			Set<DistributionItem> items();
+			DistributionChannelType channelType();
+			DistributionSchedule schedule();
+
+			interface Repository {
+				List<DistributionChannel> findByName(String name);
+			}
+		}
+
+		@Enumeration
+		interface DistributionChannelType {
+			void EMAIL();
+			void TWITTER();
+		}
+
+		@DomainInterface
+		@DomainInterfaceSpec(generateDao = PersistenceType.HIBERNATE)
+		@DataTransferObject
+		@PersistentObject(PersistenceType.JPA)
+		interface DistributionSchedule {}
+
+		@ValueObject
+		interface DistributionParameters {}
+
+		@ValueObject
+		interface EmailDistributionParameters extends DistributionParameters {
+			@Hint("mail.smtp.host")
+			String serverHost();
+		}
+	}
+}
+}}}
+
+==== MWE Sculptor model ====
+
+{{{
+Application AcrisDistribution {
+    basePackage=sk.seges.acris.distribution
+
+	Module shared {
+        enum DistributionChannelType {
+        	EMAIL,
+        	TWITTER
+        }
+        
+        enum DistributionState {
+        	CREATED,
+        	READY,
+        	DISTRIBUTED
+        }
+	
+        Entity DistributionChannel {
+        	not auditable
+        	String webId;
+        	String name;
+        	String parameters;
+        	-Set<@DistributionItem> items;
+        	- @DistributionChannelType channelType nullable;
+        	-DistributionSchedule schedule;
+        }
+
+        Entity DistributionRecipient {
+        	not auditable
+        	String parameters;
+        	-@DistributionChannel channel;
+        }
+
+        Entity DistributionItem {
+        	not auditable
+        	- @DistributionState state nullable;
+        	- @DistributionChannel channel;
+        	-DistributionSchedule schedule;
+        }
+        
+        Entity ContentDistributionItem extends @DistributionItem {
+        	not auditable
+        	String contentWebId;
+        	String contentLanguage;
+        	Long contentId;
+        }
+        
+		BasicType DistributionSchedule {
+			String schedule;
+		}
+	}
+}
+}}}
+}}}
