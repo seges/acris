@@ -9,8 +9,17 @@ Comparison to PAP + usecases
       * sculptor - a need to change the DSL = not practical
       * PAP - create annotation, write processor
   * what if you cannot annotate a class/interface?
-    * PAP is useless? how to achieve this goal in PAP?
+    * PAP is useless? how to achieve this goal in PAP? [easily achievable - use delegate annotation, for example @DataAccessObject(provider = Provider.INTERFACE, delegate = Person.class) - this will generate DAO for Person class instead of the file where the annotaton is defined)
     * how to achieve it in MWE? -> custom DSL, sculptor DSL modification -> relatively easy? compare it against creating a mechanism of loading additional project-specific info into PAP
+
+==PAP disadvantages==
+ * hard to write an annotation processor (need senior skill and a lot of experiences)
+ * longer time for learning java compiler API and processor API
+
+==PAP advantages==
+ * refactoring aware
+ * better integration with 3rd party libraries
+ * processors are indenpent and can be started separatelly (developer shoud have own implementation)
 
 ==== PAP Model =====
 
