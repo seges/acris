@@ -44,6 +44,7 @@
       * [AnnotationProcessing_DebuggingMaven Debugging annotation processorts using maven]
       * [AnnotationProcessing_DebuggingEclipse Debugging annotation processors using eclipse]
       * [CodeGenerationPlatform_IDAO Data Access Object interface annotation processor]
+      * [CodeGeneratorsEvaluation Evalution brainstorming]
     * [PortableApplication Writing portable application]
       * [PortableObjects Portable objects]
   * App engine integration
