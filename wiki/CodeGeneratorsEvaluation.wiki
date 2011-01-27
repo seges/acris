@@ -1,0 +1,13 @@
+#summary Brainstorming page for generator evaluation purposes
+== Pros & Cons & Ideas ==
+
+Comparison to PAP + usecases
+
+* generate code on top of objects that are in the 3rd-party library
+* configure different generators for different objects
+** example: typically you generate Hibernate DAOs and services for domain objects but you can also generate JSON/JAXB objects and parsers. You need to be able to define it somehow
+*** sculptor - a need to change the DSL = not practical
+*** PAP - create annotation, write processor
+* what if you cannot annotate a class/interface?
+** PAP is useless? how to achieve this goal in PAP?
+** how to achieve it in MWE? -> custom DSL, sculptor DSL modification -> relatively easy? compare it against creating a mechanism of loading additional project-specific info into PAP
