@@ -157,7 +157,29 @@ import static javax.lang.model.util.ElementFilter.*;
 List<ExecutableElement> fs = methodsIn(someClass.getEnclosedElements());
 }}}
 
+==Debugging possibilities==
+
+Althrought debugging annotation processors is not easy it is possible also directly in eclipse environment and also using maven. See details in:
+ * [AnnotationProcessing_DebuggingEclipse debugging annotation processors using eclipse]
+ * [AnnotationProcessing_DebuggingMaven debugging annotation processors using maven]
+
+= Conde generators =
+
+There shouldn't be the question why to generate code that should be generated, but the question should be how to generate that code and the code should looks like.
+
+Depending on our [PortableObjects portable architecture] we created following annotation processors that should simplifies your life:
+ 
+ * [http://code.google.com/p/acris/wiki/PortableObjects#Domain_object_declaration Domain object declaration] annotation processor
+ * [http://code.google.com/p/acris/wiki/PortableObjects#Transfer_object_declaration Transfer object declaration] annotation processor
+ * Data access object interface [CodeGenerationPlatform_IDAO annotation processor]
+ * Data access object hibernate base implementation annotation processor
+ * Data access object app engine base implementation annotation processor
+ * Service base implementation annotation processor
+ * Spring configuration annotation processor
+
 ==Testing==
+
+
 
 ==Processor pitfalls==
 
