@@ -163,7 +163,7 @@ Althrought debugging annotation processors is not easy it is possible also direc
  * [AnnotationProcessing_DebuggingEclipse debugging annotation processors using eclipse]
  * [AnnotationProcessing_DebuggingMaven debugging annotation processors using maven]
 
-= Conde generators =
+= Code generators =
 
 There shouldn't be the question why to generate code that should be generated, but the question should be how to generate that code and the code should looks like.
 
