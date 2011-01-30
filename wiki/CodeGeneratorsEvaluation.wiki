@@ -17,6 +17,7 @@ Comparison to PAP + usecases
 ==PAP disadvantages==
  * hard to write an annotation processor (need senior skill and a lot of experiences)
  * longer time for learning java compiler API and processor API
+ * not able to process local variable annotations (http://www.cs.rice.edu/~mgricken/research/laptjavac/)
 
 ==PAP advantages==
  * refactoring aware
