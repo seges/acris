@@ -19,8 +19,10 @@ public interface «name»Data<K> extends «IF hasSuperClass()»«getExtendsClass
 «DEFINE dataEntity FOR BasicType»
 	«FILE javaFileName(getDomainPackage() + "." + name + "Data")»
 package «getDomainPackage()»;
-		
-public interface «name»Data «IF hasSuperClass()» extends «getExtendsClassName()»Data«ENDIF» {
+
+import java.io.Serializable;
+
+public interface «name»Data extends«IF hasSuperClass()» «getExtendsClassName()»Data,«ENDIF» Serializable {
 	«EXPAND attribute FOREACH attributes»
 	«EXPAND reference FOREACH references»
 }
