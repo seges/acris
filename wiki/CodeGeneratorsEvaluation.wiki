@@ -11,6 +11,8 @@ Comparison to PAP + usecases
   * what if you cannot annotate a class/interface?
     * PAP is useless? how to achieve this goal in PAP? [easily achievable - use delegate annotation, for example @DataAccessObject(provider = Provider.INTERFACE, delegate = Person.class) - this will generate DAO for Person class instead of the file where the annotaton is defined)
     * how to achieve it in MWE? -> custom DSL, sculptor DSL modification -> relatively easy? compare it against creating a mechanism of loading additional project-specific info into PAP
+  * generate code in more projects based on one model - model is in a common project and other projects run different workflow against the model
+    * in PAP I think it is not possible to do
 
 ==PAP disadvantages==
  * hard to write an annotation processor (need senior skill and a lot of experiences)
@@ -19,7 +21,7 @@ Comparison to PAP + usecases
 ==PAP advantages==
  * refactoring aware
  * better integration with 3rd party libraries
- * processors are indenpent and can be started separatelly (developer shoud have own implementation)
+ * processors are indenpent and can be started separately (developer should have own implementation)
 
 ==== PAP Model =====
 
