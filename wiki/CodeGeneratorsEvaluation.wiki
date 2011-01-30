@@ -13,6 +13,8 @@ Comparison to PAP + usecases
     * how to achieve it in MWE? -> custom DSL, sculptor DSL modification -> relatively easy? compare it against creating a mechanism of loading additional project-specific info into PAP
   * generate code in more projects based on one model - model is in a common project and other projects run different workflow against the model
     * in PAP I think it is not possible to do
+  * generate only specific code - in MWE run specific workflow, in PAP run specific processor
+    * is it possible to run only specific PAP processor?
 
 ==PAP disadvantages==
  * hard to write an annotation processor (need senior skill and a lot of experiences)
