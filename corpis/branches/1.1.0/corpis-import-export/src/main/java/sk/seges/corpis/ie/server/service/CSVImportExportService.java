@@ -3,9 +3,11 @@
  */
 package sk.seges.corpis.ie.server.service;
 
-import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import sk.seges.corpis.ie.server.domain.CsvEntry;
 import sk.seges.corpis.ie.server.domain.RowBasedHandlerContext;
 import sk.seges.corpis.ie.shared.domain.ImportExportViolation;
+import sk.seges.corpis.ie.shared.domain.ViolationConstants;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 
@@ -24,7 +27,6 @@ import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
  */
 public abstract class CSVImportExportService {
 	private static final String ENTRY_MAPPING_METHOD = "getMapping";
-	private static final String FILE_NOT_FOUND = "fileNotFound";
 	private static final Logger log = LoggerFactory.getLogger(CSVImportExportService.class);
 
 	protected Map<String, CSVHandler<?, ?>> handlerMapping;
@@ -61,10 +63,16 @@ public abstract class CSVImportExportService {
 
 		List<CsvEntry> entries = null;
 		try {
-			entries = csv.parse(strat, new BufferedReader(new FileReader(file)), ',');
+//			Reader in = new BufferedReader(new FileReader(file));
+			Reader in = new InputStreamReader(new FileInputStream(file), "UTF-8");
+			entries = csv.parse(strat, in, ',');
 		} catch (FileNotFoundException e) {
 			log.warn("CSV File not found = " + file, e);
-			violations.add(new ImportExportViolation(FILE_NOT_FOUND, file));
+			violations.add(new ImportExportViolation(ViolationConstants.FILE_NOT_FOUND, file));
+			return violations;
+		} catch (UnsupportedEncodingException e) {
+			log.warn("CSV File not found = " + file, e);
+			violations.add(new ImportExportViolation(ViolationConstants.UNSUPPORTED_ENCODING, file));
 			return violations;
 		}
 		
