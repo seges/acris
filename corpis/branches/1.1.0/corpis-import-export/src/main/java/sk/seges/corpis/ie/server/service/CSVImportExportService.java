@@ -6,7 +6,6 @@ package sk.seges.corpis.ie.server.service;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sk.seges.corpis.ie.server.domain.RowBasedHandlerContext;
 import sk.seges.corpis.ie.server.domain.CsvEntry;
+import sk.seges.corpis.ie.server.domain.RowBasedHandlerContext;
 import sk.seges.corpis.ie.shared.domain.ImportExportViolation;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
@@ -29,6 +28,7 @@ public abstract class CSVImportExportService {
 	private static final Logger log = LoggerFactory.getLogger(CSVImportExportService.class);
 
 	protected Map<String, CSVHandler<?, ?>> handlerMapping;
+	private final CsvEntryMappingLoader mappingLoader;
 
 	protected abstract String detectFormat();
 
@@ -36,19 +36,10 @@ public abstract class CSVImportExportService {
 
 	protected abstract RowBasedHandlerContext instantiateContext();
 
-	public CSVImportExportService(Map<String, CSVHandler<?, ?>> handlerMapping) {
+	public CSVImportExportService(Map<String, CSVHandler<?, ?>> handlerMapping, CsvEntryMappingLoader mappingLoader) {
 		super();
 		this.handlerMapping = handlerMapping;
-	}
-
-	@SuppressWarnings("unchecked")
-	protected Map<String, String> getCsvMapping(Class<? extends CsvEntry> clz) {
-		try {
-			Method method = clz.getMethod(ENTRY_MAPPING_METHOD, (Class<?>[]) null);
-			return (Map<String, String>) method.invoke(null, (Object[]) null);
-		} catch (Exception e) {
-			throw new RuntimeException("No static method " + ENTRY_MAPPING_METHOD + "() found in " + clz, e);
-		}
+		this.mappingLoader = mappingLoader;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -61,8 +52,11 @@ public abstract class CSVImportExportService {
 		HeaderColumnNameTranslateMappingStrategy strat = new HeaderColumnNameTranslateMappingStrategy();
 		Class handledCsvEntryClass = handler.getHandledCsvEntryClass();
 		strat.setType(handledCsvEntryClass);
-		strat.setColumnMapping(getCsvMapping(handledCsvEntryClass));
+		strat.setColumnMapping(mappingLoader.loadMapping(handledCsvEntryClass));
 
+		Map<String, String> fieldToColumnMapping = mappingLoader.loadFieldToColumnMapping(handledCsvEntryClass);
+		handler.setFieldToColumnMapping(fieldToColumnMapping);
+		
 		String file = getDestination(contextTemplate);
 
 		List<CsvEntry> entries = null;
