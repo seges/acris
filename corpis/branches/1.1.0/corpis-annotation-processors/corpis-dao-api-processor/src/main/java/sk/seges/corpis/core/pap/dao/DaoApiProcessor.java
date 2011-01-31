@@ -1,12 +1,13 @@
 package sk.seges.corpis.core.pap.dao;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
@@ -92,12 +93,14 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 		}
 		return super.getConfigurationTypes(type, typeElement);
 	}
-	
+		
 	@Override
-	protected boolean isSupportedAnnotation(Annotation annotation) {
-		if (annotation instanceof DataAccessObject) {
-			return ((DataAccessObject)annotation).provider().equals(Provider.INTERFACE);
+	protected boolean isSupportedAnnotation(AnnotationMirror annotationMirror) {
+		AnnotationValue annotationValueByReturnType = getAnnotationValueByReturnType(toTypeElement(Provider.class), toTypeElement(DataAccessObject.class), annotationMirror);
+		
+		if (annotationValueByReturnType == null) {
+			return super.isSupportedAnnotation(annotationMirror);
 		}
-		return super.isSupportedAnnotation(annotation);
+		return annotationValueByReturnType.getValue().toString().equals(Provider.INTERFACE.name());
 	}
 }

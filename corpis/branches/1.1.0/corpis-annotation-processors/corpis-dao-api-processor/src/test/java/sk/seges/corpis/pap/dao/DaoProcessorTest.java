@@ -25,7 +25,7 @@ public class DaoProcessorTest extends AnnotationTest {
 		return toPath(packageName.getName());
 	}
 
-	private String toPath(String packageName) {
+	private String toPath(String packageName) { 
 		return packageName.replace(".", "/");
 	}
 
