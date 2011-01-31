@@ -13,6 +13,8 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -273,10 +275,12 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 	}
 	
 	@Override
-	protected boolean isSupportedAnnotation(Annotation annotation) {
-		if (annotation instanceof DataAccessObject) {
-			return ((DataAccessObject)annotation).provider().equals(Provider.HIBERNATE);
+	protected boolean isSupportedAnnotation(AnnotationMirror annotationMirror) {
+		AnnotationValue annotationValueByReturnType = getAnnotationValueByReturnType(toTypeElement(Provider.class), toTypeElement(DataAccessObject.class), annotationMirror);
+		
+		if (annotationValueByReturnType == null) {
+			return super.isSupportedAnnotation(annotationMirror);
 		}
-		return super.isSupportedAnnotation(annotation);
+		return annotationValueByReturnType.getValue().toString().equals(Provider.HIBERNATE.name());
 	}
 }

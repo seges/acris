@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>corpis-dao-implementation-processor</artifactId>
 	<name>corpis-dao-implementation-processor</name>
-	<description>Corpis Hibernate DAO processor</description>
+	<description>Corpis DAO Implementation processor</description>
 	<packaging>jar</packaging>
 
 	<parent>
