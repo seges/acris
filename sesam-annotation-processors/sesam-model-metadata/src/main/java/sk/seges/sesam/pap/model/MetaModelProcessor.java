@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Generated;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -31,6 +30,8 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
 import sk.seges.sesam.model.metadata.annotation.strategy.PojoPropertyConverter;
@@ -93,16 +94,19 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		return DEFAULT_CONFIG_FILE_LOCATION;
 	}
 
+	protected PackageValidatorProvider getPackageValidatorProvider() {
+		return new DefaultPackageValidatorProvider();
+	}
+
+	public static NamedType getOutputClass(MutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
+		return inputClass.addClassSufix(META_MODEL_SUFFIX);
+	}
+	
 	@Override
 	protected NamedType[] getTargetClassNames(MutableType inputClass) {
 		return new NamedType[] { 
-				inputClass.addClassSufix(META_MODEL_SUFFIX)
+				getOutputClass(inputClass, getPackageValidatorProvider()) 
 		};
-	}
-
-	@Override
-	protected void writeClassAnnotations(PrintWriter pw, Element el) {
-		pw.println("@" + Generated.class.getCanonicalName() + "(\"" + MetaModelProcessor.class.getCanonicalName() + "\")");
 	}
 
 	@Override
