@@ -58,6 +58,7 @@
 		<module>../corpis-import-export</module>
 		<module>../corpis-payment-api</module>
 		<module>../corpis-payment</module>
+		<module>../corpis-application-scaffold/corpis-application-scaffold-parent</module>
 	</modules>
 
 	<properties>
@@ -108,11 +109,17 @@
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-annotations-support</artifactId>
-				<version>${project.version}</version>
+				<version>${sesam-os.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-						
+
+
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-application-scaffold-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-dao-api</artifactId>
