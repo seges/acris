@@ -74,6 +74,13 @@
 				<artifactId>sesam-spring</artifactId>
 				<version>${pom.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-annotations-support</artifactId>
+				<type>test-jar</type>
+				<scope>test</scope>
+				<version>${pom.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
