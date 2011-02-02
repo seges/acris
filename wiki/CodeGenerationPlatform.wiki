@@ -124,7 +124,7 @@ Set of elements which comes as first parameter holds all the java classes which 
 
 ==How to run the processor?==
 
-If you want to use maven, see the [AnnotationProcessing Maven integration] section.
+If you want to use maven, see the [AnnotationProcessing_Maven Maven integration] section.
 
 If you want to use eclipse, see the [AnnotationProcessing_Eclipse Eclipse integration] section.
 
