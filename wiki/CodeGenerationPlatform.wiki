@@ -209,9 +209,9 @@ public void testMockEntityDao() {
 }
 }}}
 
-This will compile MockEntity class and will set MetaModelProcessor to a java compiler.
+This will compile !MockEntity class and will set !MetaModelProcessor to a java compiler.
 
-You can also specify output directory for the generated files by setting compiler option (CompilerOptions.GENERATED_SOURCES_DIRECTORY):
+You can also specify output directory for the generated files by setting compiler option (!CompilerOptions.GENERATED_SOURCES_DIRECTORY):
 
 {{{
 @Override
