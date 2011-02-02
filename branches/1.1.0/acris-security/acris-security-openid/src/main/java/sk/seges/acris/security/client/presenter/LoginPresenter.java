@@ -133,9 +133,9 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	@Override
 	public void bind(final HasWidgets parent) {
 		setLocaleFromCookies();
+		registerHandlers();
 		superBind(parent);
 		readLoginCookies();
-		registerHandlers();
 
 		AsyncCallback<String> stringCallback = null;
 		AsyncCallback<ClientSession> clientCallback = null;
