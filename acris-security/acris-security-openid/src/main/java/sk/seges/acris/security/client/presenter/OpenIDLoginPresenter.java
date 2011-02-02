@@ -71,10 +71,10 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 						resultSession.setSessionId(result);
 						handleSuccessfulLogin(resultSession);
 					} else {
-						superBind(parent);
-						readLoginCookies();
 						registerHandlers();
 						registerLoginHandlers(this);
+						superBind(parent);
+						readLoginCookies();
 					}
 				}
 
