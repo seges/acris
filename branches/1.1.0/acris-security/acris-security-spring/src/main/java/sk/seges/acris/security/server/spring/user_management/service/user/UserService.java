@@ -46,9 +46,11 @@ public class UserService implements IUserService {
 		HttpSession session = sessionProvider.getSession();
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
 
-		loginServiceProvider.getLoginService(token).logout();
-		session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
-		session.removeAttribute(LoginConstants.LOGGED_USER_NAME);
+		if (token != null) {
+			loginServiceProvider.getLoginService(token).logout();
+			session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
+			session.removeAttribute(LoginConstants.LOGGED_USER_NAME);
+		}
 	}
 
 	public UserData<?> getLoggedUser() throws ServerException {
