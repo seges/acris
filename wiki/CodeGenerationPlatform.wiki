@@ -288,3 +288,5 @@ public class MetaModelProcessorTest extends AnnotationTest {
 }}}
 
 ==Processor pitfalls==
+
+ * [CodeGenerationPlatform_Pitfall_Rounds Be aware of processing rounds] - it's very important to know what are the processing rounds and what is each round supposed to do. Most importatnt rule is "Do not generate files in the last round!". The last round is used to just for cleaning up the resources and for notification that processing is over.
