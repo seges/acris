@@ -1,4 +1,4 @@
-#summary Annotation processing pitfalls #1 - Be aware of maven eclipse dependencies
+#summary Annotation processing pitfalls #2 - Be aware of maven eclipse dependencies
 
 The problem is with the org.eclipse.osgi:org.eclipse.osgi.services dependency which has transitive dependeny to org.apache.felix:org.osgi.foundation. This JAR contains files from old java (probably 1.4) and I really don't understand why (but I'm pretty sure that it's reasonable and if someone knows the reason, please let me know in the comments section).
 
