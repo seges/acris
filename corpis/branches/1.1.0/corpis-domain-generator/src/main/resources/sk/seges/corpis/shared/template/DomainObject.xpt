@@ -30,7 +30,7 @@ public interface «name»Data extends«IF hasSuperClass()» «getExtendsClassNam
 «ENDDEFINE»
 
 «DEFINE dataEntity FOR Enum»
-	«EXPAND templates::DomainObject::domainObject»
+	«EXPAND templates::domain::DomainObject::domainObject»
 «ENDDEFINE»
 
 

@@ -23,7 +23,7 @@ package «getDomainPackage()».dto;
 import «getDomainPackage()».«name»Data;
 
 public class «name»Dto «IF hasSuperClass()» extends «extends.name»Dto«ENDIF» implements «name»Data<«getIdAttributeType(this)»> {
-	«EXPAND templates::DomainObject::serialVersionUID»
+	«EXPAND templates::domain::DomainObject::serialVersionUID»
 	
 	«EXPAND dtoAttribute FOREACH attributes»
 	«EXPAND dtoReference FOREACH references»

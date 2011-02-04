@@ -11,6 +11,6 @@
 		«EXPAND Hibernate::dataEntity FOREACH getAllDomainObjects(false)»
 		«EXPAND dataEntity FOREACH getAllDomainObjects(false)» 
 		«EXPAND dto FOREACH getAllDomainObjects(false)» 
-		«EXPAND templates::DomainObject::domainObject FOREACH getAllDomainObjects(false)»
+		«EXPAND templates::domain::DomainObject::domainObject FOREACH getAllDomainObjects(false)»
 		«EXPAND Gilead::dataEntity FOREACH getAllDomainObjects(false)»«ENDREM»
 «ENDDEFINE»

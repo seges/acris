@@ -7,7 +7,7 @@
 	«IF !modules.isEmpty»
 		«EXPAND DomainObject::dataEntity FOREACH getAllDomainObjects(false)» 
 		«EXPAND DomainTransferObject::dto FOREACH getAllDomainObjects(false)» 
-		«REM»«EXPAND templates::DomainObject::domainObject FOREACH getAllDomainObjects(false)»
+		«REM»«EXPAND templates::domain::DomainObject::domainObject FOREACH getAllDomainObjects(false)»
 		«EXPAND Gilead::dataEntity FOREACH getAllDomainObjects(false)»«ENDREM»
 	«ENDIF»
 «ENDDEFINE»
