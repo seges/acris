@@ -91,8 +91,6 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	private Map<ConfigurationType, Set<NamedType>> configurationParameters = new HashMap<ConfigurationType, Set<NamedType>>();
 	private Map<String, Set<SubProcessor<?>>> subProcessors = new HashMap<String, Set<SubProcessor<?>>>();
 	
-	protected Set<Element> processingElements = new HashSet<Element>();
-
 	protected boolean hasSubProcessor(TypeElement element) {
 		return subProcessors.get(element.getQualifiedName().toString()) != null;
 	}
@@ -151,8 +149,14 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		}
 				
 		Properties prop = new Properties();
+		InputStream inputStreamForResource = getInputStreamForResource(location);
+
+		if (inputStreamForResource == null) {
+			processingEnv.getMessager().printMessage(Kind.NOTE, "Configuration file not found " + location);
+			return;
+		}
 		try {
-			prop.load(getInputStreamForResource(location));
+			prop.load(inputStreamForResource);
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to initialize.", e);
 		}
@@ -280,12 +284,8 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		if (roundEnv.processingOver()) {
-			// finally process gathered elements and create java files
-			for (Element element : processingElements) {
-				processElement(element, roundEnv);
-			}
-		} else {
+		if (!roundEnv.processingOver()) {
+			Set<Element> processingElements = new HashSet<Element>();
 			for (NamedType annotationType : getProcessingAnnotations(DefaultConfigurationType.PROCESSING_ANNOTATIONS)) {
 					TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(annotationType.getQualifiedName());
 					
@@ -313,6 +313,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 						processingElements.add(element);
 					}
 				}
+			}
+			
+			for (Element element: processingElements) {
+				processElement(element, roundEnv);
 			}
 		}
 

@@ -8,4 +8,6 @@ public class Person {
 	String lastName;  
 	String phone; 
 	String fax;
+	String nieco;
+	String dalsie;
 }

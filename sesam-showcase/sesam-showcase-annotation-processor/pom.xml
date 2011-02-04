@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>sesam-annotations-support-showcase</artifactId>
-	<name>sesam-annotations-support-showcase</name>
-	<description>SeSAM Annotations support showcase</description>
+	<artifactId>sesam-showcase-annotation-processor</artifactId>
+	<name>sesam-showcase-annotation-processor</name>
+	<description>SeSAM Annotation processor showcase</description>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -13,14 +13,4 @@
 		<relativePath>../sesam-showcase-parent/pom.xml</relativePath>
 	</parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-annotations-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-showcase-playground</artifactId>
-		</dependency>
-	</dependencies>
 </project>
