@@ -17,6 +17,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -34,8 +35,8 @@ import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
-import sk.seges.sesam.model.metadata.annotation.strategy.PojoPropertyConverter;
-import sk.seges.sesam.model.metadata.annotation.strategy.api.ModelPropertyConverter;
+import sk.seges.sesam.model.metadata.strategy.PojoPropertyConverter;
+import sk.seges.sesam.model.metadata.strategy.api.ModelPropertyConverter;
 
 /**
  * Generates meta model interfaces for all relevant classes. The definition of which classes to process is following
@@ -172,6 +173,10 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		}
 	}
 
+	protected ElementKind getElementKind() {
+		return ElementKind.INTERFACE;
+	};
+	
 	private String getPropertyName(String simpleMethodName, int count) {
 		if (simpleMethodName.length() > count) {
 			return ("" + simpleMethodName.charAt(count)).toLowerCase() + simpleMethodName.substring(count + 1);
@@ -258,7 +263,7 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 
 				if (cache.add(convertedThis)) {
 					pw.println(indent(
-							"public static " + String.class.getSimpleName() + " " + convertedThis + " = \"" + prefix
+							"public static final " + String.class.getSimpleName() + " " + convertedThis + " = \"" + prefix
 									+ selectedConverter.getConvertedPropertyValue(property) + "\";", level + 1));
 					pw.println();
 				}
@@ -335,7 +340,7 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 					
 					classConstantsCache.add(convertedName);
 
-					pw.println(indent("public static " + String.class.getSimpleName() + " " + convertedName + " = \""
+					pw.println(indent("public final static " + String.class.getSimpleName() + " " + convertedName + " = \""
 							+ beanPropertyConverter.getConvertedPropertyValue(prefix + property) + "\";", level));
 					pw.println();
 				}

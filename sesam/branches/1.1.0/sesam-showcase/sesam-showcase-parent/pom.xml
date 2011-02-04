@@ -14,8 +14,9 @@
 	</parent>
 
 	<modules>
-		<module>../sesam-annotations-support-showcase</module>
+		<module>../sesam-showcase-annotations-support</module>
 		<module>../sesam-showcase-playground</module>
+		<module>../sesam-showcase-annotation-processor</module>
 	</modules>
 
 	<dependencyManagement>
@@ -30,18 +31,11 @@
 				<artifactId>sesam-showcase-playground</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<!-- Plugin deps -->
 			<dependency>
-				<groupId>org.eclipse.core</groupId>
-				<artifactId>org.eclipse.core.runtime</artifactId>
-				<version>3.6.0.v20100505</version>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-showcase-annotation-processor</artifactId>
+				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.eclipse.equinox</groupId>
-    				<artifactId>org.eclipse.equinox.common</artifactId>
-		    		<version>3.6.0.v20100503</version>
-			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 </project>

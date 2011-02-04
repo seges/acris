@@ -63,7 +63,7 @@ public class TransferObjectProcessor extends AbstractConfigurableProcessor {
 	@Override 
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
 
-		processingEnv.getMessager().printMessage(Kind.ERROR, "Processing class " + element);
+		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing class " + element);
 
 		for (Element fieldElement: ElementFilter.fieldsIn(element.getEnclosedElements())) {
 			if (fieldElement.getKind().equals(ElementKind.FIELD)) {

@@ -1,4 +1,4 @@
-package sk.seges.sesam.model.metadata.annotation.strategy.api;
+package sk.seges.sesam.model.metadata.strategy.api;
 
 public interface ModelPropertyConverter {
 

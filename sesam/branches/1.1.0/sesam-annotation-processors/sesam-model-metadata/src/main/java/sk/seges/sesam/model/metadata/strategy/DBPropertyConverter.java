@@ -1,24 +1,30 @@
-package sk.seges.sesam.model.metadata.annotation.strategy;
+package sk.seges.sesam.model.metadata.strategy;
 
-import sk.seges.sesam.model.metadata.annotation.strategy.api.ModelPropertyConverter;
+import sk.seges.sesam.model.metadata.strategy.api.ModelPropertyConverter;
 
 
-public class PojoPropertyConverter implements ModelPropertyConverter {
+public class DBPropertyConverter implements ModelPropertyConverter {
 
-	public PojoPropertyConverter() {	
+	private final String DB_PREFIX = "DB_";
+
+	public DBPropertyConverter() {	
 	}
 	
 	@Override
 	public String getConvertedPropertyValue(String originalPropertyName) {
-		return originalPropertyName;
+		return convertInPOJOWay(originalPropertyName).toLowerCase();
 	}
 
 	@Override
 	public String getConvertedPropertyName(String originalPropertyName) {
+		return DB_PREFIX + convertInPOJOWay(originalPropertyName);
+	}
+
+	private String convertInPOJOWay(String name) {
 		String result = "";
 
-		for (int i = 0; i < originalPropertyName.length(); i++) {
-			char c = originalPropertyName.charAt(i);
+		for (int i = 0; i < name.length(); i++) {
+			char c = name.charAt(i);
 			if (Character.isUpperCase(c)) {
 				result += "_";
 			}
@@ -27,7 +33,7 @@ public class PojoPropertyConverter implements ModelPropertyConverter {
 
 		return result.toUpperCase();
 	}
-
+	
 	@Override
 	public boolean handleMethods() {
 		return true;
