@@ -1,6 +1,6 @@
 #summary Annotation processing pitfalls #1 - Be aware of processor rounds
 
-It tooks me quite a long time to fully understand the compiler API and annotation processing API. After tons of coffe and many pernoctations I was well prepared and I thought that I can write a good annotation processor that will be reusable and reduces writing of repeatable code. But I was wrong, I missed one very important thing. In time of writing my first annotation processor I did not realize that generating code in the last processor round (when `roundEnv.processingOver() == true`) is very bad practise. So, how was my first annotation processor looks like?
+It tooks me quite a long time to fully understand the compiler API and annotation processing API. After tons of coffe and many pernoctations I was well prepared and I thought that I can write a good annotation processor that will be reusable and reduces writing of repeatable code. But I was wrong, I missed one very important thing. In time of writing my first annotation processor I did not realize that generating code in the last processor round (when `roundEnv.processingOver() == true`) is very bad practise. So, how did my first annotation processor looks like?
 
 {{{
 package sk.seges.sesam.core.pap;
@@ -83,18 +83,16 @@ public class BadAnnotationProcessor extends AbstractProcessor {
 }
 }}}
 
-Notice, that the generating of the new java class is done when condition roundEnv.processingOver() is true... And, what's wrong with this approach?
- * Firstly, the last processing round is not dedicated to generation process. It's used to make a final resource cleanup, nothing more.
- * Thanks to the maven fundamentals, there are no problems with maven integration - firstly the maven plugin is executed and generates all java classes using annotation processors, then compiler plugin is executed and all available classes are compiled. This strict process separation ensures that it does not matter in which processor round you are generating new source classes.
+Notice, that the generating of the new java classes is done in roundEnv.processingOver() equals true condition ... And, what's wrong with this approach?
+ * Firstly, the last processing round is not dedicated to process of generation phase. It's used to make a final resource cleanup and nothing more.
+ * Thanks to the maven fundamentals, there are no problems with the maven integration - At first the maven plugin is executed and generates all java classes using annotation processors, then compiler plugin is executed and all available classes are compiled. This strict process separation ensures that it does not matter in which processor round you are producing a new source classes.
  * But there is problem with eclipse integration. Eclipse compiler will simply do not compile java files that are produced in the last round even if they exists in the eclipse build path.
 
-I found at least 2 more people that had problem as I'm, but they did not find the solution (only one very time consuming work-arround):
+I found at least 2 more people that had problem as I had, but they did not find the solution (only one very time consuming work-arround, but anyway I was happy that I'm not alone :-) ):
  * http://stackoverflow.com/questions/3580564/eclipse-3-5-annotation-processor-generated-classes-cannot-be-imported
  * https://forum.hibernate.org/viewtopic.php?f=1&t=1004784
 
-But after a couple of hours I finally found the root of all evil. I rewrote the annotation processor and it starts perfectly working also with eclipse and maven together.
-
-So the new annotation processor should looks like this one:
+But after a couple of hours I finally found the root of all evil. I rewrote the annotation processor and it starts perfectly working also with eclipse and maven together. So, what I've changed in the implementation?
 
 {{{
 package sk.seges.sesam.core.pap;
