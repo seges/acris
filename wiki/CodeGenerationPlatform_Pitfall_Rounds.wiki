@@ -1,6 +1,6 @@
 #summary Annotation processing pitfalls #1 - Be aware of processor rounds
 
-It tooks me quite a long time to fully understand the compiler API and annotation processing API. After tons of coffe and many pernoctations I was well prepared and I thought that I can write a good annotation processor that will be reusable and reduces writing of repeatable code. But I was wrong, I missed one very important thing. In time of writing first annotation processor I did not realize that generating code is the last processor round (when `roundEnv.processingOver() == true`) is very bad practise. My first annotation processor looks like this:
+It tooks me quite a long time to fully understand the compiler API and annotation processing API. After tons of coffe and many pernoctations I was well prepared and I thought that I can write a good annotation processor that will be reusable and reduces writing of repeatable code. But I was wrong, I missed one very important thing. In time of writing my first annotation processor I did not realize that generating code in the last processor round (when `roundEnv.processingOver() == true`) is very bad practise. So, how was my first annotation processor looks like?
 
 {{{
 package sk.seges.sesam.core.pap;
