@@ -1,6 +1,6 @@
 #summary Annotation processing pitfalls #1 - Be aware of processor rounds
 
-It tooks me quite a long time to fully understand the compiler API and annotation processing API. After tons of coffe and many pernoctations I was well prepared and I thought that I can write a good annotation processor that will be reusable and reduces writing of repeatable code. But I was wrong, I missed one very important thing. In time of writing first annotation processor I did not realize that generating code is the last processor round (when roundEnv.processingOver() == true) is very bad practise. My first annotation processor looks like this:
+It tooks me quite a long time to fully understand the compiler API and annotation processing API. After tons of coffe and many pernoctations I was well prepared and I thought that I can write a good annotation processor that will be reusable and reduces writing of repeatable code. But I was wrong, I missed one very important thing. In time of writing first annotation processor I did not realize that generating code is the last processor round (when `roundEnv.processingOver() == true`) is very bad practise. My first annotation processor looks like this:
 
 {{{
 package sk.seges.sesam.core.pap;
@@ -92,7 +92,7 @@ I found at least 2 more people that had problem as I'm, but they did not find th
  * http://stackoverflow.com/questions/3580564/eclipse-3-5-annotation-processor-generated-classes-cannot-be-imported
  * https://forum.hibernate.org/viewtopic.php?f=1&t=1004784
 
-But after a couple of hours I finally found the roo of all evil. I rewrote the annotation processor and it starts perfectly working also with eclipse and maven together.
+But after a couple of hours I finally found the root of all evil. I rewrote the annotation processor and it starts perfectly working also with eclipse and maven together.
 
 So the new annotation processor should looks like this one:
 
