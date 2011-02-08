@@ -58,16 +58,18 @@ public class LikeExpression<T extends Comparable<? extends Serializable>> extend
 		return mode;
 	}
 	
-	public void setMode(MatchMode mode) {
+	public LikeExpression<T> setMode(MatchMode mode) {
 		this.mode = mode;
+		return this;
 	}
 	
 	public boolean isCaseSensitive() {
 		return caseSensitive;
 	}
 	
-	public void setCaseSensitive(boolean caseSensitive) {
+	public LikeExpression<T> setCaseSensitive(boolean caseSensitive) {
 		this.caseSensitive = caseSensitive;
+		return this;
 	}
 	
 	public static enum MatchMode {
