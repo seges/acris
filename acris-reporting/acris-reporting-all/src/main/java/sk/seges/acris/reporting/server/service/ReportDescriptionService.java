@@ -14,6 +14,7 @@ import sk.seges.acris.reporting.rpc.dao.IReportDescriptionDao;
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 import sk.seges.acris.reporting.shared.service.IReportDescriptionService;
+import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 
@@ -95,8 +96,9 @@ public class ReportDescriptionService extends RemoteServiceServlet implements IR
 	@Override
 	@Transactional
 	public List<ReportDescriptionData> findByName(String name) {
-//		return reportDescriptionDao.findByName(name);
-		return null;
+		Page page = new Page(0, Page.ALL_RESULTS);
+		page.setFilterable(Filter.eq(ReportDescriptionData.NAME_ATTR).setValue(name));
+		return reportDescriptionDao.findAll(page).getResult();
 	}	
 
 }
