@@ -25,12 +25,14 @@ public class BetweenExpression<T extends Comparable<? extends Serializable>> ext
 		this.hiValue = hiValue;
 	}
 
-	public void setLoValue(T loValue) {
+	public BetweenExpression<T> setLoValue(T loValue) {
 		setValue(loValue);
+		return this;
 	}
 	
-	public void setHiValue(T hiValue) {
+	public BetweenExpression<T> setHiValue(T hiValue) {
 		this.hiValue = hiValue;
+		return this;
 	}
 	
 	public T getLoValue() {
