@@ -12,6 +12,10 @@ public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescriptio
 		super(ReportDescription.class);
 	}
 	
+	public ReportDescription findUnique(sk.seges.sesam.dao.Page page) {
+		return super.findUnique(page);
+	}
+	
 //	@PersistenceContext(unitName = "acrisEntityManagerFactory")
 //	public void setEntityManager(EntityManager em) {
 //		super.setEntityManager(em);
