@@ -65,7 +65,7 @@
 		<module>../acris-common</module>
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
-		<module>../acris-recorder</module>
+		<!--module>../acris-recorder</module-->
 		<module>../acris-reporting</module>
 		<module>../acris-security</module>
 		<module>../acris-site</module>
