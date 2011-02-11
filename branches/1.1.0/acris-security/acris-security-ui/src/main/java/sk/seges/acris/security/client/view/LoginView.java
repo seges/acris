@@ -55,6 +55,8 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	private Boolean rememberMeAware;
 	private CheckBox rememberMeCheckbox = GWT.create(CheckBox.class);
+	
+	private boolean initialized = false;
 
 	/**
 	 * Creates a new Login Panel.
@@ -136,7 +138,10 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	@Override
 	protected void onLoad() {
-		initComponents();
+		if(!initialized) {
+			initComponents();
+			initialized = true;
+		}
 	}
 
 	protected void initComponents() {
