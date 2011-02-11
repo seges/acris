@@ -13,29 +13,33 @@
 
 	<description>Domain generator Import</description>
 	
+	<properties>
+		<sculptor.version>2.0.0-20110203.212026-20</sculptor.version>
+	</properties>
+
 	<dependencies>
 			<!-- generator -->
 			<dependency>
 				<groupId>org.fornax.cartridges</groupId>
 				<artifactId>fornax-cartridges-sculptor-generator</artifactId>
-				<version>2.0.0-SNAPSHOT</version>
+				<version>2.0.0-20110203.212026-20</version>
 			</dependency>
 			
 		<dependency>
 			<groupId>org.fornax.cartridges</groupId>
 			<artifactId>fornax-cartridges-sculptor-metamodel</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
+			<version>2.0.0-20110203.111151-16</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fornax.cartridges</groupId>
 			<artifactId>org.fornax.cartridges.sculptor.dsl</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
+			<version>2.0.0-20110203.110943-17</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.fornax.cartridges</groupId>
 			<artifactId>org.fornax.cartridges.sculptor.gui.dsl</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
+			<version>2.0.0-20110203.111113-17</version>
 			<scope>runtime</scope>
 		</dependency>
 		
