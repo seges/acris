@@ -98,4 +98,9 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData<?>> 
 		criteria.add(Restrictions.eq(UserDataBeanWrapper.USERNAME, username));
 		return findUniqueResultByCriteria(criteria);
 	}
+
+	@Override
+	public UserData<?> getEntityInstance() {
+		return new HibernateGenericUser();
+	}
 }
