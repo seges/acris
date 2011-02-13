@@ -1,5 +1,8 @@
 package sk.seges.acris.reporting.rpc.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.stereotype.Component;
 
 import sk.seges.acris.reporting.rpc.domain.ReportDescription;
@@ -16,10 +19,10 @@ public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescriptio
 		return super.findUnique(page);
 	}
 	
-//	@PersistenceContext(unitName = "acrisEntityManagerFactory")
-//	public void setEntityManager(EntityManager em) {
-//		super.setEntityManager(em);
-//	}
+	@PersistenceContext(unitName = "acrisEntityManagerFactory")
+	public void setEntityManager(EntityManager em) {
+		super.setEntityManager(em);
+	}
 //	
 //	/* (non-Javadoc)
 //	 * @see sk.seges.hroddelenie.dao.reporting.IReportDescription#findById(java.lang.Long)
