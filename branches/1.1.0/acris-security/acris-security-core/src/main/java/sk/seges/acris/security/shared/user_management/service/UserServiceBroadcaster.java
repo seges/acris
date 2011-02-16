@@ -390,7 +390,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 							for (Entry<String, ClientSession> entry : successes.entrySet()) {
 								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
 									UserData<?> entryUser = entry.getValue().getUser();
-									if (user != null) {
+									if (user != null && user.getUserAuthorities() != null) {
 										add(entryUser.getUserAuthorities(), authorities);
 										primaryResult.merge(entry.getValue());
 									}
