@@ -130,9 +130,9 @@
 						<file>
 							<name>.factorypath</name>
 							<content><![CDATA[<factorypath>
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-json/${pom.version}/acris-json-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
 							  	</factorypath>
 								  ]]>
 							</content>
@@ -163,7 +163,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<version>2.0.0</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -230,7 +229,10 @@
 			<artifactId>acris-security-spring</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
+		<dependency>
+			<groupId>${pom.groupId}</groupId>
+			<artifactId>acris-server-appengine</artifactId>
+		</dependency>
 		<!-- Acris showcase dependencies -->
 		<dependency>
 			<groupId>${groupId}</groupId>
@@ -261,7 +263,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.gwtplatform</groupId>
-			<artifactId>gwtp</artifactId>
+			<artifactId>gwtp-all</artifactId>
 		</dependency>
 
 		<!-- Guice dependencies -->
@@ -349,7 +351,7 @@
 			<artifactId>xmlbeans-xpath</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-		
+
 		<!-- ExtGWT dependencies -->
 		<dependency>
 			<groupId>com.extjs</groupId>
