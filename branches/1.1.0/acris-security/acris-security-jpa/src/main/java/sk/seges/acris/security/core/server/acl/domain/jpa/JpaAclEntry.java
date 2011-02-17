@@ -10,14 +10,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntryBeanWrapper;
+import sk.seges.acris.security.server.core.acl.domain.api.AclEntryMetaModel;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.server.core.acl.domain.dto.AclEntryDTO;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 @Entity
-@Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", AclEntryBeanWrapper.DB_ACE_ORDER})})
+@Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", AclEntryMetaModel.DB_ACE_ORDER})})
 public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Long> {
 
 	private static final long serialVersionUID = -7561144169564944658L;
@@ -52,7 +52,7 @@ public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Lon
 		return super.getMask();
 	}
 
-	@Column(name = AclEntryBeanWrapper.DB_ACE_ORDER, nullable = false)
+	@Column(name = AclEntryMetaModel.DB_ACE_ORDER, nullable = false)
 	public int getAceOrder() {
 		return super.getAceOrder();
 	}
@@ -62,12 +62,12 @@ public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Lon
 		return super.isGranting();
 	}
 
-	@Column(name = AclEntryBeanWrapper.DB_AUDIT_SUCCESS, nullable = false)
+	@Column(name = AclEntryMetaModel.DB_AUDIT_SUCCESS, nullable = false)
 	public boolean isAuditSuccess() {
 		return super.isAuditSuccess();
 	}
 
-	@Column(name = AclEntryBeanWrapper.DB_AUDIT_FAILURE, nullable = false)
+	@Column(name = AclEntryMetaModel.DB_AUDIT_FAILURE, nullable = false)
 	public boolean isAuditFailure() {
 		return super.isAuditFailure();
 	}

@@ -5,7 +5,9 @@ import java.util.List;
 import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
+import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
+@MetaModel
 public class GenericUserDTO implements UserData<Long> {
 
 	private static final long serialVersionUID = 6311173194141382224L;
