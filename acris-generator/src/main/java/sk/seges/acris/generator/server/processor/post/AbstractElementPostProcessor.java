@@ -15,7 +15,6 @@ public abstract class AbstractElementPostProcessor {
 
 	public abstract boolean process(Node node);
 
-	protected GeneratorToken defaultToken;
 	protected WebSettingsData webSettings;
 	protected GeneratorToken generatorToken;
 
@@ -52,9 +51,12 @@ public abstract class AbstractElementPostProcessor {
 		return null;
 	}
 
-	public void setPostProcessorPageId(GeneratorToken token, GeneratorToken defaultToken) {
+	protected GeneratorToken getGeneratorToken() {
+		return generatorToken;
+	}
+	
+	public void setGeneratorToken(GeneratorToken token) {
 		this.generatorToken = token;
-		this.defaultToken = defaultToken;
 		webSettings = webSettingsService.getWebSettings(token.getWebId());
 	}
 }

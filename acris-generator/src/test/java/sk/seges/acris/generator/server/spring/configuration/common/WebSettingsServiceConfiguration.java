@@ -1,4 +1,4 @@
-package sk.seges.acris.generator.server.spring.configuration;
+package sk.seges.acris.generator.server.spring.configuration.common;
 
 import java.util.Map;
 
@@ -7,8 +7,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
-import sk.seges.acris.generator.server.processor.IContentInfoProvider;
-import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
@@ -24,12 +22,6 @@ public class WebSettingsServiceConfiguration {
 	private ApplicationContext applicationContext;
 
 	@Bean
-	public HtmlPostProcessing htmlPostProcessing() {
-		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
-		return new HtmlPostProcessing(abstractPostProcessors.values());
-	}
-
-	@Bean
 	public IWebSettingsBuilder webSettingsBuilder() {
 		return new DefaultWebSettingsBuilder();
 	}
@@ -40,7 +32,8 @@ public class WebSettingsServiceConfiguration {
 	}
 	
 	@Bean
-	public IContentInfoProvider contentInfoProvider() {
-		return new MockContentInfoProvider();
+	public HtmlPostProcessing htmlPostProcessing() {
+		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
+		return new HtmlPostProcessing(abstractPostProcessors.values());
 	}
 }

@@ -4,15 +4,16 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
 
-import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagPostProcessor;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.node.NodeDefinition;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils.MetaTagNameAttribute;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public class DescriptionMetaTagAppenderPostProcessor extends AbstractMetaTagAppenderPostProcessor {
 
-	public DescriptionMetaTagAppenderPostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
+	public DescriptionMetaTagAppenderPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentMetaDataProvider) {
+		super(webSettingsService, contentMetaDataProvider);
 	}
 
 	@Override
@@ -22,8 +23,10 @@ public class DescriptionMetaTagAppenderPostProcessor extends AbstractMetaTagAppe
 
 	@Override
 	public boolean process(Node node) {
-		if (NodesUtils.getChildNode(node, MetaTag.class, new MetaTagNameAttribute(DescriptionMetaTagPostProcessor.DESCRIPTION_TAG_NAME)) == null) {
-			appendMetaTag((HeadTag) node, DescriptionMetaTagPostProcessor.DESCRIPTION_TAG_NAME, contentInfoProvider.getContentDescription(generatorToken));
+		if (NodesUtils.getChildNode(node, MetaTag.class, new MetaTagNameAttribute(NodeDefinition.DESCRIPTION_TAG_NAME)) == null) {
+			if (getContent().getDescription() != null && getContent().getDescription().length() > 0) {
+				appendMetaTag((HeadTag) node, NodeDefinition.DESCRIPTION_TAG_NAME, getContent().getDescription());
+			}
 		}
 		return true;
 	}

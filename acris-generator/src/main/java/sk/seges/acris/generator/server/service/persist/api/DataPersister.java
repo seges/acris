@@ -1,6 +1,8 @@
 package sk.seges.acris.generator.server.service.persist.api;
 
+import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
+
 public interface DataPersister {
 
-	void writeTextToFile(String directory, String filename, String content);
+	void writeTextToFile(PersistentDataProvider persistentDataProvider);
 }

@@ -11,7 +11,7 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
- * @author fat
+ * @author Peter Simun (simun@seges.sk)
  */
 public interface IGeneratorService extends RemoteService {
 

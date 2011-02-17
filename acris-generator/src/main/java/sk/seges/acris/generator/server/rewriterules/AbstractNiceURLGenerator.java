@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import sk.seges.acris.generator.server.processor.IContentInfoProvider;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
@@ -39,7 +39,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		this.legacyRedirectSingleFile = legacyRedirectSingleFile;
 	}
 	
-	private IContentInfoProvider contentInfoProvider;
+	private ContentDataProvider contentInfoProvider;
 	
 	protected abstract String getDefaultRewriteRule();
 	protected abstract String getRewriteRule(String fromURL, String toURL);
@@ -233,7 +233,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		this.redirectCondition = redirectCondition;
 	}
 
-	public void setContentInfoProvider(IContentInfoProvider contentInfoProvider) {
+	public void setContentInfoProvider(ContentDataProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
 	}
 }

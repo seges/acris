@@ -9,13 +9,15 @@ import org.htmlparser.tags.OptionTag;
 import org.htmlparser.tags.SelectTag;
 import org.htmlparser.util.NodeList;
 
+import sk.seges.acris.domain.shared.domain.api.ContentData;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProcessor {
+public class LanguageSelectorPostProcessor extends AbstractContentMetaDataPostProcessor {
 
-	public LanguageSelectorPostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
+	public LanguageSelectorPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentInfoProvider) {
+		super(webSettingsService, contentInfoProvider);
 	}
 
 	private String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
@@ -84,7 +86,11 @@ public class LanguageSelectorPostProcessor extends AbstractContentInfoPostProces
 			nodeList.add(textNode);
 			linkTag.setChildren(nodeList);
 			
-			String translatedNiceUrl = contentInfoProvider.findNiceurlForLanguage(generatorToken.getNiceUrl(), languageValue, generatorToken.getWebId());
+			ContentData<?> content = contentMetaDataProvider.getContentForLanguage(getContent(), languageValue);
+			if (content == null) {
+				continue;
+			}
+			String translatedNiceUrl = content.getNiceUrl();
 			String url = linkWebSettings.getTopLevelDomain();
 			
 			if (url == null) {

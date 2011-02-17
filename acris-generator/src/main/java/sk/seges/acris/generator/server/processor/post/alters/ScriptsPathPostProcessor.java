@@ -16,11 +16,10 @@ public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 
 	@Override
 	public boolean supports(Node node) {
-		
+
 		if (node instanceof ScriptTag) {
-			ScriptTag scriptTag = (ScriptTag)node;
-			return (isPathRelative(getPath(node)) &&
-					compareIgnoreCaseNullSafe(scriptTag.getType(), JS_TYPE));
+			ScriptTag scriptTag = (ScriptTag) node;
+			return (isPathRelative(getPath(node)) && compareIgnoreCaseNullSafe(scriptTag.getType(), JS_TYPE));
 		}
 
 		return false;
@@ -28,7 +27,7 @@ public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 
 	@Override
 	protected String getPath(Node node) {
-		ScriptTag scriptTag = (ScriptTag)node;
+		ScriptTag scriptTag = (ScriptTag) node;
 		String path = scriptTag.getAttribute(SRC);
 		if (path != null && path.length() > 0) {
 			return path;
@@ -38,7 +37,7 @@ public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 
 	@Override
 	protected void setPath(Node node, String path) {
-		ScriptTag scriptTag = (ScriptTag)node;
+		ScriptTag scriptTag = (ScriptTag) node;
 		scriptTag.setAttribute(SRC, path);
 	}
 }

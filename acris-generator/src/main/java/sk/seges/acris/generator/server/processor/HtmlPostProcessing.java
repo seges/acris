@@ -15,7 +15,6 @@ import org.htmlparser.util.ParserException;
 
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.AbstractContentInfoPostProcessor;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public class HtmlPostProcessing {
@@ -31,7 +30,7 @@ public class HtmlPostProcessing {
 		this.postProcessors = postProcessors;
 	}
 
-	public boolean setProcessorContent(final String content, GeneratorToken token, IContentInfoProvider contentInfoProvider) {
+	public boolean setProcessorContent(final String content, GeneratorToken token) {
 		if (postProcessors == null || postProcessors.size() == 0) {
 			throw new RuntimeException("No HTML postprocessor registered.");
 		}
@@ -46,21 +45,18 @@ public class HtmlPostProcessing {
 		
 		try {
 			nodeIterator = parser.elements();
-			return processNodes(token, contentInfoProvider);
+			return processNodes(token);
 		} catch (ParserException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private boolean processNodes(GeneratorToken token, IContentInfoProvider contentInfoProvider) throws ParserException {
+	private boolean processNodes(GeneratorToken token) throws ParserException {
 		
-		GeneratorToken defaultGeneratorToken = contentInfoProvider.getDefaultContent(token.getWebId(), token.getLanguage());
+//		GeneratorToken defaultGeneratorToken = contentInfoProvider.getDefaultContent(token.getWebId(), token.getLanguage());
 		
 		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-			elementPostProcessor.setPostProcessorPageId(token, defaultGeneratorToken);
-			if (elementPostProcessor instanceof AbstractContentInfoPostProcessor) {
-				((AbstractContentInfoPostProcessor)elementPostProcessor).setContentInfoProvider(contentInfoProvider);
-			}
+			elementPostProcessor.setGeneratorToken(token);
 		}
 		
 		while (nodeIterator.hasMoreNodes()) {
