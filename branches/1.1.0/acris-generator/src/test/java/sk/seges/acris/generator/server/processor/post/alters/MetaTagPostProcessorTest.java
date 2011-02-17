@@ -2,6 +2,7 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -18,6 +19,7 @@ public class MetaTagPostProcessorTest extends AbstractTest {
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/metatag/";
 
 	@Test
+	@DirtiesContext
 	public void testMetaDataPostProcessor() {
 		IWebSettingsBuilder webSettingsBuilder = ((MockWebSettingsService)webSettingsService).getWebSettingsBuilder();
 		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(new MetaTagWebSettingsBuilder());
@@ -27,6 +29,7 @@ public class MetaTagPostProcessorTest extends AbstractTest {
 	}
 	
 	@Test
+	@DirtiesContext
 	public void testMoreMetaDataPostProcessor() {
 		IWebSettingsBuilder webSettingsBuilder = ((MockWebSettingsService)webSettingsService).getWebSettingsBuilder();
 		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(new MetaTagWebSettingsBuilder());
@@ -36,6 +39,7 @@ public class MetaTagPostProcessorTest extends AbstractTest {
 	}
 	
 	@Test
+	@DirtiesContext
 	public void testMetaDataAppendPostProcessor() {
 		IWebSettingsBuilder webSettingsBuilder = ((MockWebSettingsService)webSettingsService).getWebSettingsBuilder();
 		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(new MetaTagWebSettingsBuilder());

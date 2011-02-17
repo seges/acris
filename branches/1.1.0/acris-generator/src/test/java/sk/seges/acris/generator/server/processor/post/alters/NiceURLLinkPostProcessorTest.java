@@ -2,6 +2,7 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -18,12 +19,14 @@ public class NiceURLLinkPostProcessorTest extends AbstractTest {
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/niceurl/";
 
 	@Test
+	@DirtiesContext
 	public void testNiceUrlPostProcessor() {
 		runTest(HTML_FILE_DIRECTORY + "1_test_niceurl_input.html", 
 				HTML_FILE_DIRECTORY + "1_test_niceurl_result.html");
 	}
 
 	@Test
+	@DirtiesContext
 	public void testNiceUrlHashPostProcessor() {
 		IWebSettingsBuilder webSettingsBuilder = ((MockWebSettingsService)webSettingsService).getWebSettingsBuilder();
 		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(new NoTopLevelDomainWebSettingsBuilder());
@@ -33,6 +36,7 @@ public class NiceURLLinkPostProcessorTest extends AbstractTest {
 	}
 
 	@Test
+	@DirtiesContext
 	public void testNiceUrlAbsolutePostProcessor() {
 		runTest(HTML_FILE_DIRECTORY + "3_test_niceurl_absolute_input.html", 
 				HTML_FILE_DIRECTORY + "3_test_niceurl_absolute_result.html");

@@ -5,6 +5,8 @@
 
 	<inherits name="com.allen_sauer.gwt.log.gwt-log" />
 
+	<inherits name='sk.seges.corpis.Domain' />
+	<inherits name="sk.seges.acris.Core"/>
 	<inherits name="sk.seges.acris.Callbacks"/>
 	<inherits name="sk.seges.acris.Common"/>
 

@@ -35,10 +35,7 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 	}
 	
 	protected String getLink(String link) {
-		if (defaultToken == null) {
-			return link.substring(1);
-		}
-		if (link.substring(1).toLowerCase().equals(defaultToken.getNiceUrl().toLowerCase())) {
+		if (getGeneratorToken().isDefaultToken()) {
 			return "";
 		}
 		return link.substring(1);

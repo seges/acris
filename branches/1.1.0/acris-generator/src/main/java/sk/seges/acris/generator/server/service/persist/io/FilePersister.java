@@ -9,14 +9,21 @@ import org.apache.commons.logging.LogFactory;
 import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.server.service.GeneratorService;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
+import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 
 public class FilePersister implements DataPersister {
 
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
+	protected String rootDirectory;
+	
+	public FilePersister(String rootDirectory) {
+		this.rootDirectory = rootDirectory;
+	}
+	
 	@Override
-	public void writeTextToFile(String directory, String filename, String content) {
-		File dirFile = new File(directory);
+	public void writeTextToFile(PersistentDataProvider persistentDataProvider) {
+		File dirFile = new File(getRootDirectory(rootDirectory, persistentDataProvider));
 
 		if (!dirFile.exists()) {
 			if (!dirFile.mkdirs()) {
@@ -24,19 +31,23 @@ public class FilePersister implements DataPersister {
 			}
 		}
 
-		StringFile file = createFile(dirFile, filename);
+		StringFile file = createFile(dirFile, persistentDataProvider.getId());
 
 		if (log.isDebugEnabled()) {
 			log.debug("Writing offline content to file " + file.getAbsolutePath());
 		}
 
 		try {
-			file.writeTextToFile(content);
+			file.writeTextToFile(persistentDataProvider.getContent());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	protected String getRootDirectory(String rootDirectory, PersistentDataProvider persistentDataProvider) {
+		return rootDirectory;
+	}
+	
 	protected StringFile createFile(File dirFile, String filename) {
 		StringFile file = new StringFile(dirFile, filename);
 
@@ -62,5 +73,4 @@ public class FilePersister implements DataPersister {
 
 		return file;
 	}
-
 }

@@ -3,12 +3,13 @@ package sk.seges.acris.generator.server.processor.post.alters;
 import org.htmlparser.Node;
 import org.htmlparser.tags.MetaTag;
 
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public abstract class AbstractMetaTagPostProcessor extends AbstractContentInfoPostProcessor {
+public abstract class AbstractMetaTagPostProcessor extends AbstractContentMetaDataPostProcessor {
 	
-	protected AbstractMetaTagPostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
+	protected AbstractMetaTagPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentInfoProvider) {
+		super(webSettingsService, contentInfoProvider);
 	}
 
 	public static final String NAME_ATTRIBUTE_NAME = "name";

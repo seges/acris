@@ -21,7 +21,11 @@ public abstract class AbstractMetaTagPostProcessor extends AbstractPostProcessor
 	protected boolean supportsNode(Node node) {
 		if (node instanceof MetaTag) {
 			MetaTag metaTag = (MetaTag) node;
-			return getMetaTagName().equals(metaTag.getMetaTagName());
+			String metaTagName = metaTag.getMetaTagName();
+			if (metaTagName != null) {
+				metaTagName = metaTagName.toLowerCase();
+			}
+			return getMetaTagName().toLowerCase().equals(metaTagName);
 		}
 
 		return false;

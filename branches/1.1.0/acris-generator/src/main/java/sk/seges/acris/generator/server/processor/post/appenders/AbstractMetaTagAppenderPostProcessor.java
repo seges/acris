@@ -7,14 +7,16 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
 import org.htmlparser.util.NodeList;
 
-import sk.seges.acris.generator.server.processor.post.alters.AbstractContentInfoPostProcessor;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.node.NodeDefinition;
+import sk.seges.acris.generator.server.processor.post.alters.AbstractContentMetaDataPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.AbstractMetaTagPostProcessor;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractContentInfoPostProcessor {
+public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractContentMetaDataPostProcessor {
 
-	public AbstractMetaTagAppenderPostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
+	public AbstractMetaTagAppenderPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentMetaDataProvider) {
+		super(webSettingsService, contentMetaDataProvider);
 	}
 
 	@Override
@@ -22,6 +24,10 @@ public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractConte
 		return (node instanceof HeadTag);
 	}
 
+	protected void appendMetaTag(HeadTag head, NodeDefinition node, String content) {
+		appendMetaTag(head, node.getName(), content);
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected void appendMetaTag(HeadTag head, String name, String content) {
 		TextNode paddingNode = new TextNode("\t");

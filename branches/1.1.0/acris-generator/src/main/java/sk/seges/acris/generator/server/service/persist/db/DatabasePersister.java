@@ -1,13 +1,14 @@
 package sk.seges.acris.generator.server.service.persist.db;
 
-import java.io.File;
-
 import sk.seges.acris.generator.server.dao.IFileDao;
 import sk.seges.acris.generator.server.domain.api.FileData;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
+import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 
 public class DatabasePersister implements DataPersister {
 
+	public static final String SEPARATOR = "|";
+	
 	private IFileDao<FileData> fileDao;
 
 	public DatabasePersister(IFileDao<FileData> fileDao) {
@@ -15,10 +16,10 @@ public class DatabasePersister implements DataPersister {
 	}
 
 	@Override
-	public void writeTextToFile(String directory, String filename, String content) {
+	public void writeTextToFile(PersistentDataProvider persistentDataProvider) {
 		FileData file = fileDao.getEntityInstance();
-		file.setPath(directory + File.separator + filename);
-		file.setContent(content);
+		file.setPath(persistentDataProvider.getWebId() + SEPARATOR + persistentDataProvider.getId());
+		file.setContent(persistentDataProvider.getContent());
 		fileDao.merge(file);
 	}
 }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
-import sk.seges.acris.generator.server.processor.IContentInfoProvider;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
@@ -20,7 +20,7 @@ public abstract class AbstractTest {
 	protected HtmlPostProcessing htmlPostProcessing;
 
 	@Autowired
-	protected IContentInfoProvider contentInfoProvider;
+	protected ContentDataProvider contentInfoProvider;
 
 	@Autowired
 	protected IWebSettingsService webSettingsService;
@@ -37,7 +37,7 @@ public abstract class AbstractTest {
 		this.inputHtmlFileName = inputHtmlFileName;
 		this.resultHtmlFileName = resultHtmlFileName;
 		
-		if (htmlPostProcessing.setProcessorContent(getInputHtml(), token, contentInfoProvider)) {
+		if (htmlPostProcessing.setProcessorContent(getInputHtml(), token)) {
 			String html = htmlPostProcessing.getHtml();
 			Assert.assertTrue("Result HTML is not equals to the expected result. Expected result: " + getResultHtml() + ". Current result: " + html, compare(html));
 		} else {

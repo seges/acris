@@ -9,6 +9,7 @@ public class GeneratorToken implements Serializable {
 	private String language;
 	private String webId;
 	private String niceUrl;
+	private boolean defaultToken;
 
 	public GeneratorToken() {	
 	}
@@ -35,5 +36,13 @@ public class GeneratorToken implements Serializable {
 
 	public void setNiceUrl(String niceUrl) {
 		this.niceUrl = niceUrl;
+	}
+	
+	public boolean isDefaultToken() {
+		return defaultToken;
+	}
+	
+	public void setDefaultToken(boolean defaultToken) {
+		this.defaultToken = defaultToken;
 	}
 }

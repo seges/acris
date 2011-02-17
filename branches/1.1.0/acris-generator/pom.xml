@@ -43,6 +43,12 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-spring</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-spring</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 		<!-- Acris client dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
@@ -117,12 +123,6 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-		</dependency>
-
-		<!-- Gilead -->
-		<dependency>
-			<groupId>net.sf.gilead</groupId>
-			<artifactId>gilead4gwt</artifactId>
 		</dependency>
 
 		<!-- HTML parser -->
