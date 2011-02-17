@@ -56,6 +56,10 @@ public class FormSimpleBinding implements EntryPoint {
 		errorsPanel = new VerticalPanel();
 		ExampleHighlighter.errorsPanel = errorsPanel;
 
+		ResizePanel rp = new ResizePanel();
+		rp.add(new HTML("ADAD"));
+		RootPanel.get().add(rp);
+		
 		final Button button1 = GWT.create(Button.class);
 		button1.setText("jozef");
 		RootPanel.get().add(button1);

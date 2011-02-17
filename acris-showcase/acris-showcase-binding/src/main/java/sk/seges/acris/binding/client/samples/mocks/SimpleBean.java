@@ -9,10 +9,12 @@ import javax.validation.constraints.Size;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
+@MetaModel
 @BeanWrapper
 public class SimpleBean implements IDomainObject<Long> {
-
+ 
 	private static final long serialVersionUID = -4200473134297879595L;
 
 	private Long id;

@@ -11,7 +11,7 @@ import sk.seges.acris.binding.client.annotations.ValidationStrategy;
 import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
 import sk.seges.acris.binding.client.samples.loaders.CompanyDataLoader;
 import sk.seges.acris.binding.client.samples.mocks.SimpleBean;
-import sk.seges.acris.binding.client.samples.mocks.SimpleBeanBeanWrapper;
+import sk.seges.acris.binding.client.samples.mocks.SimpleBeanMetaModel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -28,23 +28,23 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 
 	protected final Label nameLabel = GWT.create(Label.class);
 
-	@BindingField(SimpleBeanBeanWrapper.NAME)
+	@BindingField(SimpleBeanMetaModel.NAME)
 	protected final TextBox nameField = GWT.create(TextBox.class);
 
 	protected final Label emailLabel = GWT.create(Label.class);
 
-	@BindingField(SimpleBeanBeanWrapper.EMAIL)
+	@BindingField(SimpleBeanMetaModel.EMAIL)
 	protected final TextBox emailField = GWT.create(TextBox.class);
 
 	protected final Label companyLabel = GWT.create(Label.class);
 
-	@BindingField(SimpleBeanBeanWrapper.COMPANY.NAME)
+	@BindingField(SimpleBeanMetaModel.COMPANY.NAME)
 	@BindingSpecLoader(CompanyDataLoader.class)
 	protected final ListBox companyListBox = GWT.create(ListBox.class);
 
 	protected final Label birthdayLabel = GWT.create(Label.class);
 
-	@BindingField(SimpleBeanBeanWrapper.DATE)
+	@BindingField(SimpleBeanMetaModel.DATE)
 	protected final DateBox birthdayDateBox = GWT.create(DateBox.class);
 
 	protected final Label timeLabel = GWT.create(Label.class);
@@ -78,8 +78,8 @@ public class SimpleForm extends StandardFormBase implements IBeanBindingHolder<S
 		timeListBox.setWidth("90%");
 		descriptionTextArea.setWidth("90%");
 
-		Binding.alter(this).enable(descriptionTextArea).when(SimpleBeanBeanWrapper.EMAIL).isNotNull();
-		Binding.alter(this).visible(birthdayDateBox).when(SimpleBeanBeanWrapper.NAME).equalTo("andre");
+		Binding.alter(this).enable(descriptionTextArea).when(SimpleBeanMetaModel.EMAIL).isNotNull();
+		Binding.alter(this).visible(birthdayDateBox).when(SimpleBeanMetaModel.NAME).equalTo("andre");
 		
 		addWidget(nameLabel, nameField);
 		addWidget(emailLabel, emailField);
