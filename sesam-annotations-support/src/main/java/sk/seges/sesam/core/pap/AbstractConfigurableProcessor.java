@@ -26,6 +26,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
@@ -37,8 +39,13 @@ import sk.seges.sesam.core.pap.api.SubProcessor;
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.TypedClassBuilder;
+import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.api.TypeParameter;
+import sk.seges.sesam.core.pap.model.api.TypeVariable;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
@@ -93,6 +100,49 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	
 	protected boolean hasSubProcessor(TypeElement element) {
 		return subProcessors.get(element.getQualifiedName().toString()) != null;
+	}
+
+	protected Type applyUpperGenerics(Type type, TypeElement typeElement) {
+		if (typeElement.getTypeParameters() != null && typeElement.getTypeParameters().size() > 0) {
+			TypeParameter[] variables = new TypeParameter[typeElement.getTypeParameters().size()];
+			int i = 0;
+			for (TypeParameterElement typeParameterElement: typeElement.getTypeParameters()) {
+				if (typeParameterElement.getBounds() != null && typeParameterElement.getBounds().size() == 1) {
+					Element element = processingEnv.getTypeUtils().asElement(typeParameterElement.getBounds().get(0));
+					if (element.getKind().equals(ElementKind.CLASS) ||
+						element.getKind().equals(ElementKind.INTERFACE)) {
+						TypeElement boundType = (TypeElement)element;
+						variables[i] = TypeParameterBuilder.get(boundType.toString());
+					} else {
+						variables[i] = TypeParameterBuilder.get("?");
+					}
+				} else {
+					variables[i] = TypeParameterBuilder.get("?");
+				}
+				i++;
+			}
+			return TypedClassBuilder.get(type, variables);
+		}
+		
+		return type;
+	}
+	
+	protected Type applyVariableGenerics(Type type, TypeElement typeElement) {
+		if (typeElement.getTypeParameters() != null && typeElement.getTypeParameters().size() > 0) {
+			TypeParameter[] variables = new TypeParameter[typeElement.getTypeParameters().size()];
+			int i = 0;
+			for (TypeParameterElement typeParameterElement: typeElement.getTypeParameters()) {
+				if (typeParameterElement.asType().getKind().equals(TypeKind.TYPEVAR)) {
+					variables[i] = TypeParameterBuilder.get(typeParameterElement.toString());
+				} else {
+					variables[i] = TypeParameterBuilder.get("?");
+				}
+				i++;
+			}
+			return TypedClassBuilder.get(type, variables);
+		}
+		
+		return type;
 	}
 	
 	protected Type[] getSubProcessorImports() {
@@ -198,13 +248,34 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return source;
 	}
 
-	protected <T> List<T> addUnique(List<T> source, T[] additions) {
+	protected <T extends Type> List<T> addUnique(List<T> source, T[] additions) {
 		if (additions != null) {
 			for (T addClass : additions) {
 				addUnique(source, addClass);
 			}
 		}
 		return source;
+	}
+
+//	protected void stripGenerics(MutableType mutableType) {
+//		mutableType
+//	}
+	
+	protected void addGenericType(List<NamedType> result, NamedType importName, TypeElement typeElement) {
+		if (importName.getQualifiedName().equals(NamedType.THIS.getName())) {
+			importName = getNameTypes().toType(typeElement);
+		}
+		if (importName instanceof HasTypeParameters) {
+			for (TypeParameter typeParameter: ((HasTypeParameters)importName).getTypeParameters()) {
+				for (TypeVariable typeVariable: typeParameter.getBounds()) {
+					if (typeVariable.getUpperBound() != null) {
+						NamedType type = getNameTypes().toType(typeVariable.getUpperBound());
+						result.add(type);
+						addGenericType(result, type, typeElement);
+					}
+				}
+			}
+		}
 	}
 
 	protected NamedType[] getAllImports(TypeElement typeElement) {
@@ -214,7 +285,14 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		addUnique(imports, getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement));
 		addUnique(imports, getMergedConfiguration(DefaultConfigurationType.OUTPUT_INTERFACES, typeElement));
 
-		return imports.toArray(new NamedType[] {});
+		List<NamedType> result = new ArrayList<NamedType>();
+		
+		for (NamedType importName: imports) {
+			result.add(importName);
+			addGenericType(result, importName, typeElement);
+		}
+		
+		return result.toArray(new NamedType[] {});
 	}
 
 	protected ElementKind getElementKind() {
@@ -226,7 +304,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	}
 
 	protected NameTypes getNameTypes() {
-		return new NameTypesUtils(processingEnv.getElementUtils());
+		return new NameTypesUtils(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
 	}
 	
 	protected final NamedType[] getClassNames(Element element) {
@@ -282,6 +360,8 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return mergeClassArray(mergeClassArray, configurationParameters.get(type));
 	}
 	
+	private Set<Element> processedElement = new HashSet<Element>();
+	
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		if (!roundEnv.processingOver()) {
@@ -316,7 +396,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 			}
 			
 			for (Element element: processingElements) {
-				processElement(element, roundEnv);
+				if (!processedElement.contains(element)) {
+					processedElement.add(element);
+					processElement(element, roundEnv);
+				}
 			}
 		}
 

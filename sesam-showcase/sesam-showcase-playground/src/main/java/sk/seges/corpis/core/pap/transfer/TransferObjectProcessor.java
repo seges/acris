@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -22,7 +21,6 @@ import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
-@SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectProcessor extends AbstractConfigurableProcessor {
 
@@ -47,7 +45,7 @@ public class TransferObjectProcessor extends AbstractConfigurableProcessor {
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
 			return new Type[] {
-					NamedType.THIS
+					applyVariableGenerics(NamedType.THIS, typeElement)
 			};
 		}
 		return super.getConfigurationTypes(type, typeElement);
@@ -59,12 +57,12 @@ public class TransferObjectProcessor extends AbstractConfigurableProcessor {
 		}
 		return field.substring(0, 1).toUpperCase() + field.substring(1);
 	}
-	
+
 	@Override 
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
 
 		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing class " + element);
-
+		
 		for (Element fieldElement: ElementFilter.fieldsIn(element.getEnclosedElements())) {
 			if (fieldElement.getKind().equals(ElementKind.FIELD)) {
 				if (((VariableElement)fieldElement).asType().getKind().equals(TypeKind.DECLARED)) {

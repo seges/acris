@@ -1,14 +1,15 @@
 package sk.seges.sesam.core.pap;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -129,9 +130,9 @@ public abstract class AnnotationTest {
 	 *            the classes to compile
 	 * @return the {@link Diagnostic diagnostics} returned by the compilation, as demonstrated in the documentation for
 	 *         {@link JavaCompiler}
-	 * @see #compileTestCase(String...)
+	 * @see #compileFiles(String...)
 	 */
-	protected List<Diagnostic<? extends JavaFileObject>> compileTestCase(AnnotatedElement... compilationUnits) {
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Type... compilationUnits) {
 		assert (compilationUnits != null);
 
 		List<File> files = new ArrayList<File>();
@@ -145,10 +146,10 @@ public abstract class AnnotationTest {
 		if (compilationUnits == null) {
 			return;
 		}
-		addCollection(files, compilationUnits.toArray(new AnnotatedElement[] {}));
+		addCollection(files, compilationUnits.toArray(new Type[] {}));
 	}
 
-	private <T extends AnnotatedElement> void addCollection(List<File> files, T[] compilationUnits) {
+	private <T extends Type> void addCollection(List<File> files, T[] compilationUnits) {
 		if (compilationUnits == null) {
 			return;
 		}

@@ -3,7 +3,7 @@ package sk.seges.sesam.core.pap.utils;
 import java.lang.reflect.Type;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
-import sk.seges.sesam.core.pap.model.InputClass.HasTypeParameters;
+import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public class ClassUtils {
