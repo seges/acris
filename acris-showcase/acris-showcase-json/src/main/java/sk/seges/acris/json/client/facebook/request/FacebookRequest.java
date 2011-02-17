@@ -15,7 +15,7 @@ public class FacebookRequest extends JSONRequest {
 
 	@JsonObject
 	public static class JSONError extends Throwable {
-
+ 
 		private static final long serialVersionUID = 2095950996148006801L;
 
 		@Field

@@ -74,13 +74,6 @@
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.8</version>
 				<configuration>
-					<excludes>
-						<exclude>com.google.appengine:appengine-api-1.0-sdk</exclude>
-						<exclude>com.google.appengine:appengine-api-labs</exclude>
-						<exclude>org.apache.geronimo.specs:geronimo-jpa_3.0_spec</exclude>
-						<exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
-						<exclude>javax.jdo:jdo2-api</exclude>
-					</excludes>
 					<additionalBuildcommands>
 						<buildCommand>
 							<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
@@ -95,13 +88,11 @@
 
 					<additionalProjectnatures>
 						<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-						<projectnature>com.google.appengine.eclipse.core.gaeNature</projectnature>
 						<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
 					</additionalProjectnatures>
 
 					<classpathContainers>
 						<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
-						<classpathContainer>com.google.appengine.eclipse.core.GAE_CONTAINER</classpathContainer>
 						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
 					</classpathContainers>
 
@@ -119,10 +110,10 @@
 						<file>
 							<name>.factorypath</name>
 							<content><![CDATA[<factorypath>
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-json/${pom.version}/acris-json-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-									<factorypathentry kind="VARJAR" id="M2_REPO/com/gwtplatform/gwtp/${gwtp.version}/gwtp-${gwtp.version}.jar" enabled="true" runInBatchMode="false"/>
+									<factorypathentry kind="VARJAR" id="M2_REPO/com/gwtplatform/gwtp-all/${gwtp.version}/gwtp-all-${gwtp.version}.jar" enabled="true" runInBatchMode="false"/>
 							  	</factorypath>
 								  ]]>
 							</content>
@@ -137,7 +128,18 @@
 								]]>
 							</content>
 						</file>
-					</additionalConfig>
+						<file>
+                        	<name>.settings/org.eclipse.jdt.core.prefs</name>
+                            <content><![CDATA[
+								eclipse.preferences.version=1
+								org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+								org.eclipse.jdt.core.compiler.compliance=1.6
+								org.eclipse.jdt.core.compiler.processAnnotations=enabled
+								org.eclipse.jdt.core.compiler.source=1.6
+                               ]]>
+                            </content>
+                        </file>
+                    </additionalConfig>
 
 					<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
 					<wtpversion>2.0</wtpversion>
@@ -146,29 +148,10 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>${groupId}</groupId>
-			<artifactId>acris-callbacks</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${groupId}</groupId>
-			<artifactId>acris-callbacks</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${groupId}</groupId>
-			<artifactId>acris-widgets</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${groupId}</groupId>
-			<artifactId>acris-widgets</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${groupId}</groupId>
 			<artifactId>acris-generator</artifactId>
 		</dependency>
 		<dependency>
@@ -176,15 +159,14 @@
 			<artifactId>acris-generator</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
 		<!-- Acris showcase dependencies -->
 		<dependency>
 			<groupId>${groupId}</groupId>
-			<artifactId>acris-showcase-ui-support</artifactId>
+			<artifactId>acris-showcase-applications</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${groupId}</groupId>
-			<artifactId>acris-showcase-ui-support</artifactId>
+			<artifactId>acris-showcase-applications</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 
@@ -193,83 +175,5 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 		</dependency>
-
-		<!-- MVP -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-gin</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.gwtplatform</groupId>
-			<artifactId>gwtp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.guice</groupId>
-			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.guice</groupId>
-			<artifactId>guice-servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-		</dependency>
-
-		<!-- Spring dependencies -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-		</dependency>
-
-		<!-- Dozer -->
-		<dependency>
-			<groupId>net.sf.dozer</groupId>
-			<artifactId>dozer</artifactId>
-			<version>5.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlbeans</groupId>
-			<artifactId>xmlbeans</artifactId>
-			<version>2.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlbeans</groupId>
-			<artifactId>xmlbeans-xpath</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-
-		<!-- javax persistence API -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.9.1</version>
-		</dependency>
-
 	</dependencies>
 </project>
