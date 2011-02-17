@@ -6,7 +6,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
+@MetaModel
 @BeanWrapper
 public class Company implements Serializable {
 	

@@ -115,8 +115,10 @@
 							<name>.factorypath</name>
 							<content><![CDATA[
 								<factorypath>
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-model-metadata/${sesam-os.version}/sesam-model-metadata-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-								  	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
 								</factorypath>
 								  ]]>
 							</content>
@@ -131,6 +133,17 @@
 								   ]]>
 							</content>
 						</file>
+						<file>
+                        	<name>.settings/org.eclipse.jdt.core.prefs</name>
+                            <content><![CDATA[
+								eclipse.preferences.version=1
+								org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+								org.eclipse.jdt.core.compiler.compliance=1.6
+								org.eclipse.jdt.core.compiler.processAnnotations=enabled
+								org.eclipse.jdt.core.compiler.source=1.6
+                               ]]>
+                            </content>
+                        </file>
 					</additionalConfig>
 					<additionalBuildcommands>
 						<buildCommand>
@@ -160,6 +173,12 @@
 
 	<dependencies>
 
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-metadata</artifactId>
+		</dependency>
+		
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>${groupId}</groupId>
