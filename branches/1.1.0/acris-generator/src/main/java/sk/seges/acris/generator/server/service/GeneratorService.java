@@ -175,7 +175,9 @@ public class GeneratorService implements IGeneratorService {
 
 	protected String encodeFilePath(String path) {
 		 try {
-			return URLEncoder.encode(path, Charset.defaultCharset().toString());
+			path = URLEncoder.encode(path, Charset.defaultCharset().toString());
+			path = path.replaceAll("%2F","/");
+			path = path.replaceAll("%2f","/");
 		} catch (UnsupportedEncodingException e) {
 		}  
 
