@@ -16,6 +16,7 @@ import sk.seges.acris.security.shared.core.user_management.domain.hibernate.Hibe
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserDataBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.acris.security.shared.user_management.domain.api.UserRolePermission;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
@@ -95,7 +96,7 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData<?>> 
 	@Override
 	public UserData<?> findByUsername(String username) {
 		DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(UserDataBeanWrapper.USERNAME, username));
+		criteria.add(Restrictions.eq(UserDataMetaModel.USERNAME, username));
 		return findUniqueResultByCriteria(criteria);
 	}
 

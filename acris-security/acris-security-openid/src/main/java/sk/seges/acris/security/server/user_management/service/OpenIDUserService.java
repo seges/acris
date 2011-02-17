@@ -9,7 +9,7 @@ import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUser
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
 import sk.seges.acris.security.server.user_management.domain.jpa.JPAOpenIDUser;
 import sk.seges.acris.security.shared.user_management.domain.api.HasOpenIDIdentifier;
-import sk.seges.acris.security.shared.user_management.domain.api.HasOpenIDIdentifierBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.HasOpenIDIdentifierMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
@@ -66,7 +66,7 @@ public class OpenIDUserService implements IOpenIDUserService {
 		Page page = new Page(0, Page.ALL_RESULTS);
 
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>(
-				HasOpenIDIdentifierBeanWrapper.USER.USERNAME, userName, Filter.EQ));
+				HasOpenIDIdentifierMetaModel.USER.USERNAME, userName, Filter.EQ));
 
 		List<OpenIDProvider> result = new ArrayList<OpenIDProvider>();
 		List<HasOpenIDIdentifier> found = openIDUserDao.findAll(page).getResult();

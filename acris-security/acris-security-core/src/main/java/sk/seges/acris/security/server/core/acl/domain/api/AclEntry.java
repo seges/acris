@@ -1,11 +1,13 @@
 package sk.seges.acris.security.server.core.acl.domain.api;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
-import sk.seges.acris.binding.client.processor.DBPropertyConverter;
-import sk.seges.acris.binding.client.processor.PojoPropertyConverter;
 import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.model.metadata.annotation.MetaModel;
+import sk.seges.sesam.model.metadata.strategy.DBPropertyConverter;
+import sk.seges.sesam.model.metadata.strategy.PojoPropertyConverter;
 
-@BeanWrapper(beanPropertyConverter = {PojoPropertyConverter.class, DBPropertyConverter.class})
+@MetaModel(beanPropertyConverter = {PojoPropertyConverter.class, DBPropertyConverter.class})
+@BeanWrapper
 public interface AclEntry extends IDomainObject<Long> {
 
 //    public static final String DB_SID = "sid"; 

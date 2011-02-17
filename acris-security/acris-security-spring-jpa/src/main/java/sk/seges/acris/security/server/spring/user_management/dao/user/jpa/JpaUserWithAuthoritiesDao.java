@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserWithAuthorities;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
@@ -31,7 +31,7 @@ public class JpaUserWithAuthoritiesDao implements IGenericUserDao<JpaUserWithAut
 	@Override
 	public JpaUserWithAuthorities findByUsername(String username) {
 		return (JpaUserWithAuthorities) entityManager
-				.createQuery("from " + JpaUserWithAuthorities.class.getName() + " where " + UserDataBeanWrapper.USERNAME + " = :username")
+				.createQuery("from " + JpaUserWithAuthorities.class.getName() + " where " + UserDataMetaModel.USERNAME + " = :username")
 				.setParameter("username", username).getSingleResult();
 	}
 
