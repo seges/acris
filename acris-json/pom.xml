@@ -11,6 +11,18 @@
 	<name>AcrIS JSON</name>
 
 	<dependencies>
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotations-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotations-support</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		
 		<!-- GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
