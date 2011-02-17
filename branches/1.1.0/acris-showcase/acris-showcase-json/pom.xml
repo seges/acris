@@ -99,11 +99,20 @@
 				<configuration>
 					<additionalConfig>
 						<file>
+							<name>.settings/com.google.gdt.eclipse.core.prefs</name>
+							<content>
+								eclipse.preferences.version=1
+								jarsExcludedFromWebInfLib=
+								warSrcDir=target/${artifactId}-${version}
+								warSrcDirIsOutput=true
+							</content>
+						</file>
+						<file>
 							<name>.factorypath</name>
 							<content><![CDATA[
 								<factorypath>
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-json/${pom.version}/acris-json-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-								  	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false"/>						
 								</factorypath>
 								  ]]>
 							</content>
@@ -118,6 +127,17 @@
 								   ]]>
 							</content>
 						</file>
+						<file>
+                        	<name>.settings/org.eclipse.jdt.core.prefs</name>
+                            <content><![CDATA[
+								eclipse.preferences.version=1
+								org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+								org.eclipse.jdt.core.compiler.compliance=1.6
+								org.eclipse.jdt.core.compiler.processAnnotations=enabled
+								org.eclipse.jdt.core.compiler.source=1.6
+                               ]]>
+                            </content>
+                        </file>
 					</additionalConfig>
 					<additionalBuildcommands>
 						<buildCommand>
@@ -137,18 +157,6 @@
 						<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
 						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
 					</classpathContainers>
-
-					<additionalConfig>
-						<file>
-							<name>.settings/com.google.gdt.eclipse.core.prefs</name>
-							<content>
-								eclipse.preferences.version=1
-								jarsExcludedFromWebInfLib=
-								warSrcDir=target/${artifactId}-${version}
-								warSrcDirIsOutput=true
-							</content>
-						</file>
-					</additionalConfig>
 
 					<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
 					<wtpversion>2.0</wtpversion>

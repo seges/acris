@@ -23,7 +23,7 @@
 		<smartgwt.version>2.2</smartgwt.version>
 		<gxt-version>2.1.0</gxt-version>
 
-		<gwtp.version>0.5-SNAPSHOT</gwtp.version>
+		<gwtp.version>0.5</gwtp.version>
 
 		<!-- datanucleus -->
 		<!-- gae.version>1.3.5</gae.version> <orm.version>1.0.7.final</orm.version> 
@@ -77,12 +77,13 @@
 	</repositories>
 
 	<modules>
+		<module>../acris-showcase-applications</module>
 		<module>../acris-showcase-binding</module>
 		<module>../acris-showcase-callbacks</module>
 		<module>../acris-showcase-client-core</module>
 		<module>../acris-showcase-generator</module>
 		<module>../acris-showcase-json</module>
-		<!--module>../acris-showcase-mvp</module-->
+		<module>../acris-showcase-mvp</module>
 		<module>../acris-showcase-reporting</module>
 		<module>../acris-showcase-recorder</module>
 		<module>../acris-showcase-openid</module>
@@ -289,6 +290,17 @@
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
+				<artifactId>acris-showcase-applications</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
+				<artifactId>acris-showcase-applications</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-openid</artifactId>
 				<version>${pom.version}</version>
 			</dependency>
@@ -350,7 +362,7 @@
 			<!-- MVP dependency -->
 			<dependency>
 				<groupId>com.gwtplatform</groupId>
-				<artifactId>gwtp</artifactId>
+				<artifactId>gwtp-all</artifactId>
 				<version>${gwtp.version}</version>
 				<exclusions>
 					<exclusion>

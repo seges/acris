@@ -74,10 +74,10 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
-	<!--servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>service</servlet-name>
 		<url-pattern>/sk.seges.acris.demo.MVP/service/*</url-pattern>
-	</servlet-mapping-->
+	</servlet-mapping>
 
   	<filter>
     	<filter-name>guiceFilter</filter-name>
