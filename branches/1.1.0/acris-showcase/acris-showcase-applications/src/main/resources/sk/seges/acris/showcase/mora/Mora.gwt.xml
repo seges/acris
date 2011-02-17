@@ -1,0 +1,40 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
+
+	<inherits name="com.allen_sauer.gwt.log.gwt-log" />
+
+	<!-- Acris dependency -->
+	<inherits name="sk.seges.acris.Core" />
+	<inherits name="sk.seges.acris.Common" />
+	<inherits name="sk.seges.acris.Callbacks"/>
+	<inherits name="sk.seges.acris.Widgets" />
+	<inherits name="sk.seges.acris.Showcase" />
+	 
+	<!-- GIN for dependency injection -->
+	<inherits name="com.google.gwt.inject.Inject" />
+
+	<!-- MVP -->
+	<inherits name="com.gwtplatform.mvp.Mvp" />
+	<inherits name="com.gwtplatform.dispatch.Dispatch" />
+
+	<!-- Binding generator for beans binding -->
+	<generate-with class="sk.seges.acris.binding.rebind.binding.BeanBindingGenerator">
+		<when-type-assignable class="sk.seges.acris.binding.client.holder.IBeanBindingHolder" />
+	</generate-with>
+	
+	<extend-property name="locale" values="en" />
+
+	<!-- SmartGWT framework -->
+	<!-- Using black theme -->
+	<inherits name="com.smartgwt.SmartGwt" />
+	<inherits name="com.smartclient.theme.enterprise.Enterprise"/>
+
+	<source path="client" />
+	<source path="shared" />
+	<source path="offline" />
+
+</module>
