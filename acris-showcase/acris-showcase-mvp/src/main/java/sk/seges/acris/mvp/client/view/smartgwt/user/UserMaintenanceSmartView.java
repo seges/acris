@@ -5,7 +5,8 @@ import java.util.List;
 import sk.seges.acris.mvp.client.i18n.UserMessages;
 import sk.seges.acris.mvp.client.presenter.user.UserMaintenancePresenter.UserMaintenanceDisplay;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTOBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTOMetaModel;
 import sk.seges.acris.showcase.client.model.ModelAdapter;
 import sk.seges.acris.showcase.client.view.core.adapter.smartgwt.SmartViewImpl;
 import sk.seges.sesam.dao.PagedResult;
@@ -40,8 +41,8 @@ public class UserMaintenanceSmartView extends SmartViewImpl implements UserMaint
 		grid = new ListGrid();
 		grid.setWidth100();
 		grid.setHeight("80%");
-		ListGridField userNameField = new ListGridField(GenericUserDTOBeanWrapper.USERNAME, messages.userName());
-		ListGridField descriptionField = new ListGridField(GenericUserDTOBeanWrapper.DESCRIPTION, messages.identifier());
+		ListGridField userNameField = new ListGridField(UserDataMetaModel.USERNAME, messages.userName());
+		ListGridField descriptionField = new ListGridField(GenericUserDTOMetaModel.DESCRIPTION, messages.identifier());
 		
 		grid.setFields(new ListGridField[] {userNameField, descriptionField});
 

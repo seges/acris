@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
-import sk.seges.acris.security.server.user_management.dao.twig.AbstractTwigCrud;
+import sk.seges.acris.security.server.dao.twig.AbstractTwigCrud;
 import sk.seges.acris.security.server.user_management.domain.twig.TwigGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.acris.security.shared.user_management.domain.api.UserRolePermission;
 import sk.seges.sesam.dao.Filter;
@@ -27,7 +27,7 @@ public class TwigUserDao extends AbstractTwigCrud<UserData<Long>> implements IGe
 	@Override
 	public UserData<Long> findByUsername(String username) {
 		Page page = new Page(0, Page.ALL_RESULTS);
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(UserDataBeanWrapper.USERNAME);
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(UserDataMetaModel.USERNAME);
 		eq.setValue(username);
 		page.setFilterable(eq);
 		return super.findUnique(page);
@@ -79,5 +79,10 @@ public class TwigUserDao extends AbstractTwigCrud<UserData<Long>> implements IGe
 	@Override
 	public UserData<Long> persist(UserData<Long> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, false));
+	}
+
+	@Override
+	public UserData<Long> getEntityInstance() {
+		return new TwigGenericUser();
 	}
 }
