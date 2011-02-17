@@ -70,7 +70,7 @@
 		<module>../acris-security</module>
 		<module>../acris-site</module>
 		<module>../acris-server</module>
-		<!--module>../acris-showcase</module-->
+		<module>../acris-showcase</module>
 		<module>../acris-server-components</module>
 	</modules>
 
@@ -135,7 +135,36 @@
 				<artifactId>sesam-spring</artifactId>
 				<version>${sesam-os.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-spring</artifactId>
+				<version>${sesam-os.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>			
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-annotations-support</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-annotations-support</artifactId>
+				<version>${sesam-os.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>			
+			</dependency>
+			<dependency>
+				<artifactId>sesam-model-metadata</artifactId>
+				<groupId>sk.seges.sesam</groupId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>sesam-model-metadata</artifactId>
+				<groupId>sk.seges.sesam</groupId>
+				<version>${sesam-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
 			<!-- Acris dependencies -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>

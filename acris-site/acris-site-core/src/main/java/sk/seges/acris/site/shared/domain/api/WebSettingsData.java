@@ -9,11 +9,12 @@ import sk.seges.corpis.shared.domain.api.CountryData;
 import sk.seges.corpis.shared.domain.api.HasLanguage;
 import sk.seges.corpis.shared.domain.api.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
+import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
-
-@BeanWrapper
+@BeanWrapper 
+@MetaModel
 public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId, HasLanguage {
-
+ 
 	@BeanWrapper
 	public static interface MetaData extends IMutableDomainObject<Long> {
 		
