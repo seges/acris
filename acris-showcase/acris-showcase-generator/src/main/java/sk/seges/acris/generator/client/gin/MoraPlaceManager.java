@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.client.gin;
 
-import sk.seges.acris.generator.client.configuration.NameTokens;
+import sk.seges.acris.showcase.mora.client.configuration.NameTokens;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;

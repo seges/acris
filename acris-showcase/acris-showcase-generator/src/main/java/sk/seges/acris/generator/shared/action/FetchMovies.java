@@ -4,8 +4,8 @@ import java.util.Set;
 
 import sk.seges.acris.generator.shared.domain.api.MovieData;
 
-import com.gwtplatform.annotation.GenDispatch;
-import com.gwtplatform.annotation.Out;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.Out;
 
 @GenDispatch
 public class FetchMovies {

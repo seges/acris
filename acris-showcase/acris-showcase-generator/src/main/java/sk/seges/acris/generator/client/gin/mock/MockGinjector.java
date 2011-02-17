@@ -1,13 +1,13 @@
 package sk.seges.acris.generator.client.gin.mock;
 
-import sk.seges.acris.generator.client.action.mocks.MockFetchMoviesActionHandler;
 import sk.seges.acris.generator.client.action.mocks.MockGenerateOfflineActionHandler;
-import sk.seges.acris.generator.client.action.mocks.MockSaveRatingActionHandler;
-import sk.seges.acris.generator.client.gin.common.MoraModule;
-import sk.seges.acris.generator.client.gin.smartgwt.SmartGWTViews;
-import sk.seges.acris.generator.client.presenter.SummaryPresenter;
+import sk.seges.acris.generator.client.gin.common.GeneratorShowcaseModule;
+import sk.seges.acris.generator.client.presenter.SummaryOfflinePresenter;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 import sk.seges.acris.showcase.client.presenter.core.ErrorPresenter;
+import sk.seges.acris.showcase.mora.client.action.mocks.MockFetchMoviesActionHandler;
+import sk.seges.acris.showcase.mora.client.action.mocks.MockSaveRatingActionHandler;
+import sk.seges.acris.showcase.mora.client.gin.smartgwt.SmartGWTViews;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
@@ -26,7 +26,7 @@ import com.gwtplatform.mvp.client.proxy.ProxyFailureHandler;
  * @author fat
  */
 
-@GinModules({DispatchAsyncModule.class, MoraModule.class, MockModule.class, SmartGWTViews.class})
+@GinModules({DispatchAsyncModule.class, GeneratorShowcaseModule.class, MockModule.class, SmartGWTViews.class})
 public interface MockGinjector extends Ginjector {
 
 	MockFetchMoviesActionHandler getFetchMoviesActionHandler();
@@ -45,5 +45,5 @@ public interface MockGinjector extends Ginjector {
 
 	Provider<ErrorPresenter> getErrorPresenter();
 
-	Provider<SummaryPresenter> getSummaryPresenter();
+	Provider<SummaryOfflinePresenter> getSummaryPresenter();
 }
