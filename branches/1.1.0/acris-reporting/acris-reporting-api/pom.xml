@@ -12,24 +12,26 @@
 	</parent>
 
 	<dependencies>
-		<dependency>
-			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-dao-impl</artifactId>
-		</dependency>
-		
+		<!-- Testing -->		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-core</artifactId>
+			<artifactId>acris-binding</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-binding</artifactId>
+			<classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 
