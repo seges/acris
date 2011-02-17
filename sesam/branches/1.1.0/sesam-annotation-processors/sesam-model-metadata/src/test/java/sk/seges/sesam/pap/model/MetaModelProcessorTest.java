@@ -7,7 +7,7 @@ import javax.annotation.processing.Processor;
 import org.junit.Test;
 
 import sk.seges.sesam.core.pap.AnnotationTest;
-import sk.seges.sesam.core.pap.model.InputClass.OutputClass;
+import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.shared.model.mock.MockEntity;
@@ -16,7 +16,7 @@ public class MetaModelProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testMockEntityDao() {
-		assertCompilationSuccessful(compileTestCase(MockEntity.class));
+		assertCompilationSuccessful(compileFiles(MockEntity.class));
 		assertOutput(getResourceFile(MockEntity.class), getOutputFile(MockEntity.class));
 	}
 

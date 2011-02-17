@@ -1,295 +1,39 @@
 package sk.seges.sesam.core.pap.model;
 
-import java.lang.reflect.Type;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.utils.ClassUtils;
+import sk.seges.sesam.core.pap.model.api.TypeParameter;
 
 public class InputClass extends AbstractPrintableType implements NamedType, MutableType {
 
-	public interface TypeParameter {
-
-		public static final String UNDEFINED = "?";
-		
-		String getVariable();
-
-		Type getBounds();
-		
-		String toString(NamedType type, ClassSerializer serializer);
-	}
-	
-	public static interface HasTypeParameters extends NamedType {
-		TypeParameter[] getTypeParameters();
-		
-		String toString(NamedType inputClass, ClassSerializer serializer, boolean typed);
-	}
-
-	public static class OutputClass extends InputClass {
-
-		public OutputClass(String packageName, String className) {
-			super(packageName, className);
-		}
-
-		@Override
-		protected OutputClass clone() {
-			return new OutputClass(getPackageName(), getClassName());
-		}
-	}
-
-	public static class TypeParameterBuilder {
-		public static TypeParameter get(String variable, Type bounds) {
-			return new TypeParameterClass(variable, bounds);
-		}
-
-		public static TypeParameter get(String variable) {
-			return new TypeParameterClass(variable);
-		}
-
-		public static TypeParameter get(Type bounds) {
-			return new TypeParameterClass(bounds);
-		}
-}
-	
-	static class TypeParameterClass implements TypeParameter {
-
-		private String variable;
-		private Type bounds;
-		
-		public TypeParameterClass(String variable) {
-			this.variable = variable;
-		}
-
-		public TypeParameterClass(Type bounds) {
-			this.bounds = bounds;
-		}
-
-		public TypeParameterClass(String variable, Type bounds) {
-			this(variable);
-			this.bounds = bounds;
-		}
-
-		@Override
-		public String getVariable() {
-			return variable;
-		}
-
-		@Override
-		public Type getBounds() {
-			return bounds;
-		}
-		
-		public String toString(NamedType inputClass, ClassSerializer serializer) {
-			String result = "";
-			
-			if (getVariable() != null) {
-				result += getVariable() + " ";
-			}
-			
-			if (getBounds() != null) {
-				if (getVariable() != null) {
-					result += "extends ";
-				}
-				if (getBounds().equals(NamedType.THIS)) {
-					result += inputClass.toString(ClassSerializer.SIMPLE);
-				} else {
-					result += ClassUtils.toString(inputClass, getBounds(), serializer, true);
-				}
-			}
-			
-			if (result.length() == 0) {
-				throw new IllegalArgumentException("Invalid type parameter");
-			}
-			return result;
-		}
-		
-		public String toString() {
-			String result = "";
-			
-			if (getVariable() != null) {
-				result += getVariable() + " ";
-			}
-			
-			if (getBounds() != null) {
-				if (getVariable() != null) {
-					result += "extends ";
-				}
-				
-				if (getBounds().equals(NamedType.THIS)) {
-					result += "_THIS_";
-				} else {
-					if (getBounds() instanceof Class) {
-						result += ((Class<?>)getBounds()).getCanonicalName();
-					} else {
-						result += getBounds().toString();
-					}
-				}
-			}
-			
-			return result;
-		}
-
-	}
-
-	public static class TypedClassBuilder {
-		public static HasTypeParameters get(String packageName, String className, TypeParameter... typeParameters) {
-			return new TypedOutputClass(packageName, className, typeParameters);
-		}
-
-		public static HasTypeParameters get(Class<?> clazz, Class<?>... classes) {
-			return new TypedOutputClass(clazz, classes);
-		}
-
-		public static HasTypeParameters get(Class<?> clazz, NamedType... classes) {
-			return new TypedOutputClass(clazz, classes);
-		}
-
-		public static HasTypeParameters get(Class<?> clazz, TypeParameter... typeParameters) {
-			return new TypedOutputClass(clazz, typeParameters);
-		}
-
-		public static HasTypeParameters get(NamedType type, TypeParameter... typeParameters) {
-			return new TypedOutputClass(type, typeParameters);
-		}		
-
-		public static HasTypeParameters get(NamedType type, NamedType... classes) {
-			return new TypedOutputClass(type, classes);
-		}		
-	}
-	
-	static class TypedOutputClass extends OutputClass implements HasTypeParameters {
-
-		private TypeParameter[] typeParameters;
-
-		public TypedOutputClass(String packageName, String className, TypeParameter... typeParameters) {
-			super(packageName, className);
-			this.typeParameters = typeParameters;
-		}
-
-		public TypedOutputClass(Class<?> clazz, Class<?>... classes) {
-			this(clazz.getPackage().getName(), clazz.getSimpleName());
-			if (classes != null) {
-				typeParameters = new TypeParameter[classes.length];
-				for (int i = 0; i < classes.length; i++) {
-					typeParameters[i] = new TypeParameterClass(classes[i]);
-				}
-			}
-		}
-
-		public TypedOutputClass(Class<?> clazz, NamedType... classes) {
-			this(clazz.getPackage().getName(), clazz.getSimpleName());
-			if (classes != null) {
-				typeParameters = new TypeParameter[classes.length];
-				for (int i = 0; i < classes.length; i++) {
-					typeParameters[i] = new TypeParameterClass(classes[i]);
-				}
-			}
-		}
-
-		public TypedOutputClass(Class<?> clazz, TypeParameter... typeParameters) {
-			this(clazz.getPackage().getName(), clazz.getSimpleName());
-			this.typeParameters = typeParameters;
-		}
-
-		public TypedOutputClass(NamedType type, TypeParameter... typeParameters) {
-			this(type.getPackageName(), type.getSimpleName());
-			this.typeParameters = typeParameters;
-		}
-
-		public TypedOutputClass(NamedType type, NamedType... classes) {
-			this(type.getPackageName(), type.getSimpleName());
-			if (classes != null) {
-				typeParameters = new TypeParameter[classes.length];
-				for (int i = 0; i < classes.length; i++) {
-					typeParameters[i] = new TypeParameterClass(classes[i]);
-				}
-			}
-		}
-
-		public String toString(NamedType inputClass, ClassSerializer serializer, boolean typed) {
-
-			String resultName = this.toString(serializer);
-
-			if (!typed || this.getTypeParameters() == null || this.getTypeParameters().length == 0) {
-				return resultName;
-			}
-
-			String types = "<";
-
-			int i = 0;
-
-			for (TypeParameter typeParameter : this.getTypeParameters()) {
-				if (i > 0) {
-					types += ", ";
-				}
-				types += typeParameter.toString(inputClass, ClassSerializer.SIMPLE);
-				i++;
-			}
-
-			types += ">";
-
-			return resultName + types;
-		}
-
-		public TypeParameter[] getTypeParameters() {
-			return typeParameters;
-		}
-
-		@Override
-		protected TypedOutputClass clone() {
-			return new TypedOutputClass(getPackageName(), getClassName(), typeParameters);
-		}
-
-		public TypedOutputClass addType(TypeParameter typeParameter) {
-			TypeParameter[] params = new TypeParameter[typeParameters.length + 1];
-			for (int i = 0; i < typeParameters.length; i++) {
-				params[i] = typeParameters[i];
-			}
-			params[typeParameters.length] = typeParameter;
-
-			return new TypedOutputClass(getPackageName(), getClassName(), params);
-		}
-
-		String toString(HasTypeParameters hasTypeParameters) {
-			String types = "<";
-			
-			int i = 0;
-			
-			for (TypeParameter typeParameter: hasTypeParameters.getTypeParameters()) {
-				if (i > 0) {
-					types += ", ";
-				}
-				types += typeParameter.toString();
-				i++;
-			}
-			
-			types += ">";
-			
-			return types;
-		}
-		
-		@Override
-		public String toString() {
-			return super.toString() + toString(this);
-		}
-	}
-
-	private String className;
+	private String simpleClassName;
 	private String packageName;
-
-	public InputClass(String packageName, String className) {
-		this.className = className;
+	private NamedType enclosedClass;
+	
+	public InputClass(String packageName, String simpleClassName) {
+		this.simpleClassName = simpleClassName;
 		this.packageName = packageName;
 	}
 
+	public InputClass(NamedType enclosedClass, String simpleClassName) {
+		this.simpleClassName = simpleClassName;
+		this.packageName = enclosedClass.getPackageName();
+		this.enclosedClass = enclosedClass;
+	}
+
+	public NamedType getEnclosedClass() {
+		return enclosedClass;
+	}
+	
 	@Override
 	protected MutableType clone() {
-		return new OutputClass(packageName, className);
+		return new OutputClass(packageName, simpleClassName);
 	}
 
 	public String getClassName() {
-		return className;
+		return simpleClassName;
 	}
 
 	public String getPackageName() {
@@ -301,12 +45,12 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	}
 
 	public MutableType addClassSufix(String sufix) {
-		className += sufix;
+		simpleClassName += sufix;
 		return clone();
 	}
 
 	public MutableType addClassPrefix(String prefix) {
-		className = prefix + className;
+		simpleClassName = prefix + simpleClassName;
 		return clone();
 	}
 
@@ -321,7 +65,10 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	}
 
 	public String getCanonicalName() {
-		return (packageName != null ? (packageName + ".") : "") + className;
+		if (enclosedClass != null) {
+			return enclosedClass.getCanonicalName() + "." + simpleClassName;
+		}
+		return (packageName != null ? (packageName + ".") : "") + simpleClassName;
 	}
 
 	@Override
@@ -330,15 +77,16 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	}
 
 	public String getSimpleName() {
-		return className;
+		return simpleClassName;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((className == null) ? 0 : className.hashCode());
+		result = prime * result + ((enclosedClass == null) ? 0 : enclosedClass.hashCode());
 		result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
+		result = prime * result + ((simpleClassName == null) ? 0 : simpleClassName.hashCode());
 		return result;
 	}
 
@@ -348,18 +96,23 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 			return true;
 		if (obj == null)
 			return false;
-		if (!getClass().isAssignableFrom(obj.getClass()))
+		if (getClass() != obj.getClass())
 			return false;
 		InputClass other = (InputClass) obj;
-		if (className == null) {
-			if (other.className != null)
+		if (enclosedClass == null) {
+			if (other.enclosedClass != null)
 				return false;
-		} else if (!className.equals(other.className))
+		} else if (!enclosedClass.equals(other.enclosedClass))
 			return false;
 		if (packageName == null) {
 			if (other.packageName != null)
 				return false;
 		} else if (!packageName.equals(other.packageName))
+			return false;
+		if (simpleClassName == null) {
+			if (other.simpleClassName != null)
+				return false;
+		} else if (!simpleClassName.equals(other.simpleClassName))
 			return false;
 		return true;
 	}

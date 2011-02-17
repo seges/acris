@@ -5,7 +5,7 @@ import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 
 public class DefaultPackageValidatorProvider implements PackageValidatorProvider {
-
+ 
 	@Override
 	public PackageValidator get(String packageName) {
 		return new DefaultPackageValidator(packageName);

@@ -1,10 +1,10 @@
 package sk.seges.sesam.shared.model.mock;
 
 
-public class MockEntityMetaModel {
+public interface MockEntityMetaModel {
 
-		public static String NAME = "name";
+		public final static String NAME = "name";
 
-		public static String SURNAME = "surname";
+		public final static String SURNAME = "surname";
 
 }
