@@ -6,6 +6,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
 
 import sk.seges.acris.reporting.rpc.domain.ReportDescription;
+import sk.seges.acris.reporting.server.dao.api.IReportDescriptionDao;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
 @Component

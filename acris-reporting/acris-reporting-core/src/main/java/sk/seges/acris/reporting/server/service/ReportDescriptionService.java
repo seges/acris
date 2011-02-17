@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import sk.seges.acris.reporting.rpc.dao.IReportDescriptionDao;
-import sk.seges.acris.reporting.rpc.dao.IReportParameterDao;
+import sk.seges.acris.reporting.server.dao.api.IReportDescriptionDao;
+import sk.seges.acris.reporting.server.dao.api.IReportParameterDao;
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 import sk.seges.acris.reporting.shared.domain.dto.ReportDescriptionDTO;

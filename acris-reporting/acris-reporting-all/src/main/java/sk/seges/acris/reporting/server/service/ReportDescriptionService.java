@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.reporting.rpc.dao.IReportDescriptionDao;
+import sk.seges.acris.reporting.server.dao.api.IReportDescriptionDao;
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 import sk.seges.acris.reporting.shared.service.IReportDescriptionService;
