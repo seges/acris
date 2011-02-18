@@ -92,11 +92,6 @@ org.eclipse.jdt.core.compiler.source=1.6
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-model-metadata</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-model-metadata</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
