@@ -104,16 +104,8 @@
 				</repository>
 
  				<repository>
-          				<id>fornax-release</id>
-					<url>http://www.fornax-platform.org/archiva/repository/releases</url>
-        			</repository>
- 				<repository>
-          				<id>fornax-snapshot</id>
-					<url>http://www.fornax-platform.org/archiva/repository/snapshots</url>
-        			</repository>
- 				<repository>
-          				<id>fornax-migration-releases</id>
-					<url>https://fornax.itemis.de/nexus/content/repositories/migration-releases</url>
+          				<id>fornax-repository</id>
+					<url>http://fornax-platform.org/nexus/content/repositories/public</url>
         			</repository>
 			</repositories>
 
