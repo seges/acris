@@ -29,6 +29,7 @@ to:
 	<version>[1.1.1,)</version>
 	<groupId>sk.seges.sesam</groupId>
 </dependency>
+}}}
 
 *Added possibility to [http://code.google.com/p/acris/wiki/CodeGenerationPlatform#Testing test effectively] annotation processors.*
 
