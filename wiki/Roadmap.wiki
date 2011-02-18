@@ -22,12 +22,16 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 ==Features==
   * Reporting module integrated with JasperServer
   * Offline generator capable of creating a version of the web searchable by any web crawler
-
+  * Added annotation processing support - part of the sesam & corpis suite. Read more in CodeGenerationPlatform
+  * Added more and more showcases
+  * Portable architecture introduced and code is continuosuly migrated
+ 
 ==Improvements==
   * 3rd party libraries upgrade - Spring 3.0.4.Release, Hibernate 3.6.0-Final, GWT 2.0.4, Gilead 1.3.2
   * from now on AcrIS is using GWT 2.1
   * first integration with OpenID in our acris-security module
   * and of course lot of bugfixes against production code
+  * Offline content generator improved, code cleanup and polishing
 
 =Release notes 1.0.1=
 
