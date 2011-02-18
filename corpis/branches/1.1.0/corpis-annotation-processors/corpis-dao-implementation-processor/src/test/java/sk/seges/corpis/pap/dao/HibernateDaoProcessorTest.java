@@ -11,7 +11,7 @@ import sk.seges.corpis.core.pap.dao.HibernateDaoProcessor;
 import sk.seges.corpis.shared.model.mock.api.MockEntity;
 import sk.seges.corpis.shared.model.mock.jpa.JpaMockEntity;
 import sk.seges.sesam.core.pap.AnnotationTest;
-import sk.seges.sesam.core.pap.model.InputClass.OutputClass;
+import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 
@@ -19,7 +19,7 @@ public class HibernateDaoProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testMockEntityDao() {
-		assertCompilationSuccessful(compileTestCase(MockEntity.class, JpaMockEntity.class));
+		assertCompilationSuccessful(compileFiles(MockEntity.class, JpaMockEntity.class));
 		assertOutput(getResourceFile(JpaMockEntity.class), getOutputFile(JpaMockEntity.class));
 	}
  

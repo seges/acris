@@ -9,7 +9,7 @@ import org.junit.Test;
 import sk.seges.corpis.core.pap.dao.DaoApiProcessor;
 import sk.seges.corpis.shared.model.mock.MockEntity;
 import sk.seges.sesam.core.pap.AnnotationTest;
-import sk.seges.sesam.core.pap.model.InputClass.OutputClass;
+import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 
@@ -17,7 +17,7 @@ public class DaoProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testMockEntityDao() {
-		assertCompilationSuccessful(compileTestCase(MockEntity.class));
+		assertCompilationSuccessful(compileFiles(MockEntity.class));
 		assertOutput(getResourceFile(MockEntity.class), getOutputFile(MockEntity.class));
 	}
 
