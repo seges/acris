@@ -1,5 +1,10 @@
 #summary Migration guide.
 #labels Migration,Releasing
 
+Most current version is: 1.1.0
+See the [http://code.google.com/p/acris/downloads/list download] section for all downloads.
+
 Page describes how to migrate between next released versions. Currently there are following possibilites:
  * Migrate from version 1.0.0 to version 1.0.1 - follow details [Migration1_0_1 here]
+ * Migrate from version 1.0.1 to version 1.1.0 - follow details [Migration1_1_0 here]
+ * Migrate from version 1.1.0 to version 1.1.1-SNAPSHOT - follow details [Migration1_1_1 here]
