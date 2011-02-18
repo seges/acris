@@ -83,7 +83,7 @@
 		<module>../acris-showcase-client-core</module>
 		<module>../acris-showcase-generator</module>
 		<module>../acris-showcase-json</module>
-		<module>../acris-showcase-mvp</module>
+		<!--module>../acris-showcase-mvp</module-->
 		<module>../acris-showcase-reporting</module>
 		<module>../acris-showcase-recorder</module>
 		<module>../acris-showcase-openid</module>
