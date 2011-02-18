@@ -79,6 +79,7 @@ to:
 		</additionalConfig>
 	</configuration>
 </plugin>
+
 }}}
 
 == Bean wrapper PAP ==
