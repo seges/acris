@@ -7,9 +7,9 @@
 * prior to version 1.1.1 were all annotation processing related classes held in acris-client-core project. This was improved and common classes were moved into sesam-annotations-support project
 
 It is related to following classes:
-~sk.seges.acris.core.jsr269.AbstractConfigurableProcessor~ -> [http://acris.googlecode.com/svn/sesam/branches/1.1.0/sesam-annotations-support/src/main/java/sk/seges/sesam/core/pap/AbstractConfigurableProcessor.java sk.seges.sesam.core.pap.AbstractConfigurableProcessor]
+~~sk.seges.acris.core.jsr269.AbstractConfigurableProcessor~~ -> [http://acris.googlecode.com/svn/sesam/branches/1.1.0/sesam-annotations-support/src/main/java/sk/seges/sesam/core/pap/AbstractConfigurableProcessor.java sk.seges.sesam.core.pap.AbstractConfigurableProcessor]
 
-~sk.seges.acris.core.jsr269.ProcessorUtils~ -> [http://acris.googlecode.com/svn/sesam/branches/1.1.0/sesam-annotations-support/src/main/java/sk/seges/sesam/core/pap/utils/ProcessorUtils.java sk.seges.sesam.core.pap.utils.ProcessorUtils]
+~~sk.seges.acris.core.jsr269.ProcessorUtils~~ -> [http://acris.googlecode.com/svn/sesam/branches/1.1.0/sesam-annotations-support/src/main/java/sk/seges/sesam/core/pap/utils/ProcessorUtils.java sk.seges.sesam.core.pap.utils.ProcessorUtils]
 
 Please be aware of previous classes were located in acris-client-core and most current implementation is located in sesam-annotations-support, so do not forget to change dependency:
 
@@ -92,9 +92,11 @@ protected TextBox userStreet = GWT.create(TextBox.class);
 }}}
 
 This references address street in the user bean and you down't have to write error prone strings, like:
+
 {{{
 @BindingField("address.street")
 }}}
+
 Problem was with the refactoring. When you refactor getter for address or street, it is very hard to maintain also string representations of the referenced properties. One very easy solution is to define own String property, like:
 
 {{{
@@ -151,6 +153,7 @@ So, when you want to use meta model data, use !MetaModelProcessor
 }}}
 
 And when you want to use bean wrapper for binding purposes, use !BeanWrapperProcessor:
+
 {{{
 <dependency>
 	<groupId>sk.seges.acris</groupId>
