@@ -40,7 +40,7 @@ public class OpenIDConsumerService extends RemoteServiceServlet implements IOpen
 	}
 
 	private HttpSession getSession() {
-		return sessionProvider.getSession(true);
+		return sessionProvider.getSession();
 	}
 
 	@Override
@@ -70,6 +70,7 @@ public class OpenIDConsumerService extends RemoteServiceServlet implements IOpen
 
 			// simple POJO for storing the data
 			OpenIDUser user = new OpenIDUser();
+			user.setSessionId(session.getId());
 
 			// in normal servlet development the following statement would
 			// make a redirect call, but this would not work when using GWT RPC

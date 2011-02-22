@@ -7,12 +7,21 @@ public class OpenIDUser implements Serializable {
 
 	private static final long serialVersionUID = 1435482511152337161L;
 
+	private String sessionId;
 	private String redirectUrl;
 	private Map<?, ?> params;
 
-	public OpenIDUser() {	
+	public OpenIDUser() {
 	}
-	
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
 	public String getRedirectUrl() {
 		return redirectUrl;
 	}
