@@ -14,7 +14,7 @@ public class ShowcasePresenter extends OpenIDLoginPresenter {
 	public ShowcasePresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled,
 			IOpenIDConsumerServiceAsync consumerService) {
-		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, consumerService);
+		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, consumerService, null);
 	}
 
 	@Override
