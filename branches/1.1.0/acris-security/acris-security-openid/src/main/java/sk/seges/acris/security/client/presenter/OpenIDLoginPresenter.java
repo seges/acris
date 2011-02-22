@@ -42,16 +42,19 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 	protected IOpenIDConsumerServiceAsync consumerService;
 
+	protected ClientSession clientSession;
+
 	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			IOpenIDConsumerServiceAsync consumerService) {
-		this(display, broadcaster, redirectUrl, null, false, consumerService);
+		this(display, broadcaster, redirectUrl, null, false, consumerService, null);
 	}
 
 	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled,
-			IOpenIDConsumerServiceAsync consumerService) {
+			IOpenIDConsumerServiceAsync consumerService, ClientSession clientSession) {
 		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled);
 		this.consumerService = consumerService;
+		this.clientSession = clientSession;
 	}
 
 	@Override
@@ -193,6 +196,11 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 				if (result != null) {
 					// Cookies.setCookie(LoginConstants.OPENID_COOKIE_NAME,
 					// identifier);
+
+					if (clientSession != null) {
+						clientSession.setSessionId(result.getSessionId());
+					}
+
 					String url = result.getRedirectUrl();
 					url += "&openid.ns.ui=" + URL.encodeQueryString("http://specs.openid.net/extensions/ui/1.0");
 					url += "&openid.ui.mode=" + URL.encodeQueryString("popup");
@@ -230,24 +238,31 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 				}
 
 				display.displayMessage(loginMessages.loginProgress());
-				consumerService.verify(href, map, new AsyncCallback<String>() {
 
-					@Override
-					public void onFailure(Throwable caught) {
-						// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
-						unbind();
-						closePopup(null);
-						callback.onFailure(new sk.seges.acris.security.shared.exception.SecurityException(
-								"Failed to log in user locally"));
-					}
+				/*
+				 * consumerService.verify(href, map, new AsyncCallback<String>()
+				 * {
+				 * 
+				 * @Override public void onFailure(Throwable caught) { //
+				 * Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+				 * unbind(); closePopup(null); callback.onFailure(new
+				 * sk.seges.acris.security.shared.exception.SecurityException(
+				 * "Failed to log in user locally")); }
+				 * 
+				 * @Override public void onSuccess(String result) { List<String>
+				 * emails = parameterMap.get("openid.ext1.value.email"); String
+				 * email = emails != null ? emails.get(0) : null;
+				 * doLogin(constructOpenIDLoginToken(result, email,
+				 * getProviderFromURL(href)), callback); } });
+				 */
 
-					@Override
-					public void onSuccess(String result) {
-						List<String> emails = parameterMap.get("openid.ext1.value.email");
-						String email = emails != null ? emails.get(0) : null;
-						doLogin(constructOpenIDLoginToken(result, email, getProviderFromURL(href)), callback);
-					}
-				});
+				List<String> identities = parameterMap.get("openid.identity");
+				String identity = identities != null ? identities.get(0) : null;
+
+				List<String> emails = parameterMap.get("openid.ext1.value.email");
+				String email = emails != null ? emails.get(0) : null;
+
+				doLogin(constructOpenIDLoginToken(identity, email, getProviderFromURL(href)), callback);
 			}
 		} else {
 			// auto login
@@ -267,15 +282,24 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 		unbind();
 
-		String query = "";
-		if (redirectUrl != null) {
-			if (GWT.isProdMode()) {
-				query = "?" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + result.getSessionId();
-			} else {
-				query = "?gwt.codesvr=127.0.0.1:9997&" + LoginConstants.ACRIS_SESSION_ID_STRING + "="
-						+ result.getSessionId();
-			}
+		if (redirectUrl != null && !redirectUrl.isEmpty()) {
+			String theme = Location.getParameter(LoginConstants.ACRIS_THEME_STRING);
+			String locale = Location.getParameter(LoginConstants.ACRIS_LOCALE_STRING);
+			String codesvr = Location.getParameter(LoginConstants.ACRIS_CODESVR_STRING);
+			String session = result.getSessionId();
 
+			String query = "";
+			query += theme != null && !theme.isEmpty() ? "&" + LoginConstants.ACRIS_THEME_STRING + "=" + theme : "";
+			query += locale != null && !locale.isEmpty() ? "&" + LoginConstants.ACRIS_LOCALE_STRING + "=" + locale : "";
+			query += codesvr != null && !codesvr.isEmpty() ? "&" + LoginConstants.ACRIS_CODESVR_STRING + "=" + codesvr
+					: "";
+			query += session != null && !session.isEmpty() ? "&" + LoginConstants.ACRIS_SESSION_ID_STRING + "="
+					+ session : "";
+
+			if (!query.isEmpty()) {
+				query = query.replaceFirst("&", "?");
+			}
+			
 			closePopup(redirectUrl != null ? redirectUrl + query : null);
 
 			RootPanel.get().clear();
