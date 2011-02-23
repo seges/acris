@@ -1,5 +1,8 @@
 package sk.seges.acris.widget.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sk.seges.acris.widget.client.event.DialogInitializeEvent;
 import sk.seges.acris.widget.client.handler.DialogInitializeHandler;
 import sk.seges.acris.widget.client.handler.HasDialogInitializeHandlers;
@@ -7,6 +10,7 @@ import sk.seges.acris.widget.client.optionpane.OptionsPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -35,6 +39,8 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 
 	private ClickHandler hidingClickHandler;
 
+	private List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
+
 	public Dialog() {
 		super();
 		init();
@@ -46,6 +52,7 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 
 				@Override
 				public void onClick(ClickEvent event) {
+					cleanup();
 					Dialog.this.hide();
 				}
 			};
@@ -220,6 +227,13 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 
 	@Override
 	public void addDialogInitializeHandler(DialogInitializeHandler handler) {
-		addHandler(handler, DialogInitializeEvent.getType());
+		HandlerRegistration addedHandler = addHandler(handler, DialogInitializeEvent.getType());
+		handlerRegistrations.add(addedHandler);
+	}
+
+	public void cleanup() {
+		for (HandlerRegistration registration : handlerRegistrations) {
+			registration.removeHandler();
+		}
 	}
 }
