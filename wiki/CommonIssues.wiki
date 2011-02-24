@@ -148,3 +148,11 @@ Let's have a test case where we are working with Hibernate. The test creates a l
 It is because {{{Arrays.asList}}} creates internal list implementation {{{Arrays$ArrayList}}} that is different from {{{java.util.ArrayList}}}. It doesn't have methods to add or remove at specific index overriden. When Hibernate tries to add/remove to specific index it delegates the call to {{{Arrays$ArrayList}}} which throws the exception.
 
 So don't use {{{Arrays.asList}}} or wrap it e.g. using new {{{java.util.ArrayList(collection)}}}.
+
+= Unsupported Image Type for JPEG using Java Image I/O =
+
+If you have a problem reading JPEG images using ImageIO.read(File file) and searched for the right library to read it, you might come to a conclusion - there is none suitable.
+
+== Solution ==
+
+Grab https://jai-imageio.dev.java.net/ and extend your JDK/JRE/Classpath. It contains extended set of formats.
