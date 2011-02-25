@@ -26,7 +26,8 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 	
 	private List<GeneratorToken> contents = new ArrayList<GeneratorToken>();
 	private Iterator<GeneratorToken> contentsIterator;
-
+	private GeneratorToken defaultToken = null;
+	
 	public ContentInterceptor(IGeneratorServiceAsync generatorService) {
 		this.generatorService = generatorService;
 	}
@@ -43,6 +44,12 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 
 			public void onSuccess(GeneratorToken result) {
 				if (result != null) {
+					defaultToken = new GeneratorToken();
+					defaultToken.setWebId(result.getWebId());
+					defaultToken.setNiceUrl(result.getNiceUrl());
+					defaultToken.setDefaultToken(true);
+					defaultToken.setLanguage(result.getLanguage());
+					
 					getAvailableTokens(result, new AsyncCallback<Void>() {
 
 						public void onFailure(Throwable caught) {
@@ -97,7 +104,14 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 		if (contentsIterator == null) {
 			contentsIterator = contents.iterator();
 		}
-		return contentsIterator.next();
+
+		GeneratorToken token = contentsIterator.next();
+		
+		if (token.getNiceUrl().equals(defaultToken.getNiceUrl()) &&  token.getWebId().equals(defaultToken.getWebId()) && token.getLanguage().equals(defaultToken.getLanguage())) {
+			token.setDefaultToken(true);
+		}
+		
+		return token;
 	}
 
 	public void remove() {
@@ -119,7 +133,6 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 				Log.error("Loading not finished sucesfully for niceurl " + token.getNiceUrl());
 				RPCRequestTracker.getTracker().removeAllCallbacks();
 				handler.removeHandler();
-				callback.onSuccess(token);
 			}
 			
 		};
@@ -135,7 +148,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 					callback.onFailure(request.getCaught());
 				} else {
 					requestsCounter.value--;
-					Log.trace("Request finished. Waiting for next " + requestsCounter.value + " requests for niceurl " + token.getNiceUrl());
+					Log.debug("Request finished. Waiting for next " + requestsCounter.value + " requests for niceurl " + token.getNiceUrl());
 					if (request.getParentRequest() == null) {
 						timer.cancel();
 						RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -164,13 +177,13 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 				requestsCounter.value = newRunningRequestsCount - runningRequestsCount;
 				if (runningRequestsCount == newRunningRequestsCount) {
-					Log.trace("No new RPC request started for niceurl " + token.getNiceUrl());
+					Log.debug("No new RPC request started for niceurl " + token.getNiceUrl());
 					//No new async request was started
 					timer.cancel();
 					RPCRequestTracker.getTracker().removeAllCallbacks();
 					callback.onSuccess(token);
 				} else {
-					Log.trace("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
+					Log.debug("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
 				}
 			}
 		};
@@ -183,10 +196,6 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 	    } else {
 	    	History.newItem(token.getNiceUrl());
 	    }
-	}
-
-	public void setContent(String content) {
-		RootPanel.get().getElement().setInnerHTML(content);
 	}
 
 	public String getContent() {
