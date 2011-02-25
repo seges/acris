@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
+import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
@@ -54,7 +55,10 @@ public class GeneratorService implements IGeneratorService {
 	}
 
 	public GeneratorToken getLastProcessingToken() {
-		return tokenProvider.getTokenForProcessing();
+		GeneratorToken result = tokenProvider.getTokenForProcessing();
+		result.setDefaultToken(true);
+		result.setNiceUrl(contentDataProvider.getContent(result).getNiceUrl());
+		return result;
 	}
 
 	public boolean saveContent(GeneratorToken token, String contentText) {
