@@ -314,7 +314,7 @@ public class LoginView extends Composite implements LoginDisplay {
 	 */
 	@Override
 	public String getUsername() {
-		return username.getText();
+		return username.getText().trim();
 	}
 
 	@Override
@@ -329,7 +329,7 @@ public class LoginView extends Composite implements LoginDisplay {
 	 */
 	@Override
 	public String getPassword() {
-		return password.getText();
+		return password.getText().trim();
 	}
 
 	@Override
