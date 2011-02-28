@@ -75,8 +75,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			@Override
 			public void onUncaughtException(Throwable e) {
-				Log.debug("Uncaught exception", e);
-				finishTest();
+				Log.warn("Uncaught exception", e);
 			}
 		});
 
