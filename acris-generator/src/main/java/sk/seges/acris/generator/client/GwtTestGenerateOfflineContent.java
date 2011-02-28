@@ -103,6 +103,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			public void onFailure(Throwable caught) {
 				failure("Unable to obtain current content. Please check the log and connectivity on the RPC server side", caught);
+				finalizeTest();
 			}
 
 			public void onSuccess(List<GeneratorToken> result) {
@@ -112,6 +113,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 					loadEntryPointHTML();
 				} else {
 					failure("No tokens available for processing. Finishing", null);
+					finalizeTest();
 				}
 			}
 		});
@@ -125,6 +127,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			public void onFailure(Throwable caught) {
 				failure("Unable to load entry point", caught);
+				finalizeTest();
 			}
 
 			public void onSuccess(String result) {
@@ -148,6 +151,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			public void onProcessingFinished(RPCRequest request) {
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
 					failure("Unable to load site. See the previous errors in console.", null);
+					finalizeTest();
 				} else {
 					if (request.getParentRequest() == null) {
 						RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -184,6 +188,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			@Override
 			public void onFailure(Throwable caught) {
 				failure("Unable to load content for token.", caught);
+				loadNextContent();
 			}
 
 			@Override
@@ -235,8 +240,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 
 	private void failure(String msg, Throwable caught) {
-		GWT.log(msg, caught);
-		finalizeTest();
+		Log.error(msg);
+		//GWT.log(msg, caught);
+		//finalizeTest();
 	}
 
 	protected void finalizeEnvironment() {

@@ -132,7 +132,10 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 			public void run() {
 				Log.error("Loading not finished sucesfully for niceurl " + token.getNiceUrl());
 				RPCRequestTracker.getTracker().removeAllCallbacks();
-				handler.removeHandler();
+				if (handler != null) {
+					handler.removeHandler();
+					handler = null;
+				}
 			}
 			
 		};
@@ -173,7 +176,10 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				handler.removeHandler();
+				if (handler != null) {
+					handler.removeHandler();
+					handler = null;
+				}
 				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 				requestsCounter.value = newRunningRequestsCount - runningRequestsCount;
 				if (runningRequestsCount == newRunningRequestsCount) {
