@@ -270,8 +270,8 @@
 						<debugPort>8990</debugPort>
 						<shellServletMappingURL>/gwt-shell-servlet
 						</shellServletMappingURL>
-						<mergedWebXml>war/WEB-INF/web.xml</mergedWebXml>
-						<webappDirectory>war</webappDirectory>
+						<hostedWebapp>target/${artifactId}-${version}</hostedWebapp>
+	                                        <webappDirectory>target/${artifactId}-${version}</webappDirectory>
 						<soyc>false</soyc>
 						<disableCastChecking>true</disableCastChecking>
 						<!--disableClassMetadata>true</disableClassMetadata>
