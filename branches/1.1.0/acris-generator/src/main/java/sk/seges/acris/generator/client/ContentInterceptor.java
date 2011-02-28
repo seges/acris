@@ -136,6 +136,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 					handler.removeHandler();
 					handler = null;
 				}
+				callback.onSuccess(token);
 			}
 			
 		};
