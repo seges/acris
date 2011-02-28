@@ -7,7 +7,6 @@ import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.generator.shared.service.IGeneratorService;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -16,7 +15,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
@@ -28,6 +26,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private static String webId;
 
 	private IntValueHolder count = new IntValueHolder();
+	private int totalCount = 0;
+	
 	protected IGeneratorServiceAsync generatorService;
 
 	/**
@@ -108,6 +108,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			public void onSuccess(List<GeneratorToken> result) {
 				if (contentProvider.hasNext()) {
+					totalCount = result.size();
 					count.value = result.size();
 					loadEntryPointHTML();
 				} else {
@@ -197,7 +198,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		String content = contentProvider.getContent();
 
-		Log.debug("Generating offline content for niceurl: " + generatorToken.getNiceUrl());
+		Log.info("Generating offline content for niceurl [" + (totalCount - count.value + 1) + " / " + totalCount + "]: " + generatorToken.getNiceUrl());
 
 		final String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
 
