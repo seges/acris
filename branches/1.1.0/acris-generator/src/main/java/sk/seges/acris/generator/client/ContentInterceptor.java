@@ -140,7 +140,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 			}
 			
 		};
-		timer.schedule(5000);
+		timer.schedule(20000);
 
 		final IntValueHolder requestsCounter = new IntValueHolder();
 		
