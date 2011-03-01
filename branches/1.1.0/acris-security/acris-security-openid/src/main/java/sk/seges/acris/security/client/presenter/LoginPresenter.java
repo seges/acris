@@ -15,6 +15,7 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
 import sk.seges.acris.security.shared.util.LoginConstants;
+import sk.seges.acris.security.shared.util.LoginUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -374,23 +375,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		unbind();
 
 		if (redirectUrl != null && !redirectUrl.isEmpty()) {
-			String theme = Location.getParameter(LoginConstants.ACRIS_THEME_STRING);
-			String locale = Location.getParameter(LoginConstants.ACRIS_LOCALE_STRING);
-			String codesvr = Location.getParameter(LoginConstants.ACRIS_CODESVR_STRING);
-			String session = result.getSessionId();
-
-			String query = "";
-			query += theme != null && !theme.isEmpty() ? "&" + LoginConstants.ACRIS_THEME_STRING + "=" + theme : "";
-			query += locale != null && !locale.isEmpty() ? "&" + LoginConstants.ACRIS_LOCALE_STRING + "=" + locale : "";
-			query += codesvr != null && !codesvr.isEmpty() ? "&" + LoginConstants.ACRIS_CODESVR_STRING + "=" + codesvr
-					: "";
-			query += session != null && !session.isEmpty() ? "&" + LoginConstants.ACRIS_SESSION_ID_STRING + "="
-					+ session : "";
-
-			if (!query.isEmpty()) {
-				query = query.replaceFirst("&", "?");
-			}
-			
+			String sessionId = result.getSessionId();
+			String query = LoginUtils.getCommonQueryString(sessionId);
 			RootPanel.get().clear();
 			Location.replace(redirectUrl + query);
 		}
