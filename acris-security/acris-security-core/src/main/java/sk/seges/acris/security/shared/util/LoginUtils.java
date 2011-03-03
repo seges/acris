@@ -7,34 +7,34 @@ public class LoginUtils {
 
 	public static String getAdminUrl() {
 		String baseUrl = getModuleBaseUrl();
-		
+
 		if (GWT.isProdMode()) {
-			return baseUrl = baseUrl;
+			return baseUrl;
 		} else {
 			return baseUrl = baseUrl + "sk.seges.web.template.Admin/Admin.html";
 		}
 	}
-	
+
 	public static String getLoginUrl() {
 		String baseUrl = getModuleBaseUrl();
-		
+
 		if (GWT.isProdMode()) {
 			return baseUrl = baseUrl + "Login.html";
 		} else {
 			return baseUrl = baseUrl + "sk.seges.web.template.Login/Login.html";
 		}
 	}
-	
+
 	public static String getRegistrationUrl() {
 		String baseUrl = getModuleBaseUrl();
-		
+
 		if (GWT.isProdMode()) {
 			return baseUrl = baseUrl + "Registration.html";
 		} else {
 			return baseUrl = baseUrl + "sk.seges.web.template.Registration/Registration.html";
 		}
 	}
-	
+
 	public static String getModuleBaseUrl() {
 		String baseUrl = GWT.getModuleBaseURL();
 
@@ -42,7 +42,7 @@ public class LoginUtils {
 		if (indexOf > -1) {
 			baseUrl = baseUrl.substring(0, indexOf);
 		}
-		
+
 		return baseUrl;
 	}
 
