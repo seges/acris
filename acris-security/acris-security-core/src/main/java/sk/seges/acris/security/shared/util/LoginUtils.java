@@ -9,7 +9,7 @@ public class LoginUtils {
 		String baseUrl = getModuleBaseUrl();
 		
 		if (GWT.isProdMode()) {
-			return baseUrl = baseUrl + "Admin.html";
+			return baseUrl = baseUrl;
 		} else {
 			return baseUrl = baseUrl + "sk.seges.web.template.Admin/Admin.html";
 		}
