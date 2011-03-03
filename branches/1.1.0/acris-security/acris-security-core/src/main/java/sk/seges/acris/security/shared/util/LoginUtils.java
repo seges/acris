@@ -29,9 +29,9 @@ public class LoginUtils {
 		String baseUrl = getModuleBaseUrl();
 		
 		if (GWT.isProdMode()) {
-			return baseUrl = baseUrl + "Registraion.html";
+			return baseUrl = baseUrl + "Registration.html";
 		} else {
-			return baseUrl = baseUrl + "sk.seges.web.template.Registraion/Registraion.html";
+			return baseUrl = baseUrl + "sk.seges.web.template.Registration/Registration.html";
 		}
 	}
 	
