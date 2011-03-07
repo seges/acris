@@ -1,5 +1,9 @@
 #summary GoogleSummerOfCode 2010 Ideas
 
+[http://www.google-melange.com/gsoc/program/home/google/gsoc2011 GSoC 2011]
+
+Thank you for your interest on Acris project suite. These draft ideas defines the future scope of the whole project suite. If any of the idea fits your area of interest, describe the proposal implementation, unfold the whole scope and provide your concepts that leads to fulfilling the project scope.
+
 = Improve GWT widgets/components =
 
 *Project:* Acris widgets
@@ -10,13 +14,13 @@
 
 *Platform:* Java (1.5+), Google Web Toolkit (2.1+), HTML, CSS (2.1+, 3.x)
 
-*Required skills:* algoritmization, object oriented developement, punctual graphics feeling
+*Required skills:* algoritmization, object oriented developement, punctual graphical feeling
 
 *Description and motivation:*
-The goal is to provide native support for extending GWT widgets in order to achieve new look & feel of the widgets. L&F should be defined in the gwt.xml file and can be changed without changing the java code. We don't want to develop new full-featured widgets as it is done in GXT or SmartGWT framework. The goal is to easily provide a new theme for standard GWT widgets so then theme can be used in the application built on top of the GWT framework.
+The goal is to provide native support for extending GWT widgets in order to achieve new look & feel (L&F) of the core widgets. L&F should be defined in the gwt.xml configuration file and can be then changed without changing the java code. We don't want to develop new full-featured widgets as it is done in GXT or SmartGWT framework. Scope is to easily provide a new visual theme for standard GWT widgets so then theme can be used in the application built on top of the GWT framework.
 
 *Current state:*
-We did a research and protype solution and we were able to switch between different themes. Solution had some performance issues and the solution wasn't perfect at all and we are pretty sure that with the new GWT 2.x we can reach much stable and effective solution.
+We did a research and protype solution and we were able to switch between different themes. Solution had some performance issues and it wasn't perfect at all and we are sure we can reach much stable and effective solution with the GWT 2.x.
 
 <table cellpadding="10">
 <tr>
@@ -32,11 +36,11 @@ We did a research and protype solution and we were able to switch between differ
 </table>
 
 Whilst the problem seems pretty straightforward, there are also additional steps needs to be done:
- * provide at least two different color themes in order to verify switching between them without touching the code
- * prepare showcase that will present all GWT widgets properly styled using selected color theme
- * make widgets wasy to use for various applications, well documented and perfectly prepared
+ * provide at least two different color themes in order to verify switching between them without touching the code,
+ * prepare showcase that will present all GWT widgets properly styled using selected color theme,
+ * make widgets easy to use for various applications, well documented and perfectly prepared.
 
-= Acris reporting =
+= Reporting solution in the cloud =
 
 *Project:* Acris reporting
 
@@ -44,13 +48,13 @@ Whilst the problem seems pretty straightforward, there are also additional steps
 
 *Difficulty:* Hard
 
-*Platform:* Java (1.5+), Google Web Toolkit (2.1+), Google appengine, Data persistence - ORM (JPA 2.0, Hibernate), Twig perists, portable and enterprise architecture.
+*Platform:* Java (1.5+), Google Web Toolkit (2.1+), Google Appengine, Data persistence - ORM (JPA 2.0, Hibernate) and Twig perists, portable and enterprise architecture.
 
-*Required skills:* Object oriented developement, strong architecture skills, distributed data storage, complex data processing and optimization
+*Required skills:* Object oriented developement, strong architecture skills (mentor support will be provided), distributed data storage, complex data processing and optimization.
 
-*Description and motivation:* Cloud environment has great possibilities and currently there are some solutions with reporting features but only few of them can be used in the cloud. Unfortunatelly, none of these solutions can be hosted on appengine. Many production applications requires usefull reporting solution so why not to create one? The goal is to carefully plan and design whole reporting solution that runs also on the cloud (Appengine) and also in JEE (ORM based) environment.
+*Description and motivation:* Cloud environment has great possibilities and currently there are some solutions offering reporting features but only few of them can be used in the cloud. Unfortunatelly, none of these solutions can be hosted on Appengine. Many production ready applications requires usefull reporting solution so why not to create one? The goal is to carefully design, plan and implement whole reporting solution that runs also on the cloud (Appengine) and also in the JEE (ORM based) environment.
 
-*Current state:* Acris-reporting offers the user interface for managing and viewing the reports build on top of the GWT without dependency on the reporting solution (server side). Currently we are able to provide reports based on the Jasper reports/iReport, but unfortunatelly there no way how to serve report in the cloud environment like appengine.
+*Current state:* Acris-reporting offers the user interface for managing and viewing the reports built on top of the GWT without dependency on the reporting solution (server side). Currently we are able to provide reports based on the Jasper reports/iReport, but unfortunatelly there is no way how to serve reports in the cloud environment like Appengine.
 
 = Text to speech in the Rich internet applications (RIA) =
 
@@ -62,11 +66,11 @@ Whilst the problem seems pretty straightforward, there are also additional steps
 
 *Platform:* Java (1.5+), algoritmization, synthesis and voice manipulation
 
-*Description and motivation:* Support HTML 5 native support (or flash back solution) for text-to-speech in the RIA application. The motivation is to record user operations, combine them with the audio tracks and reach perfect video manuals/tutorials. Whils the audio track is generated from text, that can be localized, application will be able to provide multiple language translations without recording them again and again.
+*Description and motivation:* Provide HTML 5 native support (and flash as a backup solution) for text-to-speech in the RIA application. The motivation is to record user operations, combine them with the audio "tracks" and reach perfect video manuals/tutorials. Whils the audio track is generated from the text, that can be localized, application will be able to provide multiple language translations without recording them again and again.
 
 *Current state:* None
 
-= Gneric user interface for security maintenance =
+= Generic user interface for security maintenance =
 
 *Project:* Acris security
 
@@ -76,4 +80,20 @@ Whilst the problem seems pretty straightforward, there are also additional steps
 
 *Platform:* Java (1.5+), Google Web Toolkit
 
-*Description and motivation:* Many GWT applications uses any kind of user or group maintenance. This solution is done again and again from the scatch because of missing security standards in the GWT framework. 
+*Description and motivation:* Many GWT applications uses any kind of user or group maintenance. This solution is done again and again from the scatch because of missing security standards in the GWT framework. The goal is to provide reusable users/groups maintenance frontend build on top of the Google Web Toolkit with full backend implementation including logical and physical data models. Because there are many backend solutions that effectivelly works with the security (including ACLs), solution should not reinvent the wheel, but should reuse these solutions instead and should offers plugability for different backend implementations (Spring security, CAS, ...) while the front-end screen retain still the same.
+
+*Current status:* Acris-security project offers possibility to switch between various backend implementations and current POC is proven by Spring security (in JEE environment and also on Appengine). Focus is therefore on building the reusable UI screens.
+
+= Communication data formats in the object world =
+
+*Project:* Acris JSON, Acris XML
+
+*Contact/Mentor:* Peter Simun (simun@seges.sk), Ladislav Gazo (gazo@seges.sk)
+
+*Difficulty:* Easy
+
+*Platform:* Java (1.5+), Google Web Toolkit, JSON, XML
+
+*Description and motivation:* While GWT is more and more popular, then more and more devices/platforms can be interconnected with GWT frontend. It is not always possible to use GWT "native" communication channel (RPC) in order to communicate with backend services and alternative data formats should be also supported - like XML and JSON. Because communication layer is transparent, it will be easy to support various data formats while the code remains the same.
+
+*Current state:* Acris JSON project is able to convert JSON response into Java POJO, but the other way is not supported (from POJO to JSON). Also XML support is not currently implemented.
