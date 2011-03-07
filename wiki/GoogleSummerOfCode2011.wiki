@@ -94,7 +94,7 @@ Whilst the problem seems pretty straightforward, there are also additional steps
 
 *Description and motivation:* Many GWT applications use a kind of user or group maintenance. The solution is done again and again from the scratch because of missing security standards in the GWT framework. Because there is infinite variability in defining user interface presentation, it is also not possible to solve the problem once and for all. On the other hand it is possible to create easy-to-use components for developers where only specific logic would be implemented. 
 
-*Current status:* Acris-security project offers possibility to switch between various back-end implementations and current POC is backed by Spring security (in JEE environment and also on Appengine). Focus is therefore on building the reusable UI screens.
+*Current status:* Acris-security project offers possibility to switch between various back-end implementations and current version is backed by Spring security (in JEE environment and also on Appengine). Focus is therefore on building the reusable UI screens.
 
 *Goal:*
 The goal is to provide:
