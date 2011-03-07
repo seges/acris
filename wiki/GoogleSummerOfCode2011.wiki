@@ -75,7 +75,9 @@ There are more steps necessary to complete Acris reporting module to a sufficien
 
 *Difficulty:* Hard
 
-*Platform:* Java (1.5+), algoritmization, synthesis and voice manipulation
+*Platform:* Java (1.5+), Google Web Toolkit
+
+*Required skills:* algorithmization, synthesis and voice manipulation, HTML 5
 
 *Description and motivation:* Provide HTML 5 native support (and flash as a backup solution) for text-to-speech in the RIA application. The motivation is to record user operations, combine them with the audio "tracks" and reach perfect video manuals/tutorials. Whilst the audio track is generated from the text, that can be localized, application will be able to provide multiple language translations without recording them again and again.
 
@@ -90,6 +92,8 @@ There are more steps necessary to complete Acris reporting module to a sufficien
 *Difficulty:* Medium
 
 *Platform:* Java (1.5+), Google Web Toolkit
+
+*Required skills:* Security background, JEE security projects (Spring Security, JAAS, CAS), secured session management, front-end design
 
 *Description and motivation:* Many GWT applications use a kind of user or group maintenance. The solution is done again and again from the scratch because of missing security standards in the GWT framework. Because there is infinite variability in defining user interface presentation, it is also not possible to solve the problem once and for all. On the other hand it is possible to create easy-to-use components for developers where only specific logic would be implemented. 
 
@@ -113,11 +117,36 @@ Because there is variety of back-end solutions that effectively work with the se
 
 *Difficulty:* Easy
 
-*Platform:* Java (1.5+), Google Web Toolkit, JSON, XML
+*Platform:* Java (1.5+), Google Web Toolkit
+
+*Required skills:* JSON, XML
 
 *Description and motivation:* While GWT is more and more popular, then more and more devices/platforms can be interconnected with GWT frontend. It is not always possible to use GWT "native" communication channel (RPC) in order to communicate with backend services and alternative data formats should be also supported - like XML and JSON. Because communication layer is transparent, it will be easy to support various data formats while the code remains the same.
 
 *Current state:* Acris JSON project is able to convert JSON response into Java POJO, but the other way is not supported (from POJO to JSON). Also XML support is not currently implemented.
+
+= Complete basic web BPM set =
+
+*Project:* Acris BPM
+
+*Contact/Mentor:* Ladislav Gazo (gazo@seges.sk), Peter Simun (simun@seges.sk)
+
+*Difficulty:* Easy
+
+*Platform:* Java (1.5+), Google Web Toolkit
+
+*Required skills:* BPM solution, BPMN 2.0 basics
+
+*Description and motivation:* In the current architectural design there is a strong pressure to create reusable and clearly separated implementation that can be maintained over the long period of time where customers, business analytics and developers can keep an eye on the solution and understand it. A lot of business applications use a BPM solution on the back-end side but there are situations where client side can benefit from abstracting the logic out of the front-end code.
+
+*Current status:* Acris BPM solution contains not-yet complete migration of Activiti BPM engine into GWT. The solution contains implementation suitable for creating basic "wizard-like" process.
+
+*Goal:*
+Acris BPM solution on the client must fulfill following requirements:
+  * keep its JavaScript size at the minimum
+  * complete the support of BPMN 2.0 set available in Activiti
+  * implement basic activity nodes and tools to build usable process: injecting components/beans into process, accessing GWT-RPC / JSON /... service with just a simple configuration, displaying form input
+
 
 Reach us on Google wave:
 <wiki:gadget url="http://acris.googlecode.com/svn/gadgets/gsoc_wave.xml" width="100%" height="430" />
