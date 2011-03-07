@@ -1,4 +1,4 @@
-#summary GoogleSummerOfCode 2010 Ideas
+#summary GoogleSummerOfCode 2011 Ideas
 
 [http://www.google-melange.com/gsoc/program/home/google/gsoc2011 GSoC 2011]
 
