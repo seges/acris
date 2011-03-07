@@ -99,4 +99,4 @@ Whilst the problem seems pretty straightforward, there are also additional steps
 *Current state:* Acris JSON project is able to convert JSON response into Java POJO, but the other way is not supported (from POJO to JSON). Also XML support is not currently implemented.
 
 Reach us on Google wave:
-<wiki:gadget url="http://acris.googlecode.com/svn/gadgets/gsoc_wave.xml" width="100%" height="400" />
+<wiki:gadget url="http://acris.googlecode.com/svn/gadgets/gsoc_wave.xml" width="100%" height="430" />
