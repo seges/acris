@@ -13,6 +13,7 @@
       * [Migration1_1_0 From version 1.0.1 to 1.1.0]
       * [Migration1_1_1 From version 1.1.0 to 1.1.1]
       * [CommonIssues 3rd party libraries]
+    * [GoogleSummerOfCode2011 Google Summer of Code 2011]
   * [BeansBinding Beans binding]
     * [BeansBindingQuickStart Quick-start]
     * [BeansBindingInExamplesPart1 Example no.1]
