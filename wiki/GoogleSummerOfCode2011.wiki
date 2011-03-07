@@ -4,6 +4,44 @@
 
 Thank you for your interest in Acris project suite. These draft ideas define the future scope of the whole project suite. If any idea fits your area of interest, describe the proposal implementation, unfold the whole scope and provide your concept that leads to fulfilling the project scope.
 
+= Communication data formats in the object world =
+
+*Project:* Acris JSON, Acris XML
+
+*Contact/Mentor:* Peter Simun (simun@seges.sk), Ladislav Gazo (gazo@seges.sk)
+
+*Difficulty:* Easy
+
+*Platform:* Java (1.5+), Google Web Toolkit
+
+*Required skills:* JSON, XML
+
+*Description and motivation:* While GWT is more and more popular, then more and more devices/platforms can be interconnected with GWT frontend. It is not always possible to use GWT "native" communication channel (RPC) in order to communicate with backend services and alternative data formats should be also supported - like XML and JSON. Because communication layer is transparent, it will be easy to support various data formats while the code remains the same.
+
+*Current state:* Acris JSON project is able to convert JSON response into Java POJO, but the other way is not supported (from POJO to JSON). Also XML support is not currently implemented.
+
+= Complete basic web BPM set =
+
+*Project:* Acris BPM
+
+*Contact/Mentor:* Ladislav Gazo (gazo@seges.sk), Peter Simun (simun@seges.sk)
+
+*Difficulty:* Easy
+
+*Platform:* Java (1.5+), Google Web Toolkit
+
+*Required skills:* BPM solution, BPMN 2.0 basics
+
+*Description and motivation:* In the current architectural design there is a strong pressure to create reusable and clearly separated implementation that can be maintained over the long period of time where customers, business analytics and developers can keep an eye on the solution and understand it. A lot of business applications use a BPM solution on the back-end side but there are situations where client side can benefit from abstracting the logic out of the front-end code.
+
+*Current status:* Acris BPM solution contains not-yet complete migration of Activiti BPM engine into GWT. The solution contains implementation suitable for creating basic "wizard-like" process.
+
+*Goal:*
+Acris BPM solution on the client must fulfill following requirements:
+  * keep its JavaScript size at the minimum
+  * complete the support of BPMN 2.0 set available in Activiti
+  * implement basic activity nodes and tools to build usable process: injecting components/beans into process, accessing GWT-RPC / JSON /... service with just a simple configuration, displaying form input
+
 = Improve GWT widgets/components =
 
 *Project:* Acris widgets
@@ -41,6 +79,32 @@ Whilst the problem seems pretty straightforward, there are also additional steps
  * provide at least two different color themes in order to verify switching between them without touching the code,
  * prepare showcase that will present all GWT widgets properly styled using selected color theme,
  * make widgets easy to use for various applications, well documented and perfectly prepared.
+
+= Generic user interface for security maintenance =
+
+*Project:* Acris security
+
+*Contact/Mentor:* Peter Simun (simun@seges.sk), Ladislav Gazo (gazo@seges.sk)
+
+*Difficulty:* Medium
+
+*Platform:* Java (1.5+), Google Web Toolkit
+
+*Required skills:* Security background, JEE security projects (Spring Security, JAAS, CAS), secured session management, front-end design
+
+*Description and motivation:* Many GWT applications use a kind of user or group maintenance. The solution is done again and again from the scratch because of missing security standards in the GWT framework. Because there is infinite variability in defining user interface presentation, it is also not possible to solve the problem once and for all. On the other hand it is possible to create easy-to-use components for developers where only specific logic would be implemented. 
+
+*Current status:* Acris-security project offers possibility to switch between various back-end implementations and current POC is backed by Spring security (in JEE environment and also on Appengine). Focus is therefore on building the reusable UI screens.
+
+*Goal:*
+The goal is to provide:
+  * reusable users/groups/roles maintenance front-end widgets built on top of Google Web Toolkit
+  * with back-end implementation including logical and physical data models.
+
+Because there is variety of back-end solutions that effectively work with the security (including ACLs), solution should not reinvent the wheel, but should:
+  * reuse these solutions instead
+  * offer plugability for different back-end implementations (Spring security, CAS, JAAS, ...)
+  * while the front-end screen retain still the same.
 
 = Reporting solution in the cloud =
 
@@ -82,70 +146,6 @@ There are more steps necessary to complete Acris reporting module to a sufficien
 *Description and motivation:* Provide HTML 5 native support (and flash as a backup solution) for text-to-speech in the RIA application. The motivation is to record user operations, combine them with the audio "tracks" and reach perfect video manuals/tutorials. Whilst the audio track is generated from the text, that can be localized, application will be able to provide multiple language translations without recording them again and again.
 
 *Current state:* None
-
-= Generic user interface for security maintenance =
-
-*Project:* Acris security
-
-*Contact/Mentor:* Peter Simun (simun@seges.sk), Ladislav Gazo (gazo@seges.sk)
-
-*Difficulty:* Medium
-
-*Platform:* Java (1.5+), Google Web Toolkit
-
-*Required skills:* Security background, JEE security projects (Spring Security, JAAS, CAS), secured session management, front-end design
-
-*Description and motivation:* Many GWT applications use a kind of user or group maintenance. The solution is done again and again from the scratch because of missing security standards in the GWT framework. Because there is infinite variability in defining user interface presentation, it is also not possible to solve the problem once and for all. On the other hand it is possible to create easy-to-use components for developers where only specific logic would be implemented. 
-
-*Current status:* Acris-security project offers possibility to switch between various back-end implementations and current POC is backed by Spring security (in JEE environment and also on Appengine). Focus is therefore on building the reusable UI screens.
-
-*Goal:*
-The goal is to provide:
-  * reusable users/groups/roles maintenance front-end widgets built on top of Google Web Toolkit
-  * with back-end implementation including logical and physical data models.
-
-Because there is variety of back-end solutions that effectively work with the security (including ACLs), solution should not reinvent the wheel, but should:
-  * reuse these solutions instead
-  * offer plugability for different back-end implementations (Spring security, CAS, JAAS, ...)
-  * while the front-end screen retain still the same.
-
-= Communication data formats in the object world =
-
-*Project:* Acris JSON, Acris XML
-
-*Contact/Mentor:* Peter Simun (simun@seges.sk), Ladislav Gazo (gazo@seges.sk)
-
-*Difficulty:* Easy
-
-*Platform:* Java (1.5+), Google Web Toolkit
-
-*Required skills:* JSON, XML
-
-*Description and motivation:* While GWT is more and more popular, then more and more devices/platforms can be interconnected with GWT frontend. It is not always possible to use GWT "native" communication channel (RPC) in order to communicate with backend services and alternative data formats should be also supported - like XML and JSON. Because communication layer is transparent, it will be easy to support various data formats while the code remains the same.
-
-*Current state:* Acris JSON project is able to convert JSON response into Java POJO, but the other way is not supported (from POJO to JSON). Also XML support is not currently implemented.
-
-= Complete basic web BPM set =
-
-*Project:* Acris BPM
-
-*Contact/Mentor:* Ladislav Gazo (gazo@seges.sk), Peter Simun (simun@seges.sk)
-
-*Difficulty:* Easy
-
-*Platform:* Java (1.5+), Google Web Toolkit
-
-*Required skills:* BPM solution, BPMN 2.0 basics
-
-*Description and motivation:* In the current architectural design there is a strong pressure to create reusable and clearly separated implementation that can be maintained over the long period of time where customers, business analytics and developers can keep an eye on the solution and understand it. A lot of business applications use a BPM solution on the back-end side but there are situations where client side can benefit from abstracting the logic out of the front-end code.
-
-*Current status:* Acris BPM solution contains not-yet complete migration of Activiti BPM engine into GWT. The solution contains implementation suitable for creating basic "wizard-like" process.
-
-*Goal:*
-Acris BPM solution on the client must fulfill following requirements:
-  * keep its JavaScript size at the minimum
-  * complete the support of BPMN 2.0 set available in Activiti
-  * implement basic activity nodes and tools to build usable process: injecting components/beans into process, accessing GWT-RPC / JSON /... service with just a simple configuration, displaying form input
 
 
 Reach us on Google wave:
