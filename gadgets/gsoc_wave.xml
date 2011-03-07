@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="YouTube API for Google Web Toolkit"/> 
+  <Content type="url" href="http://acris.googlecode.com/svn/wiki/GSoC.html"/>
+</Module>
