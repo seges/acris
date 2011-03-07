@@ -97,3 +97,6 @@ Whilst the problem seems pretty straightforward, there are also additional steps
 *Description and motivation:* While GWT is more and more popular, then more and more devices/platforms can be interconnected with GWT frontend. It is not always possible to use GWT "native" communication channel (RPC) in order to communicate with backend services and alternative data formats should be also supported - like XML and JSON. Because communication layer is transparent, it will be easy to support various data formats while the code remains the same.
 
 *Current state:* Acris JSON project is able to convert JSON response into Java POJO, but the other way is not supported (from POJO to JSON). Also XML support is not currently implemented.
+
+Reach us on Google wave:
+<wiki:gadget url="http://acris.googlecode.com/svn/gadgets/gsoc_wave.xml" width="100%" height="400" />
