@@ -157,10 +157,10 @@ There are more steps necessary to complete Acris reporting module to a sufficien
 
 *Description and motivation:* Provide HTML 5 native support (and flash as a backup solution) for text-to-speech in the RIA application. The motivation is to record user operations, combine them with the audio "tracks" and reach perfect video manuals/tutorials. Whilst the audio track is generated from the text, that can be localized, application will be able to provide multiple language translations without recording them again and again.
 
-*Current state:* Acris recorder is able to record all user actions which was executed on the page/application and store them in the database in compressed form (1 user event = 2 Bytes). We are also able to replay recorded events, but the audio track is still missing.
+*Current state:* Acris recorder is able to record all user actions which were executed on the page/application and store them in the database in compressed form (1 user event = 2 Bytes). We are also able to replay recorded events but the audio track is still missing.
 
 *Goal:* 
-Steps many vary based on the internet research that has to be done. Purpose of the research is to identify all open source text-to-speech (TTS) solutions with primary focus on english language, but also additional languages will be later required. Once this is done, there can be various results:
+Steps may vary based on the internet research that has to be done. Purpose of the research is to identify all open source text-to-speech (TTS) solutions with primary focus on english language, but also additional languages will be required later. Once this is done, there can be various results:
  * no appropriate solution (with open source licence) does exist and text-to-speech synthesis has to be implemented,
  * there is a sufficient TTS implementation and can be used as part of the overall solution.
 
