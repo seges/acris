@@ -169,3 +169,4 @@ The goal is to mix video track and audio track in one coherent unit. When TTS is
 ----
 
 Do you have questions? Reach us on Google wave:
+<wiki:gadget url="http://acris.googlecode.com/svn/gadgets/gsoc_wave.xml" width="100%" height="630" />
