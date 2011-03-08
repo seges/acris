@@ -4,6 +4,8 @@
 
 Thank you for your interest in Acris project suite. These draft ideas define the future scope of the whole project suite. If any idea fits your area of interest, describe the proposal implementation, unfold the whole scope and provide your concept that leads to fulfilling the project scope.
 
+----
+
 = Communication data formats in the object world =
 
 *Project:* Acris JSON, Acris XML
@@ -19,6 +21,8 @@ Thank you for your interest in Acris project suite. These draft ideas define the
 *Description and motivation:* While GWT is more and more popular, then more and more devices/platforms can be interconnected with GWT frontend. It is not always possible to use GWT "native" communication channel (RPC) in order to communicate with backend services and alternative data formats should be also supported - like XML and JSON. Because communication layer is transparent, it will be easy to support various data formats while the code remains the same.
 
 *Current state:* Acris JSON project is able to convert JSON response into Java POJO, but the other way is not supported (from POJO to JSON). Also XML support is not currently implemented.
+
+----
 
 = Complete basic web BPM set =
 
@@ -38,9 +42,11 @@ Thank you for your interest in Acris project suite. These draft ideas define the
 
 *Goal:*
 Acris BPM solution on the client must fulfill following requirements:
-  * keep its JavaScript size at the minimum
+  * keep its !JavaScript size at the minimum
   * complete the support of BPMN 2.0 set available in Activiti
   * implement basic activity nodes and tools to build usable process: injecting components/beans into process, accessing GWT-RPC / JSON /... service with just a simple configuration, displaying form input
+
+----
 
 = Improve GWT widgets/components =
 
@@ -80,6 +86,8 @@ Whilst the problem seems pretty straightforward, there are also additional steps
  * prepare showcase that will present all GWT widgets properly styled using selected color theme,
  * make widgets easy to use for various applications, well documented and perfectly prepared.
 
+----
+
 = Generic user interface for security maintenance =
 
 *Project:* Acris security
@@ -106,6 +114,8 @@ Because there is variety of back-end solutions that effectively work with the se
   * offer plugability for different back-end implementations (Spring security, CAS, JAAS, ...)
   * while the front-end screen retain still the same.
 
+----
+
 = Reporting solution in the cloud =
 
 *Project:* Acris reporting
@@ -125,11 +135,13 @@ Because there is variety of back-end solutions that effectively work with the se
 *Goal:*
 There are more steps necessary to complete Acris reporting module to a sufficient level:
   * implement reporting solution runnable on Appengine
-  * support working with common reporting formats - at least JasperReports' JRXML
+  * support working with common reporting formats - at least !JasperReports' JRXML
   * provide export functionality to different formats - HTML, Excel, PDF
   * integrate chart engine into reports
   * keep reporting service and management independent of the reporting solution
   * fine-tune common interface to reporting services from the client perspective
+
+----
 
 = Text to speech in the Rich internet applications (RIA) =
 
@@ -145,8 +157,15 @@ There are more steps necessary to complete Acris reporting module to a sufficien
 
 *Description and motivation:* Provide HTML 5 native support (and flash as a backup solution) for text-to-speech in the RIA application. The motivation is to record user operations, combine them with the audio "tracks" and reach perfect video manuals/tutorials. Whilst the audio track is generated from the text, that can be localized, application will be able to provide multiple language translations without recording them again and again.
 
-*Current state:* None
+*Current state:* Acris recorder is able to record all user actions which was executed on the page/application and store them in the database in compressed form (1 user event = 2 Bytes). We are also able to replay recorded events, but the audio track is still missing.
 
+*Goal:* 
+Steps many vary based on the internet research that has to be done. Purpose of the research is to identify all open source text-to-speech (TTS) solutions with primary focus on english language, but also additional languages will be later required. Once this is done, there can be various results:
+ * no appropriate solution (with open source licence) does not exist and text-to-speech synthesis has to be implemented,
+ * there is a sufficient TTS implementation and can be used as part of the overall solution.
 
-Reach us on Google wave:
-<wiki:gadget url="http://acris.googlecode.com/svn/gadgets/gsoc_wave.xml" width="100%" height="430" />
+The goal is to mix video track and audio track in one coherent unit. When TTS is provided as third party solution, code should be strictly and clearly separated so TTS implementation can be easily replaced.
+
+----
+
+Do you have questions? Reach us on Google wave:
