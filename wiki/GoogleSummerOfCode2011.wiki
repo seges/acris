@@ -164,7 +164,7 @@ Steps many vary based on the internet research that has to be done. Purpose of t
  * no appropriate solution (with open source licence) does exist and text-to-speech synthesis has to be implemented,
  * there is a sufficient TTS implementation and can be used as part of the overall solution.
 
-The goal is to mix video track and audio track in one coherent unit. When TTS is provided as third party solution, code should be strictly and clearly separated so TTS implementation can be easily replaced.
+The goal is to mix "video track" (replayed user events) and audio track in one coherent unit. When TTS is provided as third party solution, code should be strictly and clearly separated so TTS implementation can be easily replaced.
 
 ----
 
