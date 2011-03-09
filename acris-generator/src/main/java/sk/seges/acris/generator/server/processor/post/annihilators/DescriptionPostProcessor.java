@@ -2,26 +2,22 @@ package sk.seges.acris.generator.server.processor.post.annihilators;
 
 import org.htmlparser.Node;
 
-import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class DescriptionPostProcessor extends AbstractContentMetaTagPostProcessor {
+public class DescriptionPostProcessor extends AbstractMetaTagPostProcessor {
 
-	public DescriptionPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentMetaDataProvider) {
-		super(webSettingsService, contentMetaDataProvider);
-	}
-
-	protected boolean supportsNode(Node node) {
-		if (!super.supportsNode(node)) {
+	protected boolean supportsNode(Node node, GeneratorEnvironment generatorEnvironment) {
+		if (!super.supportsNode(node, generatorEnvironment)) {
 			return false;
 		}
-		return (getContent().getDescription() == null || getContent().getDescription().length() == 0);
+
+		return (generatorEnvironment.getContent().getDescription() == null || 
+				generatorEnvironment.getContent().getDescription().length() == 0);
 	}
 
 	@Override
 	protected String getMetaTagName() {
 		return NodeDefinition.DESCRIPTION_TAG_NAME.getName();
 	}
-
 }

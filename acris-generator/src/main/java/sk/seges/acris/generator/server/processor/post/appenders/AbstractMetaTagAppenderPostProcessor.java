@@ -7,20 +7,15 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
 import org.htmlparser.util.NodeList;
 
-import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
-import sk.seges.acris.generator.server.processor.post.alters.AbstractContentMetaDataPostProcessor;
+import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.AbstractMetaTagPostProcessor;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractContentMetaDataPostProcessor {
-
-	public AbstractMetaTagAppenderPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentMetaDataProvider) {
-		super(webSettingsService, contentMetaDataProvider);
-	}
+public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractElementPostProcessor {
 
 	@Override
-	public boolean supports(Node node) {
+	public synchronized boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		return (node instanceof HeadTag);
 	}
 

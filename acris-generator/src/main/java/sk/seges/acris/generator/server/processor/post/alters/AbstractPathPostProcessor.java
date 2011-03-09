@@ -7,15 +7,11 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.service.GeneratorTokenWrapper;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public abstract class AbstractPathPostProcessor extends AbstractElementPostProcessor {
-
-	protected AbstractPathPostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
-	}
 
 	private static final Logger log = Logger.getLogger(AbstractPathPostProcessor.class);
 
@@ -57,9 +53,9 @@ public abstract class AbstractPathPostProcessor extends AbstractElementPostProce
 	}
 
 	@Override
-	public boolean process(Node node) {
+	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 
-		String niceUrl = generatorToken.getNiceUrl();
+		String niceUrl = generatorEnvironment.getGeneratorToken().getNiceUrl();
 		if (File.separatorChar != '/') {
 			niceUrl = niceUrl.replace(File.separatorChar, '/');
 		}
@@ -71,8 +67,8 @@ public abstract class AbstractPathPostProcessor extends AbstractElementPostProce
 
 		boolean defaultToken = false;
 
-		if (generatorToken instanceof GeneratorTokenWrapper) {
-			defaultToken = ((GeneratorTokenWrapper) generatorToken).isDefault();
+		if (generatorEnvironment.getGeneratorToken() instanceof GeneratorTokenWrapper) {
+			defaultToken = ((GeneratorTokenWrapper) generatorEnvironment.getGeneratorToken()).isDefault();
 		}
 		if (count <= 1 || defaultToken) {
 			return true; //no special processing necessary 

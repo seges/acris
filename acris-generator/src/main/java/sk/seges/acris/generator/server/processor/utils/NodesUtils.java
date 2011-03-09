@@ -78,7 +78,7 @@ public class NodesUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static final <T extends Node> T getChildNode(Node parentNode, Class<T> clazz, Attribute... attributes) {
+	public static synchronized final <T extends Node> T getChildNode(Node parentNode, Class<T> clazz, Attribute... attributes) {
 		if (parentNode == null) {
 			return null;
 		}

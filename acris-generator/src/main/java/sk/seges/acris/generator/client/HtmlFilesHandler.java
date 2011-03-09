@@ -60,9 +60,7 @@ public class HtmlFilesHandler {
 							callback.onFailure(new RuntimeException(
 									"Unable to load default content. Please check entry html file: "
 											+ initialContentFilename));
-						} else {
-							UIHelper.cleanUI();
-							
+						} else {							
 							bodyContentWrapper = result.getSecond();
 							callback.onSuccess(result.getSecond());
 						}
@@ -74,21 +72,21 @@ public class HtmlFilesHandler {
 	    return $doc.getElementsByTagName("head")[0];
 	}-*/;
 
-	public void getOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<String> callback) {
+	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
 		
 		String header = getHeadElement().getInnerHTML();
 
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
 
-		generatorService.getOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, 
-				new AsyncCallback<String>() {
+		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, 
+				new AsyncCallback<Void>() {
 
 					public void onFailure(Throwable caught) {
 						GWT.log("Unable to write text to the file. ", caught);
 						callback.onFailure(caught);
 					}
 
-					public void onSuccess(String result) {
+					public void onSuccess(Void result) {
 						callback.onSuccess(result);
 					}
 				});

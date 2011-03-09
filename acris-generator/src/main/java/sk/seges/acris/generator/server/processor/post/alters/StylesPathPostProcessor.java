@@ -3,7 +3,7 @@ package sk.seges.acris.generator.server.processor.post.alters;
 import org.htmlparser.Node;
 
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 /**
  * Relativize path in the stylesheet
@@ -15,12 +15,8 @@ public class StylesPathPostProcessor extends AbstractPathPostProcessor {
 	private static final String STYLESHEET_REL = "stylesheet";
 	private static final String CSS_TYPE = "text/css";
 
-	public StylesPathPostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
-	}
-
 	@Override
-	public boolean supports(Node node) {
+	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 
 		if (node instanceof StyleLinkTag) {
 			StyleLinkTag styleLinkTag = (StyleLinkTag) node;

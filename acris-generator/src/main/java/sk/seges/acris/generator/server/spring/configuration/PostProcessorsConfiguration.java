@@ -31,7 +31,6 @@ import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropert
 import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.rewriterules.INiceUrlGenerator;
 import sk.seges.acris.generator.server.rewriterules.SunConditionalNiceURLGenerator;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public class PostProcessorsConfiguration {
 
@@ -56,9 +55,6 @@ public class PostProcessorsConfiguration {
 	private String legacyRedirectFilePath;
 
 	@Autowired
-	private IWebSettingsService webSettingsService;
-
-	@Autowired
 	private ContentDataProvider contentMetaDataProvider;
 	
 	@Bean
@@ -69,117 +65,111 @@ public class PostProcessorsConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor descriptionMetaTagPostProcessor() {
-		return new DescriptionMetaTagPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new DescriptionMetaTagPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor imagesSourcePostProcessor() {
-		return new ImagesSourcePostProcessor(webSettingsService);
+		return new ImagesSourcePostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor keywordsMetaTagPostProcessor() {
-		return new KeywordsMetaTagPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new KeywordsMetaTagPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor languageSelectorPostProcessor() {
-		return new LanguageSelectorPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new LanguageSelectorPostProcessor(contentMetaDataProvider);
 	}
 
 	@Bean
 	public AbstractElementPostProcessor niceURLLinkPostProcessor() {
-		return new NiceURLLinkPostProcessor(webSettingsService);
+		return new NiceURLLinkPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor scriptsPathPostProcessor() {
-		return new ScriptsPathPostProcessor(webSettingsService);
+		return new ScriptsPathPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor stylesPathPostProcessor() {
-		return new StylesPathPostProcessor(webSettingsService);
+		return new StylesPathPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor titlePostProcessor() {
-		return new TitlePostProcessor(webSettingsService, contentMetaDataProvider);
+		return new TitlePostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor headStyleScriptPostProcessor() {
-		return new HeadStyleScriptPostProcessor(webSettingsService);
+		return new HeadStyleScriptPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor nochacheScriptPostProcessor() {
-		return new NochacheScriptPostProcessor(webSettingsService);
+		return new NochacheScriptPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor notVisibleTagsPostProcessor() {
-		return new NotVisibleTagsPostProcessor(webSettingsService);
+		return new NotVisibleTagsPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor onLoadErrorFnPostProcessor() {
-		return new OnLoadErrorFnPostProcessor(webSettingsService);
+		return new OnLoadErrorFnPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor onPropertyErrorFnPostProcessor() {
-		return new OnPropertyErrorFnPostProcessor(webSettingsService);
+		return new OnPropertyErrorFnPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor propertiesScriptPostProcessor() {
-		return new PropertiesScriptPostProcessor(webSettingsService);
+		return new PropertiesScriptPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor googleAnalyticPostProcessor() {
-		return new GoogleAnalyticAppenderPostProcessor(webSettingsService);
+		return new GoogleAnalyticAppenderPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor localeGwtPropertyPostProcessor() {
-		return new LocaleGwtPropertyAppenderPostProcessor(webSettingsService);
+		return new LocaleGwtPropertyAppenderPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor metaTagPostProcessor() {
-		return new MetaTagPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new MetaTagPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor keywordsPostProcessorAnihilator() {
-		return new KeywordsPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new KeywordsPostProcessor();
 	}
 	
 	@Bean
 	public AbstractElementPostProcessor metaTagAppenderPostProcessor() {
-		return new MetaTagAppenderPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new MetaTagAppenderPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor keywordsMetaTagAppenderPostProcessor() {
-		return new KeywordsMetaTagAppenderPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new KeywordsMetaTagAppenderPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor descriptionMetaTagAppenderPostProcessor() {
-		return new DescriptionMetaTagAppenderPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new DescriptionMetaTagAppenderPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor descriptionMetaTagAnnihilatorPostProcessor() {
-		return new DescriptionPostProcessor(webSettingsService, contentMetaDataProvider);
+		return new DescriptionPostProcessor();
 	}
-
-//	@Bean
-//	public HtmlPostProcessing htmlPostProcessing() {
-//		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
-//		return new HtmlPostProcessing(abstractPostProcessors.values());
-//	}
 }

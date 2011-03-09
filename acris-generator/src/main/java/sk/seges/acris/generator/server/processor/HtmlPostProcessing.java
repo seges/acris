@@ -13,29 +13,34 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
+import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 
 public class HtmlPostProcessing {
 
 	private static final Logger log = Logger.getLogger(HtmlPostProcessing.class);
 	
 	private Collection<AbstractElementPostProcessor> postProcessors;
+	private WebSettingsData webSettings;
+	private ContentDataProvider contentMetaDataProvider;
 
-	private NodeIterator nodeIterator;
-	private List<Node> rootNodes;
-
-	public HtmlPostProcessing(Collection<AbstractElementPostProcessor> postProcessors) {
+	public HtmlPostProcessing(Collection<AbstractElementPostProcessor> postProcessors, ContentDataProvider contentMetaDataProvider, WebSettingsData webSettings) {
 		this.postProcessors = postProcessors;
+		this.contentMetaDataProvider = contentMetaDataProvider;
+		this.webSettings = webSettings;
 	}
 
-	public boolean setProcessorContent(final String content, GeneratorToken token) {
+	public String setProcessorContent(final String content, GeneratorToken token) {
 		if (postProcessors == null || postProcessors.size() == 0) {
 			throw new RuntimeException("No HTML postprocessor registered.");
 		}
 
-		rootNodes = new ArrayList<Node>();
+		List<Node> rootNodes = new ArrayList<Node>();
 
 		Lexer lexer = new Lexer(content);
 		Parser parser = new Parser(lexer);
@@ -44,20 +49,25 @@ public class HtmlPostProcessing {
 		prototypicalNodeFactory.registerTag(new StyleLinkTag());
 		
 		try {
-			nodeIterator = parser.elements();
-			return processNodes(token);
+			NodeIterator nodeIterator = parser.elements();
+			return processNodes(nodeIterator, rootNodes, token);
 		} catch (ParserException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private boolean processNodes(GeneratorToken token) throws ParserException {
+	protected GeneratorEnvironment getGeneratorEnvironment(GeneratorToken generatorToken) {
+		ContentData<?> content = contentMetaDataProvider.getContent(generatorToken);
+		return new DefaultGeneratorEnvironment(webSettings, generatorToken, content);
+	}
+	
+	private String processNodes(NodeIterator nodeIterator, List<Node> rootNodes, GeneratorToken token) throws ParserException {
 		
-//		GeneratorToken defaultGeneratorToken = contentInfoProvider.getDefaultContent(token.getWebId(), token.getLanguage());
+//		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
+//			elementPostProcessor.setGeneratorToken(token);
+//		}
 		
-		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-			elementPostProcessor.setGeneratorToken(token);
-		}
+		GeneratorEnvironment generatorEnvironment = getGeneratorEnvironment(token);
 		
 		while (nodeIterator.hasMoreNodes()) {
 			Node node = nodeIterator.nextNode();
@@ -71,18 +81,22 @@ public class HtmlPostProcessing {
 			rootNodes.add(node);
 
 			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (elementPostProcessor.supports(node)) {
-					elementPostProcessor.process(node);
+				if (elementPostProcessor.supports(node, generatorEnvironment)) {
+					elementPostProcessor.process(node, generatorEnvironment);
 				}
 			}
 
-			processNodes(node.getChildren());
+			processNodes(node.getChildren(), generatorEnvironment);
 		}
 		
-		return (rootNodes != null && rootNodes.size() > 0);
+		if (rootNodes != null && rootNodes.size() > 0) {
+			return getHtml(rootNodes);
+		}
+		
+		return null;
 	}
 
-	private void processNodes(NodeList nodeList) throws ParserException {
+	private void processNodes(NodeList nodeList, GeneratorEnvironment generatorEnvironment) throws ParserException {
 		if (nodeList == null) {
 			return;
 		}
@@ -93,16 +107,16 @@ public class HtmlPostProcessing {
 			Node node = nodeList.elementAt(i);
 
 			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (elementPostProcessor.supports(node)) {
-					elementPostProcessor.process(node);
+				if (elementPostProcessor.supports(node, generatorEnvironment)) {
+					elementPostProcessor.process(node, generatorEnvironment);
 				}
 			}
 
-			processNodes(node.getChildren());
+			processNodes(node.getChildren(), generatorEnvironment);
 		}
 	}
 
-	public String getHtml() {
+	private String getHtml(List<Node> rootNodes) {
 
 		String result = "";
 		

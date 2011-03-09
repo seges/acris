@@ -11,14 +11,11 @@ import org.htmlparser.util.NodeList;
 
 import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class LanguageSelectorPostProcessor extends AbstractContentMetaDataPostProcessor {
-
-	public LanguageSelectorPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentInfoProvider) {
-		super(webSettingsService, contentInfoProvider);
-	}
+public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor {
 
 	private String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
 	private String CLASS_ATTRIBUTE_NAME = "class";
@@ -28,8 +25,14 @@ public class LanguageSelectorPostProcessor extends AbstractContentMetaDataPostPr
 	
     private static final Logger logger = Logger.getLogger(LanguageSelectorPostProcessor.class);
     
+    private ContentDataProvider contentDataProvider;
+    
+    public LanguageSelectorPostProcessor(ContentDataProvider contentDataProvider) {
+    	this.contentDataProvider = contentDataProvider;
+    }
+    
 	@Override
-	public boolean supports(Node node) {
+	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof TagNode) {
 			String classAttributeValue = ((TagNode)node).getAttribute(CLASS_ATTRIBUTE_NAME);
 			
@@ -47,7 +50,7 @@ public class LanguageSelectorPostProcessor extends AbstractContentMetaDataPostPr
 	}
 
 	@Override
-	public boolean process(Node node) {
+	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		
 		SelectTag languageSelector = interateToNode(node, SelectTag.class);
 		
@@ -72,11 +75,11 @@ public class LanguageSelectorPostProcessor extends AbstractContentMetaDataPostPr
 			String languageText = optionTag.getOptionText(); //English
 			String languageValue = optionTag.getValue(); //en
 			
-			if (languageValue == generatorToken.getLanguage()) {
+			if (languageValue == generatorEnvironment.getGeneratorToken().getLanguage()) {
 				continue;
 			}
 			
-			WebSettingsData linkWebSettings = webSettingsService.getWebSettings(generatorToken.getWebId());
+			WebSettingsData linkWebSettings = generatorEnvironment.getWebSettings();
 
 			LinkTag linkTag = new LinkTag();
 			
@@ -86,15 +89,17 @@ public class LanguageSelectorPostProcessor extends AbstractContentMetaDataPostPr
 			nodeList.add(textNode);
 			linkTag.setChildren(nodeList);
 			
-			ContentData<?> content = contentMetaDataProvider.getContentForLanguage(getContent(), languageValue);
+			ContentData<?> content = contentDataProvider.getContentForLanguage(generatorEnvironment.getContent(), languageValue);
+			
 			if (content == null) {
 				continue;
 			}
+			
 			String translatedNiceUrl = content.getNiceUrl();
 			String url = linkWebSettings.getTopLevelDomain();
 			
 			if (url == null) {
-				logger.warn("Web " + generatorToken.getWebId() + " doesn't have set top level domain. Using empty URL!");
+				logger.warn("Web " + generatorEnvironment.getGeneratorToken().getWebId() + " doesn't have set top level domain. Using empty URL!");
 				url = "";
 			}
 			

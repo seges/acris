@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
@@ -21,6 +22,9 @@ public class WebSettingsServiceConfiguration {
 	@Autowired
 	private ApplicationContext applicationContext;
 
+	@Autowired
+	private ContentDataProvider contentMetaDataProvider;
+	
 	@Bean
 	public IWebSettingsBuilder webSettingsBuilder() {
 		return new DefaultWebSettingsBuilder();
@@ -32,8 +36,8 @@ public class WebSettingsServiceConfiguration {
 	}
 	
 	@Bean
-	public HtmlPostProcessing htmlPostProcessing() {
+	public HtmlProcessorFactory htmlProcessorFactory() {
 		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
-		return new HtmlPostProcessing(abstractPostProcessors.values());
+		return new HtmlProcessorFactory(abstractPostProcessors.values(), contentMetaDataProvider);
 	}
 }

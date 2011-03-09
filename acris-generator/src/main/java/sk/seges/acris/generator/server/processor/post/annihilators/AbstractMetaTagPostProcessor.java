@@ -4,21 +4,19 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
 
-import sk.seges.acris.site.shared.service.IWebSettingsService;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public abstract class AbstractMetaTagPostProcessor extends AbstractPostProcessorAnnihilator {
 
-	protected AbstractMetaTagPostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
-	}
-
 	protected abstract String getMetaTagName();
 
-	protected boolean supportsParent(Node node) {
+	@Override
+	protected boolean supportsParent(Node node, GeneratorEnvironment generatorEnvironment) {
 		return (node instanceof HeadTag);
 	}
 
-	protected boolean supportsNode(Node node) {
+	@Override
+	protected boolean supportsNode(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof MetaTag) {
 			MetaTag metaTag = (MetaTag) node;
 			String metaTagName = metaTag.getMetaTagName();
