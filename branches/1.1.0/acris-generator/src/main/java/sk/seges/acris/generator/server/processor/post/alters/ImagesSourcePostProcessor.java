@@ -3,16 +3,12 @@ package sk.seges.acris.generator.server.processor.post.alters;
 import org.htmlparser.Node;
 import org.htmlparser.tags.ImageTag;
 
-import sk.seges.acris.site.shared.service.IWebSettingsService;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public class ImagesSourcePostProcessor extends AbstractPathPostProcessor {
 
-	public ImagesSourcePostProcessor(IWebSettingsService webSettingsService) {
-		super(webSettingsService);
-	}
-
 	@Override
-	public boolean supports(Node node) {
+	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 
 		if (node instanceof ImageTag) {
 			return isPathRelative(getPath(node));

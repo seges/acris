@@ -124,7 +124,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 	private HandlerRegistration handler;
 	
  	public void loadContent(final GeneratorToken token, final AsyncCallback<GeneratorToken> callback) {
- 		Log.debug("Loading content for niceurl " + token.getNiceUrl());
+ 		Log.info("Loading content for niceurl " + token.getNiceUrl());
 
  		final Timer timer = new Timer() {
 
@@ -136,7 +136,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 					handler.removeHandler();
 					handler = null;
 				}
-				callback.onSuccess(token);
+				callback.onFailure(new RuntimeException("Loading not finished sucesfully for niceurl " + token.getNiceUrl()));
 			}
 			
 		};
@@ -148,7 +148,9 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 
 			@Override
 			public void onProcessingFinished(RPCRequest request) {
+				requestsCounter.value--;
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
+					timer.cancel();
 					callback.onFailure(request.getCaught());
 				} else {
 					requestsCounter.value--;
@@ -184,7 +186,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 				requestsCounter.value = newRunningRequestsCount - runningRequestsCount;
 				if (runningRequestsCount == newRunningRequestsCount) {
-					Log.debug("No new RPC request started for niceurl " + token.getNiceUrl());
+					Log.info("No new RPC request started for niceurl " + token.getNiceUrl());
 					//No new async request was started
 					timer.cancel();
 					RPCRequestTracker.getTracker().removeAllCallbacks();

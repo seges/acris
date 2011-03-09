@@ -16,16 +16,17 @@ import org.apache.commons.logging.LogFactory;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
-import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
+import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
 import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 /**
  * @author Peter Simun (simun@seges.sk)
@@ -36,7 +37,8 @@ public class GeneratorService implements IGeneratorService {
 
 	protected TokenProvider tokenProvider;
 
-	protected HtmlPostProcessing htmlPostProcessing;
+	private HtmlProcessorFactory htmlProcessorFactory;
+	private IWebSettingsService webSettingsService;
 
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
@@ -45,13 +47,14 @@ public class GeneratorService implements IGeneratorService {
 
 	private String indexFileName;
 
-	public GeneratorService(DataPersister dataPersister, HtmlPostProcessing htmlPostProcessing, String indexFileName, TokenProvider tokenProvider,
-			ContentDataProvider contentDataProvider) {
+	public GeneratorService(DataPersister dataPersister, String indexFileName, TokenProvider tokenProvider,
+			ContentDataProvider contentDataProvider, IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory) {
 		this.dataPersister = dataPersister;
 		this.indexFileName = indexFileName;
-		this.htmlPostProcessing = htmlPostProcessing;
+		this.htmlProcessorFactory = htmlProcessorFactory;
 		this.tokenProvider = tokenProvider;
 		this.contentDataProvider = contentDataProvider;
+		this.webSettingsService = webSettingsService;
 	}
 
 	public GeneratorToken getLastProcessingToken() {
@@ -128,7 +131,7 @@ public class GeneratorService implements IGeneratorService {
 	}
 
 	@Override
-	public String getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token,
+	public void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token,
 			String currentServerURL) {
 
 		if (content != null) {
@@ -152,29 +155,32 @@ public class GeneratorService implements IGeneratorService {
 			log.debug("			headerContent: " + headerContent);
 		}
 
-		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
-		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
-		content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
+		HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter();
+		
+		String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
+		entryPoint = htmlNodeSplitter.replaceBody(entryPoint, contentWrapper);
+		content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
 
 		String result = content;
 
-		if (htmlPostProcessing.setProcessorContent(content, token)) {
-			result = htmlPostProcessing.getHtml();
-		}
+		HtmlPostProcessing htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+		
+		result = htmlPostProcessor.setProcessorContent(content, token);
+		
+		log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
+
+		writeTextToFile(result, false, token);
 
 		if (token.isDefaultToken()) {
 			GeneratorTokenWrapper tokenWrapper = new GeneratorTokenWrapper(token);
 			tokenWrapper.setDefault(true);
 			entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
 			entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
-			content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
+			content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
 
-			if (htmlPostProcessing.setProcessorContent(content, tokenWrapper)) {
-				writeTextToFile(htmlPostProcessing.getHtml(), true, tokenWrapper);
-			}
+			result = htmlPostProcessor.setProcessorContent(content, tokenWrapper);
+			writeTextToFile(result, true, tokenWrapper);
 		}
-
-		return result;
 	}
 
 	protected String encodeFilePath(String path) {
@@ -207,10 +213,5 @@ public class GeneratorService implements IGeneratorService {
 		}
 
 		dataPersister.writeTextToFile(createPersistentDataProvider(token, isDefault, content));
-	}
-
-	@Override
-	public void writeTextToFile(String content, GeneratorToken token) {
-		writeTextToFile(content, false, token);
 	}
 }

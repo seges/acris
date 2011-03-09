@@ -18,18 +18,14 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * Offline content generator service
 	 */
-	boolean saveContent(GeneratorToken token, String contentText);
-
 	GeneratorToken getLastProcessingToken();
 
-	String getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL);
+	void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL);
 
 	/**
 	 * File provider services
 	 */
 	Tuple<String, String> readHtmlBodyFromFile(String filename);
-
-	void writeTextToFile(String content, GeneratorToken token);
 
 	/**
 	 * Content provider services

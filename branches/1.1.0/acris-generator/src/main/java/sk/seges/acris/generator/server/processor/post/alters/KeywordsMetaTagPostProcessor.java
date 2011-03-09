@@ -2,31 +2,26 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 
-import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public class KeywordsMetaTagPostProcessor extends AbstractMetaTagPostProcessor {
 
-	public KeywordsMetaTagPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentInfoProvider) {
-		super(webSettingsService, contentInfoProvider);
-	}
-
 	@Override
-	protected String getMetaTagName() {
+	protected String getMetaTagName(GeneratorEnvironment generatorEnvironment) {
 		return NodeDefinition.KEYWORDS_TAG_NAME.getName();
 	}
 
 	@Override
-	protected String getMetaTagContent() {
-		return getContent().getKeywords();
+	protected String getMetaTagContent(GeneratorEnvironment generatorEnvironment) {
+		return generatorEnvironment.getContent().getKeywords();
 	}
 	
 	@Override
-	public boolean supports(Node node) {
-		if (!super.supports(node)) {
+	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
+		if (!super.supports(node, generatorEnvironment)) {
 			return false;
 		}
-		return (getContent().getKeywords() != null && getContent().getKeywords().length() > 0);
+		return (generatorEnvironment.getContent().getKeywords() != null && generatorEnvironment.getContent().getKeywords().length() > 0);
 	}
 }

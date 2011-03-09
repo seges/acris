@@ -5,23 +5,18 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.TitleTag;
 import org.htmlparser.util.NodeList;
 
-import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.factory.NodeFactory;
-import sk.seges.acris.generator.server.processor.post.alters.AbstractContentMetaDataPostProcessor;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class TitleAppenderPostProcessor extends AbstractContentMetaDataPostProcessor {
-
-	public TitleAppenderPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentMetaDataProvider) {
-		super(webSettingsService, contentMetaDataProvider);
-	}
+public class TitleAppenderPostProcessor extends AbstractElementPostProcessor {
 
 	@Override
-	public boolean process(Node node) {
+	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		HeadTag headTag = (HeadTag) node;
 
-		TitleTag titleTag = NodesUtils.setTitle(NodeFactory.getTagWithClosing(TitleTag.class), getContent().getTitle());
+		TitleTag titleTag = NodesUtils.setTitle(NodeFactory.getTagWithClosing(TitleTag.class), generatorEnvironment.getContent().getTitle());
 
 		if (headTag.getChildren() == null) {
 			headTag.setChildren(new NodeList());
@@ -33,7 +28,7 @@ public class TitleAppenderPostProcessor extends AbstractContentMetaDataPostProce
 	}
 
 	@Override
-	public boolean supports(Node node) {
+	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (!(node instanceof HeadTag)) {
 			return false;
 		}

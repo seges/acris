@@ -3,30 +3,26 @@ package sk.seges.acris.generator.server.processor.post.alters;
 import org.htmlparser.Node;
 import org.htmlparser.tags.MetaTag;
 
-import sk.seges.acris.generator.server.processor.ContentDataProvider;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
+import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
-public abstract class AbstractMetaTagPostProcessor extends AbstractContentMetaDataPostProcessor {
+public abstract class AbstractMetaTagPostProcessor extends AbstractElementPostProcessor {
 	
-	protected AbstractMetaTagPostProcessor(IWebSettingsService webSettingsService, ContentDataProvider contentInfoProvider) {
-		super(webSettingsService, contentInfoProvider);
-	}
-
 	public static final String NAME_ATTRIBUTE_NAME = "name";
 
-	protected abstract String getMetaTagName();
-	protected abstract String getMetaTagContent();
+	protected abstract String getMetaTagName(GeneratorEnvironment generatorEnvironment);
+	protected abstract String getMetaTagContent(GeneratorEnvironment generatorEnvironment);
 	
 	@Override
-	public boolean process(Node node) {
+	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		MetaTag metaTag = (MetaTag)node;
-		String content = getMetaTagContent();
-		metaTag.setMetaTagContents(content == null ? "" : content);
+		String metaTagContent = getMetaTagContent(generatorEnvironment);
+		metaTag.setMetaTagContents(metaTagContent == null ? "" : metaTagContent);
 		return true;
 	}
 
 	@Override
-	public boolean supports(Node node) {
+	public synchronized boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if  (!(node instanceof MetaTag)) {
 			return false;
 		}
@@ -38,6 +34,6 @@ public abstract class AbstractMetaTagPostProcessor extends AbstractContentMetaDa
 			return false;
 		}
 		
-		return (name.toLowerCase().equals(getMetaTagName().toLowerCase()));
+		return (name.toLowerCase().equals(getMetaTagName(generatorEnvironment).toLowerCase()));
 	}
 }
