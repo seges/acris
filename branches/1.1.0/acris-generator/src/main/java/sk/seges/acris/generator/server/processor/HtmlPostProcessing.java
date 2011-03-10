@@ -35,7 +35,7 @@ public class HtmlPostProcessing {
 		this.webSettings = webSettings;
 	}
 
-	public String setProcessorContent(final String content, GeneratorToken token) {
+	public String getProcessedContent(final String content, GeneratorToken token) {
 		if (postProcessors == null || postProcessors.size() == 0) {
 			throw new RuntimeException("No HTML postprocessor registered.");
 		}

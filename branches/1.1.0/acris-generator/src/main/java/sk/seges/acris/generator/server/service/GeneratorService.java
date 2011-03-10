@@ -10,6 +10,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +49,8 @@ public class GeneratorService implements IGeneratorService {
 	private ContentDataProvider contentDataProvider;
 
 	private String indexFileName;
-
+	private ThreadPoolExecutor threadPool;
+	
 	public GeneratorService(DataPersister dataPersister, String indexFileName, TokenProvider tokenProvider,
 			ContentDataProvider contentDataProvider, IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory) {
 		this.dataPersister = dataPersister;
@@ -55,6 +59,7 @@ public class GeneratorService implements IGeneratorService {
 		this.tokenProvider = tokenProvider;
 		this.contentDataProvider = contentDataProvider;
 		this.webSettingsService = webSettingsService;
+		this.threadPool = new ThreadPoolExecutor(5, 20, 20, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 	}
 
 	public GeneratorToken getLastProcessingToken() {
@@ -87,7 +92,7 @@ public class GeneratorService implements IGeneratorService {
 		return new Tuple<String, String>(new HTMLNodeSplitter().getHeaderText(content), new HTMLNodeSplitter().getBody(content));
 	}
 
-	public String readTextFromFile(String filename) {
+	public synchronized String readTextFromFile(String filename) {
 
 		URL url = null;
 
@@ -114,7 +119,7 @@ public class GeneratorService implements IGeneratorService {
 		}
 	}
 
-	private String readTextFromURL(URL url) throws IOException {
+	private synchronized String readTextFromURL(URL url) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 
 		StringBuffer content = new StringBuffer();
@@ -131,56 +136,70 @@ public class GeneratorService implements IGeneratorService {
 	}
 
 	@Override
-	public void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token,
-			String currentServerURL) {
+	public void writeOfflineContentHtml(final String entryPointFileName, final String header, final String contentWrapper, 
+			final String htmlContent, final GeneratorToken token, final String currentServerURL) {
 
-		if (content != null) {
-			content = content.replaceAll("<br></br>", "<br/>");
-		}
-
-		if (log.isDebugEnabled()) {
-			log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + token.getLanguage() + " and webId: "
-					+ token.getWebId());
-			log.debug("			entryPointFileName: " + entryPointFileName);
-			log.debug("			header: " + header);
-			log.debug("			contentWrapper: " + contentWrapper);
-			log.debug("			content: " + content);
-			log.debug("			currentServerURL: " + currentServerURL);
-		}
-
-		String headerContent = readTextFromFile(entryPointFileName);
-		String doctype = new HTMLNodeSplitter().readDoctype(headerContent);
-
-		if (log.isDebugEnabled()) {
-			log.debug("			headerContent: " + headerContent);
-		}
-
-		HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter();
+		threadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				String content = htmlContent;
+				
+				if (content != null) {
+					content = content.replaceAll("<br></br>", "<br/>");
+				}
 		
-		String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
-		entryPoint = htmlNodeSplitter.replaceBody(entryPoint, contentWrapper);
-		content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
-
-		String result = content;
-
-		HtmlPostProcessing htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+				if (log.isDebugEnabled()) {
+					synchronized (this) { 
+						log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + token.getLanguage() + " and webId: "
+								+ token.getWebId());
+						log.debug("			entryPointFileName: " + entryPointFileName);
+						log.debug("			header: " + header);
+						log.debug("			contentWrapper: " + contentWrapper);
+						log.debug("			content: " + content);
+						log.debug("			currentServerURL: " + currentServerURL);
+					}
+				}
 		
-		result = htmlPostProcessor.setProcessorContent(content, token);
+				String headerContent = readTextFromFile(entryPointFileName);
+				HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter();
+				String doctype = htmlNodeSplitter.readDoctype(headerContent);
 		
-		log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
-
-		writeTextToFile(result, false, token);
-
-		if (token.isDefaultToken()) {
-			GeneratorTokenWrapper tokenWrapper = new GeneratorTokenWrapper(token);
-			tokenWrapper.setDefault(true);
-			entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
-			entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
-			content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
-
-			result = htmlPostProcessor.setProcessorContent(content, tokenWrapper);
-			writeTextToFile(result, true, tokenWrapper);
-		}
+				if (log.isDebugEnabled()) {
+					log.debug("			headerContent: " + headerContent);
+				}
+						
+				String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
+				entryPoint = htmlNodeSplitter.replaceBody(entryPoint, contentWrapper);
+				content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
+		
+				String result = content;
+		
+				HtmlPostProcessing htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+				
+				result = htmlPostProcessor.getProcessedContent(content, token);
+				
+				if (result == null) {
+					log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
+				} else {
+					writeTextToFile(result, false, token);
+			
+					if (token.isDefaultToken()) {
+						GeneratorTokenWrapper tokenWrapper = new GeneratorTokenWrapper(token);
+						tokenWrapper.setDefault(true);
+						entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
+						entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
+						content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
+			
+						result = htmlPostProcessor.getProcessedContent(content, tokenWrapper);
+						if (result != null) {
+							writeTextToFile(result, true, tokenWrapper);
+						} else {
+							log.error("Unable to process HTML nodes for default nice-url " + tokenWrapper.getNiceUrl());
+						}
+					}
+				}
+			}
+		});
 	}
 
 	protected String encodeFilePath(String path) {
@@ -189,6 +208,7 @@ public class GeneratorService implements IGeneratorService {
 			path = path.replaceAll("%2F","/");
 			path = path.replaceAll("%2f","/");
 		} catch (UnsupportedEncodingException e) {
+			log.info("Unable to encode file path " + path);
 		}  
 
 		return path;
@@ -212,6 +232,8 @@ public class GeneratorService implements IGeneratorService {
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + token.getLanguage() + " ] for " + token.getWebId());
 		}
 
-		dataPersister.writeTextToFile(createPersistentDataProvider(token, isDefault, content));
+		synchronized (dataPersister) {
+			dataPersister.writeTextToFile(createPersistentDataProvider(token, isDefault, content));
+		}
 	}
 }
