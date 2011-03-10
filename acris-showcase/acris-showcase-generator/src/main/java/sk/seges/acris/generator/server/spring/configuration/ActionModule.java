@@ -1,23 +1,25 @@
 package sk.seges.acris.generator.server.spring.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Map;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import sk.seges.acris.generator.server.action.GenerateOfflineActionHandler;
 import sk.seges.acris.generator.server.action.GetAvailableNiceurlsActionHandler;
 import sk.seges.acris.generator.server.action.GetLastProcessingTokenActionHandler;
-import sk.seges.acris.generator.server.action.GetOfflineContentHtmlActionHandler;
 import sk.seges.acris.generator.server.action.ReadHtmlBodyFromFileActionHandler;
-import sk.seges.acris.generator.server.action.WriteTextToFileActionHandler;
+import sk.seges.acris.generator.server.action.WriteOfflineContentHtmlActionHandler;
 import sk.seges.acris.generator.server.dao.IFileDao;
 import sk.seges.acris.generator.server.dao.twig.TwigFileDao;
 import sk.seges.acris.generator.server.domain.api.FileData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
-import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
 import sk.seges.acris.generator.server.processor.MoviesContentProvider;
 import sk.seges.acris.generator.server.processor.TokenProvider;
+import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.mock.MockTokenProvider;
+import sk.seges.acris.generator.server.processor.mock.MockWebSettingsService;
+import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.service.GeneratorService;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.server.service.persist.db.DatabasePersister;
@@ -34,9 +36,6 @@ import com.vercer.engine.persist.annotation.AnnotationObjectDatastore;
 
 @Import({DefaultModule.class, DispatchModule.class, PostProcessorsConfiguration.class})
 public class ActionModule extends HandlerModule {
-
-	@Autowired
-	private HtmlPostProcessing htmlPostProcessing;
 
 	private static final String INDEX_FILE = "index.html";
 
@@ -59,18 +58,13 @@ public class ActionModule extends HandlerModule {
 	}
 
 	@Bean
-	public GetOfflineContentHtmlActionHandler getOfflineContentHtmlActionHandler() {
-		return new GetOfflineContentHtmlActionHandler(generatorService());
+	public WriteOfflineContentHtmlActionHandler getOfflineContentHtmlActionHandler() {
+		return new WriteOfflineContentHtmlActionHandler(generatorService());
 	}
 
 	@Bean
 	public ReadHtmlBodyFromFileActionHandler readHtmlBodyFromFileActionHandler() {
 		return new ReadHtmlBodyFromFileActionHandler(generatorService());
-	}
-
-	@Bean
-	public WriteTextToFileActionHandler writeTextToFileActionHandler() {
-		return new WriteTextToFileActionHandler(generatorService());
 	}
 
 	@Bean
@@ -98,9 +92,15 @@ public class ActionModule extends HandlerModule {
 		return new MoviesContentProvider();
 	}
 
+	public HtmlProcessorFactory getHtmlProcessorFactory() {
+		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
+		return new HtmlProcessorFactory(abstractPostProcessors.values(), contentDataProvider());
+	}
+	
 	@Bean
 	public GeneratorService generatorService() {
-		return new GeneratorService(dataPersister(), htmlPostProcessing, INDEX_FILE, tokenProvider(), contentDataProvider());
+		return new GeneratorService(dataPersister(), INDEX_FILE, tokenProvider(), contentDataProvider(),
+				new MockWebSettingsService(), getHtmlProcessorFactory());
 	}
 
 	@Bean
