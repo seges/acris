@@ -2,6 +2,7 @@
 
 = Application Template =
 
+----
 == 1. Personal information ==
 
  * Name: Your name
@@ -9,6 +10,7 @@
  * Country: Your country of citizenship
  * University: University or college where you are enrolled as a student
 
+----
 == 2. Experiences and motivation ==
 
 === Education ===
@@ -22,6 +24,7 @@
  * Why are you interested in proposed ideas?
  * Why are you attending at Google Summer of Code?
 
+----
 == 3. Area of interest ==
 
 === Project ===
