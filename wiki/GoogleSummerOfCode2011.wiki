@@ -124,9 +124,9 @@ Because there is variety of back-end solutions that effectively work with the se
 
 *Difficulty:* Hard
 
-*Platform:* Java (1.5+), Google Web Toolkit (2.1+), Google Appengine, Data persistence - ORM (JPA 2.0, Hibernate) and Twig perists, portable and enterprise architecture.
+*Platform:* Java (1.5+), Google Web Toolkit (2.1+), Google Appengine, Data persistence - ORM (JPA 2.0, Hibernate) and Twig persists, portable and enterprise architecture.
 
-*Required skills:* Object oriented developement, strong architectural skills (mentor support will be provided), distributed data storage, complex data processing and optimization.
+*Required skills:* Object oriented development, strong architectural skills (mentor support will be provided), distributed data storage, complex data processing and optimization.
 
 *Description and motivation:* Cloud environment has great potential for massive data processing and currently there are some solutions offering reporting features but only few of them can be used in the cloud. Unfortunately, none of these solutions can be hosted on Appengine. Many production ready applications require useful reporting solution so why not to create one? The goal is to carefully design, plan and implement whole reporting solution that runs also on the cloud (Appengine) and also in the JEE (ORM based) environment.
 
@@ -134,7 +134,7 @@ Because there is variety of back-end solutions that effectively work with the se
 
 *Goal:*
 There are more steps necessary to complete Acris reporting module to a sufficient level:
-  * implement reporting solution runnable on Appengine
+  * implement reporting solution runable on Appengine
   * support working with common reporting formats - at least !JasperReports' JRXML
   * provide export functionality to different formats - HTML, Excel, PDF
   * integrate chart engine into reports
@@ -160,8 +160,8 @@ There are more steps necessary to complete Acris reporting module to a sufficien
 *Current state:* Acris recorder is able to record all user actions which were executed on the page/application and store them in the database in compressed form (1 user event = 2 Bytes). We are also able to replay recorded events but the audio track is still missing.
 
 *Goal:* 
-Steps may vary based on the internet research that has to be done. Purpose of the research is to identify all open source text-to-speech (TTS) solutions with primary focus on english language, but also additional languages will be required later. Once this is done, there can be various results:
- * no appropriate solution (with open source licence) does exist and text-to-speech synthesis has to be implemented,
+Steps may vary based on the internet research that has to be done. Purpose of the research is to identify all open source text-to-speech (TTS) solutions with primary focus on English language, but also additional languages will be required later. Once this is done, there can be various results:
+ * no appropriate solution (with open source license) does exist and text-to-speech synthesis has to be implemented,
  * there is a sufficient TTS implementation and can be used as part of the overall solution.
 
 The goal is to mix "video track" (replayed user events) and audio track in one coherent unit. When TTS is provided as third party solution, code should be strictly and clearly separated so TTS implementation can be easily replaced.
