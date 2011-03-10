@@ -229,28 +229,24 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		final String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
 
-		timer.start(Operation.GENERATOR_SERVER_WRITE_PROCESSING);
-		
 		offlineContentProvider.saveOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<Void>() {
 
 			public void onFailure(Throwable caught) {
-				timer.stop(Operation.CONTENT_GENERATING);
-				timer.stop(Operation.GENERATOR_SERVER_WRITE_PROCESSING);
 				failure("Unable to get offline content for token " + generatorToken.getNiceUrl() + ". ", caught);
-				count.value--;
-				loadNextContent();
 			}
 
 			public void onSuccess(Void result) {
-				count.value--;
-				timer.stop(Operation.CONTENT_GENERATING);
-				timer.stop(Operation.GENERATOR_SERVER_WRITE_PROCESSING);
-				if (count.value == 0) {
-					finalizeTest();
-				}
-				loadNextContent();
 			}
 		});
+
+		timer.stop(Operation.CONTENT_GENERATING);
+
+		count.value--;
+		loadNextContent();
+
+		if (count.value == 0) {
+			finalizeTest();
+		}
 
 		return generatorToken;
 	}
