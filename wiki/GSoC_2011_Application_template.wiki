@@ -34,13 +34,13 @@
 
 === Proposed solution ===
  * Which technologies/frameworks do you prefer in order to solve the problem?
- * Can you setup the scope for the solution? Please, keep in mind the GSoC takes only 10 weeks, so the scope should reflect this time period. If you would preffer to start earlier, please include this additional work also in the time planning.
+ * Can you setup the scope for the solution? Please, keep in mind the GSoC takes only 10 weeks, so the scope should reflect this time period. If you would prefer to start earlier, please include this additional work also in the time planning.
  * Please, define the project milestones in which the isolated part of the solution will be delivered.
 
-=== Used metodology ===
+=== Used methodology ===
  * Which tools do you prefer for communication, backlogs, for issue tracking, testing and so on?
- * Please, describe briefly the metodology you want to use? What will be your effort (in percentage) for tests writing, documentation in comparision to creating the source code?
- * How do you ensure the best code quality, reusability and extendability?
+ * Please, describe briefly the methodology you want to use? What will your effort (in percentage) be for tests writing, documentation in comparison to creating the source code?
+ * How do you ensure the best code quality, reusability and extendibility?
 
 === Allocation ===
  * What is your expected allocation in hours/week?
@@ -49,4 +49,4 @@
 
 === Vision ===
  * What is your future vision in a particular area? 
- * Do you preffer to continue working on the project also in the future?
+ * Do you prefer to continue working on the project also in the future?
