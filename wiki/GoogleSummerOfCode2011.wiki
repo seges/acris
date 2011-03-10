@@ -165,8 +165,3 @@ Steps may vary based on the internet research that has to be done. Purpose of th
  * there is a sufficient TTS implementation and can be used as part of the overall solution.
 
 The goal is to mix "video track" (replayed user events) and audio track in one coherent unit. When TTS is provided as third party solution, code should be strictly and clearly separated so TTS implementation can be easily replaced.
-
-----
-
-Do you have questions? Reach us on Google wave:
-<wiki:gadget url="http://acris.googlecode.com/svn/gadgets/gsoc_wave.xml" width="100%" height="630" />
