@@ -7,7 +7,7 @@ import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Out;
 
 @GenDispatch
-public class GetOfflineContentHtml {
+public class WriteOfflineContentHtml {
 	@In(1)
 	String entryPointFileName;
 	@In(2)
@@ -20,6 +20,4 @@ public class GetOfflineContentHtml {
 	GeneratorToken token;
 	@In(6)
 	String currentServerURL;
-	@Out(1)
-	String result;
 }

@@ -7,14 +7,10 @@ import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsAction;
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsResult;
 import sk.seges.acris.generator.shared.action.GetLastProcessingTokenAction;
 import sk.seges.acris.generator.shared.action.GetLastProcessingTokenResult;
-import sk.seges.acris.generator.shared.action.GetOfflineContentHtmlAction;
-import sk.seges.acris.generator.shared.action.GetOfflineContentHtmlResult;
 import sk.seges.acris.generator.shared.action.ReadHtmlBodyFromFileAction;
 import sk.seges.acris.generator.shared.action.ReadHtmlBodyFromFileResult;
-import sk.seges.acris.generator.shared.action.SaveContentAction;
-import sk.seges.acris.generator.shared.action.SaveContentResult;
-import sk.seges.acris.generator.shared.action.WriteTextToFileAction;
-import sk.seges.acris.generator.shared.action.WriteTextToFileResult;
+import sk.seges.acris.generator.shared.action.WriteOfflineContentHtmlAction;
+import sk.seges.acris.generator.shared.action.WriteOfflineContentHtmlResult;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 import sk.seges.acris.showcase.client.action.ActionManager;
@@ -30,22 +26,6 @@ public class GeneratorServiceDispatcher implements IGeneratorServiceAsync {
 	@Inject	
 	public GeneratorServiceDispatcher(ActionManager actionManager) {
 		this.actionManager = actionManager;
-	}
-
-	@Override
-	public void saveContent(GeneratorToken token, String contentText, final AsyncCallback<Boolean> callback) {
-		actionManager.execute(new SaveContentAction(token, contentText), new DefaultAsyncCallback<SaveContentResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-
-			@Override
-			public void onSuccess(SaveContentResult result) {
-				callback.onSuccess(result.getResult());
-			}
-		});
 	}
 
 	@Override
@@ -65,10 +45,10 @@ public class GeneratorServiceDispatcher implements IGeneratorServiceAsync {
 	}
 
 	@Override
-	public void getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token,
-			String currentServerURL, final AsyncCallback<String> callback) {
-		actionManager.execute(new GetOfflineContentHtmlAction(entryPointFileName, header, contentWrapper, content, token, currentServerURL),
-				new DefaultAsyncCallback<GetOfflineContentHtmlResult>() {
+	public void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content,
+			GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
+		actionManager.execute(new WriteOfflineContentHtmlAction(entryPointFileName, header, contentWrapper, content, token, currentServerURL),
+				new DefaultAsyncCallback<WriteOfflineContentHtmlResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -76,8 +56,8 @@ public class GeneratorServiceDispatcher implements IGeneratorServiceAsync {
 					}
 
 					@Override
-					public void onSuccess(GetOfflineContentHtmlResult result) {
-						callback.onSuccess(result.getResult());
+					public void onSuccess(WriteOfflineContentHtmlResult result) {
+						callback.onSuccess(null);
 					}
 				});
 	}
@@ -94,22 +74,6 @@ public class GeneratorServiceDispatcher implements IGeneratorServiceAsync {
 			@Override
 			public void onSuccess(ReadHtmlBodyFromFileResult result) {
 				callback.onSuccess(new Tuple<String, String>(result.getHeader(), result.getBody()));
-			}
-		});
-	}
-
-	@Override
-	public void writeTextToFile(String content, GeneratorToken token, final AsyncCallback<Void> callback) {
-		actionManager.execute(new WriteTextToFileAction(content, token), new DefaultAsyncCallback<WriteTextToFileResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-
-			@Override
-			public void onSuccess(WriteTextToFileResult result) {
-				callback.onSuccess((Void) null);
 			}
 		});
 	}
