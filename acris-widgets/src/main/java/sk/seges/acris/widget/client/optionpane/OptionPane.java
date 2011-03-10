@@ -9,6 +9,8 @@ import sk.seges.acris.widget.client.Messages;
 import sk.seges.acris.widget.client.WidgetFactory;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
@@ -148,18 +150,15 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	public static EPanelResult showDefaultErrorDialog() {
 		return showDefaultErrorDialog(null);
 	}
-	
-	
 
 	public static EPanelResult showDefaultErrorDialog(Throwable e) {
 		if (e == null) {
-			return showErrorDialog(messages.optionPane_unhandledException(),
-					labels.errorDialogTitle());
+			return showErrorDialog(messages.optionPane_unhandledException(), labels.errorDialogTitle());
 		} else {
 			return showStackTraceDialog(e);
 		}
 	}
-	
+
 	private static EPanelResult showStackTraceDialog(Throwable e) {
 		Dialog dialog = WidgetFactory.modalDialog();
 		dialog.setCaption(labels.errorDialogTitle());
@@ -171,14 +170,15 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		scrollPanel.add(new HTML(stackTraceToString(e)));
 		verticalPanel.add(scrollPanel);
 		TabPanel tabPanel = new TabPanel();
-		tabPanel.add(new HTML(messages.optionPane_unhandledException()), messages.optionPane_unhandledExceptionTab1Title());
+		tabPanel.add(new HTML(messages.optionPane_unhandledException()),
+				messages.optionPane_unhandledExceptionTab1Title());
 		tabPanel.add(verticalPanel, messages.optionPane_unhandledExceptionTab2Title());
 		tabPanel.selectTab(0);
-		
+
 		OptionPane pane = new OptionPane();
 		pane.setMessage(tabPanel);
 		pane.setIcon(determineImage(EMessageType.ERROR_MESSAGE));
-		
+
 		dialog.setContent(pane);
 
 		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
@@ -186,18 +186,18 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		dialog.center();
 		return pane.getResult();
 	}
-	
+
 	public static String stackTraceToString(Throwable e) {
-	    StringBuilder sb = new StringBuilder();
-	   
-	    for (StackTraceElement element : e.getStackTrace()) {
-	        sb.append(element.toString());
-	        sb.append("\n");
-	    }
-	    if (e.getCause() != null) {
-	    	sb.append(stackTraceToString(e.getCause()));
-	    }
-	    return sb.toString();
+		StringBuilder sb = new StringBuilder();
+
+		for (StackTraceElement element : e.getStackTrace()) {
+			sb.append(element.toString());
+			sb.append("\n");
+		}
+		if (e.getCause() != null) {
+			sb.append(stackTraceToString(e.getCause()));
+		}
+		return sb.toString();
 	}
 
 	public static EPanelResult showErrorDialog(String message) {
@@ -243,6 +243,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
 		dialog.center();
+		dialog.getElement().getStyle().setTop(Window.getClientHeight() / 2 - dialog.getOffsetHeight(), Unit.PX);
 		return pane.getResult();
 		/**/
 	}
