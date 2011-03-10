@@ -13,9 +13,9 @@ http://acris.googlecode.com
 Apache License, 2.0
 
 ===Why is your organization applying to participate in GSoC 2011? What do you hope to gain by participating?===
-Google Summer of Code is a great opportunity for the students to contribute to the open source projects and to join the open source community. We will gladly help them to adapt into the community during their start time. On the other side we hope that our developer's community will grow up and there will be more people involved in the project contribution. We also hope that we will be able to find a new committers that come up with the interesting ideas that can improve our project which can be also helpful for many other people that use Acris in their business applications.
+Google Summer of Code is a great opportunity for the students to contribute to the open source projects and to join the open source community. We will gladly help them to adapt into the community during their start time. On the other side we hope that our developer's community will grow up and there will be more people involved in the project contribution. We also hope that we will be able to find a new committers that come up with the interesting ideas that can improve our project which can be also helpful for many other people that want to create a business application.
 
-As a matter of fact that we are really focused towards the community expansion, we can mention our ambitions for organizing a local GTUG sessions in Slovakia with more than 100 active members (Please, see the details in the meetup page: http://www.meetup.com/GTUG-Slovakia/)
+As a matter of fact that we are really focused towards the community expansion, we can mention our ambitions in organizing a local GTUG sessions in Slovakia with more than 100 active members (Please, see the details in the meetup page: http://www.meetup.com/GTUG-Slovakia/)
 
 ===If accepted, would this be your first year participating in GSoC?===
 Yes
@@ -46,12 +46,12 @@ http://code.google.com/p/acris/wiki/GSoC_2011_Application_template
 ===What criteria did you use to select the individuals who will act as mentors for your organization? Please be as specific as possible.===
 Selection was based on the fact that mentors should have a deep knowledge of the code base. Mentors should also have a strong architecture and development skills so they can successfully coordinate students. 
 
-Selected mentors are the core members of our development team and are really familiar with all implementation details. They have allocated appropriate time slot in order to mentor students, help them with find the solution and they are prepared to design overall architecture for the selected solution.
+Selected mentors are the core members of our development team and are really familiar with all implementation details. They allocated appropriate time slot in order to mentor students, help them to find  correct solution and they are prepared to design overall architecture for the selected solution.
 
 ===What is your plan for dealing with disappearing students?===
-The motivation is the key to the success - that is our rule and that is the reason why we are only looking for the motivated students which are really interested in the proposed ideas.
+The motivation is the key to the success - that is our rule and that is the reason why we are looking for the motivated students which are really interested in the proposed ideas.
 
-We will constantly motivate students by supporting them with professional advices during the development. We know that in spite of intensive support there might by the cases when students lose their motivation and they quit the project prematurely. Even this cannot be avoided we will keeps development in progress and we will continue in the students work if there is a relevant work done.
+We will constantly motivate students by supporting them with professional advices during the development. We know that in spite of intensive support there might by the cases when students lose their motivation and they quit the project prematurely. Even this cannot be avoided we will keep development in progress and we will continue in the students work if there is a relevant work done.
 
 We hope, that only early and regular communication with the students can guarantee the success, therefore multiple synchronization meetings during the week will be required. This helps us to detect problems in the early stages and help us (and to student also) to prevent from unwanted failures.
 
@@ -59,7 +59,7 @@ We hope, that only early and regular communication with the students can guarant
 As was mentioned above, both mentors are very active and long-time project developers thus it is not expected they will disappear. In every case, there are two more mentors allocated to help them with the mentoring or to substitute disappeared mentors.
 
 ===What steps will you take to encourage students to interact with your project's community before, during and after the program?===
-We understand that it's very difficult for new people to interact with the community therefore we would try to keep communication in very friendly manners, so the students don't have to worry to ask anything. Because this is the first time we are applying to GSoC, we hope that interesting questions can open new and productive discussions. We will prefer public communication channels in order to communicate with students so it will be possible for other members to join the discussions, bring helpfull ideas, hints and suggestions. We believe that this approach will predetermine community interaction as the most effective way how to share the knowledge or how to quickly solve the problems that occurs.
+We understand that it's very difficult for new people to interact with the community therefore we would try to keep communication in very friendly manner, so the students don't have to worry to ask anything. Because this is the first time we are applying to GSoC, we hope that interesting questions can start new and productive discussions. We will prefer public communication channels in order to communicate with the students so it will be possible for the other members to join the discussions, bring helpfull ideas, hints and suggestions. We believe that this approach will predetermine community interaction as the most effective way of sharing the knowledge or how to quickly solve the problems that occurs.
 
 After the GSoC program, the most exciting part begins, student can publish his/her results to the community for the public review. This allows him to really grow with the community, to improve the project and to be a part of the community.
 
