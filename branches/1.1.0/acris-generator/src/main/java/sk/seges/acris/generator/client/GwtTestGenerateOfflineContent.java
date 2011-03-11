@@ -161,13 +161,14 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			@Override
 			public void onProcessingFinished(RPCRequest request) {
-				timer.stop(Operation.CONTENT_RENDERING);
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
+					timer.stop(Operation.CONTENT_RENDERING);
 					timer.stop(Operation.CONTENT_GENERATING);
 					failure("Unable to load site. See the previous errors in console.", null);
 					finalizeTest();
 				} else {
 					if (request.getParentRequest() == null) {
+						timer.stop(Operation.CONTENT_RENDERING);
 						RPCRequestTracker.getTracker().removeAllCallbacks();
 						loadContentForToken(generatorToken);
 					}
@@ -185,15 +186,14 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		});
 
 		timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
-		timer.start(Operation.CONTENT_RENDERING);
 
 		if (site == null || (webId != null && webId != generatorToken.getWebId())) {
 			webId = generatorToken.getWebId();
 			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
+			timer.start(Operation.CONTENT_RENDERING);
 			site.onModuleLoad();
 		} else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
-			timer.stop(Operation.CONTENT_RENDERING);
 			loadContentForToken(generatorToken);
 		}
 
