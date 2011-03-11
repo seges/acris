@@ -240,22 +240,24 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 				display.displayMessage(loginMessages.loginProgress());
 
-				/*
-				 * consumerService.verify(href, map, new AsyncCallback<String>()
-				 * {
-				 * 
-				 * @Override public void onFailure(Throwable caught) { //
-				 * Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
-				 * unbind(); closePopup(null); callback.onFailure(new
-				 * sk.seges.acris.security.shared.exception.SecurityException(
-				 * "Failed to log in user locally")); }
-				 * 
-				 * @Override public void onSuccess(String result) { List<String>
-				 * emails = parameterMap.get("openid.ext1.value.email"); String
-				 * email = emails != null ? emails.get(0) : null;
-				 * doLogin(constructOpenIDLoginToken(result, email,
-				 * getProviderFromURL(href)), callback); } });
-				 */
+				consumerService.verify(href, map, new AsyncCallback<String>() {
+
+					@Override
+					public void onFailure(Throwable caught) { //
+						// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+						unbind();
+						closePopup(null);
+						callback.onFailure(new sk.seges.acris.security.shared.exception.SecurityException(
+								"Failed to log in user locally"));
+					}
+
+					@Override
+					public void onSuccess(String result) {
+						List<String> emails = parameterMap.get("openid.ext1.value.email");
+						String email = emails != null ? emails.get(0) : null;
+						doLogin(constructOpenIDLoginToken(result, email, getProviderFromURL(href)), callback);
+					}
+				});
 
 				List<String> identities = parameterMap.get("openid.identity");
 				String identity = identities != null ? identities.get(0) : null;
