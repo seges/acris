@@ -124,7 +124,6 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 	private HandlerRegistration handler;
 	
  	public void loadContent(final GeneratorToken token, final AsyncCallback<GeneratorToken> callback) {
- 		Log.info("Loading content for niceurl " + token.getNiceUrl());
 
  		final Timer timer = new Timer() {
 
@@ -151,9 +150,9 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 				requestsCounter.value--;
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
 					timer.cancel();
+					RPCRequestTracker.getTracker().removeAllCallbacks();
 					callback.onFailure(request.getCaught());
 				} else {
-					requestsCounter.value--;
 					Log.debug("Request finished. Waiting for next " + requestsCounter.value + " requests for niceurl " + token.getNiceUrl());
 					if (request.getParentRequest() == null) {
 						timer.cancel();

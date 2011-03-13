@@ -41,12 +41,10 @@ public class HtmlFilesHandler {
 
 	public void getEntryPointBodyHtml(final AsyncCallback<String> callback) {
 		
-		generatorService.readHtmlBodyFromFile(initialContentFilename,
-				new AsyncCallback<Tuple<String, String>>() {
+		generatorService.readHtmlBodyFromFile(initialContentFilename,new AsyncCallback<Tuple<String, String>>() {
 
 					public void onFailure(Throwable caught) {
-						GWT.log(
-								"Unable to read text from file. Please check entry html file: "
+						GWT.log("Unable to read text from file. Please check entry html file: "
 										+ initialContentFilename
 										+ " and also RPC server side", caught);
 						callback.onFailure(caught);
@@ -54,13 +52,11 @@ public class HtmlFilesHandler {
 
 					public void onSuccess(Tuple<String, String> result) {
 						if (result == null) {
-							GWT.log(
-									"Unable to load default content. Please check entry html file: "
+							GWT.log("Unable to load default content. Please check entry html file: "
 											+ initialContentFilename, null);
-							callback.onFailure(new RuntimeException(
-									"Unable to load default content. Please check entry html file: "
+							callback.onFailure(new RuntimeException("Unable to load default content. Please check entry html file: "
 											+ initialContentFilename));
-						} else {							
+						} else {
 							bodyContentWrapper = result.getSecond();
 							callback.onSuccess(result.getSecond());
 						}
@@ -72,8 +68,8 @@ public class HtmlFilesHandler {
 	    return $doc.getElementsByTagName("head")[0];
 	}-*/;
 
-	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
-		
+	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL) {
+
 		String header = getHeadElement().getInnerHTML();
 
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
@@ -82,12 +78,9 @@ public class HtmlFilesHandler {
 				new AsyncCallback<Void>() {
 
 					public void onFailure(Throwable caught) {
-						GWT.log("Unable to write text to the file. ", caught);
-						callback.onFailure(caught);
 					}
 
 					public void onSuccess(Void result) {
-						callback.onSuccess(result);
 					}
 				});
 	}

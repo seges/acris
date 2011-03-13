@@ -31,6 +31,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private int totalCount = 0;
 	private OperationTimer timer;
 	protected IGeneratorServiceAsync generatorService;
+	private String currentServerURL;
 
 	/**
 	 * Default timeout for whole run of offline content generator Suppose to be never expired because generator should
@@ -157,6 +158,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		final GeneratorToken generatorToken = contentProvider.next();
 
+		Log.info("Generating offline content for niceurl [" + (totalCount - count.value + 1) + " / " + totalCount + "]: " + generatorToken.getNiceUrl());
+
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
 			@Override
@@ -164,8 +167,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
 					timer.stop(Operation.CONTENT_RENDERING);
 					timer.stop(Operation.CONTENT_GENERATING);
-					failure("Unable to load site. See the previous errors in console.", null);
-					finalizeTest();
+					failure("Unable to load content. See the previous errors in console.", null);
+					RPCRequestTracker.getTracker().removeAllCallbacks();
+					loadNextContent();
+					//finalizeTest();
 				} else {
 					if (request.getParentRequest() == null) {
 						timer.stop(Operation.CONTENT_RENDERING);
@@ -192,6 +197,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
 			timer.start(Operation.CONTENT_RENDERING);
 			site.onModuleLoad();
+			currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
 		} else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
 			loadContentForToken(generatorToken);
@@ -221,34 +227,25 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		});
 	}
 
-	private GeneratorToken saveAndLoadContent(final GeneratorToken generatorToken) {
+	private void saveAndLoadContent(final GeneratorToken generatorToken) {
 
 		String content = contentProvider.getContent();
 
-		Log.info("Generating offline content for niceurl [" + (totalCount - count.value + 1) + " / " + totalCount + "]: " + generatorToken.getNiceUrl());
-
-		final String currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
-
-		offlineContentProvider.saveOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<Void>() {
-
-			public void onFailure(Throwable caught) {
-				failure("Unable to get offline content for token " + generatorToken.getNiceUrl() + ". ", caught);
-			}
-
-			public void onSuccess(Void result) {
-			}
-		});
+		timer.start(Operation.GENERATOR_SERVER_WRITE_PROCESSING);
+		offlineContentProvider.saveOfflineContent(content, generatorToken, currentServerURL);
+		timer.stop(Operation.GENERATOR_SERVER_WRITE_PROCESSING);
 
 		timer.stop(Operation.CONTENT_GENERATING);
 
+		Log.info(timer.report());
+
 		count.value--;
-		loadNextContent();
 
 		if (count.value == 0) {
 			finalizeTest();
 		}
 
-		return generatorToken;
+		loadNextContent();
 	}
 
 	private void failure(String msg, Throwable caught) {
