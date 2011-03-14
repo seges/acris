@@ -132,6 +132,11 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	}
 
 	@Override
+	public HandlerRegistration addLoginHandler(LoginHandler handler) {
+		return addHandler(LoginEvent.getType(), handler);
+	}
+	
+	@Override
 	public void bind(final HasWidgets parent) {
 		setLocaleFromCookies();
 		registerHandlers();
@@ -380,10 +385,5 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 			RootPanel.get().clear();
 			Location.replace(redirectUrl + query);
 		}
-	}
-
-	@Override
-	public HandlerRegistration addLoginHandler(LoginHandler handler) {
-		return addHandler(LoginEvent.getType(), handler);
 	}
 }
