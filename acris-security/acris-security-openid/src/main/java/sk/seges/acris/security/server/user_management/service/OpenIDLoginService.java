@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.user_management.dao.IGrantsDao;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
@@ -31,8 +29,6 @@ public class OpenIDLoginService implements LoginService {
 	private IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao;
 
 	private SessionIDGenerator sessionIDGenerator;
-
-	private Logger log = Logger.getLogger(OpenIDLoginService.class);
 
 	public OpenIDLoginService(TokenConverter tokenConverter, IGrantsDao grantsDao,
 			IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao, SessionIDGenerator sessionIDGenerator) {
@@ -76,9 +72,13 @@ public class OpenIDLoginService implements LoginService {
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
 
 		if (token instanceof OpenIDLoginToken) {
+			UserData<?> user = getUserByOpenIDIdentifier((OpenIDLoginToken) token);
+			if (user == null) {
+				throw new AuthenticationException("User not found!");
+			}
 			clientSession.setUser(getUserByOpenIDIdentifier((OpenIDLoginToken) token));
 		} else {
-			log.warn("Unsupported login token type!");
+			throw new AuthenticationException("Unsupported login token type!");
 		}
 
 		return clientSession;

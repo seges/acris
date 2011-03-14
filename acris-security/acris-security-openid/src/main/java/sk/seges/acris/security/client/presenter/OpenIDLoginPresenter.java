@@ -12,7 +12,7 @@ import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
-import sk.seges.acris.security.shared.data.OpenIDUser;
+import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerServiceAsync;
 import sk.seges.acris.security.shared.session.ClientSession;
@@ -27,7 +27,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -56,6 +55,11 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled);
 		this.consumerService = consumerService;
 		this.clientSession = clientSession;
+	}
+
+	@Override
+	public HandlerRegistration addOpenIDLoginHandler(OpenIDLoginHandler handler) {
+		return addHandler(OpenIDLoginEvent.getType(), handler);
 	}
 
 	@Override
@@ -184,35 +188,37 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	 * @param identifier
 	 */
 	protected void authenticate(final String identifier) {
-		consumerService.authenticate(identifier, getModuleUrl(), new AsyncCallback<OpenIDUser>() {
+		consumerService.authenticate(identifier, getModuleURL(), LoginUtils.getLoginModule(),
+				new AsyncCallback<OpenIDUserDTO>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
-				display.showMessage("Authentication failed, exception: " + caught.getLocalizedMessage());
-			}
-
-			@Override
-			public void onSuccess(OpenIDUser result) {
-				if (result != null) {
-					// Cookies.setCookie(LoginConstants.OPENID_COOKIE_NAME,
-					// identifier);
-
-					if (clientSession != null) {
-						clientSession.setSessionId(result.getSessionId());
+					@Override
+					public void onFailure(Throwable caught) {
+						// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+						GWT.log("Authentication failed", caught);
+						display.showMessage("Authentication failed, exception: " + caught.getLocalizedMessage());
 					}
 
-					String url = result.getRedirectUrl();
-					url += "&openid.ns.ui=" + URL.encodeQueryString("http://specs.openid.net/extensions/ui/1.0");
-					url += "&openid.ui.mode=" + URL.encodeQueryString("popup");
-					Window.open(url, "openIDPopup", "width = 500," + "height = 500," + "left = 200," + "top = 200,"
-							+ "resizable = yes," + "scrollbars = no," + "status = no," + "toolbar = no");
-				} else {
-					// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
-					display.showMessage("Authentication failed, OpenID provider not found");
-				}
-			}
-		});
+					@Override
+					public void onSuccess(OpenIDUserDTO result) {
+						if (result != null) {
+							// Cookies.setCookie(LoginConstants.OPENID_COOKIE_NAME,
+							// identifier);
+
+							if (clientSession != null) {
+								clientSession.setSessionId(result.getSessionId());
+							}
+
+							String url = result.getEndpointUrl();
+							Window.open(url, "openIDPopup", "width = 500," + "height = 500," + "left = 200,"
+									+ "top = 200," + "resizable = yes," + "scrollbars = no," + "status = no,"
+									+ "toolbar = no");
+						} else {
+							// Cookies.removeCookie(LoginConstants.OPENID_COOKIE_NAME);
+							GWT.log("Authentication failed, OpenID provider not found");
+							display.showMessage("Authentication failed, OpenID provider not found");
+						}
+					}
+				});
 	}
 
 	/**
@@ -233,6 +239,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 				final Map<String, List<String>> parameterMap = Window.Location.getParameterMap();
 				final Map<String, String[]> map = new HashMap<String, String[]>();
 				Set<String> keys = parameterMap.keySet();
+
 				for (String key : keys) {
 					List<String> value = parameterMap.get(key);
 					map.put(key, (String[]) value.toArray(new String[value.size()]));
@@ -240,7 +247,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 				display.displayMessage(loginMessages.loginProgress());
 
-				consumerService.verify(href, map, new AsyncCallback<String>() {
+				consumerService.verify(href, map, new AsyncCallback<OpenIDUserDTO>() {
 
 					@Override
 					public void onFailure(Throwable caught) { //
@@ -252,20 +259,11 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 					}
 
 					@Override
-					public void onSuccess(String result) {
-						List<String> emails = parameterMap.get("openid.ext1.value.email");
-						String email = emails != null ? emails.get(0) : null;
-						doLogin(constructOpenIDLoginToken(result, email, getProviderFromURL(href)), callback);
+					public void onSuccess(OpenIDUserDTO result) {
+						doLogin(constructOpenIDLoginToken(result.getOpenIDIdentifier(), result.getEmail(),
+								getProviderFromURL(href)), callback);
 					}
 				});
-
-				List<String> identities = parameterMap.get("openid.identity");
-				String identity = identities != null ? identities.get(0) : null;
-
-				List<String> emails = parameterMap.get("openid.ext1.value.email");
-				String email = emails != null ? emails.get(0) : null;
-
-				doLogin(constructOpenIDLoginToken(identity, email, getProviderFromURL(href)), callback);
 			}
 		} else {
 			// auto login
@@ -323,7 +321,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		};
 	}
 
-	private String getModuleUrl() {
+	private String getModuleURL() {
 		return Window.Location.getHref();
 	}
 
@@ -337,9 +335,4 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 												}
 												}
 												}-*/;
-
-	@Override
-	public HandlerRegistration addOpenIDLoginHandler(OpenIDLoginHandler handler) {
-		return addHandler(OpenIDLoginEvent.getType(), handler);
-	}
 }

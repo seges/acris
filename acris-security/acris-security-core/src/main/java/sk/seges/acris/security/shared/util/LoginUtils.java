@@ -15,24 +15,18 @@ public class LoginUtils {
 		}
 	}
 
-	public static String getLoginUrl() {
+	public static String getLoginModule() {
 		String baseUrl = getModuleBaseUrl();
 
 		if (GWT.isProdMode()) {
-			return baseUrl = baseUrl + "Login.html";
+			return baseUrl.substring(baseUrl.length() - 1);
 		} else {
-			return baseUrl = baseUrl + "sk.seges.web.template.Login/Login.html";
+			return baseUrl = baseUrl + "sk.seges.web.template.Login";
 		}
 	}
 
-	public static String getRegistrationUrl() {
-		String baseUrl = getModuleBaseUrl();
-
-		if (GWT.isProdMode()) {
-			return baseUrl = baseUrl + "Registration.html";
-		} else {
-			return baseUrl = baseUrl + "sk.seges.web.template.Registration/Registration.html";
-		}
+	public static String getLoginUrl() {
+		return getLoginModule() + "/Login.html";
 	}
 
 	public static String getModuleBaseUrl() {
