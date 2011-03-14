@@ -2,7 +2,7 @@ package sk.seges.acris.security.shared.service;
 
 import java.util.Map;
 
-import sk.seges.acris.security.shared.data.OpenIDUser;
+import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  */
 public interface IOpenIDConsumerService extends RemoteService {
 
-	OpenIDUser authenticate(String userSuppliedString, String returnToUrl);
+	OpenIDUserDTO authenticate(String userSuppliedString, String returnToUrl, String realm);
 
-	String verify(String queryString, Map<String, String[]> parameterMap);
+	OpenIDUserDTO verify(String queryString, Map<String, String[]> parameterMap);
 }
