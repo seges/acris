@@ -2,7 +2,7 @@ package sk.seges.acris.security.shared.service;
 
 import java.util.Map;
 
-import sk.seges.acris.security.shared.data.OpenIDUser;
+import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface IOpenIDConsumerServiceAsync {
 
-	void authenticate(String userSuppliedString, String returnToUrl, AsyncCallback<OpenIDUser> callback);
+	void authenticate(String userSuppliedString, String returnToUrl, String realm, AsyncCallback<OpenIDUserDTO> callback);
 
-	void verify(String queryString, Map<String, String[]> parameterMap, AsyncCallback<String> callback);
+	void verify(String queryString, Map<String, String[]> parameterMap, AsyncCallback<OpenIDUserDTO> callback);
 }
