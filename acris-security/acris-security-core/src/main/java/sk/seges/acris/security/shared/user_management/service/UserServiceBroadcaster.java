@@ -121,7 +121,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		final Map<String, ClientSession> successes = new HashMap<String, ClientSession>();
 
 		final Semaphore semaphore = new Semaphore(2);
-		semaphore.raise(count);
+		semaphore.raise(1);
 
 		semaphore.addListener(new SemaphoreListener() {
 
@@ -215,6 +215,8 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 				@Override
 				public void onSuccessCallback(String result) {
+					semaphore.raise(userServices.size() - 1);
+
 					ClientSession resultSession = new ClientSession();
 					resultSession.setSessionId(result);
 					successes.put(primaryServicePair.getFirst(), resultSession);
@@ -437,70 +439,20 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 					"No user service was registered. Please register user service in order to execute this method.");
 		}
 
-		final List<Throwable> failures = new ArrayList<Throwable>();
-		final Map<String, ClientSession> successes = new HashMap<String, ClientSession>();
+		Pair<String, IUserServiceAsync> primaryService = resolvePrimaryService();
 
-		final Semaphore semaphore = new Semaphore(2);
-		semaphore.raise(count);
-
-		semaphore.addListener(new SemaphoreListener() {
+		primaryService.getSecond().getLoggedUserName(new AsyncCallback<String>() {
 
 			@Override
-			public void change(SemaphoreEvent event) {
-				if (event.getCount() == event.getStates()[0] + event.getStates()[1]) {
-					if (event.getStates()[1] > 0) {
-						Throwable[] throwables = new Throwable[failures.size()];
-						failures.toArray(throwables);
-						callback.onFailure(new BroadcastingException(throwables));
-					} else {
-						String resolvedPrimaryEntryPoint = resolvePrimaryEntryPoint();
-						if (resolvedPrimaryEntryPoint != null) {
-							// merge authorities from all services to one set
-							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
-							UserData<?> user = primaryResult.getUser();
-							if (!checkUser(user, callback)) {
-								return;
-							}
-
-							List<String> authorities = new ArrayList<String>();
-							add(user.getUserAuthorities(), authorities);
-
-							for (Entry<String, ClientSession> entry : successes.entrySet()) {
-								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
-									add(entry.getValue().getUser().getUserAuthorities(), authorities);
-									primaryResult.merge(entry.getValue());
-								}
-							}
-							user.setUserAuthorities(authorities);
-							callback.onSuccess(user.getUsername());
-						} else {
-							UserData<?> user = successes.values().iterator().next().getUser();
-							if (!checkUser(user, callback)) {
-								return;
-							}
-
-							callback.onSuccess(successes.values().iterator().next().getUser().getUsername());
-						}
-					}
-				}
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
 			}
 
-			private boolean checkUser(UserData<?> user, AsyncCallback<String> callback) {
-				if (user == null) {
-					callback.onFailure(new BroadcastingException("User is null"));
-					return false;
-				}
-				return true;
-			}
-
-			private <T> void add(List<T> userAuthorities, List<T> allAuthorities) {
-				for (T authority : userAuthorities) {
-					allAuthorities.add(authority);
-				}
+			@Override
+			public void onSuccess(String result) {
+				callback.onSuccess(result);
 			}
 		});
-
-		signalUserServices(semaphore, failures, successes);
 	}
 
 	private void signalUserServices(final Semaphore semaphore, final List<Throwable> failures,
