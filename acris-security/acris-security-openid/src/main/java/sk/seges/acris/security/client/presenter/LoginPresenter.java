@@ -135,7 +135,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	public HandlerRegistration addLoginHandler(LoginHandler handler) {
 		return addHandler(LoginEvent.getType(), handler);
 	}
-	
+
 	@Override
 	public void bind(final HasWidgets parent) {
 		setLocaleFromCookies();
@@ -361,16 +361,16 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		}
 	}
 
-	protected void handleFailedLogin() {
-		clearLoginCookies();
-		display.onLoginFailed();
-		display.showMessage(loginMessages.loginFailedTitle());
-	}
-
 	protected void clearLoginCookies() {
 		Cookies.removeCookie(LoginConstants.LANGUAGE_COOKIE_NAME);
 		Cookies.removeCookie(LoginConstants.LOGINNAME_COOKIE_NAME);
 		Cookies.removeCookie(LoginConstants.LOGINPASSWORD_COOKIE_NAME);
+	}
+
+	protected void handleFailedLogin() {
+		clearLoginCookies();
+		display.onLoginFailed();
+		display.showMessage(loginMessages.loginFailedTitle());
 	}
 
 	protected void handleSuccessfulLogin(ClientSession result) {
