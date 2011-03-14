@@ -277,6 +277,12 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	@Override
+	protected void handleFailedLogin() {
+		super.handleFailedLogin();
+		closePopup(null);
+	}
+
+	@Override
 	protected void handleSuccessfulLogin(ClientSession result) {
 		display.setUsername("");
 		display.setPassword("");
