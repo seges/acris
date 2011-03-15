@@ -266,6 +266,7 @@ public class LoginView extends Composite implements LoginDisplay {
 	/**
 	 * Grab the focus. This will put the cursor in the text field for the user.
 	 */
+	@Override
 	public void focus() {
 		if (username.getText().trim().length() > 0) {
 			password.setFocus(true);
