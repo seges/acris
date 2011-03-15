@@ -76,6 +76,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		String getPassword();
 
 		void setPassword(String pass);
+		
+		void focus();
 	}
 
 	protected IUserServiceAsync broadcaster;
@@ -226,6 +228,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 
 	protected void superBind(HasWidgets parent) {
 		super.bind(parent);
+		display.focus();
 	}
 
 	protected void fireLoginEvent() {
