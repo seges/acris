@@ -33,6 +33,10 @@ public class FilePersister implements DataPersister {
 
 		StringFile file = createFile(dirFile, persistentDataProvider.getId());
 
+		if (file == null) {
+			return;
+		}
+		
 		if (log.isDebugEnabled()) {
 			log.debug("Writing offline content to file " + file.getAbsolutePath());
 		}
@@ -67,7 +71,9 @@ public class FilePersister implements DataPersister {
 					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
 				}
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				log.error("IO exception occured", e);
+				return null;
+				//throw new RuntimeException(e);
 			}
 		}
 

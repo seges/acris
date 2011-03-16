@@ -68,7 +68,7 @@ public class HtmlFilesHandler {
 	    return $doc.getElementsByTagName("head")[0];
 	}-*/;
 
-	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL) {
+	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
 
 		String header = getHeadElement().getInnerHTML();
 
@@ -78,9 +78,11 @@ public class HtmlFilesHandler {
 				new AsyncCallback<Void>() {
 
 					public void onFailure(Throwable caught) {
+						callback.onFailure(caught);
 					}
 
 					public void onSuccess(Void result) {
+						callback.onSuccess((Void)null);
 					}
 				});
 	}
