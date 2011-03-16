@@ -33,6 +33,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	protected IGeneratorServiceAsync generatorService;
 	private String currentServerURL;
 
+	private static final boolean PERFORMANCE_MONITOR = true;
+		
 	/**
 	 * Default timeout for whole run of offline content generator Suppose to be never expired because generator should
 	 * finish in correct way - by calling finalizeTest method.
@@ -74,8 +76,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			}
 		});
 
-		timer = new OperationTimer();
-
+		if (PERFORMANCE_MONITOR) {
+			timer = new OperationTimer();
+		}
+		
 		prepareEnvironment();
 
 		generatorService = getGeneratorService();
@@ -97,19 +101,26 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 	private void loadTokensForProcessing() {
 
-		timer.start(Operation.GENERATOR_SERVER_READ_PROCESSING);
+		if (PERFORMANCE_MONITOR) {
+			timer.start(Operation.GENERATOR_SERVER_READ_PROCESSING);
+			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
+		}
 		
 		//Load last token for processing
 		contentProvider.loadTokensForProcessing(new AsyncCallback<List<GeneratorToken>>() {
 
 			public void onFailure(Throwable caught) {
-				timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
+				}
 				failure("Unable to obtain current content. Please check the log and connectivity on the RPC server side", caught);
 				finalizeTest();
 			}
 
 			public void onSuccess(List<GeneratorToken> result) {
-				timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
+				}
 				if (contentProvider.hasNext()) {
 					totalCount = result.size();
 					count.value = result.size();
@@ -121,30 +132,46 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			}
 		});
 
+		if (PERFORMANCE_MONITOR) {
+			timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+		}
 	}
 
 	private void loadEntryPointHTML() {
 
-		timer.start(Operation.GENERATOR_SERVER_READ_PROCESSING);
-
+		if (PERFORMANCE_MONITOR) {
+			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
+		}
+		
 		//Load entry point
 		offlineContentProvider.getEntryPointBodyHtml(new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
-				timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
+				}
 				failure("Unable to load entry point", caught);
 				finalizeTest();
 			}
 
 			public void onSuccess(String result) {
-				timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
-				timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
+					timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
+				}
 				UIHelper.cleanUI();
 				RootPanel.get().getElement().setInnerHTML(result);
-				timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+				}
 				loadNextContent();
 			}
 		});
+		
+		if (PERFORMANCE_MONITOR) {
+			timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+			timer.start(Operation.GENERATOR_SERVER_READ_PROCESSING);
+		}
 	}
 
 	private GeneratorToken loadNextContent() {
@@ -153,9 +180,11 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			return null;
 		}
 
-		timer.start(Operation.CONTENT_GENERATING);
-		timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
-
+		if (PERFORMANCE_MONITOR) {
+			timer.start(Operation.CONTENT_GENERATING);
+			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
+		}
+		
 		final GeneratorToken generatorToken = contentProvider.next();
 
 		Log.info("Generating offline content for niceurl [" + (totalCount - count.value + 1) + " / " + totalCount + "]: " + generatorToken.getNiceUrl());
@@ -165,15 +194,20 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			@Override
 			public void onProcessingFinished(RPCRequest request) {
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
-					timer.stop(Operation.CONTENT_RENDERING);
-					timer.stop(Operation.CONTENT_GENERATING);
+					if (PERFORMANCE_MONITOR) {
+						timer.stop(Operation.CONTENT_RENDERING);
+						timer.stop(Operation.CONTENT_GENERATING);
+					}
 					failure("Unable to load content. See the previous errors in console.", null);
 					RPCRequestTracker.getTracker().removeAllCallbacks();
 					loadNextContent();
 					//finalizeTest();
 				} else {
 					if (request.getParentRequest() == null) {
-						timer.stop(Operation.CONTENT_RENDERING);
+						if (PERFORMANCE_MONITOR) {
+							timer.stop(Operation.CONTENT_RENDERING);
+						}
+						
 						RPCRequestTracker.getTracker().removeAllCallbacks();
 						loadContentForToken(generatorToken);
 					}
@@ -190,12 +224,16 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		});
 
-		timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
-
+		if (PERFORMANCE_MONITOR) {
+			timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+		}
+		
 		if (site == null || (webId != null && webId != generatorToken.getWebId())) {
 			webId = generatorToken.getWebId();
 			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
-			timer.start(Operation.CONTENT_RENDERING);
+			if (PERFORMANCE_MONITOR) {
+				timer.start(Operation.CONTENT_RENDERING);
+			}
 			site.onModuleLoad();
 			currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
 		} else {
@@ -207,13 +245,18 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 
 	private void loadContentForToken(final GeneratorToken generatorToken) {
-		timer.start(Operation.CONTENT_RENDERING);
+		if (PERFORMANCE_MONITOR) {
+			timer.start(Operation.CONTENT_RENDERING);
+		}
 		contentProvider.loadContent(generatorToken, new AsyncCallback<GeneratorToken>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				timer.stop(Operation.CONTENT_RENDERING);
-				timer.stop(Operation.CONTENT_GENERATING);
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.CONTENT_RENDERING);
+					timer.stop(Operation.CONTENT_GENERATING);
+				}
+				
 				failure("Unable to load content for nice-url " + generatorToken.getNiceUrl() + ".", caught);
 				count.value--;
 				loadNextContent();
@@ -221,31 +264,62 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			@Override
 			public void onSuccess(GeneratorToken result) {
-				timer.stop(Operation.CONTENT_RENDERING);
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.CONTENT_RENDERING);
+				}
 				saveAndLoadContent(result);
 			}
 		});
+
+		if (PERFORMANCE_MONITOR) {
+			timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
+		}
 	}
 
 	private void saveAndLoadContent(final GeneratorToken generatorToken) {
 
+		if (PERFORMANCE_MONITOR) {
+			timer.start(Operation.GENERATOR_DOM_MANIPULATION);
+		}
+
 		String content = contentProvider.getContent();
+		
+		Log.info("" + content.length());
+		
+		if (PERFORMANCE_MONITOR) {
+			timer.stop(Operation.GENERATOR_DOM_MANIPULATION);
+			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
+		}
+		
+		offlineContentProvider.saveOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<Void>() {
 
-		timer.start(Operation.GENERATOR_SERVER_WRITE_PROCESSING);
-		offlineContentProvider.saveOfflineContent(content, generatorToken, currentServerURL);
-		timer.stop(Operation.GENERATOR_SERVER_WRITE_PROCESSING);
+			@Override
+			public void onFailure(Throwable caught) {
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.CONTENT_GENERATING);
+					Log.info(timer.report());
+					timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+				}
+				loadNextContent();
+			}
 
-		timer.stop(Operation.CONTENT_GENERATING);
-
-		Log.info(timer.report());
+			@Override
+			public void onSuccess(Void result) {
+				if (PERFORMANCE_MONITOR) {
+					timer.stop(Operation.CONTENT_GENERATING);
+					Log.info(timer.report());
+					timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
+				}
+				loadNextContent();
+			}
+		});
 
 		count.value--;
-
+		
 		if (count.value == 0) {
 			finalizeTest();
 		}
-
-		loadNextContent();
 	}
 
 	private void failure(String msg, Throwable caught) {
@@ -259,7 +333,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 
 	private void finalizeTest() {
-		Log.info(timer.report());
+		if (PERFORMANCE_MONITOR) {
+			Log.info(timer.report());
+		}
 		finalizeEnvironment();
 		finishTest();
 	}

@@ -202,6 +202,9 @@ public class GeneratorService implements IGeneratorService {
 		});
 	}
 
+	/*
+	 * Method is used to encode name of the file 
+	 */
 	protected String encodeFilePath(String path) {
 		 try {
 			path = URLEncoder.encode(path, Charset.defaultCharset().toString());
@@ -222,7 +225,7 @@ public class GeneratorService implements IGeneratorService {
 		if (isDefault) {
 			dataProvider.setId(indexFileName);
 		} else {
-			dataProvider.setId(encodeFilePath(token.getNiceUrl()) + File.separator + "index.html");
+			dataProvider.setId(token.getNiceUrl() + File.separator + "index.html");
 		}
 		return dataProvider;
 	}

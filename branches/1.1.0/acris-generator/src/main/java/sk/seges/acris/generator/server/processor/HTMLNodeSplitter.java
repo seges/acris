@@ -95,6 +95,7 @@ public class HTMLNodeSplitter {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean contains(NodeList nodes, Tag searchTag) {
 		for (int i = 0; i < nodes.size(); i++) {
 			Node node = nodes.elementAt(i);
@@ -102,8 +103,8 @@ public class HTMLNodeSplitter {
 			if (node instanceof Tag) {
 				Tag tag = (Tag)node;
 				if (tag.getTagName().toLowerCase().equals(searchTag.getTagName().toLowerCase())) {
-					Vector tagAttributes = tag.getAttributesEx();
-					Vector searchTagAttributes = searchTag.getAttributesEx();
+					Vector<Attribute> tagAttributes = tag.getAttributesEx();
+					Vector<Attribute> searchTagAttributes = searchTag.getAttributesEx();
 					
 					if (tagAttributes.size() == searchTagAttributes.size()) {
 						if (attributesEquals(tagAttributes, searchTagAttributes)) {
@@ -247,7 +248,7 @@ public class HTMLNodeSplitter {
 	
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CompositeTag> T getTagByName(String content, String tagName) {
+	private synchronized <T extends CompositeTag> T getTagByName(String content, String tagName) {
 		NodeFilter nodeFilter = new TagNameFilter(tagName);
 		Lexer lexer = new Lexer(content);
 		Parser parser = new Parser(lexer);
@@ -266,8 +267,7 @@ public class HTMLNodeSplitter {
 		return (T)node;
 	}
 
-	@SuppressWarnings("unchecked")
-	private NodeIterator getNodeListIterator(String content) {
+	private synchronized NodeIterator getNodeListIterator(String content) {
 		Lexer lexer = new Lexer(content);
 		Parser parser = new Parser(lexer);
 		try {

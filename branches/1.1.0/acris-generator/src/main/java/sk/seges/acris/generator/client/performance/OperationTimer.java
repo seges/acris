@@ -8,7 +8,7 @@ public class OperationTimer {
 		CONTENT_GENERATING,
 		GENERATOR_CLIENT_PROCESSING, 
 		GENERATOR_SERVER_READ_PROCESSING, 
-		GENERATOR_SERVER_WRITE_PROCESSING, 
+		GENERATOR_DOM_MANIPULATION,
 		CONTENT_RENDERING;
 		
 		Operation() {}
@@ -62,7 +62,7 @@ public class OperationTimer {
 		return "Total: " + formatTime(Operation.CONTENT_GENERATING.getTotal(), Operation.CONTENT_GENERATING.getTotal()) + "s, Processing time in JS: " + 
 			formatTime(Operation.GENERATOR_CLIENT_PROCESSING.getTotal(), Operation.CONTENT_GENERATING.getTotal()) + "s, " + "Rendering time: " + 
 			formatTime(Operation.CONTENT_RENDERING.getTotal(), Operation.CONTENT_GENERATING.getTotal()) + "s, Service processing time (reading): " + 
-			formatTime(Operation.GENERATOR_SERVER_READ_PROCESSING.getTotal(), Operation.CONTENT_GENERATING.getTotal()) + "s, Service processing time (writing): " + 
-			formatTime(Operation.GENERATOR_SERVER_WRITE_PROCESSING.getTotal(), Operation.CONTENT_GENERATING.getTotal()) + "s";
+			formatTime(Operation.GENERATOR_SERVER_READ_PROCESSING.getTotal(), Operation.CONTENT_GENERATING.getTotal()) + "s, DOM maninulation: " + 
+			formatTime(Operation.GENERATOR_DOM_MANIPULATION.getTotal(), Operation.CONTENT_GENERATING.getTotal()) + "s";
 	}
 }
