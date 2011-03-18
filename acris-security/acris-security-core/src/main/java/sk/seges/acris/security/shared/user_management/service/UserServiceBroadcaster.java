@@ -147,6 +147,11 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 								// merge authorities from all services to one
 								// set
 								UserData<?> user = primaryResult.getUser();
+
+								if (user == null) {
+									clientCallback.onFailure(new BroadcastingException("User is null"));
+								}
+
 								List<String> authorities = new ArrayList<String>();
 								add(user.getUserAuthorities(), authorities);
 
