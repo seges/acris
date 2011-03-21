@@ -45,6 +45,9 @@ public class SessionHandlerListener implements HttpSessionListener {
 
 	public static HttpSession getSession(String sessionId) {
 		String mappedSessionId = sessionsMappings.get(sessionId);
+		if (mappedSessionId == null) {
+			return null;
+		}
 		return activeSession.get(mappedSessionId);
 	}
 
