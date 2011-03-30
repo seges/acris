@@ -7,4 +7,3 @@ import sk.seges.corpis.shared.model.mock.MockEntity;
 public interface IMockEntityDao<T extends MockEntity> extends ICrudDAO<MockEntity> {
 
 }
-
