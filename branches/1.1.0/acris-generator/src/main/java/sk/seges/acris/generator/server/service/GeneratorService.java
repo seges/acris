@@ -64,6 +64,10 @@ public class GeneratorService implements IGeneratorService {
 
 	public GeneratorToken getLastProcessingToken() {
 		GeneratorToken result = tokenProvider.getTokenForProcessing();
+		if (result == null) {
+			log.warn("No token for processing!");
+			return null;
+		}
 		result.setDefaultToken(true);
 		result.setNiceUrl(contentDataProvider.getContent(result).getNiceUrl());
 		return result;

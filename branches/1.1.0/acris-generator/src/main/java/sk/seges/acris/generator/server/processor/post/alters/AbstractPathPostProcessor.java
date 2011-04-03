@@ -31,6 +31,7 @@ public abstract class AbstractPathPostProcessor extends AbstractElementPostProce
 
 		if (path == null) {
 			log.warn("Checking for null path. Probably invalid HTML tag is processed.");
+			return false;
 		}
 
 		URI url;
