@@ -23,8 +23,8 @@ public class WebSettingsService implements IWebSettingsService {
 
 	private ICountryService countryService;
 	
-	public WebSettingsService(IWebSettingsDao<? extends WebSettingsData> webSettings, ICountryService countryService) {
-		this.webSettingsDao = webSettings;
+	public WebSettingsService(IWebSettingsDao<? extends WebSettingsData> webSettingsDao, ICountryService countryService) {
+		this.webSettingsDao = webSettingsDao;
 		this.countryService = countryService;
 	}
 
