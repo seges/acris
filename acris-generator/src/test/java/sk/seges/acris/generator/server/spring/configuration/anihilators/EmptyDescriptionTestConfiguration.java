@@ -11,10 +11,11 @@ import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcess
 import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.spring.configuration.common.FullPostProcessingConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
 import sk.seges.acris.site.shared.domain.mock.MockContent;
 
-@Import({WebSettingsServiceConfiguration.class})
+@Import({WebSettingsServiceConfiguration.class, FullPostProcessingConfiguration.class})
 public class EmptyDescriptionTestConfiguration {
 
 	public static class MockLightContentFactory implements MockContentFactory {

@@ -10,10 +10,11 @@ import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.spring.configuration.common.FullPostProcessingConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
 import sk.seges.acris.site.shared.domain.mock.MockContent;
 
-@Import({WebSettingsServiceConfiguration.class})
+@Import({WebSettingsServiceConfiguration.class, FullPostProcessingConfiguration.class})
 public class EmptyKeywordsTestConfiguration {
 
 	public static class MockLightContentFactory implements MockContentFactory {
