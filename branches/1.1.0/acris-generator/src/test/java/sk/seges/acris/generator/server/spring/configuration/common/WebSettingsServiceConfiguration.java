@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
@@ -21,6 +22,9 @@ public class WebSettingsServiceConfiguration {
 
 	@Autowired
 	private ApplicationContext applicationContext;
+
+	@Autowired
+	private PostProcessorActivator postProcessorActivator;
 
 	@Autowired
 	private ContentDataProvider contentMetaDataProvider;
@@ -38,6 +42,6 @@ public class WebSettingsServiceConfiguration {
 	@Bean
 	public HtmlProcessorFactory htmlProcessorFactory() {
 		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
-		return new HtmlProcessorFactory(abstractPostProcessors.values(), contentMetaDataProvider);
+		return new HtmlProcessorFactory(abstractPostProcessors.values(), postProcessorActivator, contentMetaDataProvider);
 	}
 }

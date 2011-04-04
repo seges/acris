@@ -18,6 +18,7 @@ import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 
@@ -28,11 +29,13 @@ public class HtmlPostProcessing {
 	private Collection<AbstractElementPostProcessor> postProcessors;
 	private WebSettingsData webSettings;
 	private ContentDataProvider contentMetaDataProvider;
+	private PostProcessorActivator postProcessorActivator;
 
-	public HtmlPostProcessing(Collection<AbstractElementPostProcessor> postProcessors, ContentDataProvider contentMetaDataProvider, WebSettingsData webSettings) {
+	public HtmlPostProcessing(Collection<AbstractElementPostProcessor> postProcessors, PostProcessorActivator postProcessorActivator, ContentDataProvider contentMetaDataProvider, WebSettingsData webSettings) {
 		this.postProcessors = postProcessors;
 		this.contentMetaDataProvider = contentMetaDataProvider;
 		this.webSettings = webSettings;
+		this.postProcessorActivator = postProcessorActivator;
 	}
 
 	public String getProcessedContent(final String content, GeneratorToken token) {
@@ -81,7 +84,7 @@ public class HtmlPostProcessing {
 			rootNodes.add(node);
 
 			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (elementPostProcessor.supports(node, generatorEnvironment)) {
+				if (postProcessorActivator.isActive(elementPostProcessor) && elementPostProcessor.supports(node, generatorEnvironment)) {
 					elementPostProcessor.process(node, generatorEnvironment);
 				}
 			}
@@ -107,7 +110,7 @@ public class HtmlPostProcessing {
 			Node node = nodeList.elementAt(i);
 
 			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (elementPostProcessor.supports(node, generatorEnvironment)) {
+				if (postProcessorActivator.isActive(elementPostProcessor) && elementPostProcessor.supports(node, generatorEnvironment)) {
 					elementPostProcessor.process(node, generatorEnvironment);
 				}
 			}
