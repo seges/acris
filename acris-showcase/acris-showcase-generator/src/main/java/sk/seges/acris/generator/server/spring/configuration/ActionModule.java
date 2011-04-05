@@ -20,6 +20,7 @@ import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.mock.MockTokenProvider;
 import sk.seges.acris.generator.server.processor.mock.MockWebSettingsService;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.generator.server.service.GeneratorService;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.server.service.persist.db.DatabasePersister;
@@ -92,9 +93,15 @@ public class ActionModule extends HandlerModule {
 		return new MoviesContentProvider();
 	}
 
+	@Bean
+	public PostProcessorActivator postProcessorActivator() {
+		return new PostProcessorActivator("");
+	}
+	
+	@Bean
 	public HtmlProcessorFactory getHtmlProcessorFactory() {
 		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
-		return new HtmlProcessorFactory(abstractPostProcessors.values(), contentDataProvider());
+		return new HtmlProcessorFactory(abstractPostProcessors.values(), postProcessorActivator(), contentDataProvider());
 	}
 	
 	@Bean
