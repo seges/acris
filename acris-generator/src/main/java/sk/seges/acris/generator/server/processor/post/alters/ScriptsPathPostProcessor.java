@@ -8,14 +8,17 @@ import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 
 	private static final String SRC = "SRC";
-	private static final String JS_TYPE = "text/javascript";
+	private static final String JS_TEXT_TYPE = "text/javascript";
+	private static final String JS_LANGUAGE = "javascript";	
 
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 
 		if (node instanceof ScriptTag) {
 			ScriptTag scriptTag = (ScriptTag) node;
-			return (isPathRelative(getPath(node)) && compareIgnoreCaseNullSafe(scriptTag.getType(), JS_TYPE));
+			return (isPathRelative(getPath(node)) && (
+					compareIgnoreCaseNullSafe(scriptTag.getLanguage(), JS_LANGUAGE) ||
+					compareIgnoreCaseNullSafe(scriptTag.getType(), JS_TEXT_TYPE)));
 		}
 
 		return false;
