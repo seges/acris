@@ -24,6 +24,7 @@ import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
+import sk.seges.acris.generator.server.processor.factory.api.ParserFactory;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
@@ -47,14 +48,16 @@ public class GeneratorService implements IGeneratorService {
 
 	private DataPersister dataPersister;
 	private ContentDataProvider contentDataProvider;
+	private ParserFactory parserFactory;
 
 	private String indexFileName;
 	private ThreadPoolExecutor threadPool;
 	
-	public GeneratorService(DataPersister dataPersister, String indexFileName, TokenProvider tokenProvider,
-			ContentDataProvider contentDataProvider, IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory) {
+	public GeneratorService(DataPersister dataPersister, String indexFileName, TokenProvider tokenProvider, ContentDataProvider contentDataProvider, 
+			IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, ParserFactory parserFactory) {
 		this.dataPersister = dataPersister;
 		this.indexFileName = indexFileName;
+		this.parserFactory = parserFactory;
 		this.htmlProcessorFactory = htmlProcessorFactory;
 		this.tokenProvider = tokenProvider;
 		this.contentDataProvider = contentDataProvider;
@@ -93,7 +96,8 @@ public class GeneratorService implements IGeneratorService {
 
 	public Tuple<String, String> readHtmlBodyFromFile(String filename) {
 		String content = readTextFromFile(filename);
-		return new Tuple<String, String>(new HTMLNodeSplitter().getHeaderText(content), new HTMLNodeSplitter().getBody(content));
+		return new Tuple<String, String>(new HTMLNodeSplitter(parserFactory).getHeaderText(content), 
+										 new HTMLNodeSplitter(parserFactory).getBody(content));
 	}
 
 	public synchronized String readTextFromFile(String filename) {
@@ -165,7 +169,7 @@ public class GeneratorService implements IGeneratorService {
 				}
 		
 				String headerContent = readTextFromFile(entryPointFileName);
-				HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter();
+				HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
 				String doctype = htmlNodeSplitter.readDoctype(headerContent);
 		
 				if (log.isDebugEnabled()) {
@@ -190,8 +194,8 @@ public class GeneratorService implements IGeneratorService {
 					if (token.isDefaultToken()) {
 						GeneratorTokenWrapper tokenWrapper = new GeneratorTokenWrapper(token);
 						tokenWrapper.setDefault(true);
-						entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
-						entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
+						entryPoint = new HTMLNodeSplitter(parserFactory).joinHeaders(headerContent, header);
+						entryPoint = new HTMLNodeSplitter(parserFactory).replaceBody(entryPoint, contentWrapper);
 						content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
 			
 						result = htmlPostProcessor.getProcessedContent(content, tokenWrapper);
