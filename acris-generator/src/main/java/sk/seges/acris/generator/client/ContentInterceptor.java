@@ -141,19 +141,16 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 		};
 		timer.schedule(20000);
 
-		final IntValueHolder requestsCounter = new IntValueHolder();
-		
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
 			@Override
 			public void onProcessingFinished(RPCRequest request) {
-				requestsCounter.value--;
 				if (request.getCallbackResult().equals(RequestState.REQUEST_FAILURE)) {
 					timer.cancel();
 					RPCRequestTracker.getTracker().removeAllCallbacks();
 					callback.onFailure(request.getCaught());
 				} else {
-					Log.debug("Request finished. Waiting for next " + requestsCounter.value + " requests for niceurl " + token.getNiceUrl());
+					Log.debug("Request finished. Waiting for next " + RPCRequestTracker.getRunningRequestStarted() + " requests for niceurl " + token.getNiceUrl());
 					if (request.getParentRequest() == null) {
 						timer.cancel();
 						RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -171,9 +168,9 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 			}
 			
 		});
-
-		final int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 		
+		final int runningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
+
 		ValueChangeHandler<String> valueChangeHandler = new ValueChangeHandler<String>() {
 			
 			@Override
@@ -183,7 +180,6 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 					handler = null;
 				}
 				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
-				requestsCounter.value = newRunningRequestsCount - runningRequestsCount;
 				if (runningRequestsCount == newRunningRequestsCount) {
 					Log.info("No new RPC request started for niceurl " + token.getNiceUrl());
 					//No new async request was started

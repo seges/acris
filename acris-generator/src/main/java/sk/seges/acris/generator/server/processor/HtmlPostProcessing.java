@@ -8,12 +8,12 @@ import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.PrototypicalNodeFactory;
-import org.htmlparser.lexer.Lexer;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
 import sk.seges.acris.domain.shared.domain.api.ContentData;
+import sk.seges.acris.generator.server.processor.factory.api.ParserFactory;
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
@@ -30,9 +30,12 @@ public class HtmlPostProcessing {
 	private WebSettingsData webSettings;
 	private ContentDataProvider contentMetaDataProvider;
 	private PostProcessorActivator postProcessorActivator;
-
-	public HtmlPostProcessing(Collection<AbstractElementPostProcessor> postProcessors, PostProcessorActivator postProcessorActivator, ContentDataProvider contentMetaDataProvider, WebSettingsData webSettings) {
+	private ParserFactory parserFactory;
+	
+	public HtmlPostProcessing(Collection<AbstractElementPostProcessor> postProcessors, PostProcessorActivator postProcessorActivator, 
+			ContentDataProvider contentMetaDataProvider, WebSettingsData webSettings, ParserFactory parserFactory) {
 		this.postProcessors = postProcessors;
+		this.parserFactory = parserFactory;
 		this.contentMetaDataProvider = contentMetaDataProvider;
 		this.webSettings = webSettings;
 		this.postProcessorActivator = postProcessorActivator;
@@ -45,8 +48,7 @@ public class HtmlPostProcessing {
 
 		List<Node> rootNodes = new ArrayList<Node>();
 
-		Lexer lexer = new Lexer(content);
-		Parser parser = new Parser(lexer);
+		Parser parser = parserFactory.createParser(content);
 		
 		PrototypicalNodeFactory prototypicalNodeFactory = (PrototypicalNodeFactory)parser.getNodeFactory();
 		prototypicalNodeFactory.registerTag(new StyleLinkTag());

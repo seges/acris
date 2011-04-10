@@ -9,7 +9,6 @@ import org.htmlparser.Parser;
 import org.htmlparser.Tag;
 import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.filters.TagNameFilter;
-import org.htmlparser.lexer.Lexer;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.BodyTag;
 import org.htmlparser.tags.CompositeTag;
@@ -18,9 +17,14 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import sk.seges.acris.generator.server.processor.factory.api.ParserFactory;
+
 public class HTMLNodeSplitter {
 
-	public HTMLNodeSplitter() {
+	private ParserFactory parserFactory;
+	
+	public HTMLNodeSplitter(ParserFactory parserFactory) {
+		this.parserFactory = parserFactory;
 	}
 
 	private String getNullSafeBody(String content) {
@@ -250,8 +254,7 @@ public class HTMLNodeSplitter {
 	@SuppressWarnings("unchecked")
 	private synchronized <T extends CompositeTag> T getTagByName(String content, String tagName) {
 		NodeFilter nodeFilter = new TagNameFilter(tagName);
-		Lexer lexer = new Lexer(content);
-		Parser parser = new Parser(lexer);
+		Parser parser = parserFactory.createParser(content);
 		NodeList nodes;
 		try {
 			nodes = parser.parse(nodeFilter);
@@ -268,8 +271,7 @@ public class HTMLNodeSplitter {
 	}
 
 	private synchronized NodeIterator getNodeListIterator(String content) {
-		Lexer lexer = new Lexer(content);
-		Parser parser = new Parser(lexer);
+		Parser parser = parserFactory.createParser(content);
 		try {
 			return parser.elements();
 		} catch (ParserException e) {
@@ -280,8 +282,7 @@ public class HTMLNodeSplitter {
 	@SuppressWarnings("unchecked")
 	private <T extends CompositeTag> T getTagById(String content, String id) {
 		HasAttributeFilter nodeFilter = new HasAttributeFilter("id", id);
-		Lexer lexer = new Lexer(content);
-		Parser parser = new Parser(lexer);
+		Parser parser = parserFactory.createParser(content);
 		NodeList nodes;
 		try {
 			nodes = parser.parse(nodeFilter);

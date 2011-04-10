@@ -248,6 +248,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		if (PERFORMANCE_MONITOR) {
 			timer.start(Operation.CONTENT_RENDERING);
 		}
+		
 		contentProvider.loadContent(generatorToken, new AsyncCallback<GeneratorToken>() {
 
 			@Override
@@ -270,7 +271,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				saveAndLoadContent(result);
 			}
 		});
-
+		
 		if (PERFORMANCE_MONITOR) {
 			timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
 			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
@@ -285,7 +286,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		String content = contentProvider.getContent();
 		
-		Log.info("" + content.length());
+		Log.info("Content length: " + content.length());
 		
 		if (PERFORMANCE_MONITOR) {
 			timer.stop(Operation.GENERATOR_DOM_MANIPULATION);
