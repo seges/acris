@@ -94,10 +94,12 @@ public abstract class TrackingAsyncCallback<T> implements AsyncCallback<T> {
 			this.handleResponseReceived();
 		}
 
-		onFailureCallback(caught);
-
-		if (request != null) {
-			this.handleResponseFinished();
+		try {
+			onFailureCallback(caught);
+		} finally {
+			if (request != null) {
+				this.handleResponseFinished();
+			}
 		}
 	}
 
@@ -115,10 +117,12 @@ public abstract class TrackingAsyncCallback<T> implements AsyncCallback<T> {
 			this.handleResponseReceived();
 		}
 
-		onSuccessCallback(result);
-
-		if (request != null) {
-			this.handleResponseFinished();
+		try {
+			onSuccessCallback(result);
+		} finally {
+			if (request != null) {
+				this.handleResponseFinished();
+			}
 		}
 	}
 
