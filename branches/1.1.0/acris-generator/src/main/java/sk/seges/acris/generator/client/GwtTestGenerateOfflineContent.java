@@ -177,6 +177,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private GeneratorToken loadNextContent() {
 		if (!contentProvider.hasNext()) {
 			//we are done
+			finalizeTest();
 			return null;
 		}
 
@@ -260,6 +261,11 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				
 				failure("Unable to load content for nice-url " + generatorToken.getNiceUrl() + ".", caught);
 				count.value--;
+
+				if (count.value == 0) {
+					finalizeTest();
+				}
+
 				loadNextContent();
 			}
 
