@@ -177,7 +177,6 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private GeneratorToken loadNextContent() {
 		if (!contentProvider.hasNext()) {
 			//we are done
-			finalizeTest();
 			return null;
 		}
 
@@ -264,9 +263,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 				if (count.value == 0) {
 					finalizeTest();
+				} else {
+					loadNextContent();
 				}
-
-				loadNextContent();
 			}
 
 			@Override
