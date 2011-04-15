@@ -5,6 +5,8 @@
 
 package sk.seges.acris.rpc;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,16 @@ public class Route {
 	private final ValueHolder<String> host;
 	private final ValueHolder<Integer> port;
 	private final String targetURI;
+
+	public Route(String sourceURL, String targetURI) throws MalformedURLException {
+
+		URL url = new URL(targetURI);
+		
+		this.sourceURI = Pattern.compile(sourceURL);
+		this.host = new ValueHolder<String>(url.getHost());
+		this.port = new ValueHolder<Integer>(url.getPort());
+		this.targetURI = url.getPath();
+	}
 
 	public Route(String sourceURI, ValueHolder<String> host, ValueHolder<Integer> port, String targetURI) {
 		this.sourceURI = Pattern.compile(sourceURI);
@@ -52,11 +64,6 @@ public class Route {
 		this.matchedSourceURI = matchedSourceURI;
 	}
 
-	
-
-	
-
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -82,9 +89,9 @@ public class Route {
 			return false;
 		return true;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Route target [" + host + ":" + port + ", uri = " + targetURI + "]";
+		return "Route target [" + getHost() + ":" + getPort() + ", uri = " + targetURI + "]";
 	}
 }

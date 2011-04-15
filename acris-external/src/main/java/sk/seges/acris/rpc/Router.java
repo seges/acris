@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -55,14 +56,31 @@ public class Router {
 				defaultPort.setValue(Integer.parseInt(value));
 			} else if (key.equals("*skip-headers")) {
 				skipHeaders = value.split(HEADER_DELIMITER);
-			} else if("".equals(value)) {
-				routes.add(new Route(key, defaultHost, defaultPort, null));
 			} else {
-				routes.add(new Route(key, defaultHost, defaultPort, value));
+				Route route = createRoute(key, defaultHost, defaultPort, "".equals(value) ? null : value);
+				if (route != null) {
+					routes.add(route);
+				}
 			}
 		}
 	}
 
+	private Route createRoute(String sourceURI, ValueHolder<String> host, ValueHolder<Integer> port, String targetURI) {
+		if (sourceURI == null) {
+			return null;
+		}
+		//We will support only this option. Yes, there plenty of other possibilities, but we want to have proxyServlet fast
+		if (targetURI != null && targetURI.startsWith("http://")) {
+			try {
+				return new Route(sourceURI, targetURI);
+			} catch (MalformedURLException e) {
+				return null;
+			}
+		}
+		
+		return new Route(sourceURI, defaultHost, defaultPort, targetURI);
+	}
+	
 	public boolean skipHeader(String headerName) {
 		if (skipHeaders == null) {
 			return false;
