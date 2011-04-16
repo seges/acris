@@ -40,4 +40,8 @@ public class GrowingErrorPane extends OptionPane {
 		error.setStyleName(STYLE_ERROR);
 		errorStack.add(error);
 	}
+	
+	public void clearMessages() {
+		errorStack.clear();
+	}
 }
