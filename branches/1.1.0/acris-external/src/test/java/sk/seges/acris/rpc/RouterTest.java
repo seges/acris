@@ -59,6 +59,9 @@ public class RouterTest {
 
 		String requestURI = "/sk.seges.test.Absolute/service/test";
 		assertEquals("localhost:8881/service/test", routeToUrl(router.getRoute(requestURI)));
+
+		requestURI = "/sk.seges.web.template.Site.JUnit/acris-server/acris-service/gs";
+		assertEquals("localhost:5881/synapso-acris-server/acris-service/gs", routeToUrl(router.getRoute(requestURI)));
 	}
 
 	public String routeToUrl(Route route) {
