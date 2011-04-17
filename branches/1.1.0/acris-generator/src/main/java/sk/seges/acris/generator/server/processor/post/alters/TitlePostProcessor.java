@@ -16,7 +16,7 @@ public class TitlePostProcessor extends AbstractElementPostProcessor {
 
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
-		NodesUtils.setTitle((TitleTag) node, generatorEnvironment.getContent().getTitle());
+		NodesUtils.setText((TitleTag) node, generatorEnvironment.getContent().getTitle());
 		return true;
 	}
 

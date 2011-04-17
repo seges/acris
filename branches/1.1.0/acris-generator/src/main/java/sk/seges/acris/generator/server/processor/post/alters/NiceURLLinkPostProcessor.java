@@ -5,6 +5,7 @@ import org.htmlparser.tags.LinkTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.generator.server.processor.utils.AnchorUtils;
 
 public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 
@@ -18,15 +19,9 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
-		if (generatorEnvironment.getWebSettings().getTopLevelDomain() == null) {
-			((LinkTag)node).setLink("/" + getLink(((LinkTag)node).getLink(), generatorEnvironment));
-		} else {
-			String url = generatorEnvironment.getWebSettings().getTopLevelDomain();
-			if (!url.endsWith("/")) {
-				url += "/";
-			}
-			((LinkTag)node).setLink(url + getLink(((LinkTag)node).getLink(), generatorEnvironment));
-		}
+		LinkTag linkNode = (LinkTag)node;
+		linkNode.setLink(AnchorUtils.getAnchorTargetHref(getLink(linkNode.getLink(), generatorEnvironment), generatorEnvironment));
+		
 		return true;
 	}
 	
