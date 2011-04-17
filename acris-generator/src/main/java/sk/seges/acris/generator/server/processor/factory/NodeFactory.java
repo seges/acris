@@ -1,6 +1,7 @@
 package sk.seges.acris.generator.server.processor.factory;
 
 import org.htmlparser.Tag;
+import org.htmlparser.nodes.TagNode;
 
 
 public class NodeFactory {
@@ -24,6 +25,13 @@ public class NodeFactory {
 		endTag.setTagName("/" + tag.getTagName());
 		tag.setEndTag(endTag);
 		
+		return tag;
+	}
+
+	public static <T extends Tag> T encloseTag(T tag) {
+		TagNode endTag = new TagNode();
+		endTag.setTagName("/" + tag.getTagName());
+		tag.setEndTag(endTag);
 		return tag;
 	}
 }

@@ -16,7 +16,7 @@ public class TitleAppenderPostProcessor extends AbstractElementPostProcessor {
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		HeadTag headTag = (HeadTag) node;
 
-		TitleTag titleTag = NodesUtils.setTitle(NodeFactory.getTagWithClosing(TitleTag.class), generatorEnvironment.getContent().getTitle());
+		TitleTag titleTag = NodesUtils.setText(NodeFactory.getTagWithClosing(TitleTag.class), generatorEnvironment.getContent().getTitle());
 
 		if (headTag.getChildren() == null) {
 			headTag.setChildren(new NodeList());

@@ -4,7 +4,7 @@ import org.htmlparser.Attribute;
 import org.htmlparser.Node;
 import org.htmlparser.Tag;
 import org.htmlparser.nodes.TextNode;
-import org.htmlparser.tags.TitleTag;
+import org.htmlparser.tags.CompositeTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.SimpleNodeIterator;
 
@@ -43,38 +43,38 @@ public class NodesUtils {
 	}
 	
 	/**
-	 * Sets title into {@link TitleTag}. From the HTML parser fundamentals node should
+	 * Sets text into {@link CompositeTag}. From the HTML parser fundamentals node should
 	 * contains a textNode which holds the plain text. So, there can be various situations
 	 * when there is:
 	 * <ul>
-	 * 	<li>no {@link TextNode} in the {@link TitleTag} </li>
+	 * 	<li>no {@link TextNode} in the {@link CompositeTag} </li>
 	 * 	<li>empty {@link TextNode} </li>
 	 * </ul>
-	 * in the {@link TitleTag}.
+	 * in the {@link CompositeTag}.
 	 * 
-	 * @param titleTag HTML title node which title is going to be changes
-	 * @param title String representation of the HTML title (just plain text)
-	 * @return {@link TitleTag} with the correct HTML representation and title text
+	 * @param tag HTML title node which text is going to be changed
+	 * @param text String representation of the HTML Text (just plain text)
+	 * @return {@link CompositeTag} with the correct HTML representation and text
 	 */
-	public static final TitleTag setTitle(TitleTag titleTag, String title) {
+	public static final <T extends CompositeTag> T setText(T tag, String text) {
 
-		if (title == null) {
-			title = "";
+		if (text == null) {
+			text = "";
 		}
 
 		TextNode titleText = null;
 
-		if (titleTag.getChildren() == null) {
-			titleTag.setChildren(new NodeList());
+		if (tag.getChildren() == null) {
+			tag.setChildren(new NodeList());
 		}
 
-		if (titleTag.getChildCount() == 0) {
-			titleText = new TextNode(title);
-			titleTag.getChildren().add(titleText);
+		if (tag.getChildCount() == 0) {
+			titleText = new TextNode(text);
+			tag.getChildren().add(titleText);
 		} else {
-			titleTag.getChildren().elementAt(0).setText(title);
+			tag.getChildren().elementAt(0).setText(text);
 		}
-		return titleTag;
+		return tag;
 	}
 
 	@SuppressWarnings("unchecked")
