@@ -86,7 +86,7 @@ public class HtmlPostProcessing {
 			rootNodes.add(node);
 
 			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (postProcessorActivator.isActive(elementPostProcessor) && elementPostProcessor.supports(node, generatorEnvironment)) {
+				if (postProcessorActivator.isActive(elementPostProcessor, token.isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
 					elementPostProcessor.process(node, generatorEnvironment);
 				}
 			}
@@ -112,7 +112,7 @@ public class HtmlPostProcessing {
 			Node node = nodeList.elementAt(i);
 
 			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (postProcessorActivator.isActive(elementPostProcessor) && elementPostProcessor.supports(node, generatorEnvironment)) {
+				if (postProcessorActivator.isActive(elementPostProcessor, generatorEnvironment.getGeneratorToken().isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
 					elementPostProcessor.process(node, generatorEnvironment);
 				}
 			}

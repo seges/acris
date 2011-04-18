@@ -10,7 +10,7 @@ import sk.seges.acris.generator.server.spring.configuration.common.NoScriptProce
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
 
 @Import({WebSettingsServiceConfiguration.class, MockTestConfiguration.class, NoScriptProcessingDisabled.class})
-public class CacheScriptTestConfiguration {
+public class DisabledCacheScriptTestConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor nochacheScriptPostProcessor() {

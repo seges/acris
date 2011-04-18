@@ -9,6 +9,6 @@ public class NoScriptProcessingDisabled {
 
 	@Bean
 	public PostProcessorActivator postProcessorActivator() {
-		return new PostProcessorActivator(NochacheScriptPostProcessor.class.getSimpleName());
+		return new PostProcessorActivator(NochacheScriptPostProcessor.class.getSimpleName(), "");
 	}
 }

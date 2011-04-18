@@ -139,7 +139,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 			}
 			
 		};
-		timer.schedule(20000);
+		timer.schedule(60000);
 
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
