@@ -8,6 +8,6 @@ public class FullPostProcessingConfiguration {
 
 	@Bean
 	public PostProcessorActivator postProcessorActivator() {
-		return new PostProcessorActivator("");
+		return new PostProcessorActivator("", "");
 	}
 }
