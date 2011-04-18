@@ -31,6 +31,9 @@
 		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/branches/1.1.0</developerConnection>
 	</scm>
 
+	<properties>
+		<selenium.version>2.0a7</selenium.version> 
+	</properties>
 
 	<modules>
 		<module>../sesam-core</module>
@@ -38,23 +41,23 @@
 		<module>../sesam-annotations-support</module>
 		<module>../sesam-annotation-processors</module>
 		<module>../sesam-showcase</module>
+		<module>../sesam-selenium-support</module>
 	</modules>
 
-        <build>
-                <plugins>
-                        <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-release-plugin</artifactId>
-                                <configuration>
-                                        <preparationGoals>install</preparationGoals>
-                                        <tagBase>
-                                                https://acris.googlecode.com/svn/sesam/tags/${pom.artifactId}
-                                        </tagBase>
-                                </configuration>
-                        </plugin>
-                </plugins>
-        </build>
-
+	<build>
+			<plugins>
+					<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-release-plugin</artifactId>
+							<configuration>
+									<preparationGoals>install</preparationGoals>
+									<tagBase>
+											https://acris.googlecode.com/svn/sesam/tags/${pom.artifactId}
+									</tagBase>
+							</configuration>
+					</plugin>
+			</plugins>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>
@@ -80,6 +83,11 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium</artifactId>
+				<version>${selenium.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
