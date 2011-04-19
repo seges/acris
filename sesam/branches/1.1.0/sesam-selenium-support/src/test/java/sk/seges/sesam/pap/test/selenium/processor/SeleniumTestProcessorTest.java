@@ -14,7 +14,7 @@ import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 public class SeleniumTestProcessorTest extends AnnotationTest {
 
 	@Test
-	public void testMockEntityDao() {
+	public void testTestCase() {
 		assertCompilationSuccessful(compileFiles(MockSelenise.class));
 		assertOutput(getResourceFile(MockSelenise.class), getOutputFile(MockSelenise.class));
 	}
