@@ -10,12 +10,11 @@ import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise;
-import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 
 public class AdvancedSeleniumTestProcessorTest extends AnnotationTest {
 
 	@Test
-	public void testMockEntityDao() {
+	public void testTestConfiguration() {
 		assertCompilationSuccessful(compileFiles(AdvancedMockSelenise.class));
 		assertOutput(getResourceFile(AdvancedMockSelenise.class), getOutputFile(AdvancedMockSelenise.class));
 	}
@@ -61,5 +60,4 @@ public class AdvancedSeleniumTestProcessorTest extends AnnotationTest {
 	protected String[] getCompilerOptions() {
 		return CompilerOptions.GENERATED_SOURCES_DIRECTORY.getOption(ensureOutputDirectory().getAbsolutePath());
 	}
-
 }

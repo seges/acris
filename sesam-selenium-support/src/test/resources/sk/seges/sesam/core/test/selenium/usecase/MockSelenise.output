@@ -4,8 +4,8 @@ import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 
 public class MockSeleniseConfiguration extends MockSelenise {
 
-	public MockSeleniseConfiguration() {
-		super();
+	protected MockSeleniseConfiguration(sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment testEnvironment) {
+		super(testEnvironment);
 	}
 	
 	@Override
