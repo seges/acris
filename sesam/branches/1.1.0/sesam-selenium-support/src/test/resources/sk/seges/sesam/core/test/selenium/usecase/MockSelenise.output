@@ -1,0 +1,16 @@
+package sk.seges.sesam.core.test.selenium.usecase;
+
+import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
+
+public class MockSeleniseConfiguration extends MockSelenise {
+
+	public MockSeleniseConfiguration() {
+		super();
+	}
+	
+	@Override
+	public void runTests() throws Exception {
+		testMethod1();
+		testMethod2();
+	}
+}

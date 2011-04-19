@@ -1,0 +1,28 @@
+package sk.seges.sesam.core.test.selenium.usecase;
+
+import sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise;
+
+public class AdvancedMockSeleniseConfiguration extends AdvancedMockSelenise {
+
+	public AdvancedMockSeleniseConfiguration() {
+		super();
+	}
+	
+	public AdvancedMockSeleniseConfiguration(java.lang.String param) {
+		super(param);
+	}
+	
+	protected AdvancedMockSeleniseConfiguration(int port) {
+		super(port);
+	}
+	
+	AdvancedMockSeleniseConfiguration(boolean flags) {
+		super(flags);
+	}
+	
+	@Override
+	public void runTests() throws Exception {
+		testMethod1();
+		testMethod2();
+	}
+}
