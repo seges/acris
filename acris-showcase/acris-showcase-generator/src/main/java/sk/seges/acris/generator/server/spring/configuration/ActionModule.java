@@ -97,7 +97,7 @@ public class ActionModule extends HandlerModule {
 
 	@Bean
 	public PostProcessorActivator postProcessorActivator() {
-		return new PostProcessorActivator("");
+		return new PostProcessorActivator("", "");
 	}
 	
 	@Bean
