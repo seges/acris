@@ -6,14 +6,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.overall.NestedLinkElementsPostProcessorTest.NestedLinkElementsPostProcessorTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.overall.NestedLinkElementsPostProcessorTestConfiguration;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = NestedLinkElementsPostProcessorTestConfigurationLoader.class)
-public class NestedLinkElementsPostProcessorTest extends AbstractTest {
+public class NestedLinkElementsPostProcessorTest extends AbstractProcessorTest {
 
 	static class NestedLinkElementsPostProcessorTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
 

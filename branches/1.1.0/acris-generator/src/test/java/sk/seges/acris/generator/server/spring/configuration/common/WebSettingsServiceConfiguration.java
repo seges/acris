@@ -7,11 +7,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
-import sk.seges.acris.generator.server.processor.factory.DefaultParserFactory;
+import sk.seges.acris.generator.server.processor.factory.DefaultNodeParserFactory;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
-import sk.seges.acris.generator.server.processor.factory.api.ParserFactory;
+import sk.seges.acris.generator.server.processor.factory.PostProcessorActivatorFactory;
+import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
@@ -26,7 +26,7 @@ public class WebSettingsServiceConfiguration {
 	private ApplicationContext applicationContext;
 
 	@Autowired
-	private PostProcessorActivator postProcessorActivator;
+	private PostProcessorActivatorFactory postProcessorActivatorFactory;
 
 	@Autowired
 	private ContentDataProvider contentMetaDataProvider;
@@ -42,13 +42,13 @@ public class WebSettingsServiceConfiguration {
 	}
 	
 	@Bean
-	public ParserFactory parserFactory() {
-		return new DefaultParserFactory();
+	public NodeParserFactory parserFactory() {
+		return new DefaultNodeParserFactory();
 	}
 	
 	@Bean
 	public HtmlProcessorFactory htmlProcessorFactory() {
 		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
-		return new HtmlProcessorFactory(abstractPostProcessors.values(), postProcessorActivator, contentMetaDataProvider, parserFactory());
+		return new HtmlProcessorFactory(abstractPostProcessors.values(), postProcessorActivatorFactory, contentMetaDataProvider, parserFactory());
 	}
 }

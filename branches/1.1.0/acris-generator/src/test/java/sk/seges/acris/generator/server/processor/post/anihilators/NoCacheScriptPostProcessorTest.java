@@ -6,14 +6,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.anihilators.NoCacheScriptPostProcessorTest.NoCacheScriptTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.anihilators.NoCacheScriptTestConfiguration;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = NoCacheScriptTestConfigurationLoader.class)
-public class NoCacheScriptPostProcessorTest extends AbstractTest {
+public class NoCacheScriptPostProcessorTest extends AbstractProcessorTest {
 
 	static class NoCacheScriptTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
 

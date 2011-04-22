@@ -1,11 +1,17 @@
 package sk.seges.acris.generator.client;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
+import sk.seges.acris.generator.client.context.DefaultGeneratorClientEnvironment;
+import sk.seges.acris.generator.client.context.MapTokenCache;
+import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
+import sk.seges.acris.generator.client.factory.AnchorNodeCollectorFactory;
+import sk.seges.acris.generator.client.factory.api.NodeCollectorFactory;
 import sk.seges.acris.generator.client.performance.OperationTimer;
 import sk.seges.acris.generator.client.performance.OperationTimer.Operation;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
@@ -16,6 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -24,17 +31,15 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private HtmlFilesHandler offlineContentProvider;
 	private ContentInterceptor contentProvider;
 
-	private static EntryPoint site;
-	private static String webId;
+	private GeneratorClientEnvironment generatorEnvironment;
+	
+	private EntryPoint site;
 
-	private IntValueHolder count = new IntValueHolder();
-	private int totalCount = 0;
 	private OperationTimer timer;
 	protected IGeneratorServiceAsync generatorService;
-	private String currentServerURL;
 
 	private static final boolean PERFORMANCE_MONITOR = true;
-		
+	
 	/**
 	 * Default timeout for whole run of offline content generator Suppose to be never expired because generator should
 	 * finish in correct way - by calling finalizeTest method.
@@ -84,19 +89,25 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		generatorService = getGeneratorService();
 
-		count.value = 0;
 		offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
+		generatorEnvironment = new DefaultGeneratorClientEnvironment(new MapTokenCache());
 
-		contentProvider = getContentProvider();
+		contentProvider = getContentProvider(generatorEnvironment);
 
 		loadTokensForProcessing();
 	}
 
+	protected Set<NodeCollectorFactory> getNodeCollectorFactories() {
+		Set<NodeCollectorFactory> collectors = new HashSet<NodeCollectorFactory>();
+		collectors.add(new AnchorNodeCollectorFactory());
+		return collectors;
+	}
+	
 	protected void prepareEnvironment() {
 	};
 
-	protected ContentInterceptor getContentProvider() {
-		return new ContentInterceptor(generatorService);
+	protected ContentInterceptor getContentProvider(GeneratorClientEnvironment generatorEnvironment) {
+		return new ContentInterceptor(generatorService, generatorEnvironment);
 	}
 
 	private void loadTokensForProcessing() {
@@ -107,7 +118,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		}
 		
 		//Load last token for processing
-		contentProvider.loadTokensForProcessing(new AsyncCallback<List<GeneratorToken>>() {
+		contentProvider.loadTokensForProcessing(new AsyncCallback<Void>() {
 
 			public void onFailure(Throwable caught) {
 				if (PERFORMANCE_MONITOR) {
@@ -117,13 +128,11 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				finalizeTest();
 			}
 
-			public void onSuccess(List<GeneratorToken> result) {
+			public void onSuccess(Void result) {
 				if (PERFORMANCE_MONITOR) {
 					timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
 				}
-				if (contentProvider.hasNext()) {
-					totalCount = result.size();
-					count.value = result.size();
+				if (generatorEnvironment.getTokensCache().hasNext()) {
 					loadEntryPointHTML();
 				} else {
 					failure("No tokens available for processing. Finishing", null);
@@ -175,8 +184,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 
 	private GeneratorToken loadNextContent() {
-		if (!contentProvider.hasNext()) {
-			//we are done
+		if (!generatorEnvironment.getTokensCache().hasNext()) {
+			finalizeTest();
 			return null;
 		}
 
@@ -185,9 +194,11 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
 		}
 		
-		final GeneratorToken generatorToken = contentProvider.next();
-
-		Log.info("Generating offline content for niceurl [" + (totalCount - count.value + 1) + " / " + totalCount + "]: " + generatorToken.getNiceUrl());
+		GeneratorToken generatorToken = generatorEnvironment.getTokensCache().next();
+		
+		Log.info("Generating offline content for niceurl [" + (generatorEnvironment.getTokensCache().getTokensCount() - 
+				generatorEnvironment.getTokensCache().getWaitingTokensCount()) + " / " + generatorEnvironment.getTokensCache().getTokensCount() + "]: " + 
+				generatorToken.getNiceUrl());
 
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
@@ -209,7 +220,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 						}
 						
 						RPCRequestTracker.getTracker().removeAllCallbacks();
-						loadContentForToken(generatorToken);
+						loadContentForToken();
 					}
 				}
 			}
@@ -228,28 +239,28 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
 		}
 		
-		if (site == null || (webId != null && webId != generatorToken.getWebId())) {
-			webId = generatorToken.getWebId();
+		if (site == null) {
 			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
 			if (PERFORMANCE_MONITOR) {
 				timer.start(Operation.CONTENT_RENDERING);
 			}
 			site.onModuleLoad();
-			currentServerURL = GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", "");
+			
+			generatorEnvironment.setServerURL(GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", ""));
 		} else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
-			loadContentForToken(generatorToken);
+			loadContentForToken();
 		}
 
 		return generatorToken;
 	}
 
-	private void loadContentForToken(final GeneratorToken generatorToken) {
+	private void loadContentForToken() {
 		if (PERFORMANCE_MONITOR) {
 			timer.start(Operation.CONTENT_RENDERING);
 		}
 		
-		contentProvider.loadContent(generatorToken, new AsyncCallback<GeneratorToken>() {
+		contentProvider.loadContent(new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -258,22 +269,16 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 					timer.stop(Operation.CONTENT_GENERATING);
 				}
 				
-				failure("Unable to load content for nice-url " + generatorToken.getNiceUrl() + ".", caught);
-				count.value--;
-
-				if (count.value == 0) {
-					finalizeTest();
-				} else {
-					loadNextContent();
-				}
+				failure("Unable to load content for nice-url " + generatorEnvironment.getTokensCache().getCurrentToken().getNiceUrl() + ".", caught);
+				loadNextContent();
 			}
 
 			@Override
-			public void onSuccess(GeneratorToken result) {
+			public void onSuccess(Void result) {
 				if (PERFORMANCE_MONITOR) {
 					timer.stop(Operation.CONTENT_RENDERING);
 				}
-				saveAndLoadContent(result);
+				saveAndLoadContent(generatorEnvironment);
 			}
 		});
 		
@@ -283,13 +288,19 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		}
 	}
 
-	private void saveAndLoadContent(final GeneratorToken generatorToken) {
+	private void saveAndLoadContent(final GeneratorClientEnvironment generatorEnvironment) {
 
 		if (PERFORMANCE_MONITOR) {
 			timer.start(Operation.GENERATOR_DOM_MANIPULATION);
 		}
 
-		String content = contentProvider.getContent();
+		com.google.gwt.user.client.Element rootElement = contentProvider.getRootElement();
+
+		for (NodeCollectorFactory nodeCollectorFactory: getNodeCollectorFactories()) {
+			nodeCollectorFactory.create().collect(rootElement, generatorEnvironment);
+		}
+		
+		String content = DOM.getInnerHTML(rootElement);
 		
 		Log.info("Content length: " + content.length());
 		
@@ -298,7 +309,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
 		}
 		
-		offlineContentProvider.saveOfflineContent(content, generatorToken, currentServerURL, new AsyncCallback<Void>() {
+		offlineContentProvider.saveOfflineContent(content, generatorEnvironment.getTokensCache().getCurrentToken(), 
+				generatorEnvironment.getServerURL(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -320,18 +332,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				loadNextContent();
 			}
 		});
-
-		count.value--;
-		
-		if (count.value == 0) {
-			finalizeTest();
-		}
 	}
 
 	private void failure(String msg, Throwable caught) {
 		Log.error(msg);
-		//GWT.log(msg, caught);
-		//finalizeTest();
 	}
 
 	protected void finalizeEnvironment() {
