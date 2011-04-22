@@ -3,7 +3,7 @@
  */
 package sk.seges.acris.generator.shared.service;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
@@ -11,7 +11,7 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * @author fat
+ * @author Peter Simun
  */
 public interface IGeneratorServiceAsync {
 
@@ -31,5 +31,5 @@ public interface IGeneratorServiceAsync {
 	/**
 	 * Content provider services
 	 */
-	void getAvailableNiceurls(String language, String webId, AsyncCallback<List<String>> callback);
+	void getAvailableNiceurls(String language, String webId, AsyncCallback<ArrayList<String>> callback);
 }

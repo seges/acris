@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.offline.action;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsAction;
@@ -79,7 +79,7 @@ public class GeneratorServiceDispatcher implements IGeneratorServiceAsync {
 	}
 
 	@Override
-	public void getAvailableNiceurls(String language, String webId, final AsyncCallback<List<String>> callback) {
+	public void getAvailableNiceurls(String language, String webId, final AsyncCallback<ArrayList<String>> callback) {
 		actionManager.execute(new GetAvailableNiceurlsAction(language, webId), new DefaultAsyncCallback<GetAvailableNiceurlsResult>() {
 
 			@Override

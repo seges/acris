@@ -16,13 +16,17 @@ import sk.seges.acris.generator.server.domain.api.FileData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MoviesContentProvider;
 import sk.seges.acris.generator.server.processor.TokenProvider;
-import sk.seges.acris.generator.server.processor.factory.DefaultParserFactory;
+import sk.seges.acris.generator.server.processor.factory.CommaSeparatedParameterManagerFactory;
+import sk.seges.acris.generator.server.processor.factory.DefaultNodeParserFactory;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
-import sk.seges.acris.generator.server.processor.factory.api.ParserFactory;
+import sk.seges.acris.generator.server.processor.factory.PlainOfflineWebSettingsFactory;
+import sk.seges.acris.generator.server.processor.factory.PostProcessorActivatorFactory;
+import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
+import sk.seges.acris.generator.server.processor.factory.api.OfflineWebSettingsFactory;
+import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.server.processor.mock.MockTokenProvider;
 import sk.seges.acris.generator.server.processor.mock.MockWebSettingsService;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.generator.server.service.GeneratorService;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.server.service.persist.db.DatabasePersister;
@@ -96,19 +100,29 @@ public class ActionModule extends HandlerModule {
 	}
 
 	@Bean
-	public PostProcessorActivator postProcessorActivator() {
-		return new PostProcessorActivator("", "");
+	public ParametersManagerFactory parametersManagerFactory() {
+		return new CommaSeparatedParameterManagerFactory();
 	}
 	
 	@Bean
-	public ParserFactory parserFactory() {
-		return new DefaultParserFactory();
+	public OfflineWebSettingsFactory offlineWebSettingsFactory() {
+		return new PlainOfflineWebSettingsFactory(parametersManagerFactory());
+	}
+	
+	@Bean
+	public PostProcessorActivatorFactory postProcessorActivatorFactory() {
+		return new PostProcessorActivatorFactory(offlineWebSettingsFactory());
+	}
+	
+	@Bean
+	public NodeParserFactory parserFactory() {
+		return new DefaultNodeParserFactory();
 	}
 	
 	@Bean
 	public HtmlProcessorFactory getHtmlProcessorFactory() {
 		Map<String, AbstractElementPostProcessor> abstractPostProcessors = this.applicationContext.getBeansOfType(AbstractElementPostProcessor.class);
-		return new HtmlProcessorFactory(abstractPostProcessors.values(), postProcessorActivator(), contentDataProvider(), parserFactory());
+		return new HtmlProcessorFactory(abstractPostProcessors.values(), postProcessorActivatorFactory(), contentDataProvider(), parserFactory());
 	}
 	
 	@Bean

@@ -3,7 +3,7 @@
  */
 package sk.seges.acris.generator.shared.service;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
@@ -30,5 +30,5 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * Content provider services
 	 */
-	List<String> getAvailableNiceurls(String lang, String webId);
+	ArrayList<String> getAvailableNiceurls(String lang, String webId);
 }

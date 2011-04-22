@@ -87,9 +87,13 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 		}
 	}
 
-	Set<CountryData> getTranslations();
+	String getParameters();
 	
-	void setTranslations(Set<CountryData> translations);
+	void setParameters(String parameters);
+	
+	Set<CountryData<?>> getTranslations();
+	
+	void setTranslations(Set<CountryData<?>> translations);
 	
 	String getTopLevelDomain();
 	

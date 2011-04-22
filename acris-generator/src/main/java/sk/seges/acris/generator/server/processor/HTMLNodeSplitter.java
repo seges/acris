@@ -17,13 +17,13 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import sk.seges.acris.generator.server.processor.factory.api.ParserFactory;
+import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 
 public class HTMLNodeSplitter {
 
-	private ParserFactory parserFactory;
+	private NodeParserFactory parserFactory;
 	
-	public HTMLNodeSplitter(ParserFactory parserFactory) {
+	public HTMLNodeSplitter(NodeParserFactory parserFactory) {
 		this.parserFactory = parserFactory;
 	}
 

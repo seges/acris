@@ -6,12 +6,22 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
+import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorPostProcessorTest.LanguageSelectorPostProcessorTestConfigurationLoader;
+import sk.seges.acris.generator.server.spring.configuration.alters.LanguageSelectorTestConfiguration;
+import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/sk/seges/acris/generator/languageselector-test-application-context.xml"})
-public class LanguageSelectorPostProcessorTest extends AbstractTest {
+@ContextConfiguration(loader = LanguageSelectorPostProcessorTestConfigurationLoader.class)
+public class LanguageSelectorPostProcessorTest extends AbstractProcessorTest {
+
+	static class LanguageSelectorPostProcessorTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
+
+		public LanguageSelectorPostProcessorTestConfigurationLoader() {
+			super(LanguageSelectorTestConfiguration.class);
+		}
+	}
 
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/languageselector/";
 

@@ -6,7 +6,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.anihilators.DisabledCacheScriptPostProcessorTest.DisabledCacheScriptTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.anihilators.DisabledCacheScriptTestConfiguration;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
@@ -14,7 +14,7 @@ import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = DisabledCacheScriptTestConfigurationLoader.class)
-public class DisabledCacheScriptPostProcessorTest extends AbstractTest {
+public class DisabledCacheScriptPostProcessorTest extends AbstractProcessorTest {
 
 	static class DisabledCacheScriptTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
 

@@ -6,14 +6,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.anihilators.EmptyKeywordsMetaTagPostProcessorTest.EmptyKeyWordsTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.anihilators.EmptyKeywordsTestConfiguration;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = EmptyKeyWordsTestConfigurationLoader.class)
-public class EmptyKeywordsMetaTagPostProcessorTest extends AbstractTest {
+public class EmptyKeywordsMetaTagPostProcessorTest extends AbstractProcessorTest {
 
 	static class EmptyKeyWordsTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
 

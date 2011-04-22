@@ -32,11 +32,11 @@ public class WebSettingsService implements IWebSettingsService {
 		WebSettingsData webSettingsData = webSettingsDao.createDefaultEntity();
 		webSettingsData.setWebId(webId);
 		
-		CountryData country = countryService.findDefaultCountry();
+		CountryData<?> country = countryService.findDefaultCountry();
 
 		if (country != null) {
 			webSettingsData.setLanguage(country.getLanguage());
-			Set<CountryData> translations = new HashSet<CountryData>();
+			Set<CountryData<?>> translations = new HashSet<CountryData<?>>();
 			translations.add(country);
 			webSettingsData.setTranslations(translations);
 		}

@@ -1,13 +1,12 @@
 package sk.seges.acris.generator.client;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
+import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
@@ -20,21 +19,18 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class ContentInterceptor implements Iterator<GeneratorToken>{
+public class ContentInterceptor {
 
 	private IGeneratorServiceAsync generatorService;
 	
-	private List<GeneratorToken> contents = new ArrayList<GeneratorToken>();
-	private Iterator<GeneratorToken> contentsIterator;
-	private GeneratorToken defaultToken = null;
+	private GeneratorClientEnvironment generatorEnvironment;
 	
-	public ContentInterceptor(IGeneratorServiceAsync generatorService) {
+	public ContentInterceptor(IGeneratorServiceAsync generatorService, GeneratorClientEnvironment generatorEnvironment) {
 		this.generatorService = generatorService;
+		this.generatorEnvironment = generatorEnvironment;
 	}
 	
-	public void loadTokensForProcessing(final AsyncCallback<List<GeneratorToken>> callback) {
-		
-		contents.clear();
+	public void loadTokensForProcessing(final AsyncCallback<Void> callback) {
 		
 		generatorService.getLastProcessingToken(new AsyncCallback<GeneratorToken>() {
 
@@ -44,87 +40,54 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 
 			public void onSuccess(GeneratorToken result) {
 				if (result != null) {
-					defaultToken = new GeneratorToken();
-					defaultToken.setWebId(result.getWebId());
+					GeneratorToken defaultToken = new GeneratorToken();
+
+					String[] params = result.getWebId().split(GeneratorToken.TOP_LEVEL_DOMAIN_SEPARATOR);
+
+					defaultToken.setWebId(params[0]);
+					if (params.length > 1) {
+						generatorEnvironment.setTopLevelDomain(params[1]);
+					}
+					
 					defaultToken.setNiceUrl(result.getNiceUrl());
 					defaultToken.setDefaultToken(true);
 					defaultToken.setLanguage(result.getLanguage());
+
+					generatorEnvironment.getTokensCache().setDefaultToken(defaultToken);
 					
-					getAvailableTokens(result, new AsyncCallback<Void>() {
-
-						public void onFailure(Throwable caught) {
-							callback.onFailure(caught);
-						}
-
-						public void onSuccess(Void v) {
-							callback.onSuccess(contents);
-						}
-					});
+					getAvailableTokens(callback);
 				} else {
-					callback.onSuccess(contents);
+					callback.onSuccess(null);
 				}
 			}
 		});
 	}
 
 	
-	private GeneratorToken createGeneratorToken(final String niceurl, final String language, final String webId) {
-		GeneratorToken content = new GeneratorToken();
-		content.setNiceUrl(niceurl);
-		content.setLanguage(language);
-		content.setWebId(webId);
-		return content;
-	}
-
-	private void getAvailableTokens(final GeneratorToken generatorToken, final AsyncCallback<Void> callback) {
+	private void getAvailableTokens(final AsyncCallback<Void> callback) {
 		
-		generatorService.getAvailableNiceurls(generatorToken.getLanguage(), generatorToken.getWebId(), new AsyncCallback<List<String>>() {
+		GeneratorToken currentToken = generatorEnvironment.getTokensCache().getDefaultToken();
+		
+		generatorService.getAvailableNiceurls(currentToken.getLanguage(), currentToken.getWebId(), new AsyncCallback<ArrayList<String>>() {
 
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
 			}
 
-			public void onSuccess(List<String> result) {
-				for (String niceurl : result) {
-					contents.add(createGeneratorToken(niceurl, generatorToken.getLanguage(), generatorToken.getWebId()));
-				}
+			public void onSuccess(ArrayList<String> result) {
+				generatorEnvironment.getTokensCache().addTokens(result);
 				callback.onSuccess(null);
 			}
 		});
 	}
 
-	public boolean hasNext() {
-		if (contentsIterator == null) {
-			contentsIterator = contents.iterator();
-		}
-		return contentsIterator.hasNext();
-	}
-
-	public GeneratorToken next() {
-		if (contentsIterator == null) {
-			contentsIterator = contents.iterator();
-		}
-
-		GeneratorToken token = contentsIterator.next();
-		
-		if (token.getNiceUrl().equals(defaultToken.getNiceUrl()) &&  token.getWebId().equals(defaultToken.getWebId()) && token.getLanguage().equals(defaultToken.getLanguage())) {
-			token.setDefaultToken(true);
-		}
-		
-		return token;
-	}
-
-	public void remove() {
-		if (contentsIterator == null) {
-			contentsIterator = contents.iterator();
-		}
-		contentsIterator.remove();
-	}
 	
 	private HandlerRegistration handler;
 	
- 	public void loadContent(final GeneratorToken token, final AsyncCallback<GeneratorToken> callback) {
+ 	public void loadContent(final AsyncCallback<Void> callback) {
 
+ 		final GeneratorToken token = generatorEnvironment.getTokensCache().getCurrentToken();
+ 		
  		final Timer timer = new Timer() {
 
 			@Override
@@ -154,7 +117,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 					if (request.getParentRequest() == null) {
 						timer.cancel();
 						RPCRequestTracker.getTracker().removeAllCallbacks();
-						callback.onSuccess(token);
+						callback.onSuccess(null);
 					}
 				}
 			}
@@ -185,7 +148,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 					//No new async request was started
 					timer.cancel();
 					RPCRequestTracker.getTracker().removeAllCallbacks();
-					callback.onSuccess(token);
+					callback.onSuccess(null);
 				} else {
 					Log.debug("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
 				}
@@ -202,7 +165,7 @@ public class ContentInterceptor implements Iterator<GeneratorToken>{
 	    }
 	}
 
-	public String getContent() {
-		return RootPanel.get().toString();	
+	public com.google.gwt.user.client.Element getRootElement() {
+		return RootPanel.get().getElement();
 	}
 }

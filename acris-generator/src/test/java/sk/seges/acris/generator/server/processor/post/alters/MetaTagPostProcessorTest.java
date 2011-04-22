@@ -6,16 +6,27 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
+import sk.seges.acris.generator.server.processor.post.alters.MetaTagPostProcessorTest.MetaTagPostProcessorTestConfigurationLoader;
+import sk.seges.acris.generator.server.spring.configuration.alters.MetaTagTestConfiguration;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.MetaTagWebSettingsBuilder;
+import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/sk/seges/acris/generator/metatag-test-application-context.xml"})
-public class MetaTagPostProcessorTest extends AbstractTest {
+@ContextConfiguration(loader = MetaTagPostProcessorTestConfigurationLoader.class)
+public class MetaTagPostProcessorTest extends AbstractProcessorTest {
 
+	static class MetaTagPostProcessorTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
+
+		public MetaTagPostProcessorTestConfigurationLoader() {
+			super(MetaTagTestConfiguration.class);
+		}
+	}
+
+	
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/metatag/";
 
 	@Test

@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.shared.action;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
@@ -16,5 +16,5 @@ public class GetAvailableNiceurls {
 	String webId;
 
 	@Out(1)
-	List<String> tokens;
+	ArrayList<String> tokens;
 }

@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Loader used to maintain IO operations, e.g. entry point loading, saving
  * generated content
  * 
- * @author fat
+ * @author Peter Simun
  */
 public class HtmlFilesHandler {
 
@@ -71,19 +71,8 @@ public class HtmlFilesHandler {
 	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
 
 		String header = getHeadElement().getInnerHTML();
-
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
 
-		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, 
-				new AsyncCallback<Void>() {
-
-					public void onFailure(Throwable caught) {
-						callback.onFailure(caught);
-					}
-
-					public void onSuccess(Void result) {
-						callback.onSuccess((Void)null);
-					}
-				});
+		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, callback);
 	}
 }

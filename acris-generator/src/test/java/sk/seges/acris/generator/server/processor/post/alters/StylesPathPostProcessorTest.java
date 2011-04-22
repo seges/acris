@@ -6,13 +6,23 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
+import sk.seges.acris.generator.server.processor.post.alters.StylesPathPostProcessorTest.StylesPathPostProcessorTestConfigurationLoader;
+import sk.seges.acris.generator.server.spring.configuration.alters.StylePathTestConfiguration;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/sk/seges/acris/generator/stylepath-test-application-context.xml"})
-public class StylesPathPostProcessorTest extends AbstractTest {
+@ContextConfiguration(loader = StylesPathPostProcessorTestConfigurationLoader.class)
+public class StylesPathPostProcessorTest extends AbstractProcessorTest {
+
+	static class StylesPathPostProcessorTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
+
+		public StylesPathPostProcessorTestConfigurationLoader() {
+			super(StylePathTestConfiguration.class);
+		}
+	}
 
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/stylepath/";
 

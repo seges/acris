@@ -67,6 +67,12 @@ public class JpaWebSettings extends WebSettingsDTO {
 	public String getAnalyticsScriptData() {
 		return super.getAnalyticsScriptData();
 	}
+
+	@Override
+	@Column(nullable = true)
+	public String getParameters() {
+		return super.getParameters();
+	};
 	
 	@Override
 	@Column(length = DBConstraints.LANGUAGE_LENGTH)
@@ -88,7 +94,7 @@ public class JpaWebSettings extends WebSettingsDTO {
 	
 	@Override
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaCountry.class)
-	public Set<CountryData> getTranslations() {
+	public Set<CountryData<?>> getTranslations() {
 		return super.getTranslations();
 	}
 	

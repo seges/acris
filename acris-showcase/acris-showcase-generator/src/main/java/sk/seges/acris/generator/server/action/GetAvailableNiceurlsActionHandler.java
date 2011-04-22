@@ -1,7 +1,6 @@
 package sk.seges.acris.generator.server.action;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsAction;
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsResult;
@@ -20,7 +19,7 @@ public class GetAvailableNiceurlsActionHandler extends AbstractActionHandler<Get
 
 	@Override
 	public GetAvailableNiceurlsResult execute(GetAvailableNiceurlsAction action, ExecutionContext context) throws ActionException {
-		List<String> availableTokens = new ArrayList<String>();
+		ArrayList<String> availableTokens = new ArrayList<String>();
 		availableTokens.add(NameTokens.HOME_PAGE);
 		return new GetAvailableNiceurlsResult(availableTokens);
 	}

@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,15 +22,16 @@ import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
-import sk.seges.acris.generator.server.processor.HtmlPostProcessing;
+import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
 import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
-import sk.seges.acris.generator.server.processor.factory.api.ParserFactory;
+import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
 import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
+import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 /**
@@ -48,13 +50,13 @@ public class GeneratorService implements IGeneratorService {
 
 	private DataPersister dataPersister;
 	private ContentDataProvider contentDataProvider;
-	private ParserFactory parserFactory;
+	private NodeParserFactory parserFactory;
 
 	private String indexFileName;
 	private ThreadPoolExecutor threadPool;
 	
 	public GeneratorService(DataPersister dataPersister, String indexFileName, TokenProvider tokenProvider, ContentDataProvider contentDataProvider, 
-			IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, ParserFactory parserFactory) {
+			IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
 		this.dataPersister = dataPersister;
 		this.indexFileName = indexFileName;
 		this.parserFactory = parserFactory;
@@ -73,6 +75,12 @@ public class GeneratorService implements IGeneratorService {
 		}
 		result.setDefaultToken(true);
 		result.setNiceUrl(contentDataProvider.getContent(result).getNiceUrl());
+		
+		WebSettingsData webSettings = webSettingsService.getWebSettings(result.getWebId());
+		String topLevelDomain = webSettings.getTopLevelDomain();
+		
+		result.setWebId(result.getWebId() + GeneratorToken.TOP_LEVEL_DOMAIN_SEPARATOR + (topLevelDomain == null ? "" : topLevelDomain));
+		
 		return result;
 	}
 
@@ -81,9 +89,15 @@ public class GeneratorService implements IGeneratorService {
 		return true;
 	}
 
-	public List<String> getAvailableNiceurls(String lang, String webId) {
-		List<String> result = contentDataProvider.getAvailableNiceurls(lang, webId);
+	public ArrayList<String> getAvailableNiceurls(String lang, String webId) {
+		List<String> availableNiceurls = contentDataProvider.getAvailableNiceurls(lang, webId);
 
+		ArrayList<String> result = new ArrayList<String>();
+		
+		for (String niceUrl: availableNiceurls) {
+			result.add(niceUrl);
+		}
+		
 		if (log.isDebugEnabled()) {
 			log.debug("Available tokens for webId: " + webId + " and language " + lang);
 			for (String niceUrl : result) {
@@ -182,13 +196,14 @@ public class GeneratorService implements IGeneratorService {
 		
 				String result = content;
 		
-				HtmlPostProcessing htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+				HtmlPostProcessor htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
 				
 				result = htmlPostProcessor.getProcessedContent(content, token);
 				
 				if (result == null) {
 					log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
 				} else {
+					
 					writeTextToFile(result, false, token);
 			
 					if (token.isDefaultToken()) {

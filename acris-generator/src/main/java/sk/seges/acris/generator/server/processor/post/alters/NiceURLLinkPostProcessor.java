@@ -24,7 +24,7 @@ public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
 		
 		return true;
 	}
-	
+
 	protected String getLink(String link, GeneratorEnvironment generatorEnvironment) {
 		if (generatorEnvironment.getGeneratorToken().isDefaultToken()) {
 			return "";

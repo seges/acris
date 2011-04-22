@@ -6,13 +6,23 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.processor.post.AbstractTest;
+import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
+import sk.seges.acris.generator.server.processor.post.alters.ImagePathPostProcessorTest.ImagePathPostProcessorTestConfigurationLoader;
+import sk.seges.acris.generator.server.spring.configuration.alters.ImagePathTestConfiguration;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:/sk/seges/acris/generator/imagepath-test-application-context.xml"})
-public class ImagePathPostProcessorTest extends AbstractTest {
+@ContextConfiguration(loader = ImagePathPostProcessorTestConfigurationLoader.class)
+public class ImagePathPostProcessorTest extends AbstractProcessorTest {
+
+	static class ImagePathPostProcessorTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
+
+		public ImagePathPostProcessorTestConfigurationLoader() {
+			super(ImagePathTestConfiguration.class);
+		}
+	}
 
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/imagepath/";
 

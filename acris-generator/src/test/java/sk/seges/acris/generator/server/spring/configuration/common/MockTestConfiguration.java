@@ -14,7 +14,7 @@ import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public class MockTestConfiguration {
 
-	private static final String MOCK_ANALYTICS_SCRIPT = "<script>test analytics script</script>";
+	public static final String MOCK_ANALYTICS_SCRIPT = "<script>test analytics script</script>";
 
 	class MockLightContentFactory implements MockContentFactory {
 

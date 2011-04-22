@@ -63,16 +63,18 @@ public class WebSettingsDTO implements WebSettingsData {
 
 	private Set<MetaData> metadata;
 
-	private Set<CountryData> translations;
+	private Set<CountryData<?>> translations;
+	
+	private String parameters;
 	
 	public WebSettingsDTO() {
 	}
 	
-	public Set<CountryData> getTranslations() {
+	public Set<CountryData<?>> getTranslations() {
 		return translations;
 	}
 
-	public void setTranslations(Set<CountryData> translations) {
+	public void setTranslations(Set<CountryData<?>> translations) {
 		this.translations = translations;
 	}
 
@@ -130,5 +132,15 @@ public class WebSettingsDTO implements WebSettingsData {
 	@Override
 	public void setMetaData(Set<MetaData> metaData) {
 		this.metadata = metaData;
+	}
+
+	@Override
+	public String getParameters() {
+		return parameters;
+	}
+
+	@Override
+	public void setParameters(String parameters) {
+		this.parameters = parameters;
 	}
 }
