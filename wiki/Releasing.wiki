@@ -119,7 +119,7 @@ To deploy to Sonatype (and later to be compliant with Maven central) artifacts n
 
 == Close the release ==
 
-  * Log in to 
+  * Log in to https://oss.sonatype.org/
   * select appropriate groupId in Staging repositories
   * select staging release and Close it
 
