@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 
 import sk.seges.acris.generator.server.action.GenerateOfflineActionHandler;
 import sk.seges.acris.generator.server.action.GetAvailableNiceurlsActionHandler;
-import sk.seges.acris.generator.server.action.GetLastProcessingTokenActionHandler;
+import sk.seges.acris.generator.server.action.GetDefaultGeneratorTokenActionHandler;
 import sk.seges.acris.generator.server.action.ReadHtmlBodyFromFileActionHandler;
 import sk.seges.acris.generator.server.action.WriteOfflineContentHtmlActionHandler;
 import sk.seges.acris.generator.server.dao.IFileDao;
@@ -60,8 +60,8 @@ public class ActionModule extends HandlerModule {
 	}
 
 	@Bean
-	public GetLastProcessingTokenActionHandler getLastProcessingTokenActionHandler() {
-		return new GetLastProcessingTokenActionHandler(tokenProvider());
+	public GetDefaultGeneratorTokenActionHandler getLastProcessingTokenActionHandler() {
+		return new GetDefaultGeneratorTokenActionHandler(tokenProvider());
 	}
 
 	@Bean

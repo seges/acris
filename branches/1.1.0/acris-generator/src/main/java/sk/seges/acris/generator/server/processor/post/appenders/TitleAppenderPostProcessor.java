@@ -33,6 +33,10 @@ public class TitleAppenderPostProcessor extends AbstractElementPostProcessor {
 			return false;
 		}
 
+		if (generatorEnvironment.getContent() == null || generatorEnvironment.getContent().getTitle() == null) {
+			return false;
+		}
+		
 		return (NodesUtils.getChildNode(node, TitleTag.class) == null);
 	}
 }

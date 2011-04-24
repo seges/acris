@@ -12,7 +12,8 @@ public class DescriptionPostProcessor extends AbstractMetaTagPostProcessor {
 			return false;
 		}
 
-		return (generatorEnvironment.getContent().getDescription() == null || 
+		return (generatorEnvironment.getContent() == null ||
+				generatorEnvironment.getContent().getDescription() == null || 
 				generatorEnvironment.getContent().getDescription().length() == 0);
 	}
 

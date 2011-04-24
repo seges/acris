@@ -89,6 +89,10 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 			nodeList.add(textNode);
 			linkTag.setChildren(nodeList);
 			
+			if (generatorEnvironment.getContent() == null) {
+				continue;
+			}
+			
 			ContentData<?> content = contentDataProvider.getContentForLanguage(generatorEnvironment.getContent(), languageValue);
 			
 			if (content == null) {

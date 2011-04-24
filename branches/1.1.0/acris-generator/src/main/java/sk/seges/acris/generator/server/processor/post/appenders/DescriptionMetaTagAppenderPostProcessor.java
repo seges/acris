@@ -19,8 +19,10 @@ public class DescriptionMetaTagAppenderPostProcessor extends AbstractMetaTagAppe
 	@Override
 	public synchronized boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (NodesUtils.getChildNode(node, MetaTag.class, new MetaTagNameAttribute(NodeDefinition.DESCRIPTION_TAG_NAME)) == null) {
-			if (generatorEnvironment.getContent().getDescription() != null && generatorEnvironment.getContent().getDescription().length() > 0) {
-				appendMetaTag((HeadTag) node, NodeDefinition.DESCRIPTION_TAG_NAME, generatorEnvironment.getContent().getDescription());
+			if (generatorEnvironment.getContent() != null && 
+				generatorEnvironment.getContent().getDescription() != null && 
+				generatorEnvironment.getContent().getDescription().length() > 0) {
+					appendMetaTag((HeadTag) node, NodeDefinition.DESCRIPTION_TAG_NAME, generatorEnvironment.getContent().getDescription());
 			}
 		}
 		return true;

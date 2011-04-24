@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
+import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
@@ -67,19 +68,27 @@ public class GeneratorService implements IGeneratorService {
 		this.threadPool = new ThreadPoolExecutor(5, 20, 20, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 	}
 
-	public GeneratorToken getLastProcessingToken() {
-		GeneratorToken result = tokenProvider.getTokenForProcessing();
-		if (result == null) {
-			log.warn("No token for processing!");
-			return null;
-		}
+	public GeneratorToken getDefaultGeneratorToken(String language, String webId) {
+
+		GeneratorToken result = new GeneratorToken();
+				
+		result.setWebId(webId);
+		result.setLanguage(language);
 		result.setDefaultToken(true);
-		result.setNiceUrl(contentDataProvider.getContent(result).getNiceUrl());
+		
+		ContentData<?> content = contentDataProvider.getContent(result);
+		if (content != null) {
+			result.setNiceUrl(content.getNiceUrl());
+		} else {
+			result.setNiceUrl("");
+		}
 		
 		WebSettingsData webSettings = webSettingsService.getWebSettings(result.getWebId());
-		String topLevelDomain = webSettings.getTopLevelDomain();
-		
-		result.setWebId(result.getWebId() + GeneratorToken.TOP_LEVEL_DOMAIN_SEPARATOR + (topLevelDomain == null ? "" : topLevelDomain));
+		if (webSettings != null) {
+			result.setWebId(webSettings.getTopLevelDomain());
+		} else {
+			result.setWebId("");
+		}
 		
 		return result;
 	}

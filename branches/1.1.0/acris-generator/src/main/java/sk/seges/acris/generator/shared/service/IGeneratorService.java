@@ -18,7 +18,7 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * Offline content generator service
 	 */
-	GeneratorToken getLastProcessingToken();
+	GeneratorToken getDefaultGeneratorToken(String language, String webId);
 
 	void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL);
 

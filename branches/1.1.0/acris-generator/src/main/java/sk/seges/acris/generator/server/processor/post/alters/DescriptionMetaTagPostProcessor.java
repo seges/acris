@@ -23,7 +23,8 @@ public class DescriptionMetaTagPostProcessor extends AbstractMetaTagPostProcesso
 		if (!super.supports(node, generatorEnvironment)) {
 			return false;
 		}
-		return (generatorEnvironment.getContent().getDescription() != null && 
+		return (generatorEnvironment.getContent() != null &&
+				generatorEnvironment.getContent().getDescription() != null && 
 				generatorEnvironment.getContent().getDescription().length() > 0);
 	}
 }

@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 public class GeneratorToken implements Serializable {
 	
-	public static final String TOP_LEVEL_DOMAIN_SEPARATOR = "__SEPARATOR__";
-	
 	private static final long serialVersionUID = -1013144843773775841L;
 
 	private String language;

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsAction;
 import sk.seges.acris.generator.shared.action.GetAvailableNiceurlsResult;
-import sk.seges.acris.generator.shared.action.GetLastProcessingTokenAction;
-import sk.seges.acris.generator.shared.action.GetLastProcessingTokenResult;
+import sk.seges.acris.generator.shared.action.GetDefaultGeneratorTokenAction;
+import sk.seges.acris.generator.shared.action.GetDefaultGeneratorTokenResult;
 import sk.seges.acris.generator.shared.action.ReadHtmlBodyFromFileAction;
 import sk.seges.acris.generator.shared.action.ReadHtmlBodyFromFileResult;
 import sk.seges.acris.generator.shared.action.WriteOfflineContentHtmlAction;
@@ -29,8 +29,8 @@ public class GeneratorServiceDispatcher implements IGeneratorServiceAsync {
 	}
 
 	@Override
-	public void getLastProcessingToken(final AsyncCallback<GeneratorToken> callback) {
-		actionManager.execute(new GetLastProcessingTokenAction(), new DefaultAsyncCallback<GetLastProcessingTokenResult>() {
+	public void getDefaultGeneratorToken(String language, String webId, final AsyncCallback<GeneratorToken> callback) {
+		actionManager.execute(new GetDefaultGeneratorTokenAction(language, webId), new DefaultAsyncCallback<GetDefaultGeneratorTokenResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -38,7 +38,7 @@ public class GeneratorServiceDispatcher implements IGeneratorServiceAsync {
 			}
 
 			@Override
-			public void onSuccess(GetLastProcessingTokenResult result) {
+			public void onSuccess(GetDefaultGeneratorTokenResult result) {
 				callback.onSuccess(result.getToken());
 			}
 		});

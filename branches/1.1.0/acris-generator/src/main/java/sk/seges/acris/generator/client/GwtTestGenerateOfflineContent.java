@@ -7,6 +7,7 @@ import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
+import sk.seges.acris.generator.client.configuration.GeneratorConfiguration;
 import sk.seges.acris.generator.client.context.DefaultGeneratorClientEnvironment;
 import sk.seges.acris.generator.client.context.MapTokenCache;
 import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
@@ -21,6 +22,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -31,7 +34,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	private HtmlFilesHandler offlineContentProvider;
 	private ContentInterceptor contentProvider;
 
-	private GeneratorClientEnvironment generatorEnvironment;
+	protected GeneratorClientEnvironment generatorEnvironment;
 	
 	private EntryPoint site;
 
@@ -80,17 +83,24 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				Log.error("Uncaught exception", e);
 			}
 		});
-
+		
+		GeneratorConfiguration generatorConfiguration = GWT.create(GeneratorConfiguration.class);
+		
 		if (PERFORMANCE_MONITOR) {
 			timer = new OperationTimer();
 		}
-		
-		prepareEnvironment();
+
+		generatorEnvironment = new DefaultGeneratorClientEnvironment(new MapTokenCache());
+		GeneratorToken defaultToken = new GeneratorToken();
+		defaultToken.setWebId(generatorConfiguration.getWebId());
+		defaultToken.setLanguage(generatorConfiguration.getLanguage());
+		generatorEnvironment.getTokensCache().setDefaultToken(defaultToken);
+
+		prepareEnvironment(generatorConfiguration);
 
 		generatorService = getGeneratorService();
 
 		offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
-		generatorEnvironment = new DefaultGeneratorClientEnvironment(new MapTokenCache());
 
 		contentProvider = getContentProvider(generatorEnvironment);
 
@@ -103,7 +113,13 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		return collectors;
 	}
 	
-	protected void prepareEnvironment() {
+	protected void prepareEnvironment(GeneratorConfiguration generatorConfiguration) {
+		if (generatorConfiguration.getProperties() != null && generatorConfiguration.getProperties().length() > 0) {
+			ScriptElement scriptElement = Document.get().createScriptElement();
+			scriptElement.setAttribute("language", "JavaScript");
+			scriptElement.setAttribute("src", generatorConfiguration.getProperties());
+			HtmlFilesHandler.getHeadElement().appendChild(scriptElement);
+		}
 	};
 
 	protected ContentInterceptor getContentProvider(GeneratorClientEnvironment generatorEnvironment) {
