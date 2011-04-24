@@ -19,8 +19,10 @@ public class KeywordsMetaTagAppenderPostProcessor extends AbstractMetaTagAppende
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (NodesUtils.getChildNode(node, MetaTag.class, new MetaTagNameAttribute(NodeDefinition.KEYWORDS_TAG_NAME)) == null) {
-			if (generatorEnvironment.getContent().getKeywords() != null && generatorEnvironment.getContent().getKeywords().length() > 0) {
-				appendMetaTag((HeadTag) node, NodeDefinition.KEYWORDS_TAG_NAME, generatorEnvironment.getContent().getKeywords());
+			if (generatorEnvironment.getContent() != null && 
+				generatorEnvironment.getContent().getKeywords() != null && 
+				generatorEnvironment.getContent().getKeywords().length() > 0) {
+					appendMetaTag((HeadTag) node, NodeDefinition.KEYWORDS_TAG_NAME, generatorEnvironment.getContent().getKeywords());
 			}
 		}
 		return true;

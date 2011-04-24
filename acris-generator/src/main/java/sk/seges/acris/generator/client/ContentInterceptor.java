@@ -32,7 +32,9 @@ public class ContentInterceptor {
 	
 	public void loadTokensForProcessing(final AsyncCallback<Void> callback) {
 		
-		generatorService.getLastProcessingToken(new AsyncCallback<GeneratorToken>() {
+		final GeneratorToken defaultToken = generatorEnvironment.getTokensCache().getDefaultToken();
+		
+		generatorService.getDefaultGeneratorToken(defaultToken.getLanguage(), defaultToken.getWebId(), new AsyncCallback<GeneratorToken>() {
 
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
@@ -40,21 +42,14 @@ public class ContentInterceptor {
 
 			public void onSuccess(GeneratorToken result) {
 				if (result != null) {
-					GeneratorToken defaultToken = new GeneratorToken();
 
-					String[] params = result.getWebId().split(GeneratorToken.TOP_LEVEL_DOMAIN_SEPARATOR);
-
-					defaultToken.setWebId(params[0]);
-					if (params.length > 1) {
-						generatorEnvironment.setTopLevelDomain(params[1]);
+					if (result.getWebId() != null && result.getWebId().length() > 0) {
+						generatorEnvironment.setTopLevelDomain(result.getWebId());
 					}
 					
 					defaultToken.setNiceUrl(result.getNiceUrl());
 					defaultToken.setDefaultToken(true);
-					defaultToken.setLanguage(result.getLanguage());
 
-					generatorEnvironment.getTokensCache().setDefaultToken(defaultToken);
-					
 					getAvailableTokens(callback);
 				} else {
 					callback.onSuccess(null);

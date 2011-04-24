@@ -22,6 +22,6 @@ public class TitlePostProcessor extends AbstractElementPostProcessor {
 
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
-		return (node instanceof TitleTag);
+		return (node instanceof TitleTag && generatorEnvironment.getContent() != null);
 	}
 }

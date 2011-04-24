@@ -22,6 +22,8 @@ public class KeywordsMetaTagPostProcessor extends AbstractMetaTagPostProcessor {
 		if (!super.supports(node, generatorEnvironment)) {
 			return false;
 		}
-		return (generatorEnvironment.getContent().getKeywords() != null && generatorEnvironment.getContent().getKeywords().length() > 0);
+		return (generatorEnvironment.getContent() != null && 
+				generatorEnvironment.getContent().getKeywords() != null && 
+				generatorEnvironment.getContent().getKeywords().length() > 0);
 	}
 }

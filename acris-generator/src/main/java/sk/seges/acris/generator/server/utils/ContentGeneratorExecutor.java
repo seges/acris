@@ -13,10 +13,11 @@ public abstract class ContentGeneratorExecutor {
 	protected String getTestMethod() {
 		return "testLoadContent";
 	}
-	
+
 	public void startOfflineProcessing() {
 
 		try {
+			
 			TestResultsCleaner singleJUnitShell = new TestResultsCleaner();
 			singleJUnitShell.clearUnitResult();
 			
@@ -37,5 +38,4 @@ public abstract class ContentGeneratorExecutor {
 			System.exit(0);
 		}
 	}
-
 }

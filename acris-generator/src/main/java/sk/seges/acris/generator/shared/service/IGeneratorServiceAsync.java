@@ -18,7 +18,7 @@ public interface IGeneratorServiceAsync {
 	/**
 	 * Offline content generator service
 	 */
-	void getLastProcessingToken(AsyncCallback<GeneratorToken> callback);
+	void getDefaultGeneratorToken(String langauge, String webId, AsyncCallback<GeneratorToken> callback);
 
 	void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL,
 			AsyncCallback<Void> callback);
