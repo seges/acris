@@ -332,13 +332,11 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	private native void closePopup(String url) /*-{
-												if ($wnd.name == 'openIDPopup')
-												{
-												$wnd.close();
-												if (url && $wnd.opener && !$wnd.opener.closed)
-												{
-												$wnd.opener.location.replace(url);
-												}
-												}
-												}-*/;
+		if ($wnd.name == 'openIDPopup') {
+			$wnd.close();
+			if (url && $wnd.opener && !$wnd.opener.closed) {
+				$wnd.opener.location.replace(url);
+			}
+		}
+	}-*/;
 }
