@@ -4,10 +4,10 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.ScriptTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.utils.ScriptUtils;
 
 public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 
-	private static final String SRC = "SRC";
 	private static final String JS_TEXT_TYPE = "text/javascript";
 	private static final String JS_LANGUAGE = "javascript";	
 
@@ -26,17 +26,11 @@ public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
 
 	@Override
 	protected String getPath(Node node) {
-		ScriptTag scriptTag = (ScriptTag) node;
-		String path = scriptTag.getAttribute(SRC);
-		if (path != null && path.length() > 0) {
-			return path;
-		}
-		return scriptTag.getAttribute(SRC.toLowerCase());
+		return ScriptUtils.getPath((ScriptTag) node);
 	}
 
 	@Override
 	protected void setPath(Node node, String path) {
-		ScriptTag scriptTag = (ScriptTag) node;
-		scriptTag.setAttribute(SRC, path);
+		ScriptUtils.setPath((ScriptTag) node, path);
 	}
 }
