@@ -22,6 +22,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.junit.client.GWTTestCase;
@@ -294,7 +296,13 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				if (PERFORMANCE_MONITOR) {
 					timer.stop(Operation.CONTENT_RENDERING);
 				}
-				saveAndLoadContent(generatorEnvironment);
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					
+					@Override
+					public void execute() {
+						saveAndLoadContent(generatorEnvironment);
+					}
+				});
 			}
 		});
 		

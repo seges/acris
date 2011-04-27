@@ -24,7 +24,6 @@ import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
-import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
@@ -42,8 +41,6 @@ public class GeneratorService implements IGeneratorService {
 
 	private static final long serialVersionUID = 6944837756691206504L;
 
-	protected TokenProvider tokenProvider;
-
 	private HtmlProcessorFactory htmlProcessorFactory;
 	private IWebSettingsService webSettingsService;
 
@@ -56,13 +53,12 @@ public class GeneratorService implements IGeneratorService {
 	private String indexFileName;
 	private ThreadPoolExecutor threadPool;
 	
-	public GeneratorService(DataPersister dataPersister, String indexFileName, TokenProvider tokenProvider, ContentDataProvider contentDataProvider, 
+	public GeneratorService(DataPersister dataPersister, String indexFileName, ContentDataProvider contentDataProvider, 
 			IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
 		this.dataPersister = dataPersister;
 		this.indexFileName = indexFileName;
 		this.parserFactory = parserFactory;
 		this.htmlProcessorFactory = htmlProcessorFactory;
-		this.tokenProvider = tokenProvider;
 		this.contentDataProvider = contentDataProvider;
 		this.webSettingsService = webSettingsService;
 		this.threadPool = new ThreadPoolExecutor(5, 20, 20, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
@@ -94,7 +90,6 @@ public class GeneratorService implements IGeneratorService {
 	}
 
 	public boolean saveContent(GeneratorToken token, String contentText) {
-		tokenProvider.setTokenForProcessing(token);
 		return true;
 	}
 
