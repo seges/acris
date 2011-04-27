@@ -77,8 +77,9 @@ public class MapTokenCache implements TokensCache {
 		
 		while (iterator.hasNext()) {
 			String token = iterator.next();
+
 			if (!isAlreadyProcessed(token) && !isAlreadyAwaiting(token)) {
-				Log.info("Adding a autodetected token for processing " + token);
+				Log.info("Adding token for a processing " + token);
 				awaitingTokens.add(token);
 			}
 		}

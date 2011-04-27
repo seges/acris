@@ -13,9 +13,9 @@ public class PlainOfflineWebSettings implements OfflineWebSettings {
 
 	public enum OfflineGeneratorParameter implements ParameterData {
 
-		INACTIVE_PROCESSORS("inactiveProcessors"),
-		INACTIVE_INDEX_PROCESSORS("inactiveIndexProcessors"),
-		AUTODETECT_MODE("autodetectMode");
+		INACTIVE_PROCESSORS("offline.post.processor.inactive"),
+		INACTIVE_INDEX_PROCESSORS("offline.index.post.processor.inactive"),
+		AUTODETECT_MODE("offline.autodetect.mode");
 
 		private String key;
 		
