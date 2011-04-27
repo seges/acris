@@ -1,6 +1,5 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -9,7 +8,7 @@ import org.htmlparser.Node;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.service.GeneratorTokenWrapper;
+import sk.seges.acris.generator.server.processor.utils.AnchorUtils;
 
 public abstract class AbstractPathPostProcessor extends AbstractElementPostProcessor {
 
@@ -56,29 +55,11 @@ public abstract class AbstractPathPostProcessor extends AbstractElementPostProce
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 
-		String niceUrl = generatorEnvironment.getGeneratorToken().getNiceUrl();
-		if (File.separatorChar != '/') {
-			niceUrl = niceUrl.replace(File.separatorChar, '/');
-		}
-
-		//count number of directories in the path. If the niceurl/token is
-		//en/project than there are 2 directories: en and project so we
-		//have to add ../../ prefix into the path
-		int count = niceUrl.split("/").length + 1;
-
-		boolean defaultToken = false;
-
-		if (generatorEnvironment.getGeneratorToken() instanceof GeneratorTokenWrapper) {
-			defaultToken = ((GeneratorTokenWrapper) generatorEnvironment.getGeneratorToken()).isDefault();
-		}
-		if (count <= 1 || defaultToken) {
-			return true; //no special processing necessary 
-		}
-
-		String pathPrefix = "";
-
-		for (int i = 1; i < count; i++) {
-			pathPrefix = pathPrefix + "../";
+		String pathPrefix = AnchorUtils.getRelativePrefix(generatorEnvironment.getGeneratorToken());
+		
+		//no special processing required
+		if (pathPrefix.length() == 0) {
+			return true;
 		}
 
 		setPath(node, pathPrefix + getPath(node));
