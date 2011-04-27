@@ -5,9 +5,8 @@ import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.HeadTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
-public class GoogleAnalyticAppenderPostProcessor extends AbstractElementPostProcessor {
+public class GoogleAnalyticAppenderPostProcessor extends AbstractAppenderPostProcessor {
 
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {

@@ -18,6 +18,7 @@ import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.generator.server.processor.post.PostProcessorKind.Kind;
 import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
@@ -90,11 +91,7 @@ public class HtmlPostProcessor {
 
 			rootNodes.add(node);
 
-			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (postProcessorActivator.isActive(elementPostProcessor, token.isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
-					elementPostProcessor.process(node, generatorEnvironment);
-				}
-			}
+			executeProcessors(node, generatorEnvironment);
 
 			processNodes(node.getChildren(), generatorEnvironment);
 		}
@@ -106,6 +103,33 @@ public class HtmlPostProcessor {
 		return null;
 	}
 
+	private void executeProcessors(Node node, GeneratorEnvironment generatorEnvironment) {
+
+		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
+			if (elementPostProcessor.getKind().equals(Kind.ANNIHILATOR)) {
+				if (postProcessorActivator.isActive(elementPostProcessor, generatorEnvironment.getGeneratorToken().isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
+					elementPostProcessor.process(node, generatorEnvironment);
+				}
+			}
+		}
+
+		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
+			if (elementPostProcessor.getKind().equals(Kind.ALTER)) {
+				if (postProcessorActivator.isActive(elementPostProcessor, generatorEnvironment.getGeneratorToken().isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
+					elementPostProcessor.process(node, generatorEnvironment);
+				}
+			}
+		}
+
+		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
+			if (elementPostProcessor.getKind().equals(Kind.APPENDER)) {
+				if (postProcessorActivator.isActive(elementPostProcessor, generatorEnvironment.getGeneratorToken().isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
+					elementPostProcessor.process(node, generatorEnvironment);
+				}
+			}
+		}
+	}
+	
 	private void processNodes(NodeList nodeList, GeneratorEnvironment generatorEnvironment) throws ParserException {
 		if (nodeList == null) {
 			return;
@@ -116,11 +140,7 @@ public class HtmlPostProcessor {
 		for (int i = 0; i < size; i++) {
 			Node node = nodeList.elementAt(i);
 
-			for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-				if (postProcessorActivator.isActive(elementPostProcessor, generatorEnvironment.getGeneratorToken().isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
-					elementPostProcessor.process(node, generatorEnvironment);
-				}
-			}
+			executeProcessors(node, generatorEnvironment);
 
 			processNodes(node.getChildren(), generatorEnvironment);
 		}

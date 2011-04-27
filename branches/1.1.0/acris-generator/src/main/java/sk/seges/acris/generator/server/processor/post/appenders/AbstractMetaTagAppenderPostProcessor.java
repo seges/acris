@@ -9,10 +9,9 @@ import org.htmlparser.util.NodeList;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.AbstractMetaTagPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.AbstractMetaTagAlterPostProcessor;
 
-public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractElementPostProcessor {
+public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractAppenderPostProcessor {
 
 	@Override
 	public synchronized boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
@@ -30,7 +29,7 @@ public abstract class AbstractMetaTagAppenderPostProcessor extends AbstractEleme
 
 		MetaTag metaTag = new MetaTag();
 		metaTag.setTagName(metaTag.getTagName().toLowerCase());
-		metaTag.getAttributesEx().add(new Attribute(" " + AbstractMetaTagPostProcessor.NAME_ATTRIBUTE_NAME, name, '"'));
+		metaTag.getAttributesEx().add(new Attribute(" " + AbstractMetaTagAlterPostProcessor.NAME_ATTRIBUTE_NAME, name, '"'));
 		metaTag.getAttributesEx().add(new Attribute(" content", content == null ? "" : content, '"'));
 
 		metaTag.setEmptyXmlTag(true);

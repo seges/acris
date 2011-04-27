@@ -8,8 +8,8 @@ import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MockContentFactory;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
@@ -34,12 +34,12 @@ public class EmptyDescriptionTestConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor descriptionMetaTagPostProcessor() {
-		return new DescriptionMetaTagPostProcessor();
+		return new DescriptionMetaTagAlterPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor descriptionMetaTagAnnihilatorPostProcessor() {
-		return new DescriptionPostProcessor();
+		return new DescriptionAnnihilatorPostProcessor();
 	}
 
 	@Bean

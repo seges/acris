@@ -6,7 +6,7 @@ import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
 
 
-public class DescriptionMetaTagPostProcessor extends AbstractMetaTagPostProcessor {
+public class DescriptionMetaTagAlterPostProcessor extends AbstractMetaTagAlterPostProcessor {
 
 	@Override
 	protected String getMetaTagName(GeneratorEnvironment generatorEnvironment) {

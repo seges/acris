@@ -6,11 +6,16 @@ import org.htmlparser.util.NodeList;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
-public abstract class AbstractPostProcessorAnnihilator extends AbstractElementPostProcessor {
+public abstract class AbstractAnnihilatorPostProcessor extends AbstractElementPostProcessor {
 
 	protected abstract boolean supportsParent(Node node, GeneratorEnvironment generatorEnvironment);
 	protected abstract boolean supportsNode(Node node, GeneratorEnvironment generatorEnvironment);
-		
+
+	@Override
+	public Kind getKind() {
+		return Kind.ANNIHILATOR;
+	}
+	
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		return supportsParent(node, generatorEnvironment);

@@ -5,12 +5,11 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils.MetaTagNameAttribute;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData.MetaData;
 
-public class MetaTagPostProcessor extends AbstractElementPostProcessor {
+public class MetaTagAlterPostProcessor extends AbstractAlterPostProcessor {
 
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {

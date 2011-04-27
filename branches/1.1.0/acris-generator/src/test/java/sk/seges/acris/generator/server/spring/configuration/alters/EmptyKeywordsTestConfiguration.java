@@ -8,7 +8,7 @@ import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MockContentFactory;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
@@ -34,7 +34,7 @@ public class EmptyKeywordsTestConfiguration {
 	
 	@Bean
 	public AbstractElementPostProcessor keywordsMetaTagPostProcessor() {
-		return new KeywordsMetaTagPostProcessor();
+		return new KeywordsMetaTagAlterPostProcessor();
 	}
 
 	@Bean

@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Import;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsMetaTagAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.alters.EmptyKeywordsTestConfiguration.MockLightContentFactory;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
@@ -18,12 +18,12 @@ public class EmptyKeywordsTestConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor keywordsMetaTagPostProcessor() {
-		return new KeywordsMetaTagPostProcessor();
+		return new KeywordsMetaTagAlterPostProcessor();
 	}
 	
 	@Bean
 	public AbstractElementPostProcessor keywordsPostProcessor() {
-		return new KeywordsPostProcessor();
+		return new KeywordsMetaTagAnnihilatorPostProcessor();
 	}
 
 	@Bean

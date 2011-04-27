@@ -6,9 +6,8 @@ import org.htmlparser.tags.MetaTag;
 import org.htmlparser.util.NodeList;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
-public class LocaleGwtPropertyAppenderPostProcessor extends AbstractElementPostProcessor {
+public class LocaleGwtPropertyAppenderPostProcessor extends AbstractAppenderPostProcessor {
 
 	private static final String NAME_ATTRIBUTE_NAME = "name";
 	private static final String CONTENT_ATTRIBUTE_NAME = "content";

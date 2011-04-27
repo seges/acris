@@ -5,28 +5,30 @@ import org.springframework.context.annotation.Bean;
 
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.ImagesSourcePostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.MetaTagPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.ScriptsPathPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.StylesPathPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.TitlePostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.HeadStyleScriptPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.NotVisibleTagsPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.OnLoadErrorFnPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.OnPropertyErrorFnPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.PropertiesScriptPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.MetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.StylesAlterPathPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.TitleAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.HeadStyleScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsMetaTagAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NotVisibleTagsAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.OnLoadErrorFnAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.OnPropertyErrorFnAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.PropertiesScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.TitleAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropertyAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.TitleAppenderPostProcessor;
 
 public class PostProcessorsConfiguration {
 
@@ -34,73 +36,53 @@ public class PostProcessorsConfiguration {
 	private ContentDataProvider contentMetaDataProvider;
 	
 	@Bean
-	public AbstractElementPostProcessor descriptionMetaTagPostProcessor() {
-		return new DescriptionMetaTagPostProcessor();
-	}
-
-	@Bean
 	public AbstractElementPostProcessor imagesSourcePostProcessor() {
-		return new ImagesSourcePostProcessor();
-	}
-
-	@Bean
-	public AbstractElementPostProcessor keywordsMetaTagPostProcessor() {
-		return new KeywordsMetaTagPostProcessor();
+		return new ImagesSourceAlterPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor languageSelectorPostProcessor() {
-		return new LanguageSelectorPostProcessor(contentMetaDataProvider);
+		return new LanguageSelectorAlterPostProcessor(contentMetaDataProvider);
 	}
 
 	@Bean
 	public AbstractElementPostProcessor niceURLLinkPostProcessor() {
-		return new NiceURLLinkPostProcessor();
+		return new NiceURLLinkAlterPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor scriptsPathPostProcessor() {
-		return new ScriptsPathPostProcessor();
-	}
-
-	@Bean
-	public AbstractElementPostProcessor stylesPathPostProcessor() {
-		return new StylesPathPostProcessor();
-	}
-
-	@Bean
-	public AbstractElementPostProcessor titlePostProcessor() {
-		return new TitlePostProcessor();
+		return new ScriptsAlterPathPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor headStyleScriptPostProcessor() {
-		return new HeadStyleScriptPostProcessor();
+		return new HeadStyleScriptAnnihilatorPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor nochacheScriptPostProcessor() {
-		return new NochacheScriptPostProcessor();
+		return new NochacheScriptAnnihilatorPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor notVisibleTagsPostProcessor() {
-		return new NotVisibleTagsPostProcessor();
+		return new NotVisibleTagsAnnihilatorPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor onLoadErrorFnPostProcessor() {
-		return new OnLoadErrorFnPostProcessor();
+		return new OnLoadErrorFnAnnihilatorPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor onPropertyErrorFnPostProcessor() {
-		return new OnPropertyErrorFnPostProcessor();
+		return new OnPropertyErrorFnAnnihilatorPostProcessor();
 	}
 
 	@Bean
 	public AbstractElementPostProcessor propertiesScriptPostProcessor() {
-		return new PropertiesScriptPostProcessor();
+		return new PropertiesScriptAnnihilatorPostProcessor();
 	}
 
 	@Bean
@@ -115,22 +97,22 @@ public class PostProcessorsConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor metaTagPostProcessor() {
-		return new MetaTagPostProcessor();
-	}
-
-	@Bean
-	public AbstractElementPostProcessor keywordsPostProcessorAnihilator() {
-		return new KeywordsPostProcessor();
+		return new MetaTagAlterPostProcessor();
 	}
 	
 	@Bean
 	public AbstractElementPostProcessor metaTagAppenderPostProcessor() {
 		return new MetaTagAppenderPostProcessor();
 	}
+		
+	@Bean
+	public AbstractElementPostProcessor stylesAlterPathPostProcessor() {
+		return new StylesAlterPathPostProcessor();
+	}
 
 	@Bean
-	public AbstractElementPostProcessor keywordsMetaTagAppenderPostProcessor() {
-		return new KeywordsMetaTagAppenderPostProcessor();
+	public AbstractElementPostProcessor descriptionAlterMetaTagPostProcessor() {
+		return new DescriptionMetaTagAlterPostProcessor();
 	}
 
 	@Bean
@@ -140,6 +122,36 @@ public class PostProcessorsConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor descriptionMetaTagAnnihilatorPostProcessor() {
-		return new DescriptionPostProcessor();
+		return new DescriptionAnnihilatorPostProcessor();
+	}
+
+	@Bean
+	public AbstractElementPostProcessor keywordsAltersMetaTagPostProcessor() {
+		return new KeywordsMetaTagAlterPostProcessor();
+	}
+
+	@Bean
+	public AbstractElementPostProcessor keywordsAnihilatorPostProcessor() {
+		return new KeywordsMetaTagAnnihilatorPostProcessor();
+	}
+
+	@Bean
+	public AbstractElementPostProcessor keywordsMetaTagAppenderPostProcessor() {
+		return new KeywordsMetaTagAppenderPostProcessor();
+	}
+
+	@Bean
+	public AbstractElementPostProcessor titleAnnihilatorPostProcessor() {
+		return new TitleAnnihilatorPostProcessor();
+	}
+
+	@Bean
+	public AbstractElementPostProcessor titleAlterPostProcessor() {
+		return new TitleAlterPostProcessor();
+	}
+
+	@Bean
+	public AbstractElementPostProcessor titleAppenderPostProcessor() {
+		return new TitleAppenderPostProcessor();
 	}
 }
