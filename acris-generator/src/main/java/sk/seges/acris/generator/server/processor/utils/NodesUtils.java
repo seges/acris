@@ -9,7 +9,7 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.SimpleNodeIterator;
 
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
-import sk.seges.acris.generator.server.processor.post.alters.AbstractMetaTagPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.AbstractMetaTagAlterPostProcessor;
 
 /**
  * Various utilities classes for processing the HTML nodes using HTML parser
@@ -38,7 +38,7 @@ public class NodesUtils {
 		 * @param value Name of the meta tag
 		 */
 		public MetaTagNameAttribute(String value) {
-			super(AbstractMetaTagPostProcessor.NAME_ATTRIBUTE_NAME, value);
+			super(AbstractMetaTagAlterPostProcessor.NAME_ATTRIBUTE_NAME, value);
 		}
 	}
 	

@@ -6,7 +6,7 @@ import org.htmlparser.tags.ScriptTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
-public class PropertiesScriptPostProcessor extends AbstractPostProcessorAnnihilator {
+public class PropertiesScriptAnnihilatorPostProcessor extends AbstractAnnihilatorPostProcessor {
 
 	@Override
 	protected boolean supportsParent(Node node, GeneratorEnvironment generatorEnvironment) {

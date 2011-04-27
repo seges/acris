@@ -4,7 +4,6 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.TitleTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 
 /**
@@ -12,7 +11,7 @@ import sk.seges.acris.generator.server.processor.utils.NodesUtils;
  * 
  * @author Peter Simun (simun@seges.sk)
  */
-public class TitlePostProcessor extends AbstractElementPostProcessor {
+public class TitleAlterPostProcessor extends AbstractAlterPostProcessor {
 
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
@@ -22,6 +21,9 @@ public class TitlePostProcessor extends AbstractElementPostProcessor {
 
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
-		return (node instanceof TitleTag && generatorEnvironment.getContent() != null);
+		return (node instanceof TitleTag && 
+				generatorEnvironment.getContent() != null &&
+				generatorEnvironment.getContent().getTitle() != null && 
+				generatorEnvironment.getContent().getTitle().length() > 0);
 	}
 }

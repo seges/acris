@@ -10,7 +10,7 @@ import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
  * 
  * @author psimun
  */
-public class StylesPathPostProcessor extends AbstractPathPostProcessor {
+public class StylesAlterPathPostProcessor extends AbstractPathAlterPostProcessor {
 
 	private static final String STYLESHEET_REL = "stylesheet";
 	private static final String CSS_TYPE = "text/css";

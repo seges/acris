@@ -6,7 +6,7 @@ import org.htmlparser.tags.ScriptTag;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.utils.ScriptUtils;
 
-public class ScriptsPathPostProcessor extends AbstractPathPostProcessor {
+public class ScriptsAlterPathPostProcessor extends AbstractPathAlterPostProcessor {
 
 	private static final String JS_TEXT_TYPE = "text/javascript";
 	private static final String JS_LANGUAGE = "javascript";	

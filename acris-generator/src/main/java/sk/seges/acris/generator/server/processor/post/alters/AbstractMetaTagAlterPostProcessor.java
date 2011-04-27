@@ -4,15 +4,14 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.MetaTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 
-public abstract class AbstractMetaTagPostProcessor extends AbstractElementPostProcessor {
+public abstract class AbstractMetaTagAlterPostProcessor extends AbstractAlterPostProcessor {
 	
 	public static final String NAME_ATTRIBUTE_NAME = "name";
 
 	protected abstract String getMetaTagName(GeneratorEnvironment generatorEnvironment);
 	protected abstract String getMetaTagContent(GeneratorEnvironment generatorEnvironment);
-	
+
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		MetaTag metaTag = (MetaTag)node;

@@ -5,7 +5,7 @@ import org.htmlparser.util.NodeList;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
-public abstract class AbstractElementPostProcessor {
+public abstract class AbstractElementPostProcessor implements PostProcessorKind {
 
 	public abstract boolean supports(Node node, GeneratorEnvironment generatorEnvironment);
 

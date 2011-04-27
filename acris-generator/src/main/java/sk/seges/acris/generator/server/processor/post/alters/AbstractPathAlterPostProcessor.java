@@ -7,12 +7,11 @@ import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.AnchorUtils;
 
-public abstract class AbstractPathPostProcessor extends AbstractElementPostProcessor {
+public abstract class AbstractPathAlterPostProcessor extends AbstractAlterPostProcessor {
 
-	private static final Logger log = Logger.getLogger(AbstractPathPostProcessor.class);
+	private static final Logger log = Logger.getLogger(AbstractPathAlterPostProcessor.class);
 
 	protected boolean compareIgnoreCaseNullSafe(String text1, String text2) {
 		if (text1 == null && text2 == null) {

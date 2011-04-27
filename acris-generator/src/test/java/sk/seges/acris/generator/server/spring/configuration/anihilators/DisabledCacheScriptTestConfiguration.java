@@ -8,7 +8,7 @@ import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MockContentFactory;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
@@ -46,6 +46,6 @@ public class DisabledCacheScriptTestConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor nochacheScriptPostProcessor() {
-		return new NochacheScriptPostProcessor();
+		return new NochacheScriptAnnihilatorPostProcessor();
 	}
 }

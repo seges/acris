@@ -1,7 +1,7 @@
 package sk.seges.acris.generator.server.processor.post.annihilators;
 
 
-public class OnLoadErrorFnPostProcessor extends AbstractMetaTagPostProcessor {
+public class OnLoadErrorFnAnnihilatorPostProcessor extends AbstractMetaTagAnnihilatorPostProcessor {
 
 	private static final String ON_LOAD_ERROR_META_TAG_NAME = "gwt:onLoadErrorFn";
 	

@@ -12,10 +12,9 @@ import org.htmlparser.util.NodeList;
 import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 
-public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor {
+public class LanguageSelectorAlterPostProcessor extends AbstractAlterPostProcessor {
 
 	private String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
 	private String CLASS_ATTRIBUTE_NAME = "class";
@@ -23,11 +22,11 @@ public class LanguageSelectorPostProcessor extends AbstractElementPostProcessor 
 		
 	private String LANGUAGE_BAR_STYLE = "height: 32px; overflow-y: scroll";
 	
-    private static final Logger logger = Logger.getLogger(LanguageSelectorPostProcessor.class);
+    private static final Logger logger = Logger.getLogger(LanguageSelectorAlterPostProcessor.class);
     
     private ContentDataProvider contentDataProvider;
     
-    public LanguageSelectorPostProcessor(ContentDataProvider contentDataProvider) {
+    public LanguageSelectorAlterPostProcessor(ContentDataProvider contentDataProvider) {
     	this.contentDataProvider = contentDataProvider;
     }
     

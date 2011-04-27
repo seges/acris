@@ -4,10 +4,9 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.LinkTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.AnchorUtils;
 
-public class NiceURLLinkPostProcessor extends AbstractElementPostProcessor {
+public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {

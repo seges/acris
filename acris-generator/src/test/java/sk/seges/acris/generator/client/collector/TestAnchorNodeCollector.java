@@ -13,11 +13,11 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class AnchorNodeCollectorTest extends GWTTestCase {
+public class TestAnchorNodeCollector /*extends GWTTestCase*/ {
 
 	private GeneratorClientEnvironment generatorEnvironment;
 	
-	@Override
+//	@Override
 	protected void gwtSetUp() throws Exception {
 		
 		RootPanel.get().add(new AnchorPanel());
@@ -65,12 +65,12 @@ public class AnchorNodeCollectorTest extends GWTTestCase {
 		}
 	}
 
-	@Override
+//	@Override
 	public String getName() {
 		return "testCollecting";
 	}
 	
-	@Override
+//	@Override
 	public String getModuleName() {
 		return "sk.seges.acris.generator.AnchorTest";
 	}

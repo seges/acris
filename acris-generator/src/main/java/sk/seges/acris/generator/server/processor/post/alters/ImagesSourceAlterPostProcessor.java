@@ -5,7 +5,7 @@ import org.htmlparser.tags.ImageTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
-public class ImagesSourcePostProcessor extends AbstractPathPostProcessor {
+public class ImagesSourceAlterPostProcessor extends AbstractPathAlterPostProcessor {
 
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
