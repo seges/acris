@@ -15,7 +15,6 @@ import sk.seges.acris.generator.server.dao.twig.TwigFileDao;
 import sk.seges.acris.generator.server.domain.api.FileData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MoviesContentProvider;
-import sk.seges.acris.generator.server.processor.TokenProvider;
 import sk.seges.acris.generator.server.processor.factory.CommaSeparatedParameterManagerFactory;
 import sk.seges.acris.generator.server.processor.factory.DefaultNodeParserFactory;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
@@ -24,7 +23,6 @@ import sk.seges.acris.generator.server.processor.factory.PostProcessorActivatorF
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.factory.api.OfflineWebSettingsFactory;
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
-import sk.seges.acris.generator.server.processor.mock.MockTokenProvider;
 import sk.seges.acris.generator.server.processor.mock.MockWebSettingsService;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.service.GeneratorService;
@@ -61,7 +59,7 @@ public class ActionModule extends HandlerModule {
 
 	@Bean
 	public GetDefaultGeneratorTokenActionHandler getLastProcessingTokenActionHandler() {
-		return new GetDefaultGeneratorTokenActionHandler(tokenProvider());
+		return new GetDefaultGeneratorTokenActionHandler();
 	}
 
 	@Bean
@@ -87,11 +85,6 @@ public class ActionModule extends HandlerModule {
 	@Bean
 	public DataPersister dataPersister() {
 		return new DatabasePersister(fileDao());
-	}
-
-	@Bean
-	public TokenProvider tokenProvider() {
-		return new MockTokenProvider();
 	}
 
 	@Bean
@@ -127,7 +120,7 @@ public class ActionModule extends HandlerModule {
 	
 	@Bean
 	public GeneratorService generatorService() {
-		return new GeneratorService(dataPersister(), INDEX_FILE, tokenProvider(), contentDataProvider(),
+		return new GeneratorService(dataPersister(), INDEX_FILE, contentDataProvider(),
 				new MockWebSettingsService(), getHtmlProcessorFactory(), parserFactory());
 	}
 
