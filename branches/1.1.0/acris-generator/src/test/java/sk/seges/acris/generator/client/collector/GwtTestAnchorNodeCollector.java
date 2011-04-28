@@ -13,7 +13,7 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class TestAnchorNodeCollector /*extends GWTTestCase*/ {
+public class GwtTestAnchorNodeCollector {
 
 	private GeneratorClientEnvironment generatorEnvironment;
 	
