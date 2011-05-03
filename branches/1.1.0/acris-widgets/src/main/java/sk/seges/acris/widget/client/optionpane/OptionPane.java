@@ -184,6 +184,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
 		dialog.center();
+		dialog.getElement().getStyle().setTop(Window.getClientHeight() / 2 - dialog.getOffsetHeight(), Unit.PX);
 		return pane.getResult();
 	}
 
@@ -243,7 +244,8 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
 		dialog.center();
-		dialog.getElement().getStyle().setTop(Window.getClientHeight() / 2 - dialog.getOffsetHeight(), Unit.PX);
+		dialog.getElement().getStyle()
+				.setTop(Window.getScrollTop() + Window.getClientHeight() / 2 - dialog.getOffsetHeight() / 2, Unit.PX);
 		return pane.getResult();
 		/**/
 	}
@@ -258,8 +260,11 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	public static void showConfirmationDialog(String title, String message, EPanelOption options,
 			OptionPaneResultListener resultListener) {
 		OptionPane pane = createOptionPaneFromMessage(message, EMessageType.QUESTION_MESSAGE);
-		Dialog d = createMessageDialog(title, pane, false, true, options, resultListener);
-		d.center();
+		Dialog dialog = createMessageDialog(title, pane, false, true, options, resultListener);
+
+		dialog.center();
+		dialog.getElement().getStyle()
+				.setTop(Window.getScrollTop() + Window.getClientHeight() / 2 - dialog.getOffsetHeight() / 2, Unit.PX);
 	}
 
 	/**
