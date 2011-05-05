@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.test.selenium.usecase;
 
+import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 
 public class MockSeleniseConfiguration extends MockSelenise {

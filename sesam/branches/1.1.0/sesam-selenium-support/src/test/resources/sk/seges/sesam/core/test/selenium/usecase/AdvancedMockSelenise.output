@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.test.selenium.usecase;
 
+import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise;
 
 public class AdvancedMockSeleniseConfiguration extends AdvancedMockSelenise {
@@ -18,6 +19,11 @@ public class AdvancedMockSeleniseConfiguration extends AdvancedMockSelenise {
 	
 	AdvancedMockSeleniseConfiguration(boolean flags) {
 		super(flags);
+	}
+	
+	public AdvancedMockSeleniseConfiguration(TestEnvironment testEnvironment) {
+		super();
+		this.testEnvironment = testEnvironment;
 	}
 	
 	@Override
