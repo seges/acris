@@ -1,7 +1,8 @@
 package sk.seges.sesam.core.test.selenium.usecase;
 
+import org.junit.Test;
+
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.TestCase;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 
@@ -12,9 +13,9 @@ public class MockSelenise extends AbstractSeleniumTest {
 		super(testEnvironment);
 	}
 
-	@TestCase
+	@Test
 	public void testMethod1() {}
 
-	@TestCase
+	@Test
 	public void testMethod2() {}
 }

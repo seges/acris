@@ -1,25 +1,47 @@
 package sk.seges.sesam.test.selenium;
 
+import org.junit.After;
+import org.junit.Before;
+
+import sk.seges.sesam.core.test.selenium.configuration.api.ISeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
 import bromine.brunit.BRUnit;
 
-public abstract class AbstractSeleniumTest extends BRUnit {
+public abstract class AbstractSeleniumTest extends BRUnit implements ISeleniumConfigurator {
 
 	protected TestEnvironment testEnvironment;
-	
-	
+
+	private ISeleniumConfigurator celeniumConfigurator;
+
 	protected AbstractSeleniumTest(TestEnvironment testEnvironment) {
 		this.testEnvironment = testEnvironment;
+	}
+	
+	@Override
+	public ConfigurationValue[] collectSystemProperties() {
+		return celeniumConfigurator.collectSystemProperties();
+	}
+
+	@Override
+	public TestEnvironment mergeConfiguration(TestEnvironment environment) {
+		return celeniumConfigurator.mergeConfiguration(environment);
 	}
 
 	public void runTests() throws Exception {
 	}
 
+	@Before
 	public void setUp() throws Exception {
 		super.setUp(testEnvironment.getBromineEnvironment().getBromineHost(), testEnvironment.getBromineEnvironment().getBrominePort());
 		super.start(testEnvironment.getSeleniumEnvironment().getSeleniumHost(), testEnvironment.getSeleniumEnvironment().getSeleniumPort(), 
-				testEnvironment.getBrowser(), testEnvironment.getTestHost(), getClass().getSimpleName());
+				testEnvironment.getBrowser(), testEnvironment.getHost(), getClass().getSimpleName());
 	}
+
+	@After
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
 
 	@Override
 	public void verifyTrue(Boolean statement1) throws Exception {

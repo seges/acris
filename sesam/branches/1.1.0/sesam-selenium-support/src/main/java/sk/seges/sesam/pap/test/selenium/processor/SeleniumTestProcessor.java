@@ -17,11 +17,13 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 
+import org.junit.Test;
+
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.TestCase;
+import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -38,6 +40,13 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		Set<String> annotations = new HashSet<String>();
 		annotations.add(SeleniumTest.class.getCanonicalName());
 		return annotations;
+	}
+	
+	@Override
+	protected Type[] getImports() {
+		return new Type[] {
+			TestEnvironment.class
+		};
 	}
 	
 	public static final MutableType getOutputClass(MutableType mutableType) {
@@ -62,11 +71,11 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		};
 	};
 
-	protected void cloneConstructor(ExecutableElement constructor, NamedType outputClass, PrintWriter pw) {
+	protected boolean cloneConstructor(ExecutableElement constructor, NamedType outputClass, PrintWriter pw) {
 
 		for (Modifier modifier: constructor.getModifiers()) {
 			if (modifier.equals(Modifier.PRIVATE)) {
-				return;
+				return false;
 			}
 		}
 		
@@ -78,13 +87,22 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		
 		List<? extends VariableElement> parameters = constructor.getParameters();
 		
+		boolean result = false;
+		
 		int i = 0;
 		for (VariableElement parameter: parameters) {
 			if (i > 0) {
 				pw.print(", ");
 			}
+			if (i == 0 && parameter.asType().toString().equals(TestEnvironment.class.getSimpleName())) {
+				result = true;
+			}
 			pw.print(parameter.asType().toString() + " " + parameter.getSimpleName().toString());
 			i++;
+		}
+
+		if (i > 1) {
+			result = false;
 		}
 		
 		pw.println(") {");
@@ -100,6 +118,8 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		pw.println(");");
 		pw.println("}");
 		pw.println("");
+		
+		return result;
 	}
 
 	@Override
@@ -130,17 +150,27 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(element.getEnclosedElements());
 		
+		boolean hasEnvironemntConstructor = false;
+		
 		for (ExecutableElement constructor: constructors) {
-			cloneConstructor(constructor, outputClass, pw);
+			hasEnvironemntConstructor |= cloneConstructor(constructor, outputClass, pw);
 		}
 		
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
+
+		if (!hasEnvironemntConstructor) {
+			pw.println("public " + outputClass.getSimpleName() + "(" + TestEnvironment.class.getSimpleName() + " testEnvironment) {");
+			pw.println("super();");
+			pw.println("this.testEnvironment = testEnvironment;");
+			pw.println("}");
+			pw.println("");
+		}
 		
 		pw.println("@Override");
 		pw.println("public void runTests() throws Exception {");
 		
 		for (ExecutableElement method: methods) {
-			TestCase annotation = method.getAnnotation(TestCase.class);
+			Test annotation = method.getAnnotation(Test.class);
 			if (annotation != null) {
 				pw.println(method.getSimpleName().toString() + "();");
 			}

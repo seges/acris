@@ -2,7 +2,11 @@ package sk.seges.sesam.core.test.selenium.configuration.api;
 
 public enum Browsers {
 
-	FIREFOX("*firefox");
+	FIREFOX("*firefox"),
+	IE("*iexplore"),
+	SAFARI("*safari"),
+	OPERA("*opera"),
+	CHROME("*chrome");
 	
 	private String browser;
 	

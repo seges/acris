@@ -7,7 +7,7 @@ public interface TestEnvironment {
 	
 	SeleniumEnvironment getSeleniumEnvironment();
 
-	String getTestHost();
+	String getHost();
 
 	String getBrowser();
 }
