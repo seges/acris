@@ -94,7 +94,7 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 			if (i > 0) {
 				pw.print(", ");
 			}
-			if (i == 0 && parameter.asType().toString().equals(TestEnvironment.class.getSimpleName())) {
+			if (i == 0 && parameter.asType().toString().equals(TestEnvironment.class.getCanonicalName())) {
 				result = true;
 			}
 			pw.print(parameter.asType().toString() + " " + parameter.getSimpleName().toString());
