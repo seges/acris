@@ -52,7 +52,6 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 
 				@Override
 				public void onClick(ClickEvent event) {
-					cleanup();
 					Dialog.this.hide();
 				}
 			};
