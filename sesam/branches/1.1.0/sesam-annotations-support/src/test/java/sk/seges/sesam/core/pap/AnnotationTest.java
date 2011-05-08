@@ -205,6 +205,9 @@ public abstract class AnnotationTest {
 	
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<JavaFileObject>();
+		if (COMPILER == null) {
+			throw new RuntimeException("Please use JDK for runing the tests!");
+		}
 		StandardJavaFileManager fileManager = COMPILER.getStandardFileManager(diagnosticCollector, null, null);
 
 		/*

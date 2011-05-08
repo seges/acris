@@ -40,7 +40,7 @@ public class SeleniumTestConfigurationProcessorTest extends AnnotationTest {
 	@Override
 	protected Processor[] getProcessors() {
 		return new Processor[] {
-			new SeleniumTestConfigurationProcessor()
+			new SeleniumTestRunnerProcessor()
 		};
 	}
 

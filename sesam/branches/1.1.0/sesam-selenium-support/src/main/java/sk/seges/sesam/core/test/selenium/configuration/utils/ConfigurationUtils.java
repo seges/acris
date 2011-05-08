@@ -5,6 +5,18 @@ import sk.seges.sesam.core.test.selenium.configuration.api.properties.Configurat
 
 public class ConfigurationUtils {
 
+	public static Boolean getConfigurationBoolean(ConfigurationValue[] configurations, Configuration config) {
+		String configurationValue = getConfigurationValue(configurations, config);
+		if (configurationValue == null) {
+			return null;
+		}
+		try {
+			return Boolean.getBoolean(configurationValue);
+		} catch (Exception e) {
+		}
+		return null;
+	}
+	
 	public static String getConfigurationValue(ConfigurationValue[] configurations, Configuration config) {
 		if (configurations == null) {
 			return null;

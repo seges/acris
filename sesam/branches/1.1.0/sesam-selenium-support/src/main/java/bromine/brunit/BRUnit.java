@@ -3,7 +3,6 @@ package bromine.brunit;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -32,19 +31,14 @@ public abstract class BRUnit {
      * @param args - Array containing params passed to the test script
      * @param c - The class of the test script
      */
-    public static void initiate(String[] args, String serverhost, int serverport, Class c) {
+    public static void initiate(String[] args, String serverhost, int serverport, Class<?> c) {
         
         try {
-        	if (args[0].equals("bromine.local.seges.sk")) {
-        		args[0] = "local.seges.sk/bromine";
-        	}
             String host = args[0];
             int port = Integer.parseInt(args[1]);
             String brows = args[2];
             String sitetotest = args[3];
             String test_id = args[4];
-//            String brows2 = URLDecoder.decode(brows, "UTF-8");
-//            brows2 += ';' + test_id;
             BRUnit obj = (BRUnit) c.newInstance();
             obj.setUp(host, port);
             obj.start(serverhost, serverport, brows, sitetotest, test_id);
@@ -76,11 +70,15 @@ public abstract class BRUnit {
         pr = new PostRequest();
     }
     
+    protected DefaultSelenium createSelenium(String host, int port, String browser, String sitetotest) {
+        return new DefaultSelenium(host, port, browser, sitetotest);
+    }
+    
     public void start(String host, int port, String browser, String sitetotest, String test_id) {
         this.browser = browser;
         this.sitetotest = sitetotest;
         this.test_id = test_id;
-        selenium = new DefaultSelenium(host, port, browser, sitetotest);
+        selenium = createSelenium(host, port, browser, sitetotest);
         selenium.start();
     }
 

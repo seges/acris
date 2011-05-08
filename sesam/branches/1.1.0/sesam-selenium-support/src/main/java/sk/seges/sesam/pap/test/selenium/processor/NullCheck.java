@@ -12,7 +12,15 @@ public class NullCheck {
 		}
 		return clazz;
 	}
-	
+
+	public static Integer checkNull(Integer value) {
+		if (value == null || value.intValue() == 0) {
+			return null;
+		}
+		
+		return value;
+	}
+
 	public static String checkNull(String value) {
 		if (value == null) {
 			return null;

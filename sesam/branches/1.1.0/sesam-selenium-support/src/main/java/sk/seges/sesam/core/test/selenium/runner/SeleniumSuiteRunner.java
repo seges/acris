@@ -1,17 +1,18 @@
 package sk.seges.sesam.core.test.selenium.runner;
 
-import sk.seges.sesam.core.test.selenium.configuration.SeleniumConfigurator;
-import sk.seges.sesam.core.test.selenium.configuration.api.ISeleniumConfigurator;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumConfigurator;
+import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
 import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 
-public class SeleniumSuiteRunner implements ISeleniumConfigurator {
+public class SeleniumSuiteRunner implements SeleniumConfigurator {
 
-	private ISeleniumConfigurator seleniumConfigurator;
+	private SeleniumConfigurator seleniumConfigurator;
 	
 	protected SeleniumSuiteRunner() {
-		seleniumConfigurator = new SeleniumConfigurator();
+		seleniumConfigurator = new DefaultSeleniumConfigurator();
 	}
 	
     public void run(AbstractSeleniumTest test) throws Exception {
@@ -26,7 +27,12 @@ public class SeleniumSuiteRunner implements ISeleniumConfigurator {
 	}
 
 	@Override
-	public TestEnvironment mergeConfiguration(TestEnvironment environment) {
-		return seleniumConfigurator.mergeConfiguration(environment);
+	public TestEnvironment mergeTestConfiguration(TestEnvironment environment) {
+		return seleniumConfigurator.mergeTestConfiguration(environment);
+	}
+
+	@Override
+	public MailSettings mergeMailConfiguration(MailSettings mailEnvironment) {
+		return seleniumConfigurator.mergeMailConfiguration(mailEnvironment);
 	}
 }

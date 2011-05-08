@@ -17,12 +17,22 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
+import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
+import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 
@@ -45,7 +55,17 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 	@Override
 	protected Type[] getImports() {
 		return new Type[] {
-			TestEnvironment.class
+			TestEnvironment.class,
+			DefaultTestEnvironment.class,
+			DefaultSeleniumEnvironment.class,
+			DefaultBromineEnvironment.class,
+			DefaultMailSettings.class,
+			MailSettings.class,
+			Browsers.class,
+			AbstractSeleniumTest.class,
+			Provider.class,
+			ReportConfiguration.class,
+			DefaultReportingSettings.class,
 		};
 	}
 	
@@ -71,12 +91,16 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		};
 	};
 
-	protected boolean cloneConstructor(ExecutableElement constructor, NamedType outputClass, PrintWriter pw) {
+	protected void cloneConstructor(ExecutableElement constructor, NamedType outputClass, PrintWriter pw) {
 
 		for (Modifier modifier: constructor.getModifiers()) {
 			if (modifier.equals(Modifier.PRIVATE)) {
-				return false;
+				return;
 			}
+		}
+		
+		if (constructor.getParameters() == null || constructor.getParameters().size() == 0) {
+			return;
 		}
 		
 		for (Modifier modifier: constructor.getModifiers()) {
@@ -86,25 +110,16 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		pw.print(outputClass.getSimpleName() + "(");
 		
 		List<? extends VariableElement> parameters = constructor.getParameters();
-		
-		boolean result = false;
-		
+				
 		int i = 0;
 		for (VariableElement parameter: parameters) {
 			if (i > 0) {
 				pw.print(", ");
 			}
-			if (i == 0 && parameter.asType().toString().equals(TestEnvironment.class.getCanonicalName())) {
-				result = true;
-			}
 			pw.print(parameter.asType().toString() + " " + parameter.getSimpleName().toString());
 			i++;
 		}
 
-		if (i > 1) {
-			result = false;
-		}
-		
 		pw.println(") {");
 		pw.print("super(");
 		i = 0;
@@ -118,8 +133,6 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		pw.println(");");
 		pw.println("}");
 		pw.println("");
-		
-		return result;
 	}
 
 	@Override
@@ -145,27 +158,30 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 //		}
 		return super.processElement(element, roundEnv);
 	}
+
+	@Override
+	protected void writeClassAnnotations(PrintWriter pw, Element el) {
+		pw.println("@" + Ignore.class.getCanonicalName());
+	}
 	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(element.getEnclosedElements());
 		
-		boolean hasEnvironemntConstructor = false;
-		
 		for (ExecutableElement constructor: constructors) {
-			hasEnvironemntConstructor |= cloneConstructor(constructor, outputClass, pw);
+			cloneConstructor(constructor, outputClass, pw);
 		}
 		
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
-		if (!hasEnvironemntConstructor) {
-			pw.println("public " + outputClass.getSimpleName() + "(" + TestEnvironment.class.getSimpleName() + " testEnvironment) {");
-			pw.println("super();");
-			pw.println("this.testEnvironment = testEnvironment;");
-			pw.println("}");
-			pw.println("");
-		}
-		
+		pw.println("public " + outputClass.getSimpleName() + "() {");
+		pw.println("super();");
+		pw.println("configure(this);");
+		pw.println("}");
+		pw.println("");
+
+		new ConfigurationProcessor(processingEnv).createConfiguration(element, pw);
+
 		pw.println("@Override");
 		pw.println("public void runTests() throws Exception {");
 		
