@@ -13,6 +13,7 @@ import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
 import sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise;
 
+@org.junit.Ignore
 public class AdvancedMockSeleniseConfiguration extends AdvancedMockSelenise {
 
 	public AdvancedMockSeleniseConfiguration(java.lang.String param) {
@@ -55,14 +56,14 @@ public class AdvancedMockSeleniseConfiguration extends AdvancedMockSelenise {
 		DefaultReportingSettings result = new DefaultReportingSettings(testElement.collectSystemProperties());
 
 		DefaultReportingSettings defaultReportingSettingsRoot = new DefaultReportingSettings(true,"result","screenshots");
-		result.merge(defaultMailSettingsRoot);
+		result.merge(defaultReportingSettingsRoot);
 		return result;
 	}
 	
 	public static AbstractSeleniumTest configure(sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise testElement) {
 		testElement.setTestEnvironment(getTestConfiguration(testElement));
 		testElement.setMailEnvironment(getMailConfiguration(testElement));
-		testElement.setReportEnvironment(getReportConfiguration(testElement));
+		testElement.setReportingSettings(getReportConfiguration(testElement));
 		return testElement;
 	}
 	
