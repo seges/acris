@@ -8,8 +8,12 @@ import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
+import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
 import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 
+@org.junit.Ignore
 public class MockSeleniseConfiguration extends MockSelenise {
 
 	protected MockSeleniseConfiguration(sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment testEnvironment) {
@@ -45,9 +49,18 @@ public class MockSeleniseConfiguration extends MockSelenise {
 		return result;
 	}
 	
+	private static DefaultReportingSettings getReportConfiguration(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
+		DefaultReportingSettings result = new DefaultReportingSettings(testElement.collectSystemProperties());
+
+		DefaultReportingSettings defaultReportingSettingsRoot = new DefaultReportingSettings(true,"result","screenshots");
+		result.merge(defaultReportingSettingsRoot);
+		return result;
+	}
+	
 	public static AbstractSeleniumTest configure(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
 		testElement.setTestEnvironment(getTestConfiguration(testElement));
 		testElement.setMailEnvironment(getMailConfiguration(testElement));
+		testElement.setReportingSettings(getReportConfiguration(testElement));
 		return testElement;
 	}
 	
