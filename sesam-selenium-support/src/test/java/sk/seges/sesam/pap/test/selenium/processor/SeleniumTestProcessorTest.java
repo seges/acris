@@ -9,13 +9,14 @@ import org.junit.Test;
 import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.test.selenium.runner.MockRunner;
 import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 
 public class SeleniumTestProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testTestCase() {
-		assertCompilationSuccessful(compileFiles(MockSelenise.class));
+		assertCompilationSuccessful(compileFiles(MockSelenise.class, MockRunner.class));
 		assertOutput(getResourceFile(MockSelenise.class), getOutputFile(MockSelenise.class));
 	}
 

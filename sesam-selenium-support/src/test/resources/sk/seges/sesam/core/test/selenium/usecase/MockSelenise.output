@@ -1,12 +1,54 @@
 package sk.seges.sesam.core.test.selenium.usecase;
 
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
+import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 
 public class MockSeleniseConfiguration extends MockSelenise {
 
 	protected MockSeleniseConfiguration(sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment testEnvironment) {
 		super(testEnvironment);
+	}
+	
+	public MockSeleniseConfiguration() {
+		super();
+		configure(this);
+	}
+	
+	private static DefaultTestEnvironment getTestConfiguration(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
+		DefaultTestEnvironment result = new DefaultTestEnvironment(testElement.collectSystemProperties());
+
+		DefaultSeleniumEnvironment defaultSeleniumEnvironmentSpecific = new DefaultSeleniumEnvironment(null,0);
+		DefaultBromineEnvironment defaultBromineEnvironmentSpecific = new DefaultBromineEnvironment(null,0);
+		DefaultTestEnvironment defaultTestEnvironmentSpecific = new DefaultTestEnvironment(defaultSeleniumEnvironmentSpecific, defaultBromineEnvironmentSpecific, "overridenURL", null);
+		result.merge(defaultTestEnvironmentSpecific);
+
+		DefaultSeleniumEnvironment defaultSeleniumEnvironmentRoot = new DefaultSeleniumEnvironment("localhost",4444);
+		DefaultBromineEnvironment defaultBromineEnvironmentRoot = new DefaultBromineEnvironment("localhost",8080);
+		DefaultTestEnvironment defaultTestEnvironmentRoot = new DefaultTestEnvironment(defaultSeleniumEnvironmentRoot, defaultBromineEnvironmentRoot, "testURL", Browsers.FIREFOX);
+		result.merge(defaultTestEnvironmentRoot);
+
+		return result;
+	}
+	
+	private static DefaultMailSettings getMailConfiguration(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
+		DefaultMailSettings result = new DefaultMailSettings(testElement.collectSystemProperties());
+
+		DefaultMailSettings defaultMailSettingsRoot = new DefaultMailSettings("host","pass","mail",Provider.IMAPS);
+		result.merge(defaultMailSettingsRoot);
+		return result;
+	}
+	
+	public static AbstractSeleniumTest configure(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
+		testElement.setTestEnvironment(getTestConfiguration(testElement));
+		testElement.setMailEnvironment(getMailConfiguration(testElement));
+		return testElement;
 	}
 	
 	@Override

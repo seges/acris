@@ -5,26 +5,15 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import sk.seges.sesam.core.test.selenium.configuration.api.ISeleniumConfigurator;
+import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.properties.Configuration;
 import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
 
-public class SeleniumConfigurator implements ISeleniumConfigurator {
+public class DefaultSeleniumConfigurator implements SeleniumConfigurator {
 
-    public TestEnvironment mergeConfiguration(TestEnvironment environment) {
-
-    	ConfigurationValue[] configurations = collectSystemProperties();
-
-    	DefaultTestEnvironment configuredEnvironment = new DefaultTestEnvironment(configurations);
-    	if (environment != null) {
-    		configuredEnvironment.merge(environment);
-    	}
-    	
-    	return configuredEnvironment;
-    }
-
-    private static final String CONFIGURATION_PROPERTY_PREFIX = "test.";
+    private static final String CONFIGURATION_PROPERTY_PREFIX = "";
     
     public ConfigurationValue[] collectSystemProperties() {
     	Properties properties = System.getProperties();
@@ -65,4 +54,25 @@ public class SeleniumConfigurator implements ISeleniumConfigurator {
     	return configurations.toArray(new ConfigurationValue[] {});
     }
 
+    public TestEnvironment mergeTestConfiguration(TestEnvironment environment) {
+
+    	DefaultTestEnvironment configuredEnvironment = new DefaultTestEnvironment(collectSystemProperties());
+    	if (environment != null) {
+    		configuredEnvironment.merge(environment);
+    	}
+    	
+    	return configuredEnvironment;
+    }
+
+	@Override
+	public MailSettings mergeMailConfiguration(MailSettings mailEnvironment) {
+    	ConfigurationValue[] configurations = collectSystemProperties();
+
+    	DefaultMailSettings configuredEnvironment = new DefaultMailSettings(configurations);
+    	if (mailEnvironment != null) {
+    		configuredEnvironment.merge(mailEnvironment);
+    	}
+    	
+    	return configuredEnvironment;
+	}
 }
