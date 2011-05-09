@@ -1,14 +1,13 @@
 package sk.seges.sesam.core.test.selenium.annotation;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
+//This is not working in the eclipse with the source retention policy
+//@Retention(RetentionPolicy.SOURCE)
 public @interface SeleniumTestConfiguration {
 	
 	String seleniumServer() default "localhost";

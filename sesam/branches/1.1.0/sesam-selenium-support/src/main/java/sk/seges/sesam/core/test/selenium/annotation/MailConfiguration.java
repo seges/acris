@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
+//This is not working in the eclipse with the source retention policy
+//@Retention(RetentionPolicy.SOURCE)
 public @interface MailConfiguration {
 
 	public enum Provider {

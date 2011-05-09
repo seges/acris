@@ -227,20 +227,30 @@ public class ConfigurationProcessor {
 	}
 
 	protected AnnotationMirror getAnnotationMirror(TypeMirror owner, Class<?> annotationClass) {
-		List<? extends AnnotationMirror> annotationMirrors = processingEnv.getElementUtils().getTypeElement(owner.toString()).getAnnotationMirrors();
+		List<? extends AnnotationMirror> annotationMirrors2 = ((DeclaredType)owner).asElement().getAnnotationMirrors();
+		processingEnv.getMessager().printMessage(Kind.WARNING, "There are " + annotationMirrors2.size() + " annotations on the " + owner.toString());
 		
+		List<? extends AnnotationMirror> allAnnotationMirrors = processingEnv.getElementUtils().getAllAnnotationMirrors(processingEnv.getElementUtils().getTypeElement(owner.toString()));
+		
+		List<? extends AnnotationMirror> annotationMirrors = processingEnv.getElementUtils().getTypeElement(owner.toString()).getAnnotationMirrors();
+
+		SeleniumTestConfiguration st = processingEnv.getElementUtils().getTypeElement(owner.toString()).getAnnotation(SeleniumTestConfiguration.class);
+		processingEnv.getMessager().printMessage(Kind.WARNING, "There is " + (st == null ? "not" : "") + " ST on the " + owner.toString());
+		
+		processingEnv.getMessager().printMessage(Kind.WARNING, "There are " + allAnnotationMirrors.size() + " annotations on the " + owner.toString());
+		processingEnv.getMessager().printMessage(Kind.WARNING, "There are " + annotationMirrors.size() + " annotations on the " + owner.toString());
+
 		for (AnnotationMirror annotation: annotationMirrors) {
 			Element annotationElement = annotation.getAnnotationType().asElement();
 			
-			if (annotationElement == null) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "NULL" );
-			}
 			if (((TypeElement)annotationElement).getQualifiedName().toString().equals(annotationClass.getCanonicalName())) {
 				return annotation;
 			}
-			processingEnv.getMessager().printMessage(Kind.NOTE, annotation.toString());
+			processingEnv.getMessager().printMessage(Kind.NOTE, "Resolving " + annotationClass.getCanonicalName() + " - processing: " + annotation.toString());
 		}
-		
+
+		processingEnv.getMessager().printMessage(Kind.WARNING, "No annotation was found for " + annotationClass.getCanonicalName());
+
 		return null;
 	}
 	
