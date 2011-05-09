@@ -68,7 +68,7 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 
 	@Override
 	public void start(String host, int port, String browser, String sitetotest, String test_id) {
-		if (reportingSettings != null && reportingSettings.isProduceScreenshots() == true) {
+		if (reportingSettings != null && reportingSettings.isProduceScreenshots() != null && reportingSettings.isProduceScreenshots() == true) {
 
 			if (!new File(getScreenshotDirectory()).exists()) {
 				new File(getScreenshotDirectory()).mkdirs();
@@ -150,7 +150,7 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 
 	@Before
 	public void setUp() throws Exception {
-		super.setUp(testEnvironment.getBromineEnvironment().getBromineHost(), testEnvironment.getBromineEnvironment()
+		setUp(testEnvironment.getBromineEnvironment().getBromineHost(), testEnvironment.getBromineEnvironment()
 				.getBrominePort());
 		start(testEnvironment.getSeleniumEnvironment().getSeleniumHost(), testEnvironment.getSeleniumEnvironment()
 				.getSeleniumPort(), testEnvironment.getBrowser(), testEnvironment.getHost(), getClass().getSimpleName());

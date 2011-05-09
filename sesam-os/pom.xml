@@ -34,6 +34,7 @@
 	<properties>
 		<selenium.version>2.0a7</selenium.version> 
 		<logging.selenium.version>1.2</logging.selenium.version>
+		<sesam-os.version>1.1.1-SNAPSHOT</sesam-os.version>
 	</properties>
 
 	<modules>
@@ -162,6 +163,11 @@
 					<groupId>junit</groupId>
 					<artifactId>junit</artifactId>
 					<version>${junit.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+					<version>${javamail.version}</version>
 				</dependency>
 			</dependencies>
 		</profile>

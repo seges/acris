@@ -12,6 +12,7 @@ public class DefaultTestEnvironment implements TestEnvironment {
 
 	public enum TestConfiguration implements Configuration {
 		HOST("test.testHost"),
+		URI("test.testUri"),
 		BROWSER("test.testBrowser");
 		
 		private String key;
@@ -28,10 +29,12 @@ public class DefaultTestEnvironment implements TestEnvironment {
 	private SeleniumEnvironment seleniumEnvironment;
 	private BromineEnvironment bromineEnvironment;
 	private String host;
+	private String uri;
 	private String browser;
 
 	public DefaultTestEnvironment(ConfigurationValue[] configurations) {
 		host = ConfigurationUtils.getConfigurationValue(configurations, TestConfiguration.HOST);
+		uri = ConfigurationUtils.getConfigurationValue(configurations, TestConfiguration.URI);
 		browser = ConfigurationUtils.getConfigurationValue(configurations, TestConfiguration.BROWSER);
 		this.seleniumEnvironment = new DefaultSeleniumEnvironment(configurations);
 		this.bromineEnvironment = new DefaultBromineEnvironment(configurations);
@@ -40,19 +43,21 @@ public class DefaultTestEnvironment implements TestEnvironment {
 	public DefaultTestEnvironment(TestEnvironment testEnvironment) {
 		if (testEnvironment != null) {
 			this.host = testEnvironment.getHost();
+			this.uri = testEnvironment.getUri();
 			this.browser = testEnvironment.getBrowser();
 		}
 	}
 	
-	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, Browsers browser) {
-		this(seleniumEnvironment, bromineEnvironment, host, browser.toString());
+	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, String uri, Browsers browser) {
+		this(seleniumEnvironment, bromineEnvironment, host, uri, browser.toString());
 	}
 	
-	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, String browser) {
+	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, String uri, String browser) {
 		this.seleniumEnvironment = seleniumEnvironment;
 		this.bromineEnvironment = bromineEnvironment;
 		this.host = host;
 		this.browser = browser;
+		this.uri = uri;
 	}
 	
 	@Override
@@ -75,6 +80,11 @@ public class DefaultTestEnvironment implements TestEnvironment {
 		return browser;
 	}
 
+	@Override
+	public String getUri() {
+		return uri;
+	}
+	
 	public DefaultTestEnvironment merge(TestEnvironment testEnvironment) {
 		if (testEnvironment == null) {
 			return this;
@@ -82,9 +92,15 @@ public class DefaultTestEnvironment implements TestEnvironment {
 		if (host == null) {
 			host = testEnvironment.getHost();
 		}
+		
+		if (uri == null) {
+			uri = testEnvironment.getUri();
+		}
+
 		if (browser == null) {
 			browser = testEnvironment.getBrowser();
 		}
+
 		if (seleniumEnvironment == null) {
 			seleniumEnvironment = new DefaultSeleniumEnvironment(testEnvironment.getSeleniumEnvironment());
 		} else {

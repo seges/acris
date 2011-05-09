@@ -8,6 +8,8 @@ public interface TestEnvironment {
 	SeleniumEnvironment getSeleniumEnvironment();
 
 	String getHost();
+	
+	String getUri();
 
 	String getBrowser();
 }

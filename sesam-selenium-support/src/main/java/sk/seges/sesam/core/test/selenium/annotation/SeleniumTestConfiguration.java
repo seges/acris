@@ -18,6 +18,7 @@ public @interface SeleniumTestConfiguration {
 	int brominePort() default 8080;
 	
 	String testURL();
+	String testURI() default "";
 	
 	Browsers browser() default Browsers.FIREFOX;
 }
