@@ -1,6 +1,10 @@
 #summary GWT beans binding extension using annotations
 #labels Phase-Implementation,Annotations,BeansBinding
 
+= Important information =
+
+*(!!!)* As of next release (1.1.2) the binding part of AcrIS will switch to the maintenance mode and no new features will be implemented. We recommend using [http://code.google.com/intl/sk-SK/webtoolkit/doc/latest/DevGuideUiEditors.html GWT's Editor framework] instead. All required features will be implemented there in case of a need.
+
 = UI widgets binding =
 
 Project acris-binding represents extension to the gwt-beansbinding library and is focused to binding Beans with GWT UI widgets.
