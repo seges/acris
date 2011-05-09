@@ -52,7 +52,7 @@ public class DefaultReportingSettings implements ReportingSettings {
 	}
 
 	@Override
-	public boolean isProduceScreenshots() {
+	public Boolean isProduceScreenshots() {
 		return produceScreenshots;
 	}
 

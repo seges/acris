@@ -196,6 +196,7 @@ public class ConfigurationProcessor {
 		pw.println(DefaultTestEnvironment.class.getSimpleName() + " defaultTestEnvironment" + suffix + " = new " + DefaultTestEnvironment.class.getSimpleName()
 				+ "(defaultSeleniumEnvironment" + suffix + ", defaultBromineEnvironment" + suffix + ", "
 				+ serialize(NullCheck.checkNull((String)getConfigurationValue(seleniumTestConfiguration, "testURL", includeDefaults))) + ", "
+				+ serialize(NullCheck.checkNull((String)getConfigurationValue(seleniumTestConfiguration, "testURI", includeDefaults))) + ", "
 				+ browserName + ");");
 		pw.println("result.merge(defaultTestEnvironment" + suffix + ");");
 		pw.println();
@@ -237,6 +238,7 @@ public class ConfigurationProcessor {
 			if (((TypeElement)annotationElement).getQualifiedName().toString().equals(annotationClass.getCanonicalName())) {
 				return annotation;
 			}
+			processingEnv.getMessager().printMessage(Kind.NOTE, annotation.toString());
 		}
 		
 		return null;
