@@ -28,6 +28,7 @@ import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
 import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultCredentialsSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
@@ -59,6 +60,7 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 			DefaultTestEnvironment.class,
 			DefaultSeleniumEnvironment.class,
 			DefaultBromineEnvironment.class,
+			DefaultCredentialsSettings.class,
 			DefaultMailSettings.class,
 			MailSettings.class,
 			Browsers.class,

@@ -19,12 +19,14 @@ import javax.lang.model.util.SimpleTypeVisitor6;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.annotation.Credentials;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
 import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTestConfiguration;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultCredentialsSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
@@ -90,12 +92,14 @@ public class ConfigurationProcessor {
 		createTestConfiguration(element, pw);
 		createMailConfiguration(element, pw);
 		createReportConfiguration(element, pw);
+		createCredentialsConfiguration(element, pw);
 		
 		pw.println("public static " + AbstractSeleniumTest.class.getSimpleName() + " configure(" + element.getQualifiedName() + " testElement) {");
 
 		pw.println("testElement.setTestEnvironment(getTestConfiguration(testElement));");
 		pw.println("testElement.setMailEnvironment(getMailConfiguration(testElement));");
 		pw.println("testElement.setReportingSettings(getReportConfiguration(testElement));");
+		pw.println("testElement.setCredentialsSettings(getCredentialsConfiguration(testElement));");
 
 		pw.println("return testElement;");
 		pw.println("}");
@@ -269,7 +273,44 @@ public class ConfigurationProcessor {
 			
 		}.createConfiguration(element, pw);
 	}
-	
+
+	protected void createCredentialsConfiguration(TypeElement element, PrintWriter pw) {
+		new ConfigurationMerger() {
+
+			@Override
+			Class<?> getReturnType() {
+				return DefaultCredentialsSettings.class;
+			}
+
+			@Override
+			Class<?> getAnnotation() {
+				return Credentials.class;
+			}
+
+			@Override
+			String getMethodName() {
+				return "getCredentialsConfiguration";
+			}
+
+			@Override
+			void createConfiguration(AnnotationMirror seleniumConfiguration, String suffix, PrintWriter pw,
+					boolean includeDefaults) {
+				createCredentialsConfiguration(seleniumConfiguration, suffix, pw, includeDefaults);
+			}
+			
+		}.createConfiguration(element, pw);
+	}
+
+	protected void createCredentialsConfiguration(AnnotationMirror seleniumCredentialsConfiguration, String suffix, PrintWriter pw, boolean includeDefaults) {
+		
+		pw.println(DefaultCredentialsSettings.class.getSimpleName() + " defaultCredentialsSettings" + suffix + " = new "
+				+ DefaultCredentialsSettings.class.getSimpleName() + "("
+				+ serialize((String)getConfigurationValue(seleniumCredentialsConfiguration, "username", includeDefaults)) + ","
+				+ serialize((String)getConfigurationValue(seleniumCredentialsConfiguration, "password", includeDefaults)) + ");");
+		
+		pw.println("result.merge(defaultCredentialsSettings" + suffix + ");");
+	}
+
 	protected void createReportConfiguration(TypeElement element, PrintWriter pw) {
 		new ConfigurationMerger() {
 

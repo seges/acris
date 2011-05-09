@@ -4,6 +4,7 @@ import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultCredentialsSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
@@ -57,10 +58,19 @@ public class MockSeleniseConfiguration extends MockSelenise {
 		return result;
 	}
 	
+	private static DefaultCredentialsSettings getCredentialsConfiguration(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
+		DefaultCredentialsSettings result = new DefaultCredentialsSettings(testElement.collectSystemProperties());
+
+		DefaultCredentialsSettings defaultCredentialsSettingsSpecific = new DefaultCredentialsSettings("test","pass");
+		result.merge(defaultCredentialsSettingsSpecific);
+		return result;
+	}
+	
 	public static AbstractSeleniumTest configure(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
 		testElement.setTestEnvironment(getTestConfiguration(testElement));
 		testElement.setMailEnvironment(getMailConfiguration(testElement));
 		testElement.setReportingSettings(getReportConfiguration(testElement));
+		testElement.setCredentialsSettings(getCredentialsConfiguration(testElement));
 		return testElement;
 	}
 	

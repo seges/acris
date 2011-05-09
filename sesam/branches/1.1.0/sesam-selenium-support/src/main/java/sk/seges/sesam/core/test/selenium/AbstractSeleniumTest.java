@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumConfigurator;
+import sk.seges.sesam.core.test.selenium.configuration.api.CredentialsSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.ReportingSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
@@ -35,6 +36,7 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 	protected TestEnvironment testEnvironment;
 	protected MailSettings mailEnvironment;
 	protected ReportingSettings reportingSettings;
+	protected CredentialsSettings credentialsSettings;
 
 	private SeleniumConfigurator seleniumConfigurator;
 	private MailSupport seleniumMailSupport;
@@ -135,6 +137,10 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 		this.reportingSettings = reportingSettings;
 	}
 
+	public void setCredentialsSettings(CredentialsSettings credentialsSettings) {
+		this.credentialsSettings = credentialsSettings;
+	}
+	
 	@Override
 	public ConfigurationValue[] collectSystemProperties() {
 		return seleniumConfigurator.collectSystemProperties();
