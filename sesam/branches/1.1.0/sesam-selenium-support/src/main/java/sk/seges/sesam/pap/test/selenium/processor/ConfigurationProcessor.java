@@ -195,7 +195,7 @@ public class ConfigurationProcessor {
 		
 		VariableElement browser = ((VariableElement)getConfigurationValue(seleniumTestConfiguration, "browser", includeDefaults));
 		
-		String browserName = browser == null ? null : (Browsers.class.getSimpleName() + "." + browser.getSimpleName().toString());
+		String browserName = browser == null ? "(String)null" : (Browsers.class.getSimpleName() + "." + browser.getSimpleName().toString());
 		
 		pw.println(DefaultTestEnvironment.class.getSimpleName() + " defaultTestEnvironment" + suffix + " = new " + DefaultTestEnvironment.class.getSimpleName()
 				+ "(defaultSeleniumEnvironment" + suffix + ", defaultBromineEnvironment" + suffix + ", "
