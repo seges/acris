@@ -3,7 +3,6 @@ package sk.seges.sesam.core.test.selenium;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
@@ -38,11 +37,9 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 	protected ReportingSettings reportingSettings;
 	protected CredentialsSettings credentialsSettings;
 
-	private SeleniumConfigurator seleniumConfigurator;
-	private MailSupport seleniumMailSupport;
-	private SeleniumSupport seleniumSupport;
-
-	private static final char[] symbols = new char[36];
+	protected SeleniumConfigurator seleniumConfigurator;
+	protected MailSupport seleniumMailSupport;
+	protected SeleniumSupport seleniumSupport;
 
 	private static final String RESULT_PATH_PREFIX = "target" + File.separator;
 
@@ -74,9 +71,6 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 	@Override
 	public void start(String host, int port, String browser, String sitetotest, String test_id) {
 		
-		seleniumMailSupport = getMailSupport();
-		seleniumSupport = getSeleniumSupport();
-
 		if (reportingSettings != null && reportingSettings.isProduceScreenshots() != null && reportingSettings.isProduceScreenshots() == true) {
 
 			if (!new File(getScreenshotDirectory()).exists()) {
@@ -101,6 +95,9 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 		}
 
 		super.start(host, port, browser, sitetotest, test_id);
+
+		seleniumMailSupport = getMailSupport();
+		seleniumSupport = getSeleniumSupport();
 	}
 
 	@Override
@@ -123,14 +120,17 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 		return new DefaultSeleniumConfigurator();
 	}
 
-	private final Random random = new Random();
-
 	public void setTestEnvironment(TestEnvironment testEnvironment) {
 		this.testEnvironment = testEnvironment;
 	}
 
 	public void setMailEnvironment(MailSettings mailEnvironment) {
 		this.mailEnvironment = mailEnvironment;
+	}
+
+	@Override
+	public String getRandomString(int length) {
+		return seleniumSupport.getRandomString(length);
 	}
 
 	public void setReportingSettings(ReportingSettings reportingSettings) {
@@ -192,27 +192,9 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 		}
 	}
 
-	static {
-		for (int idx = 0; idx < 10; ++idx)
-			symbols[idx] = (char) ('0' + idx);
-		for (int idx = 10; idx < 36; ++idx)
-			symbols[idx] = (char) ('a' + idx - 10);
-	}
-
-	protected String getRandomString(int length) {
-		if (length < 1) {
-			throw new IllegalArgumentException("length < 1: " + length);
-		}
-
-		char[] buf = new char[length];
-		for (int idx = 0; idx < buf.length; ++idx)
-			buf[idx] = symbols[random.nextInt(symbols.length)];
-		return new String(buf);
-	}
-
-	protected void waitAndClick(String xpath) throws Exception {
-		waitForElementPresent(xpath);
-		selenium.click(xpath);
+	@Override
+	public void waitAndClick(String xpath) {
+		seleniumSupport.waitAndClick(xpath);
 	}
 
 	@Override
@@ -248,5 +230,20 @@ public abstract class AbstractSeleniumTest extends BRUnit implements SeleniumCon
 	@Override
 	public void fail(String message) {
 		seleniumSupport.fail(message);
+	}
+
+	@Override
+	public void waitForTextsPresent(String... xpaths) {
+		seleniumSupport.waitForTextsPresent(xpaths);
+	}
+
+	@Override
+	public void waitForElementsPresent(String... xpaths) {
+		seleniumSupport.waitForElementsPresent(xpaths);
+	}
+
+	@Override
+	public void clickOnElement(String xpath) {
+		seleniumSupport.clickOnElement(xpath);
 	}	
 }
