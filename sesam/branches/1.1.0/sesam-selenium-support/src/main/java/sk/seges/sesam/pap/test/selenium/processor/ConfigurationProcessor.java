@@ -18,6 +18,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor6;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
 import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
@@ -29,7 +30,6 @@ import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
-import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 
 public class ConfigurationProcessor {
 
@@ -227,18 +227,8 @@ public class ConfigurationProcessor {
 	}
 
 	protected AnnotationMirror getAnnotationMirror(TypeMirror owner, Class<?> annotationClass) {
-		List<? extends AnnotationMirror> annotationMirrors2 = ((DeclaredType)owner).asElement().getAnnotationMirrors();
-		processingEnv.getMessager().printMessage(Kind.WARNING, "There are " + annotationMirrors2.size() + " annotations on the " + owner.toString());
-		
-		List<? extends AnnotationMirror> allAnnotationMirrors = processingEnv.getElementUtils().getAllAnnotationMirrors(processingEnv.getElementUtils().getTypeElement(owner.toString()));
-		
-		List<? extends AnnotationMirror> annotationMirrors = processingEnv.getElementUtils().getTypeElement(owner.toString()).getAnnotationMirrors();
 
-		SeleniumTestConfiguration st = processingEnv.getElementUtils().getTypeElement(owner.toString()).getAnnotation(SeleniumTestConfiguration.class);
-		processingEnv.getMessager().printMessage(Kind.WARNING, "There is " + (st == null ? "not" : "") + " ST on the " + owner.toString());
-		
-		processingEnv.getMessager().printMessage(Kind.WARNING, "There are " + allAnnotationMirrors.size() + " annotations on the " + owner.toString());
-		processingEnv.getMessager().printMessage(Kind.WARNING, "There are " + annotationMirrors.size() + " annotations on the " + owner.toString());
+		List<? extends AnnotationMirror> annotationMirrors = processingEnv.getElementUtils().getTypeElement(owner.toString()).getAnnotationMirrors();
 
 		for (AnnotationMirror annotation: annotationMirrors) {
 			Element annotationElement = annotation.getAnnotationType().asElement();
@@ -246,7 +236,6 @@ public class ConfigurationProcessor {
 			if (((TypeElement)annotationElement).getQualifiedName().toString().equals(annotationClass.getCanonicalName())) {
 				return annotation;
 			}
-			processingEnv.getMessager().printMessage(Kind.NOTE, "Resolving " + annotationClass.getCanonicalName() + " - processing: " + annotation.toString());
 		}
 
 		processingEnv.getMessager().printMessage(Kind.WARNING, "No annotation was found for " + annotationClass.getCanonicalName());

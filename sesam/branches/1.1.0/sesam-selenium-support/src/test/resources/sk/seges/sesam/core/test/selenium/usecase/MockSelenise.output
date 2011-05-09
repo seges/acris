@@ -7,7 +7,7 @@ import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment
 import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
-import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
 import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;

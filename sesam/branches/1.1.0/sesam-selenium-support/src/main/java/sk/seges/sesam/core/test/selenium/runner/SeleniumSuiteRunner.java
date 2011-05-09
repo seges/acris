@@ -1,11 +1,11 @@
 package sk.seges.sesam.core.test.selenium.runner;
 
+import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
-import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 
 public class SeleniumSuiteRunner implements SeleniumConfigurator {
 

@@ -23,6 +23,7 @@ import org.junit.Test;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
 import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
@@ -34,7 +35,6 @@ import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
-import sk.seges.sesam.test.selenium.AbstractSeleniumTest;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SeleniumTestProcessor extends AbstractConfigurableProcessor {

@@ -322,10 +322,6 @@ public abstract class BRUnit {
         String result = this.bromine_call("verifyNotEquals", params);
     }
 
-    public void fail(String msg) throws Exception {
-        throw new Exception(msg);
-    }
-
     public void waiting() throws Exception {
         this.ignore();
     }
