@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>corpis-application-scaffold-processors-parent</artifactId>
 	<name>Application Scaffold Processors parent</name>
@@ -9,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.corpis</groupId>
 		<artifactId>corpis-application-scaffold-parent</artifactId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.1.1</version>
 		<relativePath>../../corpis-application-scaffold-parent/pom.xml</relativePath>
 	</parent>
 
