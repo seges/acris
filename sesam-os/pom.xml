@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.5-SNAPSHOT</version>
+		<version>1.1.5</version>
 	</parent>
 
 	<!-- More Project Information -->
@@ -34,7 +34,7 @@
 	<properties>
 		<selenium.version>2.0a7</selenium.version> 
 		<logging.selenium.version>1.2</logging.selenium.version>
-		<sesam-os.version>1.1.1-SNAPSHOT</sesam-os.version>
+		<sesam-os.version>1.1.1</sesam-os.version>
 	</properties>
 
 	<modules>
