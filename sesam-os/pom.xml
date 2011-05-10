@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.5</version>
+		<version>1.1.5-SNAPSHOT</version>
 	</parent>
 
 	<!-- More Project Information -->
@@ -34,7 +34,6 @@
 	<properties>
 		<selenium.version>2.0a7</selenium.version> 
 		<logging.selenium.version>1.2</logging.selenium.version>
-		<!-- to have the same fragment of configuration of Annotation processing in maven-eclipse-plugin -->
 		<sesam-os.version>1.1.1-SNAPSHOT</sesam-os.version>
 	</properties>
 
@@ -149,14 +148,14 @@
 			</reporting>
 			<dependencies>
 				<dependency>
-					<groupId>${project.groupId}</groupId>
+					<groupId>sk.seges.sesam</groupId>
 					<artifactId>sesam-selenium-support</artifactId>
-					<version>${project.version}</version>
+					<version>${sesam-os.version}</version>
 				</dependency>
 				<dependency>
-					<groupId>${project.groupId}</groupId>
+					<groupId>sk.seges.sesam</groupId>
 					<artifactId>sesam-selenium-support</artifactId>
-					<version>${project.version}</version>
+					<version>${sesam-os.version}</version>
 					<type>test-jar</type>
 					<scope>test</scope>
 				</dependency>
