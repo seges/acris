@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.5-SNAPSHOT</version>
+		<version>1.1.5</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -270,8 +270,8 @@
 						<debugPort>8990</debugPort>
 						<shellServletMappingURL>/gwt-shell-servlet
 						</shellServletMappingURL>
-						<hostedWebapp>target/${artifactId}-${version}</hostedWebapp>
-	                                        <webappDirectory>target/${artifactId}-${version}</webappDirectory>
+						<hostedWebapp>target/${project.artifactId}-${project.version}</hostedWebapp>
+	                                        <webappDirectory>target/${project.artifactId}-${project.version}</webappDirectory>
 						<soyc>false</soyc>
 						<disableCastChecking>true</disableCastChecking>
 						<!--disableClassMetadata>true</disableClassMetadata>
