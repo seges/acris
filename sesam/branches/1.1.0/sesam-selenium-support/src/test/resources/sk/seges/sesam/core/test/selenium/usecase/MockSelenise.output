@@ -31,7 +31,7 @@ public class MockSeleniseConfiguration extends MockSelenise {
 
 		DefaultSeleniumEnvironment defaultSeleniumEnvironmentSpecific = new DefaultSeleniumEnvironment(null,0);
 		DefaultBromineEnvironment defaultBromineEnvironmentSpecific = new DefaultBromineEnvironment(null,0);
-		DefaultTestEnvironment defaultTestEnvironmentSpecific = new DefaultTestEnvironment(defaultSeleniumEnvironmentSpecific, defaultBromineEnvironmentSpecific, "overridenURL", null, null);
+		DefaultTestEnvironment defaultTestEnvironmentSpecific = new DefaultTestEnvironment(defaultSeleniumEnvironmentSpecific, defaultBromineEnvironmentSpecific, "overridenURL", null, (String)null);
 		result.merge(defaultTestEnvironmentSpecific);
 
 		DefaultSeleniumEnvironment defaultSeleniumEnvironmentRoot = new DefaultSeleniumEnvironment("localhost",4444);
