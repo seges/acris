@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.5-SNAPSHOT</version>
+		<version>1.1.5</version>
 	</parent>
 
 	<!-- More Project Information -->
@@ -34,6 +34,7 @@
 	<properties>
 		<selenium.version>2.0a7</selenium.version> 
 		<logging.selenium.version>1.2</logging.selenium.version>
+		<!-- to have the same fragment of configuration of Annotation processing in maven-eclipse-plugin -->
 		<sesam-os.version>1.1.1-SNAPSHOT</sesam-os.version>
 	</properties>
 
@@ -148,14 +149,14 @@
 			</reporting>
 			<dependencies>
 				<dependency>
-					<groupId>sk.seges.sesam</groupId>
+					<groupId>${project.groupId}</groupId>
 					<artifactId>sesam-selenium-support</artifactId>
-					<version>${sesam-os.version}</version>
+					<version>${project.version}</version>
 				</dependency>
 				<dependency>
-					<groupId>sk.seges.sesam</groupId>
+					<groupId>${project.groupId}</groupId>
 					<artifactId>sesam-selenium-support</artifactId>
-					<version>${sesam-os.version}</version>
+					<version>${project.version}</version>
 					<type>test-jar</type>
 					<scope>test</scope>
 				</dependency>
@@ -181,7 +182,7 @@
 							<configuration>
 									<preparationGoals>install</preparationGoals>
 									<tagBase>
-											https://acris.googlecode.com/svn/sesam/tags/${pom.artifactId}
+											https://acris.googlecode.com/svn/sesam/tags/${project.artifactId}
 									</tagBase>
 							</configuration>
 					</plugin>
@@ -191,32 +192,32 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-core</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-core</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-spring</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-annotations-support</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-annotations-support</artifactId>
 				<type>test-jar</type>
 				<scope>test</scope>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
