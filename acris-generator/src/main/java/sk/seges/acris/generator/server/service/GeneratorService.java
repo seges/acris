@@ -193,7 +193,7 @@ public class GeneratorService implements IGeneratorService {
 				if (log.isDebugEnabled()) {
 					log.debug("			headerContent: " + headerContent);
 				}
-						
+				
 				String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
 				entryPoint = htmlNodeSplitter.replaceBody(entryPoint, contentWrapper);
 				content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
@@ -208,20 +208,23 @@ public class GeneratorService implements IGeneratorService {
 					log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
 				} else {
 					
+					boolean isDefault = token.isDefaultToken();
+					token.setDefaultToken(false);
+					
 					writeTextToFile(result, false, token);
-			
+
+					token.setDefaultToken(isDefault);
+
 					if (token.isDefaultToken()) {
-						GeneratorTokenWrapper tokenWrapper = new GeneratorTokenWrapper(token);
-						tokenWrapper.setDefault(true);
 						entryPoint = new HTMLNodeSplitter(parserFactory).joinHeaders(headerContent, header);
 						entryPoint = new HTMLNodeSplitter(parserFactory).replaceBody(entryPoint, contentWrapper);
 						content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
 			
-						result = htmlPostProcessor.getProcessedContent(content, tokenWrapper);
+						result = htmlPostProcessor.getProcessedContent(content, token);
 						if (result != null) {
-							writeTextToFile(result, true, tokenWrapper);
+							writeTextToFile(result, true, token);
 						} else {
-							log.error("Unable to process HTML nodes for default nice-url " + tokenWrapper.getNiceUrl());
+							log.error("Unable to process HTML nodes for default nice-url " + token.getNiceUrl());
 						}
 					}
 				}
