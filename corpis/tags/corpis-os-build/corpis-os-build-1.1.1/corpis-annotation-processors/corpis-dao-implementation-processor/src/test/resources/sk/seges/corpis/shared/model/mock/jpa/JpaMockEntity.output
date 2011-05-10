@@ -1,0 +1,19 @@
+package sk.seges.corpis.server.dao.mock.jpa;
+
+import sk.seges.corpis.shared.model.mock.jpa.JpaMockEntity;
+import sk.seges.corpis.shared.model.mock.api.MockEntity;
+import sk.seges.corpis.server.dao.mock.api.IMockEntityDao;
+import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
+
+public class HibernateJpaMockEntityDao<T extends JpaMockEntity> extends AbstractHibernateCRUD<MockEntity> implements IMockEntityDao<MockEntity> {
+
+	public HibernateJpaMockEntityDao() {
+		super(JpaMockEntity.class);
+	}
+
+	@Override
+	public JpaMockEntity getEntityInstance(){
+		return new JpaMockEntity();
+	}
+
+}
