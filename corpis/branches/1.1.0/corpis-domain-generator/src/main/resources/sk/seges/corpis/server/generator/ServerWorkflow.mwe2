@@ -23,7 +23,7 @@ var outlet.res.test.dir = "../${appProject}/src/test/generated/resources"
 var outlet.webroot.dir = "../${appProject}/src/main/webapp"
 
 Workflow {
-        bean = org.fornax.cartridges.sculptor.generator.util.InitLogging {}
+        //bean = org.fornax.cartridges.sculptor.generator.util.InitLogging {}
         bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
                 platformUri = ".."
                 // Register Sculptor dsl meta model
@@ -75,16 +75,16 @@ Workflow {
 
 	component = org.eclipse.xpand2.Generator {
 		expand = "sk::seges::corpis::server::template::ServerRoot::main FOR transformedModel"
-                outlet = {                               path = outlet.src.dir                             postprocessor = JavaBeautifier {}}
-                outlet = {name = "TO_SRC"                path = outlet.src.once.dir      overwrite = false postprocessor = JavaBeautifier {}}
-                outlet = {name = "TO_SRC_TEST"           path = outlet.src.test.once.dir overwrite = false postprocessor = JavaBeautifier {}}
-                outlet = {name = "TO_GEN_SRC_TEST"       path = outlet.src.test.dir      overwrite = true  postprocessor = JavaBeautifier {}}
-                outlet = {name = "TO_RESOURCES"          path = outlet.res.once.dir      overwrite = false postprocessor = XmlFormatter {}}
-                outlet = {name = "TO_RESOURCES_TEST"     path = outlet.res.test.once.dir overwrite = false postprocessor = XmlFormatter {}}
-                outlet = {name = "TO_GEN_RESOURCES"      path = outlet.res.dir           overwrite = true  postprocessor = XmlFormatter {}}
-                outlet = {name = "TO_GEN_RESOURCES_TEST" path = outlet.res.test.dir      overwrite = true  postprocessor = XmlFormatter {}}
-                outlet = {name = "TO_WEBROOT"            path = outlet.webroot.dir       overwrite = false postprocessor = XmlFormatter {}}
-                outlet = {name = "TO_GEN_WEBROOT"        path = outlet.webroot.dir       overwrite = true  postprocessor = XmlFormatter {}}
+                outlet = {                               path = outlet.src.dir                            }
+                outlet = {name = "TO_SRC"                path = outlet.src.once.dir      overwrite = false}
+                outlet = {name = "TO_SRC_TEST"           path = outlet.src.test.once.dir overwrite = false}
+                outlet = {name = "TO_GEN_SRC_TEST"       path = outlet.src.test.dir      overwrite = true }
+                outlet = {name = "TO_RESOURCES"          path = outlet.res.once.dir      overwrite = false}
+                outlet = {name = "TO_RESOURCES_TEST"     path = outlet.res.test.once.dir overwrite = false}
+                outlet = {name = "TO_GEN_RESOURCES"      path = outlet.res.dir           overwrite = true }
+                outlet = {name = "TO_GEN_RESOURCES_TEST" path = outlet.res.test.dir      overwrite = true }
+                outlet = {name = "TO_WEBROOT"            path = outlet.webroot.dir       overwrite = false}
+                outlet = {name = "TO_GEN_WEBROOT"        path = outlet.webroot.dir       overwrite = true }
 
 		
 		fileEncoding = fileEncoding
