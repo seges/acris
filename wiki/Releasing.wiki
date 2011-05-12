@@ -114,7 +114,9 @@ To deploy to Sonatype (and later to be compliant with Maven central) artifacts n
 
   * go to *trunk* directory not parent, build pom.xml should be there
   * {{{mvn release:prepare -DautoVersionSubmodules=true}}}
+    * {{{mvn release:prepare -DautoVersionSubmodules=true -Darguments=-DskipTests}}}
   * {{{mvn -Darguments=-Dgpg.passphrase=SecretGPG release:perform}}}
+    * {{{mvn -Darguments="-Dgpg.passphrase=SecretGPG -DskipTests" release:perform}}}
   * {{{mvn release:clean}}}
 
 == Close the release ==
