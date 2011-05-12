@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.5</version>
+		<version>1.1.6</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -54,6 +54,12 @@
 
 		<beanlib-hibernate.version>5.0.2beta</beanlib-hibernate.version>
 
+		<openid4java.version>0.9.6</openid4java.version>
+		<twig.version>1.0.3</twig.version>
+                <guice.version>2.0</guice.version>
+
+		<jasper.version>3.7.3</jasper.version>
+		<jasperserver.version>3.7.0</jasperserver.version>
 	</properties>
 
 	<dependencyManagement>
@@ -219,6 +225,57 @@
 				<version>${gwt-time.version}</version>
 			</dependency>
 
+
+                        <!-- OpenID4Java consumer -->
+                        <dependency>
+                                <groupId>org.openid4java</groupId>
+                                <artifactId>openid4java-consumer</artifactId>
+                                <version>${openid4java.version}</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.openid4java</groupId>
+                                <artifactId>openid4java-nodeps</artifactId>
+                                <version>${openid4java.version}</version>
+                        </dependency>
+
+                        <!-- Twig -->
+                        <dependency>
+                                <groupId>com.vercer.engine.persist</groupId>
+                                <artifactId>twig-persist</artifactId>
+                                <version>${twig.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.google.inject</groupId>
+                                <artifactId>guice</artifactId>
+                                <version>${guice.version}</version>
+                        </dependency>
+
+			<!-- Jasper -->
+			<dependency>
+                                <groupId>net.sf.jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>${jasper.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
+                                <artifactId>jasperserver-api-metadata</artifactId>
+                                <version>${jasperserver.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.jaspersoft.jasperserver</groupId>
+                                <artifactId>jasperserver-ireport-plugin</artifactId>
+                                <version>${jasperserver.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.jaspersoft.jasperserver</groupId>
+                                <artifactId>jasperserver-common-ws</artifactId>
+                                <version>${jasperserver.version}</version>
+                        </dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -248,6 +305,7 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+			<!-- Common customized plugin section -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>gwt-maven-plugin</artifactId>
@@ -288,14 +346,8 @@
 					</executions>
 				</plugin>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-eclipse-plugin</artifactId>
-					<configuration>
-						<wtpversion>2.0</wtpversion>
-					</configuration>
-				</plugin>
 
+			<!-- End of Common customized plugin section -->
 			</plugins>
 		</pluginManagement>
 
