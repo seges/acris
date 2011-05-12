@@ -149,9 +149,28 @@
 		<jax-rs.version>1.1.1</jax-rs.version>
 		
 		<dozer.version>5.3.1</dozer.version>
+		
+		<groovy.version>1.8.0</groovy.version>
 
 		<!-- plugins -->
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
+		<maven-eclipse-plugin.version>2.8</maven-eclipse-plugin.version>
+		<maven-dependency-plugin.version>2.2</maven-dependency-plugin.version>
+		<maven-release-plugin.version>2.1</maven-release-plugin.version>
+		<maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
+		<maven-gpg-plugin.version>1.1</maven-gpg-plugin.version>
+		<maven-enforcer-plugin.version>1.0-beta-1</maven-enforcer-plugin.version>
+		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.4.3</maven-resources-plugin.version>
+		<maven-processor-plugin.version>1.3.1</maven-processor-plugin.version>
+		<build-helper-maven-plugin.version>1.3</build-helper-maven-plugin.version>
+		<maven-war-plugin.version>2.1.1</maven-war-plugin.version>
+		<maven-surefire-plugin.version>2.8.1</maven-surefire-plugin.version>
+		<maven-surefire-report-plugin.version>2.8.1</maven-surefire-report-plugin.version>
+		<maven-antrun-plugin.version>1.6</maven-antrun-plugin.version>
+		<maven-assembly-plugin.version>2.2.1</maven-assembly-plugin.version>
+		<javarebel-maven-plugin.version>1.0.5</javarebel-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -637,17 +656,23 @@
 			    <artifactId>dozer</artifactId>
 			    <version>${dozer.version}</version>
 			</dependency>
-	
+
+			<dependency>
+	                    <groupId>org.codehaus.groovy</groupId>
+        	            <artifactId>groovy</artifactId>
+	                    <version>${groovy.version}</version>
+	                </dependency>	
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
 		<pluginManagement>
 			<plugins>
+		<!-- Common plugins from sesam-os-base-parent -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>1.0-beta-1</version>
+					<version>${maven-enforcer-plugin.version}</version>
 					<executions>
 						<execution>
 							<id>enforce-maven</id>
@@ -668,18 +693,19 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>2.8</version>
+					<version>${maven-eclipse-plugin.version}</version>
 					<configuration>
 						<!--  	This eclipse workspace is read and all artifacts detected there will be connected as eclipse projects and will not be linked to the jars in the local repository. Requirement is that it was created with the similar wtp settings as the reactor projects, but the project name template my differ. The pom's in the workspace projects may not contain variables in the artefactId, groupId and version tags. -->
 						<workspace>..</workspace>
-						<ajdtVersion>none</ajdtVersion>					
+						<ajdtVersion>none</ajdtVersion>
+						<wtpversion>2.0</wtpversion>
 					</configuration>
 				</plugin>
 	
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.1</version>
+					<version>${maven-dependency-plugin.version}</version>
 					<executions>
 						<execution>
 							<id>copy-dependencies</id>
@@ -702,11 +728,20 @@
 						</execution>
 					</executions>
 				</plugin>
+
+				<plugin>                                                                                                                                                    
+					<groupId>org.apache.maven.plugins</groupId>
+	                                <artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
+	                                <configuration>
+	                                        <forkMode>pertest</forkMode>
+	                                </configuration>
+	                        </plugin>
 	
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
+					<version>${maven-compiler-plugin.version}</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 						<source>${jdk.version}</source>
@@ -716,7 +751,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.4.3</version>
+					<version>${maven-resources-plugin.version}</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
 					</configuration>
@@ -726,7 +761,7 @@
 				<plugin>
 					<groupId>org.bsc.maven</groupId>
 					<artifactId>maven-processor-plugin</artifactId>
-					<version>1.3.1</version>
+					<version>${maven-processor-plugin.version}</version>
 					<configuration>
 						<!-- source output directory -->
 						<outputDirectory>${jsr269.generated.dir}</outputDirectory>
@@ -735,7 +770,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.3</version>
+					<version>${build-helper-maven-plugin.version}</version>
 					<configuration>
 						<sources>
 							<source>${jsr269.generated.dir}</source>
@@ -743,10 +778,70 @@
 					</configuration>
 				</plugin>
 							
+				
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${maven-source-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven-jar-plugin.version}</version>
+				</plugin>
+				<!-- http://jira.codehaus.org/browse/MWAR-187 -->
+	                        <plugin>
+	                                <groupId>org.apache.maven.plugins</groupId>
+	                                <artifactId>maven-war-plugin</artifactId>
+	                                <version>${maven-war-plugin.version}</version>
+	                                <configuration>
+	                                        <useCache>false</useCache>
+	                                </configuration>
+	                        </plugin>
+
+				<plugin>                                                                                                                                                    
+					<groupId>org.apache.maven.plugins</groupId>
+	                                <artifactId>maven-antrun-plugin</artifactId>
+					<version>${maven-antrun-plugin.version}</version>
+	                        </plugin>
+				
+				<plugin>                                                                                                                                                    
+					<groupId>org.apache.maven.plugins</groupId>
+	                                <artifactId>maven-assembly-plugin</artifactId>
+					<version>${maven-assembly-plugin.version}</version>
+	                        </plugin>
+
+				<plugin>
+					<groupId>org.zeroturnaround</groupId>
+					<artifactId>javarebel-maven-plugin</artifactId>
+					<version>${javarebel-maven-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>generate-rebel-xml</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>generate</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+		<!-- End of common plugins from sesam-os-base-parent -->
+
+				<!-- Common customized plugin section -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.1</version>
+					<version>${maven-release-plugin.version}</version>
 					<configuration>
 						<mavenExecutorId>forked-path</mavenExecutorId>
 						<preparationGoals>install</preparationGoals>
@@ -755,21 +850,7 @@
 						</tagBase>
 					</configuration>
 				</plugin>
-				
-				<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>${maven-source-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+				<!-- End of Common customized plugin section -->
 			</plugins>
 		</pluginManagement>			
 	</build>
@@ -807,7 +888,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.7</version>
+						<version>${maven-javadoc-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -820,7 +901,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.1</version>
+						<version>${maven-gpg-plugin.version}</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
