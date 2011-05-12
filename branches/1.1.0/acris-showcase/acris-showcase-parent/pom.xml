@@ -180,7 +180,7 @@
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-ui-support</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>com.google.gwt</groupId>
@@ -192,7 +192,7 @@
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-ui-support</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>com.google.gwt</groupId>
@@ -203,138 +203,138 @@
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-binding</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-binding</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-reporting</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-reporting</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-callbacks</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-callbacks</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-client-core</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-client-core</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-generator</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-generator</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-json</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-json</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-mvp</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-mvp</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-recorder</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-recorder</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-applications</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-applications</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-openid</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-openid</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<!--dependency> <groupId>${groupId}</groupId> <artifactId>acris-showcase-security</artifactId> 
-				<version>${pom.version}</version> </dependency> <dependency> <groupId>${groupId}</groupId> 
+				<version>${project.version}</version> </dependency> <dependency> <groupId>${groupId}</groupId> 
 				<artifactId>acris-showcase-security</artifactId> <classifier>sources</classifier> 
-				<version>${pom.version}</version> </dependency -->
+				<version>${project.version}</version> </dependency -->
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-svn-post-commit</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-svn-post-commit</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-widgets</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${groupId}</groupId>
 				<artifactId>acris-showcase-widgets</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 
 			<!-- DI dependencies -->

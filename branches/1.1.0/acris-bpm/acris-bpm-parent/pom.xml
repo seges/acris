@@ -19,14 +19,14 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-bpm-activiti-engine</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-bpm-activiti-engine</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
 

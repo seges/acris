@@ -46,14 +46,14 @@
 							<content><![CDATA[
 								eclipse.preferences.version=1
 								jarsExcludedFromWebInfLib=
-								warSrcDir=target/${artifactId}-${version}
+								warSrcDir=target/${project.artifactId}-${project.version}
 								warSrcDirIsOutput=true
 								]]>
 							</content>
 						</file>
 					</additionalConfig>
 
-					<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
+					<buildOutputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
 					<wtpversion>2.0</wtpversion>
 				</configuration>
 			</plugin>

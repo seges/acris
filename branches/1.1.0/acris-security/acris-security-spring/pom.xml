@@ -23,16 +23,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<sourceExcludes>
-						<sourceExclude>**/emul/**/*.java</sourceExclude>
-					</sourceExcludes>
-				</configuration>
-			</plugin>
 			<!-- plugin>
 				<groupId>org.bsc.maven</groupId>
 				<artifactId>maven-processor-plugin</artifactId>
@@ -63,12 +53,15 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
+					<sourceExcludes>
+						<sourceExclude>**/emul/**/*.java</sourceExclude>
+					</sourceExcludes>
 					<additionalConfig>
 						<file>
 							<name>.factorypath</name>
 							<content><![CDATA[<factorypath>
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-						          	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false" />
+						          	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${project.version}/acris-binding-${project.version}.jar" enabled="true" runInBatchMode="false" />
 						          </factorypath>
 						          ]]>
 							</content>
