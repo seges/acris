@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+				        http://www.springframework.org/schema/context
+				        http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="sk.seges.acris.reporting" />
+    <bean class="sk.seges.sesam.spring.config.AdvancedPropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:sk/seges/acris/servlet/servlet.properties" />
+    </bean>
+    
+    <bean id="servletDirectoryConfigurer" class="sk.seges.acris.servlet.util.DirectoryConfigurer" init-method="prepareDirectories">
+        <constructor-arg value="${rootDirectoriesPropertiesFile}" />
+    </bean>
+    
+	<bean class="sk.seges.acris.reporting.server.service.ImageServlet">
+		<property name="servletDirectoryConfigurer" ref="servletDirectoryConfigurer"/>
+	</bean>
+	<!--<bean id="standardServicesUrlMapping" class="org.gwtwidgets.server.spring.GWTHandler">
+		<property name="serviceExporterFactory" ref="configurableExporterFactory" />
+		<property name="mappings">
+			<map>
+				<entry key="/reporting" value-ref="reportingService" />
+			</map>
+		</property>
+	</bean>-->
+
+</beans>
