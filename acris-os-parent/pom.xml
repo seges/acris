@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.1.2</version>
 
 	</parent>
 
@@ -78,18 +78,9 @@
 	<properties>
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
-		<corpis-os.version>1.1.1-SNAPSHOT</corpis-os.version>
-		
-		<sesam-os.version>1.1.1-SNAPSHOT</sesam-os.version>
 
-		<jasper.version>3.7.3</jasper.version>
-		
-		<jasperserver.version>3.7.0</jasperserver.version>
-		<openid4java.version>0.9.6-SNAPSHOT</openid4java.version>
-
-
-		<twig.version>1.0.3</twig.version>
-		<guice.version>2.0</guice.version>
+		<sesam-os.version>1.1.2</sesam-os.version>
+		<corpis-os.version>1.1.2</corpis-os.version>
 
 		<htmlparser.version>2.0-20100701</htmlparser.version>
 	</properties>
@@ -267,15 +258,15 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-ui</artifactId>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${pom.groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-ui</artifactId>
 				<classifier>sources</classifier>
-				<version>${pom.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
@@ -425,63 +416,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>net.sf.jasperreports</groupId>
-				<artifactId>jasperreports</artifactId>
-				<version>${jasper.version}</version>
-			</dependency>
-
-
-			<dependency>
-				<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
-				<artifactId>jasperserver-api-metadata</artifactId>
-				<version>${jasperserver.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.jaspersoft.jasperserver</groupId>
-				<artifactId>jasperserver-ireport-plugin</artifactId>
-				<version>${jasperserver.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.jaspersoft.jasperserver</groupId>
-				<artifactId>jasperserver-common-ws</artifactId>
-				<version>${jasperserver.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.google.inject</groupId>
-				<artifactId>guice</artifactId>
-  				<version>${guice.version}</version>
-			</dependency>
-
-
-
-			<!-- OpenID4Java consumer -->
-
-			<dependency>
-
-		        	<groupId>org.openid4java</groupId>
-
-		        	<artifactId>openid4java-consumer</artifactId>
-
-		        	<version>${openid4java.version}</version>
- 
-		       	</dependency>
-			<dependency>
-		        	<groupId>org.openid4java</groupId>
-		        	<artifactId>openid4java-nodeps</artifactId>
-		        	<version>${openid4java.version}</version> 
-		       	</dependency>
-
-			<!-- Twig -->
-			<dependency>
-				<groupId>com.vercer.engine.persist</groupId>
-				<artifactId>twig-persist</artifactId>
-				<version>${twig.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.htmlparser</groupId>
 				<artifactId>htmlparser</artifactId>
 		        	<version>${htmlparser.version}</version> 
@@ -504,7 +438,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.8</version>
 				<configuration>
 					<sourceExcludes>
 						<sourceExclude>**/emul/**/*.java</sourceExclude>

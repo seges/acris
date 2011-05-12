@@ -20,11 +20,11 @@
 
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-crypto</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-common</artifactId>
 		</dependency>
 		

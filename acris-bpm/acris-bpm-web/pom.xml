@@ -14,11 +14,11 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-bpm-activiti-engine</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-bpm-activiti-engine</artifactId>
 			<classifier>sources</classifier>
 		</dependency>

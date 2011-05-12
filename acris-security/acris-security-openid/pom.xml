@@ -52,7 +52,7 @@
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-model-metadata/${sesam-os.version}/sesam-model-metadata-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 						        	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-						        	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false" />
+						        	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${project.version}/acris-binding-${project.version}.jar" enabled="true" runInBatchMode="false" />
 						        </factorypath>
 						          ]]>
 							</content>
