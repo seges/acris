@@ -1,0 +1,9 @@
+package sk.seges.corpis.server.dao.mock;
+
+import sk.seges.corpis.shared.model.mock.MockEntity;
+import sk.seges.sesam.dao.ICrudDAO;
+import sk.seges.corpis.shared.model.mock.MockEntity;
+
+public interface IMockEntityDao<T extends MockEntity> extends ICrudDAO<MockEntity> {
+
+}
