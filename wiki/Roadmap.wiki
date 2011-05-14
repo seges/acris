@@ -7,8 +7,8 @@
 || 1.0.0 || 20.07.2010 || Release ||
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.0.1 1.0.1] || 04.10.2010 || Bugfixing + Security generalization ||
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.0 1.1.0] || 02.12.2010        ||  Hladný Hadík release ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.1 1.1.1] || 19.01.2010        ||  Malý Macík release ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.2.0 1.2.0] || TBD        ||  Malý Macík release ||
+|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.1 1.1.1] || 13.05.2010        ||  Hacked Hladny Hadik ||
+|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.2 1.1.2] || 13.06.2010        ||  Malý Macík release ||
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-NotSpecified TBD] || TBD        || Issues incubator ||
 
 = Organization of the development =
