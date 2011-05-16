@@ -12,9 +12,11 @@ public @interface SeleniumTestConfiguration {
 	
 	String seleniumServer() default "localhost";
 	int seleniumPort() default 4444;
+	boolean seleniumRemote() default false;
 	
 	String bromineServer() default "localhost";
 	int brominePort() default 8080;
+	boolean bromine() default false;
 	
 	String testURL();
 	String testURI() default "";

@@ -96,10 +96,10 @@ public class ConfigurationProcessor {
 		
 		pw.println("public static " + AbstractSeleniumTest.class.getSimpleName() + " configure(" + element.getQualifiedName() + " testElement) {");
 
-		pw.println("testElement.setTestEnvironment(getTestConfiguration(testElement));");
 		pw.println("testElement.setMailEnvironment(getMailConfiguration(testElement));");
 		pw.println("testElement.setReportingSettings(getReportConfiguration(testElement));");
 		pw.println("testElement.setCredentialsSettings(getCredentialsConfiguration(testElement));");
+		pw.println("testElement.setTestEnvironment(getTestConfiguration(testElement));");
 
 		pw.println("return testElement;");
 		pw.println("}");
@@ -147,7 +147,10 @@ public class ConfigurationProcessor {
 		}
 	}
 
-	protected String serialize(boolean b) {
+	protected String serialize(Boolean b) {
+		if (b == null) {
+			return null;
+		}
 		return b ? "true" : "false";
 	}
 	
@@ -191,7 +194,8 @@ public class ConfigurationProcessor {
 		pw.println(DefaultBromineEnvironment.class.getSimpleName() + " defaultBromineEnvironment" + suffix + " = new "
 				+ DefaultBromineEnvironment.class.getSimpleName() + "("
 				+ serialize(NullCheck.checkNull((String)getConfigurationValue(seleniumTestConfiguration, "bromineServer", includeDefaults))) + ","
-				+ serialize((Integer)getConfigurationValue(seleniumTestConfiguration, "brominePort", includeDefaults)) + ");");
+				+ serialize((Integer)getConfigurationValue(seleniumTestConfiguration, "brominePort", includeDefaults)) + ","
+				+ serialize((Boolean)getConfigurationValue(seleniumTestConfiguration, "bromine", includeDefaults)) + ");");
 		
 		VariableElement browser = ((VariableElement)getConfigurationValue(seleniumTestConfiguration, "browser", includeDefaults));
 		
@@ -201,7 +205,8 @@ public class ConfigurationProcessor {
 				+ "(defaultSeleniumEnvironment" + suffix + ", defaultBromineEnvironment" + suffix + ", "
 				+ serialize(NullCheck.checkNull((String)getConfigurationValue(seleniumTestConfiguration, "testURL", includeDefaults))) + ", "
 				+ serialize(NullCheck.checkNull((String)getConfigurationValue(seleniumTestConfiguration, "testURI", includeDefaults))) + ", "
-				+ browserName + ");");
+				+ browserName + ", "
+				+ serialize((Boolean)getConfigurationValue(seleniumTestConfiguration, "seleniumRemote", includeDefaults)) + ");");
 		pw.println("result.merge(defaultTestEnvironment" + suffix + ");");
 		pw.println();
 	}

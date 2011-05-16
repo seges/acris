@@ -39,7 +39,7 @@ public class DefaultMailSupport implements MailSupport {
 		assert mailEnvironment.getPassword() != null;
 	}
 	
-	public void waitForMailNotPresent(String subject) throws InterruptedException {
+	public void waitForMailNotPresent(String subject) {
 
 		verifyMailSettings();
 		
@@ -53,11 +53,15 @@ public class DefaultMailSupport implements MailSupport {
 				}
 			} catch (Exception e) {
 			}
-			Thread.sleep(1000);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Unable to sleep thread", e);
+			}
 		}
 	}
 
-	public String waitForMailPresent(String subject) throws InterruptedException {
+	public String waitForMailPresent(String subject) {
 
 		verifyMailSettings();
 
@@ -73,7 +77,11 @@ public class DefaultMailSupport implements MailSupport {
 				}
 			} catch (Exception e) {
 			}
-			Thread.sleep(1000);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Unable to sleep thread", e);
+			}
 		}
 	}
 

@@ -16,7 +16,7 @@ public @interface ReportConfiguration {
 	public @interface ScreenshotConfiguration {
 		
 		boolean produceScreenshots() default false;
-		
+
 		String resultDirectory() default Constants.NULL;
 		
 		String screenshotsDirectory() default Constants.NULL;

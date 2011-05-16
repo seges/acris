@@ -344,6 +344,15 @@ public class ClassFinder {
 			for (Class<?> cls : v) {
 				System.out.println(cls + " in " + ((finder != null) ? String.valueOf(finder.getLocationOf(cls)) : "?"));
 			}
+			
+			if (errors != null && errors.size() > 0) {
+
+				System.out.println("Errors:");
+	
+				for (Throwable error : errors) {
+					error.printStackTrace();
+				}
+			}
 		} else {
 			System.out.println("No subclasses in package " + args[0] + " found.");
 		}

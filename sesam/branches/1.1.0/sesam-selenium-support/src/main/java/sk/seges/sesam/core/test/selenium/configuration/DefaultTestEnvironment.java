@@ -13,6 +13,7 @@ public class DefaultTestEnvironment implements TestEnvironment {
 	public enum TestConfiguration implements Configuration {
 		HOST("test.testHost"),
 		URI("test.testUri"),
+		REMOTE("test.testRemote"),
 		BROWSER("test.testBrowser");
 		
 		private String key;
@@ -31,11 +32,13 @@ public class DefaultTestEnvironment implements TestEnvironment {
 	private String host;
 	private String uri;
 	private String browser;
+	private Boolean remote;
 
 	public DefaultTestEnvironment(ConfigurationValue[] configurations) {
 		host = ConfigurationUtils.getConfigurationValue(configurations, TestConfiguration.HOST);
 		uri = ConfigurationUtils.getConfigurationValue(configurations, TestConfiguration.URI);
 		browser = ConfigurationUtils.getConfigurationValue(configurations, TestConfiguration.BROWSER);
+		remote = ConfigurationUtils.getConfigurationBoolean(configurations, TestConfiguration.REMOTE);
 		this.seleniumEnvironment = new DefaultSeleniumEnvironment(configurations);
 		this.bromineEnvironment = new DefaultBromineEnvironment(configurations);
 	}
@@ -45,19 +48,21 @@ public class DefaultTestEnvironment implements TestEnvironment {
 			this.host = testEnvironment.getHost();
 			this.uri = testEnvironment.getUri();
 			this.browser = testEnvironment.getBrowser();
+			this.remote = testEnvironment.isRemote();
 		}
 	}
 	
-	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, String uri, Browsers browser) {
-		this(seleniumEnvironment, bromineEnvironment, host, uri, browser.toString());
+	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, String uri, Browsers browser, Boolean remote) {
+		this(seleniumEnvironment, bromineEnvironment, host, uri, browser.toString(), remote);
 	}
 	
-	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, String uri, String browser) {
+	public DefaultTestEnvironment(SeleniumEnvironment seleniumEnvironment, BromineEnvironment bromineEnvironment, String host, String uri, String browser, Boolean remote) {
 		this.seleniumEnvironment = seleniumEnvironment;
 		this.bromineEnvironment = bromineEnvironment;
 		this.host = host;
 		this.browser = browser;
 		this.uri = uri;
+		this.remote = remote;
 	}
 	
 	@Override
@@ -101,6 +106,10 @@ public class DefaultTestEnvironment implements TestEnvironment {
 			browser = testEnvironment.getBrowser();
 		}
 
+		if (remote == null) {
+			remote = testEnvironment.isRemote();
+		}
+		
 		if (seleniumEnvironment == null) {
 			seleniumEnvironment = new DefaultSeleniumEnvironment(testEnvironment.getSeleniumEnvironment());
 		} else {
@@ -116,5 +125,14 @@ public class DefaultTestEnvironment implements TestEnvironment {
 		}
 		
 		return this;
+	}
+
+	@Override
+	public Boolean isRemote() {
+		return remote;
+	}
+	
+	public void setRemote(Boolean remote) {
+		this.remote = remote;
 	}
 }

@@ -185,7 +185,7 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		new ConfigurationProcessor(processingEnv).createConfiguration(element, pw);
 
 		pw.println("@Override");
-		pw.println("public void runTests() throws Exception {");
+		pw.println("public void runTests() {");
 		
 		for (ExecutableElement method: methods) {
 			Test annotation = method.getAnnotation(Test.class);
