@@ -85,7 +85,7 @@
 		<module>../acris-showcase-json</module>
 		<!--module>../acris-showcase-mvp</module-->
 		<module>../acris-showcase-reporting</module>
-		<module>../acris-showcase-recorder</module>
+		<!--module>../acris-showcase-recorder</module-->
 		<module>../acris-showcase-openid</module>
 		<module>../acris-showcase-security</module>
 		<module>../acris-showcase-widgets</module>
