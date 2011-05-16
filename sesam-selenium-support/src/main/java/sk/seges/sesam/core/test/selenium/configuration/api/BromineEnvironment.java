@@ -5,4 +5,6 @@ public interface BromineEnvironment {
 	String getBromineHost();
 	
 	int getBrominePort();
+	
+	Boolean isBromineEnabled();
 }

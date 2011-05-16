@@ -4,7 +4,7 @@ import sk.seges.sesam.core.test.selenium.exception.SeleniumException;
 
 public abstract class AbstractBrowserSupport {
 
-	interface ActionHandler {
+	public interface ActionHandler {
 		boolean doAction();
 	}
 
@@ -16,22 +16,22 @@ public abstract class AbstractBrowserSupport {
 		throw new SeleniumException(e);
 	}
 
-	public void waitForAction(ActionHandler actionHandler) {
-		for (int second = 0;; second++) {
-			if (second >= 60) {
-				fail("Timeout exceed while waiting for the action!");
-			}
-			try {
-				if (actionHandler.doAction()) {
-					break;
-				}
-			} catch (Exception e) {
-			}
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				fail(e);
-			}
-		}
-	}
+//	public void waitFor(ActionHandler actionHandler) {
+//		for (int second = 0;; second++) {
+//			if (second >= 60) {
+//				fail("Timeout exceed while waiting for the action!");
+//			}
+//			try {
+//				if (actionHandler.doAction()) {
+//					break;
+//				}
+//			} catch (Exception e) {
+//			}
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				fail(e);
+//			}
+//		}
+//	}
 }

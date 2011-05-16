@@ -101,7 +101,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 	@Override
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 
-		pw.println("public void run() throws " + Exception.class.getSimpleName() +"{");
+		pw.println("public void run() {");
 		
 		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
 		
