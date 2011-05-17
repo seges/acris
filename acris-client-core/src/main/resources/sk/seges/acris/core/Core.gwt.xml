@@ -1,7 +1,6 @@
 <module>
 	<!-- Google basic inherit -->
 	<inherits name='com.google.gwt.user.User'/>
-	<inherits name='sk.seges.seges.Model'/>
 	
 	<source path="client"/>
 </module>
