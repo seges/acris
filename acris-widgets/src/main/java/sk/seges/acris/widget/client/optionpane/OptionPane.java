@@ -184,7 +184,8 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
 		dialog.center();
-		dialog.getElement().getStyle().setTop(Window.getClientHeight() / 2 - dialog.getOffsetHeight(), Unit.PX);
+		dialog.getElement().getStyle()
+				.setTop(Window.getScrollTop() + (Window.getClientHeight() - dialog.getOffsetHeight()) / 2, Unit.PX);
 		return pane.getResult();
 	}
 
@@ -245,7 +246,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 
 		dialog.center();
 		dialog.getElement().getStyle()
-				.setTop(Window.getScrollTop() + Window.getClientHeight() / 2 - dialog.getOffsetHeight() / 2, Unit.PX);
+				.setTop(Window.getScrollTop() + (Window.getClientHeight() - dialog.getOffsetHeight()) / 2, Unit.PX);
 		return pane.getResult();
 		/**/
 	}
@@ -263,8 +264,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		Dialog dialog = createMessageDialog(title, pane, false, true, options, resultListener);
 
 		dialog.center();
-		dialog.getElement().getStyle()
-				.setTop(Window.getScrollTop() + Window.getClientHeight() / 2 - dialog.getOffsetHeight() / 2, Unit.PX);
+		dialog.getElement().getStyle().setTop((Window.getClientHeight() - dialog.getOffsetHeight()) / 2, Unit.PX);
 	}
 
 	/**
