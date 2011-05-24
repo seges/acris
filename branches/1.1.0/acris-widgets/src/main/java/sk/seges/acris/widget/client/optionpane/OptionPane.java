@@ -9,6 +9,8 @@ import sk.seges.acris.widget.client.Messages;
 import sk.seges.acris.widget.client.WidgetFactory;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -160,7 +162,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	}
 
 	private static EPanelResult showStackTraceDialog(Throwable e) {
-		Dialog dialog = WidgetFactory.modalDialog();
+		final Dialog dialog = WidgetFactory.modalDialog();
 		dialog.setCaption(labels.errorDialogTitle());
 
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -183,9 +185,14 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 
 		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
-		dialog.center();
-		dialog.getElement().getStyle()
-				.setTop(Window.getScrollTop() + (Window.getClientHeight() - dialog.getOffsetHeight()) / 2, Unit.PX);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			
+			@Override
+			public void execute() {
+				dialog.center();
+			}
+		});
+		
 		return pane.getResult();
 	}
 
@@ -236,7 +243,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		 * 
 		 * dialog.add(pane); dialog.center(); return pane.getResult(); /
 		 */
-		Dialog dialog = WidgetFactory.modalDialog();
+		final Dialog dialog = WidgetFactory.modalDialog();
 		dialog.setCaption(title);
 
 		OptionPane pane = createOptionPaneFromMessage(message, type);
@@ -244,11 +251,15 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 
 		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
-		dialog.center();
-		dialog.getElement().getStyle()
-				.setTop(Window.getScrollTop() + (Window.getClientHeight() - dialog.getOffsetHeight()) / 2, Unit.PX);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			
+			@Override
+			public void execute() {
+				dialog.center();
+			}
+		});
+		
 		return pane.getResult();
-		/**/
 	}
 
 	public static OptionPane createOptionPaneFromMessage(String message, EMessageType type) {
