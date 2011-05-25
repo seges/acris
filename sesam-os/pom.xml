@@ -32,7 +32,7 @@
 	</scm>
 
 	<properties>
-		<selenium.version>2.0b3</selenium.version> 
+		<selenium.version>2.0-SNAPSHOT</selenium.version> 
 		<logging.selenium.version>1.2</logging.selenium.version>
 		<sesam-os.version>1.1.2</sesam-os.version>
 	</properties>
@@ -101,7 +101,8 @@
 											<factorypathentry kind="VARJAR" id="M2_REPO/junit/junit/${junit.version}/junit-${junit.version}.jar" enabled="true" runInBatchMode="false" />
 											<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 											<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-											<factorypathentry kind="VARJAR" id="M2_REPO/org/seleniumhq/selenium/selenium/${selenium.version}/selenium-${selenium.version}.jar" enabled="true" runInBatchMode="false" />
+											<factorypathentry kind="VARJAR" id="M2_REPO/org/seleniumhq/selenium/selenium-support/${selenium.version}/selenium-support-${selenium.version}.jar" enabled="true" runInBatchMode="false" />
+											<factorypathentry kind="VARJAR" id="M2_REPO/org/seleniumhq/selenium/selenium-api/${selenium.version}/selenium-api-${selenium.version}.jar" enabled="true" runInBatchMode="false" />
 											<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-selenium-support/${sesam-os.version}/sesam-selenium-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 								        </factorypath>
 								          ]]>
@@ -220,7 +221,52 @@
 			</dependency>
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
-				<artifactId>selenium</artifactId>
+				<artifactId>selenium-api</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-support</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-firefox-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-ie-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-remote-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-htmlunit-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-chrome-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-iphone-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-remote-control</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-server</artifactId>
 				<version>${selenium.version}</version>
 			</dependency>
 			<dependency>
