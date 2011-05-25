@@ -3,6 +3,8 @@ package sk.seges.sesam.core.test.selenium.core;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 
 public class DefaultNavigableElement<T extends NavigablePage> implements NavigableWebElement<T> {
@@ -98,5 +100,25 @@ public class DefaultNavigableElement<T extends NavigablePage> implements Navigab
 	@Override
 	public T getNavigablePage() {
 		return navigablePage;
+	}
+
+	@Override
+	public boolean isDisplayed() {
+		return webElement.isDisplayed();
+	}
+
+	@Override
+	public Point getLocation() {
+		return webElement.getLocation();
+	}
+
+	@Override
+	public Dimension getSize() {
+		return webElement.getSize();
+	}
+
+	@Override
+	public String getCssValue(String propertyName) {
+		return webElement.getCssValue(propertyName);
 	}
 }

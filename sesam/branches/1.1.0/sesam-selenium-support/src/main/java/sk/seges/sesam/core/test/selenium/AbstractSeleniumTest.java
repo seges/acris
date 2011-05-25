@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.DefaultActionChainsGenerator;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -24,30 +24,27 @@ import sk.seges.sesam.core.test.selenium.support.DefaultSeleniumSupport;
 import sk.seges.sesam.core.test.selenium.support.api.MailSupport;
 import sk.seges.sesam.core.test.selenium.support.api.SeleniumSupport;
 
-import com.unitedinternet.portal.selenium.utils.logging.LoggingCommandProcessor;
-import com.unitedinternet.portal.selenium.utils.logging.LoggingUtils;
-
 public abstract class AbstractSeleniumTest extends BromineTest implements SeleniumConfigurator, MailSupport, SeleniumSupport {
 
 	private static final String RESULT_FILE_ENCODING = "UTF-8";
 
-	protected MailSettings mailEnvironment;
+	protected MailSettings mailSettings;
 	protected ReportingSettings reportingSettings;
 	protected CredentialsSettings credentialsSettings;
 
 	protected SeleniumConfigurator seleniumConfigurator;
-	protected MailSupport seleniumMailSupport;
+	protected MailSupport mailSupport;
 	protected SeleniumSupport seleniumSupport;
 
 	private static final String RESULT_PATH_PREFIX = "target" + File.separator;
 
-	private LoggingCommandProcessor loggingProcessor;
+//	private LoggingCommandProcessor loggingProcessor;
 	private BufferedWriter loggingWriter;
 
 	private String testName;
 	protected Wait<WebDriver> wait;
 	
-	protected DefaultActionChainsGenerator actionChain;
+	protected Actions actions;
 	
 	protected AbstractSeleniumTest() {
 		seleniumConfigurator = getSeleniumConfigurator();
@@ -57,10 +54,10 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 		super.setTestEnvironment(testEnvironment);
 		wait = new WebDriverWait(webDriver, 30);
 		webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MINUTES);
+
+		actions = new Actions(webDriver);
 		
-		actionChain = new DefaultActionChainsGenerator(webDriver);
-		
-		seleniumMailSupport = getMailSupport();
+		mailSupport = getMailSupport();
 		seleniumSupport = getSeleniumSupport();		
 	}
 	
@@ -100,7 +97,7 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 	}
 	
 	protected MailSupport getMailSupport() {
-		return new DefaultMailSupport(mailEnvironment);
+		return new DefaultMailSupport(mailSettings);
 	}
 
 	public SeleniumConfigurator getSeleniumConfigurator() {
@@ -108,7 +105,7 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 	}
 
 	public void setMailEnvironment(MailSettings mailEnvironment) {
-		this.mailEnvironment = mailEnvironment;
+		this.mailSettings = mailEnvironment;
 	}
 
 	@Override
@@ -154,7 +151,7 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 
 			String resultHtmlFileName = null;
 
-			resultHtmlFileName = getResultDirectory() + "result" + LoggingUtils.timeStampForFileName() + ".html";
+//			resultHtmlFileName = getResultDirectory() + "result" + LoggingUtils.timeStampForFileName() + ".html";
 
 //			loggingWriter = LoggingUtils.createWriter(resultHtmlFileName, RESULT_FILE_ENCODING, true);
 //			LoggingResultsFormatter htmlFormatter = new HtmlResultFormatter(loggingWriter, RESULT_FILE_ENCODING) {
@@ -198,12 +195,12 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 
 	@Override
 	public void waitForMailNotPresent(String subject) {
-		seleniumMailSupport.waitForMailNotPresent(subject);
+		mailSupport.waitForMailNotPresent(subject);
 	}
 
 	@Override
 	public String waitForMailPresent(String subject) {
-		return seleniumMailSupport.waitForMailPresent(subject);
+		return mailSupport.waitForMailPresent(subject);
 	}
 
 	@Override
