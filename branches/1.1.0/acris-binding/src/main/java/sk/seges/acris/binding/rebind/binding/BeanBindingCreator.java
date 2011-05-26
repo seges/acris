@@ -28,11 +28,12 @@ import sk.seges.acris.binding.rebind.loader.EmptyLoaderCreator;
 import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.TreeLogger.Type;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.validation.client.InvalidConstraint;
 
@@ -200,9 +201,8 @@ public class BeanBindingCreator extends AbstractCreator {
 		}
 
 		sw.println("@Override");
-		sw.println("public void highlightConstraints(" + Set.class.getName() + "<"
-				+ InvalidConstraint.class.getName() + "<" + bindingBeanClassType.getSimpleSourceName()
-				+ ">> constraints) {");
+		sw.println("public void highlightConstraints(" + Set.class.getName() + "<" + InvalidConstraint.class.getName()
+				+ "<" + bindingBeanClassType.getSimpleSourceName() + ">> constraints) {");
 		sw.indent();
 		sw.println("((" + getValidatorBindingHolderClass().getName() + ")" + BINDING_HOLDER_VAR
 				+ ").highlightConstraints(constraints);");
@@ -210,10 +210,34 @@ public class BeanBindingCreator extends AbstractCreator {
 		sw.println("}");
 		sw.println();
 		sw.println("@Override");
-		sw.println("public void clearHighlight() {");
+		sw.println("public void highlightConstraint(" + InvalidConstraint.class.getName() + "<"
+				+ bindingBeanClassType.getSimpleSourceName() + "> constraint) {");
 		sw.indent();
 		sw.println("((" + getValidatorBindingHolderClass().getName() + ")" + BINDING_HOLDER_VAR
-				+ ").clearHighlight();");
+				+ ").highlightConstraint(constraint);");
+		sw.outdent();
+		sw.println("}");
+		sw.println();
+		sw.println("@Override");
+		sw.println("public void clearHighlight() {");
+		sw.indent();
+		sw.println("((" + getValidatorBindingHolderClass().getName() + ")" + BINDING_HOLDER_VAR + ").clearHighlight();");
+		sw.outdent();
+		sw.println("}");
+		sw.println();
+		sw.println("@Override");
+		sw.println("public void clearHighlight(" + Widget.class.getCanonicalName() + " widget) {");
+		sw.indent();
+		sw.println("((" + getValidatorBindingHolderClass().getName() + ")" + BINDING_HOLDER_VAR
+				+ ").clearHighlight(widget);");
+		sw.outdent();
+		sw.println("}");
+		sw.println();
+		sw.println("@Override");
+		sw.println("public " + Widget.class.getCanonicalName() + " getPropertyWidget(String property) {");
+		sw.indent();
+		sw.println("return ((" + getValidatorBindingHolderClass().getName() + ")" + BINDING_HOLDER_VAR
+				+ ").getPropertyWidget(property);");
 		sw.outdent();
 		sw.println("}");
 	}

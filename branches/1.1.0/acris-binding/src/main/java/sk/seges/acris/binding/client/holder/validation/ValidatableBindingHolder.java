@@ -1,11 +1,8 @@
-/**
- * 
- */
 package sk.seges.acris.binding.client.holder.validation;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
@@ -14,6 +11,7 @@ import sk.seges.acris.binding.client.annotations.BindingFieldInfo;
 import sk.seges.acris.binding.client.holder.BindingHolder;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.validation.client.InvalidConstraint;
 
 /**
@@ -23,9 +21,11 @@ import com.google.gwt.validation.client.InvalidConstraint;
  * 
  * @author ladislav.gazo
  */
-public class ValidatableBindingHolder<S, T extends Serializable> extends BindingHolder<T> implements ValidatableBeanBinding<T> {
+public class ValidatableBindingHolder<S, T extends Serializable> extends BindingHolder<T> implements
+		ValidatableBeanBinding<T> {
+
 	private ValidationHighligther<S, T> highlighter;
-	private List<HighlightedWidget> highlighted = new ArrayList<HighlightedWidget>();
+	private Map<Widget, HighlightedWidget> highlighted = new HashMap<Widget, HighlightedWidget>();
 
 	public ValidatableBindingHolder(UpdateStrategy updateStrategy, BeanWrapper<T> beanWrapper) {
 		super(updateStrategy, beanWrapper);
@@ -40,34 +40,62 @@ public class ValidatableBindingHolder<S, T extends Serializable> extends Binding
 		clearHighlight();
 
 		for (InvalidConstraint<T> constraint : constraints) {
-			BindingFieldInfo info = find(constraint.getPropertyPath());
-			if (info == null) {
-				throw new RuntimeException("No such binding field for constraint = "
-						+ constraint.getPropertyPath());
-			}
-
-			Object widget = info.getTargetWidget();
-			if (highlighter != null) {
-				highlighted.add(highlighter.highlight((S)widget, constraint));
-			}
+			highlight(constraint);
 		}
 	}
 
 	@Override
+	public void highlightConstraint(InvalidConstraint<T> constraint) {
+		Widget propertyWidget = getPropertyWidget(constraint.getPropertyPath());
+
+		clearHighlight(propertyWidget);
+
+		highlight(constraint);
+	}
+
+	@Override
 	public void clearHighlight() {
-		for (HighlightedWidget highlight : highlighted) {
+		for (HighlightedWidget highlight : highlighted.values()) {
 			highlight.removeHighlight();
 		}
 		highlighted.clear();
 	}
 
+	@Override
+	public void clearHighlight(Widget widget) {
+		HighlightedWidget highlightedWidget = highlighted.get(widget);
+		if (highlightedWidget != null) {
+			highlightedWidget.removeHighlight();
+			highlighted.remove(widget);
+		}
+	}
+
+	@Override
+	public Widget getPropertyWidget(String property) {
+		BindingFieldInfo info = find(property);
+		return (Widget) info.getTargetWidget();
+	}
+
 	private BindingFieldInfo find(String propertyPath) {
 		for (BindingFieldInfo info : bindingFieldInfos) {
-			if (info.getSourceProperty().equals(propertyPath)
-					|| info.getTargetProperty().equals(propertyPath)) {
+			if (info.getSourceProperty().equals(propertyPath) || info.getTargetProperty().equals(propertyPath)) {
 				return info;
 			}
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void highlight(InvalidConstraint<T> constraint) {
+		BindingFieldInfo info = find(constraint.getPropertyPath());
+		if (info == null) {
+			throw new RuntimeException("No such binding field for constraint = " + constraint.getPropertyPath());
+		}
+
+		Object widget = info.getTargetWidget();
+		if (highlighter != null) {
+			HighlightedWidget highlightedWidget = highlighter.highlight((S) widget, constraint);
+			highlighted.put((Widget) widget, highlightedWidget);
+		}
 	}
 }
