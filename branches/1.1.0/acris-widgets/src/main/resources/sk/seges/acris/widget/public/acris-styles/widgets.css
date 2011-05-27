@@ -46,6 +46,7 @@
 .acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-options .acris-cmp-option,.acris-cmp-container .acris-cmp-options .acris-cmp-option
 	{
 	float: right;
+	margin-left: 1px;
 }
 
 .acris-cmp-container .acris-cmp-options .acris-cmp-option {
