@@ -23,6 +23,7 @@ import sk.seges.sesam.core.test.selenium.support.DefaultMailSupport;
 import sk.seges.sesam.core.test.selenium.support.DefaultSeleniumSupport;
 import sk.seges.sesam.core.test.selenium.support.api.MailSupport;
 import sk.seges.sesam.core.test.selenium.support.api.SeleniumSupport;
+import sk.seges.sesam.core.test.webdriver.WebDriverActions;
 
 public abstract class AbstractSeleniumTest extends BromineTest implements SeleniumConfigurator, MailSupport, SeleniumSupport {
 
@@ -55,7 +56,7 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 		wait = new WebDriverWait(webDriver, 30);
 		webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MINUTES);
 
-		actions = new Actions(webDriver);
+		actions = new WebDriverActions(webDriver, testEnvironment);
 		
 		mailSupport = getMailSupport();
 		seleniumSupport = getSeleniumSupport();		
