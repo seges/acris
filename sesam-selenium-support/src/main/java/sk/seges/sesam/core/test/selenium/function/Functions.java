@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.test.selenium.function;
 
+import java.util.List;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,4 +17,9 @@ public class Functions {
 	public static Function<WebDriver, Alert> alertPresent(String text) {
 		return new AlertPresent(text);
 	}
+	
+	public static Function<WebDriver, WebElement> elementVisible (List<WebElement> webElements) {
+		return new ElementVisible (webElements);
+	}
+	
 }
