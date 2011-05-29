@@ -21,5 +21,8 @@ public class Functions {
 	public static Function<WebDriver, WebElement> elementVisible (List<WebElement> webElements) {
 		return new ElementVisible (webElements);
 	}
-	
+
+	public static Function<WebDriver, WebElement> elementVisible (WebElement webElement) {
+		return new ElementVisible (webElement);
+	}
 }
