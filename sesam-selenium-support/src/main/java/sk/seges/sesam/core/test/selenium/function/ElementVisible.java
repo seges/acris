@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.test.selenium.function;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
@@ -13,6 +14,11 @@ public class ElementVisible implements ExpectedCondition<WebElement> {
 	
 	ElementVisible(List<WebElement> webElements) {
 		this.webElements = webElements;
+	}
+
+	ElementVisible(WebElement webElement) {
+		webElements = new ArrayList<WebElement>();
+		webElements.add(webElement);
 	}
 
 	@Override
