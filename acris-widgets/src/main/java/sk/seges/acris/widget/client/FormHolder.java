@@ -5,6 +5,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 
 public interface FormHolder {
+	
+	Widget asWidget();
+	
 	void setCaption(String caption);
 	void setCaptionWidget(Widget caption);
 	void setContent(Widget content);

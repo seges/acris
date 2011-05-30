@@ -70,8 +70,16 @@ public class OptionsFactory extends Composite {
         return createOKCancelCustomizedOptions(labels.ok(), okHandler);
     }
 
+    public static Widget[] createOKCancelOptions(ClickHandler okHandler, ClickHandler cancelHandler) {
+        return createOKCancelCustomizedOptions(labels.ok(), okHandler, cancelHandler);
+    }
+
     public static Widget[] createSaveCancelOptions(ClickHandler okHandler) {
         return createOKCancelCustomizedOptions(labels.save(), okHandler);
+    }
+
+    public static Widget[] createSaveCancelOptions(ClickHandler okHandler, ClickHandler cancelHandler) {
+        return createOKCancelCustomizedOptions(labels.save(), okHandler, cancelHandler);
     }
 
     public static Widget createSaveOption(ClickHandler okHandler) {
@@ -80,6 +88,10 @@ public class OptionsFactory extends Composite {
 
     public static Widget[] createSubmitCancelOptions(ClickHandler okHandler) {
         return createOKCancelCustomizedOptions(labels.submit(), okHandler);
+    }
+
+    public static Widget[] createSubmitCancelOptions(ClickHandler okHandler, ClickHandler cancelHandler) {
+        return createOKCancelCustomizedOptions(labels.submit(), okHandler, cancelHandler);
     }
 
     public static Widget[] createOKCancelCustomizedOptions(String okMessage, ClickHandler okHandler) {
