@@ -27,20 +27,14 @@
 }
 
 .acris-cmp-dialog .acris-cmp-dialogContentWrapper {
-	
-}
-
-.acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-content {
-	
+	padding: 16px 16px 0;
 }
 
 .acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-options {
-	padding: 10px 10px 10px 10px;
+	padding: 20px 0 0;
 }
 
-.acris-cmp-container .acris-cmp-options {
-	padding-left: 10px;
-	padding-right: 10px;
+.acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-content {
 }
 
 .acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-options .acris-cmp-option,.acris-cmp-container .acris-cmp-options .acris-cmp-option

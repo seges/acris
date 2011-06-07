@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -20,7 +21,6 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.datepicker.client.DateBox;
 
 /**
@@ -31,6 +31,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
  * @author ladislav.gazo
  */
 public class WidgetFactory {
+
 	public static Label label(String label) {
 		Label widget = GWT.create(Label.class);
 		widget.setText(label);
@@ -158,7 +159,7 @@ public class WidgetFactory {
 		}
 		return dialog();
 	}
-	
+
 	public static Dialog dialog(boolean autohide, boolean modal, boolean glass) {
 		Dialog dialog = dialog(autohide, modal);
 		dialog.setGlassEnabled(glass);
@@ -171,8 +172,7 @@ public class WidgetFactory {
 
 	public static DateBox dateBox(String dateTimeFormatPattern) {
 		DateBox dateBox = GWT.create(DateBox.class);
-		DateBox.DefaultFormat dateBoxFormat = new DateBox.DefaultFormat(DateTimeFormat
-				.getFormat(dateTimeFormatPattern));
+		DateBox.DefaultFormat dateBoxFormat = new DateBox.DefaultFormat(DateTimeFormat.getFormat(dateTimeFormatPattern));
 		dateBox.setFormat(dateBoxFormat);
 		return dateBox;
 	}
@@ -186,25 +186,24 @@ public class WidgetFactory {
 	public static CheckBox checkBox() {
 		return GWT.create(CheckBox.class);
 	}
-	
+
 	public static CheckBox checkBox(String text) {
 		CheckBox checkBox = checkBox();
 		checkBox.setText(text);
 		return checkBox;
 	}
-	
+
 	public static CheckBox checkBox(ValueChangeHandler<Boolean> valueChangeHandler) {
 		CheckBox checkBox = checkBox();
 		checkBox.addValueChangeHandler(valueChangeHandler);
 		return checkBox;
 	}
-	
+
 	public static CheckBox checkBox(String text, ValueChangeHandler<Boolean> valueChangeHandler) {
 		CheckBox checkBox = checkBox(text);
 		checkBox.addValueChangeHandler(valueChangeHandler);
 		return checkBox;
 	}
-	
 
 	/**
 	 * @param name
@@ -224,7 +223,6 @@ public class WidgetFactory {
 		radioButton.setText(label);
 		return radioButton;
 	}
-	
 
 	/**
 	 * @param name
@@ -237,7 +235,7 @@ public class WidgetFactory {
 		radioButton.addValueChangeHandler(valueChangeHandler);
 		return radioButton;
 	}
-	
+
 	/**
 	 * @param name
 	 * @param valueChangeHandler
@@ -249,23 +247,18 @@ public class WidgetFactory {
 		return radioButton;
 	}
 
-//	/**
-//	 * @param value
-//	 *            initial value
-//	 * @param min
-//	 *            min value
-//	 * @param max
-//	 *            max value
-//	 */
-//	public static ValueSpinner valueSpinner(long value, int min, int max) {
-//		return new ValueSpinner(value, min, max);
-//	}
+	// /**
+	// * @param value
+	// * initial value
+	// * @param min
+	// * min value
+	// * @param max
+	// * max value
+	// */
+	// public static ValueSpinner valueSpinner(long value, int min, int max) {
+	// return new ValueSpinner(value, min, max);
+	// }
 
-	
-	
-	
-	
-	
 	/**
 	 * @param formHolder
 	 */
@@ -280,7 +273,7 @@ public class WidgetFactory {
 			}
 		});
 	}
-	
+
 	/**
 	 * @param dialog
 	 */
@@ -295,7 +288,7 @@ public class WidgetFactory {
 			}
 		});
 	}
-	
+
 	/**
 	 * @param dialog
 	 */
@@ -310,7 +303,7 @@ public class WidgetFactory {
 				} else {
 					left = (((Window.getClientWidth() - offsetWidth) / 2) >> 0) - leftVerticalCenterOffset;
 				}
-		
+
 				int top;
 				if (topOffset == null) {
 					top = ((Window.getClientHeight() - offsetHeight) / 2) >> 0;
@@ -327,5 +320,4 @@ public class WidgetFactory {
 		textArea.setStyleName(style);
 		return textArea;
 	}
-	
 }
