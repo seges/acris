@@ -19,7 +19,8 @@ public class HibernateDaoProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testMockEntityDao() {
-		assertCompilationSuccessful(compileFiles(MockEntity.class, JpaMockEntity.class));
+		assertCompilationSuccessful(compileFiles(MockEntity.class));
+		assertCompilationSuccessful(compileFiles(JpaMockEntity.class));
 		assertOutput(getResourceFile(JpaMockEntity.class), getOutputFile(JpaMockEntity.class));
 	}
  

@@ -31,6 +31,6 @@ public class CardPayRequest extends TatraPayRequest {
 	}
 	
 	public CardPaySettings getSettings() {
-		return getSettings();
+		return (CardPaySettings)super.getSettings();
 	}
 }

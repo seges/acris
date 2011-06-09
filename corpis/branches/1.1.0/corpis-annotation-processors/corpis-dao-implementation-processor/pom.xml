@@ -4,7 +4,19 @@
 	<name>corpis-dao-implementation-processor</name>
 	<description>Corpis DAO Implementation processor</description>
 	<packaging>jar</packaging>
-
+	
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource><directory>src/main/resources</directory></resource>			
+		</resources>
+		<testResources>
+			<testResource><directory>src/test/resources</directory></testResource>
+			<testResource><directory>target/generated-test</directory></testResource>
+		</testResources>
+	</build>
+	
 	<parent>
 		<groupId>sk.seges.corpis</groupId>
 		<artifactId>corpis-annotation-processors</artifactId>
