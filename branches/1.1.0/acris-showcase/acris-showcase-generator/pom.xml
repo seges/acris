@@ -25,7 +25,7 @@
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
 				<artifactId>maven-processor-plugin</artifactId>
-				<executions>
+					<executions>
 					<execution>
 						<id>process</id>
 						<goals>
