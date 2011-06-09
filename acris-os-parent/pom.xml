@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.1.2</version>
+		<version>1.1.3-SNAPSHOT</version>
 
 	</parent>
 
@@ -73,6 +73,7 @@
 		<module>../acris-server</module>
 		<!--module>../acris-showcase</module-->
 		<module>../acris-server-components</module>
+		<module>../acris-test-support</module>
 	</modules>
 
 	<properties>
@@ -80,7 +81,7 @@
 		<repository.project>acris</repository.project>
 
 		<sesam-os.version>1.1.2</sesam-os.version>
-		<corpis-os.version>1.1.2</corpis-os.version>
+		<corpis-os.version>1.1.3-SNAPSHOT</corpis-os.version>
 
 		<htmlparser.version>2.0-20100701</htmlparser.version>
 	</properties>
@@ -106,6 +107,22 @@
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-domain-api</artifactId>
+				<version>${corpis-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-payment</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-payment-api</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-payment-api</artifactId>
 				<version>${corpis-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
