@@ -765,6 +765,7 @@
 					<configuration>
 						<!-- source output directory -->
 						<outputDirectory>${jsr269.generated.dir}</outputDirectory>
+						<compilerArguments>-encoding utf-8</compilerArguments> 
 					</configuration>
 				</plugin>
 				<plugin>

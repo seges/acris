@@ -417,7 +417,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		NamedType[] outputNames = getClassNames(element);
 		NamedType inputClass = getNameTypes().toType(typeElement);
 		
+		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + element.getSimpleName().toString() + " with " + getClass().getSimpleName());
+
 		for (NamedType outputName: outputNames) {
+			
 			try {
 				JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(outputName.getCanonicalName(), element);
 				OutputStream os = createSourceFile.openOutputStream();

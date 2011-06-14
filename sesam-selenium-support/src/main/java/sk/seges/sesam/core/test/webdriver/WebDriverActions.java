@@ -7,7 +7,6 @@ import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.ActionChainsGenerator;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.ButtonReleaseAction;
 import org.openqa.selenium.interactions.ClickAction;
@@ -24,8 +23,7 @@ import org.openqa.selenium.internal.Locatable;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.webdriver.action.DoubleClickAction;
 
-@SuppressWarnings("deprecation")
-public class WebDriverActions extends Actions implements ActionChainsGenerator {
+public class WebDriverActions extends Actions {
 
 	protected TestEnvironment testEnvironment;
 
