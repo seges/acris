@@ -1,45 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>acris-site-core</artifactId>
+	<artifactId>acris-theme-blue</artifactId>
 	<packaging>jar</packaging>
-	<name>AcrIS Site core/api</name>
+	<name>AcrIS Blue Theme</name>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
-		<artifactId>acris-site-parent</artifactId>
+		<artifactId>acris-theme-parent</artifactId>
 		<version>1.1.2-SNAPSHOT</version>
-		<relativePath>../acris-site-parent</relativePath>
+		<relativePath>../acris-theme-parent</relativePath>
 	</parent>
 
 	<build>
-
 		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.bsc.maven</groupId>
-				<artifactId>maven-processor-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>process</id>
-						<goals>
-							<goal>process</goal>
-						</goals>
-						<phase>generate-sources</phase>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
@@ -51,8 +24,6 @@
 								<factorypath>
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-model-metadata/${sesam-os.version}/sesam-model-metadata-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-						        	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${project.version}/acris-binding-${project.version}.jar" enabled="true" runInBatchMode="false" />
 						        </factorypath>
 						          ]]>
 							</content>
@@ -68,15 +39,15 @@
 							</content>
 						</file>
 						<file>
-                                <name>.settings/org.eclipse.jdt.core.prefs</name>
-                                <content><![CDATA[
-eclipse.preferences.version=1
-org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
-org.eclipse.jdt.core.compiler.compliance=1.6
-org.eclipse.jdt.core.compiler.processAnnotations=enabled
-org.eclipse.jdt.core.compiler.source=1.6
-                                           ]]>
-                                </content>
+							<name>.settings/org.eclipse.jdt.core.prefs</name>
+                            <content><![CDATA[
+								eclipse.preferences.version=1
+								org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+								org.eclipse.jdt.core.compiler.compliance=1.6
+								org.eclipse.jdt.core.compiler.processAnnotations=enabled
+								org.eclipse.jdt.core.compiler.source=1.6
+                                 ]]>
+                            </content>
                         </file>
 					</additionalConfig>
 				</configuration>
@@ -89,14 +60,15 @@ org.eclipse.jdt.core.compiler.source=1.6
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-api</artifactId>
+			<artifactId>acris-theme-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-api</artifactId>
+			<artifactId>acris-theme-core</artifactId>
 			<classifier>sources</classifier>
-		</dependency>		
+		</dependency>
 
+		<!-- Other dependencies -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>

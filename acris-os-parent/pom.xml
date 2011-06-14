@@ -54,6 +54,7 @@
 	</profiles>
 
 	<modules>
+		<!--module>../acris-annotation-processors</module-->
 		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
 		<module>../acris-bpm</module>
@@ -237,6 +238,17 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-theme-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-theme-core</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
@@ -391,6 +403,17 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-server-components</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-api</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>

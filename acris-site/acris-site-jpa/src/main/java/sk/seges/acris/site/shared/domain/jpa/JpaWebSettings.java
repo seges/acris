@@ -72,8 +72,8 @@ public class JpaWebSettings extends WebSettingsDTO {
 	@Column(nullable = true)
 	public String getParameters() {
 		return super.getParameters();
-	};
-	
+	}
+		
 	@Override
 	@Column(length = DBConstraints.LANGUAGE_LENGTH)
 	public String getLanguage() {
