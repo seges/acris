@@ -18,6 +18,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor6;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.NullCheck;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.annotation.Credentials;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration;
