@@ -17,12 +17,12 @@ import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
 import sk.seges.acris.widget.client.i18n.DynamicTranslator;
 import sk.seges.acris.widget.client.loader.FreeServiceAwareLoader;
 import sk.seges.acris.widget.client.table.BeanTable;
-import sk.seges.acris.widget.client.table.FreeSpecLoader;
-import sk.seges.acris.widget.client.table.SpecColumn;
-import sk.seges.acris.widget.client.table.SpecParams;
 import sk.seges.acris.widget.client.table.BeanTable.DomainObjectProperty;
 import sk.seges.acris.widget.client.table.BeanTable.FilterEnumProperty;
 import sk.seges.acris.widget.client.table.BeanTable.FilterProperty;
+import sk.seges.acris.widget.client.table.FreeSpecLoader;
+import sk.seges.acris.widget.client.table.SpecColumn;
+import sk.seges.acris.widget.client.table.SpecParams;
 import sk.seges.sesam.dao.Criterion;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
@@ -33,14 +33,13 @@ import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JDummyClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JMethodInstancer;
 import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.JTypeParameter;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.dev.javac.typemodel.JDummyClassType;
+import com.google.gwt.dev.javac.typemodel.JMethodInstancer;
 import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
 import com.google.gwt.gen2.table.client.CellEditor;
 import com.google.gwt.gen2.table.client.CellRenderer;
@@ -141,9 +140,9 @@ public class BeanTableSpecCreator {
 	private JMethod[] retrieveMethodsFromBeanIfNeeded(JMethod[] methods) {
 		if (methods == null || methods.length == 0) {
 			List<JMethod> listOfMethods = new LinkedList<JMethod>();
-			JClassType dummy = new JDummyClassType();
+			JDummyClassType dummy = new JDummyClassType();
 			Map<Class<? extends Annotation>, Annotation> annotations = new HashMap<Class<? extends Annotation>, Annotation>();
-			JTypeParameter[] jtypeParameters = new JTypeParameter[0];
+			com.google.gwt.dev.javac.typemodel.JTypeParameter[] jtypeParameters = new com.google.gwt.dev.javac.typemodel.JTypeParameter[0];
 			for (JField field : beanType.getFields()) {
 				if (!field.isTransient() && !field.isStatic()) {
 					JMethod method = JMethodInstancer.instanceMethod(dummy, field.getName(), annotations,

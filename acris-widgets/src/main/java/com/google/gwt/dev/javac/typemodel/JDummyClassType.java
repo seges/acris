@@ -1,10 +1,15 @@
 /**
  * 
  */
-package com.google.gwt.core.ext.typeinfo;
+package com.google.gwt.dev.javac.typemodel;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
+
+import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
+import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
+
 
 /**
  * Holding anything needed, e.g. methods not created by GWT but yourself.
@@ -134,7 +139,7 @@ public class JDummyClassType extends JClassType {
 	 * @see com.google.gwt.core.ext.typeinfo.JClassType#getAnnotations()
 	 */
 	@Override
-	Annotation[] getAnnotations() {
+	public Annotation[] getAnnotations() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -161,7 +166,7 @@ public class JDummyClassType extends JClassType {
 	 * @see com.google.gwt.core.ext.typeinfo.JClassType#getDeclaredAnnotations()
 	 */
 	@Override
-	Annotation[] getDeclaredAnnotations() {
+	public Annotation[] getDeclaredAnnotations() {
 		// TODO Auto-generated method stub
 		return null;
 	}

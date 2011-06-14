@@ -1,4 +1,4 @@
-package com.google.gwt.core.ext.typeinfo;
+package com.google.gwt.dev.javac.typemodel;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;

@@ -67,10 +67,10 @@
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
 		<!--module>../acris-recorder</module-->
+		<module>../acris-server</module>
 		<module>../acris-reporting</module>
 		<module>../acris-security</module>
 		<module>../acris-site</module>
-		<module>../acris-server</module>
 		<!--module>../acris-showcase</module-->
 		<module>../acris-server-components</module>
 		<module>../acris-test-support</module>

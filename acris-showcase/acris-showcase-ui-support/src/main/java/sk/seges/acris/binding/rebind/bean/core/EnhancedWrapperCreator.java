@@ -7,10 +7,10 @@ import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JMethodHelper;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
+import com.google.gwt.dev.javac.typemodel.JMethodHelper;
 import com.google.gwt.user.rebind.SourceWriter;
 
 public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
@@ -192,7 +192,7 @@ public abstract class EnhancedWrapperCreator extends BeanWrapperCreator {
 		String wrapperType = getWrapperType(returnType);
 		source.println("private " + wrapperType + " " + field + ";");
 
-		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, false, false, false, false, true) + " {");
+		source.println(new JMethodHelper((com.google.gwt.dev.javac.typemodel.JMethod) methode).getReadableDeclaration(wrapperType, false, false, false, false, true) + " {");
 		//		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 
