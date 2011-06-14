@@ -45,7 +45,11 @@
 	border: 1px solid black;
 	background-color: #CCCCCC;	
 }
-	
+
+.shadow-text-box-bottom-border > textarea {
+	border: 1px solid black;
+}
+
 .shadow-text-box-right-top-corner {
 	height: 5px;
 	width: 3px;

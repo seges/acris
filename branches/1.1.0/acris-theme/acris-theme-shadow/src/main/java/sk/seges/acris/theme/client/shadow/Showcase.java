@@ -1,11 +1,10 @@
 package sk.seges.acris.theme.client.shadow;
 
-import sk.seges.acris.widget.client.form.ImageCheckBox;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -34,26 +33,7 @@ public class Showcase implements EntryPoint {
 		cb.setValue(true);
 		RootPanel.get().add(cb);
 
-		cb = (CheckBox)new ImageCheckBox();
-		RootPanel.get().add(cb);
-		cb = (CheckBox)new ImageCheckBox();
-		cb.setValue(true);
-		cb.setEnabled(false);
-		RootPanel.get().add(cb);
-
-		cb = (CheckBox)new ImageCheckBox();
-		cb.setValue(false);
-		cb.setEnabled(false);
-		RootPanel.get().add(cb);
-
-		cb = (CheckBox)new ImageCheckBox();
-		cb.setValue(false);
-		cb.setEnabled(false);
-		RootPanel.get().add(cb);
-
-		cb = (CheckBox)new ImageCheckBox();
-		cb.setValue(true);
-		cb.setEnabled(false);
-		RootPanel.get().add(cb);
+		TextArea ta = (TextArea)new ShadowTextAreaPanel();
+		RootPanel.get().add(ta);
 	}
 }
