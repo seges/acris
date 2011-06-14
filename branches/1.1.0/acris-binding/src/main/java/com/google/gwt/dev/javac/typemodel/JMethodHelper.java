@@ -1,4 +1,5 @@
-package com.google.gwt.core.ext.typeinfo;
+package com.google.gwt.dev.javac.typemodel;
+
 
 public class JMethodHelper extends JMethod {
 
@@ -68,7 +69,7 @@ public class JMethodHelper extends JMethod {
 				sb.append(paramType);
 			} else {
 				if (isVarArgs() && i == c - 1) {
-					JArrayType arrayType = param.getType().isArray();
+					com.google.gwt.core.ext.typeinfo.JArrayType arrayType = param.getType().isArray();
 					assert (arrayType != null);
 					sb.append(arrayType.getComponentType().getParameterizedQualifiedSourceName());
 					sb.append("...");
@@ -84,7 +85,7 @@ public class JMethodHelper extends JMethod {
 		if (method.getThrows().length > 0) {
 			sb.append(" throws ");
 			needComma = false;
-			for (JType thrownType : method.getThrows()) {
+			for (JClassType thrownType : method.getThrows()) {
 				if (needComma) {
 					sb.append(", ");
 				} else {

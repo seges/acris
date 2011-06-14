@@ -5,13 +5,12 @@
 	<!-- The Basics -->
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-showcase-build</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-showcase-parent</artifactId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>acris-showcase-parent</relativePath>
 	</parent>
 

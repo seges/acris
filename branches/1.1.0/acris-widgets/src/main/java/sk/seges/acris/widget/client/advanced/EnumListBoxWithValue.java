@@ -94,7 +94,7 @@ public class EnumListBoxWithValue<T extends Enum<T>> extends ListBox implements 
 	 */
 	public void load(List<T> enumList) {
 		super.clear();
-		addItem("", null);
+		addItem("", (String)null);
 		for (T enum1 : enumList) {
 			addItem(enum1.name(), enum1.name());
 		}
@@ -106,7 +106,7 @@ public class EnumListBoxWithValue<T extends Enum<T>> extends ListBox implements 
 	 */
 	public void load(Map<T, String> translatedEnums) {
 		super.clear();
-		addItem("", null);
+		addItem("", (String)null);
 		for (T enum1 : translatedEnums.keySet()) {
 			addItem(translatedEnums.get(enum1), enum1.name());
 		}
