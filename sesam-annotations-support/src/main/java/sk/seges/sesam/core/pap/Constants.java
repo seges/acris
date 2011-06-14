@@ -1,4 +1,4 @@
-package sk.seges.sesam.pap.test.selenium.processor;
+package sk.seges.sesam.core.pap;
 
 public class Constants {
 
