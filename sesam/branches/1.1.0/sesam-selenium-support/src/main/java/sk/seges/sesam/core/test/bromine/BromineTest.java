@@ -35,7 +35,7 @@ public abstract class BromineTest {
 	}
 
 	public void tearDown() {
-		webDriver.close();
+//		webDriver.close();
 		webDriver.quit();
 	}
 

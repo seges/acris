@@ -28,11 +28,6 @@ public class DefaultNavigableElement<T extends NavigablePage> implements Navigab
 	}
 
 	@Override
-	public String getValue() {
-		return webElement.getValue();
-	}
-
-	@Override
 	public void sendKeys(CharSequence... keysToSend) {
 		webElement.sendKeys(keysToSend);
 	}

@@ -2,6 +2,7 @@ package sk.seges.sesam.core.test.selenium;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -208,4 +209,9 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 	public void fail(String message) {
 		seleniumSupport.fail(message);
 	}
+	
+	@Override
+	public <T> boolean isSorted(Iterable<T> iterable, Comparator<T> comparator) {
+		return seleniumSupport.isSorted(iterable, comparator);
+	}	
 }
