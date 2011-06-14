@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.6</version>
+		<version>1.1.7-SNAPSHOT</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
