@@ -1,0 +1,21 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:s="urn:import:sk.seges.acris.theme.client">
+
+	<ui:style src="../../public/acris-styles/theme/shadow/shadow-theme.css" />
+
+	<div class="{style.inline}">
+		<div class="{style.shadow-text-box-right-border} {style.float-left}">
+			<div class="{style.shadow-text-box-right-bottom-corner} {style.float-left}">
+				<div class="{style.shadow-text-box-left-bottom-corner} {style.float-left}">
+					<div class="{style.shadow-text-box-bottom-border}">
+						<button ui:field="button"/>
+					</div>
+				</div>
+				<img src="acris-images/shadow-right-top-corner.png" class="{style.shadow-text-box-right-top-corner} {style.float-left}"/>
+				<div class="{style.cleaner}"/>
+			</div>
+			<div class="{style.cleaner}"/>
+		</div>
+		<div class="{style.cleaner} {style.inline}"></div>
+	</div>	
+</ui:UiBinder>

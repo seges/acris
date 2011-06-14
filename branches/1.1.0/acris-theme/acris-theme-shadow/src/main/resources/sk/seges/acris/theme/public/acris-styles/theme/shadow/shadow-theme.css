@@ -1,0 +1,70 @@
+.float-left {
+	float: left;
+}
+
+.inline {
+	display: inline;
+}
+
+.cleaner {
+	clear: both;
+}
+
+.shadow-text-box-right-border {
+	background: url('acris-images/shadow-right-border.png') repeat-y right;
+}
+
+.shadow-text-box-right-bottom-corner {
+	background: url('acris-images/shadow-right-bottom-corner.png') no-repeat
+		right bottom;
+}
+
+.shadow-text-box-left-bottom-corner {
+	background: url('acris-images/shadow-left-bottom-corner.png') no-repeat
+		left bottom;
+}
+
+.shadow-text-box-bottom-border {
+	background: url('acris-images/shadow-bottom-border.png') repeat-x left
+		bottom;
+	margin-left: 5px;
+	padding-bottom: 4px;
+}
+
+.shadow-text-box-bottom-border > * {
+	margin: 0px;
+	margin-left: -5px;
+}
+
+.shadow-text-box-bottom-border > input[type="text"] {
+	border: 1px solid black;
+	height: 25px;
+}
+
+.shadow-text-box-bottom-border > button {
+	border: 1px solid black;
+	background-color: #CCCCCC;	
+}
+	
+.shadow-text-box-right-top-corner {
+	height: 5px;
+	width: 3px;
+}
+
+.shadow-acris-check-box-checked, .shadow-acris-check-box-checked-disabled, .shadow-acris-check-box-unchecked, .shadow-acris-check-box-unchecked-disabled {
+	margin: 0xp;
+}
+
+.shadow-acris-check-box-checked, .shadow-acris-check-box-unchecked {
+	margin: 0xp;
+	border: 1px solid black;
+}
+
+.shadow-acris-check-box-checked-disabled, .shadow-acris-check-box-unchecked-disabled {
+	margin: 0xp;
+	border: 1px solid grey;
+}
+
+div.inline > label {
+	float:left;	
+}

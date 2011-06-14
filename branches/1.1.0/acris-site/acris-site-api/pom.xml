@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>acris-site-core</artifactId>
+	<artifactId>acris-site-api</artifactId>
 	<packaging>jar</packaging>
-	<name>AcrIS Site core/api</name>
+	<name>AcrIS Site api</name>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
@@ -52,7 +52,7 @@
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-model-metadata/${sesam-os.version}/sesam-model-metadata-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-						        	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${project.version}/acris-binding-${project.version}.jar" enabled="true" runInBatchMode="false" />
+						        	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false" />
 						        </factorypath>
 						          ]]>
 							</content>
@@ -84,26 +84,41 @@ org.eclipse.jdt.core.compiler.source=1.6
 
 		</plugins>
 	</build>
+
 	<dependencies>
 
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-metadata</artifactId>
+		</dependency>
+
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-domain-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-domain-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>		
+		
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-api</artifactId>
+			<artifactId>acris-binding</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-api</artifactId>
-			<classifier>sources</classifier>
-		</dependency>		
 
+		<!-- GWT dependencies -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>

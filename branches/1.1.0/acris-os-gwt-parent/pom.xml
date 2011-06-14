@@ -281,26 +281,14 @@
 
 	<profiles>
 		<profile>
-			<id>gwt-client</id>
+			<id>pap</id>
 			<activation>
 				<file>
-					<exists>.gwt</exists>
+					<exists>.pap</exists>
 				</file>
 			</activation>
 			<build>
-				<resources>
-					<resource>
-						<directory>${basedir}/src/main/resources</directory>
-					</resource>
-					<resource>
-						<directory>${basedir}/src/main/webapp</directory>
-					</resource>
-				</resources>
 				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-					</plugin>
 					<plugin>
 						<groupId>org.bsc.maven</groupId>
 						<artifactId>maven-processor-plugin</artifactId>
@@ -326,6 +314,30 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>gwt-client</id>
+			<activation>
+				<file>
+					<exists>.gwt</exists>
+				</file>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<directory>${basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>${basedir}/src/main/webapp</directory>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
