@@ -1,25 +1,24 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:s="urn:import:sk.seges.acris.theme.client">
 
-	<ui:style src="../../public/acris-styles/theme/shadow/shadow-theme.css" />
 	<ui:with field='resources' type='sk.seges.acris.theme.client.shadow.resources.ShadowThemeResources'/>
 
-	<div class="{style.inline}">
-		<div class="{style.inline}">
-			<div class="{style.shadow-text-box-right-border} {style.float-left}">
-				<div class="{style.shadow-text-box-right-bottom-corner} {style.float-left}">
-					<div class="{style.shadow-text-box-left-bottom-corner} {style.float-left}">
-						<div class="{style.shadow-text-box-bottom-border}">
+	<div class="inline">
+		<div class="inline">
+			<div class="shadow-text-box-right-border float-left">
+				<div class="shadow-text-box-right-bottom-corner float-left">
+					<div class="shadow-text-box-left-bottom-corner float-left">
+						<div class="shadow-text-box-bottom-border">
 							<input type="image" ui:field="checkBox"/>
 							<!-- input type="checkbox" ui:field="checkBox"/-->
 						</div>
 					</div>
-					<img src="acris-images/shadow-right-top-corner.png" class="{style.shadow-text-box-right-top-corner} {style.float-left}"/>
-					<div class="{style.cleaner}"/>
+					<img src="acris-images/shadow-right-top-corner.png" class="shadow-text-box-right-top-corner float-left"/>
+					<div class="cleaner"/>
 				</div>
-				<div class="{style.cleaner}"/>
+				<div class="cleaner"/>
 			</div>
-			<div class="{style.cleaner} {style.inline}"></div>
+			<div class="cleaner inline"/>
 		</div>
 	</div>
 

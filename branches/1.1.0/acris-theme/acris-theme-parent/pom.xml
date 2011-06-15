@@ -14,7 +14,6 @@
 	<modules>
 		<module>../acris-theme-core</module>
 		<module>../acris-theme-shadow</module>
-		<module>../acris-theme-blue</module>
 	</modules>
 
 </project>

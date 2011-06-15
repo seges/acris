@@ -6,7 +6,5 @@
 	<source path="client" />
 	<source path="shared" />
 	
-	<stylesheet src="acris-styles/theme/shadow/shadow-theme.css" />
-	
-	<entry-point class="sk.seges.acris.theme.client.shadow.Showcase" />	
+	<stylesheet src="acris-styles/theme/shadow/shadow-theme.css" />	
 </module>

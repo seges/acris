@@ -6,7 +6,7 @@
 			<div class="shadow-text-box-right-bottom-corner float-left">
 				<div class="shadow-text-box-left-bottom-corner float-left">
 					<div class="shadow-text-box-bottom-border">
-						<button ui:field="button"/>
+						<div ui:field="comboBox"/>
 					</div>
 				</div>
 				<img src="acris-images/shadow-right-top-corner.png" class="shadow-text-box-right-top-corner float-left"/>
