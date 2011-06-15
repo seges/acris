@@ -11,6 +11,22 @@ import com.google.gwt.user.client.ui.CheckBox;
 
 public class ImageCheckBox extends CheckBox {
 
+	interface DefaultCheckBoxImageResources extends CheckBoxImageResources {
+
+		@Source("checkbox-checked.png")
+		ImageResource checked();
+
+		@Source("checkbox-unchecked.png")
+		ImageResource unchecked();
+
+		@Source("checkbox-checked-disabled.png")
+		ImageResource checkedDisabled();
+
+		@Source("checkbox-unchecked-disabled.png")
+		ImageResource uncheckedDisabled();
+
+	}
+	
 	private static final String CHECK_BOX_STYLE_CLASS_SUFFIX_DISABLED = "-disabled";
 	private static final String CHECK_BOX_STYLE_CLASS_SUFFIX_UNCHECKED = "-unchecked";
 	private static final String CHECK_BOX_STYLE_CLASS_SUFFIX_CHECKED = "-checked";	
