@@ -33,7 +33,7 @@
 	</scm>
 
 	<properties>
-		<gwt.log.version>3.0.0</gwt.log.version>
+		<gwt.log.version>3.1.2</gwt.log.version>
 
 		<gwt.version>2.3.0</gwt.version>
 <!--		<gwt-incubator.version>2.0.4-20100120-dflorey-1745</gwt-incubator.version>-->
