@@ -25,5 +25,15 @@
 			<classifier>sources</classifier>
 		</dependency>
 
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-widgets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-widgets</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+
 	</dependencies>
 </project>

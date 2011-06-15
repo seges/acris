@@ -30,10 +30,10 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleTypeVisitor6;
 
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
+import sk.seges.acris.theme.pap.specific.AbstractComponentSpecificProcessor.Statement;
 import sk.seges.acris.theme.pap.specific.ComponentSpecificProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeCheckBoxProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeImageCheckBoxProcessor;
-import sk.seges.acris.theme.pap.specific.AbstractComponentSpecificProcessor.Statement;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -72,14 +72,17 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 	}
 	
 	@Override
-	protected Type[] getImports() {
+	protected Type[] getImports(TypeElement typeElement) {
 		Type[] result = new Type[] {
 		};
 		
 		List<Type> importTypes = new ArrayList<Type>();
 		
 		for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
-			addUnique(importTypes, specificProcessor.getImports());
+			TypeElement componentClass = getComponentClass(typeElement);
+			if (specificProcessor.supports(componentClass)) {
+				addUnique(importTypes, specificProcessor.getImports());
+			}
 		}
 		addUnique(importTypes, result);
 		return importTypes.toArray(new Type[] {});
@@ -137,7 +140,6 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 
 	protected void processSuperClass(TypeElement rootElement, Map<TypeElement, List<ExecutableElement>> methodCache, javax.lang.model.element.Element superClassElement, PrintWriter pw) {
 		if (superClassElement == null ||
-			superClassElement.equals(processingEnv.getElementUtils().getTypeElement(Widget.class.getCanonicalName())) ||
 			superClassElement.equals(processingEnv.getElementUtils().getTypeElement(Object.class.getCanonicalName()))) {
 			return;
 		}
@@ -149,82 +151,90 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		Elements elementUtils = processingEnv.getElementUtils();
 		
 		TypeElement superClass = (TypeElement)superClassElement;
-		List<ExecutableElement> methods = ElementFilter.methodsIn(superClass.getEnclosedElements());
 		
-		for (ExecutableElement method: methods) {
-			if (method.getModifiers().contains(Modifier.PUBLIC) && !method.getModifiers().contains(Modifier.FINAL) &&
-				!method.getModifiers().contains(Modifier.STATIC)) {
-				
-				boolean isOverriden = false;
-				
-				for (Entry<TypeElement, List<ExecutableElement>> cachedTypeMethods: methodCache.entrySet()) {
-					for (ExecutableElement cachedMethod: cachedTypeMethods.getValue()) {
-						if (elementUtils.overrides(cachedMethod, method, cachedTypeMethods.getKey())) {
-							isOverriden = true;
-							break;
+		if (!superClassElement.equals(processingEnv.getElementUtils().getTypeElement(Widget.class.getCanonicalName()))) {
+
+			List<ExecutableElement> methods = ElementFilter.methodsIn(superClass.getEnclosedElements());
+			
+			for (ExecutableElement method: methods) {
+				if (method.getModifiers().contains(Modifier.PUBLIC) && !method.getModifiers().contains(Modifier.FINAL) &&
+					!method.getModifiers().contains(Modifier.STATIC)) {
+	
+					if (method.getSimpleName().toString().equals("getElement") && method.getParameters().size() == 0) {
+						continue;
+					}
+					
+					boolean isOverriden = false;
+					
+					for (Entry<TypeElement, List<ExecutableElement>> cachedTypeMethods: methodCache.entrySet()) {
+						for (ExecutableElement cachedMethod: cachedTypeMethods.getValue()) {
+							if (elementUtils.overrides(cachedMethod, method, cachedTypeMethods.getKey())) {
+								isOverriden = true;
+								break;
+							}
 						}
 					}
-				}
-				
-				if (!isOverriden) {
-					ExecutableType methodType = (ExecutableType)processingEnv.getTypeUtils().asMemberOf((DeclaredType)rootElement.asType(), method);
 					
-					List<ExecutableElement> cachedMethods = methodCache.get(superClass);
-					if (cachedMethods == null) {
-						cachedMethods = new ArrayList<ExecutableElement>();
-						methodCache.put(superClass, cachedMethods);
-					}
-					cachedMethods.add(method);
-					
-					pw.print(toString(method.getModifiers()) + methodType.getReturnType().toString() + " " + method.getSimpleName().toString() + "(");
-					int i = 0;
-					
-					for (TypeMirror parameterType : methodType.getParameterTypes()) {
-						if (i > 0) {
-							pw.print(", ");
-						}
-					
-						VariableElement parameterElement = method.getParameters().get(i);
-						i++;
+					if (!isOverriden) {
+						ExecutableType methodType = (ExecutableType)processingEnv.getTypeUtils().asMemberOf((DeclaredType)rootElement.asType(), method);
 						
-						pw.print(parameterType.toString() + " " + parameterElement.getSimpleName());
-					}
-					pw.print(")");
-					
-					if (methodType.getThrownTypes() != null && methodType.getThrownTypes().size() > 0) {
-						pw.print(" throws ");
-						i = 0;
-						for (TypeMirror thrownType: methodType.getThrownTypes()) {
+						List<ExecutableElement> cachedMethods = methodCache.get(superClass);
+						if (cachedMethods == null) {
+							cachedMethods = new ArrayList<ExecutableElement>();
+							methodCache.put(superClass, cachedMethods);
+						}
+						cachedMethods.add(method);
+						
+						pw.print(toString(method.getModifiers()) + methodType.getReturnType().toString() + " " + method.getSimpleName().toString() + "(");
+						int i = 0;
+						
+						for (TypeMirror parameterType : methodType.getParameterTypes()) {
 							if (i > 0) {
 								pw.print(", ");
 							}
-							pw.print(thrownType.toString());
+						
+							VariableElement parameterElement = method.getParameters().get(i);
 							i++;
+							
+							pw.print(parameterType.toString() + " " + parameterElement.getSimpleName());
 						}
-					}
-					pw.println(" {");
-					pw.println("componentOperation = true;");
-					if (!methodType.getReturnType().toString().toLowerCase().equals("void")) {
-						pw.print(methodType.getReturnType().toString() + " result = ");
-					}
-					
-					i = 0;
-					pw.print("super." + method.getSimpleName().toString() + "(");
-					for (VariableElement parameter : method.getParameters()) {
-						if (i > 0) {
-							pw.print(", ");
+						pw.print(")");
+						
+						if (methodType.getThrownTypes() != null && methodType.getThrownTypes().size() > 0) {
+							pw.print(" throws ");
+							i = 0;
+							for (TypeMirror thrownType: methodType.getThrownTypes()) {
+								if (i > 0) {
+									pw.print(", ");
+								}
+								pw.print(thrownType.toString());
+								i++;
+							}
 						}
-						i++;
-						pw.print(parameter.getSimpleName());
+						pw.println(" {");
+						pw.println("componentOperation = true;");
+						if (!methodType.getReturnType().toString().toLowerCase().equals("void")) {
+							pw.print(methodType.getReturnType().toString() + " result = ");
+						}
+						
+						i = 0;
+						pw.print("super." + method.getSimpleName().toString() + "(");
+						for (VariableElement parameter : method.getParameters()) {
+							if (i > 0) {
+								pw.print(", ");
+							}
+							i++;
+							pw.print(parameter.getSimpleName());
+						}
+						pw.println(");");
+		
+						pw.println("componentOperation = false;");
+						if (!methodType.getReturnType().toString().toLowerCase().equals("void")) {
+							pw.println("return result;");
+						}
+						pw.println("}");
+						pw.println("");
 					}
-					pw.println(");");
-	
-					pw.println("componentOperation = false;");
-					if (!methodType.getReturnType().toString().toLowerCase().equals("void")) {
-						pw.println("return result;");
-					}
-					pw.println("}");
-					pw.println("");
 				}
 			}
 		}

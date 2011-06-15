@@ -5,6 +5,8 @@
 	
 	<source path="client" />
 	<source path="shared" />
+
+	<set-property name="acristheme" value="SHADOW" />
 	
 	<stylesheet src="acris-styles/theme/shadow/shadow-theme.css" />	
 </module>
