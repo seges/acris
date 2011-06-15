@@ -7,6 +7,7 @@ import javax.annotation.processing.Processor;
 import org.junit.Test;
 
 import sk.seges.acris.theme.component.TestComponent;
+import sk.seges.acris.theme.pap.ThemeComponentPanelProcessor;
 import sk.seges.sesam.core.pap.AnnotationTest;
 
 public class ThemeComponentPanelProcessorTest extends AnnotationTest {
