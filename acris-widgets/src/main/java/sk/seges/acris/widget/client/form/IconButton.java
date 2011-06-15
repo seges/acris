@@ -1,4 +1,4 @@
-package sk.seges.acris.widget.client;
+package sk.seges.acris.widget.client.form;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;

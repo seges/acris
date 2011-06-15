@@ -35,6 +35,7 @@
 }
 
 .acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-content {
+	
 }
 
 .acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-options .acris-cmp-option,.acris-cmp-container .acris-cmp-options .acris-cmp-option
@@ -75,10 +76,117 @@
 
 /************* ERROR OPTION PANE *************/
 .acris-cmp-errorPane {
+	
 }
 
 .acris-cmp-errorPane .acris-cmp-errorStack {
+	
 }
 
 .acris-cmp-errorPane .acris-cmp-errorStack .acris-cmp-error {
+	
+}
+
+/************* COMBOBOX *********************/
+/** button styles */
+.advanced-TextButtonPanel .choice-button-up {
+	border: none;
+	padding: 0;
+}
+
+/** button styles */
+.advanced-TextButtonPanel .choice-button-up-hovering {
+	border: none;
+	padding: 0;
+}
+
+/** button styles */
+.advanced-TextButtonPanel .choice-button-down {
+	border: none;
+	padding: 0;
+}
+
+/** button styles */
+.advanced-TextButtonPanel .choice-button-down-hovering {
+	border: none;
+	padding: 0;
+}
+
+.advanced-LockingPanel {
+	background-color: white;
+	filter: alpha(opacity = 65);
+	-moz-opacity: 0.65;
+	opacity: 0.65;
+}
+
+.advanced-TextButtonPanel {
+	border: 1px;
+	padding: 0;
+}
+
+.advanced-TextButtonPanel table {
+	border: 0;
+	padding: 0;
+	border-collapse: collapse;
+}
+
+.advanced-TextButtonPanel td {
+	border: 1px solid black;
+	padding: 0;
+	vertical-align: middle;
+}
+
+.advanced-TextButtonPanel .selected-value {
+	border: none;
+	color: black;
+}
+
+.advanced-TextButtonPanel .selected-row > div {
+	background-color: lightgoldenrodyellow;
+}
+
+.advanced-TextButtonPanel img {
+	display: inline;
+	border: 0;
+}
+
+.advanced-ListPopupPanel .list .icon-item img {
+	padding: 1px;
+	border: 0;
+}
+
+/** icon item label style **/
+.advanced-ListPopupPanel .list .icon-item div {
+	padding: 1px;
+}
+
+.advanced-ListPopupPanel {
+	border: 1px solid darkgray;
+	background-color: white;
+	padding: 0;
+}
+
+.advanced-ListPopupPanel .list {
+	border-collapse: collapse;
+	padding: 0;
+	cursor: pointer;
+}
+
+/** items list selected row style */
+.advanced-ListPopupPanel .list .selected-row > div {
+	background-color: lightgoldenrodyellow;
+}
+
+/** item style **/
+.advanced-ListPopupPanel .list .item {
+}
+
+/** icon item image style **/
+.advanced-ListPopupPanel .list .icon-item img {
+	border: 0;
+}
+
+/** icon item label style **/
+.advanced-ListPopupPanel .list .icon-item div {
+	padding: 1px;
 }
