@@ -63,6 +63,7 @@
 		<module>../acris-client-core</module>
 		<module>../acris-widgets</module>
 		<module>../acris-widgets-beantable</module>
+		<module>../acris-theme</module>
 		<module>../acris-json</module>
 		<module>../acris-common</module>
 		<module>../acris-external</module>
@@ -244,6 +245,17 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-theme-core</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-theme-shadow</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-theme-shadow</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
