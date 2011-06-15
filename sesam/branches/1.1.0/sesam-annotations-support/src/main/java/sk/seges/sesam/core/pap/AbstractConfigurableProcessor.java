@@ -282,6 +282,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		List<NamedType> imports = new ArrayList<NamedType>();
 
 		addUnique(imports, toTypes(getImports()));
+		addUnique(imports, toTypes(getImports(typeElement)));
 		addUnique(imports, getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement));
 		addUnique(imports, getMergedConfiguration(DefaultConfigurationType.OUTPUT_INTERFACES, typeElement));
 
@@ -299,6 +300,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return ElementKind.CLASS;
 	}
 	
+	protected Type[] getImports(TypeElement typeElement) {
+		return new Type[] { };
+	}
+
 	protected Type[] getImports() {
 		return new Type[] { };
 	}
