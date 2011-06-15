@@ -38,6 +38,12 @@
 						<enabled>true</enabled>
 					</releases>
 				</repository>
+				
+				<repository>
+          				<id>sonatype</id>
+					<url>http://oss.sonatype.org/content/repositories/staging</url>
+        			</repository>
+
 
 				<repository>
 					<id>gilead-snapshots-repo</id>

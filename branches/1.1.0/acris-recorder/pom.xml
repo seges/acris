@@ -87,8 +87,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.google.gwt</groupId>
+			<groupId>com.googlecode.gwtquery</groupId>
 			<artifactId>gwtquery</artifactId>
+			<classifier>${gwt.version}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>de.novanic.gwteventservice</groupId>
