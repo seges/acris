@@ -14,7 +14,7 @@
 	</parent>
 
 	<!-- More Project Information -->
-	<name>Acris Sitebuild</name>
+	<name>Acris Site build</name>
 	<description>Build Project for Acris site</description>
 
 	<modules>
