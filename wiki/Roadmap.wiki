@@ -17,6 +17,19 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 
 *Use appropriate template* when submitting an issue.
 
+=Release notes 1.1.2=
+
+==Features==
+  * Added shadow theme + new components into the widgets projects (ComboBox, CheckBox based on images
+  * New showcases available
+  * Added test project for testing cardpay/tatrapay payment methods
+  * New APIs/core for annotation processors
+  * Added complex selenium/webDriver support with configuration possibilities (with many fixes for doubleclick, etc.)
+
+==Improvements==
+  * 3rd party libraries upgrade - we are now using GWT 2.3.0
+  * More profiles added for easier plugin/depedency configuration(.gwt for GWT based projects, .pap profiles for plugable annotation processor based projects)
+
 =Release notes 1.1.1=
 
 ==Features==
