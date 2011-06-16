@@ -32,7 +32,7 @@
 	</scm>
 
 	<properties>
-		<selenium.version>2.0-SNAPSHOT</selenium.version> 
+		<selenium.version>2.0-2011.06.16</selenium.version> 
 		<logging.selenium.version>1.2</logging.selenium.version>
 		<sesam-os.version>1.1.2</sesam-os.version>
 	</properties>
