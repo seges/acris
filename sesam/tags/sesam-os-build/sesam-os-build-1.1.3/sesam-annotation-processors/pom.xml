@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sesam-annotation-processors</artifactId>
+	<name>sesam-annotation-processors</name>
+	<description>SeSAM Annotation processors</description>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os</artifactId>
+		<version>1.1.3</version>
+		<relativePath>../sesam-os/pom.xml</relativePath>
+	</parent>
+
+	<modules>
+		<module>sesam-model-metadata</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-annotations-support</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>

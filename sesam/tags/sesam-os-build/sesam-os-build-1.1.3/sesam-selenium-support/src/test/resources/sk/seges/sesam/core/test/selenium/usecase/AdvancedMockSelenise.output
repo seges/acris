@@ -1,0 +1,83 @@
+package sk.seges.sesam.core.test.selenium.usecase;
+
+import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultCredentialsSettings;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
+import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
+import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
+import sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise;
+
+@org.junit.Ignore
+public class AdvancedMockSeleniseConfiguration extends AdvancedMockSelenise {
+
+	public AdvancedMockSeleniseConfiguration(java.lang.String param) {
+		super(param);
+	}
+	
+	protected AdvancedMockSeleniseConfiguration(int port) {
+		super(port);
+	}
+	
+	AdvancedMockSeleniseConfiguration(boolean flags) {
+		super(flags);
+	}
+	
+	public AdvancedMockSeleniseConfiguration() {
+		super();
+		configure(this);
+	}
+	
+	private static DefaultTestEnvironment getTestConfiguration(sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise testElement) {
+		DefaultTestEnvironment result = new DefaultTestEnvironment(testElement.collectSystemProperties());
+
+		DefaultSeleniumEnvironment defaultSeleniumEnvironmentRoot = new DefaultSeleniumEnvironment("localhost",4444);
+		DefaultBromineEnvironment defaultBromineEnvironmentRoot = new DefaultBromineEnvironment("localhost",8080);
+		DefaultTestEnvironment defaultTestEnvironmentRoot = new DefaultTestEnvironment(defaultSeleniumEnvironmentRoot, defaultBromineEnvironmentRoot, "testURL", "", Browsers.FIREFOX);
+		result.merge(defaultTestEnvironmentRoot);
+
+		return result;
+	}
+	
+	private static DefaultMailSettings getMailConfiguration(sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise testElement) {
+		DefaultMailSettings result = new DefaultMailSettings(testElement.collectSystemProperties());
+
+		DefaultMailSettings defaultMailSettingsRoot = new DefaultMailSettings("host","pass","mail",Provider.IMAPS);
+		result.merge(defaultMailSettingsRoot);
+		return result;
+	}
+	
+	private static DefaultReportingSettings getReportConfiguration(sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise testElement) {
+		DefaultReportingSettings result = new DefaultReportingSettings(testElement.collectSystemProperties());
+
+		DefaultReportingSettings defaultReportingSettingsRoot = new DefaultReportingSettings(true,"result","screenshots");
+		result.merge(defaultReportingSettingsRoot);
+		return result;
+	}
+	
+	private static DefaultCredentialsSettings getCredentialsConfiguration(sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise testElement) {
+		DefaultCredentialsSettings result = new DefaultCredentialsSettings(testElement.collectSystemProperties());
+
+		return result;
+	}
+	
+	public static AbstractSeleniumTest configure(sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise testElement) {
+		testElement.setTestEnvironment(getTestConfiguration(testElement));
+		testElement.setMailEnvironment(getMailConfiguration(testElement));
+		testElement.setReportingSettings(getReportConfiguration(testElement));
+		testElement.setCredentialsSettings(getCredentialsConfiguration(testElement));
+		return testElement;
+	}
+	
+	@Override
+	public void runTests() throws Exception {
+		testMethod1();
+		testMethod2();
+	}
+}
