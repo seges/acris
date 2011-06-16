@@ -20,7 +20,7 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 =Release notes 1.1.2=
 
 ==Features==
-  * Added shadow theme + new components into the widgets projects (ComboBox, CheckBox based on images
+  * Added shadow theme + new components into the widgets projects (!ComboBox, !CheckBox based on images
   * New showcases available
   * Added test project for testing cardpay/tatrapay payment methods
   * New APIs/core for annotation processors
