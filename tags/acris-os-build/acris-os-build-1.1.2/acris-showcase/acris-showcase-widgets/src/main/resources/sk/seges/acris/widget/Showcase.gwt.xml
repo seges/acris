@@ -1,0 +1,8 @@
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='sk.seges.acris.Widgets' />
+
+	<source path="showcase" />
+	
+	<entry-point class="sk.seges.acris.widget.showcase.Showcase" />	
+</module>
