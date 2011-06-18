@@ -65,7 +65,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 		List<Type> result = new ArrayList<Type>();
 		Iterator<? extends Element> iterator = seleniumTestClasses.iterator();
 
-		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
+		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
 		
 		while (iterator.hasNext()) {
 			result.add(SeleniumTestProcessor.getOutputClass(nameTypesUtils.toType(((TypeElement)iterator.next()))));
@@ -103,7 +103,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 
 		pw.println("public void run() {");
 		
-		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
+		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
 		
 		for (Element seleniumTestClass: seleniumTestClasses) {
 			pw.println("run(new " + SeleniumTestProcessor.getOutputClass(nameTypesUtils.toType(((TypeElement)seleniumTestClass))).getSimpleName() + "());");
@@ -111,9 +111,5 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 		
 		pw.println("}");
 		pw.println("");
-
-//		pw.println("public void testAll() throws " + Exception.class.getSimpleName() + "{");
-//		pw.println("run(mergeTestConfiguration(getTestConfiguration()));");
-//		pw.println("}");
 	}
 }

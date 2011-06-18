@@ -32,6 +32,8 @@ public abstract class AnnotationTest {
 	private static final String TEST_SOURCE_FOLDER = "src/test/java";
 	private static final String MAIN_SOURCE_FOLDER = "src/main/java";
 	protected static final String SOURCE_FILE_SUFFIX = ".java";
+	protected static final String OUTPUT_FILE_SUFFIX = ".output";
+	protected static final String OUTPUT_DIRECTORY = "target/generated-test";
 
 	private static final JavaCompiler COMPILER = ToolProvider.getSystemJavaCompiler();
 
@@ -87,9 +89,31 @@ public abstract class AnnotationTest {
 	}
 
 	protected String[] getCompilerOptions() {
-		return new String[] {};
+		return CompilerOptions.GENERATED_SOURCES_DIRECTORY.getOption(ensureOutputDirectory().getAbsolutePath());
 	}
 	
+	protected String toPath(Package packageName) {
+		return toPath(packageName.getName());
+	}
+
+	protected String toPath(String packageName) { 
+		return packageName.replace(".", "/");
+	}
+
+	protected File getResourceFile(Class<?> clazz) {
+		return new File(getClass().getResource("/" + toPath(clazz.getPackage()) + "/" + 
+				clazz.getSimpleName() + OUTPUT_FILE_SUFFIX).getFile());
+	}
+
+	protected File ensureOutputDirectory() {
+		File file = new File(OUTPUT_DIRECTORY);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		
+		return file;
+	}
+
 	protected static void assertOutput(File expectedResult, File output) {
 		String[] expectedContent = getContents(expectedResult);
 		String[] outputContent = getContents(output);
@@ -245,6 +269,7 @@ public abstract class AnnotationTest {
 		for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
 			assertFalse("Expected no errors", diagnostic.getKind().equals(Kind.ERROR));
 		}
+		
 
 	}
 

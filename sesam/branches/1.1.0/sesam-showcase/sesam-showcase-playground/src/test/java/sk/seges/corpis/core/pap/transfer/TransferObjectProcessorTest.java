@@ -1,5 +1,7 @@
 package sk.seges.corpis.core.pap.transfer;
 
+import java.io.File;
+
 import javax.annotation.processing.Processor;
 
 import org.junit.Test;
@@ -21,4 +23,21 @@ public class TransferObjectProcessorTest extends AnnotationTest {
 			new TransferObjectProcessor()
 		};
 	}
+	
+	private static final String OUTPUT_DIRECTORY = "target/generated-test";
+	
+	protected File ensureOutputDirectory() {
+		File file = new File(OUTPUT_DIRECTORY);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		
+		return file;
+	}
+	
+	@Override
+	protected String[] getCompilerOptions() {
+		return CompilerOptions.GENERATED_SOURCES_DIRECTORY.getOption(ensureOutputDirectory().getAbsolutePath());
+	}
+
 }
