@@ -17,10 +17,13 @@ package sk.seges.acris.widget.client.form.select;
  */
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -36,7 +39,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * @author <a href="mailto:sskladchikov@gmail.com">Sergey Skladchikov</a>
  * @since 1.2.0
  */
-public abstract class TextButtonPanel extends SimplePanel  {
+public abstract class TextButtonPanel extends SimplePanel implements HasValue<String> {
 
 	public interface TextButtonResources extends ClientBundle {
 		ImageResource button();
@@ -270,4 +273,25 @@ public abstract class TextButtonPanel extends SimplePanel  {
     protected String getHeight() {
         return height;
     }
+    
+	@Override
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
+		return selectedValue.addValueChangeHandler(handler);
+	}
+
+	@Override
+	public String getValue() {
+		return selectedValue.getValue();
+	}
+
+	@Override
+	public void setValue(String value) {
+		selectedValue.setValue(value);
+	}
+
+	@Override
+	public void setValue(String value, boolean fireEvents) {
+		selectedValue.setValue(value, fireEvents);
+	}	
+
 }

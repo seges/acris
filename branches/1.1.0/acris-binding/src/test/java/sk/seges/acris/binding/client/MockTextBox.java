@@ -3,11 +3,10 @@
  */
 package sk.seges.acris.binding.client;
 
-import sk.seges.acris.binding.client.providers.support.widget.HasEnabled;
-
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 
