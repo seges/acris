@@ -144,7 +144,23 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		
 		return type;
 	}
-	
+
+	protected NamedType stripTypesFromTypeParameters(NamedType type) {
+		if (type instanceof HasTypeParameters) {
+			HasTypeParameters typedType = (HasTypeParameters)type;
+			if (typedType.getTypeParameters() != null && typedType.getTypeParameters().length > 0) {
+				TypeParameter[] variables = new TypeParameter[typedType.getTypeParameters().length];
+				int i = 0;
+				for (TypeParameter typeParameter: typedType.getTypeParameters()) {
+					variables[i] = TypeParameterBuilder.get(typeParameter.getVariable().toString());
+					i++;
+				}
+				return TypedClassBuilder.get(type, variables);
+			}
+		}
+		return type;
+	}
+
 	protected Type[] getSubProcessorImports() {
 		List<Type> types = new ArrayList<Type>();
 		for (Set<SubProcessor<?>> subProcessorSet : subProcessors.values()) {
@@ -257,21 +273,19 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return source;
 	}
 
-//	protected void stripGenerics(MutableType mutableType) {
-//		mutableType
-//	}
-	
 	protected void addGenericType(List<NamedType> result, NamedType importName, TypeElement typeElement) {
 		if (importName.getQualifiedName().equals(NamedType.THIS.getName())) {
 			importName = getNameTypes().toType(typeElement);
 		}
 		if (importName instanceof HasTypeParameters) {
 			for (TypeParameter typeParameter: ((HasTypeParameters)importName).getTypeParameters()) {
-				for (TypeVariable typeVariable: typeParameter.getBounds()) {
-					if (typeVariable.getUpperBound() != null) {
-						NamedType type = getNameTypes().toType(typeVariable.getUpperBound());
-						result.add(type);
-						addGenericType(result, type, typeElement);
+				if (typeParameter.getBounds() != null) {
+					for (TypeVariable typeVariable: typeParameter.getBounds()) {
+						if (typeVariable.getUpperBound() != null) {
+							NamedType type = getNameTypes().toType(typeVariable.getUpperBound());
+							result.add(type);
+							addGenericType(result, type, typeElement);
+						}
 					}
 				}
 			}
@@ -309,7 +323,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	}
 
 	protected NameTypes getNameTypes() {
-		return new NameTypesUtils(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
+		return new NameTypesUtils(processingEnv.getElementUtils());
 	}
 	
 	protected final NamedType[] getClassNames(Element element) {
@@ -420,7 +434,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		TypeElement typeElement = (TypeElement) element;
 
 		NamedType[] outputNames = getClassNames(element);
-		NamedType inputClass = getNameTypes().toType(typeElement);
+		NamedType inputClass = getNameTypes().toType(typeElement.asType());
 		
 		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + element.getSimpleName().toString() + " with " + getClass().getSimpleName());
 
@@ -441,12 +455,24 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				
 				writeClassAnnotations(pw, element);
 
+				NamedType[] superClassTypes = getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement);
+				NamedType superClass = null;
+
+				if ((getElementKind().equals(ElementKind.CLASS) || getElementKind().equals(ElementKind.INTERFACE))
+						&& superClassTypes.length == 1) {
+					superClass = superClassTypes[0];
+					if (superClass instanceof HasTypeParameters && !(outputName instanceof HasTypeParameters)) {
+						outputName = TypedClassBuilder.get(outputName, ((HasTypeParameters)superClass).getTypeParameters());
+					}
+				}
+				
 				pw.print("public " + getElementKind().name().toLowerCase() + " " + outputName.toString(inputClass, ClassSerializer.SIMPLE, true));
 				
-				NamedType[] superClassTypes = getMergedConfiguration(DefaultConfigurationType.OUTPUT_SUPERCLASS, typeElement);
-				
-				if (getElementKind().equals(ElementKind.CLASS) && superClassTypes.length == 1) {
-					pw.print(" extends " + superClassTypes[0].toString(inputClass, ClassSerializer.SIMPLE, true));
+				if ((getElementKind().equals(ElementKind.CLASS) || getElementKind().equals(ElementKind.INTERFACE))
+						&& superClass != null) {
+					
+					superClass = stripTypesFromTypeParameters(superClass);
+					pw.print(" extends " + superClass.toString(inputClass, ClassSerializer.SIMPLE, true));
 				}
 	
 				if (getMergedConfiguration(DefaultConfigurationType.OUTPUT_INTERFACES, typeElement).length > 0) {
@@ -532,8 +558,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
 		List<? extends AnnotationMirror> annotationMirrors = typeElement.getAnnotationMirrors();
 		for (AnnotationMirror mirror : annotationMirrors) {
-			Element element = mirror.getAnnotationType().asElement();
-			NamedType inputClass = nameTypes.toType(element);
+			NamedType inputClass = nameTypes.toType(mirror.getAnnotationType());
 			if (types.contains(inputClass)) {
 				try {
 					Class<Annotation> annotationClass = (Class<Annotation>) Class.forName(inputClass.getQualifiedName());
@@ -656,5 +681,4 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	protected TypeElement toTypeElement(Class<?> clazz) {
 		return processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
 	}
-
 }

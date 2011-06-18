@@ -1,17 +1,17 @@
 package sk.seges.sesam.core.pap.builder;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.model.InputClass;
@@ -24,38 +24,47 @@ import sk.seges.sesam.core.pap.model.api.TypeParameter;
 public class NameTypesUtils implements NameTypes {
 
 	private Elements elements;
-	private Types types;
 	
-	public NameTypesUtils(Elements elements, Types types) {
+	public NameTypesUtils(Elements elements) {
 		this.elements = elements;
-		this.types = types;
 	}
 	
-	private boolean isDeclaredType(Element element) {
-		return (element.getKind().equals(ElementKind.CLASS) ||
-				element.getKind().equals(ElementKind.INTERFACE));
-	}
-	
-	private MutableType handleGenerics(MutableType simpleType, Element element) {
-		if (element.getKind().equals(ElementKind.CLASS) || element.getKind().equals(ElementKind.INTERFACE)) {
-			TypeElement typeElement = (TypeElement)element;
-			if (typeElement.getTypeParameters() != null && typeElement.getTypeParameters().size() > 0) {
-				TypeParameter[] typeParameters = new TypeParameter[typeElement.getTypeParameters().size()];
-				for (int i = 0; i < typeElement.getTypeParameters().size(); i++) {
-					TypeParameterElement typeParameterElement = typeElement.getTypeParameters().get(i);
-					Type[] boundTypes = new Type[typeParameterElement.getBounds().size()];
-					for (int j = 0; j < typeParameterElement.getBounds().size(); j++) {
-						TypeMirror typeMirror = typeParameterElement.getBounds().get(j);
-						TypeVariable typeVariable = (TypeVariable)typeParameterElement.asType();
-						typeMirror = typeVariable.getUpperBound();
-						Element boundElement = types.asElement(typeMirror);
-						boundTypes[j] = toType(boundElement);
-					}
-					if (typeParameterElement.asType().getKind().equals(TypeKind.TYPEVAR)) {
-						TypeVariable typeVariable = (TypeVariable)typeParameterElement.asType();
-						typeParameters[i] = TypeParameterBuilder.get(typeVariable.toString(), boundTypes);
+	private MutableType handleGenerics(MutableType simpleType, TypeMirror type) {
+		if (type.getKind().equals(TypeKind.DECLARED)) {
+			DeclaredType declaredType = (DeclaredType)type;
+			if (declaredType.getTypeArguments() != null && declaredType.getTypeArguments().size() > 0) {
+				TypeParameter[] typeParameters = new TypeParameter[declaredType.getTypeArguments().size()];
+				for (int i = 0; i < declaredType.getTypeArguments().size(); i++) {
+					TypeMirror typeParameter = declaredType.getTypeArguments().get(i);
+
+					List<Type> boundTypes = new ArrayList<Type>();
+					
+					if (typeParameter.getKind().equals(TypeKind.TYPEVAR)) {
+						TypeVariable typeVariable = (TypeVariable)typeParameter;
+						TypeMirror upperBound = typeVariable.getUpperBound();
+
+						if (upperBound != null && upperBound.getKind().equals(TypeKind.DECLARED)) {
+							TypeElement element = (TypeElement)((DeclaredType)upperBound).asElement();
+							
+							if (element.getSuperclass() != null && !element.getSuperclass().getKind().equals(TypeKind.NONE)) {
+								DeclaredType superClassType = (DeclaredType)element.getSuperclass();
+								if (superClassType != null && !superClassType.toString().equals(Object.class.getCanonicalName())) {
+									boundTypes.add(toType(superClassType));
+								}
+
+								for (TypeMirror typeInterface: element.getInterfaces()) {
+									if (typeInterface != null && !typeInterface.toString().equals(Object.class.getCanonicalName())) {
+										boundTypes.add(toType(typeInterface));
+									}
+								}
+							} else {
+								boundTypes.add(toType(upperBound));
+							}
+							typeParameters[i] = TypeParameterBuilder.get(typeParameter.toString(), boundTypes.toArray(new Type[] {}));
+						}
 					} else {
-						typeParameters[i] = TypeParameterBuilder.get(boundTypes);
+						boundTypes.add(toType(typeParameter));
+						typeParameters[i] = TypeParameterBuilder.get(null, boundTypes.toArray(new Type[] {}));
 					}
 				}
 				return TypedClassBuilder.get(simpleType, typeParameters);
@@ -64,15 +73,32 @@ public class NameTypesUtils implements NameTypes {
 		
 		return simpleType;
 	}
+
+	public MutableType toType(TypeMirror typeMirror) {
+		if (typeMirror.getKind().equals(TypeKind.DECLARED)) {
+			DeclaredType declaredType = (DeclaredType)typeMirror;
+			
+			if (declaredType.getEnclosingType() != null && declaredType.getEnclosingType().getKind().equals(TypeKind.DECLARED)) {
+				MutableType enclosedElement = toType(declaredType.getEnclosingType());
+				return handleGenerics(new InputClass(enclosedElement, declaredType.asElement().getSimpleName().toString()), declaredType);
+			}
 	
-	public MutableType toType(Element element) {
-		if (element.getEnclosingElement() != null && isDeclaredType(element.getEnclosingElement())) {
-			MutableType enclosedElement = toType(element.getEnclosingElement());
-			return handleGenerics(new InputClass(enclosedElement, element.getSimpleName().toString()), element);
+			PackageElement packageElement = elements.getPackageOf(declaredType.asElement());
+			return handleGenerics(new InputClass(packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
 		}
 
-		PackageElement packageElement = elements.getPackageOf(element);
-		return handleGenerics(new InputClass(packageElement.getQualifiedName().toString(), element.getSimpleName().toString()), element);
+		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
+	}
+	
+	public MutableType toType(Element element) {
+		return toType(element.asType());
+//		if (element.getEnclosingElement() != null && isDeclaredType(element.getEnclosingElement())) {
+//			MutableType enclosedElement = toType(element.getEnclosingElement());
+//			return handleGenerics(new InputClass(enclosedElement, element.getSimpleName().toString()), element);
+//		}
+//
+//		PackageElement packageElement = elements.getPackageOf(element);
+//		return handleGenerics(new InputClass(packageElement.getQualifiedName().toString(), element.getSimpleName().toString()), element);
 	}
 	
 	private static NamedType toType(Class<?> clazz) {
@@ -149,7 +175,7 @@ public class NameTypesUtils implements NameTypes {
 				return TypedClassBuilder.get(packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), parameters);
 
 			} else {
-				return toType(typeElement);
+				return toType(typeElement.asType());
 			}
 		}
 
