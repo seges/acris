@@ -14,19 +14,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package sk.seges.acris.theme.client.shadow;
+package sk.seges.acris.theme.component;
 
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.widget.client.form.select.ComboBox;
-
-import com.google.gwt.user.client.ui.ListBox;
 
 /**
- * Styled {@link ComboBox} with shadow theme. This is not the standard system based {@link ListBox} because it does not
- * allows you to define custom drop down arrow. Shadow components should have a custom drop down arrow so we are using
- * {@link ComboBox} instead of {@link ListBox}
- * 
  * @author Peter Simun (simun@seges.sk)
  */
-@ThemeSupport(widgetClass = ComboBox.class, elementName = "comboBox", themeName = ShadowTheme.NAME)
-public class ShadowComboBox {}
+@ThemeSupport(widgetClass = TestWidget.class, elementName = "testWidget", themeName = "test")
+public class StyledTestWidget {}
