@@ -8,10 +8,10 @@ import org.gwt.beansbinding.core.client.ext.BeanAdapter;
 import org.gwt.beansbinding.ui.client.adapters.BeanAdapterBase;
 
 import sk.seges.acris.binding.client.providers.support.generic.HandlerBindingAdapterProvider;
-import sk.seges.acris.binding.client.providers.support.widget.HasEnabled;
 
 import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.HasEnabled;
 
 /**
  * @author ladislav.gazo

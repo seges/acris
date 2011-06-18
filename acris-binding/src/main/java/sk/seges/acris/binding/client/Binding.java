@@ -17,11 +17,11 @@ import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.holder.ConfigurableBinding;
 import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
-import sk.seges.acris.binding.client.providers.support.widget.HasEnabled;
 import sk.seges.acris.binding.client.providers.support.widget.HasVisible;
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 
 import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
