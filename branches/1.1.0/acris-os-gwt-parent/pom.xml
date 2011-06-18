@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.7</version>
+		<version>1.1.8-SNAPSHOT</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -285,7 +285,7 @@
 			<id>pap</id>
 			<activation>
 				<file>
-					<exists>.pap</exists>
+					<exists>${basedir}/.pap</exists>
 				</file>
 			</activation>
 			<build>
@@ -323,7 +323,7 @@
 			<id>gwt-client</id>
 			<activation>
 				<file>
-					<exists>.gwt</exists>
+					<exists>${basedir}/.gwt</exists>
 				</file>
 			</activation>
 			<build>

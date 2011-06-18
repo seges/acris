@@ -103,7 +103,7 @@ public class ThemeComponentProcessor extends AbstractConfigurableProcessor {
 		String uiTemplateName = uiTemplate.value();
 		
 		if (uiTemplateName != null && !uiTemplateName.equals(Constants.NULL)) {
-			pw.println("@" + UiTemplate.class.getSimpleName() + "(" + uiTemplateName + ")");
+			pw.println("@" + UiTemplate.class.getSimpleName() + "(\"" + uiTemplateName + "\")");
 		} else {
 			pw.println("@" + UiTemplate.class.getSimpleName() + "(\"" + name + ".ui.xml\")");
 		}

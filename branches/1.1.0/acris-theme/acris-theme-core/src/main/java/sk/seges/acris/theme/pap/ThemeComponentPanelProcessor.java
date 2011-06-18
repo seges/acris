@@ -79,7 +79,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		List<Type> importTypes = new ArrayList<Type>();
 		
 		for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
-			TypeElement componentClass = getComponentClass(typeElement);
+			TypeElement componentClass = getComponentType(typeElement);
 			if (specificProcessor.supports(componentClass)) {
 				addUnique(importTypes, specificProcessor.getImports());
 			}
@@ -96,9 +96,8 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
 
 		switch (type) {
-			case OUTPUT_SUPERCLASS:
-				
-				return new Type[] { getNameTypes().toType(getComponentClass(typeElement))};
+			case OUTPUT_SUPERCLASS:		
+				return new Type[] { getNameTypes().toType(getComponentType(typeElement))};
 		}
 		
 		return super.getConfigurationTypes(type, typeElement);
@@ -111,7 +110,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		};
 	};
 
-	private TypeElement getComponentClass(TypeElement typeElement) {
+	private TypeElement getComponentType(TypeElement typeElement) {
 		try {
 			ThemeSupport themeSupportAnnotation = typeElement.getAnnotation(ThemeSupport.class);
 			themeSupportAnnotation.widgetClass().getCanonicalName();
@@ -254,7 +253,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		
 		String componentName = "component";
 
-		TypeElement componentClass = getComponentClass(element);
+		TypeElement componentClass = getComponentType(element);
 		
 		pw.println("private boolean componentOperation = false;");
 		

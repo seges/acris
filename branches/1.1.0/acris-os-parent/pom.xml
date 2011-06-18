@@ -8,8 +8,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.1.3</version>
-
+		<version>1.1.4-SNAPSHOT</version>
 	</parent>
 
 	<name>AcrIS Parent</name>
@@ -82,8 +81,8 @@
 		<repository.type>java</repository.type>
 		<repository.project>acris</repository.project>
 
-		<sesam-os.version>1.1.3</sesam-os.version>
-		<corpis-os.version>1.1.3</corpis-os.version>
+		<sesam-os.version>1.1.4-SNAPSHOT</sesam-os.version>
+		<corpis-os.version>1.1.4-SNAPSHOT</corpis-os.version>
 
 		<htmlparser.version>2.0-20100701</htmlparser.version>
 	</properties>
