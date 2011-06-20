@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-gwt-parent</artifactId>
-		<version>1.0.20</version>
+		<version>1.0.22-SNAPSHOT</version>
 	</parent>
 
 	<properties>
