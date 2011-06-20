@@ -6,19 +6,8 @@
 	<source path="client" />
 	<source path="shared" />
 
-	<set-property name="acristheme" value="SHADOW" />
-	
-	<generate-with class="sk.seges.acris.theme.rebind.ThemeComponentSelectorGenerator">
-		<any>
-			<when-type-is class="com.google.gwt.user.client.ui.Button" />
-			<when-type-is class="sk.seges.acris.widget.client.form.select.ComboBox" />
-			<when-type-is class="sk.seges.acris.widget.client.form.ImageCheckBox" />
-			<when-type-is class="com.google.gwt.user.client.ui.PasswordTextBox" />
-			<when-type-is class="com.google.gwt.user.client.ui.TextArea" />
-			<when-type-is class="com.google.gwt.user.client.ui.TextBox" />
-		</any>
-	</generate-with>
-	
+	<inherits name='sk.seges.acris.theme.client.shadow.ShadowThemeConfiguration' />
+
 	<replace-with class="sk.seges.acris.theme.client.shadow.ShadowCheckBoxPanel">
     	<when-type-is class="com.google.gwt.user.client.ui.CheckBox"/>
   	</replace-with>
