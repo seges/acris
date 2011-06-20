@@ -78,11 +78,11 @@ public class NameTypesUtils implements NameTypes {
 		if (typeMirror.getKind().equals(TypeKind.DECLARED)) {
 			DeclaredType declaredType = (DeclaredType)typeMirror;
 			
-			if (declaredType.getEnclosingType() != null && declaredType.getEnclosingType().getKind().equals(TypeKind.DECLARED)) {
-				MutableType enclosedElement = toType(declaredType.getEnclosingType());
+			if (declaredType.asElement().getEnclosingElement() != null && declaredType.asElement().getEnclosingElement().asType().getKind().equals(TypeKind.DECLARED)) {
+				MutableType enclosedElement = toType(declaredType.asElement().getEnclosingElement());
 				return handleGenerics(new InputClass(enclosedElement, declaredType.asElement().getSimpleName().toString()), declaredType);
 			}
-	
+				
 			PackageElement packageElement = elements.getPackageOf(declaredType.asElement());
 			return handleGenerics(new InputClass(packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
 		}
