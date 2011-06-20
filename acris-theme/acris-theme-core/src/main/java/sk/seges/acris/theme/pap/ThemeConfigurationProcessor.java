@@ -14,6 +14,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
+import javax.tools.JavaFileManager.Location;
 import javax.tools.StandardLocation;
 
 import sk.seges.acris.theme.client.annotation.ThemeConfiguration;
@@ -51,10 +52,13 @@ public class ThemeConfigurationProcessor extends AbstractProcessor {
 				Set<? extends Element> themeComponents = roundEnv.getElementsAnnotatedWith(ThemeSupport.class);
 
 				if (themeComponents.size() == 0) {
+					processingEnv.getMessager().printMessage(Kind.NOTE, "No themed components found. Skipping processor execution. ", configurationElement);
 					return false;
 				}
 
 				ThemeConfiguration themeConfiguration = configurationElement.getAnnotation(ThemeConfiguration.class);
+
+				processingEnv.getMessager().printMessage(Kind.NOTE, "Creating GWT module for theme " + themeConfiguration.themeName() + ".", configurationElement);
 
 				PrintWriter pw = null;
 				
@@ -63,7 +67,7 @@ public class ThemeConfigurationProcessor extends AbstractProcessor {
 					String packageName = processingEnv.getElementUtils().getPackageOf(configurationElement).getQualifiedName().toString();
 					packageName = packageName.replace(".", "/");
 					
-					FileObject configurationFile = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "target/generated-resources/" + 
+					FileObject configurationFile = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, "",  
 							packageName + "/" + toFirstUppercase(themeConfiguration.themeName()) + "ThemeConfiguration.gwt.xml", configurationElement);
 					OutputStream os = configurationFile.openOutputStream();
 					

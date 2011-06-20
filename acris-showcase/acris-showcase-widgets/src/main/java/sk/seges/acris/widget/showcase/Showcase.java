@@ -19,6 +19,9 @@ public class Showcase implements EntryPoint {
 	@Override	
 	public void onModuleLoad() {
 
+//		SimplePanel fp = GWT.create(SimplePanel.class);
+//		RootPanel.get().add(fp);
+
 		Grid grid = new Grid(8, 2);
 		RootPanel.get().add(grid);
 		
@@ -68,7 +71,7 @@ public class Showcase implements EntryPoint {
 		TextArea ta = (TextArea)GWT.create(TextArea.class);
 		grid.setWidget(i/2, i%2, ta);
 		i+=2;
-
+		
 		Button button = (Button)GWT.create(Button.class);
 		button.setText("Send");
 		grid.setWidget(i/2, i%2, button);
