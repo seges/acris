@@ -10,12 +10,11 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.MirroredTypeException;
-import javax.lang.model.util.SimpleTypeVisitor6;
 
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 import sk.seges.acris.theme.client.annotation.ThemeSupport.Resource;
+import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester;
+import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.Constants;
 import sk.seges.sesam.core.pap.model.api.MutableType;
@@ -75,22 +74,6 @@ public class ThemeComponentProcessor extends AbstractConfigurableProcessor {
 			getOutputClass(mutableType)
 		};
 	};
-
-	private TypeElement getResourceClass(Resource resource) {
-		try {
-			resource.resourceClass();
-		} catch (MirroredTypeException mte) {
-			return mte.getTypeMirror().accept(new SimpleTypeVisitor6<TypeElement, Void>() {
-				@Override
-				public TypeElement visitDeclared(DeclaredType t, Void p) {
-					return ((TypeElement) t.asElement());
-				}
-			}, null);
-		}
-
-		//never happend
-		return null;
-	}
 	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
@@ -124,7 +107,13 @@ public class ThemeComponentProcessor extends AbstractConfigurableProcessor {
 		if (themeSupportAnnotation.resources() != null) {
 			for (Resource resource: themeSupportAnnotation.resources()) {
 				pw.println("@" + UiField.class.getSimpleName() + "(provided = " + resource.field().provided() + ")");
-				pw.println(getResourceClass(resource).toString() + " " + resource.name() + ";");
+				pw.println(AnnotationClassPropertyHarvester.getTypeOfClassProperty(resource, new AnnotationClassProperty<Resource>() {
+
+					@Override
+					public Class<?> getClassProperty(Resource annotation) {
+						return annotation.resourceClass();
+					}
+				} ).toString() + " " + resource.name() + ";");
 				pw.println("");
 			}
 		}

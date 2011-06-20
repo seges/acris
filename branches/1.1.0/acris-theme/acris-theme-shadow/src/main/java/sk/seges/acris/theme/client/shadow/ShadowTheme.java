@@ -15,8 +15,10 @@
  */
 package sk.seges.acris.theme.client.shadow;
 
+import sk.seges.acris.theme.client.annotation.ThemeConfiguration;
 
+
+@ThemeConfiguration(themeName = "SHADOW")
 public class ShadowTheme {
-
 	public static final String NAME = "SHADOW";
 }

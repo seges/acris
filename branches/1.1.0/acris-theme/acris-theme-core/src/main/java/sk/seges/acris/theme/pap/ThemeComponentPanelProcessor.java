@@ -22,18 +22,18 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.SimpleTypeVisitor6;
 
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 import sk.seges.acris.theme.pap.specific.AbstractComponentSpecificProcessor.Statement;
 import sk.seges.acris.theme.pap.specific.ComponentSpecificProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeCheckBoxProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeImageCheckBoxProcessor;
+import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester;
+import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -111,20 +111,14 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 	};
 
 	private TypeElement getComponentType(TypeElement typeElement) {
-		try {
-			ThemeSupport themeSupportAnnotation = typeElement.getAnnotation(ThemeSupport.class);
-			themeSupportAnnotation.widgetClass().getCanonicalName();
-		} catch (MirroredTypeException mte) {
-			return mte.getTypeMirror().accept(new SimpleTypeVisitor6<TypeElement, Void>() {
-				@Override
-				public TypeElement visitDeclared(DeclaredType t, Void p) {
-					return ((TypeElement) t.asElement());
-				}
-			}, null);
-		}
+		ThemeSupport themeSupportAnnotation = typeElement.getAnnotation(ThemeSupport.class);
+		return AnnotationClassPropertyHarvester.getTypeOfClassProperty(themeSupportAnnotation, new AnnotationClassProperty<ThemeSupport>() {
 
-		//never happend
-		return null;
+			@Override
+			public Class<?> getClassProperty(ThemeSupport annotation) {
+				return annotation.widgetClass();
+			}
+		});
 	}
 
 	private String toString(Collection<Modifier> modifiers) {
