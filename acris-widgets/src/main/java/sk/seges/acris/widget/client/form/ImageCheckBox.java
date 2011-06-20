@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Image;
 
 public class ImageCheckBox extends CheckBox {
 
@@ -50,7 +51,7 @@ public class ImageCheckBox extends CheckBox {
 	}
 	
 	public ImageCheckBox(com.google.gwt.dom.client.Element element, CheckBoxImageResources checkBoxImageResources, String stylePrefix) {
-		super((Element) element.cast());
+	super((Element) element.cast());
 		
 		this.styleClassName = stylePrefix + styleClassName;
 		
@@ -116,6 +117,13 @@ public class ImageCheckBox extends CheckBox {
 			inputElement.<com.google.gwt.user.client.Element> cast().removeClassName(getStyleClassName(!getValue(), !enabled));
 		}
 		inputElement.<com.google.gwt.user.client.Element> cast().addClassName(getStyleClassName(value, enabled));
-		inputElement.setSrc(getCheckBoxImage(value, enabled).getURL());
+		
+		ImageResource checkBoxImage = getCheckBoxImage(value, enabled);
+		//We had to use this ugly hack because sprites are not working correctly in the IE7
+		//http://code.google.com/p/google-web-toolkit/issues/detail?id=4521
+		//When this will be fixed we should use URL property instead of setting background
+		inputElement.getStyle().setProperty("background", new Image(checkBoxImage).getElement().getStyle().getProperty("background"));
+
+//		inputElement.setSrc(image.getUrl());
 	}
 }

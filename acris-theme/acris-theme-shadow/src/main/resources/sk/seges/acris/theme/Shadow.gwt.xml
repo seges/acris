@@ -8,5 +8,20 @@
 
 	<set-property name="acristheme" value="SHADOW" />
 	
+	<generate-with class="sk.seges.acris.theme.rebind.ThemeComponentSelectorGenerator">
+		<any>
+			<when-type-is class="com.google.gwt.user.client.ui.Button" />
+			<when-type-is class="sk.seges.acris.widget.client.form.select.ComboBox" />
+			<when-type-is class="sk.seges.acris.widget.client.form.ImageCheckBox" />
+			<when-type-is class="com.google.gwt.user.client.ui.PasswordTextBox" />
+			<when-type-is class="com.google.gwt.user.client.ui.TextArea" />
+			<when-type-is class="com.google.gwt.user.client.ui.TextBox" />
+		</any>
+	</generate-with>
+	
+	<replace-with class="sk.seges.acris.theme.client.shadow.ShadowCheckBoxPanel">
+    	<when-type-is class="com.google.gwt.user.client.ui.CheckBox"/>
+  	</replace-with>
+	
 	<stylesheet src="acris-styles/theme/shadow/shadow-theme.css" />	
 </module>

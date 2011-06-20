@@ -41,9 +41,9 @@ public class Showcase implements EntryPoint {
 		grid.setWidget(i/2, i%2, new Label("Format:"));
 		i++;
 
-		ComboBox combo = GWT.create(ComboBox.class);
+		ComboBox<String> combo = GWT.create(ComboBox.class);
 		
-		ComboBoxDataModel model = new ComboBoxDataModel();
+		ComboBoxDataModel<String> model = new ComboBoxDataModel<String>();
 		combo.setModel(model);
 		combo.display();
 		

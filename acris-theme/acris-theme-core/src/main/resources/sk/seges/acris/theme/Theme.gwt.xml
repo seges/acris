@@ -43,15 +43,6 @@
   	]]>
 	</property-provider>
 
-	<generate-with class="sk.seges.acris.theme.rebind.ThemeComponentSelectorGenerator">
-		<all>
-			<none>
-				<when-property-is name="acristheme" value="NONE"/>
-			</none>
-			<when-type-assignable class="com.google.gwt.user.client.ui.IsWidget" />
-		</all>
-	</generate-with>
-
 	<source path="client" />
 	<source path="shared" />
 </module>
