@@ -39,7 +39,6 @@ import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Widget;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor {
@@ -125,7 +124,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		String result = "";
 		
 		for (Modifier modifier: modifiers) {
-			result = modifier.toString() + " ";
+			result += modifier.toString() + " ";
 		}
 		
 		return result;
@@ -145,15 +144,16 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		
 		TypeElement superClass = (TypeElement)superClassElement;
 		
-		if (!superClassElement.equals(processingEnv.getElementUtils().getTypeElement(Widget.class.getCanonicalName()))) {
+		if (!superClass.asType().getKind().equals(ElementKind.INTERFACE)) {
 
 			List<ExecutableElement> methods = ElementFilter.methodsIn(superClass.getEnclosedElements());
 			
 			for (ExecutableElement method: methods) {
 				if (method.getModifiers().contains(Modifier.PUBLIC) && !method.getModifiers().contains(Modifier.FINAL) &&
-					!method.getModifiers().contains(Modifier.STATIC)) {
+					!method.getModifiers().contains(Modifier.STATIC) && !method.getModifiers().contains(Modifier.ABSTRACT)) {
 	
-					if (method.getSimpleName().toString().equals("getElement") && method.getParameters().size() == 0) {
+					if ((method.getSimpleName().toString().equals("getElement") && method.getParameters().size() == 0) || 
+						(method.getSimpleName().toString().equals("removeFromParent") && method.getParameters().size() == 0)) {
 						continue;
 					}
 					
@@ -205,6 +205,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 							}
 						}
 						pw.println(" {");
+						pw.println("boolean previousComponentOperation = componentOperation;");
 						pw.println("componentOperation = true;");
 						if (!methodType.getReturnType().toString().toLowerCase().equals("void")) {
 							pw.print(methodType.getReturnType().toString() + " result = ");
@@ -221,7 +222,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 						}
 						pw.println(");");
 		
-						pw.println("componentOperation = false;");
+						pw.println("componentOperation = previousComponentOperation;");
 						if (!methodType.getReturnType().toString().toLowerCase().equals("void")) {
 							pw.println("return result;");
 						}
@@ -292,11 +293,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 			}
 		}
 
-		TypeMirror superclass = componentClass.getSuperclass();
-		
-		if (superclass.getKind().equals(TypeKind.DECLARED)) {
-			Map<TypeElement, List<ExecutableElement>> methodCache = new HashMap<TypeElement, List<ExecutableElement>>();
-			processSuperClass(componentClass, methodCache, ((DeclaredType)superclass).asElement(), pw);
-		}
+		Map<TypeElement, List<ExecutableElement>> methodCache = new HashMap<TypeElement, List<ExecutableElement>>();
+		processSuperClass(componentClass, methodCache, componentClass, pw);
 	}
 }
