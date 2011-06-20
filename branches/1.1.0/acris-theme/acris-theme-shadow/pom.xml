@@ -13,7 +13,7 @@
 
 	<build>
 		<plugins>
-			<!-- plugin>
+			<!--plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
@@ -25,6 +25,7 @@
 									<factorypathentry kind="VARJAR" id="M2_REPO/com/google/gwt/gwt-user/${gwt.version}/gwt-user-${gwt.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-widgets/${project.version}/acris-widgets-${project.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-theme-core/${project.version}/acris-theme-core-${project.version}.jar" enabled="true" runInBatchMode="false" />
 						        </factorypath>
 						          ]]>
@@ -54,7 +55,6 @@ org.eclipse.jdt.core.compiler.source=1.6
 					</additionalConfig>
 				</configuration>
 			</plugin-->
-
 		</plugins>
 	</build>
 	<dependencies>

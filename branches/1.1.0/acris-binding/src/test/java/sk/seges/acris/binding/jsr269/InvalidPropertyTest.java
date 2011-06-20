@@ -4,13 +4,14 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
+import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.sesam.core.pap.AnnotationTest;
 
 public class InvalidPropertyTest extends AnnotationTest {
 
 	@Test
 	public void invadidProperty() {
-		assertCompilationSuccessful(compileFiles(MockData.class));
+		assertCompilationSuccessful(compileFiles(BeanWrapper.class, MockData.class));
 
 	}
 	

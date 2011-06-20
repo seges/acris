@@ -454,7 +454,7 @@
 						<!-- style>DETAILED</style--><!-- use OBF for prod -->
 						<style>OBF</style><!-- use OBF for prod -->
 						<noServer>false</noServer>
-						<extraJvmArgs>-Xmx724M -Xss16M -Dfile.encoding=utf-8
+						<extraJvmArgs>-Xmx1024M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs>
 						<debugPort>8990</debugPort>
 						<shellServletMappingURL>/gwt-shell-servlet
