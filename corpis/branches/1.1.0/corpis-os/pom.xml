@@ -65,7 +65,7 @@
 		<repository.type>java</repository.type>
 		<repository.project>corpis</repository.project>
 	
-		<sesam-os.version>1.1.3</sesam-os.version>
+		<sesam-os.version>1.1.4-SNAPSHOT</sesam-os.version>
 		
 		<bouncycastle.version>1.45</bouncycastle.version>
 	</properties>
