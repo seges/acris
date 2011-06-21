@@ -731,13 +731,22 @@
 
 				<plugin>                                                                                                                                                    
 					<groupId>org.apache.maven.plugins</groupId>
-	                                <artifactId>maven-surefire-plugin</artifactId>
+					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven-surefire-plugin.version}</version>
-	                                <configuration>
-	                                        <forkMode>pertest</forkMode>
-	                                </configuration>
-	                        </plugin>
-	
+					<configuration>
+						<forkMode>pertest</forkMode>
+						<systemProperties>
+							<property>
+								<name>maven.class.path</name>
+								<value>${classpathElements}</value>
+							</property>
+							<property>
+								<name>maven.test.class.path</name>
+								<value>${project.testClasspathElements}</value>
+							</property>
+						</systemProperties>
+					</configuration>
+	            </plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>

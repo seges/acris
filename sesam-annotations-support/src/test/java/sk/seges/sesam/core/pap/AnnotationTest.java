@@ -229,6 +229,15 @@ public abstract class AnnotationTest {
 	
 	protected StandardJavaFileManager fileManager;
 	
+	protected String getClassPath() {
+		String classPath = System.getProperty("maven.test.class.path");
+		if (classPath == null || classPath.length() == 0) {
+			return System.getProperty("java.class.path");
+		}
+		classPath = classPath.replaceAll(", ", ";").trim();
+		return "\"" + classPath.substring(1, classPath.length() - 2).trim() + ";" + new File("target\\classes").getAbsolutePath() + "\"";
+	}
+	
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<JavaFileObject>();
 		if (COMPILER == null) {
@@ -244,13 +253,31 @@ public abstract class AnnotationTest {
 		 * Information about the classes being compiled (such as what they are annotated with) is *not* available via
 		 * the RoundEnvironment. However, if these classes are annotations, they certainly need to be validated.
 		 */
-		CompilationTask task = COMPILER.getTask(null, fileManager, diagnosticCollector, mergeCompilerOptions(Arrays.asList("-proc:only")),
-				null, fileManager.getJavaFileObjectsFromFiles(compilationUnits));
+		List<String> compilerOptions = mergeCompilerOptions(Arrays.asList("-proc:only", "-classpath", getClassPath()));
+		
+		System.out.println();
+		System.out.println("Starting java compiler:");
+		System.out.print("javac ");
+		for (String option: compilerOptions) {
+			System.out.print(option + " ");
+		}
+		CompilationTask task = COMPILER.getTask(null, fileManager, diagnosticCollector, compilerOptions, null, fileManager.getJavaFileObjectsFromFiles(compilationUnits));
 		List<Processor> processors = new ArrayList<Processor>();
 		for (Processor processor: getProcessors()) {
 			processors.add(processor);
 		}
 		task.setProcessors(processors);
+		System.out.print("-processor ");
+		for (Processor processor: processors) {
+			System.out.print(processor.getClass().getCanonicalName() + " ");
+		}
+		System.out.print(" ");
+		for (File file: compilationUnits) {
+			System.out.print(file.getName() + " ");
+		}
+		System.out.println();
+		System.out.println();
+		
 		task.call();
 
 		try {
