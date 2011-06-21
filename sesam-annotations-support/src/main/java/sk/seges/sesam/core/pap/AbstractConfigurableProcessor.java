@@ -28,6 +28,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
@@ -152,7 +153,21 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				TypeParameter[] variables = new TypeParameter[typedType.getTypeParameters().length];
 				int i = 0;
 				for (TypeParameter typeParameter: typedType.getTypeParameters()) {
-					variables[i] = TypeParameterBuilder.get(typeParameter.getVariable().toString());
+					if (typeParameter.getVariable() != null) {
+						variables[i] = TypeParameterBuilder.get(typeParameter.getVariable().toString());
+					} else if (typeParameter.getBounds() != null && typeParameter.getBounds().length > 0) {
+						
+						Type[] bounds = new Type[typeParameter.getBounds().length];
+					
+						int j = 0;
+						for (TypeVariable boundType: typeParameter.getBounds()) {
+							bounds[j++] = getNameTypes().toType(boundType.getUpperBound());
+						}
+						
+						variables[i] = TypeParameterBuilder.get(bounds);
+					} else {
+						variables[i] = TypeParameterBuilder.get("?");
+					}
 					i++;
 				}
 				return TypedClassBuilder.get(type, variables);
@@ -436,7 +451,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		NamedType[] outputNames = getClassNames(element);
 		NamedType inputClass = getNameTypes().toType(typeElement.asType());
 		
-		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + element.getSimpleName().toString() + " with " + getClass().getSimpleName());
+		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + element.getSimpleName().toString() + " with " + getClass().getSimpleName(), element);
 
 		for (NamedType outputName: outputNames) {
 			
