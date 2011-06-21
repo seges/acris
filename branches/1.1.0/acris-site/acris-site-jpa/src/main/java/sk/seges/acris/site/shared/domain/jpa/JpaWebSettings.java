@@ -69,7 +69,7 @@ public class JpaWebSettings extends WebSettingsDTO {
 	}
 
 	@Override
-	@Column(nullable = true)
+	@Column(length=1024, nullable = true)
 	public String getParameters() {
 		return super.getParameters();
 	}

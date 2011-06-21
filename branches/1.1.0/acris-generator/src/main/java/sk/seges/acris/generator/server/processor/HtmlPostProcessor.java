@@ -49,7 +49,7 @@ public class HtmlPostProcessor {
 		assert postProcessorActivator != null;
 	}
 
-	public String getProcessedContent(final String content, GeneratorToken token) {
+	public String getProcessedContent(final String content, GeneratorToken token, boolean indexFile) {
 		if (postProcessors == null || postProcessors.size() == 0) {
 			log.warn("No HTML post processor register");
 		}
@@ -63,20 +63,20 @@ public class HtmlPostProcessor {
 		
 		try {
 			NodeIterator nodeIterator = parser.elements();
-			return processNodes(nodeIterator, rootNodes, token);
+			return processNodes(nodeIterator, rootNodes, token, indexFile);
 		} catch (ParserException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected GeneratorEnvironment getGeneratorEnvironment(GeneratorToken generatorToken) {
+	protected GeneratorEnvironment getGeneratorEnvironment(GeneratorToken generatorToken, boolean indexFile) {
 		ContentData<?> content = contentMetaDataProvider.getContent(generatorToken);
-		return new DefaultGeneratorEnvironment(webSettings, generatorToken, content);
+		return new DefaultGeneratorEnvironment(webSettings, generatorToken, content, indexFile);
 	}
 	
-	private String processNodes(NodeIterator nodeIterator, List<Node> rootNodes, GeneratorToken token) throws ParserException {
+	private String processNodes(NodeIterator nodeIterator, List<Node> rootNodes, GeneratorToken token, boolean indexFile) throws ParserException {
 		
-		GeneratorEnvironment generatorEnvironment = getGeneratorEnvironment(token);
+		GeneratorEnvironment generatorEnvironment = getGeneratorEnvironment(token, indexFile);
 		
 		while (nodeIterator.hasMoreNodes()) {
 			Node node = nodeIterator.nextNode();

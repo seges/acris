@@ -5,6 +5,7 @@ import org.htmlparser.tags.LinkTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.utils.AnchorUtils;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 
@@ -25,7 +26,9 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 	}
 
 	protected String getLink(String link, GeneratorEnvironment generatorEnvironment) {
-		if (generatorEnvironment.getGeneratorToken().isDefaultToken()) {
+		GeneratorToken generatorToken = generatorEnvironment.getGeneratorToken();
+		
+		if (generatorToken.isDefaultToken() && link.toLowerCase().equals("#" + generatorToken.getNiceUrl().toLowerCase())) {
 			return "";
 		}
 		return link.substring(1);

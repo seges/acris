@@ -7,7 +7,7 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public class AnchorUtils {
 	
-	public static String getRelativePrefix(GeneratorToken generatorToken) {
+	public static String getRelativePrefix(GeneratorToken generatorToken, boolean indexFile) {
 		String niceUrl = generatorToken.getNiceUrl();
 		if (File.separatorChar != '/') {
 			niceUrl = niceUrl.replace(File.separatorChar, '/');
@@ -18,7 +18,7 @@ public class AnchorUtils {
 		//have to add ../../ prefix into the path
 		int count = niceUrl.split("/").length + 1;
 
-		if (count <= 1 || generatorToken.isDefaultToken()) {
+		if (count <= 1 || indexFile) {
 			return ""; //no special processing necessary 
 		}
 
@@ -41,6 +41,5 @@ public class AnchorUtils {
 		}
 
 		return url + niceUrl;
-	}
-	
+	}	
 }
