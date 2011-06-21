@@ -28,7 +28,7 @@ import javax.tools.ToolProvider;
 import sk.seges.sesam.core.pap.utils.ClassFinder;
 
 public abstract class AnnotationTest {
- 
+
 	private static final String TEST_SOURCE_FOLDER = "src/test/java";
 	private static final String MAIN_SOURCE_FOLDER = "src/main/java";
 	protected static final String SOURCE_FILE_SUFFIX = ".java";
@@ -38,43 +38,42 @@ public abstract class AnnotationTest {
 	private static final JavaCompiler COMPILER = ToolProvider.getSystemJavaCompiler();
 
 	protected enum CompilerOptions {
-		GENERATED_SOURCES_DIRECTORY("-s <directory>", "<directory>", "Specify where to place generated source files"),
-		GENERATED_CLASSES_DIRECTORY("-d <directory>", "<directory>", "Specify where to place generated class files"),
-		;
-		
+		GENERATED_SOURCES_DIRECTORY("-s <directory>", "<directory>", "Specify where to place generated source files"), GENERATED_CLASSES_DIRECTORY(
+				"-d <directory>", "<directory>", "Specify where to place generated class files"), ;
+
 		private String option;
 		private String description;
 		private String parameter;
-		
+
 		CompilerOptions(String option, String parameter, String description) {
 			this.option = option;
 			this.parameter = parameter;
 			this.description = description;
 		}
-		
+
 		public String getOption() {
 			return option;
 		}
 
 		public String[] getOption(String parameterValue) {
 			if (parameter != null) {
-				
+
 				String[] result = new String[2];
-				
+
 				int index = option.indexOf(parameter);
 				result[0] = option.substring(0, index).trim();
 				result[1] = parameterValue;
 				return result;
 			}
-			
-			return new String[] {getOption()};
+
+			return new String[] { getOption() };
 		}
 
 		public String getDescription() {
 			return description;
 		}
 	}
-	
+
 	/**
 	 * @return the processor instances that should be tested
 	 */
@@ -91,18 +90,18 @@ public abstract class AnnotationTest {
 	protected String[] getCompilerOptions() {
 		return CompilerOptions.GENERATED_SOURCES_DIRECTORY.getOption(ensureOutputDirectory().getAbsolutePath());
 	}
-	
+
 	protected String toPath(Package packageName) {
 		return toPath(packageName.getName());
 	}
 
-	protected String toPath(String packageName) { 
+	protected String toPath(String packageName) {
 		return packageName.replace(".", "/");
 	}
 
 	protected File getResourceFile(Class<?> clazz) {
-		return new File(getClass().getResource("/" + toPath(clazz.getPackage()) + "/" + 
-				clazz.getSimpleName() + OUTPUT_FILE_SUFFIX).getFile());
+		return new File(getClass().getResource(
+				"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX).getFile());
 	}
 
 	protected File ensureOutputDirectory() {
@@ -110,7 +109,7 @@ public abstract class AnnotationTest {
 		if (!file.exists()) {
 			file.mkdirs();
 		}
-		
+
 		return file;
 	}
 
@@ -118,7 +117,7 @@ public abstract class AnnotationTest {
 		String[] expectedContent = getContents(expectedResult);
 		String[] outputContent = getContents(output);
 		assertEquals(expectedContent.length, outputContent.length);
-		
+
 		for (int i = 0; i < expectedContent.length; i++) {
 			assertEquals(expectedContent[i].trim(), outputContent[i].trim());
 		}
@@ -126,7 +125,7 @@ public abstract class AnnotationTest {
 
 	private static String[] getContents(File file) {
 		List<String> content = new ArrayList<String>();
-		
+
 		try {
 			BufferedReader input = new BufferedReader(new FileReader(file));
 			try {
@@ -143,8 +142,8 @@ public abstract class AnnotationTest {
 
 		return content.toArray(new String[] {});
 	}
-	
-	//private 
+
+	// private
 	/**
 	 * Attempts to compile the given compilation units using the Java Compiler API.
 	 * <p>
@@ -177,19 +176,19 @@ public abstract class AnnotationTest {
 		if (compilationUnits == null) {
 			return;
 		}
-		for (T element: compilationUnits) {
+		for (T element : compilationUnits) {
 			assert (element != null);
 
 			if (element instanceof Class<?>) {
-				File file = toFile(((Class<?>)element));
+				File file = toFile(((Class<?>) element));
 				if (file != null) {
 					files.add(file);
 				} else {
-					//These are innerclasses, etc ... that should not be defined in this way
+					// These are innerclasses, etc ... that should not be defined in this way
 				}
 			} else if (element instanceof Package) {
 				ClassFinder classFinder = new ClassFinder();
-				addCollection(files, classFinder.findClassesInPackage(((Package)element).getName()));
+				addCollection(files, classFinder.findClassesInPackage(((Package) element).getName()));
 			}
 		}
 	}
@@ -199,9 +198,11 @@ public abstract class AnnotationTest {
 	}
 
 	private File toFile(Class<?> clazz) {
-		File file = new File(getTestSourceFolder() + File.separator + convertClassNameToResourcePath(clazz.getCanonicalName()) + SOURCE_FILE_SUFFIX);
+		File file = new File(getTestSourceFolder() + File.separator
+				+ convertClassNameToResourcePath(clazz.getCanonicalName()) + SOURCE_FILE_SUFFIX);
 		if (!file.exists()) {
-			file = new File(getMainSourceFolder() + File.separator + convertClassNameToResourcePath(clazz.getCanonicalName()) + SOURCE_FILE_SUFFIX);
+			file = new File(getMainSourceFolder() + File.separator
+					+ convertClassNameToResourcePath(clazz.getCanonicalName()) + SOURCE_FILE_SUFFIX);
 			if (!file.exists()) {
 				return null;
 			}
@@ -210,34 +211,44 @@ public abstract class AnnotationTest {
 	}
 
 	private List<String> mergeCompilerOptions(List<String> options) {
-				
+
 		if (options == null) {
 			return Arrays.asList(getCompilerOptions());
 		}
 		List<String> result = new ArrayList<String>();
 
-		for (String option: options) {
+		for (String option : options) {
 			result.add(option);
 		}
 
-		for (String option: getCompilerOptions()) {
+		for (String option : getCompilerOptions()) {
 			result.add(option);
 		}
 
 		return result;
 	}
-	
+
 	protected StandardJavaFileManager fileManager;
-	
+
 	protected String getClassPath() {
 		String classPath = System.getProperty("maven.test.class.path");
 		if (classPath == null || classPath.length() == 0) {
 			return System.getProperty("java.class.path");
 		}
-		classPath = classPath.replaceAll(", ", ";").trim();
-		return "\"" + classPath.substring(1, classPath.length() - 2).trim() + ";" + new File("target\\classes").getAbsolutePath() + "\"";
+
+		classPath = classPath.replaceAll(", ", isWindows() ? ";" : ":").trim();
+		return "\"" + classPath.substring(1, classPath.length() - 2).trim() + ";"
+				+ new File("target\\classes").getAbsolutePath() + "\"";
 	}
-	
+
+	private String getOsName() {
+      return System.getProperty("os.name");
+	}
+
+    private boolean isWindows() {
+		return getOsName().startsWith("Windows");
+	}
+
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<JavaFileObject>();
 		if (COMPILER == null) {
@@ -254,30 +265,31 @@ public abstract class AnnotationTest {
 		 * the RoundEnvironment. However, if these classes are annotations, they certainly need to be validated.
 		 */
 		List<String> compilerOptions = mergeCompilerOptions(Arrays.asList("-proc:only", "-classpath", getClassPath()));
-		
+
 		System.out.println();
 		System.out.println("Starting java compiler:");
 		System.out.print("javac ");
-		for (String option: compilerOptions) {
+		for (String option : compilerOptions) {
 			System.out.print(option + " ");
 		}
-		CompilationTask task = COMPILER.getTask(null, fileManager, diagnosticCollector, compilerOptions, null, fileManager.getJavaFileObjectsFromFiles(compilationUnits));
+		CompilationTask task = COMPILER.getTask(null, fileManager, diagnosticCollector, compilerOptions, null,
+				fileManager.getJavaFileObjectsFromFiles(compilationUnits));
 		List<Processor> processors = new ArrayList<Processor>();
-		for (Processor processor: getProcessors()) {
+		for (Processor processor : getProcessors()) {
 			processors.add(processor);
 		}
 		task.setProcessors(processors);
 		System.out.print("-processor ");
-		for (Processor processor: processors) {
+		for (Processor processor : processors) {
 			System.out.print(processor.getClass().getCanonicalName() + " ");
 		}
 		System.out.print(" ");
-		for (File file: compilationUnits) {
+		for (File file : compilationUnits) {
 			System.out.print(file.getName() + " ");
 		}
 		System.out.println();
 		System.out.println();
-		
+
 		task.call();
 
 		try {
@@ -294,11 +306,10 @@ public abstract class AnnotationTest {
 		for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
 			System.out.println(diagnostic.toString());
 		}
-		
+
 		for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
 			assertFalse("Expected no errors", diagnostic.getKind().equals(Kind.ERROR));
 		}
-		
 
 	}
 
