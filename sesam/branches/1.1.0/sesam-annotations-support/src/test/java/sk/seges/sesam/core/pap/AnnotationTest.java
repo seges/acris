@@ -166,14 +166,14 @@ public abstract class AnnotationTest {
 		return compileFiles(files);
 	}
 
-	private <T extends AnnotatedElement> void addCollection(List<File> files, Collection<T> compilationUnits) {
+	protected <T extends AnnotatedElement> void addCollection(List<File> files, Collection<T> compilationUnits) {
 		if (compilationUnits == null) {
 			return;
 		}
 		addCollection(files, compilationUnits.toArray(new Type[] {}));
 	}
 
-	private <T extends Type> void addCollection(List<File> files, T[] compilationUnits) {
+	protected <T extends Type> void addCollection(List<File> files, T... compilationUnits) {
 		if (compilationUnits == null) {
 			return;
 		}
@@ -227,12 +227,14 @@ public abstract class AnnotationTest {
 		return result;
 	}
 	
+	protected StandardJavaFileManager fileManager;
+	
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<JavaFileObject>();
 		if (COMPILER == null) {
 			throw new RuntimeException("Please use JDK for runing the tests!");
 		}
-		StandardJavaFileManager fileManager = COMPILER.getStandardFileManager(diagnosticCollector, null, null);
+		fileManager = COMPILER.getStandardFileManager(diagnosticCollector, null, null);
 
 		/*
 		 * Call the compiler with the "-proc:only" option. The "class names" option (which could, in principle, be used
