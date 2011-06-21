@@ -1,6 +1,8 @@
 package sk.seges.corpis.pap.dao;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.processing.Processor;
 
@@ -17,19 +19,25 @@ import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 
 public class HibernateDaoProcessorTest extends AnnotationTest {
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testMockEntityDao() {
 		assertCompilationSuccessful(compileFiles(MockEntity.class));
-		assertCompilationSuccessful(compileFiles(JpaMockEntity.class));
+		
+		List<File> files = new ArrayList<File>();
+		File file = getInterfaceOutputFile(MockEntity.class);
+		files.add(file);
+		
+		addCollection(files, JpaMockEntity.class);
+		
+		assertCompilationSuccessful(compileFiles(files));
 		assertOutput(getResourceFile(JpaMockEntity.class), getOutputFile(JpaMockEntity.class));
 	}
- 
-	private String toPath(Package packageName) {
-		return toPath(packageName.getName());
-	}
 
-	private String toPath(String packageName) {
-		return packageName.replace(".", "/");
+	private File getInterfaceOutputFile(Class<?> clazz) {
+		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
+		NamedType outputClass = DaoApiProcessor.getOutputClass(inputClass, new DefaultPackageValidatorProvider());
+		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 
 	private File getOutputFile(Class<?> clazz) {
@@ -38,29 +46,8 @@ public class HibernateDaoProcessorTest extends AnnotationTest {
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 
-	private File getResourceFile(Class<?> clazz) {
-		return new File(getClass().getResource("/" + toPath(clazz.getPackage()) + "/" + 
-				clazz.getSimpleName() + ".output").getFile());
-	}
-
 	@Override
 	protected Processor[] getProcessors() {
 		return new Processor[] { new DaoApiProcessor(), new HibernateDaoProcessor() };
-	}
-	
-	private static final String OUTPUT_DIRECTORY = "target/generated-test";
-	
-	protected File ensureOutputDirectory() {
-		File file = new File(OUTPUT_DIRECTORY);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-		
-		return file;
-	}
-	
-	@Override
-	protected String[] getCompilerOptions() {
-		return CompilerOptions.GENERATED_SOURCES_DIRECTORY.getOption(ensureOutputDirectory().getAbsolutePath());
 	}
 }
