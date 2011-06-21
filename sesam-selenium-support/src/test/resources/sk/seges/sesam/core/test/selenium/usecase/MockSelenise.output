@@ -30,13 +30,13 @@ public class MockSeleniseConfiguration extends MockSelenise {
 		DefaultTestEnvironment result = new DefaultTestEnvironment(testElement.collectSystemProperties());
 
 		DefaultSeleniumEnvironment defaultSeleniumEnvironmentSpecific = new DefaultSeleniumEnvironment(null,0);
-		DefaultBromineEnvironment defaultBromineEnvironmentSpecific = new DefaultBromineEnvironment(null,0);
-		DefaultTestEnvironment defaultTestEnvironmentSpecific = new DefaultTestEnvironment(defaultSeleniumEnvironmentSpecific, defaultBromineEnvironmentSpecific, "overridenURL", null, (String)null);
+		DefaultBromineEnvironment defaultBromineEnvironmentSpecific = new DefaultBromineEnvironment(null,0,null);
+		DefaultTestEnvironment defaultTestEnvironmentSpecific = new DefaultTestEnvironment(defaultSeleniumEnvironmentSpecific, defaultBromineEnvironmentSpecific, "overridenURL", null, (String)null, null);
 		result.merge(defaultTestEnvironmentSpecific);
 
 		DefaultSeleniumEnvironment defaultSeleniumEnvironmentRoot = new DefaultSeleniumEnvironment("localhost",4444);
-		DefaultBromineEnvironment defaultBromineEnvironmentRoot = new DefaultBromineEnvironment("localhost",8080);
-		DefaultTestEnvironment defaultTestEnvironmentRoot = new DefaultTestEnvironment(defaultSeleniumEnvironmentRoot, defaultBromineEnvironmentRoot, "testURL", "", Browsers.FIREFOX);
+		DefaultBromineEnvironment defaultBromineEnvironmentRoot = new DefaultBromineEnvironment("localhost",8080,false);
+		DefaultTestEnvironment defaultTestEnvironmentRoot = new DefaultTestEnvironment(defaultSeleniumEnvironmentRoot, defaultBromineEnvironmentRoot, "testURL", "", Browsers.FIREFOX, false);
 		result.merge(defaultTestEnvironmentRoot);
 
 		return result;
@@ -67,15 +67,15 @@ public class MockSeleniseConfiguration extends MockSelenise {
 	}
 	
 	public static AbstractSeleniumTest configure(sk.seges.sesam.core.test.selenium.usecase.MockSelenise testElement) {
-		testElement.setTestEnvironment(getTestConfiguration(testElement));
 		testElement.setMailEnvironment(getMailConfiguration(testElement));
 		testElement.setReportingSettings(getReportConfiguration(testElement));
 		testElement.setCredentialsSettings(getCredentialsConfiguration(testElement));
+		testElement.setTestEnvironment(getTestConfiguration(testElement));
 		return testElement;
 	}
 	
 	@Override
-	public void runTests() throws Exception {
+	public void runTests() {
 		testMethod1();
 		testMethod2();
 	}
