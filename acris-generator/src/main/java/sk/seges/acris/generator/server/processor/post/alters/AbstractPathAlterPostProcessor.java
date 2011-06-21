@@ -54,7 +54,7 @@ public abstract class AbstractPathAlterPostProcessor extends AbstractAlterPostPr
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 
-		String pathPrefix = AnchorUtils.getRelativePrefix(generatorEnvironment.getGeneratorToken());
+		String pathPrefix = AnchorUtils.getRelativePrefix(generatorEnvironment.getGeneratorToken(), generatorEnvironment.isIndexFile());
 		
 		//no special processing required
 		if (pathPrefix.length() == 0) {

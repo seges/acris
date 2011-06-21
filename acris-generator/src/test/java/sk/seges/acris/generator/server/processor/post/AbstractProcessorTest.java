@@ -35,12 +35,16 @@ public abstract class AbstractProcessorTest {
 	}
 
 	protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token) {
+		runTest(inputHtmlFileName, resultHtmlFileName, token, false);
+	}
+	
+	protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token, boolean indexFile) {
 		this.inputHtmlFileName = inputHtmlFileName;
 		this.resultHtmlFileName = resultHtmlFileName;
 		
 		HtmlPostProcessor htmlPostProcessing = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
 		
-		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token);
+		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, indexFile);
 		if (html != null) {
 			Assert.assertTrue("Result HTML is not equals to the expected result. Expected result: " + getResultHtml() + ". Current result: " + html, compare(html));
 		} else {

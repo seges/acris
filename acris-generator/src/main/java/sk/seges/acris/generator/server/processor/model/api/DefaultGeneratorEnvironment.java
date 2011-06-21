@@ -9,11 +9,13 @@ public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 	private GeneratorToken generatorToken;
 	private ContentData<?> content;
 	private WebSettingsData webSettings;
-
-	public DefaultGeneratorEnvironment(WebSettingsData webSettings, GeneratorToken generatorToken, ContentData<?> content) {
+	private boolean indexFile;
+	
+	public DefaultGeneratorEnvironment(WebSettingsData webSettings, GeneratorToken generatorToken, ContentData<?> content, boolean indexFile) {
 		this.generatorToken = generatorToken;
 		this.webSettings = webSettings;
 		this.content = content;
+		this.indexFile = indexFile;
 	}
 		
 	public GeneratorToken getGeneratorToken() {
@@ -26,5 +28,10 @@ public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 	
 	public WebSettingsData getWebSettings() {
 		return webSettings;
+	}
+	
+	@Override
+	public boolean isIndexFile() {
+		return indexFile;
 	}
 }

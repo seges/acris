@@ -10,7 +10,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +54,14 @@ public class GeneratorService implements IGeneratorService {
 
 	private String indexFileName;
 	private ThreadPoolExecutor threadPool;
+	private Map<String, String> entriesUrlCache = new LinkedHashMap<String, String>(5, .75F, true) {
+
+		private static final long serialVersionUID = -3755811610562830079L;
+
+		protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+			return size() > 50;
+		}
+	};
 	
 	public GeneratorService(DataPersister dataPersister, String indexFileName, ContentDataProvider contentDataProvider, 
 			IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
@@ -186,7 +196,15 @@ public class GeneratorService implements IGeneratorService {
 					}
 				}
 		
-				String headerContent = readTextFromFile(entryPointFileName);
+				String headerContent;
+				
+				if (entriesUrlCache.get(entryPointFileName) == null) {
+					headerContent = readTextFromFile(entryPointFileName);
+					entriesUrlCache.put(entryPointFileName, headerContent);
+				} else {
+					headerContent = entriesUrlCache.get(entryPointFileName);
+				}
+				
 				HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
 				String doctype = htmlNodeSplitter.readDoctype(headerContent);
 		
@@ -202,25 +220,20 @@ public class GeneratorService implements IGeneratorService {
 		
 				HtmlPostProcessor htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
 				
-				result = htmlPostProcessor.getProcessedContent(content, token);
+				result = htmlPostProcessor.getProcessedContent(content, token, false);
 				
 				if (result == null) {
 					log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
 				} else {
 					
-					boolean isDefault = token.isDefaultToken();
-					token.setDefaultToken(false);
-					
 					writeTextToFile(result, false, token);
-
-					token.setDefaultToken(isDefault);
 
 					if (token.isDefaultToken()) {
 						entryPoint = new HTMLNodeSplitter(parserFactory).joinHeaders(headerContent, header);
 						entryPoint = new HTMLNodeSplitter(parserFactory).replaceBody(entryPoint, contentWrapper);
 						content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
 			
-						result = htmlPostProcessor.getProcessedContent(content, token);
+						result = htmlPostProcessor.getProcessedContent(content, token, true);
 						if (result != null) {
 							writeTextToFile(result, true, token);
 						} else {
@@ -248,11 +261,11 @@ public class GeneratorService implements IGeneratorService {
 	}
 	
 
-	protected PersistentDataProvider createPersistentDataProvider(GeneratorToken token, boolean isDefault, String content) {
+	protected PersistentDataProvider createPersistentDataProvider(GeneratorToken token, boolean indexFile, String content) {
 		PersistentDataProvider dataProvider = new TokenPersistentDataProvider();
 		dataProvider.setContent(content);
 		dataProvider.setWebId(token.getWebId());
-		if (isDefault) {
+		if (indexFile) {
 			dataProvider.setId(indexFileName);
 		} else {
 			dataProvider.setId(token.getNiceUrl() + File.separator + "index.html");
@@ -260,13 +273,13 @@ public class GeneratorService implements IGeneratorService {
 		return dataProvider;
 	}
 
-	protected void writeTextToFile(String content, boolean isDefault, GeneratorToken token) {
+	protected void writeTextToFile(String content, boolean indexFile, GeneratorToken token) {
 		if (log.isDebugEnabled()) {
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + token.getLanguage() + " ] for " + token.getWebId());
 		}
 
 		synchronized (dataPersister) {
-			dataPersister.writeTextToFile(createPersistentDataProvider(token, isDefault, content));
+			dataPersister.writeTextToFile(createPersistentDataProvider(token, indexFile, content));
 		}
 	}
 }
