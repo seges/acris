@@ -12,6 +12,7 @@ import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
+import sk.seges.acris.security.shared.configuration.LoginConfiguration;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerServiceAsync;
@@ -43,6 +44,8 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	protected IOpenIDConsumerServiceAsync consumerService;
 
 	protected ClientSession clientSession;
+	
+	protected LoginConfiguration loginConfiguration = GWT.create(LoginConfiguration.class);
 
 	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			IOpenIDConsumerServiceAsync consumerService) {
@@ -188,7 +191,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	 * @param identifier
 	 */
 	protected void authenticate(final String identifier) {
-		consumerService.authenticate(identifier, getModuleURL(), LoginUtils.getLoginModule(),
+		consumerService.authenticate(identifier, getModuleURL(), loginConfiguration.getLoginModule(),
 				new AsyncCallback<OpenIDUserDTO>() {
 
 					@Override

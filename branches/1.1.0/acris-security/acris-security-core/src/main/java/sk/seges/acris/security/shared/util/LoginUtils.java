@@ -5,30 +5,6 @@ import com.google.gwt.user.client.Window.Location;
 
 public class LoginUtils {
 
-	public static String getAdminUrl() {
-		String baseUrl = getModuleBaseUrl();
-
-		if (GWT.isProdMode()) {
-			return baseUrl;
-		} else {
-			return baseUrl = baseUrl + "sk.seges.web.template.Admin/Admin.html";
-		}
-	}
-
-	public static String getLoginModule() {
-		String baseUrl = getModuleBaseUrl();
-
-		if (GWT.isProdMode()) {
-			return baseUrl.substring(0, baseUrl.length() - 1);
-		} else {
-			return baseUrl + "sk.seges.web.template.Login";
-		}
-	}
-
-	public static String getLoginUrl() {
-		return getLoginModule() + "/Login.html";
-	}
-
 	public static String getModuleBaseUrl() {
 		String baseUrl = GWT.getModuleBaseURL();
 
