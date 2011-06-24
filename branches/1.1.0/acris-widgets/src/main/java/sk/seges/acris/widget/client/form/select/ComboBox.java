@@ -837,6 +837,7 @@ public class ComboBox<T> extends TextButtonPanel implements HasEnabled, SourcesF
 
 	public void setSelected(T item) {
 		getModel().setSelected(item);
+		setValue(item.toString());
 	}
 
 	public void setSelectedIndex(int index) {
