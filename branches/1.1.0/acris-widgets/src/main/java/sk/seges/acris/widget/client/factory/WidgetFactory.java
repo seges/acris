@@ -1,9 +1,11 @@
 /**
  * 
  */
-package sk.seges.acris.widget.client;
+package sk.seges.acris.widget.client.factory;
 
-import com.google.gwt.core.client.GWT;
+import sk.seges.acris.widget.client.Dialog;
+import sk.seges.acris.widget.client.FormHolder;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -24,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 
 /**
- * Set of static methods replacing multi-parameter constructor where it cannot
+ * Set of methods replacing multi-parameter constructor where it cannot
  * be applied easily to create widgets. Especially in cases where widgets are
  * created using GWT.create method.
  * 
@@ -32,48 +34,56 @@ import com.google.gwt.user.datepicker.client.DateBox;
  */
 public class WidgetFactory {
 
-	public static Label label(String label) {
-		Label widget = GWT.create(Label.class);
+	private WidgetProvider widgetProvider;
+	
+	public WidgetFactory(WidgetProvider widgetProvider) {
+		this.widgetProvider = widgetProvider;
+	}
+	
+	public Label label(String label) {
+		Label widget = widgetProvider.createLabel();
 		widget.setText(label);
 		return widget;
 	}
 
-	public static Label label(String label, String style) {
+	public Label label(String label, String style) {
 		Label widget = label(label);
 		widget.setStyleName(style);
 		return widget;
 	}
 
-	public static Button button(String label) {
-		Button widget = GWT.create(Button.class);
+	public Button button(String label) {
+		Button widget = widgetProvider.createButton();
 		widget.setText(label);
 		return widget;
 	}
 
-	public static Button button(String label, ClickHandler handler) {
+	public Button button(String label, ClickHandler handler) {
 		Button widget = button(label);
 		widget.addClickHandler(handler);
 		return widget;
 	}
 
-	public static PushButton pushButton(String label) {
-		PushButton widget = GWT.create(PushButton.class);
+	public PushButton pushButton(String label) {
+		PushButton widget = widgetProvider.createPushButton();
 		widget.setText(label);
 		return widget;
 	}
 
-	public static PushButton pushButton(String label, ClickHandler handler) {
+	public PushButton pushButton(String label, ClickHandler handler) {
 		PushButton widget = pushButton(label);
 		widget.addClickHandler(handler);
 		return widget;
 	}
 
-	public static PushButton pushButton(Image image, ClickHandler handler) {
-		PushButton widget = new PushButton(image, handler);
+	public PushButton pushButton(Image image, ClickHandler handler) {
+		PushButton widget = widgetProvider.createPushButton();
+		widget.getUpFace().setImage(image);
+		widget.addClickHandler(handler);
 		return widget;
 	}
 
-	public static ToggleButton toggleButton() {
+	public ToggleButton toggleButton() {
 		// ToggleButton widget = GWT.create(ToggleButton.class);
 
 		// FIXME: tmp. until themed ToggleButton looks like it must.
@@ -82,26 +92,26 @@ public class WidgetFactory {
 		return widget;
 	}
 
-	public static ToggleButton toggleButton(Image up, Image down) {
+	public ToggleButton toggleButton(Image up, Image down) {
 		ToggleButton widget = toggleButton();
 		widget.getUpFace().setImage(up);
 		widget.getDownFace().setImage(down);
 		return widget;
 	}
 
-	public static TextBox textBox(String style) {
-		TextBox widget = GWT.create(TextBox.class);
+	public TextBox textBox(String style) {
+		TextBox widget = widgetProvider.createTextBox();
 		widget.setStyleName(style);
 		return widget;
 	}
 
-	public static TextBox textBox(String style, String text) {
+	public TextBox textBox(String style, String text) {
 		TextBox widget = textBox(style);
 		widget.setText(text);
 		return widget;
 	}
 
-	public static TextBox textBox(String style, String text, boolean enabled) {
+	public TextBox textBox(String style, String text, boolean enabled) {
 		TextBox widget = textBox(style);
 		widget.setText(text);
 		widget.setEnabled(enabled);
@@ -119,14 +129,14 @@ public class WidgetFactory {
 	/**
 	 * @return Modal dialog without autohiding.
 	 */
-	public static Dialog modalDialog() {
+	public Dialog modalDialog() {
 		Dialog dialog = dialog();
 		dialog.setModal(true);
 		dialog.setAutoHideEnabled(false);
 		return dialog;
 	}
 
-	public static Dialog modalAutoHideDialog() {
+	public Dialog modalAutoHideDialog() {
 		Dialog dialog = dialog();
 		dialog.setModal(true);
 		dialog.setAutoHideEnabled(true);
@@ -136,20 +146,20 @@ public class WidgetFactory {
 	/**
 	 * @return Non-modal (modeless), non-autohide dialog.
 	 */
-	public static Dialog modelessDialog() {
+	public Dialog modelessDialog() {
 		Dialog dialog = dialog();
 		dialog.setModal(false);
 		dialog.setAutoHideEnabled(false);
 		return dialog;
 	}
 
-	public static Dialog dialog() {
-		Dialog dialog = GWT.create(Dialog.class);
+	public Dialog dialog() {
+		Dialog dialog = widgetProvider.createDialog();
 		dialog.setGlassEnabled(true);
 		return dialog;
 	}
 
-	public static Dialog dialog(boolean autohide, boolean modal) {
+	public Dialog dialog(boolean autohide, boolean modal) {
 		if (autohide == false && modal == false) {
 			return modelessDialog();
 		} else if (autohide == false && modal == true) {
@@ -160,65 +170,57 @@ public class WidgetFactory {
 		return dialog();
 	}
 
-	public static Dialog dialog(boolean autohide, boolean modal, boolean glass) {
+	public Dialog dialog(boolean autohide, boolean modal, boolean glass) {
 		Dialog dialog = dialog(autohide, modal);
 		dialog.setGlassEnabled(glass);
 		return dialog;
 	}
 
-	public static DateBox dateBox() {
+	public DateBox dateBox() {
 		return dateBox("dd.MM.yyyy");
 	}
 
-	public static DateBox dateBox(String dateTimeFormatPattern) {
-		DateBox dateBox = GWT.create(DateBox.class);
+	public DateBox dateBox(String dateTimeFormatPattern) {
+		DateBox dateBox = widgetProvider.createDateBox();
 		DateBox.DefaultFormat dateBoxFormat = new DateBox.DefaultFormat(DateTimeFormat.getFormat(dateTimeFormatPattern));
 		dateBox.setFormat(dateBoxFormat);
 		return dateBox;
 	}
 
-	public static ListBox listBox(int visibleItemCount) {
-		ListBox listBox = GWT.create(ListBox.class);
+	public ListBox listBox(int visibleItemCount) {
+		ListBox listBox = widgetProvider.createListBox();
 		listBox.setVisibleItemCount(visibleItemCount);
 		return listBox;
 	}
 
-	public static CheckBox checkBox() {
-		return GWT.create(CheckBox.class);
+	public CheckBox checkBox() {
+		return widgetProvider.createCheckBox();
 	}
 
-	public static CheckBox checkBox(String text) {
+	public CheckBox checkBox(String text) {
 		CheckBox checkBox = checkBox();
 		checkBox.setText(text);
 		return checkBox;
 	}
 
-	public static CheckBox checkBox(ValueChangeHandler<Boolean> valueChangeHandler) {
+	public CheckBox checkBox(ValueChangeHandler<Boolean> valueChangeHandler) {
 		CheckBox checkBox = checkBox();
 		checkBox.addValueChangeHandler(valueChangeHandler);
 		return checkBox;
 	}
 
-	public static CheckBox checkBox(String text, ValueChangeHandler<Boolean> valueChangeHandler) {
+	public CheckBox checkBox(String text, ValueChangeHandler<Boolean> valueChangeHandler) {
 		CheckBox checkBox = checkBox(text);
 		checkBox.addValueChangeHandler(valueChangeHandler);
 		return checkBox;
 	}
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	public static RadioButton radioButton(String name) {
+	public RadioButton radioButton(String name) {
+		//TODO Use widget provider
 		return new RadioButton(name);
 	}
 
-	/**
-	 * @param name
-	 * @param label
-	 * @return
-	 */
-	public static RadioButton radioButton(String name, String label) {
+	public RadioButton radioButton(String name, String label) {
 		RadioButton radioButton = radioButton(name);
 		radioButton.setText(label);
 		return radioButton;
@@ -230,39 +232,19 @@ public class WidgetFactory {
 	 * @param valueChangeHandler
 	 * @return
 	 */
-	public static RadioButton radioButton(String name, String label, ValueChangeHandler<Boolean> valueChangeHandler) {
+	public RadioButton radioButton(String name, String label, ValueChangeHandler<Boolean> valueChangeHandler) {
 		RadioButton radioButton = radioButton(name, label);
 		radioButton.addValueChangeHandler(valueChangeHandler);
 		return radioButton;
 	}
 
-	/**
-	 * @param name
-	 * @param valueChangeHandler
-	 * @return
-	 */
-	public static RadioButton radioButton(String name, ValueChangeHandler<Boolean> valueChangeHandler) {
+	public RadioButton radioButton(String name, ValueChangeHandler<Boolean> valueChangeHandler) {
 		RadioButton radioButton = radioButton(name);
 		radioButton.addValueChangeHandler(valueChangeHandler);
 		return radioButton;
 	}
 
-	// /**
-	// * @param value
-	// * initial value
-	// * @param min
-	// * min value
-	// * @param max
-	// * max value
-	// */
-	// public static ValueSpinner valueSpinner(long value, int min, int max) {
-	// return new ValueSpinner(value, min, max);
-	// }
-
-	/**
-	 * @param formHolder
-	 */
-	public static void showAndCenter(final FormHolder formHolder) {
+	public void showAndCenter(final FormHolder formHolder) {
 		formHolder.setPopupPositionAndShow(new PositionCallback() {
 
 			@Override
@@ -277,7 +259,7 @@ public class WidgetFactory {
 	/**
 	 * @param dialog
 	 */
-	public static void showAndCenter(final Dialog dialog) {
+	public void showAndCenter(final Dialog dialog) {
 		dialog.setPopupPositionAndShow(new PositionCallback() {
 
 			@Override
@@ -289,10 +271,7 @@ public class WidgetFactory {
 		});
 	}
 
-	/**
-	 * @param dialog
-	 */
-	public static void show(final Dialog dialog, final Integer leftVerticalCenterOffset, final Integer topOffset) {
+	public void show(final Dialog dialog, final Integer leftVerticalCenterOffset, final Integer topOffset) {
 		dialog.setPopupPositionAndShow(new PositionCallback() {
 
 			@Override
@@ -315,8 +294,8 @@ public class WidgetFactory {
 		});
 	}
 
-	public static TextArea textArea(String style) {
-		TextArea textArea = GWT.create(TextArea.class);
+	public TextArea textArea(String style) {
+		TextArea textArea = widgetProvider.createTextArea();
 		textArea.setStyleName(style);
 		return textArea;
 	}

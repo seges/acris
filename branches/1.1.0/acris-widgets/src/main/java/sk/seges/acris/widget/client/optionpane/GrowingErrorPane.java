@@ -3,6 +3,8 @@
  */
 package sk.seges.acris.widget.client.optionpane;
 
+import sk.seges.acris.widget.client.factory.WidgetFactory;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -18,7 +20,8 @@ public class GrowingErrorPane extends OptionPane {
 	
 	private FlowPanel errorStack;
 	
-	public GrowingErrorPane() {
+	public GrowingErrorPane(WidgetFactory widgetFactory) {
+		super(widgetFactory);
 		addStyleName(STYLE_ERROR_PANE);
 		
 		errorStack = new FlowPanel();

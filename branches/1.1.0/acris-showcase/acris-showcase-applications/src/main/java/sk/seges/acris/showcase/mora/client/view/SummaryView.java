@@ -10,7 +10,7 @@ import sk.seges.acris.showcase.mora.client.presenter.SummaryPresenter.DialogOpti
 import sk.seges.acris.showcase.mora.client.presenter.SummaryPresenter.SummaryDisplay;
 import sk.seges.acris.showcase.mora.shared.domain.api.MovieData;
 import sk.seges.acris.widget.client.Dialog;
-import sk.seges.acris.widget.client.WidgetFactory;
+import sk.seges.acris.widget.client.factory.StandardWidgetFactory;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -83,21 +83,21 @@ public class SummaryView extends ViewImpl implements SummaryDisplay {
 
 	@Override
 	public void showMessage(String message) {
-		Dialog dialog = WidgetFactory.dialog();
+		Dialog dialog = StandardWidgetFactory.get().dialog();
 		dialog.setContent(new HTML(message));
-		dialog.addOptions(new Widget[] {WidgetFactory.button("OK")});
+		dialog.addOptions(new Widget[] {StandardWidgetFactory.get().button("OK")});
 		dialog.center();
 	}
 
 	@Override
 	public HandlerRegistration showPrompt(String message, SelectPromtHandler handler, DialogOptions... prompts) {
-		Dialog dialog = WidgetFactory.dialog();
+		Dialog dialog = StandardWidgetFactory.get().dialog();
 		dialog.setContent(new HTML(message));
 		Widget[] widgets = new Widget[prompts.length];
 		int i = 0;
 		for (final DialogOptions dialogOption: prompts) {
 			//TODO mem leak, deregistration is missing
-			widgets[i] = WidgetFactory.button(dialogOption.getLabel(), new ClickHandler() {
+			widgets[i] = StandardWidgetFactory.get().button(dialogOption.getLabel(), new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {

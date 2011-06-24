@@ -6,7 +6,7 @@ package sk.seges.acris.widget.client.optionpane;
 import sk.seges.acris.widget.client.Cleaner;
 import sk.seges.acris.widget.client.Dialog;
 import sk.seges.acris.widget.client.Messages;
-import sk.seges.acris.widget.client.WidgetFactory;
+import sk.seges.acris.widget.client.factory.WidgetFactory;
 import sk.seges.acris.widget.client.support.DefaultStyleSupport;
 import sk.seges.acris.widget.client.support.StyleSupport;
 import sk.seges.acris.widget.client.support.StyleSupport.WidgetType;
@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author ladislav.gazo
  */
 public class OptionPane extends FlowPanel implements OptionResultHandler {
+	
 	private static final String STYLE_OPTION_PANE = "acris-cmp-optionPane";
 	private static final String STYLE_INPUT = "acris-cmp-input";
 	private static final String STYLE_MESSAGE = "acris-cmp-message";
@@ -42,10 +43,19 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 
 	private EPanelResult result;
 
+	private OptionsFactory optionsFactory;
+	private final WidgetFactory widgetFactory;
+	
 	protected static Icons icons = (Icons) GWT.create(Icons.class);
 	protected static Labels labels = (Labels) GWT.create(Labels.class);
 	protected static Messages messages = (Messages) GWT.create(Messages.class);
 
+	public OptionPane(WidgetFactory widgetFactory) {
+		this.widgetFactory = widgetFactory;
+		this.optionsFactory = new OptionsFactory(widgetFactory);
+		init();
+	}
+	
 	public Image getIcon() {
 		return icon;
 	}
@@ -79,10 +89,6 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 
 	public void setResult(EPanelResult result) {
 		this.result = result;
-	}
-
-	public OptionPane() {
-		init();
 	}
 
 	private void init() {
@@ -138,11 +144,11 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @param message
 	 * @return
 	 */
-	public static EPanelResult showMessageDialog(String message) {
+	public EPanelResult showMessageDialog(String message) {
 		return showMessageDialog(message, labels.messageDialogTitle(), EMessageType.INFORMATION_MESSAGE);
 	}
 
-	public static EPanelResult showMessageDialog(String message, StyleSupport styleSupport) {
+	public EPanelResult showMessageDialog(String message, StyleSupport styleSupport) {
 		return showMessageDialog(message, labels.messageDialogTitle(), EMessageType.INFORMATION_MESSAGE, styleSupport);
 	}
 
@@ -153,27 +159,27 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @param title
 	 * @return
 	 */
-	public static EPanelResult showMessageDialog(String message, String title) {
+	public EPanelResult showMessageDialog(String message, String title) {
 		return showMessageDialog(message, title, EMessageType.INFORMATION_MESSAGE);
 	}
 
-	public static EPanelResult showMessageDialog(String message, String title, StyleSupport styleSupport) {
+	public EPanelResult showMessageDialog(String message, String title, StyleSupport styleSupport) {
 		return showMessageDialog(message, title, EMessageType.INFORMATION_MESSAGE, styleSupport);
 	}
 
-	public static EPanelResult showDefaultErrorDialog() {
+	public EPanelResult showDefaultErrorDialog() {
 		return showDefaultErrorDialog(null, new DefaultStyleSupport());
 	}
 
-	public static EPanelResult showDefaultErrorDialog(StyleSupport styleSupport) {
+	public EPanelResult showDefaultErrorDialog(StyleSupport styleSupport) {
 		return showDefaultErrorDialog(null, styleSupport);
 	}
 
-	public static EPanelResult showDefaultErrorDialog(Throwable e) {
+	public EPanelResult showDefaultErrorDialog(Throwable e) {
 		return showDefaultErrorDialog(e, new DefaultStyleSupport());
 	}
 	
-	public static EPanelResult showDefaultErrorDialog(Throwable e, StyleSupport styleSupport) {
+	public EPanelResult showDefaultErrorDialog(Throwable e, StyleSupport styleSupport) {
 		if (e == null) {
 			return showErrorDialog(messages.optionPane_unhandledException(), labels.errorDialogTitle(), styleSupport);
 		} else {
@@ -181,8 +187,8 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		}
 	}
 
-	private static EPanelResult showStackTraceDialog(Throwable e, StyleSupport styleSupport) {
-		final Dialog dialog = WidgetFactory.modalDialog();
+	private EPanelResult showStackTraceDialog(Throwable e, StyleSupport styleSupport) {
+		final Dialog dialog = widgetFactory.modalDialog();
 		StyleUtils.applyWidgetStyles(styleSupport, WidgetType.DIALOG, dialog);
 		dialog.setCaption(labels.errorDialogTitle());
 
@@ -198,13 +204,13 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		tabPanel.add(verticalPanel, messages.optionPane_unhandledExceptionTab2Title());
 		tabPanel.selectTab(0);
 
-		OptionPane pane = new OptionPane();
+		OptionPane pane = new OptionPane(widgetFactory);
 		pane.setMessage(tabPanel);
 		pane.setIcon(determineImage(EMessageType.ERROR_MESSAGE));
 
 		dialog.setContent(pane);
 
-		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
+		dialog.addOptions(optionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			
@@ -230,19 +236,19 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		return sb.toString();
 	}
 
-	public static EPanelResult showErrorDialog(String message) {
+	public EPanelResult showErrorDialog(String message) {
 		return showErrorDialog(message, labels.errorDialogTitle());
 	}
 
-	public static EPanelResult showErrorDialog(String message, StyleSupport styleSupport) {
+	public EPanelResult showErrorDialog(String message, StyleSupport styleSupport) {
 		return showErrorDialog(message, labels.errorDialogTitle(), styleSupport);
 	}
 
-	public static EPanelResult showErrorDialog(String message, String title) {
+	public EPanelResult showErrorDialog(String message, String title) {
 		return showMessageDialog(message, title, EMessageType.ERROR_MESSAGE);
 	}
 
-	public static EPanelResult showErrorDialog(String message, String title, StyleSupport styleSupport) {
+	public EPanelResult showErrorDialog(String message, String title, StyleSupport styleSupport) {
 		return showMessageDialog(message, title, EMessageType.ERROR_MESSAGE, styleSupport);
 	}
 
@@ -255,20 +261,20 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @param type
 	 * @return
 	 */
-	public static EPanelResult showMessageDialog(String message, String title, EMessageType type) {
+	public EPanelResult showMessageDialog(String message, String title, EMessageType type) {
 		return showMessageDialog(message, title, type, new DefaultStyleSupport());
 	}
 	
-	public static EPanelResult showMessageDialog(String message, String title, EMessageType type, StyleSupport styleSupport) {
+	public EPanelResult showMessageDialog(String message, String title, EMessageType type, StyleSupport styleSupport) {
 
-		final Dialog dialog = WidgetFactory.modalDialog();
+		final Dialog dialog = widgetFactory.modalDialog();
 		StyleUtils.applyWidgetStyles(styleSupport, WidgetType.DIALOG, dialog);
 		dialog.setCaption(title);
 
 		OptionPane pane = createOptionPaneFromMessage(message, type);
 		dialog.setContent(pane);
 
-		dialog.addOptions(OptionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
+		dialog.addOptions(optionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			
@@ -281,14 +287,14 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		return pane.getResult();
 	}
 
-	public static OptionPane createOptionPaneFromMessage(String message, EMessageType type) {
-		OptionPane pane = new OptionPane();
+	public OptionPane createOptionPaneFromMessage(String message, EMessageType type) {
+		OptionPane pane = new OptionPane(widgetFactory);
 		pane.setMessage(new HTML(message));
 		pane.setIcon(determineImage(type));
 		return pane;
 	}
 
-	public static void showConfirmationDialog(String title, String message, EPanelOption options,
+	public void showConfirmationDialog(String title, String message, EPanelOption options,
 			OptionPaneResultListener resultListener) {
 		OptionPane pane = createOptionPaneFromMessage(message, EMessageType.QUESTION_MESSAGE);
 		Dialog dialog = createMessageDialog(title, pane, false, true, options, resultListener);
@@ -303,7 +309,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @param pane
 	 * @return
 	 */
-	public static Dialog createMessageBox(OptionPane pane) {
+	public Dialog createMessageBox(OptionPane pane) {
 		return createMessageBox(null, pane);
 	}
 
@@ -315,18 +321,18 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @param title
 	 * @return
 	 */
-	public static Dialog createMessageBox(String title, OptionPane pane) {
+	public Dialog createMessageBox(String title, OptionPane pane) {
 		return createMessageDialog(title, pane, true, false);
 	}
 
-	public static Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal) {
+	public Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal) {
 		return createMessageDialog(title, pane, autoHide, modal, EPanelOption.DEFAULT_OPTION);
 	}
 
-	public static Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
+	public Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
 			EPanelOption messageOption) {
 		return createMessageDialog(title, pane, autoHide, modal,
-				OptionsFactory.createOptions(pane, messageOption, null));
+				optionsFactory.createOptions(pane, messageOption, null));
 	}
 
 	/**
@@ -341,20 +347,20 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @param resultListener
 	 * @return
 	 */
-	public static Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
+	public Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
 			EPanelOption messageOption, OptionPaneResultListener resultListener) {
 		return createMessageDialog(title, pane, autoHide, modal,
-				OptionsFactory.createOptions(pane, messageOption, resultListener));
+				optionsFactory.createOptions(pane, messageOption, resultListener));
 	}
 
-	public static Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
+	public Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
 			Widget options[]) {
 		return createMessageDialog(title, pane, autoHide, modal, options, new DefaultStyleSupport());
 	}
 	
-	public static Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
+	public Dialog createMessageDialog(String title, OptionPane pane, boolean autoHide, boolean modal,
 			Widget options[], StyleSupport styleSupport) {
-		Dialog dialog = WidgetFactory.dialog(autoHide, modal);
+		Dialog dialog = widgetFactory.dialog(autoHide, modal);
 		StyleUtils.applyWidgetStyles(styleSupport, WidgetType.DIALOG, dialog);
 		dialog.setCaption(title);
 		dialog.setContent(pane);
@@ -362,17 +368,17 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		return dialog;
 	}
 
-	public static Dialog createMessageDialog(String title, String message, EMessageType type) {
+	public Dialog createMessageDialog(String title, String message, EMessageType type) {
 		return createMessageDialog(title, message, type, false, true);
 	}
 
-	public static Dialog createMessageDialog(String title, String message, EMessageType type, boolean autoHide,
+	public Dialog createMessageDialog(String title, String message, EMessageType type, boolean autoHide,
 			boolean modal) {
 		OptionPane pane = createOptionPaneFromMessage(message, type);
 		return createMessageDialog(title, pane, autoHide, modal);
 	}
 
-	public static Dialog createErrorDialog(String message, String title) {
+	public Dialog createErrorDialog(String message, String title) {
 		return createMessageDialog(title, message, EMessageType.ERROR_MESSAGE);
 	}
 }
