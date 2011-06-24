@@ -14,8 +14,8 @@ import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 import sk.seges.acris.reporting.shared.service.IReportingServiceAsync;
 import sk.seges.acris.widget.client.Dialog;
-import sk.seges.acris.widget.client.WidgetFactory;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
+import sk.seges.acris.widget.client.factory.WidgetFactory;
 import sk.seges.acris.widget.client.optionpane.OptionPane;
 import sk.seges.acris.widget.client.optionpane.OptionsFactory;
 
@@ -49,10 +49,14 @@ public class ReportExportDialogCreator {
 	protected String webId;
 	private Map<ReportParameterData, String> predefinedParams;
 
-	public ReportExportDialogCreator() {
+	private WidgetFactory widgetFactory;
+	
+	public ReportExportDialogCreator(WidgetFactory widgetFactory) {
+		this.widgetFactory = widgetFactory;
 	}
 
-	public ReportExportDialogCreator(IReportingServiceAsync reportingService) {
+	public ReportExportDialogCreator(WidgetFactory widgetFactory, IReportingServiceAsync reportingService) {
+		this(widgetFactory);
 		this.reportingService = reportingService;
 	}
 
@@ -70,7 +74,7 @@ public class ReportExportDialogCreator {
 	void init(ReportDescriptionData report,
 			Map<ReportParameterData, String> predefinedParams,
 			ParameterTypeSelector parameterTypeSelector) {
-		dialog = WidgetFactory.dialog();
+		dialog = widgetFactory.dialog();
 		dialog.setModal(false);
 		paramWidgets = new ArrayList<IParameterTypePanel<?>>();
 		dialog.setCaption(report.getName());
@@ -83,7 +87,7 @@ public class ReportExportDialogCreator {
 		// scrollPanel.setHeight("500px");
 		scrollPanel.add(contentPanel);
 		dialog.setContent(scrollPanel);
-		dialog.addOption(OptionsFactory.createCloseOption());
+		dialog.addOption(new OptionsFactory(widgetFactory).createCloseOption());
 		downloadPanel = createDownloadButtonPanel();
 		downloadPanel.setVisible(false);
 		dialog
@@ -98,7 +102,7 @@ public class ReportExportDialogCreator {
 
 	private Button createExportButton(final ReportDescriptionData report,
 			final Panel downloadPanel) {
-		return WidgetFactory.button(reportingMessages.export(),
+		return widgetFactory.button(reportingMessages.export(),
 				new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
@@ -130,9 +134,8 @@ public class ReportExportDialogCreator {
 							for (String string : notInsertedValues) {
 								errorMsg.append("<br />" + string);
 							}
-							Dialog errorDialog = OptionPane.createErrorDialog(
-									"<b>Treba zadat tieto parametre:</b>"
-											+ errorMsg, "Pozor");
+							Dialog errorDialog = new OptionPane(widgetFactory).createErrorDialog(
+									"<b>Treba zadat tieto parametre:</b>" + errorMsg, "Pozor");
 							errorDialog.setWidth("400px");
 							errorDialog.center();
 							errorDialog.show();
@@ -211,7 +214,7 @@ public class ReportExportDialogCreator {
 		 */
 		FlowPanel anchorPanel = new FlowPanel();
 		/**/
-		anchorPanel.add(WidgetFactory.hackWidget(WidgetFactory.button(
+		anchorPanel.add(WidgetFactory.hackWidget(widgetFactory.button(
 				reportingMessages.download(), new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent arg0) {
@@ -252,7 +255,7 @@ public class ReportExportDialogCreator {
 							imagePanel.setVisible(false);
 							GWT.log("export error", new Exception(
 									"Export sa nevydaril"));
-							OptionPane.createErrorDialog(reportingMessages
+							new OptionPane(widgetFactory).createErrorDialog(reportingMessages
 									.exportError(), reportingMessages.export());
 						}
 
@@ -264,7 +267,7 @@ public class ReportExportDialogCreator {
 								downloadPanel.setVisible(true);
 								// JavascriptUtils.getURL(exportPath);
 							} else {
-								OptionPane
+								new OptionPane(widgetFactory)
 										.showErrorDialog(
 												"Vyskytla sa chyba pri generovani reportu.",
 												"export error");
@@ -275,13 +278,13 @@ public class ReportExportDialogCreator {
 	}
 
 	protected void createHtmlExportDialog(String result) {
-		Dialog d = WidgetFactory.dialog();
+		Dialog d = widgetFactory.dialog();
 		HTML html = new HTML(result);
 		ScrollPanel sp = new ScrollPanel();
 		sp.setHeight("500px");
 		sp.add(html);
 		d.add(sp);
-		d.addOption(OptionsFactory.createCloseOption());
+		d.addOption(new OptionsFactory(widgetFactory).createCloseOption());
 		d.center();
 		d.show();
 	}

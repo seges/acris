@@ -1,7 +1,7 @@
 package sk.seges.acris.widget.client.optionpane;
 
 import sk.seges.acris.widget.client.Cleaner;
-import sk.seges.acris.widget.client.WidgetFactory;
+import sk.seges.acris.widget.client.factory.WidgetFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;

@@ -8,9 +8,10 @@ import sk.seges.acris.reporting.shared.service.IReportDescriptionServiceAsync;
 import sk.seges.acris.reporting.shared.service.IReportingServiceAsync;
 import sk.seges.acris.widget.client.Cleaner;
 import sk.seges.acris.widget.client.Dialog;
-import sk.seges.acris.widget.client.WidgetFactory;
 import sk.seges.acris.widget.client.action.ActionEvent;
 import sk.seges.acris.widget.client.action.ActionListener;
+import sk.seges.acris.widget.client.factory.StandardWidgetFactory;
+import sk.seges.acris.widget.client.factory.WidgetFactory;
 import sk.seges.acris.widget.client.optionpane.EMessageType;
 import sk.seges.acris.widget.client.optionpane.EPanelOption;
 import sk.seges.acris.widget.client.optionpane.EPanelResult;
@@ -36,8 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ReportViewPage extends Composite implements HasReportViewHandlers {
 
-	private ReportingMessages reportingMessages = GWT
-			.create(ReportingMessages.class);
+	private ReportingMessages reportingMessages = GWT.create(ReportingMessages.class);
 
 	private IReportDescriptionServiceAsync reportService;// =
 
@@ -62,22 +62,34 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 	private ParameterTypeSelector parameterTypeSelector;
 
 	private String webId;
+	private final WidgetFactory widgetFactory;
 
 	public ReportViewPage() {
+		widgetFactory = StandardWidgetFactory.get();
 		initWidget(container);
 	}
 
-	public ReportViewPage(IReportDescriptionServiceAsync reportService,
-			IReportingServiceAsync reportingService, String webId) {
+	public ReportViewPage(WidgetFactory widgetFactory) {
+		this.widgetFactory = widgetFactory;
+		initWidget(container);
+	}
+
+	public ReportViewPage(IReportDescriptionServiceAsync reportService, IReportingServiceAsync reportingService,
+			String webId) {
+		this(reportService, reportingService, webId, StandardWidgetFactory.get());
+	}
+
+	public ReportViewPage(IReportDescriptionServiceAsync reportService, IReportingServiceAsync reportingService,
+			String webId, WidgetFactory widgetFactory) {
 		this.reportService = reportService;
 		this.reportingService = reportingService;
 		this.webId = webId;
+		this.widgetFactory = widgetFactory;
 		initWidget(container);
 	}
 
-	public void initComponents(IReportDescriptionServiceAsync reportService,
-			IReportingServiceAsync reportingService, String webId,
-			ParameterTypeSelector parameterTypeSelector) {
+	public void initComponents(IReportDescriptionServiceAsync reportService, IReportingServiceAsync reportingService,
+			String webId, ParameterTypeSelector parameterTypeSelector) {
 		this.reportService = reportService;
 		this.reportingService = reportingService;
 		this.webId = webId;
@@ -103,13 +115,11 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		reportBeanTable.setHeight("336px");
 		reportBeanTable.addRowSelectionHandler(new RowSelectionHandler() {
 			public void onRowSelection(RowSelectionEvent event) {
-				reportBeanTable
-						.getSelected(new ActionListener<ReportDescriptionData>() {
-							public void actionPerformed(
-									ActionEvent<ReportDescriptionData> event) {
-								selectedReport = event.getSource();
-							}
-						});
+				reportBeanTable.getSelected(new ActionListener<ReportDescriptionData>() {
+					public void actionPerformed(ActionEvent<ReportDescriptionData> event) {
+						selectedReport = event.getSource();
+					}
+				});
 			}
 		});
 
@@ -125,17 +135,14 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		reportBeanTable.reload();
 	}
 
-	private Panel createBeanTableWrapperPanel(
-			BeanTable<ReportDescriptionData> beanTable) {
+	private Panel createBeanTableWrapperPanel(BeanTable<ReportDescriptionData> beanTable) {
 		SimplePanel tableWrapper = new SimplePanel();
 		tableWrapper.add(beanTable);
 
 		VerticalPanel tableWrapperVP = GWT.create(VerticalPanel.class);
 		tableWrapperVP.add(tableWrapper);
-		SimplePanel tableWrapperHacker = WidgetFactory
-				.hackWidget(tableWrapperVP);
-		tableWrapperHacker
-				.addStyleName("ReportViewPage-tabel-wrapper");
+		SimplePanel tableWrapperHacker = WidgetFactory.hackWidget(tableWrapperVP);
+		tableWrapperHacker.addStyleName("ReportViewPage-tabel-wrapper");
 
 		return tableWrapperHacker;
 	}
@@ -146,52 +153,41 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		buttonPanel.addStyleName("ReportViewPage-buttonPanel");
 
 		ClickHandler createHandler = createCreateClickHandler();
-		Widget button = WidgetFactory.hackWidget(WidgetFactory.button(
-				reportingMessages.create(), createHandler));
+		Widget button = WidgetFactory.hackWidget(widgetFactory.button(reportingMessages.create(), createHandler));
 		button.addStyleName("mainControlButton");
 		buttonPanel.add(button);
 
-		button = WidgetFactory.hackWidget(WidgetFactory.button(
-				reportingMessages.edit(), createEditClickHandler()));
+		button = WidgetFactory.hackWidget(widgetFactory.button(reportingMessages.edit(), createEditClickHandler()));
 		button.addStyleName("mainControlButton");
 		buttonPanel.add(button);
 
 		ClickHandler exportHandler = createExportClickHandler();
-		button = WidgetFactory.hackWidget(WidgetFactory.button(
-				reportingMessages.export(), exportHandler));
+		button = WidgetFactory.hackWidget(widgetFactory.button(reportingMessages.export(), exportHandler));
 		button.addStyleName("mainControlButton");
 		buttonPanel.add(button);
 
-		button = WidgetFactory.hackWidget(WidgetFactory.button(
-				reportingMessages.remove(), new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent arg0) {
-						selectedReport = reportBeanTable.getSelected().get(0);
-						if (selectedReport != null) {
-							final OptionPane pane = OptionPane
-									.createOptionPaneFromMessage(
-											reportingMessages.AreYouSure(),
-											EMessageType.QUESTION_MESSAGE);
-							final Dialog areYouSureDialog = OptionPane
-									.createMessageDialog(reportingMessages
-											.delete(), pane, false, true,
-											EPanelOption.YES_NO_OPTION,
-											new OptionPaneResultListener() {
-												public void onResultPrepared(
-														EPanelResult result) {
-													if (EPanelResult.YES_OPTION
-															.equals(result)) {
-														serviceRemove(pane);
-													}
-												}
-											});
-							areYouSureDialog.addStyleName("acris-reporting-remove-report");
-							areYouSureDialog.show();
-							areYouSureDialog.center();
+		button = WidgetFactory.hackWidget(widgetFactory.button(reportingMessages.remove(), new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent arg0) {
+				selectedReport = reportBeanTable.getSelected().get(0);
+				if (selectedReport != null) {
+					final OptionPane pane = new OptionPane(widgetFactory).createOptionPaneFromMessage(reportingMessages.AreYouSure(),
+							EMessageType.QUESTION_MESSAGE);
+					final Dialog areYouSureDialog = new OptionPane(widgetFactory).createMessageDialog(reportingMessages.delete(), pane,
+							false, true, EPanelOption.YES_NO_OPTION, new OptionPaneResultListener() {
+								public void onResultPrepared(EPanelResult result) {
+									if (EPanelResult.YES_OPTION.equals(result)) {
+										serviceRemove(pane);
+									}
+								}
+							});
+					areYouSureDialog.addStyleName("acris-reporting-remove-report");
+					areYouSureDialog.show();
+					areYouSureDialog.center();
 
-						}
-					}
-				}));
+				}
+			}
+		}));
 		button.addStyleName("mainControlButton");
 		buttonPanel.add(button);
 		buttonPanel.add(new Cleaner());
@@ -214,19 +210,17 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent arg0) {
-				final Dialog dialog = WidgetFactory.dialog();
+				final Dialog dialog = widgetFactory.dialog();
 				final ReportEditPanel rep = new ReportEditPanel();
 				dialog.setCaption(reportingMessages.newReport());
 				dialog.setContent(rep);
-				dialog.addOptions(OptionsFactory
-						.createOKCancelOptions(new ClickHandler() {
-							@Override
-							public void onClick(ClickEvent event) {
-								ReportDescriptionData report = rep
-										.getActualReport();
-								servicePersist(dialog, report);
-							}
-						}));
+				dialog.addOptions(new OptionsFactory(widgetFactory).createOKCancelOptions(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						ReportDescriptionData report = rep.getActualReport();
+						servicePersist(dialog, report);
+					}
+				}));
 				dialog.center();
 				dialog.show();
 			}
@@ -246,10 +240,8 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 	}
 
 	protected Dialog createDownloadDialog(final ReportDescriptionData report) {
-		ReportExportDialogCreator red = new ReportExportDialogCreator(
-				reportingService);
-		final Dialog dialog = red.createReportExportDialog(report,
-				new HashMap<ReportParameterData, String>(),
+		ReportExportDialogCreator red = new ReportExportDialogCreator(widgetFactory, reportingService);
+		final Dialog dialog = red.createReportExportDialog(report, new HashMap<ReportParameterData, String>(),
 				parameterTypeSelector, webId);
 		return dialog;
 	}
@@ -268,42 +260,37 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		});
 	}
 
-	protected void servicePersist(final Dialog dialog,
-			ReportDescriptionData report) {
-		reportService.persist(report,
-				new AsyncCallback<ReportDescriptionData>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						GWT.log("cannot save report", caught);
-					}
+	protected void servicePersist(final Dialog dialog, ReportDescriptionData report) {
+		reportService.persist(report, new AsyncCallback<ReportDescriptionData>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("cannot save report", caught);
+			}
 
-					@Override
-					public void onSuccess(ReportDescriptionData result) {
-						fireEvent(new ReportViewEvent(dialog, result.getId()));
-					}
-				});
+			@Override
+			public void onSuccess(ReportDescriptionData result) {
+				fireEvent(new ReportViewEvent(dialog, result.getId()));
+			}
+		});
 	}
 
 	protected void serviceFindById() {
-		reportService.findById(selectedReport.getId(),
-				new AsyncCallback<ReportDescriptionData>() {
-					@Override
-					public void onFailure(Throwable arg0) {
-						GWT.log("Cannot find selected report = "
-								+ selectedReport.getId(), arg0);
-					}
+		reportService.findById(selectedReport.getId(), new AsyncCallback<ReportDescriptionData>() {
+			@Override
+			public void onFailure(Throwable arg0) {
+				GWT.log("Cannot find selected report = " + selectedReport.getId(), arg0);
+			}
 
-					@Override
-					public void onSuccess(ReportDescriptionData arg0) {
-						final Dialog dialog = createDownloadDialog(arg0);
-						dialog.center();
-						dialog.show();
-					}
-				});
+			@Override
+			public void onSuccess(ReportDescriptionData arg0) {
+				final Dialog dialog = createDownloadDialog(arg0);
+				dialog.center();
+				dialog.show();
+			}
+		});
 	}
 
-	protected void serviceMerge(final Dialog dialog,
-			final ReportDescriptionData report) {
+	protected void serviceMerge(final Dialog dialog, final ReportDescriptionData report) {
 		reportService.merge(report, new AsyncCallback<Long>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -318,36 +305,34 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 	}
 
 	protected void createDialogForExport(ReportDescriptionData report) {
-		final Dialog dialog = WidgetFactory.dialog();
+		final Dialog dialog = widgetFactory.dialog();
 		final ReportEditPanel rep = new ReportEditPanel();
 		dialog.setCaption(report.getName());
 		dialog.setContent(rep);
-		dialog.addOptions(OptionsFactory
-				.createOKCancelOptions(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						ReportDescriptionData report = rep.getActualReport();
-						serviceMerge(dialog, report);
-					}
-				}));
+		dialog.addOptions(new OptionsFactory(widgetFactory).createOKCancelOptions(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				ReportDescriptionData report = rep.getActualReport();
+				serviceMerge(dialog, report);
+			}
+		}));
 		dialog.center();
 		dialog.show();
 		rep.setActualReport(report);
 	}
 
 	protected void serviceFindAndCreateExportDialog() {
-		reportService.findById(selectedReport.getId(),
-				new AsyncCallback<ReportDescriptionData>() {
-					@Override
-					public void onFailure(Throwable arg0) {
-						GWT.log("Cannot export", arg0);
-					}
+		reportService.findById(selectedReport.getId(), new AsyncCallback<ReportDescriptionData>() {
+			@Override
+			public void onFailure(Throwable arg0) {
+				GWT.log("Cannot export", arg0);
+			}
 
-					@Override
-					public void onSuccess(ReportDescriptionData arg0) {
-						createDialogForExport(arg0);
-					}
-				});
+			@Override
+			public void onSuccess(ReportDescriptionData arg0) {
+				createDialogForExport(arg0);
+			}
+		});
 	}
 
 	@Override
