@@ -294,4 +294,11 @@ public abstract class TextButtonPanel extends SimplePanel implements HasValue<St
 		selectedValue.setValue(value, fireEvents);
 	}	
 
+	public void setReadOnly(boolean readOnly) {
+		selectedValue.setReadOnly(readOnly);
+	}
+	
+	public boolean isReadOnly() {
+		return selectedValue.isReadOnly();
+	}
 }
