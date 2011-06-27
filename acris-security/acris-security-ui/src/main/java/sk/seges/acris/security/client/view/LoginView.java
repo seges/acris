@@ -46,7 +46,7 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	private final SimplePanel waitPanel = new SimplePanel();
 	private final HorizontalPanel loginPanel = new HorizontalPanel();
-	private final Button loginButton;
+	private Button loginButton;
 
 	private Pair<String, String>[] enabledLanguages;
 	private String selectedLanguage;
@@ -55,7 +55,7 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	private Boolean rememberMeAware;
 	private CheckBox rememberMeCheckbox = GWT.create(CheckBox.class);
-	
+
 	private boolean initialized = false;
 
 	/**
@@ -78,7 +78,6 @@ public class LoginView extends Composite implements LoginDisplay {
 		this.selectedLanguage = selectedLanguage != null ? selectedLanguage
 				: ((enabledLanguages != null && enabledLanguages.length > 0) ? enabledLanguages[0].getFirst() : null);
 		this.rememberMeAware = rememberMeAware;
-		this.loginButton = getLoginButton();
 		initWidget(dock);
 	}
 
@@ -138,14 +137,14 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	@Override
 	protected void onLoad() {
-		if(!initialized) {
+		if (!initialized) {
 			initComponents();
 			initialized = true;
 		}
 	}
 
 	protected void initComponents() {
-		loginButton.setText(loginMessages.loginButton());
+		ensureLoginButton().setText(loginMessages.loginButton());
 
 		Panel container = getContainer();
 		container.setTitle(loginMessages.loginTitle());
@@ -200,7 +199,7 @@ public class LoginView extends Composite implements LoginDisplay {
 
 		SimplePanel buttonWrapper = new SimplePanel();
 		buttonWrapper.addStyleName("login-Button-wrapper");
-		buttonWrapper.setWidget(loginButton);
+		buttonWrapper.setWidget(ensureLoginButton());
 		grouper.add(buttonWrapper);
 
 		loginPanel.add(grouper);
@@ -212,8 +211,8 @@ public class LoginView extends Composite implements LoginDisplay {
 		cellFormatter.setHorizontalAlignment(rowCounter, 1, HasAlignment.ALIGN_RIGHT);
 		cellFormatter.addStyleName(0, 1, "acris-LoginPanel-formatter-row-first");
 
-		loginButton.setEnabled(false);
-		loginButton.getParent().addStyleName("login-Button-disabled");
+		ensureLoginButton().setEnabled(false);
+		ensureLoginButton().getParent().addStyleName("login-Button-disabled");
 
 		setStyleNames();
 	}
@@ -259,7 +258,7 @@ public class LoginView extends Composite implements LoginDisplay {
 		if (rememberMeCheckbox != null) {
 			rememberMeCheckbox.addStyleName("login-RememberMeBox");
 		}
-		loginButton.addStyleName("login-Button");
+		ensureLoginButton().addStyleName("login-Button");
 		loginPanel.addStyleName("acris-login-LoginPanel");
 	}
 
@@ -281,10 +280,10 @@ public class LoginView extends Composite implements LoginDisplay {
 	 */
 	@Override
 	public void updateLoginEnabled() {
-		if (loginButton.isEnabled()) {
-			loginButton.getParent().removeStyleName("login-Button-disabled");
+		if (ensureLoginButton().isEnabled()) {
+			ensureLoginButton().getParent().removeStyleName("login-Button-disabled");
 		} else {
-			loginButton.getParent().addStyleName("login-Button-disabled");
+			ensureLoginButton().getParent().addStyleName("login-Button-disabled");
 		}
 	}
 
@@ -360,9 +359,16 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	@Override
 	public Widget asWidget() {
+		ensureLoginButton();
 		return this;
 	}
 
+	private Button ensureLoginButton() {
+		if (this.loginButton == null) {
+			this.loginButton = getLoginButton();
+		}
+		return this.loginButton;
+	}
 	@Override
 	public void displayMessage(String message) {
 		RootPanel.get().clear();
@@ -376,7 +382,7 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	@Override
 	public HandlerRegistration addLoginButtonHandler(ClickHandler handler) {
-		return loginButton.addClickHandler(handler);
+		return ensureLoginButton().addClickHandler(handler);
 	}
 
 	@Override
@@ -428,11 +434,11 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	@Override
 	public boolean isLoginEnabled() {
-		return loginButton.isEnabled();
+		return ensureLoginButton().isEnabled();
 	}
 
 	@Override
 	public void setLoginEnabled(boolean enabled) {
-		loginButton.setEnabled(enabled);
+		ensureLoginButton().setEnabled(enabled);
 	}
 }
