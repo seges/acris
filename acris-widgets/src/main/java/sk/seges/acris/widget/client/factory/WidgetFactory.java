@@ -34,7 +34,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
  */
 public class WidgetFactory {
 
-	private WidgetProvider widgetProvider;
+	protected WidgetProvider widgetProvider;
 	
 	public WidgetFactory(WidgetProvider widgetProvider) {
 		this.widgetProvider = widgetProvider;
