@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/mnt/storage/eldzi/.m2/repository/com/google/gwt/gwt-dnd/3.0.0/gwt-dnd-3.0.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/google/gwt/gwt-dnd/3.1.1/gwt-dnd-3.1.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
