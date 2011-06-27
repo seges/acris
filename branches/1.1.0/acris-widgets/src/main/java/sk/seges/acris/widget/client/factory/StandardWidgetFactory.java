@@ -1,5 +1,7 @@
 package sk.seges.acris.widget.client.factory;
 
+import sk.seges.acris.widget.client.Dialog;
+
 public class StandardWidgetFactory extends WidgetFactory {
 
 	private static StandardWidgetFactory instance;
@@ -14,5 +16,12 @@ public class StandardWidgetFactory extends WidgetFactory {
 		}
 		
 		return instance;
+	}
+	
+	@Override
+	public Dialog dialog() {
+		Dialog dialog = super.dialog();
+		dialog.addStyleName("acris-cmp-dialog");
+		return dialog;
 	}
 }
