@@ -1,0 +1,12 @@
+.wrapped-place {
+	background-color: gray;
+}
+
+#root {
+	border: 1px solid red;
+}
+
+.dragdrop-dropTarget-engage {
+  background-color: #E0E8FF;
+}
+
