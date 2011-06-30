@@ -3,6 +3,7 @@ package sk.seges.sesam.core.test.selenium.annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
+import sk.seges.sesam.core.pap.Constants;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 
 @Target(ElementType.TYPE)
@@ -18,8 +19,8 @@ public @interface SeleniumTestConfiguration {
 	int brominePort() default 8080;
 	boolean bromine() default false;
 	
-	String testURL();
-	String testURI() default "";
+	String testURL() default Constants.NULL;
+	String testURI() default Constants.NULL;
 	
 	Browsers browser() default Browsers.FIREFOX;
 }
