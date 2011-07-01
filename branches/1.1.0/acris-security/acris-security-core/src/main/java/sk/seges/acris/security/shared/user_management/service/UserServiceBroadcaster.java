@@ -400,6 +400,8 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 									if (entryUser != null && entryUser.getUserAuthorities() != null) {
 										add(entryUser.getUserAuthorities(), authorities);
 										primaryResult.merge(entry.getValue());
+									} else {
+										callback.onFailure(new BroadcastingException("User is null in " + entry.getKey()));
 									}
 								}
 							}
