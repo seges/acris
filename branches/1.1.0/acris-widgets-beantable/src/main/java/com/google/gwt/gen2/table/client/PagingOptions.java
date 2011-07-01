@@ -63,6 +63,11 @@ import com.google.gwt.user.client.ui.Widget;
  * </ul>
  */
 public class PagingOptions extends Composite {
+
+	static {
+		SliderBar.injectDefaultCss();
+	}
+
 	/**
 	 * Interface used to allow the widget access to css style names.
 	 * <p/>
@@ -186,9 +191,17 @@ public class PagingOptions extends Composite {
 	 */
 	private TextBox currentPageBox = new TextBox();
 
-	private SliderBar pageSlider = new SliderBar(1, 1, new LabelFormatter() {
+	private SliderBar pageSlider = new SliderBar(1, 1, new SliderBar.LabelFormatter() {
+
+		@Override
 		public String formatLabel(SliderBar slider, double value) {
-			return String.valueOf((int) value);
+			int maxIntValue =  (int) pageSlider.getMaxValue();
+			int intValue = (int) value;
+			if (intValue == 1 || intValue == maxIntValue) {
+				return String.valueOf(intValue);
+			} else {
+				return "";
+			}
 		}
 	});
 	/**
@@ -221,9 +234,9 @@ public class PagingOptions extends Composite {
 		this.table = table;
 		this.resources = resources;
 		Css css = resources.getStyle().css();
-		if (Gen2CssInjector.isInjectionEnabled()) {
-			Gen2CssInjector.inject(css);
-		}
+//		if (Gen2CssInjector.isInjectionEnabled()) {
+//			Gen2CssInjector.inject(css);
+//		}
 
 		// Create the main widget
 		HorizontalPanel pagingPanel = new HorizontalPanel();
@@ -240,6 +253,8 @@ public class PagingOptions extends Composite {
 			createCurrentPageBox();
 
 			pageSlider.setStepSize(1.0);
+//			pageSlider.addStyleName("acris-PagingOptions-pageSlider");
+			pageSlider.setWidth("120px");
 			pageSlider.setMaxValue(getPageCount());
 			pageSlider.addValueChangeHandler(new ValueChangeHandler<Double>() {
 				private Timer timer;
@@ -274,6 +289,7 @@ public class PagingOptions extends Composite {
 		buttonPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		buttonPanel.add(firstPageButton);
 		buttonPanel.add(previousPageButton);
+		currentPageBox.addStyleName("acris-bean-table-currentPageBox");
 		if (pageCountAvailable) {
 			buttonPanel.add(pageSlider);
 			buttonPanel.add(currentPageBox);
@@ -481,5 +497,13 @@ public class PagingOptions extends Composite {
 			pageSlider.setNumTicks(Math.min(getPageCount() - 1, 10));
 			lastPageButton.setVisible(true);
 		}
+	}
+	
+	public SliderBar getPageSlider() {
+		return pageSlider;
+	}
+
+	public Image getLoadingImage() {
+		return loadingImage;
 	}
 }
