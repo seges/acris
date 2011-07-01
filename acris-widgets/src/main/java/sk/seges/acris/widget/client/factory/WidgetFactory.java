@@ -215,6 +215,12 @@ public class WidgetFactory {
 		return checkBox;
 	}
 
+	public CheckBox checkBoxWithId(String id) {
+		CheckBox checkBox = checkBox();
+		checkBox.ensureDebugId(id);
+		return checkBox;
+	}
+	
 	public RadioButton radioButton(String name) {
 		//TODO Use widget provider
 		return new RadioButton(name);

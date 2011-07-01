@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import sk.seges.acris.widget.client.Dialog;
 import sk.seges.acris.widget.client.action.ActionEvent;
 import sk.seges.acris.widget.client.action.ActionListener;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
@@ -37,7 +38,7 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -78,7 +79,7 @@ public abstract class BeanTable<T> extends Composite {
 
 	private final PagingScrollTable<T> table;
 	private final BeanTableModel<T> model;
-	private final FixedWidthGrid dataTable;
+	private final CustomFixedWidthGrid dataTable;
 	private final DefaultTableDefinition<T> definition;
 	private final FixedWidthFlexTable headerTable;
 	private final FlowPanel container;
@@ -94,13 +95,14 @@ public abstract class BeanTable<T> extends Composite {
 	private boolean reloadOnEveryOnLoadCall = true;
 	private boolean firstOnLoadCall = true;
 	
-
+	private Dialog glassDialog;
+	
 	public BeanTable() {
 		container = new FlowPanel();
 		container.setStyleName("acris-bean-table");
 
 		model = new BeanTableModel<T>();
-		dataTable = new FixedWidthGrid();
+		dataTable = new CustomFixedWidthGrid();
 		headerTable = new FixedWidthFlexTable();
 		definition = new DefaultTableDefinition<T>();
 
@@ -122,6 +124,9 @@ public abstract class BeanTable<T> extends Composite {
 			}
 		});
 
+		glassDialog = new Dialog();
+		glassDialog.setGlassEnabled(true);
+		
 		initWidget(container);
 	}
 
@@ -359,15 +364,15 @@ public abstract class BeanTable<T> extends Composite {
 			filterableColumnDefinitions.add(columnDefinition);
 			filterProperty.setWidget((HasValue<?>) filter);
 
-			if (filter instanceof HasBlurHandlers) {
-				HasBlurHandlers blurrable = (HasBlurHandlers) filter;
-				blurrable.addBlurHandler(new BlurHandler() {
-					@Override
-					public void onBlur(BlurEvent arg0) {
-						reconstructFilterable();
-					}
-				});
-			}
+//			if (filter instanceof HasBlurHandlers) {
+//				HasBlurHandlers blurrable = (HasBlurHandlers) filter;
+//				blurrable.addBlurHandler(new BlurHandler() {
+//					@Override
+//					public void onBlur(BlurEvent arg0) {
+//						reconstructFilterable();
+//					}
+//				});
+//			}
 
 			if (filter instanceof HasKeyPressHandlers) {
 				HasKeyPressHandlers keypressable = (HasKeyPressHandlers) filter;
@@ -461,6 +466,11 @@ public abstract class BeanTable<T> extends Composite {
 			throw new RuntimeException("Unable to read field name for bean from the column definition = " + columnDef);
 		}
 		return domainObjectProperty;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
+		return dataTable.addDoubleClickHandler(handler);
 	}
 
 	public HandlerRegistration addRowSelectionHandler(RowSelectionHandler handler) {
@@ -725,4 +735,11 @@ public abstract class BeanTable<T> extends Composite {
 		this.reloadOnEveryOnLoadCall = reloadOnEverySetVisibleTrue;
 	}
 	
+	public void showGlass(boolean show) {
+		if (show) {
+			glassDialog.show();
+		} else {
+			glassDialog.hide();
+		}
+	}
 }

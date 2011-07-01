@@ -202,7 +202,7 @@ public class BeanTableSpecCreator {
 		return (affectedBean == null ? "" : affectedBean + ".");
 	}
 
-	private String getDynamicTranslatorInitialization(Class<? extends ConstantsWithLookup>[] messagesClasses) {
+	private String getDynamicTranslatorInitialization(Class<? extends ConstantsWithLookup>[] messagesClasses, String field) {
 		if (messagesClasses == null
 				|| messagesClasses.length < 1
 				|| (messagesClasses.length == 1)
@@ -219,10 +219,11 @@ public class BeanTableSpecCreator {
 				classes.append("," + classConstructor);
 			}
 		}
-		if (classes == null)
+		if (classes == null) {
 			return null;
+		}
 
-		return "final " + DynamicTranslator.class.getName() + " dynamicTranslator = new "
+		return "final " + DynamicTranslator.class.getName() + " "+field+"DynamicTranslator = new "
 				+ DynamicTranslator.class.getName() + "(" + classes + ");";
 	}
 
@@ -285,7 +286,7 @@ public class BeanTableSpecCreator {
 		String dynamicTranslatorInit = null;
 		if (specColumn != null && !"".equals(specColumn.field())) {
 			field = specColumn.field();
-			dynamicTranslatorInit = getDynamicTranslatorInitialization(specColumn.messagesClasses());
+			dynamicTranslatorInit = getDynamicTranslatorInitialization(specColumn.messagesClasses(), field);
 			if (dynamicTranslatorInit != null && dynamicTranslatorInit.length() > 1) {
 				isTranslatable = true;
 				propertyValueType = String.class.getSimpleName();
@@ -321,17 +322,19 @@ public class BeanTableSpecCreator {
 			throw new RuntimeException("Unable to retrieve getter for field = " + field, e);
 		}
 
-		if (!isTranslatable)
+		if (!isTranslatable) {
 			propertyValueType = fieldType.getQualifiedSourceName();
+		}
 
-		if (dynamicTranslatorInit != null && dynamicTranslatorInit.length() > 1)
+		if (dynamicTranslatorInit != null && dynamicTranslatorInit.length() > 1) {
 			source.println("	" + dynamicTranslatorInit);
+		}
 		source.println("columnDefinition = new AbstractColumnDefinition<" + beanTypeName + ", "
 				+ propertyValueType + ">() {");
 		source.println("	@Override");
 		source.println("	public " + propertyValueType + " getCellValue(" + beanTypeName + " rowValue) {");
 		if (!hasAssociation) {
-			source.println("		" + putCellValue("rowValue." + getter.getName() + "()", isTranslatable));
+			source.println("		" + putCellValue("rowValue." + getter.getName() + "()", isTranslatable, field));
 		} else {
 			String propertyFieldGetter = null;
 			try {
@@ -340,7 +343,7 @@ public class BeanTableSpecCreator {
 			} catch (NotFoundException e) {
 				throw new RuntimeException("Unable to retrieve getter for field = " + field, e);
 			}
-			source.println("		" + putCellValue("rowValue." + propertyFieldGetter + "()", isTranslatable));
+			source.println("		" + putCellValue("rowValue." + propertyFieldGetter + "()", isTranslatable, field));
 		}
 		source.println("	}");
 		source.println();
@@ -373,13 +376,13 @@ public class BeanTableSpecCreator {
 							+ fieldType.getQualifiedSourceName() + ".values())";
 					if (isTranslatable) {
 						source.println(Map.class.getName() + "<" + fieldType.getQualifiedSourceName()
-								+ ", String> enumMap = new " + HashMap.class.getName() + "<"
+								+ ", String> "+field+"EnumMap = new " + HashMap.class.getName() + "<"
 								+ fieldType.getQualifiedSourceName() + ", String>();");
 						source.println("for(" + fieldType.getQualifiedSourceName() + " enum1 : " + enumValues
 								+ ") {");
-						source.indentln("enumMap.put(enum1, dynamicTranslator.translate(enum1.name()));");
+						source.indentln(field+"EnumMap.put(enum1, "+field+"DynamicTranslator.translate(enum1.name()));");
 						source.println("}");
-						enumValues = "enumMap";
+						enumValues = field+"EnumMap";
 					}
 					source
 							.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterEnumProperty("
@@ -408,11 +411,12 @@ public class BeanTableSpecCreator {
 		source.println();
 	}
 
-	private String putCellValue(String line, Boolean isTranslatable) {
-		if (isTranslatable)
-			return "return dynamicTranslator.translate(" + line + ");";
-		else
+	private String putCellValue(String line, Boolean isTranslatable, String field) {
+		if (isTranslatable) {
+			return "return " + field + "DynamicTranslator.translate(" + line + ");";
+		} else {
 			return "return " + line + ";";
+		}
 	}
 
 	/**

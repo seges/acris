@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TreeTableController extends PagingOptions {
+	
   public static interface Css extends PagingOptions.Css {
     /**
      * Widget style name.
