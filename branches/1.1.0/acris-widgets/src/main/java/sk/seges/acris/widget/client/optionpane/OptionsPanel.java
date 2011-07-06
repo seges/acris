@@ -37,9 +37,12 @@ public class OptionsPanel extends FlowPanel {
 	 */
 	public HandlerRegistration addOption(Widget optionWidget, ClickHandler hidingClickHanler) {
 		// FIXME: tmp hack...
+		Widget origWidget = optionWidget;
 		Widget option = optionWidget;
 		if(option instanceof Button) {
 			option = WidgetFactory.hackWidget(option);
+		} else if(option.getStyleName().contains(WidgetFactory.HACK_WIDGET)) {
+			origWidget = ((SimplePanel) option).getWidget();
 		}
 		
 		removeCleaner();
@@ -50,8 +53,8 @@ public class OptionsPanel extends FlowPanel {
 		HandlerRegistration registration = null;
 		
 		if (hidingClickHanler != null) {
-			if((optionWidget instanceof HasClickHandlers)) {
-				registration = ((HasClickHandlers)optionWidget).addClickHandler(hidingClickHanler);
+			if((origWidget instanceof HasClickHandlers)) {
+				registration = ((HasClickHandlers)origWidget).addClickHandler(hidingClickHanler);
 			}else {
 				GWT.log("Widget does not implement " + HasClickHandlers.class.getName(), null);
 			}

@@ -34,6 +34,8 @@ import com.google.gwt.user.datepicker.client.DateBox;
  */
 public class WidgetFactory {
 
+	public static final String HACK_WIDGET = "hack-widget";
+	
 	protected WidgetProvider widgetProvider;
 	
 	public WidgetFactory(WidgetProvider widgetProvider) {
@@ -123,6 +125,7 @@ public class WidgetFactory {
 		// TODO: remove this when it will be fixed in themed components
 		SimplePanel buttonWrapper = new SimplePanel();
 		buttonWrapper.add(widget);
+		buttonWrapper.addStyleName(HACK_WIDGET);
 		return buttonWrapper;
 	}
 
