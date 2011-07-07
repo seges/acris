@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
-import net.sf.gilead.pojo.java5.LightEntity;
+import net.sf.gilead.pojo.gwt.LightEntity;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
 /**
@@ -133,30 +133,38 @@ public class ReportParameter extends LightEntity implements ReportParameterData,
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ReportParameter other = (ReportParameter) obj;
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
-		} else if (!id.equals(other.id))
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public int compareTo(ReportParameter o) {
 		Integer other = o.getOrderNumber();
-		if (other == null)
+		if (other == null) {
 			other = 0;
-		if (orderNumber == null)
+		}
+		if (orderNumber == null) {
 			orderNumber = 0;
-		if (orderNumber-other == 0)
+		}
+		if (orderNumber-other == 0) {
 			return -1;
+		}
 		return orderNumber-other;
 	}
 }
