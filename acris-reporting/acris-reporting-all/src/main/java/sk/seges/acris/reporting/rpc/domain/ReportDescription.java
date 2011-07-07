@@ -1,5 +1,6 @@
 package sk.seges.acris.reporting.rpc.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 
-import net.sf.gilead.pojo.java5.LightEntity;
+import net.sf.gilead.pojo.gwt.LightEntity;
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
@@ -90,27 +91,48 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 	}
 	@Override
 	public void setParametersList(List<ReportParameterData> parametersList) {
+//		if (parametersList == null) {
+//			this.parametersList = null;
+//			return;
+//		}
+//		this.parametersList = new ArrayList<ReportParameter>();
+//		for (ReportParameterData param : parametersList) {
+//			this.parametersList.add((ReportParameter) param);
+//		}		
 		this.parametersList = parametersList;
 	}
 	@Override
 	public List<ReportParameterData> getParametersList() {
+//		if (parametersList == null) {
+//			return null;
+//		}
+//		List<ReportParameterData> result = new ArrayList<ReportParameterData>();
+//		for (ReportParameterData param : parametersList) {
+//			result.add(param);
+//		}
+//		return result;
 		return parametersList;
 	}
 	
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) {
+			return true;
+		}
+        if (obj == null) {
+			return false;
+		}
+        if (getClass() != obj.getClass()) {
+			return false;
+		}
         ReportDescription other = (ReportDescription) obj;
         if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
+            if (other.id != null) {
+				return false;
+			}
+        } else if (!id.equals(other.id)) {
+			return false;
+		}
         return true;
     }	
 }
