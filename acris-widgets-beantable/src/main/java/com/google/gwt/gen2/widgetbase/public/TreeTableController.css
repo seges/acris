@@ -1,3 +1,5 @@
+@external gwt-PushButton-down, gwt-PushButton-up, gwt-PushButton, gwt-PushButton-up-hovering, gwt-PushButton-up-disabled, gwt-PushButton-down-hovering;
+
 @sprite .gwt-TreeTableController {
   gwt-image: "pagingBackground";
   background-color: #e3e8f3;
