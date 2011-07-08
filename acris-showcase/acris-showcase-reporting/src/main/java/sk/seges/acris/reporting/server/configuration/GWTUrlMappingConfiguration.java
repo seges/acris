@@ -15,7 +15,7 @@ import sk.seges.acris.reporting.server.dao.api.IReportParameterDao;
 import sk.seges.acris.reporting.server.dao.twig.ReportDescriptionTwigDao;
 import sk.seges.acris.reporting.server.dao.twig.ReportParameterTwigDao;
 import sk.seges.acris.reporting.server.service.MockReportingService;
-import sk.seges.acris.reporting.server.service.ReportDescriptionService;
+import sk.seges.acris.reporting.server.service.impl.ReportDescriptionService;
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 import sk.seges.acris.reporting.shared.service.IReportDescriptionService;

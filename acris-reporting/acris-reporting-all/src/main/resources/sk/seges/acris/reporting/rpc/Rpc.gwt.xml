@@ -2,11 +2,12 @@
     <!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='sk.seges.acris.Common' />
 <!--    <inherits name='sk.seges.corpis.AcrisCorpisRpc' />-->
-    <inherits name='sk.seges.acris.Security' />
+    <!-- inherits name='sk.seges.acris.Security' />
     <inherits name='com.googlecode.gwt.math.Math' />
 	<inherits name='net.sf.gilead.Gilead4Gwt'/>
-    <inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/>
+    <inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/-->
     
+    <inherits name='sk.seges.acris.reporting.shared.Api' />
     
     <source path='domain' />
     <source path='service' />

@@ -10,5 +10,6 @@ import sk.seges.sesam.dao.IEntityInstancer;
  *
  * @param <T> extends {@link ReportParameterData}
  */
+@Deprecated
 public interface IReportParameterDao<T extends ReportParameterData> extends ICrudDAO<T>, IEntityInstancer<T> {
 }

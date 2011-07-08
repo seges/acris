@@ -13,13 +13,13 @@
         <property name="location" value="classpath:sk/seges/acris/servlet/servlet.properties" />
     </bean>
     
-    <bean id="servletDirectoryConfigurer" class="sk.seges.acris.servlet.util.DirectoryConfigurer" init-method="prepareDirectories">
-        <constructor-arg value="${rootDirectoriesPropertiesFile}" />
-    </bean>
+<!--     <bean id="servletDirectoryConfigurer" class="sk.seges.acris.servlet.util.DirectoryConfigurer" init-method="prepareDirectories"> -->
+<!--         <constructor-arg value="${rootDirectoriesPropertiesFile}" /> -->
+<!--     </bean> -->
     
-	<bean class="sk.seges.acris.reporting.server.service.ImageServlet">
-		<property name="servletDirectoryConfigurer" ref="servletDirectoryConfigurer"/>
-	</bean>
+<!-- 	<bean class="sk.seges.acris.reporting.server.service.ImageServlet"> -->
+<!-- 		<property name="servletDirectoryConfigurer" ref="servletDirectoryConfigurer"/> -->
+<!-- 	</bean> -->
 	<!--<bean id="standardServicesUrlMapping" class="org.gwtwidgets.server.spring.GWTHandler">
 		<property name="serviceExporterFactory" ref="configurableExporterFactory" />
 		<property name="mappings">
