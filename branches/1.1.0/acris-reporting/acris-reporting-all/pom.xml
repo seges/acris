@@ -71,6 +71,12 @@
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
 			<artifactId>gilead4gwt</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>				
+				</exclusion>
+			</exclusions>				
 		</dependency>
 
 		<dependency>

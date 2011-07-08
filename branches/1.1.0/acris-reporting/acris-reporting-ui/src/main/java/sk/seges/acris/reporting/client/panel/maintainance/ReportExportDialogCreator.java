@@ -70,6 +70,12 @@ public class ReportExportDialogCreator {
 	}
 
 	private Panel downloadPanel;
+	protected ScrollPanel scrollPanel;
+	
+	protected void setDialogSize() {
+		scrollPanel.setWidth("700px");
+		scrollPanel.setHeight("500px");		
+	}
 
 	void init(ReportDescriptionData report,
 			Map<ReportParameterData, String> predefinedParams,
@@ -83,9 +89,8 @@ public class ReportExportDialogCreator {
 		FlowPanel contentPanel = createDownloadDialogContent(report,
 				predefinedParams, parameterTypeSelector);
 		ScrollPanel scrollPanel = GWT.create(ScrollPanel.class);
-		scrollPanel.setWidth("700px");
-		// scrollPanel.setHeight("500px");
 		scrollPanel.add(contentPanel);
+		setDialogSize();
 		dialog.setContent(scrollPanel);
 		dialog.addOption(new OptionsFactory(widgetFactory).createCloseOption());
 		downloadPanel = createDownloadButtonPanel();
@@ -126,6 +131,7 @@ public class ReportExportDialogCreator {
 									.keySet()) {
 								paramsMap.put(predefParam.getName(),
 										predefinedParams.get(predefParam));
+								paramsMap.put(predefParam.getName(), predefinedParams.get(predefParam));
 							}
 						}
 						if (notInsertedValues.size() > 0) {
@@ -192,14 +198,14 @@ public class ReportExportDialogCreator {
 						.getReportParameter()));
 			}
 		}
-		Label label = new Label(reportingMessages.exportFileType());
-		exportTypeListBox = GWT.create(EnumListBoxWithValue.class);
-		exportTypeListBox.setClazz(EReportExportType.class);
-		exportTypeListBox.load(Arrays.asList(EReportExportType.values()));
-		exportTypeListBox.removeItem(0);
-		exportTypeListBox.setSelectedIndex(0);
-		flexPanel.setWidget(++i, 0, label);
-		flexPanel.setWidget(i, 1, exportTypeListBox);
+//		Label label = new Label(reportingMessages.exportFileType());
+//		exportTypeListBox = GWT.create(EnumListBoxWithValue.class);
+//		exportTypeListBox.setClazz(EReportExportType.class);
+//		exportTypeListBox.load(Arrays.asList(EReportExportType.values()));
+//		exportTypeListBox.removeItem(0);
+//		exportTypeListBox.setSelectedIndex(0);
+//		flexPanel.setWidget(++i, 0, label);
+//		flexPanel.setWidget(i, 1, exportTypeListBox);
 
 		contentPanel.add(flexPanel);
 		return contentPanel;
@@ -246,8 +252,7 @@ public class ReportExportDialogCreator {
 		//
 		// } else
 		{
-			reportingService.exportReport(report.getId(), exportTypeListBox
-					.getValue().getName(), paramsMap, webId,
+			reportingService.exportReport(report.getId(), null, paramsMap, webId,
 					new AsyncCallback<String>() {
 
 						@Override

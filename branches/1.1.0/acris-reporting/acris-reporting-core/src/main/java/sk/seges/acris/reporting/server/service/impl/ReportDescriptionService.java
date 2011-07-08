@@ -1,4 +1,4 @@
-package sk.seges.acris.reporting.server.service;
+package sk.seges.acris.reporting.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +44,7 @@ public class ReportDescriptionService implements IReportDescriptionService {
 
 	@Override
 	public ReportDescriptionData persist(ReportDescriptionData report) {
-		report.setId(System.currentTimeMillis());
+//		report.setId(System.currentTimeMillis());
 		report.setCreationDate(new Date());
 		if (report.getParametersList() != null
 				&& !report.getParametersList().isEmpty()) {

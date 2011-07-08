@@ -39,10 +39,12 @@ import sk.seges.acris.reporting.shared.service.IReportingService;
  * export of jasper reports
  * 
  * @author marta
- *
+ * 
  */
 @Service
 public class ReportingService implements IReportingService {
+
+	private static final String OUTPUT = "output";
 
 	private static final String REPORTS_DIR = "reports";
 
@@ -57,13 +59,21 @@ public class ReportingService implements IReportingService {
 	@Qualifier("reportDescriptionService")
 	private IReportDescriptionService reportDescriptionService;
 
+	public ReportingService() {}
+	
+	public ReportingService(ConfigurationProvider configuration, IReportDescriptionService reportDescriptionService) {
+		this.configuration = configuration;
+		this.reportDescriptionService = reportDescriptionService;
+	}
+
 	@Transactional
 	@Override
 	public String exportReportToHtml(Long reportDescriptionId, Map<String, Object> parameters) {
 		ReportDescriptionData report = reportDescriptionService.findById(reportDescriptionId);
-		WSClient client = new WSClient(configuration.getJasperServerUrl() + "/services/repository", configuration.getJasperServerUser(), configuration.getJasperServerPassword());
+		WSClient client = new WSClient(configuration.getJasperServerUrl() + "/services/repository",
+				configuration.getJasperServerUser(), configuration.getJasperServerPassword());
 		try {
-//			parameters.put(Argument.RUN_OUTPUT_IMAGES_URI, "/images");
+			// parameters.put(Argument.RUN_OUTPUT_IMAGES_URI, "/images");
 			JasperPrint print = client.runReport(report.getReportUrl(), parameters);
 			HttpServletRequest request = ServletUtils.getRequest();
 			HttpServletResponse response = ServletUtils.getResponse();
@@ -77,7 +87,7 @@ public class ReportingService implements IReportingService {
 			StringWriter out = new StringWriter();
 			exporter.setParameter(JRExporterParameter.OUTPUT_WRITER, out);
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-//			String webId = "HrOd_Ranking_WEB";
+			// String webId = "HrOd_Ranking_WEB";
 			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image?image=");
 			exporter.exportReport();
 			return out.getBuffer().toString();
@@ -89,17 +99,22 @@ public class ReportingService implements IReportingService {
 
 	@Override
 	@Transactional
-	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters, String web_id) {
+	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters,
+			String web_id) {
 
 		ReportDescriptionData report = reportDescriptionService.findById(reportDescriptionId);
 		String params = "";
 		params += generateParamsString(parameters);
+		if (exportType == null) {
+			exportType = ((String) parameters.get(OUTPUT)).toLowerCase();
+		}
 
-		String urlPath = generateCompleteReportUrl(exportType, report, params, configuration.getJasperServerUser(), configuration.getJasperServerPassword());
-		if(LOG.isDebugEnabled()) {
+		String urlPath = generateCompleteReportUrl(exportType, report, params, configuration.getJasperServerUser(),
+				configuration.getJasperServerPassword());
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("Complete url = " + urlPath);
 		}
-		
+
 		try {
 			URL url = new URL(urlPath);
 			URLConnection connection = url.openConnection();
@@ -132,14 +147,13 @@ public class ReportingService implements IReportingService {
 			if (proxyIn != null) {
 				String fileName = "report" + "_" + new Date().getTime() + "." + exportType.toLowerCase();
 				String reportDir = REPORTS_DIR;
-				String directory = configuration.resolveRootDirectoryPath(web_id) + File.separator
-						+ reportDir;
+				String directory = configuration.resolveRootDirectoryPath(web_id) + "/" + reportDir;
 				File d = new File(directory);
 				if (!d.exists() || !d.isDirectory()) {
 					d.mkdir();
 				}
 				String filePath = directory + File.separator + fileName;
-				if(LOG.isDebugEnabled()) {
+				if (LOG.isDebugEnabled()) {
 					LOG.debug("Report output = " + filePath);
 				}
 
@@ -163,7 +177,9 @@ public class ReportingService implements IReportingService {
 		String params = "";
 		if (parameters != null) {
 			for (String key : parameters.keySet()) {
-				params += "&" + key + "=" + parameters.get(key);
+				if (key != OUTPUT) {
+					params += "&" + key + "=" + parameters.get(key);
+				}
 			}
 		}
 		return params;
@@ -180,10 +196,9 @@ public class ReportingService implements IReportingService {
 		String parentUrl = reportUrl.substring(0, reportUrl.lastIndexOf("/"));
 		if (parentUrl.length() <= 0)
 			parentUrl = "undefined";
-		//reportUrl = reportUrl.substring(reportUrl.lastIndexOf("/"));
-		
-		String urlPath = prefix + parameters + parentUrl
-				+ "&reportUnit=" + reportUrl;
+		// reportUrl = reportUrl.substring(reportUrl.lastIndexOf("/"));
+
+		String urlPath = prefix + parameters + parentUrl + "&reportUnit=" + reportUrl;
 		return urlPath + "&output=" + exportType + params;
 	}
 

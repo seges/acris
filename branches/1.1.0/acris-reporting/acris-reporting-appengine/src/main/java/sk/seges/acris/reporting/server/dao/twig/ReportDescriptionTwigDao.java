@@ -18,4 +18,10 @@ public class ReportDescriptionTwigDao extends AbstractTwigCrud<ReportDescription
 	public TwigReportDescription getEntityInstance() {
 		return new TwigReportDescription();
 	}
+	
+	@Override
+	public ReportDescriptionData persist(ReportDescriptionData entity) {
+		entity.setId(System.currentTimeMillis());
+		return super.persist(entity);
+	}
 }
