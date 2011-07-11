@@ -59,7 +59,7 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 		case PROCESSING_ANNOTATIONS:
 			return new Type[] { sk.seges.acris.binding.client.annotations.BeanWrapper.class };
 		case OUTPUT_INTERFACES:
-			return new Type[] { TypedClassBuilder.get(BeanWrapper.class, applyUpperGenerics(NamedType.THIS, typeElement)) };
+			return new Type[] { TypedClassBuilder.get(BeanWrapper.class, genericsSupport.applyUpperGenerics(NamedType.THIS, typeElement)) };
 		}
 		return super.getConfigurationTypes(type, typeElement);
 	}
