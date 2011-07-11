@@ -143,7 +143,6 @@ public abstract class AnnotationTest {
 		return content.toArray(new String[] {});
 	}
 
-	// private
 	/**
 	 * Attempts to compile the given compilation units using the Java Compiler API.
 	 * <p>
@@ -163,6 +162,28 @@ public abstract class AnnotationTest {
 		addCollection(files, compilationUnits);
 
 		return compileFiles(files);
+	}
+
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Package... compilationUnits) {
+		assert (compilationUnits != null);
+
+		List<File> files = new ArrayList<File>();
+
+		addCollection(files, compilationUnits);
+
+		return compileFiles(files);
+	}
+
+	private void addCollection(List<File> files, Package[] compilationUnits) {
+		if (compilationUnits == null) {
+			return;
+		}
+		for (Package element: compilationUnits) {
+			assert (element != null);
+
+			ClassFinder classFinder = new ClassFinder();
+			addCollection(files, classFinder.findClassesInPackage(((Package)element).getName()));
+		}
 	}
 
 	protected <T extends AnnotatedElement> void addCollection(List<File> files, Collection<T> compilationUnits) {

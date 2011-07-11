@@ -121,4 +121,10 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	public String getQualifiedName() {
 		return getCanonicalName().replace("$", ".");
 	}
+
+	@Override
+	public MutableType setName(String name) {
+		simpleClassName = name;
+		return this;
+	}
 }
