@@ -12,7 +12,7 @@ public interface PanelRef {
     public static final String SECURED_MENU_LAYOUT_PANEL = "secMenuLP";
 	public static final String UNAVAILABLE_PANEL = "unavailableP";
 	public static final String POPOUT_LOGIN_PANEL = "popoutLoginP";
-	public static final String LANGUAGE_SELECTOR_PANEL = "langSelPanel";
+	public static final String LANGUAGE_SELECTOR_LAYOUT = "langSelLP";
 	public static final String BLOG_POSTS_PANEL = "blogPostsPanel";
 	public static final String SEARCH_PANEL = "searchPanel";
 	public static final String NEWS_PANEL = "newsPanel";
