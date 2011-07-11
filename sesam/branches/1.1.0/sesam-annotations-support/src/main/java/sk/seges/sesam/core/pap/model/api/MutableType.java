@@ -5,6 +5,8 @@ public interface MutableType extends NamedType {
 
 	HasTypeParameters addType(TypeParameter typeParameter);
 
+	MutableType setName(String name);
+	
 	MutableType addClassSufix(String sufix);
 
 	MutableType addClassPrefix(String prefix);
