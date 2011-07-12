@@ -1,6 +1,5 @@
 package sk.seges.acris.reporting.rpc.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
@@ -47,6 +47,7 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 	
 	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY, targetEntity = ReportParameter.class)
 	@OrderBy(ReportParameterData.ORDER_NUMBER)
+	@JoinColumn(name="owning_report")
 	private List<ReportParameterData> parametersList = null;
 
 	@Override
