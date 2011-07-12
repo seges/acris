@@ -1,7 +1,6 @@
 package sk.seges.acris.reporting.client.panel.maintainance;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +87,7 @@ public class ReportExportDialogCreator {
 
 		FlowPanel contentPanel = createDownloadDialogContent(report,
 				predefinedParams, parameterTypeSelector);
-		ScrollPanel scrollPanel = GWT.create(ScrollPanel.class);
+		scrollPanel = GWT.create(ScrollPanel.class);
 		scrollPanel.add(contentPanel);
 		setDialogSize();
 		dialog.setContent(scrollPanel);
