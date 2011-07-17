@@ -22,6 +22,10 @@ public class ElementFlowPanel extends FlowPanel implements HasClickHandlers, Has
 		this.element = element;
 	}
 
+	public static ElementFlowPanel wrap(Element element) {
+		return new ElementFlowPanel(element);
+	}
+	
 	@Override
 	public com.google.gwt.user.client.Element getElement() {
 		return (com.google.gwt.user.client.Element) this.element;
