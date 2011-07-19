@@ -18,5 +18,6 @@ public interface PanelRef {
 	public static final String NEWS_PANEL = "newsPanel";
 	public static final String PAGER_LAYOUT = "layout.pager";
 	public static final String WIZARD_LAYOUT = "layout.wizard";
+	public static final String FLOW_WIZARD_STEP_LAYOUT = "layout.wizard.step.flow";
 	public static final String BOUND_FIELD_LAYOUT = "layout.boundField";
 }
