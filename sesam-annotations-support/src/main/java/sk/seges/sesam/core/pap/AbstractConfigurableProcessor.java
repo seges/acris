@@ -466,7 +466,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	/**
 	 * This method should be overrided
 	 */
-	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {	}
+	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {	}
 	
 	protected boolean supportProcessorChain() {
 		//Return true in order to run other processors

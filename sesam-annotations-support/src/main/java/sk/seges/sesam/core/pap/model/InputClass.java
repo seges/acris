@@ -1,10 +1,13 @@
 package sk.seges.sesam.core.pap.model;
 
 
+import javax.lang.model.type.TypeMirror;
+
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
+import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
 public class InputClass extends AbstractPrintableType implements NamedType, MutableType {
 
@@ -12,15 +15,23 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	private String packageName;
 	private NamedType enclosedClass;
 	
+	private TypeMirror type;
+
 	public InputClass(String packageName, String simpleClassName) {
-		this.simpleClassName = simpleClassName;
-		this.packageName = packageName;
+		this(null, packageName, simpleClassName);
 	}
 
-	public InputClass(NamedType enclosedClass, String simpleClassName) {
+	public InputClass(TypeMirror type, String packageName, String simpleClassName) {
+		this.simpleClassName = simpleClassName;
+		this.packageName = packageName;
+		this.type = type;
+	}
+
+	public InputClass(TypeMirror type, NamedType enclosedClass, String simpleClassName) {
 		this.simpleClassName = simpleClassName;
 		this.packageName = enclosedClass.getPackageName();
 		this.enclosedClass = enclosedClass;
+		this.type = type;
 	}
 
 	public NamedType getEnclosedClass() {
@@ -28,8 +39,8 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	}
 	
 	@Override
-	protected MutableType clone() {
-		return new OutputClass(packageName, simpleClassName);
+	protected OutputClass clone() {
+		return new OutputClass(asType(), packageName, simpleClassName);
 	}
 
 	public String getClassName() {
@@ -41,27 +52,31 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	}
 
 	public HasTypeParameters addType(TypeParameter typeParameter) {
-		return new TypedOutputClass(getPackageName(), getClassName(), typeParameter);
+		return new TypedOutputClass(asType(), getPackageName(), getClassName(), typeParameter);
 	}
 
 	public MutableType addClassSufix(String sufix) {
-		simpleClassName += sufix;
-		return clone();
+		InputClass result = clone();
+		result.simpleClassName += sufix;
+		return result;
 	}
 
 	public MutableType addClassPrefix(String prefix) {
-		simpleClassName = prefix + simpleClassName;
-		return clone();
+		InputClass result = clone();
+		result.simpleClassName = prefix + simpleClassName;
+		return result;
 	}
 
 	public MutableType addPackageSufix(String sufix) {
-		packageName += sufix;
-		return clone();
+		InputClass result = clone();
+		result.packageName += sufix;
+		return result;
 	}
 
 	public MutableType changePackage(String packageName) {
-		this.packageName = packageName;
-		return clone();
+		InputClass result = clone();
+		result.packageName = packageName;
+		return result;
 	}
 
 	public String getCanonicalName() {
@@ -96,8 +111,9 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof InputClass)) {
 			return false;
+		}
 		InputClass other = (InputClass) obj;
 		if (enclosedClass == null) {
 			if (other.enclosedClass != null)
@@ -124,7 +140,20 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 
 	@Override
 	public MutableType setName(String name) {
-		simpleClassName = name;
+		InputClass result = clone();
+		result.simpleClassName = name;
+		result.type = null;
+		return result;
+	}
+	
+	@Override
+	public TypeMirror asType() {
+		return type;
+	}
+
+	@Override
+	public MutableType changePackage(PackageValidator packageValidator) {
+		packageName = packageValidator.toString();
 		return this;
 	}
 }

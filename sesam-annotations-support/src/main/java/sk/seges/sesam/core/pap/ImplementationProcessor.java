@@ -22,6 +22,8 @@ public abstract class ImplementationProcessor extends AbstractConfigurableProces
 	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
+		outputName.asType();
+		
 		TypeElement typeInterfaceElement = getInterfaceElement(element, roundEnv);
 
 		for (TypeMirror typeMirror: typeInterfaceElement.getInterfaces()) {

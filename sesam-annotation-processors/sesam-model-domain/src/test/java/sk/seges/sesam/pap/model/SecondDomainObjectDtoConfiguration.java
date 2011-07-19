@@ -1,15 +1,10 @@
-package sk.seges.sesam.pap.customer;
+package sk.seges.sesam.pap.model;
 
-import sk.seges.sesam.pap.model.annotation.Field;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.TransferObjectConfiguration;
 
-@TransferObjectConfiguration(TestCustomer.class)
+@TransferObjectConfiguration(SecondDomainObject.class)
 @Mapping(MappingType.EXPLICIT)
-public interface CustomerDtoConfiguration {	
-
-	@Field
-	void contact();
-
+public interface SecondDomainObjectDtoConfiguration {	
 }

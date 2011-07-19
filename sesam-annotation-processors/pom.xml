@@ -15,6 +15,7 @@
 	<modules>
 		<module>sesam-model-metadata</module>
 		<module>sesam-model-domain</module>
+		<module>sesam-service-dto-layer</module>
 	</modules>
 
 	<dependencyManagement>
