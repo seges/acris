@@ -7,7 +7,9 @@ import sk.seges.acris.widget.client.event.DialogInitializeEvent;
 import sk.seges.acris.widget.client.handler.DialogInitializeHandler;
 import sk.seges.acris.widget.client.handler.HasDialogInitializeHandlers;
 import sk.seges.acris.widget.client.optionpane.OptionsPanel;
+import sk.seges.acris.widget.client.util.WidgetUtils;
 
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -234,5 +236,17 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 		for (HandlerRegistration registration : handlerRegistrations) {
 			registration.removeHandler();
 		}
+	}
+
+	@Override
+	public void center() {
+		super.center();
+		this.getElement().getStyle().setPosition(Position.FIXED);
+	}
+
+	@Override
+	public void setPopupPosition(int left, int top) {
+		super.setPopupPosition(left - WidgetUtils.getPageScrollX(), top - WidgetUtils.getPageScrollY());
+		this.getElement().getStyle().setPosition(Position.FIXED);
 	}
 }
