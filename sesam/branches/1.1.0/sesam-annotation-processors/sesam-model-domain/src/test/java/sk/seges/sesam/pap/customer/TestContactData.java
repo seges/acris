@@ -3,13 +3,13 @@
  */
 package sk.seges.sesam.pap.customer;
 
-import java.io.Serializable;
+import sk.seges.sesam.domain.IDomainObject;
 
 
 /**
  * @author ladislav.gazo
  */
-public interface TestContactData extends Serializable {
+public interface TestContactData extends IDomainObject<Long> {
 	public static final String PHONE = "phone";
 	public static final String FAX = "fax";
 	public static final String EMAIL = "email";

@@ -10,10 +10,11 @@ import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.pap.customer.TestAddressData;
+import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
 
 
-public class CustomerTranferObjectProcessorTest extends AnnotationTest {
+public class CustomerTransferObjectProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testNestedBounds() {
@@ -27,7 +28,8 @@ public class CustomerTranferObjectProcessorTest extends AnnotationTest {
 	@Override
 	protected Processor[] getProcessors() {
 		return new Processor[] {
-			new TransferObjectProcessor()
+			new TransferObjectProcessor(),
+			new TransferObjectConvertorProcessor()
 		};
 	}
 
@@ -36,5 +38,4 @@ public class CustomerTranferObjectProcessorTest extends AnnotationTest {
 		NamedType outputClass = TransferObjectProcessor.getOutputClass(inputClass);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
-
 }

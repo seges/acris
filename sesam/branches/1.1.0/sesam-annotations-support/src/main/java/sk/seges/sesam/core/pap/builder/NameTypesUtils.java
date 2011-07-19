@@ -75,30 +75,27 @@ public class NameTypesUtils implements NameTypes {
 	}
 
 	public MutableType toType(TypeMirror typeMirror) {
-		if (typeMirror.getKind().equals(TypeKind.DECLARED)) {
+		switch (typeMirror.getKind()) {
+		case DECLARED:
 			DeclaredType declaredType = (DeclaredType)typeMirror;
 			
 			if (declaredType.asElement().getEnclosingElement() != null && declaredType.asElement().getEnclosingElement().asType().getKind().equals(TypeKind.DECLARED)) {
 				MutableType enclosedElement = toType(declaredType.asElement().getEnclosingElement());
-				return handleGenerics(new InputClass(enclosedElement, declaredType.asElement().getSimpleName().toString()), declaredType);
+				return handleGenerics(new InputClass(typeMirror, enclosedElement, declaredType.asElement().getSimpleName().toString()), declaredType);
 			}
 				
 			PackageElement packageElement = elements.getPackageOf(declaredType.asElement());
-			return handleGenerics(new InputClass(packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
+			return handleGenerics(new InputClass(typeMirror, packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
+		case VOID:
+			return new InputClass(null, "void");
 		}
+		
 
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
 	}
 	
 	public MutableType toType(Element element) {
 		return toType(element.asType());
-//		if (element.getEnclosingElement() != null && isDeclaredType(element.getEnclosingElement())) {
-//			MutableType enclosedElement = toType(element.getEnclosingElement());
-//			return handleGenerics(new InputClass(enclosedElement, element.getSimpleName().toString()), element);
-//		}
-//
-//		PackageElement packageElement = elements.getPackageOf(element);
-//		return handleGenerics(new InputClass(packageElement.getQualifiedName().toString(), element.getSimpleName().toString()), element);
 	}
 	
 	private static NamedType toType(Class<?> clazz) {
@@ -106,9 +103,9 @@ public class NameTypesUtils implements NameTypes {
 			return null;
 		}
 		if (clazz.getEnclosingClass() != null) {
-			return new InputClass(toType(clazz.getEnclosingClass()), clazz.getSimpleName());
+			return new InputClass(null, toType(clazz.getEnclosingClass()), clazz.getSimpleName());
 		}
-		return new InputClass(clazz.getPackage().getName(), clazz.getSimpleName());
+		return new InputClass(null, clazz.getPackage().getName(), clazz.getSimpleName());
 	}
 
 	public NamedType toType(Type javaType) {
@@ -172,7 +169,7 @@ public class NameTypesUtils implements NameTypes {
 				}
 
 				PackageElement packageElement = elements.getPackageOf(typeElement);
-				return TypedClassBuilder.get(packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), parameters);
+				return TypedClassBuilder.get(typeElement.asType(), packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), parameters);
 
 			} else {
 				return toType(typeElement.asType());

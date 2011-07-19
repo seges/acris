@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public enum Browsers {
 
@@ -17,7 +18,9 @@ public enum Browsers {
 	IE("iexplore") {
 		@Override
 		public WebDriver getWebDriver() {
-			return new InternetExplorerDriver();
+			DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
+			ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+			return new InternetExplorerDriver(ieCapabilities);
 		}
 	},
 	SAFARI("safari") {
@@ -44,22 +47,22 @@ public enum Browsers {
 			return new HtmlUnitDriver();
 		}
 	};
-	
+
 	private String browser;
-	
+
 	Browsers(String browser) {
 		this.browser = browser;
 	}
-	
+
 	@Override
 	public String toString() {
 		return browser;
 	}
-	
-	public abstract WebDriver getWebDriver();	
-	
+
+	public abstract WebDriver getWebDriver();
+
 	public static Browsers get(String name) {
-		for (Browsers browser: values()) {
+		for (Browsers browser : values()) {
 			if (browser.toString().contains(name)) {
 				return browser;
 			}

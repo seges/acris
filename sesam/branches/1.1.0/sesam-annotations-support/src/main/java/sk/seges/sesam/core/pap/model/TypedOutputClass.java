@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.pap.model;
 
+import javax.lang.model.type.TypeMirror;
+
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.MutableType;
@@ -10,13 +12,13 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 
 	private TypeParameter[] typeParameters;
 
-	public TypedOutputClass(String packageName, String className, TypeParameter... typeParameters) {
-		super(packageName, className);
+	public TypedOutputClass(TypeMirror type, String packageName, String className, TypeParameter... typeParameters) {
+		super(type, packageName, className);
 		this.typeParameters = typeParameters;
 	}
 
 	public TypedOutputClass(Class<?> clazz, Class<?>... classes) {
-		this(clazz.getPackage().getName(), clazz.getSimpleName());
+		this(null, clazz.getPackage().getName(), clazz.getSimpleName());
 		if (classes != null) {
 			typeParameters = new TypeParameter[classes.length];
 			for (int i = 0; i < classes.length; i++) {
@@ -26,7 +28,7 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 	}
 
 	public TypedOutputClass(Class<?> clazz, NamedType... classes) {
-		this(clazz.getPackage().getName(), clazz.getSimpleName());
+		this(null, clazz.getPackage().getName(), clazz.getSimpleName());
 		if (classes != null) {
 			typeParameters = new TypeParameter[classes.length];
 			for (int i = 0; i < classes.length; i++) {
@@ -36,17 +38,17 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 	}
 
 	public TypedOutputClass(Class<?> clazz, TypeParameter... typeParameters) {
-		this(clazz.getPackage().getName(), clazz.getSimpleName());
+		this(null, clazz.getPackage().getName(), clazz.getSimpleName());
 		this.typeParameters = typeParameters;
 	}
 
 	public TypedOutputClass(NamedType type, TypeParameter... typeParameters) {
-		this(type.getPackageName(), type.getSimpleName());
+		this(type instanceof MutableType ? ((MutableType)type).asType() : null, type.getPackageName(), type.getSimpleName());
 		this.typeParameters = typeParameters;
 	}
 
 	public TypedOutputClass(NamedType type, NamedType... classes) {
-		this(type.getPackageName(), type.getSimpleName());
+		this(type instanceof MutableType ? ((MutableType)type).asType() : null, type.getPackageName(), type.getSimpleName());
 		if (classes != null) {
 			typeParameters = new TypeParameter[classes.length];
 			for (int i = 0; i < classes.length; i++) {
@@ -92,7 +94,7 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 
 	@Override
 	protected TypedOutputClass clone() {
-		return new TypedOutputClass(getPackageName(), getClassName(), typeParameters);
+		return new TypedOutputClass(asType(), getPackageName(), getClassName(), typeParameters);
 	}
 
 	public TypedOutputClass addType(TypeParameter typeParameter) {
@@ -102,7 +104,7 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 		}
 		params[typeParameters.length] = typeParameter;
 
-		return new TypedOutputClass(getPackageName(), getClassName(), params);
+		return new TypedOutputClass(asType(), getPackageName(), getClassName(), params);
 	}
 
 	String toString(HasTypeParameters hasTypeParameters) {
@@ -131,8 +133,8 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 	@Override
 	public MutableType stripTypeParameters() {
 		if (getEnclosedClass() != null) {
-			return new OutputClass(getEnclosedClass(), getSimpleName());
+			return new OutputClass(asType(), getEnclosedClass(), getSimpleName());
 		}
-		return new OutputClass(getPackageName(), getSimpleName());
+		return new OutputClass(asType(), getPackageName(), getSimpleName());
 	}
 }

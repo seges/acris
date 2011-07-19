@@ -2,6 +2,8 @@ package sk.seges.sesam.core.pap.model;
 
 import java.lang.reflect.Type;
 
+import javax.lang.model.type.TypeMirror;
+
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
@@ -19,8 +21,8 @@ public class TypedClassBuilder {
 		return new TypedOutputClass(clazz, (Class<?>)null);
 	}
 
-	public static HasTypeParameters get(String packageName, String className, TypeParameter... typeParameters) {
-		return new TypedOutputClass(packageName, className, typeParameters);
+	public static HasTypeParameters get(TypeMirror type, String packageName, String className, TypeParameter... typeParameters) {
+		return new TypedOutputClass(type, packageName, className, typeParameters);
 	}
 
 	public static HasTypeParameters get(Class<?> clazz, Class<?>... classes) {

@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.pap.model.api;
 
+import javax.lang.model.type.TypeMirror;
+
 public interface NamedType extends java.lang.reflect.Type, PrintableType {
 
 	public static final Class<?> THIS = NamedType.class;
@@ -11,4 +13,6 @@ public interface NamedType extends java.lang.reflect.Type, PrintableType {
 	String getCanonicalName();
 
 	String getQualifiedName();
+
+	TypeMirror asType();
 }

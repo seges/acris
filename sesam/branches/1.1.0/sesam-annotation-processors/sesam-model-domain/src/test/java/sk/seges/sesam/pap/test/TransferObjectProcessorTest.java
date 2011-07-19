@@ -12,6 +12,8 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.pap.model.DomainObject;
 import sk.seges.sesam.pap.model.MockEntityDtoConfiguration;
 import sk.seges.sesam.pap.model.SecondDomainObject;
+import sk.seges.sesam.pap.model.SecondDomainObjectDtoConfiguration;
+import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
 
 
@@ -19,14 +21,15 @@ public class TransferObjectProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testNestedBounds() {
-		assertCompilationSuccessful(compileFiles(MockEntityDtoConfiguration.class, DomainObject.class, SecondDomainObject.class));
+		assertCompilationSuccessful(compileFiles(MockEntityDtoConfiguration.class, SecondDomainObjectDtoConfiguration.class, DomainObject.class, SecondDomainObject.class));
 	//	assertOutput(getResourceFile(TestBeanNestedBounds.class), getOutputFile(TestBeanNestedBounds.class));
 	}
 
 	@Override
 	protected Processor[] getProcessors() {
 		return new Processor[] {
-			new TransferObjectProcessor()
+			new TransferObjectProcessor(),
+			new TransferObjectConvertorProcessor()
 		};
 	}
 
