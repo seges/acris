@@ -38,8 +38,7 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 
 	@Override
 	protected NamedType[] getTargetClassNames(MutableType mutableType) {
-		mutableType.changePackage(mutableType.getPackageName() + ".shared.domain");
-		return new NamedType[] { mutableType.addClassSufix("MapBean") };
+		return new NamedType[] { mutableType.changePackage(mutableType.getPackageName() + ".shared.domain").addClassSufix("MapBean") };
 	}
 
 	@Override
