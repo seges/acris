@@ -1,0 +1,16 @@
+#summary Bind UI components to HTML template in runtime
+#labels uibinder,Featured
+
+= Introduction =
+
+Probably all of you know the chapter in GWT documentation about Declarative Layout with UiBinder. It describes a way how to bind individual components within a panel to its UI representation - written in a HTML-like markup language. It allows you to define the UI layout and compile it, so you don't have to do it in the code of the panel directly and are able to switch the UI anytime with different one.
+
+But what if you need to switch the layout while the application is already running?
+
+That is the point where Dynamic UI binder comes. It allows you to specify the binding information in HTML and GWT panel the same way you do in GWT's UiBinder. The only difference is that you don't need to have the layout template in that time. You can load it later using a service or read it/modify it in the code dynamically.
+
+So let's take a look how you would do that.
+
+= Showcase =
+
+You can find a showcase of this in *acris-showcase-widgets* project.
