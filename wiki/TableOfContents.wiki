@@ -55,3 +55,5 @@
     * [AppEngineSpring Spring with appengine]
     * [AppEngineMaven GAE/GEP with maven]
     * [AppEngineSecurity Acris security on appengine]
+  * Widgets
+    * [DynamicUiBinder Dynamic UI Binder]
