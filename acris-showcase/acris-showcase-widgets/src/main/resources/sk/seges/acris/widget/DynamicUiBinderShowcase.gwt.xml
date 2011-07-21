@@ -4,5 +4,7 @@
 
 	<source path="showcase" />
 
-	<entry-point class="sk.seges.acris.widget.showcase.Showcase" />
+	<entry-point
+		class="sk.seges.acris.widget.showcase.DynamicUiBinderShowcase">
+	</entry-point>
 </module>
