@@ -244,6 +244,10 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 		this.getElement().getStyle().setPosition(Position.FIXED);
 	}
 
+	public void centerAbsolute() {
+		super.center();
+	}
+
 	@Override
 	public void setPopupPosition(int left, int top) {
 		super.setPopupPosition(left - WidgetUtils.getPageScrollX(), top - WidgetUtils.getPageScrollY());
