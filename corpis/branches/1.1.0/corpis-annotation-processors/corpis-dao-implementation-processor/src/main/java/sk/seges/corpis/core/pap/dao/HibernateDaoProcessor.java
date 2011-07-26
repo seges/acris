@@ -28,7 +28,7 @@ import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
@@ -97,7 +97,7 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 		return ElementKind.CLASS;
 	}
 
-	public static NamedType getOutputClass(MutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
+	public static NamedType getOutputClass(ImmutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
 		PackageValidator packageValidator = packageValidatorProvider.get(inputClass);
 		packageValidator.moveTo(LocationType.SERVER).moveTo(LayerType.DAO);
 		
@@ -114,7 +114,7 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType inputClass) {
+	protected NamedType[] getTargetClassNames(ImmutableType inputClass) {
 		return new NamedType[] { 
 			getOutputClass(inputClass, getPackageValidatorProvider()) 
 		};
@@ -124,7 +124,7 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 	@Override
 	protected TypeElement getInterfaceElement(Element element, RoundEnvironment roundEnv) {
 		if (interfaceElement != null) {
-			NamedType interfaceDao = DaoApiProcessor.getOutputClass(getNameTypes().toType(interfaceElement), getPackageValidatorProvider());
+			NamedType interfaceDao = DaoApiProcessor.getOutputClass(getNameTypes().toImmutableType(interfaceElement), getPackageValidatorProvider());
 			return processingEnv.getElementUtils().getTypeElement(interfaceDao.getCanonicalName());
 		}
 		
@@ -173,14 +173,14 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 	protected Type[] getImports() {
 		List<Type> imports = new ArrayList<Type>();
 		
-		ListUtils.addUnique(imports, getSubProcessorImports());
+		ListUtils.add(imports, getSubProcessorImports());
 
 		if (interfaceElement != null) {
-			ListUtils.addUnique(imports, getNameTypes().toType(interfaceElement));
-			ListUtils.addUnique(imports, getNameTypes().toType(getInterfaceElement(interfaceElement, null)));
+			ListUtils.add(imports, getNameTypes().toType(interfaceElement));
+			ListUtils.add(imports, getNameTypes().toType(getInterfaceElement(interfaceElement, null)));
 		}
 
-		ListUtils.addUnique(imports, NamedType.THIS);
+		ListUtils.add(imports, NamedType.THIS);
 
 		return imports.toArray(new Type[] {});
 	}

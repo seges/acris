@@ -27,7 +27,7 @@ import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.InputClass;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 /**
@@ -42,7 +42,7 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] { mutableType.changePackage(mutableType.getPackageName() + ".shared.domain").addClassSufix("MapBean") };
 	}
 

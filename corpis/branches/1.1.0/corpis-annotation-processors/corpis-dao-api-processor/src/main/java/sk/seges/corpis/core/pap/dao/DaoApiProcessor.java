@@ -16,7 +16,7 @@ import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LayerType;
@@ -52,7 +52,7 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 		};
 	}
 	
-	public static NamedType getOutputClass(MutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
+	public static NamedType getOutputClass(ImmutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
 		PackageValidator packageValidator = packageValidatorProvider.get(inputClass);
 		packageValidator.moveTo(LocationType.SERVER).moveTo(LayerType.DAO);
 		
@@ -69,7 +69,7 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType inputClass) {
+	protected NamedType[] getTargetClassNames(ImmutableType inputClass) {
 		return new NamedType[] { 
 				getOutputClass(inputClass, getPackageValidatorProvider()) 
 			};
