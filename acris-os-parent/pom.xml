@@ -54,7 +54,7 @@
 	</profiles>
 
 	<modules>
-		<!--module>../acris-annotation-processors</module-->
+		<module>../acris-annotation-processors</module>
 		<module>../acris-benchmark</module>
 		<module>../acris-binding</module>
 		<module>../acris-bpm</module>
@@ -176,7 +176,23 @@
 				<version>${sesam-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+			<dependency>
+				<artifactId>sesam-model-domain</artifactId>
+				<groupId>sk.seges.sesam</groupId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>sesam-model-domain</artifactId>
+				<groupId>sk.seges.sesam</groupId>
+				<version>${sesam-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
 			<!-- Acris dependencies -->
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-async-service-processor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-binding</artifactId>
@@ -259,6 +275,17 @@
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
+			<!--dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-theme-metal</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-theme-metal</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency-->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
