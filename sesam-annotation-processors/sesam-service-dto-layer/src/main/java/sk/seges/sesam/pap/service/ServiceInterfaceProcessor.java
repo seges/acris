@@ -136,11 +136,11 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 			return null;
 		case DECLARED:
 			Element element = ((DeclaredType)type).asElement();
-			TypeElement domainClass = new TransferObjectConfiguration(element).getDomainType(processingEnv);
+			TypeElement domainClass = new TransferObjectConfiguration(element, processingEnv).getDomainType();
 			if (domainClass != null) {
 				return convertTypeParameters(getNameTypes().toType(domainClass.asType()), typeElement);
 			}
-			domainClass = new TransferObjectConfiguration(typeElement).getDomainType((TypeElement)element, processingEnv);
+			domainClass = new TransferObjectConfiguration(typeElement, processingEnv).getDomainType((TypeElement)element);
 			if (domainClass != null) {
 				return convertTypeParameters(getNameTypes().toType(domainClass.asType()), typeElement);
 			}

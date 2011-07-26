@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
@@ -88,7 +89,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 							}
 							
 							pw.print(getNameTypes().toType(referenceElement) + " " + currentPath + " = ");
-							printConverterInstance(pw, getOutputClass((ImmutableType)getNameTypes().toType(configurationElement), getPackageValidatorProvider()));
+							printConverterInstance(pw, getOutputClass((ImmutableType)getNameTypes().toType(configurationElement), getPackageValidatorProvider(), processingEnv));
 							pw.println(".getDomainInstance(" + DTO_NAME + "." + toHelper.toGetter(fullPath + toHelper.toMethod(toHelper.toField(toHelper.getIdMethod(referenceElement)))) + ");");
 							instances.add(fullPath);
 						}
@@ -333,7 +334,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	@Override
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
 
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(element);
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(element, processingEnv);
 		
 		TypeElement converter = transferObjectConfiguration.getConverter();
 		if (converter != null) {
@@ -348,9 +349,9 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		return super.processElement(element, roundEnv);
 	}
 
-	public static ImmutableType getOutputClass(ImmutableType mutableType, PackageValidatorProvider packageValidatorProvider) {	
+	public static ImmutableType getOutputClass(ImmutableType mutableType, PackageValidatorProvider packageValidatorProvider, ProcessingEnvironment processingEnv) {	
 		
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration((TypeElement)((DeclaredType)mutableType.asType()).asElement());
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration((TypeElement)((DeclaredType)mutableType.asType()).asElement(), processingEnv);
 		
 		TypeElement converter = transferObjectConfiguration.getConverter();
 		if (converter != null) {
@@ -418,7 +419,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	@Override
 	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] { 
-				getOutputClass(mutableType, getPackageValidatorProvider()) };
+				getOutputClass(mutableType, getPackageValidatorProvider(), processingEnv) };
 	}
 
 	@Override
@@ -515,7 +516,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	
 	private NamedType getDtoConverterType(TypeElement typeElement) {
 
-		TypeElement converter = new TransferObjectConfiguration(typeElement).getConverter();
+		TypeElement converter = new TransferObjectConfiguration(typeElement, processingEnv).getConverter();
 
 		if (converter != null) {
 			return getNameTypes().toType(converter);
