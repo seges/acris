@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -25,6 +24,8 @@ import sk.seges.corpis.appscaffold.shared.annotation.Hint;
 import sk.seges.corpis.appscaffold.shared.annotation.MapBased;
 import sk.seges.corpis.appscaffold.shared.domain.MapBasedObject;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
+import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.InputClass;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -32,20 +33,22 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 /**
  * @author ladislav.gazo
  */
-@SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor {
 
+	@Override
+	protected ProcessorConfigurer getConfigurer() {
+		return new MapBasedValueObjectProcessorConfigurer();
+	}
+	
 	@Override
 	protected NamedType[] getTargetClassNames(MutableType mutableType) {
 		return new NamedType[] { mutableType.changePackage(mutableType.getPackageName() + ".shared.domain").addClassSufix("MapBean") };
 	}
 
 	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
-		case PROCESSING_ANNOTATIONS:
-			return new Type[] { MapBased.class };
 		case OUTPUT_SUPERCLASS:
 			return new Type[] { MapBasedObject.class };
 		case OUTPUT_INTERFACES:
@@ -58,7 +61,7 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 			return result.toArray(new Type[] {});
 
 		}
-		return super.getConfigurationTypes(type, typeElement);
+		return super.getOutputDefinition(type, typeElement);
 	}
 
 	@Override
