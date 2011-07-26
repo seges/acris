@@ -108,6 +108,11 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-model-domain</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-annotations-support</artifactId>
 				<version>${sesam-os.version}</version>
 				<type>test-jar</type>
