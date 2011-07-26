@@ -3,7 +3,10 @@ package sk.seges.sesam.pap.model;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -13,8 +16,17 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.utils.ListUtils;
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
+import sk.seges.sesam.pap.model.model.AbstractElementPrinter;
+import sk.seges.sesam.pap.model.model.ElementPrinter;
+import sk.seges.sesam.pap.model.model.ProcessorContext;
+import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration;
+import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectProcessor extends AbstractTransferProcessor {
@@ -45,12 +57,12 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 			String fieldTypeName = context.getFieldType().toString(null, ClassSerializer.CANONICAL, true);
 			
 			pw.println((context.getModifier() != null ? (context.getModifier().toString() + " ") : "") + fieldTypeName + " " + 
-					toGetter(context.getFieldName()) + " {");
+					toHelper.toGetter(context.getFieldName()) + " {");
 			pw.println("return " + context.getFieldName() + ";");
 			pw.println("}");
 			pw.println();
 
-			pw.println((context.getModifier() != null ? (context.getModifier().toString() + " ") : "") + "void " + toSetter(context.getFieldName()) + 
+			pw.println((context.getModifier() != null ? (context.getModifier().toString() + " ") : "") + "void " + toHelper.toSetter(context.getFieldName()) + 
 					"(" + fieldTypeName + " " + context.getFieldName() + ") {");
 			pw.println("this." + context.getFieldName() + " = " + context.getFieldName() + ";");
 			pw.println("}");
@@ -59,28 +71,63 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	}
 	
 	@Override
-	protected void writeClassAnnotations(PrintWriter pw, Element el) {
+	protected void writeClassAnnotations(PrintWriter pw, Element configurationElement) {
 		pw.println("@SuppressWarnings(\"serial\")");
+		
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationElement);
+		
+		MutableType configurationType = getNameTypes().toType(configurationElement);
+		
+		pw.print("@" + TransferObjectMapping.class.getSimpleName() + "(");
+
+		pw.println("dtoClass = " + getOutputClass(configurationType).getSimpleName() + ".class,");
+		pw.println("		domainClass = " + toHelper.getDomainTypeElement(configurationElement).getSimpleName().toString() + ".class, ");
+		pw.println("		configuration = " + configurationElement.getSimpleName().toString() + ".class, ");
+		pw.print("		converter = ");
+		if (transferObjectConfiguration.getConverter() != null) {
+			pw.print(transferObjectConfiguration.getConverter().toString());
+		} else {
+			MutableType generatedConverter = TransferObjectConvertorProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider());
+			pw.print(generatedConverter.getCanonicalName());
+		}
+		pw.print(".class");
+		pw.println(")");
+		
+		super.writeClassAnnotations(pw, configurationElement);
 	}
 	
 	@Override
 	protected Type[] getImports(TypeElement typeElement) {
-		NamedType dtoSuperclass = getDtoSuperclass(typeElement);
-		if (dtoSuperclass != null) {
-			return new Type[] {dtoSuperclass};
-		}
-		return super.getImports(typeElement);
+		NamedType dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
+		List<Type> result = new ArrayList<Type>();
+		ListUtils.addUnique(result, super.getImports(typeElement));
+		ListUtils.addUnique(result, new Type[] {dtoSuperclass, TransferObjectMapping.class});
+		ListUtils.addUnique(result, new Type[] {getNameTypes().toType(toHelper.getDomainTypeElement(typeElement))});
+		return result.toArray(new Type[] {});
 	}
 
 	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
+	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
+
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(element);
+		
+		TypeElement dto = transferObjectConfiguration.getDto();
+		if (dto != null) {
+			return supportProcessorChain();
+		}
+		
+		return super.processElement(element, roundEnv);
+	}
+
+	@Override
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 			case OUTPUT_SUPERCLASS:
-				NamedType dtoSuperclass = getDtoSuperclass(typeElement);
+				NamedType dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
 				if (dtoSuperclass != null) {
 					
-					TypeElement domainObjectClass = getDomainTypeElement(typeElement);
-
+					TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
+	
 					if (domainObjectClass != null) {
 						TypeMirror superClassType = domainObjectClass.getSuperclass();
 						return new Type[] { genericsSupport.applyGenerics(dtoSuperclass, (DeclaredType)superClassType) };
@@ -90,19 +137,20 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				}
 				break;
 			case OUTPUT_INTERFACES:
-				dtoSuperclass = getDtoSuperclass(typeElement);
+				dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
 				if (dtoSuperclass == null) {
 					return new Type[] { Serializable.class };
 				}
 				break;
 		}
-		return super.getConfigurationTypes(type, typeElement);
+		
+		return super.getOutputDefinition(type, typeElement);
 	}
 	
 	@Override
 	protected NamedType[] getTargetClassNames(MutableType mutableType) {
 		return new NamedType[] {
-				getOutputClass((MutableType)genericsSupport.applyVariableGenerics(mutableType, getDomainTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()))))
+				getOutputClass((MutableType)genericsSupport.applyVariableGenerics(mutableType, toHelper.getDomainTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()))))
 		};
 	}
 
@@ -114,7 +162,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	}
 
 	public static MutableType getOutputClass(MutableType mutableType) {	
-		return getDtoType(mutableType);
+		return TransferObjectHelper.getDtoType(mutableType);
 	}
 
 	@Override

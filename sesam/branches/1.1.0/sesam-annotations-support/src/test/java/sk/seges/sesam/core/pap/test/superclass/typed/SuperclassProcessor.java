@@ -9,6 +9,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
@@ -23,7 +24,7 @@ public class SuperclassProcessor extends AbstractConfigurableProcessor {
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		HashSet<String> hashSet = new HashSet<String>();
-		hashSet.add(SuperClassTest.class.getName());
+		hashSet.add(SuperClassMarker.class.getName());
 		return hashSet;
 	}
 
@@ -35,14 +36,13 @@ public class SuperclassProcessor extends AbstractConfigurableProcessor {
 	} 
 	
 	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
 			return new Type[] {
 					genericsSupport.applyVariableGenerics(NamedType.THIS, typeElement)
 			};
 		}
-		return super.getConfigurationTypes(type, typeElement);
+		return super.getOutputDefinition(type, typeElement);
 	}
-	
 }

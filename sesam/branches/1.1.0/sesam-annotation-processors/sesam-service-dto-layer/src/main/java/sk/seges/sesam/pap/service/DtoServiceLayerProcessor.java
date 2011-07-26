@@ -84,10 +84,12 @@ public class DtoServiceLayerProcessor extends AbstractConfigurableProcessor {
 
 	@Override
 	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+		
 		if (mutableType.asType() == null || !mutableType.asType().getKind().equals(TypeKind.DECLARED)) {
 			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to process " + mutableType.getCanonicalName() + " - unsupported type. Most probably this is sesam bug - please report this bug somewhere.");
 			return new NamedType[] {};
 		}
+		
 		TypeElement typeElement = (TypeElement)((DeclaredType)mutableType.asType()).asElement();
 		
 		Set<MutableType> affectedServices = getAffectedServices(typeElement);

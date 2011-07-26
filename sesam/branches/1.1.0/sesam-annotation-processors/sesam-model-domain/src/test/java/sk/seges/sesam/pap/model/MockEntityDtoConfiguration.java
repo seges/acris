@@ -3,9 +3,9 @@ package sk.seges.sesam.pap.model;
 import sk.seges.sesam.pap.model.annotation.Field;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
-import sk.seges.sesam.pap.model.annotation.TransferObjectConfiguration;
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
-@TransferObjectConfiguration(DomainObject.class)
+@TransferObjectMapping(domainClass = DomainObject.class)
 @Mapping(MappingType.EXPLICIT)
 public interface MockEntityDtoConfiguration {
 	
@@ -13,6 +13,6 @@ public interface MockEntityDtoConfiguration {
 
 	void field2();
 
-	@Field(DomainObjectMetaModel.REFERENCE.FIELD1)
+	@Field("reference.field1")
 	String referenceField1();
 }

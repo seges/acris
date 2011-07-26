@@ -3,10 +3,9 @@ package sk.seges.sesam.pap.customer;
 import sk.seges.sesam.pap.model.annotation.Field;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
-import sk.seges.sesam.pap.model.annotation.TransferObjectConfiguration;
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
-
-@TransferObjectConfiguration(TestContactData.class)
+@TransferObjectMapping(domainClass = TestContactData.class)
 @Mapping(MappingType.EXPLICIT)
 public interface ContactDtoConfiguration {
 
