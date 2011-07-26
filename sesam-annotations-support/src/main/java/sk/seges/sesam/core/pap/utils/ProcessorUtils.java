@@ -10,6 +10,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -23,6 +24,78 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 
 
 public class ProcessorUtils {
+
+	public static TypeMirror erasure(TypeElement typeElement, TypeVariable typeVar) {
+		return erasure(typeElement, typeVar.asElement().getSimpleName().toString());
+	}
+	
+	public static TypeMirror erasure(TypeElement typeElement, String parameterName) {
+
+		TypeMirror erasureSuperclass = erasureSuperclass(typeElement, parameterName, null);
+		
+		if (erasureSuperclass != null) {
+			return erasureSuperclass;
+		}
+		
+		return erasureInterfaces(typeElement, parameterName);
+	}
+
+	public static TypeMirror erasureInterfaces(TypeElement typeElement, String parameterName) {
+
+		for (TypeMirror interfaceType: typeElement.getInterfaces()) {
+			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+				
+				TypeElement currentTypeElement = (TypeElement)((DeclaredType)interfaceType).asElement();
+				
+				for (TypeParameterElement parameter: currentTypeElement.getTypeParameters()) {
+					int i = 0;
+					if (parameter.getSimpleName().toString().equals(parameterName)) {
+						return ((DeclaredType)interfaceType).getTypeArguments().get(i);
+					}
+					i++;
+				}
+				
+				erasureSuperclass(currentTypeElement, parameterName, typeElement);
+			}
+		}
+		
+		return null;
+	}
+
+	public static TypeMirror erasureSuperclass(TypeElement typeElement, String parameterName, TypeElement owner) {
+
+		Element currentElement = typeElement;
+		
+		while (currentElement != null && currentElement.asType().getKind().equals(TypeKind.DECLARED)) {
+			TypeElement currentTypeElement = (TypeElement)currentElement;
+			for (TypeParameterElement parameter: currentTypeElement.getTypeParameters()) {
+				int i = 0;
+				if (parameter.getSimpleName().toString().equals(parameterName)) {
+					if (owner != null) {
+						DeclaredType dc = (DeclaredType)owner.getSuperclass();
+						return dc.getTypeArguments().get(i);
+					}
+					i++;
+				}
+			}
+			
+			TypeMirror erasure = erasureInterfaces(currentTypeElement, parameterName);
+
+			if (erasure != null) {
+				return erasure;
+			}
+			
+			owner = currentTypeElement;
+			
+			if (currentTypeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
+				currentElement = ((DeclaredType)currentTypeElement.getSuperclass()).asElement();
+			} else {
+				currentElement = null;
+			}
+		}
+		
+		return null;
+	}
 
 	public static AnnotationMirror containsAnnotation(Element element, Class<?>... annotations) {
 		assert element != null;

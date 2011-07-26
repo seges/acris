@@ -6,6 +6,8 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
+import com.sun.org.apache.bcel.internal.classfile.Field;
+
 import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -19,7 +21,7 @@ public class CustomerTransferObjectProcessorTest extends AnnotationTest {
 	@Test
 	public void testNestedBounds() {
 
-		assertCompilationSuccessful(compileFiles(TestAddressData.class.getPackage()));
+		assertCompilationSuccessful(compileFiles(TestAddressData.class.getPackage(), Field.class.getPackage()));
 
 	//	assertCompilationSuccessful(compileFiles(MockEntityDtoConfiguration.class, DomainObject.class, SecondDomainObject.class));
 	//	assertOutput(getResourceFile(TestBeanNestedBounds.class), getOutputFile(TestBeanNestedBounds.class));

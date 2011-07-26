@@ -21,6 +21,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
@@ -76,14 +77,13 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
-
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
-			case OUTPUT_SUPERCLASS:
-				return new Type[] {MutableType.THIS};
+		case OUTPUT_SUPERCLASS:
+			return new Type[] {MutableType.THIS};
 		}
 		
-		return super.getConfigurationTypes(type, typeElement);
+		return super.getOutputDefinition(type, typeElement);
 	}
 	
 	@Override

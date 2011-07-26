@@ -1,8 +1,11 @@
 package sk.seges.sesam.pap.model;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -11,19 +14,26 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
+import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
-import sk.seges.sesam.pap.model.annotation.Converter;
+import sk.seges.sesam.pap.model.model.AbstractElementPrinter;
+import sk.seges.sesam.pap.model.model.ElementPrinter;
+import sk.seges.sesam.pap.model.model.PathResolver;
+import sk.seges.sesam.pap.model.model.ProcessorContext;
+import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration;
+import sk.seges.sesam.shared.model.converter.CachedConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectConvertorProcessor extends AbstractTransferProcessor {
@@ -39,7 +49,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 
 		void printCopyMethod(ProcessorContext context, PrintWriter pw, NamedType converterType);
 	}
-	
+
 	class CopyFromDtoMethodPrinter implements CopyMethodPrinter {
 
 		@Override
@@ -57,10 +67,10 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			if (nested) {
 				while (pathResolver.hasNext()) {
 	
-					ExecutableElement domainGetterMethod = getDomainGetterMethod(element, currentPath);
+					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
 					
 					if (domainGetterMethod == null) {
-						processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find getter method for field " + currentPath + " in the " + element.toString(), context.getConfigurationElement());
+						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find getter method for field " + currentPath + " in the " + element.toString(), context.getConfigurationElement());
 						return;
 					}
 	
@@ -70,48 +80,49 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 						if (domainGetterMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 							Element referenceElement = ((DeclaredType)domainGetterMethod.getReturnType()).asElement();
 
-							Element configurationElement = getConfigurationElement((TypeElement)referenceElement, roundEnv);
+							Element configurationElement = toHelper.getConfigurationElement((TypeElement)referenceElement, roundEnv);
 
 							if (configurationElement == null) {
-								processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find conversion configuration for type " + referenceElement.toString(), context.getConfigurationElement());
+								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find conversion configuration for type " + referenceElement.toString(), context.getConfigurationElement());
 								return;
 							}
 							
 							pw.print(getNameTypes().toType(referenceElement) + " " + currentPath + " = ");
 							printConverterInstance(pw, getOutputClass(getNameTypes().toType(configurationElement), getPackageValidatorProvider()));
-							//printDomainInstancer(pw, , currentPath, getIdMethod(referenceElement));
-							pw.println(".createDomainInstance(" + DTO_NAME + "." + toGetter(fullPath + toMethod(toField(getIdMethod(referenceElement)))) + ");");
+							pw.println(".getDomainInstance(" + DTO_NAME + "." + toHelper.toGetter(fullPath + toHelper.toMethod(toHelper.toField(toHelper.getIdMethod(referenceElement)))) + ");");
 							instances.add(fullPath);
 						}
-						pw.println(previousPath + "." + toSetter(currentPath) + "(" + currentPath + ");");
+						pw.println(previousPath + "." + toHelper.toSetter(currentPath) + "(" + currentPath + ");");
 					}
 
 					previousPath = currentPath;
 					currentPath = pathResolver.next();
-					fullPath += toMethod(currentPath);
+					fullPath += toHelper.toMethod(currentPath);
 				}
 
-				if (getDomainSetterMethod(element, context.getDomainFieldPath()) != null) {
-					pw.println(RESULT_NAME + "." + toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME + "." + toGetter(context.getFieldName()) + ");");					
+				if (toHelper.getDomainSetterMethod(element, context.getDomainFieldPath()) != null) {
+					pw.println(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME + "." + toHelper.toGetter(context.getFieldName()) + ");");					
 				} else {
-					ExecutableElement domainGetterMethod = getDomainGetterMethod(element, currentPath);
-					if ((domainGetterMethod == null && isIdField(currentPath)) || !isIdMethod(domainGetterMethod)) {
-						processingEnv.getMessager().printMessage(Kind.ERROR, "Setter is not available for the field " + currentPath + " in the class " + element.toString(), context.getConfigurationElement());
+					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
+					if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {
+						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + element.toString(), context.getConfigurationElement());
 					}
 				}
 			} else {
 				boolean generated = true;
 				if (converterType != null) {
-					String converterName = "converter" + toMethod("", context.getFieldName());
-					pw.println(converterType.getCanonicalName() + " " + converterName + " = new " + converterType.getCanonicalName() + "();");
-					pw.print(RESULT_NAME + "." + toSetter(context.getDomainFieldPath()) + "(" + converterName + ".fromDto(" + DTO_NAME  + "." + toGetter(context.getFieldName()));
+					String converterName = "converter" + toHelper.toMethod("", context.getFieldName());
+					pw.print(converterType.getCanonicalName() + " " + converterName + " = ");
+					printConverterInstance(pw, converterType);
+					pw.println(";");
+					pw.print(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + converterName + ".fromDto(" + DTO_NAME  + "." + toHelper.toGetter(context.getFieldName()));
 				} else {
-					ExecutableElement domainGetterMethod = getDomainGetterMethod(element, currentPath);
-					if ((domainGetterMethod == null && isIdField(currentPath)) || !isIdMethod(domainGetterMethod)) {
-						pw.print(RESULT_NAME + "." + toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME  + "." + toGetter(context.getFieldName()));
+					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
+					if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {
+						pw.print(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME  + "." + toHelper.toGetter(context.getFieldName()));
 					} else {
-						if ((domainGetterMethod == null && isIdField(currentPath)) || !isIdMethod(domainGetterMethod)) {
-							processingEnv.getMessager().printMessage(Kind.ERROR, "Setter is not available for the field " + currentPath + " in the class " + element.toString(), context.getConfigurationElement());
+						if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {
+							processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + element.toString(), context.getConfigurationElement());
 						}
 						generated = false;
 					}
@@ -149,7 +160,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 						if (i > 0) {
 							pw.print(" && ");
 						}
-						methodPath += "." + toGetter(path);
+						methodPath += "." + toHelper.toGetter(path);
 						
 						pw.print(methodPath + " != null");
 						i++;
@@ -159,11 +170,15 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			} 
 
 			if (converterType != null) {
-				String converterName = "converter" + toMethod("", context.getFieldName());
-				pw.println(converterType.getCanonicalName() + " " + converterName + " = new " + converterType.getCanonicalName() + "();");
-				pw.print(RESULT_NAME + "." + toSetter(context.getFieldName()) + "(" + converterName + ".toDto(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
+				String converterName = "converter" + toHelper.toMethod("", context.getFieldName());
+				
+				pw.print(converterType.getCanonicalName() + " " + converterName + " = ");
+				printConverterInstance(pw, converterType);
+				pw.println(";");
+
+				pw.print(RESULT_NAME + "." + toHelper.toSetter(context.getFieldName()) + "(" + converterName + ".toDto(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
 			} else {
-				pw.print(RESULT_NAME + "." + toSetter(context.getFieldName()) + "(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
+				pw.print(RESULT_NAME + "." + toHelper.toSetter(context.getFieldName()) + "(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
 			}
 			
 			if (converterType != null) {
@@ -173,13 +188,13 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 
 			if (nested) {
 				pw.println("} else {");
-				pw.println(RESULT_NAME + "." + toSetter(context.getFieldName()) + "(null);");
+				pw.println(RESULT_NAME + "." + toHelper.toSetter(context.getFieldName()) + "(null);");
 				pw.println("}");
 				pw.println("");
 			}
 		}	
 	}
-	
+
 	class CopyToDtoPrinter extends AbstractElementPrinter {
 
 		public CopyToDtoPrinter(PrintWriter pw) {
@@ -196,10 +211,14 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			
 			MutableType dtoType = getDtoType(typeElement);
 					
-			TypeElement domainObjectClass = getDomainTypeElement(typeElement);
+			TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
 
-			pw.println("public " + dtoType.getSimpleName() + " createDtoInstance() {");
+			pw.println("public " + dtoType.getSimpleName() + " createDtoInstance(" + Serializable.class.getSimpleName() + " id) {");
 			printDtoInstancer(pw, dtoType);
+			pw.println("}");
+			pw.println();
+			pw.println("protected " + Class.class.getSimpleName() + "<" + domainObjectClass.getSimpleName() + "> getDomainClass() {");
+			pw.println("return " + domainObjectClass.getSimpleName() + ".class;");
 			pw.println("}");
 			pw.println();
 			pw.println("public " + dtoType.getSimpleName() + " toDto(" + domainObjectClass.getSimpleName().toString() + " " + DOMAIN_NAME + ") {");
@@ -209,14 +228,24 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			pw.println("}");
 			pw.println();
 
-//			ExecutableElement dtoIdMethod = getDtoIdMethod(typeElement);
-//			
-//			if (dtoIdMethod == null) {
-//				processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find id method for DTO class " + dtoType.getCanonicalName(), typeElement);
-//				return;
-//			}
+			ExecutableElement idMethod = toHelper.getIdMethod(domainObjectClass);
+			
+			if (idMethod == null) {
+				idMethod = toHelper.getIdMethod(typeElement);
+			}
+			
+			if (idMethod == null && shouldHaveIdMethod(typeElement, domainObjectClass)) {
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for " + typeElement.toString(), typeElement);
+				return;
+			}
 
-			pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = createDtoInstance();");
+			if (idMethod == null) {
+				//TODO potentional cycle
+				pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = createDtoInstance(null);");
+			} else {
+				pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(" + DOMAIN_NAME + "." + toHelper.toGetter(toHelper.toField(idMethod)) + ");");
+			}
+
 			pw.println();
 		}
 		
@@ -244,31 +273,31 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			
 			MutableType dtoType = getDtoType(typeElement);
 					
-			TypeElement domainObjectClass = getDomainTypeElement(typeElement);
+			TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
 
-			ExecutableElement idMethod = getIdMethod(domainObjectClass);
+			ExecutableElement idMethod = toHelper.getIdMethod(domainObjectClass);
 			
 			if (idMethod == null) {
-				idMethod = getIdMethod(typeElement);
+				idMethod = toHelper.getIdMethod(typeElement);
 			}
 			
 			if (idMethod == null && shouldHaveIdMethod(typeElement, domainObjectClass)) {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find id method for " + typeElement.toString(), typeElement);
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for " + typeElement.toString(), typeElement);
 				return;
 			}
 
 			MutableType domainObjectType = getNameTypes().toType(domainObjectClass);
 			
-			if (idMethod == null) {
-				pw.println("public " + domainObjectType.getCanonicalName() + " createDomainInstance() {");
-			} else {
-				pw.println("public " + domainObjectType.getCanonicalName() + " createDomainInstance(" + 
-						getNameTypes().toType(erasure(domainObjectClass, idMethod.getReturnType())).getCanonicalName() + " id) {");
-			}
+			pw.println("public " + domainObjectType.getSimpleName() + " createDomainInstance(" + Serializable.class.getSimpleName() + " id) {");
 			
 			printDomainInstancer(pw, domainObjectType);
 			pw.println("}");
-			pw.println("");
+			pw.println();
+
+			pw.println("protected " + Class.class.getSimpleName() + "<" + dtoType.getSimpleName() + "> getDtoClass() {");
+			pw.println("return " + dtoType.getSimpleName() + ".class;");
+			pw.println("}");
+			pw.println();
 
 			pw.println("public " + domainObjectClass.getSimpleName().toString() + " fromDto(" + dtoType.getSimpleName() + " " + DTO_NAME + ") {");
 			pw.println();
@@ -277,17 +306,18 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			pw.println("}");
 			pw.println();
 			
-			ExecutableElement dtoIdMethod = getDtoIdMethod(typeElement);
+			ExecutableElement dtoIdMethod = toHelper.getDtoIdMethod(typeElement);
 			
 			if (dtoIdMethod == null && shouldHaveIdMethod(typeElement, domainObjectClass)) {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find id method for DTO class " + dtoType.getCanonicalName(), typeElement);
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for DTO class " + dtoType.getCanonicalName(), typeElement);
 				return;
 			}
 			
 			if (dtoIdMethod == null) {
-				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = createDomainInstance();");
+				//TODO potentional cycle
+				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = createDomainInstance(null);");
 			} else {
-				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = createDomainInstance(" + DTO_NAME + "." + toGetter(toField(dtoIdMethod)) + ");");
+				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + "." + toHelper.toGetter(toHelper.toField(dtoIdMethod)) + ");");
 			}
 			pw.println();
 		}
@@ -300,21 +330,77 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		}
 	}
 
+	@Override
+	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
+
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(element);
+		
+		TypeElement converter = transferObjectConfiguration.getConverter();
+		if (converter != null) {
+			return supportProcessorChain();
+		}
+		
+		TypeElement dto = transferObjectConfiguration.getDto();
+		if (dto != null) {
+			return supportProcessorChain();
+		}
+		
+		return super.processElement(element, roundEnv);
+	}
+
 	public static MutableType getOutputClass(MutableType mutableType, PackageValidatorProvider packageValidatorProvider) {	
+		
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration((TypeElement)((DeclaredType)mutableType.asType()).asElement());
+		
+		TypeElement converter = transferObjectConfiguration.getConverter();
+		if (converter != null) {
+			return null;
+		}
+
+		TypeElement dto = transferObjectConfiguration.getDto();
+		if (dto != null) {
+			return null;
+		}
+
 		//mutableType.changePackage(packageValidatorProvider.get(mutableType).moveTo(LocationType.SERVER));
 		return mutableType.addClassSufix(DEFAULT_SUFFIX);
 	}
 
-	//TODO add interface TransferObjectConverter<T, S>
+	@Override
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
+		switch (type) {
+		case OUTPUT_SUPERCLASS:
+			NamedType domainObjectType = getNameTypes().toType(toHelper.getDomainTypeElement(typeElement));
+			return new Type[] {
+					TypedClassBuilder.get(CachedConverter.class, getDtoType(typeElement), domainObjectType)
+			};
+		}
+		return super.getOutputDefinition(type, typeElement);
+	}
+	
 	@Override
 	protected Type[] getImports(TypeElement typeElement) {
 
 		MutableType dtoType = getDtoType(typeElement);				
-		TypeElement domainObjectClass = getDomainTypeElement(typeElement);
+		TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
 
-		return new Type[] {
-				dtoType, getNameTypes().toType(domainObjectClass)
-		};
+		TypeElement superElement = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
+		
+		List<ExecutableElement> constructors = ElementFilter.constructorsIn(superElement.getEnclosedElements());
+
+		List<Type> result = new ArrayList<Type>();
+		
+		for (ExecutableElement constructor: constructors) {
+			for (VariableElement parameter: constructor.getParameters()) {
+				result.add(getNameTypes().toType(parameter.asType()));
+			}
+		}
+		
+		result.add(dtoType);
+		result.add(getNameTypes().toType(domainObjectClass));
+		result.add(Serializable.class);
+
+		return result.toArray(new Type[] {});
 	}
 	
 	protected PackageValidatorProvider getPackageValidatorProvider() {
@@ -328,37 +414,65 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				new CopyFromDtoPrinter(pw)
 		};
 	}
-
-	@Override
-	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
-		if (element.getAnnotation(Converter.class) != null) {
-			return supportProcessorChain();
-		}
-		return super.processElement(element, roundEnv);
-	}
 	
 	@Override
 	protected NamedType[] getTargetClassNames(MutableType mutableType) {
-
 		return new NamedType[] { 
 				getOutputClass(mutableType, getPackageValidatorProvider()) };
-
-//		return new NamedType[] { 
-//				getOutputClass(getNameTypes().toType(
-//						getDomainTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()))),
-//							getPackageValidatorProvider()) };
 	}
 
+	@Override
+	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
+		printConstructor(outputName, pw);
+		super.processElement(element, outputName, roundEnv, pw);
+	}
+	
+	protected void printConstructor(NamedType outputName, PrintWriter pw) {
+		TypeElement superElement = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
+		
+		List<ExecutableElement> constructors = ElementFilter.constructorsIn(superElement.getEnclosedElements());
+		
+		for (ExecutableElement constructor: constructors) {
+			pw.print("public " + outputName.getSimpleName() + "(");
+			int i = 0;
+			for (VariableElement parameter: constructor.getParameters()) {
+				if (i > 0) {
+					pw.print(", ");
+				}
+				if (parameter.asType().getKind().equals(TypeKind.DECLARED)) {
+					pw.print(((DeclaredType)parameter.asType()).asElement().getSimpleName().toString() + " " + parameter.getSimpleName().toString());
+				} else {
+					pw.print(parameter.asType().toString() + " " + parameter.getSimpleName().toString());
+				}
+				i++;
+			}
+			pw.println(") {");
+			pw.print("super(");
+			i = 0;
+			for (VariableElement parameter: constructor.getParameters()) {
+				if (i > 0) {
+					pw.print(", ");
+				}
+				pw.print(parameter.getSimpleName().toString());
+				i++;
+			}
+			
+			pw.println(");");
+			pw.println("}");
+			pw.println();
+		}
+	}
+	
 	protected void printConverterInstance(PrintWriter pw, NamedType type) {
-		pw.print("new " + type.getCanonicalName() + "()");
+		pw.print("new " + type.getCanonicalName() + "(cache)");
 	}
 
 	protected void printDomainInstancer(PrintWriter pw, NamedType type) {
-		pw.println("return new " + type.getCanonicalName() + "();");
+		pw.println("return new " + type.getSimpleName() + "();");
 	}
 
 	protected void printDtoInstancer(PrintWriter pw, NamedType type) {
-		pw.println("return new " + type.getCanonicalName() + "();");
+		pw.println("return new " + type.getSimpleName() + "();");
 	}
 
 	private boolean copy(ProcessorContext context, PrintWriter pw, CopyMethodPrinter printer) {
@@ -381,11 +495,11 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		case NULL:
 		case OTHER:
 		case TYPEVAR:
-			processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find erasure for the " + context.getDomainMethodReturnType().toString() + " in the method: " + context.getFieldName(), 
+			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find erasure for the " + context.getDomainMethodReturnType().toString() + " in the method: " + context.getFieldName(), 
 					context.getConfigurationElement());
 			return false;
 		case VOID:
-			processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to process " + context.getFieldName() + ". Unsupported result type: " + 
+			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process " + context.getFieldName() + ". Unsupported result type: " + 
 					domainType.getKind());
 			return false;
 		case ARRAY:
@@ -393,24 +507,18 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		case DECLARED:
 			return copyDeclared((DeclaredType)domainType, context, pw, printer);
 		default:
-			processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to process " + context.getFieldName() + ". Unsupported result type: " + 
+			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process " + context.getFieldName() + ". Unsupported result type: " + 
 					domainType.getKind());
 			return false;
 		}
 	}
 	
 	private MutableType getDtoConverterType(TypeElement typeElement) {
-		Converter converterAnnotation = typeElement.getAnnotation(Converter.class);
-		
-		if (converterAnnotation != null) {
-			return getNameTypes().toType(AnnotationClassPropertyHarvester.getTypeOfClassProperty(converterAnnotation, new AnnotationClassProperty<Converter>() {
 
-				@Override
-				public Class<?> getClassProperty(Converter converter) {
-					return converter.value();
-				}
-				
-			}));
+		TypeElement converter = new TransferObjectConfiguration(typeElement).getConverter();
+
+		if (converter != null) {
+			return getNameTypes().toType(converter);
 		}
 		
 		return null;	
@@ -424,7 +532,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		case INTERFACE:
 			TypeElement typeElement = (TypeElement)element;
 			
-			Element configurationElement = getConfigurationElement(typeElement, roundEnv);
+			Element configurationElement = toHelper.getConfigurationElement(typeElement, roundEnv);
 			
 			if (configurationElement != null) {
 				NamedType converterType = getDtoConverterType((TypeElement)configurationElement);
@@ -434,7 +542,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				}
 				
 				printer.printCopyMethod(context, pw, converterType);
-			} else if (isUnboxedType(type) || isAllowedClass(type)) {
+			} else if (toHelper.isUnboxedType(type) || toHelper.isAllowedClass(type)) {
 				printer.printCopyMethod(context, pw, null);
 			}
 
@@ -454,7 +562,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	private boolean copyArray(ArrayType arrayType, ProcessorContext context, PrintWriter pw, CopyMethodPrinter printer) {
 		pw.println("{");
 
-		NamedType convertType = convertType(arrayType.getComponentType());
+		NamedType convertType = toHelper.convertType(arrayType.getComponentType());
 		
 		//TODO add array support, don't forget to multidimensional arrays
 		//pw.print(convertType.getCanoninalName() + "[] result = new " + convertType.getCanoninalName() + "[];");

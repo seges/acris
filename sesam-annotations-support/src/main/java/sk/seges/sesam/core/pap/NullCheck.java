@@ -1,7 +1,34 @@
 package sk.seges.sesam.core.pap;
 
+import javax.lang.model.element.TypeElement;
+
 public class NullCheck {
 
+	public static TypeElement checkNull(TypeElement typeElement, Class<?> nullClazz) {
+		if (typeElement == null) {
+			return null;
+		}
+		
+		if (typeElement.getQualifiedName().toString().equals(nullClazz.getCanonicalName())) {
+			return null;
+		}
+
+		switch (typeElement.asType().getKind()) {
+		case NONE:
+		case NULL:
+		case OTHER:
+		case VOID:
+		case ERROR:
+			return null;
+		}
+		
+		return typeElement;
+	}
+	
+	public static TypeElement checkNull(TypeElement typeElement) {
+		return checkNull(typeElement, Constants.VOID);
+	}
+	
 	public static Class<?> checkNull(Class<?> clazz) {
 		if (clazz == null) {
 			return null;

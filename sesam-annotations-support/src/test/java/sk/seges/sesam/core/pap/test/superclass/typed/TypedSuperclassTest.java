@@ -15,13 +15,13 @@ public class TypedSuperclassTest extends AnnotationTest {
 
 	@Test
 	public void testNestedBounds() {
-		assertCompilationSuccessful(compileFiles(TestBeanNestedBounds.class));
+		assertCompilationSuccessful(compileFiles(SuperClassMarker.class, TestBeanNestedBounds.class));
 		assertOutput(getResourceFile(TestBeanNestedBounds.class), getOutputFile(TestBeanNestedBounds.class));
 	}
 
 	@Test
 	public void testUpperBounds() {
-		assertCompilationSuccessful(compileFiles(TestBeanUpperBounds.class));
+		assertCompilationSuccessful(compileFiles(SuperClassMarker.class, TestBeanUpperBounds.class));
 		assertOutput(getResourceFile(TestBeanUpperBounds.class), getOutputFile(TestBeanUpperBounds.class));
 	}
 

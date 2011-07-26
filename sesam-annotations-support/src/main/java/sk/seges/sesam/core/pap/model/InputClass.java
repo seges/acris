@@ -1,6 +1,12 @@
 package sk.seges.sesam.core.pap.model;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
@@ -14,7 +20,8 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	private String simpleClassName;
 	private String packageName;
 	private NamedType enclosedClass;
-	
+	private Set<AnnotationMirror> annotations = new HashSet<AnnotationMirror>();
+
 	private TypeMirror type;
 
 	public InputClass(String packageName, String simpleClassName) {
@@ -24,23 +31,36 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	public InputClass(TypeMirror type, String packageName, String simpleClassName) {
 		this.simpleClassName = simpleClassName;
 		this.packageName = packageName;
-		this.type = type;
+		setType(type);
 	}
 
 	public InputClass(TypeMirror type, NamedType enclosedClass, String simpleClassName) {
 		this.simpleClassName = simpleClassName;
 		this.packageName = enclosedClass.getPackageName();
 		this.enclosedClass = enclosedClass;
-		this.type = type;
+		setType(type);
 	}
 
+	private void setType(TypeMirror type) {
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			for (AnnotationMirror annotation: ((DeclaredType)type).asElement().getAnnotationMirrors()) {
+				annotations.add(annotation);
+			}
+		}
+		this.type = type;		
+	}
+	
 	public NamedType getEnclosedClass() {
 		return enclosedClass;
 	}
 	
 	@Override
 	protected OutputClass clone() {
-		return new OutputClass(asType(), packageName, simpleClassName);
+		OutputClass clone = new OutputClass(asType(), packageName, simpleClassName);
+		for (AnnotationMirror annotation: annotations) {
+			clone.annotateWith(annotation);
+		}
+		return clone;
 	}
 
 	public String getClassName() {
@@ -155,5 +175,13 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	public MutableType changePackage(PackageValidator packageValidator) {
 		packageName = packageValidator.toString();
 		return this;
+	}
+	
+	public void annotateWith(AnnotationMirror annotation) {
+		annotations.add(annotation);
+	}
+	
+	public Set<AnnotationMirror> getAnnotations() {
+		return annotations;
 	}
 }

@@ -1,10 +1,17 @@
 package sk.seges.sesam.core.pap.model.api;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVisitor;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 
-public class ArrayNamedType implements NamedType {
+public class ArrayNamedType implements NamedType{
 
 	private NamedType componentType;
 	
@@ -45,5 +52,15 @@ public class ArrayNamedType implements NamedType {
 	@Override
 	public TypeMirror asType() {
 		return null;
+	}
+
+	@Override
+	public void annotateWith(AnnotationMirror annotationMirror) {
+		throw new RuntimeException("Array type should not be annnotated.");
+	}
+
+	@Override
+	public Set<AnnotationMirror> getAnnotations() {
+		return new HashSet<AnnotationMirror>();
 	}
 }

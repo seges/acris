@@ -12,40 +12,6 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.bsc.maven</groupId>
-				<artifactId>maven-processor-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>process-test</id>
-						<goals>
-							<goal>process-test</goal>
-						</goals>
-						<phase>generate-sources</phase>
-						<configuration>
-							<processors>
-							   <processor>sk.seges.sesam.pap.model.MetaModelProcessor</processor>
-							</processors>
-						</configuration> 
-					</execution>
-					<execution>
-						<id>process</id>
-						<goals>
-							<goal>process</goal>
-						</goals>
-						<phase>generate-sources</phase>
-						<configuration>
-							<processors>
-							   <processor>sk.seges.sesam.pap.model.MetaModelProcessor</processor>
-							</processors>
-						</configuration> 
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencies>
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>

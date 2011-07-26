@@ -18,6 +18,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
@@ -41,14 +42,14 @@ public class TransferObjectProcessor extends AbstractConfigurableProcessor {
 	} 
 	
 	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
 			return new Type[] {
 					genericsSupport.applyVariableGenerics(NamedType.THIS, typeElement)
 			};
 		}
-		return super.getConfigurationTypes(type, typeElement);
+		return super.getOutputDefinition(type, typeElement);
 	}
 	
 	private String toMethodProperty(String field) {

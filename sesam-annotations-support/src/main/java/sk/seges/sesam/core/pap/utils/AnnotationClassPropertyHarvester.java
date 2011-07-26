@@ -13,7 +13,7 @@ public class AnnotationClassPropertyHarvester {
 	public static interface AnnotationClassProperty<A> {
 		Class<?> getClassProperty(A annotation);
 	}
-	
+
 	public static <A extends Annotation> TypeElement getTypeOfClassProperty(A annotation, AnnotationClassProperty<A> annotationClassProperty) {
 		try {
 			annotationClassProperty.getClassProperty(annotation);

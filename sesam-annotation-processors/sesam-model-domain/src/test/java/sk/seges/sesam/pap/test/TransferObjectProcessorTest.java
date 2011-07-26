@@ -15,6 +15,7 @@ import sk.seges.sesam.pap.model.SecondDomainObject;
 import sk.seges.sesam.pap.model.SecondDomainObjectDtoConfiguration;
 import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
+import sk.seges.sesam.pap.model.annotation.Field;
 
 
 public class TransferObjectProcessorTest extends AnnotationTest {

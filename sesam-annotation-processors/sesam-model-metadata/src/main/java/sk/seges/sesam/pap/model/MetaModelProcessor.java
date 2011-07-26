@@ -4,15 +4,12 @@
 package sk.seges.sesam.pap.model;
 
 import java.io.PrintWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
@@ -29,6 +26,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
+import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
@@ -68,33 +66,18 @@ import sk.seges.sesam.model.metadata.strategy.api.ModelPropertyConverter;
  */
 @SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-@SupportedOptions({MetaModelProcessor.CONFIG_FILE_LOCATION})
 public class MetaModelProcessor extends AbstractConfigurableProcessor {
 
-	private static final String DEFAULT_CONFIG_FILE_LOCATION = "/META-INF/meta-model.properties";
-
 	public static final String META_MODEL_SUFFIX = "MetaModel";
-
 	public static final String BEAN_CLASS_NAME = "class_";
+	private static final String GETTER_PREFIX = "get";
+	private static final String IS_PREFIX = "is";
+
 
 	private enum AccessType {
 		METHOD, PROPERTY;
 	}
-
-	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
-		switch (type) {
-			case PROCESSING_ANNOTATIONS:
-				return new Type[] { MetaModel.class };
-		}
-		return super.getConfigurationTypes(type, typeElement);
-	}
 	
-	@Override
-	protected String getConfigurationFileLocation() {
-		return DEFAULT_CONFIG_FILE_LOCATION;
-	}
-
 	protected PackageValidatorProvider getPackageValidatorProvider() {
 		return new DefaultPackageValidatorProvider();
 	}
@@ -110,6 +93,11 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		};
 	}
 
+	@Override
+	protected ProcessorConfigurer getConfigurer() {
+		return new MetaModelProcessorConfigurer();
+	}
+	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 		HashSet<String> hierarchyTypes = new HashSet<String>();
@@ -128,27 +116,18 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		}
 	}
 	
-	private static final String GETTER_PREFIX = "get";
-	private static final String IS_PREFIX = "is";
-
 	private void writeMethodsFromClass(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, Element element, Set<ModelPropertyConverter> converterInstances, String prefix,
 			int level) {
-		List<? extends Element> methodsOfClass = ElementFilter.methodsIn(element.getEnclosedElements());
+		List<ExecutableElement> methodsOfClass = ElementFilter.methodsIn(element.getEnclosedElements());
 
-		for (Element methodElement : methodsOfClass) {
-			if (methodElement.getModifiers().contains(Modifier.STATIC) || methodElement.getModifiers().contains(Modifier.PRIVATE)
-					|| methodElement.getModifiers().contains(Modifier.PROTECTED)) {
+		for (ExecutableElement method : methodsOfClass) {
+			if (method.getModifiers().contains(Modifier.STATIC) || method.getModifiers().contains(Modifier.PRIVATE)
+					|| method.getModifiers().contains(Modifier.PROTECTED)) {
 				continue;
 			}
 
-			if (!(methodElement instanceof ExecutableElement)) {
-				continue;
-			}
-
-			ExecutableElement method = (ExecutableElement) methodElement;
-
-			TypeMirror typeMirror = methodElement.asType();
-			String simpleMethodName = methodElement.getSimpleName().toString();
+			TypeMirror typeMirror = method.asType();
+			String simpleMethodName = method.getSimpleName().toString();
 			if (simpleMethodName.length() == 0 || !(simpleMethodName.startsWith(GETTER_PREFIX) || simpleMethodName.startsWith(IS_PREFIX))) {
 				//only getters are interesting
 				continue;
@@ -188,7 +167,6 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 			int level) {
 		List<? extends Element> fieldsOfClass = ElementFilter.fieldsIn(element.getEnclosedElements());
 
-		//We are not going to 
 		for (Element fieldElement : fieldsOfClass) {
 			if (fieldElement.getModifiers().contains(Modifier.STATIC) || fieldElement.getModifiers().contains(Modifier.PRIVATE)
 					|| fieldElement.getModifiers().contains(Modifier.PROTECTED) || fieldElement.getModifiers().contains(Modifier.FINAL)) {
@@ -258,7 +236,6 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 				pw.println(indent("public static interface " + convertedName + " {", level));
 				pw.println();
 
-				//				String convertedThis = selectedConverter.getConvertedPropertyName("this");
 				String convertedThis = "THIS";
 
 				if (cache.add(convertedThis)) {
@@ -280,26 +257,13 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean writeForProperty(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, DeclaredType declaredType, Element element, String property,
 			Set<ModelPropertyConverter> converterInstances, String prefix, int level) {
 		final Element classElement = declaredType.asElement();
 		TypeElement classTypeElement = (TypeElement) classElement;
-		for (sk.seges.sesam.core.pap.model.api.NamedType type : getMergedConfiguration(DefaultConfigurationType.PROCESSING_ANNOTATIONS, classTypeElement)) {
-
-			Class<Annotation> annotationClass;
-			try {
-				annotationClass = (Class<Annotation>) Class.forName(type.getQualifiedName());
-			
-				Annotation annotation = classTypeElement.getAnnotation(annotationClass);
-				if (annotation != null) {
-					//this is supported meta model class
-					return writeHierarchy(classConstantsCache, hierarchyTypes, pw, classTypeElement, property, converterInstances, prefix, level);
-				}
-			} catch (ClassNotFoundException e) {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "Unable to find annotation class " + type.getQualifiedName());
-				e.printStackTrace();
-			}
+		
+		if (configurer.getSupportedAnnotation(classTypeElement) != null) {
+			return writeHierarchy(classConstantsCache, hierarchyTypes, pw, classTypeElement, property, converterInstances, prefix, level);
 		}
 		
 		return false;

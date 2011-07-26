@@ -86,8 +86,20 @@ public class NameTypesUtils implements NameTypes {
 				
 			PackageElement packageElement = elements.getPackageOf(declaredType.asElement());
 			return handleGenerics(new InputClass(typeMirror, packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
+		case BOOLEAN:
+		case BYTE:
+		case CHAR:
+		case DOUBLE:
+		case FLOAT:
+		case INT:
+		case LONG:
+		case SHORT:
 		case VOID:
-			return new InputClass(null, "void");
+			return new InputClass(null, typeMirror.getKind().name().toLowerCase());
+		case TYPEVAR:
+			//TODO
+		case ARRAY:
+			//TODO
 		}
 		
 
