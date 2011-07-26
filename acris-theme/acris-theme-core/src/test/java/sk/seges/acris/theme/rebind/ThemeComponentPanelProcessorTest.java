@@ -6,6 +6,7 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
+import sk.seges.acris.theme.component.StyledCheckBox;
 import sk.seges.acris.theme.component.StyledTestWidget;
 import sk.seges.acris.theme.pap.ThemeComponentPanelProcessor;
 import sk.seges.acris.theme.pap.ThemeComponentProcessor;
@@ -15,10 +16,16 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public class ThemeComponentPanelProcessorTest extends AnnotationTest {
 
-	@Test
+	//@Test
 	public void basicTest() {
 		assertCompilationSuccessful(compileFiles(StyledTestWidget.class));
 		assertOutput(getResourceFile(StyledTestWidget.class), getOutputFile(StyledTestWidget.class));
+	}
+
+	@Test
+	public void checkBoxTest() {
+		assertCompilationSuccessful(compileFiles(StyledCheckBox.class));
+//		assertOutput(getResourceFile(StyledTestWidget.class), getOutputFile(StyledTestWidget.class));
 	}
 
 	private File getOutputFile(Class<?> clazz) {
