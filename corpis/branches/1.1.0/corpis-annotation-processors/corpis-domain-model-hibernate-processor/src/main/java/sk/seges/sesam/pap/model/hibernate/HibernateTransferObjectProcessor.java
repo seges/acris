@@ -23,7 +23,7 @@ public class HibernateTransferObjectProcessor extends TransferObjectProcessor {
 	
 	@Override
 	protected TypeMirror getTargetEntityType(ExecutableElement method) {
-		return hibernateHelper.getTargetEntityType(method);
+		return hibernateHelper.getTargetEntityType(method, processingEnv);
 	}
 
 	@Override
