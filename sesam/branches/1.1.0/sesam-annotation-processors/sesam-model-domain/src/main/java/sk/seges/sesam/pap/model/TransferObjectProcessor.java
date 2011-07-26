@@ -101,7 +101,10 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		NamedType dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
 		List<Type> result = new ArrayList<Type>();
 		ListUtils.add(result, super.getImports(typeElement));
-		ListUtils.add(result, new Type[] {dtoSuperclass, TransferObjectMapping.class});
+		if (dtoSuperclass != null) {
+			ListUtils.add(result, new Type[] {dtoSuperclass});
+		}
+		ListUtils.add(result, new Type[] {TransferObjectMapping.class});
 		ListUtils.add(result, new Type[] {getNameTypes().toType(toHelper.getDomainTypeElement(typeElement))});
 		return result.toArray(new Type[] {});
 	}

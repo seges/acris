@@ -81,7 +81,7 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 			if (i > 0) {
 				types += ", ";
 			}
-			types += typeParameter.toString(inputClass, ClassSerializer.SIMPLE);
+			types += typeParameter.toString(inputClass, serializer);
 			i++;
 		}
 
