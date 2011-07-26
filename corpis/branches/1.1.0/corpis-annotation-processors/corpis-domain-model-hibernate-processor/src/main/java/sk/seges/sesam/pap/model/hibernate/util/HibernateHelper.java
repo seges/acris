@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.persistence.Embeddable;
 
@@ -20,7 +21,7 @@ public class HibernateHelper {
 		TypeElement collectionElement = processingEnv.getElementUtils().getTypeElement(Collection.class.getCanonicalName());
 		
 		if (ProcessorUtils.implementsType(type, collectionElement.asType())) {
-			return processingEnv.getTypeUtils().getDeclaredType(collectionElement, replacement);	
+			return processingEnv.getTypeUtils().getDeclaredType((TypeElement)((DeclaredType)type).asElement(), replacement);	
 		}
 		
 		return replacement;
