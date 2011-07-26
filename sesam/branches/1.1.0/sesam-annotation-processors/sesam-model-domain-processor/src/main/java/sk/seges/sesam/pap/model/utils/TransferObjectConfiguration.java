@@ -49,12 +49,14 @@ public class TransferObjectConfiguration {
 	private Element element;
 	private Set<TransferObjectMapping> mappings = new HashSet<TransferObjectMapping>();
 
+	private ProcessingEnvironment processingEnv;
+	
 	/**
 	 * TypeElement holds {@link TransferObjectMapping} or {@link TransferObjectMappings} annotation
 	 */
-	public TransferObjectConfiguration(Element element) {
+	public TransferObjectConfiguration(Element element, ProcessingEnvironment processingEnv) {
 		this.element = element;
-
+		this.processingEnv = processingEnv;
 		{
 			TransferObjectMapping mapping = element.getAnnotation(TransferObjectMapping.class);
 			if (mapping != null) {
@@ -72,19 +74,14 @@ public class TransferObjectConfiguration {
 		}
 	}
 
-	public TypeElement getDomainType(ProcessingEnvironment processingEnv) {
+	public TypeElement getDomainType() {
 		if (mappings.size() != 1) {
 			return null;
 		}
 
 		TransferObjectMapping mapping = mappings.iterator().next();
 
-//		if (NullCheck.checkNull(getDto(mapping)) != null) {
-//			// method should be applied only for configurations that has no DTO specified
-//			return null;
-//		}
-
-		return getDomainType(mapping, processingEnv);
+		return getDomainType(mapping);
 	}
 	
 	/**
@@ -102,18 +99,18 @@ public class TransferObjectConfiguration {
 	 * 
 	 * @return domain object mapping pair. DTO can be converted to this domain object or back.
 	 */
-	public TypeElement getDomainType(TypeElement dtoType, ProcessingEnvironment processingEnv) {
+	public TypeElement getDomainType(TypeElement dtoType) {
 		for (TransferObjectMapping mapping : mappings) {
 			TypeElement annotationDtoType = getDto(mapping);
 			
 			if (annotationDtoType.equals(dtoType)) {
-				return getDomainType(dtoType, processingEnv);
+				return getDomainType(dtoType);
 			}
 		}
 		return null;
 	}
 	
-	protected TypeElement getDomainType(TransferObjectMapping mapping, ProcessingEnvironment processingEnv) {
+	protected TypeElement getDomainType(TransferObjectMapping mapping) {
 
 		// getting the domain definition
 		TypeElement domain = NullCheck.checkNull(getDomain(mapping));
@@ -125,22 +122,21 @@ public class TransferObjectConfiguration {
 		TypeElement converter = getConverter(mapping);
 
 		if (converter != null) {
-			TypeElement domainElement = getDomainClassFromConverter(converter, processingEnv);
+			TypeElement domainElement = getDomainClassFromConverter(converter);
 
 			if (domainElement != null) {
 				return domainElement;
-			} else {
-				processingEnv.getMessager().printMessage(
-						Kind.ERROR,
+			} 
+			
+			processingEnv.getMessager().printMessage(Kind.ERROR,
 						"[ERROR] Invalid converter specified in the mapping. Unable to find domain class type. "
 								+ converter.toString(), element);
-			}
 		}
 
 		// getting the configuration definition
 		TypeElement configuration = getConfiguration(mapping);
 		if (configuration != null) {
-			TypeElement domainClassType = new TransferObjectConfiguration(configuration).getDomain();
+			TypeElement domainClassType = new TransferObjectConfiguration(configuration, processingEnv).getDomain();
 
 			if (domainClassType != null) {
 				return domainClassType;
@@ -166,14 +162,7 @@ public class TransferObjectConfiguration {
 			return null;
 		}
 
-		TransferObjectMapping mapping = mappings.iterator().next();
-
-//		if (NullCheck.checkNull(getDto(mapping)) != null) {
-//			// method should be applied only for configurations that has no DTO specified
-//			return null;
-//		}
-
-		return getDomain(mapping);
+		return getDomain(mappings.iterator().next());
 	}
 
 	public TypeElement getConfiguration() {
@@ -201,7 +190,7 @@ public class TransferObjectConfiguration {
 	}
 
 	protected TypeElement getDomain(TransferObjectMapping mapping) {
-		return NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
+		TypeElement domainType = NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
 				new AnnotationClassProperty<TransferObjectMapping>() {
 
 					@Override
@@ -209,10 +198,22 @@ public class TransferObjectConfiguration {
 						return annotation.domainClass();
 					}
 				}));
+		
+		if (domainType != null) {
+			return domainType;
+		}
+		
+		String domainClassName = NullCheck.checkNull(mapping.domainClassName());
+		
+		if (domainClassName != null) {
+			return processingEnv.getElementUtils().getTypeElement(domainClassName);
+		}
+		
+		return null;
 	}
 
 	protected TypeElement getDto(TransferObjectMapping mapping) {
-		return NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
+		TypeElement dtoElement = NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
 				new AnnotationClassProperty<TransferObjectMapping>() {
 
 					@Override
@@ -220,10 +221,22 @@ public class TransferObjectConfiguration {
 						return annotation.dtoClass();
 					}
 				}));
+		
+		if (dtoElement != null) {
+			return dtoElement;
+		}
+		
+		String dtoClassName = NullCheck.checkNull(mapping.dtoClassName());
+		
+		if (dtoClassName != null) {
+			return processingEnv.getElementUtils().getTypeElement(dtoClassName);
+		}
+		
+		return null;
 	}
 
 	protected TypeElement getConverter(TransferObjectMapping mapping) {
-		return NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
+		TypeElement converter = NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
 				new AnnotationClassProperty<TransferObjectMapping>() {
 
 					@Override
@@ -231,10 +244,22 @@ public class TransferObjectConfiguration {
 						return annotation.converter();
 					}
 				}), NotDefinedConverter.class);
+		
+		if (converter != null) {
+			return converter;
+		}
+		
+		String converterClassName = NullCheck.checkNull(mapping.converterClassName());
+		
+		if (converterClassName != null) {
+			return processingEnv.getElementUtils().getTypeElement(converterClassName);
+		}
+		
+		return null;
 	}
 
 	protected TypeElement getConfiguration(TransferObjectMapping mapping) {
-		return NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
+		TypeElement configurationClass = NullCheck.checkNull(AnnotationClassPropertyHarvester.getTypeOfClassProperty(mapping,
 				new AnnotationClassProperty<TransferObjectMapping>() {
 
 					@Override
@@ -242,10 +267,22 @@ public class TransferObjectConfiguration {
 						return annotation.configuration();
 					}
 				}));
+		
+		if (configurationClass != null) {
+			return configurationClass;
+		}
+		
+		String configurationClassName = NullCheck.checkNull(mapping.configurationClassName());
+		
+		if (configurationClassName != null) {
+			return processingEnv.getElementUtils().getTypeElement(configurationClassName);
+		}
+		
+		return null;
 	}
 
-	protected TypeElement getDomainClassFromConverter(TypeElement converterType, ProcessingEnvironment processingEnv) {
-		TypeElement domainClass = erasure(converterType, DtoConverter.class, DtoParameterType.DOMAIN.getIndex(), processingEnv);
+	protected TypeElement getDomainClassFromConverter(TypeElement converterType) {
+		TypeElement domainClass = erasure(converterType, DtoConverter.class, DtoParameterType.DOMAIN.getIndex());
 		if (domainClass == null) {
 			processingEnv.getMessager().printMessage(
 					Kind.ERROR,
@@ -256,7 +293,7 @@ public class TransferObjectConfiguration {
 		return domainClass;
 	}
 
-	protected TypeElement erasure(TypeElement rootElement, Class<?> parameterOwnerClass, int parameterIndex, ProcessingEnvironment processingEnv) {
+	protected TypeElement erasure(TypeElement rootElement, Class<?> parameterOwnerClass, int parameterIndex) {
 		TypeElement domainTypeElement = null;
 
 		TypeElement parameterHolderType = processingEnv.getElementUtils().getTypeElement(
@@ -268,8 +305,8 @@ public class TransferObjectConfiguration {
 			TypeElement holderElement = null;
 
 			if (parameterHolderType.getKind().equals(ElementKind.INTERFACE)) {
-				owner = getTypeThatImplements(rootElement, parameterHolderType, processingEnv);
-				holderElement = getImplementedInterface(owner, parameterHolderType, processingEnv);
+				owner = getTypeThatImplements(rootElement, parameterHolderType);
+				holderElement = getImplementedInterface(owner, parameterHolderType);
 			} else if (parameterHolderType.getKind().equals(ElementKind.CLASS)) {
 				owner = getTypeThatExtends(rootElement, parameterHolderType);
 				holderElement = (TypeElement) (DeclaredType) owner.getSuperclass();
@@ -309,7 +346,7 @@ public class TransferObjectConfiguration {
 		return -1;
 	}
 
-	protected TypeElement getImplementedInterface(TypeElement typeElement, TypeElement interfaceElement, ProcessingEnvironment processingEnv) {
+	protected TypeElement getImplementedInterface(TypeElement typeElement, TypeElement interfaceElement) {
 		for (TypeMirror implementedInterfaceType : typeElement.getInterfaces()) {
 			if (implementedInterfaceType.getKind().equals(TypeKind.DECLARED)) {
 				DeclaredType interfaceDeclaredType = (DeclaredType) implementedInterfaceType;
@@ -341,7 +378,7 @@ public class TransferObjectConfiguration {
 		return null;
 	}
 
-	protected TypeElement getTypeThatImplements(TypeElement rootElement, TypeElement interfaceElement, ProcessingEnvironment processingEnv) {
+	protected TypeElement getTypeThatImplements(TypeElement rootElement, TypeElement interfaceElement) {
 		for (TypeMirror implementedInterfaceType : rootElement.getInterfaces()) {
 			if (implementedInterfaceType.getKind().equals(TypeKind.DECLARED)) {
 				DeclaredType interfaceDeclaredType = (DeclaredType) implementedInterfaceType;
@@ -353,7 +390,7 @@ public class TransferObjectConfiguration {
 					}
 				}
 				TypeElement typeThatImplements = getTypeThatImplements((TypeElement) interfaceDeclaredType.asElement(),
-						interfaceElement, processingEnv);
+						interfaceElement);
 				if (typeThatImplements != null) {
 					return typeThatImplements;
 				}
@@ -363,7 +400,7 @@ public class TransferObjectConfiguration {
 		TypeMirror superclass = rootElement.getSuperclass();
 
 		if (superclass != null && superclass.getKind().equals(TypeKind.DECLARED)) {
-			TypeElement typeThatImplements = getTypeThatImplements((TypeElement) ((DeclaredType) superclass).asElement(), interfaceElement, processingEnv);
+			TypeElement typeThatImplements = getTypeThatImplements((TypeElement) ((DeclaredType) superclass).asElement(), interfaceElement);
 
 			if (typeThatImplements != null) {
 				return typeThatImplements;

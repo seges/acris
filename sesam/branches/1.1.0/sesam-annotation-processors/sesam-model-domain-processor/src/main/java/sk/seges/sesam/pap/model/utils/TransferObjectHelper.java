@@ -208,7 +208,7 @@ public class TransferObjectHelper {
 				
 		if (configurationElement != null) {
 			
-			TypeElement dto = new TransferObjectConfiguration(configurationElement).getDto();
+			TypeElement dto = new TransferObjectConfiguration(configurationElement, processingEnv).getDto();
 			
 			if (dto != null) {
 				return getNameTypes().toImmutableType(dto);
@@ -334,7 +334,7 @@ public class TransferObjectHelper {
 	}
 
 	public TypeElement getDomainTypeElement(Element configurationElement) {
-		return new TransferObjectConfiguration(configurationElement).getDomain();
+		return new TransferObjectConfiguration(configurationElement, processingEnv).getDomain();
 	}
 
 	public String getFieldPath(ExecutableElement method) {

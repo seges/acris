@@ -74,23 +74,23 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	protected void writeClassAnnotations(PrintWriter pw, Element configurationElement) {
 		pw.println("@SuppressWarnings(\"serial\")");
 		
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationElement);
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
 		
 		ImmutableType configurationType = (ImmutableType)getNameTypes().toType(configurationElement);
 		
 		pw.print("@" + TransferObjectMapping.class.getSimpleName() + "(");
 
 		pw.println("dtoClass = " + getOutputClass(configurationType).getSimpleName() + ".class,");
-		pw.println("		domainClass = " + toHelper.getDomainTypeElement(configurationElement).getSimpleName().toString() + ".class, ");
-		pw.println("		configuration = " + configurationElement.getSimpleName().toString() + ".class, ");
-		pw.print("		converter = ");
+		pw.println("		domainClassName = \"" + toHelper.getDomainTypeElement(configurationElement).getQualifiedName().toString() + "\", ");
+		pw.println("		configurationClassName = \"" + configurationElement.toString() + "\", ");
+		pw.print("		converterClassName = \"");
 		if (transferObjectConfiguration.getConverter() != null) {
 			pw.print(transferObjectConfiguration.getConverter().toString());
 		} else {
-			ImmutableType generatedConverter = TransferObjectConvertorProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider());
+			ImmutableType generatedConverter = TransferObjectConvertorProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider(), processingEnv);
 			pw.print(generatedConverter.getCanonicalName());
 		}
-		pw.print(".class");
+		pw.print("\"");
 		pw.println(")");
 		
 		super.writeClassAnnotations(pw, configurationElement);
@@ -105,14 +105,13 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 			ListUtils.add(result, new Type[] {dtoSuperclass});
 		}
 		ListUtils.add(result, new Type[] {TransferObjectMapping.class});
-		ListUtils.add(result, new Type[] {getNameTypes().toType(toHelper.getDomainTypeElement(typeElement))});
 		return result.toArray(new Type[] {});
 	}
 
 	@Override
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
 
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(element);
+		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(element, processingEnv);
 		
 		TypeElement dto = transferObjectConfiguration.getDto();
 		if (dto != null) {
