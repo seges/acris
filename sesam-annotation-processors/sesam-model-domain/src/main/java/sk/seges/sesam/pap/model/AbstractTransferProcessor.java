@@ -121,31 +121,31 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 
 		NamedType type = null;
 			
-		if (context.getMethod().getReturnType().getKind().equals(TypeKind.TYPEVAR)) {
-			TypeMirror returnType = erasure(context.getDomainTypeElement(), context.getMethod().getReturnType());
+		if (getTargetEntityType(context.getMethod()).getKind().equals(TypeKind.TYPEVAR)) {
+			TypeMirror returnType = erasure(context.getDomainTypeElement(), getTargetEntityType(context.getMethod()));
 			if (returnType != null) {
 				type = getNameTypes().toType(returnType);
 			} else {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find erasure for the " + context.getDomainMethod().getReturnType().toString() + " in the method: " + context.getFieldName(), 
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find erasure for the " + getTargetEntityType(context.getDomainMethod()).toString() + " in the method: " + context.getFieldName(), 
 						context.getConfigurationElement());
 				return false;
 			}
 		} else {
-			type = getNameTypes().toType(context.getMethod().getReturnType());
+			type = getNameTypes().toType(getTargetEntityType(context.getMethod()));
 		}
 
-		TypeMirror domainReturnType = context.getDomainMethod().getReturnType();
+		TypeMirror domainReturnType = getTargetEntityType(context.getDomainMethod());
 		
-		if (context.getDomainMethod().getReturnType().getKind().equals(TypeKind.TYPEVAR)) {
+		if (getTargetEntityType(context.getDomainMethod()).getKind().equals(TypeKind.TYPEVAR)) {
 			TypeMirror erasedType = erasure(context.getDomainTypeElement(), domainReturnType);
 			if (erasedType != null) {
 				domainReturnType = erasedType;
-			} else {
+			}/* else {
 				TypeMirror targetEntityType = getTargetEntityType(context.getDomainMethod());
 				if (targetEntityType != null && !context.getDomainMethod().getReturnType().equals(targetEntityType)) {
 					domainReturnType = targetEntityType;
 				}
-			}
+			}*/
 		}
 
 		if (context.getMethod().getReturnType().getKind().equals(TypeKind.VOID)) {
@@ -153,7 +153,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 			type = toHelper.convertType(domainReturnType);
 
 			if (type == null) {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find DTO alternative for " + context.getDomainMethod().getReturnType().toString() + ". Skipping getter " + 
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find DTO alternative for " + getTargetEntityType(context.getDomainMethod()).toString() + ". Skipping getter " + 
 						context.getMethod().getSimpleName().toString(), context.getConfigurationElement());
 				return false;
 			}
