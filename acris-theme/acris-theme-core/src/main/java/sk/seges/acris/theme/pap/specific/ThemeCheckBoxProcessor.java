@@ -3,7 +3,7 @@ package sk.seges.acris.theme.pap.specific;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
 
-import sk.seges.acris.theme.client.annotation.ThemeSupport;
+import javax.lang.model.element.ExecutableElement;
 
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -20,11 +20,11 @@ public class ThemeCheckBoxProcessor extends AbstractComponentSpecificProcessor {
 	}
 	
 	@Override
-	public void process(Statement statement, ThemeSupport themeSupport, PrintWriter pw) {
+	public void process(Statement statement, ThemeContext themeContext, PrintWriter pw) {
 
 		switch (statement) {
 			case CONSTRUCTOR:
-				pw.println("component.parentElement.appendChild(component." + themeSupport.elementName() + ");");
+				pw.println("component.parentElement.appendChild(component." + themeContext.getThemeSupport().elementName() + ");");
 				pw.println("component.getElement().getChild(0).appendChild(getLabelElement());");
 				break;
 
@@ -41,7 +41,12 @@ public class ThemeCheckBoxProcessor extends AbstractComponentSpecificProcessor {
 	}
 
 	@Override
-	protected Class<?> getComponentClass() {
-		return CheckBox.class;
+	protected Class<?>[] getComponentClasses() {
+		return new Class<?>[] { CheckBox.class };
+	}
+
+	@Override
+	public boolean isComponentMethod(ExecutableElement method) {
+		return true;
 	}
 }
