@@ -28,6 +28,7 @@ import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.annotation.Field;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
@@ -174,38 +175,6 @@ public class TransferObjectHelper {
 		return toMethod(SETTER_PREFIX, fieldName);
 	}
 
-	private boolean implementsType(TypeMirror t1, TypeMirror t2) {
-		if (t1 == null || !t1.getKind().equals(TypeKind.DECLARED) || !t2.getKind().equals(TypeKind.DECLARED)) {
-			return false;
-		}
-		
-		DeclaredType dt1 = (DeclaredType)t1;
-		DeclaredType dt2 = (DeclaredType)t2;
-
-		for (TypeMirror interfaceType: ((TypeElement)dt1.asElement()).getInterfaces()) {
-			
-			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
-				if (((DeclaredType)interfaceType).asElement().equals(dt2.asElement())) {
-					return true;
-				}
-				
-				if (implementsType(interfaceType, t2)) {
-					return true;
-				}
-			}
-			
-		}
-
-		TypeMirror superClassType = ((TypeElement)dt1.asElement()).getSuperclass();
-		
-		if (superClassType.getKind().equals(TypeKind.DECLARED)) {
-			if (((DeclaredType)superClassType).asElement().equals(dt2.asElement())) {
-				return true;
-			}		
-		}
-
-		return implementsType(superClassType, t2);
-	}
 
 	public Element getConfigurationElement(TypeElement element, RoundEnvironment roundEnv) {
 		
@@ -269,7 +238,7 @@ public class TransferObjectHelper {
 
 			if (declaredType.getTypeArguments() != null && declaredType.getTypeArguments().size() > 0) {
 
-				if (implementsType(declaredType.asElement().asType(), processingEnv.getElementUtils().getTypeElement(Collection.class.getCanonicalName()).asType())) {
+				if (ProcessorUtils.implementsType(declaredType.asElement().asType(), processingEnv.getElementUtils().getTypeElement(Collection.class.getCanonicalName()).asType())) {
 	
 					TypeMirror arg = declaredType.getTypeArguments().get(0);
 	
@@ -282,7 +251,7 @@ public class TransferObjectHelper {
 	
 					return namedType;
 					
-				} else if (implementsType(declaredType.asElement().asType(), 
+				} else if (ProcessorUtils.implementsType(declaredType.asElement().asType(), 
 						processingEnv.getElementUtils().getTypeElement(Map.class.getCanonicalName()).asType()) && declaredType.getTypeArguments().size() == 2 ) {
 					
 					TypeMirror key = declaredType.getTypeArguments().get(0);

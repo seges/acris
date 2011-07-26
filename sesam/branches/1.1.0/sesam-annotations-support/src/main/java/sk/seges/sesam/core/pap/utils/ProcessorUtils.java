@@ -25,6 +25,39 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public class ProcessorUtils {
 
+	public static boolean implementsType(TypeMirror t1, TypeMirror t2) {
+		if (t1 == null || !t1.getKind().equals(TypeKind.DECLARED) || !t2.getKind().equals(TypeKind.DECLARED)) {
+			return false;
+		}
+		
+		DeclaredType dt1 = (DeclaredType)t1;
+		DeclaredType dt2 = (DeclaredType)t2;
+
+		for (TypeMirror interfaceType: ((TypeElement)dt1.asElement()).getInterfaces()) {
+			
+			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+				if (((DeclaredType)interfaceType).asElement().equals(dt2.asElement())) {
+					return true;
+				}
+				
+				if (implementsType(interfaceType, t2)) {
+					return true;
+				}
+			}
+			
+		}
+
+		TypeMirror superClassType = ((TypeElement)dt1.asElement()).getSuperclass();
+		
+		if (superClassType.getKind().equals(TypeKind.DECLARED)) {
+			if (((DeclaredType)superClassType).asElement().equals(dt2.asElement())) {
+				return true;
+			}		
+		}
+
+		return implementsType(superClassType, t2);
+	}
+
 	public static TypeMirror erasure(TypeElement typeElement, TypeVariable typeVar) {
 		return erasure(typeElement, typeVar.asElement().getSimpleName().toString());
 	}
