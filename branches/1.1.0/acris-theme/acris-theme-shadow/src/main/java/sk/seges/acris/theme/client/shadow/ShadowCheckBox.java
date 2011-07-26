@@ -15,12 +15,15 @@
  */
 package sk.seges.acris.theme.client.shadow;
 
-import com.google.gwt.user.client.ui.CheckBox;
-
+import sk.seges.acris.theme.client.annotation.Theme;
+import sk.seges.acris.theme.client.annotation.ThemeResources;
+import sk.seges.acris.theme.client.annotation.ThemeResources.ThemeResource;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.theme.client.annotation.ThemeSupport.Resource;
+import sk.seges.acris.theme.client.shadow.ShadowTheme;
 import sk.seges.acris.theme.client.shadow.resources.ShadowThemeResources;
 import sk.seges.acris.widget.client.form.ImageCheckBox;
+
+import com.google.gwt.user.client.ui.CheckBox;
 
 /**
  * Styled {@link CheckBox} with shadow theme. This is not the standard system based check box because it does not allows
@@ -29,5 +32,7 @@ import sk.seges.acris.widget.client.form.ImageCheckBox;
  * 
  * @author Peter Simun (simun@seges.sk)
  */
-@ThemeSupport(widgetClass = ImageCheckBox.class, elementName = "checkBox", themeName = ShadowTheme.NAME, resources = @Resource(resourceClass = ShadowThemeResources.class))
+@Theme(ShadowTheme.NAME)
+@ThemeSupport(widgetClass = ImageCheckBox.class, elementName = "checkBox")
+@ThemeResources(@ThemeResource(resourceClass = ShadowThemeResources.class))
 public interface ShadowCheckBox {}

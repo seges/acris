@@ -15,6 +15,7 @@
  */
 package sk.seges.acris.theme.client.shadow;
 
+import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 
 import com.google.gwt.user.client.ui.TextBox;
@@ -24,5 +25,6 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Peter Simun (simun@seges.sk)
  */
-@ThemeSupport(widgetClass = TextBox.class, elementName = "textBox", themeName = ShadowTheme.NAME)
+@Theme(ShadowTheme.NAME)
+@ThemeSupport(widgetClass = TextBox.class, elementName = "textBox")
 public interface ShadowTextBox {} 

@@ -15,9 +15,11 @@
  */
 package sk.seges.acris.theme.client.shadow;
 
+import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 
-@ThemeSupport(widgetClass = SimplePanel.class, elementName = "simplePanel", themeName = ShadowTheme.NAME)
+@Theme(ShadowTheme.NAME)
+@ThemeSupport(widgetClass = SimplePanel.class, elementName = "simplePanel")
 public interface ShadowSimplePanel {} 
