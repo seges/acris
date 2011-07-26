@@ -205,8 +205,15 @@ public class TransferObjectHelper {
 	public ImmutableType toDto(TypeElement element, RoundEnvironment roundEnv) {
 		
 		Element configurationElement = getConfigurationElement(element, roundEnv);
-		
+				
 		if (configurationElement != null) {
+			
+			TypeElement dto = new TransferObjectConfiguration(configurationElement).getDto();
+			
+			if (dto != null) {
+				return getNameTypes().toImmutableType(dto);
+			}
+
 			return getDtoType((ImmutableType)getNameTypes().toType(configurationElement));
 		}
 		
