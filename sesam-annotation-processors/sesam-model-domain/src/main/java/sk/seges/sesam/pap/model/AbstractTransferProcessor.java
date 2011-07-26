@@ -124,14 +124,22 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		if (getTargetEntityType(context.getMethod()).getKind().equals(TypeKind.TYPEVAR)) {
 			TypeMirror returnType = erasure(context.getDomainTypeElement(), getTargetEntityType(context.getMethod()));
 			if (returnType != null) {
-				type = getNameTypes().toType(returnType);
+				type = toHelper.convertType(returnType);
+				if (type == null) {
+					type = getNameTypes().toType(returnType);
+				}
 			} else {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find erasure for the " + getTargetEntityType(context.getDomainMethod()).toString() + " in the method: " + context.getFieldName(), 
 						context.getConfigurationElement());
 				return false;
 			}
 		} else {
-			type = getNameTypes().toType(getTargetEntityType(context.getMethod()));
+			TypeMirror targetEntityType = getTargetEntityType(context.getMethod());
+			
+			type = toHelper.convertType(targetEntityType);
+			if (type == null) {
+				type = getNameTypes().toType(targetEntityType);
+			}
 		}
 
 		TypeMirror domainReturnType = getTargetEntityType(context.getDomainMethod());

@@ -70,7 +70,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
 					
 					if (domainGetterMethod == null) {
-						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find getter method for field " + currentPath + " in the " + element.toString(), context.getConfigurationElement());
+						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find getter method for the field " + currentPath + " in the " + element.toString(), context.getConfigurationElement());
 						return;
 					}
 	
