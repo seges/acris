@@ -11,13 +11,17 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
+import sk.seges.acris.theme.client.annotation.ThemeElements;
+import sk.seges.acris.theme.client.annotation.ThemeElements.ThemeElement;
+import sk.seges.acris.theme.client.annotation.ThemeResources;
+import sk.seges.acris.theme.client.annotation.ThemeResources.ThemeResource;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.theme.client.annotation.ThemeSupport.Resource;
 import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester;
 import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.Constants;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 import com.google.gwt.core.client.GWT;
@@ -53,23 +57,21 @@ public class ThemeComponentProcessor extends AbstractConfigurableProcessor {
 		};
 	}
 	
-	public static final MutableType getOutputClass(MutableType mutableType) {
+	public static final ImmutableType getOutputClass(ImmutableType mutableType) {
 		return mutableType.addClassSufix("Component");
 	}
 
 	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
-
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
-			case OUTPUT_SUPERCLASS:
-				return new Type[] { Widget.class };
-		}
-		
-		return super.getConfigurationTypes(type, typeElement);
+		case OUTPUT_SUPERCLASS:
+			return new Type[] { Widget.class };
+	}
+		return super.getOutputDefinition(type, typeElement);
 	}
 
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] {
 			getOutputClass(mutableType)
 		};
@@ -90,11 +92,11 @@ public class ThemeComponentProcessor extends AbstractConfigurableProcessor {
 		} else {
 			pw.println("@" + UiTemplate.class.getSimpleName() + "(\"" + name + ".ui.xml\")");
 		}
- 		pw.println("interface " + name + "UiBinder extends " + UiBinder.class.getSimpleName() + "<" + Element.class.getSimpleName() + ", " + outputClass.getSimpleName() + "> {}");
+ 		pw.println("interface " + name + UiBinder.class.getSimpleName() + " extends " + UiBinder.class.getSimpleName() + "<" + Element.class.getSimpleName() + ", " + outputClass.getSimpleName() + "> {}");
 		pw.println();
 				
 		//UiField annotation
-		boolean provided = themeSupportAnnotation.field().provided();
+		boolean provided = false;/*themeSupportAnnotation.field().provided()*/;
 		pw.println("@" + UiField.class.getSimpleName() + "(provided = " + provided + ")");
 		
 		String elementClassName = Element.class.getSimpleName();
@@ -103,14 +105,26 @@ public class ThemeComponentProcessor extends AbstractConfigurableProcessor {
 		pw.println();
 		pw.println(Element.class.getSimpleName() + " parentElement;");
 		pw.println();
+
+		ThemeElements themeElementsAnnotation = element.getAnnotation(ThemeElements.class);
 		
-		if (themeSupportAnnotation.resources() != null) {
-			for (Resource resource: themeSupportAnnotation.resources()) {
+		if (themeElementsAnnotation != null && themeElementsAnnotation.value() != null && themeElementsAnnotation.value().length > 0) {
+			for (ThemeElement themeElement: themeElementsAnnotation.value()) {
+				pw.println("@" + UiField.class.getSimpleName() + "(provided = " + provided + ")");
+				pw.println(elementClassName + " " + themeElement.value() + ";");
+				pw.println();
+			}
+		}
+		
+		ThemeResources themeResourcesAnnotation = element.getAnnotation(ThemeResources.class);
+
+		if (themeResourcesAnnotation != null && themeResourcesAnnotation.value() != null && themeResourcesAnnotation.value().length > 0) {
+			for (ThemeResource resource: themeResourcesAnnotation.value()) {
 				pw.println("@" + UiField.class.getSimpleName() + "(provided = " + resource.field().provided() + ")");
-				pw.println(AnnotationClassPropertyHarvester.getTypeOfClassProperty(resource, new AnnotationClassProperty<Resource>() {
+				pw.println(AnnotationClassPropertyHarvester.getTypeOfClassProperty(resource, new AnnotationClassProperty<ThemeResource>() {
 
 					@Override
-					public Class<?> getClassProperty(Resource annotation) {
+					public Class<?> getClassProperty(ThemeResource annotation) {
 						return annotation.resourceClass();
 					}
 				} ).toString() + " " + resource.name() + ";");
@@ -119,9 +133,26 @@ public class ThemeComponentProcessor extends AbstractConfigurableProcessor {
 		}
 		
 		pw.println("public " + outputClass.getSimpleName() + "() {");
-		pw.println(name + "UiBinder uiBinder = " + GWT.class.getSimpleName() + ".create(" + name + "UiBinder.class);");
+		pw.println(name + UiBinder.class.getSimpleName() + " uiBinder = " + GWT.class.getSimpleName() + ".create(" + name + UiBinder.class.getSimpleName() + ".class);");
 		pw.println("setElement(uiBinder.createAndBindUi(this));");
 		pw.println("parentElement = " +  themeSupportAnnotation.elementName() + ".getParentElement();");
+		pw.println("}");
+		pw.println("");
+		pw.println("public " + com.google.gwt.user.client.Element.class.getCanonicalName() + " getElement(String name) {");
+
+		if (themeElementsAnnotation != null && themeElementsAnnotation.value() != null && themeElementsAnnotation.value().length > 0) {
+			for (ThemeElement themeElement: themeElementsAnnotation.value()) {
+				pw.println("if (name.equals(\"" + themeElement.value() + "\")) {");
+				pw.println("return " + themeElement.value() + ".cast();");
+				pw.println("}");
+			}
+		}
+
+		pw.println("if (name.equals(\"" + themeSupportAnnotation.elementName() + "\")) {");
+		pw.println("return " + themeSupportAnnotation.elementName() + ".cast();");
+		pw.println("}");
+ 
+		pw.println("return null;");
 		pw.println("}");
 	}
 }

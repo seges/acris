@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,32 +28,39 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 
+import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 import sk.seges.acris.theme.pap.specific.AbstractComponentSpecificProcessor.Statement;
 import sk.seges.acris.theme.pap.specific.ComponentSpecificProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeCheckBoxProcessor;
+import sk.seges.acris.theme.pap.specific.ThemeContext;
+import sk.seges.acris.theme.pap.specific.ThemeDefaultProcessor;
+import sk.seges.acris.theme.pap.specific.ThemeDialogBoxProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeImageCheckBoxProcessor;
 import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester;
 import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.utils.ListUtils;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor {
 
-	private Set<ComponentSpecificProcessor> specificProcessors = new HashSet<ComponentSpecificProcessor>();
+	private List<ComponentSpecificProcessor> specificProcessors = new LinkedList<ComponentSpecificProcessor>();
 	
 	protected ElementKind getElementKind() {
 		return ElementKind.CLASS;
 	}
 	
-	
 	public ThemeComponentPanelProcessor() {
+		specificProcessors.add(new ThemeDefaultProcessor());
 		specificProcessors.add(new ThemeImageCheckBoxProcessor());
 		specificProcessors.add(new ThemeCheckBoxProcessor());
+		specificProcessors.add(new ThemeDialogBoxProcessor());
 	}
 
 	@Override
@@ -73,6 +81,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 	@Override
 	protected Type[] getImports(TypeElement typeElement) {
 		Type[] result = new Type[] {
+			SimplePanel.class
 		};
 		
 		List<Type> importTypes = new ArrayList<Type>();
@@ -80,30 +89,33 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
 			TypeElement componentClass = getComponentType(typeElement);
 			if (specificProcessor.supports(componentClass)) {
-				addUnique(importTypes, specificProcessor.getImports());
+				ListUtils.add(importTypes, specificProcessor.getImports());
 			}
 		}
-		addUnique(importTypes, result);
+		ListUtils.add(importTypes, result);
 		return importTypes.toArray(new Type[] {});
 	}
 	
-	public static final MutableType getOutputClass(MutableType mutableType) {
+	public static final ImmutableType getOutputClass(ImmutableType mutableType) {
 		return mutableType.addClassSufix("Panel");
 	}
 
 	@Override
-	protected Type[] getConfigurationTypes(DefaultConfigurationType type, TypeElement typeElement) {
-
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
-			case OUTPUT_SUPERCLASS:		
-				return new Type[] { getNameTypes().toType(getComponentType(typeElement))};
+			case OUTPUT_SUPERCLASS:
+				
+				TypeElement componentTypeElement = getComponentType(typeElement);
+				if (processingEnv.getTypeUtils().isSubtype(typeElement.asType(), componentTypeElement.asType())) {
+					return new Type[] { getNameTypes().toType(typeElement)};
+				}
+				return new Type[] { getNameTypes().toType(componentTypeElement)};
 		}
-		
-		return super.getConfigurationTypes(type, typeElement);
+		return super.getOutputDefinition(type, typeElement);
 	}
 
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] {
 			getOutputClass(mutableType)
 		};
@@ -149,14 +161,41 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 			List<ExecutableElement> methods = ElementFilter.methodsIn(superClass.getEnclosedElements());
 			
 			for (ExecutableElement method: methods) {
+				
+				ExecutableType methodType = (ExecutableType)processingEnv.getTypeUtils().asMemberOf((DeclaredType)rootElement.asType(), method);
+				
+				List<ExecutableElement> cachedMethods = methodCache.get(superClass);
+				if (cachedMethods == null) {
+					cachedMethods = new ArrayList<ExecutableElement>();
+					methodCache.put(superClass, cachedMethods);
+				}
+				cachedMethods.add(method);
+
 				if (method.getModifiers().contains(Modifier.PUBLIC) && !method.getModifiers().contains(Modifier.FINAL) &&
 					!method.getModifiers().contains(Modifier.STATIC) && !method.getModifiers().contains(Modifier.ABSTRACT)) {
-	
-					if ((method.getSimpleName().toString().equals("getElement") && method.getParameters().size() == 0) || 
-						(method.getSimpleName().toString().equals("removeFromParent") && method.getParameters().size() == 0)) {
+
+					boolean ignoredMethod = false;
+					
+					for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
+						if (specificProcessor.supports(rootElement) && specificProcessor.ignoreMethod(method)) {
+							ignoredMethod = true;
+							break;
+						}
+					}
+
+					if (ignoredMethod) {
 						continue;
 					}
 					
+					boolean isComponentMethod = true;
+					
+					for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
+						if (specificProcessor.supports(rootElement) && !specificProcessor.isComponentMethod(method)) {
+							isComponentMethod = false;
+							break;
+						}
+					}
+
 					boolean isOverriden = false;
 					
 					for (Entry<TypeElement, List<ExecutableElement>> cachedTypeMethods: methodCache.entrySet()) {
@@ -169,14 +208,6 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 					}
 					
 					if (!isOverriden) {
-						ExecutableType methodType = (ExecutableType)processingEnv.getTypeUtils().asMemberOf((DeclaredType)rootElement.asType(), method);
-						
-						List<ExecutableElement> cachedMethods = methodCache.get(superClass);
-						if (cachedMethods == null) {
-							cachedMethods = new ArrayList<ExecutableElement>();
-							methodCache.put(superClass, cachedMethods);
-						}
-						cachedMethods.add(method);
 						
 						pw.print(toString(method.getModifiers()) + methodType.getReturnType().toString() + " " + method.getSimpleName().toString() + "(");
 						int i = 0;
@@ -206,7 +237,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 						}
 						pw.println(" {");
 						pw.println("boolean previousComponentOperation = componentOperation;");
-						pw.println("componentOperation = true;");
+						pw.println("componentOperation = " + isComponentMethod + ";");
 						if (!methodType.getReturnType().toString().toLowerCase().equals("void")) {
 							pw.print(methodType.getReturnType().toString() + " result = ");
 						}
@@ -244,14 +275,24 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 
 		ThemeSupport themeSupportAnnotation = element.getAnnotation(ThemeSupport.class);
 
-		MutableType componentType = ThemeComponentProcessor.getOutputClass(getNameTypes().toType(element));
+		ImmutableType componentType = ThemeComponentProcessor.getOutputClass(getNameTypes().toImmutableType(element));
 		
 		String componentName = "component";
 
 		TypeElement componentClass = getComponentType(element);
-		
+				
 		pw.println("private boolean componentOperation = false;");
 		
+		Theme themeAnnotation = element.getAnnotation(Theme.class);
+		
+		ThemeContext themeContext = new ThemeContext();
+		if (themeAnnotation != null) {
+			themeContext.setThemeName(themeAnnotation.value());
+		} else {
+			themeContext.setThemeName("UNDEFINED");
+		}
+		themeContext.setThemeSupport(themeSupportAnnotation);
+
 		pw.println("private " + componentType.getSimpleName() + " " + componentName + ";");
 		pw.println();
 		pw.println("public " + outputClass.getSimpleName() + "() {");
@@ -259,37 +300,64 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		pw.println("}");
 		pw.println();
 		pw.println("private " + outputClass.getSimpleName() + "(" + componentType.getSimpleName() + " component) {");
-		pw.print("super((" + Element.class.getCanonicalName() + ")component." + themeSupportAnnotation.elementName());
-		for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
-			if (specificProcessor.supports(componentClass)) {
-				specificProcessor.process(Statement.SUPER_CONSTRUCTOR_ARGS, themeSupportAnnotation, pw);
+
+		TypeElement componentTypeElement = getComponentType(element);
+		
+		TypeElement superElement = null;
+		
+		if (processingEnv.getTypeUtils().isSubtype(element.asType(), componentTypeElement.asType())) {
+			superElement = element;
+		} else {
+			superElement = componentTypeElement;
+		}
+		
+		List<ExecutableElement> constructors = ElementFilter.constructorsIn(superElement.getEnclosedElements());
+		
+		boolean canAdaptElement = false;
+		
+		for (ExecutableElement constructor: constructors) {
+			if (constructor.getParameters() != null && constructor.getParameters().size() > 0 &&
+				(constructor.getParameters().get(0).asType().toString().equals(com.google.gwt.user.client.Element.class.getCanonicalName()) ||
+				 constructor.getParameters().get(0).asType().toString().equals(com.google.gwt.dom.client.Element.class.getCanonicalName()))) {
+				canAdaptElement = true;
+				break;
+			}
+		}
+		
+		pw.print("super(");
+
+		if (canAdaptElement) {
+			for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
+				if (specificProcessor.supports(componentClass)) {
+					specificProcessor.process(Statement.SUPER_CONSTRUCTOR_ARGS, themeContext, pw);
+				}
 			}
 		}
 		pw.println(");");
-		pw.println("this.component = component;");
+
+		if (!canAdaptElement) {
+			pw.println(SimplePanel.class.getSimpleName() + " panel = new " + SimplePanel.class.getSimpleName() + "((" +
+					com.google.gwt.user.client.Element.class.getCanonicalName() + ")component." + themeSupportAnnotation.elementName() + ") {");
+			pw.println("public " + SimplePanel.class.getSimpleName() + " initialize() {");
+			pw.println("onAttach();");
+			pw.println("return this;");
+			pw.println("}");
+			pw.println("}.initialize();");
+			pw.println("panel.add(this);");
+		}
 		
 		for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
 			if (specificProcessor.supports(componentClass)) {
-				specificProcessor.process(Statement.CONSTRUCTOR, themeSupportAnnotation, pw);
+				specificProcessor.process(Statement.CONSTRUCTOR, themeContext, pw);
 			}
 		}
 		
 		pw.println("}");
 		pw.println();
-		pw.println("@Override");
-		pw.println("public " + com.google.gwt.user.client.Element.class.getCanonicalName() + " getElement() {");
-		pw.println("if (component == null) {");
-		pw.println("return super.getElement();");
-		pw.println("}");
-		pw.println("if (componentOperation) {");
-		pw.println("return (" + Element.class.getCanonicalName() + ")component." + themeSupportAnnotation.elementName() + ";");
-		pw.println("}");
-		pw.println("return component.getElement();");
-		pw.println("}");
 
 		for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
 			if (specificProcessor.supports(componentClass)) {
-				specificProcessor.process(Statement.CLASS, themeSupportAnnotation, pw);
+				specificProcessor.process(Statement.CLASS, themeContext, pw);
 			}
 		}
 

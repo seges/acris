@@ -14,7 +14,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
-import javax.tools.JavaFileManager.Location;
 import javax.tools.StandardLocation;
 
 import sk.seges.acris.theme.client.annotation.ThemeConfiguration;

@@ -28,7 +28,7 @@ import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -39,7 +39,7 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 
 	public static final String ASYNC_SUFFIX = "Async";
 
-	public static NamedType getOutputClass(MutableType inputClass) {
+	public static NamedType getOutputClass(ImmutableType inputClass) {
 		return inputClass.addClassSufix(ASYNC_SUFFIX);
 	}
 		
@@ -60,9 +60,9 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 		List<Type> imports = new ArrayList<Type>();
 		
 		for (ExecutableElement method: methodsIn) {
-			addImport(imports, method.getReturnType());
+			imports.add(getNameTypes().toType(method.getReturnType()));
 			for (VariableElement parameter: method.getParameters()) {
-				addImport(imports, parameter.asType());
+				imports.add(getNameTypes().toType(parameter.asType()));
 			}
 		}
 
@@ -78,7 +78,7 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType inputClass) {
+	protected NamedType[] getTargetClassNames(ImmutableType inputClass) {
 		return new NamedType[] { 
 				getOutputClass(inputClass) 
 		};
@@ -136,7 +136,7 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				pw.print(getNameTypes().toType(parameter.asType()).getSimpleName() + " " + parameter.getSimpleName().toString());
+				pw.print(getNameTypes().toType(parameter.asType()).toString(null, ClassSerializer.SIMPLE, true) + " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
