@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
@@ -72,7 +72,7 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 		};
 	}
 	
-	public static final MutableType getOutputClass(MutableType mutableType) {
+	public static final ImmutableType getOutputClass(ImmutableType mutableType) {
 		return mutableType.addClassSufix("Configuration");
 	}
 	
@@ -80,14 +80,14 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
-			return new Type[] {MutableType.THIS};
+			return new Type[] {ImmutableType.THIS};
 		}
 		
 		return super.getOutputDefinition(type, typeElement);
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] {
 			getOutputClass(mutableType)
 		};

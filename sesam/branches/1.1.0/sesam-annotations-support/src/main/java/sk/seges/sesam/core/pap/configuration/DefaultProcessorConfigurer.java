@@ -35,7 +35,6 @@ import sk.seges.sesam.core.annotation.configuration.Interface;
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.configuration.api.ConfigurationElement;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.api.MutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
@@ -348,7 +347,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			for (ConfigurationElement configurationElement: DefaultConfigurationElement.values()) {
 				if (configurationElement.hasAnnotationOnField(field)) {
 					
-					MutableType namedFieldType = nameTypesUtils.toType(field.asType());
+					NamedType namedFieldType = nameTypesUtils.toType(field.asType());
 					
 					AnnotationMirror[] annotations = getAnnotations(field);
 					

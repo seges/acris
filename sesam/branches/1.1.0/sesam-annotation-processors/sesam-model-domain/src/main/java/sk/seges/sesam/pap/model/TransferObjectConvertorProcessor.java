@@ -24,7 +24,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
@@ -88,7 +88,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 							}
 							
 							pw.print(getNameTypes().toType(referenceElement) + " " + currentPath + " = ");
-							printConverterInstance(pw, getOutputClass(getNameTypes().toType(configurationElement), getPackageValidatorProvider()));
+							printConverterInstance(pw, getOutputClass((ImmutableType)getNameTypes().toType(configurationElement), getPackageValidatorProvider()));
 							pw.println(".getDomainInstance(" + DTO_NAME + "." + toHelper.toGetter(fullPath + toHelper.toMethod(toHelper.toField(toHelper.getIdMethod(referenceElement)))) + ");");
 							instances.add(fullPath);
 						}
@@ -209,7 +209,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		@Override
 		public void initialize(TypeElement typeElement) {
 			
-			MutableType dtoType = getDtoType(typeElement);
+			ImmutableType dtoType = getDtoType(typeElement);
 					
 			TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
 
@@ -271,7 +271,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		@Override
 		public void initialize(TypeElement typeElement) {
 			
-			MutableType dtoType = getDtoType(typeElement);
+			ImmutableType dtoType = getDtoType(typeElement);
 					
 			TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
 
@@ -286,7 +286,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				return;
 			}
 
-			MutableType domainObjectType = getNameTypes().toType(domainObjectClass);
+			ImmutableType domainObjectType = (ImmutableType)getNameTypes().toType(domainObjectClass);
 			
 			pw.println("public " + domainObjectType.getSimpleName() + " createDomainInstance(" + Serializable.class.getSimpleName() + " id) {");
 			
@@ -348,7 +348,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		return super.processElement(element, roundEnv);
 	}
 
-	public static MutableType getOutputClass(MutableType mutableType, PackageValidatorProvider packageValidatorProvider) {	
+	public static ImmutableType getOutputClass(ImmutableType mutableType, PackageValidatorProvider packageValidatorProvider) {	
 		
 		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration((TypeElement)((DeclaredType)mutableType.asType()).asElement());
 		
@@ -381,7 +381,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	@Override
 	protected Type[] getImports(TypeElement typeElement) {
 
-		MutableType dtoType = getDtoType(typeElement);				
+		ImmutableType dtoType = getDtoType(typeElement);				
 		TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
 
 		TypeElement superElement = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
@@ -416,7 +416,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] { 
 				getOutputClass(mutableType, getPackageValidatorProvider()) };
 	}
@@ -513,7 +513,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		}
 	}
 	
-	private MutableType getDtoConverterType(TypeElement typeElement) {
+	private NamedType getDtoConverterType(TypeElement typeElement) {
 
 		TypeElement converter = new TransferObjectConfiguration(typeElement).getConverter();
 
@@ -538,7 +538,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				NamedType converterType = getDtoConverterType((TypeElement)configurationElement);
 				
 				if (converterType == null) {
-					converterType = getTargetClassNames(getNameTypes().toType(configurationElement))[0];
+					converterType = getTargetClassNames((ImmutableType)getNameTypes().toType(configurationElement))[0];
 				}
 				
 				printer.printCopyMethod(context, pw, converterType);

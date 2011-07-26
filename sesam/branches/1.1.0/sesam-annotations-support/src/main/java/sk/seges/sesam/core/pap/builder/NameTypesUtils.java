@@ -4,9 +4,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -17,7 +19,8 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.model.InputClass;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 
@@ -29,7 +32,7 @@ public class NameTypesUtils implements NameTypes {
 		this.elements = elements;
 	}
 	
-	private MutableType handleGenerics(MutableType simpleType, TypeMirror type) {
+	private ImmutableType handleGenerics(ImmutableType simpleType, TypeMirror type) {
 		if (type.getKind().equals(TypeKind.DECLARED)) {
 			DeclaredType declaredType = (DeclaredType)type;
 			if (declaredType.getTypeArguments() != null && declaredType.getTypeArguments().size() > 0) {
@@ -74,13 +77,13 @@ public class NameTypesUtils implements NameTypes {
 		return simpleType;
 	}
 
-	public MutableType toType(TypeMirror typeMirror) {
+	public ImmutableType toImmutableType(TypeMirror typeMirror) {
 		switch (typeMirror.getKind()) {
 		case DECLARED:
 			DeclaredType declaredType = (DeclaredType)typeMirror;
 			
 			if (declaredType.asElement().getEnclosingElement() != null && declaredType.asElement().getEnclosingElement().asType().getKind().equals(TypeKind.DECLARED)) {
-				MutableType enclosedElement = toType(declaredType.asElement().getEnclosingElement());
+				NamedType enclosedElement = toType(declaredType.asElement().getEnclosingElement());
 				return handleGenerics(new InputClass(typeMirror, enclosedElement, declaredType.asElement().getSimpleName().toString()), declaredType);
 			}
 				
@@ -98,19 +101,41 @@ public class NameTypesUtils implements NameTypes {
 			return new InputClass(null, typeMirror.getKind().name().toLowerCase());
 		case TYPEVAR:
 			//TODO
-		case ARRAY:
-			//TODO
 		}
 		
-
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
 	}
 	
-	public MutableType toType(Element element) {
-		return toType(element.asType());
+	public NamedType toType(TypeMirror typeMirror) {
+		switch (typeMirror.getKind()) {
+		case DECLARED:
+		case BOOLEAN:
+		case BYTE:
+		case CHAR:
+		case DOUBLE:
+		case FLOAT:
+		case INT:
+		case LONG:
+		case SHORT:
+		case VOID:
+		case TYPEVAR:
+			return toImmutableType(typeMirror);
+		case ARRAY:
+			return new ArrayNamedType(toType(((ArrayType)typeMirror).getComponentType()));
+		}
+		
+		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
+	}
+
+	public ImmutableType toImmutableType(Element element) {
+		return toImmutableType(element.asType());
 	}
 	
-	private static NamedType toType(Class<?> clazz) {
+	public NamedType toType(Element element) {
+		return toType(element.asType());
+	}
+
+	private static ImmutableType toType(Class<?> clazz) {
 		if (clazz == null) {
 			return null;
 		}
@@ -120,6 +145,26 @@ public class NameTypesUtils implements NameTypes {
 		return new InputClass(null, clazz.getPackage().getName(), clazz.getSimpleName());
 	}
 
+	public ImmutableType toImmutableType(Type javaType) {
+		if (javaType instanceof Class) {
+			return toType((Class<?>)javaType);
+		}
+		
+		if (javaType instanceof ImmutableType) {
+			return (ImmutableType)javaType;
+		}
+
+		if (javaType instanceof NamedType) {
+			InputClass result = new InputClass(null, ((NamedType)javaType).getPackageName(), ((NamedType)javaType).getSimpleName());
+			for (AnnotationMirror annotation: ((NamedType)javaType).getAnnotations()) {
+				result.annotateWith(annotation);
+			}
+			return result;
+		}
+		
+		return null;
+	}
+	
 	public NamedType toType(Type javaType) {
 		
 		if (javaType instanceof Class) {
@@ -155,8 +200,7 @@ public class NameTypesUtils implements NameTypes {
 		return TypeParameterBuilder.get(parameterType);
 	}
 	
-	public NamedType toType(String className) {
-
+	public ImmutableType toImmutableType(String className) {
 		TypeElement typeElement = elements.getTypeElement(className);
 
 		String genericType = null;
@@ -184,10 +228,14 @@ public class NameTypesUtils implements NameTypes {
 				return TypedClassBuilder.get(typeElement.asType(), packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), parameters);
 
 			} else {
-				return toType(typeElement.asType());
+				return toImmutableType(typeElement.asType());
 			}
 		}
 
 		return null;
+	}
+	
+	public NamedType toType(String className) {
+		return toImmutableType(className);
 	}
 }

@@ -19,7 +19,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.annotation.Id;
@@ -47,10 +47,10 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		return method.getReturnType();
 	}
 
-	public MutableType getDtoType(TypeElement typeElement) {
-		MutableType mutableType = getNameTypes().toType(typeElement);
+	public ImmutableType getDtoType(TypeElement typeElement) {
+		NamedType mutableType = getNameTypes().toType(typeElement);
 		
-		return TransferObjectHelper.getDtoType((MutableType)genericsSupport.applyVariableGenerics(mutableType, 
+		return TransferObjectHelper.getDtoType((ImmutableType)genericsSupport.applyVariableGenerics(mutableType, 
 				toHelper.getDomainTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()))));
 	}
 	
@@ -168,11 +168,11 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 
 		if (domainReturnType.getKind().equals(TypeKind.DECLARED)) {
 			
-			MutableType domainReturnNamedType = getNameTypes().toType(domainReturnType);
+			NamedType domainReturnNamedType = getNameTypes().toType(domainReturnType);
 			
 			if (!type.getCanonicalName().equals(domainReturnNamedType.getCanonicalName())) {
 				
-				MutableType dtoType = null;
+				ImmutableType dtoType = null;
 				
 				if (domainReturnType.getKind().equals(TypeKind.DECLARED)) {
 					dtoType = toHelper.toDto((TypeElement)((DeclaredType)domainReturnType).asElement(), roundEnv);

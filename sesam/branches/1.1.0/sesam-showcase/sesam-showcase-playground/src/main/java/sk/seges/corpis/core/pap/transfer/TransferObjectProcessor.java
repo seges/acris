@@ -19,7 +19,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -35,7 +35,7 @@ public class TransferObjectProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] {
 				mutableType.addClassSufix(TRANSFER_OBJECT_SUFFIX)
 		};

@@ -27,7 +27,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
@@ -82,12 +82,12 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		return new DefaultPackageValidatorProvider();
 	}
 
-	public static NamedType getOutputClass(MutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
+	public static NamedType getOutputClass(ImmutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
 		return inputClass.addClassSufix(META_MODEL_SUFFIX);
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType inputClass) {
+	protected NamedType[] getTargetClassNames(ImmutableType inputClass) {
 		return new NamedType[] { 
 				getOutputClass(inputClass, getPackageValidatorProvider()) 
 		};

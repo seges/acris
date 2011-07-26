@@ -19,7 +19,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
@@ -60,14 +60,14 @@ public class DtoServiceLayerProcessor extends AbstractConfigurableProcessor {
 		});
 	}
 		
-	protected Set<MutableType> getAffectedServices(TypeElement element) {
+	protected Set<ImmutableType> getAffectedServices(TypeElement element) {
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 		
-		Set<MutableType> result = new HashSet<MutableType>();
+		Set<ImmutableType> result = new HashSet<ImmutableType>();
 		
 		for (ExecutableElement method: methods) {
 			if (method.getAnnotation(ExportService.class) != null) {
-				MutableType returnType = getNameTypes().toType(method.getReturnType());
+				ImmutableType returnType = (ImmutableType) getNameTypes().toType(method.getReturnType());
 				if (returnType != null) {
 					result.add(returnType);
 					methodsCache.put(returnType, method);
@@ -78,12 +78,12 @@ public class DtoServiceLayerProcessor extends AbstractConfigurableProcessor {
 		return result;
 	}
 	
-	public static MutableType getOutputClass(MutableType mutableType) {
+	public static ImmutableType getOutputClass(ImmutableType mutableType) {
 		return mutableType.addClassSufix(EXPORTER_SUFFIX);
 	}
 
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		
 		if (mutableType.asType() == null || !mutableType.asType().getKind().equals(TypeKind.DECLARED)) {
 			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to process " + mutableType.getCanonicalName() + " - unsupported type. Most probably this is sesam bug - please report this bug somewhere.");
@@ -92,8 +92,8 @@ public class DtoServiceLayerProcessor extends AbstractConfigurableProcessor {
 		
 		TypeElement typeElement = (TypeElement)((DeclaredType)mutableType.asType()).asElement();
 		
-		Set<MutableType> affectedServices = getAffectedServices(typeElement);
-		Iterator<MutableType> iterator = affectedServices.iterator();
+		Set<ImmutableType> affectedServices = getAffectedServices(typeElement);
+		Iterator<ImmutableType> iterator = affectedServices.iterator();
 		
 		Set<NamedType> result = new HashSet<NamedType>();
 		while (iterator.hasNext()) {
@@ -103,13 +103,13 @@ public class DtoServiceLayerProcessor extends AbstractConfigurableProcessor {
 		return result.toArray(new NamedType[] {});
 	}
 
-	protected MutableType toService(MutableType exporterType) {
+	protected ImmutableType toService(ImmutableType exporterType) {
 		return exporterType.setName(exporterType.getSimpleName().replaceAll(EXPORTER_SUFFIX, ""));
 	}
 	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
-		TypeElement asyncServiceType = getAsyncServiceType(element, toService((MutableType)outputName));
+		TypeElement asyncServiceType = getAsyncServiceType(element, toService((ImmutableType)outputName));
 		int a = 0;
 	}
 }

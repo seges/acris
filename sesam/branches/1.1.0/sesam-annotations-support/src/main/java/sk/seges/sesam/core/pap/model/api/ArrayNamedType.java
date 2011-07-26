@@ -4,19 +4,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVisitor;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 
-public class ArrayNamedType implements NamedType{
+public class ArrayNamedType implements NamedType {
 
 	private NamedType componentType;
 	
 	public ArrayNamedType(NamedType componentType) {
 		this.componentType = componentType;
+	}
+	
+	public NamedType getComponentType() {
+		return componentType;
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public class ArrayNamedType implements NamedType{
 
 	@Override
 	public String getPackageName() {
-		throw new RuntimeException("Invalid operation - arrays doesn't have packages.");
+		return null;
 	}
 
 	@Override

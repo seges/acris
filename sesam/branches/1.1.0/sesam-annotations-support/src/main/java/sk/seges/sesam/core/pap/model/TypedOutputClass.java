@@ -1,10 +1,12 @@
 package sk.seges.sesam.core.pap.model;
 
+import java.util.Arrays;
+
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 
@@ -43,12 +45,12 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 	}
 
 	public TypedOutputClass(NamedType type, TypeParameter... typeParameters) {
-		this(type instanceof MutableType ? ((MutableType)type).asType() : null, type.getPackageName(), type.getSimpleName());
+		this(type instanceof ImmutableType ? ((ImmutableType)type).asType() : null, type.getPackageName(), type.getSimpleName());
 		this.typeParameters = typeParameters;
 	}
 
 	public TypedOutputClass(NamedType type, NamedType... classes) {
-		this(type instanceof MutableType ? ((MutableType)type).asType() : null, type.getPackageName(), type.getSimpleName());
+		this(type instanceof ImmutableType ? ((ImmutableType)type).asType() : null, type.getPackageName(), type.getSimpleName());
 		if (classes != null) {
 			typeParameters = new TypeParameter[classes.length];
 			for (int i = 0; i < classes.length; i++) {
@@ -131,10 +133,32 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 	}
 
 	@Override
-	public MutableType stripTypeParameters() {
+	public ImmutableType stripTypeParameters() {
 		if (getEnclosedClass() != null) {
 			return new OutputClass(asType(), getEnclosedClass(), getSimpleName());
 		}
 		return new OutputClass(asType(), getPackageName(), getSimpleName());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.hashCode(typeParameters);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TypedOutputClass other = (TypedOutputClass) obj;
+		if (!Arrays.equals(typeParameters, other.typeParameters))
+			return false;
+		return true;
 	}
 }
