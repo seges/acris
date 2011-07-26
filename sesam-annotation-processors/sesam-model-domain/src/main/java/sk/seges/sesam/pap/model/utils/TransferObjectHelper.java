@@ -26,7 +26,7 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.model.InputClass;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.pap.model.annotation.Field;
 import sk.seges.sesam.pap.model.annotation.Ignore;
@@ -227,18 +227,18 @@ public class TransferObjectHelper {
 		return null;
 	}
 
-	public static MutableType getDtoType(MutableType configurationType) {
+	public static ImmutableType getDtoType(ImmutableType configurationType) {
 		return configurationType.getSimpleName().endsWith(DEFAULT_SUFFIX) ?
 				configurationType.setName(configurationType.getSimpleName().substring(0, configurationType.getSimpleName().length() - DEFAULT_SUFFIX.length())) :
 				configurationType.addClassSufix(DTO_SUFFIX);
 	}
 
-	public MutableType toDto(TypeElement element, RoundEnvironment roundEnv) {
+	public ImmutableType toDto(TypeElement element, RoundEnvironment roundEnv) {
 		
 		Element configurationElement = getConfigurationElement(element, roundEnv);
 		
 		if (configurationElement != null) {
-			return getDtoType(getNameTypes().toType(configurationElement));
+			return getDtoType((ImmutableType)getNameTypes().toType(configurationElement));
 		}
 		
 		return null;
@@ -322,7 +322,7 @@ public class TransferObjectHelper {
 				return namedType;
 			}
 			
-			MutableType dto = toDto((TypeElement)declaredType.asElement(), roundEnv);
+			ImmutableType dto = toDto((TypeElement)declaredType.asElement(), roundEnv);
 			if (dto != null) {
 				return dto;
 			} 

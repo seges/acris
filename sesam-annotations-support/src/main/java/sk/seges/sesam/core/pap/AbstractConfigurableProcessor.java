@@ -22,8 +22,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
@@ -36,8 +34,9 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
+import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.api.TypeVariable;
@@ -66,15 +65,8 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return subProcessors.get(element.getQualifiedName().toString()) != null;
 	}
 
-	protected void addImport(List<Type> imports, TypeMirror type) {
-		if (type.getKind().equals(TypeKind.DECLARED)) {
-			MutableType namedType = getNameTypes().toType(type);
-			addImport(imports, namedType);
-		}
-	}
-
-	protected void addImport(List<Type> imports, NamedType namedType) {
-		if (namedType.getPackageName() != null && !namedType.getPackageName().equals(Void.class.getPackage().toString())) {
+	private void addImport(List<? extends Type> imports, NamedType namedType) {
+		if (namedType.getPackageName() != null && !namedType.getPackageName().equals(Void.class.getPackage().getName())) {
 			ListUtils.addUnique(imports, namedType);
 		}
 	}
@@ -83,7 +75,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		List<Type> types = new ArrayList<Type>();
 		for (Set<SubProcessor<?>> subProcessorSet : subProcessors.values()) {
 			for (SubProcessor<?> subProcessor: subProcessorSet) {
-				ListUtils.addUnique(types, subProcessor.getImports());
+				ListUtils.add(types, subProcessor.getImports());
 			}
 		}
 		return types.toArray(new Type[] {});
@@ -157,12 +149,15 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 					for (TypeVariable typeVariable: typeParameter.getBounds()) {
 						if (typeVariable.getUpperBound() != null) {
 							NamedType type = getNameTypes().toType(typeVariable.getUpperBound());
-							ListUtils.addUnique(result, type);
+							addImport(result, type);
 							addGenericType(result, type, typeElement);
 						}
 					}
 				}
 			}
+		} else if (importName instanceof ArrayNamedType) {
+			addImport(result, ((ArrayNamedType)importName).getComponentType());
+			addGenericType(result, ((ArrayNamedType)importName).getComponentType(), typeElement);
 		}
 	}
 
@@ -178,15 +173,15 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	protected NamedType[] getAllImports(TypeElement typeElement) {
 		List<NamedType> imports = new ArrayList<NamedType>();
 
-		ListUtils.addUnique(imports, TypeUtils.toTypes(getImports(), nameTypesUtils));
-		ListUtils.addUnique(imports, TypeUtils.toTypes(getImports(typeElement), nameTypesUtils));
-		ListUtils.addUnique(imports, getMergedDefinition(OutputDefinition.OUTPUT_SUPERCLASS, typeElement));
-		ListUtils.addUnique(imports, getMergedDefinition(OutputDefinition.OUTPUT_INTERFACES, typeElement));
+		ListUtils.add(imports, TypeUtils.toTypes(getImports(), nameTypesUtils));
+		ListUtils.add(imports, TypeUtils.toTypes(getImports(typeElement), nameTypesUtils));
+		ListUtils.add(imports, getMergedDefinition(OutputDefinition.OUTPUT_SUPERCLASS, typeElement));
+		ListUtils.add(imports, getMergedDefinition(OutputDefinition.OUTPUT_INTERFACES, typeElement));
 
 		List<NamedType> result = new ArrayList<NamedType>();
 		
 		for (NamedType importName: imports) {
-			ListUtils.addUnique(result, importName);
+			addImport(result, importName);
 			addGenericType(result, importName, typeElement);
 		}
 		
@@ -210,10 +205,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	}
 	
 	protected final NamedType[] getClassNames(Element element) {
-		return getTargetClassNames(getNameTypes().toType(element));
+		return getTargetClassNames((ImmutableType)getNameTypes().toType(element));
 	}
 
-	protected abstract NamedType[] getTargetClassNames(MutableType mutableType);
+	protected abstract NamedType[] getTargetClassNames(ImmutableType mutableType);
 
 	protected PrintWriter initializePrintWriter(OutputStream os) {
 		FormattedPrintWriter pw = new FormattedPrintWriter(os);

@@ -10,12 +10,12 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
-public class InputClass extends AbstractPrintableType implements NamedType, MutableType {
+public class InputClass extends AbstractPrintableType implements NamedType, ImmutableType {
 
 	private String simpleClassName;
 	private String packageName;
@@ -75,25 +75,25 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 		return new TypedOutputClass(asType(), getPackageName(), getClassName(), typeParameter);
 	}
 
-	public MutableType addClassSufix(String sufix) {
+	public ImmutableType addClassSufix(String sufix) {
 		InputClass result = clone();
 		result.simpleClassName += sufix;
 		return result;
 	}
 
-	public MutableType addClassPrefix(String prefix) {
+	public ImmutableType addClassPrefix(String prefix) {
 		InputClass result = clone();
 		result.simpleClassName = prefix + simpleClassName;
 		return result;
 	}
 
-	public MutableType addPackageSufix(String sufix) {
+	public ImmutableType addPackageSufix(String sufix) {
 		InputClass result = clone();
 		result.packageName += sufix;
 		return result;
 	}
 
-	public MutableType changePackage(String packageName) {
+	public ImmutableType changePackage(String packageName) {
 		InputClass result = clone();
 		result.packageName = packageName;
 		return result;
@@ -159,7 +159,7 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	}
 
 	@Override
-	public MutableType setName(String name) {
+	public ImmutableType setName(String name) {
 		InputClass result = clone();
 		result.simpleClassName = name;
 		result.type = null;
@@ -172,7 +172,7 @@ public class InputClass extends AbstractPrintableType implements NamedType, Muta
 	}
 
 	@Override
-	public MutableType changePackage(PackageValidator packageValidator) {
+	public ImmutableType changePackage(PackageValidator packageValidator) {
 		packageName = packageValidator.toString();
 		return this;
 	}

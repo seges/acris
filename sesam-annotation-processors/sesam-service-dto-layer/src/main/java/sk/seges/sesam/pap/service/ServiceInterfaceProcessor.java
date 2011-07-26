@@ -13,6 +13,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
@@ -24,8 +25,9 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
+import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
@@ -53,7 +55,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 //		return super.getOutputDefinition(type, typeElement);
 //	}
 	
-	public static MutableType getOutputClass(MutableType mutableType) {	
+	public static ImmutableType getOutputClass(ImmutableType mutableType) {	
 		String simpleName = mutableType.getSimpleName();
 		if (simpleName.endsWith(REMOTE_SUFFIX)) {
 			simpleName = simpleName.substring(0, simpleName.length() - REMOTE_SUFFIX.length());
@@ -67,7 +69,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] { getOutputClass(mutableType) };
 	}
 	
@@ -80,9 +82,9 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 		List<Type> imports = new ArrayList<Type>();
 		
 		for (ExecutableElement method: methodsIn) {
-			addImport(imports, getDomainClass(method.getReturnType(), typeElement));
+			imports.add(getDomainClass(method.getReturnType(), typeElement));
 			for (VariableElement parameter: method.getParameters()) {
-				addImport(imports, getDomainClass(parameter.asType(), typeElement));
+				imports.add(getDomainClass(parameter.asType(), typeElement));
 			}
 		}
 
@@ -111,7 +113,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 		}
 	}
 	
-	protected MutableType getDomainClass(TypeMirror type, TypeElement typeElement) {
+	protected NamedType getDomainClass(TypeMirror type, TypeElement typeElement) {
 		switch (type.getKind()) {
 		case BOOLEAN:
 		case BYTE:
@@ -144,10 +146,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 			}
 			return convertTypeParameters(getNameTypes().toType(type), typeElement);
 		case ARRAY:
-			//ArrayType arrayType = (ArrayType)type;
-			//getDomainClass(arrayType.getComponentType(), typeElement);
-			//TODO add array support
-			return getNameTypes().toType(type);
+			return new ArrayNamedType(getDomainClass(((ArrayType)type).getComponentType(), typeElement));
 		case TYPEVAR:
 			return getNameTypes().toType(ProcessorUtils.erasure(typeElement, ((TypeVariable)type).asElement().getSimpleName().toString()));
 		}
@@ -155,7 +154,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 		return getNameTypes().toType(type);
 	}
 
-	protected MutableType convertTypeParameters(MutableType type, TypeElement typeElement) {
+	protected NamedType convertTypeParameters(NamedType type, TypeElement typeElement) {
 		if (type instanceof HasTypeParameters) {
 			
 			List<TypeParameter> domainParameters = new ArrayList<TypeParameter>();

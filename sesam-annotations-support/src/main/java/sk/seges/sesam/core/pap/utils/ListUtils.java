@@ -21,7 +21,8 @@ public class ListUtils {
 		return false;
 	}
 
-	public static  <T> List<T> addUnique(List<T> source, T t) {
+	@SuppressWarnings("unchecked")
+	public static  <T, S extends T> List<? extends T> addUnique(List<? extends T> source, S t) {
 		if (t == null) {
 			return source;
 		}
@@ -47,7 +48,9 @@ public class ListUtils {
 			}
 		}
 
-		source.add(t);
+		
+		((List<T>)source).add(t);
+		
 		return source;
 	}
 
@@ -60,10 +63,26 @@ public class ListUtils {
 		return source;
 	}
 
-	public static <T extends Type> List<T> addUnique(List<T> source, T[] additions) {
+	@SuppressWarnings("unchecked")
+	public static  <T, S extends T> List<? extends T> add(List<? extends T> source, S t) {
+		((List<T>)source).add(t);
+		
+		return source;
+	}
+	
+	public static  <T> List<T> add(List<T> source, Collection<T> additions) {
 		if (additions != null) {
 			for (T addClass : additions) {
-				addUnique(source, addClass);
+				source.add(addClass);
+			}
+		}
+		return source;
+	}
+
+	public static <T extends Type> List<T> add(List<T> source, T[] additions) {
+		if (additions != null) {
+			for (T addClass : additions) {
+				source.add(addClass);
 			}
 		}
 		return source;

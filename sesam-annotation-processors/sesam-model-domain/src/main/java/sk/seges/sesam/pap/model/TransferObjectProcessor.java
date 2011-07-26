@@ -17,7 +17,7 @@ import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ListUtils;
@@ -76,7 +76,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		
 		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationElement);
 		
-		MutableType configurationType = getNameTypes().toType(configurationElement);
+		ImmutableType configurationType = (ImmutableType)getNameTypes().toType(configurationElement);
 		
 		pw.print("@" + TransferObjectMapping.class.getSimpleName() + "(");
 
@@ -87,7 +87,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		if (transferObjectConfiguration.getConverter() != null) {
 			pw.print(transferObjectConfiguration.getConverter().toString());
 		} else {
-			MutableType generatedConverter = TransferObjectConvertorProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider());
+			ImmutableType generatedConverter = TransferObjectConvertorProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider());
 			pw.print(generatedConverter.getCanonicalName());
 		}
 		pw.print(".class");
@@ -100,9 +100,9 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	protected Type[] getImports(TypeElement typeElement) {
 		NamedType dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
 		List<Type> result = new ArrayList<Type>();
-		ListUtils.addUnique(result, super.getImports(typeElement));
-		ListUtils.addUnique(result, new Type[] {dtoSuperclass, TransferObjectMapping.class});
-		ListUtils.addUnique(result, new Type[] {getNameTypes().toType(toHelper.getDomainTypeElement(typeElement))});
+		ListUtils.add(result, super.getImports(typeElement));
+		ListUtils.add(result, new Type[] {dtoSuperclass, TransferObjectMapping.class});
+		ListUtils.add(result, new Type[] {getNameTypes().toType(toHelper.getDomainTypeElement(typeElement))});
 		return result.toArray(new Type[] {});
 	}
 
@@ -148,9 +148,9 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] {
-				getOutputClass((MutableType)genericsSupport.applyVariableGenerics(mutableType, toHelper.getDomainTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()))))
+				getOutputClass((ImmutableType)genericsSupport.applyVariableGenerics(mutableType, toHelper.getDomainTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()))))
 		};
 	}
 
@@ -161,7 +161,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		};
 	}
 
-	public static MutableType getOutputClass(MutableType mutableType) {	
+	public static ImmutableType getOutputClass(ImmutableType mutableType) {	
 		return TransferObjectHelper.getDtoType(mutableType);
 	}
 

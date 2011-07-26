@@ -18,7 +18,7 @@ import javax.lang.model.element.TypeElement;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumSuite;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
@@ -54,7 +54,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 		return annotations;
 	}
 	
-	public static final MutableType getOutputClass(MutableType mutableType) {
+	public static final ImmutableType getOutputClass(ImmutableType mutableType) {
 		return mutableType.addClassSufix("Configuration");
 	}
 	
@@ -67,7 +67,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
 		
 		while (iterator.hasNext()) {
-			result.add(SeleniumTestProcessor.getOutputClass(nameTypesUtils.toType(((TypeElement)iterator.next()))));
+			result.add(SeleniumTestProcessor.getOutputClass((ImmutableType)nameTypesUtils.toType(((TypeElement)iterator.next()))));
 		}
 		
 		result.add(TestEnvironment.class);
@@ -80,7 +80,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] {
 			getOutputClass(mutableType)
 		};
@@ -105,7 +105,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
 		
 		for (Element seleniumTestClass: seleniumTestClasses) {
-			pw.println("run(new " + SeleniumTestProcessor.getOutputClass(nameTypesUtils.toType(((TypeElement)seleniumTestClass))).getSimpleName() + "());");
+			pw.println("run(new " + SeleniumTestProcessor.getOutputClass((ImmutableType) nameTypesUtils.toType(((TypeElement)seleniumTestClass))).getSimpleName() + "());");
 		}
 		
 		pw.println("}");

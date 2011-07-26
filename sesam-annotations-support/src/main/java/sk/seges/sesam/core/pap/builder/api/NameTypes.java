@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public interface NameTypes {
@@ -14,11 +14,14 @@ public interface NameTypes {
 		CANONICAL, SIMPLE, QUALIFIED;
 	}
 
-	MutableType toType(TypeMirror typeMirror);
-	MutableType toType(Element element);
-	
+	NamedType toType(TypeMirror typeMirror);
+	NamedType toType(Element element);
 	NamedType toType(Type javaType);
-
 	NamedType toType(String className);
+
+	ImmutableType toImmutableType(TypeMirror typeMirror);
+	ImmutableType toImmutableType(Element element);
+	ImmutableType toImmutableType(Type javaType);
+	ImmutableType toImmutableType(String className);
 
 }

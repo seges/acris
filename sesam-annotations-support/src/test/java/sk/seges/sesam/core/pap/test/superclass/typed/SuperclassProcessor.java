@@ -10,14 +10,14 @@ import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.MutableType;
+import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SuperclassProcessor extends AbstractConfigurableProcessor {
 
-	public static NamedType getOutputClass(MutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
+	public static NamedType getOutputClass(ImmutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
 		return inputClass.addClassSufix("Generated");
 	}
 
@@ -29,7 +29,7 @@ public class SuperclassProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected NamedType[] getTargetClassNames(MutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 		return new NamedType[] {
 				mutableType.addClassSufix("Generated")
 		};
