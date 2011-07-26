@@ -15,6 +15,7 @@
  */
 package sk.seges.acris.theme.client.shadow;
 
+import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 
 import com.google.gwt.user.client.ui.Button;
@@ -24,5 +25,6 @@ import com.google.gwt.user.client.ui.Button;
  * 
  * @author Peter Simun (simun@seges.sk)
  */
-@ThemeSupport(widgetClass = Button.class, elementName = "button", themeName = ShadowTheme.NAME)
+@Theme(ShadowTheme.NAME)
+@ThemeSupport(widgetClass = Button.class, elementName = "button")
 public interface ShadowButton {}

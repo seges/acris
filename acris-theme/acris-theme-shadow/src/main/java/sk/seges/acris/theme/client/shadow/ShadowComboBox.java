@@ -16,6 +16,7 @@
  */
 package sk.seges.acris.theme.client.shadow;
 
+import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 import sk.seges.acris.widget.client.form.select.ComboBox;
 
@@ -28,5 +29,6 @@ import com.google.gwt.user.client.ui.ListBox;
  * 
  * @author Peter Simun (simun@seges.sk)
  */
-@ThemeSupport(widgetClass = ComboBox.class, elementName = "comboBox", themeName = ShadowTheme.NAME)
+@Theme(ShadowTheme.NAME)
+@ThemeSupport(widgetClass = ComboBox.class, elementName = "comboBox")
 public class ShadowComboBox {}
