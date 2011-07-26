@@ -1,6 +1,8 @@
 package sk.seges.sesam.pap.model.hibernate;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -8,6 +10,7 @@ import javax.lang.model.type.TypeMirror;
 import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
 import sk.seges.sesam.pap.model.hibernate.util.HibernateHelper;
 
+@SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class HibernateTransferObjectConverterProcessor extends TransferObjectConvertorProcessor {
 
 	private HibernateHelper hibernateHelper;

@@ -119,7 +119,11 @@
 				<scope>test</scope>
 			</dependency>
 
-
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-domain-model-hibernate-processor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-application-scaffold-model</artifactId>
