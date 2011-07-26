@@ -1,5 +1,6 @@
 package sk.seges.acris.theme.rebind;
 
+import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 import sk.seges.acris.theme.pap.ThemeComponentPanelProcessor;
 import sk.seges.sesam.core.pap.model.OutputClass;
@@ -40,9 +41,10 @@ public class ThemeComponentSelectorGenerator extends Generator {
 		for (JType type: generatorContext.getTypeOracle().getTypes()) {
 			if (type.isClassOrInterface() != null) {
 				JClassType classType = type.isClassOrInterface();
+				Theme theme = classType.getAnnotation(Theme.class);
 				ThemeSupport themeSupport = classType.getAnnotation(ThemeSupport.class);
-				if (themeSupport != null) {
-					if (themeName.equals(themeSupport.themeName()) && themeSupport.widgetClass().getCanonicalName().equals(typeName)) {
+				if (theme != null) {
+					if (themeName.equals(theme.value()) && themeSupport.widgetClass().getCanonicalName().equals(typeName)) {
 						return ThemeComponentPanelProcessor.getOutputClass(new OutputClass(classType.getPackage().getName(), classType.getSimpleSourceName())).getQualifiedName();
 					}
 				}

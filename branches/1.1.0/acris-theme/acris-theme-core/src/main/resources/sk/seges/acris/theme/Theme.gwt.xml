@@ -1,7 +1,7 @@
 <module>
 	<inherits name='com.google.gwt.user.User' />
 
-	<define-property name="acristheme" values="NONE, SHADOW" />
+	<define-property name="acristheme" values="NONE, SHADOW, METAL" />
 
 	<property-provider name="acristheme">
     	<![CDATA[
@@ -38,7 +38,7 @@
 		return acrisTheme;
 	 } catch(e){
 	 	alert("Unexpected exception in acris theme detection, using default: " + e);
-	    return "default";
+	    return "NONE";
 	 }
   	]]>
 	</property-provider>

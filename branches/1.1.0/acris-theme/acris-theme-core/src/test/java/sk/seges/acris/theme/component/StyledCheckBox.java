@@ -1,5 +1,4 @@
 /**
-
  *  Copyright 2011 Seges s.r.o.
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +17,8 @@ package sk.seges.acris.theme.component;
 
 import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
+import sk.seges.acris.widget.client.form.ImageCheckBox;
 
-/**
- * @author Peter Simun (simun@seges.sk)
- */
 @Theme("test")
-@ThemeSupport(widgetClass = TestWidget.class, elementName = "testWidget")
-public class StyledTestWidget {}
+@ThemeSupport(widgetClass = ImageCheckBox.class, elementName = "checkBox")
+public interface StyledCheckBox {}
