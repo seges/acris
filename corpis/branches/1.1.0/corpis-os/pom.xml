@@ -103,17 +103,27 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-annotations-support</artifactId>
+				<artifactId>sesam-annotation-core-support</artifactId>
 				<version>${sesam-os.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-model-domain</artifactId>
+				<artifactId>sesam-model-domain-api</artifactId>
 				<version>${sesam-os.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-annotations-support</artifactId>
+				<artifactId>sesam-model-domain-support</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-model-domain-processor</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-annotation-core-support</artifactId>
 				<version>${sesam-os.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>

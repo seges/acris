@@ -12,10 +12,10 @@ import sk.seges.corpis.core.pap.dao.DaoApiProcessor;
 import sk.seges.corpis.core.pap.dao.HibernateDaoProcessor;
 import sk.seges.corpis.shared.model.mock.api.MockEntity;
 import sk.seges.corpis.shared.model.mock.jpa.JpaMockEntity;
-import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.test.AnnotationTest;
 
 public class HibernateDaoProcessorTest extends AnnotationTest {
 

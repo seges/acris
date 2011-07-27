@@ -8,10 +8,10 @@ import org.junit.Test;
 
 import sk.seges.corpis.core.pap.dao.DaoApiProcessor;
 import sk.seges.corpis.shared.model.mock.MockEntity;
-import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.test.AnnotationTest;
 
 public class DaoProcessorTest extends AnnotationTest {
 
