@@ -1,9 +1,0 @@
-package sk.seges.sesam.core.pap.test.superclass.typed;
-
-import sk.seges.sesam.core.pap.test.superclass.typed.TestBeanUpperBounds;
-import java.io.Serializable;
-import java.lang.Cloneable;
-
-public class TestBeanUpperBoundsGenerated<T extends Serializable & Cloneable> extends TestBeanUpperBounds<T> {
-
-}
