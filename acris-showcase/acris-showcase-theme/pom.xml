@@ -13,6 +13,7 @@
 
 	<modules>
 		<module>acris-showcase-theme-shadow</module>
+		<module>acris-showcase-theme-metal</module>
 	</modules>
 
 </project>
