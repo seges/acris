@@ -22,7 +22,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-annotations-support</artifactId>
+				<artifactId>sesam-annotation-core-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
