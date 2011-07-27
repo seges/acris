@@ -424,44 +424,9 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
-		printConstructor(outputName, pw);
+		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
+		methodHelper.copyConstructors(outputName, cachedConverterType, pw);
 		super.processElement(element, outputName, roundEnv, pw);
-	}
-	
-	protected void printConstructor(NamedType outputName, PrintWriter pw) {
-		TypeElement superElement = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
-		
-		List<ExecutableElement> constructors = ElementFilter.constructorsIn(superElement.getEnclosedElements());
-		
-		for (ExecutableElement constructor: constructors) {
-			pw.print("public " + outputName.getSimpleName() + "(");
-			int i = 0;
-			for (VariableElement parameter: constructor.getParameters()) {
-				if (i > 0) {
-					pw.print(", ");
-				}
-				if (parameter.asType().getKind().equals(TypeKind.DECLARED)) {
-					pw.print(((DeclaredType)parameter.asType()).asElement().getSimpleName().toString() + " " + parameter.getSimpleName().toString());
-				} else {
-					pw.print(parameter.asType().toString() + " " + parameter.getSimpleName().toString());
-				}
-				i++;
-			}
-			pw.println(") {");
-			pw.print("super(");
-			i = 0;
-			for (VariableElement parameter: constructor.getParameters()) {
-				if (i > 0) {
-					pw.print(", ");
-				}
-				pw.print(parameter.getSimpleName().toString());
-				i++;
-			}
-			
-			pw.println(");");
-			pw.println("}");
-			pw.println();
-		}
 	}
 	
 	protected void printConverterInstance(PrintWriter pw, NamedType type) {
