@@ -6,16 +6,15 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
-import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.model.DomainObject;
 import sk.seges.sesam.pap.model.MockEntityDtoConfiguration;
 import sk.seges.sesam.pap.model.SecondDomainObject;
 import sk.seges.sesam.pap.model.SecondDomainObjectDtoConfiguration;
 import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
-import sk.seges.sesam.pap.model.annotation.Field;
 
 
 public class TransferObjectProcessorTest extends AnnotationTest {

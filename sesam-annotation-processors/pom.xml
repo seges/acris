@@ -15,14 +15,16 @@
 	<modules>
 		<module>sesam-model-metadata</module>
 		<module>sesam-model-domain-processor</module>
-		<module>sesam-service-dto-layer</module>
+		<module>sesam-service-converter-processor</module>
+		<module>sesam-service-exporter-processor</module>
+		<module>sesam-service-local-interface-processor</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-annotations-support</artifactId>
+				<artifactId>sesam-annotation-core-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
