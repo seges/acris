@@ -49,7 +49,7 @@
 							<name>.factorypath</name>
 							<content><![CDATA[
 								<factorypath>
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${project.version}/sesam-annotations-support-${project.version}.jar" enabled="true" runInBatchMode="false" />
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotation-core-support/${project.version}/sesam-annotation-core-support-${project.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-showcase-playground/${project.version}/sesam-showcase-playground-${project.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-showcase-annotation-processor/${project.version}/sesam-showcase-annotation-processor-${project.version}.jar" enabled="true" runInBatchMode="false" />
 						        </factorypath>
@@ -87,7 +87,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-annotations-support</artifactId>
+			<artifactId>sesam-annotation-core-support</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>

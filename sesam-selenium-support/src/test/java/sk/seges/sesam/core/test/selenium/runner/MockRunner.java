@@ -2,10 +2,10 @@ package sk.seges.sesam.core.test.selenium.runner;
 
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
-import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration.ScreenshotConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTestConfiguration;
+import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration.ScreenshotConfiguration;
 import sk.seges.sesam.core.test.selenium.annotation.SeleniumSuite;
+import sk.seges.sesam.core.test.selenium.annotation.SeleniumTestConfiguration;
 
 @SeleniumSuite
 @SeleniumTestConfiguration(

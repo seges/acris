@@ -35,15 +35,16 @@
 		<selenium.version>2.0rc3</selenium.version> 
 		<selenium-remote-control.version>2.0rc2</selenium-remote-control.version>
 		<logging.selenium.version>1.2</logging.selenium.version>
-		<sesam-os.version>1.1.2</sesam-os.version>
+		<sesam-os.version>1.1.4-SNAPSHOT</sesam-os.version>
 	</properties>
 
 	<modules>
 		<module>../sesam-core</module>
 		<module>../sesam-spring</module>
-		<module>../sesam-annotations-support</module>
+		<module>../sesam-annotation-apis</module>
+		<module>../sesam-annotation-supports</module>
 		<module>../sesam-annotation-processors</module>
-		<module>../sesam-showcase</module>
+		<!--module>../sesam-showcase</module-->
 		<module>../sesam-selenium-support</module>
 	</modules>
 
@@ -108,7 +109,7 @@
 										<factorypath>
 											<factorypathentry kind="VARJAR" id="M2_REPO/junit/junit/${junit.version}/junit-${junit.version}.jar" enabled="true" runInBatchMode="false" />
 											<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-											<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
+											<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotation-core-support/${sesam-os.version}/sesam-annotation-core-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 											<factorypathentry kind="VARJAR" id="M2_REPO/org/seleniumhq/selenium/selenium-support/${selenium.version}/selenium-support-${selenium.version}.jar" enabled="true" runInBatchMode="false" />
 											<factorypathentry kind="VARJAR" id="M2_REPO/org/seleniumhq/selenium/selenium-api/${selenium.version}/selenium-api-${selenium.version}.jar" enabled="true" runInBatchMode="false" />
 											<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-selenium-support/${sesam-os.version}/sesam-selenium-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
@@ -201,6 +202,59 @@
 		<dependencies>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-core-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-model-domain-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-model-metadata-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-service-converter-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-service-exporter-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-service-local-interface-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-service-support</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-annotation-core-support</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-annotation-core-support</artifactId>
+				<type>test-jar</type>
+				<scope>test</scope>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-model-domain-support</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -217,24 +271,12 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>sesam-annotations-support</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-model-metadata</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-model-domain</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>sesam-annotations-support</artifactId>
-				<type>test-jar</type>
-				<scope>test</scope>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
