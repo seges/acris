@@ -16,8 +16,8 @@ import sk.seges.acris.binding.rebind.loader.DefaultLoaderCreatorFactory;
 import sk.seges.acris.binding.rebind.loader.FieldSpecLoaderCreator;
 import sk.seges.acris.binding.rebind.loader.ILoaderCreator;
 
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.TreeLogger.Type;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 

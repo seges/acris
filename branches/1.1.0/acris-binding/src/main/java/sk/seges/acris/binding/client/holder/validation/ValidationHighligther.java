@@ -5,7 +5,6 @@ package sk.seges.acris.binding.client.holder.validation;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.validation.client.InvalidConstraint;
 
 /**

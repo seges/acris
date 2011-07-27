@@ -10,7 +10,7 @@
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
 		<version>1.1.3-SNAPSHOT</version>
-		<relativePath>../acris-os/pom.xml</relativePath>
+		<relativePath>../acris-os-parent/pom.xml</relativePath>
 	</parent>
 
 	<modules>

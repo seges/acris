@@ -16,11 +16,11 @@
 		<!-- Sesam dependencies -->
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-annotations-support</artifactId>
+			<artifactId>sesam-annotation-core-support</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-annotations-support</artifactId>
+			<artifactId>sesam-annotation-core-support</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

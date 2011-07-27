@@ -4,14 +4,11 @@ import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.annotation.Generated;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -88,23 +85,6 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 	protected ProcessorConfigurer getConfigurer() {
 		return new AsyncServiceProcessorConfigurer();
 	}	
-
-	protected void copyAnnotations(PrintWriter pw, Element element) {
-		for (AnnotationMirror annotation: element.getAnnotationMirrors()) {
-			pw.print("@" + annotation.getAnnotationType().asElement().getSimpleName().toString() + "(");
-			int i = 0;
-			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: 
-				processingEnv.getElementUtils().getElementValuesWithDefaults(annotation).entrySet()) {
-				if (i > 0) {
-					pw.print(", ");
-					pw.println("		");
-				}
-				pw.print( annotationValue.getKey().getSimpleName() + " = " + annotationValue.getValue().toString());
-				i++;
-			}
-			pw.println(")");
-		}
-	}
 	
 	@Override
 	protected void writeClassAnnotations(PrintWriter pw, Element el) {

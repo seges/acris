@@ -380,7 +380,7 @@
 								<file>
 									<name>.settings/com.google.gdt.eclipse.core.prefs</name>
 									<content><![CDATA[
-										eclipse.preferences.version=1
+										eclipse.preferences.version=2
 										jarsExcludedFromWebInfLib=
 										warSrcDir=target/${artifactId}-${version}
 										warSrcDirIsOutput=true
@@ -393,6 +393,27 @@
 							<wtpversion>2.0</wtpversion>
 
 						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.5</version>
+						<executions>
+							<execution>
+								<id>copy-resources</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>target/${artifactId}-${version}</outputDirectory>
+									<resources>          
+										<resource>
+											<directory>src/main/webapp</directory>
+										</resource>
+									</resources>              
+								</configuration>            
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
@@ -444,7 +465,7 @@
 						</shellServletMappingURL>
 						<hostedWebapp>target/${project.artifactId}-${project.version}</hostedWebapp>
                         <webappDirectory>target/${project.artifactId}-${project.version}</webappDirectory>
-						<soyc>false</soyc>
+						<soyc>true</soyc>
 						<disableCastChecking>true</disableCastChecking>
 						<!--disableClassMetadata>true</disableClassMetadata>
 						<draftCompile>true</draftCompile-->

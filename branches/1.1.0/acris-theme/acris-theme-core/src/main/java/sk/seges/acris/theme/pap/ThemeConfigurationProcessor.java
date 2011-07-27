@@ -18,9 +18,9 @@ import javax.tools.StandardLocation;
 
 import sk.seges.acris.theme.client.annotation.ThemeConfiguration;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester;
-import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.acris.theme.rebind.ThemeComponentSelectorGenerator;
+import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
+import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)

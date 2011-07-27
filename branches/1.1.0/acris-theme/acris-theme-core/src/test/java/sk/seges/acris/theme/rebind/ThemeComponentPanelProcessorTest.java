@@ -10,9 +10,9 @@ import sk.seges.acris.theme.component.StyledCheckBox;
 import sk.seges.acris.theme.component.StyledTestWidget;
 import sk.seges.acris.theme.pap.ThemeComponentPanelProcessor;
 import sk.seges.acris.theme.pap.ThemeComponentProcessor;
-import sk.seges.sesam.core.pap.AnnotationTest;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.test.AnnotationTest;
 
 public class ThemeComponentPanelProcessorTest extends AnnotationTest {
 
