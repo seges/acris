@@ -1,0 +1,9 @@
+package sk.seges.sesam.core.pap.test.superclass.typed;
+
+import sk.seges.sesam.core.pap.test.superclass.typed.TestBeanNestedBounds;
+import java.util.List;
+import java.io.Serializable;
+
+public class TestBeanNestedBoundsGenerated<T extends List<Serializable>> extends TestBeanNestedBounds<T> {
+
+}
