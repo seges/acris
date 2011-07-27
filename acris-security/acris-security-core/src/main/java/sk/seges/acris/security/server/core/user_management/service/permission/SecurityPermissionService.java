@@ -6,7 +6,6 @@ import java.util.List;
 import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityPermissionDao;
 import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
 import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermissionMetaModel;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.service.IHierarchyPermissionServiceExt;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Filter;

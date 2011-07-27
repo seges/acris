@@ -37,12 +37,12 @@ import sk.seges.acris.theme.pap.specific.ThemeContext;
 import sk.seges.acris.theme.pap.specific.ThemeDefaultProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeDialogBoxProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeImageCheckBoxProcessor;
-import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester;
-import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
+import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.utils.ListUtils;
 
 import com.google.gwt.user.client.ui.SimplePanel;

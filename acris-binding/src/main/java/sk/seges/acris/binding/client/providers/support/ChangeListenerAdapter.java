@@ -5,7 +5,6 @@ package sk.seges.acris.binding.client.providers.support;
 
 import org.gwt.beansbinding.ui.client.adapters.BeanAdapterBase;
 
-
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.SourcesChangeEvents;
 import com.google.gwt.user.client.ui.Widget;

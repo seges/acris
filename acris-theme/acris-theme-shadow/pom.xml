@@ -24,7 +24,7 @@
 								<factorypath>
 									<factorypathentry kind="VARJAR" id="M2_REPO/com/google/gwt/gwt-user/${gwt.version}/gwt-user-${gwt.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotations-support/${sesam-os.version}/sesam-annotations-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotation-core-support/${sesam-os.version}/sesam-annotation-core-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-widgets/${project.version}/acris-widgets-${project.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-theme-core/${project.version}/acris-theme-core-${project.version}.jar" enabled="true" runInBatchMode="false" />
 						        </factorypath>

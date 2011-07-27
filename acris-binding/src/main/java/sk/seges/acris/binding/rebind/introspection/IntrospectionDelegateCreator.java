@@ -3,16 +3,9 @@ package sk.seges.acris.binding.rebind.introspection;
 import java.beans.Introspector;
 
 import sk.seges.acris.binding.client.init.BeanWrapperIntrospector;
-import sk.seges.acris.binding.rebind.bean.BeanWrapperCreator;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.user.rebind.SourceWriter;
-import com.google.gwt.validation.rebind.TypeStrategy;
 
 /**
  * @author ladislav.gazo

@@ -16,13 +16,13 @@ import sk.seges.acris.theme.client.annotation.ThemeElements.ThemeElement;
 import sk.seges.acris.theme.client.annotation.ThemeResources;
 import sk.seges.acris.theme.client.annotation.ThemeResources.ThemeResource;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester;
-import sk.seges.acris.theme.pap.util.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.Constants;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
+import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;

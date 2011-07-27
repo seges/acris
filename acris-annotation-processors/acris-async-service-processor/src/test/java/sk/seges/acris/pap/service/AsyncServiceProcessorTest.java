@@ -4,7 +4,7 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
-import sk.seges.sesam.core.pap.AnnotationTest;
+import sk.seges.sesam.core.pap.test.AnnotationTest;
 
 public class AsyncServiceProcessorTest extends AnnotationTest {
 
