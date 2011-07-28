@@ -192,7 +192,10 @@ public class TransferObjectHelper {
 		case LONG:
 		case SHORT:
 		case VOID:
-			return getNameTypes().toType(dtoType);
+			if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+				return getNameTypes().toType(dtoType);
+			}
+			return null;
 		case ERROR:
 		case EXECUTABLE:
 		case NONE:
@@ -203,23 +206,49 @@ public class TransferObjectHelper {
 			processingEnv.getMessager().printMessage(Kind.ERROR, " [ERROR] Unsupported type kind - " + dtoType.getKind());
 			return null;
 		case DECLARED:
-			Element element = ((DeclaredType)dtoType).asElement();
+			DeclaredType declaredType = ((DeclaredType)dtoType);
+
+			if (mappingType.equals(DtoMappingType.CONVERTER) || mappingType.equals(DtoMappingType.CONFIGURATION)) {
+				if (ProcessorUtils.implementsType(declaredType.asElement().asType(), processingEnv.getElementUtils().getTypeElement(Collection.class.getCanonicalName()).asType())) {
+					
+					TypeMirror parameterType = declaredType.getTypeArguments().get(0);
+					return getDtoMappingClass(parameterType, typeElement, mappingType);
+				}
+			}
+			
+			Element element = declaredType.asElement();
 			TypeElement result = mappingType.get(new TransferObjectConfiguration(element, processingEnv));
 			if (result != null) {
-				return convertTypeParameters(getNameTypes().toType(result.asType()), typeElement);
+				if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+					return convertTypeParameters(getNameTypes().toType(result.asType()), typeElement);
+				}
+				return getNameTypes().toType(result.asType());
 			}
 			result = mappingType.get(new TransferObjectConfiguration(typeElement, processingEnv), (TypeElement)element);
 			if (result != null) {
-				return convertTypeParameters(getNameTypes().toType(result.asType()), typeElement);
+				if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+					return convertTypeParameters(getNameTypes().toType(result.asType()), typeElement);
+				}
+				return getNameTypes().toType(result.asType());
 			}
-			return convertTypeParameters(getNameTypes().toType(dtoType), typeElement);
+			if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+				return convertTypeParameters(getNameTypes().toType(dtoType), typeElement);
+			}
+			return null;
 		case ARRAY:
-			return new ArrayNamedType(getDtoMappingClass(((ArrayType)dtoType).getComponentType(), typeElement, mappingType));
+			if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+				return new ArrayNamedType(getDtoMappingClass(((ArrayType)dtoType).getComponentType(), typeElement, mappingType));
+			}
+			return getDtoMappingClass(((ArrayType)dtoType).getComponentType(), typeElement, mappingType);
 		case TYPEVAR:
-			return getNameTypes().toType(ProcessorUtils.erasure(typeElement, ((TypeVariable)dtoType).asElement().getSimpleName().toString()));
+			return getDtoMappingClass(ProcessorUtils.erasure(typeElement, ((TypeVariable)dtoType).asElement().getSimpleName().toString()), typeElement, mappingType);
 		}
 
-		return getNameTypes().toType(dtoType);
+		if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+			return getNameTypes().toType(dtoType);
+		}
+		
+		return null;
 	}
 
 	public NamedType convertTypeParameters(NamedType type, TypeElement typeElement) {

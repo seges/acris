@@ -22,7 +22,7 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public class MethodHelper {
 
-	private ProcessingEnvironment processingEnv;
+	protected ProcessingEnvironment processingEnv;
 	private NameTypesUtils nameTypes;
 	
 	public MethodHelper(ProcessingEnvironment processingEnv, NameTypesUtils nameTypes) {
@@ -32,7 +32,9 @@ public class MethodHelper {
 	
 	public void copyMethodDefinition(ExecutableElement method, ClassSerializer serializer, PrintWriter pw) {
 		for (Modifier modifier: method.getModifiers()) {
-			pw.print(modifier.toString() + " ");
+			if (!modifier.equals(Modifier.ABSTRACT)) {
+				pw.print(modifier.toString() + " ");
+			}
 		}
 		pw.print(method.getReturnType() + " " + method.getSimpleName().toString() + "(");
 		
@@ -45,15 +47,14 @@ public class MethodHelper {
 			i++;
 		}
 		
-		pw.print(";)");
+		pw.print(")");
 	}
 	
 	public void copyAnnotations(Element element, PrintWriter pw) {
 		for (AnnotationMirror annotation: element.getAnnotationMirrors()) {
 			pw.print("@" + nameTypes.toType(annotation.getAnnotationType()).toString(ClassSerializer.CANONICAL) + "(");
 			int i = 0;
-			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: 
-				processingEnv.getElementUtils().getElementValuesWithDefaults(annotation).entrySet()) {
+			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: annotation.getElementValues().entrySet()) {
 				if (i > 0) {
 					pw.print(", ");
 					pw.println("		");
