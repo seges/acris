@@ -50,6 +50,7 @@
 							<content><![CDATA[
 								<factorypath>
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core/${sesam-os.version}/sesam-core-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-core-api/${sesam-os.version}/sesam-core-api-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotation-core-support/${sesam-os.version}/sesam-annotation-core-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-model-metadata-api/${sesam-os.version}/sesam-model-metadata-api-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
 									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-model-metadata-processor/${sesam-os.version}/sesam-model-metadata-processor-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
