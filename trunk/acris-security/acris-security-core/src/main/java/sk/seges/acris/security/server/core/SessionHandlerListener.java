@@ -19,18 +19,20 @@ public class SessionHandlerListener implements HttpSessionListener {
 	private static Map<String, HttpSession> activeSession = new Hashtable<String, HttpSession>();
 	private static Map<String, Long> lastSessionAccessTimes = new Hashtable<String, Long>();
 	private static Map<String, String> sessionsMappings = new Hashtable<String, String>();
+	private static Map<String, MaxInactiveIntervalHistory> actualMaxInactiveIntervalMap = new Hashtable<String, MaxInactiveIntervalHistory>();
+	
 
 	private static final String DEFAULT_TIMEOUT = "DEFAULT_TIMEOUT";
 
 	synchronized private void sessionActivate(HttpSessionEvent event) {
 		final HttpSession session = event.getSession();
 		session.setAttribute(DEFAULT_TIMEOUT, session.getMaxInactiveInterval());
-
+		
 		activeSession.put(session.getId(), session);
 
 		long timeNow = System.currentTimeMillis();
 		lastSessionAccessTimes.put(session.getId(), timeNow);
-
+		actualMaxInactiveIntervalMap.put(session.getId(), new MaxInactiveIntervalHistory(session.getId()));
 		if (log.isDebugEnabled()) {
 			Date currentDate = new Date();
 			currentDate.setTime(timeNow);
@@ -56,6 +58,7 @@ public class SessionHandlerListener implements HttpSessionListener {
 		String sessionId = session.getId();
 		activeSession.remove(sessionId);
 		lastSessionAccessTimes.remove(sessionId);
+		actualMaxInactiveIntervalMap.remove(sessionId);
 
 		for (Entry<String, String> mappedSession : sessionsMappings.entrySet()) {
 			if (sessionId.equals(mappedSession.getValue())) {
@@ -95,6 +98,9 @@ public class SessionHandlerListener implements HttpSessionListener {
 		int delta = (int) ((timeNow - lastAccessedTime) / 1000L);
 
 		Integer lat = (Integer) session.getAttribute(DEFAULT_TIMEOUT);
+		if (actualMaxInactiveIntervalMap.containsKey(sessionId)) {
+			actualMaxInactiveIntervalMap.get(sessionId).putActual(lat + delta);
+		}
 		session.setMaxInactiveInterval(lat + delta);
 
 		if (log.isDebugEnabled()) {
@@ -119,4 +125,18 @@ public class SessionHandlerListener implements HttpSessionListener {
 	public void sessionDestroyed(HttpSessionEvent event) {
 		sessionPassivate(event);
 	}
+	
+	public static Integer getPreviousMaxInactiveInterval(String sessionId) {
+		if (!actualMaxInactiveIntervalMap.containsKey(sessionId)) {
+			return null;
+		}
+		return actualMaxInactiveIntervalMap.get(sessionId).getPrevious();
+	}
+	
+	public static void revertMaxInactiveInterval(String sessionId) {
+		if (actualMaxInactiveIntervalMap.containsKey(sessionId)) {
+			actualMaxInactiveIntervalMap.get(sessionId).revert();
+		}
+	}
+	
 }
