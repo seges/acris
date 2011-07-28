@@ -47,16 +47,19 @@ public class ServiceHelper {
 	private void getLocalServiceInterfaces(TypeElement serviceElement, Set<Element> result) {
 
 		LocalService annotation = serviceElement.getAnnotation(LocalService.class);
-		TypeElement typeOfClassProperty = AnnotationClassPropertyHarvester.getTypeOfClassProperty(annotation, new AnnotationClassProperty<LocalService>() {
-
-			@Override
-			public Class<?> getClassProperty(LocalService annotation) {
-				return annotation.localInterace();
-			}
-		});
 		
-		if (typeOfClassProperty != null && typeOfClassProperty.getKind().equals(TypeKind.DECLARED)) {
-			result.add(typeOfClassProperty);
+		if (annotation != null) {
+			TypeElement typeOfClassProperty = AnnotationClassPropertyHarvester.getTypeOfClassProperty(annotation, new AnnotationClassProperty<LocalService>() {
+	
+				@Override
+				public Class<?> getClassProperty(LocalService annotation) {
+					return annotation.localInterace();
+				}
+			});
+		
+			if (typeOfClassProperty != null && typeOfClassProperty.getKind().equals(TypeKind.DECLARED)) {
+				result.add(typeOfClassProperty);
+			}
 		}
 		
 		for (TypeMirror interfaceType: serviceElement.getInterfaces()) {
