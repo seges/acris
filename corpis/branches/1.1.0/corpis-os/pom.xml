@@ -54,6 +54,7 @@
 		<module>../corpis-domain-generator-import</module>
 		<module>../corpis-domain-generator</module>
 		<module>../corpis-import-export-api</module>
+		<module>../corpis-annotation-apis</module>
 		<module>../corpis-annotation-processors</module>
 		<module>../corpis-import-export</module>
 		<module>../corpis-payment-api</module>
