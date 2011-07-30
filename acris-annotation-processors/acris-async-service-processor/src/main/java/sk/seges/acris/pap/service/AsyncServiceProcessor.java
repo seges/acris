@@ -87,7 +87,7 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 	}	
 	
 	@Override
-	protected void writeClassAnnotations(PrintWriter pw, Element el) {
+	protected void writeClassAnnotations(Element el, NamedType outputName, PrintWriter pw) {
 		RemoteServiceRelativePath remoteServiceRelativePath = el.getAnnotation(RemoteServiceRelativePath.class);
 		if (remoteServiceRelativePath != null) {
 			pw.println("@" + RemoteServiceRelativePath.class.getSimpleName() + "(\"" + remoteServiceRelativePath.value() + "\")");
@@ -96,7 +96,7 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 		if (remoteServicePath != null) {
 			pw.println("@" + RemoteServicePath.class.getSimpleName() + "(\"" + remoteServicePath.value() + "\")");
 		}
-		super.writeClassAnnotations(pw, el);
+		super.writeClassAnnotations(el, outputName, pw);
 	}
 
 	@Override
