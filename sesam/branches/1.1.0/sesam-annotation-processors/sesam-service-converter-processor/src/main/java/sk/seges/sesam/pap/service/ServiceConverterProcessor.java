@@ -31,6 +31,7 @@ import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration.DtoMappingType;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 import sk.seges.sesam.pap.service.annotation.LocalService;
+import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 import sk.seges.sesam.pap.service.utils.ServiceHelper;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -209,6 +210,25 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		return result;
 	}
 
+	@Override
+	protected void writeClassAnnotations(Element element, NamedType outputClass, PrintWriter pw) {
+
+		Element localInterface = localInterfacesCache.get(outputClass);
+		if (localInterface == null) {
+			super.writeClassAnnotations(element, outputClass, pw);
+			return;
+		}
+		
+		TypeElement remoteServiceInterface = (TypeElement) serviceHelper.getRemoteServiceInterface(localInterface);
+		if (remoteServiceInterface == null) {
+			super.writeClassAnnotations(element, outputClass, pw);
+			return;
+		}
+		
+		pw.println("@" + LocalServiceConverter.class.getCanonicalName() + "(remoteService = " + remoteServiceInterface.toString() + ".class)");
+		super.writeClassAnnotations(element, outputClass, pw);
+	}
+	
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 
 		Element localInterface = localInterfacesCache.get(outputClass);
@@ -527,5 +547,4 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		return null;
 	}
-
 }

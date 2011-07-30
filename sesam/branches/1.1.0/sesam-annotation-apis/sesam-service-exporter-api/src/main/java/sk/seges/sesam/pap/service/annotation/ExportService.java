@@ -8,7 +8,7 @@ import sk.seges.sesam.core.pap.Constants;
 @Target(ElementType.METHOD)
 public @interface ExportService {
 
-	Class<?> remoteService();
+	Class<?> localServiceConverter();
 
 	String value() default Constants.NULL;
 }

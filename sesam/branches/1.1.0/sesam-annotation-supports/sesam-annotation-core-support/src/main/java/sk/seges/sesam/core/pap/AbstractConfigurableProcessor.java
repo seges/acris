@@ -266,7 +266,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return !supportProcessorChain();
 	}
 
-	protected void writeClassAnnotations(PrintWriter pw, Element el) {}
+	protected void writeClassAnnotations(Element el, NamedType outputName, PrintWriter pw) {}
 
 	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
 		return true;
@@ -311,7 +311,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
 				pw.println();
 				
-				writeClassAnnotations(pw, element);
+				writeClassAnnotations(element, outputName, pw);
 
 				pw.println("@" + Generated.class.getSimpleName() + "(value = \"" + this.getClass().getCanonicalName() + "\")");
 				
