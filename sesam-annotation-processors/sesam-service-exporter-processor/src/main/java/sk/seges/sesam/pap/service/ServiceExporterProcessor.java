@@ -11,7 +11,6 @@ import java.util.Set;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -27,6 +26,7 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.pap.service.annotation.ExportService;
+import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -41,35 +41,50 @@ public class ServiceExporterProcessor extends AbstractConfigurableProcessor {
 		return new ServiceExporterProcessorConfigurer();
 	}
 
-	protected TypeElement getRemoteServiceType(TypeElement element, NamedType serviceType) {
-
+	protected TypeElement getLocalServiceConverter(TypeElement element, NamedType serviceType) {
 		ExecutableElement executableElement = methodsCache.get(serviceType);
 
 		if (executableElement == null) {
-			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unknown service type " + serviceType.getCanonicalName() + ". Most probably this is sesam bug - please report this bug somewhere.");
+			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unknown service type " + serviceType.getCanonicalName() + 
+					". Most probably this is sesam bug - please report this bug somewhere.");
 			return null;
 		}
 
 		ExportService service = executableElement.getAnnotation(ExportService.class);
 		
 		if (service != null) {
-			return AnnotationClassPropertyHarvester.getTypeOfClassProperty(service, new AnnotationClassProperty<ExportService>() {
+			TypeElement localServiceConverter = AnnotationClassPropertyHarvester.getTypeOfClassProperty(service, new AnnotationClassProperty<ExportService>() {
 	
 				@Override
 				public Class<?> getClassProperty(ExportService annotation) {
-					return annotation.remoteService();
+					return annotation.localServiceConverter();
 				}
-				
 			});
+
+			return localServiceConverter;
 		}
 		
-		Element localServiceElement = ((DeclaredType)executableElement.getReturnType()).asElement();
+		return null;
+	}
+	
+	protected TypeElement getRemoteServiceType(TypeElement element, NamedType serviceType) {
+
+		TypeElement localServiceConverterType = getLocalServiceConverter(element, serviceType);
+
+		if (localServiceConverterType == null) {
+			return null;
+		}
 		
-		LocalServiceDefinition localServiceDefinition = localServiceElement.getAnnotation(LocalServiceDefinition.class);
-		return AnnotationClassPropertyHarvester.getTypeOfClassProperty(localServiceDefinition, new AnnotationClassProperty<LocalServiceDefinition>() {
+		LocalServiceConverter localServiceConveter = localServiceConverterType.getAnnotation(LocalServiceConverter.class);
+
+		if (localServiceConveter == null) {
+			return null;
+		}
+
+		return AnnotationClassPropertyHarvester.getTypeOfClassProperty(localServiceConveter, new AnnotationClassProperty<LocalServiceConverter>() {
 			
 			@Override
-			public Class<?> getClassProperty(LocalServiceDefinition annotation) {
+			public Class<?> getClassProperty(LocalServiceConverter annotation) {
 				return annotation.remoteService();
 			}
 		});
@@ -134,6 +149,13 @@ public class ServiceExporterProcessor extends AbstractConfigurableProcessor {
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
 		TypeElement remoteServiceType = getRemoteServiceType(element, toService((ImmutableType)outputName));
+		
+		if (remoteServiceType == null) {
+			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to process unsupported type. Most probably this is sesam " +
+					" bug - please report this bug somewhere.");
+		}
+		
+		
 		int a = 0;
 	}
 }

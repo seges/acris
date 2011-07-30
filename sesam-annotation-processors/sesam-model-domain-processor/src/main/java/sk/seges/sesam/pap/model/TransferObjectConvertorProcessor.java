@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -27,6 +28,7 @@ import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.MutableVariableElement;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.pap.model.model.AbstractElementPrinter;
@@ -43,6 +45,8 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	private static final String RESULT_NAME = "_result";
 	private static final String DOMAIN_NAME = "_domain";
 	private static final String DTO_NAME = "_dto";
+	
+	private List<String> parameterNames = new ArrayList<String>();
 	
 	private Set<String> instances = new HashSet<String>();
 
@@ -397,6 +401,10 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			}
 		}
 		
+		for (MutableVariableElement element: getAdditionalConstructorParameters()) {
+			result.add(getNameTypes().toType(element.asType()));
+		}
+		
 		result.add(dtoType);
 		result.add(getNameTypes().toType(domainObjectClass));
 		result.add(Serializable.class);
@@ -422,15 +430,45 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				getOutputClass(mutableType, getPackageValidatorProvider(), processingEnv) };
 	}
 
+	protected MutableVariableElement[] getAdditionalConstructorParameters() {
+		return new MutableVariableElement[] {};
+	}
+	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
 		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
-		methodHelper.copyConstructors(outputName, cachedConverterType, pw);
+		
+		Map<ExecutableElement, List<String>> constructorParameters = methodHelper.copyConstructors(outputName, cachedConverterType, pw, getAdditionalConstructorParameters());
+		
+		if (constructorParameters.size() == 0) {
+			this.parameterNames = new ArrayList<String>();
+		} else {
+			this.parameterNames = constructorParameters.values().iterator().next();
+		}
+		
+		for (MutableVariableElement parameter: getAdditionalConstructorParameters()) {
+			pw.println("private " + parameter.asType() + " " + parameter.getSimpleName().toString() + ";");
+		}
+		
 		super.processElement(element, outputName, roundEnv, pw);
 	}
 	
 	protected void printConverterInstance(PrintWriter pw, NamedType type) {
-		pw.print("new " + type.getCanonicalName() + "(cache)");
+		
+		pw.print("new " + type.getCanonicalName() + "(");
+		
+		int i = 0;
+		
+		for (String parameterName: parameterNames) {
+			if (i > 0) {
+				pw.print(", ");
+			}
+			pw.print(parameterName);
+			i++;
+		}
+		
+		pw.print(")");
+		
 	}
 
 	protected void printDomainInstancer(PrintWriter pw, NamedType type) {

@@ -162,7 +162,7 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected void writeClassAnnotations(PrintWriter pw, Element el) {
+	protected void writeClassAnnotations(Element el, NamedType outputName, PrintWriter pw) {
 		pw.println("@" + Ignore.class.getCanonicalName());
 	}
 	

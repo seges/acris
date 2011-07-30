@@ -71,7 +71,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	}
 	
 	@Override
-	protected void writeClassAnnotations(PrintWriter pw, Element configurationElement) {
+	protected void writeClassAnnotations(Element configurationElement, NamedType outputName, PrintWriter pw) {
 		pw.println("@SuppressWarnings(\"serial\")");
 		
 		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
@@ -93,7 +93,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		pw.print("\"");
 		pw.println(")");
 		
-		super.writeClassAnnotations(pw, configurationElement);
+		super.writeClassAnnotations(configurationElement, outputName, pw);
 	}
 	
 	@Override

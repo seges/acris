@@ -63,7 +63,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected void writeClassAnnotations(PrintWriter pw, Element el) {
+	protected void writeClassAnnotations(Element el, NamedType outputName, PrintWriter pw) {
 		pw.println("@" + LocalServiceDefinition.class.getSimpleName() + "(remoteService = " + el.toString() + ".class)");
 	}
 	
