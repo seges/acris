@@ -31,5 +31,9 @@ public interface ReportDescriptionData extends IMutableDomainObject<Long> {
 	void setReportUrl(String reportUrl);
 	
 	List<ReportParameterData> getParametersList();
-	void setParametersList(List<ReportParameterData> parametersList);	
+	void setParametersList(List<ReportParameterData> parametersList);
+	
+	String getDisplayName();
+	void setDisplayName(String displayName);
+	
 }
