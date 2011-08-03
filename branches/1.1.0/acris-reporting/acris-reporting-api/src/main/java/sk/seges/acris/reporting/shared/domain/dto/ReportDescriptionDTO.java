@@ -25,6 +25,7 @@ public class ReportDescriptionDTO implements ReportDescriptionData {
 	private Date creationDate;
 	private String reportUrl;
 	private List<ReportParameterData> parametersList = null;
+	private String displayName;
 
 	@Override
 	public Long getId() {
@@ -77,18 +78,31 @@ public class ReportDescriptionDTO implements ReportDescriptionData {
 	
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) {
+			return true;
+		}
+        if (obj == null) {
+			return false;
+		}
+        if (getClass() != obj.getClass()) {
+			return false;
+		}
         ReportDescriptionDTO other = (ReportDescriptionDTO) obj;
         if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
+            if (other.id != null) {
+				return false;
+			}
+        } else if (!id.equals(other.id)) {
+			return false;
+		}
         return true;
-    }	
+    }
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+	@Override
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}	
 }

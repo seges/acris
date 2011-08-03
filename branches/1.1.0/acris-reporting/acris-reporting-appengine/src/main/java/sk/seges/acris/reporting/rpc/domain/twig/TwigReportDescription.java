@@ -23,6 +23,7 @@ public class TwigReportDescription implements ReportDescriptionData {
 	String description;
 	private Date creationDate;
 	private String reportUrl;
+	private String displayName;
 
 	private @Embed
 	List<TwigReportParameter> parametersList;
@@ -103,6 +104,16 @@ public class TwigReportDescription implements ReportDescriptionData {
 	@Override
 	public Long getId() {
 		return id;
+	}
+
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 }

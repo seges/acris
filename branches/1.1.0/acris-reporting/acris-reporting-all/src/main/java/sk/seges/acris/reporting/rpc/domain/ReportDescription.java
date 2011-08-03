@@ -44,6 +44,7 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 	private String description;
 	private Date creationDate;
 	private String reportUrl;
+	private String displayName;
 	
 	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY, targetEntity = ReportParameter.class)
 	@OrderBy(ReportParameterData.ORDER_NUMBER)
@@ -135,5 +136,13 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 			return false;
 		}
         return true;
-    }	
+    }
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+	@Override
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}	
 }

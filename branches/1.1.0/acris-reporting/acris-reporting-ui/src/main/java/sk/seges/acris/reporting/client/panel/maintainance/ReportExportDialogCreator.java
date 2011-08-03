@@ -82,7 +82,7 @@ public class ReportExportDialogCreator {
 		dialog = widgetFactory.dialog();
 		dialog.setModal(false);
 		paramWidgets = new ArrayList<IParameterTypePanel<?>>();
-		dialog.setCaption(report.getName());
+		dialog.setCaption((report.getDisplayName() == null) ? report.getName() : report.getDisplayName());
 		dialog.addStyleName("report-export-dialog");
 
 		FlowPanel contentPanel = createDownloadDialogContent(report,
