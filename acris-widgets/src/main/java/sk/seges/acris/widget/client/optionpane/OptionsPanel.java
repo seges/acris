@@ -20,6 +20,8 @@ public class OptionsPanel extends FlowPanel {
 
 	private Cleaner cleaner;
 	
+	private Widget option;
+	
 	public OptionsPanel() {
 		this.setStyleName(STYLE_OPTIONS);
 	}
@@ -38,7 +40,7 @@ public class OptionsPanel extends FlowPanel {
 	public HandlerRegistration addOption(Widget optionWidget, ClickHandler hidingClickHanler) {
 		// FIXME: tmp hack...
 		Widget origWidget = optionWidget;
-		Widget option = optionWidget;
+		option = optionWidget;
 		if(option instanceof Button) {
 			option = WidgetFactory.hackWidget(option);
 		} else if(option.getStyleName().contains(WidgetFactory.HACK_WIDGET)) {
@@ -104,4 +106,12 @@ public class OptionsPanel extends FlowPanel {
 		}
 		add(cleaner);
 	}
+
+	/**
+	 * @return the option
+	 */
+	public Widget getOption() {
+		return option;
+	}
+	
 }

@@ -151,6 +151,17 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	}
 
 	/**
+	 * @param option
+	 * @param hidingClickHandler
+	 * @return
+	 */
+	public Widget addOptionAndReturnWidget(Widget option) {
+		options.addOption(option, getHidingClickHandler());
+		return options.getOption();
+	}
+	
+	
+	/**
 	 * Add an option to the list of options. The widget will not get a click
 	 * handler closing the dialog. Usually it is a button at least closing the
 	 * dialog.
