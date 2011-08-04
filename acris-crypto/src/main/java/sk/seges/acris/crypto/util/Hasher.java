@@ -39,7 +39,10 @@ public class Hasher {
 	}
 	
 	public static void main(String[] args) {
-		
-		System.out.println(Hasher.getSHAHexDigest("root"));
+		if(args == null || args.length != 1) {
+			System.err.println("Provide text to hash");
+			System.exit(42);
+		}
+		System.out.print(Hasher.getSHAHexDigest(args[0]));
 	}
 }
