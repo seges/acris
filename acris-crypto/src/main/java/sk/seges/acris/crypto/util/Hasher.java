@@ -37,12 +37,4 @@ public class Hasher {
 			throw new RuntimeException("Failed to compute hash", e);
 		}
 	}
-	
-	public static void main(String[] args) {
-		if(args == null || args.length != 1) {
-			System.err.println("Provide text to hash");
-			System.exit(42);
-		}
-		System.out.print(Hasher.getSHAHexDigest(args[0]));
-	}
 }
