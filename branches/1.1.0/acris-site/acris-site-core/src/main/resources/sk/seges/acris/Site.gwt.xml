@@ -5,9 +5,7 @@
 	<!-- Acris site inherit -->
 	<inherits name='sk.seges.acris.site.Site' />	
 
-	<source path="client"/>
     <source path="domain">
     	<exclude name='server/**' />
     </source>
-    <source path="shared"/>
 </module>
