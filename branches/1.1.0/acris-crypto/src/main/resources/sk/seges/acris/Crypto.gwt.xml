@@ -1,5 +1,7 @@
 <module>
 	<inherits name='com.google.gwt.user.User' />
 	
-	<source path="crypto"/>	
+	<source path="crypto">
+		<exclude name="CryptoStarter*" />
+	</source>
 </module>

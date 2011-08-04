@@ -20,7 +20,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>sk.seges.acris.crypto.util.Hasher</mainClass>
+							<mainClass>sk.seges.acris.crypto.CryptoStarter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
