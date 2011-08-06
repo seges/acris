@@ -2,7 +2,7 @@ package sk.seges.acris.widget.client.uibinder;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Helper class containing common methods for parsing view template into bound
@@ -43,7 +43,8 @@ public abstract class DynamicUiPanel<U, O> implements DynamicUiBinder<U, O> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public U createAndBindUi(O owner) {
-		HTML html2 = new HTML(viewTemplate);
+		SimplePanel html2 = new SimplePanel();
+		html2.getElement().setInnerHTML(viewTemplate);
 		Document.get().getBody().appendChild(html2.getElement());
 		parseTemplate(html2.getElement(), owner);
 		html2.getElement().removeFromParent();
