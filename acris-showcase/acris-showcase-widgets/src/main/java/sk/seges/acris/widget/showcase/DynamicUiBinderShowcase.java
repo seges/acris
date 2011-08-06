@@ -1,5 +1,6 @@
 package sk.seges.acris.widget.showcase;
 
+import sk.seges.acris.widget.showcase.dynamicui.EventsInDynamicallyBoundPanel;
 import sk.seges.acris.widget.showcase.dynamicui.DynamicallyBoundPanel;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -17,6 +18,7 @@ public class DynamicUiBinderShowcase implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		RootPanel.get().add(new DynamicallyBoundPanel());
+		RootPanel.get().add(new EventsInDynamicallyBoundPanel());
 	}
 
 }
