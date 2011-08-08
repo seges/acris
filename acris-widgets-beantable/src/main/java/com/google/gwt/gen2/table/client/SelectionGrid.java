@@ -199,29 +199,34 @@ public class SelectionGrid extends Grid implements HasRowHighlightHandlers,
     resize(rows, columns);
   }
 
-  public HandlerRegistration addCellHighlightHandler(
+  @Override
+public HandlerRegistration addCellHighlightHandler(
       CellHighlightHandler handler) {
     return addHandler(handler, CellHighlightEvent.TYPE);
   }
 
-  public HandlerRegistration addCellUnhighlightHandler(
+  @Override
+public HandlerRegistration addCellUnhighlightHandler(
       CellUnhighlightHandler handler) {
     return addHandler(handler, CellUnhighlightEvent.TYPE);
   }
 
-  public HandlerRegistration addRowHighlightHandler(RowHighlightHandler handler) {
+  @Override
+public HandlerRegistration addRowHighlightHandler(RowHighlightHandler handler) {
     return addHandler(handler, RowHighlightEvent.TYPE);
   }
 
-  public HandlerRegistration addRowSelectionHandler(RowSelectionHandler handler) {
+  @Override
+public HandlerRegistration addRowSelectionHandler(RowSelectionHandler handler) {
     return addHandler(handler, RowSelectionEvent.TYPE);
   }
 
-  public HandlerRegistration addRowUnhighlightHandler(
+  @Override
+public HandlerRegistration addRowUnhighlightHandler(
       RowUnhighlightHandler handler) {
     return addHandler(handler, RowUnhighlightEvent.TYPE);
   }
-
+  
   /**
    * Deselect all selected rows in the data table.
    */

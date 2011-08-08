@@ -39,6 +39,7 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -74,7 +75,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 /**
  * @author ladislav.gazo
  */
-public abstract class BeanTable<T> extends Composite {
+public abstract class BeanTable<T> extends Composite implements HasDoubleClickHandlers {
 	private static final int DEFAULT_ROW_COUNT = 10;
 
 	private final PagingScrollTable<T> table;
@@ -108,7 +109,7 @@ public abstract class BeanTable<T> extends Composite {
 
 		table = new PagingScrollTable<T>(model, dataTable, headerTable, definition);
 		table.setPageSize(DEFAULT_ROW_COUNT);
-		table.setHeight("100%");
+		table.setHeight("80%");
 		table.setWidth("100%");
 		dataTable.setWidth("100%");
 		headerTable.setHeight("100%");
@@ -258,10 +259,12 @@ public abstract class BeanTable<T> extends Composite {
 			int index = table.getCurrentPage() * DEFAULT_ROW_COUNT + dataTable.getSelectedRows().iterator().next();
 			model.requestRows(new Request(index, 1, sortList, filterList), new Callback<T>() {
 
+				@Override
 				public void onFailure(Throwable caught) {
 					GWT.log("wrongieee", caught);
 				}
 
+				@Override
 				public void onRowsReady(Request request, Response<T> response) {
 					action.actionPerformed(new ActionEvent<T>(response.getRowValues().next()));
 				}
@@ -300,7 +303,7 @@ public abstract class BeanTable<T> extends Composite {
 				SimpleExpression<Comparable<? extends Serializable>> expr = (SimpleExpression<Comparable<? extends Serializable>>) filterable;
 				Comparable<? extends Serializable> value = (Comparable<? extends Serializable>) filterProperty
 						.getWidget().getValue();
-				if (value == null || (value instanceof String && "".equals((String) value))) {
+				if (value == null || (value instanceof String && "".equals(value))) {
 					// filter value not set
 					skip = true;
 				} else {
@@ -468,7 +471,7 @@ public abstract class BeanTable<T> extends Composite {
 		return domainObjectProperty;
 	}
 	
-	@SuppressWarnings("deprecation")
+	@Override
 	public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
 		return dataTable.addDoubleClickHandler(handler);
 	}
@@ -510,6 +513,7 @@ public abstract class BeanTable<T> extends Composite {
 			enrichWithFilterable(page);
 
 			loader.load(page, new ICallback<PagedResult<List<E>>>() {
+				@Override
 				public void onFailure(Throwable caught) {
 					callback.onFailure(caught);
 					if (null != additionalLoadCallbacks) {
@@ -519,6 +523,7 @@ public abstract class BeanTable<T> extends Composite {
 					}
 				}
 
+				@Override
 				public void onSuccess(PagedResult<List<E>> result) {
 					SerializableResponse response = new SerializableResponse(result.getResult());
 					response.setRowCount(result.getTotalResultCount());
@@ -565,7 +570,7 @@ public abstract class BeanTable<T> extends Composite {
 				return;
 			}
 			for (ColumnSortInfo sortInfo : request.getColumnSortList()) {
-				ColumnDefinition<T, ?> columnDef = (ColumnDefinition<T, ?>) definition
+				ColumnDefinition<T, ?> columnDef = definition
 				.getColumnDefinition(sortInfo.getColumn());
 				DomainObjectProperty domainObjectProperty = checkAndGetDomainObjectProperty(columnDef);
 				SortInfo info = new SortInfo(sortInfo.isAscending(), domainObjectProperty.getField());
