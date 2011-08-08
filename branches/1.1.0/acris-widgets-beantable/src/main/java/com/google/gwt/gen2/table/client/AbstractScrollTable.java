@@ -1083,7 +1083,7 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
     this.headerTable = headerTable;
     this.resources = resources;
     Css css = resources.getStyle().css();
-    StyleInjector.injectStylesheet(css.getText());
+    StyleInjector.inject(css.getText());
     resizeWorker.setScrollTable(this);
 
     // Prepare the header and data tables
