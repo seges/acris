@@ -38,7 +38,9 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -75,7 +77,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 /**
  * @author ladislav.gazo
  */
-public abstract class BeanTable<T> extends Composite implements HasDoubleClickHandlers {
+public abstract class BeanTable<T> extends Composite implements HasDoubleClickHandlers, HasClickHandlers {
 	private static final int DEFAULT_ROW_COUNT = 10;
 
 	private final PagingScrollTable<T> table;
@@ -475,7 +477,19 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
 		return dataTable.addDoubleClickHandler(handler);
 	}
+	
+	@Override
+	public HandlerRegistration addClickHandler(ClickHandler handler) {
+		return dataTable.addClickHandler(handler);
+	}
 
+	/**
+	 * use addClickHandler
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	@Deprecated
 	public HandlerRegistration addRowSelectionHandler(RowSelectionHandler handler) {
 		return dataTable.addRowSelectionHandler(handler);
 	}
