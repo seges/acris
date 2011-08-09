@@ -111,7 +111,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 		table = new PagingScrollTable<T>(model, dataTable, headerTable, definition);
 		table.setPageSize(DEFAULT_ROW_COUNT);
-		table.setHeight("80%");
+		table.setHeight("100%");
 		table.setWidth("100%");
 		dataTable.setWidth("100%");
 		headerTable.setHeight("100%");
