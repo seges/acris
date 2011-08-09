@@ -27,4 +27,6 @@ public interface FormHolder {
 	boolean isShowing();
 	void setPopupPositionAndShow(PositionCallback callback);
 	void setPopupPosition(int left, int top);
+
+	void setAbsolutePopupPosition(int left, int top);
 }

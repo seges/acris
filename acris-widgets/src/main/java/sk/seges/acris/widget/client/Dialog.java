@@ -264,4 +264,10 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 		super.setPopupPosition(left - WidgetUtils.getPageScrollX(), top - WidgetUtils.getPageScrollY());
 		this.getElement().getStyle().setPosition(Position.FIXED);
 	}
+	
+	@Override
+	public void setAbsolutePopupPosition(int left, int top) {
+		super.setPopupPosition(left, top);
+		this.getElement().getStyle().setPosition(Position.ABSOLUTE);
+	}
 }
