@@ -15,14 +15,14 @@
  */
 package com.google.gwt.gen2.table.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.gen2.table.client.FixedWidthTableImpl.IdealColumnWidthInfo;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A variation of the {@link com.google.gwt.gen2.table.override.client.Grid}
@@ -423,7 +423,7 @@ public class FixedWidthGrid extends SortableGrid {
   }
 
   @Override
-  void applySort(Element[] trElems) {
+  protected void applySort(Element[] trElems) {
     // Move the rows to their new positions
     Element bodyElem = getBodyElement();
     for (int i = trElems.length - 1; i >= 0; i--) {
@@ -438,14 +438,14 @@ public class FixedWidthGrid extends SortableGrid {
   /**
    * Clear the idealWidths field when the ideal widths change.
    */
-  void clearIdealWidths() {
+  protected void clearIdealWidths() {
     idealWidths = null;
   }
 
   /**
    * @return true if the ideal column widths have already been calculated
    */
-  boolean isIdealColumnWidthsCalculated() {
+  protected boolean isIdealColumnWidthsCalculated() {
     return idealWidths != null;
   }
 
@@ -453,7 +453,7 @@ public class FixedWidthGrid extends SortableGrid {
    * Recalculate the ideal column widths of each column in the data table. This
    * method assumes that the tableLayout has already been changed.
    */
-  void recalculateIdealColumnWidthsImpl() {
+  protected void recalculateIdealColumnWidthsImpl() {
     idealWidths = FixedWidthTableImpl.get().recalculateIdealColumnWidths(
         idealColumnWidthInfo);
   }
@@ -461,7 +461,7 @@ public class FixedWidthGrid extends SortableGrid {
   /**
    * Setup to recalculate column widths.
    */
-  void recalculateIdealColumnWidthsSetup() {
+  protected void recalculateIdealColumnWidthsSetup() {
     int offset = 0;
     if (getSelectionPolicy().hasInputColumn()) {
       offset++;
@@ -473,7 +473,7 @@ public class FixedWidthGrid extends SortableGrid {
   /**
    * Tear down after recalculating column widths.
    */
-  void recalculateIdealColumnWidthsTeardown() {
+  protected void recalculateIdealColumnWidthsTeardown() {
     FixedWidthTableImpl.get().recalculateIdealColumnWidthsTeardown(
         idealColumnWidthInfo);
     idealColumnWidthInfo = null;

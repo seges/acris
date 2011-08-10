@@ -15,9 +15,22 @@
  */
 package com.google.gwt.gen2.table.client;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import sk.seges.acris.widget.client.table.CustomFixedWidthGrid;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.TableDefinition.AbstractRowView;
 import com.google.gwt.gen2.table.shared.ColumnFilterInfo;
 import com.google.gwt.gen2.table.shared.ColumnFilterList;
@@ -27,6 +40,7 @@ import com.google.gwt.gen2.table.shared.Request;
 import com.google.gwt.gen2.table.shared.SerializableResponse;
 import com.google.gwt.gen2.table.shared.TreeRequest;
 import com.google.gwt.gen2.table.shared.TreeTableItem;
+import com.google.gwt.resources.client.CssResource.NotStrict;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
@@ -35,14 +49,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.resources.client.CssResource.NotStrict;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A {@link PagingScrollTable} that hides child rows to emulate TreeTable
@@ -50,7 +56,7 @@ import java.util.Set;
  * @param <RowType> the data type of the row values
  */
 public class TreeTable<RowType extends TreeTableItem> extends
-    PagingScrollTable<RowType> {
+    PagingScrollTable<RowType> implements HasDoubleClickHandlers, HasClickHandlers {
   static class ClientTreeTableModel<RowType extends TreeTableItem> extends
       TreeTableModel<RowType> {
     class TreeItemComparator implements Comparator<TreeItem<RowType>> {
@@ -63,7 +69,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
         this.ascending = ascending;
       }
 
-      public int compare(TreeItem<RowType> o1, TreeItem<RowType> o2) {
+      @Override
+	public int compare(TreeItem<RowType> o1, TreeItem<RowType> o2) {
         return ((Comparable) columnDefinition.getCellValue(o1.getTreeTableItem())).compareTo(columnDefinition.getCellValue(o2.getTreeTableItem()))
             * (ascending ? 1 : -1);
       }
@@ -232,7 +239,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
      *
      * @return the widget's style name
      */
-    @ClassName("gwt-TreeTable")
+    @Override
+	@ClassName("gwt-TreeTable")
     String defaultStyleName();
 
     /**
@@ -262,9 +270,11 @@ public class TreeTable<RowType extends TreeTableItem> extends
   }
 
   public interface TreeTableResources extends ScrollTableResources {
-    TreeTableStyle getStyle();
+    @Override
+	TreeTableStyle getStyle();
 
-    TreeTableMessages getMessages();
+    @Override
+	TreeTableMessages getMessages();
   }
 
   public interface TreeTableMessages extends ScrollTableMessages {
@@ -285,7 +295,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
     /**
      * The css file.
      */
-    @Source("com/google/gwt/gen2/widgetbase/public/TreeTable.css")
+    @Override
+	@Source("com/google/gwt/gen2/widgetbase/public/TreeTable.css")
     @NotStrict
     Css css();
 
@@ -301,7 +312,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
     @Source("treeIndentUp.gif")
     ImageResource treeIndentUp();
 
-    @Source("headerBackground.png")
+    @Override
+	@Source("headerBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource headerBackground();
   }
@@ -311,14 +323,16 @@ public class TreeTable<RowType extends TreeTableItem> extends
     private TreeTableStyle style;
     private TreeTableMessages constants;
 
-    public TreeTableStyle getStyle() {
+    @Override
+	public TreeTableStyle getStyle() {
       if (style == null) {
         style = ((TreeTableStyle) GWT.create(TreeTableStyle.class));
       }
       return style;
     }
 
-    public TreeTableMessages getMessages() {
+    @Override
+	public TreeTableMessages getMessages() {
       if (constants == null) {
         constants = ((TreeTableMessages) GWT.create(TreeTableMessages.class));
       }
@@ -403,7 +417,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
           nodeIndicator.setStyleName(css.treeTableOpenNode());
         }
         nodeIndicator.addClickHandler(new ClickHandler() {
-          public void onClick(ClickEvent event) {
+          @Override
+		public void onClick(ClickEvent event) {
             invertedNodes.remove(treeTableItem.getId());
             treeTable.reloadPage();
           }
@@ -419,7 +434,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
           nodeIndicator.setStyleName(css.treeTableClosedNode());
         }
         nodeIndicator.addClickHandler(new ClickHandler() {
-          public void onClick(ClickEvent event) {
+          @Override
+		public void onClick(ClickEvent event) {
             invertedNodes.add(treeTableItem.getId());
             treeTable.reloadPage();
           }
@@ -435,7 +451,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
       spacer.setTitle(treeTable.getResources().getMessages().jumpTo(
           parent.getDisplayName()));
       spacer.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
+        @Override
+		public void onClick(ClickEvent event) {
           int row = parent.getRow();
           treeTable.gotoPage(row / treeTable.getPageSize(), false);
           treeTable.getDataTable().selectRow(row % treeTable.getPageSize(),
@@ -504,24 +521,24 @@ public class TreeTable<RowType extends TreeTableItem> extends
   public TreeTable(TableDefinition<RowType> tableDefinition,
       List<TreeItem<RowType>> rootItems) {
     this(new ClientTreeTableModel<RowType>(tableDefinition, rootItems, true),
-        new FixedWidthGrid(), new FixedWidthFlexTable(), tableDefinition, false);
+        new CustomFixedWidthGrid(), new FixedWidthFlexTable(), tableDefinition, false);
   }
 
   public TreeTable(TableDefinition<RowType> tableDefinition,
       List<TreeItem<RowType>> rootItems, boolean open) {
     this(new ClientTreeTableModel<RowType>(tableDefinition, rootItems, true),
-        new FixedWidthGrid(), new FixedWidthFlexTable(), tableDefinition, open);
+        new CustomFixedWidthGrid(), new FixedWidthFlexTable(), tableDefinition, open);
   }
 
   public TreeTable(TreeTableModel<RowType> tableModel,
-      FixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
+      CustomFixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
       TableDefinition<RowType> tableDefinition, boolean open) {
     this(tableModel, dataTable, headerTable, tableDefinition, open,
         new DefaultTreeTableResources());
   }
 
   public TreeTable(TreeTableModel<RowType> tableModel,
-      FixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
+      CustomFixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
       TableDefinition<RowType> tableDefinition, boolean open,
       TreeTableResources resources) {
     super(tableModel, dataTable, headerTable, tableDefinition, resources);
@@ -533,6 +550,16 @@ public class TreeTable<RowType extends TreeTableItem> extends
     setCellPadding(0);
     setCellSpacing(0);
   }
+  
+  @Override
+public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
+	  return getDataTable().addDoubleClickHandler(handler);
+  }
+  
+  @Override
+public HandlerRegistration addClickHandler(ClickHandler handler) {
+	  return getDataTable().addClickHandler(handler);
+  }
 
   /*
    * (non-Javadoc)
@@ -540,7 +567,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
    * @see com.google.gwt.gen2.table.client.PagingScrollTable#gotoPage(int,
    * boolean)
    */
-  public void gotoPage(int page, boolean forced) {
+  @Override
+public void gotoPage(int page, boolean forced) {
     super.gotoPage(page, forced);
     redraw();
   }
@@ -608,7 +636,8 @@ public class TreeTable<RowType extends TreeTableItem> extends
     setTreeNodeOpen(item, false);
   }
 
-  protected Request createRequest(int startRow, int pageSize,
+  @Override
+protected Request createRequest(int startRow, int pageSize,
       ColumnSortList columnSortList, ColumnFilterList columnFilterList) {
     return new TreeRequest(startRow, pageSize, columnSortList,
         columnFilterList, open, invertedNodes, flattened);

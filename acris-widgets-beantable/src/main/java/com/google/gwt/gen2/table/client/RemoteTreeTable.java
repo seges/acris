@@ -1,5 +1,7 @@
 package com.google.gwt.gen2.table.client;
 
+import sk.seges.acris.widget.client.table.CustomFixedWidthGrid;
+
 import com.google.gwt.gen2.table.client.TableModel.Callback;
 import com.google.gwt.gen2.table.shared.SerializableResponse;
 import com.google.gwt.gen2.table.shared.TreeRequest;
@@ -20,39 +22,42 @@ public abstract class RemoteTreeTable<RowType extends TreeTableItem> extends
       this.remoteTreeTable = remoteTreeTable;
     }
 
-    public void requestTreeItems(TreeRequest request,
+    @Override
+	public void requestTreeItems(TreeRequest request,
         TableModel.Callback<RowType> callback) {
       remoteTreeTable.requestTreeItems(request, callback);
     }
   }
 
   public RemoteTreeTable(DefaultTableDefinition<RowType> tableDefinition) {
-    super(new RemoteTreeTableModel<RowType>(), new FixedWidthGrid(),
+    super(new RemoteTreeTableModel<RowType>(), new CustomFixedWidthGrid(),
         new FixedWidthFlexTable(), tableDefinition, false);
     ((RemoteTreeTableModel<RowType>) getTableModel()).setRemoteTreeTable(this);
   }
 
   public RemoteTreeTable(DefaultTableDefinition<RowType> tableDefinition,
       boolean open) {
-    super(new RemoteTreeTableModel<RowType>(), new FixedWidthGrid(),
+    super(new RemoteTreeTableModel<RowType>(), new CustomFixedWidthGrid(),
         new FixedWidthFlexTable(), tableDefinition, open);
     ((RemoteTreeTableModel<RowType>) getTableModel()).setRemoteTreeTable(this);
   }
 
   public RemoteTreeTable(DefaultTableDefinition<RowType> tableDefinition,
       boolean open, TreeTableResources resources) {
-    super(new RemoteTreeTableModel<RowType>(), new FixedWidthGrid(),
+    super(new RemoteTreeTableModel<RowType>(), new CustomFixedWidthGrid(),
         new FixedWidthFlexTable(), tableDefinition, open, resources);
     ((RemoteTreeTableModel<RowType>) getTableModel()).setRemoteTreeTable(this);
   }
 
   protected void requestTreeItems(final TreeRequest request, final Callback<RowType> callback) {
     requestTreeItems(request, new AsyncCallback<SerializableResponse<RowType>>() {
-    public void onFailure(Throwable caught) {
+    @Override
+	public void onFailure(Throwable caught) {
       callback.onFailure(caught);
     }
 
-    public void onSuccess(SerializableResponse<RowType> response) {
+    @Override
+	public void onSuccess(SerializableResponse<RowType> response) {
       callback.onRowsReady(request, response);
     }
     });

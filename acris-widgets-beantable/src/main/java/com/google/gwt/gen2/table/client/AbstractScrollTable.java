@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sk.seges.acris.widget.client.table.CustomFixedWidthGrid;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.event.dom.client.HasScrollHandlers;
@@ -31,16 +33,16 @@ import com.google.gwt.gen2.table.client.ColumnResizer.ColumnWidthInfo;
 import com.google.gwt.gen2.table.client.property.MaximumWidthProperty;
 import com.google.gwt.gen2.table.event.client.ColumnSortEvent;
 import com.google.gwt.gen2.table.event.client.ColumnSortHandler;
-import com.google.gwt.gen2.table.override.client.OverrideDOM;
 import com.google.gwt.gen2.table.override.client.HTMLTable.CellFormatter;
+import com.google.gwt.gen2.table.override.client.OverrideDOM;
 import com.google.gwt.gen2.table.shared.ColumnFilterInfo;
 import com.google.gwt.gen2.table.shared.ColumnSortList;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.Messages;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.CssResource.NotStrict;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.client.Command;
@@ -813,14 +815,16 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
     private ScrollTableStyle style;
     private ScrollTableMessages constants;
 
-    public ScrollTableStyle getStyle() {
+    @Override
+	public ScrollTableStyle getStyle() {
       if (style == null) {
         style = ((ScrollTableStyle) GWT.create(ScrollTableStyle.class));
       }
       return style;
     }
 
-    public ScrollTableMessages getMessages() {
+    @Override
+	public ScrollTableMessages getMessages() {
       if (constants == null) {
         constants = ((ScrollTableMessages) GWT.create(ScrollTableMessages.class));
       }
@@ -893,7 +897,8 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
   }
 
   protected ColumnFilterListener columnFilterListener = new ColumnFilterListener() {
-    public void onFilterChanged(final ColumnFilterInfo info) {
+    @Override
+	public void onFilterChanged(final ColumnFilterInfo info) {
       dataTable.filterColumn(info);
     }
   };
@@ -929,7 +934,7 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
   /**
    * The data table.
    */
-  private FixedWidthGrid dataTable;
+  private CustomFixedWidthGrid dataTable;
 
   /**
    * The scrollable wrapper div around the data table.
@@ -1059,12 +1064,12 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
    * @param dataTable the data table
    * @param headerTable the header table
    */
-  public AbstractScrollTable(FixedWidthGrid dataTable,
+  public AbstractScrollTable(CustomFixedWidthGrid dataTable,
       FixedWidthFlexTable headerTable) {
     this(dataTable, headerTable, null, new DefatulScrollTableResources());
   }
 
-  public AbstractScrollTable(FixedWidthGrid dataTable,
+  public AbstractScrollTable(CustomFixedWidthGrid dataTable,
       FixedWidthFlexTable headerTable, ScrollTableResources resources) {
     this(dataTable, headerTable, null, resources);
   }
@@ -1076,7 +1081,7 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
    * @param headerTable the header table
    * @param images the images to use in the table
    */
-  public AbstractScrollTable(FixedWidthGrid dataTable,
+  public AbstractScrollTable(CustomFixedWidthGrid dataTable,
       final FixedWidthFlexTable headerTable, TableDefinition tableDefinition, ScrollTableResources resources) {
     super();
     this.dataTable = dataTable;
@@ -1172,7 +1177,8 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
 
     // Listen for sorting events in the data table
     dataTable.addColumnSortHandler(new ColumnSortHandler() {
-      public void onColumnSorted(ColumnSortEvent event) {
+      @Override
+	public void onColumnSorted(ColumnSortEvent event) {
         // Get the primary column and sort order
         int column = -1;
         boolean ascending = true;
@@ -1246,7 +1252,8 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
     }
   };
 
-  public HandlerRegistration addScrollHandler(ScrollHandler handler) {
+  @Override
+public HandlerRegistration addScrollHandler(ScrollHandler handler) {
     return addHandler(handler, ScrollEvent.getType());
   }
 
@@ -1298,7 +1305,7 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
   /**
    * @return the data table
    */
-  public FixedWidthGrid getDataTable() {
+  public CustomFixedWidthGrid getDataTable() {
     return dataTable;
   }
 
@@ -1582,7 +1589,8 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
    * @param width the new client width of the element
    * @param height the new client height of the element
    */
-  public void onResize(int width, int height) {
+  @Override
+public void onResize(int width, int height) {
     redraw();
   }
 
@@ -1598,7 +1606,8 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
     // command prevents an extra browser layout by grouping read operations.
     TableWidthInfo redrawInfo = new TableWidthInfo(false);
     Command command = new Command() {
-      public void execute() {
+      @Override
+	public void execute() {
         // We update the ResizableWidgetCollection before changing the size of
         // the ScrollTable, because change the size of the scroll table could
         // require an additional layout (ex. if window scroll bars show up).
