@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import sk.seges.acris.widget.client.table.CustomFixedWidthGrid;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -75,12 +77,12 @@ import com.google.gwt.gen2.table.shared.Response;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SourcesTableEvents;
 import com.google.gwt.user.client.ui.TableListener;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
-import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 
 /**
  * An {@link AbstractScrollTable} that acts as a view for an underlying
@@ -259,11 +261,13 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
       this.rows = rows;
     }
 
-    public boolean hasNext() {
+    @Override
+	public boolean hasNext() {
       return (curRow <= lastVisibleRow && rows.hasNext());
     }
 
-    public RowType next() {
+    @Override
+	public RowType next() {
       // Check that the next row exists
       if (!hasNext()) {
         throw new NoSuchElementException();
@@ -271,7 +275,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
       return rows.next();
     }
 
-    public void remove() {
+    @Override
+	public void remove() {
       throw new UnsupportedOperationException("Remove not supported");
     }
   }
@@ -347,12 +352,14 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
    * The callback that handles page requests.
    */
   private Callback<RowType> pagingCallback = new Callback<RowType>() {
-    public void onFailure(Throwable caught) {
+    @Override
+	public void onFailure(Throwable caught) {
       isPageLoading = false;
       fireEvent(new PagingFailureEvent(caught));
     }
 
-    public void onRowsReady(Request request, Response<RowType> response) {
+    @Override
+	public void onRowsReady(Request request, Response<RowType> response) {
       getTableModel().setRowCount(response.getRowCount());
       if (lastRequest == request) {
         setData(request.getStartRow(), response.getRowValues());
@@ -387,7 +394,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
    * The {@link RendererCallback} used when table rendering completes.
    */
   private RendererCallback tableRendererCallback = new RendererCallback() {
-    public void onRendered() {
+    @Override
+	public void onRendered() {
       onDataTableRendered();
     }
   };
@@ -410,7 +418,7 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
    */
   public PagingScrollTable(TableModel<RowType> tableModel,
       TableDefinition<RowType> tableDefinition) {
-    this(tableModel, new FixedWidthGrid(), new FixedWidthFlexTable(),
+    this(tableModel, new CustomFixedWidthGrid(), new FixedWidthFlexTable(),
         tableDefinition);
     isHeaderGenerated = true;
     isFooterGenerated = true;
@@ -418,7 +426,7 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
 
   public PagingScrollTable(TableModel<RowType> tableModel,
       TableDefinition<RowType> tableDefinition, ScrollTableResources resources) {
-    this(tableModel, new FixedWidthGrid(), new FixedWidthFlexTable(),
+    this(tableModel, new CustomFixedWidthGrid(), new FixedWidthFlexTable(),
         tableDefinition, resources);
   }
 
@@ -431,7 +439,7 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
    * @param tableDefinition the column definitions
    */
   public PagingScrollTable(TableModel<RowType> tableModel,
-      FixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
+      CustomFixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
       TableDefinition<RowType> tableDefinition) {
     this(tableModel, dataTable, headerTable, tableDefinition,
         new DefatulScrollTableResources());
@@ -447,7 +455,7 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
    * @param images the images to use in the table
    */
   public PagingScrollTable(TableModel<RowType> tableModel,
-      FixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
+      CustomFixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
       TableDefinition<RowType> tableDefinition, ScrollTableResources resources) {
     super(dataTable, headerTable, tableDefinition, resources);
     this.tableModel = tableModel;
@@ -467,7 +475,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
 
     // Listen to table model events
     tableModel.addRowCountChangeHandler(new RowCountChangeHandler() {
-      public void onRowCountChange(RowCountChangeEvent event) {
+      @Override
+	public void onRowCountChange(RowCountChangeEvent event) {
         int pageCount = getPageCount();
         if (pageCount != oldPageCount) {
           fireEvent(new PageCountChangeEvent(oldPageCount, pageCount));
@@ -477,21 +486,24 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
     });
     if (tableModel instanceof HasRowInsertionHandlers) {
       ((HasRowInsertionHandlers) tableModel).addRowInsertionHandler(new RowInsertionHandler() {
-        public void onRowInsertion(RowInsertionEvent event) {
+        @Override
+		public void onRowInsertion(RowInsertionEvent event) {
           insertAbsoluteRow(event.getRowIndex());
         }
       });
     }
     if (tableModel instanceof HasRowRemovalHandlers) {
       ((HasRowRemovalHandlers) tableModel).addRowRemovalHandler(new RowRemovalHandler() {
-        public void onRowRemoval(RowRemovalEvent event) {
+        @Override
+		public void onRowRemoval(RowRemovalEvent event) {
           removeAbsoluteRow(event.getRowIndex());
         }
       });
     }
     if (tableModel instanceof HasRowValueChangeHandlers) {
       ((HasRowValueChangeHandlers<RowType>) tableModel).addRowValueChangeHandler(new RowValueChangeHandler<RowType>() {
-        public void onRowValueChange(RowValueChangeEvent<RowType> event) {
+        @Override
+		public void onRowValueChange(RowValueChangeEvent<RowType> event) {
           int rowIndex = event.getRowIndex();
           if (rowIndex < getAbsoluteFirstRowIndex()
               || rowIndex > getAbsoluteLastRowIndex()) {
@@ -505,7 +517,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
 
     // Listen for cell click events
     dataTable.addTableListener(new TableListener() {
-      public void onCellClicked(SourcesTableEvents sender, int row, int cell) {
+      @Override
+	public void onCellClicked(SourcesTableEvents sender, int row, int cell) {
         editCell(row, cell);
       }
     });
@@ -528,13 +541,15 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
       ColumnFilterer filterer = new ColumnFilterer() {
         private Timer timer;
 
-        public void onFilterColumn(SortableGrid grid,
+        @Override
+		public void onFilterColumn(SortableGrid grid,
             ColumnFilterList filterList, final ColumnFilterCallback callback) {
           if (timer != null) {
             timer.cancel();
           }
           timer = new Timer() {
-            public void run() {
+            @Override
+			public void run() {
               // Jump to first page and force reloading as
               // filtering might
               // decrease
@@ -551,7 +566,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
 
     // Listen for selection events
     dataTable.addRowSelectionHandler(new RowSelectionHandler() {
-      public void onRowSelection(RowSelectionEvent event) {
+      @Override
+	public void onRowSelection(RowSelectionEvent event) {
         if (isPageLoading) {
           return;
         }
@@ -567,20 +583,24 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
     });
   }
 
-  public HandlerRegistration addPageChangeHandler(PageChangeHandler handler) {
+  @Override
+public HandlerRegistration addPageChangeHandler(PageChangeHandler handler) {
     return addHandler(handler, PageChangeEvent.TYPE);
   }
 
-  public HandlerRegistration addPageCountChangeHandler(
+  @Override
+public HandlerRegistration addPageCountChangeHandler(
       PageCountChangeHandler handler) {
     return addHandler(handler, PageCountChangeEvent.TYPE);
   }
 
-  public HandlerRegistration addPageLoadHandler(PageLoadHandler handler) {
+  @Override
+public HandlerRegistration addPageLoadHandler(PageLoadHandler handler) {
     return addHandler(handler, PageLoadEvent.TYPE);
   }
 
-  public HandlerRegistration addPagingFailureHandler(
+  @Override
+public HandlerRegistration addPagingFailureHandler(
       PagingFailureHandler handler) {
     return addHandler(handler, PagingFailureEvent.TYPE);
   }
@@ -704,7 +724,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
     return selectedRowValues;
   }
 
-  public TableDefinition<RowType> getTableDefinition() {
+  @Override
+public TableDefinition<RowType> getTableDefinition() {
     return tableDefinition;
   }
 
@@ -1036,10 +1057,12 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
     CellEditInfo editInfo = new CellEditInfo(getDataTable(), row, column);
     cellEditor.editCell(editInfo, colDef.getCellValue(rowValue),
         new CellEditor.Callback() {
-          public void onCancel(CellEditInfo cellEditInfo) {
+          @Override
+		public void onCancel(CellEditInfo cellEditInfo) {
           }
 
-          public void onComplete(CellEditInfo cellEditInfo, Object cellValue) {
+          @Override
+		public void onComplete(CellEditInfo cellEditInfo, Object cellValue) {
             colDef.setCellValue(rowValue, cellValue);
             if (tableModel instanceof MutableTableModel) {
               int row = getAbsoluteFirstRowIndex() + cellEditInfo.getRowIndex();
@@ -1104,7 +1127,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
       final CheckBox box = new CheckBox();
       selectAllWidget = box;
       box.addClickHandler(new ClickHandler() {
-        public void onClick(ClickEvent event) {
+        @Override
+		public void onClick(ClickEvent event) {
           if (box.getValue()) {
             getDataTable().selectAllRows();
           } else {
@@ -1173,7 +1197,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
     fireEvent(new PageLoadEvent(currentPage));
   }
 
-  protected void populateHeaderTable(FixedWidthFlexTable headerTable,
+  @Override
+protected void populateHeaderTable(FixedWidthFlexTable headerTable,
       TableDefinition tableDefinition) {
     int column = 0;
     for (ColumnDefinition<RowType, ?> columnDefinition : ((TableDefinition<RowType>) tableDefinition).getVisibleColumnDefinitions()) {
@@ -1539,11 +1564,13 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
     Iterator<RowType> singleIterator = new Iterator<RowType>() {
       private boolean nextCalled = false;
 
-      public boolean hasNext() {
+      @Override
+	public boolean hasNext() {
         return !nextCalled;
       }
 
-      public RowType next() {
+      @Override
+	public RowType next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
@@ -1551,7 +1578,8 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements
         return rowValue;
       }
 
-      public void remove() {
+      @Override
+	public void remove() {
         throw new UnsupportedOperationException();
       }
     };

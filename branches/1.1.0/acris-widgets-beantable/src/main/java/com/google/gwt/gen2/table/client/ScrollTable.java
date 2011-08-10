@@ -15,12 +15,14 @@
  */
 package com.google.gwt.gen2.table.client;
 
-import com.google.gwt.gen2.table.client.ColumnResizer.ColumnWidthInfo;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import sk.seges.acris.widget.client.table.CustomFixedWidthGrid;
+
+import com.google.gwt.gen2.table.client.ColumnResizer.ColumnWidthInfo;
 
 /**
  * A static version of the {@link AbstractScrollTable} that combines a header,
@@ -63,7 +65,7 @@ public class ScrollTable extends AbstractScrollTable {
    * @param dataTable the data table
    * @param headerTable the header table
    */
-  public ScrollTable(FixedWidthGrid dataTable, FixedWidthFlexTable headerTable) {
+  public ScrollTable(CustomFixedWidthGrid dataTable, FixedWidthFlexTable headerTable) {
     super(dataTable, headerTable);
   }
 
@@ -74,7 +76,7 @@ public class ScrollTable extends AbstractScrollTable {
    * @param headerTable the header table
    * @param images the images to use in the table
    */
-  public ScrollTable(FixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
+  public ScrollTable(CustomFixedWidthGrid dataTable, FixedWidthFlexTable headerTable,
       ScrollTableResources resources) {
     super(dataTable, headerTable, resources);
   }
@@ -117,7 +119,8 @@ public class ScrollTable extends AbstractScrollTable {
    * @param column the column index
    * @return true if the column is filterable, false if it is not filterable
    */
-  public boolean isColumnFilterable(int column) {
+  @Override
+public boolean isColumnFilterable(int column) {
     return (unfilterableColumns != null && !unfilterableColumns.contains(column));
   }
   /**
