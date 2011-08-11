@@ -187,10 +187,11 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 				}
 	
 				if (dtoType == null || !dtoType.getCanonicalName().equals(type.getCanonicalName())) {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type from domain method " + domainReturnType.toString() + " " + context.getDomainTypeElement().toString() + 
-							"." + context.getDomainFieldName() + " is not compatible with specified return type in the DTO " + type.toString() + ". Please, check your configuration " + 
-							context.getConfigurationElement().toString(), context.getConfigurationElement());
-					return false;
+					//TODO fix this - read DTO from configuration
+//					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type from domain method " + domainReturnType.toString() + " " + context.getDomainTypeElement().toString() + 
+//							"." + context.getDomainFieldName() + " is not compatible with specified return type in the DTO " + type.toString() + ". Please, check your configuration " + 
+//							context.getConfigurationElement().toString(), context.getConfigurationElement());
+//					return false;
 				}
 			}
 		} else {
