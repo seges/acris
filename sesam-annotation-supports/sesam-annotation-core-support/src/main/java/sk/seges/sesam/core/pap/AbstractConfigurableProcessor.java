@@ -254,10 +254,13 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 			for (Element element: processingElements) {
 				if (!ListUtils.contains(processedElement, element)) {
 					processedElement.add(element);
-					processElement(element, roundEnv);
-					cachedDefinition = new HashMap<OutputDefinition, Set<NamedType>>();
-					if (configurer != null) {
-						configurer.flushMessages(processingEnv.getMessager(), element);
+					if (isSupportedKind(element.getKind())) {
+						processElement(element, roundEnv);
+
+						cachedDefinition = new HashMap<OutputDefinition, Set<NamedType>>();
+						if (configurer != null) {
+							configurer.flushMessages(processingEnv.getMessager(), element);
+						}
 					}
 				}
 			}
@@ -275,7 +278,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
 
 		PrintWriter pw = null;
-
+		
 		TypeElement typeElement = (TypeElement) element;
 
 		NamedType[] outputNames = getClassNames(element);

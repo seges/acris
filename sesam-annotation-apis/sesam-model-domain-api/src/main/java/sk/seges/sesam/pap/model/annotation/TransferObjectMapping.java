@@ -9,7 +9,7 @@ import sk.seges.sesam.shared.model.converter.CachedConverter;
 import sk.seges.sesam.shared.model.converter.DtoConverter;
 import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
 
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 public @interface TransferObjectMapping {
 
 	public class NotDefinedConverter extends CachedConverter<Void, Void> {
