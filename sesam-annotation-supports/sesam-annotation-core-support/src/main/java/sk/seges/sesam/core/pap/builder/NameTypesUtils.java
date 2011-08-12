@@ -116,7 +116,7 @@ public class NameTypesUtils implements NameTypes {
 		case LONG:
 		case SHORT:
 		case VOID:
-			return new InputClass(null, typeMirror.getKind().name().toLowerCase());
+			return new InputClass(typeMirror, (String)null, typeMirror.getKind().name().toLowerCase());
 		case TYPEVAR:
 			//TODO
 		}

@@ -448,6 +448,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		
 		for (MutableVariableElement parameter: getAdditionalConstructorParameters()) {
 			pw.println("private " + parameter.asType() + " " + parameter.getSimpleName().toString() + ";");
+			pw.println();
 		}
 		
 		super.processElement(element, outputName, roundEnv, pw);

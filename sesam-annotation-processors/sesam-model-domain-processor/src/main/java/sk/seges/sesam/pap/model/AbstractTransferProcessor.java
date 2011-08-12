@@ -115,7 +115,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 	}
 	
 	protected boolean initializeContext(ProcessorContext context) {
-
+		
 		context.setFieldName(toHelper.toField(context.getMethod()));
 		context.setDomainTypeElement(toHelper.getDomainTypeElement(context.getConfigurationElement()));
 

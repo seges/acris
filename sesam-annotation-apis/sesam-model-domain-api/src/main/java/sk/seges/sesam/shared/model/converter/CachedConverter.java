@@ -2,6 +2,7 @@ package sk.seges.sesam.shared.model.converter;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -32,8 +33,10 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 			throw new RuntimeException("Unable to create collection instance for class " + domains.getClass().getCanonicalName(), e);
 		}
 		
-		while (domains.iterator().hasNext()) {
-			result.add(toDto(domains.iterator().next()));
+		Iterator<DOMAIN> iterator = domains.iterator();
+		
+		while (iterator.hasNext()) {
+			result.add(toDto(iterator.next()));
 		}
 		
 		return result;
@@ -84,8 +87,10 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 			throw new RuntimeException("Unable to create collection instance for class " + dtos.getClass().getCanonicalName(), e);
 		}
 		
-		while (dtos.iterator().hasNext()) {
-			result.add(fromDto(dtos.iterator().next()));
+		Iterator<DTO> iterator = dtos.iterator();
+		
+		while (iterator.hasNext()) {
+			result.add(fromDto(iterator.next()));
 		}
 		
 		return result;

@@ -72,6 +72,7 @@
 							<execution>
 								<id>process-test</id>
 								<goals>
+									<goal>process</goal>
 									<goal>process-test</goal>
 								</goals>
 								<phase>generate-test-sources</phase>
@@ -80,6 +81,7 @@
 								<id>process</id>
 								<goals>
 									<goal>process</goal>
+									<goal>process-test</goal>
 								</goals>
 								<phase>generate-sources</phase>
 							</execution>
@@ -99,11 +101,15 @@
 						</executions>
 					</plugin>
 					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>apt-maven-plugin</artifactId>
+					</plugin>
+					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-eclipse-plugin</artifactId>
 						<configuration>
 							<additionalConfig>
-								<file>
+								<!--file>
 									<name>.factorypath</name>
 									<content><![CDATA[
 										<factorypath>
@@ -116,7 +122,7 @@
 								        </factorypath>
 								          ]]>
 									</content>
-								</file>
+								</file-->
 								<file>
 									<name>.settings/org.eclipse.jdt.apt.core.prefs</name>
 									<content><![CDATA[

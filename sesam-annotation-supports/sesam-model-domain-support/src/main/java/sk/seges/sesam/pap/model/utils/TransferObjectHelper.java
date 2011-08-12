@@ -349,7 +349,7 @@ public class TransferObjectHelper {
 		}
 		
 		if (type.getKind().isPrimitive()) {
-			return new InputClass((String)null, type.toString().toLowerCase());
+			return new InputClass(type, (String)null, type.toString().toLowerCase());
 		}
 		
 		NamedType namedType = getNameTypes().toType(type);

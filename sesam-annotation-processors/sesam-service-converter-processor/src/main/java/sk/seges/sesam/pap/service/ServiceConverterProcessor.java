@@ -1,6 +1,7 @@
 package sk.seges.sesam.pap.service;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -143,11 +145,9 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		Element[] localInterfaces = serviceHelper.getLocalServiceInterfaces(serviceElement);
 
 		if (localInterfaces == null || localInterfaces.length == 0) {
-			processingEnv.getMessager().printMessage(
-					Kind.ERROR,
+			processingEnv.getMessager().printMessage(Kind.ERROR, 
 					"[ERROR] Unable to find local interface for the service " + serviceElement
-							+ ". You should specify local service interface using " + LocalService.class.getCanonicalName() + " annotation.",
-					serviceElement);
+							+ ". You should specify local service interface using " + LocalService.class.getCanonicalName() + " annotation.", serviceElement);
 			return null;
 		}
 
@@ -160,6 +160,28 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		}
 
 		return result.toArray(new NamedType[] {});
+	}
+
+	@Override
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement serviceElement) {
+		switch (type) {
+		case OUTPUT_INTERFACES:
+			Element[] localInterfaces = serviceHelper.getLocalServiceInterfaces(serviceElement);
+
+			if (localInterfaces != null && localInterfaces.length > 0) {
+				List<NamedType> result = new ArrayList<NamedType>();
+
+				for (Element localInterface : localInterfaces) {
+					result.add(nameTypesUtils.toType(serviceHelper.getRemoteServiceInterface(localInterface)));
+				}
+
+				return result.toArray(new Type[] {});
+			}
+			
+			break;
+		}
+		
+		return super.getOutputDefinition(type, serviceElement);
 	}
 
 	@Override
@@ -239,7 +261,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			processingEnv.getMessager().printMessage(
 					Kind.ERROR,
 					"[ERROR] Unable to find local interface for the service " + element
-							+ ". Most probably you found a bug in the sesam, report this bug immediately. Or not :-).", element);
+							+ ". Most probably you found a bug in the sesam, report this bug immediately :-).", element);
 			return;
 		}
 
@@ -320,10 +342,10 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		dummyParameter.setConverter(converter);
 		return ParameterFilter.CONVERTER.filterBy(parameters, dummyParameter);
 	}
+	
+	protected List<ConverterParameter> getConverterParameters(NamedType converter) {
 
-	protected Set<ConverterParameter> getConverterParameters(NamedType converter) {
-
-		Set<ConverterParameter> parameters = new HashSet<ConverterParameter>();
+		List<ConverterParameter> parameters = new LinkedList<ConverterParameter>();
 
 		if (converter != null) {
 			TypeElement converterTypeElement = processingEnv.getElementUtils().getTypeElement(converter.getCanonicalName());
