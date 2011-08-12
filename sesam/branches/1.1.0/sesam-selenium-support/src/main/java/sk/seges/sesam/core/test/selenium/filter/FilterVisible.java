@@ -8,17 +8,20 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 
-public class FilterNotVisible implements ExpectedCondition<List<WebElement>> {
+public class FilterVisible implements ExpectedCondition<List<WebElement>> {
 
 	private List<WebElement> webElements;
+	private boolean visible;
 	
-	FilterNotVisible(List<WebElement> webElements) {
+	FilterVisible(List<WebElement> webElements, boolean visible) {
 		this.webElements = webElements;
+		this.visible = visible;
 	}
 
-	FilterNotVisible(WebElement webElement) {
+	FilterVisible(WebElement webElement, boolean visible) {
 		webElements = new ArrayList<WebElement>();
 		webElements.add(webElement);
+		this.visible = visible;
 	}
 
 	@Override
@@ -26,11 +29,11 @@ public class FilterNotVisible implements ExpectedCondition<List<WebElement>> {
 		List<WebElement> result = new ArrayList<WebElement>();
 		
 		for (WebElement webElement: webElements) {
-			if (webElement != null && webElement instanceof WrapsElement && ((WrapsElement) webElement).getWrappedElement().isDisplayed()) {
+			if (webElement != null && webElement instanceof WrapsElement && ((WrapsElement) webElement).getWrappedElement().isDisplayed() != visible) {
 				result.add(((WrapsElement) webElement).getWrappedElement());
 			}
 			
-			if (webElement.isDisplayed()) {
+			if (webElement.isDisplayed() != visible) {
 				result.add(webElement);
 			}
 		}

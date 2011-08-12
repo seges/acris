@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -14,9 +15,11 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
+import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
@@ -30,7 +33,209 @@ import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectProcessor extends AbstractTransferProcessor {
+	
+	class EqualsPrinter extends AbstractElementPrinter {
+
+		public EqualsPrinter(PrintWriter pw) {
+			super(pw);
+		}
+
+		@Override
+		public void initialize(TypeElement typeElement) {
+			pw.println("@Override");
+			pw.println("public boolean equals(Object obj) {");
+			pw.println("if (this == obj)");
+			pw.println("	return true;");
+			pw.println("if (obj == null)");
+			pw.println("	return false;");
+			pw.println("if (getClass() != obj.getClass())");
+			pw.println("	return false;");
+			
+			NamedType targetClassName = getTargetClassNames(nameTypesUtils.toImmutableType(typeElement))[0];
+			
+			pw.println(targetClassName.toString(null, ClassSerializer.SIMPLE, true) + " other = (" + 
+					targetClassName.toString(null, ClassSerializer.SIMPLE, true) + ") obj;");
+		}
+	
+		@Override
+		public void finish(TypeElement typeElement) {
+			pw.println("return true;");
+			pw.println("}");
+		}
 		
+		@Override
+		public void print(ProcessorContext context) {
+
+			boolean idMethod = toHelper.isIdMethod(context.getMethod());
+			
+			if (idMethod) {
+				//TODO That's not really true
+				//id's are not interesting
+				return;
+			}
+			
+			if (context.getFieldType() instanceof ArrayNamedType) {
+				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + "))");
+				pw.println("	return false");
+				return;
+			}
+
+			if (context.getFieldType().asType() == null) {
+				if (idMethod) {
+					pw.println("if (" + context.getFieldName() + " != null && other." + context.getFieldName() + " != null && " + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
+					pw.println("	return true;");
+				} else {
+					pw.println("if (" + context.getFieldName() + " == null) {");
+					pw.println("if (other." + context.getFieldName() + " != null)");
+					pw.println("	return false;");
+					pw.println("} else if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
+					pw.println("	return false;");
+				}
+				return;
+			}
+			
+			switch (context.getFieldType().asType().getKind()) {
+			case BOOLEAN:
+			case BYTE:
+			case CHAR:
+			case DOUBLE:
+			case FLOAT:
+			case INT:
+			case LONG:
+			case SHORT:
+				if (idMethod) {
+					pw.println("if (" + context.getFieldName() + " == other." + context.getFieldName() + ")");
+					pw.println("	return true;");
+				} else {
+					pw.println("if (" + context.getFieldName() + " != other." + context.getFieldName() + ")");
+					pw.println("	return false;");
+				}
+				return;
+			case EXECUTABLE:
+			case NONE:
+			case NULL:
+			case OTHER:
+			case PACKAGE:
+			case ERROR:
+			case WILDCARD:
+			case VOID:
+			case TYPEVAR:
+				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getFieldName() + " (" + context.getFieldType().asType().getKind() + ") in the " + 
+						context.getConfigurationElement(), context.getConfigurationElement());
+				return;
+			case DECLARED:
+				Element element = ((DeclaredType)context.getFieldType().asType()).asElement();
+				switch (element.getKind()) {
+				case ENUM:
+				case ENUM_CONSTANT:
+					if (idMethod) {
+						pw.println("if (" + context.getFieldName() + " == other." + context.getFieldName() + ")");
+						pw.println("	return true;");
+					} else {
+						pw.println("if (" + context.getFieldName() + " != other." + context.getFieldName() + ")");
+						pw.println("	return false;");
+					}
+					return;
+				case CLASS:
+				case INTERFACE:
+					if (idMethod) {
+						pw.println("if (" + context.getFieldName() + " != null && other." + context.getFieldName() + " != null && " + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
+						pw.println("	return true;");
+					} else {
+						pw.println("if (" + context.getFieldName() + " == null) {");
+						pw.println("if (other." + context.getFieldName() + " != null)");
+						pw.println("	return false;");
+						pw.println("} else if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
+						pw.println("	return false;");
+					}
+					return;
+				}
+			case ARRAY:
+				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + "))");
+				pw.println("	return false");
+				return;
+			}
+		}		
+	}
+
+	class HashCodePrinter extends AbstractElementPrinter {
+
+		public HashCodePrinter(PrintWriter pw) {
+			super(pw);
+		}
+
+		@Override
+		public void initialize(TypeElement typeElement) {
+			pw.println("@Override");
+			pw.println("public int hashCode() {");
+			pw.println("final int prime = 31;");
+			pw.println("int result = 1;");
+		}
+	
+		@Override
+		public void finish(TypeElement typeElement) {
+			pw.println("return result;");
+			pw.println("}");
+		}
+		
+		@Override
+		public void print(ProcessorContext context) {
+
+			if (toHelper.isIdMethod(context.getMethod())) {
+				//IDs are not part of the hashCode
+				return;
+			}
+
+			if (context.getFieldType() instanceof ArrayNamedType) {
+				pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
+				return;
+			}
+
+			if (context.getFieldType().asType() == null) {
+				pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
+				return;
+			}
+			
+			switch (context.getFieldType().asType().getKind()) {
+			case BOOLEAN:
+			case BYTE:
+			case CHAR:
+			case DOUBLE:
+			case FLOAT:
+			case INT:
+			case LONG:
+			case SHORT:
+				pw.println("result = prime * result + " + context.getFieldName() + ";");
+				return;
+			case EXECUTABLE:
+			case NONE:
+			case NULL:
+			case OTHER:
+			case PACKAGE:
+			case ERROR:
+			case WILDCARD:
+			case VOID:
+			case TYPEVAR:
+				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getFieldName() + " (" + context.getFieldType().asType().getKind() + ") in the " + 
+						context.getConfigurationElement(), context.getConfigurationElement());
+				return;
+			case DECLARED:
+				Element element = ((DeclaredType)context.getFieldType().asType()).asElement();
+				switch (element.getKind()) {
+				case ENUM:
+				case ENUM_CONSTANT:
+				case CLASS:
+				case INTERFACE:
+					pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
+					return;
+				}
+			case ARRAY:
+				pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
+				return;
+			}
+		}		
+	}
+
 	class FieldPrinter extends AbstractElementPrinter {
 
 		public FieldPrinter(PrintWriter pw) {
@@ -159,7 +364,9 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	protected ElementPrinter[] getElementPrinters(PrintWriter pw) {
 		return new ElementPrinter[] {
 				new FieldPrinter(pw),
-				new AccessorsPrinter(pw)
+				new AccessorsPrinter(pw),
+				new EqualsPrinter(pw),
+				new HashCodePrinter(pw)
 		};
 	}
 
@@ -170,5 +377,5 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	@Override
 	protected boolean shouldHaveIdMethod(TypeElement configurationElement, TypeElement domainElement) {
 		return false;
-	}
+	}	
 }

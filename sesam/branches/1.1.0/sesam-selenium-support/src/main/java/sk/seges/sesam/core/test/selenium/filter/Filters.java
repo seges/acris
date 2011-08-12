@@ -10,6 +10,10 @@ import com.google.common.base.Function;
 public class Filters {
 
 	public static Function<WebDriver, List<WebElement>> filterNotVisible(List<WebElement> webElements) {
-		return new FilterNotVisible(webElements);
+		return new FilterVisible(webElements, false);
+	}
+
+	public static Function<WebDriver, List<WebElement>> filterVisible(List<WebElement> webElements) {
+		return new FilterVisible(webElements, true);
 	}
 }

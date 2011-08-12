@@ -313,7 +313,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 				
 			});
 						
-			if (this.processor.getClass().getName().equals(processorClassType.getQualifiedName())) {
+			if (this.processor.getClass().getName().equals(processorClassType.getQualifiedName().toString())) {
 				configurations.add((TypeElement)element);
 			}
 		}
