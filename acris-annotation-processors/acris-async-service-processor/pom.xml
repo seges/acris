@@ -25,6 +25,15 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-service-local-interface-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-service-local-interface-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 		
 		<!-- Acris dependencies  -->
 		<dependency>

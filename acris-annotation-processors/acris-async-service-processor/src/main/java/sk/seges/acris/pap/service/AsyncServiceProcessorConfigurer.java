@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
 import sk.seges.sesam.core.pap.configuration.DefaultProcessorConfigurer;
+import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -20,7 +21,7 @@ public class AsyncServiceProcessorConfigurer extends DefaultProcessorConfigurer 
 	protected Type[] getConfigurationElement(DefaultConfigurationElement element) {
 		switch (element) {
 			case PROCESSING_ANNOTATIONS:
-				return new Type[] { RemoteServiceRelativePath.class, RemoteServicePath.class };
+				return new Type[] { RemoteServiceRelativePath.class, RemoteServicePath.class, RemoteServiceDefinition.class };
 		}
 		return super.getConfigurationElement(element);
 	}
