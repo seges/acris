@@ -258,11 +258,30 @@ public class TransferObjectHelper {
 			HasTypeParameters paramsType = ((HasTypeParameters)type);
 			
 			for (TypeParameter typeParameter: paramsType.getTypeParameters()) {
-				for (sk.seges.sesam.core.pap.model.api.TypeVariable bound: typeParameter.getBounds()) {
-					domainParameters.add(
-							TypeParameterBuilder.get(typeParameter.getVariable(), 
-								getDtoMappingClass(processingEnv.getElementUtils().getTypeElement(
-										getNameTypes().toType(bound.getUpperBound()).getCanonicalName()).asType(), typeElement, DtoMappingType.DOMAIN)));
+				if (typeParameter.getBounds() != null) {
+					for (sk.seges.sesam.core.pap.model.api.TypeVariable bound: typeParameter.getBounds()) {
+						
+						if (bound.getUpperBound() instanceof NamedType) {
+							NamedType namedType = (NamedType)bound.getUpperBound();
+							TypeMirror boundType = namedType.asType();
+							
+							if (boundType != null) {
+								domainParameters.add(
+										TypeParameterBuilder.get(typeParameter.getVariable(), 
+												getDtoMappingClass(boundType, typeElement, DtoMappingType.DOMAIN)));
+							} else {
+								domainParameters.add(
+										TypeParameterBuilder.get(typeParameter.getVariable(), 
+											getDtoMappingClass(processingEnv.getElementUtils().getTypeElement(
+													getNameTypes().toType(bound.getUpperBound()).getCanonicalName()).asType(), typeElement, DtoMappingType.DOMAIN)));
+							}
+						} else {
+							domainParameters.add(
+									TypeParameterBuilder.get(typeParameter.getVariable(), 
+										getDtoMappingClass(processingEnv.getElementUtils().getTypeElement(
+												getNameTypes().toType(bound.getUpperBound()).getCanonicalName()).asType(), typeElement, DtoMappingType.DOMAIN)));
+						}
+					}
 				}
 			}
 			

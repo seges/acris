@@ -13,6 +13,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
@@ -46,7 +47,11 @@ public class NameTypesUtils implements NameTypes {
 						TypeVariable typeVariable = (TypeVariable)typeParameter;
 						TypeMirror upperBound = typeVariable.getUpperBound();
 
-						if (upperBound != null && upperBound.getKind().equals(TypeKind.DECLARED)) {
+						String variableName = typeVariable.asElement().getSimpleName().toString();
+						
+						if (variableName != null && variableName.length() > 0 && !variableName.startsWith("?")) {
+							typeParameters[i] = TypeParameterBuilder.get(variableName);
+						} else if (upperBound != null && upperBound.getKind().equals(TypeKind.DECLARED)) {
 							TypeElement element = (TypeElement)((DeclaredType)upperBound).asElement();
 							
 							if (element.getSuperclass() != null && !element.getSuperclass().getKind().equals(TypeKind.NONE)) {
@@ -63,8 +68,21 @@ public class NameTypesUtils implements NameTypes {
 							} else {
 								boundTypes.add(toType(upperBound));
 							}
-							typeParameters[i] = TypeParameterBuilder.get(typeParameter.toString(), boundTypes.toArray(new Type[] {}));
+							typeParameters[i] = TypeParameterBuilder.get(variableName, boundTypes.toArray(new Type[] {}));
 						}
+					} else if (typeParameter.getKind().equals(TypeKind.WILDCARD)) {
+						WildcardType wildcardType = (WildcardType)typeParameter;
+						
+						if (wildcardType.getExtendsBound() != null) {
+							boundTypes.add(toType(wildcardType.getExtendsBound()));
+							typeParameters[i] = TypeParameterBuilder.get("?", boundTypes.toArray(new Type[] {}));
+						} else if (wildcardType.getSuperBound() != null) {
+							boundTypes.add(toType(wildcardType.getSuperBound()));
+							typeParameters[i] = TypeParameterBuilder.get("?", boundTypes.toArray(new Type[] {}));
+						} else {
+							typeParameters[i] = TypeParameterBuilder.get("?");
+						}
+						
 					} else {
 						boundTypes.add(toType(typeParameter));
 						typeParameters[i] = TypeParameterBuilder.get(null, boundTypes.toArray(new Type[] {}));
