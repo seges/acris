@@ -261,13 +261,16 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 
 			String fieldTypeName = context.getFieldType().toString(null, ClassSerializer.CANONICAL, true);
 			
-			pw.println((context.getModifier() != null ? (context.getModifier().toString() + " ") : "") + fieldTypeName + " " + 
-					toHelper.toGetter(context.getFieldName()) + " {");
+			String modifier = Modifier.PUBLIC.toString() + " ";
+			
+			//modifier = context.getModifier() != null ? (context.getModifier().toString() + " ") : "";
+			
+			pw.println(modifier + fieldTypeName + " " + toHelper.toGetter(context.getFieldName()) + " {");
 			pw.println("return " + context.getFieldName() + ";");
 			pw.println("}");
 			pw.println();
 
-			pw.println((context.getModifier() != null ? (context.getModifier().toString() + " ") : "") + "void " + toHelper.toSetter(context.getFieldName()) + 
+			pw.println(modifier + "void " + toHelper.toSetter(context.getFieldName()) + 
 					"(" + fieldTypeName + " " + context.getFieldName() + ") {");
 			pw.println("this." + context.getFieldName() + " = " + context.getFieldName() + ";");
 			pw.println("}");
