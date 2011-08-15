@@ -17,6 +17,21 @@ public abstract class DelegateProcessorConfigurer extends DefaultProcessorConfig
 
 	protected abstract AnnotationMirror getAnnotationFromDelegate(AnnotationMirror annotationDelegate);
 
+	protected boolean isDelegateAnnotation(Annotation annotation) {
+		Class<? extends Annotation>[] delegatedAnnotationClasses = getDelegatedAnnotationClasses();
+		
+		if (delegatedAnnotationClasses == null) {
+			return false;
+		}
+		
+		for (Class<? extends Annotation> delegatedAnnotationClass: delegatedAnnotationClasses) {
+			if (annotation.annotationType().getCanonicalName().equals(delegatedAnnotationClass.getCanonicalName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	protected boolean isDelegateAnnotation(AnnotationMirror annotation) {
 		Class<? extends Annotation>[] delegatedAnnotationClasses = getDelegatedAnnotationClasses();
 		
@@ -32,9 +47,34 @@ public abstract class DelegateProcessorConfigurer extends DefaultProcessorConfig
 		
 		return false;
 	}
-	
+
 	@Override
-	protected AnnotationMirror[] getAnnotations(VariableElement field) {
+	protected Annotation[] getAnnotations(VariableElement field) {
+
+		List<Annotation> result = new ArrayList<Annotation>();
+		
+		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
+
+		NamedType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+
+		for (AnnotationMirror annotationMirror: annotationMirrors) {
+
+			Annotation annotation = toAnnotation(annotationMirror, field);
+			
+			for (NamedType supportedAnnotaion: supportedAnnotations) {
+				if (isDelegateAnnotation(annotation)) {
+					result.add(getAnnotationFromDelegate(annotation));
+				} else if (annotation.getClass().toString().equals(supportedAnnotaion.getCanonicalName())) {
+					result.add(annotation);
+				}
+			}
+		}
+
+		return result.toArray(new Annotation[] {});
+	}
+
+	@Override
+	protected AnnotationMirror[] getAnnotationMirrors(VariableElement field) {
 
 		List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
 		

@@ -2,6 +2,7 @@ package sk.seges.sesam.core.pap.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +62,17 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			@Override
 			public boolean isAditive() {
 				return true;
-			};
+			}
+
+			@Override
+			public boolean appliesFor(VariableElement field, Element element) {
+				for (AnnotationMirror annotationMirror: element.getAnnotationMirrors()) {
+					if (annotationMirror.getAnnotationType().toString().equals(element.asType().toString())) {
+						return true;
+					}
+				}
+				return false;
+			}
 		}, 
 
 		PROCESSING_TYPES("types") {
@@ -79,6 +90,11 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			@Override
 			public boolean isAditive() {
 				return true;
+			};
+
+			@Override
+			public boolean appliesFor(VariableElement field, Element element) {
+				return field.asType().equals(element.asType());
 			};
 		}, 
 
@@ -98,6 +114,11 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			public boolean isAditive() {
 				return true;
 			};
+
+			@Override
+			public boolean appliesFor(VariableElement field, Element element) {
+				return ProcessorUtils.implementsType(element.asType(), field.asType());
+			};
 		};
 		
 		private String key;
@@ -105,14 +126,13 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		DefaultConfigurationElement(String key) {
 			this.key = key;
 		}
-
-		public boolean hasAnnotationOnField(VariableElement element) {
-			return false;
-		}
 		
 		public String getKey() {
 			return key;
 		}
+		
+		public abstract boolean hasAnnotationOnField(VariableElement element);
+		public abstract boolean appliesFor(VariableElement field, Element element);
 	}
 
 	class DelayedMessager implements Messager {
@@ -323,7 +343,45 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		}
 	}
 
-	protected AnnotationMirror[] getAnnotations(VariableElement field) {
+	@SuppressWarnings("unchecked")
+	protected Annotation toAnnotation(String annotationClassName, Element element) {
+		try {
+			return element.getAnnotation((Class<? extends Annotation>)Class.forName(annotationClassName));
+		} catch (ClassNotFoundException e) {
+			getMessager().printMessage(Kind.WARNING, "[WARNING] Unable to find annotation " + annotationClassName);
+		}
+		
+		return null;
+	}
+
+	protected Annotation toAnnotation(NamedType type, Element element) {
+		return toAnnotation(type.getCanonicalName(), element);
+	}
+	
+	protected Annotation toAnnotation(AnnotationMirror annotation, Element element) {
+		return toAnnotation(annotation.getAnnotationType().toString(), element);
+	}
+
+	protected Annotation[] getAnnotations(VariableElement field) {
+
+		List<Annotation> result = new ArrayList<Annotation>();
+		
+		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
+
+		NamedType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+
+		for (AnnotationMirror annotation: annotationMirrors) {
+			for (NamedType supportedAnnotaion: supportedAnnotations) {
+				if (annotation.getAnnotationType().toString().equals(supportedAnnotaion.getCanonicalName())) {
+					result.add(toAnnotation(annotation, field));
+				}
+			}
+		}
+
+		return result.toArray(new Annotation[] {});
+	}
+	
+	protected AnnotationMirror[] getAnnotationMirrors(VariableElement field) {
 
 		List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
 		
@@ -349,7 +407,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 					
 					NamedType namedFieldType = nameTypesUtils.toType(field.asType());
 					
-					AnnotationMirror[] annotations = getAnnotations(field);
+					AnnotationMirror[] annotations = getAnnotationMirrors(field);
 					
 					for (AnnotationMirror annotation: annotations) {
 						namedFieldType.annotateWith(annotation);
@@ -519,8 +577,40 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		Set<NamedType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 		return getAnnotation(annotations, type);
 	}
+
+	public Annotation getSupportedAnnotation(Element element) {
+		Set<NamedType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+		
+		for (NamedType annotationType: annotations) {
+			//This is ugly hack, but what can we do
+			Annotation annotation = toAnnotation(annotationType, element);
+			if (annotation != null) {
+				return annotation;
+			}
+		}
+		
+		for (TypeElement configuration: configurations) {
+			List<VariableElement> fields = ElementFilter.fieldsIn(configuration.getEnclosedElements());
+			
+			for (VariableElement field: fields) {
+				
+				if (field.asType().equals(element.asType())) {
+					for (DefaultConfigurationElement configurationElement : DefaultConfigurationElement.values()) {
+						if (configurationElement.hasAnnotationOnField(field) && configurationElement.appliesFor(field, element)) {
+							Annotation[] result = getAnnotations(field);
+							if (result != null && result.length > 0) {
+								return result[0];
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
 	
-	public AnnotationMirror getSupportedAnnotation(Element element) {
+	public AnnotationMirror getSupportedAnnotationMirror(Element element) {
 		Set<NamedType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 		return getAnnotation(annotations, element);
 	}
@@ -603,7 +693,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 				if (isSupportedByInterface(typeElement)) {
 					processingElements.add(element);
 				} else {
-					AnnotationMirror supportedAnnotation = getSupportedAnnotation(typeElement);
+					AnnotationMirror supportedAnnotation = getSupportedAnnotationMirror(typeElement);
 					if (supportedAnnotation != null && isSupportedAnnotation(supportedAnnotation) && isSupportedKind(element.getKind())) {
 						processingElements.add(element);
 					}

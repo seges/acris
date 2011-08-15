@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -274,10 +275,15 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 							ExecutableElement nestedIdMethod = toHelper.getIdMethod(currentElement);
 
 							if (nestedIdMethod == null) {
-								//TODO Check @Id annotation is the configuration - nested field names
-								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + fieldGetter.getReturnType().toString() +
-										". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
-										Id.class.getCanonicalName() + " annotation.", typeElement);
+								
+								if ((!currentElement.getKind().equals(ElementKind.CLASS) &&
+									!currentElement.getKind().equals(ElementKind.INTERFACE)) ||
+										shouldHaveIdMethod(typeElement, (TypeElement)currentElement)) {
+									//TODO Check @Id annotation is the configuration - nested field names
+									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + fieldGetter.getReturnType().toString() +
+											". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
+											Id.class.getCanonicalName() + " annotation.", typeElement);
+								}
 							} else {
 
 								//TODO Check if is not already generated

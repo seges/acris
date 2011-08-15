@@ -27,6 +27,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
+import sk.seges.sesam.core.annotation.configuration.Configuration;
 import sk.seges.sesam.core.pap.api.SubProcessor;
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
@@ -241,11 +242,13 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				processingElements = new HashSet<Element>();
 
 				for (String annotationType: getSupportedAnnotationTypes()) {
-					TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(annotationType);
-					if (typeElement != null) {
-						Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(typeElement);
-						for (Element element: elementsAnnotatedWith) {
-							processingElements.add(element);
+					if (!annotationType.equals(Configuration.class.getCanonicalName())) {
+						TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(annotationType);
+						if (typeElement != null) {
+							Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(typeElement);
+							for (Element element: elementsAnnotatedWith) {
+								processingElements.add(element);
+							}
 						}
 					}
 				}

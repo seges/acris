@@ -518,7 +518,8 @@ public class TransferObjectHelper {
 		
 			TypeElement typeElement = (TypeElement)element;
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-				return getDomainMethod((TypeElement)((DeclaredType)typeElement.getSuperclass()).asElement(), fieldName, prefix);
+				pathResolver.reset();
+				return getDomainMethod((TypeElement)((DeclaredType)typeElement.getSuperclass()).asElement(), pathResolver, prefix);
 			}
 		}
 		
