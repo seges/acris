@@ -688,7 +688,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		Set<Element> processingElements = new HashSet<Element>();
 		
 		for (Element element : roundEnvironment.getRootElements()) {
-			if (!ListUtils.contains(configurations, element) && !ListUtils.contains(processingElements, element)) {
+			if (element.getAnnotation(Configuration.class) == null && !ListUtils.contains(processingElements, element)) {
 				TypeElement typeElement = (TypeElement) element;
 				if (isSupportedByInterface(typeElement)) {
 					processingElements.add(element);
@@ -712,7 +712,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 					
 					Set<? extends Element> els = roundEnvironment.getElementsAnnotatedWith(typeElement);
 					for (Element element : els) {
-						if (isSupportedKind(element.getKind()) && !ListUtils.contains(configurations, element) && !ListUtils.contains(processingElements, element)) {
+						if (isSupportedKind(element.getKind()) && element.getAnnotation(Configuration.class) == null && !ListUtils.contains(processingElements, element)) {
 							List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
 							for (AnnotationMirror annotationMirror: annotationMirrors) {
 								if (isSupportedAnnotation(annotationMirror)) {
@@ -729,7 +729,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 
 		for (Element element: getConfiguredProcessingTypes()) {
 			//Element is not in the list, element is not configuration and element is supported type
-			if (!ListUtils.contains(processingElements, element) && !ListUtils.contains(configurations, element)  && isSupportedKind(element.getKind())) {
+			if (!ListUtils.contains(processingElements, element) && element.getAnnotation(Configuration.class) == null  && isSupportedKind(element.getKind())) {
 				processingElements.add(element);
 			}
 		}
