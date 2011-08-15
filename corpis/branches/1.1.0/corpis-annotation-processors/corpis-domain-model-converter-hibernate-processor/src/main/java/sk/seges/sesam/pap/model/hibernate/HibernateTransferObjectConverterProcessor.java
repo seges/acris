@@ -18,6 +18,8 @@ import sk.seges.sesam.pap.model.hibernate.util.HibernateHelper;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class HibernateTransferObjectConverterProcessor extends TransferObjectConvertorProcessor {
 
+	private static final String ENTITY_MANAGER_NAME = "entityManager";
+
 	private HibernateHelper hibernateHelper;
 	
 	@Override
@@ -36,16 +38,20 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 		return hibernateHelper.shouldHaveIdMethod(configurationElement, domainElement);
 	}
 
+	@Override
 	protected MutableVariableElement[] getAdditionalConstructorParameters() {
 		MutableVariableElement entityManagerParameter = new MutableVariableElement(processingEnv.getElementUtils().getTypeElement(EntityManager.class.getCanonicalName()), processingEnv);
-		entityManagerParameter.setSimpleName("entityManager");
+		entityManagerParameter.setSimpleName(ENTITY_MANAGER_NAME);
 		return new MutableVariableElement[] {entityManagerParameter};
 	};
 	
 	@Override
 	protected void printDomainInstancer(PrintWriter pw, NamedType type) {
 		pw.println("if (id != null) {");
-		pw.println("return entityManager.find(" + type.getSimpleName() + ".class, id);");
+		pw.println(type.getSimpleName() + " result = " + ENTITY_MANAGER_NAME + ".find(" + type.getSimpleName() + ".class, id);");
+		pw.println("if (result != null) {");
+		pw.println("return result;");
+		pw.println("}");
 		pw.println("}");
 		pw.println();
 		super.printDomainInstancer(pw, type);

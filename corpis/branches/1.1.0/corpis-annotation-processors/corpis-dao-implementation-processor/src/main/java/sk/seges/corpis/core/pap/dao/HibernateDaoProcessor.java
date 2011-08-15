@@ -156,7 +156,7 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 	
 	protected boolean isDomainInterface(TypeElement typeElement) {
 		
-		AnnotationMirror annotationMirror = configurer.getSupportedAnnotation(typeElement);
+		AnnotationMirror annotationMirror = configurer.getSupportedAnnotationMirror(typeElement);
 		if (annotationMirror == null) {
 			return false;
 		}
