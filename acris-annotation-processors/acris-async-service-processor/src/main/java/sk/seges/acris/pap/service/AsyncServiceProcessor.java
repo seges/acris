@@ -64,7 +64,10 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 		}
 
 		imports.add(AsyncCallback.class);
-		imports.add(serviceAnnotationClass);
+		
+		if (serviceAnnotationClass != null) {
+			imports.add(serviceAnnotationClass);
+		}
 
 		return imports.toArray(new Type[] {});
 	}
