@@ -323,12 +323,26 @@ public class TransferObjectHelper {
 				
 		if (configurationElement != null) {
 			
-			TypeElement dto = new TransferObjectConfiguration(configurationElement, processingEnv).getDto();
+			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
+			
+			TypeElement dto = transferObjectConfiguration.getDto();
 			
 			if (dto != null) {
 				return getNameTypes().toImmutableType(dto);
 			}
 
+			if (transferObjectConfiguration.getConfiguration() != null) {
+				configurationElement = transferObjectConfiguration.getConfiguration();
+				
+				transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
+
+				dto = transferObjectConfiguration.getDto();
+				
+				if (dto != null) {
+					return getNameTypes().toImmutableType(dto);
+				}
+			}
+			
 			return getDtoType((ImmutableType)getNameTypes().toType(configurationElement));
 		}
 		

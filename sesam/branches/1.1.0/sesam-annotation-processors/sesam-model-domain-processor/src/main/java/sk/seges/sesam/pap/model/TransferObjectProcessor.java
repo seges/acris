@@ -347,11 +347,22 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				}
 				break;
 			case OUTPUT_INTERFACES:
+				List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
+				
+				List<Type> interfaceTypes = new ArrayList<Type>();
+				
+				if (interfaces != null) {
+					for (TypeMirror interfaceType: interfaces) {
+						interfaceTypes.add(nameTypesUtils.toType(interfaceType));
+					}
+				}
+				
 				dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
 				if (dtoSuperclass == null) {
-					return new Type[] { Serializable.class };
+					ListUtils.add(interfaceTypes, nameTypesUtils.toType(Serializable.class) );
 				}
-				break;
+				
+				return interfaceTypes.toArray(new Type[] {});
 		}
 		
 		return super.getOutputDefinition(type, typeElement);

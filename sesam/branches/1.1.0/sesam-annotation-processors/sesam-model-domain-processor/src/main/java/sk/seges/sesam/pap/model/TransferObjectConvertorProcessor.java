@@ -120,7 +120,19 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				}
 
 				if (toHelper.getDomainSetterMethod(element, context.getDomainFieldPath()) != null) {
-					pw.println(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME + "." + toHelper.toGetter(context.getFieldName()) + ");");
+					if (converterType != null) {
+						String converterName = "converter" + toHelper.toMethod("", context.getFieldName());
+						pw.print(converterType.getCanonicalName() + " " + converterName + " = ");
+						printConverterInstance(pw, converterType);
+						pw.println(";");
+						pw.print(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + converterName + ".fromDto(" + DTO_NAME  + "." + toHelper.toGetter(context.getFieldName()));
+					} else {
+						pw.print(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME + "." + toHelper.toGetter(context.getFieldName()));
+					}
+					if (converterType != null) {
+						pw.print(")");
+					}
+					pw.println(");");
 				} else {
 					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
 					if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {
