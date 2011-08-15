@@ -92,12 +92,26 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 								return;
 							}
 							
-							pw.print(getNameTypes().toType(referenceElement) + " " + currentPath + " = ");
-							printConverterInstance(pw, getOutputClass((ImmutableType)getNameTypes().toType(configurationElement), getPackageValidatorProvider(), processingEnv));
-							pw.println(".getDomainInstance(" + DTO_NAME + "." + toHelper.toGetter(fullPath + toHelper.toMethod(toHelper.toField(toHelper.getIdMethod(referenceElement)))) + ");");
-							instances.add(fullPath);
+							if (toHelper.getIdMethod(referenceElement) != null) {
+								pw.print(getNameTypes().toType(referenceElement) + " " + currentPath + " = ");
+								printConverterInstance(pw, getOutputClass((ImmutableType)getNameTypes().toType(configurationElement), getPackageValidatorProvider(), processingEnv));
+								pw.println(".getDomainInstance(" + DTO_NAME + "." + toHelper.toGetter(fullPath + toHelper.toMethod(toHelper.toField(toHelper.getIdMethod(referenceElement)))) + ");");
+								instances.add(fullPath);
+							} else {
+								pw.println(getNameTypes().toType(referenceElement) + " " + currentPath + " = " + RESULT_NAME + "." + toHelper.toGetter(currentPath) + ";");
+								pw.println("if (" + RESULT_NAME + "." + toHelper.toGetter(currentPath) + " == null) {");
+								pw.print(currentPath + " = ");
+								printConverterInstance(pw, getOutputClass((ImmutableType)getNameTypes().toType(configurationElement), getPackageValidatorProvider(), processingEnv));
+								pw.println(".createDomainInstance(null);");
+								instances.add(fullPath);
+								pw.println("}");
+								
+							}
 						}
-						pw.println(previousPath + "." + toHelper.toSetter(currentPath) + "(" + currentPath + ");");
+						
+						if (instances.contains(currentPath)) {
+							pw.println(previousPath + "." + toHelper.toSetter(currentPath) + "(" + currentPath + ");");
+						}
 					}
 
 					previousPath = currentPath;
@@ -106,7 +120,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				}
 
 				if (toHelper.getDomainSetterMethod(element, context.getDomainFieldPath()) != null) {
-					pw.println(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME + "." + toHelper.toGetter(context.getFieldName()) + ");");					
+					pw.println(RESULT_NAME + "." + toHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME + "." + toHelper.toGetter(context.getFieldName()) + ");");
 				} else {
 					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
 					if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {

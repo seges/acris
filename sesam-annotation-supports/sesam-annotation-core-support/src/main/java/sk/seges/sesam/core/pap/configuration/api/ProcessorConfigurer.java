@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.pap.configuration.api;
 
+import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -15,7 +16,8 @@ public interface ProcessorConfigurer {
 
 	Set<Element> getElements(RoundEnvironment roundEnvironment);
 	
-	AnnotationMirror getSupportedAnnotation(Element element);
+	AnnotationMirror getSupportedAnnotationMirror(Element element);
+	Annotation getSupportedAnnotation(Element element);
 
 	AnnotationValue getAnnotationValueByReturnType(TypeElement returnType, AnnotationMirror annotationMirror);
 	AnnotationValue getAnnotationValueByReturnType(Class<?> returnClass, AnnotationMirror annotationMirror);

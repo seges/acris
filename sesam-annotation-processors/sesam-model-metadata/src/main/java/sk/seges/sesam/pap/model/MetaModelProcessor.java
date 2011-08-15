@@ -93,9 +93,14 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		};
 	}
 
+	private MetaModelProcessorConfigurer configurer;
+
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
-		return new MetaModelProcessorConfigurer();
+		if (configurer == null) {
+			configurer = new MetaModelProcessorConfigurer();
+		}
+		return configurer;
 	}
 	
 	@Override
@@ -336,7 +341,9 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		Set<ModelPropertyConverter> converterInstances = selectedConverters;
 
 		if (converterInstances == null) {
-			MetaModel annotation = ((TypeElement) element).getAnnotation(MetaModel.class);
+			MetaModel annotation = (MetaModel)getConfigurer().getSupportedAnnotation(element);
+			
+//			MetaModel annotation = ((TypeElement) element).getAnnotation(MetaModel.class);
 			if (annotation != null) {
 				AnnotationMirror metaModelAnnotation = ProcessorUtils.containsAnnotation(element, MetaModel.class);
 				if (metaModelAnnotation != null) {
