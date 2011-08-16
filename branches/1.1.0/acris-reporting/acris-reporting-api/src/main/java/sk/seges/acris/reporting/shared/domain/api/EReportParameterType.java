@@ -7,5 +7,5 @@ package sk.seges.acris.reporting.shared.domain.api;
  */
 public enum EReportParameterType {
 	STRING, DATE, NUMBER,
-	BOOLEAN
+	BOOLEAN, FILE_TYPE
 }
