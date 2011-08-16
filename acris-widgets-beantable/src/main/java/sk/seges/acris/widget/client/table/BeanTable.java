@@ -384,7 +384,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 				keypressable.addKeyPressHandler(new KeyPressHandler() {
 					@Override
 					public void onKeyPress(KeyPressEvent event) {
-						if (KeyCodes.KEY_ENTER == event.getCharCode()) {
+						int keyCode = event.getNativeEvent().getKeyCode();
+						if (KeyCodes.KEY_ENTER == keyCode) {
 							reconstructFilterable();
 						}
 					}
