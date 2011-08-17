@@ -103,18 +103,33 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		return configurer;
 	}
 	
+	protected void processInterfaces(Set<String> classConstantsCache, HashSet<String> hierarchyTypes, PrintWriter pw, TypeElement element) {
+		if (element.getInterfaces() != null && element.getInterfaces().size() > 0) {
+			for (TypeMirror interfaceType: element.getInterfaces()) {
+				if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+					Element interfaceElement = ((DeclaredType)interfaceType).asElement();
+					if (interfaceElement.getKind().equals(ElementKind.INTERFACE)) {
+						processClass(classConstantsCache, hierarchyTypes, pw, (TypeElement)interfaceElement);
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 		HashSet<String> hierarchyTypes = new HashSet<String>();
 		Set<String> classConstantsCache = new HashSet<String>();
 
 		processClass(classConstantsCache, hierarchyTypes, pw, element);
+		processInterfaces(classConstantsCache, hierarchyTypes, pw, element);
 
 		while (element.getSuperclass() != null) {
 			if (element.getSuperclass() instanceof DeclaredType) {
 				element = (TypeElement) ((DeclaredType) element.getSuperclass()).asElement();
 
 				processClass(classConstantsCache, hierarchyTypes, pw, element);
+				processInterfaces(classConstantsCache, hierarchyTypes, pw, element);
 			} else {
 				break;
 			}
