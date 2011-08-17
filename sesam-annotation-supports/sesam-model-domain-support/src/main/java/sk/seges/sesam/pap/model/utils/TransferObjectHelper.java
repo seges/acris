@@ -33,6 +33,12 @@ import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LayerType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
+import sk.seges.sesam.core.pap.structure.api.PackageValidator;
+import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.annotation.Field;
 import sk.seges.sesam.pap.model.annotation.Ignore;
@@ -311,7 +317,14 @@ public class TransferObjectHelper {
 		return null;
 	}
 
+	public static PackageValidatorProvider getPackageValidationProvider() {
+		return new DefaultPackageValidatorProvider();
+	}
+	
 	public static ImmutableType getDtoType(ImmutableType configurationType) {
+		PackageValidator packageValidator = getPackageValidationProvider().get(configurationType).
+				moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);
+		configurationType = configurationType.changePackage(packageValidator);
 		return configurationType.getSimpleName().endsWith(DEFAULT_SUFFIX) ?
 				configurationType.setName(configurationType.getSimpleName().substring(0, configurationType.getSimpleName().length() - DEFAULT_SUFFIX.length())) :
 				configurationType.addClassSufix(DTO_SUFFIX);
@@ -460,6 +473,10 @@ public class TransferObjectHelper {
 		}		
 		
 		return null;
+	}
+
+	public boolean isDelegateConfiguration(Element configurationElement) {
+		return new TransferObjectConfiguration(configurationElement, processingEnv).getConfiguration() != null;
 	}
 
 	public TypeElement getDomainTypeElement(Element configurationElement) {

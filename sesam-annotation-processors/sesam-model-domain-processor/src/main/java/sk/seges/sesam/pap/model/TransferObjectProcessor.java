@@ -383,9 +383,9 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				new HashCodePrinter(pw)
 		};
 	}
-
-	public static ImmutableType getOutputClass(ImmutableType mutableType) {	
-		return TransferObjectHelper.getDtoType(mutableType);
+	
+	public static ImmutableType getOutputClass(ImmutableType immutableType) {	
+		return TransferObjectHelper.getDtoType(immutableType);
 	}
 
 	@Override

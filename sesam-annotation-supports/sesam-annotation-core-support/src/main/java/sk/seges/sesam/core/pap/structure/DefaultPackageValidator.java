@@ -2,14 +2,13 @@ package sk.seges.sesam.core.pap.structure;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
-import sk.seges.sesam.core.pap.structure.api.PackageValidator.SubPackageType;
 
 public class DefaultPackageValidator implements PackageValidator {
 
 	protected DefaultPackageValidator() {};
 	
 	public enum PackageLevel {
-		GROUP(true), ARTIFACT(true), LOCATION(true), BUSINESS(false), LAYER(true), TYPE(false); 
+		GROUP(true), ARTIFACT(true), LOCATION(true), BUSINESS(false), LAYER(true), TYPE(true); 
 		
 		private boolean required;
 		
@@ -51,7 +50,7 @@ public class DefaultPackageValidator implements PackageValidator {
 	}
 	
 	public enum ImplementationType implements SubPackageType {
-		API("api"), HIBERNATE("hibernate"), TWIG_PERSIST("twig"), SPRING("spring");
+		API("api"), DTO("dto"), HIBERNATE("hibernate"), TWIG_PERSIST("twig"), SPRING("spring");
 
 		private String name;
 
@@ -123,6 +122,14 @@ public class DefaultPackageValidator implements PackageValidator {
 		return this;
 	}
 
+	public DefaultPackageValidator moveTo(ImplementationType implementationType) {
+		if (isValid()) {
+			//TODO
+			this.type = implementationType.getName();
+		}
+		return this;
+	}
+
 	public DefaultPackageValidator append(ImplementationType type) {
 		if (isValid()) {
 			this.type += "." + type.getName();
@@ -132,6 +139,13 @@ public class DefaultPackageValidator implements PackageValidator {
 		return this;
 	}
 
+	public DefaultPackageValidator clearType() {
+		if (isValid()) {
+			this.type = null;
+		}
+		return this;
+	}
+	
 	public DefaultPackageValidator setType(String type) {
 		if (isValid()) {
 			this.type += "." + type;
@@ -228,6 +242,9 @@ public class DefaultPackageValidator implements PackageValidator {
 		}
 		if (subPackageType instanceof LayerType) {
 			return moveTo((LayerType)subPackageType);
+		}
+		if (subPackageType instanceof ImplementationType) {
+			return moveTo((ImplementationType)subPackageType);
 		}
 		return this;
 	}

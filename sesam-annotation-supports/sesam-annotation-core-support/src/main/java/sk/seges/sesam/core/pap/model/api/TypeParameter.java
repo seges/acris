@@ -2,7 +2,7 @@ package sk.seges.sesam.core.pap.model.api;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 
-public interface TypeParameter {
+public interface TypeParameter extends NamedType {
 
 	public static final String UNDEFINED = "?";
 	

@@ -61,7 +61,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
-		
+				
 		TypeElement domainObjectClass = toHelper.getDomainTypeElement(element);
 
 		if (domainObjectClass == null) {
@@ -109,9 +109,17 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		return ProcessorUtils.erasure(typeElement, typeVar);
 	}
 
+	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
+		if (toHelper.isDelegateConfiguration(element)) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv);
+
 		return super.process(annotations, roundEnv);
 	}
 	
@@ -175,7 +183,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 
 		context.setDomainMethodReturnType(domainReturnType);
 
-		if (domainReturnType.getKind().equals(TypeKind.DECLARED)) {
+		if (context.getMethod().getReturnType().equals(TypeKind.VOID) && domainReturnType.getKind().equals(TypeKind.DECLARED)) {
 			
 			NamedType domainReturnNamedType = getNameTypes().toType(domainReturnType);
 			
@@ -194,7 +202,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 					return false;
 				}
 			}
-		} else {
+		} else if (context.getMethod().getReturnType().equals(TypeKind.VOID)) {
 			if (!type.getCanonicalName().equals(domainReturnType.toString())) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type from domain method " + domainReturnType.toString() + " " + context.getDomainTypeElement().toString() + 
 						"." + context.getDomainFieldName() + " is not compatible with specified return type in the DTO " + type.toString() + ". Please, check your configuration " + 
@@ -209,7 +217,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 	protected void processMethods(TypeElement typeElement, TypeElement domainObjectClass, MappingType mappingType, ElementPrinter printer) {
 
 		printer.initialize(typeElement);
-		
+		//TODO add support for super classes
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(typeElement.getEnclosedElements());
 		List<ExecutableElement> methods = ElementFilter.methodsIn(domainObjectClass.getEnclosedElements());
 
