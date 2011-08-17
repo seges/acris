@@ -1,10 +1,7 @@
 package sk.seges.sesam.core.pap.utils;
 
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -21,6 +18,7 @@ import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.mutable.MutableVariableElement;
 
@@ -28,10 +26,118 @@ public class MethodHelper {
 
 	protected ProcessingEnvironment processingEnv;
 	private NameTypesUtils nameTypes;
-	
+
+	public static final String SETTER_PREFIX = "set";
+	public static final String GETTER_PREFIX = "get";
+
 	public MethodHelper(ProcessingEnvironment processingEnv, NameTypesUtils nameTypes) {
 		this.processingEnv = processingEnv;
 		this.nameTypes = nameTypes;
+	}
+
+	public String toMethod(String name) {
+
+		if (name.length() < 2) {
+			return name.toUpperCase();
+		}
+
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+
+	public String toMethod(String prefix, String fieldName) {
+		PathResolver pathResolver = new PathResolver(fieldName);
+
+		if (pathResolver.isNested()) {
+
+			int i = 0;
+
+			String result = "";
+
+			while (pathResolver.hasNext()) {
+				if (i > 0) {
+					result += ".";
+				}
+				String path = pathResolver.next();
+
+				if (pathResolver.hasNext()) {
+					result += toGetter(path);
+				} else {
+					result += toMethod(prefix, path);
+				}
+				i++;
+			}
+
+			return result;
+		}
+
+		return prefix + toMethod(fieldName);
+	}
+
+	public String toSetter(ExecutableElement method) {
+		if (method.getSimpleName().toString().startsWith(GETTER_PREFIX)) {
+			return toSetter(method.getSimpleName().toString().substring(GETTER_PREFIX.length()));
+		}
+		return toSetter(method.getSimpleName().toString());
+	}
+
+	public String toField(String fieldName) {
+		String[] pathParts = fieldName.split("\\.");
+		String result = "";
+
+		for (String path : pathParts) {
+			result += toMethod(path);
+		}
+
+		if (result.length() < 2) {
+			return result.toLowerCase();
+		}
+
+		return result.substring(0, 1).toLowerCase() + result.substring(1);
+	}
+
+	public String toGetter(String fieldName) {
+		return toMethod(GETTER_PREFIX, fieldName) + "()";
+	}
+
+	public String toGetter(ExecutableElement method) {
+		return toGetter(method.getSimpleName().toString());
+	}
+
+	public String toSetter(String fieldName) {
+		return toMethod(SETTER_PREFIX, fieldName);
+	}
+
+	public String toField(ExecutableElement getterMethod) {
+
+		String result = "";
+
+		if (getterMethod.getSimpleName().toString().startsWith(GETTER_PREFIX)) {
+			result = getterMethod.getSimpleName().toString().substring(GETTER_PREFIX.length());
+		} else {
+			result = getterMethod.getSimpleName().toString();
+		}
+
+		if (result.length() < 2) {
+			return result.toLowerCase();
+		}
+
+		return result.substring(0, 1).toLowerCase() + result.substring(1);
+	}
+
+	public Element getField(ExecutableElement method) {
+		return getField(method.getEnclosingElement(), toField(method));
+	}
+	
+	private Element getField(Element element, String name) {
+		List<VariableElement> fields = ElementFilter.fieldsIn(element.getEnclosedElements());
+		
+		for (VariableElement field: fields) {
+			if (field.getSimpleName().toString().equals(name)) {
+				return field;
+			}
+		}
+		
+		return null;
 	}
 	
 	public void copyMethodDefinition(ExecutableElement method, ClassSerializer serializer, PrintWriter pw) {
@@ -70,16 +176,11 @@ public class MethodHelper {
 		}
 	}
 
-	public Map<ExecutableElement, List<String>> copyConstructors(NamedType outputName, TypeElement fromType, PrintWriter pw, MutableVariableElement... additionalParameters) {
+	public void copyConstructors(NamedType outputName, TypeElement fromType, PrintWriter pw, MutableVariableElement... additionalParameters) {
 
-		Map<ExecutableElement, List<String>> result = new HashMap<ExecutableElement, List<String>>();
-		
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(fromType.getEnclosedElements());
 		
 		for (ExecutableElement constructor: constructors) {
-			
-			List<String> parameterNames = new LinkedList<String>();
-			result.put(constructor, parameterNames);
 			
 			pw.print("public " + outputName.getSimpleName() + "(");
 			int i = 0;
@@ -95,8 +196,6 @@ public class MethodHelper {
 				} else {
 					pw.print(parameter.asType().toString() + " " + parameterName);
 				}
-				
-				parameterNames.add(parameterName);
 				
 				i++;
 			}
@@ -114,8 +213,6 @@ public class MethodHelper {
 				} else {
 					pw.print(additionalParameter.toString() + " " + parameterName);
 				}
-				
-				parameterNames.add(parameterName);
 
 				i++;
 			}
@@ -139,7 +236,5 @@ public class MethodHelper {
 			pw.println("}");
 			pw.println();
 		}
-		
-		return result;
 	}
 }
