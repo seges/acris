@@ -25,7 +25,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
-		hibernateHelper = new HibernateHelper();
+		hibernateHelper = new HibernateHelper(methodHelper);
 	}
 	
 	@Override
