@@ -21,7 +21,7 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 	protected abstract DTO createDtoInstance(Serializable id);
 
 	@SuppressWarnings("unchecked")
-	public Collection<DTO> toDto(Collection<DOMAIN> domains) {
+	public Collection<DTO> toDto(Collection<?> domains) {
 		if (domains == null) {
 			return null;
 		}
@@ -33,10 +33,10 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 			throw new RuntimeException("Unable to create collection instance for class " + domains.getClass().getCanonicalName(), e);
 		}
 		
-		Iterator<DOMAIN> iterator = domains.iterator();
+		Iterator<?> iterator = domains.iterator();
 		
 		while (iterator.hasNext()) {
-			result.add(toDto(iterator.next()));
+			result.add(toDto((DOMAIN)iterator.next()));
 		}
 		
 		return result;
@@ -75,7 +75,7 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Collection<DOMAIN> fromDto(Collection<DTO> dtos) {
+	public Collection<DOMAIN> fromDto(Collection<?> dtos) {
 		if (dtos == null) {
 			return null;
 		}
@@ -87,10 +87,10 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 			throw new RuntimeException("Unable to create collection instance for class " + dtos.getClass().getCanonicalName(), e);
 		}
 		
-		Iterator<DTO> iterator = dtos.iterator();
+		Iterator<?> iterator = dtos.iterator();
 		
 		while (iterator.hasNext()) {
-			result.add(fromDto(iterator.next()));
+			result.add(fromDto((DTO)iterator.next()));
 		}
 		
 		return result;

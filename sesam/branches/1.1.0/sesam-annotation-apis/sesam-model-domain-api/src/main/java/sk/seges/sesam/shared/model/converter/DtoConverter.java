@@ -6,11 +6,13 @@ import java.util.Map;
 
 public interface DtoConverter<DTO, DOMAIN> {
 
+	DTO convertToDto(DTO result, DOMAIN domain);
 	DTO toDto(DOMAIN domain);
-	Collection<DTO> toDto(Collection<DOMAIN> domains);
+	Collection<DTO> toDto(Collection<?> domains);
 	Map<?, ?> toDto(Map<?, ?> domains);
 	
+	DOMAIN convertFromDto(DOMAIN result, DTO domain);
 	DOMAIN fromDto(DTO dto);
-	Collection<DOMAIN> fromDto(Collection<DTO> dtos);
+	Collection<DOMAIN> fromDto(Collection<?> dtos);
 	Map<?, ?> fromDto(Map<?, ?> dtos);
 }

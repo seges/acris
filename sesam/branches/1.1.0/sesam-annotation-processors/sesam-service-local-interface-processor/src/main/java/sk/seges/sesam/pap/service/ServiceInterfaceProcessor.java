@@ -54,7 +54,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv);
+		toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
 		return super.process(annotations, roundEnv);
 	}
 	

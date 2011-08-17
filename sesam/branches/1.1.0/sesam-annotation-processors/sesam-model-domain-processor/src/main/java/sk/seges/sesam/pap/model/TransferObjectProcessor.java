@@ -265,12 +265,12 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 			
 			//modifier = context.getModifier() != null ? (context.getModifier().toString() + " ") : "";
 			
-			pw.println(modifier + fieldTypeName + " " + toHelper.toGetter(context.getFieldName()) + " {");
+			pw.println(modifier + fieldTypeName + " " + methodHelper.toGetter(context.getFieldName()) + " {");
 			pw.println("return " + context.getFieldName() + ";");
 			pw.println("}");
 			pw.println();
 
-			pw.println(modifier + "void " + toHelper.toSetter(context.getFieldName()) + 
+			pw.println(modifier + "void " + methodHelper.toSetter(context.getFieldName()) + 
 					"(" + fieldTypeName + " " + context.getFieldName() + ") {");
 			pw.println("this." + context.getFieldName() + " = " + context.getFieldName() + ";");
 			pw.println("}");

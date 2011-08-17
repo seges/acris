@@ -186,7 +186,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv);
+		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv, methodHelper);
 		this.serviceHelper = new ServiceHelper();
 		return super.process(annotations, roundEnv);
 	}
