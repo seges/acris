@@ -1,6 +1,10 @@
 package sk.seges.sesam.core.pap.model;
 
 import java.util.Arrays;
+import java.util.Set;
+
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -37,34 +41,7 @@ class TypeParameterClass implements TypeParameter {
 	}
 
 	public String toString(NamedType inputClass, ClassSerializer serializer) {
-		String result = "";
-
-		if (getVariable() != null) {
-			result += getVariable();
-		}
-
-		if (getBounds() != null) {
-			if (getVariable() != null) {
-				result += " extends ";
-			}
-			int i = 0;
-			for (TypeVariable typeVariable : getBounds()) {
-				if (i > 0) {
-					result += " & ";
-				}
-				if (typeVariable.getUpperBound().equals(NamedType.THIS)) {
-					result += inputClass.toString(ClassSerializer.SIMPLE);
-				} else {
-					result += ClassUtils.toString(inputClass, typeVariable.getUpperBound(), serializer, true);
-				}
-				i++;
-			}
-		}
-
-		if (result.length() == 0) {
-			throw new IllegalArgumentException("Invalid type parameter");
-		}
-		return result;
+		return toString(inputClass, serializer, true);
 	}
 
 	public String toString() {
@@ -102,6 +79,50 @@ class TypeParameterClass implements TypeParameter {
 	}
 
 	@Override
+	public String toString(ClassSerializer serializer) {
+		return toString(null, serializer, true);
+	}
+
+	public String toString(NamedType inputClass, ClassSerializer serializer, boolean typed) {
+		String result = "";
+
+		if (getVariable() != null) {
+			result += getVariable() + " ";
+		}
+
+		if (getBounds() != null) {
+			if (getVariable() != null) {
+				result += "extends ";
+			}
+
+			int i = 0;
+			
+			for (TypeVariable typeVariable : getBounds()) {
+				if (i > 0) {
+					result += " & ";
+				}
+
+				if (typeVariable.getUpperBound().equals(NamedType.THIS)) {
+					if (inputClass != null) {
+						result += inputClass.toString(ClassSerializer.SIMPLE);
+					} else {
+						result += "_THIS_";
+					}
+				} else {
+					if (typeVariable.getUpperBound() instanceof Class) {
+						result += ClassUtils.toString((Class<?>)typeVariable.getUpperBound(), serializer);
+					} else {
+						result += ClassUtils.toString(inputClass, typeVariable.getUpperBound(), serializer, true);
+					}
+				}
+				i++;
+			}
+		}
+
+		return result;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -121,5 +142,40 @@ class TypeParameterClass implements TypeParameter {
 		if (!Arrays.equals(bounds, other.bounds))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String getPackageName() {
+		return "";
+	}
+
+	@Override
+	public String getSimpleName() {
+		return toString(ClassSerializer.SIMPLE);
+	}
+
+	@Override
+	public String getCanonicalName() {
+		return toString(ClassSerializer.CANONICAL);
+	}
+
+	@Override
+	public String getQualifiedName() {
+		return toString(ClassSerializer.QUALIFIED);
+	}
+
+	@Override
+	public TypeMirror asType() {
+		return null;
+	}
+
+	@Override
+	public void annotateWith(AnnotationMirror annotationMirror) {
+		throw new RuntimeException("Unsupported operation. TypeParameter cannot be annotated with " + annotationMirror.toString());
+	}
+
+	@Override
+	public Set<AnnotationMirror> getAnnotations() {
+		throw new RuntimeException("Unsupported operation. TypeParameter cannot be annotated.");
 	}
 }

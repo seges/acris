@@ -117,8 +117,6 @@ public class NameTypesUtils implements NameTypes {
 		case SHORT:
 		case VOID:
 			return new InputClass(typeMirror, (String)null, typeMirror.getKind().name().toLowerCase());
-		case TYPEVAR:
-			//TODO
 		}
 		
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
@@ -136,8 +134,18 @@ public class NameTypesUtils implements NameTypes {
 		case LONG:
 		case SHORT:
 		case VOID:
-		case TYPEVAR:
 			return toImmutableType(typeMirror);
+
+		case TYPEVAR:
+			TypeVariable typeVariable = ((TypeVariable)typeMirror);
+			
+			String name = typeVariable.asElement().getSimpleName().toString();
+			
+			if (typeVariable.getUpperBound() != null) {
+				return TypeParameterBuilder.get(name, toType(typeVariable.getUpperBound()));
+			}
+			//TODO lower bound is not supported for now
+			return TypeParameterBuilder.get(name);
 		case ARRAY:
 			return new ArrayNamedType(toType(((ArrayType)typeMirror).getComponentType()));
 		}

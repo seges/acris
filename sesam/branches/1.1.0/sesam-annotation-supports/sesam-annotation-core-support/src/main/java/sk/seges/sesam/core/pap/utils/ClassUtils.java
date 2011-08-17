@@ -35,4 +35,16 @@ public class ClassUtils {
 		
 		throw new IllegalArgumentException("Not supported annotation element " + type.toString());
 	}
+
+	public static <T extends Type> String toString(NamedType inputClass, T[] types, ClassSerializer serializer, boolean typed) {
+		String result = "";
+		for (Type type: types) {
+			if (result.length() > 0) {
+				result += ", ";
+			}
+			result += toString(inputClass, type, serializer, typed);
+		}
+		
+		return result;
+	}
 }

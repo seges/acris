@@ -21,6 +21,9 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration.DtoMappingType;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
@@ -43,6 +46,9 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 		if (simpleName.endsWith(REMOTE_SUFFIX)) {
 			simpleName = simpleName.substring(0, simpleName.length() - REMOTE_SUFFIX.length());
 		}
+		PackageValidator packageValidator = new DefaultPackageValidatorProvider().get(mutableType.getPackageName());
+		packageValidator.moveTo(LocationType.SERVER);
+		mutableType = mutableType.changePackage(packageValidator);
 		return mutableType.setName(simpleName + LOCAL_SUFFIX);
 	}
 

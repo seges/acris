@@ -15,4 +15,5 @@ public interface PackageValidator {
 	PackageValidator append(ImplementationType type);
 
 	PackageValidator setType(String type);
+	PackageValidator clearType();
 }
