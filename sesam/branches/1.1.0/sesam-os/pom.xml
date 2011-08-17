@@ -44,6 +44,7 @@
 		<module>../sesam-annotation-apis</module>
 		<module>../sesam-annotation-supports</module>
 		<module>../sesam-annotation-processors</module>
+		<module>../sesam-annotation-archetype</module>
 		<!--module>../sesam-showcase</module-->
 		<module>../sesam-selenium-support</module>
 	</modules>
