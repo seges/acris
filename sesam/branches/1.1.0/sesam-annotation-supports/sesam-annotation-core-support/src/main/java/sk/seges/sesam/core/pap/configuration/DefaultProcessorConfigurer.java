@@ -65,7 +65,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			}
 
 			@Override
-			public boolean appliesFor(VariableElement field, Element element) {
+			public boolean appliesFor(VariableElement field, Element element, ProcessingEnvironment pe) {
 				for (AnnotationMirror annotationMirror: element.getAnnotationMirrors()) {
 					if (annotationMirror.getAnnotationType().toString().equals(element.asType().toString())) {
 						return true;
@@ -93,8 +93,8 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			};
 
 			@Override
-			public boolean appliesFor(VariableElement field, Element element) {
-				return field.asType().equals(element.asType());
+			public boolean appliesFor(VariableElement field, Element element, ProcessingEnvironment pe) {
+				return pe.getTypeUtils().isSameType(pe.getTypeUtils().erasure(field.asType()), pe.getTypeUtils().erasure(element.asType()));
 			};
 		}, 
 
@@ -116,7 +116,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			};
 
 			@Override
-			public boolean appliesFor(VariableElement field, Element element) {
+			public boolean appliesFor(VariableElement field, Element element, ProcessingEnvironment pe) {
 				return ProcessorUtils.implementsType(element.asType(), field.asType());
 			};
 		};
@@ -132,7 +132,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		}
 		
 		public abstract boolean hasAnnotationOnField(VariableElement element);
-		public abstract boolean appliesFor(VariableElement field, Element element);
+		public abstract boolean appliesFor(VariableElement field, Element element, ProcessingEnvironment pe);
 	}
 
 	class DelayedMessager implements Messager {
@@ -594,9 +594,11 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			
 			for (VariableElement field: fields) {
 				
-				if (field.asType().equals(element.asType())) {
+				
+				if (processingEnv.getTypeUtils().isSameType(processingEnv.getTypeUtils().erasure(field.asType()), 
+														  	processingEnv.getTypeUtils().erasure(element.asType()))) {
 					for (DefaultConfigurationElement configurationElement : DefaultConfigurationElement.values()) {
-						if (configurationElement.hasAnnotationOnField(field) && configurationElement.appliesFor(field, element)) {
+						if (configurationElement.hasAnnotationOnField(field) && configurationElement.appliesFor(field, element, processingEnv)) {
 							Annotation[] result = getAnnotations(field);
 							if (result != null && result.length > 0) {
 								return result[0];
