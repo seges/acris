@@ -27,6 +27,14 @@ public class ProcessorContext {
 		this(typeElement, modifier, method, method);
 	}
 
+	public ProcessorContext(TypeElement configurationElement, Modifier modifier, ExecutableElement method,
+			ExecutableElement domainMethod) {
+		setConfigurationElement(configurationElement);
+		setModifier(modifier);
+		setMethod(method);
+		setDomainMethod(domainMethod);
+	}
+
 	public void setDomainMethodReturnType(TypeMirror domainMethodReturnType) {
 		this.domainMethodReturnType = domainMethodReturnType;
 	}
@@ -73,14 +81,6 @@ public class ProcessorContext {
 
 	public String getFieldName() {
 		return fieldName;
-	}
-
-	public ProcessorContext(TypeElement configurationElement, Modifier modifier, ExecutableElement method,
-			ExecutableElement domainMethod) {
-		setConfigurationElement(configurationElement);
-		setModifier(modifier);
-		setMethod(method);
-		setDomainMethod(domainMethod);
 	}
 
 	public void setConfigurationElement(TypeElement configurationElement) {

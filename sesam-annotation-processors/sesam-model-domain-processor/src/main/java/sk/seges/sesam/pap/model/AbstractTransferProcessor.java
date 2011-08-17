@@ -20,6 +20,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
+import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
@@ -29,7 +30,6 @@ import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.model.ElementPrinter;
-import sk.seges.sesam.pap.model.model.PathResolver;
 import sk.seges.sesam.pap.model.model.ProcessorContext;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
@@ -118,14 +118,14 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv);
+		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv, methodHelper);
 
 		return super.process(annotations, roundEnv);
 	}
 	
 	protected boolean initializeContext(ProcessorContext context) {
 		
-		context.setFieldName(toHelper.toField(context.getMethod()));
+		context.setFieldName(methodHelper.toField(context.getMethod()));
 		context.setDomainTypeElement(toHelper.getDomainTypeElement(context.getConfigurationElement()));
 
 		NamedType type = null;
@@ -179,7 +179,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		context.setFieldType(type);
 
 		context.setDomainFieldPath(toHelper.getFieldPath(context.getMethod()));
-		context.setDomainFieldName(toHelper.toGetter(context.getDomainFieldPath()));
+		context.setDomainFieldName(methodHelper.toGetter(context.getDomainFieldPath()));
 
 		context.setDomainMethodReturnType(domainReturnType);
 
@@ -299,9 +299,9 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 									continue;
 								}
 
-								context.setDomainFieldPath(fullPath + "." + toHelper.toField(nestedIdMethod));
-								context.setFieldName(toHelper.toField(context.getDomainFieldPath()));
-								context.setDomainFieldName(toHelper.toGetter(context.getDomainFieldPath()));
+								context.setDomainFieldPath(fullPath + "." + methodHelper.toField(nestedIdMethod));
+								context.setFieldName(methodHelper.toField(context.getDomainFieldPath()));
+								context.setDomainFieldName(methodHelper.toGetter(context.getDomainFieldPath()));
 
 								printer.print(context);
 							}

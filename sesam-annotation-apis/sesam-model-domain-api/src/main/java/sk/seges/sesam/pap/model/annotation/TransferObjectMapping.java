@@ -47,6 +47,16 @@ public @interface TransferObjectMapping {
 		protected Void createDtoInstance(Serializable id) {
 			return null;
 		}
+
+		@Override
+		public Void convertToDto(Void result, Void domain) {
+			return null;
+		}
+
+		@Override
+		public Void convertFromDto(Void result, Void domain) {
+			return null;
+		}
 	}
 
 	/**
