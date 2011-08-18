@@ -43,6 +43,7 @@
     * [AcrisSEO SEO]
   * Platform
     * [CodeGenerationPlatform Generate application skelet]
+      * [AnnotationProcessing_OwnProcessor Quick-start Own Annotation Processor]
       * [AnnotationProcessing_Maven Annotation processing maven integration]
       * [AnnotationProcessing_Eclipse Annotation processing eclipse integration]
       * [AnnotationProcessing_DebuggingMaven Debugging annotation processorts using maven]
