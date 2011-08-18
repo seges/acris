@@ -99,6 +99,11 @@ public class InputClass extends AbstractPrintableType implements NamedType, Immu
 		return result;
 	}
 
+	@Override
+	public ImmutableType changePackage(PackageValidator packageValidator) {
+		return changePackage(packageValidator.toString());
+	}
+
 	public String getCanonicalName() {
 		if (enclosedClass != null) {
 			return enclosedClass.getCanonicalName() + "." + simpleClassName;
@@ -169,12 +174,6 @@ public class InputClass extends AbstractPrintableType implements NamedType, Immu
 	@Override
 	public TypeMirror asType() {
 		return type;
-	}
-
-	@Override
-	public ImmutableType changePackage(PackageValidator packageValidator) {
-		packageName = packageValidator.toString();
-		return this;
 	}
 	
 	public void annotateWith(AnnotationMirror annotation) {
