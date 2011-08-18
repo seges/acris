@@ -64,4 +64,29 @@ public class ArrayNamedType implements NamedType {
 	public Set<AnnotationMirror> getAnnotations() {
 		return new HashSet<AnnotationMirror>();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((componentType == null) ? 0 : componentType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArrayNamedType other = (ArrayNamedType) obj;
+		if (componentType == null) {
+			if (other.componentType != null)
+				return false;
+		} else if (!componentType.equals(other.componentType))
+			return false;
+		return true;
+	}
 }

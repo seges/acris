@@ -379,8 +379,8 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		List<ExecutableElement> remoteMethods = ElementFilter.methodsIn(remoteServiceInterface.getEnclosedElements());
 
-		Map<TypeMirror, String> dtoConverters = new HashMap<TypeMirror, String>();
-		Map<TypeMirror, String> domainConverters = new HashMap<TypeMirror, String>();
+		Map<NamedType, String> dtoConverters = new HashMap<NamedType, String>();
+		Map<NamedType, String> domainConverters = new HashMap<NamedType, String>();
 
 		for (ExecutableElement remoteMethod : remoteMethods) {
 			ExecutableElement localMethod = getDomainMethodPair(remoteMethod, element, remoteServiceInterface);
@@ -392,16 +392,23 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				continue;
 			}
 
-			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && !dtoConverters.containsKey(remoteMethod.getReturnType())) {
-				String convertToDtoMethodName = printToDtoConvertMethod(remoteMethod.getReturnType(), remoteServiceInterface, parameters, pw);
-				dtoConverters.put(remoteMethod.getReturnType(), convertToDtoMethodName);
+
+			NamedType returnDtoType = null;
+			
+			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
+				returnDtoType = toHelper.getDtoMappingClass(remoteMethod.getReturnType(), remoteServiceInterface, DtoMappingType.DTO);
+				if (!dtoConverters.containsKey(returnDtoType)) {
+					String convertToDtoMethodName = printToDtoConvertMethod(remoteMethod.getReturnType(), remoteServiceInterface, parameters, pw);
+					dtoConverters.put(returnDtoType, convertToDtoMethodName);
+				}
 			}
 
 			for (int index = 0; index < localMethod.getParameters().size(); index++) {
 				TypeMirror dtoType = remoteMethod.getParameters().get(index).asType();
-				if (!domainConverters.containsKey(dtoType)) {
+				NamedType parameterDomainType = toHelper.getDtoMappingClass(dtoType, remoteServiceInterface, DtoMappingType.DOMAIN);
+				if (!domainConverters.containsKey(parameterDomainType)) {
 					String convertFromDtoMethodName = printFromDtoConvertMethod(dtoType, remoteServiceInterface, parameters, pw);
-					domainConverters.put(dtoType, convertFromDtoMethodName);
+					domainConverters.put(parameterDomainType, convertFromDtoMethodName);
 				}
 			}
 
@@ -410,10 +417,10 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			pw.println("{");
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
-				if (dtoConverters.get(remoteMethod.getReturnType()) == null) {
+				if (dtoConverters.get(returnDtoType) == null) {
 					pw.print("return ");
 				} else {
-					pw.print("return " + dtoConverters.get(remoteMethod.getReturnType()) + "(");
+					pw.print("return " + dtoConverters.get(returnDtoType) + "(");
 				}
 			}
 
@@ -425,8 +432,9 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				}
 
 				TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
+				NamedType parameterDomainType = toHelper.getDtoMappingClass(dtoType, remoteServiceInterface, DtoMappingType.DOMAIN);
 
-				String domainConverter = domainConverters.get(dtoType);
+				String domainConverter = domainConverters.get(parameterDomainType);
 
 				if (domainConverter != null) {
 					pw.print(domainConverter + "(");
@@ -441,7 +449,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 			pw.print(")");
 
-			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && dtoConverters.get(remoteMethod.getReturnType()) != null) {
+			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && dtoConverters.get(returnDtoType) != null) {
 				pw.print(")");
 			}
 			pw.println(";");
@@ -563,8 +571,8 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				}
 				processingEnv.getMessager().printMessage(
 						Kind.ERROR,
-						"[ERROR] Service method return type does not fit the remote intereface definition " + remoteMethod.toString()
-								+ ". This should never happend, you are probably magician or there is a bug in the sesam processor itself.",
+						"[ERROR] Service method return type does not match the remote interface definition " + remoteMethod.toString()
+								+ ". This should have never happened, you are probably a magician or there is a bug in the sesam processor itself.",
 						serviceElement);
 			}
 		}

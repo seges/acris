@@ -203,7 +203,6 @@ public class TransferObjectHelper {
 
 			List<TypeParameter> domainParameters = new ArrayList<TypeParameter>();
 			HasTypeParameters paramsType = ((HasTypeParameters) type);
-
 			for (TypeParameter typeParameter : paramsType.getTypeParameters()) {
 				if (typeParameter.getBounds() != null) {
 					for (sk.seges.sesam.core.pap.model.api.TypeVariable bound : typeParameter.getBounds()) {
@@ -238,6 +237,8 @@ public class TransferObjectHelper {
 											DtoMappingType.DOMAIN)));
 						}
 					}
+				} else {
+					domainParameters.add(TypeParameterBuilder.get(typeParameter.getVariable()));
 				}
 			}
 
