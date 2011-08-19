@@ -32,7 +32,7 @@
 	</scm>
 
 	<properties>
-		<selenium.version>2.0rc3</selenium.version> 
+		<selenium.version>2.4.0</selenium.version> 
 		<selenium-remote-control.version>2.0rc2</selenium-remote-control.version>
 		<logging.selenium.version>1.2</logging.selenium.version>
 		<sesam-os.version>1.1.4-SNAPSHOT</sesam-os.version>
