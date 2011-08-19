@@ -48,18 +48,8 @@ public class DefaultNavigableElement<T extends NavigablePage> implements Navigab
 	}
 
 	@Override
-	public boolean toggle() {
-		return webElement.toggle();
-	}
-
-	@Override
 	public boolean isSelected() {
 		return webElement.isSelected();
-	}
-
-	@Override
-	public void setSelected() {
-		webElement.setSelected();
 	}
 
 	@Override
