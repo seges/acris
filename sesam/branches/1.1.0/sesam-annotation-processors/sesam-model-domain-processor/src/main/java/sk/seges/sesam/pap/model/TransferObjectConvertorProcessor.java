@@ -333,7 +333,28 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				//TODO potentional cycle
 				pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = createDtoInstance(null);");
 			} else {
-				pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(" + DOMAIN_NAME + "." + methodHelper.toGetter(methodHelper.toField(idMethod)) + ");");
+								
+				boolean useIdConverter = false;
+
+				pw.print(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(");
+
+				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+					TypeElement domainType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
+					Element idConfigurationElement = toHelper.getConfigurationElement(domainType, roundEnv);
+					NamedType idConverter = getDomainConverter(domainType);
+					if (idConverter != null) {
+						printConverterInstance(pw, idConverter, (TypeElement)idConfigurationElement);
+						pw.print(".toDto(");
+						useIdConverter = true;
+					}
+				}
+				
+				pw.print(DOMAIN_NAME + "." + methodHelper.toGetter(methodHelper.toField(idMethod)) + ")");
+
+				if (useIdConverter) {
+					pw.print(")");
+				}
+				pw.println(";");
 			}
 
 			pw.println("return convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
@@ -427,10 +448,31 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			}
 			
 			if (dtoIdMethod == null) {
-				//TODO potentional cycle
+				//TODO potential cycle
 				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = createDomainInstance(null);");
 			} else {
-				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + "." + methodHelper.toGetter(methodHelper.toField(dtoIdMethod)) + ");");
+				
+				boolean useIdConverter = false;
+
+				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(");
+
+				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+					TypeElement domainType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
+					Element idConfigurationElement = toHelper.getConfigurationElement(domainType, roundEnv);
+					NamedType idConverter = getDomainConverter(domainType);
+					if (idConverter != null) {
+						printConverterInstance(pw, idConverter, (TypeElement)idConfigurationElement);
+						pw.print(".fromDto(");
+						useIdConverter = true;
+					}
+				}
+				
+				pw.print(DTO_NAME + "." + methodHelper.toGetter(methodHelper.toField(dtoIdMethod)) + ")");
+
+				if (useIdConverter) {
+					pw.print(")");
+				}
+				pw.println(";");
 			}
 			pw.println();
 			pw.println("return convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
