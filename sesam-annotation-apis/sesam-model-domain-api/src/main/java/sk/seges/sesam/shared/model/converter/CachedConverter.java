@@ -21,14 +21,14 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 	protected abstract DTO createDtoInstance(Serializable id);
 
 	@SuppressWarnings("unchecked")
-	public Collection<DTO> toDto(Collection<?> domains) {
+	public <T extends Collection<DTO>> T toDto(Collection<?> domains, Class<T> targetClass) {
 		if (domains == null) {
 			return null;
 		}
 		
-		Collection<DTO> result;
+		T result;
 		try {
-			result = domains.getClass().newInstance();
+			result = targetClass.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to create collection instance for class " + domains.getClass().getCanonicalName(), e);
 		}
@@ -40,6 +40,15 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 		}
 		
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<DTO> toDto(Collection<?> domains) {
+		if (domains == null) {
+			return null;
+		}
+
+		return toDto(domains, domains.getClass());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -75,14 +84,14 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Collection<DOMAIN> fromDto(Collection<?> dtos) {
+	public <T extends Collection<DOMAIN>> T fromDto(Collection<?> dtos, Class<T> targetClass) {
 		if (dtos == null) {
 			return null;
 		}
 		
-		Collection<DOMAIN> result;
+		T result;
 		try {
-			result = dtos.getClass().newInstance();
+			result = targetClass.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to create collection instance for class " + dtos.getClass().getCanonicalName(), e);
 		}
@@ -94,6 +103,15 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 		}
 		
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<DOMAIN> fromDto(Collection<?> dtos) {
+		if (dtos == null) {
+			return null;
+		}
+		
+		return fromDto(dtos, dtos.getClass());
 	}
 	
 	@SuppressWarnings("unchecked")
