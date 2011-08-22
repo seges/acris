@@ -356,7 +356,7 @@ public class MetaModelProcessor extends AbstractConfigurableProcessor {
 		Set<ModelPropertyConverter> converterInstances = selectedConverters;
 
 		if (converterInstances == null) {
-			MetaModel annotation = (MetaModel)getConfigurer().getSupportedAnnotation(element);
+ 			MetaModel annotation = (MetaModel)getConfigurer().getSupportedAnnotation(element);
 			
 //			MetaModel annotation = ((TypeElement) element).getAnnotation(MetaModel.class);
 			if (annotation != null) {

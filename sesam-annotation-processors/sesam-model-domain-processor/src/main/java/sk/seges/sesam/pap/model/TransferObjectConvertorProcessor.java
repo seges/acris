@@ -64,8 +64,8 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	class CopyFromDtoMethodPrinter implements CopyMethodPrinter {
 
 		private void printCollectionCastIfNecessary(ProcessorContext context, PrintWriter pw) {
-			if (ProcessorUtils.implementsType(context.getDomainMethodReturnType(), processingEnv.getElementUtils() .getTypeElement(Collection.class.getCanonicalName()).asType())) {
-				
+			if (ProcessorUtils.isCollection(context.getDomainMethodReturnType(), processingEnv)) {
+
 				DeclaredType declaredList = ((DeclaredType)context.getDomainMethodReturnType());
 				
 				if (declaredList.getTypeArguments() != null && declaredList.getTypeArguments().size() == 1) {
@@ -73,7 +73,9 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 					HasTypeParameters modifiedList = TypedClassBuilder.get(nameTypesUtils.toType(processingEnv.getTypeUtils().erasure(declaredList)), nameTypesUtils.toType(typeMirror));
 					pw.print("(" + modifiedList.toString(null, ClassSerializer.CANONICAL, true) + ")");
 				} else {
-					//TODO log here something, error
+					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type " + context.getDomainMethodReturnType().toString() +
+							" in the method " + context.getDomainMethod().getSimpleName().toString() + " should have " +
+							" defined a type parameter", context.getConfigurationElement());
 				}
 			}
 			//TODO handle maps
@@ -196,11 +198,12 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 	
 	class CopyToDtoMethodPrinter implements CopyMethodPrinter {
 
-		private void printCollectionCastIfNecessary(ProcessorContext context, PrintWriter pw) {
+		private void printCastToCollection(ProcessorContext context, PrintWriter pw) {
 			if (ProcessorUtils.implementsType(context.getDomainMethodReturnType(), processingEnv.getElementUtils() .getTypeElement(Collection.class.getCanonicalName()).asType())) {
 				
 				DeclaredType declaredList = ((DeclaredType)context.getDomainMethodReturnType());
-				
+
+				//TODO use getTargetEntity for the return type
 				if (declaredList.getTypeArguments() != null && declaredList.getTypeArguments().size() == 1) {
 
 					if (context.getFieldType() instanceof HasTypeParameters) {
@@ -210,13 +213,15 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 					};
 					
 				} else {
-					//TODO log here something, error
+					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type " + context.getDomainMethodReturnType().toString() +
+							" in the method " + context.getDomainMethod().getSimpleName().toString() + " should have " +
+							" defined a type parameter", context.getConfigurationElement());
 				}
 			}
 			//TODO handle maps
 		}
 		
-		private void printCastIfNecessary(ProcessorContext context, PrintWriter pw) {
+		private void printCastToDomainType(ProcessorContext context, PrintWriter pw) {
 			
 			TypeMirror domainReturnType = getTargetEntityType(context.getDomainMethod());
 
@@ -263,9 +268,9 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 				pw.println(";");
 
 				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(");
-				printCollectionCastIfNecessary(context, pw);
+				printCastToCollection(context, pw);
 				pw.print(converterName + ".toDto(");
-				printCastIfNecessary(context, pw);
+				printCastToDomainType(context, pw);
 				pw.print(DOMAIN_NAME  + "." + context.getDomainFieldName());
 			} else {
 				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
@@ -330,7 +335,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			}
 
 			if (idMethod == null) {
-				//TODO potentional cycle
+				//TODO potential cycle
 				pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = createDtoInstance(null);");
 			} else {
 								
@@ -636,7 +641,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		super.processElement(element, outputName, roundEnv, pw);
 	}
 	
-	//TODO remove type param
+	//TODO remove type parameter
 	protected void printConverterInstance(PrintWriter pw, NamedType type, TypeElement configurationElement) {
 				
 		TypeElement converterType = processingEnv.getElementUtils().getTypeElement(type.getCanonicalName());
@@ -762,6 +767,19 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		
 		return converterType;
 	}
+
+	private TypeElement getTypeParameter(DeclaredType type) {
+		if (type.getTypeArguments() != null && type.getTypeArguments().size() == 1) {
+			
+			TypeMirror typeParameter = type.getTypeArguments().get(0);
+			
+			if (typeParameter.getKind().equals(TypeKind.DECLARED)) {
+				return (TypeElement)((DeclaredType)typeParameter).asElement();
+			}
+		}
+		
+		return null;
+	}
 	
 	private boolean copyDeclared(DeclaredType type, ProcessorContext context, PrintWriter pw, CopyMethodPrinter printer) {
 		Element element = type.asElement();
@@ -771,14 +789,31 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		case INTERFACE:
 			TypeElement typeElement = (TypeElement)element;
 			
-			if (ProcessorUtils.implementsType(type, processingEnv.getElementUtils() .getTypeElement(Collection.class.getCanonicalName()).asType())) {
-
-				if (type.getTypeArguments() != null && type.getTypeArguments().size() == 1) {
-					
-					TypeMirror typeParameter = type.getTypeArguments().get(0);
-					
-					if (typeParameter.getKind().equals(TypeKind.DECLARED)) {
-						typeElement = (TypeElement)((DeclaredType)typeParameter).asElement();
+			if (ProcessorUtils.isCollection(type, processingEnv)) {
+				TypeElement typeParameter = getTypeParameter(type);
+				if (typeParameter == null) {
+					processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
+							" should have defined a type parameter", context.getConfigurationElement());
+				} else {
+					typeElement = typeParameter;
+				}
+			} else if (ProcessorUtils.isPagedResult(type, processingEnv)) {
+				TypeElement typeParameter = getTypeParameter(type);
+				if (typeParameter == null) {
+					processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
+							" should have defined a type parameter", context.getConfigurationElement());
+				} else {
+					if (ProcessorUtils.isCollection(typeParameter.asType(), processingEnv)) {
+						TypeElement collectionTypeParameter = getTypeParameter((DeclaredType)typeParameter.asType());
+						if (collectionTypeParameter == null) {
+							processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + typeParameter.asType() +
+									" should have defined a type parameter (originally used in the " + type.toString() + ")", 
+									context.getConfigurationElement());
+						} else {
+							typeElement = collectionTypeParameter;
+						}
+					} else {
+						//TODO handle paged result that does not hold a collection of objects
 					}
 				}
 			}
@@ -796,7 +831,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			} else {
 				printer.printCopyMethod(context, pw, getDomainConverter(typeElement));
 			}
-			//TODO handle maps, ...
+			//TODO handle maps
 			break;
 		case ENUM:
 			printer.printCopyMethod(context, pw, null);
@@ -820,9 +855,11 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		return true;
 	}
 
+	/**
+	 * This method should be overridden by the specific implementations - like hibernate, appengine, etc.
+	 */
 	@Override
 	protected boolean shouldHaveIdMethod(TypeElement configurationElement, TypeElement domainElement) {
-		//This method should be overriden by the specific implementations - like hibernate, appengine, etc.
 		return false;
 	}
 }

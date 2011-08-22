@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import sk.seges.sesam.dao.PagedResult;
+
 public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, DOMAIN> {
 
 	protected MapConvertedInstanceCache cache;
@@ -20,6 +22,29 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 	protected abstract DOMAIN createDomainInstance(Serializable id);
 	protected abstract DTO createDtoInstance(Serializable id);
 
+	@Override
+	public PagedResult<? extends Collection<DTO>> toDto(PagedResult<? extends Collection<DOMAIN>> pagedDomain) {
+		PagedResult<Collection<DTO>> result = new PagedResult<Collection<DTO>>();
+		result.setPage(pagedDomain.getPage());
+		result.setTotalResultCount(pagedDomain.getTotalResultCount());
+		if (pagedDomain.getResult() != null) {
+			result.setResult(toDto(pagedDomain.getResult()));
+		}
+		
+		return result;
+	}
+
+	@Override
+	public PagedResult<? extends Collection<DOMAIN>> fromDto(PagedResult<? extends Collection<DTO>> pagedDtos) {
+		PagedResult<Collection<DOMAIN>> result = new PagedResult<Collection<DOMAIN>>();
+		result.setPage(pagedDtos.getPage());
+		result.setTotalResultCount(pagedDtos.getTotalResultCount());
+		if (pagedDtos.getResult() != null) {
+			result.setResult(fromDto(pagedDtos.getResult()));
+		}
+		return result;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T extends Collection<DTO>> T toDto(Collection<?> domains, Class<T> targetClass) {
 		if (domains == null) {

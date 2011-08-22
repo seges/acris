@@ -217,16 +217,17 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 	protected void processMethods(TypeElement typeElement, TypeElement domainObjectClass, MappingType mappingType, ElementPrinter printer) {
 
 		printer.initialize(typeElement);
-		//TODO add support for super classes
+
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(typeElement.getEnclosedElements());
-		List<ExecutableElement> methods = ElementFilter.methodsIn(domainObjectClass.getEnclosedElements());
-
+		
+		TypeElement processingElement = domainObjectClass;
+	
 		List<String> generated = new ArrayList<String>();
-
+		
 		ExecutableElement idMethod = null;
 
 		for (ExecutableElement overridenMethod: overridenMethods) {
-
+			
 			Ignore ignoreAnnotation = overridenMethod.getAnnotation(Ignore.class);
 			if (ignoreAnnotation != null) {
 
@@ -321,31 +322,42 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 			}
 		}
 
-		if (mappingType.equals(MappingType.AUTOMATIC)) {
-			for (ExecutableElement method: methods) {
-				
-				String fieldName = toHelper.getFieldPath(method);
-				
-				if (!isProcessed(generated, fieldName) && toHelper.isGetterMethod(method) && toHelper.hasSetterMethod(domainObjectClass, method) && method.getModifiers().contains(Modifier.PUBLIC)) {
+		while (processingElement != null) {
 
-					generated.add(fieldName);
-
-					if (toHelper.isIdMethod(method)) {
-						idMethod = method;
-					}
-
-					ProcessorContext context = new ProcessorContext(typeElement, Modifier.PUBLIC, method, method);
-					if (!initializeContext(context)) {
-						continue;
-					}
-
-					printer.print(context);
-				}			
+			List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.getEnclosedElements());
+	
+			if (mappingType.equals(MappingType.AUTOMATIC)) {
+				for (ExecutableElement method: methods) {
+					
+					String fieldName = toHelper.getFieldPath(method);
+					
+					if (!isProcessed(generated, fieldName) && toHelper.isGetterMethod(method) && toHelper.hasSetterMethod(domainObjectClass, method) && method.getModifiers().contains(Modifier.PUBLIC)) {
+	
+						generated.add(fieldName);
+	
+						if (toHelper.isIdMethod(method)) {
+							idMethod = method;
+						}
+	
+						ProcessorContext context = new ProcessorContext(typeElement, Modifier.PUBLIC, method, method);
+						if (!initializeContext(context)) {
+							continue;
+						}
+	
+						printer.print(context);
+					}			
+				}
+			}
+							
+			if (processingElement.getSuperclass() != null && processingElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
+				processingElement = (TypeElement)((DeclaredType)processingElement.getSuperclass()).asElement();
+			} else {
+				processingElement = null;
 			}
 		}
-		
-		if (idMethod == null) {
 
+		if (idMethod == null) {
+			
 			idMethod = toHelper.getIdMethod(domainObjectClass);
 			
 			if (idMethod != null) {
@@ -370,7 +382,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 				}
 			}
 		}
-		
+
 		if (idMethod == null && shouldHaveIdMethod(typeElement, domainObjectClass)) {
 			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Identifier method could not be found in the automatic way. Please specify id method using " + 
 					Id.class.getSimpleName() + " annotation or just specify id as a method name.", typeElement);
@@ -378,5 +390,5 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		}
 
 		printer.finish(typeElement);
-	}	
+	}
 }
