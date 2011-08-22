@@ -558,6 +558,24 @@ public class TransferObjectHelper {
 	}
 
 	public ExecutableElement getIdMethod(Element element) {
+		
+		if (element.getKind().equals(ElementKind.CLASS) || element.getKind().equals(ElementKind.INTERFACE)) {
+			Element configurationElement = getConfigurationElement((TypeElement)element, roundEnv);
+			
+			if (configurationElement != null) {
+				List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationElement.getEnclosedElements());
+				
+				for (ExecutableElement overridenMethod: overridenMethods) {
+	
+					ExecutableElement domainMethod = getDomainGetterMethod(element, getFieldPath(overridenMethod));
+	
+					if (domainMethod != null && isIdMethod(domainMethod)) {
+						return domainMethod;
+					}
+				}
+			}
+		}
+		
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
 		for (ExecutableElement method : methods) {

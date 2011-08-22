@@ -2,9 +2,11 @@ package sk.seges.sesam.core.pap.utils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -21,10 +23,19 @@ import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.Types;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.dao.PagedResult;
 
 
 public class ProcessorUtils {
 
+	public static boolean isPagedResult(TypeMirror type, ProcessingEnvironment processingEnv) {
+		return implementsType(type, processingEnv.getElementUtils().getTypeElement(PagedResult.class.getCanonicalName()).asType());
+	}
+	
+	public static boolean isCollection(TypeMirror type, ProcessingEnvironment processingEnv) {
+		return implementsType(type, processingEnv.getElementUtils().getTypeElement(Collection.class.getCanonicalName()).asType());
+	}
+	
 	public static boolean implementsType(TypeMirror t1, TypeMirror t2) {
 		if (t1 == null || !t1.getKind().equals(TypeKind.DECLARED) || !t2.getKind().equals(TypeKind.DECLARED)) {
 			return false;
