@@ -13,7 +13,7 @@ import sk.seges.sesam.pap.model.DomainObject;
 import sk.seges.sesam.pap.model.MockEntityDtoConfiguration;
 import sk.seges.sesam.pap.model.SecondDomainObject;
 import sk.seges.sesam.pap.model.SecondDomainObjectDtoConfiguration;
-import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
+import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
 
 
@@ -29,7 +29,7 @@ public class TransferObjectProcessorTest extends AnnotationTest {
 	protected Processor[] getProcessors() {
 		return new Processor[] {
 			new TransferObjectProcessor(),
-			new TransferObjectConvertorProcessor()
+			new TransferObjectConverterProcessor()
 		};
 	}
 

@@ -80,5 +80,4 @@ public class HibernateHelper {
 	public boolean shouldHaveIdMethod(TypeElement configurationElement, TypeElement domainElement) {
 		return domainElement.getAnnotation(Embeddable.class) == null;
 	}
-
 }

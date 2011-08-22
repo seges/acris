@@ -44,6 +44,10 @@ public class ProcessorUtils {
 		DeclaredType dt1 = (DeclaredType)t1;
 		DeclaredType dt2 = (DeclaredType)t2;
 
+		if (dt1.asElement().equals(dt2.asElement())) {
+			return true;
+		}
+		
 		for (TypeMirror interfaceType: ((TypeElement)dt1.asElement()).getInterfaces()) {
 			
 			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {

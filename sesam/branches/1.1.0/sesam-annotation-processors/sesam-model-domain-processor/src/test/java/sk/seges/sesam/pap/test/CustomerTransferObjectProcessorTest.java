@@ -10,7 +10,7 @@ import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.customer.TestAddressData;
-import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
+import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
 
 import com.sun.org.apache.bcel.internal.classfile.Field;
@@ -31,7 +31,7 @@ public class CustomerTransferObjectProcessorTest extends AnnotationTest {
 	protected Processor[] getProcessors() {
 		return new Processor[] {
 			new TransferObjectProcessor(),
-			new TransferObjectConvertorProcessor()
+			new TransferObjectConverterProcessor()
 		};
 	}
 

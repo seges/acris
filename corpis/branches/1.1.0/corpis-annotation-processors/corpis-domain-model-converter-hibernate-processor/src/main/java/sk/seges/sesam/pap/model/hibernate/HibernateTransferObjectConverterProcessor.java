@@ -12,20 +12,23 @@ import javax.persistence.EntityManager;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.mutable.MutableVariableElement;
-import sk.seges.sesam.pap.model.TransferObjectConvertorProcessor;
+import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
 import sk.seges.sesam.pap.model.hibernate.util.HibernateHelper;
+import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class HibernateTransferObjectConverterProcessor extends TransferObjectConvertorProcessor {
+public class HibernateTransferObjectConverterProcessor extends TransferObjectConverterProcessor {
 
 	private static final String ENTITY_MANAGER_NAME = "entityManager";
 
 	private HibernateHelper hibernateHelper;
+	private HibernatePersistentElementHolderConverter hibernatePersistentElementHolderConverter;
 	
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
 		hibernateHelper = new HibernateHelper(methodHelper);
+		hibernatePersistentElementHolderConverter = new HibernatePersistentElementHolderConverter(pe);
 	}
 	
 	@Override
@@ -55,5 +58,10 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 		pw.println("}");
 		pw.println();
 		super.printDomainInstancer(pw, type);
+	}
+	
+	@Override
+	protected ElementHolderTypeConverter getElementTypeConverter() {
+		return hibernatePersistentElementHolderConverter;
 	}
 }

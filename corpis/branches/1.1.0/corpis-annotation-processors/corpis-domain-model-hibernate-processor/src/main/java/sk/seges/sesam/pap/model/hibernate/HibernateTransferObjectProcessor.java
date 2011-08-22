@@ -30,4 +30,5 @@ public class HibernateTransferObjectProcessor extends TransferObjectProcessor {
 	protected boolean shouldHaveIdMethod(TypeElement configurationElement, TypeElement domainElement) {
 		return hibernateHelper.shouldHaveIdMethod(configurationElement, domainElement);
 	}
+	
 }
