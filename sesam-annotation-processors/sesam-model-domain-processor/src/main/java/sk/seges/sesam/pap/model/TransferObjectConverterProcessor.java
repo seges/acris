@@ -40,11 +40,12 @@ import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.AbstractElementPrinter;
 import sk.seges.sesam.pap.model.model.ElementPrinter;
 import sk.seges.sesam.pap.model.model.ProcessorContext;
+import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration;
 import sk.seges.sesam.shared.model.converter.CachedConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class TransferObjectConvertorProcessor extends AbstractTransferProcessor {
+public class TransferObjectConverterProcessor extends AbstractTransferProcessor {
 
 	private static final String DEFAULT_SUFFIX = "Converter";	
 	private static final String DEFAULT_CONFIGURATION_SUFFIX = "Configuration";
@@ -173,6 +174,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 					pw.println(";");
 					pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getDomainFieldPath()) + "(");
 					printCollectionCastIfNecessary(context, pw);
+					
 					pw.print(converterName + ".fromDto(" + DTO_NAME  + "." + methodHelper.toGetter(context.getFieldName()));
 				} else {
 					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
@@ -195,7 +197,7 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			}
 		}
 	}
-	
+		
 	class CopyToDtoMethodPrinter implements CopyMethodPrinter {
 
 		private void printCastToCollection(ProcessorContext context, PrintWriter pw) {
@@ -277,10 +279,17 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 			}
 			
 			if (converterType != null) {
-				pw.print(")");
+				TypeMirror listType = getElementTypeConverter().getIterableDtoType(context.getDomainMethodReturnType());
+				
+				if (listType != null) {
+					pw.print(", " + processingEnv.getTypeUtils().erasure(listType).toString() + ".class)");
+				} else {
+					pw.print(")");
+				}
 			}
+			
 			pw.println(");");
-
+			
 			if (nested) {
 				pw.println("} else {");
 				pw.println(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(null);");
@@ -514,6 +523,16 @@ public class TransferObjectConvertorProcessor extends AbstractTransferProcessor 
 		}
 	}
 
+	protected ElementHolderTypeConverter getElementTypeConverter() {
+		return new ElementHolderTypeConverter() {
+
+			@Override
+			public TypeMirror getIterableDtoType(TypeMirror collectionType) {
+				return null;
+			}
+		};
+	}
+	
 	@Override
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
 

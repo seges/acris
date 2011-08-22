@@ -295,7 +295,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		if (transferObjectConfiguration.getConverter() != null) {
 			pw.print(transferObjectConfiguration.getConverter().toString());
 		} else {
-			ImmutableType generatedConverter = TransferObjectConvertorProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider(), processingEnv);
+			ImmutableType generatedConverter = TransferObjectConverterProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider(), processingEnv);
 			pw.print(generatedConverter.getCanonicalName());
 		}
 		pw.print("\"");
