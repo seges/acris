@@ -543,10 +543,10 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 			return supportProcessorChain();
 		}
 		
-		TypeElement dto = transferObjectConfiguration.getDto();
-		if (dto != null) {
-			return supportProcessorChain();
-		}
+//		TypeElement dto = transferObjectConfiguration.getDto();
+//		if (dto != null) {
+//			return supportProcessorChain();
+//		}
 		
 		return super.processElement(element, roundEnv);
 	}
@@ -560,10 +560,10 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 			return null;
 		}
 
-		TypeElement dto = transferObjectConfiguration.getDto();
-		if (dto != null) {
-			return null;
-		}
+//		TypeElement dto = transferObjectConfiguration.getDto();
+//		if (dto != null) {
+//			return null;
+//		}
 
 		String simpleName = mutableType.getSimpleName();
 		if (simpleName.endsWith(DEFAULT_CONFIGURATION_SUFFIX) && simpleName.length() > DEFAULT_CONFIGURATION_SUFFIX.length()) {
@@ -787,55 +787,13 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		return converterType;
 	}
 
-	private TypeElement getTypeParameter(DeclaredType type) {
-		if (type.getTypeArguments() != null && type.getTypeArguments().size() == 1) {
-			
-			TypeMirror typeParameter = type.getTypeArguments().get(0);
-			
-			if (typeParameter.getKind().equals(TypeKind.DECLARED)) {
-				return (TypeElement)((DeclaredType)typeParameter).asElement();
-			}
-		}
-		
-		return null;
-	}
-	
 	private boolean copyDeclared(DeclaredType type, ProcessorContext context, PrintWriter pw, CopyMethodPrinter printer) {
 		Element element = type.asElement();
 
 		switch (element.getKind()) {
 		case CLASS:
 		case INTERFACE:
-			TypeElement typeElement = (TypeElement)element;
-			
-			if (ProcessorUtils.isCollection(type, processingEnv)) {
-				TypeElement typeParameter = getTypeParameter(type);
-				if (typeParameter == null) {
-					processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
-							" should have defined a type parameter", context.getConfigurationElement());
-				} else {
-					typeElement = typeParameter;
-				}
-			} else if (ProcessorUtils.isPagedResult(type, processingEnv)) {
-				TypeElement typeParameter = getTypeParameter(type);
-				if (typeParameter == null) {
-					processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
-							" should have defined a type parameter", context.getConfigurationElement());
-				} else {
-					if (ProcessorUtils.isCollection(typeParameter.asType(), processingEnv)) {
-						TypeElement collectionTypeParameter = getTypeParameter((DeclaredType)typeParameter.asType());
-						if (collectionTypeParameter == null) {
-							processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + typeParameter.asType() +
-									" should have defined a type parameter (originally used in the " + type.toString() + ")", 
-									context.getConfigurationElement());
-						} else {
-							typeElement = collectionTypeParameter;
-						}
-					} else {
-						//TODO handle paged result that does not hold a collection of objects
-					}
-				}
-			}
+			TypeElement typeElement = toHelper.getDtoMappingClass(type);
 
 			//reads TransferObjectConfiguration annotation from method in the configuration
 			TypeElement converterTypeElement =  new TransferObjectConfiguration(context.getMethod(), processingEnv).getConverter();

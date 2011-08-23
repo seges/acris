@@ -397,6 +397,13 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 				returnDtoType = toHelper.getDtoMappingClass(remoteMethod.getReturnType(), remoteServiceInterface, DtoMappingType.DTO);
+				
+				//TODO
+				if (remoteMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+					TypeElement dtoMappingClass = toHelper.getDtoMappingClass((DeclaredType)remoteMethod.getReturnType());
+					returnDtoType = toHelper.getDtoMappingClass(dtoMappingClass.asType(), remoteServiceInterface, DtoMappingType.DOMAIN);
+				}
+
 				if (!dtoConverters.containsKey(returnDtoType)) {
 					String convertToDtoMethodName = printToDtoConvertMethod(remoteMethod.getReturnType(), remoteServiceInterface, parameters, pw);
 					dtoConverters.put(returnDtoType, convertToDtoMethodName);
@@ -406,6 +413,13 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			for (int index = 0; index < localMethod.getParameters().size(); index++) {
 				TypeMirror dtoType = remoteMethod.getParameters().get(index).asType();
 				NamedType parameterDomainType = toHelper.getDtoMappingClass(dtoType, remoteServiceInterface, DtoMappingType.DOMAIN);
+
+				//TODO
+				if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+					TypeElement dtoMappingClass = toHelper.getDtoMappingClass((DeclaredType)dtoType);
+					parameterDomainType = toHelper.getDtoMappingClass(dtoMappingClass.asType(), remoteServiceInterface, DtoMappingType.DOMAIN);
+				}
+				
 				if (!domainConverters.containsKey(parameterDomainType)) {
 					String convertFromDtoMethodName = printFromDtoConvertMethod(dtoType, remoteServiceInterface, parameters, pw);
 					domainConverters.put(parameterDomainType, convertFromDtoMethodName);
@@ -420,7 +434,14 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				if (dtoConverters.get(returnDtoType) == null) {
 					pw.print("return ");
 				} else {
-					pw.print("return " + dtoConverters.get(returnDtoType) + "(");
+					
+					String converterName = dtoConverters.get(returnDtoType);
+					
+					TypeMirror dtoType = remoteMethod.getReturnType();
+					
+					String returnType = getNameTypes().toType(dtoType).toString(null, ClassSerializer.CANONICAL, true);
+
+					pw.print("return (" + returnType + ")" + converterName + "().toDto(");
 				}
 			}
 
@@ -435,9 +456,21 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				NamedType parameterDomainType = toHelper.getDtoMappingClass(dtoType, remoteServiceInterface, DtoMappingType.DOMAIN);
 
 				String domainConverter = domainConverters.get(parameterDomainType);
-
+				
+				//TODO
+				if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+					TypeElement dtoMappingClass = toHelper.getDtoMappingClass((DeclaredType)dtoType);
+					domainConverter = domainConverters.get(toHelper.getDtoMappingClass(dtoMappingClass.asType(), remoteServiceInterface, DtoMappingType.DOMAIN));
+				}
+				
+				String returnType = null;
+				
 				if (domainConverter != null) {
-					pw.print(domainConverter + "(");
+					returnType = parameterDomainType.toString(null, ClassSerializer.CANONICAL, true);
+				}
+				
+				if (domainConverter != null) {
+					pw.print("(" + returnType + ")" + domainConverter + "().fromDto(");
 				}
 
 				pw.print(remoteMethod.getParameters().get(i).getSimpleName().toString());
@@ -459,11 +492,11 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 	}
 
 	protected String getToDtoConverterMethodName(NamedType domainClass) {
-		return "convertToDto";
+		return "getDtoConverter";
 	}
 
 	protected String getFromDtoConverterMethodName(NamedType domainClass) {
-		return "convertFromDto";
+		return "getDomainConverter";
 	}
 
 	protected String getParameterName(ConverterParameter parameter) {
@@ -484,14 +517,18 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		NamedType domainClass = toHelper.getDtoMappingClass(dtoType, remoteServiceElement, DtoMappingType.DOMAIN);
 
-		String convertMethod = getFromDtoConverterMethodName(domainClass);
-		String returnType = domainClass.toString(null, ClassSerializer.CANONICAL, true);
+		if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+			TypeElement dtoMappingClass = toHelper.getDtoMappingClass((DeclaredType)dtoType);
+			domainClass = toHelper.getDtoMappingClass(dtoMappingClass.asType(), remoteServiceElement, DtoMappingType.DOMAIN);
+		}
 		
-		pw.println("private " + returnType + " " + convertMethod + "(" + getNameTypes().toType(dtoType).toString(null, ClassSerializer.CANONICAL, true) + " instance) {");
+		String convertMethod = getFromDtoConverterMethodName(domainClass) + domainClass.getSimpleName();
+		
+		pw.println("private " + converter.getCanonicalName() + " " + convertMethod + "() {");
 
 		List<ConverterParameter> converterParameters = getConverterParameters(converter, parameters);
 
-		pw.print("return (" + returnType + ") new " + converter.getCanonicalName() + "(");
+		pw.print("return new " + converter.getCanonicalName() + "(");
 
 		int i = 0;
 		for (ConverterParameter parameter : converterParameters) {
@@ -502,7 +539,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			i++;
 		}
 
-		pw.println(").fromDto(instance);");
+		pw.println(");");
 		pw.println("}");
 		pw.println();
 
@@ -518,15 +555,18 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		NamedType domainClass = toHelper.getDtoMappingClass(dtoType, remoteServiceElement, DtoMappingType.DOMAIN);
 
-		String convertMethod = getToDtoConverterMethodName(domainClass);
-
-		String returnType = getNameTypes().toType(dtoType).toString(null, ClassSerializer.CANONICAL, true);
+		if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+			TypeElement dtoMappingClass = toHelper.getDtoMappingClass((DeclaredType)dtoType);
+			domainClass = toHelper.getDtoMappingClass(dtoMappingClass.asType(), remoteServiceElement, DtoMappingType.DOMAIN);
+		}
 		
-		pw.println("private " + returnType + " " + convertMethod + "(" + getNameTypes().toType(domainClass).toString(null, ClassSerializer.CANONICAL, true) + " instance) {");
+		String convertMethod = getToDtoConverterMethodName(domainClass) + domainClass.getSimpleName();
+		
+		pw.println("private " + converter.getCanonicalName() + " " + convertMethod + "() {");
 
 		List<ConverterParameter> converterParameters = getConverterParameters(converter, parameters);
 
-		pw.print("return (" + returnType + ")new " + converter.getCanonicalName() + "(");
+		pw.print("return new " + converter.getCanonicalName() + "(");
 
 		int i = 0;
 		for (ConverterParameter parameter : converterParameters) {
@@ -537,7 +577,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			i++;
 		}
 
-		pw.println(").toDto(instance);");
+		pw.println(");");
 		pw.println("}");
 		pw.println();
 
