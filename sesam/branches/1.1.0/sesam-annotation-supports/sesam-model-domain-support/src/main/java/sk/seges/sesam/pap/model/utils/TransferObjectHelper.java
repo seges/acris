@@ -123,6 +123,51 @@ public class TransferObjectHelper {
 		return result;
 	}
 
+	private TypeMirror getTypeParameter(DeclaredType type) {
+		if (type.getTypeArguments() != null && type.getTypeArguments().size() == 1) {
+			
+			TypeMirror typeParameter = type.getTypeArguments().get(0);
+			
+			if (typeParameter.getKind().equals(TypeKind.DECLARED)) {
+				return typeParameter;
+			}
+		}
+		
+		return null;
+	}
+
+	public TypeElement getDtoMappingClass(DeclaredType type) {
+		if (ProcessorUtils.isCollection(type, processingEnv)) {
+			TypeMirror typeParameter = getTypeParameter(type);
+			if (typeParameter == null) {
+				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
+						" should have defined a type parameter");
+			} else {
+				return (TypeElement)((DeclaredType)typeParameter).asElement();
+			}
+		} else if (ProcessorUtils.isPagedResult(type, processingEnv)) {
+			TypeMirror typeParameter = getTypeParameter(type);
+			if (typeParameter == null) {
+				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
+						" should have defined a type parameter");
+			} else {
+				if (ProcessorUtils.isCollection(typeParameter, processingEnv)) {
+					TypeMirror collectionTypeParameter = getTypeParameter((DeclaredType)typeParameter);
+					if (collectionTypeParameter == null) {
+						processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + typeParameter +
+								" should have defined a type parameter (originally used in the " + type.toString() + ")");
+					} else {
+						return (TypeElement)((DeclaredType)collectionTypeParameter).asElement();
+					}
+				} else {
+					//TODO handle paged result that does not hold a collection of objects
+				}
+			}
+		}
+		
+		return (TypeElement)type.asElement();
+	}
+	
 	public NamedType getDtoMappingClass(TypeMirror dtoType, TypeElement typeElement, DtoMappingType mappingType) {
 		switch (dtoType.getKind()) {
 		case BOOLEAN:
@@ -151,16 +196,12 @@ public class TransferObjectHelper {
 		case DECLARED:
 			DeclaredType declaredType = ((DeclaredType) dtoType);
 
-			if (mappingType.equals(DtoMappingType.CONVERTER) || mappingType.equals(DtoMappingType.CONFIGURATION)) {
-				if (ProcessorUtils.implementsType(declaredType.asElement().asType(), processingEnv.getElementUtils()
-						.getTypeElement(Collection.class.getCanonicalName()).asType())) {
+			Element element = declaredType.asElement();
 
-					TypeMirror parameterType = declaredType.getTypeArguments().get(0);
-					return getDtoMappingClass(parameterType, typeElement, mappingType);
-				}
+			if (mappingType.equals(DtoMappingType.CONVERTER) || mappingType.equals(DtoMappingType.CONFIGURATION)) {
+				element = getDtoMappingClass(declaredType);
 			}
 
-			Element element = declaredType.asElement();
 			TypeElement result = mappingType.get(new TransferObjectConfiguration(element, processingEnv));
 			if (result != null) {
 				if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
@@ -343,6 +384,7 @@ public class TransferObjectHelper {
 
 			if (declaredType.getTypeArguments() != null && declaredType.getTypeArguments().size() > 0) {
 
+				//TODO handle paged result
 				if (ProcessorUtils.implementsType(declaredType.asElement().asType(), processingEnv.getElementUtils()
 						.getTypeElement(Collection.class.getCanonicalName()).asType())) {
 

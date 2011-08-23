@@ -10,6 +10,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
@@ -78,6 +79,9 @@ public class HibernateHelper {
 	}
 
 	public boolean shouldHaveIdMethod(TypeElement configurationElement, TypeElement domainElement) {
-		return domainElement.getAnnotation(Embeddable.class) == null;
+		if (domainElement.getAnnotation(Entity.class) != null) {
+			return domainElement.getAnnotation(Embeddable.class) == null;
+		}
+		return false;
 	}
 }
