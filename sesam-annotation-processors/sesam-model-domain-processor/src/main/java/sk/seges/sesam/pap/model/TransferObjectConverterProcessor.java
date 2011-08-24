@@ -350,7 +350,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 								
 				boolean useIdConverter = false;
 
-				pw.print(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(");
+				pw.print(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(" + DOMAIN_NAME + ", ");
 
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 					TypeElement domainType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
@@ -468,7 +468,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				
 				boolean useIdConverter = false;
 
-				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(");
+				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + ", ");
 
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 					TypeElement domainType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();

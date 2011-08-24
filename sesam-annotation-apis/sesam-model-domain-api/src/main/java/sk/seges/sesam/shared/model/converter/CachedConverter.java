@@ -58,8 +58,14 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 			throw new RuntimeException("Unable to create collection instance for class " + domains.getClass().getCanonicalName(), e);
 		}
 		
-		Iterator<?> iterator = domains.iterator();
+		Iterator<?> iterator = null;
 		
+		try {
+			iterator = domains.iterator();
+		} catch (Exception e) {
+			return result;
+		}
+			
 		while (iterator.hasNext()) {
 			result.add(toDto((DOMAIN)iterator.next()));
 		}
@@ -171,41 +177,51 @@ public abstract class CachedConverter<DTO, DOMAIN> implements DtoConverter<DTO, 
 		return result;		
 	}
 
-	public DTO getDtoInstance(Serializable id) {
-		DTO result = null;
-		
-		if (id != null) {
-			result = cache.getInstance(getDtoClass(), id);
-		}
-		
-		if (result != null) {
-			return result;
-		}
-		
-		result = createDtoInstance(id);
+	public DTO getDtoInstance(Object domainSource, Serializable id) {
+		DTO result = createDtoInstance(id);
 
 		if (result != null) {
 			cache.putInstance(result, id);
+			cache.putInstance(domainSource, result);
 		}
 		
 		return result;
 	}
 	
-	public DOMAIN getDomainInstance(Serializable id) {
-		DOMAIN result = null;
-		
-		if (id != null) {
-			result = cache.getInstance(getDomainClass(), id);
-		}
-		
+	public DTO getCachedDtoInstance(Object domainSource, Serializable id) {
+		DTO result = null;
+
+		result = cache.getInstance(domainSource);
+
 		if (result != null) {
 			return result;
 		}
 		
-		result = createDomainInstance(id);
+		if (id != null) {
+			result = cache.getInstance(getDtoClass(), id);
+		}
+		
+		return result;
+	}
+
+	public DOMAIN getDomainInstance(Object dtoSource, Serializable id) {
+		DOMAIN result = createDomainInstance(id);
 
 		if (result != null) {
 			cache.putInstance(result, id);
+			cache.putInstance(dtoSource, result);
+		}
+		
+		return result;
+	}
+	
+	protected DOMAIN getCachedDomainInstance(Object dtoSource, Serializable id) {
+		DOMAIN result = null;
+		
+		result = cache.getInstance(dtoSource);
+
+		if (id != null) {
+			result = cache.getInstance(getDomainClass(), id);
 		}
 		
 		return result;
