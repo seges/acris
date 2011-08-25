@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,16 +31,17 @@ import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.mutable.MutableVariableElement;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
+import sk.seges.sesam.core.pap.utils.CastHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.AbstractElementPrinter;
 import sk.seges.sesam.pap.model.model.ElementPrinter;
 import sk.seges.sesam.pap.model.model.ProcessorContext;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration;
+import sk.seges.sesam.shared.model.converter.BasicConverter;
 import sk.seges.sesam.shared.model.converter.CachedConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -56,6 +56,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	private List<String> parameterNames = new ArrayList<String>();
 	
 	private Set<String> instances = new HashSet<String>();
+	private CastHelper castHelper;
 
 	interface CopyMethodPrinter {
 
@@ -200,38 +201,6 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		
 	class CopyToDtoMethodPrinter implements CopyMethodPrinter {
 
-		private void printCastToCollection(ProcessorContext context, PrintWriter pw) {
-			if (ProcessorUtils.implementsType(context.getDomainMethodReturnType(), processingEnv.getElementUtils() .getTypeElement(Collection.class.getCanonicalName()).asType())) {
-				
-				DeclaredType declaredList = ((DeclaredType)context.getDomainMethodReturnType());
-
-				//TODO use getTargetEntity for the return type
-				if (declaredList.getTypeArguments() != null && declaredList.getTypeArguments().size() == 1) {
-
-					if (context.getFieldType() instanceof HasTypeParameters) {
-						TypeParameter typeParameter = ((HasTypeParameters)context.getFieldType()).getTypeParameters()[0];
-						HasTypeParameters modifiedList = TypedClassBuilder.get(nameTypesUtils.toType(processingEnv.getTypeUtils().erasure(declaredList)), typeParameter);
-						pw.print("(" + modifiedList.toString(null, ClassSerializer.CANONICAL, true) + ")");
-					};
-					
-				} else {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type " + context.getDomainMethodReturnType().toString() +
-							" in the method " + context.getDomainMethod().getSimpleName().toString() + " should have " +
-							" defined a type parameter", context.getConfigurationElement());
-				}
-			}
-			//TODO handle maps
-		}
-		
-		private void printCastToDomainType(ProcessorContext context, PrintWriter pw) {
-			
-			TypeMirror domainReturnType = getTargetEntityType(context.getDomainMethod());
-
-			if (!processingEnv.getTypeUtils().isSameType(processingEnv.getTypeUtils().erasure(context.getDomainMethod().getReturnType()),
-														processingEnv.getTypeUtils().erasure(domainReturnType))) {
-				pw.print("(" + context.getDomainTypeElement().toString() +")");
-			}
-		}
 				
 		@Override
 		public void printCopyMethod(ProcessorContext context, PrintWriter pw, NamedType converterType) {
@@ -249,6 +218,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 					
 					String path = pathResolver.next();
 					
+					//TODO check if collection is not nested type - you could not use this notation on the collections (and also it can be used only on declared types)
 					if (pathResolver.hasNext()) {
 						if (i > 0) {
 							pw.print(" && ");
@@ -262,7 +232,10 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				pw.println(") {");
 			} 
 
+			pw.println("if (isInitialized(" + DOMAIN_NAME  + "." + context.getDomainFieldName() + ")) {");
+			
 			if (converterType != null) {
+				
 				String converterName = "converter" + methodHelper.toMethod("", context.getFieldName());
 				
 				pw.print(converterType.getCanonicalName() + " " + converterName + " = ");
@@ -270,15 +243,25 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				pw.println(";");
 
 				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(");
-				printCastToCollection(context, pw);
+
+				if (!castHelper.printCastForCollections(context.getDomainMethodReturnType(), context.getFieldType(), pw)) {
+					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type " + context.getDomainMethodReturnType().toString() +
+							" in the method " + context.getDomainMethod().getSimpleName().toString() + " should have " +
+							" defined a type parameter", context.getConfigurationElement());
+				}
+
 				pw.print(converterName + ".toDto(");
-				printCastToDomainType(context, pw);
+				
+				castHelper.printCastForType(context.getDomainMethod().getReturnType(), getTargetEntityType(context.getDomainMethod()), context.getDomainTypeElement(), pw);
+				
 				pw.print(DOMAIN_NAME  + "." + context.getDomainFieldName());
 			} else {
 				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
 			}
 			
 			if (converterType != null) {
+				//Creating iterable types - this should be overridden if you want to create LinkedList instead of ArrayList, etc.
+				//If you do specify any type, original type we be taken, but this can lead for using not supported types in the DTOs - like PersistenceBag instead of List
 				TypeMirror listType = getElementTypeConverter().getIterableDtoType(context.getDomainMethodReturnType());
 				
 				if (listType != null) {
@@ -289,6 +272,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 			}
 			
 			pw.println(");");
+			pw.println("};");
 			
 			if (nested) {
 				pw.println("} else {");
@@ -317,6 +301,12 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 					
 			TypeElement domainObjectClass = toHelper.getDomainTypeElement(configurationElement);
 
+			String instanceName = "instance";
+			
+			pw.println("protected boolean isInitialized(" + Object.class.getSimpleName() + " " + instanceName + ") {");
+			printIsInitializedMethod(pw, instanceName);
+			pw.println("}");
+		
 			pw.println("public " + dtoType.getSimpleName() + " createDtoInstance(" + Serializable.class.getSimpleName() + " id) {");
 			printDtoInstancer(pw, dtoType);
 			pw.println("}");
@@ -347,28 +337,46 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				//TODO potential cycle
 				pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = createDtoInstance(null);");
 			} else {
-								
+				
 				boolean useIdConverter = false;
 
-				pw.print(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(" + DOMAIN_NAME + ", ");
-
+				TypeMirror dtoIdType = idMethod.getReturnType();
+				TypeElement domainIdType = null;
+				
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-					TypeElement domainType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
-					Element idConfigurationElement = toHelper.getConfigurationElement(domainType, roundEnv);
-					NamedType idConverter = getDomainConverter(domainType);
+					domainIdType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
+					dtoIdType = toHelper.toDto(domainIdType, roundEnv).asType();
+				}
+				
+				String idName = "_id";
+				
+				pw.print(dtoIdType.toString() + " " + idName + " = ");
+				
+				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+					Element idConfigurationElement = toHelper.getConfigurationElement(domainIdType, roundEnv);
+					NamedType idConverter = getDomainConverter(domainIdType);
 					if (idConverter != null) {
 						printConverterInstance(pw, idConverter, (TypeElement)idConfigurationElement);
 						pw.print(".toDto(");
 						useIdConverter = true;
 					}
 				}
-				
+
 				pw.print(DOMAIN_NAME + "." + methodHelper.toGetter(methodHelper.toField(idMethod)) + ")");
 
 				if (useIdConverter) {
 					pw.print(")");
 				}
 				pw.println(";");
+				pw.println();
+				
+				//TODO split into 2 parts, request from the cache and the create the object
+				pw.print(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(" + DOMAIN_NAME + ", " + idName + ");");
+				pw.print("if (" + RESULT_NAME + " != null) {");
+				pw.print("return " + RESULT_NAME + ";");
+				pw.print("}");
+				pw.println();
+				pw.print(RESULT_NAME + " = createDtoInstance(" + DOMAIN_NAME + ", " + idName + ");");
 			}
 
 			pw.println("return convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
@@ -468,26 +476,48 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				
 				boolean useIdConverter = false;
 
-				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + ", ");
-
+				TypeMirror dtoIdType = idMethod.getReturnType();
+				TypeElement domainIdType = null;
+				
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-					TypeElement domainType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
-					Element idConfigurationElement = toHelper.getConfigurationElement(domainType, roundEnv);
-					NamedType idConverter = getDomainConverter(domainType);
+					domainIdType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
+					dtoIdType = toHelper.toDto(domainIdType, roundEnv).asType();
+				}
+
+				String idName = "_id";
+				
+				if (domainIdType != null) {
+					pw.print(domainIdType.toString() + " " + idName + " = ");
+				} else {
+					//Types are the same
+					pw.print(dtoIdType.toString() + " " + idName + " = ");
+				}
+				
+				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+					Element idConfigurationElement = toHelper.getConfigurationElement(domainIdType, roundEnv);
+					NamedType idConverter = getDomainConverter(domainIdType);
 					if (idConverter != null) {
 						printConverterInstance(pw, idConverter, (TypeElement)idConfigurationElement);
 						pw.print(".fromDto(");
 						useIdConverter = true;
 					}
 				}
-				
+
 				pw.print(DTO_NAME + "." + methodHelper.toGetter(methodHelper.toField(dtoIdMethod)) + ")");
 
 				if (useIdConverter) {
 					pw.print(")");
 				}
 				pw.println(";");
+				pw.println();
+
+				pw.print(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + ", " + idName + ");");
+				pw.print("if (" + RESULT_NAME + " != null) {");
+				pw.print("return " + RESULT_NAME + ";");
+				pw.print("}");
+				pw.println();
 			}
+			
 			pw.println();
 			pw.println("return convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println("}");
@@ -531,6 +561,12 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				return null;
 			}
 		};
+	}
+	
+	@Override
+	public synchronized void init(ProcessingEnvironment pe) {
+		super.init(pe);
+		castHelper = new CastHelper(processingEnv, nameTypesUtils);
 	}
 	
 	@Override
@@ -639,10 +675,16 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
-
-		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
 		
+		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(CachedConverter.class.getCanonicalName());
 		methodHelper.copyConstructors(outputName, cachedConverterType, pw, getAdditionalConstructorParameters());
+
+		List<ExecutableElement> constructors = ElementFilter.constructorsIn(cachedConverterType.getEnclosedElements());
+
+		if (constructors.size() > 0) {
+			TypeElement basicConverterType = processingEnv.getElementUtils().getTypeElement(BasicConverter.class.getCanonicalName());
+			methodHelper.copyConstructors(outputName, basicConverterType, constructors.iterator().next(), pw, getAdditionalConstructorParameters());
+		}
 		
 		Map<ExecutableElement, List<String>> constructorParameters = toHelper.getConverterParameterNames(cachedConverterType, getAdditionalConstructorParameters());
 		
@@ -704,6 +746,10 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		
 		pw.print(")");
 		
+	}
+
+	protected void printIsInitializedMethod(PrintWriter pw, String instanceName) {
+		pw.println("return true;");
 	}
 
 	protected void printDomainInstancer(PrintWriter pw, NamedType type) {

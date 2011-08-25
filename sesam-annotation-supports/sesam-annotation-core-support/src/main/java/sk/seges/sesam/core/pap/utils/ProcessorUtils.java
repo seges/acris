@@ -23,15 +23,14 @@ import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.Types;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.dao.PagedResult;
 
 
 public class ProcessorUtils {
 
-	public static boolean isPagedResult(TypeMirror type, ProcessingEnvironment processingEnv) {
-		return implementsType(type, processingEnv.getElementUtils().getTypeElement(PagedResult.class.getCanonicalName()).asType());
-	}
-	
+//	public static boolean isPagedResult(TypeMirror type, ProcessingEnvironment processingEnv) {
+//		return implementsType(type, processingEnv.getElementUtils().getTypeElement(PagedResult.class.getCanonicalName()).asType());
+//	}
+//	
 	public static boolean isCollection(TypeMirror type, ProcessingEnvironment processingEnv) {
 		return implementsType(type, processingEnv.getElementUtils().getTypeElement(Collection.class.getCanonicalName()).asType());
 	}

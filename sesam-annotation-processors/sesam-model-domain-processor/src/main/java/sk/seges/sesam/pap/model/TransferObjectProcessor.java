@@ -42,6 +42,9 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 
 		@Override
 		public void initialize(TypeElement typeElement) {
+			
+			pw.println("private boolean processingEquals = false;");
+			pw.println("");
 			pw.println("@Override");
 			pw.println("public boolean equals(Object obj) {");
 			pw.println("if (this == obj)");
@@ -75,8 +78,14 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 			}
 			
 			if (context.getFieldType() instanceof ArrayNamedType) {
-				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + "))");
-				pw.println("	return false");
+				pw.println("if (!processingEquals) {");
+				pw.println("processingEquals = true;");
+				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + ")) {");
+				pw.println("processingEquals = false;");
+				pw.println("return false");
+				pw.println("} else {");
+				pw.println("processingEquals = false;");
+				pw.println("}");
 				return;
 			}
 
@@ -145,14 +154,27 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 						pw.println("if (" + context.getFieldName() + " == null) {");
 						pw.println("if (other." + context.getFieldName() + " != null)");
 						pw.println("	return false;");
-						pw.println("} else if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
-						pw.println("	return false;");
+						pw.println("} else { ");
+						pw.println("if (!processingEquals) {");
+						pw.println("processingEquals = true;");
+						pw.println("if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + ")) {");
+						pw.println("processingEquals = false;");
+						pw.println("return false;");
+						pw.println("} else {");
+						pw.println("processingEquals = false;");
+						pw.println("}");
 					}
 					return;
 				}
 			case ARRAY:
-				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + "))");
-				pw.println("	return false");
+				pw.println("if (!processingEquals) {");
+				pw.println("processingEquals = true;");
+				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + ")) {");
+				pw.println("processingEquals = false;");
+				pw.println("return false");
+				pw.println("} else {");
+				pw.println("processingEquals = false;");
+				pw.println("}");
 				return;
 			}
 		}		
@@ -166,6 +188,8 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 
 		@Override
 		public void initialize(TypeElement typeElement) {
+			pw.println("private boolean processingHashCode = false;");
+			pw.println("");
 			pw.println("@Override");
 			pw.println("public int hashCode() {");
 			pw.println("final int prime = 31;");
@@ -187,11 +211,16 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 			}
 
 			if (context.getFieldType() instanceof ArrayNamedType) {
+				pw.println("if (!processingHashCode) {");
+				pw.println("processingHashCode = true;");
 				pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
+				pw.println("processingHashCode = false;");
+				pw.println("}");
 				return;
 			}
 
 			if (context.getFieldType().asType() == null) {
+				//TODO - what's this case?
 				pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
 				return;
 			}
@@ -224,13 +253,23 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				switch (element.getKind()) {
 				case ENUM:
 				case ENUM_CONSTANT:
+					pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
+					break;
 				case CLASS:
 				case INTERFACE:
+					pw.println("if (!processingHashCode) {");
+					pw.println("processingHashCode = true;");
 					pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
+					pw.println("processingHashCode = false;");
+					pw.println("}");
 					return;
 				}
 			case ARRAY:
+				pw.println("if (!processingHashCode) {");
+				pw.println("processingHashCode = true;");
 				pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
+				pw.println("processingHashCode = false;");
+				pw.println("}");
 				return;
 			}
 		}		
