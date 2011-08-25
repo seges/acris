@@ -14,11 +14,13 @@
 	<description>Incubator of portable domain objects</description>
 	
 	<dependencies>	
+		<!-- Sesam dependencies -->
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-core</artifactId>
 		</dependency>
 
+		<!-- JPA dependencies -->
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>

@@ -10,11 +10,12 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.persistence.EntityManager;
 
+import org.hibernate.Hibernate;
+
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.mutable.MutableVariableElement;
 import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
 import sk.seges.sesam.pap.model.hibernate.util.HibernateHelper;
-import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class HibernateTransferObjectConverterProcessor extends TransferObjectConverterProcessor {
@@ -22,13 +23,11 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	private static final String ENTITY_MANAGER_NAME = "entityManager";
 
 	private HibernateHelper hibernateHelper;
-	private HibernatePersistentElementHolderConverter hibernatePersistentElementHolderConverter;
 	
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
 		hibernateHelper = new HibernateHelper(methodHelper);
-		hibernatePersistentElementHolderConverter = new HibernatePersistentElementHolderConverter(pe);
 	}
 	
 	@Override
@@ -49,6 +48,11 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	};
 	
 	@Override
+	protected void printIsInitializedMethod(PrintWriter pw, String instanceName) {
+		pw.println(Hibernate.class.getCanonicalName() + ".isInitialized(" + instanceName + ");");
+	}
+	
+	@Override
 	protected void printDomainInstancer(PrintWriter pw, NamedType type) {
 		pw.println("if (id != null) {");
 		pw.println(type.getSimpleName() + " result = " + ENTITY_MANAGER_NAME + ".find(" + type.getSimpleName() + ".class, id);");
@@ -58,10 +62,5 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 		pw.println("}");
 		pw.println();
 		super.printDomainInstancer(pw, type);
-	}
-	
-	@Override
-	protected ElementHolderTypeConverter getElementTypeConverter() {
-		return hibernatePersistentElementHolderConverter;
 	}
 }
