@@ -352,7 +352,8 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			List<ExecutableElement> constructors = ElementFilter.constructorsIn(converterTypeElement.getEnclosedElements());
 
 			if (constructors != null && constructors.size() > 0) {
-				List<? extends VariableElement> constructorParameters = constructors.get(0).getParameters();
+				//Take the last one
+				List<? extends VariableElement> constructorParameters = constructors.get(constructors.size() - 1).getParameters();
 
 				for (VariableElement constructorParameter : constructorParameters) {
 					ConverterParameter converterParameter = new ConverterParameter();
