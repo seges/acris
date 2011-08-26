@@ -138,6 +138,8 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 					type = getNameTypes().toType(returnType);
 				}
 			} else {
+//				//TODO TODO TODO UGLY HACK
+//				returnType = processingEnv.getTypeUtils().erasure(context.getDomainTypeElement().asType());
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find erasure for the " + getTargetEntityType(context.getDomainMethod()).toString() + " in the method: " + context.getFieldName(), 
 						context.getConfigurationElement());
 				return false;

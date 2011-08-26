@@ -16,7 +16,7 @@ public interface DtoConverter<DTO, DOMAIN> {
 	Map<?, ?> toDto(Map<?, ?> domains);
 	
 	PagedResult<? extends Collection<DOMAIN>> fromDto(PagedResult<? extends Collection<DTO>> pagedDtos);
-	DOMAIN convertFromDto(DOMAIN result, DTO domain);
+	DOMAIN convertFromDto(DOMAIN result, DTO dto);
 	DOMAIN fromDto(DTO dto);
 	Collection<DOMAIN> fromDto(Collection<?> dtos);
 	<T extends Collection<DOMAIN>> T fromDto(Collection<?> dtos, Class<T> targetClass);

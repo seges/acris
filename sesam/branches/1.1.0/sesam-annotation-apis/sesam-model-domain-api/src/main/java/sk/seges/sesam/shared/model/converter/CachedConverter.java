@@ -15,7 +15,9 @@ public abstract class CachedConverter<DTO, DOMAIN> extends BasicConverter<DTO, D
 		DTO result = createDtoInstance(id);
 
 		if (result != null) {
-			cache.putInstance(result, id);
+			if (id != null) {
+				cache.putInstance(result, id);
+			}
 			cache.putInstance(domainSource, result);
 		}
 		
@@ -27,7 +29,9 @@ public abstract class CachedConverter<DTO, DOMAIN> extends BasicConverter<DTO, D
 		DOMAIN result = createDomainInstance(id);
 
 		if (result != null) {
-			cache.putInstance(result, id);
+			if (id != null) {
+				cache.putInstance(result, id);
+			}
 			cache.putInstance(dtoSource, result);
 		}
 		

@@ -16,6 +16,7 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.mutable.MutableVariableElement;
 import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
 import sk.seges.sesam.pap.model.hibernate.util.HibernateHelper;
+import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class HibernateTransferObjectConverterProcessor extends TransferObjectConverterProcessor {
@@ -28,6 +29,11 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
 		hibernateHelper = new HibernateHelper(methodHelper);
+	}
+	
+	@Override
+	protected ElementHolderTypeConverter getElementTypeConverter() {
+		return new HibernatePersistentElementHolderConverter(processingEnv);
 	}
 	
 	@Override
@@ -49,7 +55,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	
 	@Override
 	protected void printIsInitializedMethod(PrintWriter pw, String instanceName) {
-		pw.println(Hibernate.class.getCanonicalName() + ".isInitialized(" + instanceName + ");");
+		pw.println("return " + Hibernate.class.getCanonicalName() + ".isInitialized(" + instanceName + ");");
 	}
 	
 	@Override
