@@ -98,27 +98,34 @@ public class FormattedPrintWriter extends PrintWriter {
 		processing = false;
 	}
 
-	private Character lastCharacted = null;
+	private String lastText = null;
 	
 	@Override
 	public void write(String text, int off, int len) {
-		if (text != null && text.length() > off && autoIndent) {
-			setAutoIndent(text.charAt(off));
+		if (!processing) {
+			if (text != null && text.length() > off) {
+				setAutoIndent(text.charAt(off));
+			}
+			addIdentation();
 		}
-		addIdentation();
 		super.write(text, off, len);
-		if (text != null && text.length() > off + len - 1 && len > 0 && autoIndent) {
-			lastCharacted = text.charAt(off + len - 1);
+		if (!processing) {
+			lastText += text.substring(off, len);
 		}
 	}
 
 	@Override
 	public void println() {
-		if (lastCharacted != null && autoIndent) {
-			setAutoOudent(lastCharacted);
-			lastCharacted = null;
+		if (lastText != null && autoIndent) {
+			for (int i = 0; i < lastText.length(); i++) {
+				if (i > 0) {
+					setAutoIndent(lastText.charAt(i));
+				}
+				setAutoOudent(lastText.charAt(i));
+			}
 		}
 		super.println();
 		startLine = true;
+		lastText = "";
 	}
 }

@@ -64,6 +64,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		public void finish(TypeElement typeElement) {
 			pw.println("return true;");
 			pw.println("}");
+			pw.println();
 		}
 		
 		@Override
@@ -85,6 +86,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				pw.println("return false");
 				pw.println("} else {");
 				pw.println("processingEquals = false;");
+				pw.println("}");
 				pw.println("}");
 				return;
 			}
@@ -163,6 +165,8 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 						pw.println("} else {");
 						pw.println("processingEquals = false;");
 						pw.println("}");
+						pw.println("}");
+						pw.println("}");
 					}
 					return;
 				}
@@ -174,6 +178,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				pw.println("return false");
 				pw.println("} else {");
 				pw.println("processingEquals = false;");
+				pw.println("}");
 				pw.println("}");
 				return;
 			}
@@ -254,7 +259,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				case ENUM:
 				case ENUM_CONSTANT:
 					pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
-					break;
+					return;
 				case CLASS:
 				case INTERFACE:
 					pw.println("if (!processingHashCode) {");

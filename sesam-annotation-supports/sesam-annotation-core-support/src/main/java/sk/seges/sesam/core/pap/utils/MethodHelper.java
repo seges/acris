@@ -180,24 +180,18 @@ public class MethodHelper {
 
 	interface ConstructorPrinter {
 
-		boolean exists(String field);
+		boolean exists(String field, ExecutableElement constructor);
 
 		void construct(TypeMirror type, PrintWriter pw);
 
-		void finish(List<String> initializedFields, PrintWriter pw);
+		void finish(List<String> initializedFields, ExecutableElement superConstructor, PrintWriter pw);
 	}
 
 	class DefaultConstructorPrinter implements ConstructorPrinter {
 
-		private ExecutableElement superConstructor;
-		
-		public DefaultConstructorPrinter(ExecutableElement superConstructor) {
-			this.superConstructor = superConstructor;
-		}
-		
 		@Override
-		public boolean exists(String field) {
-			for (VariableElement parameter: superConstructor.getParameters()) {
+		public boolean exists(String field, ExecutableElement constructor) {
+			for (VariableElement parameter: constructor.getParameters()) {
 				if (parameter.getSimpleName().toString().equals(field)) {
 					return true;
 				}
@@ -211,7 +205,7 @@ public class MethodHelper {
 		}
 
 		@Override
-		public void finish(List<String> initializedFields, PrintWriter pw) {
+		public void finish(List<String> initializedFields, ExecutableElement superConstructor, PrintWriter pw) {
 			for (VariableElement parameter: superConstructor.getParameters()) {
 				String parameterName = parameter.getSimpleName().toString();
 				
@@ -229,7 +223,7 @@ public class MethodHelper {
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(fromType.getEnclosedElements());
 		
 		for (ExecutableElement constructor: constructors) {
-			copyConstructor(outputName, constructor, pw, new DefaultConstructorPrinter(superTypeConstructorElement), additionalParameters);
+			copyConstructor(outputName, constructor, superTypeConstructorElement, pw, new DefaultConstructorPrinter(), additionalParameters);
 		}
 	}
 	
@@ -242,10 +236,10 @@ public class MethodHelper {
 	}
 	
 	public void copyConstructor(NamedType outputName, ExecutableElement constructor, PrintWriter pw, MutableVariableElement... additionalParameters) {
-		copyConstructor(outputName, constructor, pw, new DefaultConstructorPrinter(constructor), additionalParameters);
+		copyConstructor(outputName, constructor, constructor, pw, new DefaultConstructorPrinter(), additionalParameters);
 	}
 		
-	private void copyConstructor(NamedType outputName, ExecutableElement constructor, PrintWriter pw, ConstructorPrinter constructorPrinter, MutableVariableElement... additionalParameters) {
+	private void copyConstructor(NamedType outputName, ExecutableElement constructor, ExecutableElement superConstructor, PrintWriter pw, ConstructorPrinter constructorPrinter, MutableVariableElement... additionalParameters) {
 
 		List<String> initializedFields = new ArrayList<String>();
 		
@@ -287,13 +281,13 @@ public class MethodHelper {
 		pw.println(") {");
 		pw.print("super(");
 		i = 0;
-		for (VariableElement parameter: constructor.getParameters()) {
+		for (VariableElement parameter: superConstructor.getParameters()) {
 			if (i > 0) {
 				pw.print(", ");
 			}
 			
 			String parameterName = parameter.getSimpleName().toString();
-			if (constructorPrinter.exists(parameterName)) {
+			if (constructorPrinter.exists(parameterName, constructor)) {
 				pw.print(parameterName);
 			} else {
 				constructorPrinter.construct(parameter.asType(), pw);
@@ -309,7 +303,7 @@ public class MethodHelper {
 			initializedFields.add(name);
 		}
 		
-		constructorPrinter.finish(initializedFields, pw);
+		constructorPrinter.finish(initializedFields, superConstructor, pw);
 		
 		pw.println("}");
 		pw.println();

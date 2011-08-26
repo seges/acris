@@ -145,24 +145,25 @@ public class TransferObjectHelper {
 			} else {
 				return (TypeElement)((DeclaredType)typeParameter).asElement();
 			}
-//		} else if (ProcessorUtils.isPagedResult(type, processingEnv)) {
-//			TypeMirror typeParameter = getTypeParameter(type);
-//			if (typeParameter == null) {
-//				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
-//						" should have defined a type parameter");
-//			} else {
-//				if (ProcessorUtils.isCollection(typeParameter, processingEnv)) {
-//					TypeMirror collectionTypeParameter = getTypeParameter((DeclaredType)typeParameter);
-//					if (collectionTypeParameter == null) {
-//						processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + typeParameter +
-//								" should have defined a type parameter (originally used in the " + type.toString() + ")");
-//					} else {
-//						return (TypeElement)((DeclaredType)collectionTypeParameter).asElement();
-//					}
-//				} else {
-//					//TODO handle paged result that does not hold a collection of objects
-//				}
-//			}
+			//TODO do it in the proper way
+		} else if (ProcessorUtils.isPagedResult(type, processingEnv)) {
+			TypeMirror typeParameter = getTypeParameter(type);
+			if (typeParameter == null) {
+				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
+						" should have defined a type parameter");
+			} else {
+				if (ProcessorUtils.isCollection(typeParameter, processingEnv)) {
+					TypeMirror collectionTypeParameter = getTypeParameter((DeclaredType)typeParameter);
+					if (collectionTypeParameter == null) {
+						processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + typeParameter +
+								" should have defined a type parameter (originally used in the " + type.toString() + ")");
+					} else {
+						return (TypeElement)((DeclaredType)collectionTypeParameter).asElement();
+					}
+				} else {
+					//TODO handle paged result that does not hold a collection of objects
+				}
+			}
 		}
 		
 		return (TypeElement)type.asElement();

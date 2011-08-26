@@ -179,14 +179,15 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 					pw.print(converterName + ".fromDto(" + DTO_NAME  + "." + methodHelper.toGetter(context.getFieldName()));
 				} else {
 					ExecutableElement domainGetterMethod = toHelper.getDomainGetterMethod(element, currentPath);
-					if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {
+					//TODO Precooooooooooooo?
+//					if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) /*|| !toHelper.isIdMethod(domainGetterMethod)*/) {
 						pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME  + "." + methodHelper.toGetter(context.getFieldName()));
-					} else {
-						if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {
-							processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + element.toString(), context.getConfigurationElement());
-						}
-						generated = false;
-					}
+//					} else {
+//						if ((domainGetterMethod == null && toHelper.isIdField(currentPath)) || !toHelper.isIdMethod(domainGetterMethod)) {
+//							processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + element.toString(), context.getConfigurationElement());
+//						}
+//						generated = false;
+//					}
 				}
 				
 				if (generated) {
@@ -232,6 +233,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				pw.println(") {");
 			} 
 
+			//TODO only for entities, collections and maps
 			pw.println("if (isInitialized(" + DOMAIN_NAME  + "." + context.getDomainFieldName() + ")) {");
 			
 			if (converterType != null) {
@@ -340,17 +342,27 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				
 				boolean useIdConverter = false;
 
-				TypeMirror dtoIdType = idMethod.getReturnType();
+				NamedType dtoIdType = nameTypesUtils.toType(idMethod.getReturnType());
+				
 				TypeElement domainIdType = null;
 				
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 					domainIdType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
-					dtoIdType = toHelper.toDto(domainIdType, roundEnv).asType();
+					NamedType dto = toHelper.toDto(domainIdType, roundEnv);
+					if (dto != null) {
+						dtoIdType= dto;
+					}
 				}
+								
+				pw.println(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(" + DOMAIN_NAME + ", " + DOMAIN_NAME + "." + methodHelper.toGetter(methodHelper.toField(idMethod)) + ");");
+				pw.println("if (" + RESULT_NAME + " != null) {");
+				pw.println("return " + RESULT_NAME + ";");
+				pw.println("}");
+				pw.println();
 				
 				String idName = "_id";
 				
-				pw.print(dtoIdType.toString() + " " + idName + " = ");
+				pw.print(dtoIdType.getCanonicalName() + " " + idName + " = ");
 				
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 					Element idConfigurationElement = toHelper.getConfigurationElement(domainIdType, roundEnv);
@@ -362,21 +374,15 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 					}
 				}
 
-				pw.print(DOMAIN_NAME + "." + methodHelper.toGetter(methodHelper.toField(idMethod)) + ")");
+				pw.print(DOMAIN_NAME + "." + methodHelper.toGetter(methodHelper.toField(idMethod)));
 
 				if (useIdConverter) {
 					pw.print(")");
 				}
 				pw.println(";");
 				pw.println();
-				
-				//TODO split into 2 parts, request from the cache and the create the object
-				pw.print(dtoType.getSimpleName() + " " + RESULT_NAME + " = getDtoInstance(" + DOMAIN_NAME + ", " + idName + ");");
-				pw.print("if (" + RESULT_NAME + " != null) {");
-				pw.print("return " + RESULT_NAME + ";");
-				pw.print("}");
-				pw.println();
-				pw.print(RESULT_NAME + " = createDtoInstance(" + DOMAIN_NAME + ", " + idName + ");");
+
+				pw.println(RESULT_NAME + " = createDtoInstance(" + DOMAIN_NAME + ", " + idName + ");");
 			}
 
 			pw.println("return convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
@@ -476,13 +482,21 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				
 				boolean useIdConverter = false;
 
-				TypeMirror dtoIdType = idMethod.getReturnType();
+				NamedType dtoIdType = nameTypesUtils.toType(idMethod.getReturnType());
 				TypeElement domainIdType = null;
 				
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 					domainIdType = (TypeElement)((DeclaredType)idMethod.getReturnType()).asElement();
-					dtoIdType = toHelper.toDto(domainIdType, roundEnv).asType();
+					ImmutableType dto = toHelper.toDto(domainIdType, roundEnv);
+					if (dto != null) {
+						dtoIdType= dto;
+					}
 				}
+
+				pw.println(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + ", " + DTO_NAME + "." + methodHelper.toGetter(methodHelper.toField(dtoIdMethod)) + ");");
+				pw.println("if (" + RESULT_NAME + " != null) {");
+				pw.println("return " + RESULT_NAME + ";");
+				pw.println("}");
 
 				String idName = "_id";
 				
@@ -490,7 +504,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 					pw.print(domainIdType.toString() + " " + idName + " = ");
 				} else {
 					//Types are the same
-					pw.print(dtoIdType.toString() + " " + idName + " = ");
+					pw.print(dtoIdType.getCanonicalName() + " " + idName + " = ");
 				}
 				
 				if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
@@ -503,7 +517,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 					}
 				}
 
-				pw.print(DTO_NAME + "." + methodHelper.toGetter(methodHelper.toField(dtoIdMethod)) + ")");
+				pw.print(DTO_NAME + "." + methodHelper.toGetter(methodHelper.toField(dtoIdMethod)));
 
 				if (useIdConverter) {
 					pw.print(")");
@@ -511,10 +525,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 				pw.println(";");
 				pw.println();
 
-				pw.print(domainObjectType.getCanonicalName() + " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + ", " + idName + ");");
-				pw.print("if (" + RESULT_NAME + " != null) {");
-				pw.print("return " + RESULT_NAME + ";");
-				pw.print("}");
+				pw.println(RESULT_NAME + " = createDomainInstance(" + DTO_NAME + ", " + idName + ");");
 				pw.println();
 			}
 			
