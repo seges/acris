@@ -1,1 +1,0 @@
-start /D"%JAVA_HOME%\bin" rmiregistry.exe 2001
