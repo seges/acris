@@ -1,0 +1,4 @@
+<module>
+	<inherits name='sk.seges.acris.theme.client.Metal' />
+	<inherits name='com.google.gwt.widgetideas.WidgetIdeas' />
+</module>
