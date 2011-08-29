@@ -55,7 +55,8 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 			case OUTPUT_INTERFACES:
-				return new Type[] { TypedClassBuilder.get(BeanWrapper.class, genericsSupport.applyUpperGenerics(NamedType.THIS, typeElement)) };
+				return new Type[] { TypedClassBuilder.get(BeanWrapper.class, 
+						typeParametersSupport.applyUpperTypeParameters(nameTypesUtils.toType(typeElement), typeElement)) };
 			}
 		return super.getOutputDefinition(type, typeElement);
 	}
