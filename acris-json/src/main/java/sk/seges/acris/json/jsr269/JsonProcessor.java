@@ -23,9 +23,9 @@ public class JsonProcessor extends AbstractConfigurableProcessor {
 	public static final String OUTPUT_SUFFIX = "Jsonizer";
 
 	@Override
-	protected Type[] getImports(TypeElement typeElement) {
+	protected Type[] getImports() {
 		return new Type[] {
-				nameTypesUtils.toType(typeElement)
+			NamedType.THIS	
 		};
 	}
 
@@ -38,7 +38,7 @@ public class JsonProcessor extends AbstractConfigurableProcessor {
 	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 			case OUTPUT_INTERFACES:
-				return new Type[] { TypedClassBuilder.get(IJsonObject.class, nameTypesUtils.toType(typeElement)) };
+				return new Type[] { TypedClassBuilder.get(IJsonObject.class, NamedType.THIS) };
 			}
 		return super.getOutputDefinition(type, typeElement);
 	}
