@@ -11,7 +11,13 @@ import java.io.FileReader;
 import javax.script.ScriptException;
 
 /**
+ * Class containing logic for every transformer written.
+ * 
  * @author ladislav.gazo
+ * 
+ * @param <T>
+ *            Represents type of transformation used (e.g. File with
+ *            transformation script or String with transformation script class)
  */
 public abstract class Transformer<T> {
 	protected final File inputDir;
@@ -23,11 +29,10 @@ public abstract class Transformer<T> {
 	}
 
 	public abstract void transform(T transformation);
-	
-	protected static String readFileAsString(File transformation)
-			throws java.io.IOException {
+
+	public static String readFileAsString(File file) throws java.io.IOException {
 		StringBuilder fileData = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new FileReader(transformation));
+		BufferedReader reader = new BufferedReader(new FileReader(file));
 		char[] buf = new char[1024];
 		int numRead = 0;
 		while ((numRead = reader.read(buf)) != -1) {
