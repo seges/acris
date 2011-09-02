@@ -6,6 +6,10 @@
 	Web:     http://goessner.net/ 
 */
 
+function transform(data, trans) {
+	return jsonT(eval("(" + data + ")"), eval("(" + trans + ")"));
+}
+
 function jsonT(self, rules) {
    var T = {
       output: false,
@@ -64,5 +68,3 @@ function jsonT(self, rules) {
    };
    return T.init().apply("self");
 }
-
-jsonT(data, transformation);

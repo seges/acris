@@ -7,57 +7,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
  * @author ladislav.gazo
  */
-public class Transformer {
-	private final ScriptEngine engine;
-	private final String script = "jsont.js";
-	
-	private final File inputDir;
-	private final File outputDir;
+public abstract class Transformer<T> {
+	protected final File inputDir;
+	protected final File outputDir;
 
 	public Transformer(File inputDir, File outputDir) throws ScriptException, FileNotFoundException {
-		ScriptEngineManager mgr = new ScriptEngineManager();
-		engine = mgr.getEngineByName("ECMAScript");
-		
 		this.inputDir = inputDir;
 		this.outputDir = outputDir;
 	}
 
-	public void transform(File transformation) {
-		for(File data : inputDir.listFiles()) {
-			try {
-				String result = execute(data, transformation);
-				FileWriter writer = new FileWriter(new File(outputDir, data.getName()));
-				writer.write(result);
-				writer.close();
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to transform data = " + data + " using transformation = " + transformation, e);
-			}
-		}
-	}
+	public abstract void transform(T transformation);
 	
-	private String execute(File data, File transformation)
-			throws ScriptException, IOException {
-		Reader reader = new InputStreamReader(getClass().getResourceAsStream(script));
-		Bindings binding = engine.createBindings();
-		binding.put("data", readFileAsString(data));
-		binding.put("transformation", readFileAsString(transformation));
-		return (String) engine.eval(reader, binding);
-	}
-
-	private static String readFileAsString(File transformation)
+	protected static String readFileAsString(File transformation)
 			throws java.io.IOException {
 		StringBuilder fileData = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new FileReader(transformation));
