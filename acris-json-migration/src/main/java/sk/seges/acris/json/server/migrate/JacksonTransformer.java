@@ -10,6 +10,9 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
+ * Transforms JSON data using Jackson's tree model based scripts.
+ * 
+ * @see JacksonTransformationScript
  * @author ladislav.gazo
  */
 public class JacksonTransformer extends Transformer<String> {

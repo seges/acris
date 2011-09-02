@@ -13,6 +13,14 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 /**
+ * Transforms JSON data using JSONT transformation rules.
+ * 
+ * NOTE: implementation finished but no working transformation written that
+ * would satisfy requirements for complex data transformations. Stopped when I
+ * was not able to determine whether I got last item of an array. Based on this
+ * information I wanted to add or don't add comma separator to the resulting
+ * JSON data.
+ * 
  * @author ladislav.gazo
  * 
  * @see http://goessner.net/articles/jsont/
