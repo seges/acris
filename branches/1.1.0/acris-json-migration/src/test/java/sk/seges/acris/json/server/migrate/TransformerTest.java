@@ -35,9 +35,8 @@ public class TransformerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.writeValue(new File(input, "data.json"), v1);
 		
-		File transformation = new File(getClass().getResource("trans_v1_to_v2.jsont").getFile());
-		Transformer t = new Transformer(input, output);
-		t.transform(transformation);
+		JacksonTransformer t = new JacksonTransformer(input, output);
+		t.transform(MockV1toV2Script.class.getName());
 		
 		File[] files = output.listFiles();
 		assertEquals(input.listFiles().length, files.length);
