@@ -59,8 +59,8 @@ public abstract class JacksonTransformationScript<T extends JsonNode> {
 	@SuppressWarnings("unchecked")
 	protected <N extends JsonNode> N addNonExistent(ObjectNode parent, String field, N childPrototype) {
 		JsonNode child = parent.get(field);
-		if (child != null && !child.isObject()) {
-			throw new RuntimeException("Field " + field + " exists and is not an object, cannot continue");
+		if (child != null && !childPrototype.getClass().getName().equals(child.getClass().getName())) {
+			throw new RuntimeException("Field " + field + " exists and its class " + child.getClass().getName() + " is not same as expected " + childPrototype.getClass().getName() + ", cannot continue");
 		} else if (child != null) {
 			return (N) child;
 		} else if (child == null) {
