@@ -7,7 +7,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
-import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.api.TypeVariable;
 import sk.seges.sesam.core.pap.utils.ClassUtils;
@@ -40,20 +39,21 @@ class TypeParameterClass implements TypeParameter {
 		return bounds;
 	}
 
-	public String toString(NamedType inputClass, ClassSerializer serializer) {
-		return toString(inputClass, serializer, true);
+	public String toString(ClassSerializer serializer) {
+		return toString(serializer, true);
 	}
 
 	public String toString() {
 		String result = "";
 
 		if (getVariable() != null) {
-			result += getVariable() + " ";
+			result += getVariable();
 		}
 
 		if (getBounds() != null) {
+			
 			if (getVariable() != null) {
-				result += "extends ";
+				result += " extends ";
 			}
 
 			int i = 0;
@@ -62,14 +62,10 @@ class TypeParameterClass implements TypeParameter {
 					result += " & ";
 				}
 
-				if (typeVariable.getUpperBound().equals(NamedType.THIS)) {
-					result += "_THIS_";
+				if (typeVariable.getUpperBound() instanceof Class) {
+					result += ((Class<?>) typeVariable.getUpperBound()).getCanonicalName();
 				} else {
-					if (typeVariable.getUpperBound() instanceof Class) {
-						result += ((Class<?>) typeVariable.getUpperBound()).getCanonicalName();
-					} else {
-						result += getBounds().toString();
-					}
+					result += getBounds().toString();
 				}
 				i++;
 			}
@@ -78,21 +74,16 @@ class TypeParameterClass implements TypeParameter {
 		return result;
 	}
 
-	@Override
-	public String toString(ClassSerializer serializer) {
-		return toString(null, serializer, true);
-	}
-
-	public String toString(NamedType inputClass, ClassSerializer serializer, boolean typed) {
+	public String toString(ClassSerializer serializer, boolean typed) {
 		String result = "";
 
 		if (getVariable() != null) {
-			result += getVariable() + " ";
+			result += getVariable();
 		}
 
 		if (getBounds() != null) {
 			if (getVariable() != null) {
-				result += "extends ";
+				result += " extends ";
 			}
 
 			int i = 0;
@@ -102,18 +93,10 @@ class TypeParameterClass implements TypeParameter {
 					result += " & ";
 				}
 
-				if (typeVariable.getUpperBound().equals(NamedType.THIS)) {
-					if (inputClass != null) {
-						result += inputClass.toString(ClassSerializer.SIMPLE);
-					} else {
-						result += "_THIS_";
-					}
+				if (typeVariable.getUpperBound() instanceof Class) {
+					result += ClassUtils.toString((Class<?>)typeVariable.getUpperBound(), serializer);
 				} else {
-					if (typeVariable.getUpperBound() instanceof Class) {
-						result += ClassUtils.toString((Class<?>)typeVariable.getUpperBound(), serializer);
-					} else {
-						result += ClassUtils.toString(inputClass, typeVariable.getUpperBound(), serializer, true);
-					}
+					result += ClassUtils.toString(typeVariable.getUpperBound(), serializer, true);
 				}
 				i++;
 			}

@@ -17,10 +17,13 @@ import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
+import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
 import sk.seges.sesam.core.pap.model.InputClass;
+import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
+import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
@@ -31,6 +34,18 @@ public class NameTypesUtils implements NameTypes {
 	
 	public NameTypesUtils(Elements elements) {
 		this.elements = elements;
+	}
+	
+	class NamedTypeMirrorConverter implements TypeMirrorConverter {
+
+		@Override
+		public NamedType handleType(TypeMirror type) {
+			return toType(type);
+		}
+	}
+	
+	protected TypeMirrorConverter getTypeMirrorConverter() {
+		return new NamedTypeMirrorConverter();
 	}
 	
 	private ImmutableType handleGenerics(ImmutableType simpleType, TypeMirror type) {
@@ -57,16 +72,16 @@ public class NameTypesUtils implements NameTypes {
 							if (element.getSuperclass() != null && !element.getSuperclass().getKind().equals(TypeKind.NONE)) {
 								DeclaredType superClassType = (DeclaredType)element.getSuperclass();
 								if (superClassType != null && !superClassType.toString().equals(Object.class.getCanonicalName())) {
-									boundTypes.add(toType(superClassType));
+									boundTypes.add(getTypeMirrorConverter().handleType(superClassType));
 								}
 
 								for (TypeMirror typeInterface: element.getInterfaces()) {
 									if (typeInterface != null && !typeInterface.toString().equals(Object.class.getCanonicalName())) {
-										boundTypes.add(toType(typeInterface));
+										boundTypes.add(getTypeMirrorConverter().handleType(typeInterface));
 									}
 								}
 							} else {
-								boundTypes.add(toType(upperBound));
+								boundTypes.add(getTypeMirrorConverter().handleType(upperBound));
 							}
 							typeParameters[i] = TypeParameterBuilder.get(variableName, boundTypes.toArray(new Type[] {}));
 						}
@@ -74,17 +89,17 @@ public class NameTypesUtils implements NameTypes {
 						WildcardType wildcardType = (WildcardType)typeParameter;
 						
 						if (wildcardType.getExtendsBound() != null) {
-							boundTypes.add(toType(wildcardType.getExtendsBound()));
+							boundTypes.add(getTypeMirrorConverter().handleType(wildcardType.getExtendsBound()));
 							typeParameters[i] = TypeParameterBuilder.get("?", boundTypes.toArray(new Type[] {}));
 						} else if (wildcardType.getSuperBound() != null) {
-							boundTypes.add(toType(wildcardType.getSuperBound()));
+							boundTypes.add(getTypeMirrorConverter().handleType(wildcardType.getSuperBound()));
 							typeParameters[i] = TypeParameterBuilder.get("?", boundTypes.toArray(new Type[] {}));
 						} else {
 							typeParameters[i] = TypeParameterBuilder.get("?");
 						}
 						
 					} else {
-						boundTypes.add(toType(typeParameter));
+						boundTypes.add(getTypeMirrorConverter().handleType(typeParameter));
 						typeParameters[i] = TypeParameterBuilder.get(null, boundTypes.toArray(new Type[] {}));
 					}
 				}
@@ -121,7 +136,7 @@ public class NameTypesUtils implements NameTypes {
 		
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
 	}
-	
+
 	public NamedType toType(TypeMirror typeMirror) {
 		switch (typeMirror.getKind()) {
 		case DECLARED:
@@ -142,12 +157,12 @@ public class NameTypesUtils implements NameTypes {
 			String name = typeVariable.asElement().getSimpleName().toString();
 			
 			if (typeVariable.getUpperBound() != null) {
-				return TypeParameterBuilder.get(name, toType(typeVariable.getUpperBound()));
+				return TypeParameterBuilder.get(name, getTypeMirrorConverter().handleType(typeVariable.getUpperBound()));
 			}
 			//TODO lower bound is not supported for now
 			return TypeParameterBuilder.get(name);
 		case ARRAY:
-			return new ArrayNamedType(toType(((ArrayType)typeMirror).getComponentType()));
+			return new ArrayNamedType(getTypeMirrorConverter().handleType(((ArrayType)typeMirror).getComponentType()));
 		}
 		
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
@@ -156,9 +171,9 @@ public class NameTypesUtils implements NameTypes {
 	public ImmutableType toImmutableType(Element element) {
 		return toImmutableType(element.asType());
 	}
-	
+
 	public NamedType toType(Element element) {
-		return toType(element.asType());
+		return getTypeMirrorConverter().handleType(element.asType());
 	}
 
 	private static ImmutableType toType(Class<?> clazz) {
@@ -210,16 +225,12 @@ public class NameTypesUtils implements NameTypes {
 		if (extendsIndex != -1) {
 			String parameterType = typeParameter.substring(extendsIndex + "extends".length()).trim();
 			
-			return TypeParameterBuilder.get(typeParameter.substring(0, extendsIndex).trim(), 
-						parameterType.equals("THIS") ? NamedType.THIS : toType(parameterType));
+			return TypeParameterBuilder.get(typeParameter.substring(0, extendsIndex).trim(), toType(parameterType));
 		}
 
 		NamedType parameterType = toType(typeParameter);
 
 		if (parameterType == null) {
-			if (typeParameter.equals("THIS")) {
-				return TypeParameterBuilder.get(NamedType.THIS);
-			}
 			return TypeParameterBuilder.get(typeParameter);
 		}
 
@@ -260,8 +271,20 @@ public class NameTypesUtils implements NameTypes {
 
 		return null;
 	}
-	
+
 	public NamedType toType(String className) {
 		return toImmutableType(className);
+	}
+	
+	public ImmutableType erasure(NamedType namedType) {
+		if (namedType instanceof HasTypeParameters && ((HasTypeParameters) namedType).getTypeParameters() != null) {
+			return new OutputClass(namedType.asType(), namedType.getPackageName(), namedType.getSimpleName());
+		}
+
+		if (namedType instanceof ImmutableType) {
+			return (ImmutableType)namedType;
+		}
+
+		return new OutputClass(namedType.asType(), namedType.getPackageName(), namedType.getSimpleName());
 	}
 }

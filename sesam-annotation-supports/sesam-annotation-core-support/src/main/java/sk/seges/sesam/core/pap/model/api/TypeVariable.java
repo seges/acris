@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 public interface TypeVariable {
 		
-//		Type getLowerBound(); Lower bound is not supported
+//		Type getLowerBound(); TODO Lower bound is not supported
 		
 		Type getUpperBound();
 	}

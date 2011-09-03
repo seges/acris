@@ -4,344 +4,47 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
-import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ListUtils;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
-import sk.seges.sesam.pap.model.model.AbstractElementPrinter;
-import sk.seges.sesam.pap.model.model.ElementPrinter;
-import sk.seges.sesam.pap.model.model.ProcessorContext;
-import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
+import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.DtoTypeElement;
+import sk.seges.sesam.pap.model.printer.accessors.AccessorsPrinter;
+import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.printer.equals.EqualsPrinter;
+import sk.seges.sesam.pap.model.printer.field.FieldPrinter;
+import sk.seges.sesam.pap.model.printer.hashcode.HashCodePrinter;
+import sk.seges.sesam.pap.model.resolver.DefaultIdentifierResolver;
+import sk.seges.sesam.pap.model.resolver.api.IdentityResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectProcessor extends AbstractTransferProcessor {
-	
-	class EqualsPrinter extends AbstractElementPrinter {
-
-		public EqualsPrinter(PrintWriter pw) {
-			super(pw);
-		}
-
-		@Override
-		public void initialize(TypeElement typeElement) {
-			
-			pw.println("private boolean processingEquals = false;");
-			pw.println("");
-			pw.println("@Override");
-			pw.println("public boolean equals(Object obj) {");
-			pw.println("if (this == obj)");
-			pw.println("	return true;");
-			pw.println("if (obj == null)");
-			pw.println("	return false;");
-			pw.println("if (getClass() != obj.getClass())");
-			pw.println("	return false;");
-			
-			NamedType targetClassName = getTargetClassNames(nameTypesUtils.toImmutableType(typeElement))[0];
-			
-			pw.println(targetClassName.toString(null, ClassSerializer.SIMPLE, true) + " other = (" + 
-					targetClassName.toString(null, ClassSerializer.SIMPLE, true) + ") obj;");
-		}
-	
-		@Override
-		public void finish(TypeElement typeElement) {
-			pw.println("return true;");
-			pw.println("}");
-			pw.println();
-		}
-		
-		@Override
-		public void print(ProcessorContext context) {
-
-			boolean idMethod = toHelper.isIdMethod(context.getMethod());
-			
-			if (idMethod) {
-				//TODO That's not really true
-				//id's are not interesting
-				return;
-			}
-			
-			if (context.getFieldType() instanceof ArrayNamedType) {
-				pw.println("if (!processingEquals) {");
-				pw.println("processingEquals = true;");
-				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + ")) {");
-				pw.println("processingEquals = false;");
-				pw.println("return false");
-				pw.println("} else {");
-				pw.println("processingEquals = false;");
-				pw.println("}");
-				pw.println("}");
-				return;
-			}
-
-			if (context.getFieldType().asType() == null) {
-				if (idMethod) {
-					pw.println("if (" + context.getFieldName() + " != null && other." + context.getFieldName() + " != null && " + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
-					pw.println("	return true;");
-				} else {
-					pw.println("if (" + context.getFieldName() + " == null) {");
-					pw.println("if (other." + context.getFieldName() + " != null)");
-					pw.println("	return false;");
-					pw.println("} else if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
-					pw.println("	return false;");
-				}
-				return;
-			}
-			
-			switch (context.getFieldType().asType().getKind()) {
-			case BOOLEAN:
-			case BYTE:
-			case CHAR:
-			case DOUBLE:
-			case FLOAT:
-			case INT:
-			case LONG:
-			case SHORT:
-				if (idMethod) {
-					pw.println("if (" + context.getFieldName() + " == other." + context.getFieldName() + ")");
-					pw.println("	return true;");
-				} else {
-					pw.println("if (" + context.getFieldName() + " != other." + context.getFieldName() + ")");
-					pw.println("	return false;");
-				}
-				return;
-			case EXECUTABLE:
-			case NONE:
-			case NULL:
-			case OTHER:
-			case PACKAGE:
-			case ERROR:
-			case WILDCARD:
-			case VOID:
-			case TYPEVAR:
-				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getFieldName() + " (" + context.getFieldType().asType().getKind() + ") in the " + 
-						context.getConfigurationElement(), context.getConfigurationElement());
-				return;
-			case DECLARED:
-				Element element = ((DeclaredType)context.getFieldType().asType()).asElement();
-				switch (element.getKind()) {
-				case ENUM:
-				case ENUM_CONSTANT:
-					if (idMethod) {
-						pw.println("if (" + context.getFieldName() + " == other." + context.getFieldName() + ")");
-						pw.println("	return true;");
-					} else {
-						pw.println("if (" + context.getFieldName() + " != other." + context.getFieldName() + ")");
-						pw.println("	return false;");
-					}
-					return;
-				case CLASS:
-				case INTERFACE:
-					if (idMethod) {
-						pw.println("if (" + context.getFieldName() + " != null && other." + context.getFieldName() + " != null && " + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
-						pw.println("	return true;");
-					} else {
-						pw.println("if (" + context.getFieldName() + " == null) {");
-						pw.println("if (other." + context.getFieldName() + " != null)");
-						pw.println("	return false;");
-						pw.println("} else { ");
-						pw.println("if (!processingEquals) {");
-						pw.println("processingEquals = true;");
-						pw.println("if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + ")) {");
-						pw.println("processingEquals = false;");
-						pw.println("return false;");
-						pw.println("} else {");
-						pw.println("processingEquals = false;");
-						pw.println("}");
-						pw.println("}");
-						pw.println("}");
-					}
-					return;
-				}
-			case ARRAY:
-				pw.println("if (!processingEquals) {");
-				pw.println("processingEquals = true;");
-				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + ")) {");
-				pw.println("processingEquals = false;");
-				pw.println("return false");
-				pw.println("} else {");
-				pw.println("processingEquals = false;");
-				pw.println("}");
-				pw.println("}");
-				return;
-			}
-		}		
-	}
-
-	class HashCodePrinter extends AbstractElementPrinter {
-
-		public HashCodePrinter(PrintWriter pw) {
-			super(pw);
-		}
-
-		@Override
-		public void initialize(TypeElement typeElement) {
-			pw.println("private boolean processingHashCode = false;");
-			pw.println("");
-			pw.println("@Override");
-			pw.println("public int hashCode() {");
-			pw.println("final int prime = 31;");
-			pw.println("int result = 1;");
-		}
-	
-		@Override
-		public void finish(TypeElement typeElement) {
-			pw.println("return result;");
-			pw.println("}");
-		}
-		
-		@Override
-		public void print(ProcessorContext context) {
-
-			if (toHelper.isIdMethod(context.getMethod())) {
-				//IDs are not part of the hashCode
-				return;
-			}
-
-			if (context.getFieldType() instanceof ArrayNamedType) {
-				pw.println("if (!processingHashCode) {");
-				pw.println("processingHashCode = true;");
-				pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
-				pw.println("processingHashCode = false;");
-				pw.println("}");
-				return;
-			}
-
-			if (context.getFieldType().asType() == null) {
-				//TODO - what's this case?
-				pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
-				return;
-			}
-			
-			switch (context.getFieldType().asType().getKind()) {
-			case BOOLEAN:
-			case BYTE:
-			case CHAR:
-			case DOUBLE:
-			case FLOAT:
-			case INT:
-			case LONG:
-			case SHORT:
-				pw.println("result = prime * result + " + context.getFieldName() + ";");
-				return;
-			case EXECUTABLE:
-			case NONE:
-			case NULL:
-			case OTHER:
-			case PACKAGE:
-			case ERROR:
-			case WILDCARD:
-			case VOID:
-			case TYPEVAR:
-				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getFieldName() + " (" + context.getFieldType().asType().getKind() + ") in the " + 
-						context.getConfigurationElement(), context.getConfigurationElement());
-				return;
-			case DECLARED:
-				Element element = ((DeclaredType)context.getFieldType().asType()).asElement();
-				switch (element.getKind()) {
-				case ENUM:
-				case ENUM_CONSTANT:
-					pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
-					return;
-				case CLASS:
-				case INTERFACE:
-					pw.println("if (!processingHashCode) {");
-					pw.println("processingHashCode = true;");
-					pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
-					pw.println("processingHashCode = false;");
-					pw.println("}");
-					return;
-				}
-			case ARRAY:
-				pw.println("if (!processingHashCode) {");
-				pw.println("processingHashCode = true;");
-				pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
-				pw.println("processingHashCode = false;");
-				pw.println("}");
-				return;
-			}
-		}		
-	}
-
-	class FieldPrinter extends AbstractElementPrinter {
-
-		public FieldPrinter(PrintWriter pw) {
-			super(pw);
-		}
-		
-		public void print(ProcessorContext context) {
-			//we do not use modifier from the param - fields should be always private
-			pw.println(Modifier.PRIVATE.toString() + " " + context.getFieldType().toString(null, ClassSerializer.CANONICAL, true) + " " + 
-					context.getFieldName() + ";");
-			pw.println();
-		}
-	}
-	
-	class AccessorsPrinter extends AbstractElementPrinter {
-
-		public AccessorsPrinter(PrintWriter pw) {
-			super(pw);
-		}
-		
-		@Override
-		public void print(ProcessorContext context) {
-
-			String fieldTypeName = context.getFieldType().toString(null, ClassSerializer.CANONICAL, true);
-			
-			String modifier = Modifier.PUBLIC.toString() + " ";
-			
-			//modifier = context.getModifier() != null ? (context.getModifier().toString() + " ") : "";
-			
-			pw.println(modifier + fieldTypeName + " " + methodHelper.toGetter(context.getFieldName()) + " {");
-			pw.println("return " + context.getFieldName() + ";");
-			pw.println("}");
-			pw.println();
-
-			pw.println(modifier + "void " + methodHelper.toSetter(context.getFieldName()) + 
-					"(" + fieldTypeName + " " + context.getFieldName() + ") {");
-			pw.println("this." + context.getFieldName() + " = " + context.getFieldName() + ";");
-			pw.println("}");
-			pw.println();
-		}
-	}
 	
 	@Override
 	protected void writeClassAnnotations(Element configurationElement, NamedType outputName, PrintWriter pw) {
 		pw.println("@SuppressWarnings(\"serial\")");
 		
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
-		
-		ImmutableType configurationType = (ImmutableType)getNameTypes().toType(configurationElement);
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
 		
 		pw.print("@" + TransferObjectMapping.class.getSimpleName() + "(");
 
-		pw.println("dtoClass = " + getOutputClass(configurationType).getSimpleName() + ".class,");
-		pw.println("		domainClassName = \"" + toHelper.getDomainTypeElement(configurationElement).getQualifiedName().toString() + "\", ");
+		pw.println("dtoClass = " + getOutputClass(configurationTypeElement).getSimpleName() + ".class,");
+		pw.println("		domainClassName = \"" + configurationTypeElement.getDomainTypeElement().getQualifiedName().toString() + "\", ");
 		pw.println("		configurationClassName = \"" + configurationElement.toString() + "\", ");
 		pw.print("		converterClassName = \"");
-		if (transferObjectConfiguration.getConverter() != null) {
-			pw.print(transferObjectConfiguration.getConverter().toString());
-		} else {
-			ImmutableType generatedConverter = TransferObjectConverterProcessor.getOutputClass(configurationType, new DefaultPackageValidatorProvider(), processingEnv);
-			pw.print(generatedConverter.getCanonicalName());
-		}
+		pw.print(configurationTypeElement.getConverterTypeElement().getCanonicalName());
 		pw.print("\"");
 		pw.println(")");
 		
@@ -350,7 +53,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	
 	@Override
 	protected Type[] getImports(TypeElement typeElement) {
-		NamedType dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
+		NamedType dtoSuperclass = toHelper.getDtoSuperclass(new ConfigurationTypeElement(typeElement, processingEnv, roundEnv));
 		List<Type> result = new ArrayList<Type>();
 		ListUtils.add(result, super.getImports(typeElement));
 		if (dtoSuperclass != null) {
@@ -363,10 +66,10 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	@Override
 	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
 
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(element, processingEnv);
-		
-		TypeElement dto = transferObjectConfiguration.getDto();
-		if (dto != null) {
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
+
+		DtoTypeElement dto = configurationTypeElement.getDtoTypeElement();
+		if (!dto.isGenerated()) {
 			return supportProcessorChain();
 		}
 		
@@ -374,24 +77,25 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	}
 
 	@Override
-	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
+	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement configurationElement) {
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
 		switch (type) {
 			case OUTPUT_SUPERCLASS:
-				NamedType dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
+				NamedType dtoSuperclass = toHelper.getDtoSuperclass(configurationTypeElement);
 				if (dtoSuperclass != null) {
 					
-					TypeElement domainObjectClass = toHelper.getDomainTypeElement(typeElement);
+					TypeElement domainObjectClass = configurationTypeElement.getDomainTypeElement().asElement();
 	
 					if (domainObjectClass != null) {
 						TypeMirror superClassType = domainObjectClass.getSuperclass();
-						return new Type[] { genericsSupport.applyGenerics(dtoSuperclass, (DeclaredType)superClassType) };
+						return new Type[] { typeParametersSupport.applyTypeParameters(dtoSuperclass, (DeclaredType)superClassType) };
 					}
 					
 					return new Type[] {dtoSuperclass};
 				}
 				break;
 			case OUTPUT_INTERFACES:
-				List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
+				List<? extends TypeMirror> interfaces = configurationElement.getInterfaces();
 				
 				List<Type> interfaceTypes = new ArrayList<Type>();
 				
@@ -401,7 +105,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 					}
 				}
 				
-				dtoSuperclass = toHelper.getDtoSuperclass(typeElement);
+				dtoSuperclass = toHelper.getDtoSuperclass(configurationTypeElement);
 				if (dtoSuperclass == null) {
 					ListUtils.add(interfaceTypes, nameTypesUtils.toType(Serializable.class) );
 				}
@@ -409,31 +113,38 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				return interfaceTypes.toArray(new Type[] {});
 		}
 		
-		return super.getOutputDefinition(type, typeElement);
+		return super.getOutputDefinition(type, configurationElement);
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
+	protected NamedType[] getTargetClassNames(ImmutableType immutableType) {
+
+		TypeElement configurationElement = (TypeElement)((DeclaredType)immutableType.asType()).asElement();
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
+		
+		//typeParametersSupport.applyVariableTypeParameters(immutableType, configurationTypeElement.getDomainTypeElement())
+				
 		return new NamedType[] {
-				getOutputClass((ImmutableType)genericsSupport.applyVariableGenerics(mutableType, toHelper.getDomainTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()))))
+				getOutputClass(configurationTypeElement)
 		};
 	}
 
+	@Override
 	protected ElementPrinter[] getElementPrinters(PrintWriter pw) {
 		return new ElementPrinter[] {
 				new FieldPrinter(pw),
-				new AccessorsPrinter(pw),
-				new EqualsPrinter(pw),
-				new HashCodePrinter(pw)
+				new AccessorsPrinter(processingEnv, pw),
+				new EqualsPrinter(processingEnv, pw),
+				new HashCodePrinter(processingEnv, pw)
 		};
 	}
 	
-	public static ImmutableType getOutputClass(ImmutableType immutableType) {	
-		return TransferObjectHelper.getDtoType(immutableType);
+	public static ImmutableType getOutputClass(ConfigurationTypeElement configurationTypeElement) {	
+		return configurationTypeElement.getDtoTypeElement();
 	}
 
 	@Override
-	protected boolean shouldHaveIdMethod(TypeElement configurationElement, TypeElement domainElement) {
-		return false;
-	}	
+	protected IdentityResolver getIdentityResolver() {
+		return new DefaultIdentifierResolver();
+	}
 }

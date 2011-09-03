@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
@@ -40,7 +41,7 @@ public class SuperclassProcessor extends AbstractConfigurableProcessor {
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
 			return new Type[] {
-					genericsSupport.applyVariableGenerics(NamedType.THIS, typeElement)
+					typeParametersSupport.applyVariableTypeParameters(nameTypesUtils.toImmutableType(typeElement), (DeclaredType)typeElement.asType())
 			};
 		}
 		return super.getOutputDefinition(type, typeElement);

@@ -41,9 +41,9 @@ import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.api.TypeVariable;
-import sk.seges.sesam.core.pap.utils.GenericsSupport;
 import sk.seges.sesam.core.pap.utils.ListUtils;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.utils.TypeUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
@@ -52,7 +52,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	private Map<String, Set<SubProcessor<?>>> subProcessors = new HashMap<String, Set<SubProcessor<?>>>();
 
 	protected RoundEnvironment roundEnv;
-	protected GenericsSupport genericsSupport;
+	protected TypeParametersSupport typeParametersSupport;
 	protected MethodHelper methodHelper;
 	protected NameTypesUtils nameTypesUtils;
 	protected ProcessorConfigurer configurer;
@@ -60,7 +60,6 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	private Map<OutputDefinition, Set<NamedType>> cachedDefinition = new HashMap<OutputDefinition, Set<NamedType>>();
 
 	protected AbstractConfigurableProcessor() {
-		genericsSupport = new GenericsSupport();
 		configurer = getConfigurer();
 	}
 	
@@ -74,11 +73,11 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		}
 	}
 
-	protected Type[] getSubProcessorImports() {
+	protected Type[] getSubProcessorImports(TypeElement typeElement) {
 		List<Type> types = new ArrayList<Type>();
 		for (Set<SubProcessor<?>> subProcessorSet : subProcessors.values()) {
 			for (SubProcessor<?> subProcessor: subProcessorSet) {
-				ListUtils.add(types, subProcessor.getImports());
+				ListUtils.add(types, subProcessor.getImports(typeElement));
 			}
 		}
 		return types.toArray(new Type[] {});
@@ -129,9 +128,11 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
-		genericsSupport.init(pe);
 		
 		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+
+		typeParametersSupport = new TypeParametersSupport(pe, nameTypesUtils);
+
 		this.methodHelper = new MethodHelper(pe, nameTypesUtils);
 
 		if (this.configurer != null) {
@@ -144,10 +145,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	}
 
 	protected void addGenericType(List<NamedType> result, NamedType importName, TypeElement typeElement) {
-		if (importName.getQualifiedName().equals(NamedType.THIS.getName())) {
-			importName = getNameTypes().toType(typeElement);
-		}
-		if (importName instanceof HasTypeParameters) {
+		if (typeParametersSupport.hasTypeParameters(importName)) {
 			for (TypeParameter typeParameter: ((HasTypeParameters)importName).getTypeParameters()) {
 				if (typeParameter.getBounds() != null) {
 					for (TypeVariable typeVariable: typeParameter.getBounds()) {
@@ -285,13 +283,11 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		TypeElement typeElement = (TypeElement) element;
 
 		NamedType[] outputNames = getClassNames(element);
-		NamedType inputClass = getNameTypes().toType(typeElement.asType());
 		
 		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + element.getSimpleName().toString() + " with " + getClass().getSimpleName(), element);
 
 		for (NamedType outputName: outputNames) {
 
-			
 			boolean alreadyExists = processingEnv.getElementUtils().getTypeElement(outputName.getCanonicalName()) != null;
 
 			if (!checkPreconditions(element, outputName, alreadyExists)) {
@@ -310,7 +306,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				pw.println();
 	
 				for (NamedType importType : getAllImports(typeElement)) {
-					pw.println("import " + importType.toString(inputClass, ClassSerializer.CANONICAL, false) + ";");
+					pw.println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
 				}
 
 				pw.println("import " + Generated.class.getCanonicalName() + ";");
@@ -327,18 +323,19 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				if ((getElementKind().equals(ElementKind.CLASS) || getElementKind().equals(ElementKind.INTERFACE))
 						&& superClassTypes.size() == 1) {
 					superClass = superClassTypes.iterator().next();
-					if (genericsSupport.hasVariableParameterTypes(superClass) && !(outputName instanceof HasTypeParameters)) {
-						outputName = TypedClassBuilder.get(outputName, genericsSupport.getVariableParameterTypes((HasTypeParameters)superClass));
+					
+					if (typeParametersSupport.hasVariableParameterTypes(superClass) && !typeParametersSupport.hasTypeParameters(outputName)) {
+						outputName = TypedClassBuilder.get(outputName, typeParametersSupport.getVariableParameterTypes((HasTypeParameters)superClass));
 					}
 				}
 				
-				pw.print("public " + getElementKind().name().toLowerCase() + " " + outputName.toString(inputClass, ClassSerializer.SIMPLE, true));
+				pw.print("public " + getElementKind().name().toLowerCase() + " " + outputName.toString(ClassSerializer.SIMPLE, true));
 				
 				if ((getElementKind().equals(ElementKind.CLASS) || getElementKind().equals(ElementKind.INTERFACE))
 						&& superClass != null) {
 					
-					superClass = genericsSupport.stripTypesFromTypeParameters(superClass);
-					pw.print(" extends " + superClass.toString(inputClass, ClassSerializer.SIMPLE, true));
+					superClass = typeParametersSupport.stripTypesFromTypeParameters(superClass);
+					pw.print(" extends " + superClass.toString(ClassSerializer.SIMPLE, true));
 				}
 	
 				if (ensureOutputDefinition(OutputDefinition.OUTPUT_INTERFACES, typeElement).size() > 0) {
@@ -358,7 +355,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 							if (i > 0) {
 								pw.print(", ");
 							}
-							pw.print(type.toString(inputClass, ClassSerializer.SIMPLE, true));
+							pw.print(type.toString(ClassSerializer.SIMPLE, true));
 							i++;
 						}
 					}

@@ -2,13 +2,18 @@ package sk.seges.sesam.shared.model.converter;
 
 import java.io.Serializable;
 
-public abstract class CachedConverter<DTO, DOMAIN> extends BasicConverter<DTO, DOMAIN> {
+import sk.seges.sesam.shared.model.converter.api.CachedConverter;
+
+public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConverter<DTO, DOMAIN>{
 
 	protected MapConvertedInstanceCache cache;
 	
-	public CachedConverter(MapConvertedInstanceCache cache) {
+	public BasicCachedConverter(MapConvertedInstanceCache cache) {
 		this.cache = cache;
 	}
+
+	protected abstract DOMAIN createDomainInstance(Serializable id);
+	protected abstract DTO createDtoInstance(Serializable id);
 
 	@Override
 	public DTO createDtoInstance(Object domainSource, Serializable id) {
@@ -42,16 +47,16 @@ public abstract class CachedConverter<DTO, DOMAIN> extends BasicConverter<DTO, D
 	 * Loads DTO instance from the cache
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public DTO getDtoInstance(Object domainSource, Serializable id) {
-		@SuppressWarnings("unchecked")
 		DTO result = (DTO)cache.getInstance(domainSource);
 
 		if (result != null) {
 			return result;
 		}
 		
-		if (id != null) {
-			result = cache.getInstance(getDtoClass(), id);
+		if (id != null && domainSource != null) {
+			result = (DTO) cache.getInstance(domainSource.getClass(), id);
 		}
 		
 		return result;
@@ -61,16 +66,16 @@ public abstract class CachedConverter<DTO, DOMAIN> extends BasicConverter<DTO, D
 	 * Loads DOMAIN instance from the cache
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public DOMAIN getDomainInstance(Object dtoSource, Serializable id) {
-		@SuppressWarnings("unchecked")
 		DOMAIN result = (DOMAIN)cache.getInstance(dtoSource);
 
 		if (result != null) {
 			return result;
 		}
 		
-		if (id != null) {
-			result = cache.getInstance(getDomainClass(), id);
+		if (id != null && dtoSource != null) {
+			result = (DOMAIN) cache.getInstance(dtoSource.getClass(), id);
 		}
 		
 		return result;

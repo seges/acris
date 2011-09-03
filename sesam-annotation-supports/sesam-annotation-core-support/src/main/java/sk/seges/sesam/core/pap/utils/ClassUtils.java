@@ -20,13 +20,13 @@ public class ClassUtils {
 		return null;
 	}
 	
-	public static String toString(NamedType inputClass, Type type, ClassSerializer serializer, boolean typed) {
+	public static String toString(Type type, ClassSerializer serializer, boolean typed) {
 		if (type instanceof Class) {
 			return toString((Class<?>)type, serializer);
 		}
 		
-		if (type instanceof HasTypeParameters) {
-			return ((HasTypeParameters)type).toString(inputClass, serializer, typed);
+		if (type instanceof HasTypeParameters && ((HasTypeParameters) type).getTypeParameters() != null) {
+			return ((HasTypeParameters)type).toString(serializer, typed);
 		}
 		
 		if (type instanceof NamedType) {
@@ -36,13 +36,13 @@ public class ClassUtils {
 		throw new IllegalArgumentException("Not supported annotation element " + type.toString());
 	}
 
-	public static <T extends Type> String toString(NamedType inputClass, T[] types, ClassSerializer serializer, boolean typed) {
+	public static <T extends Type> String toString(T[] types, ClassSerializer serializer, boolean typed) {
 		String result = "";
 		for (Type type: types) {
 			if (result.length() > 0) {
 				result += ", ";
 			}
-			result += toString(inputClass, type, serializer, typed);
+			result += toString(type, serializer, typed);
 		}
 		
 		return result;

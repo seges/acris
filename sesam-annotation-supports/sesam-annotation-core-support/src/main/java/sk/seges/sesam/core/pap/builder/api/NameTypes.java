@@ -23,5 +23,6 @@ public interface NameTypes {
 	ImmutableType toImmutableType(Element element);
 	ImmutableType toImmutableType(Type javaType);
 	ImmutableType toImmutableType(String className);
-
+	
+	NamedType erasure(NamedType namedType);
 }

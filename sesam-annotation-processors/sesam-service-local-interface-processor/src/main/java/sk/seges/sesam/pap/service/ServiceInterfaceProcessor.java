@@ -24,8 +24,8 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
+import sk.seges.sesam.pap.model.model.DtoTypeElement;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
-import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration.DtoMappingType;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -74,16 +74,17 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected Type[] getImports(TypeElement typeElement) {
+	protected Type[] getImports(TypeElement remoteServiceInterfaceElement) {
 
-		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(typeElement.getEnclosedElements());
+		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(remoteServiceInterfaceElement.getEnclosedElements());
 		
 		List<Type> imports = new ArrayList<Type>();
 		
 		for (ExecutableElement method: methodsIn) {
-			imports.add(toHelper.getDtoMappingClass(method.getReturnType(), typeElement, DtoMappingType.DOMAIN));
+			
+			imports.add(new DtoTypeElement(remoteServiceInterfaceElement, method.getReturnType(), processingEnv, roundEnv));
 			for (VariableElement parameter: method.getParameters()) {
-				imports.add(toHelper.getDtoMappingClass(parameter.asType(), typeElement, DtoMappingType.DOMAIN));
+				imports.add(new DtoTypeElement(remoteServiceInterfaceElement, parameter.asType(), processingEnv, roundEnv));
 			}
 		}
 
@@ -93,19 +94,24 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
+	protected void processElement(TypeElement remoteServiceInterfaceElement, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
 
-		List<ExecutableElement> methods = ElementFilter.methodsIn(typeElement.getEnclosedElements());
+		List<ExecutableElement> methods = ElementFilter.methodsIn(remoteServiceInterfaceElement.getEnclosedElements());
 		
 		for (ExecutableElement method: methods) {
-			pw.print(toHelper.getDtoMappingClass(method.getReturnType(), typeElement, DtoMappingType.DOMAIN).toString(null, ClassSerializer.SIMPLE, true) + " " + method.getSimpleName().toString() + "(");
+			DtoTypeElement dtoReturnType = new DtoTypeElement(remoteServiceInterfaceElement, method.getReturnType(), processingEnv, roundEnv);
+			
+			pw.print(dtoReturnType.getDomainTypeElement().toString(ClassSerializer.SIMPLE, true) + " " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				pw.print(toHelper.getDtoMappingClass(parameter.asType(), typeElement, DtoMappingType.DOMAIN).toString(null, ClassSerializer.SIMPLE, true) + " " + parameter.getSimpleName().toString());
+				
+				DtoTypeElement dtoParamType = new DtoTypeElement(remoteServiceInterfaceElement, parameter.asType(), processingEnv, roundEnv);
+
+				pw.print(dtoParamType.getDomainTypeElement().toString(ClassSerializer.SIMPLE, true) + " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			

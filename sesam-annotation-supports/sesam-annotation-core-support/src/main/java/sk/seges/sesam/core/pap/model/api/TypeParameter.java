@@ -10,5 +10,5 @@ public interface TypeParameter extends NamedType {
 
 	TypeVariable[] getBounds();
 	
-	String toString(NamedType type, ClassSerializer serializer);
+	String toString(ClassSerializer serializer);
 }
