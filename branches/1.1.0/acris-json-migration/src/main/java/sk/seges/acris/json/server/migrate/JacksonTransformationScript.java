@@ -74,7 +74,7 @@ public abstract class JacksonTransformationScript<T extends JsonNode> {
 		return addNonExistent(parent, field, parent.objectNode());
 	}
 	
-	protected TextNode addNonExistentObjectNode(ObjectNode parent, String field, String text) {
+	protected TextNode addNonExistentTextNode(ObjectNode parent, String field, String text) {
 		return addNonExistent(parent, field, parent.textNode(text));
 	}
 	
