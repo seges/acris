@@ -69,22 +69,53 @@ public abstract class JacksonTransformationScript<T extends JsonNode> {
 
 		return childPrototype;
 	}
-	
+
+	/**
+	 * @see {@link #addNonExistent}
+	 */
 	protected ObjectNode addNonExistentObjectNode(ObjectNode parent, String field) {
 		return addNonExistent(parent, field, parent.objectNode());
 	}
-	
+
+	/**
+	 * @see {@link #addNonExistent}
+	 */
 	protected TextNode addNonExistentTextNode(ObjectNode parent, String field, String text) {
 		return addNonExistent(parent, field, parent.textNode(text));
 	}
-	
+
+	/**
+	 * @see {@link #addNonExistent}
+	 */
 	protected BooleanNode addNonExistentBooleanNode(ObjectNode parent, String field, boolean b) {
 		return addNonExistent(parent, field, parent.booleanNode(b));
 	}
-	
+
+	/**
+	 * @see {@link #addNonExistent}
+	 */
 	protected ArrayNode addNonExistentArrayNode(ObjectNode parent, String field, JsonNode[] items) {
 		ArrayNode arrayNode = parent.arrayNode();
 		arrayNode.addAll(Arrays.asList(items));
 		return addNonExistent(parent, field, arrayNode);
+	}
+
+	/**
+	 * Removes a field from object node if it exists.
+	 * 
+	 * @param <N>
+	 *            Expected value type.
+	 * @param parent
+	 * @param field
+	 * @return Value of the removed field or null if the field does not exist.
+	 */
+	@SuppressWarnings("unchecked")
+	protected <N extends JsonNode> N removeIfExists(ObjectNode parent, String field) {
+		JsonNode formerLayoutParamsField = parent.get(field);
+
+		if (formerLayoutParamsField != null) {
+			parent.remove(field);
+		}
+		return (N) formerLayoutParamsField;
 	}
 }
