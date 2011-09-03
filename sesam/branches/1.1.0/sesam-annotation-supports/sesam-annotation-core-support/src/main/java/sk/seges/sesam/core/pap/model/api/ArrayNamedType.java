@@ -7,8 +7,9 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
-public class ArrayNamedType implements NamedType {
+public class ArrayNamedType implements ImmutableType {
 
 	private NamedType componentType;
 	
@@ -26,8 +27,8 @@ public class ArrayNamedType implements NamedType {
 	}
 
 	@Override
-	public String toString(NamedType inputClass, ClassSerializer serializer, boolean typed) {
-		return componentType.toString(inputClass, serializer, typed) + "[]";
+	public String toString(ClassSerializer serializer, boolean typed) {
+		return componentType.toString(serializer, typed) + "[]";
 	}
 
 	@Override
@@ -88,5 +89,40 @@ public class ArrayNamedType implements NamedType {
 		} else if (!componentType.equals(other.componentType))
 			return false;
 		return true;
+	}
+
+	@Override
+	public HasTypeParameters addType(TypeParameter typeParameter) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType setName(String name) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType addClassSufix(String sufix) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType addClassPrefix(String prefix) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType addPackageSufix(String sufix) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType changePackage(String packageName) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType changePackage(PackageValidator packageValidator) {
+		throw new RuntimeException("Invalid operation.");
 	}
 }

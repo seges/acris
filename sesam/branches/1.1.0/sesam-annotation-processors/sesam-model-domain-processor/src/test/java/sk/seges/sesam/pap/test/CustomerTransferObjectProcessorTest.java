@@ -1,13 +1,9 @@
 package sk.seges.sesam.pap.test;
 
-import java.io.File;
-
 import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
-import sk.seges.sesam.core.pap.model.OutputClass;
-import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.customer.TestAddressData;
 import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
@@ -35,9 +31,9 @@ public class CustomerTransferObjectProcessorTest extends AnnotationTest {
 		};
 	}
 
-	private File getOutputFile(Class<?> clazz) {
-		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = TransferObjectProcessor.getOutputClass(inputClass);
-		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
-	}
+//	private File getOutputFile(Class<?> clazz) {
+//		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
+//		NamedType outputClass = TransferObjectProcessor.getOutputClass(inputClass);
+//		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
+//	}
 }

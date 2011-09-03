@@ -56,6 +56,9 @@
 	</distributionManagement>
 
 	<properties>
+		<!-- !DO NOT FORGET TO CHANGE THIS VERSION WHEN RELEASING SESAM! -->
+		<sesam-os.version>1.1.4-SNAPSHOT</sesam-os.version>
+
 		<!-- from Sonatype -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
@@ -153,6 +156,11 @@
 		
 		<groovy.version>1.8.0</groovy.version>
 
+		<!-- Selenium -->
+		<selenium.version>2.4.0</selenium.version> 
+		<selenium-remote-control.version>2.0rc2</selenium-remote-control.version>
+		<logging.selenium.version>1.2</logging.selenium.version>
+
 		<!-- plugins -->
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
@@ -164,7 +172,7 @@
 		<maven-enforcer-plugin.version>1.0-beta-1</maven-enforcer-plugin.version>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>2.4.3</maven-resources-plugin.version>
-		<maven-processor-plugin.version>2.0.1</maven-processor-plugin.version>
+		<maven-processor-plugin.version>2.0.4</maven-processor-plugin.version>
 		<build-helper-maven-plugin.version>1.3</build-helper-maven-plugin.version>
 		<maven-war-plugin.version>2.1.1</maven-war-plugin.version>
 		<maven-surefire-plugin.version>2.8.1</maven-surefire-plugin.version>
@@ -235,6 +243,63 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 			
+			<!-- Selenium -->
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-api</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-support</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-firefox-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-ie-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-remote-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-htmlunit-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-chrome-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-iphone-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-remote-control</artifactId>
+				<version>${selenium-remote-control.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-server</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.unitedinternet.portal.selenium.utils</groupId>
+				<artifactId>logging-selenium</artifactId>
+				<version>${logging.selenium.version}</version>
+			</dependency>
+
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -898,7 +963,7 @@
 					</executions>
 				</plugin>
 
-		<!-- End of common plugins from sesam-os-base-parent -->
+				<!-- End of common plugins from sesam-os-base-parent -->
 
 				<!-- Common customized plugin section -->
 				<plugin>
@@ -920,49 +985,48 @@
 	
 	<profiles>
 		<profile>
-			<id>pap-test</id>
+			<id>selenium</id>
 			<activation>
 				<file>
-					<exists>${basedir}/.pap-test</exists>
+					<exists>.selenium</exists>
 				</file>
 			</activation>
-			<build>
+			<reporting>
 				<plugins>
 					<plugin>
-						<groupId>org.bsc.maven</groupId>
-						<artifactId>maven-processor-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>process-test</id>
-								<goals>
-									<goal>process-test</goal>
-								</goals>
-								<phase>generate-test-sources</phase>
-							</execution>
-							<execution>
-								<id>process</id>
-								<goals>
-									<goal>process</goal>
-								</goals>
-								<phase>generate-sources</phase>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>add-source</id>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>add-source</goal>
-								</goals>
-							</execution>
-						</executions>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-report-plugin</artifactId>
+						<version>${maven-surefire-report-plugin.version}</version>
+						<configuration>
+							<outputDirectory>${basedir}/target/site</outputDirectory>
+						</configuration>
 					</plugin>
 				</plugins>
-			</build>
+			</reporting>
+			<dependencies>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-selenium-support</artifactId>
+					<version>${sesam-os.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-selenium-support</artifactId>
+					<version>${sesam-os.version}</version>
+					<type>test-jar</type>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<version>${junit.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+					<version>${javamail.version}</version>
+				</dependency>
+			</dependencies>
 		</profile>
 		<profile>
 			<id>pap</id>
@@ -974,6 +1038,45 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-eclipse-plugin</artifactId>
+						<configuration>
+							<additionalConfig>
+								<file>
+									<name>.settings/org.eclipse.jdt.apt.core.prefs</name>
+									<content><![CDATA[
+eclipse.preferences.version=1
+org.eclipse.jdt.apt.aptEnabled=true
+org.eclipse.jdt.apt.genSrcDir=${jsr269.generated.dir}
+org.eclipse.jdt.apt.reconcileEnabled=true]]>
+									</content>
+								</file>
+								<file>
+									<name>.settings/org.eclipse.jdt.core.prefs</name>
+									<content><![CDATA[
+eclipse.preferences.version=1
+org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+org.eclipse.jdt.core.compiler.compliance=1.6
+org.eclipse.jdt.core.compiler.processAnnotations=enabled
+org.eclipse.jdt.core.compiler.source=1.6]]>
+									</content>
+								</file>
+
+							</additionalConfig>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>apt-maven-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<compilerArgument>-proc:none</compilerArgument>
+						</configuration>
+					</plugin>
+					<plugin>
 						<groupId>org.bsc.maven</groupId>
 						<artifactId>maven-processor-plugin</artifactId>
 						<executions>
@@ -982,7 +1085,14 @@
 								<goals>
 									<goal>process</goal>
 								</goals>
-								<phase>generate-sources</phase>
+								<phase>compile</phase>
+							</execution>
+							<execution>
+								<id>process-test</id>
+								<goals>
+									<goal>process-test</goal>
+								</goals>
+								<phase>generate-test-sources</phase>
 							</execution>
 						</executions>
 					</plugin>

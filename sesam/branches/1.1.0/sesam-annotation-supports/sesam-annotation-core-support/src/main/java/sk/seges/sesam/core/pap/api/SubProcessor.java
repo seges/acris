@@ -10,7 +10,7 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public interface SubProcessor<T> {
 
-	Type[] getImports();
+	Type[] getImports(TypeElement typeElement);
 	
 	void init(ProcessingEnvironment processingEnv);
 

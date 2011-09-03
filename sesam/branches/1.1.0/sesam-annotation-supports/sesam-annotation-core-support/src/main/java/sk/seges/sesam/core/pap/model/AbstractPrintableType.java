@@ -6,22 +6,19 @@ import sk.seges.sesam.core.pap.model.api.PrintableType;
 
 public abstract class AbstractPrintableType implements PrintableType, NamedType {
 
-	public String getCanonicalName(NamedType outputName, boolean typed) {
-		return toString(outputName, ClassSerializer.CANONICAL, typed);
+	public String getCanonicalName(boolean typed) {
+		return toString(ClassSerializer.CANONICAL, typed);
 	}
 
-	public String getSimpleName(NamedType outputName, boolean typed) {
-		return toString(outputName, ClassSerializer.SIMPLE, typed);
+	public String getSimpleName(boolean typed) {
+		return toString(ClassSerializer.SIMPLE, typed);
 	}
 
-	public String getQualifiedName(InputClass outputName, boolean typed) {
-		return toString(outputName, ClassSerializer.QUALIFIED, typed);
+	public String getQualifiedName(boolean typed) {
+		return toString(ClassSerializer.QUALIFIED, typed);
 	}
 
-	public String toString(NamedType inputClass, ClassSerializer serializer, boolean typed) {
-		if (this.getCanonicalName().equals(NamedType.THIS.getCanonicalName())) {
-			return inputClass.toString(serializer);
-		}
+	public String toString(ClassSerializer serializer, boolean typed) {
 		return toString(serializer);
 	}
 	

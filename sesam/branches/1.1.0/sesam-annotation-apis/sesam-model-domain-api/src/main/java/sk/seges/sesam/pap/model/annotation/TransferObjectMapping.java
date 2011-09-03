@@ -1,22 +1,15 @@
 package sk.seges.sesam.pap.model.annotation;
 
-import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 import sk.seges.sesam.core.pap.Constants;
-import sk.seges.sesam.shared.model.converter.CachedConverter;
-import sk.seges.sesam.shared.model.converter.DtoConverter;
-import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
+import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 public @interface TransferObjectMapping {
 
-	public class NotDefinedConverter extends CachedConverter<Void, Void> {
-
-		public NotDefinedConverter(MapConvertedInstanceCache cache) {
-			super(cache);
-		}
+	public class NotDefinedConverter implements DtoConverter<Void, Void> {
 
 		@Override
 		public Void toDto(Void domain) {
@@ -29,33 +22,13 @@ public @interface TransferObjectMapping {
 		}
 
 		@Override
-		protected Class<? extends Void> getDomainClass() {
-			return Void.class;
-		}
-
-		@Override
-		protected Class<? extends Void> getDtoClass() {
-			return Void.class;
-		}
-
-		@Override
-		protected Void createDomainInstance(Serializable id) {
-			return null;
-		}
-
-		@Override
-		protected Void createDtoInstance(Serializable id) {
-			return null;
-		}
-
-		@Override
 		public Void convertToDto(Void result, Void domain) {
-			return null;
+			return result;
 		}
 
 		@Override
 		public Void convertFromDto(Void result, Void domain) {
-			return null;
+			return result;
 		}
 	}
 
@@ -65,11 +38,17 @@ public @interface TransferObjectMapping {
 	Class<?> dtoClass() default Void.class;
 	String 	dtoClassName() default Constants.NULL;
 
+	Class<?> dtoInterface() default Void.class;
+	String dtoInterfaceName() default Constants.NULL;
+
 	/**
 	 * Do not modify the name unless change it also in the processor {@link TransferObjectProcessor} and {@link TransferObjectConfiguration} 
 	 */
 	Class<?> domainClass() default Void.class;
 	String domainClassName() default Constants.NULL;
+
+	Class<?> domainInterface() default Void.class;
+	String domainInterfaceName() default Constants.NULL;
 
 	/**
 	 * Do not modify the name unless change it also in the processor {@link TransferObjectProcessor} and {@link TransferObjectConfiguration}
@@ -80,6 +59,7 @@ public @interface TransferObjectMapping {
 	/**
 	 * Do not modify the name unless change it also in the processor {@link TransferObjectProcessor} and {@link TransferObjectConfiguration}
 	 */
-	Class<? extends DtoConverter<?, ?>> converter() default NotDefinedConverter.class;
+	@SuppressWarnings("rawtypes")
+	Class<? extends DtoConverter> converter() default NotDefinedConverter.class;
 	String converterClassName() default Constants.NULL;
 }

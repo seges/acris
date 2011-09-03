@@ -59,15 +59,9 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 		}
 	}
 
-	public String toString(NamedType inputClass, ClassSerializer serializer, boolean typed) {
+	public String toString(ClassSerializer serializer, boolean typed) {
 
-		String resultName;
-		
-		if (toString(ClassSerializer.QUALIFIED).equals(NamedType.THIS.getName())) {
-			resultName = inputClass.toString(serializer);
-		} else {
-			resultName = this.toString(serializer);
-		}
+		String resultName = this.toString(serializer);
 		
 		if (!typed || this.getTypeParameters() == null || this.getTypeParameters().length == 0) {
 			return resultName;
@@ -81,7 +75,7 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 			if (i > 0) {
 				types += ", ";
 			}
-			types += typeParameter.toString(inputClass, serializer);
+			types += typeParameter.toString(serializer, typed);
 			i++;
 		}
 
@@ -110,6 +104,10 @@ class TypedOutputClass extends OutputClass implements HasTypeParameters {
 	}
 
 	String toString(HasTypeParameters hasTypeParameters) {
+		if (hasTypeParameters.getTypeParameters() == null) {
+			return "";
+		}
+		
 		String types = "<";
 		
 		int i = 0;

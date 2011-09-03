@@ -46,7 +46,7 @@ public class TransferObjectProcessor extends AbstractConfigurableProcessor {
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
 			return new Type[] {
-					genericsSupport.applyVariableGenerics(NamedType.THIS, typeElement)
+					typeParametersSupport.applyVariableTypeParameters(nameTypesUtils.toImmutableType(typeElement), (DeclaredType)typeElement.asType())
 			};
 		}
 		return super.getOutputDefinition(type, typeElement);

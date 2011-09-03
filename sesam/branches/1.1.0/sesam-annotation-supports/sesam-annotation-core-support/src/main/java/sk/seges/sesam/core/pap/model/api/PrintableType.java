@@ -6,6 +6,6 @@ public interface PrintableType {
 
 	String toString(ClassSerializer serializer);
 
-	String toString(NamedType inputClass, ClassSerializer serializer, boolean typed);
+	String toString(ClassSerializer serializer, boolean typed);
 
 }

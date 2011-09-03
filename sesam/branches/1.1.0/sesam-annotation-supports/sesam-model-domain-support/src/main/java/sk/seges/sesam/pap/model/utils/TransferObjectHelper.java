@@ -1,8 +1,5 @@
 package sk.seges.sesam.pap.model.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,43 +19,34 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.model.converter.CollectionConfiguration;
 import sk.seges.sesam.core.pap.NullCheck;
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.model.InputClass;
+import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.PathResolver;
-import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
-import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
-import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.model.api.TypeParameter;
-import sk.seges.sesam.core.pap.model.mutable.MutableVariableElement;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LayerType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
-import sk.seges.sesam.core.pap.structure.api.PackageValidator;
-import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
-import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.annotation.Field;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
-import sk.seges.sesam.pap.model.utils.TransferObjectConfiguration.DtoMappingType;
+import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.DomainTypeElement;
+import sk.seges.sesam.pap.model.model.DtoTypeElement;
 
 public class TransferObjectHelper {
 
-	protected static final String DTO_SUFFIX = "Dto";
+	public static final String DTO_SUFFIX = "Dto";
+	public static final String DEFAULT_SUFFIX = "Configuration";
+
 	private static final String ID_METHOD_NAME = "id";
 
-	protected static final String DEFAULT_SUFFIX = "Configuration";
-
-	private static final Class<?>[] allowedClasses = new Class<?>[] { String.class, Date.class };
+//	private static final Class<?>[] allowedClasses = new Class<?>[] { String.class, Date.class };
 
 	private NameTypes nameTypes;
 	private ProcessingEnvironment processingEnv;
@@ -76,32 +64,31 @@ public class TransferObjectHelper {
 		return nameTypes;
 	}
 
-	Class<?>[] getAllowedclasses() {
-		return allowedClasses;
-	}
+//	Class<?>[] getAllowedclasses() {
+//		return allowedClasses;
+//	}
+//
+//	private boolean isAllowedClass(NamedType namedType) {
+//		for (Class<?> clazz : getAllowedclasses()) {
+//			if (namedType.getCanonicalName().equals(clazz.getCanonicalName())) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
+//	}
+//
+//	public boolean isAllowedClass(TypeMirror type) {
+//		for (Class<?> clazz : getAllowedclasses()) {
+//			if (type.toString().equals(clazz.getCanonicalName())) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
+//	}
 
-	private boolean isAllowedClass(NamedType namedType) {
-		for (Class<?> clazz : getAllowedclasses()) {
-			if (namedType.getCanonicalName().equals(clazz.getCanonicalName())) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public boolean isAllowedClass(TypeMirror type) {
-		for (Class<?> clazz : getAllowedclasses()) {
-			if (type.toString().equals(clazz.getCanonicalName())) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public Map<ExecutableElement, List<String>> getConverterParameterNames(TypeElement converterType,
-			MutableVariableElement... additionalParameters) {
+	public Map<ExecutableElement, List<String>> getConverterParameterNames(TypeElement converterType, ParameterElement... additionalParameters) {
 		Map<ExecutableElement, List<String>> result = new HashMap<ExecutableElement, List<String>>();
 
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(converterType.getEnclosedElements());
@@ -115,61 +102,15 @@ public class TransferObjectHelper {
 				parameterNames.add(parameter.getSimpleName().toString());
 			}
 
-			for (MutableVariableElement additionalParameter : additionalParameters) {
-				parameterNames.add(additionalParameter.getSimpleName().toString());
+			for (ParameterElement additionalParameter : additionalParameters) {
+				parameterNames.add(additionalParameter.getName().toString());
 			}
 		}
 
 		return result;
 	}
 
-	private TypeMirror getTypeParameter(DeclaredType type) {
-		if (type.getTypeArguments() != null && type.getTypeArguments().size() == 1) {
-			
-			TypeMirror typeParameter = type.getTypeArguments().get(0);
-			
-			if (typeParameter.getKind().equals(TypeKind.DECLARED)) {
-				return typeParameter;
-			}
-		}
-		
-		return null;
-	}
-
-	public TypeElement getDtoMappingClass(DeclaredType type) {
-		if (ProcessorUtils.isCollection(type, processingEnv)) {
-			TypeMirror typeParameter = getTypeParameter(type);
-			if (typeParameter == null) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
-						" should have defined a type parameter");
-			} else {
-				return (TypeElement)((DeclaredType)typeParameter).asElement();
-			}
-			//TODO do it in the proper way
-		} else if (ProcessorUtils.isPagedResult(type, processingEnv)) {
-			TypeMirror typeParameter = getTypeParameter(type);
-			if (typeParameter == null) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + type.toString() +
-						" should have defined a type parameter");
-			} else {
-				if (ProcessorUtils.isCollection(typeParameter, processingEnv)) {
-					TypeMirror collectionTypeParameter = getTypeParameter((DeclaredType)typeParameter);
-					if (collectionTypeParameter == null) {
-						processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Type " + typeParameter +
-								" should have defined a type parameter (originally used in the " + type.toString() + ")");
-					} else {
-						return (TypeElement)((DeclaredType)collectionTypeParameter).asElement();
-					}
-				} else {
-					//TODO handle paged result that does not hold a collection of objects
-				}
-			}
-		}
-		
-		return (TypeElement)type.asElement();
-	}
-	
-	public NamedType getDtoMappingClass(TypeMirror dtoType, TypeElement typeElement, DtoMappingType mappingType) {
+/*	public NamedType getDtoMappingClass(TypeMirror dtoType, TypeElement typeElement, ConfigurationType mappingType) {
 		switch (dtoType.getKind()) {
 		case BOOLEAN:
 		case BYTE:
@@ -180,7 +121,7 @@ public class TransferObjectHelper {
 		case LONG:
 		case SHORT:
 		case VOID:
-			if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+			if (mappingType.equals(ConfigurationType.DOMAIN) || mappingType.equals(ConfigurationType.DTO)) {
 				return getNameTypes().toType(dtoType);
 			}
 			return null;
@@ -191,49 +132,46 @@ public class TransferObjectHelper {
 		case OTHER:
 		case PACKAGE:
 		case WILDCARD:
-			processingEnv.getMessager().printMessage(Kind.ERROR,
-					" [ERROR] Unsupported type kind - " + dtoType.getKind());
+			processingEnv.getMessager().printMessage(Kind.ERROR, " [ERROR] Unsupported type kind - " + dtoType.getKind());
 			return null;
 		case DECLARED:
 			DeclaredType declaredType = ((DeclaredType) dtoType);
 
 			Element element = declaredType.asElement();
 
-			if (mappingType.equals(DtoMappingType.CONVERTER) || mappingType.equals(DtoMappingType.CONFIGURATION)) {
-				element = getDtoMappingClass(declaredType);
+			if (mappingType.equals(ConfigurationType.CONVERTER) || mappingType.equals(ConfigurationType.CONFIGURATION)) {
+				element = declaredType.asElement();
 			}
 
 			TypeElement result = mappingType.get(new TransferObjectConfiguration(element, processingEnv));
 			if (result != null) {
-				if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+				if (mappingType.equals(ConfigurationType.DOMAIN) || mappingType.equals(ConfigurationType.DTO)) {
 					return convertTypeParameters(getNameTypes().toType(result.asType()), typeElement);
 				}
 				return getNameTypes().toType(result.asType());
 			}
-			result = mappingType
-					.get(new TransferObjectConfiguration(typeElement, processingEnv), (TypeElement) element);
+			result = mappingType.get(new TransferObjectConfiguration(typeElement, processingEnv), (TypeElement) element);
 			if (result != null) {
-				if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+				if (mappingType.equals(ConfigurationType.DOMAIN) || mappingType.equals(ConfigurationType.DTO)) {
 					return convertTypeParameters(getNameTypes().toType(result.asType()), typeElement);
 				}
 				return getNameTypes().toType(result.asType());
 			}
-			if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+			if (mappingType.equals(ConfigurationType.DOMAIN) || mappingType.equals(ConfigurationType.DTO)) {
 				return convertTypeParameters(getNameTypes().toType(dtoType), typeElement);
 			}
 			return null;
 		case ARRAY:
-			if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
-				return new ArrayNamedType(getDtoMappingClass(((ArrayType) dtoType).getComponentType(), typeElement,
-						mappingType));
+			if (mappingType.equals(ConfigurationType.DOMAIN) || mappingType.equals(ConfigurationType.DTO)) {
+				return new ArrayNamedType(getDtoMappingClass(((ArrayType) dtoType).getComponentType(), typeElement, mappingType));
 			}
 			return getDtoMappingClass(((ArrayType) dtoType).getComponentType(), typeElement, mappingType);
 		case TYPEVAR:
-			return getDtoMappingClass(ProcessorUtils.erasure(typeElement, ((TypeVariable) dtoType).asElement()
-					.getSimpleName().toString()), typeElement, mappingType);
+			return getDtoMappingClass(ProcessorUtils.erasure(typeElement, ((TypeVariable) dtoType).asElement().getSimpleName().toString()),
+					typeElement, mappingType);
 		}
 
-		if (mappingType.equals(DtoMappingType.DOMAIN) || mappingType.equals(DtoMappingType.DTO)) {
+		if (mappingType.equals(ConfigurationType.DOMAIN) || mappingType.equals(ConfigurationType.DTO)) {
 			return getNameTypes().toType(dtoType);
 		}
 
@@ -241,7 +179,7 @@ public class TransferObjectHelper {
 	}
 
 	public NamedType convertTypeParameters(NamedType type, TypeElement typeElement) {
-		if (type instanceof HasTypeParameters) {
+		if (type instanceof HasTypeParameters && ((HasTypeParameters) type).getTypeParameters() != null) {
 
 			List<TypeParameter> domainParameters = new ArrayList<TypeParameter>();
 			HasTypeParameters paramsType = ((HasTypeParameters) type);
@@ -255,28 +193,22 @@ public class TransferObjectHelper {
 
 							if (boundType != null) {
 								domainParameters.add(TypeParameterBuilder.get(typeParameter.getVariable(),
-										getDtoMappingClass(boundType, typeElement, DtoMappingType.DOMAIN)));
+										getDtoMappingClass(boundType, typeElement, ConfigurationType.DOMAIN)));
 							} else {
 								domainParameters.add(TypeParameterBuilder.get(
 										typeParameter.getVariable(),
 										getDtoMappingClass(
-												processingEnv
-														.getElementUtils()
-														.getTypeElement(
-																getNameTypes().toType(bound.getUpperBound())
-																		.getCanonicalName()).asType(), typeElement,
-												DtoMappingType.DOMAIN)));
+												processingEnv.getElementUtils()
+														.getTypeElement(getNameTypes().toType(bound.getUpperBound()).getCanonicalName()).asType(),
+												typeElement, ConfigurationType.DOMAIN)));
 							}
 						} else {
 							domainParameters.add(TypeParameterBuilder.get(
 									typeParameter.getVariable(),
 									getDtoMappingClass(
-											processingEnv
-													.getElementUtils()
-													.getTypeElement(
-															getNameTypes().toType(bound.getUpperBound())
-																	.getCanonicalName()).asType(), typeElement,
-											DtoMappingType.DOMAIN)));
+											processingEnv.getElementUtils()
+													.getTypeElement(getNameTypes().toType(bound.getUpperBound()).getCanonicalName()).asType(),
+											typeElement, ConfigurationType.DOMAIN)));
 						}
 					}
 				} else {
@@ -289,72 +221,91 @@ public class TransferObjectHelper {
 
 		return type;
 	}
+*/
+	private Class<?>[] getCommonConfigurations() {
+		return new Class<?> [] {
+				CollectionConfiguration.class
+		};
+	}
 
-	public Element getConfigurationElement(TypeElement element, RoundEnvironment roundEnv) {
+	public ConfigurationTypeElement getConfigurationForDto(TypeMirror dtoType) {
 
-		if (element.asType().getKind().isPrimitive() || element.asType().getKind().equals(TypeKind.NONE)
-				|| element.asType().getKind().equals(TypeKind.NULL)
-				|| element.asType().getKind().equals(TypeKind.ERROR)) {
+		if (dtoType.getKind().isPrimitive() || dtoType.getKind().equals(TypeKind.NONE)
+				|| dtoType.getKind().equals(TypeKind.NULL) || dtoType.getKind().equals(TypeKind.ERROR)) {
+			// cannot cast to domain
+			return null;
+		}
+
+		Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
+		for (Element annotatedElement : elementsAnnotatedWith) {
+			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
+				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
+	
+				if (configurationTypeElement.appliesForDtoType(dtoType)) {
+					return new ConfigurationTypeElement(null, (DeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv);
+				}
+			}
+		}
+
+		if (getCommonConfigurations() != null) {
+			for (Class<?> clazz: getCommonConfigurations()) {
+				TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
+
+					ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
+
+					if (configurationTypeElement.appliesForDtoType(dtoType)) {
+						return new ConfigurationTypeElement(null, (DeclaredType)dtoType, configurationElement, processingEnv, roundEnv);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public ConfigurationTypeElement getConfigurationForDomain(TypeMirror domainType) {
+
+		if (domainType.getKind().isPrimitive() || domainType.getKind().equals(TypeKind.NONE)
+				|| domainType.getKind().equals(TypeKind.NULL) || domainType.getKind().equals(TypeKind.ERROR)) {
 			// cannot cast to DTO
 			return null;
 		}
 
 		Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
 		for (Element annotatedElement : elementsAnnotatedWith) {
-			TypeElement domainObjectClass = getDomainTypeElement(annotatedElement);
-
-			// Dto is going to be generated
-			if (domainObjectClass != null && domainObjectClass.equals(element)) {
-				return annotatedElement;
+			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
+				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
+	
+				if (configurationTypeElement.appliesForDomainType(domainType)) {
+					return new ConfigurationTypeElement((DeclaredType)domainType, null, (TypeElement)annotatedElement, processingEnv, roundEnv);
+				}
 			}
 		}
 
+		if (getCommonConfigurations() != null) {
+			for (Class<?> clazz: getCommonConfigurations()) {
+				TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
+
+					ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
+
+					if (configurationTypeElement.appliesForDomainType(domainType)) {
+						return new ConfigurationTypeElement((DeclaredType)domainType, null, configurationElement, processingEnv, roundEnv);
+					}
+				}
+			}
+		}
 		return null;
 	}
 
-	public static PackageValidatorProvider getPackageValidationProvider() {
-		return new DefaultPackageValidatorProvider();
-	}
+	public DtoTypeElement toDto(TypeMirror domainType) {
 
-	public static ImmutableType getDtoType(ImmutableType configurationType) {
-		PackageValidator packageValidator = getPackageValidationProvider().get(configurationType)
-				.moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);
-		configurationType = configurationType.changePackage(packageValidator);
-		return configurationType.getSimpleName().endsWith(DEFAULT_SUFFIX) ? configurationType.setName(configurationType
-				.getSimpleName().substring(0, configurationType.getSimpleName().length() - DEFAULT_SUFFIX.length()))
-				: configurationType.addClassSufix(DTO_SUFFIX);
-	}
+		ConfigurationTypeElement transferObjectConfiguration = getConfigurationForDomain(domainType);
 
-	public ImmutableType toDto(TypeElement element, RoundEnvironment roundEnv) {
-
-		Element configurationElement = getConfigurationElement(element, roundEnv);
-
-		if (configurationElement != null) {
-
-			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(
-					configurationElement, processingEnv);
-
-			TypeElement dto = transferObjectConfiguration.getDto();
-
-			if (dto != null) {
-				return getNameTypes().toImmutableType(dto);
-			}
-
-			if (transferObjectConfiguration.getConfiguration() != null) {
-				configurationElement = transferObjectConfiguration.getConfiguration();
-
-				transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
-
-				dto = transferObjectConfiguration.getDto();
-
-				if (dto != null) {
-					return getNameTypes().toImmutableType(dto);
-				}
-			}
-
-			return getDtoType((ImmutableType) getNameTypes().toType(configurationElement));
+		if (transferObjectConfiguration != null) {
+			return transferObjectConfiguration.getDtoTypeElement();
 		}
-
+		
 		return null;
 	}
 
@@ -367,9 +318,8 @@ public class TransferObjectHelper {
 		return false;
 	}
 
-	public NamedType convertType(TypeMirror type) {
-		if (type == null || type.getKind().equals(TypeKind.NONE) || type.getKind().equals(TypeKind.NULL)
-				|| type.getKind().equals(TypeKind.ERROR)) {
+	public ImmutableType convertType(TypeMirror type, NameTypes nameTypes, ConfigurationTypeElement transferObjectConfiguration) {
+		if (type == null || type.getKind().equals(TypeKind.NONE) || type.getKind().equals(TypeKind.NULL) || type.getKind().equals(TypeKind.ERROR)) {
 			return null;
 		}
 
@@ -377,81 +327,28 @@ public class TransferObjectHelper {
 			return new InputClass(type, (String) null, type.toString().toLowerCase());
 		}
 
-		NamedType namedType = getNameTypes().toType(type);
+		ImmutableType immutableType = nameTypes.toImmutableType(type);
 
 		if (type.getKind().equals(TypeKind.DECLARED)) {
 
-			DeclaredType declaredType = ((DeclaredType) type);
-
-			if (declaredType.getTypeArguments() != null && declaredType.getTypeArguments().size() > 0) {
-
-				//TODO handle paged result
-				if (ProcessorUtils.implementsType(declaredType.asElement().asType(), processingEnv.getElementUtils()
-						.getTypeElement(Collection.class.getCanonicalName()).asType())) {
-
-					TypeMirror arg = declaredType.getTypeArguments().get(0);
-
-					if (arg.getKind().equals(TypeKind.DECLARED)) {
-						NamedType dto = convertType(arg);
-						if (dto != null) {
-							return TypedClassBuilder.get(namedType, dto);
-						}
-					}
-
-					return namedType;
-
-				} else if (ProcessorUtils.implementsType(declaredType.asElement().asType(), processingEnv
-						.getElementUtils().getTypeElement(Map.class.getCanonicalName()).asType())
-						&& declaredType.getTypeArguments().size() == 2) {
-
-					TypeMirror key = declaredType.getTypeArguments().get(0);
-					TypeMirror value = declaredType.getTypeArguments().get(1);
-
-					NamedType keyType = null;
-
-					if (key.getKind().equals(TypeKind.DECLARED)) {
-						NamedType dto = convertType(key);
-						if (dto != null) {
-							keyType = dto;
-						}
-					}
-
-					if (keyType == null) {
-						keyType = getNameTypes().toType(key);
-					}
-
-					NamedType valueType = null;
-
-					if (value.getKind().equals(TypeKind.DECLARED)) {
-						NamedType dto = convertType(value);
-						if (dto != null) {
-							valueType = dto;
-						}
-					}
-
-					if (valueType == null) {
-						valueType = getNameTypes().toType(value);
-					}
-
-					return TypedClassBuilder.get(namedType, keyType, valueType);
-				}
+			DtoTypeElement dto = null;
+			
+			if (transferObjectConfiguration == null) {
+				dto = toDto(type);
 			}
-
-			if (isAllowedClass(namedType)) {
-				return namedType;
-			}
-
-			ImmutableType dto = toDto((TypeElement) declaredType.asElement(), roundEnv);
+			
 			if (dto != null) {
 				return dto;
 			}
 
+			DeclaredType declaredType = ((DeclaredType) type);
+
 			if (declaredType.asElement().getKind().equals(ElementKind.ENUM)) {
-				return namedType;
+				return immutableType;
 			}
 
 			if (isUnboxedType(declaredType)) {
-				return namedType;
+				return immutableType;
 			}
 
 		} else if (type.getKind().equals(TypeKind.ARRAY)) {
@@ -462,29 +359,22 @@ public class TransferObjectHelper {
 			}
 		}
 
-		return null;
+		return immutableType;
+	}
+	
+	public ImmutableType convertType(TypeMirror type) {
+		return convertType(type, getNameTypes(), null);
 	}
 
-	public NamedType getDtoSuperclass(TypeElement typeElement) {
+	public NamedType getDtoSuperclass(ConfigurationTypeElement configurationTypeElement) {
 
-		TypeElement domainObjectClass = getDomainTypeElement(typeElement);
+		DomainTypeElement superClassDomainType = configurationTypeElement.getDomainTypeElement().getSuperClass();
 
-		if (domainObjectClass != null) {
-			return convertType(domainObjectClass.getSuperclass());
+		if (superClassDomainType != null) {
+			return convertType(superClassDomainType.asType());
 		}
 
 		return null;
-	}
-
-	public boolean isDelegateConfiguration(Element configurationElement) {
-		if (configurationElement == null) {
-			return false;
-		}
-		return new TransferObjectConfiguration(configurationElement, processingEnv).getConfiguration() != null;
-	}
-
-	public TypeElement getDomainTypeElement(Element configurationElement) {
-		return new TransferObjectConfiguration(configurationElement, processingEnv).getDomain();
 	}
 
 	public String getFieldPath(ExecutableElement method) {
@@ -540,16 +430,13 @@ public class TransferObjectHelper {
 				}
 
 				if (elementMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-					return getDomainMethod(((DeclaredType) elementMethod.getReturnType()).asElement(),
-							pathResolver.next(), prefix);
+					return getDomainMethod(((DeclaredType) elementMethod.getReturnType()).asElement(), pathResolver.next(), prefix);
 				}
 
 				// incompatible types - nested path is expected, but declared
 				// type was not found
-				processingEnv.getMessager().printMessage(
-						Kind.WARNING,
-						"incompatible types - nested path (" + fieldName
-								+ ") is expected, but declared type was not found ", element);
+				processingEnv.getMessager().printMessage(Kind.WARNING,
+						"incompatible types - nested path (" + fieldName + ") is expected, but declared type was not found ", element);
 				return null;
 			}
 		}
@@ -559,24 +446,23 @@ public class TransferObjectHelper {
 			TypeElement typeElement = (TypeElement) element;
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
 				pathResolver.reset();
-				return getDomainMethod((TypeElement) ((DeclaredType) typeElement.getSuperclass()).asElement(),
-						pathResolver, prefix);
+				return getDomainMethod((TypeElement) ((DeclaredType) typeElement.getSuperclass()).asElement(), pathResolver, prefix);
 			}
 		}
 
 		return null;
 	}
 
-	public ExecutableElement getDtoIdMethod(TypeElement configurationElement) {
+	public ExecutableElement getDtoIdMethod(ConfigurationTypeElement configurationTypeElement) {
 
-		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationElement.getEnclosedElements());
+		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asElement().getEnclosedElements());
 
-		TypeElement domainObjectClass = getDomainTypeElement(configurationElement);
+		TypeMirror domainType = configurationTypeElement.getDomainTypeElement().asType();
 
-		if (domainObjectClass == null) {
+		if (!domainType.getKind().equals(TypeKind.DECLARED)) {
 			return null;
 		}
-
+		
 		for (ExecutableElement overridenMethod : overridenMethods) {
 
 			Ignore ignoreAnnotation = overridenMethod.getAnnotation(Ignore.class);
@@ -584,7 +470,7 @@ public class TransferObjectHelper {
 
 				if (isIdMethod(overridenMethod)) {
 					if (overridenMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
-						return getDomainGetterMethod(domainObjectClass, getFieldPath(overridenMethod));
+						return getDomainGetterMethod(((DeclaredType)domainType).asElement(), getFieldPath(overridenMethod));
 					}
 
 					return overridenMethod;
@@ -592,33 +478,35 @@ public class TransferObjectHelper {
 			}
 		}
 
-		ExecutableElement idMethod = getIdMethod(domainObjectClass);
-		if (idMethod != null && !isFieldIgnored(configurationElement, methodHelper.toField(idMethod))) {
+		ExecutableElement idMethod = getIdMethod((DeclaredType)domainType);
+		if (idMethod != null && !isFieldIgnored(configurationTypeElement, methodHelper.toField(idMethod))) {
 			return idMethod;
 		}
 
 		return null;
 	}
 
-	public ExecutableElement getIdMethod(Element element) {
+	public ExecutableElement getIdMethod(DeclaredType delcaredType) {
+
+		Element element = delcaredType.asElement();
 		
 		if (element.getKind().equals(ElementKind.CLASS) || element.getKind().equals(ElementKind.INTERFACE)) {
-			Element configurationElement = getConfigurationElement((TypeElement)element, roundEnv);
-			
+			ConfigurationTypeElement configurationElement = getConfigurationForDomain(element.asType());
+
 			if (configurationElement != null) {
-				List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationElement.getEnclosedElements());
-				
-				for (ExecutableElement overridenMethod: overridenMethods) {
-	
+				List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationElement.asElement().getEnclosedElements());
+
+				for (ExecutableElement overridenMethod : overridenMethods) {
+
 					ExecutableElement domainMethod = getDomainGetterMethod(element, getFieldPath(overridenMethod));
-	
+
 					if (domainMethod != null && isIdMethod(domainMethod)) {
 						return domainMethod;
 					}
 				}
 			}
 		}
-		
+
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
 		for (ExecutableElement method : methods) {
@@ -632,7 +520,7 @@ public class TransferObjectHelper {
 			ExecutableElement idMethod;
 
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-				idMethod = getIdMethod(((DeclaredType) typeElement.getSuperclass()).asElement());
+				idMethod = getIdMethod((DeclaredType)typeElement.getSuperclass());
 
 				if (idMethod != null) {
 					return idMethod;
@@ -641,7 +529,7 @@ public class TransferObjectHelper {
 
 			for (TypeMirror interfaceType : typeElement.getInterfaces()) {
 				if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
-					idMethod = getIdMethod(((DeclaredType) interfaceType).asElement());
+					idMethod = getIdMethod((DeclaredType)interfaceType);
 					if (idMethod != null) {
 						return idMethod;
 					}
@@ -663,10 +551,8 @@ public class TransferObjectHelper {
 		for (ExecutableElement elementMethod : methods) {
 
 			if (elementMethod.getModifiers().contains(Modifier.PUBLIC)
-					&& elementMethod.getSimpleName().toString().equals(methodHelper.toSetter(method))
-					&& elementMethod.getParameters().size() == 1
-					&& processingEnv.getTypeUtils().isAssignable(elementMethod.getParameters().get(0).asType(),
-							method.getReturnType())) {
+					&& elementMethod.getSimpleName().toString().equals(methodHelper.toSetter(method)) && elementMethod.getParameters().size() == 1
+					&& processingEnv.getTypeUtils().isAssignable(elementMethod.getParameters().get(0).asType(), method.getReturnType())) {
 				return true;
 			}
 		}
@@ -678,9 +564,9 @@ public class TransferObjectHelper {
 		return false;
 	}
 
-	private boolean isFieldIgnored(TypeElement configurationElement, String field) {
+	private boolean isFieldIgnored(ConfigurationTypeElement configurationElement, String field) {
 
-		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationElement.getEnclosedElements());
+		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationElement.asElement().getEnclosedElements());
 
 		for (ExecutableElement overridenMethod : overridenMethods) {
 
@@ -699,7 +585,7 @@ public class TransferObjectHelper {
 		return field.equals(ID_METHOD_NAME);
 	}
 
-	public boolean isIdMethod(ExecutableElement method) {
+	public static boolean isIdMethod(ExecutableElement method) {
 		if (method == null) {
 			return false;
 		}
@@ -707,8 +593,7 @@ public class TransferObjectHelper {
 		List<? extends AnnotationMirror> annotations = method.getAnnotationMirrors();
 
 		for (AnnotationMirror annotation : annotations) {
-			if (annotation.getAnnotationType().asElement().getSimpleName().toString().toLowerCase()
-					.equals(ID_METHOD_NAME)) {
+			if (annotation.getAnnotationType().asElement().getSimpleName().toString().toLowerCase().equals(ID_METHOD_NAME)) {
 				return true;
 			}
 		}
