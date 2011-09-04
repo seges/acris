@@ -234,7 +234,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	
 	public void init(ProcessingEnvironment processingEnv, AbstractProcessor processor) {
 		this.processingEnv = processingEnv;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 		this.processor = processor;
 
 		configurationParameters.put(DefaultConfigurationElement.PROCESSING_ANNOTATIONS, parse(new HashSet<NamedType>(), processor.getSupportedAnnotationTypes()));

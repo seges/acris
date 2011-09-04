@@ -28,7 +28,7 @@ public class DefaultParametersResolver implements ParametersResolver {
 	
 	public DefaultParametersResolver(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 	
 	@Override

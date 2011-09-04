@@ -16,6 +16,7 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
@@ -78,7 +79,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 					if (domainGetterMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 						Element referenceElement = ((DeclaredType)domainGetterMethod.getReturnType()).asElement();
 
-						ConfigurationTypeElement configurationElement = toHelper.getConfigurationForDomain(domainGetterMethod.getReturnType());
+						ConfigurationTypeElement configurationElement = new DomainTypeElement(domainGetterMethod.getReturnType(), processingEnv, roundEnv).getConfigurationTypeElement();
 
 						if (configurationElement == null) {
 							processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find conversion configuration for type " + referenceElement.toString(), context.getConfigurationTypeElement().asElement());

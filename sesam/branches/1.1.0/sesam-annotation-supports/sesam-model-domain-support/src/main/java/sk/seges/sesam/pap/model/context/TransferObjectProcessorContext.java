@@ -100,7 +100,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 		this.processingEnv = processingEnv;
 		this.roundEnv = roundEnv;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 		this.methodHelper = new MethodHelper(processingEnv, nameTypesUtils); 
 		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
@@ -182,7 +182,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 				ImmutableType dtoType = null;
 				
 				if (domainReturnType.getKind().equals(TypeKind.DECLARED)) {
-					dtoType = toHelper.toDto(domainReturnType);
+					dtoType = new DomainTypeElement(domainReturnType, processingEnv, roundEnv).getDtoTypeElement();
 				}
 	
 				if (dtoType == null || !dtoType.getCanonicalName().equals(type.getCanonicalName())) {
@@ -248,7 +248,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 	private ConverterTypeElement getConverterForDomainType(TypeMirror domainType) {
 		
-		ConfigurationTypeElement configurationElement = toHelper.getConfigurationForDomain(domainType);
+		ConfigurationTypeElement configurationElement = new DomainTypeElement(domainType, processingEnv, roundEnv).getConfigurationTypeElement();
 
 		if (configurationElement != null) {
 			return configurationElement.getConverterTypeElement();

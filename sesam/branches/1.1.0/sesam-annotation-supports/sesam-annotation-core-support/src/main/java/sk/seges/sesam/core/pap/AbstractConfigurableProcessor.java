@@ -129,7 +129,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
 		
-		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 
 		typeParametersSupport = new TypeParametersSupport(pe, nameTypesUtils);
 

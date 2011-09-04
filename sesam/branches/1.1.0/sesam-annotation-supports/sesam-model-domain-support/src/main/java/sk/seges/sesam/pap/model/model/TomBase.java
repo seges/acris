@@ -18,7 +18,7 @@ public class TomBase {
 		this.roundEnv = roundEnv;
 		this.processingEnv = processingEnv;
 
-		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, new MethodHelper(processingEnv, nameTypesUtils));
 	}
 	

@@ -106,9 +106,11 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 			boolean useIdConverter = false;
 
 			NamedType dtoIdType = nameTypesUtils.toType(idMethod.getReturnType());
+			DomainTypeElement domainIdTypeElement = null;
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-				NamedType dto = toHelper.toDto(idMethod.getReturnType());
+				domainIdTypeElement = new DomainTypeElement(idMethod.getReturnType(), processingEnv, roundEnv);
+				NamedType dto = domainIdTypeElement.getDtoTypeElement();
 				if (dto != null) {
 					dtoIdType= dto;
 				}
@@ -125,11 +127,10 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 			pw.print(dtoIdType.getCanonicalName() + " " + idName + " = ");
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-				DomainTypeElement idConfigurationElement = new DomainTypeElement((DeclaredType)idMethod.getReturnType(), processingEnv, roundEnv);
 				//Element idConfigurationElement = toHelper.getConfigurationElement(domainIdType, roundEnv);
 				//getDomainConverter(domainIdType);
-				if (idConfigurationElement.getConfigurationTypeElement() != null && idConfigurationElement.getConfigurationTypeElement().getConverterTypeElement() != null) {
-					pw.print(getDomainConverterMethodName(idConfigurationElement.getConfigurationTypeElement().getConverterTypeElement(), idMethod.getReturnType()));
+				if (domainIdTypeElement.getConfigurationTypeElement() != null && domainIdTypeElement.getConfigurationTypeElement().getConverterTypeElement() != null) {
+					pw.print(getDomainConverterMethodName(domainIdTypeElement.getConfigurationTypeElement().getConverterTypeElement(), idMethod.getReturnType()));
 					pw.print(".toDto(");
 					pw.print("(" + castToDelegate(idMethod.getReturnType()).toString(ClassSerializer.CANONICAL, true) + ")");
 					useIdConverter = true;

@@ -46,18 +46,23 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		this.converterTypeElement = converterTypeElement;
 		this.configurationTypeElement = configurationTypeElement;
 		this.generated = false;
-		setDelegateImmutableType(getNameTypesUtils().toImmutableType(converterTypeElement));
 		
 		initialize();
 	}
-
+	
 	ConverterTypeElement(ConfigurationTypeElement configurationTypeElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 		this.generated = true;
 		this.converterTypeElement = null;
 		this.configurationTypeElement = configurationTypeElement;
-		setDelegateImmutableType(getGeneratedConverterTypeFromConfiguration(configurationTypeElement));
 	}
+
+	protected ImmutableType getDelegateImmutableType() {
+		if (converterTypeElement != null) {
+			return getNameTypesUtils().toImmutableType(converterTypeElement);
+		}
+		return getGeneratedConverterTypeFromConfiguration(configurationTypeElement);
+	};
 
 	private void initialize() {
 		if (typeParametersSupport.hasTypeParameters(this) && typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomainTypeElement())) {
@@ -132,7 +137,7 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		
 		configurationNameType = configurationNameType.addClassSufix(DEFAULT_SUFFIX);
 		
-		NameTypesUtils nameTypes = new NameTypesUtils(processingEnv.getElementUtils());
+		NameTypesUtils nameTypes = new NameTypesUtils(processingEnv);
 		
 		if (domainType.getTypeParameters().size() > 0) {
 			
