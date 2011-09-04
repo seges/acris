@@ -25,15 +25,15 @@ import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
-import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultCredentialsSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.MailConfiguration.Provider;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportConfiguration;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
@@ -80,7 +80,7 @@ public class SeleniumTestProcessor extends AbstractConfigurableProcessor {
 	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
-			return new Type[] {ImmutableType.THIS};
+			return new Type[] {nameTypesUtils.toImmutableType(typeElement)};
 		}
 		
 		return super.getOutputDefinition(type, typeElement);

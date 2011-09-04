@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import sk.seges.sesam.core.configuration.api.Configuration;
+import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.Configuration;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
 
 public class DefaultSeleniumConfigurator implements SeleniumConfigurator {
 

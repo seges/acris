@@ -122,6 +122,8 @@ public class NameTypesUtils implements NameTypes {
 				
 			PackageElement packageElement = processingEnv.getElementUtils().getPackageOf(declaredType.asElement());
 			return handleGenerics(new InputClass(typeMirror, packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
+		case ARRAY:
+			return new ArrayNamedType(getTypeMirrorConverter().handleType(((ArrayType)typeMirror).getComponentType()));
 		case BOOLEAN:
 		case BYTE:
 		case CHAR:
@@ -203,6 +205,7 @@ public class NameTypesUtils implements NameTypes {
 		case LONG:
 		case SHORT:
 		case VOID:
+		case ARRAY:
 			return toImmutableType(typeMirror);
 
 		case TYPEVAR:
@@ -215,8 +218,6 @@ public class NameTypesUtils implements NameTypes {
 			}
 			//TODO lower bound is not supported for now
 			return TypeParameterBuilder.get(name);
-		case ARRAY:
-			return new ArrayNamedType(getTypeMirrorConverter().handleType(((ArrayType)typeMirror).getComponentType()));
 		}
 		
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());

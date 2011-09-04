@@ -1,12 +1,12 @@
 package sk.seges.sesam.core.test.selenium.configuration;
 
+import sk.seges.sesam.core.configuration.api.Configuration;
+import sk.seges.sesam.core.configuration.api.ConfigurationValue;
+import sk.seges.sesam.core.configuration.utils.ConfigurationUtils;
 import sk.seges.sesam.core.test.selenium.configuration.api.BromineEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.Configuration;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
-import sk.seges.sesam.core.test.selenium.configuration.utils.ConfigurationUtils;
 
 public class DefaultTestEnvironment implements TestEnvironment {
 

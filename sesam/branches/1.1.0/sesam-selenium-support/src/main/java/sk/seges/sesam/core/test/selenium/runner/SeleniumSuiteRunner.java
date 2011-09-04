@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.test.selenium.runner;
 
+import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumConfigurator;
@@ -10,7 +11,6 @@ import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
 
 public class SeleniumSuiteRunner implements SeleniumConfigurator {
 

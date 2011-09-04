@@ -12,6 +12,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.test.bromine.BromineTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.CredentialsSettings;
@@ -19,7 +20,6 @@ import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.ReportingSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
 import sk.seges.sesam.core.test.selenium.support.DefaultMailSupport;
 import sk.seges.sesam.core.test.selenium.support.DefaultSeleniumSupport;
 import sk.seges.sesam.core.test.selenium.support.api.MailSupport;
