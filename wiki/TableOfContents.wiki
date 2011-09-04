@@ -36,6 +36,7 @@
     * [GWTEmulation Emulation of non-acceptable classes for GWT]
     * [GWTJsonizer JSON deserialization using annotations]
     * [AsyncSync Semaphores and asynchronous synchronization]
+    * [JSONDataMigration JSON data migration]
   * User interaction
     * [UserEventRecording Recording user actions]
   * Web
