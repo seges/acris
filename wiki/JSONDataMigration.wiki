@@ -85,6 +85,10 @@ t.transform(PersonV1toV2Script.class.getName());
 
 ... where _input_ and _output_ represent directories. In the input directory all files are treated as files containing JSON data and are transformed and written to the output directory. For a detailed test you can look into [http://code.google.com/p/acris/source/browse/branches/1.1.0/acris-json-migration/src/test/java/sk/seges/acris/json/server/migrate/TransformerTest.java TransformerTest in the project].
 
+== Example conclusion ==
+
+The script's helper API is evolving and provides you with nice methods like *removeIfExists* or *addNonExistent* methods. We would like to hear about your use-cases which are not handled by *acris-json-migration* yet so the project can generally serve the purpose of JSON data migration.
+
 = Details of the concept =
 
 Questions to answer:
