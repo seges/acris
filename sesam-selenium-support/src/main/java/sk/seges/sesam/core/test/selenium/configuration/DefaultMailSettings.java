@@ -1,10 +1,10 @@
 package sk.seges.sesam.core.test.selenium.configuration;
 
-import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
+import sk.seges.sesam.core.configuration.api.Configuration;
+import sk.seges.sesam.core.configuration.api.ConfigurationValue;
+import sk.seges.sesam.core.configuration.utils.ConfigurationUtils;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.MailConfiguration.Provider;
 import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.Configuration;
-import sk.seges.sesam.core.test.selenium.configuration.api.properties.ConfigurationValue;
-import sk.seges.sesam.core.test.selenium.configuration.utils.ConfigurationUtils;
 
 public class DefaultMailSettings implements MailSettings {
 

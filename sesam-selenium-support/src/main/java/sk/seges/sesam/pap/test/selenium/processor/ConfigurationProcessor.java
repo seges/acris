@@ -20,18 +20,18 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.NullCheck;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.Credentials;
-import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration;
-import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
-import sk.seges.sesam.core.test.selenium.annotation.ReportConfiguration;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTestConfiguration;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultCredentialsSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultMailSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultReportingSettings;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.Credentials;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.MailConfiguration;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.MailConfiguration.Provider;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportConfiguration;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestConfiguration;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 
 public class ConfigurationProcessor {

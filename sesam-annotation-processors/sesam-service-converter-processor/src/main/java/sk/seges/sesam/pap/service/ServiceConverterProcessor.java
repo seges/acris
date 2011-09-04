@@ -226,6 +226,8 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		pw.println();
 
 		copyMethods(element, localInterface, converterParameters, pw);
+		
+		this.converterProviderPrinter.printConverterMethods();
 	}
 
 	protected ParametersResolver getParametersResolver() {
@@ -257,7 +259,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 			
-				if (!converters.contains(converter)) {
+				if (converter != null && !converters.contains(converter)) {
 					parameters.addAll(converter.getConverterParameters(getParametersResolver()));
 					converters.add(converter);
 				}
@@ -270,7 +272,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 
-				if (!converters.contains(converter)) {
+				if (converter != null && !converters.contains(converter)) {
 					parameters.addAll(converter.getConverterParameters(getParametersResolver()));
 					converters.add(converter);
 				}
@@ -317,9 +319,9 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 				returnDtoType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv);
 				
-				if (remoteMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-					returnDtoType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv);
-				}
+//				if (remoteMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+//					returnDtoType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv);
+//				}
 
 				if (!dtoConverters.containsKey(returnDtoType)) {
 					String convertToDtoMethodName = converterProviderPrinter.getConverterMethodName(returnDtoType.getConverter());
@@ -329,11 +331,11 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 			for (int index = 0; index < localMethod.getParameters().size(); index++) {
 				TypeMirror dtoType = remoteMethod.getParameters().get(index).asType();
-				returnDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv);
-				DomainTypeElement parameterDomainType = returnDtoType.getDomainTypeElement();
+				DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv);
+				DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
 
 				if (!domainConverters.containsKey(parameterDomainType)) {
-					String convertFromDtoMethodName = converterProviderPrinter.getConverterMethodName(returnDtoType.getConverter());
+					String convertFromDtoMethodName = converterProviderPrinter.getConverterMethodName(parameterDtoType.getConverter());
 					domainConverters.put(parameterDomainType, convertFromDtoMethodName);
 				}
 			}
@@ -426,7 +428,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 					DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceElement, dtoParameter.asType(), processingEnv, roundEnv);
 					DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
 
-					if (!getNameTypes().toType(method.getParameters().get(index).asType()).equals(parameterDomainType)) {
+					if (!parameterDomainType.equals(getNameTypes().toType(method.getParameters().get(index).asType()))) {
 						pairMethod = false;
 						break;
 					}
@@ -439,7 +441,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				DtoTypeElement returnDtoType = new DtoTypeElement(remoteServiceElement, method.getReturnType(), processingEnv, roundEnv);
 				DomainTypeElement returnDomainType = returnDtoType.getDomainTypeElement();
 
-				if (getNameTypes().toType(method.getReturnType()).equals(returnDomainType)) {
+				if (returnDomainType.equals(getNameTypes().toType(method.getReturnType()))) {
 					return method;
 				}
 				processingEnv.getMessager().printMessage(

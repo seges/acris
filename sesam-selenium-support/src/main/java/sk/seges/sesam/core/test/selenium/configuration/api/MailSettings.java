@@ -1,6 +1,6 @@
 package sk.seges.sesam.core.test.selenium.configuration.api;
 
-import sk.seges.sesam.core.test.selenium.annotation.MailConfiguration.Provider;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.MailConfiguration.Provider;
 
 public interface MailSettings {
 

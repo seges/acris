@@ -90,9 +90,9 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 
 		if (transferObjectConfiguration != null) {
 			if (dtoType.getKind().equals(TypeKind.DECLARED)) {
-				this.configurationTypeElement = new ConfigurationTypeElement(null, null, transferObjectConfiguration, processingEnv, roundEnv);
-			} else {
 				this.configurationTypeElement = new ConfigurationTypeElement(null, (DeclaredType) dtoType, transferObjectConfiguration, processingEnv, roundEnv);
+			} else {
+				this.configurationTypeElement = new ConfigurationTypeElement(null, null, transferObjectConfiguration, processingEnv, roundEnv);
 			}
 		} else {
 			this.configurationTypeElement = getConfigurationForDto(dtoType);

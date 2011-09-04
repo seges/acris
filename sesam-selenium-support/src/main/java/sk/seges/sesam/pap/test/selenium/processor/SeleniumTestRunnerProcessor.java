@@ -20,11 +20,11 @@ import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumSuite;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultBromineEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSuite;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.runner.SeleniumSuiteRunner;
@@ -64,7 +64,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 		List<Type> result = new ArrayList<Type>();
 		Iterator<? extends Element> iterator = seleniumTestClasses.iterator();
 
-		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv);
 		
 		while (iterator.hasNext()) {
 			result.add(SeleniumTestProcessor.getOutputClass((ImmutableType)nameTypesUtils.toType(((TypeElement)iterator.next()))));
@@ -102,7 +102,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 
 		pw.println("public void run() {");
 		
-		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv);
 		
 		for (Element seleniumTestClass: seleniumTestClasses) {
 			pw.println("run(new " + SeleniumTestProcessor.getOutputClass((ImmutableType) nameTypesUtils.toType(((TypeElement)seleniumTestClass))).getSimpleName() + "());");

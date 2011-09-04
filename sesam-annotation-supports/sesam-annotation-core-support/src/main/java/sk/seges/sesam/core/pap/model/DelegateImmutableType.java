@@ -133,26 +133,14 @@ public abstract class DelegateImmutableType implements HasTypeParameters {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((ensureDelegateType() == null) ? 0 : ensureDelegateType().hashCode());
-		return result;
+		return ensureDelegateType().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DelegateImmutableType other = (DelegateImmutableType) obj;
-		if (ensureDelegateType() == null) {
-			if (other.ensureDelegateType() != null)
-				return false;
-		} else if (!ensureDelegateType().equals(other.ensureDelegateType()))
-			return false;
-		return true;
+		if (obj instanceof DelegateImmutableType) {
+			return ensureDelegateType().equals(((DelegateImmutableType)obj).ensureDelegateType());
+		}
+		return ensureDelegateType().equals(obj);
 	}
 }
