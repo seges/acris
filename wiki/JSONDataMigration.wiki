@@ -1,5 +1,5 @@
 #summary Migration framework to transform JSON data over time
-#labels JSON,migration
+#labels JSON,migration,Featured
 
 = Introduction =
 
