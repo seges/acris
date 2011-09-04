@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
@@ -14,7 +15,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
-import javax.lang.model.util.Elements;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
@@ -30,10 +30,10 @@ import sk.seges.sesam.core.pap.model.api.TypeParameter;
 
 public class NameTypesUtils implements NameTypes {
 
-	private Elements elements;
+	private ProcessingEnvironment processingEnv;
 	
-	public NameTypesUtils(Elements elements) {
-		this.elements = elements;
+	public NameTypesUtils(ProcessingEnvironment processingEnv) {
+		this.processingEnv = processingEnv;
 	}
 	
 	class NamedTypeMirrorConverter implements TypeMirrorConverter {
@@ -120,7 +120,7 @@ public class NameTypesUtils implements NameTypes {
 				return handleGenerics(new InputClass(typeMirror, enclosedElement, declaredType.asElement().getSimpleName().toString()), declaredType);
 			}
 				
-			PackageElement packageElement = elements.getPackageOf(declaredType.asElement());
+			PackageElement packageElement = processingEnv.getElementUtils().getPackageOf(declaredType.asElement());
 			return handleGenerics(new InputClass(typeMirror, packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
 		case BOOLEAN:
 		case BYTE:
@@ -135,6 +135,60 @@ public class NameTypesUtils implements NameTypes {
 		}
 		
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
+	}
+
+	public TypeMirror fromType(NamedType type) {
+		if (type.asType() != null) {
+			return type.asType();
+		}
+		
+		//no package means primitive type
+		if (type.getPackageName() == null) {
+			for (TypeKind kind: TypeKind.values()) {
+				if (kind.name().toLowerCase().equals(type.getSimpleName())) {
+					return processingEnv.getTypeUtils().getPrimitiveType(kind);
+				}
+			}
+		}
+		
+		if (type instanceof ArrayNamedType) {
+			return processingEnv.getTypeUtils().getArrayType(fromType(((ArrayNamedType)type).getComponentType()));
+		}
+
+		if (type instanceof HasTypeParameters && ((HasTypeParameters)type).getTypeParameters() != null) {
+			List<TypeMirror> typeArgs = new ArrayList<TypeMirror>();
+
+			TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(type.getCanonicalName());
+			
+			int i = 0;
+			for (TypeParameter typeParameter: ((HasTypeParameters)type).getTypeParameters()) {
+				if (typeParameter.getVariable() == null || typeParameter.getVariable().length() == 0) {
+					//no variable
+					if (typeParameter.getBounds() != null && typeParameter.getBounds().length > 0) {
+						if (typeParameter.getBounds().length == 1) {
+							typeArgs.add(fromType(toImmutableType(typeParameter.getBounds()[0].getUpperBound())));
+						} else {
+							//TODO what if there is no variable and more bounds ?!, like List<Serializable & Comparable>
+						}
+					} else {
+						//TODO no variable and no bounds? Can we use Object instead?
+					}
+				} else if (typeParameter.equals("?")) {
+					if (typeParameter.getBounds() != null && typeParameter.getBounds().length > 0) {
+						typeArgs.add(processingEnv.getTypeUtils().getWildcardType(fromType(toType(typeParameter.getBounds()[0].getUpperBound())), null));
+					} else {
+						typeArgs.add(processingEnv.getTypeUtils().getWildcardType(null, null));
+					}
+				} else {
+					typeArgs.add(typeElement.getTypeParameters().get(i).asType());
+				}
+				i++;
+			}
+
+			return processingEnv.getTypeUtils().getDeclaredType(typeElement, typeArgs.toArray(new TypeMirror[] {}));
+		}
+		
+		return processingEnv.getTypeUtils().getDeclaredType(processingEnv.getElementUtils().getTypeElement(type.getCanonicalName()));
 	}
 
 	public NamedType toType(TypeMirror typeMirror) {
@@ -238,7 +292,7 @@ public class NameTypesUtils implements NameTypes {
 	}
 	
 	public ImmutableType toImmutableType(String className) {
-		TypeElement typeElement = elements.getTypeElement(className);
+		TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(className);
 
 		String genericType = null;
 		
@@ -248,7 +302,7 @@ public class NameTypesUtils implements NameTypes {
 				genericType = className.substring(genericTypeIndex + 1);
 				genericType = genericType.substring(0, genericType.length() - 1);
 				className = className.substring(0,genericTypeIndex);
-				typeElement = elements.getTypeElement(className);
+				typeElement = processingEnv.getElementUtils().getTypeElement(className);
 			}
 		}
 		
@@ -261,7 +315,7 @@ public class NameTypesUtils implements NameTypes {
 					parameters[i] = toTypeParameter(params[i]);
 				}
 
-				PackageElement packageElement = elements.getPackageOf(typeElement);
+				PackageElement packageElement = processingEnv.getElementUtils().getPackageOf(typeElement);
 				return TypedClassBuilder.get(typeElement.asType(), packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), parameters);
 
 			} else {

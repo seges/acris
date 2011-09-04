@@ -17,7 +17,7 @@ public class AccessorsPrinter extends AbstractElementPrinter {
 	
 	public AccessorsPrinter(ProcessingEnvironment processingEnv, PrintWriter pw) {
 		super(pw);
-		this.methodHelper = new MethodHelper(processingEnv, new NameTypesUtils(processingEnv.getElementUtils()));
+		this.methodHelper = new MethodHelper(processingEnv, new NameTypesUtils(processingEnv));
 	}
 	
 	@Override

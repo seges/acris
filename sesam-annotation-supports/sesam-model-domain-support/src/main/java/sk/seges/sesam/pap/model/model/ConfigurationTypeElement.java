@@ -32,7 +32,7 @@ public class ConfigurationTypeElement extends TomBase {
 
 	private final String canonicalName;
 	
-	public ConfigurationTypeElement(DeclaredType domainType, DeclaredType dtoType, TypeElement configurationElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	ConfigurationTypeElement(DeclaredType domainType, DeclaredType dtoType, TypeElement configurationElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 		
 		this.configurationElement = configurationElement;
@@ -58,14 +58,14 @@ public class ConfigurationTypeElement extends TomBase {
 		this.transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
 	}
 
-	public ConfigurationTypeElement(TransferObjectConfiguration transferObjectConfiguration, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	ConfigurationTypeElement(DeclaredType domainType, DeclaredType dtoType, TransferObjectConfiguration transferObjectConfiguration, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		
 		super(processingEnv, roundEnv);
 		
 		this.configurationElement = transferObjectConfiguration.getConfigurationHolderElement();
 		this.transferObjectConfiguration = transferObjectConfiguration;
-		this.domainType = null;
-		this.dtoType = null;
+		this.domainType = domainType;
+		this.dtoType = dtoType;
 
 		this.canonicalName = configurationElement.getSimpleName().toString();
 	}
@@ -134,13 +134,17 @@ public class ConfigurationTypeElement extends TomBase {
 			}
 			
 			if (domainType != null) {
-				this.domainTypeElement = new DomainTypeElement(this, domainType, processingEnv, roundEnv);
+				this.domainTypeElement = new DomainTypeElement(domainType, dtoType, this, processingEnv, roundEnv);
 			} else {
 				if (this.domainType == null) {
 					TypeElement domainInterface = transferObjectConfiguration.getDomainInterface();
 					if (domainInterface != null) {
-						this.domainTypeElement = new DomainTypeElement(this,(DeclaredType) domainInterface.asType(), processingEnv, roundEnv);
-						this.domainTypeElement.setInterface(true);
+						if (dtoType != null && ProcessorUtils.implementsType(dtoType, domainInterface.asType())) {
+							this.domainTypeElement = new DomainTypeElement(null, dtoType, this, processingEnv, roundEnv);
+						} else {
+							this.domainTypeElement = new DomainTypeElement(domainInterface.asType(), dtoType, this, processingEnv, roundEnv);
+							this.domainTypeElement.setInterface(true);
+						}
 					}
 				}
 			}
@@ -275,8 +279,9 @@ public class ConfigurationTypeElement extends TomBase {
 				return true;
 			}
 		} else {
-			if (processingEnv.getTypeUtils().erasure(getDtoTypeElement().asType()).equals(
-				processingEnv.getTypeUtils().erasure(dtoType))) {
+			if (getDtoTypeElement().asType() != null &&
+					processingEnv.getTypeUtils().erasure(getDtoTypeElement().asType()).equals(
+							processingEnv.getTypeUtils().erasure(dtoType))) {
 				return true;
 			}
 		}

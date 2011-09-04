@@ -11,7 +11,7 @@ import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
-public class DelegateImmutableType implements HasTypeParameters {
+public abstract class DelegateImmutableType implements HasTypeParameters {
 
 	private ImmutableType delegateImmutableType;
 	
@@ -21,116 +21,121 @@ public class DelegateImmutableType implements HasTypeParameters {
 		this.delegateImmutableType = delegateImmutableType;
 	}
 	
-	protected ImmutableType getDelegateImmutableType() {
+	private ImmutableType ensureDelegateType() {
+		if (delegateImmutableType == null) {
+			delegateImmutableType = getDelegateImmutableType();
+		}
 		return delegateImmutableType;
 	}
-	
+
+	abstract protected ImmutableType getDelegateImmutableType();
+
 	@Override
 	public String getPackageName() {
-		return delegateImmutableType.getPackageName();
+		return ensureDelegateType().getPackageName();
 	}
 
 	@Override
 	public String getSimpleName() {
-		return delegateImmutableType.getSimpleName();
+		return ensureDelegateType().getSimpleName();
 	}
 
 	@Override
 	public String getCanonicalName() {
-		return delegateImmutableType.getCanonicalName();
+		return ensureDelegateType().getCanonicalName();
 	}
 
 	@Override
 	public String getQualifiedName() {
-		return delegateImmutableType.getQualifiedName();
+		return ensureDelegateType().getQualifiedName();
 	}
 
 	@Override
 	public TypeMirror asType() {
-		return delegateImmutableType.asType();
+		return ensureDelegateType().asType();
 	}
 
 	@Override
 	public String toString(ClassSerializer serializer) {
-		return delegateImmutableType.toString(serializer);
+		return ensureDelegateType().toString(serializer);
 	}
 
 	@Override
 	public String toString(ClassSerializer serializer, boolean typed) {
-		return delegateImmutableType.toString(serializer, typed);
+		return ensureDelegateType().toString(serializer, typed);
 	}
 
 	@Override
 	public void annotateWith(AnnotationMirror annotationMirror) {
-		delegateImmutableType.annotateWith(annotationMirror);
+		ensureDelegateType().annotateWith(annotationMirror);
 	}
 
 	@Override
 	public Set<AnnotationMirror> getAnnotations() {
-		return delegateImmutableType.getAnnotations();
+		return ensureDelegateType().getAnnotations();
 	}
 
 	@Override
 	public HasTypeParameters addType(TypeParameter typeParameter) {
-		return delegateImmutableType.addType(typeParameter);
+		return ensureDelegateType().addType(typeParameter);
 	}
 
 	@Override
 	public ImmutableType setName(String name) {
-		return delegateImmutableType.setName(name);
+		return ensureDelegateType().setName(name);
 	}
 
 	@Override
 	public ImmutableType addClassSufix(String sufix) {
-		return delegateImmutableType.addClassSufix(sufix);
+		return ensureDelegateType().addClassSufix(sufix);
 	}
 
 	@Override
 	public ImmutableType addClassPrefix(String prefix) {
-		return delegateImmutableType.addClassPrefix(prefix);
+		return ensureDelegateType().addClassPrefix(prefix);
 	}
 
 	@Override
 	public ImmutableType addPackageSufix(String sufix) {
-		return delegateImmutableType.addPackageSufix(sufix);
+		return ensureDelegateType().addPackageSufix(sufix);
 	}
 
 	@Override
 	public ImmutableType changePackage(String packageName) {
-		return delegateImmutableType.changePackage(packageName);
+		return ensureDelegateType().changePackage(packageName);
 	}
 
 	@Override
 	public ImmutableType changePackage(PackageValidator packageValidator) {
-		return delegateImmutableType.changePackage(packageValidator);
+		return ensureDelegateType().changePackage(packageValidator);
 	}
 
 	@Override
 	public TypeParameter[] getTypeParameters() {
-		if (delegateImmutableType instanceof HasTypeParameters) {
-			return ((HasTypeParameters)delegateImmutableType).getTypeParameters();
+		if (ensureDelegateType() instanceof HasTypeParameters) {
+			return ((HasTypeParameters)ensureDelegateType()).getTypeParameters();
 		}
 		return null;
 	}
 
 	@Override
 	public ImmutableType stripTypeParameters() {
-		if (delegateImmutableType instanceof HasTypeParameters) {
-			return ((HasTypeParameters)delegateImmutableType).stripTypeParameters();
+		if (ensureDelegateType() instanceof HasTypeParameters) {
+			return ((HasTypeParameters)ensureDelegateType()).stripTypeParameters();
 		}
-		return delegateImmutableType;
+		return ensureDelegateType();
 	}
 	
 	@Override
 	public String toString() {
-		return delegateImmutableType.toString();
+		return ensureDelegateType().toString();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((delegateImmutableType == null) ? 0 : delegateImmutableType.hashCode());
+		result = prime * result + ((ensureDelegateType() == null) ? 0 : ensureDelegateType().hashCode());
 		return result;
 	}
 
@@ -143,13 +148,11 @@ public class DelegateImmutableType implements HasTypeParameters {
 		if (getClass() != obj.getClass())
 			return false;
 		DelegateImmutableType other = (DelegateImmutableType) obj;
-		if (delegateImmutableType == null) {
-			if (other.delegateImmutableType != null)
+		if (ensureDelegateType() == null) {
+			if (other.ensureDelegateType() != null)
 				return false;
-		} else if (!delegateImmutableType.equals(other.delegateImmutableType))
+		} else if (!ensureDelegateType().equals(other.ensureDelegateType()))
 			return false;
 		return true;
 	}
-	
-	
 }

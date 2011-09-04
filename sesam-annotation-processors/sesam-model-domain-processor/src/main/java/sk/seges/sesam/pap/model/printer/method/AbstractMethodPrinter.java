@@ -49,7 +49,7 @@ public abstract class AbstractMethodPrinter {
 		this.roundEnv = roundEnv;
 		this.converterProviderPrinter = converterProviderPrinter;
 		this.parametersResolver = parametersResolver;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 		this.methodHelper = new MethodHelper(processingEnv, nameTypesUtils);
 		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);

@@ -1,5 +1,7 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.Set;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -7,7 +9,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
 
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
@@ -40,30 +41,20 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 		super(processingEnv, roundEnv);
 		this.configurationTypeElement = configurationTypeElement;
 		this.generated = false;
-		setDelegateImmutableType(getNameTypesUtils().toImmutableType(dtoTypeElement));
 		this.dtoType = dtoTypeElement.asType();
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
-		initialize(processingEnv);
+		
+		initialize();
 	}
 
 	DtoTypeElement(ConfigurationTypeElement configurationTypeElement, DeclaredType dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 		this.configurationTypeElement = configurationTypeElement;
 		this.generated = false;
-		setDelegateImmutableType(getNameTypesUtils().toImmutableType(dtoType));
-		this.dtoType = null;
+		this.dtoType = dtoType;
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
-		initialize(processingEnv);
-	}
-
-	DtoTypeElement(ConfigurationTypeElement configurationTypeElement, ImmutableType dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		super(processingEnv, roundEnv);
-		this.configurationTypeElement = configurationTypeElement;
-		this.generated = false;
-		setDelegateImmutableType(dtoType);
-		this.dtoType = null;
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
-		initialize(processingEnv);
+		
+		initialize();
 	}
 
 	DtoTypeElement(ConfigurationTypeElement configurationTypeElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
@@ -71,9 +62,9 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 		this.configurationTypeElement = configurationTypeElement;
 		this.generated = true;
 		this.dtoType = null;
-		setDelegateImmutableType(getGeneratedDtoTypeFromConfiguration(configurationTypeElement));
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
-		initialize(processingEnv);
+
+		initialize();
 	}
 
 	public DtoTypeElement(TypeElement configurationHolderTypeElement, TypeMirror dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
@@ -87,6 +78,9 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 			TransferObjectMapping dtoMapping = transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType);
 			if (dtoMapping == null) {
 				transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)dtoType).asElement(), processingEnv);
+				if (!transferObjectConfiguration.isValid()) {
+					transferObjectConfiguration = null;
+				}
 			} else {
 				transferObjectConfiguration.setReferenceMapping(dtoMapping);
 			}
@@ -95,15 +89,18 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 		}
 
 		if (transferObjectConfiguration != null) {
-			this.configurationTypeElement = new ConfigurationTypeElement(transferObjectConfiguration, processingEnv, roundEnv);
+			if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+				this.configurationTypeElement = new ConfigurationTypeElement(null, null, transferObjectConfiguration, processingEnv, roundEnv);
+			} else {
+				this.configurationTypeElement = new ConfigurationTypeElement(null, (DeclaredType) dtoType, transferObjectConfiguration, processingEnv, roundEnv);
+			}
 		} else {
-			this.configurationTypeElement = toHelper.getConfigurationForDto(dtoType);
+			this.configurationTypeElement = getConfigurationForDto(dtoType);
 		}
-		
-		setDelegateImmutableType(new NameTypesUtils(processingEnv.getElementUtils()).toImmutableType(dtoType));
+
 		this.generated = false;
 				
-		initialize(processingEnv);
+		initialize();
 	}
 
 	public DtoTypeElement(TypeMirror dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
@@ -111,26 +108,33 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 		this.dtoType = dtoType;
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
 
-		this.configurationTypeElement = toHelper.getConfigurationForDto(dtoType);
+		this.configurationTypeElement = getConfigurationForDto(dtoType);
 
-		setDelegateImmutableType(new NameTypesUtils(processingEnv.getElementUtils()).toImmutableType(dtoType));
 		this.generated = false;
 				
-		initialize(processingEnv);
+		initialize();
 	}
-	
+
+	protected ImmutableType getDelegateImmutableType() {
+		if (dtoType != null) {
+			return getNameTypesUtils().toImmutableType(dtoType);
+		}
+		return getGeneratedDtoTypeFromConfiguration(configurationTypeElement);
+	};
+
 	class TypeMirrorDtoHandler implements TypeMirrorConverter {
 
 		@Override
 		public NamedType handleType(TypeMirror type) {
-			return toHelper.convertType(type);
+			//return toHelper.convertType(type);
+			return new DomainTypeElement(type, processingEnv, roundEnv).getDtoTypeElement();
 		}	
 	}
 	
 	class NameTypesDtoUtils extends NameTypesUtils {
 
-		public NameTypesDtoUtils(Elements elements) {
-			super(elements);
+		public NameTypesDtoUtils(ProcessingEnvironment processingEnv) {
+			super(processingEnv);
 		}
 		
 		@Override
@@ -141,10 +145,10 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 
 	@Override
 	protected NameTypesDtoUtils getNameTypesUtils() {
-		return new NameTypesDtoUtils(processingEnv.getElementUtils());
+		return new NameTypesDtoUtils(processingEnv);
 	}
 
-	private void initialize(ProcessingEnvironment processingEnv) {
+	private void initialize() {
 		if (configurationTypeElement == null) {
 			return;
 		}
@@ -169,7 +173,7 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 			return null;
 		}
 
-		ImmutableType configurationNameType = new NameTypesUtils(processingEnv.getElementUtils()).toImmutableType(configurationTypeElement.asElement());
+		ImmutableType configurationNameType = new NameTypesUtils(processingEnv).toImmutableType(configurationTypeElement.asElement());
 
 		PackageValidator packageValidator = getPackageValidationProvider().get(configurationNameType)
 				.moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);
@@ -220,4 +224,47 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 		
 		return configurationTypeElement.getConverterTypeElement();
 	}
+	
+	protected ConfigurationTypeElement getConfigurationForDto(TypeMirror dtoType) {
+
+		if (dtoType.getKind().isPrimitive() || dtoType.getKind().equals(TypeKind.NONE)
+				|| dtoType.getKind().equals(TypeKind.NULL) || dtoType.getKind().equals(TypeKind.ERROR)) {
+			// cannot cast to domain
+			return null;
+		}
+
+		if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)dtoType).asElement(), processingEnv);
+			if (transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType) != null) {
+				return new ConfigurationTypeElement(((DeclaredType)dtoType).asElement(), processingEnv, roundEnv);
+			}
+		}
+		
+		Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
+		for (Element annotatedElement : elementsAnnotatedWith) {
+			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
+				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
+	
+				if (configurationTypeElement.appliesForDtoType(dtoType)) {
+					return new ConfigurationTypeElement(null, (DeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv);
+				}
+			}
+		}
+
+		if (getCommonConfigurations() != null) {
+			for (Class<?> clazz: getCommonConfigurations()) {
+				TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
+
+					ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
+
+					if (configurationTypeElement.appliesForDtoType(dtoType)) {
+						return new ConfigurationTypeElement(null, (DeclaredType)dtoType, configurationElement, processingEnv, roundEnv);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 }

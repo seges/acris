@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -21,41 +20,16 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
-import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
+import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
-	
-	public static final String REMOTE_SUFFIX = "Remote";
-	public static final String LOCAL_SUFFIX = "Local";
-	
-	private TransferObjectHelper toHelper;
-	
+		
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
 		return new ServiceInterfaceProcessorConfigurer();
-	}
-	
-	public static ImmutableType getOutputClass(ImmutableType mutableType) {	
-		String simpleName = mutableType.getSimpleName();
-		if (simpleName.endsWith(REMOTE_SUFFIX)) {
-			simpleName = simpleName.substring(0, simpleName.length() - REMOTE_SUFFIX.length());
-		}
-		PackageValidator packageValidator = new DefaultPackageValidatorProvider().get(mutableType.getPackageName());
-		packageValidator.moveTo(LocationType.SERVER);
-		mutableType = mutableType.changePackage(packageValidator);
-		return mutableType.setName(simpleName + LOCAL_SUFFIX);
-	}
-
-	@Override
-	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
-		return super.process(annotations, roundEnv);
 	}
 	
 	@Override
@@ -65,7 +39,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 	
 	@Override
 	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		return new NamedType[] { getOutputClass(mutableType) };
+		return new NamedType[] { new RemoteServiceTypeElement(mutableType.asType(), processingEnv).getLocalServiceElement()};
 	}
 
 	@Override
@@ -82,9 +56,9 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 		
 		for (ExecutableElement method: methodsIn) {
 			
-			imports.add(new DtoTypeElement(remoteServiceInterfaceElement, method.getReturnType(), processingEnv, roundEnv));
+			imports.add(new DtoTypeElement(remoteServiceInterfaceElement, method.getReturnType(), processingEnv, roundEnv).getDomainTypeElement());
 			for (VariableElement parameter: method.getParameters()) {
-				imports.add(new DtoTypeElement(remoteServiceInterfaceElement, parameter.asType(), processingEnv, roundEnv));
+				imports.add(new DtoTypeElement(remoteServiceInterfaceElement, parameter.asType(), processingEnv, roundEnv).getDomainTypeElement());
 			}
 		}
 

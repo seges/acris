@@ -35,7 +35,7 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 	@Override
 	protected NamedType handleDomainTypeParameter(ProcessingEnvironment processingEnv, TransferObjectHelper toHelper, EntityResolver entityResolver) {
 		
-		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv);
 		
 		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 

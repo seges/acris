@@ -30,7 +30,7 @@ public class ConverterProviderPrinter {
 	public ConverterProviderPrinter(PrintWriter pw, ProcessingEnvironment processingEnv, ParametersResolver parametersResolver) {
 		this.pw = pw;
 		this.parametersResolver = parametersResolver;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv.getElementUtils());
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 		
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 	}

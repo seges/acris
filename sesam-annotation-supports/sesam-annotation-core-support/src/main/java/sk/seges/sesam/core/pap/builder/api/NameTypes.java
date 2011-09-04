@@ -18,6 +18,8 @@ public interface NameTypes {
 	NamedType toType(Element element);
 	NamedType toType(Type javaType);
 	NamedType toType(String className);
+	
+	TypeMirror fromType(NamedType type);
 
 	ImmutableType toImmutableType(TypeMirror typeMirror);
 	ImmutableType toImmutableType(Element element);
