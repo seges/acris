@@ -50,11 +50,18 @@
 		<module>../corpis-test</module>
 		<module>../corpis-dao-api</module>
 		<module>../corpis-dao-impl</module>
+		<module>../corpis-lang-api</module>
 		<module>../corpis-domain-api</module>
+		<module>../corpis-domain-jpa</module>
+		<module>../corpis-customer-domain-api</module>
+		<module>../corpis-customer-domain-jpa</module>
+		<module>../corpis-invoice-domain-api</module>
+		<module>../corpis-invoice-domain-jpa</module>
 		<module>../corpis-domain-generator-import</module>
 		<module>../corpis-domain-generator</module>
 		<module>../corpis-import-export-api</module>
 		<module>../corpis-annotation-apis</module>
+		<module>../corpis-annotation-supports</module>
 		<module>../corpis-annotation-processors</module>
 		<module>../corpis-import-export</module>
 		<module>../corpis-payment-api</module>
@@ -124,12 +131,57 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-service-converter-processor</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-service-local-interface-processor</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>			
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-annotation-core-support</artifactId>
 				<version>${sesam-os.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-lang-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-domain-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-customer-domain-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-customer-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-invoice-domain-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-service-support</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-domain-model-hibernate-processor</artifactId>

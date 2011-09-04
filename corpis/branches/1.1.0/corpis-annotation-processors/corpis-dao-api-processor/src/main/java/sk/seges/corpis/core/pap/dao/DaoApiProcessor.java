@@ -46,10 +46,10 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected Type[] getImports() {
+	protected Type[] getImports(TypeElement typeElement) {
 		return new Type[] {
-			NamedType.THIS
-		};
+				nameTypesUtils.toImmutableType(typeElement)
+			};
 	}
 	
 	public static NamedType getOutputClass(ImmutableType inputClass, PackageValidatorProvider packageValidatorProvider) {
@@ -65,7 +65,7 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 		return inputClass.changePackage(packageValidator.toString())
 										  .addClassPrefix(DAO_API_CLASS_PREFIX)
 										  .addClassSufix(DAO_API_CLASS_SUFFIX)
-										  .addType(TypeParameterBuilder.get("T", NamedType.THIS));
+										  .addType(TypeParameterBuilder.get("T", inputClass));
 	}
 	
 	@Override
@@ -80,7 +80,7 @@ public class DaoApiProcessor extends AbstractConfigurableProcessor {
 		switch (type) {
 		case OUTPUT_INTERFACES:
 			return new Type[] {
-					TypedClassBuilder.get(ICrudDAO.class, NamedType.THIS)
+					TypedClassBuilder.get(ICrudDAO.class, nameTypesUtils.toImmutableType(typeElement))
 			};
 		}
 		return super.getOutputDefinition(type, typeElement);

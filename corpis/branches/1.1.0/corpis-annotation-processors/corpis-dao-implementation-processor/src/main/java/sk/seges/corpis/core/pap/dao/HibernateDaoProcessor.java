@@ -110,7 +110,7 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 		return inputClass.changePackage(packageValidator.toString())
 										  .addClassPrefix(DAO_API_CLASS_PREFIX)
 										  .addClassSufix(DAO_API_CLASS_SUFFIX)
-										  .addType(TypeParameterBuilder.get("T", NamedType.THIS));
+										  .addType(TypeParameterBuilder.get("T", inputClass));
 	}
 	
 	@Override
@@ -170,17 +170,17 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 	}
 	
 	@Override
-	protected Type[] getImports() {
+	protected Type[] getImports(TypeElement typeElement) {
 		List<Type> imports = new ArrayList<Type>();
 		
-		ListUtils.add(imports, getSubProcessorImports());
+		ListUtils.add(imports, getSubProcessorImports(typeElement));
 
 		if (interfaceElement != null) {
 			ListUtils.add(imports, getNameTypes().toType(interfaceElement));
 			ListUtils.add(imports, getNameTypes().toType(getInterfaceElement(interfaceElement, null)));
 		}
 
-		ListUtils.add(imports, NamedType.THIS);
+		ListUtils.add(imports, nameTypesUtils.toImmutableType(typeElement));
 
 		return imports.toArray(new Type[] {});
 	}
@@ -262,7 +262,7 @@ public class HibernateDaoProcessor extends ImplementationProcessor {
 				};
 			}
 			return new Type[] {
-					TypedClassBuilder.get(AbstractHibernateCRUD.class, NamedType.THIS)
+					TypedClassBuilder.get(AbstractHibernateCRUD.class, getNameTypes().toImmutableType(typeElement))
 			};
 		}
 		return super.getOutputDefinition(type, typeElement);

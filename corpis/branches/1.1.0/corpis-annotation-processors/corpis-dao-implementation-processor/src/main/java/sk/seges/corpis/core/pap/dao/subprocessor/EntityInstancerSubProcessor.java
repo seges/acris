@@ -14,9 +14,9 @@ import sk.seges.sesam.dao.IEntityInstancer;
 public class EntityInstancerSubProcessor extends AbstractSubProcessor<IEntityInstancer<?>> {
 
 	@Override
-	public Type[] getImports() {
+	public Type[] getImports(TypeElement typeElement) {
 		return new Type[] {
-				NamedType.THIS
+				nameTypesUtils.toType(typeElement)
 		};
 	}
 	

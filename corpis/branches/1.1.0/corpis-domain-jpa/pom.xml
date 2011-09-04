@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-domain-jpa</artifactId>
+	<name>CorpIS Domain</name>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+		<version>1.1.4-SNAPSHOT</version> 
+		<relativePath>../corpis-os/pom.xml</relativePath>
+	</parent>
+
+	<description>
+		Common domain objects (JPA implementation) valid for all CoprIS based
+		projects - localization, currency, common enums 
+		are good candidates.
+	</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-domain-api</artifactId>
+		</dependency>
+	</dependencies>
+</project>
