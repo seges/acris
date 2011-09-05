@@ -6,4 +6,5 @@ package sk.seges.acris.scaffold.model.domain;
  */
 public interface RoleModel {
 	String name();
+	String description();
 }
