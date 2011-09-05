@@ -38,10 +38,13 @@ import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
 import sk.seges.sesam.pap.model.model.ParameterFilter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.annotation.LocalService;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
+import sk.seges.sesam.pap.service.model.ServiceTypeElement;
+import sk.seges.sesam.pap.service.provider.ServiceCollectorConfigurationProvider;
 import sk.seges.sesam.pap.service.utils.ServiceHelper;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -53,6 +56,8 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 	private ServiceHelper serviceHelper;
 	private ConverterProviderPrinter converterProviderPrinter;
 
+	private ConfigurationProvider[] configurationProviders;
+	
 	private Map<NamedType, Element> localInterfacesCache = new HashMap<NamedType, Element>();
 
 	@Override
@@ -68,6 +73,12 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		return new DefaultPackageValidatorProvider();
 	}
 
+	protected ConfigurationProvider[] getConfigurationProviders(ServiceTypeElement service) {
+		return new ConfigurationProvider[] {
+				new ServiceCollectorConfigurationProvider(service, processingEnv, roundEnv)
+		};
+	}
+	
 	@Override
 	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
 
@@ -186,8 +197,10 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 	
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
 
-		this.converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, getParametersResolver());
-
+		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(element, processingEnv);
+		this.configurationProviders = getConfigurationProviders(serviceTypeElement);
+		this.converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, roundEnv, getParametersResolver(), configurationProviders);
+		
 		Element localInterface = localInterfacesCache.get(outputClass);
 
 		if (localInterface == null) {
@@ -255,7 +268,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 				
-				DtoTypeElement dtoReturnType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv);
+				DtoTypeElement dtoReturnType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv, configurationProviders);
 
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 			
@@ -268,7 +281,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			for (int index = 0; index < localMethod.getParameters().size(); index++) {
 				TypeMirror dtoType = remoteMethod.getParameters().get(index).asType();
 
-				DtoTypeElement dtoReturnType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv);
+				DtoTypeElement dtoReturnType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv, configurationProviders);
 
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 
@@ -317,25 +330,21 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			DtoTypeElement returnDtoType = null;
 			
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
-				returnDtoType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv);
+				returnDtoType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv, configurationProviders);
 				
-//				if (remoteMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-//					returnDtoType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv);
-//				}
-
 				if (!dtoConverters.containsKey(returnDtoType)) {
-					String convertToDtoMethodName = converterProviderPrinter.getConverterMethodName(returnDtoType.getConverter());
+					String convertToDtoMethodName = converterProviderPrinter.getDtoConverterMethodName(returnDtoType.getConverter(), nameTypesUtils.fromType(returnDtoType));
 					dtoConverters.put(returnDtoType, convertToDtoMethodName);
 				}
 			}
 
 			for (int index = 0; index < localMethod.getParameters().size(); index++) {
 				TypeMirror dtoType = remoteMethod.getParameters().get(index).asType();
-				DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv);
+				DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv, configurationProviders);
 				DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
 
 				if (!domainConverters.containsKey(parameterDomainType)) {
-					String convertFromDtoMethodName = converterProviderPrinter.getConverterMethodName(parameterDtoType.getConverter());
+					String convertFromDtoMethodName = converterProviderPrinter.getDtoConverterMethodName(parameterDtoType.getConverter(), nameTypesUtils.fromType(parameterDtoType));
 					domainConverters.put(parameterDomainType, convertFromDtoMethodName);
 				}
 			}
@@ -355,7 +364,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 					
 					String returnType = getNameTypes().toType(dtoType).toString(ClassSerializer.CANONICAL, true);
 
-					pw.print("return (" + returnType + ")" + converterName + "().toDto(");
+					pw.print("return (" + returnType + ")" + converterName + ".toDto(");
 				}
 			}
 
@@ -368,19 +377,19 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 				TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
 				
-				DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv);
+				DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv, configurationProviders);
 				DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
 				
 				String domainConverter = domainConverters.get(parameterDomainType);
 				
-				String returnType = null;
+				String parameterType = null;
 				
 				if (domainConverter != null) {
-					returnType = parameterDomainType.toString(ClassSerializer.CANONICAL, true);
+					parameterType = parameterDomainType.toString(ClassSerializer.CANONICAL, true);
 				}
 				
 				if (domainConverter != null) {
-					pw.print("(" + returnType + ")" + domainConverter + "().fromDto(");
+					pw.print("(" + parameterType + ")" + domainConverter + ".fromDto(");
 				}
 
 				pw.print(remoteMethod.getParameters().get(i).getSimpleName().toString());
@@ -425,7 +434,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				int index = 0;
 				for (VariableElement dtoParameter : remoteMethod.getParameters()) {
 					
-					DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceElement, dtoParameter.asType(), processingEnv, roundEnv);
+					DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceElement, dtoParameter.asType(), processingEnv, roundEnv, configurationProviders);
 					DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
 
 					if (!parameterDomainType.equals(getNameTypes().toType(method.getParameters().get(index).asType()))) {
@@ -438,7 +447,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 			if (pairMethod) {
 				
-				DtoTypeElement returnDtoType = new DtoTypeElement(remoteServiceElement, method.getReturnType(), processingEnv, roundEnv);
+				DtoTypeElement returnDtoType = new DtoTypeElement(remoteServiceElement, method.getReturnType(), processingEnv, roundEnv, configurationProviders);
 				DomainTypeElement returnDomainType = returnDtoType.getDomainTypeElement();
 
 				if (returnDomainType.equals(getNameTypes().toType(method.getReturnType()))) {

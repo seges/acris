@@ -74,6 +74,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 
 			pw.print(DOMAIN_NAME  + "." + context.getDomainFieldName());
 		} else if (context.getLocalConverterName() != null) {
+			pw.println("if (" + context.getLocalConverterName() + " == null) {");
 			pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(" + 
 					context.getLocalConverterName() + ".toDto(" + DOMAIN_NAME  + "." + context.getDomainFieldName() + ")");
 		} else {
@@ -93,6 +94,14 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 		}
 		
 		pw.println(");");
+		
+		if (context.getLocalConverterName() != null) {
+			pw.println("} else {");
+			pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
+			pw.println(");");
+			pw.println("}");
+		}
+		
 		pw.println("};");
 		
 		if (nested) {

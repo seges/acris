@@ -18,6 +18,7 @@ import javax.lang.model.type.WildcardType;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
+import sk.seges.sesam.core.pap.model.DelegateImmutableType;
 import sk.seges.sesam.core.pap.model.InputClass;
 import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
@@ -140,9 +141,12 @@ public class NameTypesUtils implements NameTypes {
 	}
 
 	public TypeMirror fromType(NamedType type) {
-		if (type.asType() != null) {
-			return type.asType();
+		if (type instanceof DelegateImmutableType) {
+			return fromType(((DelegateImmutableType)type).ensureDelegateType());
 		}
+//		if (type.asType() != null) {
+//			return type.asType();
+//		}
 		
 		//no package means primitive type
 		if (type.getPackageName() == null) {

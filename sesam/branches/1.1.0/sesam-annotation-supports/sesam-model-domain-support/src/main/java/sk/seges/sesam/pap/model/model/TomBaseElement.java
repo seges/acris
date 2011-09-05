@@ -3,11 +3,12 @@ package sk.seges.sesam.pap.model.model;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 
-import sk.seges.sesam.core.model.converter.CollectionConfiguration;
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.model.DelegateImmutableType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
+import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 abstract class TomBaseElement extends DelegateImmutableType {
@@ -32,10 +33,15 @@ abstract class TomBaseElement extends DelegateImmutableType {
 		return nameTypesUtils;
 	}
 	
-	protected Class<?>[] getCommonConfigurations() {
-		return new Class<?> [] {
-				CollectionConfiguration.class
-		};
+	protected ConfigurationProvider[] getConfigurationProviders(ConfigurationProvider[] configurationProviders) {
+		if (configurationProviders != null) {
+			return configurationProviders;
+		}
+
+		ConfigurationProvider[] result = new ConfigurationProvider[1];
+		result[0] = new RoundEnvConfigurationProvider(processingEnv, roundEnv);
+		
+		return result;
 	}
 
 }

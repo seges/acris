@@ -179,7 +179,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	@Override
 	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
 
-		converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, getParametersResolver());
+		converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, roundEnv, getParametersResolver());
 
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
 		
@@ -208,14 +208,6 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 			}
 		}
 		
-//		Map<ExecutableElement, List<String>> constructorParameters = toHelper.getConverterParameterNames(cachedConverterType, getAdditionalConstructorParameters(domainObjectClass));
-//		
-//		if (constructorParameters.size() == 0) {
-//			this.parameterNames = new ArrayList<String>();
-//		} else {
-//			this.parameterNames = constructorParameters.values().iterator().next();
-//		}
-
 		for (ParameterElement parameter: constructorAditionalParameters) {
 			pw.println("private " + parameter.getType().toString(ClassSerializer.SIMPLE, true) + " " + parameter.getName().toString() + ";");
 			pw.println();

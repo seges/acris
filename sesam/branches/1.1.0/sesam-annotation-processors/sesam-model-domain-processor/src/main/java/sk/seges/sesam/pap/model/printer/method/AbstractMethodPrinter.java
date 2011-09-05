@@ -5,11 +5,7 @@ import java.io.PrintWriter;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.WildcardType;
-import javax.lang.model.util.SimpleTypeVisitor6;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
@@ -116,60 +112,11 @@ public abstract class AbstractMethodPrinter {
 		
 		return domainNamedType;
 	}
-	
+
 	protected String getDomainConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror domainType) {
-		
-		String methodName = converterProviderPrinter.getConverterMethodName(converterTypeElement) + "(";
-		
-		if (domainType.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-			if (((DeclaredType)domainType).getTypeArguments().size() > 0) {
-				int i = 0;
-				for (TypeMirror typeArgumentMirror: ((DeclaredType)domainType).getTypeArguments()) {
-					String methodParameter = typeArgumentMirror.accept(new SimpleTypeVisitor6<String, Integer>(){
-						@Override
-						public String visitDeclared(DeclaredType t, Integer i) {
-							return getConverterParameter(t, i);
-						}
-						
-						@Override
-						public String visitWildcard(WildcardType t, Integer i) {
-							String result = "";
-							if (t.getExtendsBound() != null) {
-								result = getConverterParameter(t.getExtendsBound(), i);
-							} else if (t.getSuperBound() != null) {
-								result = getConverterParameter(t.getSuperBound(), i);
-							}
-							return result;
-							
-						}
-						
-						private String getConverterParameter(TypeMirror type, int i) {
-							String result = "";
-
-							DomainTypeElement domainTypeElement = new DomainTypeElement(type, processingEnv, roundEnv);
-							if (domainTypeElement.getConfigurationTypeElement() != null) {
-								if (i > 0) {
-									result += ", ";
-								}
-								result += getDomainConverterMethodName(domainTypeElement.getConfigurationTypeElement().getConverterTypeElement(), 
-										type);
-							}
-							
-							return result;
-						}
-					}, i);
-					
-					if (methodParameter != null && methodParameter.length() > 0) {
-						methodName += methodParameter;
-						i++;
-					}
-				}
-			}
-		}
-		
-		return methodName + ")";
+		return converterProviderPrinter.getDomainConverterMethodName(converterTypeElement,domainType);
 	}
-
+	
 	//TODO move to the configuration type element
 	protected ImmutableType getDtoType(ConfigurationTypeElement configurationElement) {
 		DtoTypeElement dtoType = configurationElement.getDtoTypeElement();

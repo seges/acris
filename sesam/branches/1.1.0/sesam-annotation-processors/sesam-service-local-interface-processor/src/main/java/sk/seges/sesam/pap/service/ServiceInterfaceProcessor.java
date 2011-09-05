@@ -13,6 +13,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
@@ -39,7 +40,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 	
 	@Override
 	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		return new NamedType[] { new RemoteServiceTypeElement(mutableType.asType(), processingEnv).getLocalServiceElement()};
+		return new NamedType[] { new RemoteServiceTypeElement((TypeElement)((DeclaredType)mutableType.asType()).asElement(), processingEnv).getLocalServiceElement()};
 	}
 
 	@Override

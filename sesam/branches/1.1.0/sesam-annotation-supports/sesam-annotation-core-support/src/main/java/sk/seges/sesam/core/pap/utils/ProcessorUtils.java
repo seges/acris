@@ -25,18 +25,6 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public class ProcessorUtils {
 
-//	public static boolean isPagedResult(TypeMirror type, ProcessingEnvironment processingEnv) {
-//		return implementsType(type, processingEnv.getElementUtils().getTypeElement(PagedResult.class.getCanonicalName()).asType());
-//	}
-//	
-//	public static boolean isCollection(TypeMirror type, ProcessingEnvironment processingEnv) {
-//		return implementsType(type, processingEnv.getElementUtils().getTypeElement(Collection.class.getCanonicalName()).asType());
-//	}
-//
-//	public static boolean isMap(TypeMirror type, ProcessingEnvironment processingEnv) {
-//		return implementsType(type, processingEnv.getElementUtils().getTypeElement(Map.class.getCanonicalName()).asType());
-//	}
-
 	public static boolean implementsType(TypeMirror t1, TypeMirror t2) {
 		if (t1 == null || !t1.getKind().equals(TypeKind.DECLARED) || !t2.getKind().equals(TypeKind.DECLARED)) {
 			return false;
@@ -355,20 +343,5 @@ public class ProcessorUtils {
 		}
 
 		return false;
-	}
-
-	public static TypeMirror getMethodReturnType(String name, Element classElement) {
-		assert name != null;
-		assert classElement != null;
-		
-		List<ExecutableElement> methods = ElementFilter.methodsIn(classElement.getEnclosedElements());
-
-		for (ExecutableElement method : methods) {
-			if (method.toString().equals(name)) {
-				return method.getReturnType();
-			}
-		}
-
-		return null;
 	}
 }
