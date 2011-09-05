@@ -29,7 +29,7 @@ import sk.seges.sesam.shared.model.converter.api.DtoConverter;
  * 
  * @author Peter Simun (simun@seges.sk)
  */
-class TransferObjectConfiguration {
+public class TransferObjectConfiguration {
 
 	enum DtoParameterType {
 		DTO(0), DOMAIN(1);

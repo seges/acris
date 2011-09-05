@@ -21,7 +21,7 @@ public abstract class DelegateImmutableType implements HasTypeParameters {
 		this.delegateImmutableType = delegateImmutableType;
 	}
 	
-	private ImmutableType ensureDelegateType() {
+	public ImmutableType ensureDelegateType() {
 		if (delegateImmutableType == null) {
 			delegateImmutableType = getDelegateImmutableType();
 		}

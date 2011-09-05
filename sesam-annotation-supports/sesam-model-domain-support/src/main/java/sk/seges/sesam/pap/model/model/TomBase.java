@@ -5,6 +5,8 @@ import javax.annotation.processing.RoundEnvironment;
 
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 public class TomBase {
@@ -26,4 +28,14 @@ public class TomBase {
 		return nameTypesUtils;
 	}
 
+	protected ConfigurationProvider[] getConfigurationProviders(ConfigurationProvider[] configurationProviders) {
+		if (configurationProviders != null) {
+			return configurationProviders;
+		}
+
+		ConfigurationProvider[] result = new ConfigurationProvider[1];
+		result[0] = new RoundEnvConfigurationProvider(processingEnv, roundEnv);
+		
+		return result;
+	}
 }

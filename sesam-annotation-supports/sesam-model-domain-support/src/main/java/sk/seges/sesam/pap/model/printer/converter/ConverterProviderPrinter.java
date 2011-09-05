@@ -7,7 +7,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.WildcardType;
+import javax.lang.model.util.SimpleTypeVisitor6;
 
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
@@ -15,6 +21,9 @@ import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.DomainTypeElement;
+import sk.seges.sesam.pap.model.model.DtoTypeElement;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 public class ConverterProviderPrinter {
@@ -23,12 +32,18 @@ public class ConverterProviderPrinter {
 	private final TypeParametersSupport typeParametersSupport;
 	private final NameTypesUtils nameTypesUtils;
 	
-	private ParametersResolver parametersResolver;
+	private final ParametersResolver parametersResolver;
+	private final ProcessingEnvironment processingEnv;
+	private final RoundEnvironment roundEnv;
 	
 	private Map<ConverterTypeElement, String> converterCache = new HashMap<ConverterTypeElement, String>();
+	private final ConfigurationProvider[] configurationProviders;
 	
-	public ConverterProviderPrinter(PrintWriter pw, ProcessingEnvironment processingEnv, ParametersResolver parametersResolver) {
+	public ConverterProviderPrinter(PrintWriter pw, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ParametersResolver parametersResolver, ConfigurationProvider... configurationProviders) {
 		this.pw = pw;
+		this.processingEnv = processingEnv;
+		this.roundEnv = roundEnv;
+		this.configurationProviders = configurationProviders;
 		this.parametersResolver = parametersResolver;
 		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 		
@@ -134,7 +149,7 @@ public class ConverterProviderPrinter {
 		pw.println();
 	}
 	
-	public String getConverterMethodName(ConverterTypeElement converterTypeElement) {
+	protected String getConverterMethodName(ConverterTypeElement converterTypeElement) {
 		if (converterTypeElement == null) {
 			return null;
 		}
@@ -147,5 +162,119 @@ public class ConverterProviderPrinter {
 		converterCache.put(converterTypeElement, convertMethod);
 		
 		return convertMethod;
+	}
+	
+	public String getDomainConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror domainType) {
+		
+		String methodName = getConverterMethodName(converterTypeElement);
+		
+		if (methodName == null) {
+			return null;
+		}
+		
+		methodName = methodName + "(";
+		
+		if (domainType.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
+			if (((DeclaredType)domainType).getTypeArguments().size() > 0) {
+				int i = 0;
+				for (TypeMirror typeArgumentMirror: ((DeclaredType)domainType).getTypeArguments()) {
+					String methodParameter = typeArgumentMirror.accept(new SimpleTypeVisitor6<String, Integer>(){
+						@Override
+						public String visitDeclared(DeclaredType t, Integer i) {
+							return getConverterParameter(t, i);
+						}
+						
+						@Override
+						public String visitWildcard(WildcardType t, Integer i) {
+							String result = "";
+							if (t.getExtendsBound() != null) {
+								result = getConverterParameter(t.getExtendsBound(), i);
+							} else if (t.getSuperBound() != null) {
+								result = getConverterParameter(t.getSuperBound(), i);
+							}
+							return result;
+							
+						}
+						
+						private String getConverterParameter(TypeMirror type, int i) {
+							String result = "";
+
+							DomainTypeElement domainTypeElement = new DomainTypeElement(type, processingEnv, roundEnv, configurationProviders);
+							if (domainTypeElement.getConfigurationTypeElement() != null) {
+								if (i > 0) {
+									result += ", ";
+								}
+								result += getDomainConverterMethodName(domainTypeElement.getConfigurationTypeElement().getConverterTypeElement(), 
+										type);
+							}
+							
+							return result;
+						}
+					}, i);
+					
+					methodName += methodParameter;
+					i++;
+				}
+			}
+		}
+		
+		return methodName + ")";
+	}
+
+
+	public String getDtoConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror dtoType) {
+		
+		String methodName = getConverterMethodName(converterTypeElement);
+		
+		if (methodName == null) {
+			return null;
+		}
+		
+		methodName = methodName + "(";
+		
+		if (dtoType.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
+			if (((DeclaredType)dtoType).getTypeArguments().size() > 0) {
+				int i = 0;
+				for (TypeMirror typeArgumentMirror: ((DeclaredType)dtoType).getTypeArguments()) {
+					String methodParameter = typeArgumentMirror.accept(new SimpleTypeVisitor6<String, Integer>(){
+						@Override
+						public String visitDeclared(DeclaredType t, Integer i) {
+							return getConverterParameter(t, i);
+						}
+						
+						@Override
+						public String visitWildcard(WildcardType t, Integer i) {
+							String result = "";
+							if (t.getExtendsBound() != null) {
+								result = getConverterParameter(t.getExtendsBound(), i);
+							} else if (t.getSuperBound() != null) {
+								result = getConverterParameter(t.getSuperBound(), i);
+							}
+							return result;
+							
+						}
+						
+						private String getConverterParameter(TypeMirror type, int i) {
+							String result = "";
+
+							DtoTypeElement dtoTypeElement = new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders);
+							if (dtoTypeElement.getConfiguration() != null) {
+								if (i > 0) {
+									result += ", ";
+								}
+								result += getDomainConverterMethodName(dtoTypeElement.getConverter(), type);
+							}
+							
+							return result;
+						}
+					}, i);
+					
+					methodName += methodParameter;
+					i++;
+				}
+			}
+		}
+		
+		return methodName + ")";
 	}
 }

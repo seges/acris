@@ -27,6 +27,10 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-service-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-annotation-core-support</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>

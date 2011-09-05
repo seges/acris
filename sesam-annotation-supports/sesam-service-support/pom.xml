@@ -26,5 +26,9 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-service-local-interface-api</artifactId>		
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-domain-support</artifactId>
+		</dependency>
 	</dependencies>
 </project>

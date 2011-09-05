@@ -1,7 +1,5 @@
 package sk.seges.sesam.pap.model.model;
 
-import java.util.Set;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -17,13 +15,14 @@ import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public class DomainTypeElement extends TomBaseElement {
 
 	private TypeMirror domainType;
 
 	private final TypeMirror dtoType;
+	private final ConfigurationProvider[] configurationProviders;
 	
 	private boolean configurationTypeInitialized = false;
 	private ConfigurationTypeElement configurationTypeElement;
@@ -32,7 +31,7 @@ public class DomainTypeElement extends TomBaseElement {
 	
 	private boolean isInterface = false;
 	
-	DomainTypeElement(TypeMirror domainType, TypeMirror dtoType, ConfigurationTypeElement configurationTypeElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	DomainTypeElement(TypeMirror domainType, TypeMirror dtoType, ConfigurationTypeElement configurationTypeElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
 		this.domainType = domainType;
@@ -40,7 +39,48 @@ public class DomainTypeElement extends TomBaseElement {
 		this.configurationTypeElement = configurationTypeElement;
 		this.configurationTypeInitialized = true;
 		
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		
 		initialize();
+	}
+
+	/**
+	 * When there is only one configuration for domain type, it is OK ... but for multiple DTOs created from one domain type it can
+	 * leads to unexpected results
+	 */
+	@Deprecated
+	public DomainTypeElement(TypeMirror domainType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+		super(processingEnv, roundEnv);
+		
+		this.domainType = domainType;
+		this.dtoType = null;
+		
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+	}
+
+	class TypeMirrorDomainHandler implements TypeMirrorConverter {
+
+		@Override
+		public NamedType handleType(TypeMirror type) {
+			DomainTypeElement domain = new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders).getDomainTypeElement();
+			if (domain != null) {
+				return domain;
+			}
+			
+			return new NameTypesUtils(processingEnv).toType(type);
+		}	
+	}
+	
+	class NameTypesDomainUtils extends NameTypesUtils {
+
+		public NameTypesDomainUtils(ProcessingEnvironment processingEnv) {
+			super(processingEnv);
+		}
+		
+		@Override
+		protected TypeMirrorConverter getTypeMirrorConverter() {
+			return new TypeMirrorDomainHandler();
+		}
 	}
 
 	@Override
@@ -60,43 +100,11 @@ public class DomainTypeElement extends TomBaseElement {
 		}
 	}
 
-	class TypeMirrorDomainHandler implements TypeMirrorConverter {
-
-		@Override
-		public NamedType handleType(TypeMirror type) {
-			return new DtoTypeElement(type, processingEnv, roundEnv).getDomainTypeElement();
-		}	
-	}
-	
-	class NameTypesDomainUtils extends NameTypesUtils {
-
-		public NameTypesDomainUtils(ProcessingEnvironment processingEnv) {
-			super(processingEnv);
-		}
-		
-		@Override
-		protected TypeMirrorConverter getTypeMirrorConverter() {
-			return new TypeMirrorDomainHandler();
-		}
-	}
-
 	@Override
 	protected NameTypesDomainUtils getNameTypesUtils() {
 		return new NameTypesDomainUtils(processingEnv);
 	}
-	
-	/**
-	 * When there is only one configuration for domain type, it is OK ... but for multiple DTOs created from one domain type it can
-	 * leads to unexpected results
-	 */
-	@Deprecated
-	public DomainTypeElement(TypeMirror domainType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		super(processingEnv, roundEnv);
 		
-		this.domainType = domainType;
-		this.dtoType = null;
-	}
-	
 	void setInterface(boolean isInterface) {
 		this.isInterface = isInterface;
 	}
@@ -118,7 +126,7 @@ public class DomainTypeElement extends TomBaseElement {
 
 	public ConfigurationTypeElement getConfigurationTypeElement() {
 		if (!configurationTypeInitialized) {
-			this.configurationTypeElement = getConfigurationForDomain(domainType);
+			this.configurationTypeElement = getConfiguration(domainType);
 			this.configurationTypeInitialized = true;
 		}
 		return configurationTypeElement;
@@ -132,6 +140,18 @@ public class DomainTypeElement extends TomBaseElement {
 		return getConfigurationTypeElement().getDtoTypeElement();
 	}
 	
+	private ConfigurationTypeElement getConfiguration(TypeMirror domainType) {
+		for (ConfigurationProvider configurationProvider: configurationProviders) {
+			ConfigurationTypeElement configurationForDomain = configurationProvider.getConfigurationForDomain(domainType);
+			if (configurationForDomain != null) {
+				configurationForDomain.setConfigurationProviders(configurationProviders);
+				return configurationForDomain;
+			}
+		}
+		
+		return null;
+	}
+
 	public DomainTypeElement getSuperClass() {
 		
 		if (!asType().getKind().equals(TypeKind.DECLARED)) {
@@ -146,11 +166,10 @@ public class DomainTypeElement extends TomBaseElement {
 				if (superClassDomainType == null) {
 					TypeMirror domainSuperClass = typeElement.getSuperclass();
 					
-					ConfigurationTypeElement configurationElement = getConfigurationForDomain(domainSuperClass);
+					ConfigurationTypeElement configurationElement = getConfiguration(domainSuperClass);
 					
 					if (configurationElement != null) {
 						superClassDomainType = configurationElement.getDomainTypeElement();
-//						superClassDomainType = new DomainTypeElement(domainSuperClass, processingEnv, roundEnv);
 					}
 				}
 				return superClassDomainType;
@@ -159,40 +178,4 @@ public class DomainTypeElement extends TomBaseElement {
 		
 		return null;
 	}
-	
-	protected ConfigurationTypeElement getConfigurationForDomain(TypeMirror domainType) {
-
-		if (domainType.getKind().isPrimitive() || domainType.getKind().equals(TypeKind.NONE)
-				|| domainType.getKind().equals(TypeKind.NULL) || domainType.getKind().equals(TypeKind.ERROR)) {
-			// cannot cast to DTO
-			return null;
-		}
-
-		Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
-		for (Element annotatedElement : elementsAnnotatedWith) {
-			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
-				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
-	
-				if (configurationTypeElement.appliesForDomainType(domainType)) {
-					return new ConfigurationTypeElement((DeclaredType)domainType, null, (TypeElement)annotatedElement, processingEnv, roundEnv);
-				}
-			}
-		}
-
-		if (getCommonConfigurations() != null) {
-			for (Class<?> clazz: getCommonConfigurations()) {
-				TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
-				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
-
-					ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
-
-					if (configurationTypeElement.appliesForDomainType(domainType)) {
-						return new ConfigurationTypeElement((DeclaredType)domainType, null, configurationElement, processingEnv, roundEnv);
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 }
