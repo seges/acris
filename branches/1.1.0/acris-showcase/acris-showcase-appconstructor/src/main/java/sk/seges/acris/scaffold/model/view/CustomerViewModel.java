@@ -12,7 +12,7 @@ import sk.seges.acris.scaffold.model.domain.CustomerModel;
 public interface CustomerViewModel extends ViewModel<CustomerModel> {
 	String firstName();
 
-	@Selected
-	@Path("role.name")
+	@Selected // transforms usually to combo box and says that it should show selected (or current) value
+	@Path("role.name") // TODO: find a way to put there a constant, not a string - it should be connected to model somehow
 	String role();
 }

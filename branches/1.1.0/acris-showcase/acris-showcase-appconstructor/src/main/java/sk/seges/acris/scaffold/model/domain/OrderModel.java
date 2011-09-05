@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface OrderModel {
 	Long id();
+	String orderId();
 	Date valid();
 	
 	CustomerModel customer();
