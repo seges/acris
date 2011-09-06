@@ -43,9 +43,5 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-service-support</artifactId>
-		</dependency>
 	</dependencies>
 </project>
