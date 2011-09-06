@@ -19,6 +19,7 @@ import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.api.TypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -65,7 +66,7 @@ public abstract class AbstractMethodPrinter {
 		
 	}
 	
-	protected NamedType castToDelegate(TypeMirror domainType) {
+	public NamedType castToDelegate(TypeMirror domainType) {
 		DomainTypeElement domainTypeElement = new DomainTypeElement(domainType, processingEnv, roundEnv);
 
 		NamedType domainNamedType = nameTypesUtils.toType(domainType);
@@ -113,10 +114,6 @@ public abstract class AbstractMethodPrinter {
 		return domainNamedType;
 	}
 
-	protected String getDomainConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror domainType) {
-		return converterProviderPrinter.getDomainConverterMethodName(converterTypeElement,domainType);
-	}
-	
 	//TODO move to the configuration type element
 	protected ImmutableType getDtoType(ConfigurationTypeElement configurationElement) {
 		DtoTypeElement dtoType = configurationElement.getDtoTypeElement();
@@ -142,7 +139,7 @@ public abstract class AbstractMethodPrinter {
 		pw.println("return new " + type.toString(ClassSerializer.SIMPLE, true) + "();");
 	}
 
-	protected boolean copy(ProcessorContext context, PrintWriter pw, CopyMethodPrinter printer) {
+	protected boolean copy(ProcessorContext context, FormattedPrintWriter pw, CopyMethodPrinter printer) {
 		
 		TypeMirror returnType = context.getDomainMethodReturnType();
 		

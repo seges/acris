@@ -18,6 +18,7 @@ import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.ListUtils;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
@@ -130,7 +131,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	}
 
 	@Override
-	protected ElementPrinter[] getElementPrinters(PrintWriter pw) {
+	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ElementPrinter[] {
 				new FieldPrinter(pw),
 				new AccessorsPrinter(processingEnv, pw),

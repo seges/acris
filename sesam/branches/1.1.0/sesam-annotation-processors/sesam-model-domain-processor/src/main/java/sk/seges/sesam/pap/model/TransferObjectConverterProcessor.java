@@ -154,7 +154,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	}
 
 	@Override
-	protected ElementPrinter[] getElementPrinters(PrintWriter pw) {
+	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ElementPrinter[] {
 				new CopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getIdentityResolver(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
 				new CopyFromDtoPrinter(converterProviderPrinter, getIdentityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)

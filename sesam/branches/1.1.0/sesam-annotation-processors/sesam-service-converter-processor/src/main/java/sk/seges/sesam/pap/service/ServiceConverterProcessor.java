@@ -325,9 +325,6 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		List<ExecutableElement> remoteMethods = ElementFilter.methodsIn(remoteServiceInterface.getEnclosedElements());
 
-		Map<DtoTypeElement, String> dtoConverters = new HashMap<DtoTypeElement, String>();
-		Map<DomainTypeElement, String> domainConverters = new HashMap<DomainTypeElement, String>();
-
 		for (ExecutableElement remoteMethod : remoteMethods) {
 			ExecutableElement localMethod = getDomainMethodPair(remoteMethod, element, remoteServiceInterface);
 			if (localMethod == null) {
@@ -343,22 +340,6 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 				returnDtoType = new DtoTypeElement(remoteServiceInterface, remoteMethod.getReturnType(), processingEnv, roundEnv, configurationProviders);
-				
-				if (!dtoConverters.containsKey(returnDtoType)) {
-					String convertToDtoMethodName = converterProviderPrinter.getDtoConverterMethodName(returnDtoType.getConverter(), nameTypesUtils.fromType(returnDtoType));
-					dtoConverters.put(returnDtoType, convertToDtoMethodName);
-				}
-			}
-
-			for (int index = 0; index < localMethod.getParameters().size(); index++) {
-				TypeMirror dtoType = remoteMethod.getParameters().get(index).asType();
-				DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv, configurationProviders);
-				DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
-
-				if (!domainConverters.containsKey(parameterDomainType)) {
-					String convertFromDtoMethodName = converterProviderPrinter.getDtoConverterMethodName(parameterDtoType.getConverter(), nameTypesUtils.fromType(parameterDtoType));
-					domainConverters.put(parameterDomainType, convertFromDtoMethodName);
-				}
 			}
 
 			methodHelper.copyAnnotations(localMethod, pw);
@@ -366,10 +347,13 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			pw.println("{");
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
-				if (dtoConverters.get(returnDtoType) == null) {
+				
+				if (returnDtoType.getConverter() == null) {
 					pw.print("return ");
 				} else {
-					pw.print("return (", getNameTypes().toType(remoteMethod.getReturnType()), ")" + dtoConverters.get(returnDtoType) + ".toDto(");
+					pw.print("return (", getNameTypes().toType(remoteMethod.getReturnType()), ")");
+					converterProviderPrinter.printDtoConverterMethodName(returnDtoType.getConverter(), nameTypesUtils.fromType(returnDtoType), pw);
+					pw.print(".toDto(");
 				}
 			}
 
@@ -385,22 +369,22 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				DtoTypeElement parameterDtoType = new DtoTypeElement(remoteServiceInterface, dtoType, processingEnv, roundEnv, configurationProviders);
 				DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
 				
-				String domainConverter = domainConverters.get(parameterDomainType);
-				
-				if (domainConverter != null) {
-					pw.print("(", parameterDomainType, ")" + domainConverter + ".fromDto(");
+				if (parameterDtoType.getConverter() != null) {
+					pw.print("(", parameterDomainType, ")");
+					converterProviderPrinter.printDtoConverterMethodName(parameterDtoType.getConverter(), nameTypesUtils.fromType(parameterDtoType), pw);
+					pw.print(".fromDto(");
 				}
 
 				pw.print(remoteMethod.getParameters().get(i).getSimpleName().toString());
 
-				if (domainConverter != null) {
+				if (parameterDtoType.getConverter() != null) {
 					pw.print(")");
 				}
 			}
 
 			pw.print(")");
 
-			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && dtoConverters.get(returnDtoType) != null) {
+			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && returnDtoType.getConverter() != null) {
 				pw.print(")");
 			}
 			pw.println(";");
