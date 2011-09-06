@@ -1,11 +1,10 @@
 package sk.seges.sesam.pap.model.hibernate;
 
-import java.io.PrintWriter;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
 import sk.seges.sesam.pap.model.hibernate.printer.method.HibernateCopyFromDtoPrinter;
 import sk.seges.sesam.pap.model.hibernate.printer.method.HibernateCopyToDtoPrinter;
@@ -47,7 +46,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	}
 
 	@Override
-	protected ElementPrinter[] getElementPrinters(PrintWriter pw) {
+	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ElementPrinter[] {
 				new HibernateCopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getIdentityResolver(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
 				new HibernateCopyFromDtoPrinter(converterProviderPrinter, getIdentityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)

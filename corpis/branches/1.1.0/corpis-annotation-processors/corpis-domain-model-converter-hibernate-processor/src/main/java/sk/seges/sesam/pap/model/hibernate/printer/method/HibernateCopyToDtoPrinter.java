@@ -7,6 +7,7 @@ import javax.annotation.processing.RoundEnvironment;
 
 import org.hibernate.Hibernate;
 
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyToDtoPrinter;
@@ -20,7 +21,7 @@ public class HibernateCopyToDtoPrinter extends CopyToDtoPrinter {
 			ElementHolderTypeConverter elementHolderTypeConverter,
 			IdentityResolver identityResolver, EntityResolver entityResolver,
 			ParametersResolver parametersResolver, RoundEnvironment roundEnv,
-			ProcessingEnvironment processingEnv, PrintWriter pw) {
+			ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, elementHolderTypeConverter, identityResolver, entityResolver,
 				parametersResolver, roundEnv, processingEnv, pw);
 	}
