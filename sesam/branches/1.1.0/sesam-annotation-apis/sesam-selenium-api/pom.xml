@@ -17,7 +17,7 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sesam-configuration-api</artifactId>
 		</dependency>
-		<!--dependency>
+		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-api</artifactId>
 		</dependency>
@@ -44,6 +44,6 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-iphone-driver</artifactId>
-		</dependency-->
+		</dependency>
 	</dependencies>
 </project>
