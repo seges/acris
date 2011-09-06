@@ -34,7 +34,7 @@ abstract class TomBaseElement extends DelegateImmutableType {
 	}
 	
 	protected ConfigurationProvider[] getConfigurationProviders(ConfigurationProvider[] configurationProviders) {
-		if (configurationProviders != null) {
+		if (configurationProviders != null && configurationProviders.length > 0) {
 			return configurationProviders;
 		}
 

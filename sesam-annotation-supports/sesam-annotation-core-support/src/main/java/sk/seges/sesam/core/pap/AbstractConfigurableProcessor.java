@@ -1,10 +1,13 @@
 package sk.seges.sesam.core.pap;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,8 +62,11 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	private Set<Element> processedElement = new HashSet<Element>();
 	private Map<OutputDefinition, Set<NamedType>> cachedDefinition = new HashMap<OutputDefinition, Set<NamedType>>();
 
+	private final String lineSeparator;
+
 	protected AbstractConfigurableProcessor() {
 		configurer = getConfigurer();
+		lineSeparator = (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
 	}
 	
 	protected boolean hasSubProcessor(TypeElement element) {
@@ -212,9 +218,11 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
 	protected abstract NamedType[] getTargetClassNames(ImmutableType mutableType);
 
-	protected PrintWriter initializePrintWriter(OutputStream os) {
-		FormattedPrintWriter pw = new FormattedPrintWriter(os);
+	protected FormattedPrintWriter initializePrintWriter(OutputStream os) {
+		FormattedPrintWriter pw = new FormattedPrintWriter(os, processingEnv);
 		pw.setAutoIndent(true);
+		pw.setSerializer(ClassSerializer.SIMPLE);
+		pw.serializeTypeParameters(true);
 		return pw;
 	}
 
@@ -271,6 +279,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	}
 
 	protected void writeClassAnnotations(Element el, NamedType outputName, PrintWriter pw) {}
+	
+	protected void writeClassAnnotations(Element el, NamedType outputName, FormattedPrintWriter pw) {
+		writeClassAnnotations(el, outputName, (PrintWriter)pw);
+	}
 
 	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
 		return true;
@@ -305,16 +317,49 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				pw.println("package " + outputName.getPackageName() + ";");
 				pw.println();
 	
-				for (NamedType importType : getAllImports(typeElement)) {
-					pw.println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
+				NamedType[] imports = getAllImports(typeElement);
+
+				ByteArrayOutputStream annotationsOutputStream = new ByteArrayOutputStream();
+				FormattedPrintWriter annotationsPrintWriter = initializePrintWriter(annotationsOutputStream);
+				writeClassAnnotations(element, outputName, annotationsPrintWriter);
+				annotationsPrintWriter.flush();
+
+				ByteArrayOutputStream contentOutputStream = new ByteArrayOutputStream();
+				FormattedPrintWriter contentPrintWriter = initializePrintWriter(contentOutputStream);
+				contentPrintWriter.setDefaultIdentLevel(1);
+				processElement(typeElement, outputName, roundEnv, contentPrintWriter);
+				contentPrintWriter.flush();
+				
+				List<NamedType> mergedImports = new ArrayList<NamedType>();
+
+				ListUtils.add(mergedImports, imports);
+				ListUtils.addUnique(mergedImports, annotationsPrintWriter.getUsedTypes());
+				ListUtils.addUnique(mergedImports, contentPrintWriter.getUsedTypes());
+				ListUtils.addUnique(mergedImports, ListUtils.add(new ArrayList<NamedType>(), new NamedType[] { nameTypesUtils.toType(Generated.class)}));
+
+				mergedImports = removeNoPackageImports(mergedImports);
+
+				List<NamedType> collectedImports = new ArrayList<NamedType>();
+				
+				for (NamedType importName: mergedImports) {
+					addImport(collectedImports, importName);
+					addGenericType(collectedImports, importName, typeElement);
 				}
 
-				pw.println("import " + Generated.class.getCanonicalName() + ";");
+				sortByPackage(collectedImports);
+				
+				String previousPackage = null;
+				
+				for (NamedType importType : collectedImports) {
+					if (previousPackage != null && !getVeryTopPackage(importType).equals(previousPackage)) {
+						pw.println();
+					}
+					pw.println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
+					previousPackage = getVeryTopPackage(importType);
+				}
 
 				pw.println();
-				
-				writeClassAnnotations(element, outputName, pw);
-
+				pw.println(toString(annotationsOutputStream));
 				pw.println("@" + Generated.class.getSimpleName() + "(value = \"" + this.getClass().getCanonicalName() + "\")");
 				
 				Set<NamedType> superClassTypes = ensureOutputDefinition(OutputDefinition.OUTPUT_SUPERCLASS, typeElement);
@@ -362,7 +407,8 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				}
 				pw.println(" {");
 				pw.println();
-				processElement(typeElement, outputName, roundEnv, pw);
+				//processElement(typeElement, outputName, roundEnv, pw);
+				pw.println(toString(contentOutputStream));
 				pw.println("}");
 				pw.flush();
 				
@@ -378,10 +424,57 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return supportProcessorChain();
 	}
 
+	private String getVeryTopPackage(NamedType importType) {
+		String importPackage = importType.getPackageName();
+		int index = importPackage.indexOf('.');
+		if (index != -1) {
+			importPackage = importPackage.substring(0, index);
+		}
+		return importPackage;
+	}
+	
+	private List<NamedType> removeNoPackageImports(List<NamedType> imports) {
+		List<NamedType> result = new ArrayList<NamedType>();
+		for (NamedType importType: imports) {
+			if (importType.getPackageName() != null && importType.getPackageName().length() > 0)  {
+				result.add(importType);
+			}
+		}
+		
+		return result;
+	}
+	
+	private void sortByPackage(List<NamedType> imports) {
+		Collections.sort(imports, new Comparator<NamedType>() {
+
+			@Override
+			public int compare(NamedType o1, NamedType o2) {
+				return o1.getPackageName().compareTo(o2.getPackageName());
+			}
+			
+		});
+	}
+	
+	public String toString(ByteArrayOutputStream outputStream) {
+		String s = outputStream.toString();
+		if (s.endsWith(lineSeparator)) {
+			s = s.substring(0, s.length() - lineSeparator.length());
+		}
+		int i = 0;
+		while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
+			i++;
+		}
+		return s.substring(i);
+	}
+	
 	/**
 	 * This method should be overrided
 	 */
-	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {	}
+	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {}
+
+	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
+		processElement(typeElement, outputName, roundEnv, (PrintWriter)pw);
+	}
 	
 	protected boolean supportProcessorChain() {
 		//Return true in order to run other processors

@@ -10,12 +10,14 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
@@ -47,7 +49,6 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 //						" defined a type parameter", context.getConfigurationTypeElement().asElement());
 //			}
 //		}
-//		//TODO handle maps
 //	}
 
 	@Override
@@ -173,7 +174,13 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 
 			if (context.getLocalConverterName() != null) {
 				pw.println("} else {");
-				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getDomainFieldPath()) + "(" + DTO_NAME  + "." + methodHelper.toGetter(context.getFieldName()));
+				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getDomainFieldPath()));
+				if (context.getDomainMethodReturnType().getKind().equals(TypeKind.TYPEVAR)) {
+					pw.print("((" + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + ((TypeVariable)context.getDomainMethodReturnType()).asElement().getSimpleName().toString() + ")");
+				} else {
+					pw.print("((" + context.getDomainMethodReturnType() + ")");
+				}
+				pw.print(DTO_NAME  + "." + methodHelper.toGetter(context.getFieldName()));
 				pw.println(");");
 				pw.println("}");
 			}

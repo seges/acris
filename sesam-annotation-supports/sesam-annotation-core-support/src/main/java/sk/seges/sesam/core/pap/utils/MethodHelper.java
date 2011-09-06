@@ -23,6 +23,7 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class MethodHelper {
 
@@ -142,39 +143,44 @@ public class MethodHelper {
 		return null;
 	}
 	
-	public void copyMethodDefinition(ExecutableElement method, ClassSerializer serializer, PrintWriter pw) {
+	public void copyMethodDefinition(ExecutableElement method, FormattedPrintWriter pw) {
 		for (Modifier modifier: method.getModifiers()) {
 			if (!modifier.equals(Modifier.ABSTRACT)) {
 				pw.print(modifier.toString() + " ");
 			}
 		}
-		pw.print(method.getReturnType() + " " + method.getSimpleName().toString() + "(");
+		pw.print(method.getReturnType(), " " + method.getSimpleName().toString() + "(");
 		
 		int i = 0;
 		for (VariableElement parameter: method.getParameters()) {
 			if (i > 0) {
 				pw.print(", ");
 			}
-			pw.print(nameTypes.toType(parameter.asType()).toString(serializer, true) + " " + parameter.getSimpleName().toString());
+			pw.print(nameTypes.toType(parameter.asType()), " " + parameter.getSimpleName().toString());
 			i++;
 		}
 		
 		pw.print(")");
 	}
 	
-	public void copyAnnotations(Element element, PrintWriter pw) {
+	public void copyAnnotations(Element element, FormattedPrintWriter pw) {
 		for (AnnotationMirror annotation: element.getAnnotationMirrors()) {
-			pw.print("@" + nameTypes.toType(annotation.getAnnotationType()).toString(ClassSerializer.CANONICAL) + "(");
-			int i = 0;
-			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: annotation.getElementValues().entrySet()) {
-				if (i > 0) {
-					pw.print(", ");
-					pw.println("		");
+			pw.print("@", nameTypes.toType(annotation.getAnnotationType()));
+			
+			if (annotation.getElementValues().size() > 0) {
+				pw.print(")");
+				int i = 0;
+				for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: annotation.getElementValues().entrySet()) {
+					if (i > 0) {
+						pw.print(", ");
+						pw.println("		");
+					}
+					pw.print( annotationValue.getKey().getSimpleName() + " = " + annotationValue.getValue().toString());
+					i++;
 				}
-				pw.print( annotationValue.getKey().getSimpleName() + " = " + annotationValue.getValue().toString());
-				i++;
+				pw.print(")");
 			}
-			pw.println(")");
+			pw.println();
 		}
 	}
 
