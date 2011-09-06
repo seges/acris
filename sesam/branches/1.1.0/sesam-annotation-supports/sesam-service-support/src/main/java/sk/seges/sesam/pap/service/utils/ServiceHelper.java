@@ -19,6 +19,7 @@ public class ServiceHelper {
 	/**
 	 * Returns remote service interface (that one that uses DTO) for the local service interface (that uses domain classes)
 	 */
+	@Deprecated
 	public Element getRemoteServiceInterface(Element localServiceInterfaceElement) {
 		LocalServiceDefinition localServiceDefinition = localServiceInterfaceElement.getAnnotation(LocalServiceDefinition.class);
 
@@ -38,6 +39,7 @@ public class ServiceHelper {
 	/**
 	 * Returns local service interfaces implemented by service element specified as a parameter
 	 */
+	@Deprecated
 	public Element[] getLocalServiceInterfaces(TypeElement serviceElement) {
 		Set<Element> result = new HashSet<Element>();
 		getLocalServiceInterfaces(serviceElement, result);

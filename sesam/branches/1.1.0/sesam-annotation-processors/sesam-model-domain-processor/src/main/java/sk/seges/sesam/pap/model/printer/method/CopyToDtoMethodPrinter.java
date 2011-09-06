@@ -4,11 +4,14 @@ import java.io.PrintWriter;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -97,7 +100,13 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 		
 		if (context.getLocalConverterName() != null) {
 			pw.println("} else {");
-			pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(" + DOMAIN_NAME  + "." + context.getDomainFieldName());
+			pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()));
+			if (context.getDomainMethodReturnType().getKind().equals(TypeKind.TYPEVAR)) {
+				pw.print("((" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "_" + ((TypeVariable)context.getDomainMethodReturnType()).asElement().getSimpleName().toString() + ")");
+			} else {
+				pw.print("((" + context.getFieldType() + ")");
+			}
+			pw.print(DOMAIN_NAME  + "." + context.getDomainFieldName());
 			pw.println(");");
 			pw.println("}");
 		}

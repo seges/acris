@@ -25,13 +25,14 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
@@ -46,6 +47,7 @@ import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.provider.ServiceCollectorConfigurationProvider;
 import sk.seges.sesam.pap.service.utils.ServiceHelper;
+import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
@@ -161,6 +163,16 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		return result;
 	}
 
+	protected List<ConverterParameter> removeConverterParameters(List<ConverterParameter> parameters) {
+		List<ConverterParameter> result = new ArrayList<ConverterParameter>();
+		for (ConverterParameter parameter: parameters) {
+ 			if (!ProcessorUtils.implementsType(nameTypesUtils.fromType(parameter.getType()), processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName()).asType()))  {
+ 				result.add(parameter);
+ 			}
+		}
+		return result;
+	}
+	
 	protected List<ConverterParameter> unifyParameterNames(List<ConverterParameter> parameters) {
 		List<ConverterParameter> result = new LinkedList<ConverterParameter>();
 
@@ -177,7 +189,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected void writeClassAnnotations(Element element, NamedType outputClass, PrintWriter pw) {
+	protected void writeClassAnnotations(Element element, NamedType outputClass, FormattedPrintWriter pw) {
 
 		Element localInterface = localInterfacesCache.get(outputClass);
 		if (localInterface == null) {
@@ -191,11 +203,11 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			return;
 		}
 		
-		pw.println("@" + LocalServiceConverter.class.getCanonicalName() + "(remoteService = " + remoteServiceInterface.toString() + ".class)");
-		super.writeClassAnnotations(element, outputClass, pw);
+		pw.println("@", LocalServiceConverter.class, "(remoteService = ", remoteServiceInterface, ".class)");
+		super.writeClassAnnotations(element, outputClass, (PrintWriter) pw);
 	}
 	
-	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
+	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
 
 		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(element, processingEnv);
 		this.configurationProviders = getConfigurationProviders(serviceTypeElement);
@@ -211,21 +223,21 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			return;
 		}
 
-		pw.println("private " + localInterface.toString() + " " + SERVICE_DELEGATE_NAME + ";");
+		pw.println("private ", localInterface, " " + SERVICE_DELEGATE_NAME + ";");
 
-		List<ConverterParameter> converterParameters = unifyParameterNames(getConverterParameters(element, localInterface));
+		List<ConverterParameter> converterParameters = unifyParameterNames(removeConverterParameters(getConverterParameters(element, localInterface)));
 		List<ConverterParameter> mergedSameParameters = mergeSameParams(converterParameters);
 
 		for (ConverterParameter converterParameter : mergedSameParameters) {
-			pw.println("private " + converterParameter.getType().toString() + " " + converterParameter.getName() + ";");
+			pw.println("private ", converterParameter.getType(), " " + converterParameter.getName() + ";");
 			pw.println();
 		}
 
 		pw.println();
-		pw.print("public " + outputClass.getSimpleName() + "(" + localInterface.toString() + " " + SERVICE_DELEGATE_NAME);
+		pw.print("public " + outputClass.getSimpleName() + "(", localInterface, " " + SERVICE_DELEGATE_NAME);
 
 		for (ConverterParameter converterParameter : mergedSameParameters) {
-			pw.print(", " + converterParameter.getType().toString() + " " + converterParameter.getName());
+			pw.print(", ", converterParameter.getType(), " " + converterParameter.getName());
 		}
 
 		pw.println(") {");
@@ -301,7 +313,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		return ParameterFilter.CONVERTER.filterBy(parameters, dummyParameter);
 	}
 	
-	protected void copyMethods(Element element, Element localInterface, List<ConverterParameter> parameters, PrintWriter pw) {
+	protected void copyMethods(Element element, Element localInterface, List<ConverterParameter> parameters, FormattedPrintWriter pw) {
 
 		TypeElement remoteServiceInterface = (TypeElement) serviceHelper.getRemoteServiceInterface(localInterface);
 
@@ -350,21 +362,14 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			}
 
 			methodHelper.copyAnnotations(localMethod, pw);
-			methodHelper.copyMethodDefinition(remoteMethod, ClassSerializer.CANONICAL, pw);
+			methodHelper.copyMethodDefinition(remoteMethod, pw);
 			pw.println("{");
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 				if (dtoConverters.get(returnDtoType) == null) {
 					pw.print("return ");
 				} else {
-					
-					String converterName = dtoConverters.get(returnDtoType);
-					
-					TypeMirror dtoType = remoteMethod.getReturnType();
-					
-					String returnType = getNameTypes().toType(dtoType).toString(ClassSerializer.CANONICAL, true);
-
-					pw.print("return (" + returnType + ")" + converterName + ".toDto(");
+					pw.print("return (", getNameTypes().toType(remoteMethod.getReturnType()), ")" + dtoConverters.get(returnDtoType) + ".toDto(");
 				}
 			}
 
@@ -382,14 +387,8 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				
 				String domainConverter = domainConverters.get(parameterDomainType);
 				
-				String parameterType = null;
-				
 				if (domainConverter != null) {
-					parameterType = parameterDomainType.toString(ClassSerializer.CANONICAL, true);
-				}
-				
-				if (domainConverter != null) {
-					pw.print("(" + parameterType + ")" + domainConverter + ".fromDto(");
+					pw.print("(", parameterDomainType, ")" + domainConverter + ".fromDto(");
 				}
 
 				pw.print(remoteMethod.getParameters().get(i).getSimpleName().toString());

@@ -33,7 +33,7 @@ public class LocalServiceTypeElement extends DelegateImmutableType {
 		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	LocalServiceTypeElement(TypeElement localServiceType, ProcessingEnvironment processingEnv) {
+	public LocalServiceTypeElement(TypeElement localServiceType, ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 		this.isGenerated = false;
 		this.localServiceType = localServiceType;
@@ -94,5 +94,9 @@ public class LocalServiceTypeElement extends DelegateImmutableType {
 	
 	public RemoteServiceTypeElement getRemoteServiceInterface() {
 		return remoteService;
+	}
+	
+	public TypeElement asElement() {
+		return localServiceType;
 	}
 }

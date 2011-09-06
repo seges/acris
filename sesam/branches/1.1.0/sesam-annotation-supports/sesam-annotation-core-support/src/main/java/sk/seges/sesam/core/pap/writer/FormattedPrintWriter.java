@@ -6,8 +6,19 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FormattedPrintWriter extends PrintWriter {
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
+
+import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.api.DelayedPrintWriter;
+
+public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWriter {
 	
 	private static final String DEFAULT_OUDENT = "\t";
 	
@@ -15,37 +26,50 @@ public class FormattedPrintWriter extends PrintWriter {
 	private boolean startLine = true;
 	
 	private boolean autoIndent = false;
-
-	public FormattedPrintWriter(Writer out) {
+	private final NameTypesUtils nameTypesUtils;
+	
+	public FormattedPrintWriter(Writer out, ProcessingEnvironment processingEnv) {
 		super(out);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	public FormattedPrintWriter(Writer out, boolean autoFlush) {
+	public FormattedPrintWriter(Writer out, boolean autoFlush, ProcessingEnvironment processingEnv) {
 		super(out, autoFlush);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	public FormattedPrintWriter(OutputStream out) {
+	public FormattedPrintWriter(OutputStream out, ProcessingEnvironment processingEnv) {
 		super(out);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	public FormattedPrintWriter(OutputStream out, boolean autoFlush) {
+	public FormattedPrintWriter(OutputStream out, boolean autoFlush, ProcessingEnvironment processingEnv) {
 		super(out, autoFlush);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	public FormattedPrintWriter(String fileName) throws FileNotFoundException {
+	public FormattedPrintWriter(String fileName, ProcessingEnvironment processingEnv) throws FileNotFoundException {
 		super(fileName);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	public FormattedPrintWriter(String fileName, String csn) throws FileNotFoundException, UnsupportedEncodingException {
+	public FormattedPrintWriter(String fileName, String csn, ProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
 		super(fileName, csn);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	public FormattedPrintWriter(File file) throws FileNotFoundException {
+	public FormattedPrintWriter(File file, ProcessingEnvironment processingEnv) throws FileNotFoundException {
 		super(file);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 	}
 
-	public FormattedPrintWriter(File file, String csn) throws FileNotFoundException, UnsupportedEncodingException {
+	public FormattedPrintWriter(File file, String csn, ProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
 		super(file, csn);
+		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+	}
+	
+	public void setDefaultIdentLevel(int level) {
+		this.oudentLevel = level;
 	}
 	
 	public void setAutoIndent(boolean autoIndent) {
@@ -114,8 +138,7 @@ public class FormattedPrintWriter extends PrintWriter {
 		}
 	}
 
-	@Override
-	public void println() {
+	private void newLine() {
 		if (lastText != null && autoIndent) {
 			for (int i = 0; i < lastText.length(); i++) {
 				if (i > 0) {
@@ -127,5 +150,77 @@ public class FormattedPrintWriter extends PrintWriter {
 		super.println();
 		startLine = true;
 		lastText = "";
+	}
+	
+	@Override
+	public void println() {
+		newLine();
+	}
+
+	private ClassSerializer serializer = ClassSerializer.CANONICAL;
+	private boolean typed = false;
+	
+	@Override
+	public void setSerializer(ClassSerializer serializer) {
+		this.serializer = serializer;
+	}
+
+	public void serializeTypeParameters(boolean typed) {
+		this.typed = typed;
+	}
+
+	@Override
+	public void println(Object x) {
+		println(new Object[] {x});
+	}
+
+	@Override
+	public void println(Object... x) {
+		print(x);
+		newLine();
+	}
+
+	private List<NamedType> usedTypes = new ArrayList<NamedType>();
+	
+	@Override
+	public void print(Object obj) {
+		print(new Object[] {obj});
+	}
+	
+	@Override
+	public void print(Object... x) {
+		for (Object o: x) {
+			if (o instanceof TypeMirror) {
+				NamedType type = nameTypesUtils.toType((TypeMirror)o);
+				if (serializer.equals(ClassSerializer.SIMPLE)) {
+					usedTypes.add(type);
+				}
+				write(type.toString(serializer, typed));
+			} else if (o instanceof Element) {
+				NamedType element = nameTypesUtils.toType((Element)o);
+				if (serializer.equals(ClassSerializer.SIMPLE)) {
+					usedTypes.add(element);
+				}
+				write(element.toString(serializer, typed));
+			} else if (o instanceof NamedType) {
+				NamedType type = (NamedType)o;
+				if (serializer.equals(ClassSerializer.SIMPLE)) {
+					usedTypes.add(type);
+				}
+				write(type.toString(serializer, typed));
+			} else if (o instanceof Class) {
+				NamedType clazzType = nameTypesUtils.toType((Class<?>)o);
+				if (serializer.equals(ClassSerializer.SIMPLE)) {
+					usedTypes.add(clazzType);
+				}
+				write(clazzType.toString(serializer, typed));
+			} else {
+				super.write(String.valueOf(o));
+			}
+		}
+	}
+	
+	public List<NamedType> getUsedTypes() {
+		return usedTypes;
 	}
 }

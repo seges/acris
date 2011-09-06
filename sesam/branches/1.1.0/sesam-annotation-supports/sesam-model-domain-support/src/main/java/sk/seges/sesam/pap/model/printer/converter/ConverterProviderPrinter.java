@@ -1,6 +1,6 @@
 package sk.seges.sesam.pap.model.printer.converter;
 
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,19 +16,23 @@ import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.SimpleTypeVisitor6;
 
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
+import sk.seges.sesam.core.pap.model.TypedClassBuilder;
+import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class ConverterProviderPrinter {
 
-	private final PrintWriter pw;
+	private final FormattedPrintWriter pw;
 	private final TypeParametersSupport typeParametersSupport;
 	private final NameTypesUtils nameTypesUtils;
 	
@@ -36,10 +40,10 @@ public class ConverterProviderPrinter {
 	private final ProcessingEnvironment processingEnv;
 	private final RoundEnvironment roundEnv;
 	
-	private Map<ConverterTypeElement, String> converterCache = new HashMap<ConverterTypeElement, String>();
+	private Map<String, ConverterTypeElement> converterCache = new HashMap<String, ConverterTypeElement>();
 	private final ConfigurationProvider[] configurationProviders;
 	
-	public ConverterProviderPrinter(PrintWriter pw, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ParametersResolver parametersResolver, ConfigurationProvider... configurationProviders) {
+	public ConverterProviderPrinter(FormattedPrintWriter pw, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ParametersResolver parametersResolver, ConfigurationProvider... configurationProviders) {
 		this.pw = pw;
 		this.processingEnv = processingEnv;
 		this.roundEnv = roundEnv;
@@ -48,6 +52,40 @@ public class ConverterProviderPrinter {
 		this.nameTypesUtils = new NameTypesUtils(processingEnv);
 		
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
+	}
+
+	interface ParameterPrinter {
+		
+		void print(TypeParameterElement parameter, FormattedPrintWriter pw);
+
+		void print(TypeParameter parameter, FormattedPrintWriter pw);
+	}
+
+	class ParameterTypesPrinter implements ParameterPrinter {
+
+		@Override
+		public void print(TypeParameterElement parameter, FormattedPrintWriter pw) {
+			pw.print(nameTypesUtils.toType(parameter));
+		}
+
+		@Override
+		public void print(TypeParameter parameter, FormattedPrintWriter pw) {
+			pw.print(parameter);
+		}		
+	}
+	
+	class ParameterNamesPrinter implements ParameterPrinter {
+
+		@Override
+		public void print(TypeParameterElement parameter, FormattedPrintWriter pw) {
+			pw.print(parameter.getSimpleName().toString());
+		}
+
+		@Override
+		public void print(TypeParameter parameter, FormattedPrintWriter pw) {
+			pw.print(parameter.getSimpleName());
+		}
+		
 	}
 	
 	protected String getParameterName(ConverterParameter parameter) {
@@ -58,7 +96,7 @@ public class ConverterProviderPrinter {
 		return parameter.getName();
 	}
 
-	protected void printTypeParameters(ConverterTypeElement converterTypeElement, ClassSerializer serializer, boolean typed) {
+	protected void printTypeParameters(ConverterTypeElement converterTypeElement, ParameterPrinter parameterPrinter) {
 		pw.print("<");
 		int i = 0;
 
@@ -67,11 +105,7 @@ public class ConverterProviderPrinter {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				if (!serializer.equals(ClassSerializer.SIMPLE)) {
-					pw.print(nameTypesUtils.toType(converterTypeParameter).toString(serializer, typed));
-				} else {
-					pw.print(converterTypeParameter.getSimpleName().toString());
-				}
+				parameterPrinter.print(converterTypeParameter, pw);
 				i++;
 			}
 		} else {
@@ -79,20 +113,33 @@ public class ConverterProviderPrinter {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				if (!serializer.equals(ClassSerializer.SIMPLE)) {
-					pw.print(converterTypeParameter.toString(serializer, typed));
-				} else {
-					pw.print(converterTypeParameter.getSimpleName());
-				}
+				parameterPrinter.print(converterTypeParameter, pw);
 				i++;
 			}
 		}
 		pw.print(">");
 	}
 
+	protected TypeParameter[] toTypeParameters(ConverterTypeElement converterTypeElement) {
+		
+		List<TypeParameter> result = new ArrayList<TypeParameter>();
+
+		if (converterTypeElement.asElement() != null) {
+			for (TypeParameterElement converterTypeParameter: converterTypeElement.asElement().getTypeParameters()) {
+				result.add(TypeParameterBuilder.get(converterTypeParameter.getSimpleName().toString()));
+			}
+		} else {
+			for (TypeParameter converterTypeParameter: converterTypeElement.getTypeParameters()) {
+				result.add(TypeParameterBuilder.get(converterTypeParameter.getSimpleName()));
+			}
+		}
+		return result.toArray(new TypeParameter[] {});
+	}
+
+	
 	public void printConverterMethods() {
-		for (Entry<ConverterTypeElement, String> converterEntry: converterCache.entrySet()) {
-			printConverterMethod(converterEntry.getKey(), converterEntry.getValue());
+		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
+			printConverterMethod(converterEntry.getValue(), converterEntry.getKey());
 		}
 	}
 	
@@ -102,14 +149,18 @@ public class ConverterProviderPrinter {
 
 		pw.print("private");
 		
+		NamedType converterReplacedTypeParameters = converterTypeElement;
+
 		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-			printTypeParameters(converterTypeElement, ClassSerializer.CANONICAL, true);
+			printTypeParameters(converterTypeElement, new ParameterTypesPrinter());
+			converterReplacedTypeParameters = TypedClassBuilder.get(converterTypeElement, toTypeParameters(converterTypeElement));
 		}
 		
-		pw.print(" " + converterTypeElement.toString(ClassSerializer.CANONICAL, false));
-		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-			printTypeParameters(converterTypeElement, ClassSerializer.SIMPLE, false);
-		}
+		pw.print(" ", converterReplacedTypeParameters);
+		
+//		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
+//			printTypeParameters(converterTypeElement, new ParameterNamesPrinter());
+//		}
 		pw.print(" " + convertMethod + "(");
 
 		int i = 0;
@@ -118,20 +169,23 @@ public class ConverterProviderPrinter {
 				pw.print(", ");
 			}
 			if (converterParameter.isConverter()) {
-				pw.print(converterParameter.getType().toString(ClassSerializer.CANONICAL, false));
+				
+				NamedType parameterReplacedTypeParameters = TypedClassBuilder.get(converterParameter.getType(), toTypeParameters(converterTypeElement));
+
+//				pw.print(converterParameter.getType().toString(ClassSerializer.CANONICAL, false));
 				//TODO, print only 2 params from specific index (or number of the parameters that are required for the converter)
-				printTypeParameters(converterTypeElement, ClassSerializer.SIMPLE, false);
-				pw.print(" " + converterParameter.getName());
+//				printTypeParameters(converterTypeElement, new ParameterNamesPrinter());
+				pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
 				i++;
 			}
 		}
 		
 		pw.println(") {");
-		pw.print("return new " + converterTypeElement.getCanonicalName());
+		pw.print("return new ", converterReplacedTypeParameters);
 
-		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-			printTypeParameters(converterTypeElement, ClassSerializer.SIMPLE, false);
-		}
+//		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
+//			printTypeParameters(converterTypeElement, new ParameterNamesPrinter());
+//		}
 		
 		pw.print("(");
 
@@ -154,12 +208,13 @@ public class ConverterProviderPrinter {
 			return null;
 		}
 
-		if (converterCache.containsKey(converterTypeElement)) {
-			return converterCache.get(converterTypeElement);
+		String convertMethod = "get" + converterTypeElement.getSimpleName();
+
+		if (converterCache.containsKey(convertMethod)) {
+			return convertMethod;
 		}
 		
-		String convertMethod = "get" + converterTypeElement.getSimpleName();
-		converterCache.put(converterTypeElement, convertMethod);
+		converterCache.put(convertMethod, converterTypeElement);
 		
 		return convertMethod;
 	}
@@ -199,13 +254,15 @@ public class ConverterProviderPrinter {
 						private String getConverterParameter(TypeMirror type, int i) {
 							String result = "";
 
+							if (i > 0) {
+								result += ", ";
+							}
+
 							DomainTypeElement domainTypeElement = new DomainTypeElement(type, processingEnv, roundEnv, configurationProviders);
 							if (domainTypeElement.getConfigurationTypeElement() != null) {
-								if (i > 0) {
-									result += ", ";
-								}
-								result += getDomainConverterMethodName(domainTypeElement.getConfigurationTypeElement().getConverterTypeElement(), 
-										type);
+								result += getDomainConverterMethodName(domainTypeElement.getConfigurationTypeElement().getConverterTypeElement(), type);
+							} else {
+								result += "(" + DtoConverter.class.getCanonicalName() + "<" + type + ", " + type + ">)null";
 							}
 							
 							return result;
@@ -257,12 +314,15 @@ public class ConverterProviderPrinter {
 						private String getConverterParameter(TypeMirror type, int i) {
 							String result = "";
 
+							if (i > 0) {
+								result += ", ";
+							}
+
 							DtoTypeElement dtoTypeElement = new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders);
 							if (dtoTypeElement.getConfiguration() != null) {
-								if (i > 0) {
-									result += ", ";
-								}
 								result += getDomainConverterMethodName(dtoTypeElement.getConverter(), type);
+							} else {
+								result += "(" + DtoConverter.class.getCanonicalName() + "<" + type + ", " + type + ">)null";
 							}
 							
 							return result;
