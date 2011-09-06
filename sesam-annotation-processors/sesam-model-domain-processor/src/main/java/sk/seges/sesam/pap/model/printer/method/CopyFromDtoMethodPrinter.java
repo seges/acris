@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.printer.method;
 
-import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +14,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -34,25 +34,8 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 	}
 
-//	private void printCollectionCastIfNecessary(ProcessorContext context, PrintWriter pw) {
-//		if (ProcessorUtils.isCollection(context.getDomainMethodReturnType(), processingEnv)) {
-//
-//			DeclaredType declaredList = ((DeclaredType)context.getDomainMethodReturnType());
-//			
-//			if (declaredList.getTypeArguments() != null && declaredList.getTypeArguments().size() == 1) {
-//				TypeMirror typeMirror = declaredList.getTypeArguments().get(0);
-//				HasTypeParameters modifiedList = TypedClassBuilder.get(nameTypesUtils.toType(processingEnv.getTypeUtils().erasure(declaredList)), nameTypesUtils.toType(typeMirror));
-//				pw.print("(" + modifiedList.toString(ClassSerializer.CANONICAL, true) + ")");
-//			} else {
-//				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type " + context.getDomainMethodReturnType().toString() +
-//						" in the method " + context.getDomainMethod().getSimpleName().toString() + " should have " +
-//						" defined a type parameter", context.getConfigurationTypeElement().asElement());
-//			}
-//		}
-//	}
-
 	@Override
-	public void printCopyMethod(ProcessorContext context, PrintWriter pw) {
+	public void printCopyMethod(ProcessorContext context, FormattedPrintWriter pw) {
 		
 		PathResolver pathResolver = new PathResolver(context.getDomainFieldPath());
 
@@ -89,14 +72,14 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 						
 						if (toHelper.getIdMethod((DeclaredType)domainGetterMethod.getReturnType()) != null) {
 							pw.print(nameTypesUtils.toType(referenceElement) + " " + currentPath + " = ");
-							pw.print(getDomainConverterMethodName(context.getConfigurationTypeElement().getConverterTypeElement(), domainGetterMethod.getReturnType()));
+							converterProviderPrinter.printDomainConverterMethodName(context.getConfigurationTypeElement().getConverterTypeElement(), domainGetterMethod.getReturnType(), pw);
 							pw.println(".getDomainInstance(" + DTO_NAME + "." + methodHelper.toGetter(fullPath + methodHelper.toMethod(methodHelper.toField(toHelper.getIdMethod((DeclaredType)domainGetterMethod.getReturnType())))) + ");");
 							instances.add(fullPath);
 						} else {
 							pw.println(nameTypesUtils.toType(referenceElement) + " " + currentPath + " = " + RESULT_NAME + "." + methodHelper.toGetter(currentPath) + ";");
 							pw.println("if (" + RESULT_NAME + "." + methodHelper.toGetter(currentPath) + " == null) {");
 							pw.print(currentPath + " = ");
-							pw.print(getDomainConverterMethodName(context.getConfigurationTypeElement().getConverterTypeElement(), domainGetterMethod.getReturnType()));
+							converterProviderPrinter.printDomainConverterMethodName(context.getConfigurationTypeElement().getConverterTypeElement(), domainGetterMethod.getReturnType(), pw);
 							pw.println(".createDomainInstance(null);");
 							instances.add(fullPath);
 							pw.println("}");
@@ -118,7 +101,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 				if (context.getConverterType() != null) {
 					String converterName = "converter" + methodHelper.toMethod("", context.getFieldName());
 					pw.print(context.getConverterType().toString(ClassSerializer.CANONICAL, true) + " " + converterName + " = ");
-					pw.print(getDomainConverterMethodName(context.getConverterType(), context.getDomainMethodReturnType()));
+					converterProviderPrinter.printDomainConverterMethodName(context.getConverterType(), context.getDomainMethodReturnType(), pw);
 					pw.println(";");
 					pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getDomainFieldPath()) + "("+ converterName + ".fromDto(");
 					pw.print("(" + castToDelegate(context.getDomainMethodReturnType()).toString(ClassSerializer.CANONICAL, true) + ")");
@@ -141,7 +124,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			if (context.getConverterType() != null) {
 				String converterName = "converter" + methodHelper.toMethod("", context.getFieldName());
 				pw.print(context.getConverterType().toString(ClassSerializer.CANONICAL, true) + " " + converterName + " = ");
-				pw.print(getDomainConverterMethodName(context.getConverterType(), context.getDomainMethodReturnType()));
+				converterProviderPrinter.printDomainConverterMethodName(context.getConverterType(), context.getDomainMethodReturnType(), pw);
 				pw.println(";");
 				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getDomainFieldPath()) + "(");
 				pw.print("(" + castToDelegate(context.getDomainMethodReturnType()).toString(ClassSerializer.CANONICAL, true) + ")");

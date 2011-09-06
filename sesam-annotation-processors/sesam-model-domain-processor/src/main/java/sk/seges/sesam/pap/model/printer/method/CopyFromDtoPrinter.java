@@ -14,6 +14,7 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
@@ -28,11 +29,11 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Element
 	private static final String RESULT_NAME = "_result";
 	private static final String DTO_NAME = "_dto";
 
-	private final PrintWriter pw;
+	private final FormattedPrintWriter pw;
 	
 	private final IdentityResolver identityResolver;
 	
-	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, IdentityResolver identityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, ProcessingEnvironment processingEnv, PrintWriter pw) {
+	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, IdentityResolver identityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.pw = pw;
 		this.identityResolver = identityResolver;
@@ -132,7 +133,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Element
 				ConfigurationTypeElement idConfigurationElement = domainIdType.getConfigurationTypeElement();
 					//toHelper.getConfigurationElement(domainIdType, roundEnv);
 				if (idConfigurationElement != null && idConfigurationElement.getConverterTypeElement() != null) {
-					pw.print(getDomainConverterMethodName(idConfigurationElement.getConverterTypeElement(), domainIdType.asType()));
+					converterProviderPrinter.printDomainConverterMethodName(idConfigurationElement.getConverterTypeElement(), domainIdType.asType(), pw);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -164,7 +165,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Element
 		DomainTypeElement domainsuperClass = configurationElement.getDomainTypeElement().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConfigurationTypeElement().getConverterTypeElement() != null) {
-			pw.print(getDomainConverterMethodName(domainsuperClass.getConfigurationTypeElement().getConverterTypeElement(), domainsuperClass.asType()));
+			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConfigurationTypeElement().getConverterTypeElement(), domainsuperClass.asType(), pw);
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
 		}

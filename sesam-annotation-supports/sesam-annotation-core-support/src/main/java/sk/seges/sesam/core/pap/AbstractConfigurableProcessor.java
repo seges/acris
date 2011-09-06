@@ -59,7 +59,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	protected MethodHelper methodHelper;
 	protected NameTypesUtils nameTypesUtils;
 	protected ProcessorConfigurer configurer;
-	private Set<Element> processedElement = new HashSet<Element>();
+	private static Set<Element> processedElement = new HashSet<Element>();
 	private Map<OutputDefinition, Set<NamedType>> cachedDefinition = new HashMap<OutputDefinition, Set<NamedType>>();
 
 	private final String lineSeparator;

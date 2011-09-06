@@ -1,7 +1,5 @@
 package sk.seges.sesam.pap.model.printer.method;
 
-import java.io.PrintWriter;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.TypeKind;
@@ -10,6 +8,7 @@ import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
@@ -30,7 +29,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 	}
 
 	@Override
-	public void printCopyMethod(ProcessorContext context, PrintWriter pw) {
+	public void printCopyMethod(ProcessorContext context, FormattedPrintWriter pw) {
 
 		PathResolver pathResolver = new PathResolver(context.getDomainFieldPath());
 
@@ -67,7 +66,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			String converterName = "converter" + methodHelper.toMethod("", context.getFieldName());
 			
 			pw.print(context.getConverterType().toString(ClassSerializer.CANONICAL, true) + " " + converterName + " = ");
-			pw.print(getDomainConverterMethodName(context.getConverterType(), context.getDomainMethod().getReturnType()));
+			converterProviderPrinter.printDomainConverterMethodName(context.getConverterType(), context.getDomainMethod().getReturnType(), pw);
 			pw.println(";");
 
 			pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getFieldName()) + "(");

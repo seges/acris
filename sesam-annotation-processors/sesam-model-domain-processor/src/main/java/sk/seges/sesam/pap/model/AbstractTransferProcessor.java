@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +20,7 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.annotation.Id;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
@@ -57,7 +57,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 	}
 
 	@Override
-	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
+	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
 				
 		ConfigurationTypeElement configurationElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
 
@@ -78,7 +78,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		}
 	}
 
-	protected abstract ElementPrinter[] getElementPrinters(PrintWriter pw);
+	protected abstract ElementPrinter[] getElementPrinters(FormattedPrintWriter pw);
 	protected abstract IdentityResolver getIdentityResolver();
 	
 	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {

@@ -120,17 +120,25 @@ public class ConverterProviderPrinter {
 		pw.print(">");
 	}
 
-	protected TypeParameter[] toTypeParameters(ConverterTypeElement converterTypeElement) {
+	protected TypeParameter[] toTypeParameters(ConverterTypeElement converterTypeElement, boolean addExtends) {
 		
 		List<TypeParameter> result = new ArrayList<TypeParameter>();
 
 		if (converterTypeElement.asElement() != null) {
 			for (TypeParameterElement converterTypeParameter: converterTypeElement.asElement().getTypeParameters()) {
-				result.add(TypeParameterBuilder.get(converterTypeParameter.getSimpleName().toString()));
+				if (addExtends) {
+					result.add(TypeParameterBuilder.get("? extends " + converterTypeParameter.getSimpleName().toString()));
+				} else {
+					result.add(TypeParameterBuilder.get(converterTypeParameter.getSimpleName().toString()));
+				}
 			}
 		} else {
 			for (TypeParameter converterTypeParameter: converterTypeElement.getTypeParameters()) {
-				result.add(TypeParameterBuilder.get(converterTypeParameter.getSimpleName()));
+				if (addExtends) {
+					result.add(TypeParameterBuilder.get("? extends " + converterTypeParameter.getSimpleName()));
+				} else {
+					result.add(TypeParameterBuilder.get(converterTypeParameter.getSimpleName()));
+				}
 			}
 		}
 		return result.toArray(new TypeParameter[] {});
@@ -153,14 +161,10 @@ public class ConverterProviderPrinter {
 
 		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
 			printTypeParameters(converterTypeElement, new ParameterTypesPrinter());
-			converterReplacedTypeParameters = TypedClassBuilder.get(converterTypeElement, toTypeParameters(converterTypeElement));
+			converterReplacedTypeParameters = TypedClassBuilder.get(converterTypeElement, toTypeParameters(converterTypeElement, true));
 		}
 		
 		pw.print(" ", converterReplacedTypeParameters);
-		
-//		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-//			printTypeParameters(converterTypeElement, new ParameterNamesPrinter());
-//		}
 		pw.print(" " + convertMethod + "(");
 
 		int i = 0;
@@ -169,23 +173,19 @@ public class ConverterProviderPrinter {
 				pw.print(", ");
 			}
 			if (converterParameter.isConverter()) {
-				
-				NamedType parameterReplacedTypeParameters = TypedClassBuilder.get(converterParameter.getType(), toTypeParameters(converterTypeElement));
-
-//				pw.print(converterParameter.getType().toString(ClassSerializer.CANONICAL, false));
-				//TODO, print only 2 params from specific index (or number of the parameters that are required for the converter)
-//				printTypeParameters(converterTypeElement, new ParameterNamesPrinter());
+				NamedType parameterReplacedTypeParameters = TypedClassBuilder.get(converterParameter.getType(), toTypeParameters(converterTypeElement, false));
 				pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
 				i++;
 			}
 		}
 		
 		pw.println(") {");
-		pw.print("return new ", converterReplacedTypeParameters);
 
-//		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-//			printTypeParameters(converterTypeElement, new ParameterNamesPrinter());
-//		}
+		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
+			converterReplacedTypeParameters = TypedClassBuilder.get(converterTypeElement, toTypeParameters(converterTypeElement, false));
+		}
+		
+		pw.print("return new ", converterReplacedTypeParameters);
 		
 		pw.print("(");
 
@@ -219,122 +219,141 @@ public class ConverterProviderPrinter {
 		return convertMethod;
 	}
 	
-	public String getDomainConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror domainType) {
+	interface TomBaseElementProvider {
+		ConverterTypeElement getConverter(TypeMirror type);
+		DomainTypeElement getDomainType(TypeMirror type);
+		DtoTypeElement getDtoType(TypeMirror type);
+	}
+	
+	class DomainTypeElementProvider implements TomBaseElementProvider {
+
+		@Override
+		public ConverterTypeElement getConverter(TypeMirror type) {
+			DomainTypeElement domainTypeElement = new DomainTypeElement(type, processingEnv, roundEnv, configurationProviders);
+			if (domainTypeElement.getConfigurationTypeElement() != null) {
+				return domainTypeElement.getConfigurationTypeElement().getConverterTypeElement();
+			}
+			return null;
+		}
+
+		@Override
+		public DomainTypeElement getDomainType(TypeMirror type) {
+			return new DomainTypeElement(type, processingEnv, roundEnv, configurationProviders);
+		}
+
+		@Override
+		public DtoTypeElement getDtoType(TypeMirror type) {
+			return new DomainTypeElement(type, processingEnv, roundEnv, configurationProviders).getDtoTypeElement();
+		}
+		
+	}
+	
+	class DtoTypeElementProvider implements TomBaseElementProvider {
+
+		@Override
+		public ConverterTypeElement getConverter(TypeMirror type) {
+			DtoTypeElement dtoTypeElement = new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders);
+			if (dtoTypeElement.getConfiguration() != null) {
+				return dtoTypeElement.getConverter();
+			}
+			
+			return null;
+		}
+
+		@Override
+		public DomainTypeElement getDomainType(TypeMirror type) {
+			return new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders).getDomainTypeElement();
+		}
+
+		@Override
+		public DtoTypeElement getDtoType(TypeMirror type) {
+			return new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders);
+		}
+	}
+
+	public void printDtoConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror type, final FormattedPrintWriter pw) {
+		printConverterMethodName(converterTypeElement, type, new DtoTypeElementProvider(), pw);
+	}
+
+	public void printDomainConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror type, final FormattedPrintWriter pw) {
+		printConverterMethodName(converterTypeElement, type, new DomainTypeElementProvider(), pw);
+	}
+
+	private void printConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror type, final TomBaseElementProvider tomBaseElementProvider, final FormattedPrintWriter pw) {
 		
 		String methodName = getConverterMethodName(converterTypeElement);
 		
 		if (methodName == null) {
-			return null;
+			return;
+		}
+
+		boolean castRequired = false;
+		
+		if (type.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
+			
+			if (((DeclaredType)type).getTypeArguments().size() > 0) {
+				List<NamedType> converterArguments = new ArrayList<NamedType>();
+				for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
+					converterArguments.add(tomBaseElementProvider.getDtoType(typeArgument));
+				}
+				for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
+					converterArguments.add(tomBaseElementProvider.getDomainType(typeArgument));
+				}
+				pw.print("((", TypedClassBuilder.get(converterTypeElement, converterArguments.toArray(new NamedType[] {})), ")");
+				castRequired = true;
+			}
 		}
 		
-		methodName = methodName + "(";
+		pw.print(methodName + "(");
 		
-		if (domainType.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-			if (((DeclaredType)domainType).getTypeArguments().size() > 0) {
+		if (type.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
+			
+			if (((DeclaredType)type).getTypeArguments().size() > 0) {
 				int i = 0;
-				for (TypeMirror typeArgumentMirror: ((DeclaredType)domainType).getTypeArguments()) {
-					String methodParameter = typeArgumentMirror.accept(new SimpleTypeVisitor6<String, Integer>(){
+				for (TypeMirror typeArgumentMirror: ((DeclaredType)type).getTypeArguments()) {
+					typeArgumentMirror.accept(new SimpleTypeVisitor6<Void, Integer>(){
 						@Override
-						public String visitDeclared(DeclaredType t, Integer i) {
-							return getConverterParameter(t, i);
+						public Void visitDeclared(DeclaredType t, Integer i) {
+							printConverterParameter(t, i);
+							return null;
 						}
 						
 						@Override
-						public String visitWildcard(WildcardType t, Integer i) {
-							String result = "";
+						public Void visitWildcard(WildcardType t, Integer i) {
 							if (t.getExtendsBound() != null) {
-								result = getConverterParameter(t.getExtendsBound(), i);
+								printConverterParameter(t.getExtendsBound(), i);
 							} else if (t.getSuperBound() != null) {
-								result = getConverterParameter(t.getSuperBound(), i);
+								printConverterParameter(t.getSuperBound(), i);
 							}
-							return result;
-							
+							return null;							
 						}
 						
-						private String getConverterParameter(TypeMirror type, int i) {
-							String result = "";
+						private void printConverterParameter(TypeMirror type, int i) {
 
 							if (i > 0) {
-								result += ", ";
+								pw.print(", ");
 							}
 
-							DomainTypeElement domainTypeElement = new DomainTypeElement(type, processingEnv, roundEnv, configurationProviders);
-							if (domainTypeElement.getConfigurationTypeElement() != null) {
-								result += getDomainConverterMethodName(domainTypeElement.getConfigurationTypeElement().getConverterTypeElement(), type);
-							} else {
-								result += "(" + DtoConverter.class.getCanonicalName() + "<" + type + ", " + type + ">)null";
-							}
+							ConverterTypeElement converterTypeElement = tomBaseElementProvider.getConverter(type);
 							
-							return result;
+							if (converterTypeElement != null) {
+								printConverterMethodName(converterTypeElement, type, tomBaseElementProvider, pw);
+							} else {
+								NamedType typeParameterType = nameTypesUtils.toType(type);
+								pw.print("(", TypedClassBuilder.get(DtoConverter.class, typeParameterType, typeParameterType), ")null");
+							}
 						}
 					}, i);
-					
-					methodName += methodParameter;
 					i++;
 				}
 			}
 		}
 		
-		return methodName + ")";
-	}
-
-
-	public String getDtoConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror dtoType) {
-		
-		String methodName = getConverterMethodName(converterTypeElement);
-		
-		if (methodName == null) {
-			return null;
+		if (castRequired) {
+			pw.print(")");
 		}
-		
-		methodName = methodName + "(";
-		
-		if (dtoType.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
-			if (((DeclaredType)dtoType).getTypeArguments().size() > 0) {
-				int i = 0;
-				for (TypeMirror typeArgumentMirror: ((DeclaredType)dtoType).getTypeArguments()) {
-					String methodParameter = typeArgumentMirror.accept(new SimpleTypeVisitor6<String, Integer>(){
-						@Override
-						public String visitDeclared(DeclaredType t, Integer i) {
-							return getConverterParameter(t, i);
-						}
-						
-						@Override
-						public String visitWildcard(WildcardType t, Integer i) {
-							String result = "";
-							if (t.getExtendsBound() != null) {
-								result = getConverterParameter(t.getExtendsBound(), i);
-							} else if (t.getSuperBound() != null) {
-								result = getConverterParameter(t.getSuperBound(), i);
-							}
-							return result;
-							
-						}
-						
-						private String getConverterParameter(TypeMirror type, int i) {
-							String result = "";
-
-							if (i > 0) {
-								result += ", ";
-							}
-
-							DtoTypeElement dtoTypeElement = new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders);
-							if (dtoTypeElement.getConfiguration() != null) {
-								result += getDomainConverterMethodName(dtoTypeElement.getConverter(), type);
-							} else {
-								result += "(" + DtoConverter.class.getCanonicalName() + "<" + type + ", " + type + ">)null";
-							}
-							
-							return result;
-						}
-					}, i);
-					
-					methodName += methodParameter;
-					i++;
-				}
-			}
-		}
-		
-		return methodName + ")";
+		pw.print(")");
 	}
+	
+
 }
