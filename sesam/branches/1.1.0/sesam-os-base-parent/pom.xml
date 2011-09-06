@@ -988,7 +988,7 @@
 			<id>selenium</id>
 			<activation>
 				<file>
-					<exists>.selenium</exists>
+					<exists>${basedir}/.selenium</exists>
 				</file>
 			</activation>
 			<reporting>
@@ -1211,7 +1211,7 @@ org.eclipse.jdt.core.compiler.source=1.6]]>
 			<id>selenium-api</id>
 			<activation>
 				<file>
-					<exists>.selenium-api</exists>
+					<exists>${basedir}/.selenium-api</exists>
 				</file>
 			</activation>
 			<dependencies>
