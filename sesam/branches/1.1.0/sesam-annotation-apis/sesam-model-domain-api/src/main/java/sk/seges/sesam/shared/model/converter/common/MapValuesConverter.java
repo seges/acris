@@ -45,24 +45,26 @@ public class MapValuesConverter<DTO, DOMAIN> implements DtoConverter<Map<Object,
 		return convertFromDto(result, dtos);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<Object, DTO> convertToDto(Map<Object, DTO> result, Map<Object, DOMAIN> domains) {
 		for(Entry<Object, DOMAIN> entry: domains.entrySet()) {
 			DOMAIN value = entry.getValue();
 			if (value != null) {
-				result.put(entry.getKey(), converter.toDto(value));
+				result.put(entry.getKey(), converter == null ? (DTO)value : converter.toDto(value));
 			}
 		}
 		
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<Object, DOMAIN> convertFromDto(Map<Object, DOMAIN> result, Map<Object, DTO> dtos) {
 		for(Entry<Object, DTO> entry: dtos.entrySet()) {
 			DTO value = entry.getValue();
 			if (value != null) {
-				result.put(entry.getKey(), converter.fromDto((DTO)value));
+				result.put(entry.getKey(), converter == null ? (DOMAIN)value : converter.fromDto((DTO)value));
 			}
 		}
 		
