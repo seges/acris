@@ -371,6 +371,14 @@ public class MethodHelper {
 				}
 			}
 			
+			for (ParameterElement additionalParameter: additionalParameters) {
+				String name = additionalParameter.getName();
+				if (!constructorPrinter.existsField(name, superConstructor)) {
+					pw.println("this." + name + " = " + name + ";");
+					initializedFields.add(name);
+				}
+			}
+
 			constructorPrinter.finish(initializedFields, superConstructor, pw);
 		} else {
 			for (ParameterElement additionalParameter: additionalParameters) {
