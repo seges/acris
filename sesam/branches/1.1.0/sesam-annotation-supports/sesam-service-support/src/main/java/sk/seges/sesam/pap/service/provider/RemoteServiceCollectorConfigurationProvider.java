@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
@@ -29,7 +30,7 @@ public class RemoteServiceCollectorConfigurationProvider extends AbstractService
 		ArrayList<String> processedElements = new ArrayList<String>();
 
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
-		result.addAll(getConfigurationsFromType(remoteService.asElement(), processedElements));
+		result.addAll(getConfigurationsFromType((DeclaredType)remoteService.asElement().asType(), processedElements));
 		
 		this.configurations = result;
 

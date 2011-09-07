@@ -22,10 +22,20 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 		super(processingEnv, roundEnv);
 	}
 
-	protected List<ConfigurationTypeElement> getConfigurationsFromType(TypeElement element, List<String> processedElements) {
+	protected List<ConfigurationTypeElement> getConfigurationsFromType(DeclaredType type, List<String> processedElements) {
 
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 
+		if (type.getTypeArguments().size() > 0) {
+			for (TypeMirror typeArgument: type.getTypeArguments()) {
+				if (typeArgument.getKind().equals(TypeKind.DECLARED)) {
+					result.addAll(getConfigurationsFromType((DeclaredType)typeArgument, processedElements));
+				}
+			}
+		}
+
+		TypeElement element = (TypeElement)type.asElement();
+		
 		if (processingEnv.getElementUtils().getPackageOf(element).toString().startsWith("java.")) {
 			return result;
 		}
@@ -33,7 +43,7 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 		if (processedElements.contains(element.getQualifiedName().toString())) {
 			return result;
 		}
-
+		
 		processedElements.add(element.getQualifiedName().toString());
 		
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
@@ -51,12 +61,12 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 
 		for (VariableElement variableElement: fields) {
 			if (variableElement.asType().getKind().equals(TypeKind.DECLARED)) {
-				result.addAll(getConfigurationsFromType((TypeElement)((DeclaredType)variableElement.asType()).asElement(), processedElements));
+				result.addAll(getConfigurationsFromType((DeclaredType)variableElement.asType(), processedElements));
 			}
 		}
 		
 		if (element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-			result.addAll(getConfigurationsFromType((TypeElement)((DeclaredType)element.getSuperclass()).asElement(), processedElements));
+			result.addAll(getConfigurationsFromType((DeclaredType)element.getSuperclass(), processedElements));
 		}
 		
 		return result;
@@ -67,12 +77,12 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 		
 		if (method.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-			result.addAll(getConfigurationsFromType((TypeElement)((DeclaredType)method.getReturnType()).asElement(), processedElements));
+			result.addAll(getConfigurationsFromType((DeclaredType)method.getReturnType(), processedElements));
 		}
 		
 		for (VariableElement parameter: method.getParameters()) {
 			if (parameter.asType().getKind().equals(TypeKind.DECLARED)) {
-				result.addAll(getConfigurationsFromType((TypeElement)((DeclaredType)parameter.asType()).asElement(), processedElements));
+				result.addAll(getConfigurationsFromType((DeclaredType)parameter.asType(), processedElements));
 			}
 		}
 		
