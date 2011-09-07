@@ -216,7 +216,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		
 		super.processElement(element, outputName, roundEnv, pw);
 		
-		converterProviderPrinter.printConverterMethods();
+		converterProviderPrinter.printConverterMethods(false);
 	}
 	
 	//TODO same method as in method helper
