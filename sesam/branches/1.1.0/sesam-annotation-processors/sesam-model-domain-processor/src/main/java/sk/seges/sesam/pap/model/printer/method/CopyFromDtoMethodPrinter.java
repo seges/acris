@@ -132,7 +132,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 				
 				pw.print(converterName + ".fromDto(" + DTO_NAME  + "." + methodHelper.toGetter(context.getFieldName()));
 			} else if (context.getLocalConverterName() != null) {
-				pw.println("if (" + context.getLocalConverterName() + " == null) {");
+				pw.println("if (" + context.getLocalConverterName() + " != null) {");
 				pw.print(RESULT_NAME + "." + methodHelper.toSetter(context.getDomainFieldPath()) + "(" + 
 						context.getLocalConverterName() + ".fromDto(" + DTO_NAME  + "." + methodHelper.toGetter(context.getFieldName()) + ")");
 			} else {
