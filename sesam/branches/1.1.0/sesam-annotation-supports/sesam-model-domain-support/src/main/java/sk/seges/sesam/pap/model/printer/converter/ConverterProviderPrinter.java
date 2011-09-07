@@ -145,13 +145,13 @@ public class ConverterProviderPrinter {
 	}
 
 	
-	public void printConverterMethods() {
+	public void printConverterMethods(boolean supportExtends) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
-			printConverterMethod(converterEntry.getValue(), converterEntry.getKey());
+			printConverterMethod(converterEntry.getValue(), converterEntry.getKey(), supportExtends);
 		}
 	}
 	
-	private void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod) {
+	private void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends) {
 
 		List<ConverterParameter> converterParameters = converterTypeElement.getConverterParameters(parametersResolver);
 
@@ -161,7 +161,7 @@ public class ConverterProviderPrinter {
 
 		if (typeParametersSupport.hasTypeParameters(converterTypeElement)) {
 			printTypeParameters(converterTypeElement, new ParameterTypesPrinter());
-			converterReplacedTypeParameters = TypedClassBuilder.get(converterTypeElement, toTypeParameters(converterTypeElement, true));
+			converterReplacedTypeParameters = TypedClassBuilder.get(converterTypeElement, toTypeParameters(converterTypeElement, supportExtends));
 		}
 		
 		pw.print(" ", converterReplacedTypeParameters);
@@ -292,15 +292,23 @@ public class ConverterProviderPrinter {
 		if (type.getKind().equals(TypeKind.DECLARED) && typeParametersSupport.hasTypeParameters(converterTypeElement)) {
 			
 			if (((DeclaredType)type).getTypeArguments().size() > 0) {
+				castRequired = true;
 				List<NamedType> converterArguments = new ArrayList<NamedType>();
 				for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
-					converterArguments.add(tomBaseElementProvider.getDtoType(typeArgument));
+					DtoTypeElement dtoType = tomBaseElementProvider.getDtoType(typeArgument);
+					
+					if (dtoType == null) {
+						castRequired = false;
+					}
+					
+					converterArguments.add(dtoType);
 				}
 				for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
 					converterArguments.add(tomBaseElementProvider.getDomainType(typeArgument));
 				}
-				pw.print("((", TypedClassBuilder.get(converterTypeElement, converterArguments.toArray(new NamedType[] {})), ")");
-				castRequired = true;
+				if (castRequired) {
+					pw.print("((", TypedClassBuilder.get(converterTypeElement, converterArguments.toArray(new NamedType[] {})), ")");
+				}
 			}
 		}
 		

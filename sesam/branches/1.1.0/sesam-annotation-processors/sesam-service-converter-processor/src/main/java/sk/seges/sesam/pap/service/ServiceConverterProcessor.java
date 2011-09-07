@@ -252,7 +252,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		copyMethods(element, localInterface, converterParameters, pw);
 		
-		this.converterProviderPrinter.printConverterMethods();
+		this.converterProviderPrinter.printConverterMethods(true);
 	}
 
 	protected ParametersResolver getParametersResolver() {
