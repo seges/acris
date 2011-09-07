@@ -297,7 +297,8 @@ public class ConverterProviderPrinter {
 				for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
 					DtoTypeElement dtoType = tomBaseElementProvider.getDtoType(typeArgument);
 					
-					if (dtoType == null) {
+				if (dtoType == null) {
+						//DTO does not exists
 						castRequired = false;
 					}
 					

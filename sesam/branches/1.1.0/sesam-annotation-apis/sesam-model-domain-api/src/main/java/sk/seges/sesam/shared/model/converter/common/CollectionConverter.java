@@ -75,7 +75,11 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		}
 			
 		while (iterator.hasNext()) {
-			result.add(converter.toDto((DOMAIN)iterator.next()));
+			if (converter == null) {
+				result.add((DTO)iterator.next());
+			} else {
+				result.add(converter.toDto((DOMAIN)iterator.next()));
+			}
 		}
 		
 		return result;
@@ -87,8 +91,11 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		Iterator<?> iterator = dtos.iterator();
 		
 		while (iterator.hasNext()) {
-			DOMAIN domain = converter.fromDto((DTO)iterator.next());
-			result.add(domain);
+			if (converter == null) {
+				result.add((DOMAIN)iterator.next());
+			} else {
+				result.add(converter.fromDto((DTO)iterator.next()));
+			}
 		}
 		
 		return result;
