@@ -179,7 +179,7 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 //				applyVariableTypeParameters(getDelegateImmutableType(), configurationTypeElement.getDomainTypeElement().asType()));
 		if (typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomainTypeElement())) {
 			NamedType type = getNameTypesUtils().toType(configurationTypeElement.getDomainTypeElement().asType());
-			setDelegateImmutableType(TypedClassBuilder.get(getDelegateImmutableType(), ((HasTypeParameters)type).getTypeParameters()));
+			setDelegateImmutableType(TypedClassBuilder.get(type, ((HasTypeParameters)getDelegateImmutableType()).getTypeParameters()));
 		}
 	}
 	

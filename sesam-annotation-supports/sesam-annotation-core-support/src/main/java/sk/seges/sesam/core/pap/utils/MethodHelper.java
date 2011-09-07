@@ -168,14 +168,14 @@ public class MethodHelper {
 			pw.print("@", nameTypes.toType(annotation.getAnnotationType()));
 			
 			if (annotation.getElementValues().size() > 0) {
-				pw.print(")");
+				pw.print("(");
 				int i = 0;
 				for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: annotation.getElementValues().entrySet()) {
 					if (i > 0) {
 						pw.print(", ");
 						pw.println("		");
 					}
-					pw.print( annotationValue.getKey().getSimpleName() + " = " + annotationValue.getValue().toString());
+					pw.print( annotationValue.getKey().getSimpleName() + " = " + annotationValueToString(annotationValue.getValue()));
 					i++;
 				}
 				pw.print(")");
@@ -184,6 +184,28 @@ public class MethodHelper {
 		}
 	}
 
+	private static boolean isArray(final Object obj) {
+		if (obj != null)
+			return obj.getClass().isArray();
+		return false;
+	}
+	 
+	private String annotationValueToString(Object value) {
+		if (isArray(value)) {
+			String result = "{";
+			int i = 0;
+			for (Object obj: (Object[])value) {
+				if (i > 0) {
+					result += ", ";
+				}
+				result += annotationValueToString(obj);
+				i++;
+			}
+			return result + "}";
+		}
+		return value.toString();
+	}
+	
 	interface ConstructorPrinter {
 
 		boolean existsParameter(String field, ExecutableElement constructor);
