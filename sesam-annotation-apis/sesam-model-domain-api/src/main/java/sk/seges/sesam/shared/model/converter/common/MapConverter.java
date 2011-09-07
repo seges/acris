@@ -47,26 +47,30 @@ public class MapConverter<DTO_KEY, DTO_VALUE, DOMAIN_KEY, DOMAIN_VALUE> implemen
 		return convertFromDto(result, dtos);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<DTO_KEY, DTO_VALUE> convertToDto(Map<DTO_KEY, DTO_VALUE> result, Map<DOMAIN_KEY, DOMAIN_VALUE> domains) {
 		for(Entry<DOMAIN_KEY, DOMAIN_VALUE> entry: domains.entrySet()) {
 			DOMAIN_VALUE value = entry.getValue();
 			DOMAIN_KEY key = entry.getKey();
 			if (key != null) {
-				result.put(keyConverter.toDto(key), valueConverter.toDto(value));
+				result.put(keyConverter == null ? (DTO_KEY)key : keyConverter.toDto(key), 
+						   valueConverter == null ? (DTO_VALUE)value : valueConverter.toDto(value));
 			}
 		}
 		
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<DOMAIN_KEY, DOMAIN_VALUE> convertFromDto(Map<DOMAIN_KEY, DOMAIN_VALUE> result, Map<DTO_KEY, DTO_VALUE> dtos) {
 		for(Entry<DTO_KEY, DTO_VALUE> entry: dtos.entrySet()) {
 			DTO_VALUE value = entry.getValue();
 			DTO_KEY key = entry.getKey();
 			if (key != null) {
-				result.put(keyConverter.fromDto(key), valueConverter.fromDto(value));
+				result.put(keyConverter == null ? (DOMAIN_KEY)key : keyConverter.fromDto(key), 
+						   valueConverter == null ? (DOMAIN_VALUE)value : valueConverter.fromDto(value));
 			}
 		}
 		

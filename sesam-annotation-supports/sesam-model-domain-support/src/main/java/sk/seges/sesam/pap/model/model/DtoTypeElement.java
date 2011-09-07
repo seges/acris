@@ -70,42 +70,42 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 		initialize();
 	}
 
-	public DtoTypeElement(TypeElement configurationHolderTypeElement, TypeMirror dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv);
-
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationHolderTypeElement, processingEnv);
-		this.dtoType = dtoType;
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
-		
-		if (dtoType.getKind().equals(TypeKind.DECLARED)) {
-			TransferObjectMapping dtoMapping = transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType);
-			if (dtoMapping == null) {
-				transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)dtoType).asElement(), processingEnv);
-				if (!transferObjectConfiguration.isValid()) {
-					transferObjectConfiguration = null;
-				}
-			} else {
-				transferObjectConfiguration.setReferenceMapping(dtoMapping);
-			}
-		} else {
-			transferObjectConfiguration = null;
-		}
-
-		if (transferObjectConfiguration != null) {
-			if (dtoType.getKind().equals(TypeKind.DECLARED)) {
-				this.configurationTypeElement = new ConfigurationTypeElement(null, (DeclaredType) dtoType, transferObjectConfiguration, processingEnv, roundEnv, configurationProviders);
-			} else {
-				this.configurationTypeElement = new ConfigurationTypeElement(null, null, transferObjectConfiguration, processingEnv, roundEnv, configurationProviders);
-			}
-		} else {
-			this.configurationTypeElement = getConfiguration(dtoType);
-		}
-
-		this.generated = false;
-				
-		initialize();
-	}
+//	public DtoTypeElement(TypeElement configurationHolderTypeElement, TypeMirror dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+//		super(processingEnv, roundEnv);
+//
+//		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationHolderTypeElement, processingEnv);
+//		this.dtoType = dtoType;
+//		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
+//		this.configurationProviders = getConfigurationProviders(configurationProviders);
+//		
+//		if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+//			TransferObjectMapping dtoMapping = transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType);
+//			if (dtoMapping == null) {
+//				transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)dtoType).asElement(), processingEnv);
+//				if (!transferObjectConfiguration.isValid()) {
+//					transferObjectConfiguration = null;
+//				}
+//			} else {
+//				transferObjectConfiguration.setReferenceMapping(dtoMapping);
+//			}
+//		} else {
+//			transferObjectConfiguration = null;
+//		}
+//
+//		if (transferObjectConfiguration != null) {
+//			if (dtoType.getKind().equals(TypeKind.DECLARED)) {
+//				this.configurationTypeElement = new ConfigurationTypeElement(null, (DeclaredType) dtoType, transferObjectConfiguration, processingEnv, roundEnv, configurationProviders);
+//			} else {
+//				this.configurationTypeElement = new ConfigurationTypeElement(null, null, transferObjectConfiguration, processingEnv, roundEnv, configurationProviders);
+//			}
+//		} else {
+//			this.configurationTypeElement = getConfiguration(dtoType);
+//		}
+//
+//		this.generated = false;
+//				
+//		initialize();
+//	}
 
 	public DtoTypeElement(TypeMirror dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
 		super(processingEnv, roundEnv);
@@ -179,7 +179,7 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 //				applyVariableTypeParameters(getDelegateImmutableType(), configurationTypeElement.getDomainTypeElement().asType()));
 		if (typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomainTypeElement())) {
 			NamedType type = getNameTypesUtils().toType(configurationTypeElement.getDomainTypeElement().asType());
-			setDelegateImmutableType(TypedClassBuilder.get(type, ((HasTypeParameters)getDelegateImmutableType()).getTypeParameters()));
+			setDelegateImmutableType(TypedClassBuilder.get(getDelegateImmutableType(), ((HasTypeParameters)type).getTypeParameters()));
 		}
 	}
 	

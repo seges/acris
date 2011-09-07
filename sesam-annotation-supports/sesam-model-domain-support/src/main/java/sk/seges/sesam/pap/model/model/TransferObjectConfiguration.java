@@ -15,6 +15,7 @@ import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.NullCheck;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping.NotDefinedConverter;
@@ -82,6 +83,10 @@ public class TransferObjectConfiguration {
 		return mappings.size() > 0;
 	}
 	
+	TransferObjectMapping getReferenceMapping() {
+		return referenceMapping;
+	}
+	
 	Element getConfigurationHolderElement() {
 		return configurationHolderElement;
 	}
@@ -99,18 +104,47 @@ public class TransferObjectConfiguration {
 	}
 	
 	public TransferObjectMapping getMappingForDto(DeclaredType dtoType) {
-		TypeElement dtoElement = (TypeElement)dtoType.asElement();
 		for (TransferObjectMapping mapping : mappings) {
 			TypeElement annotationDtoType = getDto(mapping);
-			
-			if (annotationDtoType.equals(dtoElement)) {
+
+			if (annotationDtoType != null) {
+				if (processingEnv.getTypeUtils().erasure(annotationDtoType.asType()).equals(
+					processingEnv.getTypeUtils().erasure(dtoType))) {
+					return mapping;
+				}
+			}
+
+			annotationDtoType = getDtoInterface(mapping);
+
+			if (annotationDtoType != null && ProcessorUtils.implementsType(dtoType, annotationDtoType.asType())) {
 				return mapping;
 			}
 		}
 		
 		return null;
 	}
-	
+
+	public TransferObjectMapping getMappingForDomain(DeclaredType domainType) {
+		for (TransferObjectMapping mapping : mappings) {
+			TypeElement annotationDomainType = getDomain(mapping);
+
+			if (annotationDomainType != null) {
+				if (processingEnv.getTypeUtils().erasure(annotationDomainType.asType()).equals(
+					processingEnv.getTypeUtils().erasure(domainType))) {
+					return mapping;
+				}
+			}
+
+			annotationDomainType = getDomainInterface(mapping);
+
+			if (annotationDomainType != null && ProcessorUtils.implementsType(domainType, annotationDomainType.asType())) {
+				return mapping;
+			}
+		}
+		
+		return null;
+	}
+
 	protected TypeElement getEvaluatedDomainType(TransferObjectMapping mapping) {
 
 		// getting the domain definition

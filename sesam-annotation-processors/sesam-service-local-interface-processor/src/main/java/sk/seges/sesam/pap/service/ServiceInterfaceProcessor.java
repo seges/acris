@@ -2,7 +2,6 @@ package sk.seges.sesam.pap.service;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -17,17 +16,21 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
+import sk.seges.sesam.pap.service.provider.RemoteServiceCollectorConfigurationProvider;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
-		
+
+	private ConfigurationProvider[] configurationProviders;
+
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
 		return new ServiceInterfaceProcessorConfigurer();
@@ -50,33 +53,30 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 	
 	@Override
 	protected Type[] getImports(TypeElement remoteServiceInterfaceElement) {
+		return new Type[] {
+				LocalServiceDefinition.class				
+		};
+	}
 
-		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(remoteServiceInterfaceElement.getEnclosedElements());
-		
-		List<Type> imports = new ArrayList<Type>();
-		
-		for (ExecutableElement method: methodsIn) {
-			
-			imports.add(new DtoTypeElement(remoteServiceInterfaceElement, method.getReturnType(), processingEnv, roundEnv).getDomainTypeElement());
-			for (VariableElement parameter: method.getParameters()) {
-				imports.add(new DtoTypeElement(remoteServiceInterfaceElement, parameter.asType(), processingEnv, roundEnv).getDomainTypeElement());
-			}
-		}
-
-		imports.add(LocalServiceDefinition.class);
-		
-		return imports.toArray(new Type[] {});
+	
+	protected ConfigurationProvider[] getConfigurationProviders(RemoteServiceTypeElement remoteServiceInterfaceElement) {
+		return new ConfigurationProvider[] {
+				new RemoteServiceCollectorConfigurationProvider(remoteServiceInterfaceElement, processingEnv, roundEnv)
+		};
 	}
 
 	@Override
-	protected void processElement(TypeElement remoteServiceInterfaceElement, NamedType outputName, RoundEnvironment roundEnv, PrintWriter pw) {
+	protected void processElement(TypeElement remoteServiceInterfaceElement, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
+
+		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement(remoteServiceInterfaceElement, processingEnv);
+		this.configurationProviders = getConfigurationProviders(remoteServiceTypeElement);
 
 		List<ExecutableElement> methods = ElementFilter.methodsIn(remoteServiceInterfaceElement.getEnclosedElements());
 		
 		for (ExecutableElement method: methods) {
-			DtoTypeElement dtoReturnType = new DtoTypeElement(remoteServiceInterfaceElement, method.getReturnType(), processingEnv, roundEnv);
+			DtoTypeElement dtoReturnType = new DtoTypeElement(method.getReturnType(), processingEnv, roundEnv, configurationProviders);
 			
-			pw.print(dtoReturnType.getDomainTypeElement().toString(ClassSerializer.SIMPLE, true) + " " + method.getSimpleName().toString() + "(");
+			pw.print(dtoReturnType.getDomainTypeElement(), " " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
@@ -84,9 +84,9 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 					pw.print(", ");
 				}
 				
-				DtoTypeElement dtoParamType = new DtoTypeElement(remoteServiceInterfaceElement, parameter.asType(), processingEnv, roundEnv);
+				DtoTypeElement dtoParamType = new DtoTypeElement(parameter.asType(), processingEnv, roundEnv, configurationProviders);
 
-				pw.print(dtoParamType.getDomainTypeElement().toString(ClassSerializer.SIMPLE, true) + " " + parameter.getSimpleName().toString());
+				pw.print(dtoParamType.getDomainTypeElement(), " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			

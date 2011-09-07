@@ -45,6 +45,9 @@ public class ConfigurationTypeElement extends TomBase {
 //		setDelegateImmutableType(getNameTypesUtils().toImmutableType(configurationElement));
 		
 		this.transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
+		if (this.transferObjectConfiguration.getReferenceMapping() == null) {
+			this.transferObjectConfiguration.setReferenceMapping(transferObjectConfiguration.getMappingForDto(dtoType));
+		}
 		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
 	
@@ -202,19 +205,27 @@ public class ConfigurationTypeElement extends TomBase {
 	
 	public ConverterTypeElement getConverterTypeElement() {
 
-		if (getDelegateConfigurationTypeElement() != null) {
-			return getDelegateConfigurationTypeElement().getConverterTypeElement();
-		}
-
 		if (!converterTypeElementInitialized) {
 			this.converterTypeElement = getConverter(transferObjectConfiguration);
 			this.converterTypeElementInitialized = true;
 		}
 		
 		if (converterTypeElement != null) {
+			if (converterTypeElement.isGenerated()) {
+				if (getDelegateConfigurationTypeElement() != null) {
+					ConverterTypeElement delegateConverterTypeElement = getDelegateConfigurationTypeElement().getConverterTypeElement();
+					if (delegateConverterTypeElement != null) {
+						return delegateConverterTypeElement;
+					}
+				}
+			}
 			return converterTypeElement;
 		}
 
+		if (getDelegateConfigurationTypeElement() != null) {
+			return getDelegateConfigurationTypeElement().getConverterTypeElement();
+		}
+		
 		return null;
 	}
 	
@@ -237,43 +248,22 @@ public class ConfigurationTypeElement extends TomBase {
 	
 	public boolean appliesForDomainType(TypeMirror domainType) {
 		
-		if (getDomainTypeElement() == null || !domainType.getKind().equals(TypeKind.DECLARED)) {
+		//Configuration should be applied only for declared types like classes or interfaces
+		if (!domainType.getKind().equals(TypeKind.DECLARED)) {
 			return false;
 		}
 		
-		if (getDomainTypeElement().isInterface()) {
-			if (ProcessorUtils.implementsType(domainType, getDomainTypeElement().asType())) {
-				return true;
-			}
-		} else {
-			if (processingEnv.getTypeUtils().erasure(getDomainTypeElement().asType()).equals(
-				processingEnv.getTypeUtils().erasure(domainType))) {
-				return true;
-			}
-		}
-		
-		return false;
+		return transferObjectConfiguration.getMappingForDomain((DeclaredType)domainType) != null;
 	}
 
 	public boolean appliesForDtoType(TypeMirror dtoType) {
-		
-		if (getDtoTypeElement() == null || !dtoType.getKind().equals(TypeKind.DECLARED)) {
+
+		//Configuration should be applied only for declared types like classes or interfaces
+		if (!dtoType.getKind().equals(TypeKind.DECLARED)) {
 			return false;
 		}
 		
-		if (getDtoTypeElement().isInterface()) {
-			if (ProcessorUtils.implementsType(dtoType, getDtoTypeElement().asType())) {
-				return true;
-			}
-		} else {
-			if (getDtoTypeElement().asType() != null &&
-					processingEnv.getTypeUtils().erasure(getDtoTypeElement().asType()).equals(
-							processingEnv.getTypeUtils().erasure(dtoType))) {
-				return true;
-			}
-		}
-		
-		return false;
+		return transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType) != null;
 	}
 
 	public String getCanonicalName() {
