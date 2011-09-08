@@ -1,12 +1,15 @@
 package sk.seges.sesam.pap.model.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import sk.seges.sesam.core.pap.Constants;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface TransferObjectMapping {
 
 	public class NotDefinedConverter implements DtoConverter<Void, Void> {
