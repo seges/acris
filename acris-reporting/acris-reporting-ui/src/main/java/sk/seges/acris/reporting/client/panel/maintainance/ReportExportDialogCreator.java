@@ -50,6 +50,10 @@ public class ReportExportDialogCreator {
 
 	private WidgetFactory widgetFactory;
 	
+	protected Dialog getDialog() {
+		return dialog;
+	}
+	
 	public ReportExportDialogCreator(WidgetFactory widgetFactory) {
 		this.widgetFactory = widgetFactory;
 	}
@@ -110,7 +114,6 @@ public class ReportExportDialogCreator {
 				new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						imagePanel.setVisible(true);
 						downloadPanel.setVisible(false);
 						Map<String, Object> paramsMap = new HashMap<String, Object>();
 						List<String> notInsertedValues = new ArrayList<String>();
@@ -233,6 +236,7 @@ public class ReportExportDialogCreator {
 	/**/
 	protected void doExport(final ReportDescriptionData report,
 			final Panel downloadPanel, Map<String, Object> paramsMap) {
+		imagePanel.setVisible(true);
 		// if (EReportExportType.HTML.equals(exportTypeListBox.getValue())) {
 		// reportingService.exportReportToHtml(report.getId(), paramsMap, new
 		// AsyncCallback<String>() {
