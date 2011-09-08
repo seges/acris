@@ -119,7 +119,7 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				pw.print(getNameTypes().toType(parameter.asType()).toString(null, ClassSerializer.SIMPLE, true) + " " + parameter.getSimpleName().toString());
+				pw.print(getNameTypes().toType(parameter.asType()).toString(ClassSerializer.SIMPLE, true) + " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
@@ -128,7 +128,7 @@ public class AsyncServiceProcessor extends AbstractConfigurableProcessor {
 			if (i > 0) {
 				pw.print(", ");
 			}
-			pw.println(AsyncCallback.class.getSimpleName() + "<" + unBoxType(returnType).toString(null, ClassSerializer.SIMPLE, true) + "> callback);");
+			pw.println(AsyncCallback.class.getSimpleName() + "<" + unBoxType(returnType).toString(ClassSerializer.SIMPLE, true) + "> callback);");
 			pw.println();
 			//TODO add throws
 		}

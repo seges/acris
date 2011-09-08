@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
@@ -52,10 +53,16 @@ public class BeanWrapperProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
+	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
+		return !alreadyExists;
+	}
+	
+	@Override
 	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
 			case OUTPUT_INTERFACES:
-				return new Type[] { TypedClassBuilder.get(BeanWrapper.class, genericsSupport.applyUpperGenerics(NamedType.THIS, typeElement)) };
+				return new Type[] { TypedClassBuilder.get(BeanWrapper.class, 
+						typeParametersSupport.applyUpperTypeParameters(nameTypesUtils.toType(typeElement), typeElement)) };
 			}
 		return super.getOutputDefinition(type, typeElement);
 	}
