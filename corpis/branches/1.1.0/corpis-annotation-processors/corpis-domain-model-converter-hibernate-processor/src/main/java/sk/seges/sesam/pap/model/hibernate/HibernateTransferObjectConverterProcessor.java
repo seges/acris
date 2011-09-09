@@ -9,12 +9,10 @@ import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
 import sk.seges.sesam.pap.model.hibernate.printer.method.HibernateCopyFromDtoPrinter;
 import sk.seges.sesam.pap.model.hibernate.printer.method.HibernateCopyToDtoPrinter;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateEntityResolver;
-import sk.seges.sesam.pap.model.hibernate.resolver.HibernateIdentityResolver;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolver;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.resolver.api.IdentityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -41,15 +39,10 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	}
 
 	@Override
-	protected IdentityResolver getIdentityResolver() {
-		return new HibernateIdentityResolver();
-	}
-
-	@Override
 	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ElementPrinter[] {
-				new HibernateCopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getIdentityResolver(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
-				new HibernateCopyFromDtoPrinter(converterProviderPrinter, getIdentityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
+				new HibernateCopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
+				new HibernateCopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
 	}
 

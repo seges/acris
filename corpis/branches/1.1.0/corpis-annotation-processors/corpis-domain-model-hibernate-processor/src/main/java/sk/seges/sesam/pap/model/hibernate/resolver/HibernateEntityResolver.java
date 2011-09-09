@@ -7,15 +7,22 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
+import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.pap.model.hibernate.MappingType;
+import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class HibernateEntityResolver implements EntityResolver {
@@ -94,5 +101,45 @@ public class HibernateEntityResolver implements EntityResolver {
 		}
 
 		return null;
+	}
+
+	@Override
+	public boolean shouldHaveIdMethod(ConfigurationTypeElement configurationElement, TypeMirror domainType) {
+		if (!domainType.getKind().equals(TypeKind.DECLARED)) {
+			return false;
+		}
+		
+		TypeElement domainElement = (TypeElement)((DeclaredType)domainType).asElement();
+		if (domainElement.getAnnotation(Entity.class) != null) {
+			return domainElement.getAnnotation(Embeddable.class) == null;
+		}
+		return false;
+	}
+
+	private boolean isId(Element element) {
+		return element.getAnnotation(Id.class) != null || element.getAnnotation(EmbeddedId.class) != null;
+	}
+
+	@Override
+	public boolean isIdField(VariableElement field) {
+		return isId(field);
+	}
+
+	@Override
+	public boolean isIdMethod(ExecutableElement method) {
+		boolean result = isId(method);
+		
+		if (result) {
+			return result;
+		}
+		
+		
+		Element field = methodHelper.getField(method);
+
+		if (field == null) {
+			return false;
+		}
+
+		return isId(field);
 	}
 }
