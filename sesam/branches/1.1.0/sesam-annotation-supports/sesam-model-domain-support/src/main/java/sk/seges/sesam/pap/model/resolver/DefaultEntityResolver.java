@@ -2,8 +2,10 @@ package sk.seges.sesam.pap.model.resolver;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
+import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class DefaultEntityResolver implements EntityResolver {
@@ -15,5 +17,20 @@ public class DefaultEntityResolver implements EntityResolver {
 			return ((ExecutableElement)element).getReturnType();
 		}
 		return element.asType();
+	}
+
+	@Override
+	public boolean shouldHaveIdMethod(ConfigurationTypeElement configurationElement, TypeMirror domainType) {
+		return false;
+	}
+
+	@Override
+	public boolean isIdMethod(ExecutableElement method) {
+		return false;
+	}
+
+	@Override
+	public boolean isIdField(VariableElement field) {
+		return false;
 	}
 }

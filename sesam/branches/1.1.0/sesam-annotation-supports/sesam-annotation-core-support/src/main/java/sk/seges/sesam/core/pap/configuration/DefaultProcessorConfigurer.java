@@ -31,7 +31,7 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
-import sk.seges.sesam.core.annotation.configuration.Configuration;
+import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 import sk.seges.sesam.core.annotation.configuration.Interface;
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.configuration.api.ConfigurationElement;
@@ -262,7 +262,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			}
 		}
 
-		result.add(Configuration.class.getCanonicalName());
+		result.add(ProcessorConfiguration.class.getCanonicalName());
 
 		return result;
 	}
@@ -320,14 +320,14 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	}
 
 	protected void loadFromConfiguration() {
-		Set<? extends Element> elementsAnnotatedWith = roundEnvironment.getElementsAnnotatedWith(Configuration.class);
+		Set<? extends Element> elementsAnnotatedWith = roundEnvironment.getElementsAnnotatedWith(ProcessorConfiguration.class);
 		
 		for (Element element: elementsAnnotatedWith) {
-			Configuration configurationAnnotation = element.getAnnotation(Configuration.class);
-			TypeElement processorClassType = AnnotationClassPropertyHarvester.getTypeOfClassProperty(configurationAnnotation, new AnnotationClassProperty<Configuration>(){
+			ProcessorConfiguration configurationAnnotation = element.getAnnotation(ProcessorConfiguration.class);
+			TypeElement processorClassType = AnnotationClassPropertyHarvester.getTypeOfClassProperty(configurationAnnotation, new AnnotationClassProperty<ProcessorConfiguration>(){
 
 				@Override
-				public Class<?> getClassProperty(Configuration annotation) {
+				public Class<?> getClassProperty(ProcessorConfiguration annotation) {
 					return annotation.processor();
 				}
 				
@@ -690,7 +690,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		Set<Element> processingElements = new HashSet<Element>();
 		
 		for (Element element : roundEnvironment.getRootElements()) {
-			if (element.getAnnotation(Configuration.class) == null && !ListUtils.contains(processingElements, element)) {
+			if (element.getAnnotation(ProcessorConfiguration.class) == null && !ListUtils.contains(processingElements, element)) {
 				TypeElement typeElement = (TypeElement) element;
 				if (isSupportedByInterface(typeElement)) {
 					processingElements.add(element);
@@ -714,7 +714,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 					
 					Set<? extends Element> els = roundEnvironment.getElementsAnnotatedWith(typeElement);
 					for (Element element : els) {
-						if (isSupportedKind(element.getKind()) && element.getAnnotation(Configuration.class) == null && !ListUtils.contains(processingElements, element)) {
+						if (isSupportedKind(element.getKind()) && element.getAnnotation(ProcessorConfiguration.class) == null && !ListUtils.contains(processingElements, element)) {
 							List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
 							for (AnnotationMirror annotationMirror: annotationMirrors) {
 								if (isSupportedAnnotation(annotationMirror)) {
@@ -731,7 +731,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 
 		for (Element element: getConfiguredProcessingTypes()) {
 			//Element is not in the list, element is not configuration and element is supported type
-			if (!ListUtils.contains(processingElements, element) && element.getAnnotation(Configuration.class) == null  && isSupportedKind(element.getKind())) {
+			if (!ListUtils.contains(processingElements, element) && element.getAnnotation(ProcessorConfiguration.class) == null  && isSupportedKind(element.getKind())) {
 				processingElements.add(element);
 			}
 		}

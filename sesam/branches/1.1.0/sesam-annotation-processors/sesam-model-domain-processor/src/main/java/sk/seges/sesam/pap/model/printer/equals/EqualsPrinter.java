@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.printer.equals;
 
-import java.io.PrintWriter;
 import java.util.Arrays;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -11,24 +10,42 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.printer.AbstractElementPrinter;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
+/**
+ * {@link EqualsPrinter} prints equals method based on the fields defined in the class.
+ * Equals method tries to detect endless loops by checking whether the equals method isn't 
+ * already processed by setting a <i>processingEquals</i> flag. When infinite loops is detected
+ * no referenced entities are processed for equals purposes.
+ * <pre>
+ * This is used when entity A has reference to the entity B and entity B has reference to the entity A.
+ * Then infinite loops can occur in the equals method.
+ * </pre>
+ * @author Peter Simun
+ *
+ */
 public class EqualsPrinter extends AbstractElementPrinter {
 
 	private ProcessingEnvironment processingEnv;
+	private EntityResolver entityResolver;
 	
-	public EqualsPrinter(ProcessingEnvironment processingEnv, PrintWriter pw) {
+	public EqualsPrinter(EntityResolver entityResolver, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(pw);
 		this.processingEnv = processingEnv;
+		this.entityResolver = entityResolver;
 	}
 
+	/**
+	 * Prints the definition of the equals method with the initial prechecks
+	 */
 	@Override
-	public void initialize(ConfigurationTypeElement configurationTypeElement) {
-		
+	public void initialize(ConfigurationTypeElement configurationTypeElement, NamedType outputName) {
+
 		pw.println("private boolean processingEquals = false;");
 		pw.println("");
 		pw.println("@Override");
@@ -46,8 +63,12 @@ public class EqualsPrinter extends AbstractElementPrinter {
 				targetClassName.toString(ClassSerializer.SIMPLE, true) + ") obj;");
 	}
 
+	/**
+	 * Enclose equals method
+	 */
 	@Override
 	public void finish(ConfigurationTypeElement configurationTypeElement) {
+
 		pw.println("return true;");
 		pw.println("}");
 		pw.println();
@@ -59,10 +80,15 @@ public class EqualsPrinter extends AbstractElementPrinter {
 				TransferObjectProcessor.getOutputClass(configurationTypeElement)
 		};
 	}
+
+	/**
+	 * Is executed for every field in the class and prints the logic based on the type (primitive types, declared types, etc.).
+	 */
 	@Override
 	public void print(ProcessorContext context) {
 
-		boolean idMethod = TransferObjectHelper.isIdMethod(context.getMethod());
+		boolean idMethod = entityResolver.isIdMethod(context.getMethod());
+//		boolean idMethod = TransferObjectHelper.isIdMethod(context.getMethod());
 		
 		if (idMethod) {
 			//TODO That's not really true
