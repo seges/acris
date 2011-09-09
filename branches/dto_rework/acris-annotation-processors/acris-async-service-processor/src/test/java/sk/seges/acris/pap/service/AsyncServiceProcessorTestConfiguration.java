@@ -1,10 +1,10 @@
 package sk.seges.acris.pap.service;
 
-import sk.seges.sesam.core.annotation.configuration.Configuration;
+import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("")
-@Configuration(processor = AsyncServiceProcessor.class)
+@ProcessorConfiguration(processor = AsyncServiceProcessor.class)
 public class AsyncServiceProcessorTestConfiguration {
 }
