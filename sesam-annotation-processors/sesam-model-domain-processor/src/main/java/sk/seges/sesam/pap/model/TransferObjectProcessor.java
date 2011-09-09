@@ -24,11 +24,12 @@ import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
 import sk.seges.sesam.pap.model.printer.accessors.AccessorsPrinter;
 import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.printer.constructor.EmptyConstructorPrinter;
+import sk.seges.sesam.pap.model.printer.constructor.EnumeratedConstructorBodyPrinter;
+import sk.seges.sesam.pap.model.printer.constructor.EnumeratedConstructorDefinitionPrinter;
 import sk.seges.sesam.pap.model.printer.equals.EqualsPrinter;
 import sk.seges.sesam.pap.model.printer.field.FieldPrinter;
 import sk.seges.sesam.pap.model.printer.hashcode.HashCodePrinter;
-import sk.seges.sesam.pap.model.resolver.DefaultIdentifierResolver;
-import sk.seges.sesam.pap.model.resolver.api.IdentityResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectProcessor extends AbstractTransferProcessor {
@@ -134,18 +135,16 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ElementPrinter[] {
 				new FieldPrinter(pw),
+				new EmptyConstructorPrinter(pw),
+				new EnumeratedConstructorDefinitionPrinter(pw),
+				new EnumeratedConstructorBodyPrinter(pw),
 				new AccessorsPrinter(processingEnv, pw),
-				new EqualsPrinter(processingEnv, pw),
-				new HashCodePrinter(processingEnv, pw)
+				new EqualsPrinter(getEntityResolver(), processingEnv, pw),
+				new HashCodePrinter(getEntityResolver(), processingEnv, pw)
 		};
 	}
 	
 	public static ImmutableType getOutputClass(ConfigurationTypeElement configurationTypeElement) {	
 		return configurationTypeElement.getDtoTypeElement();
-	}
-
-	@Override
-	protected IdentityResolver getIdentityResolver() {
-		return new DefaultIdentifierResolver();
 	}
 }

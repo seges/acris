@@ -33,7 +33,6 @@ import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
 import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
 import sk.seges.sesam.pap.model.resolver.DefaultEntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.resolver.api.IdentityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 public abstract class AbstractTransferProcessor extends AbstractConfigurableProcessor {
@@ -74,12 +73,12 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		}
 
 		for (ElementPrinter elementPrinter: getElementPrinters(pw)) {
+			elementPrinter.initialize(configurationElement, outputName);
 			processMethods(configurationElement, mappingType, elementPrinter);
 		}
 	}
 
 	protected abstract ElementPrinter[] getElementPrinters(FormattedPrintWriter pw);
-	protected abstract IdentityResolver getIdentityResolver();
 	
 	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
 		return new ConfigurationTypeElement((TypeElement)element, processingEnv, roundEnv).getDelegateConfigurationTypeElement() == null;
@@ -99,8 +98,6 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		
 	protected void processMethods(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, ElementPrinter printer) {
 
-		printer.initialize(configurationTypeElement);
-
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asElement().getEnclosedElements());
 		
 		DomainTypeElement domainTypeElement = configurationTypeElement.getDomainTypeElement();
@@ -119,7 +116,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 				String fieldName = toHelper.getFieldPath(overridenMethod);
 				ExecutableElement domainMethod = toHelper.getDomainGetterMethod(processingElement, fieldName);
 
-				if (TransferObjectHelper.isIdMethod(domainMethod)) {
+				if (getEntityResolver().isIdMethod(domainMethod)) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Id method can't be ignored. There should be an id method available for merging purposes.", configurationTypeElement.asElement());
 					return;
 				}
@@ -142,7 +139,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 					continue;
 				}
 
-				if (TransferObjectHelper.isIdMethod(domainMethod)) {
+				if (getEntityResolver().isIdMethod(domainMethod)) {
 					idMethod = domainMethod;
 				}
 
@@ -165,13 +162,13 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 						
 						if (fieldGetter.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 							currentElement = ((DeclaredType)fieldGetter.getReturnType()).asElement();
-							ExecutableElement nestedIdMethod = toHelper.getIdMethod((DeclaredType)fieldGetter.getReturnType());
+							ExecutableElement nestedIdMethod = toHelper.getIdMethod((DeclaredType)fieldGetter.getReturnType(), getEntityResolver());
 
 							if (nestedIdMethod == null) {
 								
 								if ((!currentElement.getKind().equals(ElementKind.CLASS) &&
 									!currentElement.getKind().equals(ElementKind.INTERFACE)) ||
-										getIdentityResolver().shouldHaveIdMethod(configurationTypeElement, fieldGetter.getReturnType())) {
+										getEntityResolver().shouldHaveIdMethod(configurationTypeElement, fieldGetter.getReturnType())) {
 									//TODO Check @Id annotation is the configuration - nested field names
 									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + fieldGetter.getReturnType().toString() +
 											". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
@@ -217,7 +214,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 	
 						generated.add(fieldName);
 	
-						if (TransferObjectHelper.isIdMethod(method)) {
+						if (getEntityResolver().isIdMethod(method)) {
 							idMethod = method;
 						}
 
@@ -240,7 +237,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 
 		if (idMethod == null && domainTypeElement.asType().getKind().equals(TypeKind.DECLARED)) {
 			
-			idMethod = toHelper.getIdMethod((DeclaredType) domainTypeElement.asType());
+			idMethod = toHelper.getIdMethod((DeclaredType) domainTypeElement.asType(), getEntityResolver());
 			
 			if (idMethod != null) {
 
@@ -254,7 +251,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 		}
 
 		for (ExecutableElement overridenMethod: overridenMethods) {
-			if (!isProcessed(generated, toHelper.getFieldPath(overridenMethod)) && TransferObjectHelper.isIdMethod(overridenMethod)) {
+			if (!isProcessed(generated, toHelper.getFieldPath(overridenMethod)) && getEntityResolver().isIdMethod(overridenMethod)) {
 				if (idMethod != null) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 							idMethod.getSimpleName().toString() + " in the " + idMethod.getEnclosingElement().toString() + " class and " +
@@ -267,7 +264,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 			}
 		}
 
-		if (idMethod == null && getIdentityResolver().shouldHaveIdMethod(configurationTypeElement, domainTypeElement.asType())) {
+		if (idMethod == null && getEntityResolver().shouldHaveIdMethod(configurationTypeElement, domainTypeElement.asType())) {
 			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Identifier method could not be found in the automatic way. Please specify id method using " + 
 					Id.class.getSimpleName() + " annotation or just specify id as a method name.", configurationTypeElement.asElement());
 			return;

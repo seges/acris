@@ -21,7 +21,7 @@ import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
 import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.IdentityResolver;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 public class CopyFromDtoPrinter extends AbstractMethodPrinter implements ElementPrinter {
@@ -30,22 +30,21 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Element
 	private static final String DTO_NAME = "_dto";
 
 	private final FormattedPrintWriter pw;
+	private EntityResolver entityResolver;
 	
-	private final IdentityResolver identityResolver;
-	
-	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, IdentityResolver identityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.pw = pw;
-		this.identityResolver = identityResolver;
+		this.entityResolver = entityResolver;
 	}
 	
 	@Override
 	public void print(ProcessorContext context) {
-		copy(context, pw, new CopyFromDtoMethodPrinter(converterProviderPrinter, parametersResolver, roundEnv, processingEnv));
+		copy(context, pw, new CopyFromDtoMethodPrinter(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv));
 	}
 
 	@Override
-	public void initialize(ConfigurationTypeElement configurationElement) {
+	public void initialize(ConfigurationTypeElement configurationElement, NamedType outputName) {
 		
 		ImmutableType dtoType = getDtoType(configurationElement);
 		ImmutableType domainType = getDomainType(configurationElement);
@@ -55,13 +54,13 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Element
 		ExecutableElement idMethod = null;
 		
 		if (domainTypeMirror.getKind().equals(TypeKind.DECLARED)) {
-			idMethod = toHelper.getIdMethod((DeclaredType)domainTypeMirror);
+			idMethod = toHelper.getIdMethod((DeclaredType)domainTypeMirror, entityResolver);
 			
 			if (idMethod == null) {
-				idMethod = toHelper.getIdMethod((DeclaredType)configurationElement.asElement().asType());
+				idMethod = toHelper.getIdMethod((DeclaredType)configurationElement.asElement().asType(), entityResolver);
 			}
 			
-			if (idMethod == null && identityResolver.shouldHaveIdMethod(configurationElement, domainTypeMirror)) {
+			if (idMethod == null && entityResolver.shouldHaveIdMethod(configurationElement, domainTypeMirror)) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for " + configurationElement.toString(), configurationElement.asElement());
 				return;
 			}
@@ -88,9 +87,9 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Element
 		pw.println("}");
 		pw.println();
 		
-		ExecutableElement dtoIdMethod = toHelper.getDtoIdMethod(configurationElement);
+		ExecutableElement dtoIdMethod = toHelper.getDtoIdMethod(configurationElement, entityResolver);
 		
-		if (dtoIdMethod == null && identityResolver.shouldHaveIdMethod(configurationElement, domainTypeMirror)) {
+		if (dtoIdMethod == null && entityResolver.shouldHaveIdMethod(configurationElement, domainTypeMirror)) {
 			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for DTO class " + dtoType.getCanonicalName(), configurationElement.asElement());
 			return;
 		}

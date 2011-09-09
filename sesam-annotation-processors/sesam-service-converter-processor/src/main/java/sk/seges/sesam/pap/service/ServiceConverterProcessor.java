@@ -93,7 +93,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			processingEnv.getMessager().printMessage(Kind.ERROR, 
 					"[ERROR] Unable to find local interface for the service " + serviceElement
 							+ ". You should specify local service interface using " + LocalService.class.getCanonicalName() + " annotation.", serviceElement);
-			return null;
+			return new NamedType[] {};
 		}
 
 		List<NamedType> result = new ArrayList<NamedType>();

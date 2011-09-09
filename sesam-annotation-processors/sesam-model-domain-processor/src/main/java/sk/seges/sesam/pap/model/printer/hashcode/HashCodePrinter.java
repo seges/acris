@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.printer.hashcode;
 
-import java.io.PrintWriter;
 import java.util.Arrays;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -9,22 +8,42 @@ import javax.lang.model.type.DeclaredType;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
+import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.printer.AbstractElementPrinter;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
+/**
+ * {@link HashCodePrinter} prints hashcode method based on the fields defined in the class.
+ * Hashcode method tries to detect endless loops by checking whether the hashCode method isn't 
+ * already processed by setting a <i>processingEquals</i> flag. When infinite loops is detected
+ * no referenced entities are processed for hashCode purposes.
+ * <pre>
+ * This is used when entity A has reference to the entity B and entity B has reference to the entity A.
+ * Then infinite loops can occur in the hashCode method.
+ * </pre>
+ * @author Peter Simun
+ *
+ */
 public class HashCodePrinter extends AbstractElementPrinter {
 
 	private ProcessingEnvironment processingEnv;
-	
-	public HashCodePrinter(ProcessingEnvironment processingEnv, PrintWriter pw) {
+	private EntityResolver entityResolver;
+
+	public HashCodePrinter(EntityResolver entityResolver, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(pw);
 		this.processingEnv = processingEnv;
+		this.entityResolver = entityResolver;
 	}
 
+	/**
+	 * Prints the definition of the hashCode method with the initial prechecks
+	 */
 	@Override
-	public void initialize(ConfigurationTypeElement configuratioTypeElement) {
+	public void initialize(ConfigurationTypeElement configurationTypeElement, NamedType outputName) {
+		
 		pw.println("private boolean processingHashCode = false;");
 		pw.println("");
 		pw.println("@Override");
@@ -33,16 +52,23 @@ public class HashCodePrinter extends AbstractElementPrinter {
 		pw.println("int result = 1;");
 	}
 
+	/**
+	 * Enclose hashCode method
+	 */
 	@Override
-	public void finish(ConfigurationTypeElement configuratioTypeElement) {
+	public void finish(ConfigurationTypeElement configurationTypeElement) {
+		
 		pw.println("return result;");
 		pw.println("}");
 	}
 	
+	/**
+	 * Is executed for every field in the class and prints the logic based on the type (primitive types, declared types, etc.).
+	 */
 	@Override
 	public void print(ProcessorContext context) {
 
-		if (TransferObjectHelper.isIdMethod(context.getMethod())) {
+		if (entityResolver.isIdMethod(context.getMethod())) {
 			//TODO Not true
 			//IDs are not part of the hashCode
 			return;
@@ -51,7 +77,7 @@ public class HashCodePrinter extends AbstractElementPrinter {
 		if (context.getFieldType() instanceof ArrayNamedType) {
 			pw.println("if (!processingHashCode) {");
 			pw.println("processingHashCode = true;");
-			pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
+			pw.println("result = prime * result + ", Arrays.class, ".hashCode(" + context.getFieldName() + ");");
 			pw.println("processingHashCode = false;");
 			pw.println("}");
 			return;
@@ -105,7 +131,7 @@ public class HashCodePrinter extends AbstractElementPrinter {
 		case ARRAY:
 			pw.println("if (!processingHashCode) {");
 			pw.println("processingHashCode = true;");
-			pw.println("result = prime * result + " + Arrays.class.getCanonicalName() + ".hashCode(" + context.getFieldName() + ");");
+			pw.println("result = prime * result + ", Arrays.class, ".hashCode(" + context.getFieldName() + ");");
 			pw.println("processingHashCode = false;");
 			pw.println("}");
 			return;

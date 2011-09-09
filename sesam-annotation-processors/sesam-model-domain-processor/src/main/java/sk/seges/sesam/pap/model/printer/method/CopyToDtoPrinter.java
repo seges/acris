@@ -21,7 +21,6 @@ import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.resolver.api.IdentityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPrinter {
@@ -33,15 +32,13 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 
 	private ElementHolderTypeConverter elementHolderTypeConverter;
 	private EntityResolver entityResolver;
-	private IdentityResolver identityResolver;
 	
-	public CopyToDtoPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, IdentityResolver identityResolver, EntityResolver entityResolver, ParametersResolver parametersResolver, 
+	public CopyToDtoPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, ParametersResolver parametersResolver, 
 			RoundEnvironment roundEnv, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.pw = pw;
 		this.elementHolderTypeConverter = elementHolderTypeConverter;
 		this.entityResolver = entityResolver;
-		this.identityResolver = identityResolver;
 	}
 	
 	@Override
@@ -50,7 +47,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 	}
 
 	@Override
-	public void initialize(ConfigurationTypeElement configurationElement) {
+	public void initialize(ConfigurationTypeElement configurationElement, NamedType outputName) {
 		
 		ImmutableType dtoType = getDtoType(configurationElement);
 		ImmutableType domainType = getDomainType(configurationElement);
@@ -87,13 +84,13 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 		ExecutableElement idMethod = null;
 		
 		if (domainType.asType().getKind().equals(TypeKind.DECLARED)) {
-			idMethod = toHelper.getIdMethod((DeclaredType)domainTypeElement.asType());
+			idMethod = toHelper.getIdMethod((DeclaredType)domainTypeElement.asType(), entityResolver);
 			
 			if (idMethod == null) {
-				idMethod = toHelper.getIdMethod((DeclaredType) configurationElement.asElement().asType());
+				idMethod = toHelper.getIdMethod((DeclaredType) configurationElement.asElement().asType(), entityResolver);
 			}
 			
-			if (idMethod == null && identityResolver.shouldHaveIdMethod(configurationElement, domainTypeElement.asType())) {
+			if (idMethod == null && entityResolver.shouldHaveIdMethod(configurationElement, domainTypeElement.asType())) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for " + configurationElement.toString(), configurationElement.asElement());
 				return;
 			}
@@ -128,11 +125,11 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 			pw.print(dtoIdType.getCanonicalName() + " " + idName + " = ");
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-				//Element idConfigurationElement = toHelper.getConfigurationElement(domainIdType, roundEnv);
-				//getDomainConverter(domainIdType);
 				if (domainIdTypeElement.getConfigurationTypeElement() != null && domainIdTypeElement.getConfigurationTypeElement().getConverterTypeElement() != null) {
 					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfigurationTypeElement().getConverterTypeElement(), idMethod.getReturnType(), pw);
-					pw.print(".toDto(");
+					pw.print(".convertToDto(");
+					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfigurationTypeElement().getConverterTypeElement(), idMethod.getReturnType(), pw);
+					pw.print(".createDtoInstance(null), ");
 					pw.print("(" + castToDelegate(idMethod.getReturnType()).toString(ClassSerializer.CANONICAL, true) + ")");
 					useIdConverter = true;
 				}

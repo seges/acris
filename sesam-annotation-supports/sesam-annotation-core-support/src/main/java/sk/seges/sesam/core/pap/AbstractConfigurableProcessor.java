@@ -19,6 +19,7 @@ import javax.annotation.Generated;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -27,10 +28,11 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import sk.seges.sesam.core.annotation.configuration.Configuration;
+import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 import sk.seges.sesam.core.pap.api.SubProcessor;
 import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
@@ -99,10 +101,22 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
 	public Set<String> getSupportedAnnotationTypes() {
 
-		Set<String> result = new HashSet<String>(super.getSupportedAnnotationTypes());
+	    SupportedAnnotationTypes sat = this.getClass().getAnnotation(SupportedAnnotationTypes.class);
+
+		Set<String> result = null;
+		
+		if (sat != null) {
+			result = new HashSet<String>(super.getSupportedAnnotationTypes());
+		} else {
+			result = new HashSet<String>();
+		}
 		
 		if (configurer != null) {
 			result.addAll(configurer.getSupportedAnnotations());
+		}
+
+		if (result.size() == 0) {
+		    processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "No SupportedAnnotationTypes for " + this.getClass().getName() + ", returning an empty set.");
 		}
 
 		return result;
@@ -144,7 +158,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		if (this.configurer != null) {
 			this.configurer.init(pe, this);
 		}
-}
+	}
 
 	protected ProcessorConfigurer getConfigurer() {
 		return null;
@@ -248,7 +262,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 				processingElements = new HashSet<Element>();
 
 				for (String annotationType: getSupportedAnnotationTypes()) {
-					if (!annotationType.equals(Configuration.class.getCanonicalName())) {
+					if (!annotationType.equals(ProcessorConfiguration.class.getCanonicalName())) {
 						TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(annotationType);
 						if (typeElement != null) {
 							Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(typeElement);
@@ -419,6 +433,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 					pw.close();
 				}
 			}
+
 		}
 		
 		return supportProcessorChain();

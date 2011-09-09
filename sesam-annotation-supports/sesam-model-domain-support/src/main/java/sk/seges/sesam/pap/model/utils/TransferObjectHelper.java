@@ -1,19 +1,14 @@
 package sk.seges.sesam.pap.model.utils;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -24,7 +19,6 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.NullCheck;
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.model.InputClass;
-import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.ArrayNamedType;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
@@ -35,13 +29,12 @@ import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.DtoTypeElement;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class TransferObjectHelper {
 
 	public static final String DTO_SUFFIX = "Dto";
 	public static final String DEFAULT_SUFFIX = "Configuration";
-
-	private static final String ID_METHOD_NAME = "id";
 
 	private NameTypes nameTypes;
 	private ProcessingEnvironment processingEnv;
@@ -59,28 +52,6 @@ public class TransferObjectHelper {
 		return nameTypes;
 	}
 
-//	public Map<ExecutableElement, List<String>> getConverterParameterNames(TypeElement converterType, ParameterElement... additionalParameters) {
-//		Map<ExecutableElement, List<String>> result = new HashMap<ExecutableElement, List<String>>();
-//
-//		List<ExecutableElement> constructors = ElementFilter.constructorsIn(converterType.getEnclosedElements());
-//
-//		for (ExecutableElement constructor : constructors) {
-//
-//			List<String> parameterNames = new LinkedList<String>();
-//			result.put(constructor, parameterNames);
-//
-//			for (VariableElement parameter : constructor.getParameters()) {
-//				parameterNames.add(parameter.getSimpleName().toString());
-//			}
-//
-//			for (ParameterElement additionalParameter : additionalParameters) {
-//				parameterNames.add(additionalParameter.getName().toString());
-//			}
-//		}
-//
-//		return result;
-//	}
-//
 	public boolean isUnboxedType(TypeMirror typeMirror) {
 		try {
 			return (processingEnv.getTypeUtils().unboxedType(typeMirror) != null);
@@ -231,7 +202,7 @@ public class TransferObjectHelper {
 		return null;
 	}
 
-	public ExecutableElement getDtoIdMethod(ConfigurationTypeElement configurationTypeElement) {
+	public ExecutableElement getDtoIdMethod(ConfigurationTypeElement configurationTypeElement, EntityResolver entityResolver) {
 
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asElement().getEnclosedElements());
 
@@ -246,7 +217,7 @@ public class TransferObjectHelper {
 			Ignore ignoreAnnotation = overridenMethod.getAnnotation(Ignore.class);
 			if (ignoreAnnotation == null) {
 
-				if (isIdMethod(overridenMethod)) {
+				if (entityResolver.isIdMethod(overridenMethod)) {
 					if (overridenMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 						return getDomainGetterMethod(((DeclaredType)domainType).asElement(), getFieldPath(overridenMethod));
 					}
@@ -256,7 +227,7 @@ public class TransferObjectHelper {
 			}
 		}
 
-		ExecutableElement idMethod = getIdMethod((DeclaredType)domainType);
+		ExecutableElement idMethod = getIdMethod((DeclaredType)domainType, entityResolver);
 		if (idMethod != null && !isFieldIgnored(configurationTypeElement, methodHelper.toField(idMethod))) {
 			return idMethod;
 		}
@@ -264,7 +235,7 @@ public class TransferObjectHelper {
 		return null;
 	}
 
-	public ExecutableElement getIdMethod(DeclaredType delcaredType) {
+	public ExecutableElement getIdMethod(DeclaredType delcaredType, EntityResolver entityResolver) {
 
 		Element element = delcaredType.asElement();
 		
@@ -278,7 +249,7 @@ public class TransferObjectHelper {
 
 					ExecutableElement domainMethod = getDomainGetterMethod(element, getFieldPath(overridenMethod));
 
-					if (domainMethod != null && isIdMethod(domainMethod)) {
+					if (domainMethod != null && entityResolver.isIdMethod(domainMethod)) {
 						return domainMethod;
 					}
 				}
@@ -288,7 +259,7 @@ public class TransferObjectHelper {
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
 		for (ExecutableElement method : methods) {
-			if (isIdMethod(method)) {
+			if (entityResolver.isIdMethod(method)) {
 				return method;
 			}
 		}
@@ -298,7 +269,7 @@ public class TransferObjectHelper {
 			ExecutableElement idMethod;
 
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-				idMethod = getIdMethod((DeclaredType)typeElement.getSuperclass());
+				idMethod = getIdMethod((DeclaredType)typeElement.getSuperclass(), entityResolver);
 
 				if (idMethod != null) {
 					return idMethod;
@@ -307,7 +278,7 @@ public class TransferObjectHelper {
 
 			for (TypeMirror interfaceType : typeElement.getInterfaces()) {
 				if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
-					idMethod = getIdMethod((DeclaredType)interfaceType);
+					idMethod = getIdMethod((DeclaredType)interfaceType, entityResolver);
 					if (idMethod != null) {
 						return idMethod;
 					}
@@ -357,26 +328,5 @@ public class TransferObjectHelper {
 		}
 
 		return false;
-	}
-
-	public boolean isIdField(String field) {
-		return field.equals(ID_METHOD_NAME);
-	}
-
-	public static boolean isIdMethod(ExecutableElement method) {
-		if (method == null) {
-			return false;
-		}
-
-		List<? extends AnnotationMirror> annotations = method.getAnnotationMirrors();
-
-		for (AnnotationMirror annotation : annotations) {
-			if (annotation.getAnnotationType().asElement().getSimpleName().toString().toLowerCase().equals(ID_METHOD_NAME)) {
-				return true;
-			}
-		}
-
-		String methodName = method.getSimpleName().toString().toLowerCase();
-		return methodName.equals(MethodHelper.GETTER_PREFIX + ID_METHOD_NAME) || methodName.equals(ID_METHOD_NAME);
 	}
 }

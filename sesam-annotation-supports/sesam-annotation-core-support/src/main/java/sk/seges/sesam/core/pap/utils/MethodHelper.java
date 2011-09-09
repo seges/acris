@@ -131,7 +131,7 @@ public class MethodHelper {
 		return getField(method.getEnclosingElement(), toField(method));
 	}
 	
-	private Element getField(Element element, String name) {
+	public VariableElement getField(Element element, String name) {
 		List<VariableElement> fields = ElementFilter.fieldsIn(element.getEnclosedElements());
 		
 		for (VariableElement field: fields) {

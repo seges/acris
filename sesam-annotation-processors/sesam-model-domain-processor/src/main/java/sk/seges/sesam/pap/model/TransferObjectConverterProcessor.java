@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,9 +37,7 @@ import sk.seges.sesam.pap.model.printer.method.CopyFromDtoPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyToDtoPrinter;
 import sk.seges.sesam.pap.model.provider.TransferObjectConverterProcessorContextProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
-import sk.seges.sesam.pap.model.resolver.DefaultIdentifierResolver;
 import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
-import sk.seges.sesam.pap.model.resolver.api.IdentityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 import sk.seges.sesam.shared.model.converter.BasicConverter;
@@ -145,10 +142,6 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		return result.toArray(new Type[] {});
 	}
 	
-	protected IdentityResolver getIdentityResolver() {
-		return new DefaultIdentifierResolver();
-	}
-	
 	protected PackageValidatorProvider getPackageValidatorProvider() {
 		return new DefaultPackageValidatorProvider();
 	}
@@ -156,8 +149,8 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	@Override
 	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ElementPrinter[] {
-				new CopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getIdentityResolver(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
-				new CopyFromDtoPrinter(converterProviderPrinter, getIdentityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
+				new CopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(),getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
+				new CopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
 	}
 	
