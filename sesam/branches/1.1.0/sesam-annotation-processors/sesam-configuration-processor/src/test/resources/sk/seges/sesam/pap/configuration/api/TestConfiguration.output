@@ -1,0 +1,179 @@
+package sk.seges.sesam.pap.configuration.api;
+
+import javax.annotation.Generated;
+
+import sk.seges.sesam.core.configuration.api.ConfigurationValue;
+import sk.seges.sesam.core.configuration.utils.ConfigurationUtils;
+
+
+@Generated(value = "sk.seges.sesam.pap.configuration.ConfigurationProcessor")
+public class TestConfigurationHolder {
+
+	private String seleniumServer;
+
+	private Integer seleniumPort;
+
+	private Boolean seleniumRemote;
+
+	private String bromineServer;
+
+	private Integer brominePort;
+
+	private Boolean bromine;
+
+	private String testURL;
+
+	private String testURI;
+
+	/**
+	* Defines host name where the selenium server is located.
+	*/
+	public String getSeleniumServer() {
+		return seleniumServer;
+	}
+	
+	public void setSeleniumServer(String seleniumServer) {
+		this.seleniumServer = seleniumServer;
+	}
+	
+	/**
+	* Defines port name where the selenium server is located.
+	*/
+	public Integer getSeleniumPort() {
+		return seleniumPort;
+	}
+	
+	public void setSeleniumPort(Integer seleniumPort) {
+		this.seleniumPort = seleniumPort;
+	}
+	
+	/**
+	* Defines support for connection to the remote server instance.
+	*/
+	public Boolean getSeleniumRemote() {
+		return seleniumRemote;
+	}
+	
+	public void setSeleniumRemote(Boolean seleniumRemote) {
+		this.seleniumRemote = seleniumRemote;
+	}
+	
+	/**
+	* Defines host name where the bromine server is located.
+	*/
+	public String getBromineServer() {
+		return bromineServer;
+	}
+	
+	public void setBromineServer(String bromineServer) {
+		this.bromineServer = bromineServer;
+	}
+	
+	/**
+	* Defines port name where the bromine server is located.
+	*/
+	public Integer getBrominePort() {
+		return brominePort;
+	}
+	
+	public void setBrominePort(Integer brominePort) {
+		this.brominePort = brominePort;
+	}
+	
+	/**
+	* Enables/disables support for bromine.
+	*/
+	public Boolean getBromine() {
+		return bromine;
+	}
+	
+	public void setBromine(Boolean bromine) {
+		this.bromine = bromine;
+	}
+	
+	/**
+	* Defines root URL of the testing site.
+	*/
+	public String getTestURL() {
+		return testURL;
+	}
+	
+	public void setTestURL(String testURL) {
+		this.testURL = testURL;
+	}
+	
+	/**
+	* Defines relative URI of the testing home page.
+	*/
+	public String getTestURI() {
+		return testURI;
+	}
+	
+	public void setTestURI(String testURI) {
+		this.testURI = testURI;
+	}
+	
+	public TestConfigurationHolder(ConfigurationValue[] configurations) {
+		this.seleniumServer = ConfigurationUtils.getConfigurationValue(configurations, "test.seleniumHost");
+		this.seleniumPort = ConfigurationUtils.getConfigurationInt(configurations, "test.seleniumPort");
+		this.seleniumRemote = ConfigurationUtils.getConfigurationBoolean(configurations, "test.testRemote");
+		this.bromineServer = ConfigurationUtils.getConfigurationValue(configurations, "test.bromineHost");
+		this.brominePort = ConfigurationUtils.getConfigurationInt(configurations, "test.brominePort");
+		this.bromine = ConfigurationUtils.getConfigurationBoolean(configurations, "test.bromineEnabled");
+		this.testURL = ConfigurationUtils.getConfigurationValue(configurations, "test.testHost");
+		this.testURI = ConfigurationUtils.getConfigurationValue(configurations, "test.testUri");
+	}
+
+	public TestConfigurationHolder(String seleniumServer, Integer seleniumPort, Boolean seleniumRemote, String bromineServer, Integer brominePort, Boolean bromine, String testURL, String testURI) {
+		this.seleniumServer = seleniumServer;
+		this.seleniumPort = seleniumPort;
+		this.seleniumRemote = seleniumRemote;
+		this.bromineServer = bromineServer;
+		this.brominePort = brominePort;
+		this.bromine = bromine;
+		this.testURL = testURL;
+		this.testURI = testURI;
+	}
+
+	public TestConfigurationHolder(TestConfigurationHolder testConfigurationHolder) {
+		this.seleniumServer = testConfigurationHolder.getSeleniumServer();
+		this.seleniumPort = testConfigurationHolder.getSeleniumPort();
+		this.seleniumRemote = testConfigurationHolder.getSeleniumRemote();
+		this.bromineServer = testConfigurationHolder.getBromineServer();
+		this.brominePort = testConfigurationHolder.getBrominePort();
+		this.bromine = testConfigurationHolder.getBromine();
+		this.testURL = testConfigurationHolder.getTestURL();
+		this.testURI = testConfigurationHolder.getTestURI();
+	}
+
+	public TestConfigurationHolder merge(TestConfigurationHolder testConfigurationHolder) {
+		if (testConfigurationHolder == null) {
+			return this;
+		}
+		if (seleniumServer == null) {
+			this.seleniumServer = testConfigurationHolder.getSeleniumServer();
+		}
+		if (seleniumPort == null) {
+			this.seleniumPort = testConfigurationHolder.getSeleniumPort();
+		}
+		if (seleniumRemote == null) {
+			this.seleniumRemote = testConfigurationHolder.getSeleniumRemote();
+		}
+		if (bromineServer == null) {
+			this.bromineServer = testConfigurationHolder.getBromineServer();
+		}
+		if (brominePort == null) {
+			this.brominePort = testConfigurationHolder.getBrominePort();
+		}
+		if (bromine == null) {
+			this.bromine = testConfigurationHolder.getBromine();
+		}
+		if (testURL == null) {
+			this.testURL = testConfigurationHolder.getTestURL();
+		}
+		if (testURI == null) {
+			this.testURI = testConfigurationHolder.getTestURI();
+		}
+		return this;
+	}
+}
