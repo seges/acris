@@ -126,7 +126,11 @@
 				<artifactId>sesam-model-domain-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-configuration-processor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-core</artifactId>

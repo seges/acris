@@ -4,9 +4,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.Credentials;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTestConfiguration;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.Credentials;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestConfiguration;
 import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 import sk.seges.sesam.core.test.selenium.runner.MockRunner;
 

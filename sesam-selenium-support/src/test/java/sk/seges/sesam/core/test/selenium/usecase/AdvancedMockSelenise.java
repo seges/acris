@@ -4,7 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
-import sk.seges.sesam.core.test.selenium.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.runner.MockRunner;
 
 @Ignore
