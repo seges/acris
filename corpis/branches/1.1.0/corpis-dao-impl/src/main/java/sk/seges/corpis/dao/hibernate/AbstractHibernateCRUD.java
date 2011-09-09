@@ -70,6 +70,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		return preparedCriterions;
 	}
 
+	@Override
 	public List<T> findByCriteria(DetachedCriteria criteria, Page page) {
 		return findByCriteria(criteria, page, false);
 	}
@@ -78,6 +79,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		return findByCriteria(criteria, page, null, cacheable);
 	}
 
+	@Override
 	public List<T> findByCriteria(DetachedCriteria criteria, Page page, Set<String> existingAliases) {
 		return findByCriteria(criteria, page, existingAliases, false);
 	}
@@ -126,10 +128,12 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		return executable.list();
 	}
 
+	@Override
 	public Integer getCountByCriteria(DetachedCriteria criteria) {
 		return getCountByCriteria(criteria, null, null);
 	}
 
+	@Override
 	public Integer getCountByCriteria(DetachedCriteria criteria, Page requestedPage, Set<String> existingAliases) {
 		return doGetCountByCriteria(criteria, requestedPage, existingAliases, null);
 	}
@@ -169,6 +173,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		return findPagedResultByCriteria(createCriteria(), requestedPage);
 	}
 
+	@Override
 	public T findUnique(Page requestedPage) {
 		 PagedResult<List<T>> resultList = findAll(requestedPage);
 		 if (resultList == null || resultList.getResult() == null || resultList.getResult().size() != 1) {
@@ -441,7 +446,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 				continue;
 			}
 			orig = chain.substring(0, index);
-			criteria.createAlias(replaceAllEmbeddedFieldDelimsWithFieldDelims(orig), aliased);
+			criteria.createAlias(replaceAllEmbeddedFieldDelimsWithFieldDelims(orig), aliased, Criteria.LEFT_JOIN);
 			existingAliases.add(aliased);
 
 			lastIndex = index + 1;
