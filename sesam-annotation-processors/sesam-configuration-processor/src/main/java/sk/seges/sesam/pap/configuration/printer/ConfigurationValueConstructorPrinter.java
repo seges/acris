@@ -3,21 +3,28 @@ package sk.seges.sesam.pap.configuration.printer;
 import java.io.PrintWriter;
 
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementKindVisitor6;
 import javax.lang.model.util.SimpleTypeVisitor6;
 
 import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.configuration.utils.ConfigurationUtils;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.ProcessorContext;
 import sk.seges.sesam.pap.configuration.printer.api.ElementPrinter;
 
 public class ConfigurationValueConstructorPrinter implements ElementPrinter {
 
-	private PrintWriter pw;
+	enum Te {
+		
+	}
 	
-	public ConfigurationValueConstructorPrinter(PrintWriter pw) {
+	private FormattedPrintWriter pw;
+	
+	public ConfigurationValueConstructorPrinter(FormattedPrintWriter pw) {
 		this.pw = pw;
 	}
 
@@ -35,6 +42,34 @@ public class ConfigurationValueConstructorPrinter implements ElementPrinter {
 				pw.println("this." + context.getFieldName() + " = " +
 						ConfigurationUtils.class.getSimpleName() + ".getConfigurationValue(configurations, \"" + context.getParameter().name() + "\");");
 				return null;
+			}
+			
+			@Override
+			public Void visitDeclared(DeclaredType t, ProcessorContext context) {
+				Boolean result = t.asElement().accept(new ElementKindVisitor6<Boolean, ProcessorContext>() {
+					@Override
+					public Boolean visitTypeAsEnum(TypeElement e, ProcessorContext context) {
+						for (Te te: Te.values()) {
+							if (te.toString().equals("")) {
+								
+							}
+						}
+						pw.println(String.class.getSimpleName() + " _" + context.getFieldName() + " = " +
+								ConfigurationUtils.class.getSimpleName() + ".getConfigurationValue(configurations, \"" + context.getParameter().name() + "\");");
+						pw.println("for (", e, " _enumValue: ", e, ".values()) {");
+						pw.println("if (_enumValue.toString().equals(_" + context.getFieldName() + ")) {");
+						pw.println("this." + context.getFieldName() + " = _enumValue;");
+						pw.println("}");
+						pw.println("}");
+						return true;
+					}
+				}, context);
+				
+				if (result != null && result) {
+					return null;
+				}
+				
+				return super.visitDeclared(t, context);
 			}
 			
 			@Override
