@@ -20,7 +20,7 @@ import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.configurer.ConfigurationProcessorConfigurer;
+import sk.seges.sesam.pap.configuration.configuration.ConfigurationProcessorConfigurer;
 import sk.seges.sesam.pap.configuration.model.ProcessorContext;
 import sk.seges.sesam.pap.configuration.printer.AccessorPrinter;
 import sk.seges.sesam.pap.configuration.printer.ConfigurationValueConstructorPrinter;
