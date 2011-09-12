@@ -83,9 +83,13 @@ public class HashCodePrinter extends AbstractElementPrinter {
 			return;
 		}
 
+		//When field type is generated 
 		if (context.getFieldType().asType() == null) {
-			//TODO - what's this case?
+			pw.println("if (!processingHashCode) {");
+			pw.println("processingHashCode = true;");
 			pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
+			pw.println("processingHashCode = false;");
+			pw.println("}");
 			return;
 		}
 		

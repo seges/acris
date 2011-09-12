@@ -117,8 +117,17 @@ public class EqualsPrinter extends AbstractElementPrinter {
 				pw.println("if (" + context.getFieldName() + " == null) {");
 				pw.println("if (other." + context.getFieldName() + " != null)");
 				pw.println("	return false;");
-				pw.println("} else if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
-				pw.println("	return false;");
+				pw.println("} else { ");
+				pw.println("if (!processingEquals) {");
+				pw.println("processingEquals = true;");
+				pw.println("if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + ")) {");
+				pw.println("processingEquals = false;");
+				pw.println("return false;");
+				pw.println("} else {");
+				pw.println("processingEquals = false;");
+				pw.println("}");
+				pw.println("}");
+				pw.println("}");
 			}
 			return;
 		}
