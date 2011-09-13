@@ -29,6 +29,7 @@ import sk.seges.corpis.domain.VATTestDO;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.SimpleExpression;
+import sk.seges.sesam.dao.SortInfo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:test-corpis-dao-context.xml" })
@@ -64,7 +65,7 @@ public class ProjectablesTest {
 
 		UserTestDO anotherUser = new UserTestDO();
 		anotherUser.setLogin("jara");
-		user.setName("Jara Cimrman");
+		anotherUser.setName("Jara Cimrman");
 		anotherUser.setPassword("araj");
 
 		LocationTestDO anotherBirth = new LocationTestDO();
@@ -76,6 +77,7 @@ public class ProjectablesTest {
 		anotherMailTemplate.setSubject("another user subject");
 		CommonMailStuffTestEmbeddable anotherCommonMailStuff = new CommonMailStuffTestEmbeddable();
 		anotherCommonMailStuff.setMailAddress(anotherBirth);
+		anotherCommonMailStuff.setSimpleMailAttribute("yetAnotherAttribute");
 		anotherMailTemplate.setCommonStuff(anotherCommonMailStuff);
 		anotherUser.setMailTemplate(anotherMailTemplate);
 
@@ -352,5 +354,45 @@ public class ProjectablesTest {
 			assertNull(order.getMailTemplate().getToUser());
 		}
 	}
+	
+	@Test
+	public void testSortablesOnEmbeddedFields() {
+		OrderTestDO o = new OrderTestDO();
+		o.setOrdered(new Date());
+		o.setDelivered(new Date());
+		o.setOrderId("myid-SortableTest");
+
+		MailTemplateTestEmbeddable mailTemplate = new MailTemplateTestEmbeddable();
+		o.setMailTemplate(mailTemplate);
+		mailTemplate.setSubject("Abcd-Store");
+		mailTemplate.setMailBody("Zet body to be the last");
+		orderDAO.persist(o);
+
+		Page page = new Page(0, 0);
+		page.setProjectableResult(OrderTestDO.class.getName());
+		page.addProjectable("mailTemplate.subject");
+		page.addSortable(new SortInfo(true, "mailTemplate.subject"));
+		List<OrderTestDO> orders = orderDAO.findAll(page).getResult();
+		assertEquals(ITEM_COUNT+1, orders.size());
+		assertEquals("mailTemplate.subject of first order", o.getMailTemplate().getSubject(), orders.get(0).getMailTemplate().getSubject());
+		
+		page = new Page(0, 0);
+		page.setProjectableResult(OrderTestDO.class.getName());
+		page.addProjectable("mailTemplate.subject");
+		page.addSortable(new SortInfo(false, "mailTemplate.subject"));
+		orders = orderDAO.findAll(page).getResult();
+		assertEquals(ITEM_COUNT+1, orders.size());
+		assertEquals("mailTemplate.subject of last order", o.getMailTemplate().getSubject(), orders.get(orders.size()-1).getMailTemplate().getSubject());
+		
+		page = new Page(0, 0);
+		page.setProjectableResult(OrderTestDO.class.getName());
+		page.addProjectable("mailTemplate.subject");
+		page.addSortable(new SortInfo(true, "mailTemplate.mailBody"));
+		orders = orderDAO.findAll(page).getResult();
+		assertEquals(ITEM_COUNT+1, orders.size());
+		assertEquals("mailTemplate.subject of last order", o.getMailTemplate().getSubject(), orders.get(orders.size()-1).getMailTemplate().getSubject());
+
+	}
+	
 
 }

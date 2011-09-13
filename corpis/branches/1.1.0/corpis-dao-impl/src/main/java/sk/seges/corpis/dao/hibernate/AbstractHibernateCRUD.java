@@ -42,7 +42,8 @@ import sk.seges.sesam.dao.SimpleExpression;
 import sk.seges.sesam.dao.SortInfo;
 import sk.seges.sesam.domain.IDomainObject;
 
-public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends AbstractJPADAO<T> implements IHibernateFinderDAO<T> {
+public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends AbstractJPADAO<T> implements
+		IHibernateFinderDAO<T> {
 
 	public static final String ALIAS_CHAIN_DELIM = "_";
 	public static final String FIELD_DELIM = ".";
@@ -88,18 +89,18 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		return doFindByCriteria(criteria, page, existingAliases, true, cacheable);
 	}
 
-    @Override
-    @Transactional
-    public T persist(T entity) {
-        return super.persist(entity);
-    }
+	@Override
+	@Transactional
+	public T persist(T entity) {
+		return super.persist(entity);
+	}
 
-    @Override
-    @Transactional
-    public T merge(T entity) {
-        return super.merge(entity);
-    }
-    
+	@Override
+	@Transactional
+	public T merge(T entity) {
+		return super.merge(entity);
+	}
+
 	@SuppressWarnings("unchecked")
 	private List<T> doFindByCriteria(DetachedCriteria criteria, Page page, Set<String> existingAliases,
 			boolean addFilterables, boolean cacheable) {
@@ -113,6 +114,8 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			// count
 			enrichCriteriaWithProjectables(page, executable, existingAliases);
 		}
+
+		enrichCriteriaWithSortables(page, executable, existingAliases);
 
 		executable.setFirstResult(page.getStartIndex());
 		if (!retrieveAllResults(page)) {
@@ -175,11 +178,11 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 
 	@Override
 	public T findUnique(Page requestedPage) {
-		 PagedResult<List<T>> resultList = findAll(requestedPage);
-		 if (resultList == null || resultList.getResult() == null || resultList.getResult().size() != 1) {
-			 return null;
-		 }
-		 return resultList.getResult().get(0);
+		PagedResult<List<T>> resultList = findAll(requestedPage);
+		if (resultList == null || resultList.getResult() == null || resultList.getResult().size() != 1) {
+			return null;
+		}
+		return resultList.getResult().get(0);
 	}
 
 	public PagedResult<List<T>> findPagedResultByCriteria(DetachedCriteria criteria, Page requestedPage,
@@ -199,7 +202,6 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 		}
 
-		enrichCriteriaWithSortables(requestedPage, criteria);
 		List<T> list = doFindByCriteria(criteria, requestedPage, existingAliases, !addedFilterables.value, cacheable);
 
 		if (retrieveAllResults(requestedPage)) {
@@ -320,7 +322,8 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	 * Projection will be = user__birthplace__street.number
 	 * 
 	 * <p>
-	 * Because bug in hibernate HHH-817 alias can't have the same name as property 
+	 * Because bug in hibernate HHH-817 alias can't have the same name as
+	 * property
 	 * 
 	 * 
 	 * 
@@ -472,10 +475,9 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 				resultClass = Class.forName(className);
 			}
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Unable to recreate class with string " + className
-					+ " for filterables.");
+			throw new RuntimeException("Unable to recreate class with string " + className + " for filterables.");
 		}
-		
+
 		criteria.add(retrieveRestriction(filterable, criteria, existingAliases, resultClass));
 	}
 
@@ -559,7 +561,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			alias = replaceAllEmbeddedFieldDelimsWithFieldDelims(alias);
 			parameters = new Object[] { alias };
 		}
-		
+
 		try {
 			Method criterion = extractCriterionMethod(filterable1, parameterTypes);
 			Criterion criterionInst = (Criterion) criterion.invoke(null, parameters);
@@ -590,18 +592,36 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	}
 
 	/**
+	 * adds sortables to criteria, new aliases are added as well
+	 * 
 	 * @param requestedPage
 	 * @param criteria
 	 */
-	private void enrichCriteriaWithSortables(Page requestedPage, DetachedCriteria criteria) {
+	private void enrichCriteriaWithSortables(Page requestedPage, Criteria criteria, Set<String> existingAliases) {
 		List<SortInfo> sortables = requestedPage.getSortables();
 		if (sortables == null) {
 			return;
 		}
 
+		PropertyAccessor propertyAccessor = PropertyAccessorFactory.getPropertyAccessor("field");
+		Class<?> projectableResultClass;
+		try {
+			projectableResultClass = Class.forName(requestedPage.getProjectableResult());
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Unable to recreate class with string " + requestedPage.getProjectableResult()
+					+ " for projectables.");
+		}
+
 		for (SortInfo sortable : sortables) {
-			criteria.addOrder(sortable.isAscending() ? Order.asc(sortable.getColumn()) : Order.desc(sortable
-					.getColumn()));
+			String sort = sortable.getColumn();
+			String sortWithEmbedded = addEmbeddedDelimsToProperty(sort, projectableResultClass, propertyAccessor);
+			
+			String alias = createAliases(criteria, sortWithEmbedded, existingAliases);
+			if (alias.lastIndexOf(EMBEDDED_FIELD_DELIM) > alias.lastIndexOf(FIELD_DELIM)) {
+				int index = alias.lastIndexOf(EMBEDDED_FIELD_DELIM);
+				alias = alias.substring(0, index) + FIELD_DELIM + alias.substring(index+1);
+			}
+			criteria.addOrder(sortable.isAscending() ? Order.asc(alias) : Order.desc(alias));
 		}
 	}
 
