@@ -2,6 +2,9 @@ package sk.seges.sesam.pap.test.selenium.processor;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,8 +39,6 @@ import sk.seges.sesam.pap.test.selenium.processor.printer.SettingsInitializerPri
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProcessor {
-
-	static boolean configured = false;
 	
 	protected ElementKind getElementKind() {
 		return ElementKind.CLASS;
@@ -49,11 +50,14 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 		annotations.add(SeleniumTest.class.getCanonicalName());
 		return annotations;
 	}
-	
-	public static final ImmutableType getOutputClass(ImmutableType mutableType) {
-		return mutableType.addClassSufix("Configuration");
-	}
-	
+
+	@Override
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
+		return new NamedType[] {
+				new SeleniumTestTypeElement((TypeElement)((DeclaredType)mutableType.asType()).asElement(), processingEnv).getConfiguration()
+		};
+	};
+
 	@Override
 	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
 		switch (type) {
@@ -64,13 +68,6 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 		return super.getOutputDefinition(type, typeElement);
 	}
 	
-	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		return new NamedType[] {
-			getOutputClass(mutableType)
-		};
-	};
-
 	protected void cloneConstructor(ExecutableElement constructor, NamedType outputClass, PrintWriter pw) {
 
 		for (Modifier modifier: constructor.getModifiers()) {
@@ -140,8 +137,16 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 		for (ExecutableElement constructor: constructors) {
 			cloneConstructor(constructor, outputClass, pw);
 		}
+
+		ArrayList<Element> configurationElements = new ArrayList<Element>(getClassPathTypes().getElementsAnnotatedWith(Configuration.class, roundEnv));
 		
-		Set<? extends Element> configurationElements = getClassPathTypes().getElementsAnnotatedWith(Configuration.class);
+		Collections.sort(configurationElements, new Comparator<Element>() {
+
+			@Override
+			public int compare(Element o1, Element o2) {
+				return o1.toString().compareTo(o2.toString());
+			}
+		});
 
 		SettingsInitializerPrinter settingsInitializerPrinter = new SettingsInitializerPrinter(pw, processingEnv);
 		
@@ -157,7 +162,6 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 				settingsContext.setSettings(settingsTypeElement);
 				settingsInitializerPrinter.print(settingsContext);
 				settingsInitializerPrinter.finish();
-				pw.println();
 			}
 		}
 	}

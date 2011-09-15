@@ -12,7 +12,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
 
 import org.junit.Test;
@@ -25,11 +24,11 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSuite;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.runner.SeleniumSuiteRunner;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestConfigurationTypeElement;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
+
+	private static final String SUFFIX = "Runner";
 
 	protected ElementKind getElementKind() {
 		return ElementKind.CLASS;
@@ -47,19 +46,23 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
+	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
+		return new NamedType[] {
+			getOutputClass(mutableType)
+		};
+	};
+
+	public static final ImmutableType getOutputClass(ImmutableType mutableType) {
+		return mutableType.addClassSufix(SUFFIX);
+	}	
+
+	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		Set<String> annotations = new HashSet<String>();
 		annotations.add(SeleniumSuite.class.getCanonicalName());
 		return annotations;
 	}
 		
-	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		return new NamedType[] {
-				new SeleniumTestTypeElement((TypeElement)((DeclaredType)mutableType.asType()).asElement(), processingEnv).getConfiguration()
-		};
-	};
-
 	@Override
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
 
@@ -68,25 +71,25 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 		Set<? extends Element> seleniumTestClasses = getClassPathTypes().getElementsAnnotatedWith(SeleniumTest.class);
 
 		for (Element seleniumTestClass: seleniumTestClasses) {
-			pw.println("{");
 
 			List<ExecutableElement> methods = ElementFilter.methodsIn(seleniumTestClass.getEnclosedElements());
 
 			for (ExecutableElement method: methods) {
 				Test annotation = method.getAnnotation(Test.class);
 				if (annotation != null) {
-					SeleniumTestConfigurationTypeElement configuration = new SeleniumTestTypeElement((TypeElement)seleniumTestClass, processingEnv).getConfiguration();
+					pw.println("{");
 					
-					pw.println(configuration, " " + configuration.getSimpleName() + " = new ", configuration, "());");
+					String testName = methodHelper.toField(seleniumTestClass.getSimpleName().toString());
+					
+					pw.println(seleniumTestClass, " " + testName + " = new ", seleniumTestClass, "();");
 					//TODO find before annotation
-					pw.println(configuration.getSimpleName(), ".setUp()");
-					pw.println(configuration.getSimpleName(), "." + method.getSimpleName().toString() + "();");
+					pw.println(testName, ".setUp();");
+					pw.println(testName, "." + method.getSimpleName().toString() + "();");
 					//TODO find after annotation
-					pw.println(configuration.getSimpleName(), ".tearDown()");
+					pw.println(testName, ".tearDown();");
+					pw.println("}");
 				}
 			}
-			
-			pw.println("}");
 		}
 		
 		pw.println("}");

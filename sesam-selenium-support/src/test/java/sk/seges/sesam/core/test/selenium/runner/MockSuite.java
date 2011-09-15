@@ -24,6 +24,6 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.Selenium;
 				screenshotsDirectory = "screenshots"
 		)
 )
-public class MockRunner {
+public class MockSuite {
 
 }

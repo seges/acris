@@ -27,6 +27,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -547,5 +548,42 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 	@Override
 	public Set<? extends Element> getElementsAnnotatedWith(Class<? extends Annotation> a) {
 		return getElementsAnnotatedWith(processingEnv.getElementUtils().getTypeElement(a.getCanonicalName()));
+	}
+
+	@Override
+	public Set<? extends Element> getElementsAnnotatedWith(TypeElement a, RoundEnvironment roundEnv) {
+		Set<? extends Element> classpathElements = getElementsAnnotatedWith(a);
+		Set<? extends Element> roundElements = roundEnv.getElementsAnnotatedWith(a);
+
+		Set<Element> result = new HashSet<Element>();
+		
+		if (classpathElements != null) {
+			for (Element classPathElement: classpathElements) {
+				result.add(classPathElement);
+			}
+		}
+
+		if (roundElements != null) {
+			for (Element roundElement: roundElements) {
+				boolean found = false;
+				for (Element resultElement: result) {
+					if (resultElement.toString().equals(roundElement.toString())) {
+						found = true;
+						break;
+					}
+				}
+				
+				if (!found) {
+					result.add(roundElement);
+				}
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Set<? extends Element> getElementsAnnotatedWith(Class<? extends Annotation> a, RoundEnvironment roundEnv) {
+		return getElementsAnnotatedWith(processingEnv.getElementUtils().getTypeElement(a.getCanonicalName()), roundEnv);
 	}
 }

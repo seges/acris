@@ -79,5 +79,5 @@ public class SettingsProcessor extends AbstractConfigurableProcessor {
 
 			printer.finish(typeElement);
 		}
-	}	
+	}
 }
