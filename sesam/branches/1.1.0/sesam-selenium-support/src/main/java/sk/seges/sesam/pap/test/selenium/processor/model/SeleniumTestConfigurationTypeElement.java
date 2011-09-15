@@ -12,11 +12,12 @@ public class SeleniumTestConfigurationTypeElement extends AbstractSeleniumTypeEl
 	
 	SeleniumTestConfigurationTypeElement(SeleniumTestTypeElement seleniumTestTypeElement, ProcessingEnvironment processingEnv) {
 		super(processingEnv);
+		this.seleniumTestTypeElement = seleniumTestTypeElement;
 	}
 	
 	@Override
 	protected ImmutableType getDelegateImmutableType() {
-		return getNameTypeUtils().toImmutableType(seleniumTestTypeElement).addClassSufix(SUFFIX);
+		return seleniumTestTypeElement.addClassSufix(SUFFIX);
 	}
 	
 	public SeleniumTestTypeElement getSeleniumTest() {

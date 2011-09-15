@@ -8,10 +8,10 @@ import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Credentials;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Selenium;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
-import sk.seges.sesam.core.test.selenium.runner.MockRunner;
+import sk.seges.sesam.core.test.selenium.runner.MockSuite;
 
 @Ignore
-@SeleniumTest(suiteRunner = MockRunner.class)
+@SeleniumTest(suiteRunner = MockSuite.class)
 @Selenium(
 		testURL = "overridenURL"
 )

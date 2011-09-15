@@ -1,7 +1,8 @@
 package sk.seges.sesam.pap.configuration.processor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -46,34 +47,17 @@ public class ConfigurationProviderProcessor extends AbstractConfigurableProcesso
 	
 	@Override
 	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
-		Set<? extends Element> classpathElements = getClassPathTypes().getElementsAnnotatedWith(Configuration.class);
-		Set<? extends Element> roundElements = roundEnv.getElementsAnnotatedWith(Configuration.class);
-
-		Set<Element> result = new HashSet<Element>();
+		ArrayList<Element> elements = new ArrayList<Element>(getClassPathTypes().getElementsAnnotatedWith(Configuration.class, roundEnv));
 		
-		if (classpathElements != null) {
-			for (Element classPathElement: classpathElements) {
-				result.add(classPathElement);
-			}
-		}
+		Collections.sort(elements, new Comparator<Element>() {
 
-		if (roundElements != null) {
-			for (Element roundElement: roundElements) {
-				boolean found = false;
-				for (Element resultElement: result) {
-					if (resultElement.toString().equals(roundElement.toString())) {
-						found = true;
-						break;
-					}
-				}
-				
-				if (!found) {
-					result.add(roundElement);
-				}
+			@Override
+			public int compare(Element o1, Element o2) {
+				return o1.toString().compareTo(o2.toString());
 			}
-		}
-
-		for (Element element: result) {
+		});
+		
+		for (Element element: elements) {
 			NamedType outputClass = new SettingsTypeElement((DeclaredType)element.asType(), processingEnv);
 			pw.println(outputClass, " get" + outputClass.getSimpleName() + "();");
 			pw.println();
