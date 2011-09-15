@@ -125,4 +125,14 @@ public class ArrayNamedType implements ImmutableType {
 	public ImmutableType changePackage(PackageValidator packageValidator) {
 		throw new RuntimeException("Invalid operation.");
 	}
+
+	@Override
+	public NamedType getEnclosedClass() {
+		return null;
+	}
+
+	@Override
+	public ImmutableType setEnclosedClass(NamedType type) {
+		throw new RuntimeException("Invalid operation.");
+	}
 }

@@ -17,9 +17,4 @@ public class OutputClass extends InputClass {
 	public OutputClass(TypeMirror type, NamedType enclosedClass, String simpleClassName) {
 		super(type, enclosedClass, simpleClassName);
 	}
-
-	@Override
-	protected OutputClass clone() {
-		return new OutputClass(asType(), getPackageName(), getClassName());
-	}
 }

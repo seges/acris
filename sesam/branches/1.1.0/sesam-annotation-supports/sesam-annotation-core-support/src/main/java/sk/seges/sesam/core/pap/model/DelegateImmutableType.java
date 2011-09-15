@@ -8,6 +8,7 @@ import javax.lang.model.type.TypeMirror;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
@@ -142,5 +143,15 @@ public abstract class DelegateImmutableType implements HasTypeParameters {
 			return ensureDelegateType().equals(((DelegateImmutableType)obj).ensureDelegateType());
 		}
 		return ensureDelegateType().equals(obj);
+	}
+	
+	@Override
+	public ImmutableType setEnclosedClass(NamedType type) {
+		return ensureDelegateType().setEnclosedClass(type);
+	}
+	
+	@Override
+	public NamedType getEnclosedClass() {
+		return ensureDelegateType().getEnclosedClass();
 	}
 }

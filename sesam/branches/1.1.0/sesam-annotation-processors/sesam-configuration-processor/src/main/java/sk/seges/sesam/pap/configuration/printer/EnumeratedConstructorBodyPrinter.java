@@ -5,10 +5,10 @@ import java.io.PrintWriter;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.pap.configuration.model.ProcessorContext;
-import sk.seges.sesam.pap.configuration.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.configuration.model.SettingsContext;
+import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
-public class EnumeratedConstructorBodyPrinter implements ElementPrinter {
+public class EnumeratedConstructorBodyPrinter implements SettingsElementPrinter {
 
 	private PrintWriter pw;
 	
@@ -21,9 +21,8 @@ public class EnumeratedConstructorBodyPrinter implements ElementPrinter {
 	}
 
 	@Override
-	public void print(ProcessorContext context) {
-		String name = context.getMethod().getSimpleName().toString();
-		pw.println("this." + name + " = " + name + ";");
+	public void print(SettingsContext context) {
+		pw.println("this." + context.getFieldName() + " = " + context.getFieldName() + ";");
 	}
 
 	@Override

@@ -3,34 +3,34 @@ package sk.seges.sesam.pap.configuration.printer;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.pap.configuration.model.ProcessorContext;
-import sk.seges.sesam.pap.configuration.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.configuration.model.SettingsContext;
+import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
-public class GroupPrinter implements ElementPrinter {
+public class GroupPrinter implements SettingsElementPrinter {
 
-	private ElementPrinter[] printers;
+	private SettingsElementPrinter[] printers;
 	
-	public GroupPrinter(ElementPrinter... printers) {
+	public GroupPrinter(SettingsElementPrinter... printers) {
 		this.printers = printers;
 	}
 	
 	@Override
 	public void initialize(TypeElement type, NamedType outputName) {
-		for (ElementPrinter printer: printers) {
+		for (SettingsElementPrinter printer: printers) {
 			printer.initialize(type, outputName);
 		}
 	}
 
 	@Override
-	public void print(ProcessorContext context) {
-		for (ElementPrinter printer: printers) {
+	public void print(SettingsContext context) {
+		for (SettingsElementPrinter printer: printers) {
 			printer.print(context);
 		}
 	}
 
 	@Override
 	public void finish(TypeElement type) {
-		for (ElementPrinter printer: printers) {
+		for (SettingsElementPrinter printer: printers) {
 			printer.finish(type);
 		}
 	}

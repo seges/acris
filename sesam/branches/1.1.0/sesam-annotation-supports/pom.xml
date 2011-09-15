@@ -16,5 +16,6 @@
 		<module>sesam-annotation-core-support</module>
 		<module>sesam-model-domain-support</module>
 		<module>sesam-service-support</module>
+		<module>sesam-configuration-support</module>
 	</modules>
 </project>

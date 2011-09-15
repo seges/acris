@@ -7,6 +7,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.api.TypeVariable;
 import sk.seges.sesam.core.pap.utils.ClassUtils;
@@ -160,5 +161,10 @@ class TypeParameterClass implements TypeParameter {
 	@Override
 	public Set<AnnotationMirror> getAnnotations() {
 		throw new RuntimeException("Unsupported operation. TypeParameter cannot be annotated.");
+	}
+
+	@Override
+	public NamedType getEnclosedClass() {
+		return null;
 	}
 }

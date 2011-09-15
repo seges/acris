@@ -14,7 +14,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
@@ -137,7 +137,7 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		
 		configurationNameType = configurationNameType.addClassSufix(DEFAULT_SUFFIX);
 		
-		NameTypesUtils nameTypes = new NameTypesUtils(processingEnv);
+		NameTypeUtils nameTypes = new NameTypeUtils(processingEnv);
 		
 		if (domainType.getTypeParameters().size() > 0) {
 			

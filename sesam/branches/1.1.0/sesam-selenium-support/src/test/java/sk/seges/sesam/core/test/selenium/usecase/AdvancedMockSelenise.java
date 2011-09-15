@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.runner.MockRunner;
 
@@ -29,4 +30,9 @@ public class AdvancedMockSelenise extends AbstractSeleniumTest {
 
 	@Test
 	public void testMethod2() {}
+
+	@Override
+	protected DefaultTestSettings getSettings() {
+		return null;
+	}
 }

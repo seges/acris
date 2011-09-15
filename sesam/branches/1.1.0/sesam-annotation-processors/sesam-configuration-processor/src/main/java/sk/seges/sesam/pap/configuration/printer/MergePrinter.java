@@ -1,25 +1,24 @@
 package sk.seges.sesam.pap.configuration.printer;
 
-import java.io.PrintWriter;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
-import sk.seges.sesam.pap.configuration.model.ProcessorContext;
-import sk.seges.sesam.pap.configuration.printer.api.ElementPrinter;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.configuration.model.SettingsContext;
+import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
-public class MergePrinter implements ElementPrinter {
+public class MergePrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
 
-	private PrintWriter pw;
 	private String instanceName;
 	private MethodHelper methodHelper;
+	private FormattedPrintWriter pw;
 
-	public MergePrinter(PrintWriter pw, ProcessingEnvironment pe) {
+	public MergePrinter(FormattedPrintWriter pw, ProcessingEnvironment processingEnv) {
+		super(processingEnv);
 		this.pw = pw;
-		methodHelper = new MethodHelper(pe, new NameTypesUtils(pe));
+		methodHelper = new MethodHelper(processingEnv, nameTypesUtils);
 	}
 	
 	@Override
@@ -32,15 +31,23 @@ public class MergePrinter implements ElementPrinter {
 	}
 
 	@Override
-	public void print(ProcessorContext context) {
+	public void print(SettingsContext context) {
 		pw.println("if (" + context.getFieldName() + " == null) {");
 		pw.println("this." + context.getFieldName() + " = " + instanceName + "." + methodHelper.toGetter(context.getFieldName()) + ";");
-		pw.println("}");
+		pw.print("}");
+		if (context.getNestedElement() != null) {
+			pw.println(" else {");
+			pw.println("this." + context.getFieldName() + ".merge(" + instanceName + "." + methodHelper.toGetter(context.getFieldName()) + ");");
+			pw.println("}");
+		} else {
+			pw.println();
+		}
 	}
 
 	@Override
 	public void finish(TypeElement type) {
 		pw.println("return this;");
 		pw.println("}");
+		pw.println();
 	}
 }

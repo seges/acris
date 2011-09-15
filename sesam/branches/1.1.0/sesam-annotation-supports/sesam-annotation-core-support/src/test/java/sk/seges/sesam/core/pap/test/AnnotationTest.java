@@ -285,7 +285,7 @@ public abstract class AnnotationTest {
 		 * Information about the classes being compiled (such as what they are annotated with) is *not* available via
 		 * the RoundEnvironment. However, if these classes are annotations, they certainly need to be validated.
 		 */
-		List<String> compilerOptions = mergeCompilerOptions(Arrays.asList("-proc:only", "-classpath", getClassPath()));
+		List<String> compilerOptions = mergeCompilerOptions(Arrays.asList("-proc:only", "-classpath", getClassPath(), "-Aclasspath=" + getClassPath(), "-AprojectName=" + getClass().getCanonicalName()));
 
 		System.out.println();
 		System.out.println("Starting java compiler:");

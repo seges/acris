@@ -15,23 +15,4 @@ public abstract class AbstractBrowserSupport {
 	public void fail(Exception e) {
 		throw new SeleniumException(e);
 	}
-
-//	public void waitFor(ActionHandler actionHandler) {
-//		for (int second = 0;; second++) {
-//			if (second >= 60) {
-//				fail("Timeout exceed while waiting for the action!");
-//			}
-//			try {
-//				if (actionHandler.doAction()) {
-//					break;
-//				}
-//			} catch (Exception e) {
-//			}
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				fail(e);
-//			}
-//		}
-//	}
 }
