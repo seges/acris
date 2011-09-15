@@ -3,7 +3,7 @@ package sk.seges.sesam.pap.model.printer.accessors;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
@@ -15,7 +15,7 @@ public class AccessorsPrinter extends AbstractElementPrinter {
 	
 	public AccessorsPrinter(ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(pw);
-		this.methodHelper = new MethodHelper(processingEnv, new NameTypesUtils(processingEnv));
+		this.methodHelper = new MethodHelper(processingEnv, new NameTypeUtils(processingEnv));
 	}
 	
 	@Override

@@ -15,7 +15,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.SimpleTypeVisitor6;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -34,7 +34,7 @@ public class ConverterProviderPrinter {
 
 	private final FormattedPrintWriter pw;
 	private final TypeParametersSupport typeParametersSupport;
-	private final NameTypesUtils nameTypesUtils;
+	private final NameTypeUtils nameTypesUtils;
 	
 	private final ParametersResolver parametersResolver;
 	private final ProcessingEnvironment processingEnv;
@@ -49,7 +49,7 @@ public class ConverterProviderPrinter {
 		this.roundEnv = roundEnv;
 		this.configurationProviders = configurationProviders;
 		this.parametersResolver = parametersResolver;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 	}

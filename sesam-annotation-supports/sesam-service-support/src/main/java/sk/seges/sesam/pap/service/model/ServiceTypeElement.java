@@ -9,19 +9,19 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.DelegateImmutableType;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 
 public class ServiceTypeElement extends DelegateImmutableType {
 
 	private final TypeElement service;
-	private final NameTypesUtils namedTypesUtils;
+	private final NameTypeUtils namedTypesUtils;
 	private final ProcessingEnvironment processingEnv;
 	
 	public ServiceTypeElement(TypeElement service, ProcessingEnvironment processingEnv) {
 		this.service = service;
-		this.namedTypesUtils = new NameTypesUtils(processingEnv);
+		this.namedTypesUtils = new NameTypeUtils(processingEnv);
 		this.processingEnv = processingEnv;
 	}
 

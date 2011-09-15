@@ -20,6 +20,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -34,7 +35,9 @@ import javax.tools.JavaFileObject;
 
 import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 import sk.seges.sesam.core.pap.api.SubProcessor;
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.ClassPathTypeUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
+import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.builder.api.NameTypes;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
@@ -59,7 +62,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	protected RoundEnvironment roundEnv;
 	protected TypeParametersSupport typeParametersSupport;
 	protected MethodHelper methodHelper;
-	protected NameTypesUtils nameTypesUtils;
+	protected NameTypeUtils nameTypesUtils;
 	protected ProcessorConfigurer configurer;
 	private Set<Element> processedElement = new HashSet<Element>();
 	private Map<OutputDefinition, Set<NamedType>> cachedDefinition = new HashMap<OutputDefinition, Set<NamedType>>();
@@ -98,7 +101,41 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 			}
 		}
 	}
+	
+	public static final String PROJECT_NAME_OPTION = "projectName";
+	public static final String CLASSPATH_OPTION = "classpath";
 
+    public Set<String> getSupportedOptions() {
+    	SupportedOptions so = this.getClass().getAnnotation(SupportedOptions.class);
+    	Set<String> result = new HashSet<String>();
+    	if  (so != null) {
+    	    result = arrayToSet(so.value());
+    	}
+    	
+    	result.add(CLASSPATH_OPTION);
+    	result.add(PROJECT_NAME_OPTION);
+    	
+    	return result;
+    }
+    
+    protected static Set<String> arrayToSet(String[] array) {
+		assert array != null;
+		Set<String> set = new HashSet<String>(array.length);
+		for (String s : array)
+		    set.add(s);
+		return Collections.unmodifiableSet(set);
+    }
+
+    protected ClassPathTypes getClassPathTypes() {
+	    String projectName = processingEnv.getOptions().get(PROJECT_NAME_OPTION);
+	    
+	    if (projectName == null) {
+	    	projectName = getClass().getCanonicalName();
+	    }
+
+		return new ClassPathTypeUtils(processingEnv, projectName);
+    }
+    
 	public Set<String> getSupportedAnnotationTypes() {
 
 	    SupportedAnnotationTypes sat = this.getClass().getAnnotation(SupportedAnnotationTypes.class);
@@ -145,11 +182,13 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		processors.add(subProcessor);
 	}
 
+	//String location = processingEnv.getOptions().get(CONFIG_FILE_LOCATION);
+
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
 		
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 
 		typeParametersSupport = new TypeParametersSupport(pe, nameTypesUtils);
 

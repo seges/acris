@@ -10,6 +10,8 @@ import sk.seges.sesam.core.pap.model.OutputClass;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.configuration.api.TestConfiguration;
+import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
+import sk.seges.sesam.pap.configuration.processor.SettingsProcessor;
 
 public class ConfigurationProcessorTest extends AnnotationTest {
 
@@ -21,14 +23,14 @@ public class ConfigurationProcessorTest extends AnnotationTest {
 
 	private File getOutputFile(Class<?> clazz) {
 		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = ConfigurationProcessor.getOutputClass(inputClass);
+		NamedType outputClass = new SettingsTypeElement(inputClass, null);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 
 	@Override
 	protected Processor[] getProcessors() {
 		return new Processor[] {
-			new ConfigurationProcessor()
+			new SettingsProcessor()
 		};
 	}		
 

@@ -5,10 +5,10 @@ import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.ProcessorContext;
-import sk.seges.sesam.pap.configuration.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.configuration.model.SettingsContext;
+import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
-public class EnumeratedConstructorDefinitionPrinter extends AbstractElementPrinter implements ElementPrinter {
+public class EnumeratedConstructorDefinitionPrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
 	private int index = 0;
@@ -24,11 +24,17 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractElementPrint
 	}
 
 	@Override
-	public void print(ProcessorContext context) {
+	public void print(SettingsContext context) {
 		if (index > 0) {
 			pw.print(", ");
 		}
-		pw.print(unboxType(context.getMethod().getReturnType()), " " + context.getMethod().getSimpleName().toString());
+
+		if (context.getNestedElement() != null) {
+			pw.print(context.getNestedOutputName().getSimpleName() + " " + context.getMethod().getSimpleName().toString());
+		} else {
+			pw.print(unboxType(context.getMethod().getReturnType()), " " + context.getMethod().getSimpleName().toString());
+		}
+		
 		index++;
 	}
 

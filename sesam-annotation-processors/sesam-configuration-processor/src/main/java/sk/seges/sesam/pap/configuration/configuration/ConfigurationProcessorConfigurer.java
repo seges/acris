@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import javax.lang.model.element.ElementKind;
 
-import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
+import sk.seges.sesam.core.configuration.annotation.Configuration;
 import sk.seges.sesam.core.pap.configuration.DefaultProcessorConfigurer;
 
 public class ConfigurationProcessorConfigurer extends DefaultProcessorConfigurer {
@@ -13,7 +13,7 @@ public class ConfigurationProcessorConfigurer extends DefaultProcessorConfigurer
 	protected Type[] getConfigurationElement(DefaultConfigurationElement element) {
 		switch (element) {
 		case PROCESSING_ANNOTATIONS:
-			return new Type[] { ProcessorConfiguration.class };
+			return new Type[] { Configuration.class };
 		}
 		return super.getConfigurationElement(element);
 	}

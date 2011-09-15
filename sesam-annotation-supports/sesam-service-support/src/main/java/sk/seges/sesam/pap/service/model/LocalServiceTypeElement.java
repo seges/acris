@@ -3,7 +3,7 @@ package sk.seges.sesam.pap.service.model;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.DelegateImmutableType;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
@@ -23,21 +23,21 @@ public class LocalServiceTypeElement extends DelegateImmutableType {
 	private final ProcessingEnvironment processingEnv;
 	private final RemoteServiceTypeElement remoteService;
 	private final TypeElement localServiceType;
-	private final NameTypesUtils nameTypesUtils;
+	private final NameTypeUtils nameTypesUtils;
 	
 	public LocalServiceTypeElement(RemoteServiceTypeElement remoteService, ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 		this.isGenerated = true;
 		this.remoteService = remoteService;
 		this.localServiceType = null;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public LocalServiceTypeElement(TypeElement localServiceType, ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 		this.isGenerated = false;
 		this.localServiceType = localServiceType;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		this.remoteService = getRemoteServiceElement();
 	}
 

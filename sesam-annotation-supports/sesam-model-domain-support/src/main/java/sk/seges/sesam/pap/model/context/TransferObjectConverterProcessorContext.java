@@ -9,7 +9,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -35,7 +35,7 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 	@Override
 	protected NamedType handleDomainTypeParameter(ProcessingEnvironment processingEnv, TransferObjectHelper toHelper, EntityResolver entityResolver) {
 		
-		NameTypesUtils nameTypesUtils = new NameTypesUtils(processingEnv);
+		NameTypeUtils nameTypesUtils = new NameTypeUtils(processingEnv);
 		
 		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 

@@ -13,4 +13,6 @@ public interface NamedType extends java.lang.reflect.Type, PrintableType, HasAnn
 	String getQualifiedName();
 
 	TypeMirror asType();
+	
+	NamedType getEnclosedClass();
 }

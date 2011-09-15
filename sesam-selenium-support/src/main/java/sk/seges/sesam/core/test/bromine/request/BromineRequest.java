@@ -9,22 +9,22 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import sk.seges.sesam.core.test.bromine.BromineCommand;
-import sk.seges.sesam.core.test.selenium.configuration.api.BromineEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 
 public class BromineRequest {
 
-	private BromineEnvironment bromineEnvironment;
+	private SeleniumSettings seleniumEnvironment;
 	
-	public BromineRequest(BromineEnvironment bromineEnvironment) {
-		this.bromineEnvironment = bromineEnvironment;
+	public BromineRequest(SeleniumSettings seleniumEnvironment) {
+		this.seleniumEnvironment = seleniumEnvironment;
 	}
 
 	private String getBromineHost() {
-		if (bromineEnvironment.getBrominePort() != 443) {
-			return "http://" + bromineEnvironment.getBromineHost() + ":" + bromineEnvironment.getBrominePort();
+		if (seleniumEnvironment.getBrominePort() != 443) {
+			return "http://" + seleniumEnvironment.getBromineServer() + ":" + seleniumEnvironment.getBrominePort();
 		}
 
-		return "https://" + bromineEnvironment.getBromineHost();
+		return "https://" + seleniumEnvironment.getBromineServer();
 	}
 	
     public String send(BromineCommand command, String data) throws MalformedURLException, IOException {

@@ -9,7 +9,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
@@ -67,11 +67,11 @@ public class DomainTypeElement extends TomBaseElement {
 				return domain;
 			}
 			
-			return new NameTypesUtils(processingEnv).toType(type);
+			return new NameTypeUtils(processingEnv).toType(type);
 		}	
 	}
 	
-	class NameTypesDomainUtils extends NameTypesUtils {
+	class NameTypesDomainUtils extends NameTypeUtils {
 
 		public NameTypesDomainUtils(ProcessingEnvironment processingEnv) {
 			super(processingEnv);
@@ -86,9 +86,9 @@ public class DomainTypeElement extends TomBaseElement {
 	@Override
 	protected ImmutableType getDelegateImmutableType() {
 		if (domainType != null) {
-			return new NameTypesUtils(processingEnv).toImmutableType(domainType);
+			return new NameTypeUtils(processingEnv).toImmutableType(domainType);
 		}
-		return new NameTypesUtils(processingEnv).toImmutableType(dtoType);
+		return new NameTypeUtils(processingEnv).toImmutableType(dtoType);
 	}
 
 	private void initialize() {

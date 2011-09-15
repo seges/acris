@@ -1,8 +1,6 @@
 package sk.seges.sesam.core.test.selenium;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -12,47 +10,51 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.test.bromine.BromineTest;
-import sk.seges.sesam.core.test.selenium.configuration.DefaultSeleniumConfigurator;
-import sk.seges.sesam.core.test.selenium.configuration.api.CredentialsSettings;
-import sk.seges.sesam.core.test.selenium.configuration.api.MailSettings;
-import sk.seges.sesam.core.test.selenium.configuration.api.ReportingSettings;
-import sk.seges.sesam.core.test.selenium.configuration.api.SeleniumConfigurator;
-import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
-import sk.seges.sesam.core.test.selenium.support.DefaultMailSupport;
-import sk.seges.sesam.core.test.selenium.support.DefaultSeleniumSupport;
-import sk.seges.sesam.core.test.selenium.support.api.MailSupport;
-import sk.seges.sesam.core.test.selenium.support.api.SeleniumSupport;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
+import sk.seges.sesam.core.test.selenium.support.MailSupport;
+import sk.seges.sesam.core.test.selenium.support.SeleniumSupport;
 import sk.seges.sesam.core.test.webdriver.WebDriverActions;
 
-public abstract class AbstractSeleniumTest extends BromineTest implements SeleniumConfigurator, MailSupport, SeleniumSupport {
+public abstract class AbstractSeleniumTest extends BromineTest {
 
-	private static final String RESULT_FILE_ENCODING = "UTF-8";
+//	private static final String RESULT_FILE_ENCODING = "UTF-8";
 
-	protected MailSettings mailSettings;
-	protected ReportingSettings reportingSettings;
-	protected CredentialsSettings credentialsSettings;
-
-	protected SeleniumConfigurator seleniumConfigurator;
+//	protected MailSettings mailSettings;
+//	protected ReportingSettings reportingSettings;
+//	protected CredentialsSettings credentialsSettings;
+//
+//	protected SeleniumConfigurer seleniumConfigurator;
 	protected MailSupport mailSupport;
 	protected SeleniumSupport seleniumSupport;
 
 	private static final String RESULT_PATH_PREFIX = "target" + File.separator;
 
 //	private LoggingCommandProcessor loggingProcessor;
-	private BufferedWriter loggingWriter;
+//	private BufferedWriter loggingWriter;
 
 	private String testName;
 	protected Wait<WebDriver> wait;
 	
 	protected Actions actions;
+	protected DefaultTestSettings settings;
 	
 	protected AbstractSeleniumTest() {
-		seleniumConfigurator = getSeleniumConfigurator();
+//		seleniumConfigurator = getSeleniumConfigurator();
 	}
 
-	public void setTestEnvironment(TestEnvironment testEnvironment) {
+	protected abstract DefaultTestSettings getSettings();
+	
+	protected DefaultTestSettings ensureSettings() {
+		if (settings == null) {
+			settings = getSettings();
+		}
+		
+		return settings;
+	}
+	
+	public void setTestEnvironment(SeleniumSettings testEnvironment) {
 		super.setTestEnvironment(testEnvironment);
 		wait = new WebDriverWait(webDriver, 30);
 		webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MINUTES);
@@ -70,7 +72,7 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 	
 	protected String getResultDirectory() {
 		String result = RESULT_PATH_PREFIX
-				+ (reportingSettings.getResultDirectory() == null ? "report" : reportingSettings.getResultDirectory());
+				+ (ensureSettings().getReportSettings().getScreenshotConfiguration().getResultDirectory() == null ? "report" : ensureSettings().getReportSettings().getScreenshotConfiguration().getResultDirectory());
 
 		result = new File(result).getAbsolutePath();
 		result += File.separator;
@@ -80,8 +82,8 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 	
 	protected String getScreenshotDirectory() {
 
-		String screenshotsDirectory = (reportingSettings.getScreenshotsDirectory() == null ? "screenshot"
-				: reportingSettings.getScreenshotsDirectory());
+		String screenshotsDirectory = (ensureSettings().getReportSettings().getScreenshotConfiguration().getScreenshotsDirectory() == null ? "screenshot"
+				: ensureSettings().getReportSettings().getScreenshotConfiguration().getScreenshotsDirectory());
 
 		return getResultDirectory() + screenshotsDirectory;
 	}
@@ -94,64 +96,25 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 //		return super.createSelenium(host, port, browser, sitetotest);
 //	}
 
-	protected SeleniumSupport getSeleniumSupport() {
-		return new DefaultSeleniumSupport(webDriver);
-	}
-	
 	protected MailSupport getMailSupport() {
-		return new DefaultMailSupport(mailSettings);
-	}
-
-	public SeleniumConfigurator getSeleniumConfigurator() {
-		return new DefaultSeleniumConfigurator();
-	}
-
-	public void setMailEnvironment(MailSettings mailEnvironment) {
-		this.mailSettings = mailEnvironment;
-	}
-
-	@Override
-	public String getRandomString(int length) {
-		return seleniumSupport.getRandomString(length);
-	}
-
-	@Override
-	public String getRandomEmail() {
-		return seleniumSupport.getRandomEmail();
+		return new MailSupport(ensureSettings().getMailSettings());
 	}
 	
-	public void setReportingSettings(ReportingSettings reportingSettings) {
-		this.reportingSettings = reportingSettings;
-	}
-
-	public void setCredentialsSettings(CredentialsSettings credentialsSettings) {
-		this.credentialsSettings = credentialsSettings;
-	}
-	
-	@Override
-	public ConfigurationValue[] collectSystemProperties() {
-		return seleniumConfigurator.collectSystemProperties();
-	}
-
-	@Override
-	public TestEnvironment mergeTestConfiguration(TestEnvironment environment) {
-		return seleniumConfigurator.mergeTestConfiguration(environment);
-	}
-
-	@Override
-	public MailSettings mergeMailConfiguration(MailSettings mailEnvironment) {
-		return seleniumConfigurator.mergeMailConfiguration(mailEnvironment);
+	protected SeleniumSupport getSeleniumSupport() {
+		return new SeleniumSupport(webDriver);
 	}
 
 	@Before
 	public void setUp() {
-		if (reportingSettings != null && reportingSettings.isProduceScreenshots() != null && reportingSettings.isProduceScreenshots() == true) {
+		if (ensureSettings().getReportSettings() != null && 
+			ensureSettings().getReportSettings().getScreenshotConfiguration().getProduceScreenshots() != null && 
+			ensureSettings().getReportSettings().getScreenshotConfiguration().getProduceScreenshots() == true) {
 
 			if (!new File(getScreenshotDirectory()).exists()) {
 				new File(getScreenshotDirectory()).mkdirs();
 			}
 
-			String resultHtmlFileName = null;
+//			String resultHtmlFileName = null;
 
 //			resultHtmlFileName = getResultDirectory() + "result" + LoggingUtils.timeStampForFileName() + ".html";
 
@@ -174,7 +137,7 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 	}
 
 	protected void start() {
-		webDriver.get(testEnvironment.getHost() + testEnvironment.getUri());
+		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());
 	}
 
 	@After
@@ -195,23 +158,4 @@ public abstract class AbstractSeleniumTest extends BromineTest implements Seleni
 //		}
 	}
 
-	@Override
-	public void waitForMailNotPresent(String subject) {
-		mailSupport.waitForMailNotPresent(subject);
-	}
-
-	@Override
-	public String waitForMailPresent(String subject) {
-		return mailSupport.waitForMailPresent(subject);
-	}
-
-	@Override
-	public void fail(String message) {
-		seleniumSupport.fail(message);
-	}
-	
-	@Override
-	public <T> boolean isSorted(Iterable<T> iterable, Comparator<T> comparator) {
-		return seleniumSupport.isSorted(iterable, comparator);
-	}	
 }

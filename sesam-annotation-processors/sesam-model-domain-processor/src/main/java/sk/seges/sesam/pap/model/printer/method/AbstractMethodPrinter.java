@@ -8,7 +8,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
@@ -32,7 +32,7 @@ import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 public abstract class AbstractMethodPrinter {
 
 	protected final ProcessingEnvironment processingEnv;
-	protected final NameTypesUtils nameTypesUtils;
+	protected final NameTypeUtils nameTypesUtils;
 	protected final MethodHelper methodHelper;
 	protected final TransferObjectHelper toHelper;
 	protected final RoundEnvironment roundEnv;
@@ -46,7 +46,7 @@ public abstract class AbstractMethodPrinter {
 		this.roundEnv = roundEnv;
 		this.converterProviderPrinter = converterProviderPrinter;
 		this.parametersResolver = parametersResolver;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		this.methodHelper = new MethodHelper(processingEnv, nameTypesUtils);
 		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);

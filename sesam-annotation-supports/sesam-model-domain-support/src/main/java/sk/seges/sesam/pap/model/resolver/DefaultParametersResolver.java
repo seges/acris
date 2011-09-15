@@ -10,7 +10,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
@@ -24,11 +24,11 @@ import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 public class DefaultParametersResolver implements ParametersResolver {
 
 	protected ProcessingEnvironment processingEnv;
-	protected NameTypesUtils nameTypesUtils;
+	protected NameTypeUtils nameTypesUtils;
 	
 	public DefaultParametersResolver(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 	
 	@Override

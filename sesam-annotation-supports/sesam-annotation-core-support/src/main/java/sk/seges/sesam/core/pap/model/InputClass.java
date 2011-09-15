@@ -55,8 +55,22 @@ public class InputClass extends AbstractPrintableType implements NamedType, Immu
 	}
 	
 	@Override
+	public ImmutableType setEnclosedClass(NamedType type) {
+		InputClass result = clone();
+		result.enclosedClass = type;
+		return result;
+	}
+	
+	@Override
 	protected OutputClass clone() {
-		OutputClass clone = new OutputClass(asType(), packageName, simpleClassName);
+		OutputClass clone = null;
+		
+		if (enclosedClass != null) {
+			clone = new OutputClass(asType(), enclosedClass, simpleClassName);
+		} else {
+			clone = new OutputClass(asType(), packageName, simpleClassName);
+		}
+
 		for (AnnotationMirror annotation: annotations) {
 			clone.annotateWith(annotation);
 		}

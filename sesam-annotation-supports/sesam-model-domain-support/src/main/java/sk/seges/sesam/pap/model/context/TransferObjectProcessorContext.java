@@ -12,7 +12,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -87,7 +87,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 	private TypeParametersSupport typeParametersSupport;
 	private ProcessingEnvironment processingEnv;
-	private NameTypesUtils nameTypesUtils;
+	private NameTypeUtils nameTypesUtils;
 	private MethodHelper methodHelper;
 	private TransferObjectHelper toHelper;
 	private RoundEnvironment roundEnv;
@@ -100,7 +100,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 		this.processingEnv = processingEnv;
 		this.roundEnv = roundEnv;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		this.methodHelper = new MethodHelper(processingEnv, nameTypesUtils); 
 		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);

@@ -20,23 +20,23 @@ import org.openqa.selenium.interactions.MoveToOffsetAction;
 import org.openqa.selenium.interactions.SendKeysAction;
 import org.openqa.selenium.internal.Locatable;
 
-import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.webdriver.action.DoubleClickAction;
 
 public class WebDriverActions extends Actions {
 
-	protected TestEnvironment testEnvironment;
+	protected SeleniumSettings testEnvironment;
 
 	protected Mouse mouse;
 	protected Keyboard keyboard;
 	private CompositeAction action;
 	protected WebDriver webDriver;
 	
-	public WebDriverActions(WebDriver webDriver, TestEnvironment testEnvironment) {
+	public WebDriverActions(WebDriver webDriver, SeleniumSettings testEnvironment) {
 		this(webDriver, ((HasInputDevices) webDriver).getKeyboard(), ((HasInputDevices) webDriver).getMouse(), testEnvironment);
 	}
 
-	public WebDriverActions(WebDriver webDriver, Keyboard keyboard, Mouse mouse, TestEnvironment testEnvironment) {
+	public WebDriverActions(WebDriver webDriver, Keyboard keyboard, Mouse mouse, SeleniumSettings testEnvironment) {
 		super(keyboard, mouse);
 		this.mouse = mouse;
 		this.keyboard = keyboard;

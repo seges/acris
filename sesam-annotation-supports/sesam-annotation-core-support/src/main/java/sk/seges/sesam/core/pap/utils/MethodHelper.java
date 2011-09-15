@@ -18,7 +18,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.PathResolver;
@@ -28,12 +28,12 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 public class MethodHelper {
 
 	protected ProcessingEnvironment processingEnv;
-	private NameTypesUtils nameTypes;
+	private NameTypeUtils nameTypes;
 
 	public static final String SETTER_PREFIX = "set";
 	public static final String GETTER_PREFIX = "get";
 
-	public MethodHelper(ProcessingEnvironment processingEnv, NameTypesUtils nameTypes) {
+	public MethodHelper(ProcessingEnvironment processingEnv, NameTypeUtils nameTypes) {
 		this.processingEnv = processingEnv;
 		this.nameTypes = nameTypes;
 	}

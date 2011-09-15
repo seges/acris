@@ -33,7 +33,7 @@ import javax.tools.StandardLocation;
 
 import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 import sk.seges.sesam.core.annotation.configuration.Interface;
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.configuration.api.ConfigurationElement;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.NamedType;
@@ -210,7 +210,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	protected RoundEnvironment roundEnvironment;
 	
 	protected ProcessingEnvironment processingEnv;
-	protected NameTypesUtils nameTypesUtils;
+	protected NameTypeUtils nameTypesUtils;
 	private AbstractProcessor processor;
 
 	private DelayedMessager messager;
@@ -234,7 +234,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	
 	public void init(ProcessingEnvironment processingEnv, AbstractProcessor processor) {
 		this.processingEnv = processingEnv;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		this.processor = processor;
 
 		configurationParameters.put(DefaultConfigurationElement.PROCESSING_ANNOTATIONS, parse(new HashSet<NamedType>(), processor.getSupportedAnnotationTypes()));

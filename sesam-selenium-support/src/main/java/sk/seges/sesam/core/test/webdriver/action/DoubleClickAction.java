@@ -5,16 +5,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
-import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
 
 public class DoubleClickAction implements Action {
 
 	private WebDriver webDriver;
-	private TestEnvironment testEnvironment;
+	private SeleniumSettings testEnvironment;
 	private WebElement webElement;
 	
-	public DoubleClickAction(WebDriver webDriver, TestEnvironment testEnvironment, WebElement webElement) {
+	public DoubleClickAction(WebDriver webDriver, SeleniumSettings testEnvironment, WebElement webElement) {
 		this.webDriver = webDriver;
 		this.testEnvironment = testEnvironment;
 		this.webElement = webElement;

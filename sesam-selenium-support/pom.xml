@@ -52,6 +52,10 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>sesam-configuration-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>sesam-selenium-api</artifactId>
 		</dependency>
 		<dependency>

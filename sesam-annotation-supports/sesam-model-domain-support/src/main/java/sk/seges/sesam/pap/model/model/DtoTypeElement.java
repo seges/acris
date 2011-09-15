@@ -8,7 +8,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
@@ -149,11 +149,11 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 				return dto;
 			}
 			
-			return new NameTypesUtils(processingEnv).toType(type);
+			return new NameTypeUtils(processingEnv).toType(type);
 		}	
 	}
 	
-	class NameTypesDtoUtils extends NameTypesUtils {
+	class NameTypesDtoUtils extends NameTypeUtils {
 
 		public NameTypesDtoUtils(ProcessingEnvironment processingEnv) {
 			super(processingEnv);
@@ -195,7 +195,7 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 			return null;
 		}
 
-		ImmutableType configurationNameType = new NameTypesUtils(processingEnv).toImmutableType(configurationTypeElement.asElement());
+		ImmutableType configurationNameType = new NameTypeUtils(processingEnv).toImmutableType(configurationTypeElement.asElement());
 
 		PackageValidator packageValidator = getPackageValidationProvider().get(configurationNameType)
 				.moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);

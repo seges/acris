@@ -9,14 +9,14 @@ import org.openqa.selenium.WebDriver;
 import sk.seges.sesam.core.test.bromine.exception.BromineException;
 import sk.seges.sesam.core.test.bromine.request.BromineRequest;
 import sk.seges.sesam.core.test.bromine.utils.QueryHelper;
-import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.selenium.factory.LocalWebDriverFactory;
 import sk.seges.sesam.core.test.selenium.factory.RemoteWebDriverFactory;
 import sk.seges.sesam.core.test.selenium.factory.WebDriverFactory;
 
 public abstract class BromineTest {
 
-	protected TestEnvironment testEnvironment;
+	protected SeleniumSettings testEnvironment;
 
 	protected WebDriver webDriver;
 
@@ -25,13 +25,13 @@ public abstract class BromineTest {
 	protected BromineTest() {
 	}
 
-	public void setTestEnvironment(TestEnvironment testEnvironment) {
+	public void setTestEnvironment(SeleniumSettings testEnvironment) {
 		this.testEnvironment = testEnvironment;
 		webDriver = getWebDriverFactory(testEnvironment).createSelenium(testEnvironment);
 	}
 
-	protected WebDriverFactory getWebDriverFactory(TestEnvironment testEnvironment) {
-		return testEnvironment.isRemote() ? new RemoteWebDriverFactory() : new LocalWebDriverFactory();
+	protected WebDriverFactory getWebDriverFactory(SeleniumSettings testEnvironment) {
+		return testEnvironment.getSeleniumRemote() ? new RemoteWebDriverFactory() : new LocalWebDriverFactory();
 	}
 
 	public void tearDown() {
@@ -44,8 +44,8 @@ public abstract class BromineTest {
 	protected abstract String getTestName();
 
 	protected boolean supportsBromine() {
-		return (testEnvironment.getBromineEnvironment().isBromineEnabled() != null &&
-				testEnvironment.getBromineEnvironment().isBromineEnabled().equals(Boolean.TRUE));
+		return (testEnvironment.getBromine() != null &&
+				testEnvironment.getBromine().equals(Boolean.TRUE));
 		
 //		if (bromineAccessible != null) {
 //			return bromineAccessible;
@@ -103,7 +103,7 @@ public abstract class BromineTest {
 		}
 
 		try {
-			result = new BromineRequest(testEnvironment.getBromineEnvironment()).send(command, query);
+			result = new BromineRequest(testEnvironment).send(command, query);
 
 			if (result.indexOf("OK") != 0) {
 				this.tearDown();
@@ -202,12 +202,10 @@ public abstract class BromineTest {
 		}
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyTrue(Boolean statement1) {
 		verifyTrue(statement1, "");
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyTrue(Boolean statement1, String comment) {
 		if (supportsBromine()) {
 			executeBromineQuery(BromineCommand.VERIFY_TRUE.get().statement1(statement1).comment(comment));
@@ -218,12 +216,10 @@ public abstract class BromineTest {
 		}
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyFalse(Boolean statement1) {
 		verifyFalse(statement1, "");
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyFalse(Boolean statement1, String comment) {
 		if (supportsBromine()) {
 			executeBromineQuery(BromineCommand.VERIFY_FALSE.get().statement1(statement1).comment(comment));
@@ -234,12 +230,10 @@ public abstract class BromineTest {
 		}
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyEquals(String statement1, String statement2) {
 		verifyEquals(statement1, statement2, "");
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyEquals(String statement1, String statement2, String comment) {
 		if (supportsBromine()) {
 			executeBromineQuery(BromineCommand.VERIFY_EQUALS.get().statement1(statement1).statement2(statement2).comment(comment));
@@ -256,12 +250,10 @@ public abstract class BromineTest {
 		}
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyNotEquals(String statement1, String statement2) {
 		verifyNotEquals(statement1, statement2, "");
 	}
 
-	//TODO This should not throws exception
 	public synchronized void verifyNotEquals(String statement1, String statement2, String comment) {
 		if (supportsBromine()) {
 			executeBromineQuery(BromineCommand.VERIFY_NOT_EQUALS.get().statement1(statement1).statement2(statement2).comment(comment));

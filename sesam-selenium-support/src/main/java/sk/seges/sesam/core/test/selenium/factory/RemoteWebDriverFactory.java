@@ -8,19 +8,19 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import sk.seges.sesam.core.test.selenium.configuration.api.TestEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 
 public class RemoteWebDriverFactory implements WebDriverFactory {
 
 	@Override
-	public WebDriver createSelenium(TestEnvironment testEnvironment) {
+	public WebDriver createSelenium(SeleniumSettings testEnvironment) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
-		capabilities.setBrowserName(testEnvironment.getBrowser());
+		capabilities.setBrowserName(testEnvironment.getBrowser().toString());
 		CommandExecutor executor;
 		try {
 			executor = new SeleneseCommandExecutor(
-					new URL("http", extractHost(testEnvironment.getSeleniumEnvironment().getSeleniumHost()),testEnvironment.getSeleniumEnvironment().getSeleniumPort(), "/"), 
-					new URL("http", extractHost(testEnvironment.getHost()), 80, "/"), capabilities);
+					new URL("http", extractHost(testEnvironment.getSeleniumServer()),testEnvironment.getSeleniumPort(), "/"), 
+					new URL("http", extractHost(testEnvironment.getTestURL()), 80, "/"), capabilities);
 		} catch (Exception ex) {
 			throw new RuntimeException("Invalid test environment specified.", ex);
 		}

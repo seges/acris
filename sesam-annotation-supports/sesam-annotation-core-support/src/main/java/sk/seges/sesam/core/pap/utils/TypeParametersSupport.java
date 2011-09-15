@@ -13,7 +13,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
@@ -26,9 +26,9 @@ import sk.seges.sesam.core.pap.model.api.TypeVariable;
 public class TypeParametersSupport {
 
 	private ProcessingEnvironment processingEnv;
-	private NameTypesUtils nameTypesUtils;
+	private NameTypeUtils nameTypesUtils;
 	
-	public TypeParametersSupport(ProcessingEnvironment processingEnv, NameTypesUtils nameTypesUtils) {
+	public TypeParametersSupport(ProcessingEnvironment processingEnv, NameTypeUtils nameTypesUtils) {
 		this.processingEnv = processingEnv;
 		this.nameTypesUtils = nameTypesUtils;
 	};

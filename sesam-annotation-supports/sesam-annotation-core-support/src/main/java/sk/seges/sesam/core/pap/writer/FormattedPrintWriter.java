@@ -13,7 +13,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.writer.api.DelayedPrintWriter;
@@ -26,46 +26,46 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 	private boolean startLine = true;
 	
 	private boolean autoIndent = false;
-	private final NameTypesUtils nameTypesUtils;
+	private final NameTypeUtils nameTypesUtils;
 	
 	public FormattedPrintWriter(Writer out, ProcessingEnvironment processingEnv) {
 		super(out);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public FormattedPrintWriter(Writer out, boolean autoFlush, ProcessingEnvironment processingEnv) {
 		super(out, autoFlush);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public FormattedPrintWriter(OutputStream out, ProcessingEnvironment processingEnv) {
 		super(out);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public FormattedPrintWriter(OutputStream out, boolean autoFlush, ProcessingEnvironment processingEnv) {
 		super(out, autoFlush);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public FormattedPrintWriter(String fileName, ProcessingEnvironment processingEnv) throws FileNotFoundException {
 		super(fileName);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public FormattedPrintWriter(String fileName, String csn, ProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
 		super(fileName, csn);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public FormattedPrintWriter(File file, ProcessingEnvironment processingEnv) throws FileNotFoundException {
 		super(file);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 
 	public FormattedPrintWriter(File file, String csn, ProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
 		super(file, csn);
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 	
 	public void setDefaultIdentLevel(int level) {
