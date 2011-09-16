@@ -117,8 +117,15 @@
 				</pluginRepository>
 				<pluginRepository>
 					<id>DataNucleus</id>
-            				<url>http://www.datanucleus.org/downloads/maven2/</url>
-        			</pluginRepository>
+       				<url>http://www.datanucleus.org/downloads/maven2/</url>
+       			</pluginRepository>
+				<pluginRepository>
+					<id>sonatype-releases-plugins</id>
+       				<url>https://oss.sonatype.org/content/repositories/releases</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+       			</pluginRepository>
 			</pluginRepositories>
 		</profile>
 	</profiles>
