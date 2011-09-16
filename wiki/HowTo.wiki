@@ -5,7 +5,7 @@
 
 == Prerequisites ==
   * JDK 1.6+
-  * Maven [2.0.9,> (currently tested on 2.1.0 and 2.2.1)
+  * Maven [3.0.0,> (currently tested on 3.0.3)
   * Brain
 
 == Steps ==
