@@ -16,7 +16,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -32,7 +32,7 @@ public class HibernateEntityResolver implements EntityResolver {
 	
 	public HibernateEntityResolver(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.methodHelper = new MethodHelper(processingEnv, new NameTypesUtils(processingEnv));
+		this.methodHelper = new MethodHelper(processingEnv, new NameTypeUtils(processingEnv));
 	}
 	
 	@Override

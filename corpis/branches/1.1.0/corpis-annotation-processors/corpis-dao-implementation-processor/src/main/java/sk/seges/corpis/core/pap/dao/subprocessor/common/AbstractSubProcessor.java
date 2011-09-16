@@ -6,12 +6,12 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.api.SubProcessor;
-import sk.seges.sesam.core.pap.builder.NameTypesUtils;
+import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 
 public abstract class AbstractSubProcessor<T> implements SubProcessor<T> {
 
 	protected ProcessingEnvironment processingEnv;
-	protected NameTypesUtils nameTypesUtils;
+	protected NameTypeUtils nameTypesUtils;
 	
 	@Override
 	public Type[] getImports(TypeElement typeElement) {
@@ -23,6 +23,6 @@ public abstract class AbstractSubProcessor<T> implements SubProcessor<T> {
 	@Override
 	public void init(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.nameTypesUtils = new NameTypesUtils(processingEnv);
+		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 }
