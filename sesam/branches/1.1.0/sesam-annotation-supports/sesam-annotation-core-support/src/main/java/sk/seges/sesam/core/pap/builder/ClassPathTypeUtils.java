@@ -493,6 +493,7 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		if (type == null) {
 			return;
 		}
+
 		List<? extends AnnotationMirror> annotationMirrors = type.getAnnotationMirrors();
 		for (AnnotationMirror annotationMirror: annotationMirrors) {
 			
@@ -520,6 +521,7 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		if (rootDirectory != null) {
 			//TODO read from options
 			String classPath = rootDirectory + File.separator + "target" + File.separator + "classes";
+			classPath += System.getProperty(PATH_SEPARATOR) + rootDirectory + File.separator + "target" + File.separator + "test-classes";
 			if (File.separator.equals("\\")) {
 				classPath = classPath.replace("\\", "/");
 			}
