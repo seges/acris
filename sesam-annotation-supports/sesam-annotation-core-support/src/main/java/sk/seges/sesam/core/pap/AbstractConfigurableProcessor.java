@@ -407,6 +407,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 					if (previousPackage != null && !getVeryTopPackage(importType).equals(previousPackage)) {
 						pw.println();
 					}
+					//TODO do no print types that are nested in the output class
 					pw.println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
 					previousPackage = getVeryTopPackage(importType);
 				}
