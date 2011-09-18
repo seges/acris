@@ -180,7 +180,7 @@
 		<maven-antrun-plugin.version>1.6</maven-antrun-plugin.version>
 		<maven-assembly-plugin.version>2.2.1</maven-assembly-plugin.version>
 		<javarebel-maven-plugin.version>1.0.5</javarebel-maven-plugin.version>
-		<apt-maven-plugin.version>1.0-alpha-4</apt-maven-plugin.version>
+		<apt-maven-plugin.version>1.0-alpha-5-SNAPSHOT</apt-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -1011,6 +1011,11 @@
 			</reporting>
 			<dependencies>
 				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-configuration-processor</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
 					<groupId>org.seleniumhq.selenium</groupId>
 					<artifactId>selenium-api</artifactId>
 				</dependency>
@@ -1053,6 +1058,12 @@
 				</dependency>
 				<dependency>
 					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-configuration-processor</artifactId>
+					<version>${sesam-os.version}</version>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
 					<artifactId>sesam-selenium-support</artifactId>
 					<version>${sesam-os.version}</version>
 					<type>test-jar</type>
@@ -1062,6 +1073,7 @@
 					<groupId>junit</groupId>
 					<artifactId>junit</artifactId>
 					<version>${junit.version}</version>
+					<scope>compile</scope>
 				</dependency>
 				<dependency>
 					<groupId>javax.mail</groupId>
@@ -1069,6 +1081,21 @@
 					<version>${javamail.version}</version>
 				</dependency>
 			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>test-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>	
+			</build>
 		</profile>
 		<profile>
 			<id>pap</id>

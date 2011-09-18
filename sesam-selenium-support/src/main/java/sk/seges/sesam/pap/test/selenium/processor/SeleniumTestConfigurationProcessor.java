@@ -34,6 +34,7 @@ import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
+import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsProviderTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.printer.SettingsInitializerPrinter;
 
@@ -63,6 +64,10 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 		switch (type) {
 		case OUTPUT_SUPERCLASS:
 			return new Type[] { DefaultTestSettings.class };
+		case OUTPUT_INTERFACES:
+			return new Type[] {
+					new SeleniumSettingsProviderTypeElement(new SeleniumTestTypeElement(typeElement, processingEnv).getSeleniumSuite(), processingEnv)
+			};
 		}
 		
 		return super.getOutputDefinition(type, typeElement);
@@ -155,14 +160,14 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 		for (Element configurationElement: configurationElements) {
 			
 			SettingsTypeElement settingsTypeElement = new SettingsTypeElement((DeclaredType)configurationElement.asType(), processingEnv);
-			if (settingsTypeElement.exists()) {
+//			if (settingsTypeElement.exists()) {
 				settingsInitializerPrinter.initialize(seleniumTestElement, outputClass);
 				SeleniumSettingsContext settingsContext = new SeleniumSettingsContext();
 				settingsContext.setSeleniumTest(seleniumTestElement);
 				settingsContext.setSettings(settingsTypeElement);
 				settingsInitializerPrinter.print(settingsContext);
 				settingsInitializerPrinter.finish();
-			}
+//			}
 		}
 	}
 }

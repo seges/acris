@@ -7,9 +7,9 @@ import java.util.Set;
 
 import sk.seges.sesam.core.configuration.api.Configuration;
 import sk.seges.sesam.core.configuration.api.ConfigurationValue;
-import sk.seges.sesam.core.test.selenium.configuration.model.SeleniumSettingsProvider;
+import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 
-public abstract class DefaultTestSettings implements SeleniumSettingsProvider {
+public abstract class DefaultTestSettings implements CoreSeleniumSettingsProvider {
 
     private static final String CONFIGURATION_PROPERTY_PREFIX = "";
     

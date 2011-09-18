@@ -32,6 +32,7 @@ public class MethodHelper {
 
 	public static final String SETTER_PREFIX = "set";
 	public static final String GETTER_PREFIX = "get";
+	public static final String GETTER_IS_PREFIX = "is";
 
 	public MethodHelper(ProcessingEnvironment processingEnv, NameTypeUtils nameTypes) {
 		this.processingEnv = processingEnv;

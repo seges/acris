@@ -21,12 +21,12 @@ public class JavaDocPrinter implements SettingsElementPrinter {
 
 	@Override
 	public void print(SettingsContext context) {
-		if (context.getParameter() == null) {
+		if (context.getNestedElement() != null) {
 			return;
 		}
 		
 		pw.println("/**");
-		pw.println("* " + context.getParameter().description());
+		pw.println("* " + context.getParameterDescription());
 		pw.println("*/");
 	}
 
