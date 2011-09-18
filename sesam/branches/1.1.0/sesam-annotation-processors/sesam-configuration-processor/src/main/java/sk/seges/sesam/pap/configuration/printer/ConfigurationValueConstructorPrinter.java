@@ -36,7 +36,7 @@ public class ConfigurationValueConstructorPrinter implements SettingsElementPrin
 	
 				@Override
 				protected Void defaultAction(TypeMirror e, SettingsContext context) {
-					pw.println("this." + context.getFieldName() + " = ", ConfigurationUtils.class, ".getConfigurationValue(configurations, \"" + context.getParameter().name() + "\");");
+					pw.println("this." + context.getFieldName() + " = ", ConfigurationUtils.class, ".getConfigurationValue(configurations, \"" + context.getParameterName() + "\");");
 					return null;
 				}
 				
@@ -45,7 +45,7 @@ public class ConfigurationValueConstructorPrinter implements SettingsElementPrin
 					Boolean result = t.asElement().accept(new ElementKindVisitor6<Boolean, SettingsContext>() {
 						@Override
 						public Boolean visitTypeAsEnum(TypeElement e, SettingsContext context) {
-							pw.println(String.class, " _" + context.getFieldName() + " = ", ConfigurationUtils.class, ".getConfigurationValue(configurations, \"" + context.getParameter().name() + "\");");
+							pw.println(String.class, " _" + context.getFieldName() + " = ", ConfigurationUtils.class, ".getConfigurationValue(configurations, \"" + context.getParameterName() + "\");");
 							pw.println("for (", e, " _enumValue: ", e, ".values()) {");
 							pw.println("if (_enumValue.toString().equals(_" + context.getFieldName() + ")) {");
 							pw.println("this." + context.getFieldName() + " = _enumValue;");
@@ -92,7 +92,7 @@ public class ConfigurationValueConstructorPrinter implements SettingsElementPrin
 						break;
 					}
 	
-					pw.println("(configurations, \"" + context.getParameter().name() + "\");");
+					pw.println("(configurations, \"" + context.getParameterName() + "\");");
 	
 					return null;
 				}

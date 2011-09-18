@@ -9,7 +9,7 @@ public class SeleniumSuiteTypeElement extends AbstractSeleniumTypeElement {
 
 	private final TypeElement suiteElement;
 	
-	SeleniumSuiteTypeElement(TypeElement suiteElement, ProcessingEnvironment processingEnv) {
+	public SeleniumSuiteTypeElement(TypeElement suiteElement, ProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.suiteElement = suiteElement;
 	}

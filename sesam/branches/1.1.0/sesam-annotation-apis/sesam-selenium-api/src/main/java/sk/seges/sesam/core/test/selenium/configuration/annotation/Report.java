@@ -14,18 +14,18 @@ import sk.seges.sesam.core.pap.Constants;
 public @interface Report {
 
 	@Target(ElementType.ANNOTATION_TYPE)
-	//@Retention(RetentionPolicy.SOURCE)
-	public @interface ScreenshotConfiguration {
+	public @interface Support {
 		
-		@Parameter(name = "report.produce.screenshots", description = "Enables/disables producing screenshots on the of the test or when test fails")
-		boolean produceScreenshots() default false;
+		@Parameter(name = "enabled", description = "Enables/disables support")
+		boolean enabled() default false;
 
-		@Parameter(name = "report.result.directory", description = "Output directory for the test HTML reports")
-		String resultDirectory() default Constants.NULL;
-		
-		@Parameter(name = "report.screenshot.directory", description = "Output directory for the screenshots")
-		String screenshotsDirectory() default Constants.NULL;
+		@Parameter(name = "directory", description = "Output directory")
+		String directory() default Constants.NULL;
 	}
 	
-	ScreenshotConfiguration screenshotConfiguration() default @ScreenshotConfiguration;
+	@Parameter(name = "report.screenshot", description = "screenshots")
+	Support screenshot() default @Support;
+
+	@Parameter(name = "report.html", description = "HTML reports")
+	Support html() default @Support;
 }

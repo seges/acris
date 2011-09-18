@@ -7,17 +7,18 @@ import sk.seges.sesam.core.configuration.annotation.Parameter;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 
 public class SettingsContext {
-
+	
 	private TypeElement configurationElement;
 	private ExecutableElement method;
 	private String fieldName;
 
 	private Parameter parameter;
-//	private AnnotationMirror annotationMirror;
+	private String prefix = "";
 	
 	private TypeElement nestedElement;
 	private NamedType nestedOutputName;
-
+	private boolean nestedElementExists = false;
+	
 	public void setConfigurationElement(TypeElement configurationElement) {
 		this.configurationElement = configurationElement;
 	}
@@ -42,8 +43,18 @@ public class SettingsContext {
 		this.fieldName = fieldName;
 	}
 	
-	public Parameter getParameter() {
-		return parameter;
+	public String getParameterName() {
+		if (parameter == null) {
+			return null;
+		}
+		return prefix + parameter.name();
+	}
+
+	public String getParameterDescription() {
+		if (parameter == null) {
+			return null;
+		}
+		return parameter.description();
 	}
 	
 	public void setParameter(Parameter parameter) {
@@ -66,11 +77,19 @@ public class SettingsContext {
 		return nestedOutputName;
 	}
 
-//	public AnnotationMirror getAnnotationMirror() {
-//		return annotationMirror;
-//	}
-//
-//	public void setAnnotationMirror(AnnotationMirror annotationMirror) {
-//		this.annotationMirror = annotationMirror;
-//	}
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+	
+	public String getPrefix() {
+		return prefix;
+	}
+	
+	public void setNestedElementExists(boolean nestedElementExists) {
+		this.nestedElementExists = nestedElementExists;
+	}
+	
+	public boolean isNestedElementExists() {
+		return nestedElementExists;
+	}
 }

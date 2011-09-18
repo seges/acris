@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.configuration.printer;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -31,7 +32,8 @@ public class AccessorPrinter extends AbstractSettingsElementPrinter implements S
 		if (context.getNestedElement() != null) {
 			pw.println("public " + context.getNestedOutputName().getSimpleName() +  " " + methodHelper.toGetter(fieldName) + " {");
 		} else {
-			pw.println("public ", unboxType(context.getMethod().getReturnType()), " " + methodHelper.toGetter(fieldName) + " {");
+			TypeMirror unboxedReturnType = unboxType(context.getMethod().getReturnType());
+			pw.println("public ", unboxedReturnType, " " + methodHelper.toGetter(fieldName) + " {");
 		}
 		pw.println("return " + fieldName + ";");
 		pw.println("}");

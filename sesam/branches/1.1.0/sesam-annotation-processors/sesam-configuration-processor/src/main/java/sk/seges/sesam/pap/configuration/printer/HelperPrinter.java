@@ -28,14 +28,20 @@ public class HelperPrinter extends AbstractSettingsElementPrinter implements Set
 	@Override
 	public void initialize(TypeElement type, NamedType outputName) {
 		pw.println("public void printHelp(", PrintStream.class, " out) {");
+		pw.println("printHelp(out, \"\", null);");
+		pw.println("}");
+		pw.println();
+		pw.println("public void printHelp(", PrintStream.class, " out, ", String.class," prefix, ", String.class, " name) {");
 	}
 
 	@Override
 	public void print(SettingsContext context) {
 		if (context.getNestedElement() != null) {
-			pw.println(context.getFieldName() + ".printHelp(out);");
+			pw.println(context.getFieldName() + ".printHelp(out, \"" + context.getPrefix() + "\", \"" + context.getParameterDescription() + "\");");
 		} else {
-			pw.println("out.println(\"" + alignText(context.getParameter().name()) + " " + context.getParameter().description() + "\");");
+			pw.print("out.println(prefix + \"" + alignText(context.getParameterName()) + " " + context.getParameterDescription() + "\"");
+			pw.print(" + (name != null ? \"for \" + name : \"\")");
+			pw.println(");");
 			if (context.getMethod().getReturnType().getKind().equals(TypeKind.DECLARED) && 
 					((DeclaredType) context.getMethod().getReturnType()).asElement().getKind().equals(ElementKind.ENUM)) {
 

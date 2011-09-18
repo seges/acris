@@ -3,15 +3,17 @@ package sk.seges.sesam.pap.configuration.processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
+import sk.seges.sesam.core.configuration.annotation.Settings;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.configuration.ConfigurationProcessorConfigurer;
+import sk.seges.sesam.pap.configuration.configurer.SettingsProcessorConfigurer;
 import sk.seges.sesam.pap.configuration.model.SettingsIterator;
 import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
 import sk.seges.sesam.pap.configuration.printer.AccessorPrinter;
@@ -30,10 +32,9 @@ import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SettingsProcessor extends AbstractConfigurableProcessor {
 
-
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
-		return new ConfigurationProcessorConfigurer();
+		return new SettingsProcessorConfigurer();
 	}
 	
 	@Override
@@ -41,6 +42,12 @@ public class SettingsProcessor extends AbstractConfigurableProcessor {
 		return new NamedType[] { new SettingsTypeElement(inputClass, processingEnv) };
 	}
 
+	@Override
+	protected void writeClassAnnotations(Element el, NamedType outputName, FormattedPrintWriter pw) {
+		pw.println("@", Settings.class, "(configuration = ", el, ".class)");
+		super.writeClassAnnotations(el, outputName, pw);
+	}
+	
 	protected SettingsElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new SettingsElementPrinter[] {
 				new NestedParameterPrinter(pw, this, processingEnv),

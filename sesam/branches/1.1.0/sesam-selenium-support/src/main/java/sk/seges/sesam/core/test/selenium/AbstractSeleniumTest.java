@@ -11,8 +11,8 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import sk.seges.sesam.core.test.bromine.BromineTest;
-import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
+import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 import sk.seges.sesam.core.test.selenium.support.MailSupport;
 import sk.seges.sesam.core.test.selenium.support.SeleniumSupport;
 import sk.seges.sesam.core.test.webdriver.WebDriverActions;
@@ -38,15 +38,15 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	protected Wait<WebDriver> wait;
 	
 	protected Actions actions;
-	protected DefaultTestSettings settings;
+	protected CoreSeleniumSettingsProvider settings;
 	
 	protected AbstractSeleniumTest() {
-//		seleniumConfigurator = getSeleniumConfigurator();
+		setTestEnvironment(ensureSettings().getSeleniumSettings());
 	}
 
-	protected abstract DefaultTestSettings getSettings();
+	protected abstract CoreSeleniumSettingsProvider getSettings();
 	
-	protected DefaultTestSettings ensureSettings() {
+	protected CoreSeleniumSettingsProvider ensureSettings() {
 		if (settings == null) {
 			settings = getSettings();
 		}
@@ -72,7 +72,7 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	
 	protected String getResultDirectory() {
 		String result = RESULT_PATH_PREFIX
-				+ (ensureSettings().getReportSettings().getScreenshotConfiguration().getResultDirectory() == null ? "report" : ensureSettings().getReportSettings().getScreenshotConfiguration().getResultDirectory());
+				+ (ensureSettings().getReportSettings().getScreenshot().getDirectory() == null ? "report" : ensureSettings().getReportSettings().getScreenshot().getDirectory());
 
 		result = new File(result).getAbsolutePath();
 		result += File.separator;
@@ -82,8 +82,8 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	
 	protected String getScreenshotDirectory() {
 
-		String screenshotsDirectory = (ensureSettings().getReportSettings().getScreenshotConfiguration().getScreenshotsDirectory() == null ? "screenshot"
-				: ensureSettings().getReportSettings().getScreenshotConfiguration().getScreenshotsDirectory());
+		String screenshotsDirectory = (ensureSettings().getReportSettings().getScreenshot().getDirectory() == null ? "screenshot"
+				: ensureSettings().getReportSettings().getScreenshot().getDirectory());
 
 		return getResultDirectory() + screenshotsDirectory;
 	}
@@ -107,8 +107,8 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	@Before
 	public void setUp() {
 		if (ensureSettings().getReportSettings() != null && 
-			ensureSettings().getReportSettings().getScreenshotConfiguration().getProduceScreenshots() != null && 
-			ensureSettings().getReportSettings().getScreenshotConfiguration().getProduceScreenshots() == true) {
+			ensureSettings().getReportSettings().getScreenshot().getEnabled() != null && 
+			ensureSettings().getReportSettings().getScreenshot().getEnabled() == true) {
 
 			if (!new File(getScreenshotDirectory()).exists()) {
 				new File(getScreenshotDirectory()).mkdirs();
