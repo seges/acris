@@ -59,4 +59,8 @@ public class ServiceTypeElement extends DelegateImmutableType {
 		
 		return result;
 	}
+	
+	public TypeElement asElement() {
+		return service;
+	}
 }

@@ -21,7 +21,6 @@ import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
-import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
@@ -69,43 +68,6 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 
 		initialize();
 	}
-
-//	public DtoTypeElement(TypeElement configurationHolderTypeElement, TypeMirror dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-//		super(processingEnv, roundEnv);
-//
-//		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(configurationHolderTypeElement, processingEnv);
-//		this.dtoType = dtoType;
-//		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
-//		this.configurationProviders = getConfigurationProviders(configurationProviders);
-//		
-//		if (dtoType.getKind().equals(TypeKind.DECLARED)) {
-//			TransferObjectMapping dtoMapping = transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType);
-//			if (dtoMapping == null) {
-//				transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)dtoType).asElement(), processingEnv);
-//				if (!transferObjectConfiguration.isValid()) {
-//					transferObjectConfiguration = null;
-//				}
-//			} else {
-//				transferObjectConfiguration.setReferenceMapping(dtoMapping);
-//			}
-//		} else {
-//			transferObjectConfiguration = null;
-//		}
-//
-//		if (transferObjectConfiguration != null) {
-//			if (dtoType.getKind().equals(TypeKind.DECLARED)) {
-//				this.configurationTypeElement = new ConfigurationTypeElement(null, (DeclaredType) dtoType, transferObjectConfiguration, processingEnv, roundEnv, configurationProviders);
-//			} else {
-//				this.configurationTypeElement = new ConfigurationTypeElement(null, null, transferObjectConfiguration, processingEnv, roundEnv, configurationProviders);
-//			}
-//		} else {
-//			this.configurationTypeElement = getConfiguration(dtoType);
-//		}
-//
-//		this.generated = false;
-//				
-//		initialize();
-//	}
 
 	public DtoTypeElement(TypeMirror dtoType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
 		super(processingEnv, roundEnv);
