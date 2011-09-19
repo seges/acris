@@ -6,7 +6,11 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
+import sk.seges.sesam.core.configuration.annotation.Configuration;
 import sk.seges.sesam.core.configuration.annotation.Settings;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
@@ -42,6 +46,27 @@ public class SettingsProcessor extends AbstractConfigurableProcessor {
 		return new NamedType[] { new SettingsTypeElement(inputClass, processingEnv) };
 	}
 
+	private boolean isEnclosedToConfiguration(DeclaredType type) {
+		TypeMirror enclosingType = type.getEnclosingType();
+		while (enclosingType.getKind().equals(TypeKind.DECLARED)) {
+			type = (DeclaredType)enclosingType;
+			//TODO read from configuration
+			if (type.asElement().getAnnotation(Configuration.class) != null) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
+		if (isEnclosedToConfiguration((DeclaredType)element.asType())) {
+			return false;
+		}
+		return super.checkPreconditions(element, outputName, alreadyExists);
+	}
+	
 	@Override
 	protected void writeClassAnnotations(Element el, NamedType outputName, FormattedPrintWriter pw) {
 		pw.println("@", Settings.class, "(configuration = ", el, ".class)");
