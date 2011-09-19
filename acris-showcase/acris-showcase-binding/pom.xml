@@ -28,82 +28,8 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/lib/</outputDirectory>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<excludeTransitive>false</excludeTransitive>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.4.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<compilerArgument>-proc:none</compilerArgument>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<additionalConfig>
-						<file>
-							<name>.settings/com.google.gdt.eclipse.core.prefs</name>
-							<content>
-								eclipse.preferences.version=1
-								jarsExcludedFromWebInfLib=
-								warSrcDir=target/${artifactId}-${version}
-								warSrcDirIsOutput=true
-							</content>
-						</file>
-					</additionalConfig>
-					<additionalBuildcommands>
-						<buildCommand>
-							<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-						</buildCommand>
-						<buildCommand>
-							<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
-						</buildCommand>
-					</additionalBuildcommands>
-
-					<additionalProjectnatures>
-						<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-						<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
-					</additionalProjectnatures>
-
-					<classpathContainers>
-						<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-					</classpathContainers>
-
-					<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
-					<wtpversion>2.0</wtpversion>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

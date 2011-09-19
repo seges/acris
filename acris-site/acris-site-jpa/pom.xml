@@ -31,7 +31,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-domain-jpa</artifactId>
+		</dependency> 
+		
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
