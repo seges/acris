@@ -27,15 +27,18 @@ public abstract class BromineTest {
 
 	public void setTestEnvironment(SeleniumSettings testEnvironment) {
 		this.testEnvironment = testEnvironment;
-		webDriver = getWebDriverFactory(testEnvironment).createSelenium(testEnvironment);
+		webDriver = createWebDriver(getWebDriverFactory(testEnvironment), testEnvironment);
 	}
 
+	protected WebDriver createWebDriver(WebDriverFactory webDriverFactory, SeleniumSettings seleniumSettings) {
+		return webDriverFactory.createSelenium(seleniumSettings);
+	}
+	
 	protected WebDriverFactory getWebDriverFactory(SeleniumSettings testEnvironment) {
 		return testEnvironment.getSeleniumRemote() ? new RemoteWebDriverFactory() : new LocalWebDriverFactory();
 	}
 
 	public void tearDown() {
-//		webDriver.close();
 		webDriver.quit();
 	}
 

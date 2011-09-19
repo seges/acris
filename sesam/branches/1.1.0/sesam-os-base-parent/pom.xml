@@ -157,9 +157,7 @@
 		<groovy.version>1.8.0</groovy.version>
 
 		<!-- Selenium -->
-		<selenium.version>2.4.0</selenium.version> 
-		<selenium-remote-control.version>2.0rc2</selenium-remote-control.version>
-		<logging.selenium.version>1.2</logging.selenium.version>
+		<selenium.version>2.6.0</selenium.version> 
 
 		<!-- plugins -->
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
@@ -256,6 +254,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
+				<artifactId>selenium-remote-driver</artifactId>
+				<version>${selenium.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seleniumhq.selenium</groupId>
 				<artifactId>selenium-firefox-driver</artifactId>
 				<version>${selenium.version}</version>
 			</dependency>
@@ -266,7 +269,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
-				<artifactId>selenium-remote-driver</artifactId>
+				<artifactId>selenium-java</artifactId>
 				<version>${selenium.version}</version>
 			</dependency>
 			<dependency>
@@ -286,18 +289,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
-				<artifactId>selenium-remote-control</artifactId>
-				<version>${selenium-remote-control.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.seleniumhq.selenium</groupId>
 				<artifactId>selenium-server</artifactId>
 				<version>${selenium.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.unitedinternet.portal.selenium.utils</groupId>
-				<artifactId>logging-selenium</artifactId>
-				<version>${logging.selenium.version}</version>
 			</dependency>
 
 			<!-- Spring -->
@@ -1045,7 +1038,7 @@
 				</dependency>
 				<dependency>
 					<groupId>org.seleniumhq.selenium</groupId>
-					<artifactId>selenium-remote-control</artifactId>
+					<artifactId>selenium-java</artifactId>
 				</dependency>
 				<dependency>
 					<groupId>org.seleniumhq.selenium</groupId>
@@ -1281,7 +1274,7 @@ org.eclipse.jdt.core.compiler.source=1.6]]>
 				</dependency>
 				<dependency>
 					<groupId>org.seleniumhq.selenium</groupId>
-					<artifactId>selenium-remote-control</artifactId>
+					<artifactId>selenium-java</artifactId>
 				</dependency>
 				<dependency>
 					<groupId>org.seleniumhq.selenium</groupId>

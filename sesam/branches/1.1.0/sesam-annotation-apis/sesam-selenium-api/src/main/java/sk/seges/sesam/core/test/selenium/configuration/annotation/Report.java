@@ -26,6 +26,16 @@ public @interface Report {
 	@Parameter(name = "report.screenshot", description = "screenshots")
 	Support screenshot() default @Support;
 
+	@Target(ElementType.ANNOTATION_TYPE)
+	public @interface HtmlReport {
+
+		@Parameter(name = "report.html", description = "HTML reports")
+		Support support() default @Support;
+		
+		@Parameter(name = "template.path", description = "Defines path to the used template")
+		String templatePath() default Constants.NULL;
+	}
+	
 	@Parameter(name = "report.html", description = "HTML reports")
-	Support html() default @Support;
+	HtmlReport html() default @HtmlReport;
 }

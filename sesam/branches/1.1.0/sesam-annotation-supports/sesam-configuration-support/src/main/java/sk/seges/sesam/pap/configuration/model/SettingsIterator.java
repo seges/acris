@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -16,9 +17,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.configuration.annotation.Parameter;
-import sk.seges.sesam.core.configuration.annotation.Settings;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.pap.configuration.model.SettingsIterator.SettingsHandler;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
@@ -30,6 +28,18 @@ public class SettingsIterator implements Iterator<SettingsHandler> {
 		
 		SettingsHandler(ExecutableElement method) {
 			this.method = method;
+		}
+
+		//We have to use elements instead of types, because types does not 
+		//reflect enclosing elements correctly
+		private Element getEnclosingElement(Element element) {
+			Element enclosingElement = element.getEnclosingElement();
+			while (enclosingElement.getKind().equals(ElementKind.ANNOTATION_TYPE)) {
+				element = enclosingElement;
+				enclosingElement = element.getEnclosingElement();
+			}
+			
+			return element;
 		}
 		
 		public boolean handle(SettingsElementPrinter printer) {
@@ -55,25 +65,12 @@ public class SettingsIterator implements Iterator<SettingsHandler> {
 				context.setPrefix(parameterAnnotation.name() + ".");
 				initializeContext(context);
 
-				SettingsTypeElement settingsTypeElement = new SettingsTypeElement((DeclaredType) context.getNestedElement().asType(), processingEnv);				
-				TypeElement settingElement = processingEnv.getElementUtils().getTypeElement(settingsTypeElement.getCanonicalName());
+				DeclaredType type = (DeclaredType) context.getNestedElement().asType();
 				
-				if (settingElement != null && settingElement.getAnnotation(Settings.class) != null) {
-					TypeElement configurationClass = AnnotationClassPropertyHarvester.getTypeOfClassProperty(settingElement.getAnnotation(Settings.class), new AnnotationClassProperty<Settings>() {
-						@Override
-						public Class<?> getClassProperty(Settings annotation) {
-							return annotation.configuration();
-						}						
-					});
-					
-					if (configurationClass.equals(context.getNestedElement())) {
-						nestedClasses.add(context.getNestedOutputName().getCanonicalName());
-					}
-				}
+				context.setNestedElementExists(!getEnclosingElement(type.asElement()).equals(context.getConfigurationElement()));
 				
 				if (!nestedClasses.contains(context.getNestedOutputName().getCanonicalName())) {
 					nestedClasses.add(context.getNestedOutputName().getCanonicalName());
-					context.setNestedElementExists(false);
 				} else {
 					context.setNestedElementExists(true);
 				}
