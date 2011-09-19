@@ -66,15 +66,6 @@ public class MoviesContent implements ContentData<Long> {
 	}
 
 	@Override
-	public String getContentDetached() {
-		return null;
-	}
-
-	@Override
-	public void setContentDetached(String content) {
-	}
-
-	@Override
 	public String getPageName() {
 		// TODO Auto-generated method stub
 		return null;
@@ -99,19 +90,13 @@ public class MoviesContent implements ContentData<Long> {
 	}
 
 	@Override
-	public List<ContentData<Long>> getSubContents() {
+	public List<? extends ContentData<Long>> getSubContents() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void setSubContents(List<ContentData<Long>> subContents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addSubContent(ContentData<Long> subContent) {
+	public void setSubContents(List<? extends ContentData<Long>> subContents) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -114,6 +114,17 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-jpa</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-jpa</artifactId>
+				<version>${corpis-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-payment</artifactId>
 				<version>${corpis-os.version}</version>
 			</dependency>
