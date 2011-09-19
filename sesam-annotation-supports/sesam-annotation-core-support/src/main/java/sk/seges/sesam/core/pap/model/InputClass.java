@@ -103,12 +103,14 @@ public class InputClass extends AbstractPrintableType implements NamedType, Immu
 
 	public ImmutableType addPackageSufix(String sufix) {
 		InputClass result = clone();
+		result.enclosedClass = null;
 		result.packageName += sufix;
 		return result;
 	}
 
 	public ImmutableType changePackage(String packageName) {
 		InputClass result = clone();
+		result.enclosedClass = null;
 		result.packageName = packageName;
 		return result;
 	}
