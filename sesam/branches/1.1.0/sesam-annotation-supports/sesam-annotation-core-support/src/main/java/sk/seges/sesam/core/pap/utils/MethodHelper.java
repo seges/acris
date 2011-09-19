@@ -3,11 +3,9 @@ package sk.seges.sesam.core.pap.utils;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -23,6 +21,7 @@ import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class MethodHelper {
@@ -166,47 +165,11 @@ public class MethodHelper {
 	
 	public void copyAnnotations(Element element, FormattedPrintWriter pw) {
 		for (AnnotationMirror annotation: element.getAnnotationMirrors()) {
-			pw.print("@", nameTypes.toType(annotation.getAnnotationType()));
-			
-			if (annotation.getElementValues().size() > 0) {
-				pw.print("(");
-				int i = 0;
-				for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: annotation.getElementValues().entrySet()) {
-					if (i > 0) {
-						pw.print(", ");
-						pw.println("		");
-					}
-					pw.print( annotationValue.getKey().getSimpleName() + " = " + annotationValueToString(annotationValue.getValue()));
-					i++;
-				}
-				pw.print(")");
-			}
+			new AnnotationPrinter(pw, processingEnv).print(annotation);
 			pw.println();
 		}
 	}
-
-	private static boolean isArray(final Object obj) {
-		if (obj != null)
-			return obj.getClass().isArray();
-		return false;
-	}
 	 
-	private String annotationValueToString(Object value) {
-		if (isArray(value)) {
-			String result = "{";
-			int i = 0;
-			for (Object obj: (Object[])value) {
-				if (i > 0) {
-					result += ", ";
-				}
-				result += annotationValueToString(obj);
-				i++;
-			}
-			return result + "}";
-		}
-		return value.toString();
-	}
-	
 	interface ConstructorPrinter {
 
 		boolean existsParameter(String field, ExecutableElement constructor);

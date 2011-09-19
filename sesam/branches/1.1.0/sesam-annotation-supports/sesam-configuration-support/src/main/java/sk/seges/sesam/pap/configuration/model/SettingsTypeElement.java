@@ -53,7 +53,9 @@ public class SettingsTypeElement extends DelegateImmutableType {
 	
 	@Override
 	protected ImmutableType getDelegateImmutableType() {
-		return getOutputName(annotationNamedType);
+		ImmutableType outputName = getOutputName(annotationNamedType);
+		outputName = outputName.setEnclosedClass(annotationNamedType.getEnclosedClass());
+		return outputName;
 	}
 
 	public AnnotationMirror getAnnotationMirrorForElement(TypeElement typeElement) {
