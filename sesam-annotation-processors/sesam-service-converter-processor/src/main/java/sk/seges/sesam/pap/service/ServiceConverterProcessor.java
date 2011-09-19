@@ -44,9 +44,10 @@ import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.annotation.LocalService;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
+import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
+import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.provider.ServiceCollectorConfigurationProvider;
-import sk.seges.sesam.pap.service.utils.ServiceHelper;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -55,12 +56,11 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 	public static final String SERVICE_CONVERTER_SUFFIX = "Exporter";
 	private static final String SERVICE_DELEGATE_NAME = "service";
 
-	private ServiceHelper serviceHelper;
 	private ConverterProviderPrinter converterProviderPrinter;
 
 	private ConfigurationProvider[] configurationProviders;
 	
-	private Map<NamedType, Element> localInterfacesCache = new HashMap<NamedType, Element>();
+	private Map<NamedType, LocalServiceTypeElement> localInterfacesCache = new HashMap<NamedType, LocalServiceTypeElement>();
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
@@ -87,9 +87,10 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		// type should be always declared type. If not, than strange things happen here
 		TypeElement serviceElement = (TypeElement) ((DeclaredType) mutableType.asType()).asElement();
 
-		Element[] localInterfaces = serviceHelper.getLocalServiceInterfaces(serviceElement);
-
-		if (localInterfaces == null || localInterfaces.length == 0) {
+		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(serviceElement, processingEnv);
+		List<LocalServiceTypeElement> localServiceInterfaces = serviceTypeElement.getLocalServiceInterfaces();
+		
+		if (localServiceInterfaces == null || localServiceInterfaces.size() == 0) {
 			processingEnv.getMessager().printMessage(Kind.ERROR, 
 					"[ERROR] Unable to find local interface for the service " + serviceElement
 							+ ". You should specify local service interface using " + LocalService.class.getCanonicalName() + " annotation.", serviceElement);
@@ -98,7 +99,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		List<NamedType> result = new ArrayList<NamedType>();
 
-		for (Element localInterface : localInterfaces) {
+		for (LocalServiceTypeElement localInterface : localServiceInterfaces) {
 			NamedType outputClass = getOutputClass(getNameTypes().toImmutableType(localInterface), getPackageValidatorProvider());
 			localInterfacesCache.put(outputClass, localInterface);
 			result.add(outputClass);
@@ -111,13 +112,14 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement serviceElement) {
 		switch (type) {
 		case OUTPUT_INTERFACES:
-			Element[] localInterfaces = serviceHelper.getLocalServiceInterfaces(serviceElement);
+			
+			List<LocalServiceTypeElement> localServiceInterfaces = new ServiceTypeElement(serviceElement, processingEnv).getLocalServiceInterfaces();
 
-			if (localInterfaces != null && localInterfaces.length > 0) {
+			if (localServiceInterfaces != null && localServiceInterfaces.size() > 0) {
 				List<NamedType> result = new ArrayList<NamedType>();
 
-				for (Element localInterface : localInterfaces) {
-					result.add(nameTypesUtils.toType(serviceHelper.getRemoteServiceInterface(localInterface)));
+				for (LocalServiceTypeElement localInterface : localServiceInterfaces) {
+					result.add(localInterface.getRemoteServiceInterface());
 				}
 
 				return result.toArray(new Type[] {});
@@ -127,12 +129,6 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		}
 		
 		return super.getOutputDefinition(type, serviceElement);
-	}
-
-	@Override
-	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		this.serviceHelper = new ServiceHelper();
-		return super.process(annotations, roundEnv);
 	}
 
 	// TODO If the converter has 2 same parameters, like Cache cache1, Cache cache2
@@ -191,18 +187,19 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 	@Override
 	protected void writeClassAnnotations(Element element, NamedType outputClass, FormattedPrintWriter pw) {
 
-		Element localInterface = localInterfacesCache.get(outputClass);
+		LocalServiceTypeElement localInterface = localInterfacesCache.get(outputClass);
 		if (localInterface == null) {
 			super.writeClassAnnotations(element, outputClass, pw);
 			return;
 		}
 		
-		TypeElement remoteServiceInterface = (TypeElement) serviceHelper.getRemoteServiceInterface(localInterface);
+		RemoteServiceTypeElement remoteServiceInterface = localInterface.getRemoteServiceInterface();
 		if (remoteServiceInterface == null) {
 			super.writeClassAnnotations(element, outputClass, pw);
 			return;
 		}
 		
+		//TODO if one service handles more remote services ?
 		pw.println("@", LocalServiceConverter.class, "(remoteService = ", remoteServiceInterface, ".class)");
 		super.writeClassAnnotations(element, outputClass, (PrintWriter) pw);
 	}
@@ -213,11 +210,10 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		this.configurationProviders = getConfigurationProviders(serviceTypeElement);
 		this.converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, roundEnv, getParametersResolver(), configurationProviders);
 		
-		Element localInterface = localInterfacesCache.get(outputClass);
+		LocalServiceTypeElement localInterface = localInterfacesCache.get(outputClass);
 
 		if (localInterface == null) {
-			processingEnv.getMessager().printMessage(
-					Kind.ERROR,
+			processingEnv.getMessager().printMessage(Kind.ERROR,
 					"[ERROR] Unable to find local interface for the service " + element
 							+ ". Most probably you found a bug in the sesam, report this bug immediately :-).", element);
 			return;
@@ -225,7 +221,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 
 		pw.println("private ", localInterface, " " + SERVICE_DELEGATE_NAME + ";");
 
-		List<ConverterParameter> converterParameters = unifyParameterNames(removeConverterParameters(getConverterParameters(element, localInterface)));
+		List<ConverterParameter> converterParameters = unifyParameterNames(removeConverterParameters(getConverterParameters(serviceTypeElement, localInterface)));
 		List<ConverterParameter> mergedSameParameters = mergeSameParams(converterParameters);
 
 		for (ConverterParameter converterParameter : mergedSameParameters) {
@@ -250,7 +246,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		pw.println("}");
 		pw.println();
 
-		copyMethods(element, localInterface, converterParameters, pw);
+		copyMethods(serviceTypeElement, localInterface, converterParameters, pw);
 		
 		this.converterProviderPrinter.printConverterMethods(true);
 	}
@@ -259,8 +255,13 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		return new DefaultParametersResolver(processingEnv);
 	}
 	
-	protected List<ConverterParameter> getConverterParameters(Element element, Element localInterface) {
-		TypeElement remoteServiceInterface = (TypeElement) serviceHelper.getRemoteServiceInterface(localInterface);
+	/**
+	 * Collects all converters from the remote service interface methods return types and method parameters and returns all parameters
+	 * required by these converters.
+	 * This parameters should be passed to the service exporter constructor and initialized by dependency injection of in the upper layer.
+	 */
+	protected List<ConverterParameter> getConverterParameters(ServiceTypeElement serviceTypeElement, LocalServiceTypeElement localInterface) {
+		RemoteServiceTypeElement remoteServiceInterface = localInterface.getRemoteServiceInterface();
 
 		List<ConverterParameter> parameters = new LinkedList<ConverterParameter>();
 
@@ -268,12 +269,14 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			return parameters;
 		}
 
-		List<ExecutableElement> remoteMethods = ElementFilter.methodsIn(remoteServiceInterface.getEnclosedElements());
+		List<ExecutableElement> remoteMethods = ElementFilter.methodsIn(remoteServiceInterface.asElement().getEnclosedElements());
 
 		Set<ConverterTypeElement> converters = new HashSet<ConverterTypeElement>();
 
 		for (ExecutableElement remoteMethod : remoteMethods) {
-			ExecutableElement localMethod = getDomainMethodPair(remoteMethod, element, remoteServiceInterface);
+			ExecutableElement localMethod = getDomainMethodPair(remoteMethod, serviceTypeElement);
+			
+			//If the remote method does not have local method pair then invalid service interface are used
 			if (localMethod == null) {
 				continue;
 			}
@@ -313,25 +316,24 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		return ParameterFilter.CONVERTER.filterBy(parameters, dummyParameter);
 	}
 	
-	protected void copyMethods(Element element, Element localInterface, List<ConverterParameter> parameters, FormattedPrintWriter pw) {
+	protected void copyMethods(ServiceTypeElement serviceTypeElement, LocalServiceTypeElement localInterface, List<ConverterParameter> parameters, FormattedPrintWriter pw) {
 
-		TypeElement remoteServiceInterface = (TypeElement) serviceHelper.getRemoteServiceInterface(localInterface);
+		RemoteServiceTypeElement remoteServiceInterface = localInterface.getRemoteServiceInterface();
 
 		if (remoteServiceInterface == null) {
 			processingEnv.getMessager().printMessage(Kind.ERROR,
-					"[ERROR] Unable to find remote service pair for the local service definition " + localInterface.toString(), element);
+					"[ERROR] Unable to find remote service pair for the local service definition " + localInterface.toString(), serviceTypeElement.asElement());
 			return;
 		}
 
-		List<ExecutableElement> remoteMethods = ElementFilter.methodsIn(remoteServiceInterface.getEnclosedElements());
+		List<ExecutableElement> remoteMethods = ElementFilter.methodsIn(remoteServiceInterface.asElement().getEnclosedElements());
 
 		for (ExecutableElement remoteMethod : remoteMethods) {
-			ExecutableElement localMethod = getDomainMethodPair(remoteMethod, element, remoteServiceInterface);
+			ExecutableElement localMethod = getDomainMethodPair(remoteMethod, serviceTypeElement);
 			if (localMethod == null) {
-				processingEnv.getMessager().printMessage(
-						Kind.ERROR,
+				processingEnv.getMessager().printMessage(Kind.ERROR,
 						"[ERROR] Service class does not implements local service method " + remoteMethod.toString()
-								+ ". Please specify correct service implementation.", element);
+								+ ". Please specify correct service implementation.", serviceTypeElement.asElement());
 				continue;
 			}
 
@@ -405,8 +407,8 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		return parameter.getName();
 	}
 
-	protected ExecutableElement getDomainMethodPair(ExecutableElement remoteMethod, Element serviceElement, TypeElement remoteServiceElement) {
-		List<ExecutableElement> methods = ElementFilter.methodsIn(serviceElement.getEnclosedElements());
+	protected ExecutableElement getDomainMethodPair(ExecutableElement remoteMethod, ServiceTypeElement serviceTypeElement) {
+		List<ExecutableElement> methods = ElementFilter.methodsIn(serviceTypeElement.asElement().getEnclosedElements());
 
 		for (ExecutableElement method : methods) {
 			boolean pairMethod = false;
@@ -436,11 +438,10 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				if (returnDomainType.equals(getNameTypes().toType(method.getReturnType()))) {
 					return method;
 				}
-				processingEnv.getMessager().printMessage(
-						Kind.ERROR,
+				processingEnv.getMessager().printMessage(Kind.ERROR,
 						"[ERROR] Service method return type does not match the remote interface definition " + remoteMethod.toString()
 								+ ". This should have never happened, you are probably a magician or there is a bug in the sesam processor itself.",
-						serviceElement);
+						serviceTypeElement.asElement());
 			}
 		}
 

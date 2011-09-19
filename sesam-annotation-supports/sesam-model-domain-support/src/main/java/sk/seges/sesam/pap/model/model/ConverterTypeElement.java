@@ -1,6 +1,8 @@
 package sk.seges.sesam.pap.model.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -186,6 +188,19 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		converterParameter.setConverter(this);
 		return converterParameter;
 	}
+
+	private List<ExecutableElement> getSortedConstructorMethods(TypeElement element) {
+		List<ExecutableElement> constructors = ElementFilter.constructorsIn(element.getEnclosedElements());
+		Collections.sort(constructors, new Comparator<ExecutableElement>() {
+
+			@Override
+			public int compare(ExecutableElement o1, ExecutableElement o2) {
+				return o1.getParameters().size() - o2.getParameters().size();
+			}
+		});
+		
+		return constructors;
+	}
 	
 	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver) {
 
@@ -193,11 +208,10 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 
 		if (!isGenerated()) {
 			TypeElement converterTypeElement = processingEnv.getElementUtils().getTypeElement(getCanonicalName());
-			List<ExecutableElement> constructors = ElementFilter.constructorsIn(converterTypeElement.getEnclosedElements());
+			List<ExecutableElement> constructors = getSortedConstructorMethods(converterTypeElement);
 
 			if (constructors != null && constructors.size() > 0) {
-				//Take the last one
-				List<? extends VariableElement> constructorParameters = constructors.get(constructors.size() - 1).getParameters();
+				List<? extends VariableElement> constructorParameters = constructors.get(0).getParameters();
 
 				for (VariableElement constructorParameter : constructorParameters) {
 					parameters.add(toConverterParameter(constructorParameter));
@@ -205,10 +219,10 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 			}
 		} else {
 			TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
-			List<ExecutableElement> constructors = ElementFilter.constructorsIn(cachedConverterType.getEnclosedElements());
+			List<ExecutableElement> constructors = getSortedConstructorMethods(cachedConverterType);
 
 			if (constructors != null && constructors.size() > 0) {
-				List<? extends VariableElement> constructorParameters = constructors.get(constructors.size() - 1).getParameters();
+				List<? extends VariableElement> constructorParameters = constructors.get(0).getParameters();
 
 				for (VariableElement constructorParameter : constructorParameters) {
 					parameters.add(toConverterParameter(constructorParameter));
