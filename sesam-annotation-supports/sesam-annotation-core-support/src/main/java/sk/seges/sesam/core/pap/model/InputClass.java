@@ -91,12 +91,14 @@ public class InputClass extends AbstractPrintableType implements NamedType, Immu
 
 	public ImmutableType addClassSufix(String sufix) {
 		InputClass result = clone();
+		result.enclosedClass = null;
 		result.simpleClassName += sufix;
 		return result;
 	}
 
 	public ImmutableType addClassPrefix(String prefix) {
 		InputClass result = clone();
+		result.enclosedClass = null;
 		result.simpleClassName = prefix + simpleClassName;
 		return result;
 	}
