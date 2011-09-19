@@ -3,7 +3,6 @@
  */
 package sk.seges.corpis.appscaffold.mapbasedobject.pap;
 
-import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.NullType;
@@ -26,9 +24,9 @@ import sk.seges.corpis.appscaffold.shared.domain.MapBasedObject;
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.InputClass;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 /**
  * @author ladislav.gazo
@@ -43,6 +41,7 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 	
 	@Override
 	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
+		//TODO use packageValidator
 		return new NamedType[] { mutableType.changePackage(mutableType.getPackageName() + ".shared.domain").addClassSufix("MapBean") };
 	}
 
@@ -54,9 +53,7 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 		case OUTPUT_INTERFACES:
 			List<Type> result = new ArrayList<Type>();
 			for (TypeMirror interfaceElementMirror : typeElement.getInterfaces()) {
-				Element asElement = processingEnv.getTypeUtils().asElement(interfaceElementMirror);
-				result.add(new InputClass(processingEnv.getElementUtils().getPackageOf(asElement).toString(),
-						asElement.getSimpleName().toString()));
+				result.add(nameTypesUtils.toImmutableType(interfaceElementMirror));
 			}
 			return result.toArray(new Type[] {});
 
@@ -65,13 +62,13 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 	}
 
 	@Override
-	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv,
-			PrintWriter pw) {
+	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
 		MapBased annotation = element.getAnnotation(MapBased.class);
 		if (annotation == null) {
 			return;
 		}
 
+		//TODO use ElementFilter -> ElementFilter.methodsIn(element.getEnclosedElements())
 		List<? extends Element> allMembers = processingEnv.getElementUtils().getAllMembers(element);
 		for (Element member : allMembers) {
 			if (!isMethod(member)) {
@@ -83,29 +80,32 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 			}
 			ExecutableElement method = (ExecutableElement) member;
 			TypeMirror returnType = method.getReturnType();
+
+			//TODO do not use instanceof, use returnType.getKind() instead
+			//Using instanceof is not necessarily a reliable idiom for determining the effective class of an object in this modeling
+			//hierarchy since an implementation may choose to have a single object implement multiple TypeMirror subinterfaces.
 			if (returnType == null || returnType instanceof NoType || returnType instanceof NullType) {
 				continue;
 			}
 
-			Name methodName = method.getSimpleName();
-
+			//TODO use returnType.getKind().isPrimitive()
 			String returnTypeName = returnType.toString();
 			if (!returnTypeName.contains(".")) {
 				// if it is primitive type, it doesn't have a package
 				continue;
 			}
-			String methodNameStr = methodName.toString();
+			String methodNameStr = method.getSimpleName().toString();
 
 			Hint hint = method.getAnnotation(Hint.class);
 
 			String key = (hint == null ? methodNameStr : hint.value());
 
-			pw.println("public " + returnTypeName + " " + toGetter(methodNameStr) + "() {");
-			pw.println("    return (" + returnTypeName + ") get(\"" + key + "\");");
+			pw.println("public ", returnType, " " + toGetter(methodNameStr) + "() {");
+			pw.println("return (" + returnTypeName + ") get(\"" + key + "\");");
 			pw.println("}");
 
-			pw.println("public void " + toSetter(methodNameStr) + "(" + returnTypeName + " value) {");
-			pw.println("    set(\"" + key + "\", value);");
+			pw.println("public void " + toSetter(methodNameStr) + "(", returnType, " value) {");
+			pw.println("set(\"" + key + "\", value);");
 			pw.println("}");
 		}
 	}
@@ -126,14 +126,17 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 				member.getEnclosingElement().asType());
 	}
 
+	//TODO use methodHelper
 	private String toGetter(String field) {
 		return "get" + toMethodProperty(field);
 	}
 
+	//TODO use methodHelper
 	private String toSetter(String field) {
 		return "set" + toMethodProperty(field);
 	}
 
+	//TODO use methodHelper
 	private String toMethodProperty(String field) {
 		if (field.length() == 1) {
 			return field.toUpperCase();
