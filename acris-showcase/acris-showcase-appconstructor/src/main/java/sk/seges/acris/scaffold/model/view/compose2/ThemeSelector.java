@@ -26,10 +26,12 @@ public class ThemeSelector {
 	/**
 	 * TODO: define somehow, that this detail serves for adding a theme by
 	 * uploading it. After upload it should refresh the view.
+	 * 
+	 * NOTE: might be wondering, where is a name for the theme... it will be
+	 * provided by user code as well so the one theme uploaded by user can be
+	 * overriden everytime and it will have a special name.
 	 */
 	interface Detail extends ThemeModel {
-		String name();
-
 		Upload archive();
 
 		interface FilterBy extends CommonFilteredBy {}
