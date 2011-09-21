@@ -892,6 +892,7 @@
 						
 						<options>
 							<classpath>${project.compileClasspathElements}</classpath>
+							<testClasspath>${project.testClasspathElements}</testClasspath>
 							<projectName>${project.artifactId}:${project.groupId}</projectName>
 						</options>
 					</configuration>
