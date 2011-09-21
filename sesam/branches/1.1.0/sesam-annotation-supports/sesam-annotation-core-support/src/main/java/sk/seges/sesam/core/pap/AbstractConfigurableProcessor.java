@@ -71,7 +71,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
 	protected AbstractConfigurableProcessor() {
 		configurer = getConfigurer();
-		lineSeparator = (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
+		lineSeparator = java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
 	}
 	
 	protected boolean hasSubProcessor(TypeElement element) {
@@ -104,8 +104,10 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 	
 	public static final String PROJECT_NAME_OPTION = "projectName";
 	public static final String CLASSPATH_OPTION = "classpath";
+	public static final String TEST_CLASSPATH_OPTION = "testClasspath";
 
-    public Set<String> getSupportedOptions() {
+    @Override
+	public Set<String> getSupportedOptions() {
     	SupportedOptions so = this.getClass().getAnnotation(SupportedOptions.class);
     	Set<String> result = new HashSet<String>();
     	if  (so != null) {
@@ -114,6 +116,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
     	
     	result.add(CLASSPATH_OPTION);
     	result.add(PROJECT_NAME_OPTION);
+    	result.add(TEST_CLASSPATH_OPTION);
     	
     	return result;
     }
@@ -121,8 +124,9 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
     protected static Set<String> arrayToSet(String[] array) {
 		assert array != null;
 		Set<String> set = new HashSet<String>(array.length);
-		for (String s : array)
-		    set.add(s);
+		for (String s : array) {
+			set.add(s);
+		}
 		return Collections.unmodifiableSet(set);
     }
 
@@ -136,6 +140,7 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return new ClassPathTypeUtils(processingEnv, projectName);
     }
     
+	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 
 	    SupportedAnnotationTypes sat = this.getClass().getAnnotation(SupportedAnnotationTypes.class);

@@ -12,6 +12,7 @@ import java.lang.annotation.Annotation;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.tools.Diagnostic.Kind;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -136,18 +136,23 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			Project other = (Project) obj;
 			if (projectName == null) {
-				if (other.projectName != null)
+				if (other.projectName != null) {
 					return false;
-			} else if (!projectName.equals(other.projectName))
+				}
+			} else if (!projectName.equals(other.projectName)) {
 				return false;
+			}
 			return true;
 		}	
 	}
@@ -257,18 +262,35 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 	private static final String PATH_SEPARATOR = "path.separator";
 	private static final String FACTORY_PATH_FILE_NAME = ".factorypath";
 	
-	private void initializeSystemProperties() {
-		
-		String classPath = processingEnv.getOptions().get(AbstractConfigurableProcessor.CLASSPATH_OPTION);
-		
+	private String getClasspathFromList(String classPath) {
 		if (classPath != null) {
 			if (classPath.startsWith("[")) {
 				classPath = classPath.substring(1, classPath.length() - 2);
 				classPath = classPath.replaceAll(",", System.getProperty(PATH_SEPARATOR));
 			}
-			System.setProperty(PROCESSOR_CLASS_PATH, classPath);
 		}
 		
+		return classPath;
+	}
+	
+	private void initializeSystemProperties() {
+		
+		String classPath = processingEnv.getOptions().get(AbstractConfigurableProcessor.CLASSPATH_OPTION);
+		
+		if (classPath != null) {
+			System.setProperty(PROCESSOR_CLASS_PATH, getClasspathFromList(classPath));
+		}
+
+		String testClassPath = processingEnv.getOptions().get(AbstractConfigurableProcessor.TEST_CLASSPATH_OPTION);
+
+		if (testClassPath != null) {
+			if (classPath != null) {
+				System.setProperty(PROCESSOR_CLASS_PATH, System.getProperty(PROCESSOR_CLASS_PATH) + System.getProperty(PATH_SEPARATOR) + getClasspathFromList(testClassPath));
+			} else {
+				System.setProperty(PROCESSOR_CLASS_PATH, getClasspathFromList(testClassPath));
+			}
+		}
+
 		final String rootDirectory = processingEnv.getOptions().get(ROOT_DIRECTORY_OPTION);
 		String m2Repo = processingEnv.getOptions().get(M2_REPO_OPTION);
 		
@@ -285,7 +307,7 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 				try {
 					context = JAXBContext.newInstance(FactoryPath.class);
 					Unmarshaller unmarshaller = context.createUnmarshaller();
-					JAXBElement<FactoryPath> element = (JAXBElement<FactoryPath>) unmarshaller.unmarshal(new StreamSource(new StringReader(readContent(rootDirectoryFile))), FactoryPath.class);
+					JAXBElement<FactoryPath> element = unmarshaller.unmarshal(new StreamSource(new StringReader(readContent(rootDirectoryFile))), FactoryPath.class);
 					FactoryPath factoryPath = element.getValue();
 					
 					String separator = System.getProperty(PATH_SEPARATOR);
@@ -312,25 +334,32 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 
 		String pathSep = System.getProperty(PATH_SEPARATOR);
 		
+		List<String> classPathElements = new ArrayList<String>();
+		
 		if (classpath != null && pathSep != null) {
 			StringTokenizer st = new StringTokenizer(classpath, pathSep);
 			while (st.hasMoreTokens()) {
 				String path = st.nextToken().trim();
-				file = new File(path);
-				include(null, file, map);
+				if (!classPathElements.contains(path)) {
+					classPathElements.add(path);
+					file = new File(path);
+					include(null, file, map);
+				}
 			}
 		}
-		
+						
 		return map;
 	}
 
 	private static FileFilter DIRECTORIES_ONLY = new FileFilter() {
+		@Override
 		public boolean accept(File f) {
 			return (f.exists() && f.isDirectory());
 		}
 	};
 
 	private static Comparator<URL> URL_COMPARATOR = new Comparator<URL>() {
+		@Override
 		public int compare(URL u1, URL u2) {
 			return String.valueOf(u1).compareTo(String.valueOf(u2));
 		}
@@ -368,13 +397,14 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 	}
 
 	private void includeJar(File file, Map<URL, String> map) {
-		if (file.isDirectory())
+		if (file.isDirectory()) {
 			return;
+		}
 
 		URL jarURL = null;
 		JarFile jar = null;
 		try {
-			jarURL = new URL("file:/" + file.getCanonicalPath());
+			jarURL = new URL("file://" + file.getCanonicalPath());
 			jarURL = new URL("jar:" + jarURL.toExternalForm() + "!/");
 			JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
 			jar = conn.getJarFile();
@@ -384,8 +414,9 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			return;
 		}
 
-		if (jar == null || jarURL == null)
+		if (jar == null || jarURL == null) {
 			return;
+		}
 
 		// include the jar's "default" package (i.e. jar's root)
 		map.put(jarURL, "");
@@ -395,8 +426,9 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			JarEntry entry = e.nextElement();
 
 			if (entry.isDirectory()) {
-				if (entry.getName().toUpperCase().equals("META-INF/"))
+				if (entry.getName().toUpperCase().equals("META-INF/")) {
 					continue;
+				}
 
 				try {
 					map.put(new URL(jarURL.toExternalForm() + entry.getName()), packageNameFor(entry));
@@ -409,17 +441,22 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 	}
 
 	private String packageNameFor(JarEntry entry) {
-		if (entry == null)
+		if (entry == null) {
 			return "";
+		}
 		String s = entry.getName();
-		if (s == null)
+		if (s == null) {
 			return "";
-		if (s.length() == 0)
+		}
+		if (s.length() == 0) {
 			return s;
-		if (s.startsWith("/"))
+		}
+		if (s.startsWith("/")) {
 			s = s.substring(1, s.length());
-		if (s.endsWith("/"))
+		}
+		if (s.endsWith("/")) {
 			s = s.substring(0, s.length() - 1);
+		}
 		return s.replace('/', '.');
 	}
 
@@ -497,7 +534,7 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		List<? extends AnnotationMirror> annotationMirrors = type.getAnnotationMirrors();
 		for (AnnotationMirror annotationMirror: annotationMirrors) {
 			
-			String qualifiedName = ((TypeElement)((DeclaredType)annotationMirror.getAnnotationType()).asElement()).getQualifiedName().toString();
+			String qualifiedName = ((TypeElement)annotationMirror.getAnnotationType().asElement()).getQualifiedName().toString();
 			
 			Set<String> types = annotatedClasses.get(qualifiedName);
 			if (types == null) {
