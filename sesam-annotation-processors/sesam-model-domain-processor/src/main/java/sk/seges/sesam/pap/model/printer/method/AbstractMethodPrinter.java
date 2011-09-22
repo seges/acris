@@ -17,7 +17,6 @@ import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.api.TypeVariable;
-import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.ProcessorContext;
@@ -33,11 +32,10 @@ public abstract class AbstractMethodPrinter {
 
 	protected final ProcessingEnvironment processingEnv;
 	protected final NameTypeUtils nameTypesUtils;
-	protected final MethodHelper methodHelper;
-	protected final TransferObjectHelper toHelper;
 	protected final RoundEnvironment roundEnv;
 	protected final ParametersResolver parametersResolver;
 	protected final TypeParametersSupport typeParametersSupport;
+	protected final TransferObjectHelper toHelper;
 	
 	protected ConverterProviderPrinter converterProviderPrinter;
 	
@@ -47,8 +45,7 @@ public abstract class AbstractMethodPrinter {
 		this.converterProviderPrinter = converterProviderPrinter;
 		this.parametersResolver = parametersResolver;
 		this.nameTypesUtils = new NameTypeUtils(processingEnv);
-		this.methodHelper = new MethodHelper(processingEnv, nameTypesUtils);
-		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
+		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 	}
 
@@ -61,8 +58,8 @@ public abstract class AbstractMethodPrinter {
 		
 		DomainTypeElement domainTypeElement = new DomainTypeElement(domainType.asType(), processingEnv, roundEnv);
 
-		return castToDelegate(domainNamedType, domainTypeElement.getConfigurationTypeElement() == null ? null : 
-			domainTypeElement.getConfigurationTypeElement().getDelegateConfigurationTypeElement());
+		return castToDelegate(domainNamedType, domainTypeElement.getConfiguration() == null ? null : 
+			domainTypeElement.getConfiguration().getDelegateConfigurationTypeElement());
 		
 	}
 	
@@ -71,14 +68,14 @@ public abstract class AbstractMethodPrinter {
 
 		NamedType domainNamedType = nameTypesUtils.toType(domainType);
 
-		return castToDelegate(domainNamedType, domainTypeElement.getConfigurationTypeElement() == null ? null : 
-			domainTypeElement.getConfigurationTypeElement().getDelegateConfigurationTypeElement());
+		return castToDelegate(domainNamedType, domainTypeElement.getConfiguration() == null ? null : 
+			domainTypeElement.getConfiguration().getDelegateConfigurationTypeElement());
 	}
 	
 	protected NamedType castToDelegate(NamedType domainNamedType, ConfigurationTypeElement delegateConfigurationTypeElement) {
 
 		if (delegateConfigurationTypeElement != null) {
-			DomainTypeElement replacementType = delegateConfigurationTypeElement.getDomainTypeElement();
+			DomainTypeElement replacementType = delegateConfigurationTypeElement.getDomain();
 			
 			if (typeParametersSupport.hasTypeParameters(domainNamedType) && typeParametersSupport.hasTypeParameters(replacementType)) {
 				domainNamedType = TypedClassBuilder.get(replacementType, ((HasTypeParameters)domainNamedType).getTypeParameters());
@@ -116,7 +113,7 @@ public abstract class AbstractMethodPrinter {
 
 	//TODO move to the configuration type element
 	protected ImmutableType getDtoType(ConfigurationTypeElement configurationElement) {
-		DtoTypeElement dtoType = configurationElement.getDtoTypeElement();
+		DtoTypeElement dtoType = configurationElement.getDto();
 		
 		if (dtoType != null) {
 			return typeParametersSupport.prefixTypeParameter(dtoType, ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
@@ -126,7 +123,7 @@ public abstract class AbstractMethodPrinter {
 
 	//TODO move to the configuration type element
 	protected ImmutableType getDomainType(ConfigurationTypeElement configurationElement) {
-		DomainTypeElement domainType = configurationElement.getDomainTypeElement();
+		DomainTypeElement domainType = configurationElement.getDomain();
 		
 		if (domainType != null) {
 			return typeParametersSupport.prefixTypeParameter(domainType, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);

@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -29,6 +30,9 @@ import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
+import sk.seges.sesam.core.pap.printer.AnnotationPrinter.AnnotationFilter;
+import sk.seges.sesam.core.pap.printer.MethodPrinter;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
@@ -204,6 +208,12 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 		super.writeClassAnnotations(element, outputClass, (PrintWriter) pw);
 	}
 	
+	protected Class<?>[] getIgnoredAnnotations(Element method) {
+		return new Class<?>[] {
+				SuppressWarnings.class
+		};
+	}
+	
 	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
 
 		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(element, processingEnv);
@@ -344,8 +354,23 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				returnDtoType = new DtoTypeElement(remoteMethod.getReturnType(), processingEnv, roundEnv, configurationProviders);
 			}
 
-			methodHelper.copyAnnotations(localMethod, pw);
-			methodHelper.copyMethodDefinition(remoteMethod, pw);
+			new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationFilter() {
+
+				@Override
+				public boolean isAnnotationIgnored(Element method, AnnotationMirror annotation) {
+					for (Class<?> ignoredAnnotationClass: getIgnoredAnnotations(method)) {
+						if (annotation.getAnnotationType().toString().equals(ignoredAnnotationClass.getCanonicalName())) {
+							return true;
+						}
+					}
+					
+					return false;
+				}
+				
+			});
+
+			new MethodPrinter(pw, processingEnv).printMethodDefinition(remoteMethod);
+			
 			pw.println("{");
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
@@ -369,7 +394,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
 				
 				DtoTypeElement parameterDtoType = new DtoTypeElement(dtoType, processingEnv, roundEnv, configurationProviders);
-				DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
+				DomainTypeElement parameterDomainType = parameterDtoType.getDomain();
 				
 				if (parameterDtoType.getConverter() != null) {
 					pw.print("(", parameterDomainType, ")");
@@ -420,7 +445,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 				for (VariableElement dtoParameter : remoteMethod.getParameters()) {
 					
 					DtoTypeElement parameterDtoType = new DtoTypeElement(dtoParameter.asType(), processingEnv, roundEnv, configurationProviders);
-					DomainTypeElement parameterDomainType = parameterDtoType.getDomainTypeElement();
+					DomainTypeElement parameterDomainType = parameterDtoType.getDomain();
 
 					if (!parameterDomainType.equals(getNameTypes().toType(method.getParameters().get(index).asType()))) {
 						pairMethod = false;
@@ -433,7 +458,7 @@ public class ServiceConverterProcessor extends AbstractConfigurableProcessor {
 			if (pairMethod) {
 				
 				DtoTypeElement returnDtoType = new DtoTypeElement(method.getReturnType(), processingEnv, roundEnv, configurationProviders);
-				DomainTypeElement returnDomainType = returnDtoType.getDomainTypeElement();
+				DomainTypeElement returnDomainType = returnDtoType.getDomain();
 
 				if (returnDomainType.equals(getNameTypes().toType(method.getReturnType()))) {
 					return method;

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -15,6 +16,10 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class AnnotationPrinter {
 
+	public interface AnnotationFilter {
+		boolean isAnnotationIgnored(Element method, AnnotationMirror annotation);
+	}
+	
 	private final FormattedPrintWriter pw;
 	private final NameTypeUtils nameTypeUtils;
 	
@@ -23,6 +28,27 @@ public class AnnotationPrinter {
 		this.nameTypeUtils = new NameTypeUtils(processingEnv);
 	}
 
+	public void printMethodAnnotations(Element method, AnnotationFilter...annotationFilters) {
+		for (AnnotationMirror annotation: method.getAnnotationMirrors()) {
+			
+			boolean isAnnotationIgnored = false;
+			
+			if (annotationFilters != null) {
+				for (AnnotationFilter filter: annotationFilters) {
+					if (filter.isAnnotationIgnored(method, annotation)) {
+						isAnnotationIgnored = true;
+						break;
+					}
+				}
+			}
+			
+			if (!isAnnotationIgnored) {
+				print(annotation);
+				pw.println();
+			}
+		}
+	}
+	
 	public void print(AnnotationMirror annotation) {
 		pw.print("@", nameTypeUtils.toType(annotation.getAnnotationType()));
 		

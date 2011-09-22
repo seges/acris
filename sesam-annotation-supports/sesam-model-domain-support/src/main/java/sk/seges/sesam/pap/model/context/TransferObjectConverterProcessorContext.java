@@ -39,7 +39,7 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 		
 		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 
-		DomainTypeElement domainTypeElement = configurationTypeElement.getDomainTypeElement();
+		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
 
 		if (domainTypeElement.asType().getKind().equals(TypeKind.DECLARED) && ((DeclaredType)domainTypeElement.asType()).getTypeArguments().size() > 0) {
 			

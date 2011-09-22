@@ -8,18 +8,16 @@ import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.annotation.Id;
 import sk.seges.sesam.pap.model.annotation.Ignore;
@@ -60,7 +58,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 				
 		ConfigurationTypeElement configurationElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
 
-		if (configurationElement.getDomainTypeElement() == null) {
+		if (configurationElement.getDomain() == null) {
 			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find domain class reference for " + element.toString(), element);
 			return;
 		}
@@ -90,57 +88,51 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 	
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv, methodHelper);
+		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv);
 		processorContextProvider = getProcessorContextProvider(processingEnv, roundEnv);
 		
 		return super.process(annotations, roundEnv);
 	}
-		
+	
 	protected void processMethods(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, ElementPrinter printer) {
 
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asElement().getEnclosedElements());
 		
-		DomainTypeElement domainTypeElement = configurationTypeElement.getDomainTypeElement();
+		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
 
-		TypeElement processingElement = domainTypeElement.asElement();
+		DomainTypeElement processingElement = domainTypeElement;
 	
 		List<String> generated = new ArrayList<String>();
 		
-		ExecutableElement idMethod = null;
-
 		for (ExecutableElement overridenMethod: overridenMethods) {
 			
 			Ignore ignoreAnnotation = overridenMethod.getAnnotation(Ignore.class);
 			if (ignoreAnnotation != null) {
 
-				String fieldName = toHelper.getFieldPath(overridenMethod);
-				ExecutableElement domainMethod = toHelper.getDomainGetterMethod(processingElement, fieldName);
+				String fieldName = TransferObjectHelper.getFieldPath(overridenMethod);
+				ExecutableElement domainMethod = processingElement.getGetterMethod(fieldName);
 
 				if (getEntityResolver().isIdMethod(domainMethod)) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Id method can't be ignored. There should be an id method available for merging purposes.", configurationTypeElement.asElement());
 					return;
 				}
-				generated.add(toHelper.getFieldPath(overridenMethod));
+				generated.add(TransferObjectHelper.getFieldPath(overridenMethod));
 			}
 		}
 
 		for (ExecutableElement overridenMethod: overridenMethods) {
 
-			String fieldName = toHelper.getFieldPath(overridenMethod);
+			String fieldName = TransferObjectHelper.getFieldPath(overridenMethod);
 			
 			if (!isProcessed(generated, fieldName)) {
 				generated.add(fieldName);
 
-				ExecutableElement domainMethod = toHelper.getDomainGetterMethod(((DeclaredType)domainTypeElement.asType()).asElement(), fieldName);
+				ExecutableElement domainMethod = domainTypeElement.getGetterMethod(fieldName);
 
 				if (domainMethod == null) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find method " + overridenMethod.getSimpleName().toString() + 
 							" in the domain class " + domainTypeElement.getCanonicalName(), configurationTypeElement.asElement());
 					continue;
-				}
-
-				if (getEntityResolver().isIdMethod(domainMethod)) {
-					idMethod = domainMethod;
 				}
 
 				ProcessorContext context = processorContextProvider.get(configurationTypeElement, Modifier.PUBLIC, overridenMethod, domainMethod);
@@ -155,27 +147,20 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 				
 				if (pathResolver.hasNext()) {
 
-					Element currentElement = processingElement;
+					DomainTypeElement currentElement = processingElement;
 	
 					while (pathResolver.hasNext()) {
-						ExecutableElement fieldGetter = toHelper.getDomainGetterMethod(currentElement, currentPath);
+						currentElement = currentElement.getDomainReference(currentPath);
 						
-						if (fieldGetter.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-							currentElement = ((DeclaredType)fieldGetter.getReturnType()).asElement();
-							ExecutableElement nestedIdMethod = toHelper.getIdMethod((DeclaredType)fieldGetter.getReturnType(), getEntityResolver());
+						if (currentElement != null) {
+							ExecutableElement nestedIdMethod = currentElement.getIdMethod(getEntityResolver());
 
-							if (nestedIdMethod == null) {
-								
-								if ((!currentElement.getKind().equals(ElementKind.CLASS) &&
-									!currentElement.getKind().equals(ElementKind.INTERFACE)) ||
-										getEntityResolver().shouldHaveIdMethod(configurationTypeElement, fieldGetter.getReturnType())) {
-									//TODO Check @Id annotation is the configuration - nested field names
-									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + fieldGetter.getReturnType().toString() +
-											". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
-											Id.class.getCanonicalName() + " annotation.", configurationTypeElement.asElement());
-								}
+							if (nestedIdMethod == null && getEntityResolver().shouldHaveIdMethod(currentElement)) {
+								//TODO Check @Id annotation is the configuration - nested field names
+								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + currentElement.getCanonicalName() +
+										". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
+										Id.class.getCanonicalName() + " annotation.", configurationTypeElement.asElement());
 							} else {
-
 								//TODO Check if is not already generated
 								context = processorContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath);
 								if (context == null) {
@@ -187,14 +172,13 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 						} else {
 							if (pathResolver.hasNext()) {
 								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Invalid mapping specified in the field " + fieldName + ". Current path (" + 
-										currentPath + ") address getter type that is not class/interfaces (" + fieldGetter.getReturnType().toString() + ")." +
+										currentPath + ") address getter type that is not class/interfaces." +
 										"You probably mistyped this field in the configuration.", configurationTypeElement.asElement());
 							}
 						}
 
 						currentPath = pathResolver.next();
 						fullPath += "." + currentPath;
-						
 					}
 				}
 			}
@@ -202,22 +186,18 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 
 		while (processingElement != null) {
 
-			List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.getEnclosedElements());
+			List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.asElement().getEnclosedElements());
 	
 			if (mappingType.equals(MappingType.AUTOMATIC)) {
 				for (ExecutableElement method: methods) {
 					
-					String fieldName = toHelper.getFieldPath(method);
+					String fieldName = TransferObjectHelper.getFieldPath(method);
 					
 					if (!isProcessed(generated, fieldName) && toHelper.isGetterMethod(method) && 
 							toHelper.hasSetterMethod(domainTypeElement.asElement(), method) && method.getModifiers().contains(Modifier.PUBLIC)) {
 	
 						generated.add(fieldName);
 	
-						if (getEntityResolver().isIdMethod(method)) {
-							idMethod = method;
-						}
-
 						ProcessorContext context = processorContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method);
 						if (context == null) {
 							continue;
@@ -227,47 +207,21 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 					}			
 				}
 			}
-							
-			if (processingElement.getSuperclass() != null && processingElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-				processingElement = (TypeElement)((DeclaredType)processingElement.getSuperclass()).asElement();
-			} else {
-				processingElement = null;
-			}
+
+			processingElement = processingElement.getSuperClass();
 		}
 
-		if (idMethod == null && domainTypeElement.asType().getKind().equals(TypeKind.DECLARED)) {
-			
-			idMethod = toHelper.getIdMethod((DeclaredType) domainTypeElement.asType(), getEntityResolver());
-			
-			if (idMethod != null) {
-
-				ProcessorContext context = processorContextProvider.get(configurationTypeElement, Modifier.PROTECTED, idMethod, idMethod);
-				if (context != null) {
-					printer.print(context);
-				} else {
-					idMethod = null;
-				}
-			}
-		}
-
-		for (ExecutableElement overridenMethod: overridenMethods) {
-			if (!isProcessed(generated, toHelper.getFieldPath(overridenMethod)) && getEntityResolver().isIdMethod(overridenMethod)) {
-				if (idMethod != null) {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
-							idMethod.getSimpleName().toString() + " in the " + idMethod.getEnclosingElement().toString() + " class and " +
-							overridenMethod.getSimpleName().toString() + " in the configuration " + configurationTypeElement.getCanonicalName(), 
-							configurationTypeElement.asElement());
-					return;
-				} else {
-					idMethod = overridenMethod;
-				}
-			}
-		}
-
-		if (idMethod == null && getEntityResolver().shouldHaveIdMethod(configurationTypeElement, domainTypeElement.asType())) {
+		ExecutableElement idMethod = domainTypeElement.getIdMethod(getEntityResolver());
+		
+		if (idMethod == null && getEntityResolver().shouldHaveIdMethod(domainTypeElement)) {
 			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Identifier method could not be found in the automatic way. Please specify id method using " + 
 					Id.class.getSimpleName() + " annotation or just specify id as a method name.", configurationTypeElement.asElement());
 			return;
+		} else if (idMethod != null && !isProcessed(generated, MethodHelper.toField(idMethod))) {
+			ProcessorContext context = processorContextProvider.get(configurationTypeElement, Modifier.PROTECTED, idMethod, idMethod);
+			if (context != null) {
+				printer.print(context);
+			}
 		}
 
 		printer.finish(configurationTypeElement);

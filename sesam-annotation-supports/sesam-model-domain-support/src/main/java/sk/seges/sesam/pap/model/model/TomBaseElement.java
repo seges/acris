@@ -5,7 +5,6 @@ import javax.annotation.processing.RoundEnvironment;
 
 import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.DelegateImmutableType;
-import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
@@ -25,7 +24,7 @@ abstract class TomBaseElement extends DelegateImmutableType {
 		this.processingEnv = processingEnv;
 
 		this.nameTypesUtils = new NameTypeUtils(processingEnv);
-		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, new MethodHelper(processingEnv, nameTypesUtils));
+		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 	}
 	

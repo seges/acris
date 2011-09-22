@@ -15,10 +15,7 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 	protected abstract DOMAIN createDomainInstance(Serializable id);
 	protected abstract DTO createDtoInstance(Serializable id);
 
-	@Override
-	public DTO createDtoInstance(Object domainSource, Serializable id) {
-		DTO result = createDtoInstance(id);
-
+	protected DTO putDtoIntoCache(Object domainSource, DTO result, Serializable id) {
 		if (result != null) {
 			if (id != null) {
 				cache.putInstance(result, id);
@@ -28,27 +25,9 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 		
 		return result;
 	}
-
-	@Override
-	public DOMAIN createDomainInstance(Object dtoSource, Serializable id) {
-		DOMAIN result = createDomainInstance(id);
-
-		if (result != null) {
-			if (id != null) {
-				cache.putInstance(result, id);
-			}
-			cache.putInstance(dtoSource, result);
-		}
-		
-		return result;
-	}
-
-	/**
-	 * Loads DTO instance from the cache
-	 */
-	@Override
+	
 	@SuppressWarnings("unchecked")
-	public DTO getDtoInstance(Object domainSource, Serializable id) {
+	protected DTO getDtoFromCache(Object domainSource, Serializable id) {
 		DTO result = (DTO)cache.getInstance(domainSource);
 
 		if (result != null) {
@@ -62,12 +41,19 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 		return result;
 	}
 	
-	/**
-	 * Loads DOMAIN instance from the cache
-	 */
-	@Override
+	protected DOMAIN putDomainIntoCache(Object dtoSource, DOMAIN result, Serializable id) {
+		if (result != null) {
+			if (id != null) {
+				cache.putInstance(result, id);
+			}
+			cache.putInstance(dtoSource, result);
+		}
+		
+		return result;
+	}
+
 	@SuppressWarnings("unchecked")
-	public DOMAIN getDomainInstance(Object dtoSource, Serializable id) {
+	protected DOMAIN getDomainFromCache(Object dtoSource, Serializable id) {
 		DOMAIN result = (DOMAIN)cache.getInstance(dtoSource);
 
 		if (result != null) {
@@ -79,5 +65,31 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public DTO createDtoInstance(Object domainSource, Serializable id) {
+		return putDtoIntoCache(domainSource, createDtoInstance(id), id);
+	}
+
+	@Override
+	public DOMAIN createDomainInstance(Object dtoSource, Serializable id) {
+		return putDomainIntoCache(dtoSource, createDomainInstance(id), id);
+	}
+
+	/**
+	 * Loads DTO instance from the cache
+	 */
+	@Override
+	public DTO getDtoInstance(Object domainSource, Serializable id) {
+		return getDtoFromCache(domainSource, id);
+	}
+	
+	/**
+	 * Loads DOMAIN instance from the cache
+	 */
+	@Override
+	public DOMAIN getDomainInstance(Object dtoSource, Serializable id) {
+		return getDomainFromCache(dtoSource, id);
 	}
 }

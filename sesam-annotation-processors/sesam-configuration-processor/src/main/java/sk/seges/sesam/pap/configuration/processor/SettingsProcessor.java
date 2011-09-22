@@ -82,8 +82,8 @@ public class SettingsProcessor extends AbstractConfigurableProcessor {
 				new ConfigurationValueConstructorPrinter(pw),
 				new EnumeratedConstructorDefinitionPrinter(pw, processingEnv),
 				new EnumeratedConstructorBodyPrinter(pw),
-				new CopyConstructorDefinitionPrinter(pw, processingEnv),
-				new MergePrinter(pw, processingEnv),
+				new CopyConstructorDefinitionPrinter(pw),
+				new MergePrinter(pw),
 				new HelperPrinter(pw, processingEnv)
 		};
 	}

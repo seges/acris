@@ -1,8 +1,6 @@
 package sk.seges.sesam.pap.model;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -17,12 +15,12 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.printer.ConstructorPrinter;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -33,6 +31,7 @@ import sk.seges.sesam.pap.model.model.DtoTypeElement;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyToDtoPrinter;
 import sk.seges.sesam.pap.model.provider.TransferObjectConverterProcessorContextProvider;
@@ -62,7 +61,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
 		
-		ConverterTypeElement converter = configurationTypeElement.getConverterTypeElement();
+		ConverterTypeElement converter = configurationTypeElement.getConverter();
 		if (!converter.isGenerated()) {
 			return supportProcessorChain();
 		}
@@ -90,7 +89,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	
 	//TODO move to the configuration type element
 	protected ImmutableType getDtoType(ConfigurationTypeElement configurationElement) {
-		DtoTypeElement dtoType = configurationElement.getDtoTypeElement();
+		DtoTypeElement dtoType = configurationElement.getDto();
 		
 		if (dtoType != null) {
 			return typeParametersSupport.prefixTypeParameter(dtoType, ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
@@ -100,7 +99,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 
 	//TODO move to the configuration type element
 	protected ImmutableType getDomainType(ConfigurationTypeElement configurationElement) {
-		DomainTypeElement domainType = configurationElement.getDomainTypeElement();
+		DomainTypeElement domainType = configurationElement.getDomain();
 		
 		if (domainType != null) {
 			return typeParametersSupport.prefixTypeParameter(domainType, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
@@ -109,39 +108,6 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		return null;
 	}
 
-	@Override
-	protected Type[] getImports(TypeElement configurationElement) {
-
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
-		TypeMirror domainType = configurationTypeElement.getDomainTypeElement().asType();
-		
-		TypeElement superElement = processingEnv.getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
-		
-		List<ExecutableElement> constructors = ElementFilter.constructorsIn(superElement.getEnclosedElements());
-
-		List<Type> result = new ArrayList<Type>();
-		
-		for (ExecutableElement constructor: constructors) {
-			for (VariableElement parameter: constructor.getParameters()) {
-				result.add(getNameTypes().toType(parameter.asType()));
-			}
-		}
-		
-		for (ParameterElement element: getParametersResolver().getConstructorAditionalParameters(domainType)) {
-			result.add(element.getType());
-		}
-		
-		if (configurationTypeElement.getDtoTypeElement().isGenerated()) {
-			ImmutableType dtoType = configurationTypeElement.getDtoTypeElement();
-			result.add(dtoType);
-		}
-
-		result.add(getNameTypes().toType(domainType));
-		result.add(Serializable.class);
-
-		return result.toArray(new Type[] {});
-	}
-	
 	protected PackageValidatorProvider getPackageValidatorProvider() {
 		return new DefaultPackageValidatorProvider();
 	}
@@ -149,6 +115,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	@Override
 	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ElementPrinter[] {
+				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), processingEnv, pw),
 				new CopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(),getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
 				new CopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
@@ -157,11 +124,10 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	@Override
 	protected NamedType[] getTargetClassNames(ImmutableType immutableType) {
 		return new NamedType[] { 
-				new ConfigurationTypeElement((TypeElement)((DeclaredType)immutableType.asType()).asElement(), processingEnv, roundEnv).getConverterTypeElement()
+				new ConfigurationTypeElement((TypeElement)((DeclaredType)immutableType.asType()).asElement(), processingEnv, roundEnv).getConverter()
 		};
 	}
 
-	
 	protected TransferObjectProcessorContextProvider getProcessorContextProvider(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		return new TransferObjectConverterProcessorContextProvider(processingEnv, roundEnv, getEntityResolver());
 	}
@@ -175,15 +141,12 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 
 		converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, roundEnv, getParametersResolver());
 
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
-		
-		TypeMirror domainType = configurationTypeElement.getDomainTypeElement().asType();
-
 		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
 		
-		ParameterElement[] constructorAditionalParameters = getParametersResolver().getConstructorAditionalParameters(domainType);
+		ParameterElement[] constructorAditionalParameters = getParametersResolver().getConstructorAditionalParameters(new ConfigurationTypeElement(element, processingEnv, roundEnv).getDomain().asType());
 		
-		methodHelper.copyConstructors(outputName, cachedConverterType, pw, constructorAditionalParameters);
+		ConstructorPrinter constructorPrinter = new ConstructorPrinter(pw, outputName);
+		constructorPrinter.printConstructors(cachedConverterType, constructorAditionalParameters);
 
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(cachedConverterType.getEnclosedElements());
 
@@ -191,21 +154,22 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 			ExecutableElement constructor = constructors.iterator().next();
 			
 			TypeElement basicConverterType = processingEnv.getElementUtils().getTypeElement(BasicConverter.class.getCanonicalName());
-			methodHelper.copyConstructors(outputName, basicConverterType, constructor, pw, false, constructorAditionalParameters);
+			constructorPrinter.printConstructors(basicConverterType, constructor, false, constructorAditionalParameters);
 			
 			for (VariableElement parameter: constructor.getParameters()) {
 				String name = parameter.getSimpleName().toString();
 				if (!existsField(name, constructor)) {
-					pw.println("private " + parameter.asType().toString() + " " + name + ";");
+					pw.println("private ", parameter.asType(), " " + name + ";");
 					pw.println();
 				}
 			}
 		}
 		
 		for (ParameterElement parameter: constructorAditionalParameters) {
-			pw.println("private " + parameter.getType().toString(ClassSerializer.SIMPLE, true) + " " + parameter.getName().toString() + ";");
+			pw.println("private ", parameter.getType(), " " + parameter.getName().toString() + ";");
 			pw.println();
 		}
+		
 		
 		super.processElement(element, outputName, roundEnv, pw);
 		
@@ -224,5 +188,4 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		
 		return false;
 	}
-
 }

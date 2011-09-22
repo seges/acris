@@ -50,7 +50,6 @@ import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.model.api.TypeVariable;
 import sk.seges.sesam.core.pap.utils.ListUtils;
-import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.utils.TypeUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -61,7 +60,6 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 
 	protected RoundEnvironment roundEnv;
 	protected TypeParametersSupport typeParametersSupport;
-	protected MethodHelper methodHelper;
 	protected NameTypeUtils nameTypesUtils;
 	protected ProcessorConfigurer configurer;
 	private Set<Element> processedElement = new HashSet<Element>();
@@ -196,8 +194,6 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 
 		typeParametersSupport = new TypeParametersSupport(pe, nameTypesUtils);
-
-		this.methodHelper = new MethodHelper(pe, nameTypesUtils);
 
 		if (this.configurer != null) {
 			this.configurer.init(pe, this);

@@ -1,7 +1,9 @@
 package sk.seges.sesam.shared.model.converter.common;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
@@ -73,7 +75,7 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		} catch (Exception e) {
 			return result;
 		}
-			
+		
 		while (iterator.hasNext()) {
 			if (converter == null) {
 				result.add((DTO)iterator.next());
@@ -90,14 +92,108 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 	public Collection<DOMAIN> convertFromDto(Collection<DOMAIN> result, Collection<DTO> dtos) {
 		Iterator<?> iterator = dtos.iterator();
 		
+		List<DOMAIN> removed = new ArrayList<DOMAIN>();
+		
+		Iterator<?> domainIterator = result.iterator();
+
+		if (converter != null) {
+			while (domainIterator.hasNext()) {
+				removed.add((DOMAIN)domainIterator.next());
+			}
+		} else {
+			result.clear();
+		}
+		
 		while (iterator.hasNext()) {
 			if (converter == null) {
 				result.add((DOMAIN)iterator.next());
 			} else {
-				result.add(converter.fromDto((DTO)iterator.next()));
+				DTO dto = (DTO)iterator.next();
+				DOMAIN domain = getDomain(result, dto);
+				if (domain != null) {
+					converter.convertFromDto(domain, dto);
+					removed.remove(domain);
+				} else {
+					result.add(converter.fromDto(dto));
+				}
 			}
+		}
+
+		for (DOMAIN domain: removed) {
+			result.remove(domain);
 		}
 		
 		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private DOMAIN getDomain(Collection<DOMAIN> domains, DTO dto) {
+		if (dto == null) {
+			return null;
+		}
+		
+		if (converter == null) {
+			Iterator<?> iterator = domains.iterator();
+			
+			while (iterator.hasNext()) {
+				DOMAIN domain = (DOMAIN)iterator.next();
+				if (dto.equals(domain)) {
+					return domain;
+				}
+			}
+		} else {
+			Iterator<?> iterator = domains.iterator();
+	
+			while (iterator.hasNext()) {
+				DOMAIN domain = (DOMAIN)iterator.next();
+				if (converter.equals(domain, dto)) {
+					return domain;
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(Collection<DOMAIN> domains, Collection<DTO> dtos) {
+		if (domains == null) {
+			if (dtos != null) {
+				return false;
+			}
+			return true;
+		}
+		
+		if (dtos == null) {
+			return false;
+		}
+		
+		if (domains.size() != dtos.size()) {
+			return false;
+		}
+
+		Iterator<?> dtoIterator = dtos.iterator();
+		Iterator<?> domainIterator = domains.iterator();
+
+		List<DOMAIN> notProceeded = new ArrayList<DOMAIN>();
+		
+		while (domainIterator.hasNext()) {
+			notProceeded.add((DOMAIN)domainIterator.next());
+		}
+
+		while (dtoIterator.hasNext()) {
+			DOMAIN domain = getDomain(notProceeded, (DTO)dtoIterator.next());
+			if (domain == null) {
+				return false;
+			}
+			notProceeded.remove(domain);
+		}
+		
+		if (notProceeded.size() > 0) {
+			return false;
+		}
+		
+		return true;
 	}
 }

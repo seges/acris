@@ -43,10 +43,10 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		pw.print("@" + TransferObjectMapping.class.getSimpleName() + "(");
 
 		pw.println("dtoClass = " + getOutputClass(configurationTypeElement).getSimpleName() + ".class,");
-		pw.println("		domainClassName = \"" + configurationTypeElement.getDomainTypeElement().getQualifiedName().toString() + "\", ");
+		pw.println("		domainClassName = \"" + configurationTypeElement.getDomain().getQualifiedName().toString() + "\", ");
 		pw.println("		configurationClassName = \"" + configurationElement.toString() + "\", ");
 		pw.print("		converterClassName = \"");
-		pw.print(configurationTypeElement.getConverterTypeElement().getCanonicalName());
+		pw.print(configurationTypeElement.getConverter().getCanonicalName());
 		pw.print("\"");
 		pw.println(")");
 		
@@ -70,7 +70,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
 
-		DtoTypeElement dto = configurationTypeElement.getDtoTypeElement();
+		DtoTypeElement dto = configurationTypeElement.getDto();
 		if (!dto.isGenerated()) {
 			return supportProcessorChain();
 		}
@@ -86,7 +86,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				NamedType dtoSuperclass = toHelper.getDtoSuperclass(configurationTypeElement);
 				if (dtoSuperclass != null) {
 					
-					TypeElement domainObjectClass = configurationTypeElement.getDomainTypeElement().asElement();
+					TypeElement domainObjectClass = configurationTypeElement.getDomain().asElement();
 	
 					if (domainObjectClass != null) {
 						TypeMirror superClassType = domainObjectClass.getSuperclass();
@@ -138,13 +138,13 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				new EmptyConstructorPrinter(pw),
 				new EnumeratedConstructorDefinitionPrinter(pw),
 				new EnumeratedConstructorBodyPrinter(pw),
-				new AccessorsPrinter(processingEnv, pw),
+				new AccessorsPrinter(pw),
 				new EqualsPrinter(getEntityResolver(), processingEnv, pw),
 				new HashCodePrinter(getEntityResolver(), processingEnv, pw)
 		};
 	}
 	
 	public static ImmutableType getOutputClass(ConfigurationTypeElement configurationTypeElement) {	
-		return configurationTypeElement.getDtoTypeElement();
+		return configurationTypeElement.getDto();
 	}
 }

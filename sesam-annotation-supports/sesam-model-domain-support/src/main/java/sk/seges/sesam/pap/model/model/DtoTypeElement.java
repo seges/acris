@@ -1,12 +1,16 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.List;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
@@ -20,9 +24,12 @@ import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
+import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
@@ -139,8 +146,8 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 //		//TODO I'm not sure if this is good for something
 //		setDelegateImmutableType(new TypeParametersSupport(processingEnv, new NameTypesUtils(processingEnv.getElementUtils())).
 //				applyVariableTypeParameters(getDelegateImmutableType(), configurationTypeElement.getDomainTypeElement().asType()));
-		if (typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomainTypeElement())) {
-			NamedType type = getNameTypesUtils().toType(configurationTypeElement.getDomainTypeElement().asType());
+		if (typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomain())) {
+			NamedType type = getNameTypesUtils().toType(configurationTypeElement.getDomain().asType());
 			setDelegateImmutableType(TypedClassBuilder.get(getDelegateImmutableType(), ((HasTypeParameters)type).getTypeParameters()));
 		}
 	}
@@ -172,10 +179,10 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 		return generated;
 	}
 	
-	public DomainTypeElement getDomainTypeElement() {
+	public DomainTypeElement getDomain() {
 		DomainTypeElement result = null;
 		if (configurationTypeElement != null) {
-			result = configurationTypeElement.getDomainTypeElement();
+			result = configurationTypeElement.getDomain();
 		}
 		
 		if (result != null) {
@@ -206,6 +213,45 @@ public class DtoTypeElement extends TomBaseElement implements GeneratedClass {
 			return null;
 		}
 		
-		return configurationTypeElement.getConverterTypeElement();
+		return configurationTypeElement.getConverter();
+	}
+
+	public ExecutableElement getIdMethod(EntityResolver entityResolver) {
+
+		if (getConfiguration() != null) {
+			List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(getConfiguration().asElement().getEnclosedElements());
+	
+			DomainTypeElement domainType = getConfiguration().getDomain();
+	
+			if (!domainType.asType().getKind().equals(TypeKind.DECLARED)) {
+				return null;
+			}
+			
+			for (ExecutableElement overridenMethod : overridenMethods) {
+	
+				Ignore ignoreAnnotation = overridenMethod.getAnnotation(Ignore.class);
+				if (ignoreAnnotation == null) {
+	
+					if (entityResolver.isIdMethod(overridenMethod)) {
+						if (overridenMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
+							return domainType.getGetterMethod(TransferObjectHelper.getFieldPath(overridenMethod));
+						}
+	
+						return overridenMethod;
+					}
+				}
+			}
+		}
+		
+		ExecutableElement idMethod = getDomain().getIdMethod(entityResolver);
+		
+		if (getConfiguration() != null) {
+			if (idMethod != null && !getConfiguration().isFieldIgnored(MethodHelper.toField(idMethod))) {
+				return idMethod;
+			}
+			
+			return null;
+		}
+		return idMethod;
 	}
 }
