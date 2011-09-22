@@ -54,11 +54,13 @@ public interface IUserServiceAsync {
 	 * Returns current logged user from user session. If no user is logged
 	 * return value is null
 	 * 
+	 * @param webId 
+	 * 			  current web ID
 	 * @param callback
 	 *            Asynchronous GWT callback with a logged user or null if no
 	 *            user is logged in
 	 */
-	void getLoggedUser(AsyncCallback<UserData<?>> callback) throws ServerException;
+	void getLoggedUser(String webId, AsyncCallback<UserData<?>> callback) throws ServerException;
 
 	void getLoggedUserName(AsyncCallback<String> callback) throws ServerException;
 }

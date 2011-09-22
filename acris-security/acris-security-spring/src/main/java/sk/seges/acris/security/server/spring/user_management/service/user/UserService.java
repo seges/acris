@@ -7,6 +7,7 @@ import sk.seges.acris.security.server.core.login.api.LoginServiceProvider;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserService;
@@ -53,8 +54,14 @@ public class UserService implements IUserService {
 		}
 	}
 
-	public UserData<?> getLoggedUser() throws ServerException {
+	public UserData<?> getLoggedUser(String webId) throws ServerException {
 		HttpSession session = sessionProvider.getSession();
+
+		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
+		if (token instanceof UserPasswordLoginToken) {
+			if (!webId.equals(((UserPasswordLoginToken)token).getWebId())) return null;
+		}
+		
 		UserData<?> user = (UserData<?>) session.getAttribute(LoginConstants.LOGGED_USER_NAME);
 
 		return user;
