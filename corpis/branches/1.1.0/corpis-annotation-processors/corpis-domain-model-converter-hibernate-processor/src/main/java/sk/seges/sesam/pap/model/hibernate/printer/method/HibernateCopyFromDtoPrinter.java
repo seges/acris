@@ -1,11 +1,8 @@
 package sk.seges.sesam.pap.model.hibernate.printer.method;
 
-import java.io.PrintWriter;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolver;
@@ -23,10 +20,9 @@ public class HibernateCopyFromDtoPrinter extends CopyFromDtoPrinter {
 	}
 
 	@Override
-	protected void printDomainInstancer(PrintWriter pw, NamedType type) {
+	protected void printDomainInstancer(FormattedPrintWriter pw, NamedType type) {
 		pw.println("if (id != null) {");
-		pw.println(type.toString(ClassSerializer.SIMPLE, true) + " result = (" + type.toString(ClassSerializer.SIMPLE, true) + ")" + 
-				HibernateParameterResolver.ENTITY_MANAGER_NAME + ".find(" + type.getSimpleName() + ".class, id);");
+		pw.println(type, " result = (", type, ")" + HibernateParameterResolver.ENTITY_MANAGER_NAME + ".find(", type.getSimpleName(), ".class, id);");
 		pw.println("if (result != null) {");
 		pw.println("return result;");
 		pw.println("}");

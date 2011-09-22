@@ -18,6 +18,12 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-service-converter-processor</artifactId>
 		</dependency>
+
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
 		
 		<!-- Corpis dependencies -->
 		<dependency>

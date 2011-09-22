@@ -9,30 +9,26 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.hibernate.MappingType;
-import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class HibernateEntityResolver implements EntityResolver {
 
 	private ProcessingEnvironment processingEnv;
-	private MethodHelper methodHelper;
 	
 	public HibernateEntityResolver(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.methodHelper = new MethodHelper(processingEnv, new NameTypeUtils(processingEnv));
 	}
 	
 	@Override
@@ -58,7 +54,7 @@ public class HibernateEntityResolver implements EntityResolver {
 			return targetEntityType;
 		}
 		
-		Element field = methodHelper.getField(method);
+		Element field = MethodHelper.getField(method);
 
 		if (field != null) {
 			targetEntityType =  getTargetEntityType(field, field.asType());
@@ -104,12 +100,12 @@ public class HibernateEntityResolver implements EntityResolver {
 	}
 
 	@Override
-	public boolean shouldHaveIdMethod(ConfigurationTypeElement configurationElement, TypeMirror domainType) {
-		if (!domainType.getKind().equals(TypeKind.DECLARED)) {
+	public boolean shouldHaveIdMethod(DomainTypeElement domainTypeElement) {
+		if (domainTypeElement.asElement() == null) {
 			return false;
 		}
 		
-		TypeElement domainElement = (TypeElement)((DeclaredType)domainType).asElement();
+		TypeElement domainElement = domainTypeElement.asElement();
 		if (domainElement.getAnnotation(Entity.class) != null) {
 			return domainElement.getAnnotation(Embeddable.class) == null;
 		}
@@ -134,7 +130,7 @@ public class HibernateEntityResolver implements EntityResolver {
 		}
 		
 		
-		Element field = methodHelper.getField(method);
+		Element field = MethodHelper.getField(method);
 
 		if (field == null) {
 			return false;
