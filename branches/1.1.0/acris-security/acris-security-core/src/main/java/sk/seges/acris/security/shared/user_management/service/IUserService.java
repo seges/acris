@@ -49,8 +49,10 @@ public interface IUserService extends RemoteService {
 	/**
 	 * @return current logged user from user server session. If no user is
 	 *         logged return value is null
+	 * @param webId 
+	 * 			current web ID
 	 */
-	UserData<?> getLoggedUser() throws ServerException;
+	UserData<?> getLoggedUser(String webId) throws ServerException;
 
 	String getLoggedUserName() throws ServerException;
 }

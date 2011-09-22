@@ -358,7 +358,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	@Override
-	public void getLoggedUser(final AsyncCallback<UserData<?>> callback) throws ServerException {
+	public void getLoggedUser(String webId, final AsyncCallback<UserData<?>> callback) throws ServerException {
 		final int count = userServices.size();
 
 		if (count == 0) {
@@ -434,7 +434,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 			}
 		});
 
-		signalUserServices(semaphore, failures, successes);
+		signalUserServices(semaphore, failures, successes, webId);
 	}
 
 	@Override
@@ -463,10 +463,10 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	private void signalUserServices(final Semaphore semaphore, final List<Throwable> failures,
-			final Map<String, ClientSession> successes) {
+			final Map<String, ClientSession> successes, String webId) {
 		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
 
-			userServiceEntry.getValue().getLoggedUser(new AsyncCallback<UserData<?>>() {
+			userServiceEntry.getValue().getLoggedUser(webId, new AsyncCallback<UserData<?>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
