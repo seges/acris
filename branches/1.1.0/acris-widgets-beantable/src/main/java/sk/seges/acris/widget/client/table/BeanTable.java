@@ -19,6 +19,7 @@ import java.util.Set;
 import sk.seges.acris.widget.client.Dialog;
 import sk.seges.acris.widget.client.action.ActionEvent;
 import sk.seges.acris.widget.client.action.ActionListener;
+import sk.seges.acris.widget.client.advanced.DoubleTextBox;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
 import sk.seges.acris.widget.client.filterpanel.FilterPanelSpec;
 import sk.seges.sesam.dao.Conjunction;
@@ -68,6 +69,7 @@ import com.google.gwt.gen2.table.shared.Response;
 import com.google.gwt.gen2.table.shared.SerializableResponse;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
@@ -355,6 +357,10 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			if (filter == null) {
 				if (filterProperty.getWidgetType() != null && filterProperty.getWidgetType().equals(DateBox.class)) {
 					filter = GWT.create(DateBox.class);
+				} else if (DoubleBox.class.equals(filterProperty.getWidgetType())) {
+					filter = new DoubleBox();
+				} else if (DoubleTextBox.class.equals(filterProperty.getWidgetType())) {
+					filter = new DoubleTextBox();
 				} else {
 					filter = new com.google.gwt.user.client.ui.TextBox();
 				}
