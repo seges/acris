@@ -76,7 +76,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 		for (ExecutableElement method: methods) {
 			DtoTypeElement dtoReturnType = new DtoTypeElement(method.getReturnType(), processingEnv, roundEnv, configurationProviders);
 			
-			pw.print(dtoReturnType.getDomainTypeElement(), " " + method.getSimpleName().toString() + "(");
+			pw.print(dtoReturnType.getDomain(), " " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
@@ -86,7 +86,7 @@ public class ServiceInterfaceProcessor extends AbstractConfigurableProcessor {
 				
 				DtoTypeElement dtoParamType = new DtoTypeElement(parameter.asType(), processingEnv, roundEnv, configurationProviders);
 
-				pw.print(dtoParamType.getDomainTypeElement(), " " + parameter.getSimpleName().toString());
+				pw.print(dtoParamType.getDomain(), " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			

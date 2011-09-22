@@ -76,4 +76,9 @@ public class MapConverter<DTO_KEY, DTO_VALUE, DOMAIN_KEY, DOMAIN_VALUE> implemen
 		
 		return result;		
 	}
+
+	@Override
+	public boolean equals(Map<DOMAIN_KEY, DOMAIN_VALUE> domain, Map<DTO_KEY, DTO_VALUE> dto) {
+		return false;
+	}
 }

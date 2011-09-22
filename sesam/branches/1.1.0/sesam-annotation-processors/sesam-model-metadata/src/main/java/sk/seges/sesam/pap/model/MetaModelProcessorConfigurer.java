@@ -32,7 +32,7 @@ public class MetaModelProcessorConfigurer extends DelegateProcessorConfigurer {
 
 	@Override
 	protected AnnotationMirror getAnnotationFromDelegate(AnnotationMirror annotationDelegate) {
-		return (AnnotationMirror)getAnnotationValueByReturnType(MetaModel.class, annotationDelegate);
+		return (AnnotationMirror)getAnnotationValueByReturnType(MetaModel.class, annotationDelegate).getValue();
 	}
 
 	@Override

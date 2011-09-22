@@ -4,7 +4,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 
 import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
@@ -21,7 +20,7 @@ public class TomBase {
 		this.processingEnv = processingEnv;
 
 		this.nameTypesUtils = new NameTypeUtils(processingEnv);
-		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, new MethodHelper(processingEnv, nameTypesUtils));
+		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv);
 	}
 	
 	protected NameTypeUtils getNameTypesUtils() {

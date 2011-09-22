@@ -13,12 +13,10 @@ import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 public class AccessorPrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
-	private MethodHelper methodHelper;
 	
 	public AccessorPrinter(FormattedPrintWriter pw, ProcessingEnvironment pe) {
 		super(pe);
 		this.pw = pw;
-		methodHelper = new MethodHelper(pe, nameTypesUtils);
 	}
 	
 	@Override
@@ -30,19 +28,19 @@ public class AccessorPrinter extends AbstractSettingsElementPrinter implements S
 		String fieldName = context.getFieldName();
 
 		if (context.getNestedElement() != null) {
-			pw.println("public " + context.getNestedOutputName().getSimpleName() +  " " + methodHelper.toGetter(fieldName) + " {");
+			pw.println("public " + context.getNestedOutputName().getSimpleName() +  " " + MethodHelper.toGetter(fieldName) + " {");
 		} else {
 			TypeMirror unboxedReturnType = unboxType(context.getMethod().getReturnType());
-			pw.println("public ", unboxedReturnType, " " + methodHelper.toGetter(fieldName) + " {");
+			pw.println("public ", unboxedReturnType, " " + MethodHelper.toGetter(fieldName) + " {");
 		}
 		pw.println("return " + fieldName + ";");
 		pw.println("}");
 		pw.println("");
 
 		if (context.getNestedElement() != null) {
-			pw.println("public void " + methodHelper.toSetter(fieldName) + "(" + context.getNestedOutputName().getSimpleName() + " " + fieldName + ") {");
+			pw.println("public void " + MethodHelper.toSetter(fieldName) + "(" + context.getNestedOutputName().getSimpleName() + " " + fieldName + ") {");
 		} else {
-			pw.println("public void " + methodHelper.toSetter(fieldName) + "(", unboxType(context.getMethod().getReturnType()), " " + fieldName + ") {");
+			pw.println("public void " + MethodHelper.toSetter(fieldName) + "(", unboxType(context.getMethod().getReturnType()), " " + fieldName + ") {");
 		}
 		pw.println("this." + fieldName + " = " + fieldName + ";");
 		pw.println("}");

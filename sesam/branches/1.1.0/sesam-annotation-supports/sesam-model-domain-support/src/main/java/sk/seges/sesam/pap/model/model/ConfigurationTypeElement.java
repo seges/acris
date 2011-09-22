@@ -1,14 +1,23 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.List;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
+import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
+import sk.seges.sesam.pap.model.annotation.Ignore;
+import sk.seges.sesam.pap.model.annotation.Mapping;
+import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public class ConfigurationTypeElement extends TomBase {
@@ -34,12 +43,15 @@ public class ConfigurationTypeElement extends TomBase {
 	private final String canonicalName;
 	private ConfigurationProvider[] configurationProviders;
 	
+	private final TypeParametersSupport typeParametersSupport;
+	
 	public ConfigurationTypeElement(DeclaredType domainType, DeclaredType dtoType, TypeElement configurationElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
 		this.configurationElement = configurationElement;
 		this.domainType = domainType;
 		this.dtoType = dtoType;
+		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
 		
 		this.canonicalName = configurationElement.getQualifiedName().toString();
 //		setDelegateImmutableType(getNameTypesUtils().toImmutableType(configurationElement));
@@ -58,6 +70,7 @@ public class ConfigurationTypeElement extends TomBase {
 		this.configurationElement = configurationElement;
 		this.domainType = null;
 		this.dtoType = null;
+		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
 
 		this.canonicalName = configurationElement.getSimpleName().toString();
 
@@ -68,7 +81,9 @@ public class ConfigurationTypeElement extends TomBase {
 	ConfigurationTypeElement(DeclaredType domainType, DeclaredType dtoType, TransferObjectConfiguration transferObjectConfiguration, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		
 		super(processingEnv, roundEnv);
-		
+
+		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
+
 		this.configurationElement = transferObjectConfiguration.getConfigurationHolderElement();
 		this.transferObjectConfiguration = transferObjectConfiguration;
 		this.domainType = domainType;
@@ -110,7 +125,7 @@ public class ConfigurationTypeElement extends TomBase {
 		return new ConverterTypeElement(this, processingEnv, roundEnv);
 	}
 
-	public DomainTypeElement getDomainTypeElement() {
+	public DomainTypeElement getDomain() {
 		if (!domainTypeElementInitialized) {
 			DeclaredType domainType = null;
 			
@@ -149,10 +164,10 @@ public class ConfigurationTypeElement extends TomBase {
 		return domainTypeElement;
 	}
 	
-	public DtoTypeElement getDtoTypeElement() {
+	public DtoTypeElement getDto() {
 		
 		if (getDelegateConfigurationTypeElement() != null) {
-			return getDelegateConfigurationTypeElement().getDtoTypeElement();
+			return getDelegateConfigurationTypeElement().getDto();
 		}
 
 		if (!dtoTypeElementInitialized) {
@@ -203,7 +218,7 @@ public class ConfigurationTypeElement extends TomBase {
 		return dtoTypeElement;
 	}
 	
-	public ConverterTypeElement getConverterTypeElement() {
+	public ConverterTypeElement getConverter() {
 
 		if (!converterTypeElementInitialized) {
 			this.converterTypeElement = getConverter(transferObjectConfiguration);
@@ -213,7 +228,7 @@ public class ConfigurationTypeElement extends TomBase {
 		if (converterTypeElement != null) {
 			if (converterTypeElement.isGenerated()) {
 				if (getDelegateConfigurationTypeElement() != null) {
-					ConverterTypeElement delegateConverterTypeElement = getDelegateConfigurationTypeElement().getConverterTypeElement();
+					ConverterTypeElement delegateConverterTypeElement = getDelegateConfigurationTypeElement().getConverter();
 					if (delegateConverterTypeElement != null) {
 						return delegateConverterTypeElement;
 					}
@@ -223,7 +238,7 @@ public class ConfigurationTypeElement extends TomBase {
 		}
 
 		if (getDelegateConfigurationTypeElement() != null) {
-			return getDelegateConfigurationTypeElement().getConverterTypeElement();
+			return getDelegateConfigurationTypeElement().getConverter();
 		}
 		
 		return null;
@@ -268,5 +283,33 @@ public class ConfigurationTypeElement extends TomBase {
 
 	public String getCanonicalName() {
 		return canonicalName;
+	}
+	
+	public MappingType getMappingType() {
+		MappingType mappingType = MappingType.AUTOMATIC;
+		Mapping mapping =  configurationElement.getAnnotation(Mapping.class);
+
+		if (mapping != null) {
+			mappingType = mapping.value();
+		}
+		
+		return mappingType;
+	}
+
+	boolean isFieldIgnored(String field) {
+
+		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(asElement().getEnclosedElements());
+
+		for (ExecutableElement overridenMethod : overridenMethods) {
+
+			if (MethodHelper.toField(overridenMethod).equals(field)) {
+				Ignore ignoreAnnotation = overridenMethod.getAnnotation(Ignore.class);
+				if (ignoreAnnotation != null) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

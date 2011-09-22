@@ -31,8 +31,8 @@ import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
  */
 public class EqualsPrinter extends AbstractElementPrinter {
 
-	private ProcessingEnvironment processingEnv;
-	private EntityResolver entityResolver;
+	private final ProcessingEnvironment processingEnv;
+	private final EntityResolver entityResolver;
 	
 	public EqualsPrinter(EntityResolver entityResolver, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(pw);
@@ -88,7 +88,6 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	public void print(ProcessorContext context) {
 
 		boolean idMethod = entityResolver.isIdMethod(context.getMethod());
-//		boolean idMethod = TransferObjectHelper.isIdMethod(context.getMethod());
 		
 		if (idMethod) {
 			//TODO That's not really true
@@ -109,6 +108,7 @@ public class EqualsPrinter extends AbstractElementPrinter {
 			return;
 		}
 
+		//DTO that is generated
 		if (context.getFieldType().asType() == null) {
 			if (idMethod) {
 				pw.println("if (" + context.getFieldName() + " != null && other." + context.getFieldName() + " != null && " + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");

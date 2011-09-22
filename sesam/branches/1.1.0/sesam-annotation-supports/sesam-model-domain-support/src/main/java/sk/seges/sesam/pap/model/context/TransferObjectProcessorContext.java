@@ -88,7 +88,6 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 	private TypeParametersSupport typeParametersSupport;
 	private ProcessingEnvironment processingEnv;
 	private NameTypeUtils nameTypesUtils;
-	private MethodHelper methodHelper;
 	private TransferObjectHelper toHelper;
 	private RoundEnvironment roundEnv;
 	
@@ -101,23 +100,22 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 		this.processingEnv = processingEnv;
 		this.roundEnv = roundEnv;
 		this.nameTypesUtils = new NameTypeUtils(processingEnv);
-		this.methodHelper = new MethodHelper(processingEnv, nameTypesUtils); 
-		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv, methodHelper);
+		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
 		
 		if (path == null) {
 			this.domainFieldPath = toHelper.getFieldPath(getMethod());
-			this.fieldName = methodHelper.toField(getMethod());
+			this.fieldName = MethodHelper.toField(getMethod());
 		} else {
-			this.domainFieldPath = path + "." + methodHelper.toField(getMethod());
-			this.fieldName = methodHelper.toField(getDomainFieldPath());
+			this.domainFieldPath = path + "." + MethodHelper.toField(getMethod());
+			this.fieldName = MethodHelper.toField(getDomainFieldPath());
 		}
 
-		this.domainFieldName = methodHelper.toGetter(getDomainFieldPath());
+		this.domainFieldName = MethodHelper.toGetter(getDomainFieldPath());
 
 		//context.setDomainTypeElement(toHelper.getDomainTypeElement(context.getConfigurationElement()));
 
-		DomainTypeElement domainTypeElement = configurationTypeElement.getDomainTypeElement();
+		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
 		
 		NamedType type = null;
 			
@@ -212,7 +210,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 		
 		switch (returnType.getKind()) {
 		case TYPEVAR:
-			TypeMirror domainType = configurationTypeElement.getDomainTypeElement().asType();
+			TypeMirror domainType = configurationTypeElement.getDomain().asType();
 			
 			if (domainType.getKind().equals(TypeKind.DECLARED)) {
 				Integer parameterIndex = typeParametersSupport.getParameterIndexByName((DeclaredType)domainType, 
@@ -232,7 +230,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 			case INTERFACE:
 
 				//reads TransferObjectConfiguration annotation from method in the configuration
-				ConverterTypeElement converterTypeElement = new ConfigurationTypeElement(getMethod(), processingEnv, roundEnv).getConverterTypeElement();
+				ConverterTypeElement converterTypeElement = new ConfigurationTypeElement(getMethod(), processingEnv, roundEnv).getConverter();
 
 				if (converterTypeElement != null) {
 					this.converterType = converterTypeElement;
@@ -248,10 +246,10 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 	private ConverterTypeElement getConverterForDomainType(TypeMirror domainType) {
 		
-		ConfigurationTypeElement configurationElement = new DomainTypeElement(domainType, processingEnv, roundEnv).getConfigurationTypeElement();
+		ConfigurationTypeElement configurationElement = new DomainTypeElement(domainType, processingEnv, roundEnv).getConfiguration();
 
 		if (configurationElement != null) {
-			return configurationElement.getConverterTypeElement();
+			return configurationElement.getConverter();
 		}
 		
 		return null;
@@ -305,7 +303,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 	}
 	
 	@Override
-	public ConverterTypeElement getConverterType() {
+	public ConverterTypeElement getConverter() {
 		return converterType;
 	}
 	

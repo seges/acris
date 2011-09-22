@@ -70,4 +70,10 @@ public class MapKeysConverter<DTO, DOMAIN> implements DtoConverter<Map<DTO, Obje
 		
 		return result;		
 	}
+
+	@Override
+	public boolean equals(Map<DOMAIN, Object> domains, Map<DTO, Object> dtos) {
+		//TODO
+		return false;
+	}
 }

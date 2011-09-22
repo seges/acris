@@ -25,7 +25,7 @@ public interface ProcessorContext {
 	String getFieldName();
 
 	ConfigurationTypeElement getConfigurationTypeElement();
-	ConverterTypeElement getConverterType();
+	ConverterTypeElement getConverter();
 
 	Modifier getModifier();
 

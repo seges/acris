@@ -14,6 +14,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.builder.NameTypeUtils;
@@ -26,6 +27,7 @@ import sk.seges.sesam.core.pap.model.api.TypeParameter;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
+import sk.seges.sesam.pap.model.context.api.ProcessorContext;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
@@ -67,18 +69,18 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 	};
 
 	private void initialize() {
-		if (typeParametersSupport.hasTypeParameters(this) && typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomainTypeElement())) {
+		if (typeParametersSupport.hasTypeParameters(this) && typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomain())) {
 
-			TypeParameter[] converterParameters = new TypeParameter[configurationTypeElement.getDomainTypeElement().getTypeParameters().length * 2];
+			TypeParameter[] converterParameters = new TypeParameter[configurationTypeElement.getDomain().getTypeParameters().length * 2];
 			
 			int i = 0;
 			
-			for (TypeParameter typeParameter: configurationTypeElement.getDtoTypeElement().getTypeParameters()) {
+			for (TypeParameter typeParameter: configurationTypeElement.getDto().getTypeParameters()) {
 				converterParameters[i] = typeParameter;
 				i++;
 			}
 
-			for (TypeParameter typeParameter: configurationTypeElement.getDomainTypeElement().getTypeParameters()) {
+			for (TypeParameter typeParameter: configurationTypeElement.getDomain().getTypeParameters()) {
 				converterParameters[i] = typeParameter;
 				i++;
 			}
@@ -166,7 +168,7 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		return converterTypeElement;
 	}
 	
-	public ConfigurationTypeElement getConfigurationTypeElement() {
+	public ConfigurationTypeElement getConfiguration() {
 		return configurationTypeElement;
 	}
 
@@ -229,7 +231,7 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 				}
 			}
 
-			ParameterElement[] constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(configurationTypeElement.getDomainTypeElement().asType());
+			ParameterElement[] constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(getConfiguration().getDomain().asType());
 
 			for (ParameterElement constructorAditionalParameter: constructorAditionalParameters) {
 				parameters.add(toConverterParameter(constructorAditionalParameter));
@@ -237,5 +239,29 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		}
 
 		return parameters;
+	}
+	
+	public DomainTypeElement getDomain() {
+		if (getConfiguration() == null) {
+			return null;
+		}
+		
+		return getConfiguration().getDomain();
+	}
+	
+	public List<String> getLocalConverters() {
+		TypeElement domainElement = getDomain().asElement();
+
+		List<String> result = new ArrayList<String>();
+
+		if (domainElement == null) {
+			return result;
+		}
+		
+		for (int i = 0; i < domainElement.getTypeParameters().size(); i++) {
+			result.add(ProcessorContext.LOCAL_CONVERTER_NAME + i);
+		}
+
+		return result;
 	}
 }

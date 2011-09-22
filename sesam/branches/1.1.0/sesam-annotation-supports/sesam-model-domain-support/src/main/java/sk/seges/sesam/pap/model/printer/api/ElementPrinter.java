@@ -6,7 +6,11 @@ import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 
 
 public interface ElementPrinter {
-	
+
+	public static final String DOMAIN_NAME = "_domain";
+	public static final String RESULT_NAME = "_result";
+	public static final String DTO_NAME = "_dto";
+
 	void initialize(ConfigurationTypeElement configurationTypeElement, NamedType outputName);
 	
 	void print(ProcessorContext context);

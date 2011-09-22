@@ -20,6 +20,7 @@ import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSuite;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
@@ -79,7 +80,7 @@ public class SeleniumTestRunnerProcessor extends AbstractConfigurableProcessor {
 				if (annotation != null) {
 					pw.println("{");
 					
-					String testName = methodHelper.toField(seleniumTestClass.getSimpleName().toString());
+					String testName = MethodHelper.toField(seleniumTestClass.getSimpleName().toString());
 					
 					pw.println(seleniumTestClass, " " + testName + " = new ", seleniumTestClass, "();");
 					//TODO find before annotation

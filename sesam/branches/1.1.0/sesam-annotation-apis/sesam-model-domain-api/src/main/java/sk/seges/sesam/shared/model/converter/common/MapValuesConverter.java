@@ -70,4 +70,10 @@ public class MapValuesConverter<DTO, DOMAIN> implements DtoConverter<Map<Object,
 		
 		return result;		
 	}
+
+	@Override
+	public boolean equals(Map<Object, DOMAIN> domain, Map<Object, DTO> dto) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

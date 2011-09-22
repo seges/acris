@@ -33,6 +33,11 @@ public @interface TransferObjectMapping {
 		public Void convertFromDto(Void result, Void domain) {
 			return result;
 		}
+
+		@Override
+		public boolean equals(Void domain, Void dto) {
+			return false;
+		}
 	}
 
 	/**

@@ -230,8 +230,8 @@ public class ConverterProviderPrinter {
 		@Override
 		public ConverterTypeElement getConverter(TypeMirror type) {
 			DomainTypeElement domainTypeElement = new DomainTypeElement(type, processingEnv, roundEnv, configurationProviders);
-			if (domainTypeElement.getConfigurationTypeElement() != null) {
-				return domainTypeElement.getConfigurationTypeElement().getConverterTypeElement();
+			if (domainTypeElement.getConfiguration() != null) {
+				return domainTypeElement.getConfiguration().getConverter();
 			}
 			return null;
 		}
@@ -262,7 +262,7 @@ public class ConverterProviderPrinter {
 
 		@Override
 		public DomainTypeElement getDomainType(TypeMirror type) {
-			return new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders).getDomainTypeElement();
+			return new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders).getDomain();
 		}
 
 		@Override

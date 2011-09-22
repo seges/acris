@@ -5,13 +5,13 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.DomainTypeElement;
 
 public interface EntityResolver {
 
 	TypeMirror getTargetEntityType(Element element);
 
-	boolean shouldHaveIdMethod(ConfigurationTypeElement configurationElement, TypeMirror domainType);
+	boolean shouldHaveIdMethod(DomainTypeElement domainTypeElement);
 	
 	boolean isIdField(VariableElement field);
 	boolean isIdMethod(ExecutableElement method);
