@@ -250,6 +250,11 @@ public abstract class AbstractConfigurableProcessor extends AbstractProcessor {
 		return result.toArray(new NamedType[] {});
 	}
 
+	/**
+	 * Determines what kind of type to generate.
+	 * 
+	 * @return ElementKind of type to generate.
+	 */
 	protected ElementKind getElementKind() {
 		return ElementKind.CLASS;
 	}
