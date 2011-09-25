@@ -6,10 +6,12 @@ import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
+import javax.persistence.Entity;
 
 import sk.seges.corpis.appscaffold.shared.annotation.domain.BusinessKey;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.Exclude;
@@ -70,6 +72,18 @@ public class JpaModelProcessor extends FluentProcessor {
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
 		return new JpaModelProcessorConfigurer();
+	}
+	
+	@Override
+	protected void writeClassAnnotations(Element el, NamedType outputName, FormattedPrintWriter pw) {
+		List<? extends AnnotationMirror> annotationMirrors = el.getAnnotationMirrors();
+		for (AnnotationMirror annotation : annotationMirrors) {
+			if (!typeEquals(JpaModel.class, annotation)) {
+				pw.println(annotation);
+			}
+		}
+		pw.println("@", Entity.class);
+		super.writeClassAnnotations(el, outputName, pw);
 	}
 
 	@Override
