@@ -396,6 +396,14 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		}
 	}
 
+	private static String getOsName() {
+		return System.getProperty("os.name");
+	}
+
+	private boolean isWindows() {
+		return getOsName().startsWith("Windows");
+	}
+
 	private void includeJar(File file, Map<URL, String> map) {
 		if (file.isDirectory()) {
 			return;
@@ -404,7 +412,11 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		URL jarURL = null;
 		JarFile jar = null;
 		try {
-			jarURL = new URL("file://" + file.getCanonicalPath());
+			if (isWindows()) {
+				jarURL = new URL("file:/" + file.getCanonicalPath());
+			} else {
+				jarURL = new URL("file://" + file.getCanonicalPath());
+			}
 			jarURL = new URL("jar:" + jarURL.toExternalForm() + "!/");
 			JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
 			jar = conn.getJarFile();
