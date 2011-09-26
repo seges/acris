@@ -49,6 +49,7 @@
       * [AnnotationProcessing_Eclipse Annotation processing eclipse integration]
       * [AnnotationProcessing_DebuggingMaven Debugging annotation processorts using maven]
       * [AnnotationProcessing_DebuggingEclipse Debugging annotation processors using eclipse]
+      * [AnnotationProcessing_Advanced Advanced features of the annotation processors]
       * [CodeGenerationPlatform_IDAO Data Access Object interface annotation processor]
       * [CodeGeneratorsEvaluation Evalution brainstorming]
     * [PortableApplication Writing portable application]
