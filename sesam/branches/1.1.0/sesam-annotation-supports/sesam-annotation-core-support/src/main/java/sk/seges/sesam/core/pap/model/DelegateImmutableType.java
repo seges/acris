@@ -154,4 +154,24 @@ public abstract class DelegateImmutableType implements HasTypeParameters {
 	public NamedType getEnclosedClass() {
 		return ensureDelegateType().getEnclosedClass();
 	}
+	
+	@Override
+	public ImmutableType removeClassSuffix(String originalSuffix) {
+		return ensureDelegateType().removeClassSuffix(originalSuffix);
+	}
+
+	@Override
+	public ImmutableType removeClassPrefix(String originalPrefix) {
+		return ensureDelegateType().removeClassPrefix(originalPrefix);
+	}
+
+	@Override
+	public ImmutableType replaceClassSuffix(String originalSuffix, String newSuffix) {
+		return ensureDelegateType().replaceClassSuffix(originalSuffix, newSuffix);
+	}
+	
+	@Override
+	public ImmutableType replaceClassPrefix(String originalPrefix, String newPrefix) {
+		return ensureDelegateType().replaceClassPrefix(originalPrefix, newPrefix);
+	}
 }
