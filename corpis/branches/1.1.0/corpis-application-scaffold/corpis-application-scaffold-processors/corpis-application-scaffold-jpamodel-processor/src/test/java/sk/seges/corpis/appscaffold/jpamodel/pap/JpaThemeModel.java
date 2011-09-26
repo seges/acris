@@ -16,7 +16,6 @@ import sk.seges.corpis.appscaffold.shared.annotation.domain.JpaModel;
 //		ThemeMetaModel.WEB_ID, ThemeMetaModel.NAME }) })
 @SequenceGenerator(name = "seqThemes", sequenceName = "SEQ_THEMES", initialValue = 1)
 public interface JpaThemeModel extends ThemeModel {
-//	@BusinessKey
 	@Id
 	@GeneratedValue(generator = "seqThemes")
 	Long id();

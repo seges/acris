@@ -10,4 +10,5 @@ public interface CustomerModel {
 	String surname();
 	
 	RoleModel role();
+//	List<ThemeModel> themes();
 }
