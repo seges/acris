@@ -201,4 +201,41 @@ public class InputClass extends AbstractPrintableType implements NamedType, Immu
 	public Set<AnnotationMirror> getAnnotations() {
 		return annotations;
 	}
+
+	@Override
+	public ImmutableType replaceClassSuffix(String originalSuffix, String newSuffix) {
+		if(!simpleClassName.endsWith(originalSuffix)) {
+			return this;
+		}
+
+		InputClass result = clone();
+		result.enclosedClass = null;
+		result.simpleClassName = this.simpleClassName.substring(0, simpleClassName.length() - originalSuffix.length()) + newSuffix;
+
+		return result;
+	}
+
+	@Override
+	public ImmutableType replaceClassPrefix(String originalPrefix, String newPrefix) {
+		if(!simpleClassName.startsWith(originalPrefix)) {
+			return this;
+		}
+
+		InputClass result = clone();
+		result.enclosedClass = null;
+		result.simpleClassName = newPrefix + this.simpleClassName.substring(originalPrefix.length());
+
+		return result;
+
+	}
+
+	@Override
+	public ImmutableType removeClassSuffix(String originalSuffix) {
+		return replaceClassSuffix(originalSuffix, "");
+	}
+
+	@Override
+	public ImmutableType removeClassPrefix(String originalPrefix) {
+		return replaceClassPrefix(originalPrefix, "");
+	}
 }

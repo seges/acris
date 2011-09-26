@@ -14,13 +14,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
 import sk.seges.sesam.core.pap.model.api.NamedType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-
-import com.sun.tools.javac.util.Pair;
 
 /**
  * @author ladislav.gazo
@@ -105,25 +102,25 @@ public abstract class FluentProcessor extends AbstractConfigurableProcessor {
 		}
 	}
 
-	protected void printField(FormattedPrintWriter pw, TypeMirror type, Element name) {
+	protected void printField(FormattedPrintWriter pw, Object type, Element name) {
 		pw.println("private ", type, " ", name.getSimpleName(), ";");
 	}
 
-	protected String getGetterSignature(TypeMirror type, Element name) {
+	protected String getGetterSignature(Object type, Element name) {
 		String fieldName = name.getSimpleName().toString();
 		String upperFieldName = firstUpperCase(fieldName);
 		
 		return type.toString() + " get" + upperFieldName + "()";
 	}
 
-	protected String getSetterSignature(TypeMirror type, Element name) {
+	protected String getSetterSignature(Object type, Element name) {
 		String fieldName = name.getSimpleName().toString();
 		String upperFieldName = firstUpperCase(fieldName);
 		
 		return "void set" + upperFieldName + "(" + type.toString() + " " + fieldName + ")";
 	}
 
-	protected void printStandardGetter(FormattedPrintWriter pw, TypeMirror type, Element name) {
+	protected void printStandardGetter(FormattedPrintWriter pw, Object type, Element name) {
 		String fieldName = name.getSimpleName().toString();
 		String upperFieldName = firstUpperCase(fieldName);
 
@@ -132,7 +129,7 @@ public abstract class FluentProcessor extends AbstractConfigurableProcessor {
 		pw.println("}");
 	}
 
-	protected void printStandardSetter(FormattedPrintWriter pw, TypeMirror type, ExecutableElement name) {
+	protected void printStandardSetter(FormattedPrintWriter pw, Object type, ExecutableElement name) {
 		String fieldName = name.getSimpleName().toString();
 		String upperFieldName = firstUpperCase(fieldName);
 
@@ -142,6 +139,16 @@ public abstract class FluentProcessor extends AbstractConfigurableProcessor {
 
 	}
 
+	protected void printObjectSetter(FormattedPrintWriter pw, Object type, ExecutableElement name) {
+		String fieldName = name.getSimpleName().toString();
+		String upperFieldName = firstUpperCase(fieldName);
+
+		pw.println("public void set", upperFieldName, "(Object ", fieldName, ") {");
+		pw.println("this.", fieldName, " = ("+type+")", fieldName, ";");
+		pw.println("}");
+	}
+
+	
 	protected String firstUpperCase(String name) {
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
 	}

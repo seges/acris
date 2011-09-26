@@ -13,6 +13,12 @@ public interface ImmutableType extends NamedType {
 	ImmutableType addClassSufix(String sufix);
 
 	ImmutableType addClassPrefix(String prefix);
+	
+	ImmutableType replaceClassSuffix(String originalSuffix, String newSuffix);
+	ImmutableType replaceClassPrefix(String originalPrefix, String newPrefix);
+	
+	ImmutableType removeClassSuffix(String originalSuffix);
+	ImmutableType removeClassPrefix(String originalPrefix);
 
 	ImmutableType addPackageSufix(String sufix);
 
