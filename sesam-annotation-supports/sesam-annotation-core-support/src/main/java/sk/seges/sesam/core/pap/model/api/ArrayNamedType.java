@@ -135,4 +135,24 @@ public class ArrayNamedType implements ImmutableType {
 	public ImmutableType setEnclosedClass(NamedType type) {
 		throw new RuntimeException("Invalid operation.");
 	}
+
+	@Override
+	public ImmutableType replaceClassSuffix(String originalSuffix, String newSuffix) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType replaceClassPrefix(String originalPrefix, String newPrefix) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType removeClassSuffix(String originalSuffix) {
+		throw new RuntimeException("Invalid operation.");
+	}
+
+	@Override
+	public ImmutableType removeClassPrefix(String originalPrefix) {
+		throw new RuntimeException("Invalid operation.");
+	}
 }
