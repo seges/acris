@@ -14,7 +14,12 @@ public class DataInterfaceProcessorTest extends FluentProcessorTest {
 	}
 	
 	@Test
-	public void testProcessor() {
+	public void testProcessorWithoutReferences() {
 		assertCompilationSuccessful(compileFiles(ThemeModel.class));
+	}
+	
+	@Test
+	public void testProcessorWithReferences() {
+		assertCompilationSuccessful(compileFiles(CustomerModel.class, RoleModel.class));
 	}
 }

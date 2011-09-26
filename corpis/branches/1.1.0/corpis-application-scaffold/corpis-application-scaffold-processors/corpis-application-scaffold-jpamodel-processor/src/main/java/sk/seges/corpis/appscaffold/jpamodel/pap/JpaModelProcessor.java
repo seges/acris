@@ -10,16 +10,16 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import sk.seges.corpis.appscaffold.shared.annotation.domain.BusinessKey;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.Exclude;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.FieldStrategyDefinition;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.JpaModel;
 import sk.seges.sesam.core.pap.FluentProcessor;
-import sk.seges.sesam.core.pap.FluentProcessor.MethodAction;
-import sk.seges.sesam.core.pap.FluentProcessor.Rule;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ImmutableType;
@@ -45,15 +45,9 @@ public class JpaModelProcessor extends FluentProcessor {
 			
 			@Override
 			public List<Type> getTypes(ImmutableType typeElement) {
-				String simpleName = typeElement.getSimpleName();
-				
-				if(simpleName.startsWith(JPA_PREFIX)) {
-					simpleName = simpleName.substring(JPA_PREFIX.length());
-				}
-				if(simpleName.endsWith(MODEL_SUFFIX)) {
-					simpleName = simpleName.substring(0, simpleName.length() - MODEL_SUFFIX.length());
-				}
-				return asList(typeElement.setName(simpleName + DATA_SUFFIX));
+				ImmutableType immutableType = typeElement.replaceClassPrefix(JPA_PREFIX, "");
+				immutableType = immutableType.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX);
+				return asList(immutableType);
 			}
 		};
 		addImplementedInterface(rule);
@@ -61,12 +55,7 @@ public class JpaModelProcessor extends FluentProcessor {
 
 	@Override
 	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		ImmutableType type = mutableType;
-		if (mutableType.getSimpleName().endsWith(MODEL_SUFFIX)) {
-			type = mutableType.setName(mutableType.getSimpleName().substring(0,
-					mutableType.getSimpleName().length() - MODEL_SUFFIX.length()));
-		}
-		return new NamedType[] { type };
+		return new NamedType[] { mutableType.removeClassSuffix(MODEL_SUFFIX) };
 	}
 
 	@Override
@@ -90,7 +79,7 @@ public class JpaModelProcessor extends FluentProcessor {
 	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv,
 			final FormattedPrintWriter pw) {
 
-		JpaModel jpaModel = typeElement.getAnnotation(JpaModel.class);
+		final JpaModel jpaModel = typeElement.getAnnotation(JpaModel.class);
 
 		final List<ExecutableElement> businessKeys = new ArrayList<ExecutableElement>();
 
@@ -112,9 +101,19 @@ public class JpaModelProcessor extends FluentProcessor {
 					}
 				}
 
-				printField(pw, fieldDef.getReturnType(), fieldDef);
-				printStandardGetter(pw, fieldDef.getReturnType(), fieldDef);
-				printStandardSetter(pw, fieldDef.getReturnType(), fieldDef);
+				TypeMirror returnType = fieldDef.getReturnType();
+				ImmutableType immutableReturnType = nameTypesUtils.toImmutableType(returnType);
+				immutableReturnType = immutableReturnType.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX);
+				
+				printField(pw, immutableReturnType, fieldDef);
+				printStandardGetter(pw, immutableReturnType, fieldDef);
+				
+				Id id = fieldDef.getAnnotation(Id.class);
+				if(id != null && jpaModel.portable()) {
+					printObjectSetter(pw, immutableReturnType, fieldDef);
+				} else {
+					printStandardSetter(pw, immutableReturnType, fieldDef);
+				}
 
 			}
 		};

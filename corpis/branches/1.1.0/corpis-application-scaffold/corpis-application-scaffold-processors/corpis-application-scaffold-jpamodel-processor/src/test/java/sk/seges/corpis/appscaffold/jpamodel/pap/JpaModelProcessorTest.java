@@ -16,7 +16,12 @@ public class JpaModelProcessorTest extends FluentProcessorTest {
 	}
 	
 	@Test
-	public void testProcessor() {
+	public void testProcessorWithoutReferences() {
 		assertCompilationSuccessful(compileFiles(ThemeModel.class, JpaThemeModel.class));
+	}
+	
+	@Test
+	public void testProcessorWithReferences() {
+		assertCompilationSuccessful(compileFiles(CustomerModel.class, RoleModel.class, JpaCustomerModel.class, JpaRoleModel.class));
 	}
 }

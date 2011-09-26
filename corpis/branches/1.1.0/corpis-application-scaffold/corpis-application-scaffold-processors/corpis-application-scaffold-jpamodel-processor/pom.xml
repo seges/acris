@@ -25,10 +25,31 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-metadata-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-metadata-processor</artifactId>
+			<scope>test</scope>
+		</dependency>
 		
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-application-scaffold-model</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-application-scaffold-datainterface-processor</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>

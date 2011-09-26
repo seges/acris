@@ -1,19 +1,15 @@
 package sk.seges.corpis.appscaffold.datainterface.pap;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.corpis.appscaffold.shared.annotation.domain.BusinessKey;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.Exclude;
-import sk.seges.corpis.appscaffold.shared.annotation.domain.FieldStrategyDefinition;
-import sk.seges.corpis.appscaffold.shared.annotation.domain.JpaModel;
 import sk.seges.sesam.core.pap.FluentProcessor;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.TypedClassBuilder;
@@ -61,15 +57,17 @@ public class DataInterfaceProcessor extends FluentProcessor {
 		MethodAction action = new MethodAction() {
 			@Override
 			public void doExecute(ExecutableElement fieldDef) {
-				List<? extends AnnotationMirror> annotationMirrors = fieldDef.getAnnotationMirrors();
-
 				Exclude exclude = fieldDef.getAnnotation(Exclude.class);
 				if (exclude != null) {
 					return;
 				}
 
-				pw.println(getGetterSignature(fieldDef.getReturnType(), fieldDef) + ";");
-				pw.println(getSetterSignature(fieldDef.getReturnType(), fieldDef) + ";");
+				TypeMirror returnType = fieldDef.getReturnType();
+				ImmutableType immutableReturnType = nameTypesUtils.toImmutableType(returnType);
+				immutableReturnType = immutableReturnType.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX);
+				
+				pw.println(getGetterSignature(immutableReturnType, fieldDef) + ";");
+				pw.println(getSetterSignature(immutableReturnType, fieldDef) + ";");
 			}
 		};
 
