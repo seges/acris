@@ -15,8 +15,7 @@
   ** sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor- annotation processor that can manipulate with mutable types and offers you advanced features
  * method ~~protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement)~~ from AbstractConfigurableProcessor was replaced by protected MutableDeclaredType[] getOutputClasses(RoundContext context) in the MutableAnnotationProcessor - in this method you should specify whole output class with all the implemented interfaces, element kind and/or superclass
  * method ~~protected NamedType[] getTargetClassNames(ImmutableType immutableType)~~ from AbstractConfigurableProcessor was removed and replaced by getOutputClasses (see paragraph above)
- * method ~~protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw)~~ from AbstractConvfigurableProcessor was changed into:
-protected void processElement(ProcessorContext context). Method arguments now can be obtained in the following way:
+ * method ~~protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw)~~ from AbstractConvfigurableProcessor was changed into: protected void processElement(ProcessorContext context). Method arguments now can be obtained in the following way:
   ** TypeElement element = context.getTypeElement();
   ** ~~NamedType~~ MutableDeclaredType outputName = context.getMutableType();
   ** FormattedPrintWriter  pw = context.getPrintWriter()
