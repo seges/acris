@@ -13,5 +13,13 @@
   ** sk.seges.sesam.core.pap.processor.PlugableAnnotationProcessor - very basic processor with output formatting purposes
   ** sk.seges.sesam.core.pap.processor.ConfigurableAnnotationProcessor - annotation processor that can be configured using configurers and delegated configurers
   ** sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor- annotation processor that can manipulate with mutable types and offers you advanced features
+ * method ~~protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement)~~ from AbstractConfigurableProcessor was replaced by protected MutableDeclaredType[] getOutputClasses(RoundContext context) in the MutableAnnotationProcessor - in this method you should specify whole output class with all the implemented interfaces, element kind and/or superclass
+ * method ~~protected NamedType[] getTargetClassNames(ImmutableType immutableType)~~ from AbstractConfigurableProcessor was removed and replaced by getOutputClasses (see paragraph above)
+ * method ~~protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw)~~ from AbstractConvfigurableProcessor was changed into:
+protected void processElement(ProcessorContext context). Method arguments now can be obtained in the following way:
+  ** TypeElement element = context.getTypeElement();
+  ** ~~NamedType~~ MutableDeclaredType outputName = context.getMutableType();
+  ** FormattedPrintWriter  pw = context.getPrintWriter()
+  ** RoundEnvironment roundEnv is local class field of the MutableAnnotationProcessor, so: this.roundEnv
 
 !!WARNING!! Old API was immutable (all setters returned a new instance), new API is completly mutable and no new instances are created. Use clone method if you want to create a new cloned instance!!
