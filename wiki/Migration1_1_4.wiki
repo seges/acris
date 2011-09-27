@@ -4,8 +4,14 @@
   * sesam-annotations-support renamed into sesam-annotation-core-support
   * sesam-model-metadata renamed into sesam-model-metadata-processor
 
-= new world of PAP =
+= New world of PAP =
   * ~~sk.seges.sesam.core.pap.model.api.HasTypeParameters~~ is replaced by sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType
   * ~~sk.seges.sesam.core.pap.builder.NameTypeUtils~~ is replace by sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes and can be obtained using sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment that is hold by sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor (so, your processor should extends this class)
  * ~~sk.seges.sesam.core.pap.model.api.TypeParameter~~ replaced by sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable or sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType, depends which type variable you want to use
  * ~~sk.seges.sesam.core.pap.model.TypedClassBuilder~~ removed, now the mutable types are created using sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes using methods getDeclaredType, etc.
+ * ~~sk.seges.sesam.core.pap.AbstractConfigurableProcessor~~ is no more exist - it was replace by multiple abstract processors you can extend:
+  ** sk.seges.sesam.core.pap.processor.PlugableAnnotationProcessor - very basic processor with output formatting purposes
+  ** sk.seges.sesam.core.pap.processor.ConfigurableAnnotationProcessor - annotation processor that can be configured using configurers and delegated configurers
+  ** sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor- annotation processor that can manipulate with mutable types and offers you advanced features
+
+!!WARNING!! Old API was immutable (all setters returned a new instance), new API is completly mutable and no new instances are created. Use clone method if you want to create a new cloned instance!!
