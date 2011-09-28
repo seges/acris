@@ -23,5 +23,9 @@
  * ~~sk.seges.sesam.core.pap.model.api.ArrayNamedType~~ renamed into sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType
  * ~~sk.seges.sesam.core.pap.model.api.TypeVariable~~ was removed and has no replacement in the new API (this class is no more required)
  * you can't now override protected boolean processElement(Element element, RoundEnvironment roundEnv) method in AbstractConfigurableProcessor (this case was very common in order to check if annotation processor should be executed on the element or not) -> for these purposes was protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) introduced 
+ * method ~~protected void writeClassAnnotations(Element el, NamedType outputName, PrintWriter pw)~~ from AbstractConfigurableProcessor changed into protected void printAnnotations(ProcessorContext context). Method arguments can be obtained from the context itself:
+  ** Element el = context.getTypeElement();
+  ** ~~NamedType~~ MutableDeclaredType outputName = context.getMutableType();
+  ** FormattedPrintWriter pw = context.getPrintWriter()
 
 !!WARNING!! Old API was immutable (all setters returned a new instance), new API is completly mutable and no new instances are created. Use clone method if you want to create a new cloned instance!!
