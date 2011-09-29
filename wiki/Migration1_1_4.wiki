@@ -27,5 +27,6 @@
   ** Element el = context.getTypeElement();
   ** ~~NamedType~~ MutableDeclaredType outputName = context.getMutableType();
   ** FormattedPrintWriter pw = context.getPrintWriter()
+ * getConfigurationElement in the class sk.seges.sesam.core.pap.configuration.DefaultProcessorConfigurer is now abstract so you have implement this method in your processor configurer. Also can't call return super.getConfigurationElement now, istead of that use return new Type[] {};
 
 !!WARNING!! Old API was immutable (all setters returned a new instance), new API is completly mutable and no new instances are created. Use clone method if you want to create a new cloned instance!!
