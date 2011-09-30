@@ -157,7 +157,7 @@
 		<groovy.version>1.8.0</groovy.version>
 
 		<!-- Selenium -->
-		<selenium.version>2.6.0</selenium.version> 
+		<selenium.version>2.7.0</selenium.version> 
 
 		<!-- plugins -->
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
