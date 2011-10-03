@@ -2,6 +2,8 @@
 
 == The "standard way" ==
 
+Using @SupportedAnnotationTypes annotation _(used mainly to support all annotations using asterix "`*`")_
+
 {{{
 @SupportedAnnotationTypes("sk.seges.sesam.core.annotation.CustomAnnotation")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -10,7 +12,7 @@ public class SesamProcessor extends AbstractProcessor {
 
 }}}
 
-or
+or using getSupportedAnnotationTypes method _(in order to have type safe code)_
 
 {{{
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
