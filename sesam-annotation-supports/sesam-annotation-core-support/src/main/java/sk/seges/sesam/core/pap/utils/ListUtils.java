@@ -3,10 +3,11 @@ package sk.seges.sesam.core.pap.utils;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 
 public class ListUtils {
 
@@ -29,8 +30,8 @@ public class ListUtils {
 		
 		String canonicalName = t.toString();
 		
-		if (t instanceof NamedType) {
-			canonicalName = ((NamedType)t).getCanonicalName();
+		if (t instanceof MutableDeclaredType) {
+			canonicalName = ((MutableDeclaredType)t).getCanonicalName();
 		} else if (t instanceof Class) {
 			canonicalName = ((Class<?>)t).getCanonicalName();
 		}
@@ -38,8 +39,8 @@ public class ListUtils {
 		for (T s : source) {
 			String sourceName = t.toString();
 			
-			if (s instanceof NamedType) {
-				sourceName = ((NamedType)s).getCanonicalName();
+			if (s instanceof MutableDeclaredType) {
+				sourceName = ((MutableDeclaredType)s).getCanonicalName();
 			} else if (s instanceof Class) {
 				sourceName = ((Class<?>)s).getCanonicalName();
 			}
@@ -69,7 +70,7 @@ public class ListUtils {
 		
 		return source;
 	}
-	
+
 	public static  <T> List<T> add(List<T> source, Collection<T> additions) {
 		if (additions != null) {
 			for (T addClass : additions) {
@@ -87,5 +88,4 @@ public class ListUtils {
 		}
 		return source;
 	}
-
 }

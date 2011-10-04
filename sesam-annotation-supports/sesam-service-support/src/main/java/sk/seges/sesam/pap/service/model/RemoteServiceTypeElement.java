@@ -1,33 +1,32 @@
 package sk.seges.sesam.pap.service.model;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.DelegateImmutableType;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
-public class RemoteServiceTypeElement extends DelegateImmutableType {
+public class RemoteServiceTypeElement extends DelegateMutableDeclaredType {
 
+	private final MutableProcessingEnvironment processingEnv;
 	private final TypeElement remoteServiceElement;
-	private final NameTypeUtils nameTypesUtils;
 	private final LocalServiceTypeElement localServiceElement;
 	
-	public RemoteServiceTypeElement(TypeElement remoteServiceElement, ProcessingEnvironment processingEnv) {
+	public RemoteServiceTypeElement(TypeElement remoteServiceElement, MutableProcessingEnvironment processingEnv) {
 		this.remoteServiceElement = remoteServiceElement;
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 		this.localServiceElement = new LocalServiceTypeElement(this, processingEnv);
 	}
 
-	RemoteServiceTypeElement(TypeElement remoteServiceElement, LocalServiceTypeElement localServiceElement, ProcessingEnvironment processingEnv) {
+	RemoteServiceTypeElement(TypeElement remoteServiceElement, LocalServiceTypeElement localServiceElement, MutableProcessingEnvironment processingEnv) {
 		this.remoteServiceElement = remoteServiceElement;
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 		this.localServiceElement = localServiceElement;
 	}
 
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
-		return nameTypesUtils.toImmutableType(remoteServiceElement);
+	protected MutableDeclaredType getDelegate() {
+		return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(remoteServiceElement.asType());
 	}
 	
 	public TypeElement asElement() {

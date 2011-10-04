@@ -1,10 +1,10 @@
 package sk.seges.sesam.pap.configuration.printer;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
@@ -14,13 +14,13 @@ public class AccessorPrinter extends AbstractSettingsElementPrinter implements S
 
 	private FormattedPrintWriter pw;
 	
-	public AccessorPrinter(FormattedPrintWriter pw, ProcessingEnvironment pe) {
+	public AccessorPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment pe) {
 		super(pe);
 		this.pw = pw;
 	}
 	
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {}
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {}
 
 	@Override
 	public void print(SettingsContext context) {
@@ -28,7 +28,7 @@ public class AccessorPrinter extends AbstractSettingsElementPrinter implements S
 		String fieldName = context.getFieldName();
 
 		if (context.getNestedElement() != null) {
-			pw.println("public " + context.getNestedOutputName().getSimpleName() +  " " + MethodHelper.toGetter(fieldName) + " {");
+			pw.println("public " + context.getNestedMutableType().getSimpleName() +  " " + MethodHelper.toGetter(fieldName) + " {");
 		} else {
 			TypeMirror unboxedReturnType = unboxType(context.getMethod().getReturnType());
 			pw.println("public ", unboxedReturnType, " " + MethodHelper.toGetter(fieldName) + " {");
@@ -38,7 +38,7 @@ public class AccessorPrinter extends AbstractSettingsElementPrinter implements S
 		pw.println("");
 
 		if (context.getNestedElement() != null) {
-			pw.println("public void " + MethodHelper.toSetter(fieldName) + "(" + context.getNestedOutputName().getSimpleName() + " " + fieldName + ") {");
+			pw.println("public void " + MethodHelper.toSetter(fieldName) + "(" + context.getNestedMutableType().getSimpleName() + " " + fieldName + ") {");
 		} else {
 			pw.println("public void " + MethodHelper.toSetter(fieldName) + "(", unboxType(context.getMethod().getReturnType()), " " + fieldName + ") {");
 		}

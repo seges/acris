@@ -119,4 +119,9 @@ public class MethodHelper {
 		
 		return null;
 	}
+	
+	public static boolean isGetterMethod(ExecutableElement method) {
+		return method.getSimpleName().toString().startsWith(MethodHelper.GETTER_PREFIX);
+	}
+
 }

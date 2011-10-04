@@ -1,11 +1,10 @@
 package sk.seges.sesam.pap.service.model;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.DelegateImmutableType;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
@@ -13,31 +12,29 @@ import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 
-public class LocalServiceTypeElement extends DelegateImmutableType {
+public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
 
 	public static final String REMOTE_SUFFIX = "Remote";
 	public static final String LOCAL_SUFFIX = "Local";
 
 	private final boolean isGenerated;
 	
-	private final ProcessingEnvironment processingEnv;
+	private final MutableProcessingEnvironment processingEnv;
 	private final RemoteServiceTypeElement remoteService;
 	private final TypeElement localServiceType;
-	private final NameTypeUtils nameTypesUtils;
 	
-	public LocalServiceTypeElement(RemoteServiceTypeElement remoteService, ProcessingEnvironment processingEnv) {
+	public LocalServiceTypeElement(RemoteServiceTypeElement remoteService, MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 		this.isGenerated = true;
 		this.remoteService = remoteService;
 		this.localServiceType = null;
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		setKind(MutableTypeKind.INTERFACE);
 	}
 
-	public LocalServiceTypeElement(TypeElement localServiceType, ProcessingEnvironment processingEnv) {
+	public LocalServiceTypeElement(TypeElement localServiceType, MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 		this.isGenerated = false;
 		this.localServiceType = localServiceType;
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		this.remoteService = getRemoteServiceElement();
 	}
 
@@ -70,14 +67,14 @@ public class LocalServiceTypeElement extends DelegateImmutableType {
 	}
 	
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
+	protected MutableDeclaredType getDelegate() {
 		if (localServiceType != null) {
-			return nameTypesUtils.toImmutableType(localServiceType);
+			return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(localServiceType.asType());
 		}
 		return getLocalServiceClass(remoteService);
 	}
 	
-	public ImmutableType getLocalServiceClass(ImmutableType mutableType) {
+	public MutableDeclaredType getLocalServiceClass(MutableDeclaredType mutableType) {
 		String simpleName = mutableType.getSimpleName();
 		if (simpleName.endsWith(REMOTE_SUFFIX)) {
 			simpleName = simpleName.substring(0, simpleName.length() - REMOTE_SUFFIX.length());
@@ -85,7 +82,7 @@ public class LocalServiceTypeElement extends DelegateImmutableType {
 		PackageValidator packageValidator = new DefaultPackageValidatorProvider().get(mutableType.getPackageName());
 		packageValidator.moveTo(LocationType.SERVER);
 		mutableType = mutableType.changePackage(packageValidator);
-		return mutableType.setName(simpleName + LOCAL_SUFFIX);
+		return mutableType.setSimpleName(simpleName + LOCAL_SUFFIX);
 	}
 
 	public boolean isGenerated() {

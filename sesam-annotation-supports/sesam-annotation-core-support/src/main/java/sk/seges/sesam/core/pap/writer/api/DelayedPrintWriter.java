@@ -1,6 +1,7 @@
 package sk.seges.sesam.core.pap.writer.api;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+
 
 public interface DelayedPrintWriter {
 

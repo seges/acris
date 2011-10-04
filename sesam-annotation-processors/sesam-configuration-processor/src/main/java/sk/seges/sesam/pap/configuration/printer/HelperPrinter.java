@@ -3,7 +3,6 @@ package sk.seges.sesam.pap.configuration.printer;
 import java.io.PrintStream;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -11,7 +10,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
@@ -20,13 +20,13 @@ public class HelperPrinter extends AbstractSettingsElementPrinter implements Set
 
 	private FormattedPrintWriter pw;
 	
-	public HelperPrinter(FormattedPrintWriter pw, ProcessingEnvironment processingEnv) {
+	public HelperPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.pw = pw;
 	}
 
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {
 		pw.println("public void printHelp(", PrintStream.class, " out) {");
 		pw.println("printHelp(out, \"\", null);");
 		pw.println("}");

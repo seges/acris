@@ -2,26 +2,28 @@ package sk.seges.sesam.pap.model.provider;
 
 import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.model.converter.CollectionConfiguration;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectConfiguration;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 
-	protected final ProcessingEnvironment processingEnv;
+	protected final TransferObjectProcessingEnvironment processingEnv;
 	protected final RoundEnvironment roundEnv;
 	
-	public RoundEnvConfigurationProvider(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	public RoundEnvConfigurationProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		this.processingEnv = processingEnv;
 		this.roundEnv = roundEnv;
 	}
@@ -32,11 +34,11 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		};
 	}
 
-	protected boolean isSupportedType(TypeMirror type) {
-		return (!type.getKind().isPrimitive() && !type.getKind().equals(TypeKind.NONE) && !type.getKind().equals(TypeKind.NULL) && !type.getKind().equals(TypeKind.ERROR));
+	protected boolean isSupportedType(MutableTypeMirror type) {
+		return (!type.getKind().equals(MutableTypeKind.PRIMITIVE));
 	}
 	
-	public ConfigurationTypeElement getConfigurationForDomain(TypeMirror domainType) {
+	public ConfigurationTypeElement getConfigurationForDomain(MutableTypeMirror domainType) {
 
 		if (!isSupportedType(domainType)) {
 			return null;
@@ -48,7 +50,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
 	
 				if (configurationTypeElement.appliesForDomainType(domainType)) {
-					return new ConfigurationTypeElement((DeclaredType)domainType, null, (TypeElement)annotatedElement, processingEnv, roundEnv);
+					return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)annotatedElement, processingEnv, roundEnv);
 				}
 			}
 		}
@@ -61,7 +63,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 					ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
 
 					if (configurationTypeElement.appliesForDomainType(domainType)) {
-						return new ConfigurationTypeElement((DeclaredType)domainType, null, configurationElement, processingEnv, roundEnv);
+						return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, configurationElement, processingEnv, roundEnv);
 					}
 				}
 			}
@@ -69,16 +71,16 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		return null;
 	}
 
-	public ConfigurationTypeElement getConfigurationForDto(TypeMirror dtoType) {
+	public ConfigurationTypeElement getConfigurationForDto(MutableTypeMirror dtoType) {
 
 		if (!isSupportedType(dtoType)) {
 			return null;
 		};
 
 		//Configuration should be directly in the DTO - when its generated
-		if (dtoType.getKind().equals(TypeKind.DECLARED)) {
-			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)dtoType).asElement(), processingEnv);
-			if (transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType) != null) {
+		if (dtoType.getKind().isDeclared() && (((MutableDeclaredType)dtoType).asType()) != null && ((MutableDeclaredType)dtoType).asType().getKind().equals(TypeKind.DECLARED)) {
+			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv);
+			if (transferObjectConfiguration.getMappingForDto((MutableDeclaredType)dtoType) != null) {
 				return new ConfigurationTypeElement(((DeclaredType)dtoType).asElement(), processingEnv, roundEnv);
 			}
 		}

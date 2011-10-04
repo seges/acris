@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.context;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -12,20 +11,21 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
-public class TransferObjectProcessorContext implements ProcessorContext {
+public class TransferObjectProcessorContext implements TransferObjectContext {
 		
 	protected final ConfigurationTypeElement configurationTypeElement;
 
@@ -35,7 +35,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 	protected TypeMirror domainMethodReturnType;
 
-	protected NamedType fieldType;
+	protected DtoType fieldType;
 	protected String fieldName;
 
 	protected String domainFieldName;
@@ -57,7 +57,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 		this.domainMethod = domainMethod;
 	}
 
-	protected TypeMirror erasure(TransferObjectHelper toHelper, TypeElement typeElement, TypeMirror param) {
+	protected TypeMirror erasure(TypeElement typeElement, TypeMirror param, ConfigurationProvider... configurationProviders) {
 
 		if (typeElement == null) {
 			return param;
@@ -68,15 +68,17 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 		}
 		
 		TypeVariable typeVar = (TypeVariable)param;
-		if (typeVar.getUpperBound() != null) {
-			NamedType convertedTypeVar = toHelper.convertType(typeVar.getUpperBound());
+		//TODO support also typevariables and wildcards?
+		if (typeVar.getUpperBound().getKind().equals(TypeKind.DECLARED)) {
+			DtoType convertedTypeVar = processingEnv.getTransferObjectUtils().getDomainType(typeVar.getUpperBound()).getDto();
 			if (convertedTypeVar != null) {
 				return typeVar.getUpperBound();
 			}
 		}
-
-		if (typeVar.getLowerBound() != null) {
-			NamedType convertedTypeVar = toHelper.convertType(typeVar.getLowerBound());
+		
+		//TODO support also typevariables and wildcards?
+		if (typeVar.getLowerBound().getKind().equals(TypeKind.DECLARED)) {
+			DtoType convertedTypeVar = processingEnv.getTransferObjectUtils().getDomainType(typeVar.getLowerBound()).getDto();
 			if (convertedTypeVar != null) {
 				return typeVar.getLowerBound();
 			}
@@ -86,66 +88,62 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 	}
 
 	private TypeParametersSupport typeParametersSupport;
-	private ProcessingEnvironment processingEnv;
-	private NameTypeUtils nameTypesUtils;
+	private TransferObjectProcessingEnvironment processingEnv;
 	private TransferObjectHelper toHelper;
-	private RoundEnvironment roundEnv;
+	protected RoundEnvironment roundEnv;
 	
-	public boolean initialize(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, EntityResolver entityResolver) {
-		return initialize(processingEnv, roundEnv, entityResolver, null);
+	public boolean initialize(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, EntityResolver entityResolver, ConfigurationProvider[] configurationProviders) {
+		return initialize(processingEnv, roundEnv, entityResolver, null, configurationProviders);
 	}
 	
-	public boolean initialize(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, EntityResolver entityResolver, String path) {
+	public boolean initialize(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, EntityResolver entityResolver, String path, ConfigurationProvider[] configurationProviders) {
 
 		this.processingEnv = processingEnv;
 		this.roundEnv = roundEnv;
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
-		this.toHelper = new TransferObjectHelper(nameTypesUtils, processingEnv, roundEnv);
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
+		this.toHelper = new TransferObjectHelper(processingEnv);
+		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
 		
 		if (path == null) {
-			this.domainFieldPath = toHelper.getFieldPath(getMethod());
-			this.fieldName = MethodHelper.toField(getMethod());
+			this.domainFieldPath = TransferObjectHelper.getFieldPath(getDtoMethod());
+			this.fieldName = MethodHelper.toField(getDtoMethod());
 		} else {
-			this.domainFieldPath = path + "." + MethodHelper.toField(getMethod());
+			this.domainFieldPath = path + "." + MethodHelper.toField(getDtoMethod());
 			this.fieldName = MethodHelper.toField(getDomainFieldPath());
 		}
 
 		this.domainFieldName = MethodHelper.toGetter(getDomainFieldPath());
 
-		//context.setDomainTypeElement(toHelper.getDomainTypeElement(context.getConfigurationElement()));
-
 		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
 		
-		NamedType type = null;
-			
-		if (entityResolver.getTargetEntityType(getMethod()).getKind().equals(TypeKind.TYPEVAR)) {
-			TypeMirror returnType = erasure(toHelper, domainTypeElement.asElement(), entityResolver.getTargetEntityType(getMethod()));
+		DtoType type = null;
+		
+		if (entityResolver.getTargetEntityType(getDtoMethod()).getKind().equals(TypeKind.TYPEVAR)) {
+			TypeMirror returnType = erasure(domainTypeElement.asElement(), entityResolver.getTargetEntityType(getDtoMethod()), configurationProviders);
 			if (returnType != null) {
-				type = toHelper.convertType(returnType);
+				type = processingEnv.getTransferObjectUtils().getDomainType(returnType).getDto();
 				if (type == null) {
-					type = nameTypesUtils.toType(returnType);
+					type = processingEnv.getTransferObjectUtils().getDtoType(returnType);
 				}
 			} else {
-				type = handleDomainTypeParameter(processingEnv, toHelper, entityResolver);
+				type = handleDomainTypeParameter(processingEnv, toHelper, entityResolver, configurationProviders);
 				
 				if (type == null) {
 					return false;
 				}
 			}
 		} else {
-			TypeMirror targetEntityType = entityResolver.getTargetEntityType(getMethod());
+			TypeMirror targetEntityType = entityResolver.getTargetEntityType(getDtoMethod());
 			
-			type = toHelper.convertType(targetEntityType);
+			type = processingEnv.getTransferObjectUtils().getDomainType(targetEntityType).getDto();
 			if (type == null) {
-				type = nameTypesUtils.toType(targetEntityType);
+				type = processingEnv.getTransferObjectUtils().getDtoType(targetEntityType);
 			}
 		}
 
 		TypeMirror domainReturnType = entityResolver.getTargetEntityType(getDomainMethod());
 		
 		if (entityResolver.getTargetEntityType(getDomainMethod()).getKind().equals(TypeKind.TYPEVAR)) {
-			TypeMirror erasedType = erasure(toHelper, domainTypeElement.asElement(), domainReturnType);
+			TypeMirror erasedType = erasure(domainTypeElement.asElement(), domainReturnType, configurationProviders);
 			if (erasedType != null && !erasedType.toString().equals(Object.class.getCanonicalName())) {
 				domainReturnType = erasedType;
 			}/* else {
@@ -156,13 +154,13 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 			}*/
 		}
 
-		if (getMethod().getReturnType().getKind().equals(TypeKind.VOID)) {
+		if (getDtoMethod().getReturnType().getKind().equals(TypeKind.VOID)) {
 			
-			type = toHelper.convertType(domainReturnType);
+			type = processingEnv.getTransferObjectUtils().getDomainType(domainReturnType).getDto();
 
 			if (type == null) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find DTO alternative for " + entityResolver.getTargetEntityType(getDomainMethod()).toString() + ". Skipping getter " + 
-						getMethod().getSimpleName().toString(),configurationTypeElement.asElement());
+						getDtoMethod().getSimpleName().toString(),configurationTypeElement.asElement());
 				return false;
 			}
 		}
@@ -171,27 +169,27 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 		setDomainMethodReturnType(domainReturnType);
 
-		if (getMethod().getReturnType().equals(TypeKind.VOID) && domainReturnType.getKind().equals(TypeKind.DECLARED)) {
+		if (getDtoMethod().getReturnType().equals(TypeKind.VOID) && domainReturnType.getKind().equals(TypeKind.DECLARED)) {
 			
-			NamedType domainReturnNamedType = nameTypesUtils.toType(domainReturnType);
+			MutableTypeMirror domainReturnMutableType = processingEnv.getTypeUtils().toMutableType(domainReturnType);
 			
-			if (!type.getCanonicalName().equals(domainReturnNamedType.getCanonicalName())) {
+			if (!processingEnv.getTypeUtils().isSameType(type, domainReturnMutableType)) {
 				
-				ImmutableType dtoType = null;
+				DtoType dtoType = null;
 				
 				if (domainReturnType.getKind().equals(TypeKind.DECLARED)) {
-					dtoType = new DomainTypeElement(domainReturnType, processingEnv, roundEnv).getDtoTypeElement();
+					dtoType = processingEnv.getTransferObjectUtils().getDomainType(domainReturnType).getDto();
 				}
 	
-				if (dtoType == null || !dtoType.getCanonicalName().equals(type.getCanonicalName())) {
+				if (dtoType == null || !processingEnv.getTransferObjectUtils().isSameType(dtoType, type)) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type from domain method " + domainReturnType.toString() + " " + domainTypeElement.getCanonicalName() + 
 							"." + getDomainFieldName() + " is not compatible with specified return type in the DTO " + type.toString() + ". Please, check your configuration " + 
 							configurationTypeElement.getCanonicalName(), configurationTypeElement.asElement());
 					return false;
 				}
 			}
-		} else if (getMethod().getReturnType().equals(TypeKind.VOID)) {
-			if (!type.getCanonicalName().equals(domainReturnType.toString())) {
+		} else if (getDtoMethod().getReturnType().equals(TypeKind.VOID)) {
+			if (!processingEnv.getTypeUtils().isSameType(type, processingEnv.getTypeUtils().toMutableType(domainReturnType))) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Return type from domain method " + domainReturnType.toString() + " " + domainTypeElement.getCanonicalName() + 
 						"." + getDomainFieldName() + " is not compatible with specified return type in the DTO " + type.toString() + ". Please, check your configuration " + 
 						configurationTypeElement.getCanonicalName(), configurationTypeElement.asElement());
@@ -230,7 +228,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 			case INTERFACE:
 
 				//reads TransferObjectConfiguration annotation from method in the configuration
-				ConverterTypeElement converterTypeElement = new ConfigurationTypeElement(getMethod(), processingEnv, roundEnv).getConverter();
+				ConverterTypeElement converterTypeElement = new ConfigurationTypeElement(getDtoMethod(), processingEnv, roundEnv).getConverter();
 
 				if (converterTypeElement != null) {
 					this.converterType = converterTypeElement;
@@ -246,7 +244,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 
 	private ConverterTypeElement getConverterForDomainType(TypeMirror domainType) {
 		
-		ConfigurationTypeElement configurationElement = new DomainTypeElement(domainType, processingEnv, roundEnv).getConfiguration();
+		ConfigurationTypeElement configurationElement = processingEnv.getTransferObjectUtils().getDomainType(domainType).getConfiguration();
 
 		if (configurationElement != null) {
 			return configurationElement.getConverter();
@@ -255,7 +253,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 		return null;
 	}
 	
-	protected NamedType handleDomainTypeParameter(ProcessingEnvironment processingEnv, TransferObjectHelper toHelper, EntityResolver entityResolver) {
+	protected DtoType handleDomainTypeParameter(TransferObjectProcessingEnvironment processingEnv, TransferObjectHelper toHelper, EntityResolver entityResolver, ConfigurationProvider[] configurationProviders) {
 		processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find erasure for the " + 
 				entityResolver.getTargetEntityType(getDomainMethod()).toString() + " in the method: " + getFieldName(), 
 				getConfigurationTypeElement().asElement());
@@ -278,7 +276,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 		return domainFieldName;
 	}
 
-	public NamedType getFieldType() {
+	public DtoType getFieldType() {
 		return fieldType;
 	}
 
@@ -294,7 +292,7 @@ public class TransferObjectProcessorContext implements ProcessorContext {
 		return modifier;
 	}
 
-	public ExecutableElement getMethod() {
+	public ExecutableElement getDtoMethod() {
 		return method;
 	}
 

@@ -6,12 +6,11 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
-import sk.seges.sesam.core.pap.model.OutputClass;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.core.test.selenium.runner.MockSuite;
 import sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
+import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestConfigurationTypeElement;
 
 public class AdvancedSeleniumTestProcessorTest extends AnnotationTest {
 
@@ -22,12 +21,7 @@ public class AdvancedSeleniumTestProcessorTest extends AnnotationTest {
 	}
 
 	private File getOutputFile(Class<?> clazz) {
-		final OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = new SeleniumTestTypeElement(null, null) {
-			protected sk.seges.sesam.core.pap.model.api.ImmutableType getDelegateImmutableType() {
-				return inputClass;
-			};
-		}.getConfiguration();
+		final MutableDeclaredType outputClass = toMutable(clazz).addClassSufix(SeleniumTestConfigurationTypeElement.SUFFIX);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 

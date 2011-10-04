@@ -2,27 +2,27 @@ package sk.seges.sesam.pap.model.model;
 
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
-import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
-public class ConfigurationTypeElement extends TomBase {
+public class ConfigurationTypeElement extends TomBaseDeclaredType {
 
-	private DtoTypeElement dtoTypeElement;
+	private DtoDeclared dtoTypeElement;
 	private boolean dtoTypeElementInitialized = false;
 
 	private DomainTypeElement domainTypeElement;
@@ -37,40 +37,35 @@ public class ConfigurationTypeElement extends TomBase {
 	private final Element configurationElement;
 	private final TransferObjectConfiguration transferObjectConfiguration;
 
-	private final DeclaredType domainType;
+	private final MutableDeclaredType domainType;
 	private final DeclaredType dtoType;
 
 	private final String canonicalName;
 	private ConfigurationProvider[] configurationProviders;
 	
-	private final TypeParametersSupport typeParametersSupport;
-	
-	public ConfigurationTypeElement(DeclaredType domainType, DeclaredType dtoType, TypeElement configurationElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	public ConfigurationTypeElement(MutableDeclaredType domainType, DeclaredType dtoType, TypeElement configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
 		this.configurationElement = configurationElement;
 		this.domainType = domainType;
 		this.dtoType = dtoType;
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
 		
 		this.canonicalName = configurationElement.getQualifiedName().toString();
-//		setDelegateImmutableType(getNameTypesUtils().toImmutableType(configurationElement));
 		
 		this.transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
 		if (this.transferObjectConfiguration.getReferenceMapping() == null) {
-			this.transferObjectConfiguration.setReferenceMapping(transferObjectConfiguration.getMappingForDto(dtoType));
+			this.transferObjectConfiguration.setReferenceMapping(transferObjectConfiguration.getMappingForDto(processingEnv.getTypeUtils().toMutableType(dtoType)));
 		}
 		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
 	
-	public ConfigurationTypeElement(Element configurationElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	public ConfigurationTypeElement(Element configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		
 		super(processingEnv, roundEnv);
 		
 		this.configurationElement = configurationElement;
 		this.domainType = null;
 		this.dtoType = null;
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
 
 		this.canonicalName = configurationElement.getSimpleName().toString();
 
@@ -78,19 +73,9 @@ public class ConfigurationTypeElement extends TomBase {
 		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
 
-	ConfigurationTypeElement(DeclaredType domainType, DeclaredType dtoType, TransferObjectConfiguration transferObjectConfiguration, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		
-		super(processingEnv, roundEnv);
-
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv, getNameTypesUtils());
-
-		this.configurationElement = transferObjectConfiguration.getConfigurationHolderElement();
-		this.transferObjectConfiguration = transferObjectConfiguration;
-		this.domainType = domainType;
-		this.dtoType = dtoType;
-
-		this.canonicalName = configurationElement.getSimpleName().toString();
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
+	@Override
+	protected MutableDeclaredType getDelegate() {
+		return processingEnv.getTypeUtils().toMutableType((DeclaredType)configurationElement.asType());
 	}
 
 	void setConfigurationProviders(ConfigurationProvider[] configurationProviders) {
@@ -127,14 +112,14 @@ public class ConfigurationTypeElement extends TomBase {
 
 	public DomainTypeElement getDomain() {
 		if (!domainTypeElementInitialized) {
-			DeclaredType domainType = null;
+			MutableDeclaredType domainType = null;
 			
 			if (this.domainType != null) {
 				domainType = this.domainType;
 			} else {
 				TypeElement domainTypeElement = transferObjectConfiguration.getEvaluatedDomainType();
 				if (domainTypeElement != null) {
-					domainType = (DeclaredType) domainTypeElement.asType();
+					domainType = processingEnv.getTypeUtils().toMutableType((DeclaredType) domainTypeElement.asType());
 				}
 			}
 			
@@ -147,7 +132,7 @@ public class ConfigurationTypeElement extends TomBase {
 						if (dtoType != null && ProcessorUtils.implementsType(dtoType, domainInterface.asType())) {
 							this.domainTypeElement = new DomainTypeElement(null, dtoType, this, processingEnv, roundEnv, configurationProviders);
 						} else {
-							this.domainTypeElement = new DomainTypeElement(domainInterface.asType(), dtoType, this, processingEnv, roundEnv, configurationProviders);
+							this.domainTypeElement = new DomainTypeElement(processingEnv.getTypeUtils().toMutableType(domainInterface.asType()), dtoType, this, processingEnv, roundEnv, configurationProviders);
 							this.domainTypeElement.setInterface(true);
 						}
 					}
@@ -157,14 +142,16 @@ public class ConfigurationTypeElement extends TomBase {
 			if (this.domainTypeElement == null) {
 				this.dtoTypeElementInitialized = true;
 				this.dtoTypeElement = null;
+			} else {
+				domainTypeElement.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
 			}
-
+			
 			this.domainTypeElementInitialized = true;
 		}
 		return domainTypeElement;
 	}
 	
-	public DtoTypeElement getDto() {
+	public DtoDeclaredType getDto() {
 		
 		if (getDelegateConfigurationTypeElement() != null) {
 			return getDelegateConfigurationTypeElement().getDto();
@@ -186,15 +173,15 @@ public class ConfigurationTypeElement extends TomBase {
 			}
 			
 			if (dtoType != null) {
-				this.dtoTypeElement = new DtoTypeElement(this, dtoType, processingEnv, roundEnv, configurationProviders);
+				this.dtoTypeElement = new DtoDeclared(this, dtoType, processingEnv, roundEnv, configurationProviders);
 			} else {
 				if (this.dtoType == null && transferObjectConfiguration.isValid()) {
 					TypeElement dtoInterface = transferObjectConfiguration.getDtoInterface();
 					if (dtoInterface != null) {
-						if (domainType != null && ProcessorUtils.implementsType(domainType, dtoInterface.asType())) {
-							this.dtoTypeElement = new DtoTypeElement(this, domainType, processingEnv, roundEnv, configurationProviders);
+						if (domainType != null && processingEnv.getTypeUtils().implementsType(domainType, processingEnv.getTypeUtils().toMutableType(dtoInterface.asType()))) {
+							this.dtoTypeElement = new DtoDeclared(this, domainType, processingEnv, roundEnv, configurationProviders);
 						} else {
-							this.dtoTypeElement = new DtoTypeElement(this, dtoInterface, processingEnv, roundEnv, configurationProviders);
+							this.dtoTypeElement = new DtoDeclared(this, processingEnv.getTypeUtils().toMutableType((DeclaredType) dtoInterface.asType()), processingEnv, roundEnv, configurationProviders);
 							this.dtoTypeElement.setInterface(true);
 						}
 					}
@@ -207,11 +194,14 @@ public class ConfigurationTypeElement extends TomBase {
 						return null;
 					}
 
-					this.dtoTypeElement = new DtoTypeElement(this, processingEnv, roundEnv, configurationProviders);
+					this.dtoTypeElement = new DtoDeclared(this, processingEnv, roundEnv, configurationProviders);
 				}
 			}
 
-			//this.dtoTypeElement = getDto(transferObjectConfiguration);
+			if (dtoTypeElement != null) {
+				dtoTypeElement.prefixTypeParameter(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
+			}
+
 			this.dtoTypeElementInitialized = true;
 		}
 		
@@ -261,24 +251,26 @@ public class ConfigurationTypeElement extends TomBase {
 		return delegateConfigurationTypeElement;
 	}
 	
-	public boolean appliesForDomainType(TypeMirror domainType) {
+	public boolean appliesForDomainType(MutableTypeMirror domainType) {
 		
 		//Configuration should be applied only for declared types like classes or interfaces
-		if (!domainType.getKind().equals(TypeKind.DECLARED)) {
+		if (!domainType.getKind().equals(MutableTypeKind.CLASS) &&
+			!domainType.getKind().equals(MutableTypeKind.INTERFACE)) {
 			return false;
 		}
 		
-		return transferObjectConfiguration.getMappingForDomain((DeclaredType)domainType) != null;
+		return transferObjectConfiguration.getMappingForDomain((MutableDeclaredType)domainType) != null;
 	}
 
-	public boolean appliesForDtoType(TypeMirror dtoType) {
+	public boolean appliesForDtoType(MutableTypeMirror dtoType) {
 
 		//Configuration should be applied only for declared types like classes or interfaces
-		if (!dtoType.getKind().equals(TypeKind.DECLARED)) {
-			return false;
+		if (!dtoType.getKind().equals(MutableTypeKind.CLASS) &&
+			!dtoType.getKind().equals(MutableTypeKind.INTERFACE)) {
+				return false;
 		}
 		
-		return transferObjectConfiguration.getMappingForDto((DeclaredType)dtoType) != null;
+		return transferObjectConfiguration.getMappingForDto((MutableDeclaredType)dtoType) != null;
 	}
 
 	public String getCanonicalName() {

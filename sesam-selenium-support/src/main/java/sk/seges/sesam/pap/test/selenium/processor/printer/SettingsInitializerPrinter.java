@@ -1,9 +1,9 @@
 package sk.seges.sesam.pap.test.selenium.processor.printer;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
@@ -15,15 +15,15 @@ public class SettingsInitializerPrinter implements SeleniumSettingsElementPrinte
 	private static final String RESULT_NAME = "result";
 	
 	private FormattedPrintWriter pw;
-	private ProcessingEnvironment processingEnv;
+	private MutableProcessingEnvironment processingEnv;
 	
-	public SettingsInitializerPrinter(FormattedPrintWriter pw, ProcessingEnvironment processingEnv) {
+	public SettingsInitializerPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
 		this.pw = pw;
 		this.processingEnv = processingEnv;
 	}
 	
 	@Override
-	public void initialize(SeleniumTestTypeElement seleniumTestElement, NamedType outputName) {
+	public void initialize(SeleniumTestTypeElement seleniumTestElement, MutableDeclaredType outputName) {
 	}
 
 	@Override

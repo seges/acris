@@ -6,10 +6,9 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
-import sk.seges.sesam.core.pap.model.OutputClass;
-import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
+import sk.seges.sesam.core.pap.test.superclass.typed.SuperclassProcessor.SuperclassAwareType;
 
 public class TypedSuperclassTest extends AnnotationTest {
 
@@ -33,8 +32,7 @@ public class TypedSuperclassTest extends AnnotationTest {
 	}
 
 	private File getOutputFile(Class<?> clazz) {
-		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = SuperclassProcessor.getOutputClass(inputClass, new DefaultPackageValidatorProvider());
+		MutableDeclaredType outputClass = toMutable(clazz).addClassSufix(SuperclassAwareType.SUFFIX);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 }

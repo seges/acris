@@ -1,12 +1,12 @@
 package sk.seges.sesam.pap.model.model;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
 public class ConverterParameter {
 
 	private boolean isConverter;
 	private String name;
-	private NamedType type;
+	private MutableTypeMirror type;
 	private ConverterTypeElement converter;
 	private ConverterParameter sameParameter;
 
@@ -18,11 +18,11 @@ public class ConverterParameter {
 		this.name = name;
 	}
 
-	public NamedType getType() {
+	public MutableTypeMirror getType() {
 		return type;
 	}
 
-	public void setType(NamedType typeMirror) {
+	public void setType(MutableTypeMirror typeMirror) {
 		this.type = typeMirror;
 	}
 

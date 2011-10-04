@@ -1,8 +1,8 @@
 package sk.seges.sesam.pap.test.selenium.processor.model;
 
-import javax.annotation.processing.ProcessingEnvironment;
-
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 
 public class SeleniumSettingsProviderTypeElement extends AbstractSeleniumTypeElement {
 
@@ -10,17 +10,19 @@ public class SeleniumSettingsProviderTypeElement extends AbstractSeleniumTypeEle
 
 	private SeleniumSuiteTypeElement seleniumSuite;
 	
-	public SeleniumSettingsProviderTypeElement(SeleniumSuiteTypeElement seleniumSuite, ProcessingEnvironment processingEnv) {
+	public SeleniumSettingsProviderTypeElement(SeleniumSuiteTypeElement seleniumSuite, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.seleniumSuite = seleniumSuite;
+		
+		setSuperClass(processingEnv.getTypeUtils().toMutableType(CoreSeleniumSettingsProvider.class));
 	}
 
-	private ImmutableType getOutputClass(ImmutableType inputClass) {
-		return inputClass.addClassSufix(SUFFIX);
+	private MutableDeclaredType getOutputClass(MutableDeclaredType inputClass) {
+		return inputClass.clone().addClassSufix(SUFFIX);
 	}
 
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
+	protected MutableDeclaredType getDelegate() {
 		return getOutputClass(seleniumSuite);
 	}
 }

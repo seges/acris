@@ -1,6 +1,6 @@
 package sk.seges.sesam.core.pap.structure;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
 public class DefaultPackageValidator implements PackageValidator {
@@ -77,7 +77,7 @@ public class DefaultPackageValidator implements PackageValidator {
 		this.notParsedName = packageName;
 	}
 
-	DefaultPackageValidator(NamedType inputClass) {
+	DefaultPackageValidator(MutableDeclaredType inputClass) {
 		this(inputClass.getPackageName());
 	}
 

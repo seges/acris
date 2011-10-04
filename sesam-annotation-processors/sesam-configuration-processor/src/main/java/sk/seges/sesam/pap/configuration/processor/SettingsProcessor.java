@@ -1,9 +1,7 @@
 package sk.seges.sesam.pap.configuration.processor;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -12,10 +10,9 @@ import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.configuration.annotation.Configuration;
 import sk.seges.sesam.core.configuration.annotation.Settings;
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.configurer.SettingsProcessorConfigurer;
 import sk.seges.sesam.pap.configuration.model.SettingsIterator;
@@ -34,18 +31,18 @@ import sk.seges.sesam.pap.configuration.printer.NestedParameterPrinter;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class SettingsProcessor extends AbstractConfigurableProcessor {
+public class SettingsProcessor extends MutableAnnotationProcessor {
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
 		return new SettingsProcessorConfigurer();
 	}
-	
-	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType inputClass) {
-		return new NamedType[] { new SettingsTypeElement(inputClass, processingEnv) };
-	}
 
+	@Override
+	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
+		return new MutableDeclaredType[] { new SettingsTypeElement((DeclaredType)context.getTypeElement().asType(), processingEnv) };
+	}
+	
 	private boolean isEnclosedToConfiguration(DeclaredType type) {
 		TypeMirror enclosingType = type.getEnclosingType();
 		while (enclosingType.getKind().equals(TypeKind.DECLARED)) {
@@ -60,17 +57,17 @@ public class SettingsProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
-		if (isEnclosedToConfiguration((DeclaredType)element.asType())) {
+	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
+		if (isEnclosedToConfiguration((DeclaredType)context.getTypeElement().asType())) {
 			return false;
 		}
-		return super.checkPreconditions(element, outputName, alreadyExists);
+		return super.checkPreconditions(context, alreadyExists);
 	}
-	
+
 	@Override
-	protected void writeClassAnnotations(Element el, NamedType outputName, FormattedPrintWriter pw) {
-		pw.println("@", Settings.class, "(configuration = ", el, ".class)");
-		super.writeClassAnnotations(el, outputName, pw);
+	protected void printAnnotations(ProcessorContext context) {
+		context.getPrintWriter().println("@", Settings.class, "(configuration = ", context.getTypeElement(), ".class)");
+		super.printAnnotations(context);
 	}
 	
 	protected SettingsElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
@@ -95,11 +92,11 @@ public class SettingsProcessor extends AbstractConfigurableProcessor {
 	}
 	
 	@Override
-	protected void processElement(TypeElement typeElement, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
-		processAnnotation(typeElement, outputName, pw);
+	protected void processElement(ProcessorContext context) {
+		processAnnotation(context.getTypeElement(), context.getOutputType(), context.getPrintWriter());
 	}
 
-	public void processAnnotation(TypeElement typeElement, NamedType outputName, FormattedPrintWriter pw) {
+	public void processAnnotation(TypeElement typeElement, MutableDeclaredType outputName, FormattedPrintWriter pw) {
 
 		for (SettingsElementPrinter printer: getElementPrinters(pw)) {
 			printer.initialize(typeElement, outputName);

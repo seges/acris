@@ -1,11 +1,10 @@
 package sk.seges.sesam.pap.configuration.printer;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.configuration.annotation.Settings;
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
@@ -16,15 +15,14 @@ public class NestedParameterPrinter extends AbstractSettingsElementPrinter imple
 	private FormattedPrintWriter pw;
 	private SettingsProcessor settingsProcessor;
 	
-	public NestedParameterPrinter(FormattedPrintWriter pw, SettingsProcessor configurationProcessor, ProcessingEnvironment processingEnv) {
+	public NestedParameterPrinter(FormattedPrintWriter pw, SettingsProcessor configurationProcessor, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		this.pw = pw;
 		this.settingsProcessor = configurationProcessor;
 	}
 
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {}
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {}
 
 	@Override
 	public void print(SettingsContext context) {
@@ -32,8 +30,8 @@ public class NestedParameterPrinter extends AbstractSettingsElementPrinter imple
 			return;
 		}
 		pw.println("@", Settings.class, "(configuration = ", context.getNestedElement(), ".class)");
-		pw.println("public static class " + context.getNestedOutputName().getSimpleName() + " {");
-		settingsProcessor.processAnnotation(context.getNestedElement(), context.getNestedOutputName(), pw);
+		pw.println("public static class " + context.getNestedMutableType().getSimpleName() + " {");
+		settingsProcessor.processAnnotation(context.getNestedElement(), context.getNestedMutableType(), pw);
 		pw.println("}");
 
 	}

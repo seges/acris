@@ -6,8 +6,7 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
-import sk.seges.sesam.core.pap.model.OutputClass;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.configuration.api.TestConfiguration;
 import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
@@ -22,8 +21,8 @@ public class ConfigurationProcessorTest extends AnnotationTest {
 	}
 
 	private File getOutputFile(Class<?> clazz) {
-		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = new SettingsTypeElement(inputClass, null);
+		MutableDeclaredType inputClass = toMutable(clazz);
+		SettingsTypeElement outputClass = new SettingsTypeElement(inputClass, null);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 

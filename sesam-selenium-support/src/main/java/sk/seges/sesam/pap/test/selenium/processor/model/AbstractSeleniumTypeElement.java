@@ -1,21 +1,18 @@
 package sk.seges.sesam.pap.test.selenium.processor.model;
 
-import javax.annotation.processing.ProcessingEnvironment;
+import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.DelegateImmutableType;
+public abstract class AbstractSeleniumTypeElement extends DelegateMutableDeclaredType {
 
-public abstract class AbstractSeleniumTypeElement extends DelegateImmutableType {
-
-	protected ProcessingEnvironment processingEnv;
-	private NameTypeUtils nameTypeUtils;
+	protected MutableProcessingEnvironment processingEnv;
 	
-	protected AbstractSeleniumTypeElement(ProcessingEnvironment processingEnv) {
+	protected AbstractSeleniumTypeElement(MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.nameTypeUtils = new NameTypeUtils(processingEnv);
 	}
 	
-	protected NameTypeUtils getNameTypeUtils() {
-		return nameTypeUtils;
+	protected MutableTypes getMutableTypeUtils() {
+		return processingEnv.getTypeUtils();
 	}
 }

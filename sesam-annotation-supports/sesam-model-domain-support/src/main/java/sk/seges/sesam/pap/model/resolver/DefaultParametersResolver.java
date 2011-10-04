@@ -3,32 +3,27 @@ package sk.seges.sesam.pap.model.resolver;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
-import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.TypeParameter;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class DefaultParametersResolver implements ParametersResolver {
 
-	protected ProcessingEnvironment processingEnv;
-	protected NameTypeUtils nameTypesUtils;
+	protected MutableProcessingEnvironment processingEnv;
 	
-	public DefaultParametersResolver(ProcessingEnvironment processingEnv) {
+	public DefaultParametersResolver(MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 	}
 	
 	@Override
@@ -51,12 +46,12 @@ public class DefaultParametersResolver implements ParametersResolver {
 					String typeParameterName = ((TypeVariable)typeParameterElement).asElement().getSimpleName().toString();
 					
 					if (typeParameterName != null && !typeParameterName.equals("?") && typeParameterName.length() > 0) {
-						TypeParameter dtoTypeVariable = TypeParameterBuilder.get(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "_" + typeParameterName);
-						TypeParameter domainTypeVariable = TypeParameterBuilder.get(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + typeParameterName);
+						MutableTypeVariable dtoTypeVariable = processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "_" + typeParameterName);
+						MutableTypeVariable domainTypeVariable = processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + typeParameterName);
 						
-						HasTypeParameters dtoConverterNamedType = TypedClassBuilder.get(nameTypesUtils.toType(dtoConverterType), dtoTypeVariable, domainTypeVariable);
+						MutableDeclaredType dtoConverterNamedType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType((DeclaredType) dtoConverterType.asType()), dtoTypeVariable, domainTypeVariable);
 						
-						ParameterElement converterManagerParameter = new ParameterElement(dtoConverterNamedType, ProcessorContext.LOCAL_CONVERTER_NAME + index, true);
+						ParameterElement converterManagerParameter = new ParameterElement(dtoConverterNamedType, TransferObjectContext.LOCAL_CONVERTER_NAME + index, true);
 						
 						variableElements.add(converterManagerParameter);
 					} else {

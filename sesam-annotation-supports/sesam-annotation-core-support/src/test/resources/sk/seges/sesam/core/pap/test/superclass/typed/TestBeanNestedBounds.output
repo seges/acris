@@ -1,9 +1,11 @@
 package sk.seges.sesam.core.pap.test.superclass.typed;
 
-import sk.seges.sesam.core.pap.test.superclass.typed.TestBeanNestedBounds;
-import java.util.List;
-import java.io.Serializable;
+import javax.annotation.Generated;
 
+import sk.seges.sesam.core.pap.test.superclass.typed.TestBeanNestedBoundsGenerated;
+import sk.seges.sesam.core.pap.test.superclass.typed.TestBeanNestedBounds;
+
+@Generated(value = "sk.seges.sesam.core.pap.test.superclass.typed.SuperclassProcessor")
 public class TestBeanNestedBoundsGenerated<T extends List<Serializable>> extends TestBeanNestedBounds<T> {
 
 }

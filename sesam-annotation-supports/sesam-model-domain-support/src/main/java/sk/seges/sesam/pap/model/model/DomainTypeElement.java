@@ -3,7 +3,6 @@ package sk.seges.sesam.pap.model.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -16,22 +15,22 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.builder.api.TypeMirrorConverter;
 import sk.seges.sesam.core.pap.model.PathResolver;
-import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes.MutableTypeConverter;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
-public class DomainTypeElement extends TomBaseElement {
+public class DomainTypeElement extends TomBaseDeclaredType {
 
-	private TypeMirror domainType;
+	private MutableTypeMirror domainType;
 
 	private final TypeMirror dtoType;
 	private final ConfigurationProvider[] configurationProviders;
@@ -46,7 +45,7 @@ public class DomainTypeElement extends TomBaseElement {
 	private boolean idMethodInitialized = false;
 	private ExecutableElement idMethod;
 	
-	DomainTypeElement(TypeMirror domainType, TypeMirror dtoType, ConfigurationTypeElement configurationTypeElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	DomainTypeElement(MutableTypeMirror domainType, TypeMirror dtoType, ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
 		this.domainType = domainType;
@@ -64,62 +63,71 @@ public class DomainTypeElement extends TomBaseElement {
 	 * leads to unexpected results
 	 */
 	@Deprecated
-	public DomainTypeElement(TypeMirror domainType, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	public DomainTypeElement(TypeMirror domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
-		this.domainType = domainType;
+		this.domainType = processingEnv.getTypeUtils().toMutableType(domainType);
 		this.dtoType = null;
 		
 		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
 
-	class TypeMirrorDomainHandler implements TypeMirrorConverter {
+	/**
+	 * When there is only one configuration for domain type, it is OK ... but for multiple DTOs created from one domain type it can
+	 * leads to unexpected results
+	 */
+	@Deprecated
+	public DomainTypeElement(MutableTypeMirror domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+		super(processingEnv, roundEnv);
+		
+		this.domainType = processingEnv.getTypeUtils().toMutableType(domainType);
+		this.dtoType = null;
+		
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+	}
+
+	class TypeMirrorDomainHandler extends MutableTypeConverter {
+
+		protected TypeMirrorDomainHandler(MutableTypes mutableTypes) {
+			super(mutableTypes);
+		}
 
 		@Override
-		public NamedType handleType(TypeMirror type) {
-			DomainTypeElement domain = new DtoTypeElement(type, processingEnv, roundEnv, configurationProviders).getDomain();
+		public MutableTypeMirror handleType(TypeMirror type) {
+			DomainTypeElement domain = processingEnv.getTransferObjectUtils().getDtoType(type).getDomain();
 			if (domain != null) {
 				return domain;
 			}
 			
-			return new NameTypeUtils(processingEnv).toType(type);
+			return super.handleType(type);
 		}	
 	}
 	
-	class NameTypesDomainUtils extends NameTypeUtils {
-
-		public NameTypesDomainUtils(ProcessingEnvironment processingEnv) {
-			super(processingEnv);
-		}
-		
-		@Override
-		protected TypeMirrorConverter getTypeMirrorConverter() {
-			return new TypeMirrorDomainHandler();
-		}
-	}
-
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
+	protected MutableDeclaredType getDelegate() {
 		if (domainType != null) {
-			return new NameTypeUtils(processingEnv).toImmutableType(domainType);
+			return (MutableDeclaredType)super.getMutableTypesUtils().toMutableType(domainType);
 		}
-		return new NameTypeUtils(processingEnv).toImmutableType(dtoType);
+		return (MutableDeclaredType) super.getMutableTypesUtils().toMutableType(dtoType);
 	}
 
 	private void initialize() {
 		if (dtoType != null && dtoType.getKind().equals(TypeKind.DECLARED) && ((DeclaredType)dtoType).getTypeArguments().size() > 0) {
-			NamedType type = getNameTypesUtils().toType(dtoType);
-			HasTypeParameters result = TypedClassBuilder.get(getDelegateImmutableType(), ((HasTypeParameters)type).getTypeParameters());
-			setDelegateImmutableType(result);
-			this.domainType = getNameTypesUtils().fromType(result);
+			MutableDeclaredType mutableType = (MutableDeclaredType) getMutableTypesUtils().toMutableType(dtoType);
+			MutableTypeVariable[] typeVariables = new MutableTypeVariable[mutableType.getTypeVariables().size()];
+			
+			int i = 0;
+			for (MutableTypeVariable typeVariable: mutableType.getTypeVariables()) {
+				typeVariables[i++] = typeVariable;
+			}
+			
+			MutableDeclaredType result = getDelegate().setTypeVariables(typeVariables);
+			
+			setDelegate(result);
+			this.domainType = result;
 		}
 	}
 
-	@Override
-	protected NameTypesDomainUtils getNameTypesUtils() {
-		return new NameTypesDomainUtils(processingEnv);
-	}
-		
 	void setInterface(boolean isInterface) {
 		this.isInterface = isInterface;
 	}
@@ -136,7 +144,7 @@ public class DomainTypeElement extends TomBaseElement {
 	}
 
 	public TypeMirror asType() {
-		return domainType;
+		return getMutableTypesUtils().fromMutableType(domainType);
 	}
 
 	public ConfigurationTypeElement getConfiguration() {
@@ -147,7 +155,7 @@ public class DomainTypeElement extends TomBaseElement {
 		return configurationTypeElement;
 	}
 
-	public DtoTypeElement getDtoTypeElement() {
+	public DtoDeclaredType getDto() {
 		if (getConfiguration() == null) {
 			return null;
 		}
@@ -155,7 +163,7 @@ public class DomainTypeElement extends TomBaseElement {
 		return getConfiguration().getDto();
 	}
 	
-	private ConfigurationTypeElement getConfiguration(TypeMirror domainType) {
+	private ConfigurationTypeElement getConfiguration(MutableTypeMirror domainType) {
 		for (ConfigurationProvider configurationProvider: configurationProviders) {
 			ConfigurationTypeElement configurationForDomain = configurationProvider.getConfigurationForDomain(domainType);
 			if (configurationForDomain != null) {
@@ -181,7 +189,7 @@ public class DomainTypeElement extends TomBaseElement {
 				if (superClassDomainType == null) {
 					TypeMirror domainSuperClass = typeElement.getSuperclass();
 					
-					ConfigurationTypeElement configurationElement = getConfiguration(domainSuperClass);
+					ConfigurationTypeElement configurationElement = getConfiguration(processingEnv.getTypeUtils().toMutableType(domainSuperClass));
 					
 					if (configurationElement != null) {
 						superClassDomainType = configurationElement.getDomain();
@@ -248,7 +256,7 @@ public class DomainTypeElement extends TomBaseElement {
 		
 				if (mappingType.equals(MappingType.AUTOMATIC)) {
 					for (ExecutableElement method: methods) {
-						if (toHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
+						if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
 							if (this.idMethod != null) {
 								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 										this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +

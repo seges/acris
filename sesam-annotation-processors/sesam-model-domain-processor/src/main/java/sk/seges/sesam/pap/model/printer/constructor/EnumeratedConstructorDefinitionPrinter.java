@@ -1,13 +1,13 @@
 package sk.seges.sesam.pap.model.printer.constructor;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.printer.AbstractElementPrinter;
-import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 
-public class EnumeratedConstructorDefinitionPrinter extends AbstractElementPrinter implements ElementPrinter {
+public class EnumeratedConstructorDefinitionPrinter extends AbstractElementPrinter implements TransferObjectElementPrinter {
 
 	private int index = 0;
 	
@@ -16,7 +16,7 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractElementPrint
 	}
 
 	@Override
-	public void initialize(ConfigurationTypeElement configurationTypeElement, NamedType outputName) {
+	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 		pw.print("public " + outputName.getSimpleName() + "(");
 	}
 
@@ -26,7 +26,7 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractElementPrint
 	}
 
 	@Override
-	public void print(ProcessorContext context) {
+	public void print(TransferObjectContext context) {
 		if (index > 0) {
 			pw.print(", ");
 		}

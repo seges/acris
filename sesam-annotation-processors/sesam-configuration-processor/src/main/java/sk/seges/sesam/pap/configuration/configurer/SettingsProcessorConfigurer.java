@@ -15,7 +15,7 @@ public class SettingsProcessorConfigurer extends DefaultProcessorConfigurer {
 		case PROCESSING_ANNOTATIONS:
 			return new Type[] { Configuration.class };
 		}
-		return super.getConfigurationElement(element);
+		return new Type [] {};
 	}
 
 	@Override
