@@ -3,11 +3,8 @@
  */
 package sk.seges.corpis.appscaffold.mapbasedobject.pap;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -18,21 +15,20 @@ import javax.lang.model.type.NoType;
 import javax.lang.model.type.NullType;
 import javax.lang.model.type.TypeMirror;
 
+import sk.seges.corpis.appscaffold.mapbasedobject.pap.configurer.MapBasedValueObjectProcessorConfigurer;
+import sk.seges.corpis.appscaffold.mapbasedobject.pap.model.MapBasedType;
 import sk.seges.corpis.appscaffold.shared.annotation.Hint;
 import sk.seges.corpis.appscaffold.shared.annotation.MapBased;
-import sk.seges.corpis.appscaffold.shared.domain.MapBasedObject;
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 /**
  * @author ladislav.gazo
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor {
+public class MapBasedValueObjectProcessor extends MutableAnnotationProcessor {
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
@@ -40,33 +36,23 @@ public class MapBasedValueObjectProcessor extends AbstractConfigurableProcessor 
 	}
 	
 	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		//TODO use packageValidator
-		return new NamedType[] { mutableType.changePackage(mutableType.getPackageName() + ".shared.domain").addClassSufix("MapBean") };
+	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
+		return new MutableDeclaredType[] {
+				new MapBasedType(context.getTypeElement(), processingEnv)
+		};
 	}
 
 	@Override
-	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
-		switch (type) {
-		case OUTPUT_SUPERCLASS:
-			return new Type[] { MapBasedObject.class };
-		case OUTPUT_INTERFACES:
-			List<Type> result = new ArrayList<Type>();
-			for (TypeMirror interfaceElementMirror : typeElement.getInterfaces()) {
-				result.add(nameTypesUtils.toImmutableType(interfaceElementMirror));
-			}
-			return result.toArray(new Type[] {});
-
-		}
-		return super.getOutputDefinition(type, typeElement);
-	}
-
-	@Override
-	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
+	protected void processElement(ProcessorContext context) {
+		
+		TypeElement element = context.getTypeElement();
+		
 		MapBased annotation = element.getAnnotation(MapBased.class);
 		if (annotation == null) {
 			return;
 		}
+
+		FormattedPrintWriter pw = context.getPrintWriter();
 
 		//TODO use ElementFilter -> ElementFilter.methodsIn(element.getEnclosedElements())
 		List<? extends Element> allMembers = processingEnv.getElementUtils().getAllMembers(element);

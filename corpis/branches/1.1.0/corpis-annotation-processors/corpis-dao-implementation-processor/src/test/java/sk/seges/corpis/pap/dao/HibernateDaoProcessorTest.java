@@ -10,11 +10,10 @@ import org.junit.Test;
 
 import sk.seges.corpis.core.pap.dao.DaoApiProcessor;
 import sk.seges.corpis.core.pap.dao.HibernateDaoProcessor;
+import sk.seges.corpis.core.pap.dao.model.DaoApiType;
+import sk.seges.corpis.core.pap.dao.model.HibernateDaoType;
 import sk.seges.corpis.shared.model.mock.api.MockEntity;
 import sk.seges.corpis.shared.model.mock.jpa.JpaMockEntity;
-import sk.seges.sesam.core.pap.model.OutputClass;
-import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 
 public class HibernateDaoProcessorTest extends AnnotationTest {
@@ -35,15 +34,13 @@ public class HibernateDaoProcessorTest extends AnnotationTest {
 	}
 
 	private File getInterfaceOutputFile(Class<?> clazz) {
-		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = DaoApiProcessor.getOutputClass(inputClass, new DefaultPackageValidatorProvider());
-		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
+		DaoApiType daoApiType = new DaoApiType(toMutable(clazz), processingEnv);
+		return new File(OUTPUT_DIRECTORY, toPath(daoApiType.getPackageName()) + "/" + daoApiType.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 
 	private File getOutputFile(Class<?> clazz) {
-		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = HibernateDaoProcessor.getOutputClass(inputClass, new DefaultPackageValidatorProvider());
-		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
+		HibernateDaoType hibernateDaoType = new HibernateDaoType(toMutable(clazz), processingEnv);
+		return new File(OUTPUT_DIRECTORY, toPath(hibernateDaoType.getPackageName()) + "/" + hibernateDaoType.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 
 	@Override

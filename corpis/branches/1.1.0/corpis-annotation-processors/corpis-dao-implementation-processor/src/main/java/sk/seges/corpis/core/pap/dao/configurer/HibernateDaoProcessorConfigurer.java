@@ -1,4 +1,4 @@
-package sk.seges.corpis.core.pap.dao;
+package sk.seges.corpis.core.pap.dao.configurer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -21,7 +21,7 @@ public class HibernateDaoProcessorConfigurer extends DelegateProcessorConfigurer
 					DataAccessObject.class
 			};
 		}
-		return super.getConfigurationElement(element);
+		return new Type[] {};
 	}
 	
 	@SuppressWarnings("unchecked")

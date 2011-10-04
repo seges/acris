@@ -1,4 +1,4 @@
-package sk.seges.corpis.appscaffold.mapbasedobject.pap;
+package sk.seges.corpis.appscaffold.mapbasedobject.pap.configurer;
 
 import java.lang.reflect.Type;
 
@@ -13,6 +13,6 @@ public class MapBasedValueObjectProcessorConfigurer extends DefaultProcessorConf
 		case PROCESSING_ANNOTATIONS:
 			return new Type[] { MapBased.class };
 		}
-		return super.getConfigurationElement(element);
+		return new Type[] {};
 	}
 }

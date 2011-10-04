@@ -1,19 +1,18 @@
 package sk.seges.corpis.pap.service.hibernate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import sk.seges.corpis.pap.service.annotation.TransactionPropagation;
-import sk.seges.corpis.pap.service.annotation.TransactionPropagation.PropagationType;
+import sk.seges.corpis.pap.service.hibernate.printer.HibernateServiceMethodConverterPrinter;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.ServiceConverterProcessor;
+import sk.seges.sesam.pap.service.printer.ConverterParameterFieldPrinter;
+import sk.seges.sesam.pap.service.printer.LocalServiceFieldPrinter;
+import sk.seges.sesam.pap.service.printer.ServiceConstructorBodyPrinter;
+import sk.seges.sesam.pap.service.printer.ServiceConstructorDefinitionPrinter;
+import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class HibernateServiceConverterProcessor extends ServiceConverterProcessor {
@@ -22,23 +21,13 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 		return new HibernateParameterResolver(processingEnv);
 	}
 	
-	protected Class<?>[] getIgnoredAnnotations(Element method) {
-		TransactionPropagation transactionPropagation = method.getAnnotation(TransactionPropagation.class);
-
-		List<Class<?>> result = new ArrayList<Class<?>>();
-		
-		Class<?>[] ignoredAnnotations = super.getIgnoredAnnotations(method);
-		
-		if (ignoredAnnotations != null) {
-			for (Class<?> ignoredAnnotation: ignoredAnnotations) {
-				result.add(ignoredAnnotation);
-			}
-		}
-		
-		if (transactionPropagation != null && transactionPropagation.value().equals(PropagationType.ISOLATE)) {
-			result.add(Transactional.class);
-		}
-
-		return result.toArray(new Class<?>[] {});
+	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
+		return new ServiceConverterElementPrinter[] {
+				new LocalServiceFieldPrinter(pw),
+				new ConverterParameterFieldPrinter(processingEnv, getParametersResolver(), pw),
+				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersResolver(), pw),
+				new ServiceConstructorBodyPrinter(processingEnv, getParametersResolver(), pw),
+				new HibernateServiceMethodConverterPrinter(processingEnv, getParametersResolver(), pw, converterProviderPrinter)
+		};
 	}
 }
