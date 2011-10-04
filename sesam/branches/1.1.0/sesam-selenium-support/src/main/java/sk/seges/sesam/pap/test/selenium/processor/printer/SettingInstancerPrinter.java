@@ -2,7 +2,6 @@ package sk.seges.sesam.pap.test.selenium.processor.printer;
 
 import java.util.Map;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -12,7 +11,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
 import sk.seges.sesam.core.pap.NullCheck;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
 import sk.seges.sesam.pap.configuration.model.SettingsIterator;
@@ -27,7 +27,7 @@ public class SettingInstancerPrinter extends AbstractSettingsElementPrinter impl
 	private int i = 0;
 	private final boolean includeDefaults;
 	
-	public SettingInstancerPrinter(AnnotationMirror annotationMirror, ProcessingEnvironment processingEnv, FormattedPrintWriter pw, boolean includeDefaults) {
+	public SettingInstancerPrinter(AnnotationMirror annotationMirror, MutableProcessingEnvironment processingEnv, FormattedPrintWriter pw, boolean includeDefaults) {
 		super(processingEnv);
 		this.pw = pw;
 		this.annotationMirror = annotationMirror;
@@ -35,11 +35,11 @@ public class SettingInstancerPrinter extends AbstractSettingsElementPrinter impl
 	}
 
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {
 		pw.print("new ", type, "(");
 	}
 
-	public void initialize(NamedType type, NamedType outputName) {
+	public void initialize(MutableDeclaredType type, MutableDeclaredType outputName) {
 		pw.print("new ", type, "(");
 	}
 	
@@ -72,7 +72,7 @@ public class SettingInstancerPrinter extends AbstractSettingsElementPrinter impl
 		if (context.getNestedElement() != null) {
 		
 			if (value != null) {
-				new SettingInstancerPrinter((AnnotationMirror)value, processingEnv, pw, includeDefaults).print(new SettingsTypeElement((DeclaredType)context.getMethod().getReturnType(), processingEnv), context.getNestedOutputName());
+				new SettingInstancerPrinter((AnnotationMirror)value, processingEnv, pw, includeDefaults).print(new SettingsTypeElement((DeclaredType)context.getMethod().getReturnType(), processingEnv), context.getNestedMutableType());
 			} else {
 				pw.println("null");
 			}
@@ -94,7 +94,7 @@ public class SettingInstancerPrinter extends AbstractSettingsElementPrinter impl
 		i++;
 	}
 
-	public void print(SettingsTypeElement settingsTypeElement, NamedType outputName) {
+	public void print(SettingsTypeElement settingsTypeElement, MutableDeclaredType outputName) {
 		SettingInstancerPrinter settingInstancerPrinter = new SettingInstancerPrinter(annotationMirror, processingEnv, pw, includeDefaults);
 		
 		settingInstancerPrinter.initialize(settingsTypeElement, outputName);
@@ -112,7 +112,7 @@ public class SettingInstancerPrinter extends AbstractSettingsElementPrinter impl
 		finish();
 	}
 
-	public void finish(NamedType type) {
+	public void finish(MutableDeclaredType type) {
 		finish();
 	}
 	

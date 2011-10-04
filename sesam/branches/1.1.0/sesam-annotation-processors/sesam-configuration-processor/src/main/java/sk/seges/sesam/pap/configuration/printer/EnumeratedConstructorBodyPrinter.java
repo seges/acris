@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
@@ -17,7 +17,7 @@ public class EnumeratedConstructorBodyPrinter implements SettingsElementPrinter 
 	}
 
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {
 	}
 
 	@Override

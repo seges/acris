@@ -1,23 +1,33 @@
 package sk.seges.sesam.pap.test.selenium.processor.model;
 
-import javax.annotation.processing.ProcessingEnvironment;
+import java.util.HashSet;
+import java.util.Set;
 
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
 
 public class SeleniumTestConfigurationTypeElement extends AbstractSeleniumTypeElement {
 
-	private static final String SUFFIX = "Configuration";
+	public static final String SUFFIX = "Configuration";
 	
 	private SeleniumTestTypeElement seleniumTestTypeElement;
 	
-	SeleniumTestConfigurationTypeElement(SeleniumTestTypeElement seleniumTestTypeElement, ProcessingEnvironment processingEnv) {
+	SeleniumTestConfigurationTypeElement(SeleniumTestTypeElement seleniumTestTypeElement, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.seleniumTestTypeElement = seleniumTestTypeElement;
+		
+		setSuperClass(processingEnv.getTypeUtils().toMutableType(DefaultTestSettings.class));
+
+		Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
+		interfaces.add(new SeleniumSettingsProviderTypeElement(seleniumTestTypeElement.getSeleniumSuite(), processingEnv));
+		setInterfaces(interfaces);
 	}
 	
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
-		return seleniumTestTypeElement.addClassSufix(SUFFIX);
+	protected MutableDeclaredType getDelegate() {
+		return seleniumTestTypeElement.clone().addClassSufix(SUFFIX);
 	}
 	
 	public SeleniumTestTypeElement getSeleniumTest() {

@@ -1,10 +1,10 @@
 package sk.seges.sesam.pap.test.selenium.processor.model;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
@@ -19,14 +19,14 @@ public class SeleniumTestTypeElement extends AbstractSeleniumTypeElement {
 	private boolean configurationInitialized = false;
 	private SeleniumTestConfigurationTypeElement configuration;
 	
-	public SeleniumTestTypeElement(TypeElement testCase, ProcessingEnvironment processingEnv) {
+	public SeleniumTestTypeElement(TypeElement testCase, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.testCase = testCase;
 	}
 
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
-		return getNameTypeUtils().toImmutableType(testCase);
+	protected MutableDeclaredType getDelegate() {
+		return (MutableDeclaredType) getMutableTypeUtils().toMutableType(testCase.asType());
 	}
 	
 	public SeleniumSuiteTypeElement getSeleniumSuite() {

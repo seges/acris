@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.context;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
@@ -9,15 +8,15 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
-import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActionType;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
-import sk.seges.sesam.core.pap.utils.TypeParametersSupport.RenameActionType;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
@@ -33,11 +32,9 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 	}
 	
 	@Override
-	protected NamedType handleDomainTypeParameter(ProcessingEnvironment processingEnv, TransferObjectHelper toHelper, EntityResolver entityResolver) {
+	protected DtoType handleDomainTypeParameter(TransferObjectProcessingEnvironment processingEnv, TransferObjectHelper toHelper, EntityResolver entityResolver, ConfigurationProvider[] configurationProviders) {
 		
-		NameTypeUtils nameTypesUtils = new NameTypeUtils(processingEnv);
-		
-		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(processingEnv, nameTypesUtils);
+		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(processingEnv);
 
 		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
 
@@ -45,20 +42,19 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 			
 			DeclaredType declaredDomainType = ((DeclaredType)domainTypeElement.asType());
 			
-			TypeMirror returnType = getMethod().getReturnType();
+			TypeMirror returnType = getDtoMethod().getReturnType();
 
 			switch (returnType.getKind()) {
 				case DECLARED:
-					NamedType type = toHelper.convertType(returnType);
+					DtoType type = processingEnv.getTransferObjectUtils().getDomainType(returnType).getDto();
 					
-					if (type instanceof HasTypeParameters && ((HasTypeParameters) type).getTypeParameters() != null) {
+					if (type instanceof MutableDeclaredType) {
 		
 						for (TypeMirror typeParameter: declaredDomainType.getTypeArguments()) {
 							if (typeParameter.getKind().equals(TypeKind.TYPEVAR)) {
 								String variable = ((TypeVariable)typeParameter).asElement().getSimpleName().toString();
 							
-								type = typeParametersSupport.renameTypeParameter((HasTypeParameters)type, 
-										RenameActionType.REPLACE, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variable, variable, true);
+								((MutableDeclaredType)type).renameTypeParameter(RenameActionType.REPLACE, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variable, variable, true);
 							}
 						}
 						
@@ -69,23 +65,24 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 					}
 					break;
 				case TYPEVAR:
+					
 					TypeVariable typeVariable = (TypeVariable)returnType;
 					
 					String variable = typeVariable.asElement().getSimpleName().toString();
 					
 					if (variable == null || variable.equals("?")) {
-						processingEnv.getMessager().printMessage(Kind.WARNING, "Method " + getMethod().getSimpleName().toString() + 
+						processingEnv.getMessager().printMessage(Kind.WARNING, "Method " + getDtoMethod().getSimpleName().toString() + 
 								" returns unsupported type variable " + typeVariable.toString(), configurationTypeElement.asElement());
 						return null;
 					}
 			
 					if (typeParametersSupport.hasParameterByName(declaredDomainType, variable)) {
-						return TypeParameterBuilder.get(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variable);
+						return processingEnv.getTransferObjectUtils().getDtoType(processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variable));
 					}
 					break;
 			}
 		}
 
-		return super.handleDomainTypeParameter(processingEnv, toHelper, entityResolver);
+		return super.handleDomainTypeParameter(processingEnv, toHelper, entityResolver, configurationProviders);
 	}
 }

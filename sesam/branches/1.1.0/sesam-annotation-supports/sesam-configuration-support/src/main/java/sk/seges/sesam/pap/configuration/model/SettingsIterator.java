@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -17,6 +16,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.configuration.annotation.Parameter;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.configuration.model.SettingsIterator.SettingsHandler;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
@@ -69,8 +69,8 @@ public class SettingsIterator implements Iterator<SettingsHandler> {
 				
 				context.setNestedElementExists(!getEnclosingElement(type.asElement()).equals(context.getConfigurationElement()));
 				
-				if (!nestedClasses.contains(context.getNestedOutputName().getCanonicalName())) {
-					nestedClasses.add(context.getNestedOutputName().getCanonicalName());
+				if (!nestedClasses.contains(context.getNestedMutableType().getCanonicalName())) {
+					nestedClasses.add(context.getNestedMutableType().getCanonicalName());
 				} else {
 					context.setNestedElementExists(true);
 				}
@@ -86,17 +86,17 @@ public class SettingsIterator implements Iterator<SettingsHandler> {
 
 	private final List<ExecutableElement> methods;
 	private final TypeElement annotationElement;
-	private final ProcessingEnvironment processingEnv;
+	private final MutableProcessingEnvironment processingEnv;
 	
 	private int index = -1;
 	
-	public SettingsIterator(TypeElement annotationElement, ProcessingEnvironment processingEnv) {
+	public SettingsIterator(TypeElement annotationElement, MutableProcessingEnvironment processingEnv) {
 		this.annotationElement = annotationElement;
 		this.processingEnv = processingEnv;
 		this.methods = getSortedMethods(annotationElement);
 	}
 
-	public SettingsIterator(AnnotationMirror annotationMirror, ProcessingEnvironment processingEnv) {
+	public SettingsIterator(AnnotationMirror annotationMirror, MutableProcessingEnvironment processingEnv) {
 		TypeElement annotationElement = (TypeElement) annotationMirror.getAnnotationType().asElement();
 		this.methods = getSortedMethods(annotationElement);
 		this.annotationElement = annotationElement;
@@ -143,7 +143,7 @@ public class SettingsIterator implements Iterator<SettingsHandler> {
 		context.setFieldName(fieldName);
 		
 		if (context.getNestedElement() != null) {
-			context.setNestedOutputName(new SettingsTypeElement((DeclaredType) context.getNestedElement().asType(), processingEnv));
+			context.setNestedMutableType(new SettingsTypeElement((DeclaredType) context.getNestedElement().asType(), processingEnv));
 		}
 	}
 

@@ -1,0 +1,313 @@
+package sk.seges.sesam.pap.model.model;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes.MutableTypeConverter;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LayerType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.structure.api.PackageValidator;
+import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.pap.model.annotation.Ignore;
+import sk.seges.sesam.pap.model.model.api.GeneratedClass;
+import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
+import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
+
+class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDeclaredType {
+
+	private final ConfigurationTypeElement configurationTypeElement;
+
+	private final boolean generated;
+	private final MutableTypeMirror dtoType;
+	private ConfigurationProvider[] configurationProviders;
+	
+	private boolean isInterface = false;
+	
+	DtoDeclared(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType dtoTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv);
+		this.configurationTypeElement = configurationTypeElement;
+		this.generated = false;
+		this.dtoType = dtoTypeElement;
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		
+		initialize();
+	}
+
+	DtoDeclared(ConfigurationTypeElement configurationTypeElement, DeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv);
+		
+		this.configurationTypeElement = configurationTypeElement;
+		this.generated = false;
+		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoType);
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		
+		initialize();
+	}
+
+	DtoDeclared(ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv);
+
+		this.configurationTypeElement = configurationTypeElement;
+		this.generated = true;
+		this.dtoType = null;
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+
+		initialize();
+		
+		setKind(MutableTypeKind.CLASS);
+		
+		DomainTypeElement superClassDomainType = getDomain().getSuperClass();
+
+		if (superClassDomainType != null) {
+			DtoDeclaredType superclassDto = superClassDomainType.getDto();
+			MutableDeclaredType mutableSuperclassType = processingEnv.getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asElement().asType());
+			
+			if (superclassDto instanceof MutableDeclaredType) {
+				//TODO convert type variables also
+				((MutableDeclaredType)superclassDto).setTypeVariables(mutableSuperclassType.getTypeVariables().toArray(new MutableTypeVariable[] {}));
+				setSuperClass((MutableDeclaredType)superclassDto);
+			} else {
+				//TODO log something here
+			}
+		}
+
+		if (configurationTypeElement.asElement().asType().getKind().equals(TypeKind.DECLARED)) {
+			List<? extends TypeMirror> interfaces = ((TypeElement)configurationTypeElement.asElement()).getInterfaces();
+			
+			Set<MutableTypeMirror> interfaceTypes = new HashSet<MutableTypeMirror>();
+			
+			if (interfaces != null) {
+				for (TypeMirror interfaceType: interfaces) {
+					interfaceTypes.add(processingEnv.getTypeUtils().toMutableType(interfaceType));
+				}
+			}
+			
+			MutableTypeMirror superClass = super.getSuperClass();
+			if (superClass == null) {
+				//TODO check if it is not already there
+				interfaceTypes.add(processingEnv.getTypeUtils().toMutableType(Serializable.class));
+			}
+			
+			setInterfaces(interfaceTypes);
+		}
+	}
+
+	DtoDeclared(TypeMirror dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv);
+
+		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoType);
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		this.configurationTypeElement = getConfiguration(this.dtoType);
+
+		this.generated = false;
+				
+		initialize();
+	}
+
+	DtoDeclared(MutableTypeMirror dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv);
+
+		this.dtoType = dtoType;
+		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		this.configurationTypeElement = getConfiguration(this.dtoType);
+
+		this.generated = false;
+				
+		initialize();
+	}
+
+	private ConfigurationTypeElement getConfiguration(MutableTypeMirror dtoType) {
+		for (ConfigurationProvider configurationProvider: configurationProviders) {
+			ConfigurationTypeElement configurationForDto = configurationProvider.getConfigurationForDto(dtoType);
+			if (configurationForDto != null) {
+				configurationForDto.setConfigurationProviders(configurationProviders);
+				return configurationForDto;
+			}
+		}
+		
+		return null;
+	}
+	
+	protected MutableDeclaredType getDelegate() {
+		if (dtoType != null) {
+			return (MutableDeclaredType) getMutableTypesUtils().toMutableType(dtoType);
+		}
+		return getGeneratedDtoTypeFromConfiguration(configurationTypeElement);
+	};
+
+	class DtoMutableConverter extends MutableTypeConverter {
+
+		public DtoMutableConverter(MutableTypes mutableTypes) {
+			super(mutableTypes);
+		}
+
+		@Override
+		public MutableTypeMirror handleType(TypeMirror type) {
+			//return toHelper.convertType(type);
+			DtoDeclaredType dto = processingEnv.getTransferObjectUtils().getDomainType(type).getDto();
+			
+			if (dto != null) {
+				return dto;
+			}
+			
+			return super.handleType(type);
+		}	
+
+	}
+
+	@Override
+	protected MutableTypes getMutableTypesUtils() {
+		return new MutableTypes(processingEnv.getElementUtils(), processingEnv.getTypeUtils()) {
+			@Override
+			protected MutableTypeConverter getMutableTypeConverter() {
+				return new DtoMutableConverter(this);
+			}
+		};
+	}
+
+	private void initialize() {
+		if (configurationTypeElement == null) {
+			return;
+		}
+
+		if (configurationTypeElement.getDomain().hasTypeParameters()) {
+			MutableDeclaredType type = getMutableTypesUtils().toMutableType((DeclaredType) configurationTypeElement.getDomain().asType());
+			setDelegate(getDelegate().clone().setTypeVariables(type.getTypeVariables().toArray(new MutableTypeVariable[] {})));
+		}
+	}
+	
+	protected PackageValidatorProvider getPackageValidationProvider() {
+		return new DefaultPackageValidatorProvider();
+	}
+
+	private MutableDeclaredType getGeneratedDtoTypeFromConfiguration(ConfigurationTypeElement configurationType) {
+
+		Element configurationElement = configurationType.asElement();
+		
+		if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
+			return null;
+		}
+
+		MutableDeclaredType configurationNameType = super.getMutableTypesUtils().toMutableType((DeclaredType) configurationTypeElement.asElement().asType());
+
+		PackageValidator packageValidator = getPackageValidationProvider().get(configurationNameType)
+				.moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);
+		configurationNameType = configurationNameType.changePackage(packageValidator);
+		return configurationNameType.getSimpleName().endsWith(TransferObjectHelper.DEFAULT_SUFFIX) ? configurationNameType.setSimpleName(configurationNameType
+				.getSimpleName().substring(0, configurationNameType.getSimpleName().length() - TransferObjectHelper.DEFAULT_SUFFIX.length()))
+				: configurationNameType.addClassSufix(TransferObjectHelper.DTO_SUFFIX);
+	}
+
+	@Override
+	public boolean isGenerated() {
+		return generated;
+	}
+	
+	public DomainTypeElement getDomain() {
+		DomainTypeElement result = null;
+		if (configurationTypeElement != null) {
+			result = configurationTypeElement.getDomain();
+		}
+		
+		if (result != null) {
+			return result;
+		}
+
+		if (dtoType != null) {
+			return processingEnv.getTransferObjectUtils().getDomainType(dtoType);
+		}
+
+		return null;
+	}
+
+	public DtoDeclared getSuperClass() {
+
+		if (getDelegate() instanceof MutableDeclaredType) {
+			MutableDeclaredType declaredDelegate = (MutableDeclaredType)getDelegate();
+			if (declaredDelegate != null && declaredDelegate.asType() != null) {
+				return (DtoDeclared) processingEnv.getTransferObjectUtils().getDtoType(declaredDelegate.asType());
+			}
+		}
+
+		return null;
+	}
+	
+	public boolean isInterface() {
+		return isInterface;
+	}
+	
+	void setInterface(boolean isInterface) {
+		this.isInterface = isInterface;
+	}
+	
+	public ConfigurationTypeElement getConfiguration() {
+		return configurationTypeElement;
+	}
+	
+	public ConverterTypeElement getConverter() {
+		if (configurationTypeElement == null) {
+			return null;
+		}
+		
+		return configurationTypeElement.getConverter();
+	}
+
+	public ExecutableElement getIdMethod(EntityResolver entityResolver) {
+
+		if (getConfiguration() != null) {
+			List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(getConfiguration().asElement().getEnclosedElements());
+	
+			DomainTypeElement domainType = getConfiguration().getDomain();
+	
+			if (!domainType.asType().getKind().equals(TypeKind.DECLARED)) {
+				return null;
+			}
+			
+			for (ExecutableElement overridenMethod : overridenMethods) {
+	
+				Ignore ignoreAnnotation = overridenMethod.getAnnotation(Ignore.class);
+				if (ignoreAnnotation == null) {
+	
+					if (entityResolver.isIdMethod(overridenMethod)) {
+						if (overridenMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
+							return domainType.getGetterMethod(TransferObjectHelper.getFieldPath(overridenMethod));
+						}
+	
+						return overridenMethod;
+					}
+				}
+			}
+		}
+		
+		ExecutableElement idMethod = getDomain().getIdMethod(entityResolver);
+		
+		if (getConfiguration() != null) {
+			if (idMethod != null && !getConfiguration().isFieldIgnored(MethodHelper.toField(idMethod))) {
+				return idMethod;
+			}
+			
+			return null;
+		}
+		return idMethod;
+	}
+}

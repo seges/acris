@@ -44,8 +44,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.stream.StreamSource;
 
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
 import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
+import sk.seges.sesam.core.pap.processor.ConfigurableAnnotationProcessor;
 
 public class ClassPathTypeUtils implements ClassPathTypes {
 
@@ -275,13 +275,13 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 	
 	private void initializeSystemProperties() {
 		
-		String classPath = processingEnv.getOptions().get(AbstractConfigurableProcessor.CLASSPATH_OPTION);
+		String classPath = processingEnv.getOptions().get(ConfigurableAnnotationProcessor.CLASSPATH_OPTION);
 		
 		if (classPath != null) {
 			System.setProperty(PROCESSOR_CLASS_PATH, getClasspathFromList(classPath));
 		}
 
-		String testClassPath = processingEnv.getOptions().get(AbstractConfigurableProcessor.TEST_CLASSPATH_OPTION);
+		String testClassPath = processingEnv.getOptions().get(ConfigurableAnnotationProcessor.TEST_CLASSPATH_OPTION);
 
 		if (testClassPath != null) {
 			if (classPath != null) {

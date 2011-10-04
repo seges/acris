@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.provider;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -8,11 +7,12 @@ import javax.lang.model.element.Modifier;
 import sk.seges.sesam.pap.model.context.TransferObjectConverterProcessorContext;
 import sk.seges.sesam.pap.model.context.TransferObjectProcessorContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class TransferObjectConverterProcessorContextProvider extends TransferObjectProcessorContextProvider {
 
-	public TransferObjectConverterProcessorContextProvider(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
+	public TransferObjectConverterProcessorContextProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
 			EntityResolver entityResolver) {
 		super(processingEnv, roundEnv, entityResolver);
 	}

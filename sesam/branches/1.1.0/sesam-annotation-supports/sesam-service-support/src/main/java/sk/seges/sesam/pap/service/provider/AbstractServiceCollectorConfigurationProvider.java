@@ -3,7 +3,6 @@ package sk.seges.sesam.pap.service.provider;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -13,12 +12,14 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 
 public abstract class AbstractServiceCollectorConfigurationProvider extends RoundEnvConfigurationProvider {
 
-	public AbstractServiceCollectorConfigurationProvider(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	public AbstractServiceCollectorConfigurationProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 	}
 
@@ -92,7 +93,7 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 	protected abstract List<ConfigurationTypeElement> collectConfigurations();
 
 	@Override
-	public ConfigurationTypeElement getConfigurationForDto(TypeMirror dtoType) {
+	public ConfigurationTypeElement getConfigurationForDto(MutableTypeMirror dtoType) {
 		if (!isSupportedType(dtoType)) {
 			return null;
 		};
@@ -107,7 +108,7 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 	}
 
 	@Override
-	public ConfigurationTypeElement getConfigurationForDomain(TypeMirror domainType) {
+	public ConfigurationTypeElement getConfigurationForDomain(MutableTypeMirror domainType) {
 		if (!isSupportedType(domainType)) {
 			return null;
 		};

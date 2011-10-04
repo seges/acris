@@ -1,11 +1,11 @@
 package sk.seges.sesam.pap.model.printer;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
-import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 
-public abstract class AbstractElementPrinter implements ElementPrinter {
+public abstract class AbstractElementPrinter implements TransferObjectElementPrinter {
 	
 	protected final FormattedPrintWriter pw;
 	
@@ -14,7 +14,7 @@ public abstract class AbstractElementPrinter implements ElementPrinter {
 	}
 	
 	@Override
-	public void initialize(ConfigurationTypeElement configurationTypeElement, NamedType outputName) {}
+	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {}
 	
 	@Override
 	public void finish(ConfigurationTypeElement configurationTypeElement) {}

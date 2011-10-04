@@ -1,11 +1,8 @@
 package sk.seges.sesam.pap.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -14,48 +11,54 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
+import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.PathResolver;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.annotation.Id;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
-import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.configurer.TrasferObjectProcessorConfigurer;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
-import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
+import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.DefaultEntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
-public abstract class AbstractTransferProcessor extends AbstractConfigurableProcessor {
+public abstract class AbstractTransferProcessor extends MutableAnnotationProcessor {
 
 	protected TransferObjectHelper toHelper;
-	protected TransferObjectProcessorContextProvider processorContextProvider;
+	protected TransferObjectProcessorContextProvider transferObjectContextProvider;
 	
-	@Override
-	public Set<String> getSupportedAnnotationTypes() {
-		Set<String> annotations = new HashSet<String>();
-		annotations.add(TransferObjectMapping.class.getCanonicalName());
-		return annotations;
-	}
+	protected TransferObjectProcessingEnvironment processingEnv;
 	
 	protected EntityResolver getEntityResolver() {
 		return new DefaultEntityResolver();
 	}
 
+	@Override
+	protected ProcessorConfigurer getConfigurer() {
+		return new TrasferObjectProcessorConfigurer();
+	}
+	
 	protected boolean isProcessed(List<String> generated, String fieldName) {
 		return generated.contains(fieldName);
 	}
 
 	@Override
-	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
-				
+	protected void processElement(ProcessorContext context) {
+
+
+		TypeElement element = context.getTypeElement();
+		
 		ConfigurationTypeElement configurationElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
 
 		if (configurationElement.getDomain() == null) {
@@ -70,31 +73,38 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 			mappingType = mapping.value();
 		}
 
-		for (ElementPrinter elementPrinter: getElementPrinters(pw)) {
-			elementPrinter.initialize(configurationElement, outputName);
+		for (TransferObjectElementPrinter elementPrinter: getElementPrinters(context.getPrintWriter())) {
+			elementPrinter.initialize(configurationElement, context.getOutputType());
 			processMethods(configurationElement, mappingType, elementPrinter);
 		}
 	}
 
-	protected abstract ElementPrinter[] getElementPrinters(FormattedPrintWriter pw);
+	protected abstract TransferObjectElementPrinter[] getElementPrinters(FormattedPrintWriter pw);
 	
-	protected boolean checkPreconditions(Element element, NamedType outputName, boolean alreadyExists) {
-		return new ConfigurationTypeElement((TypeElement)element, processingEnv, roundEnv).getDelegateConfigurationTypeElement() == null;
+	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
+		return new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv).getDelegateConfigurationTypeElement() == null;
 	}
 
-	protected TransferObjectProcessorContextProvider getProcessorContextProvider(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	protected TransferObjectProcessorContextProvider getProcessorContextProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		return new TransferObjectProcessorContextProvider(processingEnv, roundEnv, getEntityResolver());
 	}
-	
+
 	@Override
-	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		this.toHelper = new TransferObjectHelper(getNameTypes(), processingEnv, roundEnv);
-		processorContextProvider = getProcessorContextProvider(processingEnv, roundEnv);
-		
-		return super.process(annotations, roundEnv);
+	protected void init(Element element, RoundEnvironment roundEnv) {
+		super.init(element, roundEnv);
+		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv);
+		this.processingEnv.setConfigurationProviders(getConfigurationProviders());
+		this.toHelper = new TransferObjectHelper(processingEnv);
+		this.transferObjectContextProvider = getProcessorContextProvider(processingEnv, roundEnv);
 	}
 	
-	protected void processMethods(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, ElementPrinter printer) {
+	protected ConfigurationProvider[] getConfigurationProviders() {
+		return new ConfigurationProvider[] {
+				new RoundEnvConfigurationProvider(processingEnv, roundEnv)
+		};
+	}
+
+	protected void processMethods(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, TransferObjectElementPrinter printer) {
 
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asElement().getEnclosedElements());
 		
@@ -135,7 +145,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 					continue;
 				}
 
-				ProcessorContext context = processorContextProvider.get(configurationTypeElement, Modifier.PUBLIC, overridenMethod, domainMethod);
+				TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PUBLIC, overridenMethod, domainMethod, getConfigurationProviders());
 				if (context == null) {
 					continue;
 				}
@@ -162,7 +172,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 										Id.class.getCanonicalName() + " annotation.", configurationTypeElement.asElement());
 							} else {
 								//TODO Check if is not already generated
-								context = processorContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath);
+								context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath, getConfigurationProviders());
 								if (context == null) {
 									continue;
 								}
@@ -193,12 +203,12 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 					
 					String fieldName = TransferObjectHelper.getFieldPath(method);
 					
-					if (!isProcessed(generated, fieldName) && toHelper.isGetterMethod(method) && 
+					if (!isProcessed(generated, fieldName) && MethodHelper.isGetterMethod(method) && 
 							toHelper.hasSetterMethod(domainTypeElement.asElement(), method) && method.getModifiers().contains(Modifier.PUBLIC)) {
 	
 						generated.add(fieldName);
 	
-						ProcessorContext context = processorContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method);
+						TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method, getConfigurationProviders());
 						if (context == null) {
 							continue;
 						}
@@ -218,7 +228,7 @@ public abstract class AbstractTransferProcessor extends AbstractConfigurableProc
 					Id.class.getSimpleName() + " annotation or just specify id as a method name.", configurationTypeElement.asElement());
 			return;
 		} else if (idMethod != null && !isProcessed(generated, MethodHelper.toField(idMethod))) {
-			ProcessorContext context = processorContextProvider.get(configurationTypeElement, Modifier.PROTECTED, idMethod, idMethod);
+			TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, idMethod, idMethod, getConfigurationProviders());
 			if (context != null) {
 				printer.print(context);
 			}

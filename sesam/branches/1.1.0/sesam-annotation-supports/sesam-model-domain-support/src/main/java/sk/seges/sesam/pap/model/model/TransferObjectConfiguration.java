@@ -3,7 +3,6 @@ package sk.seges.sesam.pap.model.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -14,9 +13,11 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.NullCheck;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
-import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping.NotDefinedConverter;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMappings;
@@ -48,14 +49,14 @@ public class TransferObjectConfiguration {
 	
 	private Set<TransferObjectMapping> mappings = new HashSet<TransferObjectMapping>();
 
-	private ProcessingEnvironment processingEnv;
+	private MutableProcessingEnvironment processingEnv;
 	private TransferObjectMapping referenceMapping;
 	private Element configurationHolderElement;
 	
 	/**
 	 * TypeElement holds {@link TransferObjectMapping} or {@link TransferObjectMappings} annotation
 	 */
-	public TransferObjectConfiguration(Element element, ProcessingEnvironment processingEnv) {
+	public TransferObjectConfiguration(Element element, MutableProcessingEnvironment processingEnv) {
 		this.configurationHolderElement = element;
 		this.processingEnv = processingEnv;
 		{
@@ -103,20 +104,21 @@ public class TransferObjectConfiguration {
 		return getEvaluatedDomainType(referenceMapping);
 	}
 	
-	public TransferObjectMapping getMappingForDto(DeclaredType dtoType) {
+	public TransferObjectMapping getMappingForDto(MutableDeclaredType dtoType) {
 		for (TransferObjectMapping mapping : mappings) {
 			TypeElement annotationDtoType = getDto(mapping);
+			MutableDeclaredType mutableAnnotationDtoType = null;
 
 			if (annotationDtoType != null) {
-				if (processingEnv.getTypeUtils().erasure(annotationDtoType.asType()).equals(
-					processingEnv.getTypeUtils().erasure(dtoType))) {
+				mutableAnnotationDtoType = processingEnv.getTypeUtils().toMutableType((DeclaredType)annotationDtoType.asType());
+				if (processingEnv.getTypeUtils().isSameType(mutableAnnotationDtoType, dtoType)) {
 					return mapping;
 				}
 			}
 
 			annotationDtoType = getDtoInterface(mapping);
 
-			if (annotationDtoType != null && ProcessorUtils.implementsType(dtoType, annotationDtoType.asType())) {
+			if (annotationDtoType != null && processingEnv.getTypeUtils().implementsType(dtoType, mutableAnnotationDtoType)) {
 				return mapping;
 			}
 		}
@@ -124,6 +126,28 @@ public class TransferObjectConfiguration {
 		return null;
 	}
 
+	public TransferObjectMapping getMappingForDomain(MutableDeclaredType domainType) {
+		for (TransferObjectMapping mapping : mappings) {
+			TypeElement annotationDomainType = getDomain(mapping);
+			MutableDeclaredType mutableAnnotationDomainType = null;
+			
+			if (annotationDomainType != null) {
+				mutableAnnotationDomainType = processingEnv.getTypeUtils().toMutableType((DeclaredType)annotationDomainType.asType());
+				if (processingEnv.getTypeUtils().isSameType(mutableAnnotationDomainType, domainType)) {
+					return mapping;
+				}
+			}
+
+			annotationDomainType = getDomainInterface(mapping);
+
+			if (annotationDomainType != null && processingEnv.getTypeUtils().implementsType(domainType, mutableAnnotationDomainType)) {
+				return mapping;
+			}
+		}
+		
+		return null;
+	}
+	
 	public TransferObjectMapping getMappingForDomain(DeclaredType domainType) {
 		for (TransferObjectMapping mapping : mappings) {
 			TypeElement annotationDomainType = getDomain(mapping);

@@ -1,6 +1,5 @@
 package sk.seges.sesam.core.pap.printer;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,17 +11,18 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class ConstructorPrinter {
 
 	private final FormattedPrintWriter pw;
-	private final NamedType outputName;
+	private final MutableDeclaredType outputName;
 	
-	public ConstructorPrinter(FormattedPrintWriter pw, NamedType outputName) {
+	public ConstructorPrinter(FormattedPrintWriter pw, MutableDeclaredType outputName) {
 		this.pw = pw;
 		this.outputName = outputName;
 	}
@@ -32,10 +32,10 @@ public class ConstructorPrinter {
 		boolean existsParameter(String field, ExecutableElement constructor);
 		boolean existsField(String field, ExecutableElement constructor);
 
-		void construct(TypeMirror type, PrintWriter pw);
-		void construct(NamedType type, PrintWriter pw);
+		void construct(TypeMirror type, FormattedPrintWriter pw);
+		void construct(MutableTypeMirror type, FormattedPrintWriter pw);
 
-		void finish(List<String> initializedFields, ExecutableElement superConstructor, PrintWriter pw);
+		void finish(List<String> initializedFields, ExecutableElement superConstructor, FormattedPrintWriter pw);
 	}
 
 	class DefaultConstructorHelper implements ConstructorHelper {
@@ -51,17 +51,17 @@ public class ConstructorPrinter {
 		}
 
 		@Override
-		public void construct(TypeMirror type, PrintWriter pw) {
+		public void construct(TypeMirror type, FormattedPrintWriter pw) {
 			pw.print("new " + type.toString() + "()");
 		}
 
 		@Override
-		public void construct(NamedType type, PrintWriter pw) {
-			pw.print("new " + type.toString(ClassSerializer.CANONICAL, true) + "()");
+		public void construct(MutableTypeMirror type, FormattedPrintWriter pw) {
+			pw.print("new ", type, "()");
 		}
 
 		@Override
-		public void finish(List<String> initializedFields, ExecutableElement superConstructor, PrintWriter pw) {
+		public void finish(List<String> initializedFields, ExecutableElement superConstructor, FormattedPrintWriter pw) {
 			for (VariableElement parameter: superConstructor.getParameters()) {
 				String parameterName = parameter.getSimpleName().toString();
 				

@@ -9,7 +9,7 @@ import javax.lang.model.util.SimpleTypeVisitor6;
 
 import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.configuration.utils.ConfigurationUtils;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
@@ -23,14 +23,14 @@ public class ConfigurationValueConstructorPrinter implements SettingsElementPrin
 	}
 
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {
 		pw.println("public " + outputName.getSimpleName() + "(", ConfigurationValue.class, "[] configurations) {");
 	}
 
 	@Override
 	public void print(SettingsContext context) {
 		if (context.getNestedElement() != null) {
-			pw.println("this." + context.getFieldName() + " = new ", context.getNestedOutputName(), "(configurations);");
+			pw.println("this." + context.getFieldName() + " = new ", context.getNestedMutableType(), "(configurations);");
 		} else {
 			context.getMethod().getReturnType().accept(new SimpleTypeVisitor6<Void, SettingsContext>() {
 	

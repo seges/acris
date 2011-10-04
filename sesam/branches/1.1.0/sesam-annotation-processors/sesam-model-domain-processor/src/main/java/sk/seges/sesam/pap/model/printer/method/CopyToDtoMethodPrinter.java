@@ -1,19 +1,19 @@
 package sk.seges.sesam.pap.model.printer.method;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
-import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
@@ -22,13 +22,13 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 
 	private ElementHolderTypeConverter elementHolderTypeConverter;
 	
-	public CopyToDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, ProcessingEnvironment processingEnv) {
+	public CopyToDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.elementHolderTypeConverter = elementHolderTypeConverter;
 	}
 
 	@Override
-	public void printCopyMethod(ProcessorContext context, FormattedPrintWriter pw) {
+	public void printCopyMethod(TransferObjectContext context, FormattedPrintWriter pw) {
 
 		PathResolver pathResolver = new PathResolver(context.getDomainFieldPath());
 
@@ -38,7 +38,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			pw.print("if (");
 			int i = 0;
 			
-			String methodPath = ElementPrinter.DOMAIN_NAME;
+			String methodPath = TransferObjectElementPrinter.DOMAIN_NAME;
 			
 			while (pathResolver.hasNext()) {
 				
@@ -58,28 +58,28 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			pw.println(") {");
 		} 
 
-		pw.println("if (isInitialized(" + ElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")) {");
+		pw.println("if (isInitialized(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")) {");
 		
 		if (context.getConverter() != null) {
 			
 			String converterName = "converter" + MethodHelper.toMethod("", context.getFieldName());
 			
-			pw.print(context.getConverter().toString(ClassSerializer.CANONICAL, true) + " " + converterName + " = ");
+			pw.print(context.getConverter(), " " + converterName + " = ");
 			converterProviderPrinter.printDomainConverterMethodName(context.getConverter(), context.getDomainMethod().getReturnType(), pw);
 			pw.println(";");
 
-			pw.print(ElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(");
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(");
 
 			pw.print(converterName + ".toDto(");
-			pw.print("(" + castToDelegate(context.getDomainMethodReturnType()).toString(ClassSerializer.CANONICAL, true) + ")");
+			pw.print("(", castToDelegate(context.getDomainMethodReturnType()), ")");
 
-			pw.print(ElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
+			pw.print(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
 		} else if (context.getLocalConverterName() != null) {
 			pw.println("if (" + context.getLocalConverterName() + " != null) {");
-			pw.print(ElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(" + 
-					context.getLocalConverterName() + ".toDto(" + ElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")");
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(" + 
+					context.getLocalConverterName() + ".toDto(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")");
 		} else {
-			pw.print(ElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(" + ElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
 		}
 		
 		if (context.getConverter() != null) {
@@ -88,7 +88,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			TypeMirror listType = elementHolderTypeConverter.getIterableDtoType(context.getDomainMethodReturnType());
 			
 			if (listType != null) {
-				pw.print(", " + nameTypesUtils.toType(processingEnv.getTypeUtils().erasure(listType)).toString(ClassSerializer.CANONICAL, false) + ".class)");
+				pw.print(", " + processingEnv.getTypeUtils().toMutableType(processingEnv.getTypeUtils().erasure(listType)).toString(ClassSerializer.CANONICAL, false) + ".class)");
 			} else {
 				pw.print(")");
 			}
@@ -98,13 +98,13 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 		
 		if (context.getLocalConverterName() != null) {
 			pw.println("} else {");
-			pw.print(ElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()));
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()));
 			if (context.getDomainMethodReturnType().getKind().equals(TypeKind.TYPEVAR)) {
 				pw.print("((" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "_" + ((TypeVariable)context.getDomainMethodReturnType()).asElement().getSimpleName().toString() + ")");
 			} else {
 				pw.print("((" + context.getFieldType() + ")");
 			}
-			pw.print(ElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
+			pw.print(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
 			pw.println(");");
 			pw.println("}");
 		}
@@ -113,7 +113,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 		
 		if (nested) {
 			pw.println("} else {");
-			pw.println(ElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(null);");
+			pw.println(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(null);");
 			pw.println("}");
 			pw.println("");
 		}

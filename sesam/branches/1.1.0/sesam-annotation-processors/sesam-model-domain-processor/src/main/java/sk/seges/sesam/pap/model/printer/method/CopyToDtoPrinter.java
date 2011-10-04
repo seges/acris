@@ -3,26 +3,27 @@ package sk.seges.sesam.pap.model.printer.method;
 import java.io.PrintWriter;
 import java.io.Serializable;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DomainTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
-import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
+import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
-public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPrinter {
+public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferObjectElementPrinter {
 
 	private final FormattedPrintWriter pw;
 
@@ -30,7 +31,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 	private EntityResolver entityResolver;
 	
 	public CopyToDtoPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, ParametersResolver parametersResolver, 
-			RoundEnvironment roundEnv, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+			RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.pw = pw;
 		this.elementHolderTypeConverter = elementHolderTypeConverter;
@@ -38,15 +39,15 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 	}
 	
 	@Override
-	public void print(ProcessorContext context) {
+	public void print(TransferObjectContext context) {
 		copy(context, pw, new CopyToDtoMethodPrinter(converterProviderPrinter, elementHolderTypeConverter, entityResolver, parametersResolver, roundEnv, processingEnv));
 	}
 
 	@Override
-	public void initialize(ConfigurationTypeElement configurationElement, NamedType outputName) {
+	public void initialize(ConfigurationTypeElement configurationElement, MutableDeclaredType outputName) {
 		
-		ImmutableType dtoType = getDtoType(configurationElement);
-		ImmutableType domainType = getDomainType(configurationElement);
+		DtoDeclaredType dtoType = configurationElement.getDto();
+		DomainTypeElement domainType = configurationElement.getDomain();
 		
 		DomainTypeElement domainTypeElement = configurationElement.getDomain();
 
@@ -71,7 +72,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 
 		ExecutableElement idMethod = null;
 		
-		if (domainType.asType().getKind().equals(TypeKind.DECLARED)) {
+		if (domainType.getKind().isDeclared()) {
 			idMethod = domainTypeElement.getIdMethod(entityResolver);
 			
 			if (idMethod == null && entityResolver.shouldHaveIdMethod(domainTypeElement)) {
@@ -87,12 +88,12 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 			
 			boolean useIdConverter = false;
 
-			NamedType dtoIdType = nameTypesUtils.toType(idMethod.getReturnType());
+			MutableTypeMirror dtoIdType = processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType());
 			DomainTypeElement domainIdTypeElement = null;
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				domainIdTypeElement = domainTypeElement.getId(entityResolver);
-				NamedType dto = domainIdTypeElement.getDtoTypeElement();
+				DtoDeclaredType dto = domainIdTypeElement.getDto();
 				if (dto != null) {
 					dtoIdType= dto;
 				}
@@ -106,7 +107,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements ElementPr
 			
 			String idName = "_id";
 			
-			pw.print(dtoIdType.getCanonicalName() + " " + idName + " = ");
+			pw.print(dtoIdType, " " + idName + " = ");
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				if (domainIdTypeElement.getConfiguration() != null && domainIdTypeElement.getConfiguration().getConverter() != null) {

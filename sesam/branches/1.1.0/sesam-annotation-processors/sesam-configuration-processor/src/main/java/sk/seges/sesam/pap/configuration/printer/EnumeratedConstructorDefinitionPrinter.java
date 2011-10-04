@@ -1,9 +1,9 @@
 package sk.seges.sesam.pap.configuration.printer;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
 import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
@@ -13,13 +13,13 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractSettingsElem
 	private FormattedPrintWriter pw;
 	private int index = 0;
 	
-	public EnumeratedConstructorDefinitionPrinter(FormattedPrintWriter pw, ProcessingEnvironment processingEnv) {
+	public EnumeratedConstructorDefinitionPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.pw = pw;
 	}
 
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {
 		pw.print("public " + outputName.getSimpleName() + "(");
 	}
 
@@ -30,7 +30,7 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractSettingsElem
 		}
 
 		if (context.getNestedElement() != null) {
-			pw.print(context.getNestedOutputName().getSimpleName() + " " + context.getMethod().getSimpleName().toString());
+			pw.print(context.getNestedMutableType().getSimpleName() + " " + context.getMethod().getSimpleName().toString());
 		} else {
 			pw.print(unboxType(context.getMethod().getReturnType()), " " + context.getMethod().getSimpleName().toString());
 		}
@@ -42,5 +42,4 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractSettingsElem
 	public void finish(TypeElement type) {
 		pw.println(") {");
 	}
-
 }

@@ -2,9 +2,9 @@ package sk.seges.sesam.core.pap.utils;
 
 import java.lang.reflect.Type;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
-import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
 public class ClassUtils {
 
@@ -25,12 +25,12 @@ public class ClassUtils {
 			return toString((Class<?>)type, serializer);
 		}
 		
-		if (type instanceof HasTypeParameters && ((HasTypeParameters) type).getTypeParameters() != null) {
-			return ((HasTypeParameters)type).toString(serializer, typed);
+		if (type instanceof MutableDeclaredType) {
+			return ((MutableDeclaredType)type).toString(serializer, typed);
 		}
 		
-		if (type instanceof NamedType) {
-			return ((NamedType)type).toString(serializer);
+		if (type instanceof MutableTypeMirror) {
+			return ((MutableTypeMirror)type).toString(serializer);
 		}
 		
 		throw new IllegalArgumentException("Not supported annotation element " + type.toString());

@@ -7,65 +7,69 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.builder.api.NameTypes.ClassSerializer;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.api.DelayedPrintWriter;
 
 public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWriter {
-	
+
+	public interface FlushListener {
+		
+		void beforeFlush(FormattedPrintWriter pw);
+
+		void afterFlush(FormattedPrintWriter pw);
+	}
+
 	private static final String DEFAULT_OUDENT = "\t";
 	
 	private int oudentLevel = 0;
 	private boolean startLine = true;
 	
 	private boolean autoIndent = false;
-	private final NameTypeUtils nameTypesUtils;
-	
-	public FormattedPrintWriter(Writer out, ProcessingEnvironment processingEnv) {
+	private final MutableProcessingEnvironment processingEnv;
+
+	private Set<FlushListener> listeners = new HashSet<FlushListener>();
+
+	public FormattedPrintWriter(Writer out, MutableProcessingEnvironment processingEnv) {
 		super(out);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 
-	public FormattedPrintWriter(Writer out, boolean autoFlush, ProcessingEnvironment processingEnv) {
-		super(out, autoFlush);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
-	}
-
-	public FormattedPrintWriter(OutputStream out, ProcessingEnvironment processingEnv) {
+	public FormattedPrintWriter(OutputStream out, MutableProcessingEnvironment processingEnv) {
 		super(out);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 
-	public FormattedPrintWriter(OutputStream out, boolean autoFlush, ProcessingEnvironment processingEnv) {
-		super(out, autoFlush);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
-	}
-
-	public FormattedPrintWriter(String fileName, ProcessingEnvironment processingEnv) throws FileNotFoundException {
+	public FormattedPrintWriter(String fileName, MutableProcessingEnvironment processingEnv) throws FileNotFoundException {
 		super(fileName);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 
-	public FormattedPrintWriter(String fileName, String csn, ProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
+	public FormattedPrintWriter(String fileName, String csn, MutableProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
 		super(fileName, csn);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 
-	public FormattedPrintWriter(File file, ProcessingEnvironment processingEnv) throws FileNotFoundException {
+	public FormattedPrintWriter(File file, MutableProcessingEnvironment processingEnv) throws FileNotFoundException {
 		super(file);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 
-	public FormattedPrintWriter(File file, String csn, ProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
+	public FormattedPrintWriter(File file, String csn, MutableProcessingEnvironment processingEnv) throws FileNotFoundException, UnsupportedEncodingException {
 		super(file, csn);
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 	
 	public void setDefaultIdentLevel(int level) {
@@ -180,47 +184,162 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		newLine();
 	}
 
-	private List<NamedType> usedTypes = new ArrayList<NamedType>();
+	private List<MutableDeclaredType> usedTypes = new ArrayList<MutableDeclaredType>();
 	
 	@Override
 	public void print(Object obj) {
 		print(new Object[] {obj});
+	}
+
+	private Set<MutableDeclaredType> extractDeclaredType(MutableTypeMirror type) {
+		return extractDeclaredType(type, new HashSet<MutableDeclaredType>());
+	}
+	
+	private Set<MutableDeclaredType> extractDeclaredType(MutableTypeMirror type, Set<MutableDeclaredType> types) {
+			
+		if (type instanceof MutableDeclaredType) {
+			types.add((MutableDeclaredType)type);
+			if (typed) {
+				for (MutableTypeVariable variable: ((MutableDeclaredType)type).getTypeVariables()) {
+					types.addAll(extractDeclaredType(variable));
+				}
+			}
+			return types;
+		} 
+		
+		if (type instanceof MutableArrayType) {
+			extractDeclaredType(((MutableArrayType)type).getComponentType(), types);
+			return types;
+		} 
+
+		if (type instanceof MutableTypeVariable) {
+			MutableTypeVariable variable = ((MutableTypeVariable)type);
+			Set<? extends MutableTypeMirror> lowerBounds = variable.getLowerBounds();
+			
+			for (MutableTypeMirror lowerBound: lowerBounds) {
+				extractDeclaredType(lowerBound, types);
+			}
+			
+			Set<? extends MutableTypeMirror> upperBounds = variable.getUpperBounds();
+
+			for (MutableTypeMirror upperBound: upperBounds) {
+				extractDeclaredType(upperBound, types);
+			}
+			
+			return types;
+		}
+		
+		if (type instanceof MutableWildcardType) {
+			MutableWildcardType wildcard = (MutableWildcardType)type;
+			
+			if (wildcard.getExtendsBound() != null) {
+				extractDeclaredType(wildcard.getExtendsBound(), types);
+			}
+			
+			if (wildcard.getSuperBound() != null) {
+				extractDeclaredType(wildcard.getSuperBound(), types);
+			}
+
+			return types;
+		}
+		
+		return types;
+	}
+	
+	private MutableTypeMirror toMutableType(Object o) {
+		if (o instanceof MutableDeclaredType) {
+			return (MutableDeclaredType)o;
+		} else if (o instanceof MutableArrayType) {
+			return (MutableArrayType)o;
+		} else if (o instanceof MutableTypeVariable) {
+			return (MutableTypeVariable)o;
+		} else if (o instanceof MutableWildcardType) {
+			return (MutableWildcardType)o;
+		}
+		
+		return null;
+	}
+
+	private String getImportPackage(MutableDeclaredType type) {
+		if (type.getEnclosedClass() != null) {
+			return type.getEnclosedClass().getCanonicalName();
+		}
+		return type.getPackageName();
+	};
+
+	private boolean isConflictType(MutableDeclaredType mutableType) {
+		for (MutableDeclaredType importType: usedTypes) {
+			if (getImportPackage(importType) != null && importType.getSimpleName().equals(mutableType.getSimpleName()) && !getImportPackage(importType).equals(getImportPackage(mutableType))) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean isConflictType(MutableTypeMirror mutableType) {
+		Set<MutableDeclaredType> declaredTypes = extractDeclaredType(mutableType);
+		
+		//TODO implement better version - print canonical names only those type variables that are in conflict (not whole declared type)
+		for (MutableDeclaredType declaredType: declaredTypes) {
+			if (isConflictType(declaredType)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override
 	public void print(Object... x) {
 		for (Object o: x) {
 			if (o instanceof TypeMirror) {
-				NamedType type = nameTypesUtils.toType((TypeMirror)o);
-				if (serializer.equals(ClassSerializer.SIMPLE)) {
-					usedTypes.add(type);
-				}
-				write(type.toString(serializer, typed));
+				o = processingEnv.getTypeUtils().toMutableType((TypeMirror)o);
 			} else if (o instanceof Element) {
-				NamedType element = nameTypesUtils.toType((Element)o);
-				if (serializer.equals(ClassSerializer.SIMPLE)) {
-					usedTypes.add(element);
-				}
-				write(element.toString(serializer, typed));
-			} else if (o instanceof NamedType) {
-				NamedType type = (NamedType)o;
-				if (serializer.equals(ClassSerializer.SIMPLE)) {
-					usedTypes.add(type);
-				}
-				write(type.toString(serializer, typed));
+				o = processingEnv.getTypeUtils().toMutableType(((Element)o).asType());
 			} else if (o instanceof Class) {
-				NamedType clazzType = nameTypesUtils.toType((Class<?>)o);
+				o = processingEnv.getTypeUtils().toMutableType((Class<?>)o);
+			}
+			
+			MutableTypeMirror mutableType = toMutableType(o);
+			
+			if (mutableType != null) {
+				
+				ClassSerializer evalSerializer = serializer;
 				if (serializer.equals(ClassSerializer.SIMPLE)) {
-					usedTypes.add(clazzType);
+					if (isConflictType(mutableType)) {
+						evalSerializer = ClassSerializer.CANONICAL;
+					} else {
+						usedTypes.addAll(extractDeclaredType(mutableType));
+					}
 				}
-				write(clazzType.toString(serializer, typed));
+				write(mutableType.toString(evalSerializer, typed));
 			} else {
 				super.write(String.valueOf(o));
 			}
 		}
 	}
 	
-	public List<NamedType> getUsedTypes() {
+	public List<MutableDeclaredType> getUsedTypes() {
 		return usedTypes;
+	}
+	
+	public void addFlushListener(FlushListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeFlushListener(FlushListener listener) {
+		listeners.remove(listener);
+	}
+
+	@Override
+	public void flush() {
+		for (FlushListener flushListener: listeners) {
+			flushListener.beforeFlush(this);
+		}
+		super.flush();
+		for (FlushListener flushListener: listeners) {
+			flushListener.afterFlush(this);
+		}
 	}
 }

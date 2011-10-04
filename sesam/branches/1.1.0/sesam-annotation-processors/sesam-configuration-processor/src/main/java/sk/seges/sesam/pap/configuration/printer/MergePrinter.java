@@ -2,7 +2,7 @@ package sk.seges.sesam.pap.configuration.printer;
 
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.SettingsContext;
@@ -18,7 +18,7 @@ public class MergePrinter implements SettingsElementPrinter {
 	}
 	
 	@Override
-	public void initialize(TypeElement type, NamedType outputName) {
+	public void initialize(TypeElement type, MutableDeclaredType outputName) {
 		instanceName = MethodHelper.toField(outputName.getSimpleName());
 		pw.println("public " + outputName.getSimpleName() + " merge(" + outputName.getSimpleName() + " " + instanceName + ") {");
 		pw.println("if (" + instanceName + " == null) {");

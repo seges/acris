@@ -31,12 +31,13 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
-import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 import sk.seges.sesam.core.annotation.configuration.Interface;
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
+import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 import sk.seges.sesam.core.pap.configuration.api.ConfigurationElement;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.core.pap.utils.ListUtils;
@@ -204,13 +205,12 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 
 	private static final String CONFIGURATION = "configuration";
 
-	private Map<ConfigurationElement, Set<NamedType>> configurationParameters = new HashMap<ConfigurationElement, Set<NamedType>>();
-	private Map<ConfigurationElement, Set<NamedType>> cachedConfiguration = new HashMap<ConfigurationElement, Set<NamedType>>();
+	private Map<ConfigurationElement, Set<MutableDeclaredType>> configurationParameters = new HashMap<ConfigurationElement, Set<MutableDeclaredType>>();
+	private Map<ConfigurationElement, Set<MutableDeclaredType>> cachedConfiguration = new HashMap<ConfigurationElement, Set<MutableDeclaredType>>();
 	private Set<TypeElement> configurations = new HashSet<TypeElement>();
 	protected RoundEnvironment roundEnvironment;
 	
-	protected ProcessingEnvironment processingEnv;
-	protected NameTypeUtils nameTypesUtils;
+	protected MutableProcessingEnvironment processingEnv;
 	private AbstractProcessor processor;
 
 	private DelayedMessager messager;
@@ -232,12 +232,11 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		this.messager.flush(messager, element);
 	}
 	
-	public void init(ProcessingEnvironment processingEnv, AbstractProcessor processor) {
+	public void init(MutableProcessingEnvironment processingEnv, AbstractProcessor processor) {
 		this.processingEnv = processingEnv;
-		this.nameTypesUtils = new NameTypeUtils(processingEnv);
 		this.processor = processor;
 
-		configurationParameters.put(DefaultConfigurationElement.PROCESSING_ANNOTATIONS, parse(new HashSet<NamedType>(), processor.getSupportedAnnotationTypes()));
+		configurationParameters.put(DefaultConfigurationElement.PROCESSING_ANNOTATIONS, parse(new HashSet<MutableDeclaredType>(), processor.getSupportedAnnotationTypes()));
 		
 		loadConfiguration();
 		
@@ -292,7 +291,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		for (ConfigurationElement configurationType: DefaultConfigurationElement.values()) {
 			String configurationString = (String) prop.get(configurationType.getKey());
 			if (configurationString != null) {
-				Set<NamedType> configurationValues = new HashSet<NamedType>();
+				Set<MutableDeclaredType> configurationValues = new HashSet<MutableDeclaredType>();
 				parse(configurationValues, configurationString);
 				appendConfiguration(configurationType, configurationValues);
 			}
@@ -300,18 +299,16 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		
 		String configurationTypeString = (String)prop.get(CONFIGURATION);
 		if (configurationTypeString != null) {
-			Set<NamedType> configurationValues = new HashSet<NamedType>();
+			Set<MutableDeclaredType> configurationValues = new HashSet<MutableDeclaredType>();
 			parse(configurationValues, configurationTypeString);
-			for (NamedType configurationType: configurationValues) {
+			for (MutableDeclaredType configurationType: configurationValues) {
 				configurations.add(toTypeElement(configurationType));
 			}
 		}
 		
 	}
 	
-	protected Type[] getConfigurationElement(DefaultConfigurationElement element) {
-		return new Type[] {};
-	}
+	protected abstract Type[] getConfigurationElement(DefaultConfigurationElement element);
 	
 	protected boolean isSupportedKind(ElementKind kind) {
 		return (kind.equals(ElementKind.CLASS) || 
@@ -354,7 +351,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return null;
 	}
 
-	protected Annotation toAnnotation(NamedType type, Element element) {
+	protected Annotation toAnnotation(MutableDeclaredType type, Element element) {
 		return toAnnotation(type.getCanonicalName(), element);
 	}
 	
@@ -368,10 +365,10 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		
 		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
 
-		NamedType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+		MutableDeclaredType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 
 		for (AnnotationMirror annotation: annotationMirrors) {
-			for (NamedType supportedAnnotaion: supportedAnnotations) {
+			for (MutableDeclaredType supportedAnnotaion: supportedAnnotations) {
 				if (annotation.getAnnotationType().toString().equals(supportedAnnotaion.getCanonicalName())) {
 					result.add(toAnnotation(annotation, field));
 				}
@@ -387,10 +384,10 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		
 		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
 
-		NamedType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+		MutableDeclaredType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 
 		for (AnnotationMirror annotation: annotationMirrors) {
-			for (NamedType supportedAnnotaion: supportedAnnotations) {
+			for (MutableDeclaredType supportedAnnotaion: supportedAnnotations) {
 				if (annotation.getAnnotationType().toString().equals(supportedAnnotaion.getCanonicalName())) {
 					result.add(annotation);
 				}
@@ -405,7 +402,8 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			for (ConfigurationElement configurationElement: DefaultConfigurationElement.values()) {
 				if (configurationElement.hasAnnotationOnField(field)) {
 					
-					NamedType namedFieldType = nameTypesUtils.toType(field.asType());
+					//This will be always MutableDeclaredType, because it's only over the fields which can be only type (or primitive type)
+					MutableDeclaredType namedFieldType = (MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(field.asType());
 					
 					AnnotationMirror[] annotations = getAnnotationMirrors(field);
 					
@@ -420,17 +418,17 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	}
 
 	protected void setConfigurationElement(ConfigurationElement element, Type[] types) {
-		overrideConfiguration(element, TypeUtils.mergeClassArray(new Type[] {}, types, nameTypesUtils));
+		overrideConfiguration(element, TypeUtils.mergeClassArray(new Type[] {}, types, processingEnv));
 	}
 	
-	protected Set<NamedType> overrideConfiguration(ConfigurationElement configurationElement, NamedType[] namedTypes) {
- 		Set<NamedType> types = configurationParameters.get(configurationElement);
+	protected Set<MutableDeclaredType> overrideConfiguration(ConfigurationElement configurationElement, MutableDeclaredType[] namedTypes) {
+ 		Set<MutableDeclaredType> types = configurationParameters.get(configurationElement);
 		if (types == null || !configurationElement.isAditive()) {
-			types = new HashSet<NamedType>();
+			types = new HashSet<MutableDeclaredType>();
 			configurationParameters.put(configurationElement, types);
 		}
 
-		for (NamedType namedType: namedTypes) {
+		for (MutableDeclaredType namedType: namedTypes) {
 			if (!types.contains(namedType)) {
 				types.add(namedType);
 			}
@@ -439,14 +437,14 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return types;
 	}
 
-	protected Set<NamedType> appendConfiguration(ConfigurationElement configurationElement, Set<NamedType> namedTypes) {
- 		Set<NamedType> types = configurationParameters.get(configurationElement);
+	protected Set<MutableDeclaredType> appendConfiguration(ConfigurationElement configurationElement, Set<MutableDeclaredType> namedTypes) {
+ 		Set<MutableDeclaredType> types = configurationParameters.get(configurationElement);
 		if (types == null) {
-			types = new HashSet<NamedType>();
+			types = new HashSet<MutableDeclaredType>();
 			configurationParameters.put(configurationElement, types);
 		}
 
-		for (NamedType namedType: namedTypes) {
+		for (MutableDeclaredType namedType: namedTypes) {
 			if (!types.contains(namedType)) {
 				types.add(namedType);
 			}
@@ -459,19 +457,19 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return true;
 	}
 	
-	protected Set<NamedType> appendConfiguration(ConfigurationElement configurationElement, NamedType namedType) {
-		Set<NamedType> namedTypes = new HashSet<NamedType>();
+	protected Set<MutableDeclaredType> appendConfiguration(ConfigurationElement configurationElement, MutableDeclaredType namedType) {
+		Set<MutableDeclaredType> namedTypes = new HashSet<MutableDeclaredType>();
 		namedTypes.add(namedType);
 		return appendConfiguration(configurationElement, namedTypes);
 	}
 
-	private Set<NamedType> ensureConfiguration(ConfigurationElement element) {
-		Set<NamedType> cachedValue = cachedConfiguration.get(element);
+	private Set<MutableDeclaredType> ensureConfiguration(ConfigurationElement element) {
+		Set<MutableDeclaredType> cachedValue = cachedConfiguration.get(element);
 		
 		if (cachedValue == null) {
-			cachedValue = new HashSet<NamedType>();
+			cachedValue = new HashSet<MutableDeclaredType>();
 
-			for (NamedType clazz: getMergedConfiguration(element)) {
+			for (MutableDeclaredType clazz: getMergedConfiguration(element)) {
 				cachedValue.add(clazz);
 			}
 
@@ -522,7 +520,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return resourceName.substring(resourceName.lastIndexOf(PATH_SEPARATOR) + 1);
 	}
 
-	private Set<NamedType> parse(Set<NamedType> result, String line) {
+	private Set<MutableDeclaredType> parse(Set<MutableDeclaredType> result, String line) {
 		if (line == null || line.length() == 0) {
 			return null;
 		}
@@ -531,7 +529,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		String name;
 		while (tokenizer.hasMoreElements()) {
 			name = tokenizer.nextToken().trim();
-			NamedType type = nameTypesUtils.toType(name);
+			MutableDeclaredType type = processingEnv.getTypeUtils().toMutableType(name);
 			if (type == null) {
 				if (!name.equals("*")) {
 					getMessager().printMessage(Kind.ERROR, "[ERROR] Invalid type (" + name + ") listed in the configuration " + (getConfigurationFileLocation() != null ? getConfigurationFileLocation() : processor.getClass().getCanonicalName()));
@@ -543,12 +541,12 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return result;
 	}
 	
-	private Set<NamedType> parse(Set<NamedType> result, Set<String> types) {
+	private Set<MutableDeclaredType> parse(Set<MutableDeclaredType> result, Set<String> types) {
 		if (types == null) {
 			return result;
 		}
 		for (String typeName: types) {
-			NamedType type = nameTypesUtils.toType(typeName);
+			MutableDeclaredType type = processingEnv.getTypeUtils().toMutableType(typeName);
 			if (type == null) {
 				if (!typeName.equals("*")) {
 					getMessager().printMessage(Kind.ERROR, "[ERROR] Invalid type (" + typeName + ") listed in the configuration " + (getConfigurationFileLocation() != null ? getConfigurationFileLocation() : processor.getClass().getCanonicalName()));
@@ -561,27 +559,27 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	}
 
 	
-	protected Set<NamedType> getProcessingAnnotations() {
+	protected Set<MutableDeclaredType> getProcessingAnnotations() {
 		return ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 	}
 	
-	final protected NamedType[] getMergedConfiguration(ConfigurationElement element) {
-		Set<NamedType> configuredTypes = configurationParameters.get(element);
+	final protected MutableDeclaredType[] getMergedConfiguration(ConfigurationElement element) {
+		Set<MutableDeclaredType> configuredTypes = configurationParameters.get(element);
 		if (configuredTypes == null) {
-			return new NamedType[] {};
+			return new MutableDeclaredType[] {};
 		}
-		return configuredTypes.toArray(new NamedType[] {});
+		return configuredTypes.toArray(new MutableDeclaredType[] {});
 	}
 
-	public AnnotationMirror getSupportedAnnotation(NamedType type) {
-		Set<NamedType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+	public AnnotationMirror getSupportedAnnotation(MutableDeclaredType type) {
+		Set<MutableDeclaredType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 		return getAnnotation(annotations, type);
 	}
 
 	public Annotation getSupportedAnnotation(Element element) {
-		Set<NamedType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+		Set<MutableDeclaredType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 		
-		for (NamedType annotationType: annotations) {
+		for (MutableDeclaredType annotationType: annotations) {
 			//This is ugly hack, but what can we do
 			Annotation annotation = toAnnotation(annotationType, element);
 			if (annotation != null) {
@@ -613,17 +611,17 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	}
 	
 	public AnnotationMirror getSupportedAnnotationMirror(Element element) {
-		Set<NamedType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+		Set<MutableDeclaredType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 		return getAnnotation(annotations, element);
 	}
 
-	protected AnnotationMirror getAnnotation(Collection<NamedType> annotationTypes, Collection<? extends AnnotationMirror> annotationMirrors) {
+	protected AnnotationMirror getAnnotation(Collection<MutableDeclaredType> annotationTypes, Collection<? extends AnnotationMirror> annotationMirrors) {
 		if (annotationMirrors == null) {
 			return null;
 		}
 		for (AnnotationMirror mirror : annotationMirrors) {
 			Element annotationElement = mirror.getAnnotationType().asElement();
-			NamedType annotationType = nameTypesUtils.toType(annotationElement);
+			MutableTypeMirror annotationType = processingEnv.getTypeUtils().toMutableType(annotationElement.asType());
 			if (annotationTypes.contains(annotationType)) {
 				return mirror;
 			}
@@ -631,7 +629,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return null;
 	}
 	
-	protected AnnotationMirror getAnnotation(Collection<NamedType> annotationTypes, NamedType type) {
+	protected AnnotationMirror getAnnotation(Collection<MutableDeclaredType> annotationTypes, MutableDeclaredType type) {
 		if (annotationTypes == null || annotationTypes.size() == 0) {
 			return null;
 		}
@@ -639,7 +637,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return getAnnotation(annotationTypes, type.getAnnotations());
 	}
 	
-	protected AnnotationMirror getAnnotation(Collection<NamedType> annotationTypes, Element element) {
+	protected AnnotationMirror getAnnotation(Collection<MutableDeclaredType> annotationTypes, Element element) {
 		if (annotationTypes == null || annotationTypes.size() == 0) {
 			return null;
 		}
@@ -647,20 +645,12 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return getAnnotation(annotationTypes, element.getAnnotationMirrors());
 	}
 
-//	@SuppressWarnings("unchecked")
-//	protected <T extends Annotation> T hasAnnotation(TypeElement typeElement) {
-//		List<NamedType> configuration = ensureConfiguration(DefaultConfigurationType.PROCESSING_ANNOTATIONS, typeElement);
-//		
-//		Annotation annotation = hasAnnotation(configuration, typeElement, processingEnv.getElementUtils(), getNameTypes());
-//		return (T)annotation;
-//	}
-
 	public boolean isSupportedByInterface(TypeElement typeElement) {
 		if (ensureConfiguration(DefaultConfigurationElement.PROCESSING_INTERFACES).size() == 0) {
 			return false;
 		}
 
-		for (NamedType type : ensureConfiguration(DefaultConfigurationElement.PROCESSING_INTERFACES)) {
+		for (MutableDeclaredType type : ensureConfiguration(DefaultConfigurationElement.PROCESSING_INTERFACES)) {
 			if (ProcessorUtils.isAssignableFrom(typeElement, type)) {
 				return true;
 			}
@@ -671,8 +661,8 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 
 	protected Set<Element> getConfiguredProcessingTypes() {
 		Set<Element> result = new HashSet<Element>();
-		NamedType[] configuredTypes = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_TYPES);
-		for (NamedType configuredType: configuredTypes) {
+		MutableDeclaredType[] configuredTypes = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_TYPES);
+		for (MutableDeclaredType configuredType: configuredTypes) {
 			AnnotationMirror supportedAnnotation = getSupportedAnnotation(configuredType);
 			if (supportedAnnotation == null || (supportedAnnotation != null && isSupportedAnnotation(supportedAnnotation))) {
 				result.add(toTypeElement(configuredType));
@@ -703,10 +693,10 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			}
 		}
 
-		Set<NamedType> annotations = getProcessingAnnotations();
+		Set<MutableDeclaredType> annotations = getProcessingAnnotations();
 		
 		if (annotations != null) {
-			for (NamedType annotationType: annotations) {
+			for (MutableDeclaredType annotationType: annotations) {
 				
 				TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(annotationType.getQualifiedName());
 				
@@ -764,7 +754,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
 	}
 
-	protected TypeElement toTypeElement(NamedType type) {
+	protected TypeElement toTypeElement(MutableDeclaredType type) {
 		return processingEnv.getElementUtils().getTypeElement(type.getCanonicalName());
 	}
 }

@@ -6,10 +6,10 @@ import javax.annotation.processing.Processor;
 
 import org.junit.Test;
 
-import sk.seges.sesam.core.pap.model.OutputClass;
-import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
+import sk.seges.sesam.pap.metadata.MetaModelProcessor;
+import sk.seges.sesam.pap.metadata.model.MetaModelTypeElement;
 import sk.seges.sesam.shared.model.mock.MockEntity;
 
 public class MetaModelProcessorTest extends AnnotationTest {
@@ -21,8 +21,7 @@ public class MetaModelProcessorTest extends AnnotationTest {
 	}
 
 	private File getOutputFile(Class<?> clazz) {
-		OutputClass inputClass = new OutputClass(clazz.getPackage().getName(), clazz.getSimpleName());
-		NamedType outputClass = MetaModelProcessor.getOutputClass(inputClass, new DefaultPackageValidatorProvider());
+		MutableDeclaredType outputClass = toMutable(clazz).addClassSufix(MetaModelTypeElement.META_MODEL_SUFFIX);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 

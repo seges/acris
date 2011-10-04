@@ -13,7 +13,6 @@ public class ConfigurationProcessorProviderConfigurer extends DefaultProcessorCo
 		case PROCESSING_ANNOTATIONS:
 			return new Type[] { SettingsProvider.class };
 		}
-		return super.getConfigurationElement(element);
+		return new Type[] {};
 	}
-
 }

@@ -1,21 +1,20 @@
 package sk.seges.sesam.core.pap.printer;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class MethodPrinter {
 
 	private final FormattedPrintWriter pw;
-	private final NameTypeUtils nameTypeUtils;
+	private final MutableProcessingEnvironment processingEnv;
 	
-	public MethodPrinter(FormattedPrintWriter pw, ProcessingEnvironment processingEnv) {
+	public MethodPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
 		this.pw = pw;
-		this.nameTypeUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 
 	public void printMethodDefinition(ExecutableElement method) {
@@ -31,11 +30,10 @@ public class MethodPrinter {
 			if (i > 0) {
 				pw.print(", ");
 			}
-			pw.print(nameTypeUtils.toType(parameter.asType()), " " + parameter.getSimpleName().toString());
+			pw.print(processingEnv.getTypeUtils().toMutableType(parameter.asType()), " " + parameter.getSimpleName().toString());
 			i++;
 		}
 		
 		pw.print(")");
-	}	
-
+	}
 }

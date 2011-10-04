@@ -1,60 +1,56 @@
 package sk.seges.sesam.pap.configuration.model;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.DelegateImmutableType;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
-public class SettingsTypeElement extends DelegateImmutableType {
+public class SettingsTypeElement extends DelegateMutableDeclaredType {
 
 	public static final String SUFFIX = "Settings";
 
-	private final ImmutableType annotationNamedType;
-	private final NameTypeUtils nameTypeUtils;
+	private final MutableDeclaredType annotationNamedType;
 	private DeclaredType annotationType;
-	private final ProcessingEnvironment processingEnv;
+	private final MutableProcessingEnvironment processingEnv;
 	
-	public SettingsTypeElement(AnnotationMirror configurationAnnotation, ProcessingEnvironment processingEnv) {
-		this.nameTypeUtils = new NameTypeUtils(processingEnv);
-		this.annotationNamedType = toOutputType(nameTypeUtils.toImmutableType(configurationAnnotation.getAnnotationType()));
+	public SettingsTypeElement(AnnotationMirror configurationAnnotation, MutableProcessingEnvironment processingEnv) {
+		this.annotationNamedType = toOutputType((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(configurationAnnotation.getAnnotationType()));
 		this.annotationType = configurationAnnotation.getAnnotationType();
 		this.processingEnv = processingEnv;
 	}
 
-	public SettingsTypeElement(DeclaredType annotationType, ProcessingEnvironment processingEnv) {
-		this.nameTypeUtils = new NameTypeUtils(processingEnv);
-		this.annotationNamedType = toOutputType(nameTypeUtils.toImmutableType(annotationType));
+	public SettingsTypeElement(DeclaredType annotationType, MutableProcessingEnvironment processingEnv) {
+		this.annotationNamedType = toOutputType((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(annotationType));
 		this.annotationType = annotationType;
 		this.processingEnv = processingEnv;
 	}
 
-	public SettingsTypeElement(ImmutableType annotationNamedType, ProcessingEnvironment processingEnv) {
-		this.nameTypeUtils = new NameTypeUtils(processingEnv);
-		this.annotationNamedType = toOutputType(annotationNamedType);
-		this.annotationType = (DeclaredType)nameTypeUtils.fromType(annotationNamedType);
+	public SettingsTypeElement(MutableDeclaredType annotationMutableType, MutableProcessingEnvironment processingEnv) {
+		this.annotationNamedType = toOutputType(annotationMutableType);
+		this.annotationType = (DeclaredType)processingEnv.getTypeUtils().fromMutableType(annotationMutableType);
 		this.processingEnv = processingEnv;
 	}
 
-	private static ImmutableType toOutputType(ImmutableType type) {
+	private static MutableDeclaredType toOutputType(MutableDeclaredType type) {
 		if (type.getEnclosedClass() != null) {
-			type = type.setEnclosedClass(getOutputName((ImmutableType)type.getEnclosedClass()));
+			type.setEnclosedClass(getOutputName(type.getEnclosedClass()));
 		}
 		
 		return type;
 	}
 	
-	private static ImmutableType getOutputName(ImmutableType type) {
+	private static MutableDeclaredType getOutputName(MutableDeclaredType type) {
 		return type.addClassSufix(SUFFIX);
 	}
 	
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
-		ImmutableType outputName = getOutputName(annotationNamedType);
+	protected MutableDeclaredType getDelegate() {
+		MutableDeclaredType outputName = getOutputName(annotationNamedType);
 		outputName = outputName.setEnclosedClass(annotationNamedType.getEnclosedClass());
+		outputName.setKind(MutableTypeKind.CLASS);
 		return outputName;
 	}
 

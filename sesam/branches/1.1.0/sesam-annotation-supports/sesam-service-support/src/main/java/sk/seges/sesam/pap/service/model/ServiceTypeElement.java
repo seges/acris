@@ -3,31 +3,30 @@ package sk.seges.sesam.pap.service.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
-import sk.seges.sesam.core.pap.model.DelegateImmutableType;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
-public class ServiceTypeElement extends DelegateImmutableType {
+public class ServiceTypeElement extends DelegateMutableDeclaredType {
 
 	private final TypeElement service;
-	private final NameTypeUtils namedTypesUtils;
-	private final ProcessingEnvironment processingEnv;
+	private final MutableProcessingEnvironment processingEnv;
 	
-	public ServiceTypeElement(TypeElement service, ProcessingEnvironment processingEnv) {
+	private ServiceConverterTypeElement serviceConverter;
+	
+	public ServiceTypeElement(TypeElement service, MutableProcessingEnvironment processingEnv) {
 		this.service = service;
-		this.namedTypesUtils = new NameTypeUtils(processingEnv);
 		this.processingEnv = processingEnv;
 	}
 
 	@Override
-	protected ImmutableType getDelegateImmutableType() {
-		return namedTypesUtils.toImmutableType(service);
+	protected MutableDeclaredType getDelegate() {
+		return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(service.asType());
 	}
 
 	public List<LocalServiceTypeElement> getLocalServiceInterfaces() {
@@ -62,5 +61,13 @@ public class ServiceTypeElement extends DelegateImmutableType {
 	
 	public TypeElement asElement() {
 		return service;
+	}
+	
+	public ServiceConverterTypeElement getServiceConverter() {
+		if (serviceConverter == null) {
+			serviceConverter = new ServiceConverterTypeElement(this);
+		}
+		
+		return serviceConverter;
 	}
 }

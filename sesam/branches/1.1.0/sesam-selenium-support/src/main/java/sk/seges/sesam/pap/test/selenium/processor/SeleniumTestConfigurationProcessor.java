@@ -1,22 +1,17 @@
 package sk.seges.sesam.pap.test.selenium.processor;
 
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
@@ -24,56 +19,37 @@ import javax.lang.model.util.ElementFilter;
 import org.junit.Ignore;
 
 import sk.seges.sesam.core.configuration.annotation.Configuration;
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
-import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
-import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
+import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumConfigurationProcessorProviderConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsProviderTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.printer.SettingsInitializerPrinter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProcessor {
+public class SeleniumTestConfigurationProcessor extends MutableAnnotationProcessor {
 	
 	protected ElementKind getElementKind() {
 		return ElementKind.CLASS;
 	}
 
 	@Override
-	public Set<String> getSupportedAnnotationTypes() {
-		Set<String> annotations = new HashSet<String>();
-		annotations.add(SeleniumTest.class.getCanonicalName());
-		return annotations;
+	protected ProcessorConfigurer getConfigurer() {
+		return new SeleniumConfigurationProcessorProviderConfigurer();
 	}
 
 	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		return new NamedType[] {
-				new SeleniumTestTypeElement((TypeElement)((DeclaredType)mutableType.asType()).asElement(), processingEnv).getConfiguration()
+	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
+		return new MutableDeclaredType[] { 
+				new SeleniumTestTypeElement(context.getTypeElement(), processingEnv).getConfiguration()
 		};
-	};
-
-	@Override
-	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
-		switch (type) {
-		case OUTPUT_SUPERCLASS:
-			return new Type[] { DefaultTestSettings.class };
-		case OUTPUT_INTERFACES:
-			return new Type[] {
-					new SeleniumSettingsProviderTypeElement(new SeleniumTestTypeElement(typeElement, processingEnv).getSeleniumSuite(), processingEnv)
-			};
-		}
-		
-		return super.getOutputDefinition(type, typeElement);
 	}
 	
-	protected void cloneConstructor(ExecutableElement constructor, NamedType outputClass, PrintWriter pw) {
+	protected void cloneConstructor(ExecutableElement constructor, MutableDeclaredType outputClass, PrintWriter pw) {
 
 		for (Modifier modifier: constructor.getModifiers()) {
 			if (modifier.equals(Modifier.PRIVATE)) {
@@ -123,24 +99,25 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 	}
 	
 	@Override
-	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
-		if (!processingEnv.getTypeUtils().isAssignable(element.asType(), processingEnv.getElementUtils().getTypeElement(AbstractSeleniumTest.class.getCanonicalName()).asType())) {
-			return !supportProcessorChain();
-		}
-		return super.processElement(element, roundEnv);
-	}
-
-	@Override
-	protected void writeClassAnnotations(Element el, NamedType outputName, PrintWriter pw) {
-		pw.println("@" + Ignore.class.getCanonicalName());
+	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
+		return processingEnv.getTypeUtils().isAssignable(context.getTypeElement().asType(), 
+				processingEnv.getElementUtils().getTypeElement(AbstractSeleniumTest.class.getCanonicalName()).asType());
 	}
 	
 	@Override
-	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
-		List<ExecutableElement> constructors = ElementFilter.constructorsIn(element.getEnclosedElements());
+	protected void printAnnotations(ProcessorContext context) {
+		context.getPrintWriter().println("@" + Ignore.class.getCanonicalName());
+	}
+
+	@Override
+	protected void processElement(ProcessorContext context) {
+		
+		FormattedPrintWriter pw = context.getPrintWriter();
+		
+		List<ExecutableElement> constructors = ElementFilter.constructorsIn(context.getTypeElement().getEnclosedElements());
 		
 		for (ExecutableElement constructor: constructors) {
-			cloneConstructor(constructor, outputClass, pw);
+			cloneConstructor(constructor, context.getOutputType(), context.getPrintWriter());
 		}
 
 		ArrayList<Element> configurationElements = new ArrayList<Element>(getClassPathTypes().getElementsAnnotatedWith(Configuration.class, roundEnv));
@@ -155,13 +132,13 @@ public class SeleniumTestConfigurationProcessor extends AbstractConfigurableProc
 
 		SettingsInitializerPrinter settingsInitializerPrinter = new SettingsInitializerPrinter(pw, processingEnv);
 		
-		SeleniumTestTypeElement seleniumTestElement = new SeleniumTestTypeElement(element, processingEnv);
+		SeleniumTestTypeElement seleniumTestElement = new SeleniumTestTypeElement(context.getTypeElement(), processingEnv);
 				
 		for (Element configurationElement: configurationElements) {
 			
 			SettingsTypeElement settingsTypeElement = new SettingsTypeElement((DeclaredType)configurationElement.asType(), processingEnv);
 //			if (settingsTypeElement.exists()) {
-				settingsInitializerPrinter.initialize(seleniumTestElement, outputClass);
+				settingsInitializerPrinter.initialize(seleniumTestElement, context.getOutputType());
 				SeleniumSettingsContext settingsContext = new SeleniumSettingsContext();
 				settingsContext.setSeleniumTest(seleniumTestElement);
 				settingsContext.setSettings(settingsTypeElement);

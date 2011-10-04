@@ -3,7 +3,6 @@ package sk.seges.sesam.core.pap.printer;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -11,7 +10,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class AnnotationPrinter {
@@ -21,11 +20,11 @@ public class AnnotationPrinter {
 	}
 	
 	private final FormattedPrintWriter pw;
-	private final NameTypeUtils nameTypeUtils;
+	private final MutableProcessingEnvironment processingEnv;
 	
-	public AnnotationPrinter(FormattedPrintWriter pw, ProcessingEnvironment processingEnv) {
+	public AnnotationPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
 		this.pw = pw;
-		this.nameTypeUtils = new NameTypeUtils(processingEnv);
+		this.processingEnv = processingEnv;
 	}
 
 	public void printMethodAnnotations(Element method, AnnotationFilter...annotationFilters) {
@@ -50,7 +49,7 @@ public class AnnotationPrinter {
 	}
 	
 	public void print(AnnotationMirror annotation) {
-		pw.print("@", nameTypeUtils.toType(annotation.getAnnotationType()));
+		pw.print("@", processingEnv.getTypeUtils().toMutableType(annotation.getAnnotationType()));
 		
 		if (annotation.getElementValues().size() > 0) {
 			pw.print("(");

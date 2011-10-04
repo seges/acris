@@ -6,30 +6,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import sk.seges.sesam.core.pap.builder.api.NameTypes;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
 public class TypeUtils {
 
-	public static NamedType[] mergeClassArray(Type[] classes, Set<NamedType> classNames, NameTypes nameTypes) {
-		List<NamedType> result = new ArrayList<NamedType>();
+	public static MutableDeclaredType[] mergeClassArray(Type[] classes, Set<MutableDeclaredType> classNames, MutableProcessingEnvironment processingEnv) {
+		List<MutableDeclaredType> result = new ArrayList<MutableDeclaredType>();
 
-		ListUtils.addUnique(result, TypeUtils.toTypes(classes, nameTypes));
+		ListUtils.addUnique(result, TypeUtils.toTypes(classes, processingEnv));
 		ListUtils.addUnique(result, classNames);
 		
-		return result.toArray(new NamedType[] {});		
+		return result.toArray(new MutableDeclaredType[] {});		
 	}
 
-	public static NamedType[] mergeClassArray(Type[] originClasses, Type[] newClasses, NameTypes nameTypes) {
-		return mergeClassArray(originClasses, TypeUtils.toTypes(newClasses, nameTypes), nameTypes);
+	public static MutableDeclaredType[] mergeClassArray(Type[] originClasses, Type[] newClasses, MutableProcessingEnvironment processingEnv) {
+		return mergeClassArray(originClasses, TypeUtils.toTypes(newClasses, processingEnv), processingEnv);
 	}
 
-	public static Set<NamedType> toTypes(Type[] javaTypes, NameTypes nameTypes) {
-		Set<NamedType> result = new HashSet<NamedType>();
+	public static Set<MutableDeclaredType> toTypes(Type[] javaTypes, MutableProcessingEnvironment processingEnv) {
+		Set<MutableDeclaredType> result = new HashSet<MutableDeclaredType>();
 		for (Type javaType: javaTypes) {
-			result.add(nameTypes.toType(javaType));
+			result.add((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(javaType));
 		}
 		return result;
 	}
-
 }

@@ -4,7 +4,7 @@ import javax.lang.model.element.Modifier;
 
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.printer.AbstractElementPrinter;
 
 public class AccessorsPrinter extends AbstractElementPrinter {
@@ -14,7 +14,7 @@ public class AccessorsPrinter extends AbstractElementPrinter {
 	}
 	
 	@Override
-	public void print(ProcessorContext context) {
+	public void print(TransferObjectContext context) {
 
 		String modifier = Modifier.PUBLIC.toString() + " ";
 		

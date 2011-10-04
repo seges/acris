@@ -1,35 +1,27 @@
 package sk.seges.sesam.pap.model;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.printer.ConstructorPrinter;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
-import sk.seges.sesam.pap.model.model.DtoTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
-import sk.seges.sesam.pap.model.printer.api.ElementPrinter;
+import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoPrinter;
@@ -57,78 +49,44 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	}
 	
 	@Override
-	protected boolean processElement(Element element, RoundEnvironment roundEnv) {
-
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
+	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
 		
 		ConverterTypeElement converter = configurationTypeElement.getConverter();
 		if (!converter.isGenerated()) {
-			return supportProcessorChain();
+			return false;
 		}
 
-		return super.processElement(element, roundEnv);
-	}
-
-	@Override
-	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
-		
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(typeElement, processingEnv, roundEnv);
-		
-		switch (type) {
-		case OUTPUT_SUPERCLASS:
-			
-			ImmutableType domainParameterType = getDomainType(configurationTypeElement);
-			ImmutableType dtoParameterType = getDtoType(configurationTypeElement);
-			
-			return new Type[] {
-					TypedClassBuilder.get(BasicCachedConverter.class, dtoParameterType, domainParameterType)
-			};
-		}
-		return super.getOutputDefinition(type, typeElement);
+		return super.checkPreconditions(context, alreadyExists);
 	}
 	
-	//TODO move to the configuration type element
-	protected ImmutableType getDtoType(ConfigurationTypeElement configurationElement) {
-		DtoTypeElement dtoType = configurationElement.getDto();
+	@Override
+	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		
-		if (dtoType != null) {
-			return typeParametersSupport.prefixTypeParameter(dtoType, ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
-		}
-		return null;
-	}
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
 
-	//TODO move to the configuration type element
-	protected ImmutableType getDomainType(ConfigurationTypeElement configurationElement) {
-		DomainTypeElement domainType = configurationElement.getDomain();
-		
-		if (domainType != null) {
-			return typeParametersSupport.prefixTypeParameter(domainType, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
+		ConverterTypeElement converter = configurationTypeElement.getConverter();
+		if (!converter.isGenerated()) {
+			return new MutableDeclaredType[] {};
 		}
-		
-		return null;
-	}
 
+		return new MutableDeclaredType[] { converter };
+	}
+	
 	protected PackageValidatorProvider getPackageValidatorProvider() {
 		return new DefaultPackageValidatorProvider();
 	}
 
 	@Override
-	protected ElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
-		return new ElementPrinter[] {
+	protected TransferObjectElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
+		return new TransferObjectElementPrinter[] {
 				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), processingEnv, pw),
 				new CopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(),getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
 				new CopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
 	}
 	
-	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType immutableType) {
-		return new NamedType[] { 
-				new ConfigurationTypeElement((TypeElement)((DeclaredType)immutableType.asType()).asElement(), processingEnv, roundEnv).getConverter()
-		};
-	}
-
-	protected TransferObjectProcessorContextProvider getProcessorContextProvider(ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	protected TransferObjectProcessorContextProvider getProcessorContextProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		return new TransferObjectConverterProcessorContextProvider(processingEnv, roundEnv, getEntityResolver());
 	}
 
@@ -137,15 +95,17 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	}
 	
 	@Override
-	protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw) {
+	protected void processElement(ProcessorContext context) {
 
-		converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, roundEnv, getParametersResolver());
+		FormattedPrintWriter pw = context.getPrintWriter();
+		
+		converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, getParametersResolver());
 
 		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
 		
-		ParameterElement[] constructorAditionalParameters = getParametersResolver().getConstructorAditionalParameters(new ConfigurationTypeElement(element, processingEnv, roundEnv).getDomain().asType());
+		ParameterElement[] constructorAditionalParameters = getParametersResolver().getConstructorAditionalParameters(new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv).getDomain().asType());
 		
-		ConstructorPrinter constructorPrinter = new ConstructorPrinter(pw, outputName);
+		ConstructorPrinter constructorPrinter = new ConstructorPrinter(pw, context.getOutputType());
 		constructorPrinter.printConstructors(cachedConverterType, constructorAditionalParameters);
 
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(cachedConverterType.getEnclosedElements());
@@ -171,7 +131,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		}
 		
 		
-		super.processElement(element, outputName, roundEnv, pw);
+		super.processElement(context);
 		
 		converterProviderPrinter.printConverterMethods(false);
 	}

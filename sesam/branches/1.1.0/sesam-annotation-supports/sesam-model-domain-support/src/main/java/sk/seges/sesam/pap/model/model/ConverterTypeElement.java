@@ -3,10 +3,10 @@ package sk.seges.sesam.pap.model.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -14,26 +14,21 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.sesam.core.pap.builder.NameTypeUtils;
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.model.TypeParameterBuilder;
-import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.TypeParameter;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
-import sk.seges.sesam.pap.model.context.api.ProcessorContext;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
-public class ConverterTypeElement extends TomBaseElement implements GeneratedClass {
+public class ConverterTypeElement extends TomBaseDeclaredType implements GeneratedClass {
 
 	public static final String DEFAULT_SUFFIX = "Converter";	
 	public static final String DEFAULT_CONFIGURATION_SUFFIX = "Configuration";
@@ -45,7 +40,7 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 	
 	private final boolean generated;
 	
-	ConverterTypeElement(ConfigurationTypeElement configurationTypeElement, TypeElement converterTypeElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	ConverterTypeElement(ConfigurationTypeElement configurationTypeElement, TypeElement converterTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 		this.converterTypeElement = converterTypeElement;
 		this.configurationTypeElement = configurationTypeElement;
@@ -54,38 +49,42 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		initialize();
 	}
 	
-	ConverterTypeElement(ConfigurationTypeElement configurationTypeElement, ProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+	public ConverterTypeElement(ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 		this.generated = true;
 		this.converterTypeElement = null;
 		this.configurationTypeElement = configurationTypeElement;
+
+		setKind(MutableTypeKind.CLASS);
+		setSuperClass(processingEnv.getTypeUtils().getDeclaredType(
+				(MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(BasicCachedConverter.class), configurationTypeElement.getDto(), configurationTypeElement.getDomain()));
 	}
 
-	protected ImmutableType getDelegateImmutableType() {
+	protected MutableDeclaredType getDelegate() {
 		if (converterTypeElement != null) {
-			return getNameTypesUtils().toImmutableType(converterTypeElement);
+			return (MutableDeclaredType) getMutableTypesUtils().toMutableType((DeclaredType)converterTypeElement.asType());
 		}
 		return getGeneratedConverterTypeFromConfiguration(configurationTypeElement);
 	};
 
 	private void initialize() {
-		if (typeParametersSupport.hasTypeParameters(this) && typeParametersSupport.hasTypeParameters(configurationTypeElement.getDomain())) {
+		if (this.hasVariableParameterTypes() && configurationTypeElement.getDomain().hasTypeParameters()) {
 
-			TypeParameter[] converterParameters = new TypeParameter[configurationTypeElement.getDomain().getTypeParameters().length * 2];
+			MutableTypeVariable[] converterParameters = new MutableTypeVariable[configurationTypeElement.getDomain().getTypeVariables().size() * 2];
 			
 			int i = 0;
 			
-			for (TypeParameter typeParameter: configurationTypeElement.getDto().getTypeParameters()) {
-				converterParameters[i] = typeParameter;
+			for (MutableTypeVariable typeVariable: configurationTypeElement.getDto().getTypeVariables()) {
+				converterParameters[i] = typeVariable;
 				i++;
 			}
 
-			for (TypeParameter typeParameter: configurationTypeElement.getDomain().getTypeParameters()) {
-				converterParameters[i] = typeParameter;
+			for (MutableTypeVariable typeVariable: configurationTypeElement.getDomain().getTypeVariables()) {
+				converterParameters[i] = typeVariable;
 				i++;
 			}
 			
-			setDelegateImmutableType(TypedClassBuilder.get(this, converterParameters));
+			setDelegate(this.clone().setTypeVariables(converterParameters));
 		}
 	}
 	
@@ -93,25 +92,31 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		return new DefaultPackageValidatorProvider();
 	}
 
-	private List<TypeParameter> copyTypeArguments(String prefix, DeclaredType declaredType, HasTypeParameters referenceType) {
+	private List<MutableTypeVariable> copyTypeArguments(String prefix, DeclaredType declaredType, MutableDeclaredType referenceType) {
 		
-		List<TypeParameter> result = new ArrayList<TypeParameter>();
+		List<MutableTypeVariable> result = new ArrayList<MutableTypeVariable>();
 		
-		for (int i = 0; i < declaredType.getTypeArguments().size(); i++) {
-			TypeParameter typeParameter = referenceType.getTypeParameters()[i];
+		Iterator<? extends MutableTypeVariable> iterator = referenceType.getTypeVariables().iterator();
+		
+		int i = 0;
+		while (iterator.hasNext()) {
+			if (i >= declaredType.getTypeArguments().size()) {
+				break;
+			}
+			i++;
+			MutableTypeVariable typeParameter = iterator.next();
 			
-			String name = typeParameter.getSimpleName();
+			String name = typeParameter.getVariable();
 			
 			if (name != null && name.length() > 0) {
-				result.add(TypeParameterBuilder.get(prefix + "_" + name, typeParameter.getBounds()));
+				result.add(typeParameter.clone().setVariable(prefix + "_" + name));
 			}
-			//TODO handle else ???
 		}
 		
 		return result;
 	}
 
-	private ImmutableType getGeneratedConverterTypeFromConfiguration(ConfigurationTypeElement configurationTypeElement) {
+	private MutableDeclaredType getGeneratedConverterTypeFromConfiguration(ConfigurationTypeElement configurationTypeElement) {
 
 		Element configurationElement = configurationTypeElement.asElement();
 		
@@ -130,33 +135,29 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 
 		TypeElement domainType = transferObjectConfiguration.getDomain();
 		
-		ImmutableType configurationNameType = getNameTypesUtils().toImmutableType(configurationTypeElement.asElement());
+		MutableDeclaredType configurationNameType = getMutableTypesUtils().toMutableType((DeclaredType)configurationTypeElement.asElement().asType());
 		
 		//Remove configuration suffix if it is there - just to have better naming convention
 		String simpleName = configurationNameType.getSimpleName();
 		if (simpleName.endsWith( DEFAULT_CONFIGURATION_SUFFIX) && simpleName.length() > DEFAULT_CONFIGURATION_SUFFIX.length()) {
 			simpleName = simpleName.substring(0, simpleName.lastIndexOf(DEFAULT_CONFIGURATION_SUFFIX));
-			configurationNameType = configurationNameType.setName(simpleName);
+			configurationNameType = configurationNameType.setSimpleName(simpleName);
 		}
 		
-		configurationNameType = configurationNameType.addClassSufix(DEFAULT_SUFFIX);
-		
-		NameTypeUtils nameTypes = new NameTypeUtils(processingEnv);
+		MutableDeclaredType converterNameType = configurationNameType.addClassSufix(DEFAULT_SUFFIX);
 		
 		if (domainType.getTypeParameters().size() > 0) {
 			
-			HasTypeParameters referenceType = (HasTypeParameters)nameTypes.toType(domainType);
+			MutableDeclaredType referenceType = getMutableTypesUtils().toMutableType((DeclaredType)domainType.asType());
 			
 			//there are type parameters, so they should be passed into the converter definition itself			
-			List<TypeParameter> typeParameters = copyTypeArguments(DTO_TYPE_ARGUMENT_PREFIX, (DeclaredType)domainType.asType(), referenceType);
+			List<MutableTypeVariable> typeParameters = copyTypeArguments(DTO_TYPE_ARGUMENT_PREFIX, (DeclaredType)domainType.asType(), referenceType);
 			typeParameters.addAll(copyTypeArguments(DOMAIN_TYPE_ARGUMENT_PREFIX, (DeclaredType)domainType.asType(), referenceType));
 
-			configurationNameType = nameTypes.erasure(configurationNameType);
-
-			return TypedClassBuilder.get(configurationNameType, typeParameters.toArray(new TypeParameter[] {}));
+			converterNameType.setTypeVariables(typeParameters.toArray(new MutableTypeVariable[] {}));
 		}
 		
-		return configurationNameType;
+		return converterNameType;
 	}
 	
 	@Override
@@ -185,7 +186,7 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		ConverterParameter converterParameter = new ConverterParameter();
 		TypeElement dtoConverterTypeElement = processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName());
 		converterParameter.setConverter(ProcessorUtils.implementsType(constructorParameter.asType(), dtoConverterTypeElement.asType()));
-		converterParameter.setType(getNameTypesUtils().toImmutableType(constructorParameter.asType()));
+		converterParameter.setType(getMutableTypesUtils().toMutableType(constructorParameter.asType()));
 		converterParameter.setName(constructorParameter.getSimpleName().toString());
 		converterParameter.setConverter(this);
 		return converterParameter;
@@ -259,7 +260,7 @@ public class ConverterTypeElement extends TomBaseElement implements GeneratedCla
 		}
 		
 		for (int i = 0; i < domainElement.getTypeParameters().size(); i++) {
-			result.add(ProcessorContext.LOCAL_CONVERTER_NAME + i);
+			result.add(TransferObjectContext.LOCAL_CONVERTER_NAME + i);
 		}
 
 		return result;

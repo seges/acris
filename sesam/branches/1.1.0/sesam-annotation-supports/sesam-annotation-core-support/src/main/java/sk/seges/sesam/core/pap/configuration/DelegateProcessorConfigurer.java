@@ -7,7 +7,7 @@ import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 
 public abstract class DelegateProcessorConfigurer extends DefaultProcessorConfigurer {
 
@@ -55,13 +55,13 @@ public abstract class DelegateProcessorConfigurer extends DefaultProcessorConfig
 		
 		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
 
-		NamedType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+		MutableDeclaredType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 
 		for (AnnotationMirror annotationMirror: annotationMirrors) {
 
 			Annotation annotation = toAnnotation(annotationMirror, field);
 			
-			for (NamedType supportedAnnotaion: supportedAnnotations) {
+			for (MutableDeclaredType supportedAnnotaion: supportedAnnotations) {
 				if (isDelegateAnnotation(annotation)) {
 					result.add(getAnnotationFromDelegate(annotation));
 				} else if (annotation.getClass().toString().equals(supportedAnnotaion.getCanonicalName())) {
@@ -80,10 +80,10 @@ public abstract class DelegateProcessorConfigurer extends DefaultProcessorConfig
 		
 		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
 
-		NamedType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
+		MutableDeclaredType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
 
 		for (AnnotationMirror annotation: annotationMirrors) {
-			for (NamedType supportedAnnotaion: supportedAnnotations) {
+			for (MutableDeclaredType supportedAnnotaion: supportedAnnotations) {
 				if (isDelegateAnnotation(annotation)) {
 					result.add(getAnnotationFromDelegate(annotation));
 				} else if (annotation.getAnnotationType().toString().equals(supportedAnnotaion.getCanonicalName())) {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -20,10 +21,19 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.Types;
 
-import sk.seges.sesam.core.pap.model.api.NamedType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 
 
 public class ProcessorUtils {
+
+	public static boolean isUnboxedType(TypeMirror typeMirror, ProcessingEnvironment processingEnv) {
+		try {
+			return (processingEnv.getTypeUtils().unboxedType(typeMirror) != null);
+		} catch (IllegalArgumentException e) {
+		}
+
+		return false;
+	}
 
 	public static boolean implementsType(TypeMirror t1, TypeMirror t2) {
 		if (t1 == null || !t1.getKind().equals(TypeKind.DECLARED) || !t2.getKind().equals(TypeKind.DECLARED)) {
@@ -283,7 +293,7 @@ public class ProcessorUtils {
 	/**
 	 * Method determines whether typeElement implements or extends type
 	 */
-	public static boolean isAssignableFrom(TypeElement typeElement, NamedType type) {
+	public static boolean isAssignableFrom(TypeElement typeElement, MutableDeclaredType type) {
 		assert typeElement != null;
 		assert type != null;
 		
@@ -310,7 +320,7 @@ public class ProcessorUtils {
 		return false;
 	}
 
-	public static boolean isAssignable(TypeMirror mirror, NamedType type) {
+	public static boolean isAssignable(TypeMirror mirror, MutableDeclaredType type) {
 		assert mirror != null;
 		assert type != null;
 
@@ -327,7 +337,7 @@ public class ProcessorUtils {
 		return false;
 	}
 
-	public static boolean isOfType(TypeElement te, NamedType type) {
+	public static boolean isOfType(TypeElement te, MutableDeclaredType type) {
 		return te.getQualifiedName().getClass().toString().equals(type.getQualifiedName());
 	}
 
