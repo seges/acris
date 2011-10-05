@@ -1,0 +1,132 @@
+#summary Selenium support with advanced configuration possibilities
+
+*Strong advice: The ones who does not use/like maven - go away, this wiki page is not for you! Seriously.*
+
+= Creating new project with selenium support =
+
+*Ensure* that you use sesam-os-base-parent (version 1.1.4-SNAPSHOT or higher) as your parent project (__note: or another project that has sesam-os-base-parent as the parent project__)
+{{{
+<project>
+	...
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os-base-parent</artifactId>
+		<version>1.1.4-SNAPSHOT</version>
+		<relativePath/>
+	</parent>
+</project>
+}}}
+
+*Create* following files in the root directory (where is your pom.xml located):
+ * .pap - this enables maven profile responsible for annotation processor (JSR269) plugins and dependencies, configure required plugins and dependencies
+ * .selenium - this provides all dependencies to the selenium and configures reporting plugins
+
+= Why annotation processors ? =
+
+
+{{{
+@SeleniumSuite
+@SeleniumTestConfiguration(
+		testURL = "http://example.com",
+		testURI = "/selenium/site/",
+		browser = Browsers.FIREFOX
+)
+@MailConfiguration(
+		host = "smtp.example.com",
+		mail = "secure@example.com",
+		password = "secured_pass",
+		provider = Provider.IMAPS
+)
+@ReportConfiguration(
+		screenshotConfiguration = @ScreenshotConfiguration(
+				produceScreenshots = true
+		)
+)
+@Credentials (
+		username = "secret_user",
+		password = "secred_pass"
+)
+public class SuiteRunner extends SuiteRunnerConfiguration {
+
+	public static void main(String[] args) throws Exception {
+		new SuiteRunner().run();
+	}
+}
+}}}
+
+= Maven integration =
+
+|| *Task* || *Maven command* || *Decription* ||
+|| *Eclipse integration* || mvn eclipse:clean eclipse:eclipse || This creates you eclipse based project with all settings required for annotation processor including the .factorypath, .org.eclipse.jdt.apt.core.prefs, .etc. *This command does not execute processors anymore!* ||
+|| *Executing processors* || mvn processor:process processor:process-tests || This executes processor against the java sources and against the test sources ||
+|| *Install selenium project* || mvn clean install -!DskipTests || Executes available annotation processors and installs JAR with all the test classes (with suffix -tests.jar) ||
+|| *Executing tests* || mvn test || Execute tests with default configuration ||
+
+= Eclipse integration =
+
+You can run annotation processors also in the eclipse, eclipse:eclipse command prepares all required settings for the eclipse. You can check the settings in the project properties (alt + enter).
+
+[http://acris.googlecode.com/svn/wiki/images/pap_eclipse_integration.png]
+
+Annotation processor is executed immediately after the java source is saved and generated files are located in the target/generated directory (this should be part of the build path)
+
+= Executing processors =
+
+Processors are executed in 2 ways:
+ * in the manual way using `mvn processor:process processor:process-tests` command or
+ * in the automatic way using `mvn install` command
+
+_Note: if do not want to execute processors against the test source just skip the processor:process-tests (= use only mvn processor:process) command or skip tests using -Dmaven.test.skip parameter._
+
+= Install selenium project =
+
+This allows you to reuse selenium common classes/tests in more project. Just install the project using `mvn clean install` _(or mvn clean install -!DskipTests if you don't want to execute tests during the installation)_ command and dependency to your new project:
+
+{{{
+<dependency>
+	<groupId>__YOUR_GROUP_ID__</groupId>
+	<artifactId>__YOUR_ARTIFACT_ID__</artifactId>
+	<version>__VERSION__</version>
+	<type>test-jar</type>
+	<scope>test</scope>
+</dependency>
+}}}
+
+= Executing tests =
+
+Tests can be executed using `mvn test` command using default configuration listend in the SuiteRunner:
+
+{{{
+@SeleniumSuite
+@SeleniumTestConfiguration(
+		testURL = "http://example.com",
+		testURI = "/selenium/test-site/",
+		browser = Browsers.FIREFOX
+)
+@MailConfiguration(
+		host = "smtp.example.com",
+		mail = "secure@example.com",
+		password = "secured_pass",
+		provider = Provider.IMAPS
+)
+@ReportConfiguration(
+		screenshotConfiguration = @ScreenshotConfiguration(
+				produceScreenshots = true
+		)
+)
+@Credentials (
+		username = "secret_user",
+		password = "secred_pass"
+)
+public class SuiteRunner extends SuiteRunnerConfiguration {
+
+	public static void main(String[] args) throws Exception {
+		new SuiteRunner().run();
+	}
+}
+}}}
+
+= Problems =
+
+ * ~~APT maven plugin creates factory path entries with trailing whitespace~~ - this is problem only on linux environment (see reported issue) - [http://jira.codehaus.org/browse/MOJO-1609] - *SOLVED* with 1.0-alpha-5-SNAPSHOT version of the apt-maven-plugin
+ * ~~Chicken-and-egg problem - if your project has compilation errors there is no easy way how to import project into the eclipse (because processors execution is part of the eclipse:eclipse goal and if it fails no eclipse project file is generated)~~ - *SOLVED* processors are no more bound to the generate-source (generate-test-source) phase therefore you can create eclipse project and run processors separatelly
