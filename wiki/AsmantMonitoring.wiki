@@ -18,6 +18,10 @@ There are several possibilities of what to configure:
 
 When deployed on GAE, it will register a cron job checking defined list of sites every 2 minutes.
 
+Only users specified as developers (in GAE) will be able to access administration interfaces.
+
+You can manage (especially view and delete) the configuration using GAE Data Explorer view.
+
 = Project =
 
 {{{
