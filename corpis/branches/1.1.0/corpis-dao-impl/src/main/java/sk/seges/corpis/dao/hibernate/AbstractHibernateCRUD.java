@@ -599,7 +599,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	 */
 	private void enrichCriteriaWithSortables(Page requestedPage, Criteria criteria, Set<String> existingAliases) {
 		List<SortInfo> sortables = requestedPage.getSortables();
-		if (sortables == null) {
+		if (sortables == null || sortables.isEmpty()) {
 			return;
 		}
 
@@ -612,6 +612,9 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 					+ " for projectables.");
 		}
 
+		if (existingAliases == null) {
+			existingAliases = new HashSet<String>();
+		}
 		for (SortInfo sortable : sortables) {
 			String sort = sortable.getColumn();
 			String sortWithEmbedded = addEmbeddedDelimsToProperty(sort, projectableResultClass, propertyAccessor);
