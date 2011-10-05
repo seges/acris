@@ -43,5 +43,17 @@
 		<url-pattern>/asmant-rest/*</url-pattern>
 	</servlet-mapping>
 
+	<security-role>
+		<role-name>admin</role-name>
+	</security-role>
 
+	<security-constraint>
+        <web-resource-collection>
+        	<web-resource-name>asmant</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 </web-app>
