@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -202,20 +201,22 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 
 	private MutableDeclaredType getGeneratedDtoTypeFromConfiguration(ConfigurationTypeElement configurationType) {
 
-		Element configurationElement = configurationType.asElement();
+//		Element configurationElement = configurationType.asElement();
+//		
+//		if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
+//			return null;
+//		}
+
+		//MutableDeclaredType configurationNameType = super.getMutableTypesUtils().toMutableType((DeclaredType) configurationTypeElement.asElement().asType());
+
+		MutableDeclaredType outputType = configurationType.clone();
 		
-		if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
-			return null;
-		}
-
-		MutableDeclaredType configurationNameType = super.getMutableTypesUtils().toMutableType((DeclaredType) configurationTypeElement.asElement().asType());
-
-		PackageValidator packageValidator = getPackageValidationProvider().get(configurationNameType)
+		PackageValidator packageValidator = getPackageValidationProvider().get(outputType)
 				.moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);
-		configurationNameType = configurationNameType.changePackage(packageValidator);
-		return configurationNameType.getSimpleName().endsWith(TransferObjectHelper.DEFAULT_SUFFIX) ? configurationNameType.setSimpleName(configurationNameType
-				.getSimpleName().substring(0, configurationNameType.getSimpleName().length() - TransferObjectHelper.DEFAULT_SUFFIX.length()))
-				: configurationNameType.addClassSufix(TransferObjectHelper.DTO_SUFFIX);
+		outputType = outputType.changePackage(packageValidator);
+		return outputType.getSimpleName().endsWith(TransferObjectHelper.DEFAULT_SUFFIX) ? outputType.setSimpleName(outputType
+				.getSimpleName().substring(0, outputType.getSimpleName().length() - TransferObjectHelper.DEFAULT_SUFFIX.length()))
+				: outputType.addClassSufix(TransferObjectHelper.DTO_SUFFIX);
 	}
 
 	@Override
@@ -242,11 +243,9 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 
 	public DtoDeclared getSuperClass() {
 
-		if (getDelegate() instanceof MutableDeclaredType) {
-			MutableDeclaredType declaredDelegate = (MutableDeclaredType)getDelegate();
-			if (declaredDelegate != null && declaredDelegate.asType() != null) {
-				return (DtoDeclared) processingEnv.getTransferObjectUtils().getDtoType(declaredDelegate.asType());
-			}
+		MutableDeclaredType superClassDelegate = ensureDelegateType().getSuperClass();
+		if (superClassDelegate != null) {
+			return (DtoDeclared) processingEnv.getTransferObjectUtils().getDtoType(superClassDelegate);
 		}
 
 		return null;
