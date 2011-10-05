@@ -25,7 +25,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		FormattedPrintWriter pw = context.getPrintWriter();
 		
 		pw.println("@SuppressWarnings(\"serial\")");
-		
+		//TODO context.getOutputClass is DTO - get configuration element from there
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
 		
 		pw.print("@", TransferObjectMapping.class, "(");
@@ -43,6 +43,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	
 	@Override
 	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
+		//TODO context.getOutputClass is DTO, so use it!
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
 		if (!configurationTypeElement.getDto().isGenerated()) {
 			return false;

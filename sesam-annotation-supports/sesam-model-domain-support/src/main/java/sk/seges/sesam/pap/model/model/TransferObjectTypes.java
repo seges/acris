@@ -32,6 +32,10 @@ public class TransferObjectTypes {
 	}
 
 	public DtoType getDtoType(MutableTypeMirror type) {
+		if (type instanceof DtoType) {
+			return (DtoType)type;
+		}
+		
 		switch (type.getKind()) {
 		case ARRAY:
 			return new DtoArray(getDtoType(type), processingEnv);
