@@ -25,6 +25,9 @@ import sk.seges.acris.asmant.server.domain.twig.TwigSite;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.QueryResultIterator;
+import com.google.appengine.api.urlfetch.HTTPHeader;
+import com.google.appengine.api.urlfetch.HTTPMethod;
+import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
@@ -42,10 +45,21 @@ public class SiteResource {
 	
 	@Path("/")
 	@POST
-	public void addSite(@FormParam("name") String name, @FormParam("url") String url) {
+	public void addSite(@FormParam("name") String name, @FormParam("url") String url, @FormParam("method") String method, @FormParam("headers") String headers, @FormParam("payload") String payload) {
 		TwigSite site = new TwigSite();
 		site.setName(name);
 		site.setUrl(url);
+		if(method !=null && !method.isEmpty()) {
+			site.setMethod(method.toUpperCase());
+		} else {
+			site.setMethod(HTTPMethod.GET.name());
+		}
+		if(payload !=null && !payload.isEmpty()) {
+			site.setPayload(payload);
+		}
+		if(headers !=null && !headers.isEmpty()) {
+			site.setHeaders(headers);
+		}
 		
 		Key store = dataStore.store(site);
 		log.fine("Site saved = " + site + ", key = " + store);
@@ -100,8 +114,25 @@ public class SiteResource {
 			TwigSite site = iterator.next();
 			URLFetchService fetcher = URLFetchServiceFactory.getURLFetchService();
 			try {
+				HTTPResponse response;
 				URL url = new URL(site.getUrl());
-				HTTPResponse response = fetcher.fetch(url);
+				String headers = site.getHeaders();
+				if(headers != null || site.getPayload() != null) {
+					HTTPRequest request = new HTTPRequest(url, HTTPMethod.valueOf(site.getMethod()));
+					if(site.getPayload() != null) {
+						request.setPayload(site.getPayload().getBytes());
+					}
+					if(headers != null) {
+						String[] split = headers.split("\\|\\|");
+						for(int i = 0; i < split.length; i++) {
+							HTTPHeader header = new HTTPHeader(split[i], split[++i]);
+							request.addHeader(header);
+						}
+					}
+					response = fetcher.fetch(request);
+				} else {
+					response = fetcher.fetch(url);
+				}
 
 //				byte[] content = response.getContent();
 				// if redirects are followed, this returns the final URL we are redirected to

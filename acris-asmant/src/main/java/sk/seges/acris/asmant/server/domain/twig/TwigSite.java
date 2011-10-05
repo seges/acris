@@ -10,6 +10,9 @@ public class TwigSite {
 	private String id;
 	private String url;
 	private String name;
+	private String method;
+	private String headers;
+	private String payload;
 	
 	
 	public String getId() {
@@ -36,8 +39,34 @@ public class TwigSite {
 		this.name = name;
 	}
 
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
+	public String getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(String headers) {
+		this.headers = headers;
+	}
+
+	public String getPayload() {
+		return payload;
+	}
+
+	public void setPayload(String payload) {
+		this.payload = payload;
+	}
+
 	@Override
 	public String toString() {
-		return "TwigSite [url=" + url + ", name=" + name + "]";
+		return "TwigSite [id=" + id + ", url=" + url + ", name=" + name
+				+ ", method=" + method + ", headers=" + headers + ", payload="
+				+ payload + "]";
 	}
 }
