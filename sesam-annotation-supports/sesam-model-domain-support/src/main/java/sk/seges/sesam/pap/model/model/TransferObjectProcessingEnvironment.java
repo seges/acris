@@ -11,10 +11,9 @@ public class TransferObjectProcessingEnvironment extends MutableProcessingEnviro
 	private final RoundEnvironment roundEnv;
 	private ConfigurationProvider[] configurationProviders;
 	
-	public TransferObjectProcessingEnvironment(MutableProcessingEnvironment processingEnvironment, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	public TransferObjectProcessingEnvironment(MutableProcessingEnvironment processingEnvironment, RoundEnvironment roundEnv) {
 		super(processingEnvironment);
 		this.roundEnv = roundEnv;
-		this.configurationProviders = configurationProviders;
 	}
 
 	public void setConfigurationProviders(ConfigurationProvider... configurationProviders) {

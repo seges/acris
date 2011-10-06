@@ -12,6 +12,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -100,7 +101,7 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 
 		for (ConfigurationTypeElement configurationTypeElement : collectConfigurations()) {
 			if (configurationTypeElement.appliesForDtoType(dtoType)) {
-				return new ConfigurationTypeElement(null, (DeclaredType)dtoType, (TypeElement)configurationTypeElement.asElement(), processingEnv, roundEnv);
+				return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)configurationTypeElement.asElement(), processingEnv, roundEnv);
 			}
 		}
 
@@ -115,7 +116,7 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 
 		for (ConfigurationTypeElement configurationTypeElement : collectConfigurations()) {
 			if (configurationTypeElement.appliesForDomainType(domainType)) {
-				return new ConfigurationTypeElement(null, (DeclaredType)domainType, (TypeElement)configurationTypeElement.asElement(), processingEnv, roundEnv);
+				return new ConfigurationTypeElement(null, (MutableDeclaredType)domainType, (TypeElement)configurationTypeElement.asElement(), processingEnv, roundEnv);
 			}
 		}
 

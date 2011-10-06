@@ -37,14 +37,14 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 	protected final ConfigurationProvider[] configurationProviders;
 
 	protected MutableDeclaredType domainType;
-	protected DeclaredType dtoType;
+	protected MutableDeclaredType dtoType;
 
 	private DomainDeclaredType superClassDomainType;
 
 	private boolean idMethodInitialized = false;
 	private ExecutableElement idMethod;
 
-	protected DomainDeclared(MutableDeclaredType domainType, DeclaredType dtoType, ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	protected DomainDeclared(MutableDeclaredType domainType, MutableDeclaredType dtoType, ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
 		this.domainType = domainType;
@@ -348,7 +348,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 		if (domainType != null) {
 			return domainType;
 		}
-		return getMutableTypesUtils().toMutableType(dtoType);
+		return dtoType;
 	}
 
 	private DomainType getDomainForType(TypeMirror type) {
@@ -356,13 +356,12 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 	}
 
 	private void initialize() {
-		if (dtoType != null && dtoType.getTypeArguments().size() > 0) {
+		if (dtoType != null && dtoType.getTypeVariables().size() > 0) {
 
-			MutableDeclaredType mutableType = getMutableTypesUtils().toMutableType(dtoType);
-			MutableTypeVariable[] typeVariables = new MutableTypeVariable[mutableType.getTypeVariables().size()];
+			MutableTypeVariable[] typeVariables = new MutableTypeVariable[dtoType.getTypeVariables().size()];
 			
 			int i = 0;
-			for (MutableTypeVariable typeVariable: mutableType.getTypeVariables()) {
+			for (MutableTypeVariable typeVariable: dtoType.getTypeVariables()) {
 				typeVariables[i++] = (DomainTypeVariable)processingEnv.getTransferObjectUtils().getDtoType(typeVariable).getDomain();
 			}
 			
