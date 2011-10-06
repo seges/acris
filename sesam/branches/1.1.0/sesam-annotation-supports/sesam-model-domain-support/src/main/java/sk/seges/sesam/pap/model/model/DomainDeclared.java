@@ -342,9 +342,9 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 	@Override
 	protected MutableDeclaredType getDelegate() {
 		if (domainType != null) {
-			return (MutableDeclaredType)domainType;
+			return domainType;
 		}
-		return (MutableDeclaredType)getMutableTypesUtils().toMutableType(dtoType);
+		return getMutableTypesUtils().toMutableType(dtoType);
 	}
 
 	private DomainType getDomainForType(TypeMirror type) {
@@ -352,17 +352,18 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 	}
 
 	private void initialize() {
-		if (dtoType != null && dtoType.getKind().equals(TypeKind.DECLARED) && ((DeclaredType)dtoType).getTypeArguments().size() > 0) {
+		if (dtoType != null && dtoType.getTypeArguments().size() > 0) {
 
-			MutableDeclaredType mutableType = (MutableDeclaredType) getMutableTypesUtils().toMutableType(dtoType);
+			MutableDeclaredType mutableType = getMutableTypesUtils().toMutableType(dtoType);
 			MutableTypeVariable[] typeVariables = new MutableTypeVariable[mutableType.getTypeVariables().size()];
 			
 			int i = 0;
 			for (MutableTypeVariable typeVariable: mutableType.getTypeVariables()) {
-				typeVariables[i++] = (DomainTypeVariable)processingEnv.getTransferObjectUtils().getDomainType(typeVariable);
+				typeVariables[i++] = (DomainTypeVariable)processingEnv.getTransferObjectUtils().getDtoType(typeVariable).getDomain();
 			}
 			
 			MutableDeclaredType result = setTypeVariables(typeVariables);
+			stripTypeParametersTypes();
 			this.domainType = result;
 		}
 	}

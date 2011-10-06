@@ -7,11 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.WildcardType;
-import javax.lang.model.util.SimpleTypeVisitor6;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -207,15 +202,15 @@ public class ConverterProviderPrinter {
 	}
 	
 	interface TomBaseElementProvider {
-		ConverterTypeElement getConverter(TypeMirror type);
-		DomainType getDomainType(TypeMirror type);
-		DtoType getDtoType(TypeMirror type);
+		ConverterTypeElement getConverter(MutableTypeMirror type);
+		DomainType getDomainType(MutableTypeMirror type);
+		DtoType getDtoType(MutableTypeMirror type);
 	}
 	
 	class DomainTypeElementProvider implements TomBaseElementProvider {
 
 		@Override
-		public ConverterTypeElement getConverter(TypeMirror type) {
+		public ConverterTypeElement getConverter(MutableTypeMirror type) {
 			DomainType domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(type);
 			if (domainTypeElement.getConfiguration() != null) {
 				return domainTypeElement.getConfiguration().getConverter();
@@ -224,12 +219,12 @@ public class ConverterProviderPrinter {
 		}
 
 		@Override
-		public DomainType getDomainType(TypeMirror type) {
+		public DomainType getDomainType(MutableTypeMirror type) {
 			return processingEnv.getTransferObjectUtils().getDomainType(type);
 		}
 
 		@Override
-		public DtoType getDtoType(TypeMirror type) {
+		public DtoType getDtoType(MutableTypeMirror type) {
 			return processingEnv.getTransferObjectUtils().getDomainType(type).getDto();
 		}
 		
@@ -238,7 +233,7 @@ public class ConverterProviderPrinter {
 	class DtoTypeElementProvider implements TomBaseElementProvider {
 
 		@Override
-		public ConverterTypeElement getConverter(TypeMirror type) {
+		public ConverterTypeElement getConverter(MutableTypeMirror type) {
 			DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
 			if (dtoType.getConfiguration() != null) {
 				return dtoType.getConverter();
@@ -248,12 +243,12 @@ public class ConverterProviderPrinter {
 		}
 
 		@Override
-		public DomainType getDomainType(TypeMirror type) {
+		public DomainType getDomainType(MutableTypeMirror type) {
 			return processingEnv.getTransferObjectUtils().getDtoType(type).getDomain();
 		}
 
 		@Override
-		public DtoType getDtoType(TypeMirror type) {
+		public DtoType getDtoType(MutableTypeMirror type) {
 			return processingEnv.getTransferObjectUtils().getDtoType(type);
 		}
 	}
@@ -276,12 +271,12 @@ public class ConverterProviderPrinter {
 
 		boolean castRequired = false;
 		
-		if (type.getKind().equals(TypeKind.DECLARED) && converterTypeElement.hasTypeParameters()) {
+		if (type.getKind().isDeclared() && converterTypeElement.hasTypeParameters()) {
 			
-			if (((DeclaredType)type).getTypeArguments().size() > 0) {
+			if (((MutableDeclaredType)type).getTypeVariables().size() > 0) {
 				castRequired = true;
 				List<MutableTypeVariable> converterArguments = new ArrayList<MutableTypeVariable>();
-				for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
+				for (MutableTypeMirror typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
 					DtoType dtoType = tomBaseElementProvider.getDtoType(typeArgument);
 					
 					if (dtoType == null) {
@@ -291,7 +286,7 @@ public class ConverterProviderPrinter {
 					
 					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, dtoType));
 				}
-				for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
+				for (MutableTypeVariable typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
 					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, tomBaseElementProvider.getDomainType(typeArgument)));
 				}
 				if (castRequired) {
@@ -302,51 +297,21 @@ public class ConverterProviderPrinter {
 		
 		pw.print(methodName + "(");
 		
-		if (type.getKind().equals(TypeKind.DECLARED) && converterTypeElement.hasTypeParameters()) {
+		if (type.getKind().isDeclared() && converterTypeElement.hasTypeParameters()) {
 			
-			if (((DeclaredType)type).getTypeArguments().size() > 0) {
+			if (((MutableDeclaredType)type).getTypeVariables().size() > 0) {
 				int i = 0;
-				for (TypeMirror typeArgumentMirror: ((DeclaredType)type).getTypeArguments()) {
-					typeArgumentMirror.accept(new SimpleTypeVisitor6<Void, Integer>(){
-						@Override
-						public Void visitDeclared(DeclaredType t, Integer i) {
-							printConverterParameter(t, i);
-							return null;
-						}
-						
-						@Override
-						public Void visitWildcard(WildcardType t, Integer i) {
-							if (t.getExtendsBound() != null) {
-								printConverterParameter(t.getExtendsBound(), i);
-							} else if (t.getSuperBound() != null) {
-								printConverterParameter(t.getSuperBound(), i);
-							}
-							return null;							
-						}
-						
-						private void printConverterParameter(TypeMirror type, int i) {
+				for (MutableTypeVariable typeArgumentMirror: ((MutableDeclaredType)type).getTypeVariables()) {
+					
+					for (MutableTypeMirror upperBound: typeArgumentMirror.getUpperBounds()) {
+						printConverterParameter(tomBaseElementProvider, upperBound, i);
+						i++;
+					}
 
-							if (i > 0) {
-								pw.print(", ");
-							}
-
-							ConverterTypeElement converterTypeElement = tomBaseElementProvider.getConverter(type);
-							
-							if (converterTypeElement != null) {
-								printConverterMethodName(converterTypeElement, processingEnv.getTypeUtils().toMutableType(type), tomBaseElementProvider, pw);
-							} else {
-								MutableTypeMirror typeParameterType = processingEnv.getTypeUtils().toMutableType(type);
-								if (typeParameterType instanceof MutableTypeVariable) {
-									pw.print("(", processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(DtoConverter.class), (MutableTypeVariable)typeParameterType, (MutableTypeVariable)typeParameterType), ")null");
-								} else if (typeParameterType instanceof MutableDeclaredType) {
-									pw.print("(", processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(DtoConverter.class), (MutableDeclaredType)typeParameterType, (MutableDeclaredType)typeParameterType), ")null");
-								} else {
-									processingEnv.getMessager().printMessage(Kind.ERROR, "Unsupported type: " + type.toString() + " used in the converter " + converterTypeElement);
-								}
-							}
-						}
-					}, i);
-					i++;
+					for (MutableTypeMirror lowerBound: typeArgumentMirror.getLowerBounds()) {
+						printConverterParameter(tomBaseElementProvider, lowerBound, i);
+						i++;
+					}
 				}
 			}
 		}
@@ -356,4 +321,48 @@ public class ConverterProviderPrinter {
 		}
 		pw.print(")");
 	}
+
+//	private void printConverterParameter(TomBaseElementProvider tomBaseElementProvider, MutableTypeMirror type, int index) {
+//		switch (type.getKind()) {
+//		case CLASS:
+//		case ANNOTATION_TYPE:
+//		case ENUM:
+//		case INTERFACE:
+//		case PRIMITIVE:
+//			printConverterParameter(tomBaseElementProvider, (MutableDeclaredType)type, index);
+//			break;
+//		case WILDCARD:
+//			MutableWildcardType wildcardType = (MutableWildcardType)type;
+//			if (wildcardType.getExtendsBound() != null) {
+//				printConverterParameter(tomBaseElementProvider, wildcardType.getExtendsBound(), index);
+//			} else if (wildcardType.getSuperBound() != null) {
+//				printConverterParameter(tomBaseElementProvider, wildcardType.getSuperBound(), index);
+//			}
+//			break;
+//			
+//		}
+//	}
+	
+	private void printConverterParameter(TomBaseElementProvider tomBaseElementProvider, MutableTypeMirror type, int index) {
+	
+		if (index > 0) {
+			pw.print(", ");
+		}
+	
+		ConverterTypeElement converterTypeElement = tomBaseElementProvider.getConverter(type);
+		
+		if (converterTypeElement != null) {
+			printConverterMethodName(converterTypeElement, processingEnv.getTypeUtils().toMutableType(type), tomBaseElementProvider, pw);
+		} else {
+			MutableTypeMirror typeParameterType = processingEnv.getTypeUtils().toMutableType(type);
+			if (typeParameterType instanceof MutableTypeVariable) {
+				pw.print("(", processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(DtoConverter.class), (MutableTypeVariable)typeParameterType, (MutableTypeVariable)typeParameterType), ")null");
+			} else if (typeParameterType instanceof MutableDeclaredType) {
+				pw.print("(", processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(DtoConverter.class), (MutableDeclaredType)typeParameterType, (MutableDeclaredType)typeParameterType), ")null");
+			} else {
+				processingEnv.getMessager().printMessage(Kind.ERROR, "Unsupported type: " + type.toString() + " used in the converter " + converterTypeElement);
+			}
+		}
+	}
+
 }

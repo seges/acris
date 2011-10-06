@@ -174,7 +174,7 @@ public class MutableTypes implements Types {
 		typeVariable.setVariable(name);
 		Set<MutableTypeMirror> bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: upperBounds) {
-			if (bound != null && (!bound.getKind().equals(TypeKind.DECLARED) || !bound.toString().equals(Object.class.getCanonicalName()))) {
+			if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
 				bounds.add(bound);
 			}
 		}
@@ -182,7 +182,7 @@ public class MutableTypes implements Types {
 
 		bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: lowerBounds) {
-			if (bound != null && (!bound.getKind().equals(TypeKind.DECLARED) || !bound.toString().equals(Object.class.getCanonicalName()))) {
+			if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
 				bounds.add(bound);
 			}
 		}
@@ -197,7 +197,9 @@ public class MutableTypes implements Types {
 		Set<MutableTypeMirror> bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: upperBounds) {
 			if (bound != null) {
-				bounds.add(bound);
+				if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
+					bounds.add(bound);
+				}
 			}
 		}
 		typeVariable.setUpperBounds(bounds);
