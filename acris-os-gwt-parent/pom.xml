@@ -55,11 +55,13 @@
 		<beanlib-hibernate.version>5.0.2beta</beanlib-hibernate.version>
 
 		<openid4java.version>0.9.6</openid4java.version>
-		<twig.version>1.0.3</twig.version>
+		<twig.version>1.0.4</twig.version>
                 <guice.version>2.0</guice.version>
 
 		<jasper.version>3.7.3</jasper.version>
 		<jasperserver.version>3.7.0</jasperserver.version>
+
+		<appengine.version>1.5.2</appengine.version>
 	</properties>
 
 	<dependencyManagement>
@@ -245,7 +247,7 @@
 
                         <!-- Twig -->
                         <dependency>
-                                <groupId>com.vercer.engine.persist</groupId>
+				<groupId>com.vercer.engine.persist</groupId>
                                 <artifactId>twig-persist</artifactId>
                                 <version>${twig.version}</version>
                         </dependency>
@@ -256,8 +258,8 @@
                                 <version>${guice.version}</version>
                         </dependency>
 
-						<!-- Jasper -->
-						<dependency>
+			<!-- Jasper -->
+			<dependency>
                                 <groupId>net.sf.jasperreports</groupId>
                                 <artifactId>jasperreports</artifactId>
                                 <version>${jasper.version}</version>
@@ -280,6 +282,17 @@
                                 <artifactId>jasperserver-common-ws</artifactId>
                                 <version>${jasperserver.version}</version>
                         </dependency>
+
+			<dependency>
+	                        <groupId>com.google.appengine</groupId>
+	                        <artifactId>appengine-api-1.0-sdk</artifactId>
+				<version>${appengine.version}</version>
+			</dependency>
+			<dependency>
+	                        <groupId>com.google.appengine</groupId>
+	                        <artifactId>appengine-api-labs</artifactId>
+				<version>${appengine.version}</version>
+	                </dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -433,6 +446,122 @@
 					<artifactId>gwt-dev</artifactId>
 					<scope>provided</scope>
 				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>gae</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.gae</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-eclipse-plugin</artifactId>
+						<version>2.8</version>
+						<configuration>
+							<excludes>
+								<exclude>com.google.appengine:appengine-api-1.0-sdk</exclude>
+								<exclude>com.google.appengine:appengine-api-labs</exclude>
+							</excludes>
+							<additionalBuildcommands>
+								<buildCommand>
+									<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
+								</buildCommand>
+								<buildCommand>
+									<name>com.google.appengine.eclipse.core.projectValidator</name>
+								</buildCommand>
+							</additionalBuildcommands>
+
+							<additionalProjectnatures>
+								<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
+							</additionalProjectnatures>
+
+							<classpathContainers>
+								<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+								<classpathContainer>com.google.appengine.eclipse.core.GAE_CONTAINER</classpathContainer>
+							</classpathContainers>
+
+							<additionalConfig>
+								<file>
+									<name>.settings/com.google.gdt.eclipse.core.prefs</name>
+									<content><![CDATA[
+										eclipse.preferences.version=2
+										jarsExcludedFromWebInfLib=
+										warSrcDir=target/${artifactId}-${version}
+										warSrcDirIsOutput=true
+										]]>
+									</content>
+								</file>
+							</additionalConfig>
+
+							<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
+							<wtpversion>2.0</wtpversion>
+
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency>
+		                        <groupId>com.google.appengine</groupId>
+		                        <artifactId>appengine-api-1.0-sdk</artifactId>
+		                </dependency>
+                
+				<dependency>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-javamail_1.4_spec</artifactId>
+				</dependency>
+
+				<dependency>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>acris-quick-gae</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.acris-quick-gae</exists>
+				</file>
+			</activation>
+
+			<dependencies>
+				<dependency>
+                			<groupId>com.vercer.engine.persist</groupId>
+			                <artifactId>twig-persist</artifactId>
+		        	</dependency>
+
+				<dependency>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>jsr311-api</artifactId>
+				</dependency>
+	
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-server</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-client</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-json</artifactId>
+				</dependency>	
+				<dependency>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-spring</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-multipart</artifactId>
+				</dependency>	
 			</dependencies>
 		</profile>
 	</profiles>
