@@ -7,6 +7,7 @@ import sk.seges.acris.widget.client.util.WidgetUtils;
 
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
@@ -74,6 +75,7 @@ public class ResizablePanel extends HTML {
 		handleElement = DOM.createDiv();
 		handleElement.addClassName(RESIZABLE_HANDLE_STYLE);
 		handleElement.getStyle().setPosition(Position.RELATIVE);
+		handleElement.getStyle().setOverflow(Overflow.HIDDEN);
 		getElement().appendChild(handleElement);
 
 		Element handleN = createHandle("north");
@@ -196,6 +198,14 @@ public class ResizablePanel extends HTML {
 				DOM.setCapture(this.getElement());
 				event.stopPropagation();
 
+				com.google.gwt.dom.client.Element childElement = getElement().getFirstChildElement();
+				while (childElement != null) {
+					if (childElement.getClassName().contains(X_RESIZABLE_HANDLE_STYLE)) {
+						childElement.getStyle().setDisplay(Display.NONE);
+					}
+					childElement = childElement.getNextSiblingElement();
+				}
+
 				overlayElement.getStyle().setCursor(cursorResize);
 				overlayElement.getStyle().setWidth(getBody().getOffsetWidth(), Unit.PX);
 				overlayElement.getStyle().setHeight(getBody().getOffsetHeight(), Unit.PX);
@@ -219,6 +229,14 @@ public class ResizablePanel extends HTML {
 
 			int width = proxyElement.getOffsetWidth();
 			int height = proxyElement.getOffsetHeight();
+
+			com.google.gwt.dom.client.Element childElement = getElement().getFirstChildElement();
+			while (childElement != null) {
+				if (childElement.getClassName().contains(X_RESIZABLE_HANDLE_STYLE)) {
+					childElement.getStyle().clearDisplay();
+				}
+				childElement = childElement.getNextSiblingElement();
+			}
 
 			overlayElement.getStyle().clearCursor();
 			overlayElement.getStyle().setWidth(getBody().getOffsetWidth(), Unit.PX);
