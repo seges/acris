@@ -196,14 +196,6 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 
 	private MutableDeclaredType getGeneratedDtoTypeFromConfiguration(ConfigurationTypeElement configurationType) {
 
-//		Element configurationElement = configurationType.asElement();
-//		
-//		if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
-//			return null;
-//		}
-
-		//MutableDeclaredType configurationNameType = super.getMutableTypesUtils().toMutableType((DeclaredType) configurationTypeElement.asElement().asType());
-
 		MutableDeclaredType outputType = configurationType.clone();
 		
 		PackageValidator packageValidator = getPackageValidationProvider().get(outputType)

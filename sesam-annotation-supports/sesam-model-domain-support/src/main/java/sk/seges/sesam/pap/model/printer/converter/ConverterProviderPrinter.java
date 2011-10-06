@@ -226,8 +226,7 @@ public class ConverterProviderPrinter {
 		@Override
 		public DtoType getDtoType(MutableTypeMirror type) {
 			return processingEnv.getTransferObjectUtils().getDomainType(type).getDto();
-		}
-		
+		}		
 	}
 	
 	class DtoTypeElementProvider implements TomBaseElementProvider {
