@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import sk.seges.corpis.appscaffold.datainterface.pap.DataInterfaceProcessor;
 import sk.seges.sesam.core.pap.test.FluentProcessorTest;
-import sk.seges.sesam.pap.model.MetaModelProcessor;
+import sk.seges.sesam.pap.metadata.MetaModelProcessor;
 
 
 /**

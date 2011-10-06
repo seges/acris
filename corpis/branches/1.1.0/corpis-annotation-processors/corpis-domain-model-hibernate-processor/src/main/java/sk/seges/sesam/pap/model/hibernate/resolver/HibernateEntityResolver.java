@@ -20,7 +20,7 @@ import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.Annotation
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.hibernate.MappingType;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class HibernateEntityResolver implements EntityResolver {
@@ -100,7 +100,7 @@ public class HibernateEntityResolver implements EntityResolver {
 	}
 
 	@Override
-	public boolean shouldHaveIdMethod(DomainTypeElement domainTypeElement) {
+	public boolean shouldHaveIdMethod(DomainDeclaredType domainTypeElement) {
 		if (domainTypeElement.asElement() == null) {
 			return false;
 		}
