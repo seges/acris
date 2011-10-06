@@ -1,19 +1,14 @@
 package sk.seges.acris.theme.pap;
 
-import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
@@ -30,6 +25,9 @@ import javax.lang.model.util.Elements;
 
 import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
+import sk.seges.acris.theme.pap.configurer.ThemeProcessorConfigurer;
+import sk.seges.acris.theme.pap.model.ThemeComponentType;
+import sk.seges.acris.theme.pap.model.ThemeConfigurationType;
 import sk.seges.acris.theme.pap.specific.AbstractComponentSpecificProcessor.Statement;
 import sk.seges.acris.theme.pap.specific.ComponentSpecificProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeCheckBoxProcessor;
@@ -37,24 +35,18 @@ import sk.seges.acris.theme.pap.specific.ThemeContext;
 import sk.seges.acris.theme.pap.specific.ThemeDefaultProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeDialogBoxProcessor;
 import sk.seges.acris.theme.pap.specific.ThemeImageCheckBoxProcessor;
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
-import sk.seges.sesam.core.pap.utils.ListUtils;
+import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor {
+public class ThemeComponentPanelProcessor extends MutableAnnotationProcessor {
 
 	private List<ComponentSpecificProcessor> specificProcessors = new LinkedList<ComponentSpecificProcessor>();
-	
-	protected ElementKind getElementKind() {
-		return ElementKind.CLASS;
-	}
 	
 	public ThemeComponentPanelProcessor() {
 		specificProcessors.add(new ThemeDefaultProcessor());
@@ -64,11 +56,9 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 	}
 
 	@Override
-	public Set<String> getSupportedAnnotationTypes() {
-		Set<String> annotations = new HashSet<String>();
-		annotations.add(ThemeSupport.class.getCanonicalName());
-		return annotations;
-	}
+	protected ProcessorConfigurer getConfigurer() {
+		return new ThemeProcessorConfigurer();
+	}	
 
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
@@ -77,59 +67,12 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 			specificProcessor.init(pe);
 		}
 	}
-	
+
 	@Override
-	protected Type[] getImports(TypeElement typeElement) {
-		Type[] result = new Type[] {
-			SimplePanel.class
+	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
+		return new MutableDeclaredType[] {
+				new ThemeConfigurationType(context.getTypeElement(), processingEnv).getThemePanel()
 		};
-		
-		List<Type> importTypes = new ArrayList<Type>();
-		
-		for (ComponentSpecificProcessor specificProcessor: specificProcessors) {
-			TypeElement componentClass = getComponentType(typeElement);
-			if (specificProcessor.supports(componentClass)) {
-				ListUtils.add(importTypes, specificProcessor.getImports());
-			}
-		}
-		ListUtils.add(importTypes, result);
-		return importTypes.toArray(new Type[] {});
-	}
-	
-	public static final ImmutableType getOutputClass(ImmutableType mutableType) {
-		return mutableType.addClassSufix("Panel");
-	}
-
-	@Override
-	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
-		switch (type) {
-			case OUTPUT_SUPERCLASS:
-				
-				TypeElement componentTypeElement = getComponentType(typeElement);
-				if (processingEnv.getTypeUtils().isSubtype(typeElement.asType(), componentTypeElement.asType())) {
-					return new Type[] { getNameTypes().toType(typeElement)};
-				}
-				return new Type[] { getNameTypes().toType(componentTypeElement)};
-		}
-		return super.getOutputDefinition(type, typeElement);
-	}
-
-	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		return new NamedType[] {
-			getOutputClass(mutableType)
-		};
-	};
-
-	private TypeElement getComponentType(TypeElement typeElement) {
-		ThemeSupport themeSupportAnnotation = typeElement.getAnnotation(ThemeSupport.class);
-		return AnnotationClassPropertyHarvester.getTypeOfClassProperty(themeSupportAnnotation, new AnnotationClassProperty<ThemeSupport>() {
-
-			@Override
-			public Class<?> getClassProperty(ThemeSupport annotation) {
-				return annotation.widgetClass();
-			}
-		});
 	}
 
 	private String toString(Collection<Modifier> modifiers) {
@@ -142,7 +85,7 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		return result;
 	}
 
-	protected void processSuperClass(TypeElement rootElement, Map<TypeElement, List<ExecutableElement>> methodCache, javax.lang.model.element.Element superClassElement, PrintWriter pw) {
+	protected void processSuperClass(TypeElement rootElement, Map<TypeElement, List<ExecutableElement>> methodCache, javax.lang.model.element.Element superClassElement, FormattedPrintWriter pw) {
 		if (superClassElement == null ||
 			superClassElement.equals(processingEnv.getElementUtils().getTypeElement(Object.class.getCanonicalName()))) {
 			return;
@@ -220,7 +163,8 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 							VariableElement parameterElement = method.getParameters().get(i);
 							i++;
 							
-							pw.print(parameterType.toString() + " " + parameterElement.getSimpleName());
+							MutableTypeMirror mutableType = processingEnv.getTypeUtils().toMutableType(parameterType);
+							pw.print(processingEnv.getTypeUtils().stripTypeVariableTypes(mutableType), " " + parameterElement.getSimpleName());
 						}
 						pw.print(")");
 						
@@ -271,15 +215,19 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 	}
 	
 	@Override
-	protected void processElement(TypeElement element, NamedType outputClass, RoundEnvironment roundEnv, PrintWriter pw) {
+	protected void processElement(ProcessorContext context) {
 
+		TypeElement element = context.getTypeElement();
+		FormattedPrintWriter pw = context.getPrintWriter();
+		
 		ThemeSupport themeSupportAnnotation = element.getAnnotation(ThemeSupport.class);
 
-		ImmutableType componentType = ThemeComponentProcessor.getOutputClass(getNameTypes().toImmutableType(element));
+		ThemeConfigurationType configurationType = new ThemeConfigurationType(element, processingEnv);
+		ThemeComponentType componentType = configurationType.getThemeComponent();
 		
 		String componentName = "component";
 
-		TypeElement componentClass = getComponentType(element);
+		TypeElement componentClass = configurationType.getWidgetType();
 				
 		pw.println("private boolean componentOperation = false;");
 		
@@ -293,22 +241,20 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		}
 		themeContext.setThemeSupport(themeSupportAnnotation);
 
-		pw.println("private " + componentType.getSimpleName() + " " + componentName + ";");
+		pw.println("private ", componentType, " " + componentName + ";");
 		pw.println();
-		pw.println("public " + outputClass.getSimpleName() + "() {");
+		pw.println("public " + context.getOutputType().getSimpleName() + "() {");
 		pw.println("this(new " + componentType.getSimpleName() + "());");
 		pw.println("}");
 		pw.println();
-		pw.println("private " + outputClass.getSimpleName() + "(" + componentType.getSimpleName() + " component) {");
+		pw.println("private " + context.getOutputType().getSimpleName() + "(" + componentType.getSimpleName() + " component) {");
 
-		TypeElement componentTypeElement = getComponentType(element);
-		
 		TypeElement superElement = null;
 		
-		if (processingEnv.getTypeUtils().isSubtype(element.asType(), componentTypeElement.asType())) {
+		if (processingEnv.getTypeUtils().isSubtype(element.asType(), componentClass.asType())) {
 			superElement = element;
 		} else {
-			superElement = componentTypeElement;
+			superElement = componentClass;
 		}
 		
 		List<ExecutableElement> constructors = ElementFilter.constructorsIn(superElement.getEnclosedElements());
@@ -336,9 +282,9 @@ public class ThemeComponentPanelProcessor extends AbstractConfigurableProcessor 
 		pw.println(");");
 
 		if (!canAdaptElement) {
-			pw.println(SimplePanel.class.getSimpleName() + " panel = new " + SimplePanel.class.getSimpleName() + "((" +
-					com.google.gwt.user.client.Element.class.getCanonicalName() + ")component." + themeSupportAnnotation.elementName() + ") {");
-			pw.println("public " + SimplePanel.class.getSimpleName() + " initialize() {");
+			pw.println(SimplePanel.class, " panel = new ", SimplePanel.class, "((",
+					com.google.gwt.user.client.Element.class, ")component." + themeSupportAnnotation.elementName() + ") {");
+			pw.println("public ", SimplePanel.class, " initialize() {");
 			pw.println("onAttach();");
 			pw.println("return this;");
 			pw.println("}");

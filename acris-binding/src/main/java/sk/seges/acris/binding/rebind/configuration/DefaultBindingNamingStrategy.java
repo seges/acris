@@ -1,6 +1,6 @@
 package sk.seges.acris.binding.rebind.configuration;
 
-import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
+import sk.seges.acris.binding.pap.model.BeanWrapperType;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.validation.rebind.TypeStrategy;
@@ -18,7 +18,7 @@ public class DefaultBindingNamingStrategy implements BindingNamingStrategy {
 
 	@Override
 	public String getBeanWrapperName(String beanName) {
-		return beanName + BeanWrapperProcessor.BEAN_WRAPPER_SUFFIX;
+		return beanName + BeanWrapperType.BEAN_WRAPPER_SUFFIX;
 	}
 
 	@Override

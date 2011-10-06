@@ -1,4 +1,4 @@
-package sk.seges.acris.json.jsr269;
+package sk.seges.acris.json.jsr269.configurer;
 
 import java.lang.reflect.Type;
 
@@ -20,6 +20,6 @@ public class JsonProcessorConfiguration extends DefaultProcessorConfigurer {
 			case PROCESSING_ANNOTATIONS:
 				return new Type[] { JsonObject.class };
 		}
-		return super.getConfigurationElement(element);
+		return new Type[] {};
 	}
 }
