@@ -4,7 +4,7 @@
 = SeSAM Annotation Processing profile =
 
 || *Profile* || *Activation* || *Purpose* ||
-|| *pap* || file activation - *.pap* || annotation processor configuration for maven and eclpise ||  
+|| *pap* || file activation - *.pap* || annotation processor configuration for maven and eclipse ||  
 || *selenium* || file activation - *.selenium* || selenium based project - with all selenium dependencies ||
 || *generate-site* || property activation - *generateSite=true* || generates documentation before release ||
 || selenium-api || file activation - .selenium-api || *Deprecated* ||
