@@ -15,7 +15,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.JavaFileObject;
 
-import sk.seges.sesam.core.pap.test.annotation.UrobToCoChcem;
+import sk.seges.sesam.core.pap.test.annotation.TestAnnotation;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TestAnnotationProcessor extends AbstractProcessor {
@@ -23,7 +23,7 @@ public class TestAnnotationProcessor extends AbstractProcessor {
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		Set<String> result = new HashSet<String>();
-		result.add(UrobToCoChcem.class.getCanonicalName());
+		result.add(TestAnnotation.class.getCanonicalName());
 		return result;
 	}
 	
