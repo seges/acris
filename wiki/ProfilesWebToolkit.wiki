@@ -1,0 +1,6 @@
+#summary Available WebToolkit profiles for project quick-start.
+#labels Project,QuickStart,WebToolkit
+
+= Google Web Toolkit client profile =
+
+{{{.gwt-client}}}
