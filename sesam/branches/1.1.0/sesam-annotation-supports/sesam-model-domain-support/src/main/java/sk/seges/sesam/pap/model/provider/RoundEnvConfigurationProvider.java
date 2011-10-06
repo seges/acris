@@ -91,7 +91,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
 	
 				if (configurationTypeElement.appliesForDtoType(dtoType)) {
-					return new ConfigurationTypeElement(null, (DeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv);
+					return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 					ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv);
 
 					if (configurationTypeElement.appliesForDtoType(dtoType)) {
-						return new ConfigurationTypeElement(null, (DeclaredType)dtoType, configurationElement, processingEnv, roundEnv);
+						return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, configurationElement, processingEnv, roundEnv);
 					}
 				}
 			}
