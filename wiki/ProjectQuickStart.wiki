@@ -15,3 +15,7 @@ Pick a specific type of how to configure AcrIS project from the following list (
   * [ProfilesAppEngine Google AppEngine profiles]
   * [ProfilesAnnotationProcessing SeSAM Annotation Processing profiles]
   * [QuickStartCustomized Customized quick-start]
+
+Profiles are activated by placing {{{-P}}} argument to {{{mvn}}} command but to simplify the process again, you usually need to *place profile's dot-file* only to the root directory.
+
+Chapters about profiles provide more detailed information.
