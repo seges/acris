@@ -1,9 +1,9 @@
 package sk.seges.acris.theme.pap.specific;
 
-import java.io.PrintWriter;
-
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
+
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,7 +28,7 @@ public class ThemeDefaultProcessor extends AbstractComponentSpecificProcessor {
 	}
 	
 	@Override
-	public void process(Statement statement, ThemeContext themeContext, PrintWriter pw) {
+	public void process(Statement statement, ThemeContext themeContext, FormattedPrintWriter pw) {
 
 		switch (statement) {
 			case CONSTRUCTOR:
@@ -36,11 +36,11 @@ public class ThemeDefaultProcessor extends AbstractComponentSpecificProcessor {
 				break;
 
 			case SUPER_CONSTRUCTOR_ARGS:
-				pw.print("(" + Element.class.getCanonicalName() + ")component." + themeContext.getThemeSupport().elementName());
+				pw.print("(", Element.class, ")component." + themeContext.getThemeSupport().elementName());
 				break;
 				
 			case CLASS:
-				pw.println("protected " + com.google.gwt.user.client.Element.class.getCanonicalName() + " getElement(String name) {");
+				pw.println("protected ", com.google.gwt.user.client.Element.class, " getElement(String name) {");
 				pw.println("if (component != null) {");
 				pw.println("return component.getElement(name);");
 				pw.println("}");
@@ -48,12 +48,12 @@ public class ThemeDefaultProcessor extends AbstractComponentSpecificProcessor {
 				pw.println("}");
 				pw.println();
 				pw.println("@Override");
-				pw.println("public " + com.google.gwt.user.client.Element.class.getCanonicalName() + " getElement() {");
+				pw.println("public ", com.google.gwt.user.client.Element.class, " getElement() {");
 				pw.println("if (component == null) {");
 				pw.println("return super.getElement();");
 				pw.println("}");
 				pw.println("if (componentOperation) {");
-				pw.println("return (" + Element.class.getCanonicalName() + ")component." + themeContext.getThemeSupport().elementName() + ";");
+				pw.println("return (", Element.class, ")component." + themeContext.getThemeSupport().elementName() + ";");
 				pw.println("}");
 				pw.println("return component.getElement();");
 				pw.println("}");
