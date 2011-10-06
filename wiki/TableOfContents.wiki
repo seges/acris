@@ -2,6 +2,10 @@
   * [Introduction]
   * Project
     * [ProjectQuickStart Quick-start AcrIS project]
+      * [ProfilesWebToolkit Google Web Toolkit profiles]
+      * [ProfilesAppEngine Google AppEngine profiles]
+      * [ProfilesAnnotationProcessing SeSAM Annotation Processing profiles]
+      * [QuickStartCustomized Customized quick-start]
     * [ProjectSupport Project structures description]
     * [HowTo Build AcrIS from sources]
     * [CodeStyle Code style conventions]
