@@ -1,7 +1,5 @@
 package sk.seges.acris.theme.pap.specific;
 
-import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +9,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public abstract class AbstractComponentSpecificProcessor implements ComponentSpecificProcessor {
 
@@ -108,11 +108,6 @@ public abstract class AbstractComponentSpecificProcessor implements ComponentSpe
 		this.processingEnv = processingEnv;
 	}
 
-	@Override
-	public Type[] getImports() {
-		return new Type[] {};
-	}
-
 	protected ExecutableMethodDefinition[] getOuterMethodDefinitions() {
 		return new ExecutableMethodDefinition[] {};
 	}
@@ -149,5 +144,5 @@ public abstract class AbstractComponentSpecificProcessor implements ComponentSpe
 	}
 
 	@Override
-	public void process(Statement statement, ThemeContext themeContext, PrintWriter pw) {}
+	public void process(Statement statement, ThemeContext themeContext, FormattedPrintWriter pw) {}
 }

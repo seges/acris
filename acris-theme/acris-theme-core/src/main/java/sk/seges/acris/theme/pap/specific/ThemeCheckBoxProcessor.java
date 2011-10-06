@@ -1,9 +1,8 @@
 package sk.seges.acris.theme.pap.specific;
 
-import java.io.PrintWriter;
-import java.lang.reflect.Type;
-
 import javax.lang.model.element.ExecutableElement;
+
+import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -12,15 +11,7 @@ import com.google.gwt.user.client.ui.CheckBoxHelper;
 public class ThemeCheckBoxProcessor extends AbstractComponentSpecificProcessor {
 
 	@Override
-	public Type[] getImports() {
-		return new Type[] {
-				LabelElement.class,
-				CheckBoxHelper.class
-		};
-	}
-	
-	@Override
-	public void process(Statement statement, ThemeContext themeContext, PrintWriter pw) {
+	public void process(Statement statement, ThemeContext themeContext, FormattedPrintWriter pw) {
 
 		switch (statement) {
 			case CONSTRUCTOR:
@@ -29,8 +20,8 @@ public class ThemeCheckBoxProcessor extends AbstractComponentSpecificProcessor {
 				break;
 
 			case CLASS:
-				pw.println("protected " + LabelElement.class.getSimpleName() + " getLabelElement() {");
-				pw.println("return " + CheckBoxHelper.class.getSimpleName() + ".getLabelElement(this);");
+				pw.println("protected ", LabelElement.class, " getLabelElement() {");
+				pw.println("return ", CheckBoxHelper.class, ".getLabelElement(this);");
 				pw.println("}");
 				pw.println("");
 				break;

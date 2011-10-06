@@ -2,8 +2,7 @@ package sk.seges.acris.theme.rebind;
 
 import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.theme.pap.ThemeComponentPanelProcessor;
-import sk.seges.sesam.core.pap.model.OutputClass;
+import sk.seges.acris.theme.pap.model.ThemePanelType;
 
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.Generator;
@@ -45,7 +44,7 @@ public class ThemeComponentSelectorGenerator extends Generator {
 				ThemeSupport themeSupport = classType.getAnnotation(ThemeSupport.class);
 				if (theme != null) {
 					if (themeName.equals(theme.value()) && themeSupport.widgetClass().getCanonicalName().equals(typeName)) {
-						return ThemeComponentPanelProcessor.getOutputClass(new OutputClass(classType.getPackage().getName(), classType.getSimpleSourceName())).getQualifiedName();
+						return classType.getPackage().getName() + "." + classType.getSimpleSourceName() + ThemePanelType.SUFFIX;
 					}
 				}
 			}
