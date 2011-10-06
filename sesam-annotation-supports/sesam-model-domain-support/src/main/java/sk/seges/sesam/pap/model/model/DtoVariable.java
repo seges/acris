@@ -1,9 +1,13 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
@@ -53,11 +57,20 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 	}
 
 	public DomainTypeVariable getDomain() {
-		if (dtoType != null) {
-			return (DomainTypeVariable) processingEnv.getTransferObjectUtils().getDomainType(dtoType);
-		}
 
-		return null;
+		if (getConfiguration() == null) {
+			List<MutableTypeMirror> domainUpperBounds = new LinkedList<MutableTypeMirror>();
+			for (MutableTypeMirror bound: getUpperBounds()) {
+				domainUpperBounds.add(processingEnv.getTransferObjectUtils().getDtoType(bound).getDomain());
+			}
+			List<MutableTypeMirror> domainLowerBounds = new LinkedList<MutableTypeMirror>();
+			for (MutableTypeMirror bound: getLowerBounds()) {
+				domainLowerBounds.add(processingEnv.getTransferObjectUtils().getDtoType(bound).getDomain());
+			}
+			return new DomainVariable(processingEnv.getTypeUtils().getTypeVariable(getVariable(), domainUpperBounds.toArray(new MutableTypeMirror[] {}), domainLowerBounds.toArray(new MutableTypeMirror[]{})), processingEnv, roundEnv);
+		}
+		
+		return (DomainTypeVariable) getConfiguration().getDomain();
 	}
 
 	@Override

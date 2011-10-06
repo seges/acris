@@ -131,6 +131,10 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 	@Override
 	public DtoDeclaredType getDto() {
 		if (getConfiguration() == null) {
+			if (domainType != null) {
+				return new DtoDeclared(domainType, processingEnv, roundEnv, configurationProviders);
+			}
+			
 			return null;
 		}
 		
