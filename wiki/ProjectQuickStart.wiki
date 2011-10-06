@@ -18,7 +18,14 @@ Pick a specific type of how to configure AcrIS project from the following list (
 
 Profiles are activated by placing {{{-P}}} argument to {{{mvn}}} command but to simplify the process again, you usually need to *place profile's dot-file* only to the root directory.
 
-For these profiles to work you need to inherit from:
+Chapters about profiles provide more detailed information.
+
+== How-to use profiles ==
+
+There are only 2 steps:
+
+Create project with POM file inheriting from:
+
 {{{
 	<parent>
 		<groupId>sk.seges.acris</groupId>
@@ -27,4 +34,6 @@ For these profiles to work you need to inherit from:
 	</parent>
 }}}
 
-Chapters about profiles provide more detailed information.
+Place desired dot-file (empty file with specific name - e.g. {{{.gwt-client}}} ) to the same directory where POM file is.
+
+That's it!
