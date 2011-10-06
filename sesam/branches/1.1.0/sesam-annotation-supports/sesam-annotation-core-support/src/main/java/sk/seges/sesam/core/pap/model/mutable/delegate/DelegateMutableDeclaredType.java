@@ -182,4 +182,24 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	public MutableDeclaredType stripTypeParametersTypes() {
 		return ensureDelegateType().stripTypeParametersTypes();
 	}
+	
+	@Override
+	public MutableDeclaredType replaceClassSuffix(String oldSuffix, String newSuffix) {
+		return ensureDelegateType().replaceClassSuffix(oldSuffix, newSuffix);
+	}
+	
+	@Override
+	public MutableDeclaredType replaceClassPrefix(String oldPrefix, String newPrefix) {
+		return ensureDelegateType().replaceClassPrefix(oldPrefix, newPrefix);
+	}
+
+	@Override
+	public MutableDeclaredType removeClassSuffix(String originalSuffix) {
+		return ensureDelegateType().removeClassSuffix(originalSuffix);
+	}
+	
+	@Override
+	public MutableDeclaredType removeClassPrefix(String originalPrefix) {
+		return ensureDelegateType().removeClassPrefix(originalPrefix);
+	}
 }

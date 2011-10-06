@@ -48,8 +48,13 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
 
 	MutableDeclaredType addClassSufix(String sufix);
 	MutableDeclaredType addClassPrefix(String prefix);
-	//MutableDeclaredType replaceClassSuffix(String )
 	
+	MutableDeclaredType replaceClassSuffix(String oldSuffix, String newSuffix);
+	MutableDeclaredType replaceClassPrefix(String oldPrefix, String newPrefix);
+
+	MutableDeclaredType removeClassSuffix(String originalSuffix);
+	MutableDeclaredType removeClassPrefix(String originalPrefix);
+
 	MutableDeclaredType addPackageSufix(String sufix);
 
 	MutableDeclaredType changePackage(String packageName);

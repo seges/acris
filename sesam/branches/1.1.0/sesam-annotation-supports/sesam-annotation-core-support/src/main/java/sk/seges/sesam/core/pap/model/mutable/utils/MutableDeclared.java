@@ -203,6 +203,40 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		return this;
 	};
 
+	@Override
+	public MutableDeclaredType replaceClassSuffix(String originalSuffix, String newSuffix) {
+		if(!simpleName.endsWith(originalSuffix)) {
+			return this;
+		}
+
+		dirty();
+		invalidateEnclosedType();
+		simpleName = simpleName.substring(0, simpleName.length() - originalSuffix.length()) + newSuffix;
+		return this;
+	}
+
+	@Override
+	public MutableDeclaredType replaceClassPrefix(String originalPrefix, String newPrefix) {
+		if(!simpleName.startsWith(originalPrefix)) {
+			return this;
+		}
+
+		dirty();
+		invalidateEnclosedType();
+		simpleName = newPrefix + this.simpleName.substring(originalPrefix.length());
+		return this;
+	}
+
+	@Override
+	public MutableDeclaredType removeClassSuffix(String originalSuffix) {
+		return replaceClassSuffix(originalSuffix, "");
+	}
+
+	@Override
+	public MutableDeclaredType removeClassPrefix(String originalPrefix) {
+		return replaceClassPrefix(originalPrefix, "");
+	}
+
 	public MutableDeclaredType changePackage(String packageName) {
 		dirty();
 		invalidateEnclosedType();
