@@ -89,8 +89,9 @@ public class TransferObjectTypes {
 		case INT:
 		case LONG:
 		case SHORT:
-		case VOID:
 			return new DomainDeclared((PrimitiveType) type, processingEnv, roundEnv, configurationProviders);
+		case VOID:
+			return new DomainDeclared((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type), processingEnv, roundEnv, configurationProviders);
 		}
 		
 		throw new RuntimeException("Unsupported domain type! Unable to representet " + type.getKind() + " as a domain.");
@@ -120,6 +121,7 @@ public class TransferObjectTypes {
 				dtoTypeVariables.add((MutableTypeVariable)dtoTypeVariable);
 			}
 			dtoDeclared.setTypeVariables(dtoTypeVariables.toArray(new MutableTypeVariable[] {}));
+			return dtoDeclared;
 		case TYPEVAR:
 			return new DtoVariable((MutableTypeVariable)type, processingEnv, roundEnv);
 		case WILDCARD:
@@ -154,8 +156,9 @@ public class TransferObjectTypes {
 		case INT:
 		case LONG:
 		case SHORT:
-		case VOID:
 			return new DtoDeclared((PrimitiveType) type, processingEnv, roundEnv, configurationProviders);
+		case VOID:
+			return new DtoDeclared((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type), processingEnv, roundEnv, configurationProviders);
 		}
 		
 		throw new RuntimeException("Unsupported DTO type! Unable to representet " + type.getKind() + " as a DTO.");

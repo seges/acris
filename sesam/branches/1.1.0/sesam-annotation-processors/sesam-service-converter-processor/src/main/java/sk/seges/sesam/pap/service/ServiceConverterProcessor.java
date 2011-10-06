@@ -111,7 +111,8 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
 		ServiceTypeElement serviceTypeElement = new ServiceTypeElement((TypeElement) element, processingEnv);
-		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationProviders(serviceTypeElement));
+		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv);
+		this.processingEnv.setConfigurationProviders(getConfigurationProviders(serviceTypeElement));
 	}
 	
 	@Override

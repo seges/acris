@@ -13,7 +13,6 @@ import javax.lang.model.util.ElementFilter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
-import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
@@ -39,12 +38,12 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 	private final TransferObjectConfiguration transferObjectConfiguration;
 
 	private final MutableDeclaredType domainType;
-	private final DeclaredType dtoType;
+	private final MutableDeclaredType dtoType;
 
 	private final String canonicalName;
 	private ConfigurationProvider[] configurationProviders;
 	
-	public ConfigurationTypeElement(MutableDeclaredType domainType, DeclaredType dtoType, TypeElement configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	public ConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
 		this.configurationElement = configurationElement;
@@ -55,7 +54,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 		
 		this.transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
 		if (this.transferObjectConfiguration.getReferenceMapping() == null) {
-			this.transferObjectConfiguration.setReferenceMapping(transferObjectConfiguration.getMappingForDto(processingEnv.getTypeUtils().toMutableType(dtoType)));
+			this.transferObjectConfiguration.setReferenceMapping(transferObjectConfiguration.getMappingForDto(dtoType));
 		}
 		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
@@ -130,7 +129,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 				if (this.domainType == null) {
 					TypeElement domainInterface = transferObjectConfiguration.getDomainInterface();
 					if (domainInterface != null) {
-						if (dtoType != null && ProcessorUtils.implementsType(dtoType, domainInterface.asType())) {
+						if (dtoType != null && processingEnv.getTypeUtils().implementsType(dtoType, processingEnv.getTypeUtils().toMutableType(domainInterface.asType()))) {
 							this.domainDeclaredType = new DomainDeclared(null, dtoType, this, processingEnv, roundEnv, configurationProviders);
 						} else {
 							this.domainDeclaredType = new DomainDeclared((MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(domainInterface.asType()), dtoType, this, processingEnv, roundEnv, configurationProviders);
@@ -160,7 +159,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 
 		if (!dtoTypeElementInitialized) {
 			
-			DeclaredType dtoType = null;
+			MutableDeclaredType dtoType = null;
 			
 			if (this.dtoType != null) {
 				dtoType = this.dtoType;
@@ -168,7 +167,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 				if (transferObjectConfiguration.isValid()) {
 					TypeElement dtoTypeElement = transferObjectConfiguration.getDto();
 					if (dtoTypeElement != null) {
-						dtoType = (DeclaredType) dtoTypeElement.asType();
+						dtoType = processingEnv.getTypeUtils().toMutableType((DeclaredType) dtoTypeElement.asType());
 					}
 				}
 			}
