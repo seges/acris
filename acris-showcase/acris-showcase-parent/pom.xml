@@ -20,7 +20,7 @@
 		<javax.inject.version>1</javax.inject.version>
 
 		<!-- UI layer -->
-		<smartgwt.version>2.2</smartgwt.version>
+		<smartgwt.version>2.5</smartgwt.version>
 		<gxt-version>2.1.0</gxt-version>
 
 		<gwtp.version>0.5</gwtp.version>

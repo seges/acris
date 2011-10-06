@@ -156,6 +156,11 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-service-support</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-annotation-core-support</artifactId>
 				<version>${sesam-os.version}</version>
 			</dependency>
@@ -198,6 +203,18 @@
 				<version>${sesam-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-service-local-interface-api</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-service-local-interface-api</artifactId>
+				<version>${sesam-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+		
 			<!-- Acris dependencies -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
