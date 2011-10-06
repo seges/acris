@@ -1,34 +1,17 @@
 package sk.seges.acris.json.jsr269;
 
-import java.lang.reflect.Type;
-
-import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.TypeElement;
 
-import sk.seges.acris.json.client.data.IJsonObject;
-import sk.seges.sesam.core.pap.AbstractConfigurableProcessor;
-import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
+import sk.seges.acris.json.jsr269.configurer.JsonProcessorConfiguration;
+import sk.seges.acris.json.jsr269.model.JsonizerType;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.TypedClassBuilder;
-import sk.seges.sesam.core.pap.model.api.HasTypeParameters;
-import sk.seges.sesam.core.pap.model.api.ImmutableType;
-import sk.seges.sesam.core.pap.model.api.NamedType;
-import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 
-@SupportedAnnotationTypes("*")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class JsonProcessor extends AbstractConfigurableProcessor {
+public class JsonProcessor extends MutableAnnotationProcessor {
 
-	public static final String OUTPUT_SUFFIX = "Jsonizer";
-
-	@Override
-	protected Type[] getImports(TypeElement typeElement) {
-		return new Type[] {
-				nameTypesUtils.toType(typeElement)
-		};
-	}
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
@@ -36,23 +19,12 @@ public class JsonProcessor extends AbstractConfigurableProcessor {
 	}
 
 	@Override
-	protected Type[] getOutputDefinition(OutputDefinition type, TypeElement typeElement) {
-		switch (type) {
-			case OUTPUT_INTERFACES:
-				return new Type[] { TypedClassBuilder.get(IJsonObject.class, nameTypesUtils.toType(typeElement)) };
-			}
-		return super.getOutputDefinition(type, typeElement);
-	}
-
-	public static NamedType getOutputClass(ImmutableType inputClass) {
-		if (inputClass instanceof HasTypeParameters) {
-			inputClass = ((HasTypeParameters)inputClass).stripTypeParameters();
-		}
-		return inputClass.addClassSufix(OUTPUT_SUFFIX);
+	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
+		return new MutableDeclaredType[] {
+			new JsonizerType(context.getMutableType(), processingEnv)
+		};
 	}
 
 	@Override
-	protected NamedType[] getTargetClassNames(ImmutableType mutableType) {
-		return new NamedType[] { getOutputClass(mutableType) };
-	}
+	protected void processElement(ProcessorContext context) {}
 }
