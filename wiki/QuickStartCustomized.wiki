@@ -1,5 +1,5 @@
 #summary The most customized quick-start approach.
-#labels QuickStart
+#labels QuickStart,Project
 
 = Introduction =
 
