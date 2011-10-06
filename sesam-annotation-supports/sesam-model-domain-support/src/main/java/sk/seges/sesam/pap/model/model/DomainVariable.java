@@ -1,5 +1,8 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
@@ -74,7 +77,15 @@ class DomainVariable extends TomBaseVariable implements DomainTypeVariable {
 	@Override
 	public DtoTypeVariable getDto() {
 		if (getConfiguration() == null) {
-			return null;
+			List<MutableTypeMirror> dtoUpperBounds = new LinkedList<MutableTypeMirror>();
+			for (MutableTypeMirror bound: getUpperBounds()) {
+				dtoUpperBounds.add(processingEnv.getTransferObjectUtils().getDomainType(bound).getDto());
+			}
+			List<MutableTypeMirror> dtoLowerBounds = new LinkedList<MutableTypeMirror>();
+			for (MutableTypeMirror bound: getLowerBounds()) {
+				dtoLowerBounds.add(processingEnv.getTransferObjectUtils().getDomainType(bound).getDto());
+			}
+			return new DtoVariable(processingEnv.getTypeUtils().getTypeVariable(getVariable(), dtoUpperBounds.toArray(new MutableTypeMirror[] {}), dtoLowerBounds.toArray(new MutableTypeMirror[]{})), processingEnv, roundEnv);
 		}
 		
 		return (DtoTypeVariable) getConfiguration().getDto();

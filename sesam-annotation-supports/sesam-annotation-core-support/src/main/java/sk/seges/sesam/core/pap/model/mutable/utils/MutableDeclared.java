@@ -52,13 +52,21 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		this.type = type;
 		this.enclosedClass = null;
 
+		initKind();
+	}
+
+	private void initKind() {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 			this.kind = convertKind(((DeclaredType)type).asElement().getKind());
 		} else {
-			this.kind = MutableTypeKind.CLASS;
+			if (type != null && type.getKind().isPrimitive()) {
+				this.kind = MutableTypeKind.PRIMITIVE;
+			} else {
+				this.kind = MutableTypeKind.CLASS;
+			}
 		}
 	}
-
+	
 	private MutableTypeKind convertKind(ElementKind kind) {
 		switch (kind) {
 		case CLASS:
@@ -80,11 +88,7 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		this.packageName = enclosedClass.getPackageName();
 		this.enclosedClass = enclosedClass;
 		this.type = type;
-		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
-			this.kind = convertKind(((DeclaredType)type).asElement().getKind());
-		} else {
-			this.kind = MutableTypeKind.CLASS;
-		}
+		initKind();
 	}
 
 	private void copySuperclass() {

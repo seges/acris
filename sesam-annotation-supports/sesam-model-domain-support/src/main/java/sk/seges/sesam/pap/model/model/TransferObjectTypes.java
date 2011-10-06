@@ -53,6 +53,7 @@ public class TransferObjectTypes {
 				domainTypeVariables.add((MutableTypeVariable)domainTypeVariable);
 			}
 			domainDeclared.setTypeVariables(domainTypeVariables.toArray(new MutableTypeVariable[] {}));
+			return domainDeclared;
 		case TYPEVAR:
 			return new DomainVariable((MutableTypeVariable)type, processingEnv, roundEnv, configurationProviders);
 		case WILDCARD:
