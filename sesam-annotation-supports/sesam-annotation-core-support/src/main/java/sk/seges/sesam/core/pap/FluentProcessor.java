@@ -1,6 +1,5 @@
 package sk.seges.sesam.core.pap;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -103,7 +102,7 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 			return types;
 		}
 
-		protected List<Type> asList(Type... types) {
+		protected <T> List<T> asList(T... types) {
 			return Arrays.asList(types);
 		}
 	}

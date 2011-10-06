@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
@@ -131,7 +132,7 @@ public class TransferObjectTypes {
 	public DtoType getDtoType(TypeMirror type) {
 		switch (type.getKind()) {
 		case ARRAY:
-			return new DtoArray(getDtoType(type), processingEnv);
+			return new DtoArray(getDtoType(((ArrayType)type).getComponentType()), processingEnv);
 		case DECLARED:
 			return new DtoDeclared((DeclaredType) type, processingEnv, roundEnv, configurationProviders);
 		case ERROR:
