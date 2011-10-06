@@ -107,9 +107,9 @@ public class ResizablePanel extends HTML {
 		proxyElement.getStyle().setWidth(getBorderSize(this.getOffsetWidth()), Unit.PX);
 		proxyElement.getStyle().setHeight(getBorderSize(this.getOffsetHeight()), Unit.PX);
 		proxyElement.getStyle().setDisplay(Display.NONE);
-		RootPanel.getBodyElement().appendChild(proxyElement);
+		getBody().appendChild(proxyElement);
 
-		com.google.gwt.dom.client.Element childElement = RootPanel.getBodyElement().getFirstChildElement();
+		com.google.gwt.dom.client.Element childElement = getBody().getFirstChildElement();
 		while (childElement != null) {
 			if (childElement.getClassName().contains(RESIZABLE_OVERLAY_STYLE)) {
 				overlayElement = (Element) childElement;
@@ -127,7 +127,7 @@ public class ResizablePanel extends HTML {
 		overlayElement.getStyle().setWidth(100, Unit.PCT);
 		overlayElement.getStyle().setHeight(100, Unit.PCT);
 		overlayElement.getStyle().setDisplay(Display.NONE);
-		RootPanel.getBodyElement().appendChild(overlayElement);
+		getBody().appendChild(overlayElement);
 	}
 
 	private Element createHandle(String suffix) {
@@ -184,6 +184,10 @@ public class ResizablePanel extends HTML {
 		}
 	}
 
+	protected Element getBody() {
+		return RootPanel.getBodyElement();
+	}
+
 	protected void onMouseDown(Event event) {
 		if (!dragging) {
 			cursorResize = getCursorResize(event);
@@ -193,6 +197,8 @@ public class ResizablePanel extends HTML {
 				event.stopPropagation();
 
 				overlayElement.getStyle().setCursor(cursorResize);
+				overlayElement.getStyle().setWidth(getBody().getOffsetWidth(), Unit.PX);
+				overlayElement.getStyle().setHeight(getBody().getOffsetHeight(), Unit.PX);
 				overlayElement.getStyle().setDisplay(Display.BLOCK);
 
 				proxyElement.getStyle().setCursor(cursorResize);
@@ -215,6 +221,8 @@ public class ResizablePanel extends HTML {
 			int height = proxyElement.getOffsetHeight();
 
 			overlayElement.getStyle().clearCursor();
+			overlayElement.getStyle().setWidth(getBody().getOffsetWidth(), Unit.PX);
+			overlayElement.getStyle().setHeight(getBody().getOffsetHeight(), Unit.PX);
 			overlayElement.getStyle().setDisplay(Display.NONE);
 
 			proxyElement.getStyle().clearCursor();
