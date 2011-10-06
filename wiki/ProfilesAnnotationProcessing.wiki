@@ -3,4 +3,8 @@
 
 = SeSAM Annotation Processing profile =
 
-{{{.pap}}}
+|| *Profile* || *Activation* || *Purpose* ||
+|| pap || file actiobation - .pap || annotation processor configuration for maven and eclpise ||  
+|| selenium || file activation - .selenium || selenium based project - with all selenium dependencies ||
+|| generate-site || property activation - -DgenerateSite=true || generates documentation before release ||
+|| selenium-api || file activation - .selenium-api || *Deprecated* ||
