@@ -4,6 +4,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableArray;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoArrayType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 
@@ -28,8 +29,8 @@ public class DtoArray extends DelegateMutableArray implements GeneratedClass, Dt
 	}
 
 	@Override
-	public DomainTypeElement getDomain() {
-		return dtoType.getDomain();
+	public DomainType getDomain() {
+		return new DomainArray(dtoType.getDomain(), processingEnv);
 	}
 
 	@Override

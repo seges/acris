@@ -20,8 +20,8 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
@@ -208,7 +208,7 @@ public class ConverterProviderPrinter {
 	
 	interface TomBaseElementProvider {
 		ConverterTypeElement getConverter(TypeMirror type);
-		DomainTypeElement getDomainType(TypeMirror type);
+		DomainType getDomainType(TypeMirror type);
 		DtoType getDtoType(TypeMirror type);
 	}
 	
@@ -216,7 +216,7 @@ public class ConverterProviderPrinter {
 
 		@Override
 		public ConverterTypeElement getConverter(TypeMirror type) {
-			DomainTypeElement domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(type);
+			DomainType domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(type);
 			if (domainTypeElement.getConfiguration() != null) {
 				return domainTypeElement.getConfiguration().getConverter();
 			}
@@ -224,7 +224,7 @@ public class ConverterProviderPrinter {
 		}
 
 		@Override
-		public DomainTypeElement getDomainType(TypeMirror type) {
+		public DomainType getDomainType(TypeMirror type) {
 			return processingEnv.getTransferObjectUtils().getDomainType(type);
 		}
 
@@ -248,7 +248,7 @@ public class ConverterProviderPrinter {
 		}
 
 		@Override
-		public DomainTypeElement getDomainType(TypeMirror type) {
+		public DomainType getDomainType(TypeMirror type) {
 			return processingEnv.getTransferObjectUtils().getDtoType(type).getDomain();
 		}
 
@@ -258,15 +258,15 @@ public class ConverterProviderPrinter {
 		}
 	}
 
-	public void printDtoConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror type, final FormattedPrintWriter pw) {
+	public void printDtoConverterMethodName(ConverterTypeElement converterTypeElement, MutableTypeMirror type, final FormattedPrintWriter pw) {
 		printConverterMethodName(converterTypeElement, type, new DtoTypeElementProvider(), pw);
 	}
 
-	public void printDomainConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror type, final FormattedPrintWriter pw) {
+	public void printDomainConverterMethodName(ConverterTypeElement converterTypeElement, MutableTypeMirror type, final FormattedPrintWriter pw) {
 		printConverterMethodName(converterTypeElement, type, new DomainTypeElementProvider(), pw);
 	}
 
-	private void printConverterMethodName(ConverterTypeElement converterTypeElement, TypeMirror type, final TomBaseElementProvider tomBaseElementProvider, final FormattedPrintWriter pw) {
+	private void printConverterMethodName(ConverterTypeElement converterTypeElement, MutableTypeMirror type, final TomBaseElementProvider tomBaseElementProvider, final FormattedPrintWriter pw) {
 		
 		String methodName = getConverterMethodName(converterTypeElement);
 		
@@ -333,7 +333,7 @@ public class ConverterProviderPrinter {
 							ConverterTypeElement converterTypeElement = tomBaseElementProvider.getConverter(type);
 							
 							if (converterTypeElement != null) {
-								printConverterMethodName(converterTypeElement, type, tomBaseElementProvider, pw);
+								printConverterMethodName(converterTypeElement, processingEnv.getTypeUtils().toMutableType(type), tomBaseElementProvider, pw);
 							} else {
 								MutableTypeMirror typeParameterType = processingEnv.getTypeUtils().toMutableType(type);
 								if (typeParameterType instanceof MutableTypeVariable) {

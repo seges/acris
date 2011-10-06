@@ -15,8 +15,8 @@ import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
 import sk.seges.sesam.core.pap.printer.AnnotationPrinter.AnnotationFilter;
 import sk.seges.sesam.core.pap.printer.MethodPrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
@@ -98,7 +98,7 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 					pw.print("return ");
 				} else {
 					pw.print("return (", processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType()), ")");
-					converterProviderPrinter.printDtoConverterMethodName(returnDtoType.getConverter(), processingEnv.getTypeUtils().fromMutableType(returnDtoType), pw);
+					converterProviderPrinter.printDtoConverterMethodName(returnDtoType.getConverter(), returnDtoType, pw);
 					pw.print(".toDto(");
 				}
 			}
@@ -113,11 +113,11 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 				TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
 				
 				DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
-				DomainTypeElement parameterDomainType = parameterDtoType.getDomain();
+				DomainType parameterDomainType = parameterDtoType.getDomain();
 				
 				if (parameterDtoType.getConverter() != null) {
 					pw.print("(", parameterDomainType, ")");
-					converterProviderPrinter.printDtoConverterMethodName(parameterDtoType.getConverter(), processingEnv.getTypeUtils().fromMutableType(parameterDtoType), pw);
+					converterProviderPrinter.printDtoConverterMethodName(parameterDtoType.getConverter(), parameterDtoType, pw);
 					pw.print(".fromDto(");
 				}
 

@@ -13,8 +13,8 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActio
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -36,7 +36,7 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 		
 		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(processingEnv);
 
-		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
+		DomainDeclaredType domainTypeElement = configurationTypeElement.getDomain();
 
 		if (domainTypeElement.asType().getKind().equals(TypeKind.DECLARED) && ((DeclaredType)domainTypeElement.asType()).getTypeArguments().size() > 0) {
 			

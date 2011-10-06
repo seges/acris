@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -24,23 +25,28 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	protected String simpleName;
 	private String packageName;
 	private MutableDeclaredType enclosedClass;
-	private Set<AnnotationMirror> annotations = new HashSet<AnnotationMirror>();
-	private List<MutableTypeVariable> typeVariables = new LinkedList<MutableTypeVariable>();
+	private Set<AnnotationMirror> annotations;
+	private List<MutableTypeVariable> typeVariables;
 
 	private MutableTypeKind kind;
 
-	private Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
+	private Set<MutableTypeMirror> interfaces;
+	
+	private boolean superClassInitialized = false;
 	private MutableDeclaredType superClass;
 
 	//TypeMirror for the primitive types, otherwise DeclaredType
 	private TypeMirror type;
 	private boolean dirty = false;
 	
-	public MutableDeclared(String packageName, String simpleName) {
-		this(null, packageName, simpleName);
+	private final MutableProcessingEnvironment processingEnv;
+	
+	public MutableDeclared(String packageName, String simpleName, MutableProcessingEnvironment processingEnv) {
+		this(null, packageName, simpleName, processingEnv);
 	}
 
-	public MutableDeclared(TypeMirror type, String packageName, String simpleName) {
+	public MutableDeclared(TypeMirror type, String packageName, String simpleName, MutableProcessingEnvironment processingEnv) {
+		this.processingEnv = processingEnv;
 		this.simpleName = simpleName;
 		this.packageName = packageName;
 		this.type = type;
@@ -51,7 +57,6 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		} else {
 			this.kind = MutableTypeKind.CLASS;
 		}
-		copyAnnotations();
 	}
 
 	private MutableTypeKind convertKind(ElementKind kind) {
@@ -69,7 +74,8 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		throw new RuntimeException("Unsupported kind " + kind + ". Unable to create declared type with this kind.");
 	}
 	
-	public MutableDeclared(TypeMirror type, MutableDeclaredType enclosedClass, String simpleName) {
+	public MutableDeclared(TypeMirror type, MutableDeclaredType enclosedClass, String simpleName, MutableProcessingEnvironment processingEnv) {
+		this.processingEnv = processingEnv;
 		this.simpleName = simpleName;
 		this.packageName = enclosedClass.getPackageName();
 		this.enclosedClass = enclosedClass;
@@ -79,9 +85,46 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		} else {
 			this.kind = MutableTypeKind.CLASS;
 		}
-		copyAnnotations();
 	}
 
+	private void copySuperclass() {
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			TypeElement typeElement = (TypeElement)((DeclaredType)type).asElement();
+			
+			TypeMirror superclassType = typeElement.getSuperclass();
+			
+			if (superclassType.getKind().equals(TypeKind.DECLARED)) {
+				this.superClass = processingEnv.getTypeUtils().toMutableType((DeclaredType) superclassType);
+			}
+		}		
+	}
+	
+	private void copyTypeParameters() {
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			
+			List<? extends TypeMirror> typeArguments = ((DeclaredType)type).getTypeArguments();
+			
+			for (TypeMirror typeArgument: typeArguments) {
+				MutableTypeMirror mutableTypeArgument = processingEnv.getTypeUtils().toMutableType(typeArgument);
+				if (mutableTypeArgument instanceof MutableTypeVariable) {
+					typeVariables.add((MutableTypeVariable)mutableTypeArgument);
+				} else {
+					typeVariables.add(processingEnv.getTypeUtils().getTypeVariable(null, mutableTypeArgument));
+				}
+			}
+		}
+	}
+
+	private void copyInterfaces() {
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			TypeElement typeElement = (TypeElement)((DeclaredType)type).asElement();
+			
+			for (TypeMirror interfaceType: typeElement.getInterfaces()) {
+				interfaces.add(processingEnv.getTypeUtils().toMutableType(interfaceType));
+			}
+		}
+	}
+	
 	private void copyAnnotations() {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 			for (AnnotationMirror annotation: ((DeclaredType)type).asElement().getAnnotationMirrors()) {
@@ -109,11 +152,22 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		return packageName;
 	}
 
+	private List<MutableTypeVariable> ensureTypeVariables() {
+		if (typeVariables == null) {
+			typeVariables = new LinkedList<MutableTypeVariable>();
+			copyTypeParameters();
+		}
+		return typeVariables;
+	}
+	
 	public List<MutableTypeVariable> getTypeVariables() {
-		return Collections.unmodifiableList(this.typeVariables);
+		return Collections.unmodifiableList(ensureTypeVariables());
 	};
 
 	private void dirty() {
+		if (type != null) {
+			processingEnv.getTypeUtils().invalidateCache(type);
+		}
 		type = null;
 	}
 	
@@ -173,11 +227,18 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 
 	public void annotateWith(AnnotationMirror annotation) {
 		dirty();
+		if (annotations == null) {
+			annotations = new HashSet<AnnotationMirror>();
+		}
 		annotations.add(annotation);
 	}
 
 	@Override
 	public Set<AnnotationMirror> getAnnotations() {
+		if (annotations == null) {
+			annotations = new HashSet<AnnotationMirror>();
+			copyAnnotations();
+		}
 		return Collections.unmodifiableSet(annotations);
 	};
 
@@ -268,18 +329,28 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	}
 	
 	public Set<? extends MutableTypeMirror> getInterfaces() {
+		if (interfaces == null) {
+			interfaces = new HashSet<MutableTypeMirror>();
+			copyInterfaces();
+		}
 		return Collections.unmodifiableSet(interfaces);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public MutableDeclaredType setInterfaces(Set<? extends MutableTypeMirror> interfaces) {
 		dirty();
-		this.interfaces = (Set<MutableTypeMirror>) interfaces;
+		this.interfaces = new HashSet<MutableTypeMirror>();
+		for (MutableTypeMirror interfaceType: interfaces) {
+			this.interfaces.add(interfaceType);	
+		}
 		return this;
 	}
 	
 	public MutableDeclaredType getSuperClass() {
+		if (!superClassInitialized) {
+			copySuperclass();
+			superClassInitialized = true;
+		}
 		return superClass;
 	}
 	
@@ -330,15 +401,12 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((annotations == null) ? 0 : annotations.hashCode());
 		result = prime * result + ((enclosedClass == null) ? 0 : enclosedClass.hashCode());
-		result = prime * result + ((interfaces == null) ? 0 : interfaces.hashCode());
 		result = prime * result + ((kind == null) ? 0 : kind.hashCode());
 		result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
 		result = prime * result + ((simpleName == null) ? 0 : simpleName.hashCode());
-		result = prime * result + ((superClass == null) ? 0 : superClass.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + ((typeVariables == null) ? 0 : typeVariables.hashCode());
+		result = prime * result + ((getTypeVariables() == null) ? 0 : getTypeVariables().hashCode());
 		return result;
 	}
 
@@ -351,20 +419,10 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		if (getClass() != obj.getClass())
 			return false;
 		MutableDeclared other = (MutableDeclared) obj;
-		if (annotations == null) {
-			if (other.annotations != null)
-				return false;
-		} else if (!annotations.equals(other.annotations))
-			return false;
 		if (enclosedClass == null) {
 			if (other.enclosedClass != null)
 				return false;
 		} else if (!enclosedClass.equals(other.enclosedClass))
-			return false;
-		if (interfaces == null) {
-			if (other.interfaces != null)
-				return false;
-		} else if (!interfaces.equals(other.interfaces))
 			return false;
 		if (kind != other.kind)
 			return false;
@@ -378,20 +436,15 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 				return false;
 		} else if (!simpleName.equals(other.simpleName))
 			return false;
-		if (superClass == null) {
-			if (other.superClass != null)
-				return false;
-		} else if (!superClass.equals(other.superClass))
-			return false;
 		if (type == null) {
 			if (other.type != null)
 				return false;
 		} else if (!type.equals(other.type))
 			return false;
-		if (typeVariables == null) {
-			if (other.typeVariables != null)
+		if (getTypeVariables() == null) {
+			if (other.getTypeVariables() != null)
 				return false;
-		} else if (!typeVariables.equals(other.typeVariables))
+		} else if (!getTypeVariables().equals(other.getTypeVariables()))
 			return false;
 		return true;
 	}
@@ -421,8 +474,7 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	@Override
 	public MutableDeclaredType addTypeVariable(MutableTypeVariable typeVariable) {
 		dirty();
-		
-		this.typeVariables.add(typeVariable);
+		ensureTypeVariables().add(typeVariable);
 		return this;
 	}
 
@@ -491,24 +543,34 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	
 	@Override
 	public MutableDeclaredType clone() {
-		MutableDeclared result = new MutableDeclared(type, packageName, simpleName);
+		MutableDeclared result = new MutableDeclared(type, packageName, simpleName, processingEnv);
 		result.enclosedClass = enclosedClass;
 		
-		for (AnnotationMirror annotationMirror: annotations) {
-			result.annotations.add(annotationMirror);
+		if (annotations != null) {
+			result.annotations = new HashSet<AnnotationMirror>();
+			for (AnnotationMirror annotationMirror: annotations) {
+				result.annotations.add(annotationMirror);
+			}
 		}
 		
-		for (MutableTypeVariable typeVariable: typeVariables) {
-			result.typeVariables.add(typeVariable.clone());
+		if (typeVariables != null) {
+			result.typeVariables = new LinkedList<MutableTypeVariable>();
+			for (MutableTypeVariable typeVariable: typeVariables) {
+				result.typeVariables.add(typeVariable.clone());
+			}
 		}
 		
 		result.dirty = dirty;
 		result.kind = kind;
 		
-		for (MutableTypeMirror interfaceType: interfaces) {
-			result.interfaces.add(interfaceType);
+		if (interfaces != null) {
+			result.interfaces = new HashSet<MutableTypeMirror>();
+			for (MutableTypeMirror interfaceType: interfaces) {
+				result.interfaces.add(interfaceType);
+			}
 		}
 		
+		result.superClassInitialized = superClassInitialized;
 		result.superClass = superClass;
 
 		return result;

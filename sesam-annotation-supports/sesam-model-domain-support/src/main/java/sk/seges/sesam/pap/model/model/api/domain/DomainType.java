@@ -1,14 +1,13 @@
-package sk.seges.sesam.pap.model.model.api.dto;
+package sk.seges.sesam.pap.model.model.api.domain;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.api.GeneratedClass;
-import sk.seges.sesam.pap.model.model.api.domain.DomainType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 
-public interface DtoType extends MutableTypeMirror, GeneratedClass {
+public interface DomainType extends MutableTypeMirror {
 
 	ConfigurationTypeElement getConfiguration();
 	ConverterTypeElement getConverter();
-	DomainType getDomain();
+	DtoType getDto();
 }

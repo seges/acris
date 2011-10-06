@@ -18,9 +18,9 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.ParameterFilter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
@@ -106,7 +106,7 @@ public class AbstractServicePrinter {
 				for (VariableElement dtoParameter : remoteMethod.getParameters()) {
 					
 					DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoParameter.asType());
-					DomainTypeElement parameterDomainType = parameterDtoType.getDomain();
+					DomainType parameterDomainType = parameterDtoType.getDomain();
 
 					if (!parameterDomainType.equals(processingEnv.getTypeUtils().toMutableType(method.getParameters().get(index).asType()))) {
 						pairMethod = false;
@@ -119,7 +119,7 @@ public class AbstractServicePrinter {
 			if (pairMethod) {
 				
 				DtoType returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
-				DomainTypeElement returnDomainType = returnDtoType.getDomain();
+				DomainType returnDomainType = returnDtoType.getDomain();
 
 				if (returnDomainType.equals(processingEnv.getTypeUtils().toMutableType(method.getReturnType()))) {
 					return method;

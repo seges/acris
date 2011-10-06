@@ -18,8 +18,8 @@ import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -113,7 +113,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 
 		this.domainFieldName = MethodHelper.toGetter(getDomainFieldPath());
 
-		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
+		DomainDeclaredType domainTypeElement = configurationTypeElement.getDomain();
 		
 		DtoType type = null;
 		

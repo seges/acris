@@ -24,6 +24,8 @@ import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
@@ -92,7 +94,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		return new DefaultPackageValidatorProvider();
 	}
 
-	private List<MutableTypeVariable> copyTypeArguments(String prefix, DeclaredType declaredType, MutableDeclaredType referenceType) {
+	private List<MutableTypeVariable> prefixTypeArguments(String prefix, DeclaredType declaredType, MutableDeclaredType referenceType) {
 		
 		List<MutableTypeVariable> result = new ArrayList<MutableTypeVariable>();
 		
@@ -151,8 +153,8 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			MutableDeclaredType referenceType = getMutableTypesUtils().toMutableType((DeclaredType)domainType.asType());
 			
 			//there are type parameters, so they should be passed into the converter definition itself			
-			List<MutableTypeVariable> typeParameters = copyTypeArguments(DTO_TYPE_ARGUMENT_PREFIX, (DeclaredType)domainType.asType(), referenceType);
-			typeParameters.addAll(copyTypeArguments(DOMAIN_TYPE_ARGUMENT_PREFIX, (DeclaredType)domainType.asType(), referenceType));
+			List<MutableTypeVariable> typeParameters = prefixTypeArguments(DTO_TYPE_ARGUMENT_PREFIX, (DeclaredType)domainType.asType(), referenceType);
+			typeParameters.addAll(prefixTypeArguments(DOMAIN_TYPE_ARGUMENT_PREFIX, (DeclaredType)domainType.asType(), referenceType));
 
 			converterNameType.setTypeVariables(typeParameters.toArray(new MutableTypeVariable[] {}));
 		}
@@ -242,7 +244,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		return parameters;
 	}
 	
-	public DomainTypeElement getDomain() {
+	public DomainType getDomain() {
 		if (getConfiguration() == null) {
 			return null;
 		}
@@ -251,9 +253,13 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 	}
 	
 	public List<String> getLocalConverters() {
-		TypeElement domainElement = getDomain().asElement();
-
 		List<String> result = new ArrayList<String>();
+
+		if (!(getDomain() instanceof DomainDeclaredType)) {
+			return result;
+		}
+		
+		TypeElement domainElement = ((DomainDeclaredType)getDomain()).asElement();
 
 		if (domainElement == null) {
 			return result;

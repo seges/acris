@@ -36,20 +36,22 @@ public class SettingsTypeElement extends DelegateMutableDeclaredType {
 
 	private static MutableDeclaredType toOutputType(MutableDeclaredType type) {
 		if (type.getEnclosedClass() != null) {
-			type.setEnclosedClass(getOutputName(type.getEnclosedClass()));
+			return type.clone().setEnclosedClass(getOutputName(type.getEnclosedClass()));
 		}
 		
 		return type;
 	}
 	
 	private static MutableDeclaredType getOutputName(MutableDeclaredType type) {
-		return type.addClassSufix(SUFFIX);
+		return type.clone().addClassSufix(SUFFIX);
 	}
 	
 	@Override
 	protected MutableDeclaredType getDelegate() {
 		MutableDeclaredType outputName = getOutputName(annotationNamedType);
-		outputName = outputName.setEnclosedClass(annotationNamedType.getEnclosedClass());
+		if (annotationNamedType.getEnclosedClass() != null) {
+			outputName = outputName.setEnclosedClass(annotationNamedType.getEnclosedClass().clone());
+		}
 		outputName.setKind(MutableTypeKind.CLASS);
 		return outputName;
 	}

@@ -13,8 +13,9 @@ import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
@@ -45,7 +46,7 @@ public abstract class AbstractMethodPrinter {
 			return domainNamedType;
 		}
 		
-		DomainTypeElement domainTypeElement = new DomainTypeElement(domainType, processingEnv, roundEnv);
+		DomainType domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(domainType);
 
 		return castToDelegate(domainNamedType, domainTypeElement.getConfiguration() == null ? null : 
 			domainTypeElement.getConfiguration().getDelegateConfigurationTypeElement());
@@ -53,7 +54,7 @@ public abstract class AbstractMethodPrinter {
 	}
 	
 	public MutableTypeMirror castToDelegate(TypeMirror domainType) {
-		DomainTypeElement domainTypeElement = new DomainTypeElement(domainType, processingEnv, roundEnv);
+		DomainType domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(domainType);
 
 		MutableTypeMirror domainNamedType = processingEnv.getTypeUtils().toMutableType(domainType);
 
@@ -64,7 +65,7 @@ public abstract class AbstractMethodPrinter {
 	protected MutableTypeMirror castToDelegate(MutableTypeMirror domainNamedType, ConfigurationTypeElement delegateConfigurationTypeElement) {
 
 		if (delegateConfigurationTypeElement != null) {
-			DomainTypeElement replacementType = delegateConfigurationTypeElement.getDomain();
+			DomainDeclaredType replacementType = delegateConfigurationTypeElement.getDomain();
 			
 			if ((domainNamedType instanceof MutableDeclaredType) && ((MutableDeclaredType)domainNamedType).hasTypeParameters() && replacementType.hasTypeParameters()) {
 				domainNamedType = replacementType.clone().setTypeVariables(((MutableDeclaredType)domainNamedType).getTypeVariables().toArray(new MutableTypeVariable[] {}));

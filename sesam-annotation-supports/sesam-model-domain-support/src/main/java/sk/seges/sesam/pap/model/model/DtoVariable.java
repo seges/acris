@@ -4,28 +4,28 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
+import sk.seges.sesam.pap.model.model.api.domain.DomainTypeVariable;
 import sk.seges.sesam.pap.model.model.api.dto.DtoTypeVariable;
 
 class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVariable {
 
-	private final MutableTypeMirror dtoType;
+	private final MutableTypeVariable dtoType;
 	private final boolean generated;
 
 	DtoVariable(TypeVariable dtoTypeVariable, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 		
-		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoTypeVariable);
+		this.dtoType = (MutableTypeVariable)processingEnv.getTypeUtils().toMutableType(dtoTypeVariable);
 		this.generated = false;
 	}
 
 	DtoVariable(WildcardType dtoWildcardType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
 		super(processingEnv, roundEnv);
 		
-		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoWildcardType);
+		this.dtoType = (MutableTypeVariable)processingEnv.getTypeUtils().toMutableType(dtoWildcardType);
 		this.generated = false;
 	}
 
@@ -52,9 +52,9 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 		return null;
 	}
 
-	public DomainTypeElement getDomain() {
+	public DomainTypeVariable getDomain() {
 		if (dtoType != null) {
-			return processingEnv.getTransferObjectUtils().getDomainType(dtoType);
+			return (DomainTypeVariable) processingEnv.getTransferObjectUtils().getDomainType(dtoType);
 		}
 
 		return null;
