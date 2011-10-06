@@ -1,0 +1,11 @@
+#summary Available AppEngine profiles for project quick-start.
+#labels Project,QuickStart,AppEngine
+
+= Google AppEngine profile =
+
+{{{.gae}}}
+
+
+= AcrIS Quick-start GAE profile =
+
+{{{.acris-quick-gae}}}
