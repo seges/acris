@@ -13,7 +13,7 @@ import java.util.Map;
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
-import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
+import sk.seges.acris.binding.pap.model.BeanWrapperType;
 import sk.seges.acris.binding.rebind.AbstractCreator;
 import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
 import sk.seges.acris.core.rebind.RebindUtils;
@@ -361,7 +361,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 	}
 
 	protected String getWrapperClassName(String beanClassName) {
-		return beanClassName + BeanWrapperProcessor.BEAN_WRAPPER_SUFFIX;
+		return beanClassName + BeanWrapperType.BEAN_WRAPPER_SUFFIX;
 	}
 
 	protected void generateGetterForSimpleBean(SourceWriter source, JMethod methode) {
