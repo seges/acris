@@ -14,10 +14,12 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -47,9 +49,9 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 	public void initialize(ConfigurationTypeElement configurationElement, MutableDeclaredType outputName) {
 		
 		DtoDeclaredType dtoType = configurationElement.getDto();
-		DomainTypeElement domainType = configurationElement.getDomain();
+		DomainDeclaredType domainType = configurationElement.getDomain();
 		
-		DomainTypeElement domainTypeElement = configurationElement.getDomain();
+		DomainDeclaredType domainTypeElement = domainType;
 
 		String instanceName = "instance";
 		
@@ -89,11 +91,11 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			boolean useIdConverter = false;
 
 			MutableTypeMirror dtoIdType = processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType());
-			DomainTypeElement domainIdTypeElement = null;
+			DomainType domainIdTypeElement = null;
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				domainIdTypeElement = domainTypeElement.getId(entityResolver);
-				DtoDeclaredType dto = domainIdTypeElement.getDto();
+				DtoType dto = domainIdTypeElement.getDto();
 				if (dto != null) {
 					dtoIdType= dto;
 				}
@@ -111,9 +113,9 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				if (domainIdTypeElement.getConfiguration() != null && domainIdTypeElement.getConfiguration().getConverter() != null) {
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfiguration().getConverter(), idMethod.getReturnType(), pw);
+					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfiguration().getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), pw);
 					pw.print(".convertToDto(");
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfiguration().getConverter(), idMethod.getReturnType(), pw);
+					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfiguration().getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), pw);
 					pw.print(".createDtoInstance(null), ");
 					pw.print("(", castToDelegate(idMethod.getReturnType()), ")");
 					useIdConverter = true;
@@ -143,10 +145,10 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		pw.println();
 
 
-		DomainTypeElement domainsuperClass = configurationElement.getDomain().getSuperClass();
+		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConfiguration().getConverter() != null) {
-			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConfiguration().getConverter(), domainsuperClass.asType(), pw);
+			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConfiguration().getConverter(), domainsuperClass, pw);
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
 		}

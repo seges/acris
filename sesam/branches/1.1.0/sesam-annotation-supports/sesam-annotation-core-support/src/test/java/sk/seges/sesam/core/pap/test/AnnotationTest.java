@@ -79,7 +79,7 @@ public abstract class AnnotationTest {
 	}
 
 	protected MutableDeclaredType toMutable(Class<?> clazz) {
-		return new TestClass(clazz.getPackage().getName(), clazz.getSimpleName());
+		return new TestClass(clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
 	}
 	
 	protected MutableProcessingEnvironment processingEnv = new MutableProcessingEnvironment(new TestProcessingEnvironment());

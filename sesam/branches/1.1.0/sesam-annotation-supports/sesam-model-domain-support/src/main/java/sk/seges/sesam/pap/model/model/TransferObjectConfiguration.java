@@ -139,9 +139,11 @@ public class TransferObjectConfiguration {
 			}
 
 			annotationDomainType = getDomainInterface(mapping);
-
-			if (annotationDomainType != null && processingEnv.getTypeUtils().implementsType(domainType, mutableAnnotationDomainType)) {
-				return mapping;
+			if (annotationDomainType != null) {
+				mutableAnnotationDomainType = processingEnv.getTypeUtils().toMutableType((DeclaredType)annotationDomainType.asType());
+				if (processingEnv.getTypeUtils().implementsType(domainType, mutableAnnotationDomainType)) {
+					return mapping;
+				}
 			}
 		}
 		

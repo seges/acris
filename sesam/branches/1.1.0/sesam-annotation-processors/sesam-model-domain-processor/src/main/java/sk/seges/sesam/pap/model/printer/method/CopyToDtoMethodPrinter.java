@@ -65,7 +65,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			String converterName = "converter" + MethodHelper.toMethod("", context.getFieldName());
 			
 			pw.print(context.getConverter(), " " + converterName + " = ");
-			converterProviderPrinter.printDomainConverterMethodName(context.getConverter(), context.getDomainMethod().getReturnType(), pw);
+			converterProviderPrinter.printDomainConverterMethodName(context.getConverter(), processingEnv.getTypeUtils().toMutableType(context.getDomainMethod().getReturnType()), pw);
 			pw.println(";");
 
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getFieldName()) + "(");

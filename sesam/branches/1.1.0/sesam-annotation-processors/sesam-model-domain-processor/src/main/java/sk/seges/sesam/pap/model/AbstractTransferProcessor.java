@@ -23,8 +23,9 @@ import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.configurer.TrasferObjectProcessorConfigurer;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
@@ -108,9 +109,9 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asElement().getEnclosedElements());
 		
-		DomainTypeElement domainTypeElement = configurationTypeElement.getDomain();
+		DomainDeclaredType domainTypeElement = configurationTypeElement.getDomain();
 
-		DomainTypeElement processingElement = domainTypeElement;
+		DomainDeclaredType processingElement = domainTypeElement;
 	
 		List<String> generated = new ArrayList<String>();
 		
@@ -157,12 +158,14 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 				
 				if (pathResolver.hasNext()) {
 
-					DomainTypeElement currentElement = processingElement;
+					DomainDeclaredType currentElement = processingElement;
 	
 					while (pathResolver.hasNext()) {
-						currentElement = currentElement.getDomainReference(currentPath);
+						DomainType domainReference = currentElement.getDomainReference(currentPath);
 						
-						if (currentElement != null) {
+						if (domainReference != null && !domainReference.getKind().isDeclared()) {
+							currentElement = (DomainDeclaredType)domainReference;
+							
 							ExecutableElement nestedIdMethod = currentElement.getIdMethod(getEntityResolver());
 
 							if (nestedIdMethod == null && getEntityResolver().shouldHaveIdMethod(currentElement)) {

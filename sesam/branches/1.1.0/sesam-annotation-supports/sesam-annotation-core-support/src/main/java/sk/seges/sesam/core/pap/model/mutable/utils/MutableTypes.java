@@ -3,9 +3,12 @@ package sk.seges.sesam.core.pap.model.mutable.utils;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.lang.model.element.Element;
@@ -34,26 +37,14 @@ import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredTyp
 
 public class MutableTypes implements Types {
 
-	public static class MutableTypeConverter {
-
-		private MutableTypes mutableTypes;
-		
-		protected MutableTypeConverter(MutableTypes mutableTypes) {
-			this.mutableTypes = mutableTypes;
-		};
-		
-		public MutableTypeMirror handleType(TypeMirror type) {
-			return mutableTypes.toMutableType(type);
-		}
-		
-	}
-
 	private Types types;
 	private Elements elements;
+	private MutableProcessingEnvironment processingEnv;
 	
-	public MutableTypes(Elements elements, Types types) {
+	public MutableTypes(MutableProcessingEnvironment processingEnv, Elements elements, Types types) {
 		this.types = types;
 		this.elements = elements;
+		this.processingEnv = processingEnv;
 	}
 
 	@Override
@@ -183,7 +174,7 @@ public class MutableTypes implements Types {
 		typeVariable.setVariable(name);
 		Set<MutableTypeMirror> bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: upperBounds) {
-			if (bound != null) {
+			if (bound != null && (!bound.getKind().equals(TypeKind.DECLARED) || !bound.toString().equals(Object.class.getCanonicalName()))) {
 				bounds.add(bound);
 			}
 		}
@@ -191,7 +182,7 @@ public class MutableTypes implements Types {
 
 		bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: lowerBounds) {
-			if (bound != null) {
+			if (bound != null && (!bound.getKind().equals(TypeKind.DECLARED) || !bound.toString().equals(Object.class.getCanonicalName()))) {
 				bounds.add(bound);
 			}
 		}
@@ -220,9 +211,9 @@ public class MutableTypes implements Types {
 
 	MutableDeclaredType constructDeclaredType(MutableDeclaredType type, MutableTypeVariable... typeArgs) {
 		if (type.getEnclosedClass() != null) {
-			return new MutableDeclared(type.asType(), type.getEnclosedClass(), type.getSimpleName()).setTypeVariables(typeArgs);
+			return new MutableDeclared(type.asType(), type.getEnclosedClass(), type.getSimpleName(), processingEnv).setTypeVariables(typeArgs);
 		}
-		return new MutableDeclared(type.asType(), type.getPackageName(), type.getSimpleName()).setTypeVariables(typeArgs);
+		return new MutableDeclared(type.asType(), type.getPackageName(), type.getSimpleName(), processingEnv).setTypeVariables(typeArgs);
 	}
 
 	public MutableDeclaredType getDeclaredType(MutableDeclaredType type, MutableTypeVariable... typeArgs) {
@@ -238,7 +229,7 @@ public class MutableTypes implements Types {
 	}
 
 	public MutableDeclaredType getDeclaredType(MutableDeclaredType enclosedType, MutableDeclaredType type, MutableTypeVariable... typeArgs) {
-		return new MutableDeclared(type.asType(), enclosedType, type.getSimpleName()).setTypeVariables(typeArgs);
+		return new MutableDeclared(type.asType(), enclosedType, type.getSimpleName(), processingEnv).setTypeVariables(typeArgs);
 	}
 
 	@Override
@@ -251,26 +242,24 @@ public class MutableTypes implements Types {
 		return this.types.asMemberOf(containing, element);
 	}
 
-	protected MutableTypeConverter getMutableTypeConverter() {
-		return new MutableTypeConverter(this);
-	}
-
 	private MutableTypeMirror[] toMutableTypes(Collection<? extends TypeMirror> types) {
 		if (types.size() == 0) {
 			return new MutableTypeMirror[] {};
 		}
 		
-		MutableTypeMirror[] result = new MutableTypeMirror[types.size()];
+		List<MutableTypeMirror> result = new LinkedList<MutableTypeMirror>();
 
 		Iterator<? extends TypeMirror> iterator = types.iterator();
 		
-		int i = 0;
 		while (iterator.hasNext()) {
 			TypeMirror type = iterator.next();
-			result[i++] = getMutableTypeConverter().handleType(type);
+			MutableTypeMirror mutableType = toMutableType(type);
+			if (mutableType != null) {
+				result.add(mutableType);
+			}
 		}
 		
-		return result;
+		return result.toArray(new MutableTypeMirror[] {});
 	}
 	
 	public MutableDeclaredType toMutableType(Class<?> clazz) {
@@ -278,9 +267,9 @@ public class MutableTypes implements Types {
 			return null;
 		}
 		if (clazz.getEnclosingClass() != null) {
-			return new MutableDeclared(null, toMutableType(clazz.getEnclosingClass()), clazz.getSimpleName());
+			return new MutableDeclared(null, toMutableType(clazz.getEnclosingClass()), clazz.getSimpleName(), processingEnv);
 		}
-		return new MutableDeclared(null, clazz.getPackage().getName(), clazz.getSimpleName());
+		return new MutableDeclared(null, clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
 	}
 
 	public MutableTypeMirror toMutableType(Type javaType) {
@@ -299,6 +288,17 @@ public class MutableTypes implements Types {
 		return (MutableDeclaredType) convertToMutableType(declaredType);
 	}
 	
+	private static Map<TypeMirror, MutableTypeMirror> typesCache = new HashMap<TypeMirror, MutableTypeMirror>();
+
+	void invalidateCache(TypeMirror type) {
+		typesCache.remove(type);
+	}
+	
+	private <T extends MutableTypeMirror> T addToCache(T mutableType, TypeMirror typeMirror) {
+		typesCache.put(typeMirror, mutableType);
+		return mutableType;
+	}
+	
 	public MutableTypeMirror toMutableType(TypeMirror typeMirror) {
 		
 		if (typeMirror == null || typeMirror.getKind().equals(TypeKind.NULL)  || typeMirror.getKind().equals(TypeKind.NONE)) {
@@ -307,7 +307,7 @@ public class MutableTypes implements Types {
 		
 		switch (typeMirror.getKind()) {
 		case ARRAY:
-			return new MutableArray(getMutableTypeConverter().handleType(((ArrayType)typeMirror).getComponentType()));
+			return addToCache(new MutableArray(toMutableType(((ArrayType)typeMirror).getComponentType())), typeMirror);
 		case DECLARED:
 		case BOOLEAN:
 		case BYTE:
@@ -319,6 +319,10 @@ public class MutableTypes implements Types {
 		case SHORT:
 		case VOID:
 			return convertToMutableType(typeMirror);
+		case WILDCARD:
+			WildcardType wildcardType = (WildcardType)typeMirror;
+
+			return getWildcardType(toMutableType(wildcardType.getExtendsBound()), toMutableType(wildcardType.getSuperBound()));
 
 		case TYPEVAR:
 			TypeVariable typeVariable = ((TypeVariable)typeMirror);
@@ -329,23 +333,33 @@ public class MutableTypes implements Types {
 			List<? extends TypeMirror> lowerBounds = directSupertypes(typeVariable.getLowerBound());
 			
 			return getTypeVariable(name, toMutableTypes(upperBounds), toMutableTypes(lowerBounds));
+		case NULL:
+		case NONE:
+			return null;
 		}
 		
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
 	}
 	
 	private MutableDeclaredType convertToMutableType(TypeMirror typeMirror) {
+		
+		MutableTypeMirror cachedType = typesCache.get(typeMirror);
+		
+		if (cachedType != null) {
+			return (MutableDeclaredType) cachedType;
+		}
+
 		switch (typeMirror.getKind()) {
 		case DECLARED:
 			DeclaredType declaredType = (DeclaredType)typeMirror;
 			
 			if (declaredType.asElement().getEnclosingElement() != null && declaredType.asElement().getEnclosingElement().asType().getKind().equals(TypeKind.DECLARED)) {
 				MutableDeclaredType enclosedType = convertToMutableType(declaredType.asElement().getEnclosingElement().asType());
-				return handleGenerics(new MutableDeclared(declaredType, enclosedType, declaredType.asElement().getSimpleName().toString()), declaredType);
+				return addToCache(new MutableDeclared(declaredType, enclosedType, declaredType.asElement().getSimpleName().toString(), processingEnv), typeMirror);
 			}
 				
 			PackageElement packageElement = elements.getPackageOf(declaredType.asElement());
-			return handleGenerics(new MutableDeclared(declaredType, packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString()), declaredType);
+			return addToCache(new MutableDeclared(declaredType, packageElement.getQualifiedName().toString(), declaredType.asElement().getSimpleName().toString(), processingEnv), typeMirror);
 		case BOOLEAN:
 		case BYTE:
 		case CHAR:
@@ -355,65 +369,10 @@ public class MutableTypes implements Types {
 		case LONG:
 		case SHORT:
 		case VOID:
-			return new MutableDeclared(typeMirror, (String)null, typeMirror.getKind().name().toLowerCase());
+			return addToCache(new MutableDeclared(typeMirror, (String)null, typeMirror.getKind().name().toLowerCase(), processingEnv), typeMirror);
 		}
 		
 		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
-	}
-
-	private MutableDeclaredType handleGenerics(MutableDeclaredType simpleType, TypeMirror type) {
-		
-		DeclaredType declaredType = (DeclaredType)type;
-		if (declaredType.getTypeArguments() != null && declaredType.getTypeArguments().size() > 0) {
-			MutableTypeVariable[] typeParameters = new MutableTypeVariable[declaredType.getTypeArguments().size()];
-			for (int i = 0; i < declaredType.getTypeArguments().size(); i++) {
-				TypeMirror typeParameter = declaredType.getTypeArguments().get(i);
-				
-				if (typeParameter.getKind().equals(TypeKind.TYPEVAR)) {
-					
-					List<MutableTypeMirror> upperBoundTypes = new ArrayList<MutableTypeMirror>();
-					List<MutableTypeMirror> lowerBoundTypes = new ArrayList<MutableTypeMirror>();
-
-					TypeVariable typeVariable = (TypeVariable)typeParameter;
-
-					List<? extends TypeMirror> upperBounds = directSupertypes(typeVariable.getUpperBound());
-					
-					if (upperBounds.size() > 0) {
-						for (TypeMirror upperBound: upperBounds) {
-							if (!upperBound.getKind().equals(TypeKind.NULL)) {
-								if (!upperBound.getKind().equals(TypeKind.DECLARED) || !upperBound.toString().equals(Object.class.getCanonicalName()))
-								upperBoundTypes.add(getMutableTypeConverter().handleType(upperBound));
-							}
-						}
-					}
-
-					List<? extends TypeMirror> lowerBounds = directSupertypes(typeVariable.getLowerBound());
-					
-					if (lowerBounds.size() > 0) {
-						for (TypeMirror lowerBound: lowerBounds) {
-							if (!lowerBound.getKind().equals(TypeKind.NULL)) {
-								lowerBoundTypes.add(getMutableTypeConverter().handleType(lowerBound));
-							}
-						}
-					}
-
-					String variableName = typeVariable.asElement().getSimpleName().toString();
-
-					typeParameters[i] = getTypeVariable(variableName, upperBoundTypes.toArray(new MutableDeclaredType[] {}), lowerBoundTypes.toArray(new MutableDeclaredType[] {}));
-					
-				} else if (typeParameter.getKind().equals(TypeKind.WILDCARD)) {
-					WildcardType wildcardType = (WildcardType)typeParameter;
-
-					typeParameters[i] = getWildcardType(getMutableTypeConverter().handleType(wildcardType.getExtendsBound()), 
-														getMutableTypeConverter().handleType(wildcardType.getSuperBound()));
-				} else {
-					typeParameters[i] = getTypeVariable(null, getMutableTypeConverter().handleType(typeParameter));
-				}
-			}
-			return getDeclaredType((MutableDeclaredType)simpleType, typeParameters);
-		}
-		
-		return simpleType;
 	}
 
 	public TypeMirror fromMutableType(MutableTypeMirror type) {
@@ -531,9 +490,7 @@ public class MutableTypes implements Types {
 				}
 
 				PackageElement packageElement = elements.getPackageOf(typeElement);
-				MutableDeclared result = new MutableDeclared(typeElement.asType(), packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString());
-				result.setTypeVariables(parameters);
-				return result;
+				return new MutableDeclared(typeElement.asType(), packageElement.getQualifiedName().toString(), typeElement.getSimpleName().toString(), processingEnv).setTypeVariables(parameters);
 			} else {
 				return (MutableDeclaredType) toMutableType(typeElement.asType());
 			}
@@ -656,8 +613,8 @@ public class MutableTypes implements Types {
 		MutableDeclaredType dt1 = (MutableDeclaredType)t1;
 		MutableDeclaredType dt2 = (MutableDeclaredType)t2;
 
-		if (!dt1.getCanonicalName().equals(dt2.getCanonicalName())) {
-			return false;
+		if (dt1.getCanonicalName().equals(dt2.getCanonicalName())) {
+			return true;
 		}
 		
 		for (MutableTypeMirror interfaceType: dt1.getInterfaces()) {
@@ -676,7 +633,7 @@ public class MutableTypes implements Types {
 
 		MutableTypeMirror superClassType = dt1.getSuperClass();
 		
-		if (superClassType.getKind().isDeclared()) {
+		if (superClassType != null && superClassType.getKind().isDeclared()) {
 			if (((MutableDeclaredType)superClassType).getCanonicalName().equals(dt2.getCanonicalName())) {
 				return true;
 			}

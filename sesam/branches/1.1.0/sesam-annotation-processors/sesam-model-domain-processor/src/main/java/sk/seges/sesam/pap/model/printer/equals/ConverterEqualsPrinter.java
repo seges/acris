@@ -11,7 +11,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
-import sk.seges.sesam.pap.model.model.DomainTypeElement;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -38,11 +38,11 @@ public class ConverterEqualsPrinter implements TransferObjectElementPrinter {
 											 configurationTypeElement.getDto(), " " + DTO_NAME + ") {");
 		if (entityResolver.shouldHaveIdMethod(configurationTypeElement.getDomain())) {
 
-			DomainTypeElement domainId = configurationTypeElement.getDomain().getId(entityResolver);
+			DomainType domainId = configurationTypeElement.getDomain().getId(entityResolver);
 
 			if (domainId.getConverter() != null) {
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
-				converterProviderPrinter.printDomainConverterMethodName(domainId.getConverter(), domainId.asType(), pw);
+				converterProviderPrinter.printDomainConverterMethodName(domainId.getConverter(), domainId, pw);
 				pw.print(".toDto(");
 			} else {
 				pw.print(domainId, " " + DTO_ID + " = ");
