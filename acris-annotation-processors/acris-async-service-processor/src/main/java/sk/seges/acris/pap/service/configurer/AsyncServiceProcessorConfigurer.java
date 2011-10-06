@@ -1,4 +1,4 @@
-package sk.seges.acris.pap.service;
+package sk.seges.acris.pap.service.configurer;
 
 import java.lang.reflect.Type;
 
@@ -23,6 +23,6 @@ public class AsyncServiceProcessorConfigurer extends DefaultProcessorConfigurer 
 			case PROCESSING_ANNOTATIONS:
 				return new Type[] { RemoteServiceRelativePath.class, RemoteServicePath.class, RemoteServiceDefinition.class };
 		}
-		return super.getConfigurationElement(element);
+		return new Type[] {};
 	}
 }
