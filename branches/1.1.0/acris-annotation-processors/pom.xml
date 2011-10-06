@@ -16,20 +16,4 @@
 	<modules>
 		<module>acris-async-service-processor</module>
 	</modules>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-service-local-interface-api</artifactId>
-				<version>${sesam-os.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-service-local-interface-api</artifactId>
-				<classifier>sources</classifier>
-				<version>${sesam-os.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>
