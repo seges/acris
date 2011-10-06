@@ -18,7 +18,7 @@ import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport;
 import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport.TypePrinterSupport;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.processor.PlugableAnnotationProcessor;
-import sk.seges.sesam.core.pap.test.annotation.UrobToCoChcem;
+import sk.seges.sesam.core.pap.test.annotation.TestAnnotation;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 @PrintSupport(printer = @TypePrinterSupport(printSerializer = ClassSerializer.SIMPLE))
@@ -28,7 +28,7 @@ public class TestPlugableAnnotationProcessor extends PlugableAnnotationProcessor
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		Set<String> result = new HashSet<String>();
-		result.add(UrobToCoChcem.class.getCanonicalName());
+		result.add(TestAnnotation.class.getCanonicalName());
 		return result;
 	}
 	
