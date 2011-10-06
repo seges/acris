@@ -1,0 +1,6 @@
+#summary Available Annotation Processing profiles for project quick-start.
+#labels Project,QuickStart,PAP
+
+= SeSAM Annotation Processing profile =
+
+{{{.pap}}}
