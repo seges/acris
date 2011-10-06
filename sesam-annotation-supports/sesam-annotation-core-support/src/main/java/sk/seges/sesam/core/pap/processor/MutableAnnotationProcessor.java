@@ -131,7 +131,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 
 				pw.print("public " + outputClass.getKind().toString() + " " + outputClass.toString(ClassSerializer.SIMPLE, true));
 				
-				if (superClassType != null) {
+				if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && !outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
 					pw.print(" extends ", superClassType);
 				}
 	
@@ -149,6 +149,12 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 	
 					if (supportedType) {
 						int i = 0;
+
+						if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
+							pw.print(superClassType);
+							i++;
+						}
+						
 						for (MutableTypeMirror type : outputClass.getInterfaces()) {
 							if (i > 0) {
 								pw.print(", ");
