@@ -133,7 +133,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		
 		super.processElement(context);
 		
-		converterProviderPrinter.printConverterMethods(false);
+		converterProviderPrinter.printConverterMethods(false, 0);
 	}
 	
 	//TODO same method as in method helper
