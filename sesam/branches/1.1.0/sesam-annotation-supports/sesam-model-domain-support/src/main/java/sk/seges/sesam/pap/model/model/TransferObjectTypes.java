@@ -67,7 +67,7 @@ public class TransferObjectTypes {
 	public DomainType getDomainType(TypeMirror type) {
 		switch (type.getKind()) {
 		case ARRAY:
-			return new DomainArray(getDomainType(type), processingEnv);
+			return new DomainArray(getDomainType(((ArrayType)type).getComponentType()), processingEnv);
 		case DECLARED:
 			return new DomainDeclared((DeclaredType) type, processingEnv, roundEnv, configurationProviders);
 		case ERROR:

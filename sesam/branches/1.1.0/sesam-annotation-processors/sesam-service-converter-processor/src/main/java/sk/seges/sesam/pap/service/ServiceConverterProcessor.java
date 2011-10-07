@@ -73,7 +73,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 
 		FormattedPrintWriter pw = context.getPrintWriter();
 		
-		pw.print("@", LocalServiceConverter.class, "(remoteService = ");
+		pw.print("@", LocalServiceConverter.class, "(remoteServices = ");
 
 		if (localServiceInterfaces.size() > 0) {
 			pw.print("{");
@@ -92,7 +92,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		if (localServiceInterfaces.size() > 0) {
 			pw.print("}");
 		}
-		pw.print(");");
+		pw.println(")");
 
 		super.printAnnotations(context);
 	}
