@@ -19,10 +19,14 @@ public class Functions {
 	}
 	
 	public static Function<WebDriver, WebElement> elementVisible (List<WebElement> webElements) {
-		return new ElementVisible (webElements);
+		return new ElementVisible (webElements, true);
 	}
 
 	public static Function<WebDriver, WebElement> elementVisible (WebElement webElement) {
-		return new ElementVisible (webElement);
+		return new ElementVisible (webElement, true);
+	}
+
+	public static Function<WebDriver, WebElement> elementNotVisible (WebElement webElement) {
+		return new ElementVisible (webElement, false);
 	}
 }
