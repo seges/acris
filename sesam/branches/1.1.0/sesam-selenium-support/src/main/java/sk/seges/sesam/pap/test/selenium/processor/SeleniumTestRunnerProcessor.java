@@ -17,7 +17,7 @@ import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
-import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumTestProcessorConfigurer;
+import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumSuiteProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteTypeElement;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -32,7 +32,7 @@ public class SeleniumTestRunnerProcessor extends MutableAnnotationProcessor {
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
-		return new SeleniumTestProcessorConfigurer();
+		return new SeleniumSuiteProcessorConfigurer();
 	}
 		
 	@Override

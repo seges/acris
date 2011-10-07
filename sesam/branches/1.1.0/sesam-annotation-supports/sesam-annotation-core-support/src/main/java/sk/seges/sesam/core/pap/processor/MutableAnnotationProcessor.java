@@ -150,7 +150,8 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 					if (supportedType) {
 						int i = 0;
 
-						if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
+						if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && 
+								outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
 							pw.print(superClassType);
 							i++;
 						}
@@ -163,6 +164,10 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 							i++;
 						}
 					}
+				} else if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && 
+								outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
+					pw.print(" extends ");
+					pw.print(superClassType);
 				}
 				pw.println(" {");
 				pw.println();
@@ -178,7 +183,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 			}
 		}
 
-		return supportProcessorChain();
+		return !supportProcessorChain();
 	}
 
 	protected abstract MutableDeclaredType[] getOutputClasses(RoundContext context);

@@ -58,7 +58,7 @@ public class SettingsTypeElement extends DelegateMutableDeclaredType {
 
 	public AnnotationMirror getAnnotationMirrorForElement(TypeElement typeElement) {
 		for (AnnotationMirror annotationMirror: typeElement.getAnnotationMirrors()) {
-			if (annotationMirror.getAnnotationType().equals(annotationType)) {
+			if (annotationMirror.getAnnotationType().asElement().asType().equals(annotationType)) {
 				return annotationMirror;
 			}
 		}
