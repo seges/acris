@@ -67,7 +67,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 		FormattedPrintWriter pw = context.getPrintWriter();
 		
 		for (ExecutableElement method: methods) {
-			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDomainType(method.getReturnType()).getDto();
+			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
 			
 			pw.print(dtoReturnType.getDomain(), " " + method.getSimpleName().toString() + "(");
 			
@@ -77,7 +77,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 					pw.print(", ");
 				}
 				
-				DtoType dtoParamType = processingEnv.getTransferObjectUtils().getDomainType(parameter.asType()).getDto();
+				DtoType dtoParamType = processingEnv.getTransferObjectUtils().getDtoType(parameter.asType());
 
 				pw.print(dtoParamType.getDomain(), " " + parameter.getSimpleName().toString());
 				i++;

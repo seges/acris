@@ -15,6 +15,7 @@ public class SeleniumSettingsProviderTypeElement extends AbstractSeleniumTypeEle
 		this.seleniumSuite = seleniumSuite;
 		
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(CoreSeleniumSettingsProvider.class));
+		setKind(MutableTypeKind.INTERFACE);
 	}
 
 	private MutableDeclaredType getOutputClass(MutableDeclaredType inputClass) {

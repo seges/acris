@@ -25,7 +25,7 @@ import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
-import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumConfigurationProcessorProviderConfigurer;
+import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumTestProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.printer.SettingsInitializerPrinter;
@@ -39,7 +39,7 @@ public class SeleniumTestConfigurationProcessor extends MutableAnnotationProcess
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
-		return new SeleniumConfigurationProcessorProviderConfigurer();
+		return new SeleniumTestProcessorConfigurer();
 	}
 
 	@Override

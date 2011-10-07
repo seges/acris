@@ -118,8 +118,11 @@ public class TransferObjectConfiguration {
 
 			annotationDtoType = getDtoInterface(mapping);
 
-			if (annotationDtoType != null && processingEnv.getTypeUtils().implementsType(dtoType, mutableAnnotationDtoType)) {
-				return mapping;
+			if (annotationDtoType != null) {
+				mutableAnnotationDtoType = processingEnv.getTypeUtils().toMutableType((DeclaredType)annotationDtoType.asType());
+				if (processingEnv.getTypeUtils().implementsType(dtoType, mutableAnnotationDtoType)) {
+					return mapping;
+				}
 			}
 		}
 		

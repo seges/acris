@@ -6,7 +6,7 @@ import javax.lang.model.SourceVersion;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.pap.configuration.processor.AbstractConfigurationProviderProcessor;
-import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumConfigurationProcessorProviderConfigurer;
+import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumSuiteProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsProviderTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteTypeElement;
 
@@ -21,7 +21,7 @@ public class SeleniumConfigurationProviderProcessor extends AbstractConfiguratio
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
-		return new SeleniumConfigurationProcessorProviderConfigurer();
+		return new SeleniumSuiteProcessorConfigurer();
 	}
 
 }
