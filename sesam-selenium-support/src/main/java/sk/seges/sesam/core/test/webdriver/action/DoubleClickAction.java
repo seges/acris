@@ -22,9 +22,9 @@ public class DoubleClickAction implements Action {
 
 	@Override
 	public void perform() {
-		if (testEnvironment.getBrowser().equals(Browsers.FIREFOX.toString())) {
+		if (testEnvironment.getBrowser().equals(Browsers.FIREFOX)) {
 			((JavascriptExecutor) webDriver).executeScript("var evt = document.createEvent('MouseEvents'); evt.initMouseEvent('dblclick',true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0,null); arguments[0].dispatchEvent(evt);", webElement);
-		} else if (testEnvironment.getBrowser().equals(Browsers.IE.toString())) {
+		} else if (testEnvironment.getBrowser().equals(Browsers.IE)) {
 			((JavascriptExecutor) webDriver).executeScript("arguments[0].fireEvent('ondblclick');", webElement); 
 		} else {
 			throw new RuntimeException("Not supported browser for double click action");
