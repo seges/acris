@@ -13,11 +13,12 @@ import sk.seges.sesam.core.test.selenium.report.AbstractReportHelper;
 
 public class ScreenshotSupport extends AbstractReportHelper implements ReportSupport {
 
-	private ReportSettings reportSettings;
-	private WebDriver webDriver;
+	private final ReportSettings reportSettings;
+	private final WebDriver webDriver;
 	
 	public ScreenshotSupport(WebDriver webDriver, ReportSettings reportSettings) {
 		this.reportSettings = reportSettings;
+		this.webDriver = webDriver;
 	}
 	
 	public void initialize() {
@@ -27,6 +28,9 @@ public class ScreenshotSupport extends AbstractReportHelper implements ReportSup
 	}
 	
 	private String getScreenshotDirectory() {
+		if (reportSettings.getScreenshot().getDirectory() == null) {
+			return getResultDirectory();
+		}
 		return getResultDirectory() + reportSettings.getScreenshot().getDirectory();
 	}
 
