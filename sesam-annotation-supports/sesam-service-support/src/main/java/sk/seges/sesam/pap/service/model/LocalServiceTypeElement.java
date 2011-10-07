@@ -69,9 +69,9 @@ public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
 	@Override
 	protected MutableDeclaredType getDelegate() {
 		if (localServiceType != null) {
-			return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(localServiceType.asType());
+			return ((MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(localServiceType.asType()));
 		}
-		return getLocalServiceClass(remoteService);
+		return getLocalServiceClass(remoteService.clone());
 	}
 	
 	public MutableDeclaredType getLocalServiceClass(MutableDeclaredType mutableType) {

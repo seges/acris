@@ -108,7 +108,7 @@ public class AbstractServicePrinter {
 					DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoParameter.asType());
 					DomainType parameterDomainType = parameterDtoType.getDomain();
 
-					if (!parameterDomainType.equals(processingEnv.getTypeUtils().toMutableType(method.getParameters().get(index).asType()))) {
+					if (!processingEnv.getTypeUtils().isSameType(parameterDomainType, processingEnv.getTypeUtils().toMutableType(method.getParameters().get(index).asType()))) {
 						pairMethod = false;
 						break;
 					}
@@ -121,7 +121,7 @@ public class AbstractServicePrinter {
 				DtoType returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
 				DomainType returnDomainType = returnDtoType.getDomain();
 
-				if (returnDomainType.equals(processingEnv.getTypeUtils().toMutableType(method.getReturnType()))) {
+				if (processingEnv.getTypeUtils().isSameType(returnDomainType, returnDtoType)) {
 					return method;
 				}
 				
