@@ -11,24 +11,27 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 public class ElementVisible implements ExpectedCondition<WebElement> {
 
 	private List<WebElement> webElements;
+	private boolean visible = true;
 	
-	ElementVisible(List<WebElement> webElements) {
+	ElementVisible(List<WebElement> webElements, boolean visible) {
 		this.webElements = webElements;
+		this.visible = visible;
 	}
 
-	ElementVisible(WebElement webElement) {
+	ElementVisible(WebElement webElement, boolean visible) {
 		webElements = new ArrayList<WebElement>();
 		webElements.add(webElement);
+		this.visible = visible;
 	}
 
 	@Override
 	public WebElement apply(WebDriver webDriver) {
 		for (WebElement webElement: webElements) {
-			if (webElement != null && webElement instanceof WrapsElement && ((WrapsElement) webElement).getWrappedElement().isDisplayed()) {
+			if (webElement != null && webElement instanceof WrapsElement && ((WrapsElement) webElement).getWrappedElement().isDisplayed() == visible) {
 				return ((WrapsElement) webElement).getWrappedElement();
 			}
 			
-			if (webElement.isDisplayed()) {
+			if (webElement.isDisplayed() == visible) {
 				return webElement;
 			}
 		}
