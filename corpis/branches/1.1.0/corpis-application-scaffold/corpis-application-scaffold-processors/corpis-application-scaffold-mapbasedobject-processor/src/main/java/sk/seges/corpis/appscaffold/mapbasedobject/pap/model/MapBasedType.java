@@ -35,6 +35,7 @@ public class MapBasedType extends DelegateMutableDeclaredType {
 
 		setInterfaces(interfaces);
 
+		setKind(MutableTypeKind.CLASS);
 	}
 	
 	@Override
