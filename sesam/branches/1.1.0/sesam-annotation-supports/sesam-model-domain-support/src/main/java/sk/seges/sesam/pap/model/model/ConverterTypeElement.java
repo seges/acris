@@ -206,18 +206,30 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		
 		return constructors;
 	}
-	
+
 	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver) {
+		return getConverterParameters(parametersResolver, 0);
+	}
+	
+	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver, int constructorIndex) {
 
 		List<ConverterParameter> parameters = new LinkedList<ConverterParameter>();
 
-		if (!isGenerated()) {
-			TypeElement converterTypeElement = processingEnv.getElementUtils().getTypeElement(getCanonicalName());
+		TypeElement converterTypeElement = processingEnv.getElementUtils().getTypeElement(getCanonicalName());
+
+		if (converterTypeElement != null) {
 			List<ExecutableElement> constructors = getSortedConstructorMethods(converterTypeElement);
 
-			if (constructors != null && constructors.size() > 0) {
-				List<? extends VariableElement> constructorParameters = constructors.get(0).getParameters();
-
+			if (constructors != null && constructors.size() > constructorIndex) {
+				
+				List<? extends VariableElement> constructorParameters = null;
+				
+				if (constructorIndex != -1) {
+					constructorParameters = constructors.get(constructorIndex).getParameters();
+				} else {
+					constructorParameters = constructors.get(constructors.size() - 1).getParameters();
+				}
+				
 				for (VariableElement constructorParameter : constructorParameters) {
 					parameters.add(toConverterParameter(constructorParameter));
 				}
@@ -226,8 +238,14 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
 			List<ExecutableElement> constructors = getSortedConstructorMethods(cachedConverterType);
 
-			if (constructors != null && constructors.size() > 0) {
-				List<? extends VariableElement> constructorParameters = constructors.get(0).getParameters();
+			if (constructors != null && constructors.size() > constructorIndex) {
+
+				List<? extends VariableElement> constructorParameters = null;
+				if (constructorIndex != -1) {
+					constructorParameters = constructors.get(constructorIndex).getParameters();
+				} else {
+					constructorParameters = constructors.get(constructors.size() - 1).getParameters();
+				}
 
 				for (VariableElement constructorParameter : constructorParameters) {
 					parameters.add(toConverterParameter(constructorParameter));

@@ -126,16 +126,15 @@ public class ConverterProviderPrinter {
 		return result.toArray(new MutableTypeVariable[] {});
 	}
 
-	
-	public void printConverterMethods(boolean supportExtends) {
+	public void printConverterMethods(boolean supportExtends, int constructorIndex) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
-			printConverterMethod(converterEntry.getValue(), converterEntry.getKey(), supportExtends);
+			printConverterMethod(converterEntry.getValue(), converterEntry.getKey(), supportExtends, constructorIndex);
 		}
 	}
 	
-	private void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends) {
+	private void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends, int constructorIndex) {
 
-		List<ConverterParameter> converterParameters = converterTypeElement.getConverterParameters(parametersResolver);
+		List<ConverterParameter> converterParameters = converterTypeElement.getConverterParameters(parametersResolver, constructorIndex);
 
 		pw.print("private");
 		
@@ -320,27 +319,6 @@ public class ConverterProviderPrinter {
 		}
 		pw.print(")");
 	}
-
-//	private void printConverterParameter(TomBaseElementProvider tomBaseElementProvider, MutableTypeMirror type, int index) {
-//		switch (type.getKind()) {
-//		case CLASS:
-//		case ANNOTATION_TYPE:
-//		case ENUM:
-//		case INTERFACE:
-//		case PRIMITIVE:
-//			printConverterParameter(tomBaseElementProvider, (MutableDeclaredType)type, index);
-//			break;
-//		case WILDCARD:
-//			MutableWildcardType wildcardType = (MutableWildcardType)type;
-//			if (wildcardType.getExtendsBound() != null) {
-//				printConverterParameter(tomBaseElementProvider, wildcardType.getExtendsBound(), index);
-//			} else if (wildcardType.getSuperBound() != null) {
-//				printConverterParameter(tomBaseElementProvider, wildcardType.getSuperBound(), index);
-//			}
-//			break;
-//			
-//		}
-//	}
 	
 	private void printConverterParameter(TomBaseElementProvider tomBaseElementProvider, MutableTypeMirror type, int index) {
 	
