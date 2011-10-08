@@ -1,7 +1,9 @@
 package sk.seges.sesam.shared.model.mock;
 
+import javax.annotation.Generated;
 
-public interface MockEntityMetaModel {
+@Generated(value = "sk.seges.sesam.pap.metadata.MetaModelProcessor")
+public class MockEntityMetaModel {
 
 		public final static String NAME = "name";
 
