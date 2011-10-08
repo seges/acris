@@ -32,6 +32,7 @@ import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
+import sk.seges.sesam.model.metadata.strategy.MetamodelMethodStrategy;
 import sk.seges.sesam.model.metadata.strategy.PojoPropertyConverter;
 import sk.seges.sesam.model.metadata.strategy.api.ModelPropertyConverter;
 import sk.seges.sesam.pap.metadata.configurer.MetaModelProcessorConfigurer;
@@ -62,7 +63,7 @@ import sk.seges.sesam.pap.metadata.model.MetaModelTypeElement;
  * will be regenerated and you will get a compile error (when using the strings, determining the references is much more
  * harder)
  * 
- * @author eldzi
+ * @author ladislav.gazo
  * @author Peter Simun (simun@seges.sk)
  */
 @SupportedAnnotationTypes("*")
@@ -137,7 +138,9 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 	private void writeMethodsFromClass(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, Element element, Set<ModelPropertyConverter> converterInstances, String prefix,
 			int level) {
 		List<ExecutableElement> methodsOfClass = ElementFilter.methodsIn(element.getEnclosedElements());
-
+		MetaModel metaModel = element.getAnnotation(MetaModel.class);
+		MetamodelMethodStrategy methodStrategy = (metaModel == null ? MetamodelMethodStrategy.GETTER_SETTER : metaModel.methodStrategy());
+		
 		for (ExecutableElement method : methodsOfClass) {
 			if (method.getModifiers().contains(Modifier.STATIC) || method.getModifiers().contains(Modifier.PRIVATE)
 					|| method.getModifiers().contains(Modifier.PROTECTED)) {
@@ -146,12 +149,13 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 
 			TypeMirror typeMirror = method.asType();
 			String simpleMethodName = method.getSimpleName().toString();
-			if (simpleMethodName.length() == 0 || (element.getKind() == ElementKind.CLASS && (!(simpleMethodName.startsWith(GETTER_PREFIX) || simpleMethodName.startsWith(IS_PREFIX))))) {
+			
+			if (simpleMethodName.length() == 0 || (MetamodelMethodStrategy.GETTER_SETTER.equals(methodStrategy) && (!(simpleMethodName.startsWith(GETTER_PREFIX) || simpleMethodName.startsWith(IS_PREFIX))))) {
 				//only getters are interesting
 				continue;
 			}
 
-			if(element.getKind() == ElementKind.CLASS) {
+			if(MetamodelMethodStrategy.GETTER_SETTER.equals(methodStrategy)) {
 				int count = 3;
 	
 				String setterMethodName = "set";
@@ -168,8 +172,10 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 				}
 	
 				writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.METHOD, getPropertyName(simpleMethodName, count), converterInstances, prefix, level);
-			} else if(element.getKind() == ElementKind.INTERFACE) {
+			} else if(MetamodelMethodStrategy.PURE.equals(methodStrategy)) {
 				writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.METHOD, simpleMethodName, converterInstances, prefix, level);
+			} else {
+				throw new RuntimeException("Unknown method strategy = " + methodStrategy);
 			}
 		}
 	}

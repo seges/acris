@@ -6,8 +6,10 @@ import sk.seges.sesam.model.metadata.strategy.MetamodelMethodStrategy;
 /**
  * @author ladislav.gazo
  */
-@MetaModel(methodStrategy = MetamodelMethodStrategy.PURE)
-public interface MockBirdInterface {
-	String name();
-	Integer type();
+@MetaModel(methodStrategy = MetamodelMethodStrategy.GETTER_SETTER)
+public interface MockBirdGetterInterface {
+	String getName();
+	void setName(String name);
+	Integer getType();
+	void setType(Integer type);
 }
