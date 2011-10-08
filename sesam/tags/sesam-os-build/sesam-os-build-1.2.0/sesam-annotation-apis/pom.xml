@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sesam-annotation-apis</artifactId>
+	<name>sesam-annotation-apis</name>
+	<description>SeSAM Annotation APIs</description>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os</artifactId>
+		<version>1.2.0</version>
+		<relativePath>../sesam-os/pom.xml</relativePath>
+	</parent>
+
+	<modules>
+		<module>sesam-core-api</module>
+		<module>sesam-configuration-api</module>
+		<module>sesam-selenium-api</module>
+		<module>sesam-model-domain-api</module>
+		<module>sesam-model-metadata-api</module>
+		<module>sesam-service-converter-api</module>
+		<module>sesam-service-exporter-api</module>
+		<module>sesam-service-local-interface-api</module>
+	</modules>
+</project>
