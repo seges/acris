@@ -62,5 +62,9 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>sesam-core</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>org.apache.velocity</groupId>
+		    <artifactId>velocity</artifactId>
+		</dependency>
 	</dependencies>
 </project>
