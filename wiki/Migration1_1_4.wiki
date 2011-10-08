@@ -5,6 +5,9 @@
   * sesam-model-metadata renamed into sesam-model-metadata-processor
 
 = New world of PAP =
+
+*!!WARNING!!* Old API was immutable (all setters returned a new instance), new API is completly mutable and no new instances are created. Use clone method if you want to create a new cloned instance!!
+
   * ~~sk.seges.sesam.core.pap.model.api.HasTypeParameters~~ is replaced by sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType
   * ~~sk.seges.sesam.core.pap.builder.NameTypeUtils~~ is replace by sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes and can be obtained using sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment that is hold by sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor (so, your processor should extends this class)
  * ~~sk.seges.sesam.core.pap.model.api.TypeParameter~~ replaced by sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable or sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType, depends which type variable you want to use
@@ -30,5 +33,3 @@
  * getConfigurationElement in the class sk.seges.sesam.core.pap.configuration.DefaultProcessorConfigurer is now abstract so you have implement this method in your processor configurer. Also can't call return super.getConfigurationElement now, istead of that use return new Type[] {};
  * method ~~protected ElementKind getElementKind()~~ from ~~AbstractConfigurableProcessor~~ was removed. Now you should define kind of the output type directly in the MutableDeclaredType using setKind method
  * ~~protected boolean isSupportedAnnotation(AnnotationMirror annotationMirror)~~ method is removed from ~~AbstractConfigurableProcessor~~. Use protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) instead and get annotation from type using context.getTypeElement().getAnnotation(XYZ.class)
-
-!!WARNING!! Old API was immutable (all setters returned a new instance), new API is completly mutable and no new instances are created. Use clone method if you want to create a new cloned instance!!
