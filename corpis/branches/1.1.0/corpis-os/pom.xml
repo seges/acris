@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.8-SNAPSHOT</version>
+		<version>1.2.0</version>
 	</parent>
 
 	<!-- More Project Information -->
@@ -73,7 +73,7 @@
 		<repository.type>java</repository.type>
 		<repository.project>corpis</repository.project>
 	
-		<sesam-os.version>1.1.4-SNAPSHOT</sesam-os.version>
+		<sesam-os.version>1.2.0</sesam-os.version>
 		
 		<bouncycastle.version>1.45</bouncycastle.version>
 	</properties>
