@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import sk.seges.corpis.appscaffold.datainterface.pap.DataInterfaceProcessor;
 import sk.seges.sesam.core.pap.test.FluentProcessorTest;
-import sk.seges.sesam.pap.metadata.MetaModelProcessor;
 
 
 /**
@@ -12,7 +11,7 @@ import sk.seges.sesam.pap.metadata.MetaModelProcessor;
  */
 public class JpaModelProcessorTest extends FluentProcessorTest {
 	public JpaModelProcessorTest() {
-		addProcessor(new JpaModelProcessor(), new MetaModelProcessor(), new DataInterfaceProcessor());
+		addProcessor(new JpaModelProcessor(), new DataInterfaceProcessor());
 	}
 	
 	@Test
