@@ -18,6 +18,10 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 
 *Use appropriate template* when submitting an issue.
 
+=Release notes 1.2.0=
+
+TBD.
+
 =Release notes 1.1.2=
 
 ==Features==
