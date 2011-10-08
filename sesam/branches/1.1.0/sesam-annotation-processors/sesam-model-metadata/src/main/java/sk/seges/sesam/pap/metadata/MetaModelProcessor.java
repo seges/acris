@@ -146,27 +146,31 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 
 			TypeMirror typeMirror = method.asType();
 			String simpleMethodName = method.getSimpleName().toString();
-			if (simpleMethodName.length() == 0 || !(simpleMethodName.startsWith(GETTER_PREFIX) || simpleMethodName.startsWith(IS_PREFIX))) {
+			if (simpleMethodName.length() == 0 || (element.getKind() == ElementKind.CLASS && (!(simpleMethodName.startsWith(GETTER_PREFIX) || simpleMethodName.startsWith(IS_PREFIX))))) {
 				//only getters are interesting
 				continue;
 			}
 
-			int count = 3;
-
-			String setterMethodName = "set";
-			if (simpleMethodName.startsWith(GETTER_PREFIX)) {
-				setterMethodName = setterMethodName + simpleMethodName.substring(GETTER_PREFIX.length());
-			} else if (simpleMethodName.startsWith(IS_PREFIX)) {
-				count = 2;
-				setterMethodName = setterMethodName + simpleMethodName.substring(IS_PREFIX.length());
+			if(element.getKind() == ElementKind.CLASS) {
+				int count = 3;
+	
+				String setterMethodName = "set";
+				if (simpleMethodName.startsWith(GETTER_PREFIX)) {
+					setterMethodName = setterMethodName + simpleMethodName.substring(GETTER_PREFIX.length());
+				} else if (simpleMethodName.startsWith(IS_PREFIX)) {
+					count = 2;
+					setterMethodName = setterMethodName + simpleMethodName.substring(IS_PREFIX.length());
+				}
+				ExecutableElement setterMethod = ProcessorUtils.getMethodByParameterType(setterMethodName, element, 0, method.getReturnType(), processingEnv.getTypeUtils());
+				if (setterMethod == null) {
+					//setter method is not accessible
+					continue;
+				}
+	
+				writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.METHOD, getPropertyName(simpleMethodName, count), converterInstances, prefix, level);
+			} else if(element.getKind() == ElementKind.INTERFACE) {
+				writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.METHOD, simpleMethodName, converterInstances, prefix, level);
 			}
-			ExecutableElement setterMethod = ProcessorUtils.getMethodByParameterType(setterMethodName, element, 0, method.getReturnType(), processingEnv.getTypeUtils());
-			if (setterMethod == null) {
-				//setter method is not accessible
-				continue;
-			}
-
-			writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.METHOD, getPropertyName(simpleMethodName, count), converterInstances, prefix, level);
 		}
 	}
 

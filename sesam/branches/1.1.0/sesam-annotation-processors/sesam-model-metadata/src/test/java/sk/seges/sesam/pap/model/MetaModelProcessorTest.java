@@ -10,6 +10,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.metadata.MetaModelProcessor;
 import sk.seges.sesam.pap.metadata.model.MetaModelTypeElement;
+import sk.seges.sesam.shared.model.mock.MockBirdInterface;
 import sk.seges.sesam.shared.model.mock.MockEntity;
 
 public class MetaModelProcessorTest extends AnnotationTest {
@@ -20,6 +21,13 @@ public class MetaModelProcessorTest extends AnnotationTest {
 		assertOutput(getResourceFile(MockEntity.class), getOutputFile(MockEntity.class));
 	}
 
+	@Test
+	public void testCreateMetaModelOnInterface() {
+		assertCompilationSuccessful(compileFiles(MockBirdInterface.class));
+		assertOutput(getResourceFile(MockBirdInterface.class), getOutputFile(MockBirdInterface.class));
+	}
+
+	
 	private File getOutputFile(Class<?> clazz) {
 		MutableDeclaredType outputClass = toMutable(clazz).addClassSufix(MetaModelTypeElement.META_MODEL_SUFFIX);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
