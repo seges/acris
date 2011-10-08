@@ -5,7 +5,7 @@
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
 	<artifactId>sesam-os-base-parent</artifactId>
-	<version>1.1.8-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- More Project Information -->
@@ -57,7 +57,7 @@
 
 	<properties>
 		<!-- !DO NOT FORGET TO CHANGE THIS VERSION WHEN RELEASING SESAM! -->
-		<sesam-os.version>1.1.4-SNAPSHOT</sesam-os.version>
+		<sesam-os.version>1.2.0</sesam-os.version>
 
 		<!-- from Sonatype -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -179,7 +179,7 @@
 		<maven-antrun-plugin.version>1.6</maven-antrun-plugin.version>
 		<maven-assembly-plugin.version>2.2.1</maven-assembly-plugin.version>
 		<javarebel-maven-plugin.version>1.0.5</javarebel-maven-plugin.version>
-		<apt-maven-plugin.version>1.0-alpha-5-SNAPSHOT</apt-maven-plugin.version>
+		<apt-maven-plugin.version>1.0-alpha-5-acris</apt-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
