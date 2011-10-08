@@ -35,6 +35,9 @@ public class ThemeSelector {
 		Upload archive();
 
 		interface FilterBy extends CommonFilteredBy {}
+		
+//		@Provided(clz = XYFilter.class)
+//		interface Filter2 {}
 	}
 
 	/**
@@ -46,7 +49,7 @@ public class ThemeSelector {
 	 * 
 	 * This is an example of shared filter...
 	 */
-	@Provided
+//	@Provided(class =)
 	interface CommonFilteredBy extends ThemeModel {
 		String webId();
 	}
