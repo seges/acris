@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.corpis</groupId>
 		<artifactId>corpis-application-scaffold-parent</artifactId>
-		<version>1.1.4-SNAPSHOT</version>
+		<version>1.2.0</version>
 		<relativePath>../../corpis-application-scaffold-parent/pom.xml</relativePath>
 	</parent>
 
