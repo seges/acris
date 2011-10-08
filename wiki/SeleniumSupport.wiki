@@ -44,7 +44,6 @@ public class SuiteRunner {}
 }}}
 
  * When you create test case (for example LoginTestCase) and defines @SeleniumTest annotation (with specific SuiteRunner), all configurations are automatically inherited from the SuiteRunner - this allows you to define global settings in one single place.
-
 {{{
 @SeleniumTest(suiteRunner = SuiteRunner.class)
 public class LoginTestCase extends AbstractSynapsoTest {
@@ -62,7 +61,6 @@ public class LoginTestCase extends AbstractSynapsoTest {
 }}}
 
  * If you want to override global settings only in hte specific test, you can do it easily - using annotations
-
 {{{
 @Credentials(username = "new_user", password = "other_password")
 @SeleniumTest(suiteRunner = SuiteRunner.class)
@@ -79,14 +77,11 @@ public class LoginTestCase extends AbstractSeleniumTest {
         }
 }
 }}}
-
  * In that case, all parameters will be inherited from suite runner except the credentials.
  * If you want to redefine configurations without touching the code, nothing is easier - just use the java variable, like:
-
 {{{
 mvn test -Dtest.username=production_user -Dtest.password=secred_password
 }}}
-
  * Now, parameters from the command line will be used
  * This allows you to handle situations like:
    ** run tests on different platforms just using different parameters (still without touching the code), like executing tests on firefox {{{ mvn test -Dtest.testBrowser=firefox }}} or executing tests on IE {{{ mvn test -Dtest.testBrowser=iexplore }}}
@@ -161,16 +156,12 @@ public @interface OpenID {
 	@Parameter(name = "openid.provider", description = "OpenID provider")
 	Provider provider() default Provider.GOOGLE;
 }}}
-
  * define default settings in your SuiteRunner
-
 {{{
 @OpenID(user = "test@gmail.com", pass = "secred_pass", provider = Provider.GOOGLE)
 public class SuiteRunner {}
 }}}
-
  * you can access these settings in your test like
-
 {{{
 @SeleniumTest(suiteRunner = SuiteRunner.class)
 public class OpenIDLoginTestCase extends AbstractSynapsoTest {
@@ -185,7 +176,6 @@ public class OpenIDLoginTestCase extends AbstractSynapsoTest {
         }
 }
 }}}
-
  * and you have all the possibilities that sesam-selenium offers, like: redefine default settings using {{{ -Dopen.user=production@gmail.com }}} or redefine global settings using annotation on the test case directly
 
 = Maven integration =
