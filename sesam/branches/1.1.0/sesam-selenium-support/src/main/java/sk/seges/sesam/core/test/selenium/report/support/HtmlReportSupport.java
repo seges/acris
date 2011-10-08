@@ -13,7 +13,7 @@ public class HtmlReportSupport extends AbstractReportHelper implements ReportSup
 	private LoggingWebDriverEventListener loggingWebDriverEventListener;
 
 	public HtmlReportSupport(Class<? extends AbstractSeleniumTest> testClass, ReportSettings reportSettings) {
-		loggingWebDriverEventListener = new LoggingWebDriverEventListener(testClass, new HtmlReportPrinter(reportSettings));
+		loggingWebDriverEventListener = new LoggingWebDriverEventListener(testClass, reportSettings, new HtmlReportPrinter(reportSettings));
 	}
 
 	@Override
@@ -28,5 +28,6 @@ public class HtmlReportSupport extends AbstractReportHelper implements ReportSup
 
 	@Override
 	public void finish() {
+		loggingWebDriverEventListener.finish();
 	}
 }

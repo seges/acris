@@ -1,7 +1,6 @@
 package sk.seges.sesam.core.test.selenium.report.support;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -35,10 +34,10 @@ public class ScreenshotSupport extends AbstractReportHelper implements ReportSup
 	}
 
 	public void makeScreenshot() {
-		File screnshotFile = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
 		try {
+			File screnshotFile = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(screnshotFile, new File(getScreenshotDirectory() + File.separator + "screenshot_" + getTimeStamp() + ".png"));
-		} catch (IOException e) {}
+		} catch (Exception e) {}
 	}
 	
 	@Override
