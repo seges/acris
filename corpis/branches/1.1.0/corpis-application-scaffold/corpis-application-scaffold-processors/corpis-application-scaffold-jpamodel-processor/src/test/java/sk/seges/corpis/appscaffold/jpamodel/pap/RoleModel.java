@@ -6,8 +6,8 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
  * @author ladislav.gazo
  */
 @DomainInterface
-public interface RoleModel {
-	Object id();
+public interface RoleModel<T> {
+	T id();
 	String name();
 	String description();
 }

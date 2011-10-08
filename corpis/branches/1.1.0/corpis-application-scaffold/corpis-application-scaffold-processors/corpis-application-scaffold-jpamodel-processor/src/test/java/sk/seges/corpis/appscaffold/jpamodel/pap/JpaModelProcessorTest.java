@@ -1,5 +1,6 @@
 package sk.seges.corpis.appscaffold.jpamodel.pap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sk.seges.corpis.appscaffold.datainterface.pap.DataInterfaceProcessor;
@@ -16,6 +17,7 @@ public class JpaModelProcessorTest extends FluentProcessorTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testProcessorWithoutReferences() {
 		assertCompilationSuccessful(compileFiles(ThemeModel.class, JpaThemeModel.class));
 	}

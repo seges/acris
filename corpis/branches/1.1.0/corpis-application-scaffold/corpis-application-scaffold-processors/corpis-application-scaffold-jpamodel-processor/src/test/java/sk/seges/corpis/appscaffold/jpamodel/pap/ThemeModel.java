@@ -9,8 +9,8 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
  */
 @MetaModel
 @DomainInterface
-public interface ThemeModel {
-	Object id();
+public interface ThemeModel<T> {
+	T id();
 	@BusinessKey
 	String name();
 	@BusinessKey

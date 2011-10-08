@@ -1,12 +1,9 @@
 package sk.seges.corpis.appscaffold.jpamodel.pap;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -14,19 +11,16 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
-import sk.seges.corpis.appscaffold.jpamodel.pap.configurer.JpaModelProcessorConfigurer;
-import sk.seges.corpis.appscaffold.jpamodel.pap.model.JpaModelType;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.BusinessKey;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.Exclude;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.FieldStrategyDefinition;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.JpaModel;
 import sk.seges.sesam.core.pap.FluentProcessor;
 import sk.seges.sesam.core.pap.configuration.api.OutputDefinition;
-import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 /**
@@ -48,20 +42,22 @@ public class JpaModelProcessor extends FluentProcessor {
 
 			@Override
 			public List<MutableDeclaredType> getTypes(MutableDeclaredType typeElement) {
-				return asList(typeElement.replaceClassPrefix(JPA_PREFIX, "").replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX));
+				MutableDeclaredType baseModel = (MutableDeclaredType) typeElement.getInterfaces().iterator().next();
+				MutableTypeVariable baseModelTypeVariable = baseModel.getTypeVariables().get(0);
+
+				MutableDeclaredType dataInterface = typeElement.replaceClassPrefix(JPA_PREFIX, "")
+						.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX).addTypeVariable(baseModelTypeVariable);
+				return asList(dataInterface);
 			}
 		};
+		
 		addImplementedInterface(rule);
+		reactsOn(JpaModel.class);
 	}
 
 	@Override
-	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
-		return new MutableDeclaredType[] { new JpaModelType(context.getMutableType()) };
-	}
-	
-	@Override
-	protected ProcessorConfigurer getConfigurer() {
-		return new JpaModelProcessorConfigurer();
+	protected MutableDeclaredType getResultType(MutableDeclaredType inputType) {
+		return inputType.removeClassSuffix(JpaModelProcessor.MODEL_SUFFIX);
 	}
 
 	@Override
@@ -77,11 +73,11 @@ public class JpaModelProcessor extends FluentProcessor {
 	}
 
 	@Override
-	protected void processElement(ProcessorContext context) {
+	protected void processElement(final ProcessorContext context) {
 
 		final JpaModel jpaModel = context.getTypeElement().getAnnotation(JpaModel.class);
 		final FormattedPrintWriter pw = context.getPrintWriter();
-		
+
 		final List<ExecutableElement> businessKeys = new ArrayList<ExecutableElement>();
 
 		MethodAction action = new MethodAction() {
@@ -102,18 +98,37 @@ public class JpaModelProcessor extends FluentProcessor {
 					}
 				}
 
-				MutableDeclaredType mutableType = processingEnv.getTypeUtils().toMutableType((DeclaredType)fieldDef.getReturnType());
-				mutableType = mutableType.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX);
-				
-				printField(pw, mutableType, fieldDef);
-				printStandardGetter(pw, mutableType, fieldDef);
-				
-				Id id = fieldDef.getAnnotation(Id.class);
-				if(id != null && jpaModel.portable()) {
-					printObjectSetter(pw, mutableType, fieldDef);
+				TypeMirror returnType = fieldDef.getReturnType();
+				MutableTypeMirror mirror;
+				if (returnType instanceof DeclaredType) {
+					MutableDeclaredType mutableType = processingEnv.getTypeUtils().toMutableType(
+							(DeclaredType) returnType);
+					mutableType = mutableType.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX);
+
+					mirror = mutableType;
 				} else {
-					printStandardSetter(pw, mutableType, fieldDef);
+					mirror = processingEnv.getTypeUtils().toMutableType(returnType);
+					if(mirror instanceof MutableTypeVariable) {
+						// e.g. T id() then T is in mirror
+						
+						TypeElement typeElement = context.getTypeElement();
+						TypeMirror typeMirror = typeElement.getInterfaces().iterator().next();
+						MutableDeclaredType baseModel = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(typeMirror);
+						MutableTypeVariable baseModelTypeVariable = baseModel.getTypeVariables().get(0);
+						
+						mirror = baseModelTypeVariable;
+					}
 				}
+
+				printField(pw, mirror, fieldDef);
+				printStandardGetter(pw, mirror, fieldDef);
+
+//				Id id = fieldDef.getAnnotation(Id.class);
+//				if (id != null && jpaModel.portable()) {
+//					printObjectSetter(pw, mirror, fieldDef);
+//				} else {
+					printStandardSetter(pw, mirror, fieldDef);
+//				}
 
 			}
 		};

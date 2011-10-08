@@ -6,5 +6,5 @@ import sk.seges.corpis.appscaffold.shared.annotation.domain.JpaModel;
  * @author ladislav.gazo
  */
 @JpaModel
-public interface JpaCustomerModel extends CustomerModel {
+public interface JpaCustomerModel extends CustomerModel<Long> {
 }

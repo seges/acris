@@ -7,12 +7,12 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.corpis.appscaffold.datainterface.pap.configurer.DataInterfaceProcessorConfigurer;
-import sk.seges.corpis.appscaffold.datainterface.pap.model.DataInterfaceType;
+import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.Exclude;
 import sk.seges.sesam.core.pap.FluentProcessor;
-import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 /**
  * @author ladislav.gazo
@@ -22,16 +22,26 @@ public class DataInterfaceProcessor extends FluentProcessor {
 	public static final String DATA_SUFFIX = "Data";
 	public static final String MODEL_SUFFIX = "Model";
 
-	@Override
-	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
-		return new MutableDeclaredType[] {
-			new DataInterfaceType(context.getMutableType(), processingEnv)
+	public DataInterfaceProcessor() {
+		reactsOn(DomainInterface.class);
+
+		Rule rule = new AlwaysRule() {
+			@Override
+			public List<MutableDeclaredType> getTypes(MutableDeclaredType typeElement) {
+				MutableDeclaredType interfaceType = processingEnv.getTypeUtils().toMutableType(
+						IMutableDomainObject.class);
+				interfaceType.addTypeVariable(processingEnv.getTypeUtils().getTypeVariable("T"));
+				return asList(interfaceType);
+			}
 		};
+		addImplementedInterface(rule);
+		setResultKind(MutableTypeKind.INTERFACE);
 	}
-	
+
 	@Override
-	protected ProcessorConfigurer getConfigurer() {
-		return new DataInterfaceProcessorConfigurer();
+	protected MutableDeclaredType getResultType(MutableDeclaredType inputType) {
+		return inputType.removeClassSuffix(MODEL_SUFFIX).addClassSufix(DataInterfaceProcessor.DATA_SUFFIX)
+				.addTypeVariable(processingEnv.getTypeUtils().getTypeVariable("T"));
 	}
 
 	@Override
@@ -46,17 +56,25 @@ public class DataInterfaceProcessor extends FluentProcessor {
 				}
 
 				TypeMirror returnType = fieldDef.getReturnType();
-				MutableDeclaredType mutableType = processingEnv.getTypeUtils().toMutableType((DeclaredType)returnType);
-				mutableType = mutableType.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX);
-				
-				context.getPrintWriter().println(getGetterSignature(mutableType, fieldDef) + ";");
-				context.getPrintWriter().println(getSetterSignature(mutableType, fieldDef) + ";");
+				// processingEnv.getTypeUtils().toMutableType(javaType)
+				if (returnType instanceof DeclaredType) {
+					MutableDeclaredType mutableType = processingEnv.getTypeUtils().toMutableType(
+							(DeclaredType) returnType);
+					mutableType = mutableType.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX);
+
+					context.getPrintWriter().println(getGetterSignature(mutableType, fieldDef) + ";");
+					context.getPrintWriter().println(getSetterSignature(mutableType, fieldDef) + ";");
+				} else {
+					context.getPrintWriter().println(getGetterSignature(returnType, fieldDef) + ";");
+					context.getPrintWriter().println(getSetterSignature(returnType, fieldDef) + ";");
+				}
 			}
 		};
 
 		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(context.getTypeElement().getEnclosedElements());
 		for (ExecutableElement fieldDef : methodsIn) {
 			action.execute(fieldDef);
-		}	
+		}
 	}
+
 }

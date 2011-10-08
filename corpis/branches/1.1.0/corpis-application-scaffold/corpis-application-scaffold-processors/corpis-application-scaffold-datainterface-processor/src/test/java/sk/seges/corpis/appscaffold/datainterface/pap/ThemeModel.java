@@ -6,8 +6,8 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
  * @author ladislav.gazo
  */
 @DomainInterface
-public interface ThemeModel {
-	Object id();
+public interface ThemeModel<T> {
+	T id();
 	String name();
 	String webId();
 }
