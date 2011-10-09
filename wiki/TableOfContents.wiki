@@ -49,8 +49,8 @@
     * [AcrisSEO SEO]
   * Testing <sup><font color="red">1.2.0</font></sup>
     * [SeleniumSupport Selenium support] <sup><font color="red">1.2.0</font></sup>
-  * Platform <sup><font color="red">New</font></sup>
-    * [CodeGenerationPlatform Generate application skelet] <sup><font color="red">New</font></sup>
+  * Platform<sup><font color="red">New</font></sup>
+    * [CodeGenerationPlatform Generate application skelet]<sup><font color="red">New</font></sup>
       * [AnnotationProcessing_OwnProcessor Quick-start Own Annotation Processor]
       * [AnnotationProcessing_Maven Annotation processing maven integration]
       * [AnnotationProcessing_Eclipse Annotation processing eclipse integration]
