@@ -1,7 +1,7 @@
 #summary Generating async version of the GWT remote service.
 #labels AsyncRemoteService,PAP,Annotationprocessor
 
-= Introduction =
+= Introduction = 
 
 Shakespeare would ask: *to generate async remote service or not to generate async remote service*?
 
@@ -59,3 +59,4 @@ public interface GWTContentAdministrationServiceRemoteAsync {
 	void remove(ContentDTO content, AsyncCallback<Void> callback);
 }
 }}}
+<g:plusone size="medium"></g:plusone>
