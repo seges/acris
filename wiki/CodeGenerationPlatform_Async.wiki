@@ -59,4 +59,4 @@ public interface GWTContentAdministrationServiceRemoteAsync {
 	void remove(ContentDTO content, AsyncCallback<Void> callback);
 }
 }}}
-<g:plusone size="medium"></g:plusone>
+<g:plusone size="medium" annotation="inline"></g:plusone>
