@@ -5,11 +5,11 @@
 
 || 0.9.0 || 01.07.2010 || Release Candidate 1 ||
 || 1.0.0 || 20.07.2010 || Release ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.0.1 1.0.1] || 04.10.2010 || Bugfixing + Security generalization ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.0 1.1.0] || 02.12.2010        ||  Hladný Hadík release ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.1 1.1.1] || 13.05.2011        ||  Hacked Hladny Hadik ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.1.2 1.1.2] || 16.06.2011        ||  Malý Macík Mrnčí release ||
-|| [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-1.2.0 1.2.0] || 08.10.2011        ||  Kuvikajúci Kanec Kľačí release ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.0.1 1.0.1] || 04.10.2010 || Bugfixing + Security generalization ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.0 1.1.0] || 02.12.2010        ||  Hladný Hadík release ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.1 1.1.1] || 13.05.2011        ||  Hacked Hladny Hadik ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.2 1.1.2] || 16.06.2011        ||  Malý Macík Mrnčí release ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.0 1.2.0] || 08.10.2011        ||  Kuvikajúci Kanec Kľačí release ||
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-NotSpecified TBD] || TBD        || Issues incubator ||
 
 = Organization of the development =
