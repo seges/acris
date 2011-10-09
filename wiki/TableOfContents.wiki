@@ -48,7 +48,7 @@
     * [AcrisWeb Navigation and layout]
     * [AcrisSEO SEO]
   * Testing
-    * Selenium support <sup style="color: red;">2.1</sup>
+    * [SeleniumSupport Selenium support] <sup><font color="red">2.1</font></sup>
   * Platform
     * [CodeGenerationPlatform Generate application skelet]
       * [AnnotationProcessing_OwnProcessor Quick-start Own Annotation Processor]
