@@ -170,10 +170,6 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 
 	private void dirty() {
 		if (type != null) {
-			getTypeVariables();
-			getSuperClass();
-			getAnnotations();
-			getInterfaces();
 			processingEnv.getTypeUtils().invalidateCache(type);
 		}
 		type = null;
