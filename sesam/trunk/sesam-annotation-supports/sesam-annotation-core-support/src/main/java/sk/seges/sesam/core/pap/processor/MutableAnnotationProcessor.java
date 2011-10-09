@@ -15,6 +15,7 @@ import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport.TypePrinterSu
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -129,7 +130,23 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 
 				MutableTypeMirror superClassType = outputClass.getSuperClass();
 
-				pw.print("public " + outputClass.getKind().toString() + " " + outputClass.toString(ClassSerializer.SIMPLE, true));
+				pw.print("public " + outputClass.getKind().toString() + " " + outputClass.toString(ClassSerializer.SIMPLE, false));
+				
+				if (outputClass.getTypeVariables().size() > 0) {
+					pw.print("<");
+
+					int i = 0;
+
+					for (MutableTypeVariable typeParameter : outputClass.getTypeVariables()) {
+						if (i > 0) {
+							pw.print(", ");
+						}
+						pw.print(typeParameter);
+						i++;
+					}
+
+					pw.print(">");
+				}
 				
 				if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && !outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
 					pw.print(" extends ", superClassType);
