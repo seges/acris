@@ -27,6 +27,7 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
     * delegated configuration might help you when you don't want to polute existing (or even new) objects with processor-specific annotations
     * there are several prepared annotation processors:
       * for generating portable domain interfaces
+      * [CodeGenerationPlatform_Async generating async] version of the remote service
       * [CodeGenerationPlatform_DTO generating DTOs] and convertion layers between server and client layer
       * first sketch of appconstructor - scaffolding platform using annotations
       * GWT service layer processors
