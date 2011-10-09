@@ -36,7 +36,7 @@ When your remote service is annotated with one of the following annotation, asyn
 Remote service: 
 
 {{{
-@RemoteServiceDefinition
+@RemoteServiceRelativePath("/service")
 public interface GWTContentAdministrationServiceRemote extends RemoteService {
 
 	PagedResult<List<ContentDTO>> findAll(Page page);
