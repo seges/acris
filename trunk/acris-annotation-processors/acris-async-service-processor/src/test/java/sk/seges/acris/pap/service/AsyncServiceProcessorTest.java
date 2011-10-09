@@ -14,6 +14,11 @@ public class AsyncServiceProcessorTest extends AnnotationTest {
 				DummyService.class));
 	}
 	
+	@Test
+	public void testAsyncExtendedServices() {
+		assertCompilationSuccessful(compileFiles(DummySuperExtendedService.class, DummyExtendedService.class));
+	}
+	
 	@Override
 	protected Processor[] getProcessors() {
 		return new Processor[] {

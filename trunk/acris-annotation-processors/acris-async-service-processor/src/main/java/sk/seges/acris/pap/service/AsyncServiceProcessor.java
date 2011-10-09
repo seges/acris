@@ -1,26 +1,27 @@
 package sk.seges.acris.pap.service;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Generated;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
 import sk.seges.acris.pap.service.configurer.AsyncServiceProcessorConfigurer;
 import sk.seges.acris.pap.service.model.AsyncRemoteServiceType;
+import sk.seges.sesam.core.pap.FluentProcessor;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
 
@@ -28,7 +29,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class AsyncServiceProcessor extends MutableAnnotationProcessor {
+public class AsyncServiceProcessor extends FluentProcessor {
 
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
@@ -65,32 +66,41 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 	@Override
 	protected void processElement(ProcessorContext context) {
 		
-		FormattedPrintWriter pw = context.getPrintWriter();
+		final FormattedPrintWriter pw = context.getPrintWriter();
 		TypeElement element = context.getTypeElement();
 		
-		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(element.getEnclosedElements());
+//		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(element.getEnclosedElements());
 		
-		for (ExecutableElement method: methodsIn) {
-			pw.print("void " + method.getSimpleName().toString() + "(");
+//		for (ExecutableElement method: methodsIn) {
+		
+		MethodAction action = new MethodAction() {
 			
-			int i = 0;
-			for (VariableElement parameter: method.getParameters()) {
+			@Override
+			protected void doExecute(ExecutableElement method) {
+				pw.print("void " + method.getSimpleName().toString() + "(");
+				
+				int i = 0;
+				for (VariableElement parameter: method.getParameters()) {
+					if (i > 0) {
+						pw.print(", ");
+					}
+					pw.print(processingEnv.getTypeUtils().toMutableType(parameter.asType()), " " + parameter.getSimpleName().toString());
+					i++;
+				}
+				
+				TypeMirror returnType = method.getReturnType();
+	
 				if (i > 0) {
 					pw.print(", ");
 				}
-				pw.print(processingEnv.getTypeUtils().toMutableType(parameter.asType()), " " + parameter.getSimpleName().toString());
-				i++;
+				pw.println(AsyncCallback.class, "<", unBoxType(returnType), "> callback);");
+				pw.println();
+				//TODO add throws
+				
 			}
-			
-			TypeMirror returnType = method.getReturnType();
-
-			if (i > 0) {
-				pw.print(", ");
-			}
-			pw.println(AsyncCallback.class, "<", unBoxType(returnType), "> callback);");
-			pw.println();
-			//TODO add throws
-		}
+		};
+		
+		doForAllMembers(element, ElementKind.METHOD, action);
 	}
 	
 	protected MutableTypeMirror unBoxType(TypeMirror type) {
@@ -117,6 +127,42 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			return null;
 		}
 		
-		return processingEnv.getTypeUtils().toMutableType(type);
+		return stripVariableTypeVariables((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type));
+	}
+
+	private MutableDeclaredType stripVariableTypeVariables(MutableDeclaredType type) {
+		  if (type != null && type.hasVariableParameterTypes()) {
+		   type.stripTypeParametersTypes();
+		  } else {
+		   for (MutableTypeVariable typeVariable: type.getTypeVariables()) {
+		    Set<? extends MutableTypeMirror> lowerBounds = typeVariable.getLowerBounds();
+		    
+		    if (lowerBounds != null) {
+		     for (MutableTypeMirror lowerBound: lowerBounds) {
+		      if (lowerBound instanceof MutableDeclaredType) {
+		       stripVariableTypeVariables((MutableDeclaredType)lowerBound);
+		      }
+		     }
+		    }
+		    
+		    Set<? extends MutableTypeMirror> upperBounds = typeVariable.getUpperBounds();
+		    
+		    if (upperBounds != null) {
+		     for (MutableTypeMirror upperBound: upperBounds) {
+		      if (upperBound instanceof MutableDeclaredType) {
+		       stripVariableTypeVariables((MutableDeclaredType)upperBound);
+		      }
+		     }
+		    }
+		   }
+		  }
+		  
+		  return type;
+		 }
+	
+	@Override
+	protected MutableDeclaredType getResultType(MutableDeclaredType inputType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
