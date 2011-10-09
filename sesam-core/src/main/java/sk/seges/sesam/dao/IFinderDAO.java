@@ -25,6 +25,18 @@ public interface IFinderDAO<E> extends IDataAccessObject {
 	PagedResult<List<E>> findAll(Page requestedPage);
 
 	/**
+	 * Search for unique element according to specified page.
+	 * 
+	 * @param requestedPage
+	 *            Required page of elements. Number of elements is determined by
+	 *            the specified size in requested page. Also a starting index
+	 *            should be taken into account.
+	 * @return Unique result for requested page.
+	 *         null if there is no or more results
+	 */
+	E findUnique(Page requestedPage);
+
+	/**
 	 * Defines a way how to find entity in data source based on some entity information provided.
 	 * 
 	 * @param entity Filled with necessary information to find entity.

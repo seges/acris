@@ -2,6 +2,8 @@ package sk.seges.sesam.dao;
 
 import java.io.Serializable;
 
+import sk.seges.sesam.dao.LikeExpression.MatchMode;
+
 /**
  * @author eldzi
  */
@@ -28,36 +30,76 @@ public class Filter {
 		return new BetweenExpression<T>(property, BETWEEN);
 	}
 	
+	public static <T extends Comparable<? extends Serializable>> BetweenExpression<T> between(String property, T low, T high) {
+		return new BetweenExpression<T>(property, BETWEEN).setLoValue(low).setHiValue(high);
+	}
+	
 	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> eq(String property) {
 		return new SimpleExpression<T>(property, EQ);
+	}
+	
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> eq(String property, T value) {
+		return new SimpleExpression<T>(property, EQ).setValue(value);
 	}
 	
 	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> ge(String property) {
 		return new SimpleExpression<T>(property, GE);
 	}
 	
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> ge(String property, T value) {
+		return new SimpleExpression<T>(property, GE).setValue(value);
+	}
+	
 	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> gt(String property) {
 		return new SimpleExpression<T>(property, GT);
+	}
+	
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> gt(String property, T value) {
+		return new SimpleExpression<T>(property, GT).setValue(value);
 	}
 	
 	public static <T extends Comparable<? extends Serializable>> LikeExpression<T> ilike(String property) {
 		return new LikeExpression<T>(property, false);
 	}
 	
+	public static <T extends Comparable<? extends Serializable>> LikeExpression<T> ilike(String property, T value) {
+		return (LikeExpression<T>) new LikeExpression<T>(property, false).setValue(value);
+	}
+	
+	public static <T extends Comparable<? extends Serializable>> LikeExpression<T> ilike(String property, MatchMode matchMode, T value) {
+		return (LikeExpression<T>) new LikeExpression<T>(property, false).setMode(matchMode).setValue(value);
+	}
+	
 	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> le(String property) {
 		return new SimpleExpression<T>(property, LE);
+	}
+	
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> le(String property, T value) {
+		return new SimpleExpression<T>(property, LE).setValue(value);
 	}
 
 	public static <T extends Comparable<? extends Serializable>> LikeExpression<T> like(String property) {
 		return new LikeExpression<T>(property);
+	}
+
+	public static <T extends Comparable<? extends Serializable>> LikeExpression<T> like(String property, T value) {
+		return (LikeExpression<T>) new LikeExpression<T>(property).setValue(value);
 	}
 	
 	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> lt(String property) {
 		return new SimpleExpression<T>(property, LT);
 	}
 	
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> lt(String property, T value) {
+		return new SimpleExpression<T>(property, LT).setValue(value);
+	}
+	
 	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> ne(String property) {
 		return new SimpleExpression<T>(property, NE);
+	}
+	
+	public static <T extends Comparable<? extends Serializable>> SimpleExpression<T> ne(String property, T value) {
+		return new SimpleExpression<T>(property, NE).setValue(value);
 	}
 	
 	public static NotExpression not(Criterion criterion) {

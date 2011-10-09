@@ -49,8 +49,9 @@ public class SimpleExpression<T extends Comparable<? extends Serializable>> impl
 		return value;
 	}
 
-	public void setValue(T value) {
+	public SimpleExpression<T> setValue(T value) {
 		this.value = value;
+		return this;
 	}
 
 	public String getOperation() {
@@ -77,7 +78,6 @@ public class SimpleExpression<T extends Comparable<? extends Serializable>> impl
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -86,7 +86,7 @@ public class SimpleExpression<T extends Comparable<? extends Serializable>> impl
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SimpleExpression other = (SimpleExpression) obj;
+		SimpleExpression<?> other = (SimpleExpression<?>) obj;
 		if (operation == null) {
 			if (other.operation != null)
 				return false;
