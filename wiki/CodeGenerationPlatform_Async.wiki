@@ -5,7 +5,9 @@
 
 Shakespeare would ask: *to generate async remote service or not to generate async remote service*?
 
-Our answer is: definetelly generated them! It allows you to keep these two files (remote service and async remote service) in the *sync* (maybe you have had a hard times with GWT complition and knows perfectly this kind of error messages: *Missing asynchronous version of the synchronous method*). Thanks to eclipse annotation processing support it is perfectly integrated with your IDE and async remote service is automatically regenerated after each change in the remote service).
+Our answer is: definetelly generated them! It allows you to keep these two files (remote service and async remote service) in the *sync* (maybe you have had a hard times with GWT compilation and knows perfectly this kind of error message: *Missing asynchronous version of the synchronous method*). Thanks to eclipse annotation processing support it is perfectly integrated with your IDE and async remote service is automatically regenerated after each change in the remote service).
+
+*The ones who does not use/like maven - we are supporting only maven configuration - if you can provide configuration for other project management tools, please let us know.*
 
 == Maven configuration ==
 
