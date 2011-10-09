@@ -1,7 +1,7 @@
 #summary table of contents
   * [Introduction]
   * Project
-    * [ProjectQuickStart Quick-start AcrIS project]
+    * [ProjectQuickStart Quick-start AcrIS project]<sup><font color="red">1.2.0</font></sup>
       * [ProfilesWebToolkit Google Web Toolkit profiles]<sup><font color="red">1.2.0</font></sup>
       * [ProfilesAppEngine Google AppEngine profiles]<sup><font color="red">1.2.0</font></sup>
       * [ProfilesAnnotationProcessing SeSAM Annotation Processing profiles]<sup><font color="red">1.2.0</font></sup>
@@ -40,8 +40,8 @@
     * [GWTEmulation Emulation of non-acceptable classes for GWT]
     * [GWTJsonizer JSON deserialization using annotations]
     * [AsyncSync Semaphores and asynchronous synchronization]
-    * [JSONDataMigration JSON data migration]
-    * [AsmantMonitoring Asmant - Site monitoring tool]
+    * [JSONDataMigration JSON data migration]<sup><font color="red">1.2.0</font></sup>
+    * [AsmantMonitoring Asmant - Site monitoring tool]<sup><font color="red">1.2.0</font></sup>
   * User interaction
     * [UserEventRecording Recording user actions]
   * Web
@@ -70,5 +70,5 @@
     * [AppEngineMaven GAE/GEP with maven]
     * [AppEngineSecurity Acris security on appengine]
   * Widgets
-    * [DynamicUiBinder Dynamic UI Binder]
-    * [MicroTemplate Micro-template UI]
+    * [DynamicUiBinder Dynamic UI Binder]<sup><font color="red">1.2.0</font></sup>
+    * [MicroTemplate Micro-template UI]<sup><font color="red">1.2.0</font></sup>
