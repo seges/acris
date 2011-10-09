@@ -140,6 +140,14 @@ When you are trying to release from a branch, be aware of the following:
   * mvn source:jar javadoc:jar gpg:sign repository:bundle-create
   * use Sonatype console - Staging Upload - where you upload the bundle
 
+== Post release/deploy steps ==
+
+  * export artifacts as a ZIP bundle to download section with a script in *sesam-helper-scripts* - ExportMavenDeps.py (there is README as well)
+  * prepare release notes
+  * move old release notes to OldReleaseNotes
+  * adjust release dates table
+  * close issues and mark them correctly
+
 = Information regarding Sonatype repository =
 
 https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
