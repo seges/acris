@@ -1,4 +1,4 @@
-package sk.seges.corpis.appscaffold.jpamodel.pap;
+package sk.seges.corpis.appscaffold.jpamodel.pap.api;
 
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 

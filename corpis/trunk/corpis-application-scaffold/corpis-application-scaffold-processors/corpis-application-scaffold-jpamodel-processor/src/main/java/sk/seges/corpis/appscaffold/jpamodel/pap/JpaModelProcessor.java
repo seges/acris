@@ -47,6 +47,7 @@ public class JpaModelProcessor extends FluentProcessor {
 
 				MutableDeclaredType dataInterface = typeElement.replaceClassPrefix(JPA_PREFIX, "")
 						.replaceClassSuffix(MODEL_SUFFIX, DATA_SUFFIX).addTypeVariable(baseModelTypeVariable);
+				dataInterface.changePackage(baseModel.getPackageName());
 				return asList(dataInterface);
 			}
 		};

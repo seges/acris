@@ -1,9 +1,10 @@
-package sk.seges.corpis.appscaffold.jpamodel.pap;
+package sk.seges.corpis.appscaffold.jpamodel.pap.jpa;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
+import sk.seges.corpis.appscaffold.jpamodel.pap.api.ThemeModel;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.BusinessKey;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.JpaModel;
 

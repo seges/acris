@@ -1,5 +1,6 @@
-package sk.seges.corpis.appscaffold.jpamodel.pap;
+package sk.seges.corpis.appscaffold.jpamodel.pap.jpa;
 
+import sk.seges.corpis.appscaffold.jpamodel.pap.api.RoleModel;
 import sk.seges.corpis.appscaffold.shared.annotation.domain.JpaModel;
 
 /**

@@ -3,6 +3,12 @@ package sk.seges.corpis.appscaffold.jpamodel.pap;
 import org.junit.Test;
 
 import sk.seges.corpis.appscaffold.datainterface.pap.DataInterfaceProcessor;
+import sk.seges.corpis.appscaffold.jpamodel.pap.api.CustomerModel;
+import sk.seges.corpis.appscaffold.jpamodel.pap.api.RoleModel;
+import sk.seges.corpis.appscaffold.jpamodel.pap.api.ThemeModel;
+import sk.seges.corpis.appscaffold.jpamodel.pap.jpa.JpaCustomerModel;
+import sk.seges.corpis.appscaffold.jpamodel.pap.jpa.JpaRoleModel;
+import sk.seges.corpis.appscaffold.jpamodel.pap.jpa.JpaThemeModel;
 import sk.seges.sesam.core.pap.test.FluentProcessorTest;
 
 
