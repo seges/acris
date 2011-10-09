@@ -9,7 +9,6 @@ import org.htmlparser.Parser;
 import org.htmlparser.Tag;
 import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.filters.TagNameFilter;
-import org.htmlparser.lexer.Lexer;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.BodyTag;
 import org.htmlparser.tags.CompositeTag;
@@ -17,12 +16,15 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
-import org.springframework.stereotype.Component;
 
-@Component
+import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
+
 public class HTMLNodeSplitter {
 
-	public HTMLNodeSplitter() {
+	private NodeParserFactory parserFactory;
+	
+	public HTMLNodeSplitter(NodeParserFactory parserFactory) {
+		this.parserFactory = parserFactory;
 	}
 
 	private String getNullSafeBody(String content) {
@@ -97,6 +99,7 @@ public class HTMLNodeSplitter {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private boolean contains(NodeList nodes, Tag searchTag) {
 		for (int i = 0; i < nodes.size(); i++) {
 			Node node = nodes.elementAt(i);
@@ -104,8 +107,8 @@ public class HTMLNodeSplitter {
 			if (node instanceof Tag) {
 				Tag tag = (Tag)node;
 				if (tag.getTagName().toLowerCase().equals(searchTag.getTagName().toLowerCase())) {
-					Vector tagAttributes = tag.getAttributesEx();
-					Vector searchTagAttributes = searchTag.getAttributesEx();
+					Vector<Attribute> tagAttributes = tag.getAttributesEx();
+					Vector<Attribute> searchTagAttributes = searchTag.getAttributesEx();
 					
 					if (tagAttributes.size() == searchTagAttributes.size()) {
 						if (attributesEquals(tagAttributes, searchTagAttributes)) {
@@ -249,10 +252,9 @@ public class HTMLNodeSplitter {
 	
 	
 	@SuppressWarnings("unchecked")
-	private <T extends CompositeTag> T getTagByName(String content, String tagName) {
+	private synchronized <T extends CompositeTag> T getTagByName(String content, String tagName) {
 		NodeFilter nodeFilter = new TagNameFilter(tagName);
-		Lexer lexer = new Lexer(content);
-		Parser parser = new Parser(lexer);
+		Parser parser = parserFactory.createParser(content);
 		NodeList nodes;
 		try {
 			nodes = parser.parse(nodeFilter);
@@ -268,10 +270,8 @@ public class HTMLNodeSplitter {
 		return (T)node;
 	}
 
-	@SuppressWarnings("unchecked")
-	private NodeIterator getNodeListIterator(String content) {
-		Lexer lexer = new Lexer(content);
-		Parser parser = new Parser(lexer);
+	private synchronized NodeIterator getNodeListIterator(String content) {
+		Parser parser = parserFactory.createParser(content);
 		try {
 			return parser.elements();
 		} catch (ParserException e) {
@@ -282,8 +282,7 @@ public class HTMLNodeSplitter {
 	@SuppressWarnings("unchecked")
 	private <T extends CompositeTag> T getTagById(String content, String id) {
 		HasAttributeFilter nodeFilter = new HasAttributeFilter("id", id);
-		Lexer lexer = new Lexer(content);
-		Parser parser = new Parser(lexer);
+		Parser parser = parserFactory.createParser(content);
 		NodeList nodes;
 		try {
 			nodes = parser.parse(nodeFilter);

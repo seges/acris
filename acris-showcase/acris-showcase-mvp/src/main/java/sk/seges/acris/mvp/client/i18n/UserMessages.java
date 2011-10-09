@@ -4,8 +4,6 @@ import com.google.gwt.i18n.client.Messages;
 
 
 public interface UserMessages extends Messages {
-
-	String failure(String error);
 	
 	String userName();
 	

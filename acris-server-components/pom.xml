@@ -3,51 +3,58 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.2.1-SNAPSHOT</version>
 		<relativePath>../acris-os-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-server-components</artifactId>
 	<name>AcrIS Server Components</name>
 	<packaging>jar</packaging>
-	<version>1.0.3-SNAPSHOT</version>
 
 	<dependencies>
+		<!-- Sesam dependencies -->
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-core</artifactId>
 		</dependency>
-		
+
+		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-crypto</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-common</artifactId>
 		</dependency>
 		
+		<!-- GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 		</dependency>
-
+		
+		<!-- Other stuff -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
-			<artifactId>adapter-core</artifactId>
+			<artifactId>gilead-core</artifactId>
 		</dependency>
-        
 		<dependency>
 			<groupId>net.sf.gwt-widget</groupId>
 			<artifactId>gwt-sl</artifactId>

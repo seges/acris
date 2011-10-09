@@ -3,11 +3,11 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-showcase-parent</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>1.1.3-SNAPSHOT</version>
+		<relativePath>../acris-showcase-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-showcase-mvp</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>AcrIS MVP Showcase</name>
 
@@ -21,152 +21,9 @@
 			</resource>
 		</resources>
 		<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/classes</outputDirectory>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/lib/</outputDirectory>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<excludeTransitive>false</excludeTransitive>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>1.3-SNAPSHOT</version>
-				<configuration>
-					<hostedWebapp>${project.build.directory}/${artifactId}-${version}</hostedWebapp>
-					<webappDirectory>${project.build.directory}/${artifactId}-${version}</webappDirectory>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.bsc.maven</groupId>
-				<artifactId>maven-processor-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>process</id>
-						<goals>
-							<goal>process</goal>
-						</goals>
-						<phase>generate-sources</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<excludes>
-						<exclude>com.google.appengine:appengine-api-1.0-sdk</exclude>
-						<exclude>com.google.appengine:appengine-api-labs</exclude>
-						<exclude>org.apache.geronimo.specs:geronimo-jpa_3.0_spec</exclude>
-						<exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
-						<exclude>javax.jdo:jdo2-api</exclude>
-					</excludes>
-					<additionalBuildcommands>
-						<buildCommand>
-							<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-						</buildCommand>
-						<buildCommand>
-							<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
-						</buildCommand>
-						<buildCommand>
-							<name>com.google.appengine.eclipse.core.projectValidator</name>
-						</buildCommand>
-					</additionalBuildcommands>
-
-					<additionalProjectnatures>
-						<projectnature>com.google.gwt.eclipse.core.gwtNature</projectnature>
-						<projectnature>com.google.appengine.eclipse.core.gaeNature</projectnature>
-						<projectnature>com.google.gdt.eclipse.core.webAppNature</projectnature>
-					</additionalProjectnatures>
-
-					<classpathContainers>
-						<classpathContainer>com.google.gwt.eclipse.core.GWT_CONTAINER</classpathContainer>
-						<classpathContainer>com.google.appengine.eclipse.core.GAE_CONTAINER</classpathContainer>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-					</classpathContainers>
-
-					<additionalConfig>
-						<file>
-							<name>.settings/com.google.gdt.eclipse.core.prefs</name>
-							<content><![CDATA[
-								eclipse.preferences.version=1
-								jarsExcludedFromWebInfLib=
-								warSrcDir=target/${artifactId}-${version}
-								warSrcDirIsOutput=true
-								]]>
-							</content>
-						</file>
-						<file>
-							<name>.factorypath</name>
-							<content><![CDATA[<factorypath>
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-json/${pom.version}/acris-json-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false"/>
-							  	</factorypath>
-								  ]]>
-							</content>
-						</file>
-						<file>
-							<name>.settings/org.eclipse.jdt.apt.core.prefs</name>
-							<content><![CDATA[
-								eclipse.preferences.version=1
-          						org.eclipse.jdt.apt.aptEnabled=true
-          						org.eclipse.jdt.apt.genSrcDir=${jsr269.generated.dir}
-          						org.eclipse.jdt.apt.reconcileEnabled=true
-								]]>
-							</content>
-						</file>
-					</additionalConfig>
-
-					<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
-					<wtpversion>2.0</wtpversion>
-
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencies>
-
-		<!-- GWT dependencies -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>2.0.0</version>
-			<scope>compile</scope>
-		</dependency>
 
 		<!-- Corpis dependencies -->
 		<dependency>
@@ -231,17 +88,14 @@
 			<artifactId>acris-security-spring</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-server-appengine</artifactId>
+		</dependency>
 		<!-- Acris showcase dependencies -->
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>acris-showcase-ui-support</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>${groupId}</groupId>
@@ -256,15 +110,10 @@
 		</dependency>
 
 		<!-- javax persistence API -->
-		<!--dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-		</dependency-->
 		<dependency>
-                        <groupId>org.hibernate.javax.persistence</groupId>
-                        <artifactId>hibernate-jpa-2.0-api</artifactId>
-                </dependency>
-
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+		</dependency>
 
 		<!-- MVP dependencies -->
 		<dependency>
@@ -272,14 +121,8 @@
 			<artifactId>gwt-gin</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.philbeaudoin</groupId>
-			<artifactId>gwtp</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>com.gwtplatform</groupId>
+			<artifactId>gwtp-all</artifactId>
 		</dependency>
 
 		<!-- Guice dependencies -->
@@ -367,7 +210,7 @@
 			<artifactId>xmlbeans-xpath</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-		
+
 		<!-- ExtGWT dependencies -->
 		<dependency>
 			<groupId>com.extjs</groupId>

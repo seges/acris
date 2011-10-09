@@ -12,9 +12,4 @@
 	
 	<bean class="sk.seges.acris.mvp.server.configuration.ShowcaseApplicationContext"/>
 	
-	<context:component-scan base-package="sk.seges.acris.mvp.server" />
-	<context:component-scan base-package="com.philbeaudoin.gwtp.dispatch.server" />
-
-	<bean class="com.philbeaudoin.gwtp.dispatch.server.spring.DefaultServerDispatchModule" />
-
 </beans>

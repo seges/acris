@@ -5,7 +5,7 @@ import java.util.List;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityRoleDao;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
-import sk.seges.acris.security.shared.user_management.domain.api.RoleDataBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.RoleDataMetaModel;
 import sk.seges.acris.security.shared.user_management.service.IRoleService;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
@@ -31,7 +31,7 @@ public class SecurityRoleService extends RemoteServiceServlet implements IRoleSe
 	@Override
 	public RoleData findRole(String roleName) {
 		Page page = new Page(0, 0);
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(RoleDataBeanWrapper.NAME);
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(RoleDataMetaModel.NAME);
 		eq.setValue(roleName);
 		page.setFilterable(eq);
 

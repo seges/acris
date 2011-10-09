@@ -11,10 +11,10 @@ import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
 
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclEntry;
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntryBeanWrapper;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescriptionBeanWrapper;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityBeanWrapper;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSidBeanWrapper;
+import sk.seges.acris.security.server.core.acl.domain.api.AclEntryMetaModel;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescriptionMetaModel;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSidMetaModel;
 import sk.seges.acris.security.server.spring.acl.vote.AbstractAclInjectionVoter;
 
 
@@ -32,25 +32,25 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
         DetachedCriteria criteria = DetachedCriteria.forClass(JpaAclEntry.class, "aclEntry");
 
         // We just want to select objectIdentities
-        criteria.setProjection(Projections.alias(Projections.property(AclEntryBeanWrapper.OBJECT_IDENTITY.THIS), "object_identity"));
+        criteria.setProjection(Projections.alias(Projections.property(AclEntryMetaModel.OBJECT_IDENTITY.THIS), "object_identity"));
 
-        criteria.createCriteria(AclEntryBeanWrapper.OBJECT_IDENTITY.THIS).
+        criteria.createCriteria(AclEntryMetaModel.OBJECT_IDENTITY.THIS).
         // select secured object id
-                add(Restrictions.sqlRestriction("{alias}." + AclSecuredObjectIdentityBeanWrapper.DB_OBJECT_ID_IDENTITY + "=this_.id")).createCriteria(
-                        AclSecuredObjectIdentityBeanWrapper.OBJECT_ID_CLASS.THIS).
+                add(Restrictions.sqlRestriction("{alias}." + AclSecuredObjectIdentityMetaModel.DB_OBJECT_ID_IDENTITY + "=this_.id")).createCriteria(
+                        AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS).
                 // select secured object class
-                add(Restrictions.eq(AclSecuredClassDescriptionBeanWrapper.CLASS_NAME, clazz.getName()));
+                add(Restrictions.eq(AclSecuredClassDescriptionMetaModel.CLASS_NAME, clazz.getName()));
 
         // create disjunction of the principals
         Junction junction = Restrictions.disjunction();
 
         for (Sid sid : sids) {
             if (sid instanceof PrincipalSid) {
-                junction.add(Restrictions.eq(AclSidBeanWrapper.SID, ((PrincipalSid) sid).getPrincipal()));
+                junction.add(Restrictions.eq(AclSidMetaModel.SID, ((PrincipalSid) sid).getPrincipal()));
             }
         }
 
-        criteria.createCriteria(AclEntryBeanWrapper.SID).add(junction);
+        criteria.createCriteria(AclEntryMetaModel.SID).add(junction);
 
         // combine sub-queries
         clazzCriteria.add(Subqueries.exists(criteria));

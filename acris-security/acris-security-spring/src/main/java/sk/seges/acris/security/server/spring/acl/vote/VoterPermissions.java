@@ -13,6 +13,10 @@ public class VoterPermissions {
     @Autowired
     private DefaultPermissionFactory permissionFactory;
     
+	public void setPermissionFactory(DefaultPermissionFactory permissionFactory) {
+		this.permissionFactory = permissionFactory;
+	}
+	
     @PostConstruct
     public void init() {
         permissionFactory.registerPermission(BasePermission.READ, BasePermission.READ.getPattern());

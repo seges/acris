@@ -10,7 +10,7 @@ import sk.seges.acris.mvp.client.configuration.production.ProductionGinjector;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.philbeaudoin.gwtp.mvp.client.DelayedBindRegistry;
+import com.gwtplatform.mvp.client.DelayedBindRegistry;
 
 public class HolyBridge implements EntryPoint {
 

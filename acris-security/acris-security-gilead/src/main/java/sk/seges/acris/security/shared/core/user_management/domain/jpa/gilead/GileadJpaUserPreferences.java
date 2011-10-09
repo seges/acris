@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import net.sf.gilead.pojo.base.ILightEntity;
+import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserPreferences;
 
 @Entity
+@Table(name = "userpreferences")
 public class GileadJpaUserPreferences extends JpaUserPreferences implements
 		ILightEntity {
 
@@ -18,24 +21,15 @@ public class GileadJpaUserPreferences extends JpaUserPreferences implements
 	public GileadJpaUserPreferences() {	
 	}
 	
-	@Transient
-	protected Map<String, String> _proxyInformations;
+	protected Map<String, IGwtSerializableParameter> _proxyInformations;
 
-	@Transient
-	public Map<String, String> getProxyInformations() {
-		return _proxyInformations;
-	}
+	protected Map<String, Boolean> _initializationMap;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void setProxyInformations(Map informations) {
-		_proxyInformations = informations;
-	}
-
-	public void addProxyInformation(String property, String proxyInfo) {
+	public void addProxyInformation(String property, Object proxyInfo) {
 		if (_proxyInformations == null) {
-			_proxyInformations = new HashMap<String, String>();
+			_proxyInformations = new HashMap<String, IGwtSerializableParameter>();
 		}
-		_proxyInformations.put(property, proxyInfo);
+		_proxyInformations.put(property, (IGwtSerializableParameter) proxyInfo);
 	}
 
 	public void removeProxyInformation(String property) {
@@ -44,7 +38,8 @@ public class GileadJpaUserPreferences extends JpaUserPreferences implements
 		}
 	}
 
-	public String getProxyInformation(String property) {
+	@Transient
+	public Object getProxyInformation(String property) {
 		if (_proxyInformations != null) {
 			return _proxyInformations.get(property);
 		} else {
@@ -59,5 +54,30 @@ public class GileadJpaUserPreferences extends JpaUserPreferences implements
 		} else {
 			return null;
 		}
+	}
+
+	@Transient
+	public boolean isInitialized(String property) {
+		if (_initializationMap == null) {
+			return true;
+		}
+
+		Boolean initialized = _initializationMap.get(property);
+		if (initialized == null) {
+			return true;
+		}
+		return initialized.booleanValue();
+	}
+
+	public void setInitialized(String property, boolean initialized) {
+		if (_initializationMap == null) {
+			_initializationMap = new HashMap<String, Boolean>();
+		}
+		_initializationMap.put(property, initialized);
+	}
+
+	@Transient
+	public Object getUnderlyingValue() {
+		return this;
 	}
 }

@@ -3,13 +3,13 @@ package sk.seges.acris.mvp.client.action.mocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.seges.acris.mvp.client.action.mocks.core.MockActionHandler;
 import sk.seges.acris.mvp.shared.action.user.LoginAction;
 import sk.seges.acris.mvp.shared.result.user.LoginResult;
 import sk.seges.acris.mvp.shared.security.Grants;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.showcase.client.action.mocks.core.MockActionHandler;
 
 import com.google.inject.Inject;
 

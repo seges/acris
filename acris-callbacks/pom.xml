@@ -2,18 +2,27 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-callbacks</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>AcrIS Client Callbacks</name>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.2.1-SNAPSHOT</version>
 		<relativePath>../acris-os-parent</relativePath>
 	</parent>
   
   	<dependencies>
+  		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 	  	<!-- GWT dependencies -->
 	  	<dependency>
 			<groupId>com.google.gwt</groupId>

@@ -5,7 +5,7 @@ import java.util.List;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityPermissionDao;
 import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
-import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermissionBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermissionMetaModel;
 import sk.seges.acris.security.shared.user_management.service.IHierarchyPermissionServiceExt;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Filter;
@@ -28,7 +28,7 @@ public class SecurityPermissionService implements IHierarchyPermissionServiceExt
 	@Override
 	public PagedResult<List<HierarchyPermission>> findAll(String webId, Page page) {
 		
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionBeanWrapper.WEB_ID);
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionMetaModel.WEB_ID);
 		eq.setValue(webId);
 
 		if (page.getFilterable() != null) {
@@ -61,19 +61,19 @@ public class SecurityPermissionService implements IHierarchyPermissionServiceExt
 		Page page = new Page(0, 0);
 		if (null == parentId) {
 			Conjunction filterable = Filter.conjunction(); 
-			filterable.add(Filter.isNull(HierarchyPermissionBeanWrapper.PARENT.THIS));
-			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionBeanWrapper.WEB_ID);
+			filterable.add(Filter.isNull(HierarchyPermissionMetaModel.PARENT.THIS));
+			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionMetaModel.WEB_ID);
 			eq.setValue(webId);
 			filterable.add(eq);
 			page.setFilterable(filterable);
 		} else {
 			Conjunction filterable = Filter.conjunction(); 
 			//FIXME, interface inheritance
-			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionBeanWrapper.PARENT.THIS + ".id");
+			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionMetaModel.PARENT.THIS + ".id");
 			eq.setValue(parentId);
 			filterable.add(eq);
 			
-			eq = Filter.eq(HierarchyPermissionBeanWrapper.WEB_ID);
+			eq = Filter.eq(HierarchyPermissionMetaModel.WEB_ID);
 			eq.setValue(webId);
 			filterable.add(eq);
 			page.setFilterable(filterable);

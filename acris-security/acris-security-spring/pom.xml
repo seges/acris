@@ -1,14 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-security-spring</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>AcrIS Security with spring support</name>
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-security-parent</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.2.1-SNAPSHOT</version>
 		<relativePath>../acris-security-parent</relativePath>
 	</parent>
 
@@ -22,16 +21,6 @@
 					<excludes>
 						<value>**/emul/**/*.java</value>
 					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<sourceExcludes>
-						<sourceExclude>**/emul/**/*.java</sourceExclude>
-					</sourceExcludes>
 				</configuration>
 			</plugin>
 			<!-- plugin>
@@ -64,14 +53,17 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
+					<sourceExcludes>
+						<sourceExclude>**/emul/**/*.java</sourceExclude>
+					</sourceExcludes>
 					<additionalConfig>
 						<file>
 							<name>.factorypath</name>
 							<content><![CDATA[<factorypath>
-          <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${pom.version}/acris-binding-${pom.version}.jar" enabled="true" runInBatchMode="false" />
-		  <factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-client-core/${pom.version}/acris-client-core-${pom.version}.jar" enabled="true" runInBatchMode="false" />
-          </factorypath>
-          ]]>
+									<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/sesam/sesam-annotation-core-support/${sesam-os.version}/sesam-annotation-core-support-${sesam-os.version}.jar" enabled="true" runInBatchMode="false" />
+						          	<factorypathentry kind="VARJAR" id="M2_REPO/sk/seges/acris/acris-binding/${project.version}/acris-binding-${project.version}.jar" enabled="true" runInBatchMode="false" />
+						          </factorypath>
+						          ]]>
 							</content>
 						</file>
 						<file>

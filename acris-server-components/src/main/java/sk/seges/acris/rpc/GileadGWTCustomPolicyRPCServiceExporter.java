@@ -3,6 +3,7 @@ package sk.seges.acris.rpc;
 import javax.servlet.http.HttpServletRequest;
 
 import org.gwtwidgets.server.spring.gilead.GileadRPCServiceExporter;
+import org.springframework.web.context.ServletContextAware;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 
@@ -13,7 +14,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * @author eldzi
  * @author mig
  */
-public class GileadGWTCustomPolicyRPCServiceExporter extends GileadRPCServiceExporter implements ICustomSerializationPolicyServiceExporter {
+public class GileadGWTCustomPolicyRPCServiceExporter extends GileadRPCServiceExporter implements ICustomSerializationPolicyServiceExporter, ServletContextAware {
 	private static final long serialVersionUID = 888485619457236610L;
 	private ICustomSerializationPolicy policy;
 

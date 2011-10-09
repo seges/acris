@@ -6,6 +6,7 @@ import sk.seges.acris.security.shared.session.ClientSession;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
+import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 import com.google.gwt.user.client.rpc.impl.Serializer;
 import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader;
 
@@ -34,7 +35,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 				serializationPolicyName, serializer);
 	}
 
-	protected ClientSession getSession() {
+	public ClientSession getSession() {
 		return clientSession;
 	}
 
@@ -42,10 +43,9 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 		this.clientSession = clientSession;
 	}
 
-	@Override
-	protected <T> Request doInvoke(ResponseReader responseReader,
-			String methodName, int invocationCount, String requestData,
-			AsyncCallback<T> callback) {
+	  protected <T> Request doInvoke(ResponseReader responseReader,
+		      String methodName, RpcStatsContext statsContext, String requestData,
+		      AsyncCallback<T> callback) {
 
 		long lastUniqueRequestID = uniqueRequestId;
 		uniqueRequestId++;
@@ -67,12 +67,12 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 
 		if (sessionID.length() > 0) {
 			final char sep = '\uffff';
-			return super.doInvoke(responseReader, methodName, invocationCount,
+			return super.doInvoke(responseReader, methodName, statsContext,
 					String.valueOf(sep) + sessionID + String.valueOf(sep)
 							+ requestData, callback);
 		}
 
-		return super.doInvoke(responseReader, methodName, invocationCount,
+		return super.doInvoke(responseReader, methodName, statsContext,
 				requestData, callback);
 	}
 }

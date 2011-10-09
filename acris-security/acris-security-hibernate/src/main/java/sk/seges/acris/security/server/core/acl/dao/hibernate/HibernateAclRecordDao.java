@@ -12,11 +12,11 @@ import org.hibernate.criterion.Restrictions;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclEntry;
 import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
 import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntryBeanWrapper;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescriptionBeanWrapper;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityBeanWrapper;
+import sk.seges.acris.security.server.core.acl.domain.api.AclEntryMetaModel;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescriptionMetaModel;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSidBeanWrapper;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSidMetaModel;
 import sk.seges.acris.security.server.utils.CastUtils;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
@@ -25,7 +25,7 @@ import sk.seges.sesam.dao.Page;
 public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> implements IAclRecordDao<JpaAclEntry> {
 
 	public HibernateAclRecordDao() {
-		super(JpaAclEntry.class);
+		super(JpaAclEntry.class); 
 	}
 
 	protected HibernateAclRecordDao(Class<? extends JpaAclEntry> clazz) {
@@ -39,20 +39,20 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 
 	protected static final String HQL_ACL_DELETE_FROM_TABLE = "delete from " + JpaAclEntry.class.getSimpleName() + " acl where acl.objectIdentity.id=:input";
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
-			+ AclEntryBeanWrapper.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityBeanWrapper.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
-			+ AclEntryBeanWrapper.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityBeanWrapper.OBJECT_ID_CLASS.THIS + "."
-			+ AclSecuredClassDescriptionBeanWrapper.CLASS_NAME + "=:classname and " + " acl." + AclEntryBeanWrapper.SID + "." + AclSidBeanWrapper.SID
-			+ "=:sid and " + " acl." + AclEntryBeanWrapper.SID + "." + AclSidBeanWrapper.PRINCIPAL + "=:principal";
+			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
+			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
+			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.SID
+			+ "=:sid and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
-			+ AclEntryBeanWrapper.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityBeanWrapper.OBJECT_ID_CLASS.THIS + "."
-			+ AclSecuredClassDescriptionBeanWrapper.CLASS_NAME + "=:classname and " + " acl." + AclEntryBeanWrapper.SID + "." + AclSidBeanWrapper.SID
-			+ "=:sid and " + " acl." + AclEntryBeanWrapper.SID + "." + AclSidBeanWrapper.PRINCIPAL + "=:principal";
+			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
+			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.SID
+			+ "=:sid and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
 
 	@Override
 	public List<AclEntry> findByIdentityId(long aclObjectIdentity) {
 		DetachedCriteria criteria = createCriteria();
 		//FIXME .id
-		criteria.add(Restrictions.eq(AclEntryBeanWrapper.OBJECT_IDENTITY.THIS + ".id", aclObjectIdentity));
+		criteria.add(Restrictions.eq(AclEntryMetaModel.OBJECT_IDENTITY.THIS + ".id", aclObjectIdentity));
 		List<JpaAclEntry> result = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
 		return CastUtils.castList(result, AclEntry.class);
 	}

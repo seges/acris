@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
@@ -56,7 +57,8 @@ public class HibernateGenericUser extends GenericUserDTO {
 		return super.isEnabled();
 	}
 
-	@Column
+	@NotNull
+	@Column(nullable = false)
 	public String getUsername() {
 		return super.getUsername();
 	}

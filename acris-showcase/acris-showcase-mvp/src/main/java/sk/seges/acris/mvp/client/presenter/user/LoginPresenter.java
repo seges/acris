@@ -1,7 +1,5 @@
 package sk.seges.acris.mvp.client.presenter.user;
 
-import sk.seges.acris.mvp.client.action.ActionManager;
-import sk.seges.acris.mvp.client.action.DefaultAsyncCallback;
 import sk.seges.acris.mvp.client.configuration.NameTokens;
 import sk.seges.acris.mvp.client.event.LoginEvent;
 import sk.seges.acris.mvp.client.event.LoginEvent.LoginEventHandler;
@@ -10,21 +8,23 @@ import sk.seges.acris.mvp.client.presenter.user.LoginPresenter.LoginProxy;
 import sk.seges.acris.mvp.shared.action.user.LoginAction;
 import sk.seges.acris.mvp.shared.result.user.LoginResult;
 import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.showcase.client.action.ActionManager;
+import sk.seges.acris.showcase.client.action.DefaultAsyncCallback;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.inject.Inject;
-import com.philbeaudoin.gwtp.mvp.client.EventBus;
-import com.philbeaudoin.gwtp.mvp.client.PresenterImpl;
-import com.philbeaudoin.gwtp.mvp.client.View;
-import com.philbeaudoin.gwtp.mvp.client.annotations.NameToken;
-import com.philbeaudoin.gwtp.mvp.client.annotations.ProxyStandard;
-import com.philbeaudoin.gwtp.mvp.client.proxy.Place;
-import com.philbeaudoin.gwtp.mvp.client.proxy.PlaceManager;
-import com.philbeaudoin.gwtp.mvp.client.proxy.PlaceRequest;
-import com.philbeaudoin.gwtp.mvp.client.proxy.Proxy;
-import com.philbeaudoin.gwtp.mvp.client.proxy.RevealRootContentEvent;
+import com.gwtplatform.mvp.client.Presenter;
+import com.gwtplatform.mvp.client.View;
+import com.gwtplatform.mvp.client.annotations.NameToken;
+import com.gwtplatform.mvp.client.annotations.ProxyStandard;
+import com.gwtplatform.mvp.client.proxy.Place;
+import com.gwtplatform.mvp.client.proxy.PlaceManager;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
+import com.gwtplatform.mvp.client.proxy.Proxy;
+import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 
-public class LoginPresenter extends PresenterImpl<LoginDisplay, LoginProxy> implements LoginEventHandler {
+public class LoginPresenter extends Presenter<LoginDisplay, LoginProxy> implements LoginEventHandler {
 
 	@ProxyStandard
 	@NameToken(NameTokens.LOGIN_PAGE)
@@ -58,7 +58,7 @@ public class LoginPresenter extends PresenterImpl<LoginDisplay, LoginProxy> impl
 	
 	@Override
 	protected void revealInParent() {
-		RevealRootContentEvent.fire(eventBus, this);
+		RevealRootContentEvent.fire(this, this);
 	}
 
 	@Override

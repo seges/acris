@@ -5,6 +5,7 @@ import java.beans.IntrospectionException;
 import sk.seges.acris.core.rebind.RebindUtils;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
 
 /**
  * 
@@ -13,7 +14,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 public class PropertyResolver {
 
 	private String listBeanReferenceProperty;
-	private String listBeanProperty; 
+	private String listBeanProperty;
 
 	public PropertyResolver(String property) throws IntrospectionException {
 		if (property == null) {
@@ -21,47 +22,59 @@ public class PropertyResolver {
 		}
 
 		int lastDotIndex = property.lastIndexOf(".");
-		
+
 		if (lastDotIndex == -1) {
-			throw new IntrospectionException("Incorrect property description " + property + ". Property should consits from listBeanReferenceProperty and listBeanProperty separated by dot. (e.g. program.name)");
+			throw new IntrospectionException(
+					"Incorrect property description "
+							+ property
+							+ ". Property should consits from listBeanReferenceProperty and listBeanProperty separated by dot. (e.g. program.name)");
 		}
-		
+
 		listBeanProperty = property.substring(0, lastDotIndex);
-		listBeanReferenceProperty = property.substring(lastDotIndex + 1); 
+		listBeanReferenceProperty = property.substring(lastDotIndex + 1);
 	}
-	
-	public JClassType resolveBeanPropertyClassType(JClassType classType) throws IntrospectionException {		
+
+	public JClassType resolveBeanPropertyClassType(JClassType classType) throws IntrospectionException {
 		return resolveClassType(classType, listBeanProperty);
 	}
-	
-	public JClassType resolveBeanReferencePropertyClassType(JClassType classType) throws IntrospectionException {
+
+	public JClassType resolveBeanReferencePropertyClassType(JClassType classType)
+			throws IntrospectionException {
 		return resolveClassType(classType, listBeanProperty + "." + listBeanReferenceProperty);
 	}
-	
+
 	private JClassType resolveClassType(JClassType classType, String property) throws IntrospectionException {
-		JClassType listBeanClassType = RebindUtils.getDeclaredFieldClassType(classType, property);
-		
+		JClassType listBeanClassType;
+		try {
+			listBeanClassType = RebindUtils.getDeclaredFieldClassType(classType, property);
+		} catch (NotFoundException e) {
+			throw new RuntimeException("Cannot find class type for property " + property + " in bean "
+					+ classType.getQualifiedSourceName(), e);
+		}
+
 		if (listBeanClassType == null) {
-			throw new IntrospectionException("Cannot find class type for property " + property + " in bean " + classType.getQualifiedSourceName());
-		}	
-		
+			throw new IntrospectionException("Cannot find class type for property " + property + " in bean "
+					+ classType.getQualifiedSourceName());
+		}
+
 		return listBeanClassType;
 	}
 
 	public String getBeanProperty() {
 		return listBeanProperty;
 	}
-	
+
 	public String getBeanPropertyVariableName() {
 		return getBeanProperty().replaceAll("\\.", "_");
 	}
-	
+
 	public String getBeanPropertyReference() {
 		return listBeanReferenceProperty;
 	}
-	
+
 	public String getPropertyTuple(JClassType classType) {
-		return classType.getSimpleSourceName() + getFirstUpperCase(getBeanProperty()) + getFirstUpperCase(getBeanPropertyReference());
+		return classType.getSimpleSourceName() + getFirstUpperCase(getBeanProperty())
+				+ getFirstUpperCase(getBeanPropertyReference());
 	}
 
 	private String getFirstUpperCase(String text) {

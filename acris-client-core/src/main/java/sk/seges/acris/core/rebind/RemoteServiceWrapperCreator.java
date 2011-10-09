@@ -145,8 +145,6 @@ public class RemoteServiceWrapperCreator {
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
-//		sourceWriter.println(remoteServiceGinjectorClassname + " ginjector = GWT.create(" + remoteServiceGinjectorClassname + ".class);");
-//		sourceWriter.println("service = ginjector.get" + simpleClassName + "();");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("");

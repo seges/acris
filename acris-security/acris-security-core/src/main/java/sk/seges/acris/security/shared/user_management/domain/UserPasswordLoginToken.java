@@ -17,14 +17,23 @@ public class UserPasswordLoginToken implements LoginToken {
 	private String username;
 	private String password;
 	private String language;
+	private String webId;
 
 	public UserPasswordLoginToken() {}
 
-	public UserPasswordLoginToken(String username, String password, String language) {
+	public UserPasswordLoginToken(String username, String password, String webId) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.webId = webId;
+	}
+	
+	public UserPasswordLoginToken(String username, String password, String language, String webId) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.language = language;
+		this.webId = webId;
 	}
 
 	public String getUsername() {
@@ -49,5 +58,13 @@ public class UserPasswordLoginToken implements LoginToken {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
 	}
 }

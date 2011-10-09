@@ -4,97 +4,139 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-
-import net.sf.gilead.gwt.PersistentRemoteService;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import sk.seges.acris.etc.Countries;
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.rpc.service.IGeneratorService;
+import sk.seges.acris.common.util.Tuple;
+import sk.seges.acris.core.server.utils.io.StringFile;
+import sk.seges.acris.domain.shared.domain.api.ContentData;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
-import sk.seges.acris.generator.server.processor.HTMLPostProcessing;
-import sk.seges.acris.generator.server.processor.IContentInfoProvider;
-import sk.seges.acris.generator.server.processor.TokenProvider;
-import sk.seges.acris.io.StringFile;
-import sk.seges.acris.util.Tuple;
+import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
+import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
+import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
+import sk.seges.acris.generator.server.service.persist.api.DataPersister;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
+import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
+import sk.seges.acris.generator.shared.service.IGeneratorService;
+import sk.seges.acris.site.shared.domain.api.WebSettingsData;
+import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 /**
- * @author fat
- *
+ * @author Peter Simun (simun@seges.sk)
  */
-public class GeneratorService extends PersistentRemoteService implements IGeneratorService {
+public class GeneratorService implements IGeneratorService {
 
 	private static final long serialVersionUID = 6944837756691206504L;
-	
-	@Autowired
-	protected TokenProvider tokenProvider;
 
-	@Autowired
-	@Qualifier("offline.content.taget.path")
-	protected String offlineContentTargetPath;
+	private HtmlProcessorFactory htmlProcessorFactory;
+	private IWebSettingsService webSettingsService;
 
-	@Autowired
-	protected HTMLPostProcessing htmlPostProcessing;
-	
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
-	private IContentInfoProvider contentInfoProvider;
+	private DataPersister dataPersister;
+	private ContentDataProvider contentDataProvider;
+	private NodeParserFactory parserFactory;
+
+	private String indexFileName;
+	private ThreadPoolExecutor threadPool;
+	private Map<String, String> entriesUrlCache = new LinkedHashMap<String, String>(5, .75F, true) {
+
+		private static final long serialVersionUID = -3755811610562830079L;
+
+		protected boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+			return size() > 50;
+		}
+	};
 	
-	public GeneratorService(IContentInfoProvider contentInfoProvider) {
-		this.contentInfoProvider = contentInfoProvider;
+	public GeneratorService(DataPersister dataPersister, String indexFileName, ContentDataProvider contentDataProvider, 
+			IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
+		this.dataPersister = dataPersister;
+		this.indexFileName = indexFileName;
+		this.parserFactory = parserFactory;
+		this.htmlProcessorFactory = htmlProcessorFactory;
+		this.contentDataProvider = contentDataProvider;
+		this.webSettingsService = webSettingsService;
+		this.threadPool = new ThreadPoolExecutor(5, 20, 20, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 	}
-	
-	public GeneratorToken getLastProcessingToken() {
-		return tokenProvider.getTokenForProcessing();
+
+	public GeneratorToken getDefaultGeneratorToken(String language, String webId) {
+
+		GeneratorToken result = new GeneratorToken();
+				
+		result.setWebId(webId);
+		result.setLanguage(language);
+		result.setDefaultToken(true);
+		
+		ContentData<?> content = contentDataProvider.getContent(result);
+		if (content != null) {
+			result.setNiceUrl(content.getNiceUrl());
+		} else {
+			result.setNiceUrl("");
+		}
+		
+		WebSettingsData webSettings = webSettingsService.getWebSettings(result.getWebId());
+		if (webSettings != null) {
+			result.setWebId(webSettings.getTopLevelDomain());
+		} else {
+			result.setWebId("");
+		}
+		
+		return result;
 	}
-	
-	public void setTokenProvider(TokenProvider tokenProvider) {
-		this.tokenProvider = tokenProvider;
-	}
-	
+
 	public boolean saveContent(GeneratorToken token, String contentText) {
-		tokenProvider.setTokenForProcessing(token);
 		return true;
 	}
 
-	public List<String> getAvailableNiceurls(String lang, String webId) {
-		return contentInfoProvider.getAvailableNiceurls(lang, webId);
-	}
+	public ArrayList<String> getAvailableNiceurls(String lang, String webId) {
+		List<String> availableNiceurls = contentDataProvider.getAvailableNiceurls(lang, webId);
 
-	public String getDomainForLanguage(String webId, String language) {
-		for (Countries country: Countries.values()) {
-			if (language.equals(country.getLang())) {
-				return country.getDomain();
+		ArrayList<String> result = new ArrayList<String>();
+		
+		for (String niceUrl: availableNiceurls) {
+			result.add(niceUrl);
+		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug("Available tokens for webId: " + webId + " and language " + lang);
+			for (String niceUrl : result) {
+				log.debug(niceUrl);
 			}
 		}
-		return null;
- 	}
+
+		return result;
+	}
 
 	public Tuple<String, String> readHtmlBodyFromFile(String filename) {
 		String content = readTextFromFile(filename);
-		return new Tuple<String, String>(new HTMLNodeSplitter().getHeaderText(content), new HTMLNodeSplitter().getBody(content));
+		return new Tuple<String, String>(new HTMLNodeSplitter(parserFactory).getHeaderText(content), 
+										 new HTMLNodeSplitter(parserFactory).getBody(content));
 	}
-	
-	public String readTextFromFile(String filename) {
 
-		URL url;
-		
+	public synchronized String readTextFromFile(String filename) {
+
+		URL url = null;
+
 		if (filename.startsWith("http://")) {
 			try {
 				url = new URL(filename);
 			} catch (MalformedURLException e) {
 				throw new RuntimeException("Unable to load file: " + filename);
-			}
-	
-			if (url == null) {
-				throw new RuntimeException("File or directory should exists: " + filename);
 			}
 
 			try {
@@ -102,7 +144,7 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-		} 
+		}
 
 		final StringFile file = StringFile.getFileDescriptor(filename);
 
@@ -113,130 +155,131 @@ public class GeneratorService extends PersistentRemoteService implements IGenera
 		}
 	}
 
-	private String readTextFromURL(URL url) throws IOException {
+	private synchronized String readTextFromURL(URL url) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 
 		StringBuffer content = new StringBuffer();
-		
+
 		String line;
 
 		while ((line = br.readLine()) != null) {
 			content.append(line);
 		}
-	
+
 		br.close();
 
 		return content.toString();
 	}
 
-	protected String getOfflineContentTargetPath(GeneratorToken token) {
-		return offlineContentTargetPath;
+	@Override
+	public void writeOfflineContentHtml(final String entryPointFileName, final String header, final String contentWrapper, 
+			final String htmlContent, final GeneratorToken token, final String currentServerURL) {
+
+		threadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				String content = htmlContent;
+				
+				if (content != null) {
+					content = content.replaceAll("<br></br>", "<br/>");
+				}
+		
+				if (log.isDebugEnabled()) {
+					synchronized (this) { 
+						log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + token.getLanguage() + " and webId: "
+								+ token.getWebId());
+						log.debug("			entryPointFileName: " + entryPointFileName);
+						log.debug("			header: " + header);
+						log.debug("			contentWrapper: " + contentWrapper);
+						log.debug("			content: " + content);
+						log.debug("			currentServerURL: " + currentServerURL);
+					}
+				}
+		
+				String headerContent;
+				
+				if (entriesUrlCache.get(entryPointFileName) == null) {
+					headerContent = readTextFromFile(entryPointFileName);
+					entriesUrlCache.put(entryPointFileName, headerContent);
+				} else {
+					headerContent = entriesUrlCache.get(entryPointFileName);
+				}
+				
+				HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
+				String doctype = htmlNodeSplitter.readDoctype(headerContent);
+		
+				if (log.isDebugEnabled()) {
+					log.debug("			headerContent: " + headerContent);
+				}
+				
+				String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
+				entryPoint = htmlNodeSplitter.replaceBody(entryPoint, contentWrapper);
+				content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
+		
+				String result = content;
+		
+				HtmlPostProcessor htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+				
+				result = htmlPostProcessor.getProcessedContent(content, token, false);
+				
+				if (result == null) {
+					log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
+				} else {
+					
+					writeTextToFile(result, false, token);
+
+					if (token.isDefaultToken()) {
+						entryPoint = new HTMLNodeSplitter(parserFactory).joinHeaders(headerContent, header);
+						entryPoint = new HTMLNodeSplitter(parserFactory).replaceBody(entryPoint, contentWrapper);
+						content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
+			
+						result = htmlPostProcessor.getProcessedContent(content, token, true);
+						if (result != null) {
+							writeTextToFile(result, true, token);
+						} else {
+							log.error("Unable to process HTML nodes for default nice-url " + token.getNiceUrl());
+						}
+					}
+				}
+			}
+		});
+	}
+
+	/*
+	 * Method is used to encode name of the file 
+	 */
+	protected String encodeFilePath(String path) {
+		 try {
+			path = URLEncoder.encode(path, Charset.defaultCharset().toString());
+			path = path.replaceAll("%2F","/");
+			path = path.replaceAll("%2f","/");
+		} catch (UnsupportedEncodingException e) {
+			log.info("Unable to encode file path " + path);
+		}  
+
+		return path;
 	}
 	
-	@Override
-	public String getOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content,
-			GeneratorToken token, String currentServerURL) {
 
-		if (log.isDebugEnabled()) {
-			log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
-					token.getLanguage() + " and webId: " + token.getWebId());
-			log.debug("			entryPointFileName: " + entryPointFileName);
-			log.debug("			header: " + header);
-			log.debug("			contentWrapper: " + contentWrapper);
-			log.debug("			content: " + content);
-			log.debug("			currentServerURL: " + currentServerURL);
+	protected PersistentDataProvider createPersistentDataProvider(GeneratorToken token, boolean indexFile, String content) {
+		PersistentDataProvider dataProvider = new TokenPersistentDataProvider();
+		dataProvider.setContent(content);
+		dataProvider.setWebId(token.getWebId());
+		if (indexFile) {
+			dataProvider.setId(indexFileName);
+		} else {
+			dataProvider.setId(token.getNiceUrl() + File.separator + "index.html");
 		}
-
-		log.error("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
-				token.getLanguage() + " and webId: " + token.getWebId());
-		log.error("			entryPointFileName: " + entryPointFileName);
-		log.error("			header: " + header);
-		log.error("			contentWrapper: " + contentWrapper);
-		log.error("			content: " + content);
-		log.error("			currentServerURL: " + currentServerURL);
-
-		System.out.println("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + 
-				token.getLanguage() + " and webId: " + token.getWebId());
-		System.out.println("			entryPointFileName: " + entryPointFileName);
-		System.out.println("			header: " + header);
-		System.out.println("			contentWrapper: " + contentWrapper);
-		System.out.println("			content: " + content);
-		System.out.println("			currentServerURL: " + currentServerURL);
-
-		
-		String headerContent = readTextFromFile(entryPointFileName);
-		String doctype = new HTMLNodeSplitter().readDoctype(headerContent);
-
-		if (log.isDebugEnabled()) {
-			log.debug("			headerContent: " + headerContent);
-		}
-
-		log.error("			headerContent: " + headerContent);
-		System.out.println("			headerContent: " + headerContent);
-
-		String entryPoint = new HTMLNodeSplitter().joinHeaders(headerContent, header);
-		entryPoint = new HTMLNodeSplitter().replaceBody(entryPoint, contentWrapper);
-		content = (doctype == null ? "" : ("<" + doctype + ">")) + new HTMLNodeSplitter().replaceRootContent(entryPoint, content);
-
-		if (htmlPostProcessing.setProcessorContent(content, token, contentInfoProvider)) {
-			return htmlPostProcessing.getHtml();	
-		}
-
-		return content;
+		return dataProvider;
 	}
 
-	@Override
-	public void writeTextToFile(String content, GeneratorToken token) {
-		File dirFile = new File(getOfflineContentTargetPath(token));
-
-		if (dirFile == null) {
-			throw new RuntimeException("File " + offlineContentTargetPath + " does not exists.");
-		}
-
-		if (!dirFile.exists()) {
-			if (!dirFile.mkdirs()) {
-				throw new RuntimeException("Directory " + dirFile.getAbsolutePath() + " cannot be created.");
-			}
-		}
-		
-		StringFile file = new StringFile(dirFile, token.getNiceUrl() + File.separator + "index.html");
-
-		if (!file.exists()) {
-			try {
-				if (!file.getParentFile().exists()) {
-					file.getParentFile().mkdirs();
-					if (log.isDebugEnabled()) {
-						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
-					}
-					log.error("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
-					System.out.println("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
-				}
-				if (log.isDebugEnabled()) {
-					log.debug("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
-				}
-				log.error("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
-				System.out.println("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
-				if (!file.createNewFile()) {
-					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
-				}
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
+	protected void writeTextToFile(String content, boolean indexFile, GeneratorToken token) {
 		if (log.isDebugEnabled()) {
-			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-					token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
+			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + token.getLanguage() + " ] for " + token.getWebId());
 		}
-		log.error("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-				token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
-		
-		System.out.println("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + 
-				token.getLanguage() + " ] for " + token.getWebId() + " to file " + file.getAbsolutePath());
-		try {
-			file.writeTextToFile(content);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}		
+
+		synchronized (dataPersister) {
+			dataPersister.writeTextToFile(createPersistentDataProvider(token, indexFile, content));
+		}
 	}
 }

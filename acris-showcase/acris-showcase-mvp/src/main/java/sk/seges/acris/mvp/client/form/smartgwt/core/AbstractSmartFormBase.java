@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.binding.client.annotations.Generated;
-import sk.seges.acris.binding.client.holder.IBeanBindingHolder;
 import sk.seges.sesam.domain.IDomainObject;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.FormItem;
 import com.smartgwt.client.widgets.form.fields.SpacerItem;
-import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
-public abstract class AbstractSmartFormBase<T extends IDomainObject<?>> extends HLayout implements IBeanBindingHolder<T> {
+public abstract class AbstractSmartFormBase<T extends IDomainObject<?>> extends AbstractSmartBindingHolder<T> {
 
 	private final VLayout vp;
 

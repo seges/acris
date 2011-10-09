@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.gwt.beansbinding.core.client.AutoBinding;
+import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.core.client.BeanProperty;
 import org.gwt.beansbinding.core.client.Binding;
 import org.gwt.beansbinding.core.client.BindingGroup;
 import org.gwt.beansbinding.core.client.Bindings;
 import org.gwt.beansbinding.core.client.Converter;
 import org.gwt.beansbinding.core.client.Validator;
-import org.gwt.beansbinding.core.client.AutoBinding.UpdateStrategy;
 import org.gwt.beansbinding.ui.client.GWTBindings;
 import org.gwt.beansbinding.ui.client.ListBoxBinding;
 

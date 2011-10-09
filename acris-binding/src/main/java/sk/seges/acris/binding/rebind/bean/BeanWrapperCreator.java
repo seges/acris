@@ -13,7 +13,7 @@ import java.util.Map;
 import org.gwt.beansbinding.core.client.util.HasPropertyChangeSupport;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
-import sk.seges.acris.binding.jsr269.BeanWrapperProcessor;
+import sk.seges.acris.binding.pap.model.BeanWrapperType;
 import sk.seges.acris.binding.rebind.AbstractCreator;
 import sk.seges.acris.binding.rebind.configuration.BindingNamingStrategy;
 import sk.seges.acris.core.rebind.RebindUtils;
@@ -25,11 +25,11 @@ import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JMethodHelper;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
+import com.google.gwt.dev.javac.typemodel.JMethodHelper;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
@@ -361,7 +361,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 	}
 
 	protected String getWrapperClassName(String beanClassName) {
-		return beanClassName + BeanWrapperProcessor.BEAN_WRAPPER_SUFFIX;
+		return beanClassName + BeanWrapperType.BEAN_WRAPPER_SUFFIX;
 	}
 
 	protected void generateGetterForSimpleBean(SourceWriter source, JMethod methode) {
@@ -382,6 +382,9 @@ public class BeanWrapperCreator extends AbstractCreator {
 		try {
 			typeOracle.getType(resultName);
 		} catch (NotFoundException e) {
+			if(logger.isLoggable(Type.WARN)) {
+				logger.log(Type.WARN, "Falling back to non-beanwrapper primitive type - didn't find = " + resultName);
+			}
 			generateGetterForPrimitive(source, methode);
 			return;
 		}
@@ -390,7 +393,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		String wrapperType = getWrapperType(returnType);
 		source.println("private " + wrapperType + " " + field + ";");
 
-		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, false, false, false, false, true) + " {");
+		source.println(new JMethodHelper((com.google.gwt.dev.javac.typemodel.JMethod) methode).getReadableDeclaration(wrapperType, false, false, false, false, true) + " {");
 //		source.println(methode.getReadableDeclaration() + " {");
 		source.indent();
 		
@@ -447,7 +450,15 @@ public class BeanWrapperCreator extends AbstractCreator {
 			return;
 		}
 
-		String wrapperType = getWrapperType(returnType);
+		JType fieldType;
+		if(getter != null) {
+			// use getter to align field type with return type of GWT.create
+			fieldType = getter.getReturnType();
+		} else {
+			fieldType = returnType;
+		}
+		
+		String wrapperType = getWrapperType(fieldType);
 
 //		source.println(new JMethodHelper(methode).getReadableDeclaration(wrapperType, 0) + " {");
 		source.println(methode.getReadableDeclaration(false, false, false, false, true) + " {");
@@ -467,7 +478,7 @@ public class BeanWrapperCreator extends AbstractCreator {
 		source.println("this." + field + " = (" + wrapperType + ") GWT.create(" + getWrapperClassName(returnType.getQualifiedSourceName()) + ".class);");
 		source.outdent();
 		source.println("}");
-		source.println("this." + field + ".setBeanWrapperContent(" + parameter.getName() + ");");
+		source.println("this." + field + ".setBeanWrapperContent((" + fieldType.getQualifiedSourceName() + ")" + parameter.getName() + ");");
 		source.println("pcs.firePropertyChange(\"" + parameter.getName() + "\", oldValue, " + parameter.getName() + ");");
 		source.outdent();
 		source.println("}");
@@ -506,8 +517,29 @@ public class BeanWrapperCreator extends AbstractCreator {
 	}
 
 	protected String[] getImports() {
-		return new String[] {BeanWrapper.class.getCanonicalName(), IObservableObject.class.getCanonicalName(), PropertyChangeSupport.class.getCanonicalName(),
-				PropertyChangeListener.class.getCanonicalName(), GWT.class.getCanonicalName(), classType.getQualifiedSourceName()};
+		int size;
+		String[] imports;
+		if(classType.getPackage().equals(beanType.getPackage())) {
+			size = 6;
+			imports = fillImports(size);
+		} else {
+			size = 7;
+			imports = fillImports(size);
+			imports[6] = beanType.getQualifiedSourceName();
+		}
+
+		return imports;
+	}
+
+	private String[] fillImports(int size) {
+		String[] imports = new String[size];
+		imports[0] = BeanWrapper.class.getCanonicalName();
+		imports[1] = IObservableObject.class.getCanonicalName();
+		imports[2] = PropertyChangeSupport.class.getCanonicalName();
+		imports[3] = PropertyChangeListener.class.getCanonicalName();
+		imports[4] = GWT.class.getCanonicalName();
+		imports[5] = classType.getQualifiedSourceName();
+		return imports;
 	}
 
 	protected String[] getImplementedInterfaces() {

@@ -194,17 +194,34 @@ public class RebindUtils {
 	 * @param property
 	 *            May contain dots
 	 * @return
+	 * @throws NotFoundException
 	 */
-	public static JField getDeclaredField(JClassType classType, String property) {
+	private static Object getDeclaredField(JClassType classType, String property) throws NotFoundException {
 		int dotIndex = property.indexOf(".");
 		if (dotIndex == -1) {
 			return getDeclaredDirectField(classType, property);
 		} else {
-			JField field = getDeclaredDirectField(classType, property.substring(0, dotIndex));
-			if (!(field.getType() instanceof JClassType)) {
-				throw new RuntimeException("Not of JClassType type = " + field);
+			Object propertyRepresentation = getDeclaredDirectField(classType, property.substring(0, dotIndex));
+			JClassType propertyType;
+			if (propertyRepresentation instanceof JField) {
+				JField field = (JField) propertyRepresentation;
+				if (!(field.getType() instanceof JClassType)) {
+					throw new RuntimeException("Not of JClassType type = " + field);
+				}
+				propertyType = (JClassType) field.getType();
+			} else if (propertyRepresentation instanceof JMethod) {
+				JMethod method = (JMethod) propertyRepresentation;
+				if (!(method.getReturnType() instanceof JClassType)) {
+					throw new RuntimeException("Not of JClassType type = " + method);
+				}
+				propertyType = (JClassType) method.getReturnType();
+			} else {
+				throw new NotFoundException("Unsupported property type = "
+						+ propertyRepresentation.getClass().getName() + ", classType = " + classType
+						+ ", property = " + property);
 			}
-			return getDeclaredField((JClassType) field.getType(), property.substring(dotIndex + 1));
+			return getDeclaredField(propertyType, property.substring(dotIndex + 1));
+
 		}
 
 	}
@@ -214,21 +231,39 @@ public class RebindUtils {
 	 * 
 	 * @param classType
 	 * @param fieldName
-	 * @return
+	 * @return field or method containing representing the field
+	 * @throws NotFoundException
 	 */
-	public static JField getDeclaredDirectField(JClassType classType, String fieldName) {
+	public static Object getDeclaredDirectField(JClassType classType, String fieldName)
+			throws NotFoundException {
 		JField field = classType.getField(fieldName);
 		JClassType superClass = classType.getSuperclass();
-		if (field == null && superClass != null) {
+		JMethod getter = null;
+		if (field == null) {
+			try {
+				getter = getGetter(classType, fieldName);
+			} catch (Exception e) {}
+		}
+		if (field == null && getter == null && superClass != null) {
 			return getDeclaredDirectField(superClass, fieldName);
 		}
-		return field;
+		if (field != null) {
+			return field;
+		} else if (getter != null) {
+			return getter;
+		}
+		throw new NotFoundException(
+				"Unable to identify a property descriptor (field or method) for classType = " + classType
+						+ ", field = " + fieldName);
 	}
 
 	/**
 	 * Will it comment later :)
+	 * 
+	 * @throws NotFoundException
 	 */
-	public static JClassType getDeclaredFieldClassType(JClassType classType, String property) {
+	public static JClassType getDeclaredFieldClassType(JClassType classType, String property)
+			throws NotFoundException {
 		JType fieldType = getDeclaredFieldType(classType, property);
 
 		if (fieldType instanceof JClassType) {
@@ -241,15 +276,25 @@ public class RebindUtils {
 	/**
 	 * Will it comment it aprox. 2 minutes before getDeclaredFieldClassType
 	 * method
+	 * 
+	 * @throws NotFoundException
 	 */
-	public static JType getDeclaredFieldType(JClassType classType, String property) {
-		JField field = RebindUtils.getDeclaredField(classType, property);
+	public static JType getDeclaredFieldType(JClassType classType, String property) throws NotFoundException {
+		Object propertyRepresentation = RebindUtils.getDeclaredField(classType, property);
 
-		if (field == null) {
+		if (propertyRepresentation == null) {
 			return null;
 		}
 
-		return field.getType();
+		if (propertyRepresentation instanceof JField) {
+			return ((JField) propertyRepresentation).getType();
+		} else if (propertyRepresentation instanceof JMethod) {
+			return ((JMethod) propertyRepresentation).getReturnType();
+		} else {
+			throw new NotFoundException("Unsupported property type = "
+					+ propertyRepresentation.getClass().getName() + ", classType = " + classType
+					+ ", property = " + property);
+		}
 	}
 
 	/**
@@ -261,10 +306,11 @@ public class RebindUtils {
 	 *            Interface where parametrized type is present.
 	 * @param position
 	 *            Position in a list of parametrized types in interface.
-	 * @return Generics type in interface implemented by a class type or null if not found
+	 * @return Generics type in interface implemented by a class type or null if
+	 *         not found
 	 */
-	private static JClassType getGenericsFromInterfaceHierarchy(JClassType classType, JClassType parametrizedType,
-			int position) {
+	private static JClassType getGenericsFromInterfaceHierarchy(JClassType classType,
+			JClassType parametrizedType, int position) {
 		for (JClassType type : classType.getImplementedInterfaces()) {
 			if (type instanceof JParameterizedType) {
 				JParameterizedType paramType = (JParameterizedType) type;
@@ -274,12 +320,12 @@ public class RebindUtils {
 			}
 			// seach parent interfaces
 			JClassType result = getGenericsFromInterfaceHierarchy(type, parametrizedType, position);
-			if (result != null) 
+			if (result != null)
 				return result;
-		}	
+		}
 		return null;
 	}
-	
+
 	/**
 	 * Tries to find parametrized type in interface of a class.
 	 * 
@@ -297,7 +343,7 @@ public class RebindUtils {
 		JClassType type = getGenericsFromInterfaceHierarchy(classType, parametrizedType, position);
 		if (type != null)
 			return type;
-		
+
 		if (classType.getSuperclass() != null) {
 			return getGenericsFromInterfaceType(classType.getSuperclass(), parametrizedType, position);
 		}
@@ -311,37 +357,48 @@ public class RebindUtils {
 	 * superclass
 	 */
 	public static JClassType getGenericsFromSuperclassType(JClassType classType,
-			/*JClassType[] parametrizedTypes, */int position) throws NotFoundException {
+	/* JClassType[] parametrizedTypes, */int position) throws NotFoundException {
 		JClassType superclassType = classType.getSuperclass();
 
 		if (superclassType == null) {
-//			String parametrizedTypesText = "[";
-//
-//			int index = 0;
-//			for (JClassType parametrizedType : parametrizedTypes) {
-//				if (index > 0) {
-//					parametrizedTypesText += ", ";
-//				}
-//				parametrizedTypesText += parametrizedType.getQualifiedSourceName();
-//				index++;
-//			}
+			// String parametrizedTypesText = "[";
+			//
+			// int index = 0;
+			// for (JClassType parametrizedType : parametrizedTypes) {
+			// if (index > 0) {
+			// parametrizedTypesText += ", ";
+			// }
+			// parametrizedTypesText +=
+			// parametrizedType.getQualifiedSourceName();
+			// index++;
+			// }
 
-//			parametrizedTypesText += "]";
+			// parametrizedTypesText += "]";
 
-			throw new NotFoundException("Unable to find generics in type " + classType
-					+ /*", where parametrized types are " + parametrizedTypesText +*/ " on position " + position);
+			throw new NotFoundException("Unable to find generics in type " + classType + /*
+																						 * ", where parametrized types are "
+																						 * +
+																						 * parametrizedTypesText
+																						 * +
+																						 */" on position "
+					+ position);
 		}
 
 		if (superclassType instanceof JParameterizedType) {
 			JParameterizedType paramType = (JParameterizedType) superclassType;
-//			for (JClassType parametrizedType : parametrizedTypes) {
-//				if (paramType.getErasedType().equals(parametrizedType.getErasedType())) {
-					return paramType.getTypeArgs()[position];
-//				}
-//			}
+			// for (JClassType parametrizedType : parametrizedTypes) {
+			// if
+			// (paramType.getErasedType().equals(parametrizedType.getErasedType()))
+			// {
+			return paramType.getTypeArgs()[position];
+			// }
+			// }
 		}
 
-		return getGenericsFromSuperclassType(superclassType/*, parametrizedTypes*/, position);
+		return getGenericsFromSuperclassType(superclassType/*
+															 * ,
+															 * parametrizedTypes
+															 */, position);
 	}
 
 	public static String getComparableMethodDeclaration(JMethod method) {
@@ -350,8 +407,10 @@ public class RebindUtils {
 		// ignoring modifiers and type parameters, they are not significant for
 		// method signature comparision
 
-		sb.append(method.getReturnType().getParameterizedQualifiedSourceName());
-		sb.append(" ");
+		// ignoring also return type because there cannot co-exist two methods with different return types and same name
+//		sb.append(method.getReturnType().getParameterizedQualifiedSourceName());
+//		sb.append(" ");
+		
 		sb.append(method.getName());
 
 		JParameter[] params = method.getParameters();

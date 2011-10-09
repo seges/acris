@@ -20,14 +20,13 @@ public class SessionHandlerListener implements HttpSessionListener {
 	private static Map<String, Long> lastSessionAccessTimes = new Hashtable<String, Long>();
 	private static Map<String, String> sessionsMappings = new Hashtable<String, String>();
 	private static Map<String, MaxInactiveIntervalHistory> actualMaxInactiveIntervalMap = new Hashtable<String, MaxInactiveIntervalHistory>();
-	
 
 	private static final String DEFAULT_TIMEOUT = "DEFAULT_TIMEOUT";
 
 	synchronized private void sessionActivate(HttpSessionEvent event) {
 		final HttpSession session = event.getSession();
 		session.setAttribute(DEFAULT_TIMEOUT, session.getMaxInactiveInterval());
-		
+
 		activeSession.put(session.getId(), session);
 
 		long timeNow = System.currentTimeMillis();
@@ -48,7 +47,7 @@ public class SessionHandlerListener implements HttpSessionListener {
 	public static HttpSession getSession(String sessionId) {
 		String mappedSessionId = sessionsMappings.get(sessionId);
 		if (mappedSessionId == null) {
-			return null;
+			return activeSession.get(sessionId);
 		}
 		return activeSession.get(mappedSessionId);
 	}
@@ -59,7 +58,7 @@ public class SessionHandlerListener implements HttpSessionListener {
 		activeSession.remove(sessionId);
 		lastSessionAccessTimes.remove(sessionId);
 		actualMaxInactiveIntervalMap.remove(sessionId);
-
+		
 		for (Entry<String, String> mappedSession : sessionsMappings.entrySet()) {
 			if (sessionId.equals(mappedSession.getValue())) {
 				sessionsMappings.remove(mappedSession.getKey());
@@ -138,5 +137,4 @@ public class SessionHandlerListener implements HttpSessionListener {
 			actualMaxInactiveIntervalMap.get(sessionId).revert();
 		}
 	}
-	
 }

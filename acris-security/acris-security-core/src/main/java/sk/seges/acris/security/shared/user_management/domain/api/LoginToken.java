@@ -16,4 +16,5 @@ import sk.seges.acris.security.shared.domain.ITransferableObject;
  * 
  * @author ladislav.gazo
  */
-public interface LoginToken extends ITransferableObject {}
+public interface LoginToken extends ITransferableObject {
+}

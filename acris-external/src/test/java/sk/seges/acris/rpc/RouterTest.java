@@ -3,6 +3,8 @@ package sk.seges.acris.rpc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.regex.Matcher;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,4 +49,25 @@ public class RouterTest {
 		route = router.getRoute(uri);
 		assertEquals(Router.NO_ROUTE, route);
 	}
+
+	@Test
+	public void testAbsoluteTargetURL() {
+		
+		//Testing if default port is 8888 but redirected port should be differetn
+		assertEquals("localhost", router.getDefaultHost());
+		assertEquals(Integer.valueOf(8888), router.getDefaultPort());
+
+		String requestURI = "/sk.seges.test.Absolute/service/test";
+		assertEquals("localhost:8881/service/test", routeToUrl(router.getRoute(requestURI)));
+
+		requestURI = "/sk.seges.web.template.Site.JUnit/acris-server/acris-service/gs";
+		assertEquals("localhost:5881/synapso-acris-server/acris-service/gs", routeToUrl(router.getRoute(requestURI)));
+	}
+
+	public String routeToUrl(Route route) {
+        Matcher matcher = route.getMatchedSourceURI();
+        String redirectURI = matcher.replaceFirst(route.getTargetURI());
+		return route.getHost() + ":" + route.getPort() + (redirectURI == null ? "" : redirectURI);
+	}
+
 }

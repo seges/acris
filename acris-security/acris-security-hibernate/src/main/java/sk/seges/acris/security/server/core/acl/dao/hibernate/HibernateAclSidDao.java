@@ -11,7 +11,7 @@ import org.hibernate.criterion.Restrictions;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclSid;
 import sk.seges.acris.security.server.acl.dao.IAclSidDao;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSidBeanWrapper;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSidMetaModel;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
@@ -29,8 +29,8 @@ public class HibernateAclSidDao extends AbstractHibernateCRUD<JpaAclSid> impleme
     public AclSid loadOrCreate(String sidName, boolean principal) {
 
         DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(AclSidBeanWrapper.SID, sidName));
-		criteria.add(Restrictions.eq(AclSidBeanWrapper.PRINCIPAL, principal));
+		criteria.add(Restrictions.eq(AclSidMetaModel.SID, sidName));
+		criteria.add(Restrictions.eq(AclSidMetaModel.PRINCIPAL, principal));
 
 		List<JpaAclSid> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
         

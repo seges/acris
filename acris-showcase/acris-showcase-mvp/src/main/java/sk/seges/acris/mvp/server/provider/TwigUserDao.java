@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
-import sk.seges.acris.security.server.user_management.dao.twig.AbstractTwigCrud;
+import sk.seges.acris.security.server.dao.twig.AbstractTwigCrud;
 import sk.seges.acris.security.server.user_management.domain.twig.TwigGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataBeanWrapper;
+import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.acris.security.shared.user_management.domain.api.UserRolePermission;
 import sk.seges.sesam.dao.Filter;
@@ -18,28 +18,28 @@ import sk.seges.sesam.dao.SimpleExpression;
 
 import com.vercer.engine.persist.ObjectDatastore;
 
-public class TwigUserDao extends AbstractTwigCrud<UserData> implements IGenericUserDao<UserData> {
+public class TwigUserDao extends AbstractTwigCrud<UserData<Long>> implements IGenericUserDao<UserData<Long>> {
 
 	public TwigUserDao(ObjectDatastore datastore) {
 		super(datastore, TwigGenericUser.class);
 	}
 
 	@Override
-	public UserData findByUsername(String username) {
+	public UserData<Long> findByUsername(String username) {
 		Page page = new Page(0, Page.ALL_RESULTS);
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(UserDataBeanWrapper.USERNAME);
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(UserDataMetaModel.USERNAME);
 		eq.setValue(username);
 		page.setFilterable(eq);
 		return super.findUnique(page);
 	}
 
 	@Override
-	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
+	public UserData<Long> persist(UserData<Long> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, false));
 	}
 
 	@Override
-	public UserData collectUserAuthorities(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public UserData<Long> collectUserAuthorities(UserData<Long> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		List<String> authorities = new ArrayList<String>();
 
 		if (addMode && user.getUserAuthorities() != null) {
@@ -77,7 +77,12 @@ public class TwigUserDao extends AbstractTwigCrud<UserData> implements IGenericU
 	}
 
 	@Override
-	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public UserData<Long> persist(UserData<Long> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, false));
+	}
+
+	@Override
+	public UserData<Long> getEntityInstance() {
+		return new TwigGenericUser();
 	}
 }

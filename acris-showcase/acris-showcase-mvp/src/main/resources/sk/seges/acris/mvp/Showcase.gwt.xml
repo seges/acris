@@ -7,6 +7,7 @@
 	<inherits name="sk.seges.acris.security.Session" />
  	<inherits name="sk.seges.acris.security.Spring" />
 	<inherits name="sk.seges.acris.Security" />
+	<inherits name="sk.seges.acris.Showcase" />
  
 	<!-- GIN for dependency injection -->
 	<inherits name="com.google.gwt.inject.Inject" />
@@ -15,8 +16,8 @@
 	<inherits name='sk.seges.acris.Binding' />
 
 	<!-- MVP -->
-	<inherits name="com.philbeaudoin.gwtp.mvp.Mvp" />
-	<inherits name="com.philbeaudoin.gwtp.dispatch.Dispatch" />
+	<inherits name="com.gwtplatform.mvp.Mvp" />
+	<inherits name="com.gwtplatform.dispatch.Dispatch" />
 
 	<define-configuration-property name="gin.ginjector" is-multi-valued="false" />
 	<set-configuration-property name="gin.ginjector" value="sk.seges.acris.mvp.client.configuration.production.ProductionGinjector" />
@@ -36,6 +37,9 @@
 	<inherits name="com.smartgwt.SmartGwt" />
 	<inherits name="com.smartclient.theme.enterprise.Enterprise"/>
 
+	<!-- ExtGWT / GXT / Sencha -->
+	<inherits name="com.extjs.gxt.ui.GXT" /> 
+	
 	<!-- Binding generator for binding widget holders (e.g. panels, forms, ...) -->
 	<generate-with class="sk.seges.acris.binding.rebind.bean.smartgwt.SmartGWTRecordWrapperGenerator">
 		<all>

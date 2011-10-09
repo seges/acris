@@ -11,11 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.server.processor.IContentInfoProvider;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
@@ -23,27 +21,25 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
 	protected static final Logger log = Logger.getLogger(AbstractNiceURLGenerator.class);
 
-	@Autowired
-	@Qualifier("url.redirect.single.file")
 	protected Boolean redirectSingleFile;
 
-	@Autowired
-	@Qualifier("url.redirect.condition")
 	protected Boolean redirectCondition;
 	
-	@Autowired
-	@Qualifier("url.redirect.file.location")
 	private String redirectFilePath;
 
-	@Autowired
-	@Qualifier("legacy.url.redirect.single.file")
 	private Boolean legacyRedirectSingleFile;
 
-	@Autowired
-	@Qualifier("legacy.url.redirect.file.location")
 	private String legacyRedirectFilePath;
 
-	private IContentInfoProvider contentInfoProvider;
+	protected AbstractNiceURLGenerator(String redirectFilePath, Boolean redirectCondition, Boolean redirectSingleFile, String legacyRedirectFilePath, Boolean legacyRedirectSingleFile) {
+		this.redirectFilePath = redirectFilePath;
+		this.redirectCondition = redirectCondition;
+		this.redirectSingleFile = redirectSingleFile;
+		this.legacyRedirectFilePath = legacyRedirectFilePath;
+		this.legacyRedirectSingleFile = legacyRedirectSingleFile;
+	}
+	
+	private ContentDataProvider contentInfoProvider;
 	
 	protected abstract String getDefaultRewriteRule();
 	protected abstract String getRewriteRule(String fromURL, String toURL);
@@ -237,7 +233,7 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 		this.redirectCondition = redirectCondition;
 	}
 
-	public void setContentInfoProvider(IContentInfoProvider contentInfoProvider) {
+	public void setContentInfoProvider(ContentDataProvider contentInfoProvider) {
 		this.contentInfoProvider = contentInfoProvider;
 	}
 }

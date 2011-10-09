@@ -17,6 +17,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface IUserServiceAsync {
 
 	/**
+	 * Logs in and returns sessionId only, using URL redirection.
+	 * 
+	 * @param token
+	 * @param callback
+	 */
+	void authenticate(LoginToken token, AsyncCallback<String> callback) throws ServerException;
+
+	/**
 	 * Authenticate user represented with username and his credentials. Service
 	 * method also set selected language to user preferences
 	 * 
@@ -46,9 +54,13 @@ public interface IUserServiceAsync {
 	 * Returns current logged user from user session. If no user is logged
 	 * return value is null
 	 * 
+	 * @param webId 
+	 * 			  current web ID
 	 * @param callback
 	 *            Asynchronous GWT callback with a logged user or null if no
 	 *            user is logged in
 	 */
-	void getLoggedUser(AsyncCallback<UserData> callback) throws ServerException;
+	void getLoggedUser(String webId, AsyncCallback<UserData<?>> callback) throws ServerException;
+
+	void getLoggedUserName(AsyncCallback<String> callback) throws ServerException;
 }

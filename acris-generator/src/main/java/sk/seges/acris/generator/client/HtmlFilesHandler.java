@@ -1,8 +1,8 @@
 package sk.seges.acris.generator.client;
 
-import sk.seges.acris.generator.rpc.domain.GeneratorToken;
-import sk.seges.acris.generator.rpc.service.IGeneratorServiceAsync;
-import sk.seges.acris.util.Tuple;
+import sk.seges.acris.common.util.Tuple;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadElement;
@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Loader used to maintain IO operations, e.g. entry point loading, saving
  * generated content
  * 
- * @author fat
+ * @author Peter Simun
  */
 public class HtmlFilesHandler {
 
@@ -41,12 +41,10 @@ public class HtmlFilesHandler {
 
 	public void getEntryPointBodyHtml(final AsyncCallback<String> callback) {
 		
-		generatorService.readHtmlBodyFromFile(initialContentFilename,
-				new AsyncCallback<Tuple<String, String>>() {
+		generatorService.readHtmlBodyFromFile(initialContentFilename,new AsyncCallback<Tuple<String, String>>() {
 
 					public void onFailure(Throwable caught) {
-						GWT.log(
-								"Unable to read text from file. Please check entry html file: "
+						GWT.log("Unable to read text from file. Please check entry html file: "
 										+ initialContentFilename
 										+ " and also RPC server side", caught);
 						callback.onFailure(caught);
@@ -54,15 +52,11 @@ public class HtmlFilesHandler {
 
 					public void onSuccess(Tuple<String, String> result) {
 						if (result == null) {
-							GWT.log(
-									"Unable to load default content. Please check entry html file: "
+							GWT.log("Unable to load default content. Please check entry html file: "
 											+ initialContentFilename, null);
-							callback.onFailure(new RuntimeException(
-									"Unable to load default content. Please check entry html file: "
+							callback.onFailure(new RuntimeException("Unable to load default content. Please check entry html file: "
 											+ initialContentFilename));
 						} else {
-							UIHelper.cleanUI();
-							
 							bodyContentWrapper = result.getSecond();
 							callback.onSuccess(result.getSecond());
 						}
@@ -74,23 +68,11 @@ public class HtmlFilesHandler {
 	    return $doc.getElementsByTagName("head")[0];
 	}-*/;
 
-	public void getOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<String> callback) {
-		
-		String header = getHeadElement().getInnerHTML();
+	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
 
+		String header = getHeadElement().getInnerHTML();
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
 
-		generatorService.getOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, 
-				new AsyncCallback<String>() {
-
-					public void onFailure(Throwable caught) {
-						GWT.log("Unable to write text to the file. ", caught);
-						callback.onFailure(caught);
-					}
-
-					public void onSuccess(String result) {
-						callback.onSuccess(result);
-					}
-				});
+		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, callback);
 	}
 }

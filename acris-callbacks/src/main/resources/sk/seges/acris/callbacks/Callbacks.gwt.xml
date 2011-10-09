@@ -1,6 +1,9 @@
 <module>
 	<!-- Google basic inherit -->
 	<inherits name='com.google.gwt.user.User'/>
+
+	<!-- Sesam core -->
+	<inherits name='sk.seges.sesam.Core'/>
 	
 	<source path="client"/>
 </module>

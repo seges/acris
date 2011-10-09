@@ -1,8 +1,8 @@
 package sk.seges.acris.mvp.shared.action.core;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.philbeaudoin.gwtp.dispatch.shared.ActionImpl;
-import com.philbeaudoin.gwtp.dispatch.shared.Result;
+import com.gwtplatform.dispatch.shared.ActionImpl;
+import com.gwtplatform.dispatch.shared.Result;
 
 public abstract class AbstractAction<R extends Result> extends ActionImpl<R> implements IsSerializable {
 

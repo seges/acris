@@ -12,7 +12,7 @@ import javax.persistence.UniqueConstraint;
 
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescription;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityBeanWrapper;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.server.core.acl.domain.dto.AclSecuredObjectIdentityDTO;
 import sk.seges.sesam.domain.IMutableDomainObject;
@@ -22,8 +22,8 @@ import sk.seges.sesam.domain.IMutableDomainObject;
  */
 
 @Entity
-@Table(name = "ACL_SECURED_OBJECT_IDENTITY", uniqueConstraints = {@UniqueConstraint(columnNames = {AclSecuredObjectIdentityBeanWrapper.DB_OBJECT_ID_CLASS.THIS,
-		AclSecuredObjectIdentityBeanWrapper.DB_OBJECT_ID_IDENTITY})})
+@Table(name = "ACL_SECURED_OBJECT_IDENTITY", uniqueConstraints = {@UniqueConstraint(columnNames = {AclSecuredObjectIdentityMetaModel.DB_OBJECT_ID_CLASS.THIS,
+		AclSecuredObjectIdentityMetaModel.DB_OBJECT_ID_IDENTITY})})
 public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO implements IMutableDomainObject<Long> {
 
 	//	public static final String A_CLASS_ID = "objectIdClass.id";
@@ -47,7 +47,7 @@ public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO imp
 	}
 
 	@Override
-	@Column(name = AclSecuredObjectIdentityBeanWrapper.DB_OBJECT_ID_IDENTITY, nullable = false)
+	@Column(name = AclSecuredObjectIdentityMetaModel.DB_OBJECT_ID_IDENTITY, nullable = false)
 	public Long getObjectIdIdentity() {
 		return super.getObjectIdIdentity();
 	}

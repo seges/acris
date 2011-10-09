@@ -1,6 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <module>
-    <source path='rpc' />
-    <source path='util' />
-    <source path='etc' />
-    <source path='constant' />
+	<inherits name="sk.seges.acris.common.Common" />
 </module>

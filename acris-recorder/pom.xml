@@ -2,12 +2,11 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
-		<version>1.0.3-SNAPSHOT</version>
+		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>../acris-os-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-recorder</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>AcrIS Event Recorder</name>
 
@@ -31,24 +30,24 @@
 		
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-external</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-callbacks</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-callbacks</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
@@ -61,7 +60,7 @@
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
+			<artifactId>hibernate-core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -88,8 +87,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.google.gwt</groupId>
+			<groupId>com.googlecode.gwtquery</groupId>
 			<artifactId>gwtquery</artifactId>
+			<classifier>${gwt.version}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>de.novanic.gwteventservice</groupId>
