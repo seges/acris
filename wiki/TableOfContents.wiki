@@ -47,7 +47,7 @@
   * Web
     * [AcrisWeb Navigation and layout]
     * [AcrisSEO SEO]
-  * Testing
+  * Testing <sup><font color="red">2.1</font></sup>
     * [SeleniumSupport Selenium support] <sup><font color="red">2.1</font></sup>
   * Platform
     * [CodeGenerationPlatform Generate application skelet]
