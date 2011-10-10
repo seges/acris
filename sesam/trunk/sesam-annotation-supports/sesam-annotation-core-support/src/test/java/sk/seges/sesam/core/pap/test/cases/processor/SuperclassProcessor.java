@@ -1,4 +1,4 @@
-package sk.seges.sesam.core.pap.test.superclass.typed;
+package sk.seges.sesam.core.pap.test.cases.processor;
 
 import java.lang.reflect.Type;
 
@@ -13,6 +13,7 @@ import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
+import sk.seges.sesam.core.pap.test.cases.annotation.SuperclassTestAnnotation;
 
 @PrintSupport(autoIdent = true, printer = @TypePrinterSupport(printSerializer = ClassSerializer.SIMPLE))
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -49,7 +50,7 @@ public class SuperclassProcessor extends MutableAnnotationProcessor {
 			protected Type[] getConfigurationElement(DefaultConfigurationElement element) {
 				switch (element) {
 				case PROCESSING_ANNOTATIONS:
-					return new Type[] { SuperClassMarker.class };
+					return new Type[] { SuperclassTestAnnotation.class };
 				}
 				return new Type[] {};
 			}

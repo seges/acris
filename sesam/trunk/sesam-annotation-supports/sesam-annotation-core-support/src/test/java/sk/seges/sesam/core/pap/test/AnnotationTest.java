@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -110,8 +111,15 @@ public abstract class AnnotationTest {
 	}
 
 	protected File getResourceFile(Class<?> clazz) {
-		return new File(getClass().getResource(
-				"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX).getFile());
+		URL resource = getClass().getResource(
+				"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX);
+		
+		if (resource == null) {
+			throw new RuntimeException("Unable to find output file " + 
+					"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX );
+		}
+
+		return new File(resource.getFile());
 	}
 
 	protected File ensureOutputDirectory() {
