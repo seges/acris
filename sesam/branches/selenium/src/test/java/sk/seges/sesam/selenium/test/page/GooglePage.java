@@ -13,6 +13,6 @@ public class GooglePage {
 	}
 
 	public By getResultLink() {
-		return By.xpath("//a[contains(@href, 'www.seges.scom']");
+		return By.xpath("//a[contains(@href, 'www.seges.')]");
 	}
 }

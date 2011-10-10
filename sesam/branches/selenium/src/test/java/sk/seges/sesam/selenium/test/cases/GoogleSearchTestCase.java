@@ -19,7 +19,7 @@ public class GoogleSearchTestCase extends AbstractSeleniumTest {
 	@Test
 	public void searchTest() {
 		GooglePage googlePage = new GooglePage();
-		webDriver.findElement(googlePage.getSearchBoxLocator()).sendKeys("seges");
+		webDriver.findElement(googlePage.getSearchBoxLocator()).sendKeys("seges\n");
 		webDriver.findElement(googlePage.getResultLink());
 	}
 }
