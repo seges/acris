@@ -7,7 +7,7 @@ import java.util.List;
  * @author ladislav.gazo
  *
  */
-public interface OrderModel {
+public interface OrderModel extends DomainModel {
 	Long id();
 	String orderId();
 	Date valid();
