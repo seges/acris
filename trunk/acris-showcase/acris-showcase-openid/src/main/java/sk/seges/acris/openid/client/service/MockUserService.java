@@ -6,6 +6,7 @@ import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
 
@@ -70,12 +71,12 @@ public class MockUserService implements IUserServiceAsync, ServiceDefTarget {
 	}
 
 	@Override
-	public void getLoggedUser(String webId, AsyncCallback<UserData<?>> callback) throws ServerException {
+	public void getLoggedUser(UserContext userContext, AsyncCallback<UserData<?>> callback) throws ServerException {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void getLoggedUserName(AsyncCallback<String> callback) throws ServerException {
+	public void getLoggedUserName(UserContext userContext, AsyncCallback<String> callback) throws ServerException {
 		// TODO Auto-generated method stub
 	}
 }

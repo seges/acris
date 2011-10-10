@@ -22,6 +22,7 @@
 		<module>../acris-security-spring-hibernate</module>
 		<module>../acris-security-openid</module>
 		<module>../acris-security-ui</module>
+		<module>../acris-security-rest-authentication</module>
 	</modules>
 
 </project>
