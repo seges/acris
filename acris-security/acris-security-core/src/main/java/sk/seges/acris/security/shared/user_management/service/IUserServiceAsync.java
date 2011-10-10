@@ -3,6 +3,7 @@ package sk.seges.acris.security.shared.user_management.service;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -54,13 +55,13 @@ public interface IUserServiceAsync {
 	 * Returns current logged user from user session. If no user is logged
 	 * return value is null
 	 * 
-	 * @param webId 
-	 * 			  current web ID
+	 * @param userContext 
+	 * 			  current context
 	 * @param callback
 	 *            Asynchronous GWT callback with a logged user or null if no
 	 *            user is logged in
 	 */
-	void getLoggedUser(String webId, AsyncCallback<UserData<?>> callback) throws ServerException;
+	void getLoggedUser(UserContext userContext, AsyncCallback<UserData<?>> callback) throws ServerException;
 
-	void getLoggedUserName(AsyncCallback<String> callback) throws ServerException;
+	void getLoggedUserName(UserContext userContext, AsyncCallback<String> callback) throws ServerException;
 }

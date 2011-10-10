@@ -15,6 +15,7 @@ import sk.seges.acris.security.client.session.SessionServiceDefTarget;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
@@ -358,7 +359,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	@Override
-	public void getLoggedUser(String webId, final AsyncCallback<UserData<?>> callback) throws ServerException {
+	public void getLoggedUser(UserContext userContext, final AsyncCallback<UserData<?>> callback) throws ServerException {
 		final int count = userServices.size();
 
 		if (count == 0) {
@@ -434,11 +435,11 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 			}
 		});
 
-		signalUserServices(semaphore, failures, successes, webId);
+		signalUserServices(semaphore, failures, successes, userContext);
 	}
 
 	@Override
-	public void getLoggedUserName(final AsyncCallback<String> callback) throws ServerException {
+	public void getLoggedUserName(UserContext userContext, final AsyncCallback<String> callback) throws ServerException {
 		final int count = userServices.size();
 
 		if (count == 0) {
@@ -448,7 +449,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 		Pair<String, IUserServiceAsync> primaryService = resolvePrimaryService();
 
-		primaryService.getSecond().getLoggedUserName(new AsyncCallback<String>() {
+		primaryService.getSecond().getLoggedUserName(userContext, new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -463,10 +464,10 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	private void signalUserServices(final Semaphore semaphore, final List<Throwable> failures,
-			final Map<String, ClientSession> successes, String webId) {
+			final Map<String, ClientSession> successes, UserContext userContext) {
 		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
 
-			userServiceEntry.getValue().getLoggedUser(webId, new AsyncCallback<UserData<?>>() {
+			userServiceEntry.getValue().getLoggedUser(userContext, new AsyncCallback<UserData<?>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
