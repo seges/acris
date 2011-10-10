@@ -14,6 +14,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
@@ -24,6 +25,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
@@ -81,6 +83,11 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 		this.resultKind = resultKind;
 	}
 
+	protected void setSuperClass(Class<?> superClass) {
+		MutableTypes types = new MutableTypes(null, null, null);
+		setSuperClass(types.toMutableType(superClass));
+	}
+	
 	protected void setSuperClass(MutableDeclaredType superClass) {
 		this.superClass = new AlwaysRule(superClass);
 	}
@@ -89,6 +96,11 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 		this.superClass = rule;
 	}
 
+	protected void addImplementedInterface(Class<?> iface) {
+		MutableTypes types = new MutableTypes(null, null, null);
+		addImplementedInterface(types.toMutableType(iface));
+	}
+	
 	protected void addImplementedInterface(MutableDeclaredType clz) {
 		addImplementedInterface(new AlwaysRule(clz));
 	}
@@ -122,7 +134,7 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 		}
 		return configurer;
 	}
-
+	
 	/**
 	 * Example: rule defines an interface that generated class must implement.
 	 * The interface definition is defined using
@@ -287,6 +299,14 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 			}
 		}
 	}
+	
+	protected TypeElement toElement(TypeMirror mirror) {
+		if (mirror.getKind().equals(TypeKind.DECLARED)) {
+		     return (TypeElement) ((DeclaredType)mirror).asElement();
+		}
+		return null;
+	}
+	
 
 	public interface ElementAction<T extends Element> {
 		void execute(T element);
