@@ -1,4 +1,4 @@
-package sk.seges.sesam.core.pap.test;
+package sk.seges.sesam.core.pap.test.cases.processor;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -15,15 +15,17 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.JavaFileObject;
 
-import sk.seges.sesam.core.pap.test.annotation.TestAnnotation;
+import sk.seges.sesam.core.pap.test.cases.annotation.BasicTestAnnotation;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class TestAnnotationProcessor extends AbstractProcessor {
+public class BasicTestAnnotationProcessor extends AbstractProcessor {
+
+	public static final String SUFFIX = "Test";
 
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		Set<String> result = new HashSet<String>();
-		result.add(TestAnnotation.class.getCanonicalName());
+		result.add(BasicTestAnnotation.class.getCanonicalName());
 		return result;
 	}
 	
@@ -38,7 +40,7 @@ public class TestAnnotationProcessor extends AbstractProcessor {
 				for (Element annotatedElement: elementsAnnotatedWith) {
 					PrintWriter pw = null;
 					try {
-						JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(annotatedElement.toString() + "Test", annotatedElement);
+						JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(annotatedElement.toString() + SUFFIX, annotatedElement);
 						OutputStream os = createSourceFile.openOutputStream();
 						
 						pw = new PrintWriter(os);
@@ -48,7 +50,7 @@ public class TestAnnotationProcessor extends AbstractProcessor {
 					
 					pw.println("package " + processingEnv.getElementUtils().getPackageOf(annotatedElement).toString() + ";");
 					pw.println();
-					pw.println("public class " + annotatedElement.toString() + "Test" + " {");
+					pw.println("public class " + annotatedElement.toString() + SUFFIX + " {");
 					
 					for (ExecutableElement method: ElementFilter.methodsIn(annotatedElement.getEnclosedElements())) {
 						

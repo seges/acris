@@ -1,4 +1,4 @@
-package sk.seges.sesam.core.pap.test;
+package sk.seges.sesam.core.pap.test.cases.processor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,17 +18,19 @@ import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport;
 import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport.TypePrinterSupport;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.processor.PlugableAnnotationProcessor;
-import sk.seges.sesam.core.pap.test.annotation.TestAnnotation;
+import sk.seges.sesam.core.pap.test.cases.annotation.BasicTestAnnotation;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 @PrintSupport(printer = @TypePrinterSupport(printSerializer = ClassSerializer.SIMPLE))
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class TestPlugableAnnotationProcessor extends PlugableAnnotationProcessor {
+public class FormattedOutputAnnotationProcessor extends PlugableAnnotationProcessor {
 
+	public static final String SUFFIX = "Formatted";
+	
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		Set<String> result = new HashSet<String>();
-		result.add(TestAnnotation.class.getCanonicalName());
+		result.add(BasicTestAnnotation.class.getCanonicalName());
 		return result;
 	}
 	
@@ -43,7 +45,7 @@ public class TestPlugableAnnotationProcessor extends PlugableAnnotationProcessor
 				for (Element annotatedElement: elementsAnnotatedWith) {
 					FormattedPrintWriter pw = null;
 					try {
-						JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(annotatedElement.toString() + "Test", annotatedElement);
+						JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(annotatedElement.toString() + SUFFIX, annotatedElement);
 						OutputStream os = createSourceFile.openOutputStream();
 						
 						pw = initializePrintWriter(os);
@@ -56,7 +58,7 @@ public class TestPlugableAnnotationProcessor extends PlugableAnnotationProcessor
 					printImports(pw);
 					
 					pw.println();
-					pw.println("public class " + annotatedElement.toString() + "Test" + " {");
+					pw.println("public class " + annotatedElement.toString() + SUFFIX + " {");
 					
 					for (ExecutableElement method: ElementFilter.methodsIn(annotatedElement.getEnclosedElements())) {
 						
@@ -84,5 +86,4 @@ public class TestPlugableAnnotationProcessor extends PlugableAnnotationProcessor
 		
 		return false;
 	}
-
 }

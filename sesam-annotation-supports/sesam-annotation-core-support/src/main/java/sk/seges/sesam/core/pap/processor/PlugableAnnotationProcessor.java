@@ -67,7 +67,7 @@ public abstract class PlugableAnnotationProcessor extends AbstractProcessor {
 
 				@Override
 				public int compare(MutableDeclaredType o1, MutableDeclaredType o2) {
-					return o1.getPackageName().compareTo(o2.getPackageName());
+					return o1.getCanonicalName().compareTo(o2.getCanonicalName());
 				}
 				
 			});

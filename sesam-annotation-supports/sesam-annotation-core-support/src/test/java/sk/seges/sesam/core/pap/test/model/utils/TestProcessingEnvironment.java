@@ -55,12 +55,12 @@ public class TestProcessingEnvironment implements ProcessingEnvironment {
 
 	@Override
 	public Elements getElementUtils() {
-		return null;
+		return new TestElements();
 	}
 
 	@Override
 	public Types getTypeUtils() {
-		return null;
+		return new TestTypes();
 	}
 
 	@Override

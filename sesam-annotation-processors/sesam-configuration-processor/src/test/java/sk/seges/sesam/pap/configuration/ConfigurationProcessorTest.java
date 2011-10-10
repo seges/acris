@@ -22,7 +22,7 @@ public class ConfigurationProcessorTest extends AnnotationTest {
 
 	private File getOutputFile(Class<?> clazz) {
 		MutableDeclaredType inputClass = toMutable(clazz);
-		SettingsTypeElement outputClass = new SettingsTypeElement(inputClass, null);
+		SettingsTypeElement outputClass = new SettingsTypeElement(inputClass, processingEnv);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 
