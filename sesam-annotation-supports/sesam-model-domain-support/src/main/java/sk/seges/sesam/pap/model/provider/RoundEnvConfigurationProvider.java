@@ -81,7 +81,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		if (dtoType.getKind().isDeclared() && (((MutableDeclaredType)dtoType).asType()) != null && ((MutableDeclaredType)dtoType).asType().getKind().equals(TypeKind.DECLARED)) {
 			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv);
 			if (transferObjectConfiguration.getMappingForDto((MutableDeclaredType)dtoType) != null) {
-				return new ConfigurationTypeElement(((DeclaredType)dtoType).asElement(), processingEnv, roundEnv);
+				return new ConfigurationTypeElement(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv, roundEnv);
 			}
 		}
 		
