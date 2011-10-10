@@ -1,23 +1,30 @@
 package sk.seges.crm.client.activity;
 
+import sk.seges.acris.scaffold.model.view.compose.Conjunction;
+import sk.seges.acris.scaffold.model.view.compose.SelectedDetail;
+import sk.seges.acris.scaffold.model.view.compose.ViewComposer;
+import sk.seges.acris.scaffold.model.view.compose2.AllowEmpty;
+import sk.seges.acris.scaffold.model.view.compose2.Singleselect;
 import sk.seges.crm.shared.domain.api.CustomerModel;
 import sk.seges.crm.shared.domain.api.LeadActivityModel;
 import sk.seges.crm.shared.domain.api.SalesmanModel;
 
-//@ViewComposer
+@ViewComposer
 public interface ActivitiesManagementComposition {
-	//@SingleSelect
+	@sk.seges.acris.scaffold.annotation.View
+	@Singleselect
 	interface View extends LeadActivityModel {
-		//@Conjunction
+		@Conjunction
 		interface FilterBy {
-			//@AllowEmpty
+			@AllowEmpty
 			SalesmanModel responsible();
-			//@AllowEmpty
+			@AllowEmpty
 			CustomerModel customer();
 		}
 	}
 	
-	//@SelectedDetail(of = View.class)
+	@sk.seges.acris.scaffold.annotation.View
+	@SelectedDetail(of = View.class)
 	interface Detail extends LeadActivityModel {
 		
 	}

@@ -1,4 +1,6 @@
 package sk.seges.crm.shared.domain.api;
 
-public interface ActivityTypeModel {
+import sk.seges.acris.scaffold.model.domain.DomainModel;
+
+public interface ActivityTypeModel extends DomainModel {
 }

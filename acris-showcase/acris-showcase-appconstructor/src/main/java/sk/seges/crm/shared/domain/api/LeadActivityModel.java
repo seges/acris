@@ -2,7 +2,9 @@ package sk.seges.crm.shared.domain.api;
 
 import java.util.Date;
 
-public interface LeadActivityModel {
+import sk.seges.acris.scaffold.model.domain.DomainModel;
+
+public interface LeadActivityModel extends DomainModel {
 	SalesmanModel executedBy();
 	Date when();
 	ActivityTypeModel type();

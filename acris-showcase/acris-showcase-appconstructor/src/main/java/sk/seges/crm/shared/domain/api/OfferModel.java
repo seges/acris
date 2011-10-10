@@ -1,5 +1,7 @@
 package sk.seges.crm.shared.domain.api;
 
-public interface OfferModel {
+import sk.seges.acris.scaffold.model.domain.DomainModel;
+
+public interface OfferModel extends DomainModel {
 
 }

@@ -1,5 +1,7 @@
 package sk.seges.crm.shared.domain.api;
 
-public interface UserAccountModel {
+import sk.seges.acris.scaffold.model.domain.DomainModel;
+
+public interface UserAccountModel extends DomainModel {
 
 }
