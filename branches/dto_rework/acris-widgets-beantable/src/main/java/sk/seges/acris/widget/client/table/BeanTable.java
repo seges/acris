@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
@@ -67,6 +68,8 @@ import com.google.gwt.gen2.table.shared.Request;
 import com.google.gwt.gen2.table.shared.Response;
 import com.google.gwt.gen2.table.shared.SerializableResponse;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -78,6 +81,8 @@ import com.google.gwt.user.datepicker.client.DateBox;
  * @author ladislav.gazo
  */
 public abstract class BeanTable<T> extends Composite implements HasDoubleClickHandlers, HasClickHandlers {
+	
+	private static final int FILTER_DELAY_MILLIS = 1000;
 	private static final int DEFAULT_ROW_COUNT = 10;
 
 	private final PagingScrollTable<T> table;
@@ -378,15 +383,37 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 //					}
 //				});
 //			}
+			
+			if (filter instanceof HasChangeHandlers) {
+				((HasChangeHandlers) filter).addChangeHandler(new ChangeHandler() {
+					
+					@Override
+					public void onChange(ChangeEvent event) {
+						reconstructFilterable();
+					}
+				});
+			}
 
 			if (filter instanceof HasKeyPressHandlers) {
 				HasKeyPressHandlers keypressable = (HasKeyPressHandlers) filter;
 				keypressable.addKeyPressHandler(new KeyPressHandler() {
+					
+					private Timer timer = new Timer() {
+
+						@Override
+						public void run() {
+							reconstructFilterable();
+						}
+					};
+					
 					@Override
 					public void onKeyPress(KeyPressEvent event) {
 						int keyCode = event.getNativeEvent().getKeyCode();
 						if (KeyCodes.KEY_ENTER == keyCode) {
 							reconstructFilterable();
+						} else {
+							timer.cancel();
+							timer.schedule(FILTER_DELAY_MILLIS);
 						}
 					}
 				});
@@ -395,6 +422,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			if (filter instanceof DateBox) {
 				DateBox dateBoxFilter = (DateBox) filter;
 				dateBoxFilter.addValueChangeHandler(new ValueChangeHandler<Date>() {
+					
 					@Override
 					public void onValueChange(ValueChangeEvent<Date> arg0) {
 						reconstructFilterable();
@@ -403,12 +431,14 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 				TextBox dateTextBox = dateBoxFilter.getTextBox();
 				dateTextBox.addBlurHandler(new BlurHandler() {
+					
 					@Override
 					public void onBlur(BlurEvent arg0) {
 						reconstructFilterable();
 					}
 				});
 				dateTextBox.addKeyPressHandler(new KeyPressHandler() {
+					
 					@Override
 					public void onKeyPress(KeyPressEvent event) {
 						if (KeyCodes.KEY_ENTER == event.getCharCode()) {
@@ -417,7 +447,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 					}
 				});
 				
-				dateBoxFilter.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getShortDateTimeFormat()));
+				dateBoxFilter.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT)));
 			}
 
 			if (filter instanceof EnumListBoxWithValue<?>) {
