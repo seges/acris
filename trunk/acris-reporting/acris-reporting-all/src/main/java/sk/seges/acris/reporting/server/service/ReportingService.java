@@ -152,7 +152,7 @@ public class ReportingService implements IReportingService {
 				if (!d.exists() || !d.isDirectory()) {
 					d.mkdir();
 				}
-				String filePath = directory + File.separator + fileName;
+				String filePath = directory + "/" + fileName;
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("Report output = " + filePath);
 				}
@@ -162,7 +162,7 @@ public class ReportingService implements IReportingService {
 				copy(proxyIn, fos);
 				fos.close();
 
-				return reportDir + File.separator + fileName;
+				return reportDir + "/" + fileName;
 
 			}
 
@@ -191,12 +191,15 @@ public class ReportingService implements IReportingService {
 		String prefix = configuration.getJasperServerUrl();
 		String parameters = "/flow.html?_flowId=viewReportFlow&ndefined=&standAlone=true&ParentFolderUri=";
 		String reportUrl = report.getReportUrl();
-		if (!reportUrl.startsWith("/"))
+		if (!reportUrl.startsWith("/")) {
 			reportUrl = "/" + reportUrl;
+		}
 		String parentUrl = reportUrl.substring(0, reportUrl.lastIndexOf("/"));
 		if (parentUrl.length() <= 0)
+		 {
 			parentUrl = "undefined";
 		// reportUrl = reportUrl.substring(reportUrl.lastIndexOf("/"));
+		}
 
 		String urlPath = prefix + parameters + parentUrl + "&reportUnit=" + reportUrl;
 		return urlPath + "&output=" + exportType + params;
@@ -218,8 +221,9 @@ public class ReportingService implements IReportingService {
 		int len = 0;
 		while (true) {
 			len = in.read(buffer, 0, buffer.length);
-			if (len < 0)
+			if (len < 0) {
 				break;
+			}
 			out.write(buffer, 0, len);
 		}
 	}
