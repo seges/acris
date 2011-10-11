@@ -1,6 +1,3 @@
-/**
- * 
- */
 package sk.seges.acris.widget.client.table;
 
 import java.beans.PropertyChangeEvent;
@@ -41,6 +38,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
@@ -68,6 +66,8 @@ import com.google.gwt.gen2.table.shared.Request;
 import com.google.gwt.gen2.table.shared.Response;
 import com.google.gwt.gen2.table.shared.SerializableResponse;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -80,6 +80,8 @@ import com.google.gwt.user.datepicker.client.DateBox;
  * @author ladislav.gazo
  */
 public abstract class BeanTable<T> extends Composite implements HasDoubleClickHandlers, HasClickHandlers {
+
+	private static final int FILTER_DELAY_MILLIS = 1000;
 	private static final int DEFAULT_ROW_COUNT = 10;
 
 	private final PagingScrollTable<T> table;
@@ -99,9 +101,9 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	private List<Callback> additionalLoadCallbacks;
 	private boolean reloadOnEveryOnLoadCall = true;
 	private boolean firstOnLoadCall = true;
-	
+
 	private Dialog glassDialog;
-	
+
 	public BeanTable() {
 		container = new FlowPanel();
 		container.setStyleName("acris-bean-table");
@@ -131,7 +133,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 		glassDialog = new Dialog();
 		glassDialog.setGlassEnabled(true);
-		
+
 		initWidget(container);
 	}
 
@@ -151,7 +153,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			}
 		}
 	}
-	
+
 	public void addAdditionalLoadCallback(Callback callback) {
 		if (null == additionalLoadCallbacks) {
 			additionalLoadCallbacks = new ArrayList<Callback>();
@@ -165,8 +167,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	}
 
 	/**
-	 * Hack method until it will be possible to set height of the table in
-	 * reasonable way
+	 * Hack method until it will be possible to set height of the table in reasonable way
 	 * 
 	 * @param height
 	 */
@@ -176,18 +177,15 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	}
 
 	/**
-	 * Should provide ID column name of a bean. Needed to preserve while
-	 * defining constraint for projectables.
+	 * Should provide ID column name of a bean. Needed to preserve while defining constraint for projectables.
 	 * 
-	 * @return If it is not database POJO or ID need not to be preserved return
-	 *         null. Else return name of a field marked with @Id annotation.
+	 * @return If it is not database POJO or ID need not to be preserved return null. Else return name of a field marked with @Id annotation.
 	 */
 	protected abstract String getIdProperty();
 
 	/**
-	 * Class is determined by bean table class generics parameter but for
-	 * further processing (loader, DAO and paging mechanism,...) it is needed to
-	 * be explicitly specified.
+	 * Class is determined by bean table class generics parameter but for further processing (loader, DAO and paging mechanism,...) it is needed to be
+	 * explicitly specified.
 	 * 
 	 * @return Class of the bean contained within the bean table.
 	 */
@@ -305,8 +303,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			Criterion filterable = filterProperty.getFilterable();
 			if (filterable instanceof SimpleExpression<?>) {
 				SimpleExpression<Comparable<? extends Serializable>> expr = (SimpleExpression<Comparable<? extends Serializable>>) filterable;
-				Comparable<? extends Serializable> value = (Comparable<? extends Serializable>) filterProperty
-						.getWidget().getValue();
+				Comparable<? extends Serializable> value = (Comparable<? extends Serializable>) filterProperty.getWidget().getValue();
 				if (value == null || (value instanceof String && "".equals(value))) {
 					// filter value not set
 					skip = true;
@@ -347,8 +344,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			Widget filter = null;
 
 			if (filterProperty instanceof FilterEnumProperty<?>) {
-				if (filterProperty.getWidgetType() != null
-						&& filterProperty.getWidgetType().equals(EnumListBoxWithValue.class)) {
+				if (filterProperty.getWidgetType() != null && filterProperty.getWidgetType().equals(EnumListBoxWithValue.class)) {
 					filter = new EnumListBoxWithValue(((FilterEnumProperty) filterProperty).getClazz());
 					((EnumListBoxWithValue) filter).load(((FilterEnumProperty) filterProperty).getEnumMap());
 				}
@@ -375,24 +371,36 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			filterableColumnDefinitions.add(columnDefinition);
 			filterProperty.setWidget((HasValue<?>) filter);
 
-//			if (filter instanceof HasBlurHandlers) {
-//				HasBlurHandlers blurrable = (HasBlurHandlers) filter;
-//				blurrable.addBlurHandler(new BlurHandler() {
-//					@Override
-//					public void onBlur(BlurEvent arg0) {
-//						reconstructFilterable();
-//					}
-//				});
-//			}
+			if (filter instanceof HasChangeHandlers) {
+				((HasChangeHandlers) filter).addChangeHandler(new ChangeHandler() {
+
+					@Override
+					public void onChange(ChangeEvent event) {
+						reconstructFilterable();
+					}
+				});
+			}
 
 			if (filter instanceof HasKeyPressHandlers) {
 				HasKeyPressHandlers keypressable = (HasKeyPressHandlers) filter;
 				keypressable.addKeyPressHandler(new KeyPressHandler() {
+
+					private Timer timer = new Timer() {
+
+						@Override
+						public void run() {
+							reconstructFilterable();
+						}
+					};
+
 					@Override
 					public void onKeyPress(KeyPressEvent event) {
 						int keyCode = event.getNativeEvent().getKeyCode();
 						if (KeyCodes.KEY_ENTER == keyCode) {
 							reconstructFilterable();
+						} else {
+							timer.cancel();
+							timer.schedule(FILTER_DELAY_MILLIS);
 						}
 					}
 				});
@@ -401,6 +409,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			if (filter instanceof DateBox) {
 				DateBox dateBoxFilter = (DateBox) filter;
 				dateBoxFilter.addValueChangeHandler(new ValueChangeHandler<Date>() {
+
 					@Override
 					public void onValueChange(ValueChangeEvent<Date> arg0) {
 						reconstructFilterable();
@@ -409,12 +418,14 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 				TextBox dateTextBox = dateBoxFilter.getTextBox();
 				dateTextBox.addBlurHandler(new BlurHandler() {
+
 					@Override
 					public void onBlur(BlurEvent arg0) {
 						reconstructFilterable();
 					}
 				});
 				dateTextBox.addKeyPressHandler(new KeyPressHandler() {
+
 					@Override
 					public void onKeyPress(KeyPressEvent event) {
 						if (KeyCodes.KEY_ENTER == event.getCharCode()) {
@@ -422,8 +433,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 						}
 					}
 				});
-				
-				dateBoxFilter.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getShortDateTimeFormat()));
+
+				dateBoxFilter.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT)));
 			}
 
 			if (filter instanceof EnumListBoxWithValue<?>) {
@@ -479,12 +490,12 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		}
 		return domainObjectProperty;
 	}
-	
+
 	@Override
 	public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
 		return dataTable.addDoubleClickHandler(handler);
 	}
-	
+
 	@Override
 	public HandlerRegistration addClickHandler(ClickHandler handler) {
 		return dataTable.addClickHandler(handler);
@@ -591,8 +602,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 				return;
 			}
 			for (ColumnSortInfo sortInfo : request.getColumnSortList()) {
-				ColumnDefinition<T, ?> columnDef = definition
-				.getColumnDefinition(sortInfo.getColumn());
+				ColumnDefinition<T, ?> columnDef = definition.getColumnDefinition(sortInfo.getColumn());
 				DomainObjectProperty domainObjectProperty = checkAndGetDomainObjectProperty(columnDef);
 				SortInfo info = new SortInfo(sortInfo.isAscending(), domainObjectProperty.getField());
 				page.addSortable(info);
@@ -601,8 +611,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	}
 
 	/* *******************************
-	 * ****** Begin of delegates  ****
-	 * *******************************/
+	 * ****** Begin of delegates **** ******************************
+	 */
 
 	public void setSelectionEnabled(boolean enabled) {
 		dataTable.setSelectionEnabled(enabled);
@@ -613,14 +623,12 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	}
 
 	/* *******************************
-	 * ****** End of delegates  ****
-	 * *******************************/
+	 * ****** End of delegates **** ******************************
+	 */
 
 	/**
-	 * A column property bound to a bean as underlying source of the
-	 * information. Especially relation between column ID and field
-	 * name/expression is provided. It should ease manipulation with table
-	 * representation of the bean.
+	 * A column property bound to a bean as underlying source of the information. Especially relation between column ID and field name/expression is
+	 * provided. It should ease manipulation with table representation of the bean.
 	 * 
 	 * @see BeanTable
 	 * 
@@ -653,8 +661,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 	/**
 	 * used if column filter is listbox, which should be filled by enum items<br />
-	 * On UI {@link EnumListBoxWithValue} is used, for it's initialization we
-	 * need to specified enum class and list of enum items (usually
+	 * On UI {@link EnumListBoxWithValue} is used, for it's initialization we need to specified enum class and list of enum items (usually
 	 * MyEnum.values()) or map of enum items and their translated values
 	 * 
 	 * @author marta
@@ -664,8 +671,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		private Class<T> clazz = null;
 		private Map<T, String> enumMap = null;
 
-		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz,
-				List<T> enumList) {
+		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz, List<T> enumList) {
 			super(widgetType, filterable);
 			this.clazz = enumClazz;
 			enumMap = new HashMap<T, String>();
@@ -674,8 +680,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			}
 		}
 
-		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz,
-				Map<T, String> enumMap) {
+		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz, Map<T, String> enumMap) {
 			super(widgetType, filterable);
 			this.clazz = enumClazz;
 			this.enumMap = enumMap;
@@ -760,7 +765,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	public void setReloadOnEveryOnLoadCall(boolean reloadOnEverySetVisibleTrue) {
 		this.reloadOnEveryOnLoadCall = reloadOnEverySetVisibleTrue;
 	}
-	
+
 	public void showGlass(boolean show) {
 		if (show) {
 			glassDialog.show();
