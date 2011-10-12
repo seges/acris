@@ -49,9 +49,9 @@
     * [AcrisSEO SEO]
   * Testing <sup><font color="red">1.2.0</font></sup>
     * [SeleniumSupport Selenium support] <sup><font color="red">1.2.0</font></sup>
-      * [WebDriverBasics Web driver basics] <sup><font color="red">1.2.1</font></sup>
-      * [SeleniumConfiguration Tests configuration] <sup><font color="red">1.2.1</font></sup>
-      * [SeleniumReporting Tests reporting] <sup><font color="red">1.2.1</font></sup>
+      * [WebDriverBasics Web driver] <sup><font color="red">1.2.1</font></sup>
+      * [SeleniumConfiguration Configuration] <sup><font color="red">1.2.1</font></sup>
+      * [SeleniumReporting Reporting] <sup><font color="red">1.2.1</font></sup>
       * [SeleniumCI Continuous integration] <sup><font color="red">1.2.1</font></sup>
   * Platform<sup><font color="red">New</font></sup>
     * [CodeGenerationPlatform Generate application skelet]<sup><font color="red">New</font></sup>
