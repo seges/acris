@@ -1,6 +1,6 @@
 #summary Reusable printers for PAP
 
-|| Name || Purpose || Implementation ||
+|| *Name* || *Purpose* || *Implementation* ||
 || EqualsPrinter || Generates equals method (prevents also infinite loops) || Needs refactoring (used only for DTO purposes) ||
 || HashCodePrinter || Generates hashcode method (prevents also infinite llops) || Needs refactoring (used only for DTO purposes) ||
 || EmptyConstructorPrinter || prints default constructor || Needs refactoring (used only for DTO purposes) ||
