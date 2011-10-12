@@ -20,13 +20,13 @@
       * [Migration1_2_0 From version 1.1.2 to 1.2.0]<sup><font color="red">New</font></sup>
       * [CommonIssues 3rd party libraries]
     * [GoogleSummerOfCode2011 Google Summer of Code 2011]
-  * [BeansBinding Beans binding]
-    * [BeansBindingQuickStart Quick-start]
-    * [BeansBindingInExamplesPart1 Example no.1]
-    * [BeansBindingInExamplesPart2 Form with validation]
-    * [BeanWrappers Bean wrappers]
-    * [BeansBindingCollections Collections]
-    * [BeansBindingConditional Conditions]
+  * [BeansBinding Beans binding]<sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingQuickStart Quick-start]<sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingInExamplesPart1 Example no.1]<sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingInExamplesPart2 Form with validation]<sup><font color="red">Deprecated</font></sup>
+    * [BeanWrappers Bean wrappers]<sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingCollections Collections]<sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingConditional Conditions]<sup><font color="red">Deprecated</font></sup>
   * [Security Security]
     * [SecurityQuickStart Quick-start]
     * [SecurityConcept Concept]
