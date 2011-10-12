@@ -18,6 +18,7 @@
       * [Migration1_1_1 From version 1.1.0 to 1.1.1]
       * [Migration1_1_2 From version 1.1.1 to 1.1.2]
       * [Migration1_2_0 From version 1.1.2 to 1.2.0]<sup><font color="red">New</font></sup>
+      * [Migration1_2_1 From version 1.2.0 to 1.2.1]
       * [CommonIssues 3rd party libraries]
     * [GoogleSummerOfCode2011 Google Summer of Code 2011]
   * [BeansBinding Beans binding]<sup><font color="red">Deprecated</font></sup>
