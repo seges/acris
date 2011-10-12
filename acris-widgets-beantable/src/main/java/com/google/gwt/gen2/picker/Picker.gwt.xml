@@ -1,0 +1,5 @@
+<module>
+	<!--  Sets up dependent code --> 
+	<inherits name='com.google.gwt.gen2.widgetbase.WidgetBase' />
+	 <inherits name='com.google.gwt.widgetideas.BasicWidget' />
+</module>
