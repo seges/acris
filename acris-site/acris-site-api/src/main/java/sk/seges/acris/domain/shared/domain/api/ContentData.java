@@ -3,13 +3,9 @@ package sk.seges.acris.domain.shared.domain.api;
 import java.util.Date;
 import java.util.List;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.corpis.shared.domain.api.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
-import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
-@BeanWrapper
-@MetaModel
 public interface ContentData<T> extends IMutableDomainObject<T>, HasWebId {
 
 	String getTitle();
@@ -36,9 +32,15 @@ public interface ContentData<T> extends IMutableDomainObject<T>, HasWebId {
 
 	void setToken(String token);
 
-	List<? extends ContentData<T>> getSubContents();
+	String getContentDetached();
 
-	void setSubContents(List<? extends ContentData<T>> subContents);
+	void setContentDetached(String contentDetached);
+
+	List<ContentData<T>> getSubContents();
+
+	void setSubContents(List<ContentData<T>> subContents);
+
+	void addSubContent(ContentData<T> subContent);
 
 	ContentData<T> getParent();
 
