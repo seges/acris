@@ -1,6 +1,7 @@
 package sk.seges.acris.common.constant;
 
 public interface PanelRef {
+
 	public static final String MENU_CHOCOLATE_PANEL = "menuChocolatePanel";
 	public static final String CHOCOLATE_PANEL = "chocolatePanel";
 	
