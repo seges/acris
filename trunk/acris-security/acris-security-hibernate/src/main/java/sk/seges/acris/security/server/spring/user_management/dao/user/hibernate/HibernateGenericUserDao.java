@@ -15,7 +15,6 @@ import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUser
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataBeanWrapper;
 import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.acris.security.shared.user_management.domain.api.UserRolePermission;
