@@ -107,12 +107,6 @@
 			<artifactId>gwt-dev</artifactId>
 		</dependency>
 
-		<!-- GWT logging dependencies -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-log</artifactId>
-		</dependency>
-
 		<!-- String dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
