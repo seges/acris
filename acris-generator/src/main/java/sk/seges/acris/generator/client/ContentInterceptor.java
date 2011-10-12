@@ -10,7 +10,7 @@ import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
-import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -87,7 +87,7 @@ public class ContentInterceptor {
 
 			@Override
 			public void run() {
-				Log.error("Loading not finished sucesfully for niceurl " + token.getNiceUrl());
+				GWT.log("Loading not finished sucesfully for niceurl " + token.getNiceUrl());
 				RPCRequestTracker.getTracker().removeAllCallbacks();
 				if (handler != null) {
 					handler.removeHandler();
@@ -108,7 +108,7 @@ public class ContentInterceptor {
 					RPCRequestTracker.getTracker().removeAllCallbacks();
 					callback.onFailure(request.getCaught());
 				} else {
-					Log.debug("Request finished. Waiting for next " + RPCRequestTracker.getRunningRequestStarted() + " requests for niceurl " + token.getNiceUrl());
+					GWT.log("Request finished. Waiting for next " + RPCRequestTracker.getRunningRequestStarted() + " requests for niceurl " + token.getNiceUrl());
 					if (request.getParentRequest() == null) {
 						timer.cancel();
 						RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -139,13 +139,13 @@ public class ContentInterceptor {
 				}
 				int newRunningRequestsCount = RPCRequestTracker.getRunningRequestStarted();
 				if (runningRequestsCount == newRunningRequestsCount) {
-					Log.info("No new RPC request started for niceurl " + token.getNiceUrl());
+					GWT.log("No new RPC request started for niceurl " + token.getNiceUrl());
 					//No new async request was started
 					timer.cancel();
 					RPCRequestTracker.getTracker().removeAllCallbacks();
 					callback.onSuccess(null);
 				} else {
-					Log.debug("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
+					GWT.log("Waiting for " + (newRunningRequestsCount - runningRequestsCount) + " requests for niceurl " + token.getNiceUrl());
 				}
 			}
 		};
@@ -153,7 +153,7 @@ public class ContentInterceptor {
 		handler = History.addValueChangeHandler(valueChangeHandler);
 		
 	    if (token.getNiceUrl().equals(History.getToken())) {
-			Log.error("Loading already loaded niceurl " + token.getNiceUrl());
+	    	GWT.log("Loading already loaded niceurl " + token.getNiceUrl());
 			valueChangeHandler.onValueChange(null);
 	    } else {
 	    	History.newItem(token.getNiceUrl());

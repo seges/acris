@@ -18,7 +18,6 @@ import sk.seges.acris.generator.client.performance.OperationTimer.Operation;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
@@ -82,7 +81,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			@Override
 			public void onUncaughtException(Throwable e) {
-				Log.error("Uncaught exception", e);
+				GWT.log("Uncaught exception", e);
 			}
 		});
 		
@@ -214,7 +213,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		
 		GeneratorToken generatorToken = generatorEnvironment.getTokensCache().next();
 		
-		Log.info("Generating offline content for niceurl [" + (generatorEnvironment.getTokensCache().getTokensCount() - 
+		GWT.log("Generating offline content for niceurl [" + (generatorEnvironment.getTokensCache().getTokensCount() - 
 				generatorEnvironment.getTokensCache().getWaitingTokensCount()) + " / " + generatorEnvironment.getTokensCache().getTokensCount() + "]: " + 
 				generatorToken.getNiceUrl());
 
@@ -326,7 +325,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		
 		String content = DOM.getInnerHTML(rootElement);
 		
-		Log.info("Content length: " + content.length());
+		GWT.log("Content length: " + content.length());
 		
 		if (PERFORMANCE_MONITOR) {
 			timer.stop(Operation.GENERATOR_DOM_MANIPULATION);
@@ -340,7 +339,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			public void onFailure(Throwable caught) {
 				if (PERFORMANCE_MONITOR) {
 					timer.stop(Operation.CONTENT_GENERATING);
-					Log.info(timer.report());
+					GWT.log(timer.report());
 					timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
 				}
 				loadNextContent();
@@ -350,7 +349,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			public void onSuccess(Void result) {
 				if (PERFORMANCE_MONITOR) {
 					timer.stop(Operation.CONTENT_GENERATING);
-					Log.info(timer.report());
+					GWT.log(timer.report());
 					timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
 				}
 				loadNextContent();
@@ -359,7 +358,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 
 	private void failure(String msg, Throwable caught) {
-		Log.error(msg);
+		GWT.log(msg);
 	}
 
 	protected void finalizeEnvironment() {
@@ -368,7 +367,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 	private void finalizeTest() {
 		if (PERFORMANCE_MONITOR) {
-			Log.info(timer.report());
+			GWT.log(timer.report());
 		}
 		finalizeEnvironment();
 		finishTest();
