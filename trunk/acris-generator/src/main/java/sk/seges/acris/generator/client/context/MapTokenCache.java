@@ -10,7 +10,7 @@ import java.util.Set;
 import sk.seges.acris.generator.client.context.api.TokensCache;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.log.client.Log;
 
 public class MapTokenCache implements TokensCache {
 
@@ -79,7 +79,7 @@ public class MapTokenCache implements TokensCache {
 			String token = iterator.next();
 
 			if (!isAlreadyProcessed(token) && !isAlreadyAwaiting(token)) {
-				GWT.log("Adding token for a processing " + token);
+				Log.info("Adding token for a processing " + token);
 				awaitingTokens.add(token);
 			}
 		}
