@@ -32,7 +32,9 @@ public class ContentBase implements ContentData<ContentPkBase> {
 
 	private String ref;
 
-	private List<? extends ContentData<ContentPkBase>> subContents = new LinkedList<ContentData<ContentPkBase>>();
+	private String contentDetached;
+
+	private List<ContentData<ContentPkBase>> subContents = new LinkedList<ContentData<ContentPkBase>>();
 
 	private ContentData<ContentPkBase> parent;
 
@@ -140,13 +142,29 @@ public class ContentBase implements ContentData<ContentPkBase> {
 	}
 
 	@Override
-	public List<? extends ContentData<ContentPkBase>> getSubContents() {
+	public String getContentDetached() {
+		return contentDetached;
+	}
+
+	@Override
+	public void setContentDetached(String contentDetached) {
+		this.contentDetached = contentDetached;
+	}
+
+	@Override
+	public List<ContentData<ContentPkBase>> getSubContents() {
 		return subContents;
 	}
 
 	@Override
-	public void setSubContents(List<? extends ContentData<ContentPkBase>> subContents) {
+	public void setSubContents(List<ContentData<ContentPkBase>> subContents) {
 		this.subContents = subContents;
+	}
+
+	@Override
+	public void addSubContent(ContentData<ContentPkBase> subContent) {
+		subContents.add(subContent);
+		subContent.setParent(this);
 	}
 
 	@Override
