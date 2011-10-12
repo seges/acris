@@ -19,6 +19,7 @@ public class SpringAclSidDTO extends AclSidDTO implements SpringAclSid {
 	public SpringAclSidDTO(String principal) {
 		Assert.hasText(principal, "Principal required");
 		setSid(principal);
+		setPrincipal(true);
 	}
 
 	public SpringAclSidDTO(Authentication authentication) {
@@ -32,5 +33,6 @@ public class SpringAclSidDTO extends AclSidDTO implements SpringAclSid {
 		} else {
 			setSid(authentication.getPrincipal().toString());
 		}
+		setPrincipal(true);
 	}
 }
