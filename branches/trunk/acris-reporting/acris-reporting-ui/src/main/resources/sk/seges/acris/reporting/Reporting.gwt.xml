@@ -1,0 +1,16 @@
+<module>
+	<inherits name="com.google.gwt.user.User"/>
+	<!-- inherits name="com.google.gwt.i18n.I18N"/>
+	<inherits name='com.google.gwt.junit.JUnit'/>
+
+	<inherits name="sk.seges.acris.Callbacks"/> -->
+	<inherits name="sk.seges.acris.Common" />
+	<inherits name='sk.seges.acris.Core'/>		
+	<inherits name="sk.seges.acris.widget.BeanTable" />
+	<inherits name='sk.seges.acris.Callbacks'/>
+	<inherits name="sk.seges.acris.Widgets" />
+	
+	<inherits name='sk.seges.acris.reporting.rpc.Rpc' />
+	
+	<source path='client' />
+</module>
