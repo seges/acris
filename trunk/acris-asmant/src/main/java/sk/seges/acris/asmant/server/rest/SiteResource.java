@@ -84,11 +84,11 @@ public class SiteResource {
 			@Override
 			public void execute(TwigSite site, HTTPResponse response) {
 				int responseCode = (response == null ? 42 : response.getResponseCode());
-				if(responseCode != 200 || responseCode != 500) {
+				if(responseCode == 200 || responseCode == 500) {
+					log.info("Site is UP = " + site + ", response = " + responseCode);
+				} else {
 					send(site, response);
 					log.info("Site is DOWN = " + site + ", response = " + responseCode);
-				} else {
-					log.info("Site is UP = " + site + ", response = " + responseCode);
 				}
 			}
 		});
