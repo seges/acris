@@ -3,4 +3,13 @@
 
 = Google Web Toolkit client profile =
 
-{{{.gwt-client}}}
+you have to have use acris-os-gwt-parent as your parent project
+{{{
+<parent>
+	<groupId>sk.seges.acris</groupId>
+	<artifactId>acris-os-gwt-parent</artifactId>
+</parent>
+}}}
+
+|| *Profile* || *Activation* || *Purpose* ||
+|| *gwt* || file activation - *.gwt-client* || GWT configuration for maven and eclipse ||  
