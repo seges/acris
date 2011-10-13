@@ -2,3 +2,4 @@
 
     * sk.seges.acris.configuration.Constants package changed to sk.seges.acris.client.Constants
     * sk.seges.acris.domain classes moved to sk.seges.acris.site.shared.domain.api
+    * sk.seges.acris.dto classes are now generated in sk.seges.acris.shared.model.dto
