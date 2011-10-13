@@ -1,0 +1,114 @@
+#summary Selenium web driver basics
+
+= Introduction =
+
+[http://seleniumhq.org/ Selenium] is *cool* :=) because there is whole suite around testing:
+ * *Selenium IDE* for recording the commands
+ * *Selenium server* for executing commands remotely
+ * *Selenium client* for executing tests in the specific language like java, c#, ruby and python
+ * *Selenium Grid* for distributed selenium tests execution 
+ * and many many *plugins* that could make your life easier ... or not :-)
+
+We were using selenium few years ago and we are still using selenium now and all I can say is: the selenium is cool, but:
+ * we are *not* using selenium IDE for recording the commands
+ * we are *not* using selenium server for executing commands remotelly
+ * we are *not* using selenium grid
+ * and we are *not* using selenium plugins that are officialy available
+
+and here is why not.
+
+= Why not? =
+
+== Selenium IDE ==
+
+Selenium IDE allows you to record user actions easily whilst you are clicking on the page. This is great tool when you are beginning with the selenium or if you want to show the power of the tests to your management during the presentation. But there are plenty of problems we have faced with:
+ * xpaths are not recorded in the optimal way for the elements that does not have IDs (to be honest, the only way how to write them correctly is to use human brain) therefore the tests are hard to maintain
+ * reuse problem: when there is a common functionality, like login, that has to be performed before each test, it should be in the separated test and it should be included in all other tests - this is impossible to do with selenium IDE
+ * tests cannot be configured outside of tests - use one user to login on test the environment and use different user to login on the production environment
+
+This reasons lead us to not use selenium IDE, but it helps us a lot in the very first phases.
+
+== Selenium plugins ==
+
+What we are missing in the selenium is the support for HTML reports that will tell/provide us:
+ * which commands were executed,
+ * which command failed, 
+ * what was the reason of the failure,
+ * screenshot before the action and screenshot after the action so we can see what exactly the problem was
+
+This what we've expected from the selenium plugins, because selenium itself does not have mechanism for reporting results, but it has great 
+possibilites to create such reports.
+
+Next think we were looking for was the possibility to configure the tests from the command line (= without changing the code), for example:
+ * specify the browser that the tests are running on,
+ * change user that is going to be used for the tests,
+ * to enable/disable or specify reporting possibilities (e.g. if I want to have report with the screenshots or not, ...),
+ * to specify email account - for the tests that are integrated with mailbox and are validating also the mail arrivals and contents,
+
+and all of this have to achieved in the easy way.
+
+This is what a bromine should be used for - but it does not!
+
+== Selenium Grid & Selenium Server ==
+
+ * Selenium Grid is a great way how to run tests in a parallel. But you probably want to run tests using continuous integration tools - like jenkins and thats exacly what jenkins does - runs multiple jobs in a parallel, in a multiplne nodes simultaneously or in a multiple node in paralel mode - that perfectly fits the needs, so we never had a real reason to use selenium grid
+ * and the same with the selenium server - we never had a reason to use selenium server/RC - jenkins has a slave nodes for that purpose. Just run a slave node on a machine where selenium server should be executed and run tests directly on that node
+
+Pretty bad! There are plenty of selenium tools, but what makes selenium great is selenium client libraries - we are using java libraries.
+
+= Why yes? =
+
+With the new selenium releases (2.x versions) web driver was introduced. This made a revolution in the selenium and whole approach was completly reworked from scratch, but with the bright future. Client libraries allows us to achieve:
+ * *write reusable tests* - common functionality in the common classes and when the common functionality is changes we just change it in a one place
+ * *integrate tests with outside world* like emails - in a fews web applications/sites is email an integral part that represents core functionality - like how you will test a news letter? How you can check in your test that email is working and was delivered in the correct format with ptoper content? How you can parse the email if contains correct activation links? - this can be easily achieved using java.
+ * *integrate test with maven* and this means:
+   ** run tests in the easy way: using {{{ mvn test }}} command
+   ** run tests using CI like jenkins
+   ** easily upgrade selenium libraries - now, each wekk selenium is released with a new minor version - maven allows us to upgrade in a seconds
+   ** and few more - I'll explain this later on
+
+== Let's play with sample project ==
+
+Want a try maven based selenium project in a 3 minutes?
+ # download sample project from [http://acris.googlecode.com/svn/sesam/branches/selenium/ SVN repository] 
+ # download and run [http://maven.apache.org/ maven]
+ # run command {{{ mvn test }}} in the directory where sample project is located
+
+Now, test should be executed using firefox (If you have installed it :-) )
+
+=== Eclipse configuration ===
+
+ # run command {{{ mvn eclipse:eclipse }}}
+ # import project into the eclipse
+ # run test as junit tests (4 easy steps described on images below)
+
+<table border="none">
+<tr>
+<td>
+<a href="http://acris.googlecode.com/svn/wiki/images/selenium_1_eclipse.png"><img src="http://acris.googlecode.com/svn/wiki/images/selenium_1_eclipse_small.png"/></a>
+</td>
+<td>
+<a href="http://acris.googlecode.com/svn/wiki/images/selenium_2_import.png"><img src="http://acris.googlecode.com/svn/wiki/images/selenium_2_import_small.png"/></a>
+</td>
+<td>
+<a href="http://acris.googlecode.com/svn/wiki/images/selenium_3_project.png"><img src="http://acris.googlecode.com/svn/wiki/images/selenium_3_project_small.png"/></a>
+</td>
+<td>
+<a href="http://acris.googlecode.com/svn/wiki/images/selenium_4_final.png"><img src="http://acris.googlecode.com/svn/wiki/images/selenium_4_final_small.png"/></a>
+</td>
+</tr>
+<tr>
+<td align="center">
+<font size="5" color="#DDDDDD">*Select import*</font>
+</td>
+<td align="center">
+<font size="5" color="#DDDDDD">*Existing project*</font>
+</td>
+<td align="center">
+<font size="5" color="#DDDDDD">*Choose directory*</font>
+</td>
+<td align="center">
+<font size="5" color="#DDDDDD">*Project imported*</font>
+</td>
+</tr>
+</table>
