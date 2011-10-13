@@ -1,3 +1,4 @@
 #summary Migration guide from version 1.2.0 to 1.2.1
 
     * sk.seges.acris.configuration.Constants package changed to sk.seges.acris.client.Constants
+    * sk.seges.acris.domain classes moved to sk.seges.acris.site.shared.domain.api
