@@ -20,7 +20,7 @@
  * method ~~protected NamedType[] getTargetClassNames(ImmutableType immutableType)~~ from AbstractConfigurableProcessor was removed and replaced by getOutputClasses (see paragraph above)
  * method ~~protected void processElement(TypeElement element, NamedType outputName, RoundEnvironment roundEnv, FormattedPrintWriter pw)~~ from AbstractConfigurableProcessor was changed into: protected void processElement(ProcessorContext context). Method arguments now can be obtained in the following way:
   ** TypeElement element = context.getTypeElement();
-  ** ~~NamedType~~ MutableDeclaredType outputName = context.getMutableType();
+  ** ~~NamedType~~ MutableDeclaredType outputName = context.getOutputType();
   ** FormattedPrintWriter  pw = context.getPrintWriter()
   ** RoundEnvironment roundEnv is local class field of the MutableAnnotationProcessor, so: this.roundEnv
  * ~~sk.seges.sesam.core.pap.model.api.ArrayNamedType~~ renamed into sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType
