@@ -77,6 +77,7 @@
 		<!--module>../acris-showcase</module-->
 		<module>../acris-server-components</module>
 		<module>../acris-test-support</module>
+		<module>../acris-asmant</module>
 	</modules>
 
 	<properties>
