@@ -254,23 +254,3 @@ public class SuiteRunner extends SuiteRunnerConfiguration {
 
  * ~~APT maven plugin creates factory path entries with trailing whitespace~~ - this is problem only on linux environment (see reported issue) - [http://jira.codehaus.org/browse/MOJO-1609] - *SOLVED* with 1.0-alpha-5-SNAPSHOT version of the apt-maven-plugin
  * ~~Chicken-and-egg problem - if your project has compilation errors there is no easy way how to import project into the eclipse (because processors execution is part of the eclipse:eclipse goal and if it fails no eclipse project file is generated)~~ - *SOLVED* processors are no more bound to the generate-source (generate-test-source) phase therefore you can create eclipse project and run processors separatelly
-
-== Sample project ==
-
-In a 3 steps:
- # download sample project from [http://acris.googlecode.com/svn/sesam/branches/selenium/ SVN repository] 
- # download and run [http://maven.apache.org/ maven]
- # run command {{{ mvn test }}}
-
-Eclipse configuration:
- # run command {{{ mvn eclipse:eclipse }}}
- # import project into the eclipse
- # run test as junit tests (4 easy steps described on images below)
-
-[http://acris.googlecode.com/svn/wiki/images/selenium_1_eclipse.png]
-
-[http://acris.googlecode.com/svn/wiki/images/selenium_2_import.png]
-
-[http://acris.googlecode.com/svn/wiki/images/selenium_3_project.png]
-
-[http://acris.googlecode.com/svn/wiki/images/selenium_4_final.png]
