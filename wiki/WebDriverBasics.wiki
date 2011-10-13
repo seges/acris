@@ -85,7 +85,7 @@ Now, test should be executed using firefox (If you have installed it :-) )
 <table border="none">
 <tr>
 <td>
-<a href="http://acris.googlecode.com/svn/wiki/images/selenium_1_eclipse.png"><img src="http://acris.googlecode.com/svn/wiki/images/selenium_1_eclipse_small.png"/></a>
+[http://acris.googlecode.com/svn/wiki/images/selenium_1_eclipse.png http://acris.googlecode.com/svn/wiki/images/selenium_1_eclipse_small.png]
 </td>
 <td>
 <a href="http://acris.googlecode.com/svn/wiki/images/selenium_2_import.png"><img src="http://acris.googlecode.com/svn/wiki/images/selenium_2_import_small.png"/></a>
