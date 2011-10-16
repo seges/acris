@@ -1,8 +1,9 @@
-package sk.seges.sesam.pap.model.hibernate.printer.method;
+	package sk.seges.sesam.pap.model.hibernate.printer.method;
 
 import javax.annotation.processing.RoundEnvironment;
 
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolver;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
@@ -19,6 +20,11 @@ public class HibernateCopyFromDtoPrinter extends CopyFromDtoPrinter {
 		super(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv, pw);
 	}
 
+	@Override
+	public void print(TransferObjectContext context) {
+		copy(context, pw, new HibernateCopyFromDtoMethodPrinter(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv));
+	}
+	
 	@Override
 	protected void printDomainInstancer(FormattedPrintWriter pw, DomainDeclaredType domainType) {
 		pw.println("if (id != null) {");

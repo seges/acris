@@ -2,6 +2,8 @@ package sk.seges.sesam.pap.model.hibernate;
 
 import java.lang.annotation.Annotation;
 
+import javax.persistence.Basic;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -20,6 +22,11 @@ public enum MappingType {
 		public Class<?> getTargetEntityFromAnnotation(Annotation annotation) {
 			return ((OneToMany)annotation).targetEntity();
 		}
+
+		@Override
+		public FetchType getFetchTypeFromAnnotation(Annotation annotation) {
+			return ((OneToMany)annotation).fetch();
+		}
 	},
 
 	MANY_TO_MANY {
@@ -32,6 +39,11 @@ public enum MappingType {
 		@Override
 		public Class<?> getTargetEntityFromAnnotation(Annotation annotation) {
 			return ((ManyToMany)annotation).targetEntity();
+		}
+
+		@Override
+		public FetchType getFetchTypeFromAnnotation(Annotation annotation) {
+			return ((ManyToMany)annotation).fetch();
 		}
 	},
 
@@ -46,6 +58,11 @@ public enum MappingType {
 		public Class<?> getTargetEntityFromAnnotation(Annotation annotation) {
 			return ((ManyToOne)annotation).targetEntity();
 		}
+
+		@Override
+		public FetchType getFetchTypeFromAnnotation(Annotation annotation) {
+			return ((ManyToOne)annotation).fetch();
+		}
 	},
 
 	ONE_TO_ONE {
@@ -59,9 +76,32 @@ public enum MappingType {
 		public Class<?> getTargetEntityFromAnnotation(Annotation annotation) {
 			return ((OneToOne)annotation).targetEntity();
 		}
+
+		@Override
+		public FetchType getFetchTypeFromAnnotation(Annotation annotation) {
+			return ((OneToOne)annotation).fetch();
+		}
+	},
+	
+	BASIC {
+		@Override
+		public Class<? extends Annotation> getAnnotationClass() {
+			return Basic.class;
+		}
+		
+		@Override
+		public Class<?> getTargetEntityFromAnnotation(Annotation annotation) {
+			return null;
+		}
+
+		@Override
+		public FetchType getFetchTypeFromAnnotation(Annotation annotation) {
+			return ((Basic)annotation).fetch();
+		}
 	};
 
 	public abstract Class<? extends Annotation> getAnnotationClass();
 
+	public abstract FetchType getFetchTypeFromAnnotation(Annotation annotation);
 	public abstract Class<?> getTargetEntityFromAnnotation(Annotation annotation);
 }

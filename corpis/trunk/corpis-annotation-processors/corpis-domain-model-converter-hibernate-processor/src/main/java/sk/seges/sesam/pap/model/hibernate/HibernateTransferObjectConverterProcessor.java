@@ -47,5 +47,4 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 				new HibernateCopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
 	}
-
 }

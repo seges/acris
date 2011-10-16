@@ -7,8 +7,8 @@ import javax.lang.model.element.Element;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.corpis.pap.service.annotation.TransactionPropagation;
-import sk.seges.corpis.pap.service.annotation.TransactionPropagation.PropagationType;
+import sk.seges.corpis.service.annotation.TransactionPropagation;
+import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;

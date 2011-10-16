@@ -1,4 +1,4 @@
-package sk.seges.corpis.pap.service.annotation;
+package sk.seges.corpis.service.annotation;
 
 public @interface TransactionPropagation {
 
@@ -7,4 +7,6 @@ public @interface TransactionPropagation {
 	}
 	
 	PropagationType value() default PropagationType.PROPAGATE;
+
+	String[] fields() default {};
 }

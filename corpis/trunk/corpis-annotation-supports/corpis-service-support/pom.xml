@@ -18,6 +18,11 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-model-domain-support</artifactId>
 		</dependency>
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-service-api</artifactId>
+		</dependency>
 		
 		<!-- Hibernate dependencies -->
 		<dependency>

@@ -13,6 +13,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
@@ -29,6 +30,37 @@ public class HibernateEntityResolver implements EntityResolver {
 	
 	public HibernateEntityResolver(ProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
+	}
+	
+	public boolean isLazyReference(ExecutableElement method) {
+		if (hasLazyReference(method)) {
+			return true;
+		}
+		
+		Element field = MethodHelper.getField(method);
+
+		if (field != null) {
+			if (hasLazyReference(field)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private boolean hasLazyReference(Element element) {
+		for (final MappingType mappingType: MappingType.values()) {
+			Annotation annotation = element.getAnnotation(mappingType.getAnnotationClass());
+			
+			if (annotation != null) {
+				FetchType fetchType = mappingType.getFetchTypeFromAnnotation(annotation);
+				if (fetchType != null && fetchType.equals(FetchType.LAZY)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override
