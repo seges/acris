@@ -8,6 +8,7 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.service.model.ParametersFilter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
@@ -16,10 +17,12 @@ public abstract class AbstractPatameterCollectorPrinter extends AbstractServiceP
 
 	protected List<ConverterParameter> converterParameters = new ArrayList<ConverterParameter>();
 	protected final FormattedPrintWriter pw;
+	protected final ParametersFilter parametersFilter;
 	
-	protected AbstractPatameterCollectorPrinter(TransferObjectProcessingEnvironment processingEnv, ParametersResolver parametersResolver, FormattedPrintWriter pw) {
+	protected AbstractPatameterCollectorPrinter(TransferObjectProcessingEnvironment processingEnv, ParametersFilter parametersFilter, ParametersResolver parametersResolver, FormattedPrintWriter pw) {
 		super(processingEnv, parametersResolver);
 		this.pw = pw;
+		this.parametersFilter = parametersFilter;
 	}
 		
 	@Override
@@ -27,8 +30,7 @@ public abstract class AbstractPatameterCollectorPrinter extends AbstractServiceP
 
 	@Override
 	public void print(ServiceConverterPrinterContext context) {
-		List<ConverterParameter> newParams = removeConverterParameters(getConverterParameters(context.getService(), context.getLocalServiceInterface()));
+		List<ConverterParameter> newParams = parametersFilter.getPropagatedParameters(getConverterParameters(context.getService(), context.getLocalServiceInterface()));
 		converterParameters = unifyParameterNames(converterParameters, newParams);
 	}
-
 }

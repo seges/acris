@@ -14,7 +14,7 @@ public class EnumeratedConstructorBodyPrinter extends AbstractElementPrinter imp
 
 	@Override
 	public void print(TransferObjectContext context) {
-		pw.println("this." + context.getFieldName() + " = " + context.getFieldName() + ";");
+		pw.println("this." + context.getDtoFieldName() + " = " + context.getDtoFieldName() + ";");
 	}
 
 	@Override

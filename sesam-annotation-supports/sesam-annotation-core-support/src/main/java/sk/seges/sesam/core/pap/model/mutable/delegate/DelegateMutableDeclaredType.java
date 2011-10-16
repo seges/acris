@@ -202,4 +202,9 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	public MutableDeclaredType removeClassPrefix(String originalPrefix) {
 		return ensureDelegateType().removeClassPrefix(originalPrefix);
 	}
+	
+	@Override
+	public MutableDeclaredType stripVariableTypeVariables() {
+		return ensureDelegateType().stripVariableTypeVariables();
+	}
 }

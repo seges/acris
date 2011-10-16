@@ -20,14 +20,14 @@ public class AccessorsPrinter extends AbstractElementPrinter {
 		
 		//modifier = context.getModifier() != null ? (context.getModifier().toString() + " ") : "";
 		
-		pw.println(modifier, context.getFieldType(), " " + MethodHelper.toGetter(context.getFieldName()) + " {");
-		pw.println("return " + context.getFieldName() + ";");
+		pw.println(modifier, context.getDtoFieldType(), " " + MethodHelper.toGetter(context.getDtoFieldName()) + " {");
+		pw.println("return " + context.getDtoFieldName() + ";");
 		pw.println("}");
 		pw.println();
 
-		pw.println(modifier + "void " + MethodHelper.toSetter(context.getFieldName()) + 
-				"(", context.getFieldType(), " " + context.getFieldName() + ") {");
-		pw.println("this." + context.getFieldName() + " = " + context.getFieldName() + ";");
+		pw.println(modifier + "void " + MethodHelper.toSetter(context.getDtoFieldName()) + 
+				"(", context.getDtoFieldType(), " " + context.getDtoFieldName() + ") {");
+		pw.println("this." + context.getDtoFieldName() + " = " + context.getDtoFieldName() + ";");
 		pw.println("}");
 		pw.println();
 	}

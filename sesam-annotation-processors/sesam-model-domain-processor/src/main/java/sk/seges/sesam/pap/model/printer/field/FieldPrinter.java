@@ -14,7 +14,7 @@ public class FieldPrinter extends AbstractElementPrinter {
 	
 	public void print(TransferObjectContext context) {
 		//we do not use modifier from the param - fields should be always private
-		pw.println(Modifier.PRIVATE.toString() + " ", context.getFieldType(), " " + context.getFieldName() + ";");
+		pw.println(Modifier.PRIVATE.toString() + " ", context.getDtoFieldType(), " " + context.getDtoFieldName() + ";");
 		pw.println();
 	}
 }

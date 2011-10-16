@@ -6,12 +6,12 @@ public class ParameterElement {
 
 	private MutableTypeMirror type;
 	private String name;
-	private boolean isConverter;
-
-	public ParameterElement(MutableTypeMirror type, String name, boolean isConverter) {
+	private boolean isPropagated;
+	
+	public ParameterElement(MutableTypeMirror type, String name, boolean isPropagated) {
 		this.type = type;
 		this.name = name;
-		this.isConverter = isConverter;
+		this.isPropagated = isPropagated;
 	}
 
 	public MutableTypeMirror getType() {
@@ -23,6 +23,10 @@ public class ParameterElement {
 	}
 
 	public boolean isConverter() {
-		return isConverter;
+		return false;
+	}
+	
+	public boolean isPropagated() {
+		return isPropagated;
 	}
 }

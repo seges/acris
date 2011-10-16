@@ -78,6 +78,8 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
 
 	MutableDeclaredType stripTypeParameters();
 	MutableDeclaredType stripTypeParametersTypes();
+	MutableDeclaredType stripVariableTypeVariables();
+
 	MutableDeclaredType prefixTypeParameter(String prefix);
 	MutableDeclaredType renameTypeParameter(RenameActionType actionType, String parameter);
 	MutableDeclaredType renameTypeParameter(RenameActionType actionType, String parameter, String oldName, boolean recursive);

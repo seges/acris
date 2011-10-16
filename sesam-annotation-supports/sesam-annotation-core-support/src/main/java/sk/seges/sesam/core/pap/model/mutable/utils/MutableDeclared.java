@@ -546,6 +546,36 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		return result.toArray(new MutableTypeVariable[] {});
 	}
 
+	public MutableDeclaredType stripVariableTypeVariables() {
+		if (hasVariableParameterTypes()) {
+			stripTypeParametersTypes();
+		} else {
+			for (MutableTypeVariable typeVariable: getTypeVariables()) {
+				Set<? extends MutableTypeMirror> lowerBounds = typeVariable.getLowerBounds();
+				
+				if (lowerBounds != null) {
+					for (MutableTypeMirror lowerBound: lowerBounds) {
+						if (lowerBound instanceof MutableDeclaredType) {
+							((MutableDeclaredType)lowerBound).stripVariableTypeVariables();
+						}
+					}
+				}
+				
+				Set<? extends MutableTypeMirror> upperBounds = typeVariable.getUpperBounds();
+				
+				if (upperBounds != null) {
+					for (MutableTypeMirror upperBound: upperBounds) {
+						if (upperBound instanceof MutableDeclaredType) {
+							((MutableDeclaredType)upperBound).stripVariableTypeVariables();
+						}
+					}
+				}
+			}
+		}
+		
+		return this;
+	}
+
 	public MutableDeclaredType stripTypeParametersTypes() {
 
 		dirty();

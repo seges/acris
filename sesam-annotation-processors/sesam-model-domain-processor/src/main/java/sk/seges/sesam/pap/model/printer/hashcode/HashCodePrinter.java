@@ -71,33 +71,33 @@ public class HashCodePrinter extends AbstractElementPrinter {
 			return;
 		}
 
-		switch (context.getFieldType().getKind()) {
+		switch (context.getDtoFieldType().getKind()) {
 		case PRIMITIVE:
-			pw.println("result = prime * result + " + context.getFieldName() + ";");
+			pw.println("result = prime * result + " + context.getDtoFieldName() + ";");
 			return;
 		case ENUM:
-			pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
+			pw.println("result = prime * result + ((" + context.getDtoFieldName() + " == null) ? 0 : " + context.getDtoFieldName() + ".hashCode());");
 			return;
 		case CLASS:
 		case INTERFACE:
 		case ANNOTATION_TYPE:
 			pw.println("if (!processingHashCode) {");
 			pw.println("processingHashCode = true;");
-			pw.println("result = prime * result + ((" + context.getFieldName() + " == null) ? 0 : " + context.getFieldName() + ".hashCode());");
+			pw.println("result = prime * result + ((" + context.getDtoFieldName() + " == null) ? 0 : " + context.getDtoFieldName() + ".hashCode());");
 			pw.println("processingHashCode = false;");
 			pw.println("}");
 			return;
 		case ARRAY:
 			pw.println("if (!processingHashCode) {");
 			pw.println("processingHashCode = true;");
-			pw.println("result = prime * result + ", Arrays.class, ".hashCode(" + context.getFieldName() + ");");
+			pw.println("result = prime * result + ", Arrays.class, ".hashCode(" + context.getDtoFieldName() + ");");
 			pw.println("processingHashCode = false;");
 			pw.println("}");
 			return;
 		case WILDCARD:
 		case VOID:
 		case TYPEVAR:
-			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getFieldName() + " (" + context.getFieldType().getKind() + ") in the " + 
+			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getDtoFieldName() + " (" + context.getDtoFieldType().getKind() + ") in the " + 
 					context.getConfigurationTypeElement().asElement(), context.getConfigurationTypeElement().asElement());
 			return;
 		}

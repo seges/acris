@@ -2,9 +2,7 @@ package sk.seges.sesam.core.pap.model.mutable.api;
 
 import java.lang.reflect.Type;
 
-import sk.seges.sesam.core.pap.model.api.ClassSerializer;
-
-public interface MutableTypeMirror extends Type {
+public interface MutableTypeMirror extends Type, MutableType {
 
 	public enum MutableTypeKind {
 		ENUM {
@@ -49,6 +47,4 @@ public interface MutableTypeMirror extends Type {
 	
 	MutableTypeKind getKind();
 		
-	String toString(ClassSerializer serializer);
-	String toString(ClassSerializer serializer, boolean typed);
 }

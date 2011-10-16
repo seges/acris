@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.service.printer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -14,8 +13,8 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.ParameterFilter;
@@ -26,7 +25,6 @@ import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
-import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class AbstractServicePrinter {
 
@@ -135,17 +133,6 @@ public class AbstractServicePrinter {
 		return null;
 	}
 	
-	protected List<ConverterParameter> removeConverterParameters(List<ConverterParameter> parameters) {
-		List<ConverterParameter> result = new ArrayList<ConverterParameter>();
-		for (ConverterParameter parameter: parameters) {
- 			if (!ProcessorUtils.implementsType(processingEnv.getTypeUtils().fromMutableType(parameter.getType()), 
- 											   processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName()).asType()))  {
- 				result.add(parameter);
- 			}
-		}
-		return result;
-	}
-
 	protected List<ConverterParameter> unifyParameterNames(List<ConverterParameter> allPparameters, List<ConverterParameter> parameters) {
 
 		for (ConverterParameter parameter : parameters) {
@@ -180,7 +167,7 @@ public class AbstractServicePrinter {
 	// cache2
 	private ConverterParameter getSameByType(MutableTypeMirror typeParameter, Collection<ConverterParameter> parameters) {
 		for (ConverterParameter parameter : parameters) {
-			if (parameter.getType().equals(typeParameter)) {
+			if (parameter.getType().toString(ClassSerializer.CANONICAL).equals(typeParameter.toString(ClassSerializer.CANONICAL))) {
 				return parameter;
 			}
 		}

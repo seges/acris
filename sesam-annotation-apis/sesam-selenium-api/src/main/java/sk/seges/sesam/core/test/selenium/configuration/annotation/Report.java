@@ -27,6 +27,20 @@ public @interface Report {
 	Support screenshot() default @Support;
 
 	@Target(ElementType.ANNOTATION_TYPE)
+	public @interface Screenshot {
+
+		public enum When {
+			ON_FAILURE, AFTER_COMMAND, BEFORE_COMMNAND, ON_SUCESS
+		}
+		
+		@Parameter(name = "support", description = "Screenshot reports")
+		Support support() default @Support;
+
+		@Parameter(name = "when", description = "Defines when a screenshot is taken")
+		When[] when() default When.ON_FAILURE;
+	}
+	
+	@Target(ElementType.ANNOTATION_TYPE)
 	public @interface HtmlReport {
 
 		@Parameter(name = "report.html", description = "HTML reports")

@@ -110,15 +110,11 @@ public abstract class AbstractMethodPrinter {
 
 	protected boolean copy(TransferObjectContext context, FormattedPrintWriter pw, CopyMethodPrinter printer) {
 		
-		TypeMirror returnType = context.getDomainMethodReturnType();
+		DomainType returnType = context.getDomainMethodReturnType();
 		
 		switch (returnType.getKind()) {
-		case ERROR:
-		case NONE:
-		case NULL:
-		case OTHER:
 		case VOID:
-			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process " + context.getFieldName() + ". Unsupported result type: " + 
+			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process " + context.getDtoFieldName() + ". Unsupported result type: " + 
 					returnType.getKind());
 			return false;
 		case ARRAY:

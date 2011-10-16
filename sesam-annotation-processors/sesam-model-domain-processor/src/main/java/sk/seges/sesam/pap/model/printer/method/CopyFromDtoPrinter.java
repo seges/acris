@@ -25,8 +25,8 @@ import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 public class CopyFromDtoPrinter extends AbstractMethodPrinter implements TransferObjectElementPrinter {
 
-	private final FormattedPrintWriter pw;
-	private EntityResolver entityResolver;
+	protected final FormattedPrintWriter pw;
+	protected final EntityResolver entityResolver;
 	
 	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
@@ -114,7 +114,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 				ConfigurationTypeElement idConfigurationElement = domainIdType.getConfiguration();
 					//toHelper.getConfigurationElement(domainIdType, roundEnv);
 				if (idConfigurationElement != null && idConfigurationElement.getConverter() != null) {
-					converterProviderPrinter.printDomainConverterMethodName(idConfigurationElement.getConverter(), domainIdType, pw);
+					converterProviderPrinter.printDomainConverterMethodName(idConfigurationElement.getConverter(), domainIdType, idMethod, pw);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -146,7 +146,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConfiguration().getConverter() != null) {
-			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConfiguration().getConverter(), domainsuperClass, pw);
+			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConfiguration().getConverter(), domainsuperClass, null, pw);
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
 		}
