@@ -16,8 +16,6 @@ import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
-import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.ParameterFilter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
@@ -25,7 +23,9 @@ import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 import sk.seges.sesam.pap.service.configurer.ServiceConverterProcessorConfigurer;
+import sk.seges.sesam.pap.service.model.ConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
+import sk.seges.sesam.pap.service.model.ParametersFilter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.ConverterParameterFieldPrinter;
 import sk.seges.sesam.pap.service.printer.LocalServiceFieldPrinter;
@@ -97,12 +97,16 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		super.printAnnotations(context);
 	}
 	
+	protected ParametersFilter getParametersFilter() {
+		return new ConverterParametersFilter();
+	}
+	
 	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new ServiceConverterElementPrinter[] {
 				new LocalServiceFieldPrinter(pw),
-				new ConverterParameterFieldPrinter(processingEnv, getParametersResolver(), pw),
-				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersResolver(), pw),
-				new ServiceConstructorBodyPrinter(processingEnv, getParametersResolver(), pw),
+				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
+				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
+				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
 				new ServiceMethodConverterPrinter(processingEnv, getParametersResolver(), pw, converterProviderPrinter)
 		};
 	}
@@ -115,6 +119,10 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		this.processingEnv.setConfigurationProviders(getConfigurationProviders(serviceTypeElement));
 	}
 	
+	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw) {
+		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolver());
+	}
+	
 	@Override
 	protected void processElement(ProcessorContext context) {
 
@@ -122,7 +130,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		TypeElement element = context.getTypeElement();		
 		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(element, processingEnv);
 		
-		this.converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, getParametersResolver());
+		this.converterProviderPrinter = getConverterProviderPrinter(pw);
 
 		for (ServiceConverterElementPrinter elementPrinter: getElementPrinters(pw)) {
 			elementPrinter.initialize(serviceTypeElement, context.getOutputType());
@@ -143,11 +151,11 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		return new DefaultParametersResolver(processingEnv);
 	}	
 
-	protected List<ConverterParameter> getConverterParameters(ConverterTypeElement converter, List<ConverterParameter> parameters) {
-		ConverterParameter dummyParameter = new ConverterParameter();
-		dummyParameter.setConverter(converter);
-		return ParameterFilter.CONVERTER.filterBy(parameters, dummyParameter);
-	}
+//	protected List<ConverterParameter> getConverterParameters(ConverterTypeElement converter, List<ConverterParameter> parameters) {
+//		ConverterParameter dummyParameter = new ConverterParameter();
+//		dummyParameter.setConverter(converter);
+//		return ParameterFilter.CONVERTER.filterBy(parameters, dummyParameter);
+//	}
 	
 
 	protected String getConverterMethodName(MutableDeclaredType domainClass) {

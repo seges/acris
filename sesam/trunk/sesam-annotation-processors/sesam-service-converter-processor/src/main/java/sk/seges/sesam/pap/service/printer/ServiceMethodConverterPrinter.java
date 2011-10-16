@@ -98,7 +98,7 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 					pw.print("return ");
 				} else {
 					pw.print("return (", processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType()), ")");
-					converterProviderPrinter.printDtoConverterMethodName(returnDtoType.getConverter(), returnDtoType, pw);
+					converterProviderPrinter.printDtoConverterMethodName(returnDtoType.getConverter(), returnDtoType, localMethod, pw);
 					pw.print(".toDto(");
 				}
 			}
@@ -117,7 +117,7 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 				
 				if (parameterDtoType.getConverter() != null) {
 					pw.print("(", parameterDomainType, ")");
-					converterProviderPrinter.printDtoConverterMethodName(parameterDtoType.getConverter(), parameterDtoType, pw);
+					converterProviderPrinter.printDtoConverterMethodName(parameterDtoType.getConverter(), parameterDtoType, localMethod, pw);
 					pw.print(".fromDto(");
 				}
 

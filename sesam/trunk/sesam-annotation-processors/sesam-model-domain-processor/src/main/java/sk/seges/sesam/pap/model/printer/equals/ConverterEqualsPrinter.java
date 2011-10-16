@@ -42,7 +42,7 @@ public class ConverterEqualsPrinter implements TransferObjectElementPrinter {
 
 			if (domainId.getConverter() != null) {
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
-				converterProviderPrinter.printDomainConverterMethodName(domainId.getConverter(), domainId, pw);
+				converterProviderPrinter.printDomainConverterMethodName(domainId.getConverter(), domainId, configurationTypeElement.getDomain().getIdMethod(entityResolver), pw);
 				pw.print(".toDto(");
 			} else {
 				pw.print(domainId, " " + DTO_ID + " = ");
@@ -73,42 +73,42 @@ public class ConverterEqualsPrinter implements TransferObjectElementPrinter {
 		
 		if (context.getLocalConverterName() != null) {
 			pw.println("if (!" + context.getLocalConverterName() + ".equals(" + DOMAIN_NAME + "." + context.getDomainFieldName() + "," +
-					DTO_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + "))");
+					DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + "))");
 			pw.println("	return false;");
 		} else {
-			if (context.getFieldType() instanceof MutableArrayType) {
-				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + ", " + DTO_NAME + "." + 
-						MethodHelper.toGetter(context.getFieldName()) + "))");
+			if (context.getDtoFieldType() instanceof MutableArrayType) {
+				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + ", " + DTO_NAME + "." + 
+						MethodHelper.toGetter(context.getDtoFieldName()) + "))");
 				pw.println("	return false;");
 				return;
 			} 
 			
-			switch (context.getFieldType().getKind()) {
+			switch (context.getDtoFieldType().getKind()) {
 			case PRIMITIVE:
-				pw.println("if (" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + " != " + DTO_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + ")");
+				pw.println("if (" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + " != " + DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + ")");
 				pw.println("	return false;");
 				return;
 			case WILDCARD:
 			case VOID:
 			case TYPEVAR:
-				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getFieldName() + " (" + context.getFieldType().getKind() + ") in the " + 
+				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getDtoFieldName() + " (" + context.getDtoFieldType().getKind() + ") in the " + 
 						context.getConfigurationTypeElement().asElement(), context.getConfigurationTypeElement().asElement());
 				return;
 			case CLASS:
 			case INTERFACE:
-				pw.println("if (" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + " == null) {");
-				pw.println("if (" + DTO_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + " != null)");
+				pw.println("if (" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + " == null) {");
+				pw.println("if (" + DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + " != null)");
 				pw.println("	return false;");
-				pw.println("} else if (!" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + ".equals(" + DTO_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + "))");
+				pw.println("} else if (!" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + ".equals(" + DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + "))");
 				pw.println("	return false;");
 				return;
 
 			case ENUM:
-				pw.println("if (" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + " != " + DTO_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + ")");
+				pw.println("if (" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + " != " + DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + ")");
 				pw.println("	return false;");
 				return;
 			case ARRAY:
-				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + ", " + DTO_NAME + "." + MethodHelper.toGetter(context.getFieldName()) + "))");
+				pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + DOMAIN_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + ", " + DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + "))");
 				pw.println("	return false;");
 				return;
 			}

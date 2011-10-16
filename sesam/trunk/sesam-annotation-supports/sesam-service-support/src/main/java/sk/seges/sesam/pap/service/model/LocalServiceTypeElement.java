@@ -3,6 +3,7 @@ package sk.seges.sesam.pap.service.model;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
@@ -82,6 +83,10 @@ public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
 		PackageValidator packageValidator = new DefaultPackageValidatorProvider().get(mutableType.getPackageName());
 		packageValidator.moveTo(LocationType.SERVER);
 		mutableType = mutableType.changePackage(packageValidator);
+
+		mutableType.setTypeVariables(
+				remoteService.getTypeVariables().toArray(new MutableTypeVariable[] {}));
+
 		return mutableType.setSimpleName(simpleName + LOCAL_SUFFIX);
 	}
 

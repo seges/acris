@@ -6,14 +6,15 @@ import java.util.Set;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
+import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
@@ -74,22 +75,8 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 					//TODO check if getId is null
 
 					if (referenceDomainType.getKind().isDeclared()) {
-
-						if (referenceDomainType.getId(entityResolver) != null) {
-							pw.print(referenceDomainType + " " + currentPath + " = ");
-							converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConfiguration().getConverter(), referenceDomainType, pw);
-							pw.println(".getDomainInstance(" + TransferObjectElementPrinter.DTO_NAME + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
-							instances.add(fullPath);
-						} else {
-							pw.println(referenceDomainType + " " + currentPath + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(currentPath) + ";");
-							pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(currentPath) + " == null) {");
-							pw.print(currentPath + " = ");
-							converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConfiguration().getConverter(), referenceDomainType, pw);
-							pw.println(".createDomainInstance(null);");
-							instances.add(fullPath);
-							pw.println("}");
-							
-						}
+						printCopyNested(pathResolver, fullPath, referenceDomainType, context.getDomainMethod(), pw);
+						instances.add(fullPath);
 					}
 					
 					if (instances.contains(currentPath)) {
@@ -103,21 +90,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			}
 
 			if (context.getConfigurationTypeElement().getDomain() != null && domainTypeElement.getSetterMethod(context.getDomainFieldPath()) != null) {
-				if (context.getConverter() != null) {
-					String converterName = "converter" + MethodHelper.toMethod("", context.getFieldName());
-					pw.print(context.getConverter(), " " + converterName + " = ");
-					converterProviderPrinter.printDomainConverterMethodName(context.getConverter(), processingEnv.getTypeUtils().toMutableType(context.getDomainMethodReturnType()), pw);
-					pw.println(";");
-					pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDomainFieldPath()) + "("+ converterName + ".fromDto(");
-					pw.print("(", castToDelegate(context.getDomainMethodReturnType()), ")");
-					pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getFieldName()));
-				} else {
-					pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDomainFieldPath()) + "(" + TransferObjectElementPrinter.DTO_NAME + "." + MethodHelper.toGetter(context.getFieldName()));
-				}
-				if (context.getConverter() != null) {
-					pw.print(")");
-				}
-				pw.println(");");
+				printCopy(pathResolver, context, pw);
 			} else {
 				ExecutableElement domainGetterMethod = context.getConfigurationTypeElement().getDomain().getGetterMethod(currentPath);
 				
@@ -128,54 +101,81 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 				}
 			}
 		} else {
-			boolean generated = true;
-			if (context.getConverter() != null) {
-				String converterName = "converter" + MethodHelper.toMethod("", context.getFieldName());
-				pw.print(context.getConverter(), " " + converterName + " = ");
-				converterProviderPrinter.printDomainConverterMethodName(context.getConverter(), processingEnv.getTypeUtils().toMutableType(context.getDomainMethodReturnType()), pw);
-				pw.println(";");
-				pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDomainFieldPath()) + "(");
-				pw.print("(", castToDelegate(context.getDomainMethodReturnType()), ")");
-				pw.print(converterName + ".fromDto(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getFieldName()));
-			} else if (context.getLocalConverterName() != null) {
-				pw.println("if (" + context.getLocalConverterName() + " != null) {");
-				pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDomainFieldPath()) + "(" + 
-						context.getLocalConverterName() + ".fromDto(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getFieldName()) + ")");
-			} else {
-				ExecutableElement domainGetterMethod = domainTypeElement.getGetterMethod(currentPath);
-				
-				if (context.getConfigurationTypeElement().getDomain().getSetterMethod(context.getDomainFieldPath()) != null) {
-					pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDomainFieldPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getFieldName()));
-				} else {
-					
-					VariableElement field = MethodHelper.getField(domainTypeElement.asElement(), currentPath);
-					
-					if ((domainGetterMethod == null && field != null && !entityResolver.isIdField(field)) || !entityResolver.isIdMethod(domainGetterMethod)) {
-						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + domainTypeElement.toString(), context.getConfigurationTypeElement().asElement());
-						generated = false;
-					}
-				}
-			}
-			
-			if (generated) {
-				if (context.getConverter() != null) {
-					pw.print(")");
-				}
-				pw.println(");");
-			}
-
-			if (context.getLocalConverterName() != null) {
-				pw.println("} else {");
-				pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDomainFieldPath()));
-				if (context.getDomainMethodReturnType().getKind().equals(TypeKind.TYPEVAR)) {
-					pw.print("((" + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + ((TypeVariable)context.getDomainMethodReturnType()).asElement().getSimpleName().toString() + ")");
-				} else {
-					pw.print("((" + context.getDomainMethodReturnType() + ")");
-				}
-				pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getFieldName()));
-				pw.println(");");
-				pw.println("}");
-			}
+			printCopy(pathResolver, context, pw);
 		}
 	}
+	
+	protected void printCopy(PathResolver pathResolver, TransferObjectContext context, FormattedPrintWriter pw) {
+		if (context.getConverter() != null) {
+			printCopyByConverter(context.getConverter(), context.getDomainMethod(), pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
+		} else if (context.getLocalConverterName() != null) {
+			printCopyByLocalConverter(context.getLocalConverterName(), pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
+		} else {
+			printCopySimple(pathResolver, context.getConfigurationTypeElement().getDomain(), context.getConfigurationTypeElement(), context.getDtoFieldName(), pw);
+		}
+	}
+	
+	protected void printCopyNested(PathResolver domainPathResolver, String fullPath, DomainDeclaredType referenceDomainType, ExecutableElement method, FormattedPrintWriter pw) {
+		if (referenceDomainType.getId(entityResolver) != null) {
+			pw.print(referenceDomainType + " " + domainPathResolver.getCurrent() + " = ");
+			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConfiguration().getConverter(), referenceDomainType, method, pw);
+			pw.println(".getDomainInstance(" + TransferObjectElementPrinter.DTO_NAME + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
+		} else {
+			pw.println(referenceDomainType + " " + domainPathResolver.getCurrent() + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ";");
+			pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " == null) {");
+			pw.print(domainPathResolver.getCurrent() + " = ");
+			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConfiguration().getConverter(), referenceDomainType, method, pw);
+			pw.println(".createDomainInstance(null);");
+			pw.println("}");
+		}
+	}
+	
+	protected void printCopySimple(PathResolver domainPathResolver, DomainDeclaredType domainTypeElement, ConfigurationTypeElement configurationTypeElement, String dtoField, FormattedPrintWriter pw) {
+		ExecutableElement domainGetterMethod = domainTypeElement.getGetterMethod(domainPathResolver.getCurrent());
+		
+		if (configurationTypeElement.getDomain().getSetterMethod(domainPathResolver.getPath()) != null) {
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
+		} else {
+			
+			VariableElement field = MethodHelper.getField(domainTypeElement.asElement(), domainPathResolver.getCurrent());
+			
+			if ((domainGetterMethod == null && field != null && !entityResolver.isIdField(field)) || !entityResolver.isIdMethod(domainGetterMethod)) {
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + domainPathResolver.getCurrent() + " in the class " + domainTypeElement.toString(), configurationTypeElement.asElement());
+				return;
+			}
+		}
+	
+		pw.println(");");
+	}
+
+    protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
+		String converterName = "converter" + MethodHelper.toMethod("", dtoField);
+		pw.print(converter, " " + converterName + " = ");
+		converterProviderPrinter.printDomainConverterMethodName(converter, domainMethodReturnType, domainMethod, pw);
+		pw.println(";");
+		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
+		pw.print("(", castToDelegate(domainMethodReturnType), ")");
+		pw.print(converterName + ".fromDto(");
+		//TODO check for the nested
+		//pw.print("(", castToDelegate(domainMethodReturnType), ")");
+		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
+		pw.println("));");
+	}
+	
+	protected void printCopyByLocalConverter(String localConverterName, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
+		pw.println("if (" + localConverterName + " != null) {");
+		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + 
+				localConverterName + ".fromDto(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField) + ")");
+		pw.println(");");
+		pw.println("} else {");
+		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()));
+		if (domainMethodReturnType.getKind().equals(MutableTypeKind.TYPEVAR)) {
+			pw.print("((" + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + ((MutableTypeVariable)domainMethodReturnType).getVariable() + ")");
+		} else {
+			pw.print("((" + domainMethodReturnType + ")");
+		}
+		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
+		pw.println(");");
+		pw.println("}");
+	}	
 }

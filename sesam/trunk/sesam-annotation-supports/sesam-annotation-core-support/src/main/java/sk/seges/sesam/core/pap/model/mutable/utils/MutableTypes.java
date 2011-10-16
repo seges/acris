@@ -29,8 +29,11 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
@@ -669,4 +672,39 @@ public class MutableTypes implements Types {
 		
 		return mutableType;
 	}
+
+	public MutableTypeValue getTypeValue(MutableTypeMirror type, Object value) {
+		
+		if (value != null && value.getClass().isEnum()) {
+			return getEnumValue(value);
+		}
+
+		if (type instanceof MutableDeclaredType) {
+			return getDeclaredValue((MutableDeclaredType)type, value);
+		}
+
+		if (type instanceof MutableArrayType) {
+			return getArrayValue((MutableArrayType)type, value);
+		}
+
+		return null;
+	}
+	
+	public MutableDeclaredTypeValue getEnumValue(Object value) {
+		return new MutableEnumValue(toMutableType(value.getClass()), value);
+	}
+
+	public MutableDeclaredTypeValue getDeclaredValue(MutableDeclaredType type, Object value) {
+		return new MutableDeclaredValue(type, value);
+	}
+	
+	public MutableArrayTypeValue getArrayValue(MutableArrayType array, Object... values) {
+		MutableTypeValue[] arrayValues = new MutableTypeValue[values.length];
+		int i = 0;
+		for (Object value: values) {
+			arrayValues[i++] = getTypeValue(array.getComponentType(), value);
+		}
+		
+		return new MutableArrayValue(array, arrayValues);
+	}	
 }

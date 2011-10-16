@@ -13,6 +13,7 @@ import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -69,7 +70,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 		for (ExecutableElement method: methods) {
 			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
 			
-			pw.print(dtoReturnType.getDomain(), " " + method.getSimpleName().toString() + "(");
+			pw.print(stripVariableTypeVariables(dtoReturnType.getDomain()), " " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
@@ -79,7 +80,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 				
 				DtoType dtoParamType = processingEnv.getTransferObjectUtils().getDtoType(parameter.asType());
 
-				pw.print(dtoParamType.getDomain(), " " + parameter.getSimpleName().toString());
+				pw.print(stripVariableTypeVariables(dtoParamType.getDomain()), " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
@@ -87,4 +88,12 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 			pw.println();
 		}
 	}
+
+	private MutableTypeMirror stripVariableTypeVariables(MutableTypeMirror type) {
+		if (type != null && type instanceof MutableDeclaredType) {
+			return ((MutableDeclaredType)type).stripVariableTypeVariables();
+		}
+		return type;
+	}
+
 }

@@ -91,5 +91,5 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 	@Override
 	public DOMAIN getDomainInstance(Object dtoSource, Serializable id) {
 		return getDomainFromCache(dtoSource, id);
-	}
+	}	
 }

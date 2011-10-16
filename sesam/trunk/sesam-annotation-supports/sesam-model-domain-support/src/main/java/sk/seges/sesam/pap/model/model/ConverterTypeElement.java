@@ -13,10 +13,12 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
@@ -181,6 +183,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		converterParameter.setName(parameter.getName());
 		converterParameter.setConverter(this);
 		converterParameter.setConverter(parameter.isConverter());
+		converterParameter.setPropagated(parameter.isPropagated());
 		return converterParameter;
 	}
 	
@@ -191,6 +194,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		converterParameter.setType(getMutableTypesUtils().toMutableType(constructorParameter.asType()));
 		converterParameter.setName(constructorParameter.getSimpleName().toString());
 		converterParameter.setConverter(this);
+		converterParameter.setPropagated(true);
 		return converterParameter;
 	}
 
@@ -200,7 +204,9 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 			@Override
 			public int compare(ExecutableElement o1, ExecutableElement o2) {
-				return o1.getParameters().size() - o2.getParameters().size();
+				int size1 = ((ExecutableType)o1.asType()).getTypeVariables().size();
+				int size2 = ((ExecutableType)o2.asType()).getTypeVariables().size();
+				return size1 - size2;
 			}
 		});
 		
@@ -220,6 +226,12 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		if (converterTypeElement != null) {
 			List<ExecutableElement> constructors = getSortedConstructorMethods(converterTypeElement);
 
+			ParameterElement[] constructorAditionalParameters = new ParameterElement[0];
+			
+			if (getConfiguration() != null && getConfiguration().getDomain() != null) {
+				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(getConfiguration().getDomain().asType());
+			}
+			
 			if (constructors != null && constructors.size() > constructorIndex) {
 				
 				List<? extends VariableElement> constructorParameters = null;
@@ -231,7 +243,19 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				}
 				
 				for (VariableElement constructorParameter : constructorParameters) {
-					parameters.add(toConverterParameter(constructorParameter));
+					
+					ConverterParameter converterParameter = toConverterParameter(constructorParameter);
+					
+					for (ParameterElement constructorAditionalParameter: constructorAditionalParameters) {
+						if (!constructorAditionalParameter.isPropagated() &&
+								converterParameter.getType().toString(ClassSerializer.CANONICAL, false).equals(
+										constructorAditionalParameter.getType().toString(ClassSerializer.CANONICAL, false))) {
+							converterParameter.setPropagated(false);
+							break;
+						}
+					}
+					
+					parameters.add(converterParameter);
 				}
 			}
 		} else {

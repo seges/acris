@@ -13,6 +13,7 @@ import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.printer.ConstructorPrinter;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
@@ -42,7 +43,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		return new ElementHolderTypeConverter() {
 
 			@Override
-			public TypeMirror getIterableDtoType(TypeMirror collectionType) {
+			public TypeMirror getIterableDtoType(MutableTypeMirror collectionType) {
 				return null;
 			}
 		};
@@ -94,12 +95,16 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		return new DefaultParametersResolver(processingEnv);
 	}
 	
+	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw) {
+		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolver());
+	}
+	
 	@Override
 	protected void processElement(ProcessorContext context) {
 
 		FormattedPrintWriter pw = context.getPrintWriter();
 		
-		converterProviderPrinter = new ConverterProviderPrinter(pw, processingEnv, getParametersResolver());
+		converterProviderPrinter = getConverterProviderPrinter(pw);
 
 		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
 		

@@ -16,8 +16,11 @@ import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -255,6 +258,10 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 			return (MutableTypeVariable)o;
 		} else if (o instanceof MutableWildcardType) {
 			return (MutableWildcardType)o;
+		} else if (o instanceof MutableArrayTypeValue) {
+			return ((MutableArrayTypeValue)o).asType();
+		} else if (o instanceof MutableDeclaredTypeValue) {
+			return ((MutableDeclaredTypeValue)o).asType();
 		}
 		
 		return null;
@@ -300,22 +307,30 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 			} else if (o instanceof Class) {
 				o = processingEnv.getTypeUtils().toMutableType((Class<?>)o);
 			}
-			
-			MutableTypeMirror mutableType = toMutableType(o);
-			
-			if (mutableType != null) {
-				
-				ClassSerializer evalSerializer = serializer;
+
+			if (o instanceof MutableTypeValue) {
 				if (serializer.equals(ClassSerializer.SIMPLE)) {
-					if (isConflictType(mutableType)) {
-						evalSerializer = ClassSerializer.CANONICAL;
-					} else {
-						usedTypes.addAll(extractDeclaredType(mutableType));
-					}
+					super.write(((MutableTypeValue)o).toString(ClassSerializer.SIMPLE, typed));
+				} else {
+					super.write(((MutableTypeValue)o).toString(serializer, typed));
 				}
-				write(mutableType.toString(evalSerializer, typed));
 			} else {
-				super.write(String.valueOf(o));
+				MutableTypeMirror mutableType = toMutableType(o);
+				
+				if (mutableType != null) {
+					
+					ClassSerializer evalSerializer = serializer;
+					if (serializer.equals(ClassSerializer.SIMPLE)) {
+						if (isConflictType(mutableType)) {
+							evalSerializer = ClassSerializer.CANONICAL;
+						} else {
+							usedTypes.addAll(extractDeclaredType(mutableType));
+						}
+					}
+					write(mutableType.toString(evalSerializer, typed));
+				} else {
+					super.write(String.valueOf(o));
+				}
 			}
 		}
 	}

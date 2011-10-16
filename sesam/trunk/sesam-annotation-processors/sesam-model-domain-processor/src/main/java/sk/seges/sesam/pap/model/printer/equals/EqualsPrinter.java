@@ -92,30 +92,30 @@ public class EqualsPrinter extends AbstractElementPrinter {
 			return;
 		}
 		
-		switch (context.getFieldType().getKind()) {
+		switch (context.getDtoFieldType().getKind()) {
 		case ENUM:
 		case PRIMITIVE:
 			if (idMethod) {
-				pw.println("if (" + context.getFieldName() + " == other." + context.getFieldName() + ")");
+				pw.println("if (" + context.getDtoFieldName() + " == other." + context.getDtoFieldName() + ")");
 				pw.println("	return true;");
 			} else {
-				pw.println("if (" + context.getFieldName() + " != other." + context.getFieldName() + ")");
+				pw.println("if (" + context.getDtoFieldName() + " != other." + context.getDtoFieldName() + ")");
 				pw.println("	return false;");
 			}
 			return;
 		case CLASS:
 		case INTERFACE:
 			if (idMethod) {
-				pw.println("if (" + context.getFieldName() + " != null && other." + context.getFieldName() + " != null && " + context.getFieldName() + ".equals(other." + context.getFieldName() + "))");
+				pw.println("if (" + context.getDtoFieldName() + " != null && other." + context.getDtoFieldName() + " != null && " + context.getDtoFieldName() + ".equals(other." + context.getDtoFieldName() + "))");
 				pw.println("	return true;");
 			} else {
-				pw.println("if (" + context.getFieldName() + " == null) {");
-				pw.println("if (other." + context.getFieldName() + " != null)");
+				pw.println("if (" + context.getDtoFieldName() + " == null) {");
+				pw.println("if (other." + context.getDtoFieldName() + " != null)");
 				pw.println("	return false;");
 				pw.println("} else { ");
 				pw.println("if (!processingEquals) {");
 				pw.println("processingEquals = true;");
-				pw.println("if (!" + context.getFieldName() + ".equals(other." + context.getFieldName() + ")) {");
+				pw.println("if (!" + context.getDtoFieldName() + ".equals(other." + context.getDtoFieldName() + ")) {");
 				pw.println("processingEquals = false;");
 				pw.println("return false;");
 				pw.println("} else {");
@@ -128,7 +128,7 @@ public class EqualsPrinter extends AbstractElementPrinter {
 		case ARRAY:
 			pw.println("if (!processingEquals) {");
 			pw.println("processingEquals = true;");
-			pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getFieldName() + ", other." + context.getFieldName() + ")) {");
+			pw.println("if (!" + Arrays.class.getCanonicalName() + ".equals(" + context.getDtoFieldName() + ", other." + context.getDtoFieldName() + ")) {");
 			pw.println("processingEquals = false;");
 			pw.println("return false");
 			pw.println("} else {");
@@ -139,7 +139,7 @@ public class EqualsPrinter extends AbstractElementPrinter {
 		case WILDCARD:
 		case VOID:
 		case TYPEVAR:
-			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getFieldName() + " (" + context.getFieldType().getKind() + ") in the " + 
+			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getDtoFieldName() + " (" + context.getDtoFieldType().getKind() + ") in the " + 
 					context.getConfigurationTypeElement().asElement(), context.getConfigurationTypeElement().asElement());
 			return;
 		}

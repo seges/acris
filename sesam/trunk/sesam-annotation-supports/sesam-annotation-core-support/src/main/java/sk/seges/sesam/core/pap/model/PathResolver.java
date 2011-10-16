@@ -6,8 +6,10 @@ public class PathResolver implements Iterator<String> {
 	
 	private String[] fields;
 	private int index = 0;
-
+	private String path;
+	
 	public PathResolver(String path) {
+		this.path = path;
 		fields = path.split("\\.");
 		if (fields == null) {
 			fields = new String[0];
@@ -35,5 +37,13 @@ public class PathResolver implements Iterator<String> {
 
 	public void reset() {
 		index = 0;
+	}
+	
+	public String getPath() {
+		return path;
+	}
+	
+	public String getCurrent() {
+		return fields[index - 1];
 	}
 }

@@ -9,6 +9,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
+import sk.seges.sesam.core.pap.model.ConverterParameterElement;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -50,10 +51,7 @@ public class DefaultParametersResolver implements ParametersResolver {
 						MutableTypeVariable domainTypeVariable = processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + typeParameterName);
 						
 						MutableDeclaredType dtoConverterNamedType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType((DeclaredType) dtoConverterType.asType()), dtoTypeVariable, domainTypeVariable);
-						
-						ParameterElement converterManagerParameter = new ParameterElement(dtoConverterNamedType, TransferObjectContext.LOCAL_CONVERTER_NAME + index, true);
-						
-						variableElements.add(converterManagerParameter);
+						variableElements.add(new ConverterParameterElement(dtoConverterNamedType, TransferObjectContext.LOCAL_CONVERTER_NAME + index, true));
 					} else {
 						//TODO handle type parameter with no variables
 					}

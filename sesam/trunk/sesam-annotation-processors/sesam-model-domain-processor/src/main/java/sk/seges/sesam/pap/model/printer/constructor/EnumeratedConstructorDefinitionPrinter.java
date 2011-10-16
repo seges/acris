@@ -30,7 +30,7 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractElementPrint
 		if (index > 0) {
 			pw.print(", ");
 		}
-		pw.print(context.getFieldType(), " " + context.getFieldName());
+		pw.print(context.getDtoFieldType(), " " + context.getDtoFieldName());
 		index++;
 	}
 }
