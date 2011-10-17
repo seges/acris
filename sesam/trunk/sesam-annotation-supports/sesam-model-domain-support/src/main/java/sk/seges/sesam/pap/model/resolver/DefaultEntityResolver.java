@@ -5,6 +5,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
+import sk.seges.sesam.pap.model.annotation.Id;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
@@ -26,11 +27,11 @@ public class DefaultEntityResolver implements EntityResolver {
 
 	@Override
 	public boolean isIdMethod(ExecutableElement method) {
-		return false;
+		return method.getAnnotation(Id.class) != null;
 	}
 
 	@Override
 	public boolean isIdField(VariableElement field) {
-		return false;
+		return field.getAnnotation(Id.class) != null;
 	}
 }
