@@ -56,6 +56,15 @@ public class MockContent implements ContentData<Long> {
 	}
 
 	@Override
+	public String getContentDetached() {
+		return "Test";
+	}
+
+	@Override
+	public void setContentDetached(String content) {
+	}
+
+	@Override
 	public String getWebId() {
 		return "test";
 	}
@@ -95,7 +104,13 @@ public class MockContent implements ContentData<Long> {
 	}
 
 	@Override
-	public void setSubContents(List<? extends ContentData<Long>> subContents) {
+	public void setSubContents(List<ContentData<Long>> subContents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addSubContent(ContentData<Long> subContent) {
 		// TODO Auto-generated method stub
 		
 	}

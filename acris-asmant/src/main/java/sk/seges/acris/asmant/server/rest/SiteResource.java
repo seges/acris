@@ -83,12 +83,12 @@ public class SiteResource {
 			
 			@Override
 			public void execute(TwigSite site, HTTPResponse response) {
-				int responseCode = response.getResponseCode();
-				if(responseCode == 404) {
-					send(site, response);
-					log.info("Site is DOWN = " + site + ", response = " + response.getResponseCode());
+				int responseCode = (response == null ? 42 : response.getResponseCode());
+				if(responseCode == 200 || responseCode == 500) {
+					log.info("Site is UP = " + site + ", response = " + responseCode);
 				} else {
-					log.info("Site is UP = " + site + ", response = " + response.getResponseCode());
+					send(site, response);
+					log.info("Site is DOWN = " + site + ", response = " + responseCode);
 				}
 			}
 		});
@@ -102,7 +102,7 @@ public class SiteResource {
 		doStatus(new StatusAction() {
 			@Override
 			public void execute(TwigSite site, HTTPResponse response) {
-				statuses.add("[" + site.getName() + "] " + site.getUrl() + " | " + response.getResponseCode());
+				statuses.add("[" + site.getName() + "] " + site.getUrl() + " | " + (response == null ? "n/a" : response.getResponseCode()));
 			}
 		});
 		return statuses;
@@ -142,6 +142,7 @@ public class SiteResource {
 				action.execute(site, response);
 			} catch (IOException e) {
 				log.log(Level.SEVERE, "Error while connecting to site  = " + site, e);
+				action.execute(site, null);
 			}
 		}
 		return null;

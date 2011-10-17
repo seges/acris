@@ -11,6 +11,7 @@ import sk.seges.pap.detail.SelectedDetailViewDisplayProcessor;
 import sk.seges.pap.detail.SelectedDetailViewPanelProcessor;
 import sk.seges.pap.singleselect.SingleSelectViewDisplayProcessor;
 import sk.seges.pap.singleselect.SingleSelectViewPanelProcessor;
+import sk.seges.pap.singleselect.SingleSelectViewPresenterProcessor;
 import sk.seges.sesam.core.pap.test.FluentProcessorTest;
 
 /**
@@ -22,6 +23,7 @@ public class CompositionProcessorTest extends FluentProcessorTest {
 		addProcessor(new CompositionProcessor(),
 				new SingleSelectViewPanelProcessor(),
 				new SingleSelectViewDisplayProcessor(),
+				new SingleSelectViewPresenterProcessor(),
 				new SelectedDetailViewPanelProcessor(),
 				new SelectedDetailViewDisplayProcessor());
 	}
