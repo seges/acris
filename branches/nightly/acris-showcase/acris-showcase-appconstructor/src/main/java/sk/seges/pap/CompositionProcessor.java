@@ -26,8 +26,7 @@ public class CompositionProcessor extends FluentProcessor {
 	}
 	
 	@Override
-	protected void processElement(ProcessorContext context) {
-		
+	protected void doProcessElement(ProcessorContext context) {
 	}
 
 }
