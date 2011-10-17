@@ -116,7 +116,14 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			processingEnv.getMessager().printMessage(Kind.ERROR, " [ERROR] Cannot unbox type " + type.getKind() + " - unsupported type!");
 			return null;
 		}
-		
-		return processingEnv.getTypeUtils().toMutableType(type);
+
+		return stripVariableTypeVariables((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type));
+	}
+
+	private MutableDeclaredType stripVariableTypeVariables(MutableDeclaredType type) {
+		if (type != null) {
+			return type.stripVariableTypeVariables();
+		}
+		return type;
 	}
 }
