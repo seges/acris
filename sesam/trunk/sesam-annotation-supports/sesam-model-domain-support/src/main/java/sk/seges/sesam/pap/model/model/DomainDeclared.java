@@ -333,6 +333,8 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 					
 					if (configurationElement != null) {
 						superClassDomainType = configurationElement.getDomain();
+//					} else {
+//						superClassDomainType = (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainSuperClass);
 					}
 				}
 				return superClassDomainType;

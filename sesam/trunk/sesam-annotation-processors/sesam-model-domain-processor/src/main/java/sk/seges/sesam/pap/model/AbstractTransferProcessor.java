@@ -8,6 +8,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
@@ -217,11 +219,24 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 						}
 
 						printer.print(context);
-					}			
+					}
 				}
 			}
 
-			processingElement = processingElement.getSuperClass();
+			if (processingElement.getSuperClass() != null) {
+				processingElement = processingElement.getSuperClass();
+			} else {
+				if (processingElement.asElement() != null) {
+					TypeMirror superclass = processingElement.asElement().getSuperclass();
+					if (superclass.getKind().equals(TypeKind.DECLARED)) {
+						processingElement = (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(superclass);
+					} else {
+						processingElement =  null;
+					}
+				} else {
+					processingElement = null;
+				}
+			}
 		}
 
 		ExecutableElement idMethod = domainTypeElement.getIdMethod(getEntityResolver());
