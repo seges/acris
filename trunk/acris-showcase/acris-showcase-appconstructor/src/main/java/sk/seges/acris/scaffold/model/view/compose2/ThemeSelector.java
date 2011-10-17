@@ -2,6 +2,7 @@ package sk.seges.acris.scaffold.model.view.compose2;
 
 import sk.seges.acris.scaffold.model.domain.ThemeModel;
 import sk.seges.acris.scaffold.model.view.compose.ViewComposer;
+import sk.seges.acris.scaffold.service.ReadOperation;
 
 /**
  * Idea: we have a dialog where we can pick a theme for a web site (e.g. from a
@@ -16,6 +17,7 @@ import sk.seges.acris.scaffold.model.view.compose.ViewComposer;
  */
 @ViewComposer
 public class ThemeSelector {
+	@ServiceMapping(type = ServiceMapping.READ_TYPE, operation = ReadOperation.class)
 	@Singleselect
 	interface View extends ThemeModel {
 		String name();

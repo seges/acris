@@ -22,8 +22,7 @@ public class ViewTransferObjectProcessor extends FluentProcessor {
 	}
 
 	@Override
-	protected void processElement(ProcessorContext context) {
-		// TODO Auto-generated method stub
+	protected void doProcessElement(ProcessorContext context) {
 		
 	}
 

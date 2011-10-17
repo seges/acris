@@ -14,8 +14,9 @@ import sk.seges.acris.scaffold.model.domain.DomainModel;
 import sk.seges.acris.scaffold.model.view.compose2.Singleselect;
 import sk.seges.acris.scaffold.mvp.DefaultViewConfiguration;
 import sk.seges.pap.ScaffoldConstant;
-import sk.seges.pap.ScaffoldNameUtil;
 import sk.seges.pap.printer.table.column.TableColumnPrinter;
+import sk.seges.pap.type.DisplayType;
+import sk.seges.pap.type.PanelType;
 import sk.seges.sesam.core.pap.FluentProcessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -37,27 +38,18 @@ public class SingleSelectViewPanelProcessor extends FluentProcessor {
 			@Override
 			public List<MutableDeclaredType> getTypes(
 					MutableDeclaredType typeElement) {
-				ScaffoldNameUtil.prefixIfEnclosed(typeElement);
-				typeElement.addPackageSufix("." + ScaffoldConstant.PRES_PKG);
-				MutableDeclaredType displayInterface = typeElement.addClassSufix(Singleselect.class
-								.getSimpleName() + ScaffoldConstant.DISPLAY_SUFFIX);
-				return asList(displayInterface);
+				return asList((MutableDeclaredType) new DisplayType(typeElement));
 			}
 		});
 	}
 
 	@Override
 	protected MutableDeclaredType getResultType(MutableDeclaredType inputType) {
-		ScaffoldNameUtil.prefixIfEnclosed(inputType);
-		inputType.addPackageSufix("." + ScaffoldConstant.VIEW_PKG);
-		return inputType.addClassSufix(Singleselect.class.getSimpleName()
-				+ ScaffoldConstant.PANEL_SUFFIX);
+		return new PanelType(inputType);
 	}
 
 	@Override
-	protected void processElement(ProcessorContext context) {
-		FormattedPrintWriter pw = context.getPrintWriter();
-
+	protected void doProcessElement(ProcessorContext context) {
 		List<? extends TypeMirror> interfaces = context.getTypeElement()
 				.getInterfaces();
 		TypeMirror vtoMirror = findDomainModel(interfaces);

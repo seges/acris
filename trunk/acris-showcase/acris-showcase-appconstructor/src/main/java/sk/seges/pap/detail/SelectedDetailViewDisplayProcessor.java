@@ -4,8 +4,7 @@
 package sk.seges.pap.detail;
 
 import sk.seges.acris.scaffold.model.view.compose.SelectedDetail;
-import sk.seges.pap.ScaffoldConstant;
-import sk.seges.pap.ScaffoldNameUtil;
+import sk.seges.pap.type.DisplayType;
 import sk.seges.sesam.core.pap.FluentProcessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
@@ -21,15 +20,13 @@ public class SelectedDetailViewDisplayProcessor extends FluentProcessor {
 		addImplementedInterface(IsWidget.class);
 		setResultKind(MutableTypeKind.INTERFACE);
 	}
-	
+
 	@Override
 	protected MutableDeclaredType getResultType(MutableDeclaredType inputType) {
-		ScaffoldNameUtil.prefixIfEnclosed(inputType);
-		inputType.addPackageSufix("." + ScaffoldConstant.PRES_PKG);
-		return inputType.addClassSufix(SelectedDetail.class.getSimpleName() + ScaffoldConstant.DISPLAY_SUFFIX);
+		return new DisplayType(inputType);
 	}
 
 	@Override
-	protected void processElement(ProcessorContext context) {
+	protected void doProcessElement(ProcessorContext context) {
 	}
 }

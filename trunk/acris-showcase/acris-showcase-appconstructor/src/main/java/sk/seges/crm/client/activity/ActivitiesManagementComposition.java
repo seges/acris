@@ -1,5 +1,7 @@
 package sk.seges.crm.client.activity;
 
+import java.util.Date;
+
 import sk.seges.acris.scaffold.model.view.compose.Conjunction;
 import sk.seges.acris.scaffold.model.view.compose.SelectedDetail;
 import sk.seges.acris.scaffold.model.view.compose.ViewComposer;
@@ -14,6 +16,9 @@ public interface ActivitiesManagementComposition {
 	@sk.seges.acris.scaffold.annotation.View
 	@Singleselect
 	interface View extends LeadActivityModel {
+		Date when();
+		SalesmanModel executedBy();
+		
 		@Conjunction
 		interface FilterBy {
 			@AllowEmpty
@@ -28,4 +33,5 @@ public interface ActivitiesManagementComposition {
 	interface Detail extends LeadActivityModel {
 		
 	}
+	
 }
