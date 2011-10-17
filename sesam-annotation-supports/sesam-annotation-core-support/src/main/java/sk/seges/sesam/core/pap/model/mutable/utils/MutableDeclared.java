@@ -18,6 +18,7 @@ import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
 class MutableDeclared extends MutableType implements MutableDeclaredType {
@@ -578,19 +579,24 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 
 	public MutableDeclaredType stripTypeParametersTypes() {
 
-		dirty();
+		boolean invalidate = false;
 		
 		MutableTypeVariable[] variables = new MutableTypeVariable[getTypeVariables().size()];
 		int i = 0;
 		for (MutableTypeVariable typeParameter: getTypeVariables()) {
-			if (typeParameter.getVariable() != null) {
+			if (typeParameter.getVariable() != null && typeParameter.getVariable() != MutableWildcardType.WILDCARD_NAME) {
 				MutableVariable typeVariable = new MutableVariable();
 				typeVariable.setVariable(typeParameter.getVariable().toString());
 				variables[i] = typeVariable;
+				invalidate = true;
 			} else {
 				variables[i] = typeParameter;
 			}
 			i++;
+		}
+
+		if (invalidate) {
+			dirty();
 		}
 
 		return setTypeVariables(variables);

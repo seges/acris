@@ -31,10 +31,10 @@ class MutableWildcard extends MutableVariable implements MutableWildcardType {
 
 	@Override
 	public MutableTypeMirror getSuperBound() {
-		if (this.upperBounds.size() == 0) {
+		if (this.lowerBounds.size() == 0) {
 			return null;
 		}
-		return this.upperBounds.iterator().next();
+		return this.lowerBounds.iterator().next();
 	}
 
 	@Override

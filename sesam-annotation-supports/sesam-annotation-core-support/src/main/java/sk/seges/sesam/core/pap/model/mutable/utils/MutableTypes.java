@@ -397,7 +397,7 @@ public class MutableTypes implements Types {
 		if (type instanceof MutableWildcardType) {
 			return getWildcardType(
 					fromMutableType(((MutableWildcardType)type).getExtendsBound()),
-					fromMutableType(((MutableWildcardType)type).getExtendsBound()));
+					fromMutableType(((MutableWildcardType)type).getSuperBound()));
 		}
 
 		if (type instanceof MutableTypeVariable) {
