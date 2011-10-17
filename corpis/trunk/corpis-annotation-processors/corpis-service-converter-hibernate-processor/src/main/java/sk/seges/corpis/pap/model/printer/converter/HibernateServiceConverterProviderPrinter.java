@@ -21,9 +21,9 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
-public class HibernateConverterProviderPrinter extends ConverterProviderPrinter {
+public class HibernateServiceConverterProviderPrinter extends ConverterProviderPrinter {
 
-	public HibernateConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
+	public HibernateServiceConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
 			ParametersResolver parametersResolver) {
 		super(pw, processingEnv, parametersResolver);
 	}
@@ -82,4 +82,25 @@ public class HibernateConverterProviderPrinter extends ConverterProviderPrinter 
 
 		return result;
 	}
+	
+	@Override
+	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
+		int i = 0;
+		for (ConverterParameter converterParameter: converterParameters) {
+			if (converterParameter.isConverter() || !converterParameter.isPropagated()) {
+				if (i > 0) {
+					pw.print(", ");
+				}
+				
+				if (converterParameter.isConverter()) {
+					MutableDeclaredType parameterReplacedTypeParameters = ((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(converterParameter.getType())).setTypeVariables(toTypeParameters(converterTypeElement, false));
+					pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
+				} else {
+					pw.print(converterParameter.getType(), " " + converterParameter.getName());
+				}
+				i++;
+			}
+		}
+	}
+
 }
