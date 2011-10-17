@@ -145,7 +145,7 @@ public class HibernateEntityResolver implements EntityResolver {
 	}
 
 	private boolean isId(Element element) {
-		return element.getAnnotation(Id.class) != null || element.getAnnotation(EmbeddedId.class) != null;
+		return element.getAnnotation(sk.seges.sesam.pap.model.annotation.Id.class) != null || element.getAnnotation(Id.class) != null || element.getAnnotation(EmbeddedId.class) != null;
 	}
 
 	@Override
