@@ -584,9 +584,16 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		MutableTypeVariable[] variables = new MutableTypeVariable[getTypeVariables().size()];
 		int i = 0;
 		for (MutableTypeVariable typeParameter: getTypeVariables()) {
-			if (typeParameter.getVariable() != null && typeParameter.getVariable() != MutableWildcardType.WILDCARD_NAME) {
+			if (typeParameter.getVariable() != null && !typeParameter.getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
 				MutableVariable typeVariable = new MutableVariable();
 				typeVariable.setVariable(typeParameter.getVariable().toString());
+				variables[i] = typeVariable;
+				invalidate = true;
+			} else if (typeParameter.getVariable() != null && typeParameter.getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
+				MutableVariable typeVariable = new MutableVariable();
+				typeVariable.setLowerBounds(typeParameter.getLowerBounds());
+				typeVariable.setUpperBounds(typeParameter.getUpperBounds());
+				typeVariable.setVariable(null);
 				variables[i] = typeVariable;
 				invalidate = true;
 			} else {
