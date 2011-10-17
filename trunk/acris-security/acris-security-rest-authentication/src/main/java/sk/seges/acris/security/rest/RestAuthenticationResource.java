@@ -17,7 +17,7 @@ public class RestAuthenticationResource {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public JSONObject authenticateUser(@PathParam("webId") String webId, @PathParam("apiKey") String apiKey) throws JSONException {
 		JSONObject result;
-		if (webId != null && webId.matches("demo*\\.synapso\\.sk")) {
+		if (webId != null && webId.matches("demo*.\\.synapso\\.sk")) {
 			result = new JSONObject().put("allowed", true);
 		} else {
 			result = new JSONObject().put("allowed", false);
