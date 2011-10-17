@@ -45,7 +45,7 @@ public class ConverterProviderPrinter {
 		void print(MutableTypeVariable parameter, FormattedPrintWriter pw);
 	}
 
-	class ParameterTypesPrinter implements ParameterPrinter {
+	protected class ParameterTypesPrinter implements ParameterPrinter {
 
 		@Override
 		public void print(TypeParameterElement parameter, FormattedPrintWriter pw) {
@@ -58,7 +58,7 @@ public class ConverterProviderPrinter {
 		}
 	}
 	
-	class ParameterNamesPrinter implements ParameterPrinter {
+	protected class ParameterNamesPrinter implements ParameterPrinter {
 
 		@Override
 		public void print(TypeParameterElement parameter, FormattedPrintWriter pw) {
@@ -137,7 +137,23 @@ public class ConverterProviderPrinter {
 		return converterTypeElement.getConverterParameters(parametersResolver, constructorIndex);
 	}
 	
-	private void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends, int constructorIndex) {
+	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
+		int i = 0;
+		for (ConverterParameter converterParameter: converterParameters) {
+			if (converterParameter.isConverter()) {
+				if (i > 0) {
+					pw.print(", ");
+				}
+				
+				MutableDeclaredType parameterReplacedTypeParameters = ((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(converterParameter.getType())).setTypeVariables(toTypeParameters(converterTypeElement, false));
+				pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
+				
+				i++;
+			}
+		}
+	}
+	
+	protected void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends, int constructorIndex) {
 
 		List<ConverterParameter> converterParameters = getConverterParametersDefinition(converterTypeElement, constructorIndex);
 
@@ -153,22 +169,9 @@ public class ConverterProviderPrinter {
 		pw.print(" ", converterReplacedTypeParameters);
 		pw.print(" " + convertMethod + "(");
 
+		printConverterParametersDefinition(converterParameters, converterTypeElement);
+		
 		int i = 0;
-		for (ConverterParameter converterParameter: converterParameters) {
-			if (converterParameter.isConverter() || !converterParameter.isPropagated()) {
-				if (i > 0) {
-					pw.print(", ");
-				}
-				
-				if (converterParameter.isConverter()) {
-					MutableDeclaredType parameterReplacedTypeParameters = ((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(converterParameter.getType())).setTypeVariables(toTypeParameters(converterTypeElement, false));
-					pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
-				} else {
-					pw.print(converterParameter.getType(), " " + converterParameter.getName());
-				}
-				i++;
-			}
-		}
 		
 		pw.println(") {");
 
