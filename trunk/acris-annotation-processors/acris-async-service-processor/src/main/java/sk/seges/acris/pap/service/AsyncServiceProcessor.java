@@ -64,7 +64,7 @@ public class AsyncServiceProcessor extends FluentProcessor {
 	}
 	
 	@Override
-	protected void processElement(ProcessorContext context) {
+	protected void doProcessElement(ProcessorContext context) {
 		
 		final FormattedPrintWriter pw = context.getPrintWriter();
 		TypeElement element = context.getTypeElement();

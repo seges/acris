@@ -74,7 +74,7 @@ public class JpaModelProcessor extends FluentProcessor {
 	}
 
 	@Override
-	protected void processElement(final ProcessorContext context) {
+	protected void doProcessElement(final ProcessorContext context) {
 
 		final JpaModel jpaModel = context.getTypeElement().getAnnotation(JpaModel.class);
 		final FormattedPrintWriter pw = context.getPrintWriter();

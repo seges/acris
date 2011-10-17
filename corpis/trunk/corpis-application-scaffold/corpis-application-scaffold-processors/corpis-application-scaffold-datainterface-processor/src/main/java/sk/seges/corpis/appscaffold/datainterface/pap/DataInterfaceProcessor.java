@@ -45,7 +45,7 @@ public class DataInterfaceProcessor extends FluentProcessor {
 	}
 
 	@Override
-	protected void processElement(final ProcessorContext context) {
+	protected void doProcessElement(final ProcessorContext context) {
 
 		MethodAction action = new MethodAction() {
 			@Override

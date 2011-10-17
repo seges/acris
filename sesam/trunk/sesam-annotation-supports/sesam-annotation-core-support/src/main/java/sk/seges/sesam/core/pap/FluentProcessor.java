@@ -74,9 +74,18 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 	private Rule superClass = null;
 	private Type[] reactsOn;
 	private DefaultProcessorConfigurer configurer = null;
+	protected FormattedPrintWriter pw;
 
+	@Override
+	protected void processElement(ProcessorContext context) {
+		pw = context.getPrintWriter();
+		
+		doProcessElement(context);
+	}
+	
 	protected void addTargetClassName() {}
 
+	protected abstract void doProcessElement(ProcessorContext context);
 	protected abstract MutableDeclaredType getResultType(MutableDeclaredType inputType);
 
 	public void setResultKind(MutableTypeKind resultKind) {
@@ -133,6 +142,27 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 			};
 		}
 		return configurer;
+	}
+	
+	protected MutableDeclaredType toParametrizedMutableDeclaredType(Class<?> baseType, Class<?>... typeVariables) {
+		MutableDeclaredType mutableType = processingEnv.getTypeUtils().toMutableType(baseType);
+		for(Class<?> typeVariable : typeVariables) {
+			MutableDeclaredType typeVariableMirror = processingEnv.getTypeUtils().toMutableType(typeVariable);
+			mutableType.addTypeVariable(processingEnv.getTypeUtils().getTypeVariable(null, typeVariableMirror));
+		}
+		return mutableType;
+	}
+	
+	protected MutableDeclaredType toParametrizedMutableDeclaredType(Class<?> baseType, MutableDeclaredType... typeVariables) {
+		MutableDeclaredType mutableType = processingEnv.getTypeUtils().toMutableType(baseType);
+		return toParametrizedMutableDeclaredType(mutableType, typeVariables);
+	}
+	
+	protected MutableDeclaredType toParametrizedMutableDeclaredType(MutableDeclaredType baseType, MutableDeclaredType... typeVariables) {
+		for(MutableDeclaredType typeVariable : typeVariables) {
+			baseType.addTypeVariable(processingEnv.getTypeUtils().getTypeVariable(null, typeVariable));
+		}
+		return baseType;
 	}
 	
 	/**
