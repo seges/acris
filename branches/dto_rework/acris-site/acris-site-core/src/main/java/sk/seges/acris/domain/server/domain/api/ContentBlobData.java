@@ -2,9 +2,7 @@ package sk.seges.acris.domain.server.domain.api;
 
 import java.sql.Blob;
 
-import sk.seges.sesam.domain.IMutableDomainObject;
-
-public interface ContentBlobData<T> extends IMutableDomainObject<T> {
+public interface ContentBlobData {
 
 	Blob getContent();
 

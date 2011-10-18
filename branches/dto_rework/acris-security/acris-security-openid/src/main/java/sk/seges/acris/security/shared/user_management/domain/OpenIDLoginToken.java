@@ -8,19 +8,19 @@ public class OpenIDLoginToken implements LoginToken {
 	private static final long serialVersionUID = -1409051773288396870L;
 
 	private String identifier;
-
 	private String email;
-
 	private OpenIDProvider provider;
-
+	private String webId;
+	
 	public OpenIDLoginToken() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 
-	public OpenIDLoginToken(String identifier, String email, OpenIDProvider provider) {
+	public OpenIDLoginToken(String identifier, String email, OpenIDProvider provider, String webId) {
 		this.identifier = identifier;
 		this.email = email;
 		this.provider = provider;
+		this.webId = webId;
 	}
 
 	public String getIdentifier() {
@@ -45,5 +45,13 @@ public class OpenIDLoginToken implements LoginToken {
 
 	public void setProvider(OpenIDProvider provider) {
 		this.provider = provider;
+	}
+	
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
 	}
 }

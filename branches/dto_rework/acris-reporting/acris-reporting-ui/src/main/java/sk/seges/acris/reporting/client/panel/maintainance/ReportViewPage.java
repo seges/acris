@@ -24,8 +24,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.gen2.table.event.client.RowSelectionEvent;
-import com.google.gwt.gen2.table.event.client.RowSelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -113,9 +111,11 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 		reportBeanTable.setStyleName("ReportViewPage-view-table");
 		reportBeanTable.addStyleName("ReportViewPage-beantable");
 		reportBeanTable.setHeight("336px");
-		reportBeanTable.addRowSelectionHandler(new RowSelectionHandler() {
-			public void onRowSelection(RowSelectionEvent event) {
+		reportBeanTable.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
 				reportBeanTable.getSelected(new ActionListener<ReportDescriptionData>() {
+					@Override
 					public void actionPerformed(ActionEvent<ReportDescriptionData> event) {
 						selectedReport = event.getSource();
 					}
@@ -175,6 +175,7 @@ public class ReportViewPage extends Composite implements HasReportViewHandlers {
 							EMessageType.QUESTION_MESSAGE);
 					final Dialog areYouSureDialog = new OptionPane(widgetFactory).createMessageDialog(reportingMessages.delete(), pane,
 							false, true, EPanelOption.YES_NO_OPTION, new OptionPaneResultListener() {
+								@Override
 								public void onResultPrepared(EPanelResult result) {
 									if (EPanelResult.YES_OPTION.equals(result)) {
 										serviceRemove(pane);

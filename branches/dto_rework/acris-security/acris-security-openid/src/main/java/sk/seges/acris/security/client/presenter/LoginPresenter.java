@@ -281,7 +281,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 			// language support disabled
 		}
 
-		return new UserPasswordLoginToken(username, password, language);
+		return new UserPasswordLoginToken(username, password, language, null);
 	}
 
 	protected void registerHandlers() {

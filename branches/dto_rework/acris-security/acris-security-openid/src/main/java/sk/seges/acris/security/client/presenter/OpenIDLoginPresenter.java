@@ -9,8 +9,8 @@ import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.event.OpenIDLoginEvent;
 import sk.seges.acris.security.client.handler.HasOpenIDLoginHandlers;
 import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
-import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
+import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.configuration.LoginConfiguration;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
@@ -180,8 +180,8 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		registerHandler(addOpenIDLoginHandler(openIDLoginHandler));
 	}
 
-	protected OpenIDLoginToken constructOpenIDLoginToken(String identifier, String email, OpenIDProvider provider) {
-		return new OpenIDLoginToken(identifier, email, provider);
+	protected OpenIDLoginToken constructOpenIDLoginToken(String identifier, String email, OpenIDProvider provider, String webId) {
+		return new OpenIDLoginToken(identifier, email, provider, webId);
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 					@Override
 					public void onSuccess(OpenIDUserDTO result) {
 						doLogin(constructOpenIDLoginToken(result.getOpenIDIdentifier(), result.getEmail(),
-								getProviderFromURL(href)), callback);
+								getProviderFromURL(href), null), callback);
 					}
 				});
 			}

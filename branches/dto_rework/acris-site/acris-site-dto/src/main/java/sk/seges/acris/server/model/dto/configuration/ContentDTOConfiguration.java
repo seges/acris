@@ -16,13 +16,19 @@ import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 @Mapping(MappingType.AUTOMATIC)
 public interface ContentDTOConfiguration extends IDataTransferObject {
 
-	@Ignore void webId();
+	@Ignore
+	void webId();
 
-	@Id void id();
+	@Id
+	void id();
 
-	@Field("content") String contentDetached();
-	@Field("menuItems") MenuItem menuItemsData();
+	@Field("content")
+	String contentDetached();
+
+	@Field("menuItems")
+	MenuItem menuItemsData();
 
 	Date created();
+
 	Date modified();
 }
