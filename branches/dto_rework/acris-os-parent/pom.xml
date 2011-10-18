@@ -139,6 +139,12 @@
 				<version>${corpis-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+			<dependency>
+	            	<groupId>sk.seges.corpis</groupId>
+	            	<artifactId>corpis-domain-model-hibernate-processor</artifactId>
+				<version>${corpis-os.version}</version>
+	            	<scope>provided</scope>
+	        	</dependency>
 
 			<!-- Sesam dependencies -->
 			<dependency>
@@ -502,6 +508,17 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-core</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-dto</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
