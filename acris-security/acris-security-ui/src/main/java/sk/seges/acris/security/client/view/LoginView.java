@@ -215,9 +215,6 @@ public class LoginView extends Composite implements LoginDisplay {
 		ensureLoginButton().getParent().addStyleName("login-Button-disabled");
 
 		setStyleNames();
-		
-		username.setText("admin");
-		password.setText("admin");
 	}
 
 	private int initLanguageBox(Pair<String, String>[] enabledLanguages, int rowCounter) {

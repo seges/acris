@@ -3,12 +3,12 @@
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-gwt-parent</artifactId>
-	<version>1.1.4-SNAPSHOT</version>
+	<version>1.2.1-SNAPSHOT</version>
 
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.1.8-SNAPSHOT</version>
+		<version>1.2.1-SNAPSHOT</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -41,7 +41,7 @@
 		<gwt-beansbinding.version>0.4</gwt-beansbinding.version>
 
 		<gilead.version>1.3.3s2</gilead.version>
-		<gwt-widgets-server.version>1.1</gwt-widgets-server.version>
+		<gwt-widgets-server.version>1.2</gwt-widgets-server.version>
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 		<gwteventservice.version>1.0.2</gwteventservice.version>
 		
@@ -55,11 +55,13 @@
 		<beanlib-hibernate.version>5.0.2beta</beanlib-hibernate.version>
 
 		<openid4java.version>0.9.6</openid4java.version>
-		<twig.version>1.0.3</twig.version>
-		<guice.version>2.0</guice.version>
+		<twig.version>1.0.4</twig.version>
+                <guice.version>2.0</guice.version>
 
 		<jasper.version>3.7.3</jasper.version>
 		<jasperserver.version>3.7.0</jasperserver.version>
+
+		<appengine.version>1.5.2</appengine.version>
 	</properties>
 
 	<dependencyManagement>
@@ -219,66 +221,79 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.htmlparser</groupId>
-				<artifactId>htmlparser</artifactId>
-				<version>${htmlparser.version}</version>
-			</dependency>
+	                        <groupId>org.htmlparser</groupId>
+	                        <artifactId>htmlparser</artifactId>
+        	                <version>${htmlparser.version}</version>
+	                </dependency>
 
 			<dependency>
-	        	<groupId>org</groupId>
+		        	<groupId>org</groupId>
 				<artifactId>gwt-time</artifactId>
 				<version>${gwt-time.version}</version>
 			</dependency>
 
-			<!-- OpenID4Java consumer -->
-			<dependency>
-					<groupId>org.openid4java</groupId>
-					<artifactId>openid4java-consumer</artifactId>
-					<version>${openid4java.version}</version>
-			</dependency>
-			<dependency>
-					<groupId>org.openid4java</groupId>
-					<artifactId>openid4java-nodeps</artifactId>
-					<version>${openid4java.version}</version>
-			</dependency>
 
-			<!-- Twig -->
-			<dependency>
-					<groupId>com.vercer.engine.persist</groupId>
-					<artifactId>twig-persist</artifactId>
-					<version>${twig.version}</version>
-			</dependency>
+                        <!-- OpenID4Java consumer -->
+                        <dependency>
+                                <groupId>org.openid4java</groupId>
+                                <artifactId>openid4java-consumer</artifactId>
+                                <version>${openid4java.version}</version>
+                        </dependency>
+                        <dependency>
+                                <groupId>org.openid4java</groupId>
+                                <artifactId>openid4java-nodeps</artifactId>
+                                <version>${openid4java.version}</version>
+                        </dependency>
 
-			<dependency>
-					<groupId>com.google.inject</groupId>
-					<artifactId>guice</artifactId>
-					<version>${guice.version}</version>
-			</dependency>
+                        <!-- Twig -->
+                        <dependency>
+				<groupId>com.vercer.engine.persist</groupId>
+                                <artifactId>twig-persist</artifactId>
+                                <version>${twig.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.google.inject</groupId>
+                                <artifactId>guice</artifactId>
+                                <version>${guice.version}</version>
+                        </dependency>
 
 			<!-- Jasper -->
 			<dependency>
-					<groupId>net.sf.jasperreports</groupId>
-					<artifactId>jasperreports</artifactId>
-					<version>${jasper.version}</version>
-			</dependency>
+                                <groupId>net.sf.jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>${jasper.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
+                                <artifactId>jasperserver-api-metadata</artifactId>
+                                <version>${jasperserver.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.jaspersoft.jasperserver</groupId>
+                                <artifactId>jasperserver-ireport-plugin</artifactId>
+                                <version>${jasperserver.version}</version>
+                        </dependency>
+
+                        <dependency>
+                                <groupId>com.jaspersoft.jasperserver</groupId>
+                                <artifactId>jasperserver-common-ws</artifactId>
+                                <version>${jasperserver.version}</version>
+                        </dependency>
 
 			<dependency>
-					<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
-					<artifactId>jasperserver-api-metadata</artifactId>
-					<version>${jasperserver.version}</version>
+	                        <groupId>com.google.appengine</groupId>
+	                        <artifactId>appengine-api-1.0-sdk</artifactId>
+				<version>${appengine.version}</version>
 			</dependency>
-
 			<dependency>
-					<groupId>com.jaspersoft.jasperserver</groupId>
-					<artifactId>jasperserver-ireport-plugin</artifactId>
-					<version>${jasperserver.version}</version>
-			</dependency>
+	                        <groupId>com.google.appengine</groupId>
+	                        <artifactId>appengine-api-labs</artifactId>
+				<version>${appengine.version}</version>
+	                </dependency>
 
-			<dependency>
-					<groupId>com.jaspersoft.jasperserver</groupId>
-					<artifactId>jasperserver-common-ws</artifactId>
-					<version>${jasperserver.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -417,6 +432,7 @@
 				</dependency>
 			</dependencies>
 		</profile>
+
 		<profile>
 			<id>gae</id>
 			<activation>
@@ -481,9 +497,6 @@
 							</excludes>
 							<additionalBuildcommands>
 								<buildCommand>
-									<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
-								</buildCommand>
-								<buildCommand>
 									<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
 								</buildCommand>
 								<buildCommand>
@@ -507,7 +520,7 @@
 								<file>
 									<name>.settings/com.google.gdt.eclipse.core.prefs</name>
 									<content><![CDATA[
-										eclipse.preferences.version=1
+										eclipse.preferences.version=2
 										jarsExcludedFromWebInfLib=
 										warSrcDir=target/${artifactId}-${version}
 										warSrcDirIsOutput=true
@@ -546,41 +559,61 @@
 			</build>
 			<dependencies>
 				<dependency>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-user</artifactId>
-					<scope>provided</scope>
-				</dependency>
+		                        <groupId>com.google.appengine</groupId>
+		                        <artifactId>appengine-api-1.0-sdk</artifactId>
+		                </dependency>
+                
 				<dependency>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-servlet</artifactId>
-					<scope>runtime</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-dev</artifactId>
-					<scope>provided</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.google.appengine</groupId>
-					<artifactId>appengine-api-1.0-sdk</artifactId>
-					<version>1.3.6</version>
-				</dependency>
-				<dependency>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpcore</artifactId>
-					<version>4.0.1</version>
-				</dependency>
-				<dependency>
-					<groupId>org.apache.httpcomponents</groupId>
-					<artifactId>httpcore</artifactId>
-					<version>4.0.1</version>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-javamail_1.4_spec</artifactId>
 				</dependency>
 
 				<dependency>
-					<groupId>xalan</groupId>
-					<artifactId>xalan</artifactId>
-					<version>2.7.1</version>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
 				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>acris-quick-gae</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.acris-quick-gae</exists>
+				</file>
+			</activation>
+
+			<dependencies>
+				<dependency>
+                			<groupId>com.vercer.engine.persist</groupId>
+			                <artifactId>twig-persist</artifactId>
+		        	</dependency>
+
+				<dependency>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>jsr311-api</artifactId>
+				</dependency>
+	
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-server</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-client</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-json</artifactId>
+				</dependency>	
+				<dependency>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-spring</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-multipart</artifactId>
+				</dependency>	
 			</dependencies>
 		</profile>
 	</profiles>
@@ -588,6 +621,7 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+			<!-- Common customized plugin section -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>gwt-maven-plugin</artifactId>
@@ -629,6 +663,7 @@
 						</execution>
 					</executions>
 				</plugin>
+			<!-- End of Common customized plugin section -->
 			</plugins>
 		</pluginManagement>
 

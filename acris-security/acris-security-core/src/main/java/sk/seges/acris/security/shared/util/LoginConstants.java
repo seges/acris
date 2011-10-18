@@ -7,6 +7,8 @@ public class LoginConstants {
 	public static final String ACRIS_LOCALE_STRING = "locale";
 	public static final String ACRIS_CODESVR_STRING = "gwt.codesvr";
 	public static final String ACRIS_SESSION_ID_STRING = "sessionid";
+	public static final String ACRIS_API_KEY_STRING = "apikey";
+	public static final String ACRIS_WEB_ID_STRING = "webid";
 
 	// Login token name
 	public static final String LOGIN_TOKEN_NAME = "login.token.name";

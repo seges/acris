@@ -16,6 +16,7 @@ public class JsonizerType extends DelegateMutableDeclaredType {
 	private MutableDeclaredType type;
 	
 	public JsonizerType(MutableDeclaredType type, MutableProcessingEnvironment processingEnv) {
+		this.type = type;
 		Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
 		interfaces.add(processingEnv.getTypeUtils().toMutableType(IJsonObject.class).setTypeVariables(processingEnv.getTypeUtils().getTypeVariable(null, type)));
 

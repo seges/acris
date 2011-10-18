@@ -4,9 +4,8 @@ import java.sql.Blob;
 
 import sk.seges.acris.domain.server.domain.api.ContentBlobData;
 import sk.seges.acris.domain.shared.domain.base.ContentBase;
-import sk.seges.acris.domain.shared.domain.base.ContentPkBase;
 
-public class ContentBlobBase extends ContentBase implements ContentBlobData<ContentPkBase> {
+public class ContentBlobBase extends ContentBase implements ContentBlobData {
 
 	private static final long serialVersionUID = 1744660288284574333L;
 

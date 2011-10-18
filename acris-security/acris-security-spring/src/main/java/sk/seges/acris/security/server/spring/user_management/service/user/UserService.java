@@ -5,9 +5,11 @@ import javax.servlet.http.HttpSession;
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.core.login.api.LoginServiceProvider;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
+import sk.seges.acris.security.server.core.user_management.context.api.UserContextProvider;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserService;
 import sk.seges.acris.security.shared.util.LoginConstants;
@@ -16,10 +18,12 @@ public class UserService implements IUserService {
 
 	private LoginServiceProvider loginServiceProvider;
 	private ServerSessionProvider sessionProvider;
-
-	public UserService(LoginServiceProvider loginServiceProvider, ServerSessionProvider sessionProvider) {
+	private UserContextProvider userContextProvider;
+	
+	public UserService(LoginServiceProvider loginServiceProvider, ServerSessionProvider sessionProvider, UserContextProvider userContextProvider) {
 		this.loginServiceProvider = loginServiceProvider;
 		this.sessionProvider = sessionProvider;
+		this.userContextProvider = userContextProvider;
 	}
 
 	@Override
@@ -53,18 +57,13 @@ public class UserService implements IUserService {
 		}
 	}
 
-	public UserData<?> getLoggedUser() throws ServerException {
-		HttpSession session = sessionProvider.getSession();
-		UserData<?> user = (UserData<?>) session.getAttribute(LoginConstants.LOGGED_USER_NAME);
-
-		return user;
-	}
-
 	@Override
-	public String getLoggedUserName() throws ServerException {
-		HttpSession session = sessionProvider.getSession();
-		UserData<?> user = (UserData<?>) session.getAttribute(LoginConstants.LOGGED_USER_NAME);
-
-		return user.getUsername();
+	public String getLoggedUserName(UserContext userContext) throws ServerException {
+		return userContextProvider.getUserProviderService(userContext).getLoggedUserName(userContext);
+	}
+	
+	@Override
+	public UserData<?> getLoggedUser(UserContext userContext) {
+		return userContextProvider.getUserProviderService(userContext).getLoggedUser(userContext);
 	}
 }

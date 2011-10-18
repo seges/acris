@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-site-parent</artifactId>
-		<version>1.1.3-SNAPSHOT</version>
+		<version>1.2.1-SNAPSHOT</version>
 		<relativePath>../acris-site-parent</relativePath>
 	</parent>
 
@@ -19,6 +19,11 @@
             <artifactId>corpis-domain-model-hibernate-processor</artifactId>
             <scope>provided</scope>
         </dependency>
+		<!--dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-domain-model-converter-hibernate-processor</artifactId>
+            <scope>provided</scope>
+        </dependency-->
 
 		<!-- Acris dependencies -->
 		<dependency>

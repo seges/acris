@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 
 import net.sf.gilead.pojo.base.ILightEntity;
 import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
-import sk.seges.corpis.server.domain.jpa.JpaCountry;
+import sk.seges.corpis.shared.domain.jpa.JpaCountry;
 
 
 @Entity

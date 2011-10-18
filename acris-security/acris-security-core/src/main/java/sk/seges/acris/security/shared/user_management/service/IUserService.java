@@ -3,6 +3,7 @@ package sk.seges.acris.security.shared.user_management.service;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -46,11 +47,7 @@ public interface IUserService extends RemoteService {
 	 */
 	void logout() throws ServerException;
 
-	/**
-	 * @return current logged user from user server session. If no user is
-	 *         logged return value is null
-	 */
-	UserData<?> getLoggedUser() throws ServerException;
-
-	String getLoggedUserName() throws ServerException;
+	String getLoggedUserName(UserContext userContext) throws ServerException;
+	
+	UserData<?> getLoggedUser(UserContext userContext);
 }

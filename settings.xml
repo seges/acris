@@ -124,6 +124,13 @@
 					</snapshots>
 				</pluginRepository>
 				<pluginRepository>
+					<id>acris-plugins-releases-repo</id>
+					<url>http://acris.googlecode.com/svn/release-repository</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
 					<id>acris-plugins-snapshots-repo</id>
 					<url>http://acris.googlecode.com/svn/snapshot-plugins-repository</url>
 					<snapshots>
