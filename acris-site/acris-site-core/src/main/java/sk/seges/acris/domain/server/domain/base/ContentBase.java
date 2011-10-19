@@ -1,16 +1,21 @@
-package sk.seges.acris.domain.shared.domain.base;
+package sk.seges.acris.domain.server.domain.base;
 
+import java.sql.Blob;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import sk.seges.acris.domain.server.domain.api.ContentBlobData;
 import sk.seges.acris.domain.shared.domain.api.ContentData;
+import sk.seges.acris.domain.shared.domain.base.ContentPkBase;
 
-public class ContentBase implements ContentData<ContentPkBase> {
+public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData {
 
-	private static final long serialVersionUID = 1204787763693370171L;
+	private static final long serialVersionUID = 1744660288284574333L;
 
 	private ContentPkBase id;
+
+	private String webId;
 
 	private String title;
 
@@ -58,6 +63,8 @@ public class ContentBase implements ContentData<ContentPkBase> {
 
 	private Boolean hasChildren = false;
 
+	private Blob content;
+
 	@Override
 	public ContentPkBase getId() {
 		return id;
@@ -70,13 +77,12 @@ public class ContentBase implements ContentData<ContentPkBase> {
 
 	@Override
 	public String getWebId() {
-
-		return null;
+		return webId;
 	}
 
 	@Override
 	public void setWebId(String webId) {
-
+		this.webId = webId;
 	}
 
 	@Override
@@ -307,5 +313,15 @@ public class ContentBase implements ContentData<ContentPkBase> {
 	@Override
 	public void setParams(String params) {
 		this.params = params;
+	}
+
+	@Override
+	public Blob getContent() {
+		return content;
+	}
+
+	@Override
+	public void setContent(Blob content) {
+		this.content = content;
 	}
 }
