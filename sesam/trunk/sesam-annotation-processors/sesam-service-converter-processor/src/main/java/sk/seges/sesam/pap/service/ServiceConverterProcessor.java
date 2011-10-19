@@ -62,7 +62,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 
 	protected ConfigurationProvider[] getConfigurationProviders(ServiceTypeElement service) {
 		return new ConfigurationProvider[] {
-				new ServiceCollectorConfigurationProvider(service, processingEnv, roundEnv)
+				new ServiceCollectorConfigurationProvider(getClassPathTypes(), service, processingEnv, roundEnv)
 		};
 	}
 

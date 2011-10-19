@@ -64,6 +64,11 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	}
 
 	@Override
+	public MutableDeclaredType cloneTypeVariables(MutableDeclaredType declaredType) {
+		return ensureDelegateType().cloneTypeVariables(declaredType);
+	}
+
+	@Override
 	public MutableDeclaredType setTypeVariables(MutableTypeVariable... mutableTypeVariables) {
 		return ensureDelegateType().setTypeVariables(mutableTypeVariables);
 	}

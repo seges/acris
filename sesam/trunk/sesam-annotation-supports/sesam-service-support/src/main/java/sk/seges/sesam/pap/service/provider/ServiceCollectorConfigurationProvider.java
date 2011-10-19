@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.DeclaredType;
 
+import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
@@ -17,8 +18,8 @@ public class ServiceCollectorConfigurationProvider extends AbstractServiceCollec
 	protected final ServiceTypeElement service;
 	private List<ConfigurationTypeElement> configurations = null;
 	
-	public ServiceCollectorConfigurationProvider(ServiceTypeElement service, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		super(processingEnv, roundEnv);
+	public ServiceCollectorConfigurationProvider(ClassPathTypes classpathUtils, ServiceTypeElement service, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+		super(classpathUtils, processingEnv, roundEnv);
 		this.service = service;
 	}
 		

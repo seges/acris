@@ -21,6 +21,8 @@ import sk.seges.sesam.core.pap.utils.ListUtils;
 
 public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotationProcessor {
 
+	public static final String SUPPORTED_PACKAGE = "sk.seges";
+	
 	public static final String PROJECT_NAME_OPTION = "projectName";
 	public static final String CLASSPATH_OPTION = "classpath";
 	public static final String TEST_CLASSPATH_OPTION = "testClasspath";
@@ -67,7 +69,7 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	    	projectName = getClass().getCanonicalName();
 	    }
 
-		return new ClassPathTypeUtils(processingEnv, projectName);
+		return new ClassPathTypeUtils(processingEnv, projectName, SUPPORTED_PACKAGE);
     }
 
 	@Override

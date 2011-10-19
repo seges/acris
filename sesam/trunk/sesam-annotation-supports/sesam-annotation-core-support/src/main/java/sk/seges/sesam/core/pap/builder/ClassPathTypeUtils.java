@@ -224,10 +224,12 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 	
 	private ProcessingEnvironment processingEnv;
 	private Project project;
+	private String packageName;
 	
-	public ClassPathTypeUtils(ProcessingEnvironment processingEnv, String projectName) {
+	public ClassPathTypeUtils(ProcessingEnvironment processingEnv, String projectName, String packageName) {
 		this.processingEnv = processingEnv;
 		this.project = Project.get(projectName);
+		this.packageName = packageName;
 
 		if (!project.isInitialized()) {
 			initializeSystemProperties();
@@ -494,6 +496,10 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 
 	private void findSubclasses(URL location, String packageName, Map<String, Set<String>> annotatedClasses) {
 
+		if (!packageName.startsWith(this.packageName)) {
+			return;
+		}
+		
 		// TODO: add getResourceLocations() to this list
 
 

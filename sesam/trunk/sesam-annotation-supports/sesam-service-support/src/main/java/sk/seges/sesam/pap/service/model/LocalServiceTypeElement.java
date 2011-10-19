@@ -11,6 +11,7 @@ import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 
 public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
@@ -30,6 +31,7 @@ public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
 		this.remoteService = remoteService;
 		this.localServiceType = null;
 		setKind(MutableTypeKind.INTERFACE);
+		prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
 	}
 
 	public LocalServiceTypeElement(TypeElement localServiceType, MutableProcessingEnvironment processingEnv) {
@@ -83,10 +85,7 @@ public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
 		PackageValidator packageValidator = new DefaultPackageValidatorProvider().get(mutableType.getPackageName());
 		packageValidator.moveTo(LocationType.SERVER);
 		mutableType = mutableType.changePackage(packageValidator);
-
-		mutableType.setTypeVariables(
-				remoteService.getTypeVariables().toArray(new MutableTypeVariable[] {}));
-
+		mutableType.cloneTypeVariables(remoteService);
 		return mutableType.setSimpleName(simpleName + LOCAL_SUFFIX);
 	}
 
