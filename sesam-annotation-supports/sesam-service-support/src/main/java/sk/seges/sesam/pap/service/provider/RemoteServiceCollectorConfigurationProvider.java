@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.DeclaredType;
 
+import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
@@ -15,8 +16,8 @@ public class RemoteServiceCollectorConfigurationProvider extends AbstractService
 	protected final RemoteServiceTypeElement remoteService;
 	private List<ConfigurationTypeElement> configurations = null;
 
-	public RemoteServiceCollectorConfigurationProvider(RemoteServiceTypeElement remoteService, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		super(processingEnv, roundEnv);
+	public RemoteServiceCollectorConfigurationProvider(ClassPathTypes classpathUtils, RemoteServiceTypeElement remoteService, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+		super(classpathUtils, processingEnv, roundEnv);
 		this.remoteService = remoteService;
 	}
 

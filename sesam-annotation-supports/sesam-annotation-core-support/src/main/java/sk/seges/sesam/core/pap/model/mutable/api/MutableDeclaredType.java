@@ -44,6 +44,7 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
 
 	List<? extends MutableTypeVariable> getTypeVariables();
 	MutableDeclaredType setTypeVariables(MutableTypeVariable... mutableTypeVariables);
+	MutableDeclaredType cloneTypeVariables(MutableDeclaredType declaredType);
 	MutableDeclaredType addTypeVariable(MutableTypeVariable typeVariable);
 
 	MutableDeclaredType addClassSufix(String sufix);

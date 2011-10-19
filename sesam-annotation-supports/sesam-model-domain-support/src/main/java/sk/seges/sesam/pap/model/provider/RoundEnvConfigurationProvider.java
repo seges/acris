@@ -38,19 +38,28 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		return (!type.getKind().equals(MutableTypeKind.PRIMITIVE));
 	}
 	
+	protected Set<? extends Element> getConfigurationElements() {
+		return roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
+	}
+	
 	public ConfigurationTypeElement getConfigurationForDomain(MutableTypeMirror domainType) {
 
 		if (!isSupportedType(domainType)) {
 			return null;
 		};
 
-		Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
+		Element result = null;
+		
+		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
 		for (Element annotatedElement : elementsAnnotatedWith) {
 			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
 				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
 	
 				if (configurationTypeElement.appliesForDomainType(domainType)) {
-					return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)annotatedElement, processingEnv, roundEnv);
+					result = annotatedElement;
+					if (configurationTypeElement.getDelegateConfigurationTypeElement() == null) {
+						return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)annotatedElement, processingEnv, roundEnv);
+					}
 				}
 			}
 		}
@@ -68,6 +77,11 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 				}
 			}
 		}
+
+		if (result != null) {
+			return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result, processingEnv, roundEnv);
+		}
+
 		return null;
 	}
 
@@ -76,22 +90,20 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		if (!isSupportedType(dtoType)) {
 			return null;
 		};
-
-		//Configuration should be directly in the DTO - when its generated
-		if (dtoType.getKind().isDeclared() && (((MutableDeclaredType)dtoType).asType()) != null && ((MutableDeclaredType)dtoType).asType().getKind().equals(TypeKind.DECLARED)) {
-			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv);
-			if (transferObjectConfiguration.getMappingForDto((MutableDeclaredType)dtoType) != null) {
-				return new ConfigurationTypeElement(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv, roundEnv);
-			}
-		}
 		
-		Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
+		Element result = null;
+		
+		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
 		for (Element annotatedElement : elementsAnnotatedWith) {
 			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
 				ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement((TypeElement)annotatedElement, processingEnv, roundEnv);
 	
 				if (configurationTypeElement.appliesForDtoType(dtoType)) {
-					return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv);
+					result = annotatedElement;
+					
+					if (configurationTypeElement.getDelegateConfigurationTypeElement() == null) {
+						return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv);
+					}
 				}
 			}
 		}
@@ -109,6 +121,19 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 				}
 			}
 		}
+
+		if (result != null) {
+			return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result, processingEnv, roundEnv);
+		}
+
+		//Configuration should be directly in the DTO - when its generated
+		if (dtoType.getKind().isDeclared() && (((MutableDeclaredType)dtoType).asType()) != null && ((MutableDeclaredType)dtoType).asType().getKind().equals(TypeKind.DECLARED)) {
+			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv);
+			if (transferObjectConfiguration.getMappingForDto((MutableDeclaredType)dtoType) != null) {
+				return new ConfigurationTypeElement(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv, roundEnv);
+			}
+		}
+
 		return null;
 	}
 }

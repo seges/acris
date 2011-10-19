@@ -48,7 +48,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 	
 	protected ConfigurationProvider[] getConfigurationProviders(RemoteServiceTypeElement remoteServiceInterfaceElement) {
 		return new ConfigurationProvider[] {
-				new RemoteServiceCollectorConfigurationProvider(remoteServiceInterfaceElement, processingEnv, roundEnv)
+				new RemoteServiceCollectorConfigurationProvider(getClassPathTypes(), remoteServiceInterfaceElement, processingEnv, roundEnv)
 		};
 	}
 

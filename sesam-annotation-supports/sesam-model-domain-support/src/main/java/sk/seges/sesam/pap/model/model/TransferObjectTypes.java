@@ -1,8 +1,5 @@
 package sk.seges.sesam.pap.model.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -45,16 +42,7 @@ public class TransferObjectTypes {
 		case INTERFACE:
 		case PRIMITIVE:
 		case VOID:
-			DomainDeclared domainDeclared = new DomainDeclared((MutableDeclaredType) type, processingEnv, roundEnv, configurationProviders);
-			//FIXME I'm not sure about this
-			List<? extends MutableTypeVariable> typeVariables = domainDeclared.getTypeVariables();
-			List<MutableTypeVariable> domainTypeVariables = new LinkedList<MutableTypeVariable>();
-			for (MutableTypeVariable dtoTypeVariable: typeVariables) {
-				DomainType domainTypeVariable = getDomainType(dtoTypeVariable);
-				domainTypeVariables.add((MutableTypeVariable)domainTypeVariable);
-			}
-			domainDeclared.setTypeVariables(domainTypeVariables.toArray(new MutableTypeVariable[] {}));
-			return domainDeclared;
+			return new DomainDeclared((MutableDeclaredType) type, processingEnv, roundEnv, configurationProviders);
 		case TYPEVAR:
 			return new DomainVariable((MutableTypeVariable)type, processingEnv, roundEnv, configurationProviders);
 		case WILDCARD:
@@ -112,16 +100,7 @@ public class TransferObjectTypes {
 		case INTERFACE:
 		case PRIMITIVE:
 		case VOID:
-			DtoDeclared dtoDeclared = new DtoDeclared((MutableDeclaredType) type, processingEnv, roundEnv, configurationProviders);
-			//FIXME I'm not sure about this
-			List<? extends MutableTypeVariable> typeVariables = dtoDeclared.getTypeVariables();
-			List<MutableTypeVariable> dtoTypeVariables = new LinkedList<MutableTypeVariable>();
-			for (MutableTypeVariable domainTypeVariable: typeVariables) {
-				DtoType dtoTypeVariable = getDtoType(domainTypeVariable);
-				dtoTypeVariables.add((MutableTypeVariable)dtoTypeVariable);
-			}
-			dtoDeclared.setTypeVariables(dtoTypeVariables.toArray(new MutableTypeVariable[] {}));
-			return dtoDeclared;
+			return new DtoDeclared((MutableDeclaredType) type, processingEnv, roundEnv, configurationProviders);
 		case TYPEVAR:
 			return new DtoVariable((MutableTypeVariable)type, processingEnv, roundEnv);
 		case WILDCARD:

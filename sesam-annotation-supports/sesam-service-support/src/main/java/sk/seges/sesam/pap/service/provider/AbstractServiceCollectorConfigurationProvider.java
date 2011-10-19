@@ -12,16 +12,18 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
+import sk.seges.sesam.pap.model.provider.ClasspathConfigurationProvider;
 
-public abstract class AbstractServiceCollectorConfigurationProvider extends RoundEnvConfigurationProvider {
+public abstract class AbstractServiceCollectorConfigurationProvider extends ClasspathConfigurationProvider {
 
-	public AbstractServiceCollectorConfigurationProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		super(processingEnv, roundEnv);
+	public AbstractServiceCollectorConfigurationProvider(ClassPathTypes classpathUtils,
+			TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+		super(classpathUtils, processingEnv, roundEnv);
 	}
 
 	protected List<ConfigurationTypeElement> getConfigurationsFromType(DeclaredType type, List<String> processedElements) {
@@ -99,13 +101,29 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 			return null;
 		};
 
+		ConfigurationTypeElement result = null;
+		
 		for (ConfigurationTypeElement configurationTypeElement : collectConfigurations()) {
 			if (configurationTypeElement.appliesForDtoType(dtoType)) {
-				return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)configurationTypeElement.asElement(), processingEnv, roundEnv);
+				result = configurationTypeElement;
+
+				if (result.getDelegateConfigurationTypeElement() == null) {
+					return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asElement(), processingEnv, roundEnv);
+				}
 			}
 		}
+		
+		ConfigurationTypeElement configurationForDto = super.getConfigurationForDto(dtoType);
+		
+		if (configurationForDto != null) {
+			return configurationForDto;
+		}
 
-		return super.getConfigurationForDto(dtoType);
+		if (result != null) {
+			return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asElement(), processingEnv, roundEnv);
+		}
+
+		return null;
 	}
 
 	@Override
@@ -114,12 +132,28 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Roun
 			return null;
 		};
 
+		ConfigurationTypeElement result = null;
+
 		for (ConfigurationTypeElement configurationTypeElement : collectConfigurations()) {
 			if (configurationTypeElement.appliesForDomainType(domainType)) {
-				return new ConfigurationTypeElement(null, (MutableDeclaredType)domainType, (TypeElement)configurationTypeElement.asElement(), processingEnv, roundEnv);
+				result = configurationTypeElement;
+
+				if (result.getDelegateConfigurationTypeElement() == null) {
+					return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asElement(), processingEnv, roundEnv);
+				}
 			}
 		}
 
-		return super.getConfigurationForDomain(domainType);
+		ConfigurationTypeElement configurationForDomain = super.getConfigurationForDomain(domainType);
+		
+		if (configurationForDomain != null) {
+			return configurationForDomain;
+		}
+		
+		if (result != null) {
+			return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asElement(), processingEnv, roundEnv);
+		}
+		
+		return null;
 	}
 }

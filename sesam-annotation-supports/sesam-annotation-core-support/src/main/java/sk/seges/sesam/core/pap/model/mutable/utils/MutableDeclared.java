@@ -497,6 +497,19 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	}
 
 	@Override
+	public MutableDeclaredType cloneTypeVariables(MutableDeclaredType declaredType) {
+		dirty();
+		
+		this.typeVariables = new LinkedList<MutableTypeVariable>();
+		
+		for (MutableTypeVariable typeVariable: declaredType.getTypeVariables()) {
+			this.typeVariables.add(typeVariable.clone());
+		}
+		
+		return this;
+	}
+
+	@Override
 	public MutableDeclaredType setTypeVariables(MutableTypeVariable... mutableTypeVariables) {
 		
 		dirty();
