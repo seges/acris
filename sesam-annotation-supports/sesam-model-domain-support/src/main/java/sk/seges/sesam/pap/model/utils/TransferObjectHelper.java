@@ -50,11 +50,11 @@ public class TransferObjectHelper {
 
 			if (elementMethod.getModifiers().contains(Modifier.PUBLIC)
 					&& elementMethod.getSimpleName().toString().equals(MethodHelper.toSetter(method)) && elementMethod.getParameters().size() == 1
-					&& processingEnv.getTypeUtils().isAssignable(elementMethod.getParameters().get(0).asType(), method.getReturnType())) {
+					&& processingEnv.getTypeUtils().isAssignable(method.getReturnType(), elementMethod.getParameters().get(0).asType())) {
 				return true;
 			}
 		}
-
+		
 		if (element.getSuperclass() != null && element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
 			return hasSetterMethod((TypeElement) ((DeclaredType) element.getSuperclass()).asElement(), method);
 		}
