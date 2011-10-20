@@ -270,7 +270,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	 */
 	private List<String> enhanceProjectablesWithEmbeddables(List<String> projectableList,
 			Class<?> projectableResultClass) {
-		PropertyAccessor propertyAccessor = PropertyAccessorFactory.getPropertyAccessor("field");
+		PropertyAccessor propertyAccessor = PropertyAccessorFactory.getPropertyAccessor("property");
 
 		List<String> projectables = new ArrayList<String>();
 		for (String projectable : projectableList) {
