@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.service.printer;
 
 import java.util.List;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -71,7 +72,7 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 				returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(remoteMethod.getReturnType());
 			}
 
-			new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationTypeFilter(true, getIgnoredAnnotations()));
+			new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationTypeFilter(true, getIgnoredAnnotations(localMethod)));
 
 			new MethodPrinter(pw, processingEnv).printMethodDefinition(remoteMethod);
 			
@@ -127,7 +128,7 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 	@Override
 	public void finish(ServiceTypeElement serviceTypeElement) {}
 	
-	protected Class<?>[] getIgnoredAnnotations() {
+	protected Class<?>[] getIgnoredAnnotations(Element method) {
 		return new Class<?>[] {
 			SuppressWarnings.class
 		};
