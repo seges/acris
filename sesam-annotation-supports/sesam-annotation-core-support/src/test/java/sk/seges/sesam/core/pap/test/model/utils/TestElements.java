@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
@@ -30,9 +29,7 @@ public class TestElements implements Elements {
 			return null;
 		}
 		
-		return new TestTypeElement(clazz.isInterface() ? ElementKind.INTERFACE: 
-				clazz.isAnnotation() ? ElementKind.ANNOTATION_TYPE:
-				clazz.isEnum() ? ElementKind.ENUM: ElementKind.CLASS, clazz.getSimpleName(), clazz.getPackage().toString());
+		return new TestTypeElement(clazz);
 	}
 
 	@Override
@@ -104,5 +101,4 @@ public class TestElements implements Elements {
 	public Name getName(CharSequence cs) {
 		return new TestName(cs.toString());
 	}
-
 }

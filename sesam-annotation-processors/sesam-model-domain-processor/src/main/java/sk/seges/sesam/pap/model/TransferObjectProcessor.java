@@ -65,7 +65,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				new EmptyConstructorPrinter(pw),
 				new EnumeratedConstructorDefinitionPrinter(pw),
 				new EnumeratedConstructorBodyPrinter(pw),
-				new AccessorsPrinter(pw),
+				new AccessorsPrinter(processingEnv, pw),
 				new EqualsPrinter(getEntityResolver(), processingEnv, pw),
 				new HashCodePrinter(getEntityResolver(), processingEnv, pw)
 		};

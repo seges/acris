@@ -131,7 +131,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		
 		DeclaredType declaredType = (DeclaredType)configurationTypeElement.asElement().asType();
 		
-		TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration((TypeElement)declaredType.asElement(), processingEnv);
+		TransferObjectMappingAccessor transferObjectConfiguration = new TransferObjectMappingAccessor((TypeElement)declaredType.asElement(), processingEnv);
 		
 		TypeElement converter = transferObjectConfiguration.getConverter();
 		if (converter != null) {

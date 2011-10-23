@@ -3,8 +3,13 @@ package sk.seges.sesam.core.pap.utils;
 import java.util.List;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
@@ -117,6 +122,12 @@ public class MethodHelper {
 			}
 		}
 		
+		if (element.getKind().equals(ElementKind.CLASS)) {
+			TypeMirror superclass = ((TypeElement)element).getSuperclass();
+			if (superclass.getKind().equals(TypeKind.DECLARED)) {
+				return getField(((DeclaredType)superclass).asElement(), name);
+			}
+		}
 		return null;
 	}
 	

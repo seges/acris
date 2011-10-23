@@ -14,7 +14,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
-import sk.seges.sesam.pap.model.model.TransferObjectConfiguration;
+import sk.seges.sesam.pap.model.model.TransferObjectMappingAccessor;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
@@ -128,7 +128,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 
 		//Configuration should be directly in the DTO - when its generated
 		if (dtoType.getKind().isDeclared() && (((MutableDeclaredType)dtoType).asType()) != null && ((MutableDeclaredType)dtoType).asType().getKind().equals(TypeKind.DECLARED)) {
-			TransferObjectConfiguration transferObjectConfiguration = new TransferObjectConfiguration(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv);
+			TransferObjectMappingAccessor transferObjectConfiguration = new TransferObjectMappingAccessor(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv);
 			if (transferObjectConfiguration.getMappingForDto((MutableDeclaredType)dtoType) != null) {
 				return new ConfigurationTypeElement(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv, roundEnv);
 			}
