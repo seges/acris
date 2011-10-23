@@ -15,37 +15,21 @@ import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 @Generated(value = "sk.seges.sesam.pap.model.TransferObjectProcessor")
 public class EntityWithEqualsDTO implements Serializable {
 
-	private String webId;
+	private Date date;
 
 	private String niceurl;
 
-	private Date date;
-
 	private Long value;
+
+	private String webId;
 
 	public EntityWithEqualsDTO() {
 	}
-	public EntityWithEqualsDTO(String webId, String niceurl, Date date, Long value) {
-		this.webId = webId;
-		this.niceurl = niceurl;
+	public EntityWithEqualsDTO(Date date, String niceurl, Long value, String webId) {
 		this.date = date;
-		this.value = value;
-	}
-
-	public String getWebId() {
-		return webId;
-	}
-
-	public void setWebId(String webId) {
-		this.webId = webId;
-	}
-
-	public String getNiceurl() {
-		return niceurl;
-	}
-
-	public void setNiceurl(String niceurl) {
 		this.niceurl = niceurl;
+		this.value = value;
+		this.webId = webId;
 	}
 
 	public Date getDate() {
@@ -56,12 +40,28 @@ public class EntityWithEqualsDTO implements Serializable {
 		this.date = date;
 	}
 
+	public String getNiceurl() {
+		return niceurl;
+	}
+
+	public void setNiceurl(String niceurl) {
+		this.niceurl = niceurl;
+	}
+
 	public Long getValue() {
 		return value;
 	}
 
 	public void setValue(Long value) {
 		this.value = value;
+	}
+
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
 	}
 
 	private boolean processingEquals = false;
@@ -75,13 +75,13 @@ public class EntityWithEqualsDTO implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		EntityWithEqualsDTO other = (EntityWithEqualsDTO) obj;
-		if (webId == null) {
-			if (other.webId != null)
+		if (date == null) {
+			if (other.date != null)
 				return false;
 		} else { 
 			if (!processingEquals) {
 				processingEquals = true;
-				if (!webId.equals(other.webId)) {
+				if (!date.equals(other.date)) {
 					processingEquals = false;
 					return false;
 				} else {
@@ -103,20 +103,6 @@ public class EntityWithEqualsDTO implements Serializable {
 				}
 			}
 		}
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else { 
-			if (!processingEquals) {
-				processingEquals = true;
-				if (!date.equals(other.date)) {
-					processingEquals = false;
-					return false;
-				} else {
-					processingEquals = false;
-				}
-			}
-		}
 		if (value == null) {
 			if (other.value != null)
 				return false;
@@ -124,6 +110,20 @@ public class EntityWithEqualsDTO implements Serializable {
 			if (!processingEquals) {
 				processingEquals = true;
 				if (!value.equals(other.value)) {
+					processingEquals = false;
+					return false;
+				} else {
+					processingEquals = false;
+				}
+			}
+		}
+		if (webId == null) {
+			if (other.webId != null)
+				return false;
+		} else { 
+			if (!processingEquals) {
+				processingEquals = true;
+				if (!webId.equals(other.webId)) {
 					processingEquals = false;
 					return false;
 				} else {

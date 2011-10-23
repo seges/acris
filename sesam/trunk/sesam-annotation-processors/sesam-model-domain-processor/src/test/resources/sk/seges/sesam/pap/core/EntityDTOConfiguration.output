@@ -15,37 +15,21 @@ import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 @Generated(value = "sk.seges.sesam.pap.model.TransferObjectProcessor")
 public class EntityDTO implements Serializable {
 
-	private String webId;
+	private Date date;
 
 	private String niceurl;
 
-	private Date date;
-
 	private Long value;
+
+	private String webId;
 
 	public EntityDTO() {
 	}
-	public EntityDTO(String webId, String niceurl, Date date, Long value) {
-		this.webId = webId;
-		this.niceurl = niceurl;
+	public EntityDTO(Date date, String niceurl, Long value, String webId) {
 		this.date = date;
-		this.value = value;
-	}
-
-	public String getWebId() {
-		return webId;
-	}
-
-	public void setWebId(String webId) {
-		this.webId = webId;
-	}
-
-	public String getNiceurl() {
-		return niceurl;
-	}
-
-	public void setNiceurl(String niceurl) {
 		this.niceurl = niceurl;
+		this.value = value;
+		this.webId = webId;
 	}
 
 	public Date getDate() {
@@ -56,12 +40,28 @@ public class EntityDTO implements Serializable {
 		this.date = date;
 	}
 
+	public String getNiceurl() {
+		return niceurl;
+	}
+
+	public void setNiceurl(String niceurl) {
+		this.niceurl = niceurl;
+	}
+
 	public Long getValue() {
 		return value;
 	}
 
 	public void setValue(Long value) {
 		this.value = value;
+	}
+
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
 	}
 
 }

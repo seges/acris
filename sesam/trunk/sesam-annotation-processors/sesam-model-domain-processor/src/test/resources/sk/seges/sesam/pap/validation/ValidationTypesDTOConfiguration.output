@@ -17,30 +17,29 @@ import sk.seges.sesam.pap.validation.annotation.Size;
 @Generated(value = "sk.seges.sesam.pap.model.TransferObjectProcessor")
 public class ValidationTypesDTO implements Serializable {
 
-	private String webId;
+	private Date date;
 
 	private String niceurl;
 
-	private Date date;
-
 	private Long value;
+
+	private String webId;
 
 	public ValidationTypesDTO() {
 	}
-	public ValidationTypesDTO(String webId, String niceurl, Date date, Long value) {
-		this.webId = webId;
-		this.niceurl = niceurl;
+	public ValidationTypesDTO(Date date, String niceurl, Long value, String webId) {
 		this.date = date;
+		this.niceurl = niceurl;
 		this.value = value;
-	}
-
-	@Size(min = 0, max = 255)
-	public String getWebId() {
-		return webId;
-	}
-
-	public void setWebId(String webId) {
 		this.webId = webId;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	@Size(min = 1, max = 255)
@@ -53,20 +52,21 @@ public class ValidationTypesDTO implements Serializable {
 		this.niceurl = niceurl;
 	}
 
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
 	public Long getValue() {
 		return value;
 	}
 
 	public void setValue(Long value) {
 		this.value = value;
+	}
+
+	@Size(min = 0, max = 255)
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
 	}
 
 }

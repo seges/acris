@@ -1,6 +1,9 @@
 package sk.seges.sesam.pap.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -109,10 +112,11 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 
 	protected void processMethods(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, TransferObjectElementPrinter printer) {
 
+		List<TransferObjectContext> contexts = new LinkedList<TransferObjectContext>();
+		
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asElement().getEnclosedElements());
 		
 		DomainDeclaredType domainTypeElement = configurationTypeElement.getDomain();
-
 		DomainDeclaredType processingElement = domainTypeElement;
 	
 		List<String> generated = new ArrayList<String>();
@@ -152,7 +156,8 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 				if (context == null) {
 					continue;
 				}
-				printer.print(context);					
+				contexts.add(context);
+//				printer.print(context);					
 				
 				PathResolver pathResolver = new PathResolver(fieldName);
 				String currentPath = pathResolver.next();
@@ -182,7 +187,8 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 									continue;
 								}
 
-								printer.print(context);
+								contexts.add(context);
+//								printer.print(context);
 							}
 						} else {
 							if (pathResolver.hasNext()) {
@@ -218,7 +224,8 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 							continue;
 						}
 
-						printer.print(context);
+						contexts.add(context);
+//						printer.print(context);
 					}
 				}
 			}
@@ -248,10 +255,23 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		} else if (idMethod != null && !isProcessed(generated, MethodHelper.toField(idMethod))) {
 			TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, idMethod, idMethod, getConfigurationProviders());
 			if (context != null) {
-				printer.print(context);
+				contexts.add(context);
+				//printer.print(context);				
 			}
 		}
 
+		Collections.sort(contexts, new Comparator<TransferObjectContext>() {
+
+			@Override
+			public int compare(TransferObjectContext o1, TransferObjectContext o2) {
+				return o1.getDtoFieldName().compareTo(o2.getDtoFieldName());
+			}
+		});
+
+		for (TransferObjectContext context: contexts) {
+			printer.print(context);
+		}
+		
 		printer.finish(configurationTypeElement);
 	}
 }
