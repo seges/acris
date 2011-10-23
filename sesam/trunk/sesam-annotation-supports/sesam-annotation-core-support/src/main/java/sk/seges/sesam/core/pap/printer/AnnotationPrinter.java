@@ -10,14 +10,11 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
+import sk.seges.sesam.core.pap.accessor.AnnotationAccessor.AnnotationFilter;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class AnnotationPrinter {
-
-	public interface AnnotationFilter {
-		boolean isAnnotationIgnored(Element method, AnnotationMirror annotation);
-	}
 	
 	private final FormattedPrintWriter pw;
 	private final MutableProcessingEnvironment processingEnv;
@@ -34,7 +31,7 @@ public class AnnotationPrinter {
 			
 			if (annotationFilters != null) {
 				for (AnnotationFilter filter: annotationFilters) {
-					if (filter.isAnnotationIgnored(method, annotation)) {
+					if (filter.isAnnotationIgnored(annotation)) {
 						isAnnotationIgnored = true;
 						break;
 					}
@@ -47,7 +44,7 @@ public class AnnotationPrinter {
 			}
 		}
 	}
-	
+
 	public void print(AnnotationMirror annotation) {
 		pw.print("@", processingEnv.getTypeUtils().toMutableType(annotation.getAnnotationType()));
 		
@@ -57,7 +54,11 @@ public class AnnotationPrinter {
 			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationValue: annotation.getElementValues().entrySet()) {
 				if (i > 0) {
 					pw.print(", ");
-					pw.println("		");
+					
+					if (pw.getCurrentPosition() > FormattedPrintWriter.LINE_LENGTH) {
+						pw.println();
+						pw.print("		");
+					}
 				}
 				pw.print( annotationValue.getKey().getSimpleName() + " = ");
 				printValue(annotationValue.getValue());
@@ -65,6 +66,7 @@ public class AnnotationPrinter {
 			}
 			pw.print(")");
 		}
+		pw.println();
 	}
 	
 	private void printValue(Object value) {
@@ -107,7 +109,7 @@ public class AnnotationPrinter {
 			}
 		} else if (value instanceof String) {
 			//String
-			pw.print("\"" + value.toString() + "\"");
+			pw.print("\"" + value.toString().replace("\\", "\\\\") + "\"");
 		} else {
 			//Integer - primitive types
 			pw.print(value.toString());

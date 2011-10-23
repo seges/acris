@@ -1,0 +1,67 @@
+package sk.seges.sesam.pap.core;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.annotation.Generated;
+
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
+
+@SuppressWarnings("serial")
+@TransferObjectMapping(dtoClass = EntityDTO.class,
+		domainClassName = "sk.seges.sesam.pap.model.Entity", 
+		configurationClassName = "sk.seges.sesam.pap.core.EntityDTOConfiguration", 
+		converterClassName = "sk.seges.sesam.pap.core.EntityDTOConverter")
+@Generated(value = "sk.seges.sesam.pap.model.TransferObjectProcessor")
+public class EntityDTO implements Serializable {
+
+	private String webId;
+
+	private String niceurl;
+
+	private Date date;
+
+	private Long value;
+
+	public EntityDTO() {
+	}
+	public EntityDTO(String webId, String niceurl, Date date, Long value) {
+		this.webId = webId;
+		this.niceurl = niceurl;
+		this.date = date;
+		this.value = value;
+	}
+
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
+	}
+
+	public String getNiceurl() {
+		return niceurl;
+	}
+
+	public void setNiceurl(String niceurl) {
+		this.niceurl = niceurl;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Long getValue() {
+		return value;
+	}
+
+	public void setValue(Long value) {
+		this.value = value;
+	}
+
+}

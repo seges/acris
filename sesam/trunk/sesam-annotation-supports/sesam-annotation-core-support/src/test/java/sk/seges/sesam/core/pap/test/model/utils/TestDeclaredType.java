@@ -19,10 +19,12 @@ public class TestDeclaredType extends TestTypeMirror implements DeclaredType {
 	
 	public TestDeclaredType(TypeElement element) {
 		super(TypeKind.DECLARED);
+		this.element = element;
 	}
 
 	public TestDeclaredType(TypeElement element, TypeMirror... typeArgs) {
 		super(TypeKind.DECLARED);
+		this.element = element;
 		this.typeArgs = typeArgs;
 	}
 

@@ -37,6 +37,10 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-core-api</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>cglib</groupId>
+		    <artifactId>cglib</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

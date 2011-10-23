@@ -27,7 +27,7 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.api.DelayedPrintWriter;
 
 public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWriter {
-
+	
 	public interface FlushListener {
 		
 		void beforeFlush(FormattedPrintWriter pw);
@@ -35,7 +35,8 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		void afterFlush(FormattedPrintWriter pw);
 	}
 
-	private static final String DEFAULT_OUDENT = "\t";
+	public static final String DEFAULT_OUDENT = "\t";
+	public static final int LINE_LENGTH = 120;
 	
 	private int oudentLevel = 0;
 	private boolean startLine = true;
@@ -123,6 +124,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 				indentation += DEFAULT_OUDENT;
 			}
 			
+			currentPosition += indentation.length();
 			super.print(indentation);
 			startLine = false;
 		}
@@ -139,6 +141,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 			}
 			addIdentation();
 		}
+		currentPosition += len;
 		super.write(text, off, len);
 		if (!processing) {
 			lastText += text.substring(off, len);
@@ -157,6 +160,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		super.println();
 		startLine = true;
 		lastText = "";
+		currentPosition = 0;
 	}
 	
 	@Override
@@ -297,8 +301,17 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		return false;
 	}
 	
+	private int currentPosition = 0;
+	
+	public int getCurrentPosition() {
+		return currentPosition;
+	}
+	
 	@Override
 	public void print(Object... x) {
+		
+		int length = 0;
+		
 		for (Object o: x) {
 			if (o instanceof TypeMirror) {
 				o = processingEnv.getTypeUtils().toMutableType((TypeMirror)o);
@@ -310,9 +323,13 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 
 			if (o instanceof MutableTypeValue) {
 				if (serializer.equals(ClassSerializer.SIMPLE)) {
-					super.write(((MutableTypeValue)o).toString(ClassSerializer.SIMPLE, typed));
+					String res = ((MutableTypeValue)o).toString(ClassSerializer.SIMPLE, typed);
+					length += res.length();
+					super.write(res);
 				} else {
-					super.write(((MutableTypeValue)o).toString(serializer, typed));
+					String res = ((MutableTypeValue)o).toString(serializer, typed);
+					length += res.length();
+					super.write(res);
 				}
 			} else {
 				MutableTypeMirror mutableType = toMutableType(o);
@@ -327,12 +344,18 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 							usedTypes.addAll(extractDeclaredType(mutableType));
 						}
 					}
-					write(mutableType.toString(evalSerializer, typed));
+					String res = mutableType.toString(evalSerializer, typed);
+					length += res.length();
+					write(res);
 				} else {
-					super.write(String.valueOf(o));
+					String res = String.valueOf(o);
+					length += res.length();
+					super.write(res);
 				}
 			}
 		}
+		
+		currentPosition += length;
 	}
 	
 	public List<MutableDeclaredType> getUsedTypes() {

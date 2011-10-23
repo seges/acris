@@ -9,6 +9,7 @@ import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
+import sk.seges.sesam.pap.model.accessor.GenerateEqualsAccessor;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.printer.AbstractElementPrinter;
@@ -31,6 +32,8 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	private final ProcessingEnvironment processingEnv;
 	private final EntityResolver entityResolver;
 	
+	private boolean active = true;
+	
 	public EqualsPrinter(EntityResolver entityResolver, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(pw);
 		this.processingEnv = processingEnv;
@@ -43,6 +46,12 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 
+		active = new GenerateEqualsAccessor(configurationTypeElement.asElement()).generate();
+		
+		if (!active) {
+			return;
+		}
+		
 		pw.println("private boolean processingEquals = false;");
 		pw.println("");
 		pw.println("@Override");
@@ -66,6 +75,10 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	@Override
 	public void finish(ConfigurationTypeElement configurationTypeElement) {
 
+		if (!active) {
+			return;
+		}
+
 		pw.println("return true;");
 		pw.println("}");
 		pw.println();
@@ -83,6 +96,10 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	 */
 	@Override
 	public void print(TransferObjectContext context) {
+
+		if (!active) {
+			return;
+		}
 
 		boolean idMethod = entityResolver.isIdMethod(context.getDtoMethod());
 		

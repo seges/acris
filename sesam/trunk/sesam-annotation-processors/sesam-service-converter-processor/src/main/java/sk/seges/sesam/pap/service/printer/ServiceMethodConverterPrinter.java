@@ -2,17 +2,15 @@ package sk.seges.sesam.pap.service.printer;
 
 import java.util.List;
 
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.accessor.AnnotationAccessor.AnnotationTypeFilter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
-import sk.seges.sesam.core.pap.printer.AnnotationPrinter.AnnotationFilter;
 import sk.seges.sesam.core.pap.printer.MethodPrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -73,20 +71,7 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 				returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(remoteMethod.getReturnType());
 			}
 
-			new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationFilter() {
-
-				@Override
-				public boolean isAnnotationIgnored(Element method, AnnotationMirror annotation) {
-					for (Class<?> ignoredAnnotationClass: getIgnoredAnnotations(method)) {
-						if (annotation.getAnnotationType().toString().equals(ignoredAnnotationClass.getCanonicalName())) {
-							return true;
-						}
-					}
-					
-					return false;
-				}
-				
-			});
+			new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationTypeFilter(true, getIgnoredAnnotations()));
 
 			new MethodPrinter(pw, processingEnv).printMethodDefinition(remoteMethod);
 			
@@ -142,7 +127,7 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 	@Override
 	public void finish(ServiceTypeElement serviceTypeElement) {}
 	
-	protected Class<?>[] getIgnoredAnnotations(Element method) {
+	protected Class<?>[] getIgnoredAnnotations() {
 		return new Class<?>[] {
 			SuppressWarnings.class
 		};

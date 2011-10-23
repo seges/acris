@@ -35,7 +35,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 	private boolean converterTypeElementInitialized = false;
 
 	private final Element configurationElement;
-	private final TransferObjectConfiguration transferObjectConfiguration;
+	private final TransferObjectMappingAccessor transferObjectConfiguration;
 
 	private final MutableDeclaredType domainType;
 	private final MutableDeclaredType dtoType;
@@ -52,7 +52,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 		
 		this.canonicalName = configurationElement.getQualifiedName().toString();
 		
-		this.transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
+		this.transferObjectConfiguration = new TransferObjectMappingAccessor(configurationElement, processingEnv);
 		if (this.transferObjectConfiguration.getReferenceMapping() == null) {
 			this.transferObjectConfiguration.setReferenceMapping(transferObjectConfiguration.getMappingForDto(dtoType));
 		}
@@ -69,7 +69,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 
 		this.canonicalName = configurationElement.getSimpleName().toString();
 
-		this.transferObjectConfiguration = new TransferObjectConfiguration(configurationElement, processingEnv);
+		this.transferObjectConfiguration = new TransferObjectMappingAccessor(configurationElement, processingEnv);
 		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
 
@@ -90,7 +90,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 		return transferObjectConfiguration.isValid();
 	}
 	
-	private ConverterTypeElement getConverter(TransferObjectConfiguration transferObjectConfiguration) {
+	private ConverterTypeElement getConverter(TransferObjectMappingAccessor transferObjectConfiguration) {
 		
 		if (!transferObjectConfiguration.isValid()) {
 			return null;

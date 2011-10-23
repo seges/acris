@@ -13,6 +13,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.NullCheck;
+import sk.seges.sesam.core.pap.accessor.AnnotationAccessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
@@ -31,7 +32,7 @@ import sk.seges.sesam.shared.model.converter.api.DtoConverter;
  * 
  * @author Peter Simun (simun@seges.sk)
  */
-public class TransferObjectConfiguration {
+public class TransferObjectMappingAccessor extends AnnotationAccessor {
 
 	enum DtoParameterType {
 		DTO(0), DOMAIN(1);
@@ -56,7 +57,7 @@ public class TransferObjectConfiguration {
 	/**
 	 * TypeElement holds {@link TransferObjectMapping} or {@link TransferObjectMappings} annotation
 	 */
-	public TransferObjectConfiguration(Element element, MutableProcessingEnvironment processingEnv) {
+	public TransferObjectMappingAccessor(Element element, MutableProcessingEnvironment processingEnv) {
 		this.configurationHolderElement = element;
 		this.processingEnv = processingEnv;
 		{
@@ -80,7 +81,7 @@ public class TransferObjectConfiguration {
 		}
 	}
 
-	boolean isValid() {
+	public boolean isValid() {
 		return mappings.size() > 0;
 	}
 	
@@ -201,7 +202,7 @@ public class TransferObjectConfiguration {
 		TypeElement configuration = getConfiguration(mapping);
 		if (configuration != null) {
 			
-			TypeElement domainType = new TransferObjectConfiguration(configuration, processingEnv).getEvaluatedDomainType();
+			TypeElement domainType = new TransferObjectMappingAccessor(configuration, processingEnv).getEvaluatedDomainType();
 			
 //			TypeElement domainClassType = new TransferObjectConfiguration(configuration, processingEnv).getDomain();
 
@@ -279,7 +280,7 @@ public class TransferObjectConfiguration {
 					public Class<?> getClassProperty(TransferObjectMapping annotation) {
 						return annotation.domainClass();
 					}
-				}));
+				}, processingEnv));
 		
 		if (domainType != null) {
 			return domainType;
@@ -363,7 +364,7 @@ public class TransferObjectConfiguration {
 		TypeElement delegatedConfiguration = getConfiguration();
 		
 		if (delegatedConfiguration != null) {
-			return new TransferObjectConfiguration(delegatedConfiguration, processingEnv).getDto();
+			return new TransferObjectMappingAccessor(delegatedConfiguration, processingEnv).getDto();
 		}
 
 		return null;
@@ -392,7 +393,7 @@ public class TransferObjectConfiguration {
 		TypeElement delegatedConfiguration = getConfiguration();
 		
 		if (delegatedConfiguration != null) {
-			return new TransferObjectConfiguration(delegatedConfiguration, processingEnv).getConverter();
+			return new TransferObjectMappingAccessor(delegatedConfiguration, processingEnv).getConverter();
 		}
 		
 		return null;

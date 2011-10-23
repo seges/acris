@@ -1,0 +1,72 @@
+package sk.seges.sesam.pap.validation;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.annotation.Generated;
+
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
+import sk.seges.sesam.pap.validation.annotation.Pattern;
+import sk.seges.sesam.pap.validation.annotation.Size;
+
+@SuppressWarnings("serial")
+@TransferObjectMapping(dtoClass = ValidationTypesDTO.class,
+		domainClassName = "sk.seges.sesam.pap.model.EntityWithValidation", 
+		configurationClassName = "sk.seges.sesam.pap.validation.ValidationTypesDTOConfiguration", 
+		converterClassName = "sk.seges.sesam.pap.validation.ValidationTypesDTOConverter")
+@Generated(value = "sk.seges.sesam.pap.model.TransferObjectProcessor")
+public class ValidationTypesDTO implements Serializable {
+
+	private String webId;
+
+	private String niceurl;
+
+	private Date date;
+
+	private Long value;
+
+	public ValidationTypesDTO() {
+	}
+	public ValidationTypesDTO(String webId, String niceurl, Date date, Long value) {
+		this.webId = webId;
+		this.niceurl = niceurl;
+		this.date = date;
+		this.value = value;
+	}
+
+	@Size(min = 0, max = 255)
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
+	}
+
+	@Size(min = 1, max = 255)
+	@Pattern(regexp = "[a-zA-Z0-9\\-_]*")
+	public String getNiceurl() {
+		return niceurl;
+	}
+
+	public void setNiceurl(String niceurl) {
+		this.niceurl = niceurl;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Long getValue() {
+		return value;
+	}
+
+	public void setValue(Long value) {
+		this.value = value;
+	}
+
+}

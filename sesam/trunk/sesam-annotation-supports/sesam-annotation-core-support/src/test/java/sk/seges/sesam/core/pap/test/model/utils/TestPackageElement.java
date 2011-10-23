@@ -66,7 +66,7 @@ public class TestPackageElement extends TestElement implements PackageElement {
 
 	@Override
 	public Name getQualifiedName() {
-		return null;
+		return getSimpleName();
 	}
 
 	@Override

@@ -14,7 +14,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
@@ -30,6 +32,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.model.mutable.utils.TestClass;
 import sk.seges.sesam.core.pap.test.model.utils.TestProcessingEnvironment;
+import sk.seges.sesam.core.pap.test.model.utils.TestRoundEnvironment;
 import sk.seges.sesam.core.pap.utils.ClassFinder;
 
 public abstract class AnnotationTest {
@@ -84,6 +87,7 @@ public abstract class AnnotationTest {
 	}
 	
 	protected MutableProcessingEnvironment processingEnv = new MutableProcessingEnvironment(new TestProcessingEnvironment());
+	protected TestRoundEnvironment roundEnv = new TestRoundEnvironment(processingEnv);
 	
 	/**
 	 * @return the processor instances that should be tested
@@ -179,6 +183,15 @@ public abstract class AnnotationTest {
 
 		addCollection(files, compilationUnits);
 
+		Set<Class<?>> classes = new HashSet<Class<?>>();
+		for (Type type: compilationUnits) {
+			if (type instanceof Class<?>) {
+				classes.add((Class<?>)type);
+			}
+		}
+		
+		roundEnv.setRootElements(classes);
+
 		return compileFiles(files);
 	}
 
@@ -243,6 +256,9 @@ public abstract class AnnotationTest {
 			file = new File(getMainSourceFolder() + File.separator
 					+ convertClassNameToResourcePath(clazz.getCanonicalName()) + SOURCE_FILE_SUFFIX);
 			if (!file.exists()) {
+				if (clazz.getEnclosingClass() != null) {
+					return toFile(clazz.getEnclosingClass());
+				}
 				return null;
 			}
 		}
@@ -289,6 +305,7 @@ public abstract class AnnotationTest {
 	}
 
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
+				
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<JavaFileObject>();
 		if (COMPILER == null) {
 			throw new RuntimeException("Please use JDK for runing the tests!");
