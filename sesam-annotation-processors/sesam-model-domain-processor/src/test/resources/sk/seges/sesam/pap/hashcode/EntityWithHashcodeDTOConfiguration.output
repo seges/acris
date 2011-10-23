@@ -15,20 +15,44 @@ import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 @Generated(value = "sk.seges.sesam.pap.model.TransferObjectProcessor")
 public class EntityWithHashcodeDTO implements Serializable {
 
-	private String webId;
+	private Date date;
 
 	private String niceurl;
 
-	private Date date;
-
 	private Long value;
+
+	private String webId;
 
 	public EntityWithHashcodeDTO() {
 	}
-	public EntityWithHashcodeDTO(String webId, String niceurl, Date date, Long value) {
-		this.webId = webId;
-		this.niceurl = niceurl;
+	public EntityWithHashcodeDTO(Date date, String niceurl, Long value, String webId) {
 		this.date = date;
+		this.niceurl = niceurl;
+		this.value = value;
+		this.webId = webId;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getNiceurl() {
+		return niceurl;
+	}
+
+	public void setNiceurl(String niceurl) {
+		this.niceurl = niceurl;
+	}
+
+	public Long getValue() {
+		return value;
+	}
+
+	public void setValue(Long value) {
 		this.value = value;
 	}
 
@@ -40,30 +64,6 @@ public class EntityWithHashcodeDTO implements Serializable {
 		this.webId = webId;
 	}
 
-	public String getNiceurl() {
-		return niceurl;
-	}
-
-	public void setNiceurl(String niceurl) {
-		this.niceurl = niceurl;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public Long getValue() {
-		return value;
-	}
-
-	public void setValue(Long value) {
-		this.value = value;
-	}
-
 	private boolean processingHashCode = false;
 	
 	@Override
@@ -72,7 +72,7 @@ public class EntityWithHashcodeDTO implements Serializable {
 		int result = 1;
 		if (!processingHashCode) {
 			processingHashCode = true;
-			result = prime * result + ((webId == null) ? 0 : webId.hashCode());
+			result = prime * result + ((date == null) ? 0 : date.hashCode());
 			processingHashCode = false;
 		}
 		if (!processingHashCode) {
@@ -82,12 +82,12 @@ public class EntityWithHashcodeDTO implements Serializable {
 		}
 		if (!processingHashCode) {
 			processingHashCode = true;
-			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			result = prime * result + ((value == null) ? 0 : value.hashCode());
 			processingHashCode = false;
 		}
 		if (!processingHashCode) {
 			processingHashCode = true;
-			result = prime * result + ((value == null) ? 0 : value.hashCode());
+			result = prime * result + ((webId == null) ? 0 : webId.hashCode());
 			processingHashCode = false;
 		}
 		return result;
