@@ -15,8 +15,6 @@ public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData 
 
 	private ContentPkBase id;
 
-	private String webId;
-
 	private String title;
 
 	private String keywords;
@@ -37,9 +35,9 @@ public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData 
 
 	private String ref;
 
-	private List<? extends ContentData<ContentPkBase>> subContents = new LinkedList<ContentData<ContentPkBase>>();
+	private List<ContentBase> subContents = new LinkedList<ContentBase>();
 
-	private ContentData<ContentPkBase> parent;
+	private ContentBase parent;
 
 	private Date created;
 
@@ -77,12 +75,14 @@ public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData 
 
 	@Override
 	public String getWebId() {
-		return webId;
+		return this.id != null ? this.id.getWebId() : null;
 	}
 
 	@Override
 	public void setWebId(String webId) {
-		this.webId = webId;
+		if (this.id != null) {
+			id.setWebId(webId);
+		}
 	}
 
 	@Override
@@ -151,8 +151,9 @@ public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData 
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setSubContents(List<? extends ContentData<ContentPkBase>> subContents) {
-		this.subContents = subContents;
+		this.subContents = (List<ContentBase>) subContents;
 	}
 
 	@Override
@@ -162,7 +163,7 @@ public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData 
 
 	@Override
 	public void setParent(ContentData<ContentPkBase> parent) {
-		this.parent = parent;
+		this.parent = (ContentBase) parent;
 	}
 
 	@Override
