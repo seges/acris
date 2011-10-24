@@ -66,6 +66,7 @@
       * [AnnotationProcessing_Advanced Advanced features of the annotation processors] <sup><font color="red">1.2.0</font></sup>
       * [CodeGenerationPlatform_IDAO Data Access Object interface annotation processor]
       * [CodeGenerationPlatform_Async Async remote service] <sup><font color="red">1.2.0</font></sup>
+      * [CodeGenerationPlatform_Accessors Annotation accessor] <sup><font color="red">1.2.1</font></sup>
       * [CodeGeneratorsEvaluation Evalution brainstorming]
     * [PortableApplication Writing portable application]
       * [PortableObjects Portable objects]
