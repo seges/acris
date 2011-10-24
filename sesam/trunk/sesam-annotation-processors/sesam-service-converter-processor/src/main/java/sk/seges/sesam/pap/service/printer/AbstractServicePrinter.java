@@ -69,7 +69,7 @@ public class AbstractServicePrinter {
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 			
 				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolver));
+					parameters.addAll(converter.getConverterParameters(parametersResolver, 1));
 					converters.add(converter);
 				}
 			}
@@ -82,7 +82,7 @@ public class AbstractServicePrinter {
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 
 				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolver));
+					parameters.addAll(converter.getConverterParameters(parametersResolver, 1));
 					converters.add(converter);
 				}
 			}

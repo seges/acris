@@ -127,14 +127,14 @@ public class ConverterProviderPrinter {
 		return result.toArray(new MutableTypeVariable[] {});
 	}
 
-	public void printConverterMethods(boolean supportExtends, int constructorIndex) {
+	public void printConverterMethods(boolean supportExtends) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
-			printConverterMethod(converterEntry.getValue(), converterEntry.getKey(), supportExtends, constructorIndex);
+			printConverterMethod(converterEntry.getValue(), converterEntry.getKey(), supportExtends);
 		}
 	}
 	
-	public List<ConverterParameter> getConverterParametersDefinition(ConverterTypeElement converterTypeElement, int constructorIndex) {
-		return converterTypeElement.getConverterParameters(parametersResolver, constructorIndex);
+	public List<ConverterParameter> getConverterParametersDefinition(ConverterTypeElement converterTypeElement) {
+		return converterTypeElement.getConverterParameters(parametersResolver, 1);
 	}
 	
 	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
@@ -153,9 +153,9 @@ public class ConverterProviderPrinter {
 		}
 	}
 	
-	protected void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends, int constructorIndex) {
+	protected void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends) {
 
-		List<ConverterParameter> converterParameters = getConverterParametersDefinition(converterTypeElement, constructorIndex);
+		List<ConverterParameter> converterParameters = getConverterParametersDefinition(converterTypeElement);
 
 		pw.print("private");
 		
