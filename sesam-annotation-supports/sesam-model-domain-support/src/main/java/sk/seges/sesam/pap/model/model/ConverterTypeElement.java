@@ -265,12 +265,17 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(getConfiguration().getDomain().asType());
 			}
 			
-			if (constructors != null && constructors.size() > constructorIndex) {
+			if (constructors != null) {
 				
 				List<ConverterParameter> constructorParameters = null;
 				
+				//TODO
 				if (constructorIndex != -1) {
-					constructorParameters = getConstructorParameters(constructors.get(constructorIndex));
+					if (constructors.size() > constructorIndex) {
+						constructorParameters = getConstructorParameters(constructors.get(constructorIndex));
+					} else {
+						constructorParameters = getConstructorParameters(constructors.get(0));
+					}
 				} else {
 					constructorParameters = getConstructorParameters(constructors.get(constructors.size() - 1));
 				}
