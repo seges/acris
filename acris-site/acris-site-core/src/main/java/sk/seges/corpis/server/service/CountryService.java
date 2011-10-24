@@ -5,7 +5,6 @@ import java.util.List;
 
 import sk.seges.corpis.server.dao.ICountryDao;
 import sk.seges.corpis.shared.domain.api.CountryData;
-import sk.seges.corpis.shared.domain.dto.CountryDto;
 import sk.seges.corpis.shared.service.ICountryService;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
@@ -14,17 +13,17 @@ import sk.seges.sesam.dao.SimpleExpression;
 
 public class CountryService implements ICountryService {
 
-	private ICountryDao<? extends CountryData> countryDao;
+	private ICountryDao<? extends CountryData<?>> countryDao;
 
 	private static final String DEFAULT_COUNTRY = "us";
 
-	public CountryService(ICountryDao<? extends CountryData> countryDao) {
+	public CountryService(ICountryDao<? extends CountryData<?>> countryDao) {
 		this.countryDao = countryDao;
 	}
 	
 
 	@Override
-	public CountryData findByCountry(String country) {
+	public CountryData<?> findByCountry(String country) {
 		Page page = new Page(0, 1);
 		
 		// TODO: switch to @BeanWrapper
@@ -40,7 +39,7 @@ public class CountryService implements ICountryService {
 
 
 	@Override
-	public CountryData findDefaultCountry() {
+	public CountryData<?> findDefaultCountry() {
 		return findByCountry(DEFAULT_COUNTRY);
 	}
 }

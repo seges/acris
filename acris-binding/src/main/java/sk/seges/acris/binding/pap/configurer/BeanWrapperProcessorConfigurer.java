@@ -54,6 +54,6 @@ public class BeanWrapperProcessorConfigurer extends DelegateProcessorConfigurer 
 
 	@Override
 	protected AnnotationMirror getAnnotationFromDelegate(AnnotationMirror annotationDelegate) {
-		return (AnnotationMirror)getAnnotationValueByReturnType(BeanWrapper.class, annotationDelegate);
+		return (AnnotationMirror)getAnnotationValueByReturnType(BeanWrapper.class, annotationDelegate).getValue();
 	}
 }

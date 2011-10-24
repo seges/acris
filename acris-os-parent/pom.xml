@@ -116,6 +116,17 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-jpa</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-jpa</artifactId>
+				<version>${corpis-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-payment</artifactId>
 				<version>${corpis-os.version}</version>
 			</dependency>
@@ -130,6 +141,18 @@
 				<version>${corpis-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+			<dependency>
+	            	<groupId>sk.seges.corpis</groupId>
+	            	<artifactId>corpis-domain-model-hibernate-processor</artifactId>
+				<version>${corpis-os.version}</version>
+	            	<scope>provided</scope>
+	        	</dependency>
+			<dependency>
+	            	<groupId>sk.seges.corpis</groupId>
+	            	<artifactId>corpis-domain-model-converter-hibernate-processor</artifactId>
+				<version>${corpis-os.version}</version>
+	            	<scope>provided</scope>
+	        	</dependency>
 
 			<!-- Sesam dependencies -->
 			<dependency>
@@ -498,6 +521,17 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-dto</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-jpa</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -553,74 +587,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.bsc.maven</groupId>
-										<artifactId>
-											maven-processor-plugin
-										</artifactId>
-										<versionRange>
-											[2.0.4,)
-										</versionRange>
-										<goals>
-											<goal>process</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											build-helper-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.3,)
-										</versionRange>
-										<goals>
-											<goal>add-source</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.codehaus.mojo</groupId>
-										<artifactId>
-											gwt-maven-plugin
-										</artifactId>
-										<versionRange>
-											[2.3.0,)
-										</versionRange>
-										<goals>
-											<goal>mergewebxml</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>								
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 </project>
+
