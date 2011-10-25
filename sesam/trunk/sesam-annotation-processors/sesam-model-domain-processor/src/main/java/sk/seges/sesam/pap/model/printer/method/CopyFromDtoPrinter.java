@@ -80,7 +80,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			//TODO potential cycle
 			pw.println(domainType, " " + RESULT_NAME + " = createDomainInstance(null);");
 		} else {
-			
+
 			boolean useIdConverter = false;
 
 			MutableTypeMirror dtoIdType = processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType());
@@ -143,6 +143,17 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		pw.println("}");
 		pw.println();
 
+		if (dtoIdMethod != null) {
+			pw.println(domainType, " domainFromCache = getDomainFromCache(" + DTO_NAME + ", " + DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)) + ");");
+			pw.println();
+			pw.println("if (domainFromCache != null) {");
+			pw.println("return domainFromCache;");
+			pw.println("}");
+			pw.println();
+			pw.println("putDomainIntoCache(" + DTO_NAME + ", " + RESULT_NAME + "," + RESULT_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(idMethod)) + ");");
+			pw.println();
+		}
+		
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConfiguration().getConverter() != null) {
