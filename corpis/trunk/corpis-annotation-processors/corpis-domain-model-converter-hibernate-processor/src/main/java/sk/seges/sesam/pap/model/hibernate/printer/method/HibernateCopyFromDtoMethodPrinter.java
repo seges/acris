@@ -39,11 +39,12 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     		pw.print(converter, " " + converterName + " = ");
     		converterProviderPrinter.printDomainConverterMethodName(converter, domainMethodReturnType, domainMethod, pw);
     		pw.println(";");
-    		pw.print(converterName + ".convertFromDto(");
+    		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
     		pw.print("(", castToDelegate(domainMethodReturnType), ")");
+    		pw.print(converterName + ".convertFromDto(");
     		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ",");
     		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
-    		pw.println(");");
+    		pw.println("));");
         	pw.println("} else {");
         	pw.println(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(null);");
         	pw.println("}");
