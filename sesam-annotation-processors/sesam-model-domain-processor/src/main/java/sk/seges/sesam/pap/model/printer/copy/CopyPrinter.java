@@ -35,7 +35,10 @@ public abstract class CopyPrinter extends AbstractElementPrinter {
 
 		supportedAnnotations.addAll(methodCopyAccessor.getSupportedAnnotations(context.getDomainMethod()));
 		supportedAnnotations.addAll(methodCopyAccessor.getSupportedAnnotations(MethodHelper.getField(context.getDomainMethod())));
-		
+
+		supportedAnnotations.addAll(typeCopyAccessor.getSupportedAnnotations(context.getDtoMethod()));
+		supportedAnnotations.addAll(methodCopyAccessor.getSupportedAnnotations(context.getDtoMethod()));
+
 		return supportedAnnotations;
 	}
 }
