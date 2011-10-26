@@ -61,7 +61,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		pw.println();
 		
 		pw.println("public ", dtoType, " createDtoInstance(", Serializable.class, " id) {");
-		printDtoInstancer(pw, dtoType);
+		printDtoInstancer(pw, entityResolver, dtoType);
 		pw.println("}");
 		pw.println();
 							
@@ -130,7 +130,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			pw.println(";");
 			pw.println();
 
-			pw.println(RESULT_NAME + " = createDtoInstance(" + DOMAIN_NAME + ", " + idName + ");");
+			pw.println(RESULT_NAME + " = createDtoInstance(" + idName + ");");
 		}
 
 		pw.println("return convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
