@@ -128,8 +128,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			pw.println(";");
 			pw.println();
 
-			pw.println(RESULT_NAME + " = createDomainInstance(" + DTO_NAME + ", " + idName + ");");
-			pw.println();
+			pw.println(RESULT_NAME + " = createDomainInstance(" + idName + ");");
 		}
 		
 		pw.println();

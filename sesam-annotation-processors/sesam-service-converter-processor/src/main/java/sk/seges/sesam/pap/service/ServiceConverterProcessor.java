@@ -144,7 +144,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 			elementPrinter.finish(serviceTypeElement);
 		}
 	
-		this.converterProviderPrinter.printConverterMethods(true);
+		this.converterProviderPrinter.printConverterMethods(true, 1);
 	}
 
 	protected ParametersResolver getParametersResolver() {

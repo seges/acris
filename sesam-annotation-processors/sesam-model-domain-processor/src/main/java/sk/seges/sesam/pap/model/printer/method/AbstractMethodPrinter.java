@@ -3,12 +3,14 @@ package sk.seges.sesam.pap.model.printer.method;
 import java.util.Iterator;
 
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
@@ -16,7 +18,10 @@ import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
@@ -104,8 +109,15 @@ public abstract class AbstractMethodPrinter {
 		return domainNamedType;
 	}
 
-	protected void printDtoInstancer(FormattedPrintWriter pw, MutableTypeMirror type) {
-		pw.println("return new ", type, "();");
+	private static final String RESULT = "_result";
+	
+	protected void printDtoInstancer(FormattedPrintWriter pw, EntityResolver entityResolver, DtoType type) {
+		pw.println(type," " + RESULT + " = new ", type, "();");
+		if ((type instanceof DtoDeclaredType) && entityResolver.shouldHaveIdMethod((DomainDeclaredType) type.getDomain())) {
+			ExecutableElement idMethod = ((DtoDeclaredType)type).getIdMethod(entityResolver);			
+			pw.println(RESULT + "." + MethodHelper.toSetter(idMethod) + "((", processingEnv.getTransferObjectUtils().getDomainType(idMethod.getReturnType()).getDto(), ")id);");
+		}
+		pw.println("return " + RESULT + ";");
 	}
 
 	protected boolean copy(TransferObjectContext context, FormattedPrintWriter pw, CopyMethodPrinter printer) {
