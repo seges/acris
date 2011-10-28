@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
@@ -18,6 +19,8 @@ import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
 public class APIKeyUserService implements UserProviderService {
 
+	private static final Logger logger = Logger.getLogger(APIKeyUserService.class);
+	
 	private String apiKeyURL;
 	
 	public APIKeyUserService(String apiKeyURL) { 
@@ -41,7 +44,7 @@ public class APIKeyUserService implements UserProviderService {
 			  }
 			is.close();	
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Comunication with APIKey service failed", e);
 		}
 		return createUser(s.toString());
 	}
@@ -51,7 +54,7 @@ public class APIKeyUserService implements UserProviderService {
 		try {
 			allowed = (Boolean) new JSONObject(result).get("allowed");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("APIKey service do not return correct result", e);
 		}
 		
 		if (allowed) {
