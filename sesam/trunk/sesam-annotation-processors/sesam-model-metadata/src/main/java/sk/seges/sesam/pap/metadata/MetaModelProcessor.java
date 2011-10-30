@@ -110,7 +110,7 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
 				Element interfaceElement = ((DeclaredType)interfaceType).asElement();
 				if (interfaceElement.getKind().equals(ElementKind.INTERFACE)) {
-					processNestedType((TypeElement)interfaceElement);
+					processClass((TypeElement)interfaceElement);
 				}
 			}
 		}
@@ -132,13 +132,14 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 			TypeElement element = context.getTypeElement();
 
 			this.context.setConverter(selectedConverter);
+			this.context.setProcessingElement(element);
 			
-			processNestedType(element);
+			processClass(element);
 			processInterfaces(element);
 	
 			while (element.getSuperclass() instanceof DeclaredType) {
 				element = (TypeElement) ((DeclaredType) element.getSuperclass()).asElement();
-				processNestedType(element);
+				processClass(element);
 				processInterfaces(element);
 			}
 		}
@@ -156,7 +157,7 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 
 		context.setProcessingElement(element);
 
-		if (cache.isProcessed(context, MetaElementType.TYPE)) {
+		if (cache.isProcessed(context, MetaElementType.TYPE) || cache.isProcessed(context, MetaElementType.PROPERTY)) {
 			context.setProcessingElement(null);
 			return false;
 		}
@@ -189,7 +190,6 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 		boolean interfaceGenerated = false;
 
 		if (!cache.isProcessed(context, MetaElementType.TYPE)) {
-			//cycle not detected
 			if (element.asType().getKind().equals(TypeKind.DECLARED) && accessType.equals(AccessType.PROPERTY)) {
 				interfaceGenerated = processProperty((DeclaredType) element.asType());
 			} else if (element.asType().getKind().equals(TypeKind.EXECUTABLE) && accessType.equals(AccessType.METHOD)) {
