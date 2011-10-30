@@ -2,29 +2,19 @@ package sk.seges.sesam.pap.model.accessor;
 
 import javax.lang.model.element.Element;
 
-import sk.seges.sesam.core.pap.accessor.AnnotationAccessor;
+import sk.seges.sesam.core.pap.accessor.SingleAnnotationAccessor;
 import sk.seges.sesam.pap.model.annotation.GenerateHashcode;
 
-public class GenerateHashcodeAccessor extends AnnotationAccessor {
+public class GenerateHashcodeAccessor extends SingleAnnotationAccessor<GenerateHashcode> {
 
-	private Boolean generate = null;
-	
 	public GenerateHashcodeAccessor(Element element) {
-		GenerateHashcode annotation = element.getAnnotation(GenerateHashcode.class);
-		
-		if (annotation != null) {
-			generate = annotation.generate();
-		} else {
-			generate = true;
-		}
+		super(element, GenerateHashcode.class);
 	}
 	
-	@Override
-	public boolean isValid() {
-		return generate != null;
-	}
-
 	public boolean generate() {
-		return generate;
+		if (annotation != null) {
+			return annotation.generate();
+		}
+		return true;
 	}
 }

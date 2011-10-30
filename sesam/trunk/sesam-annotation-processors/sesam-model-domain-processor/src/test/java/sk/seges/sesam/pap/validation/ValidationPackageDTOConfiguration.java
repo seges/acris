@@ -6,9 +6,9 @@ import sk.seges.sesam.pap.model.annotation.Copy;
 import sk.seges.sesam.pap.model.annotation.GenerateEquals;
 import sk.seges.sesam.pap.model.annotation.GenerateHashcode;
 import sk.seges.sesam.pap.model.annotation.Mapping;
+import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.PropertyAccessor;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
-import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.validation.annotation.Size;
 
 @TransferObjectMapping(domainClass = EntityWithValidation.class)

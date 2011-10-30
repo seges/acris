@@ -3,10 +3,10 @@ package sk.seges.sesam.shared.model.mock;
 import javax.annotation.Generated;
 
 @Generated(value = "sk.seges.sesam.pap.metadata.MetaModelProcessor")
-public class MockEntityMetaModel {
+public class MultipleConverterEntityMetaModel {
+
+	public static final String DB_NAME = "name";
 
 	public static final String NAME = "name";
-
-	public static final String SURNAME = "surname";
 
 }

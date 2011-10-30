@@ -3,7 +3,7 @@ package sk.seges.sesam.shared.model.mock;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
 @MetaModel
-public class MockEntity {
+public class MockEntity implements MockEntityData {
 
 	private String name;
 	private String surname;

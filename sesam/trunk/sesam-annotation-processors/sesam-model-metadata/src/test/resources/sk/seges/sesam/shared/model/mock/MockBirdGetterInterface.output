@@ -5,8 +5,8 @@ import javax.annotation.Generated;
 @Generated(value = "sk.seges.sesam.pap.metadata.MetaModelProcessor")
 public interface MockBirdGetterInterfaceMetaModel {
 
-		public final static String NAME = "name";
+	public static final String NAME = "name";
 
-		public final static String TYPE = "type";
+	public static final String TYPE = "type";
 
 }

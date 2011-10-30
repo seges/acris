@@ -1,13 +1,8 @@
 package sk.seges.sesam.core.pap.utils;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -18,7 +13,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import javax.lang.model.util.Types;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -143,104 +137,7 @@ public class ProcessorUtils {
 		
 		return null;
 	}
-
-	public static AnnotationMirror containsAnnotation(Element element, Class<?>... annotations) {
-		assert element != null;
-		assert annotations != null;
-
-		List<String> annotationClassNames = new ArrayList<String>();
-		for ( Class<?> clazz : annotations ) {
-			annotationClassNames.add( clazz.getName() );
-		}
-
-		List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
-		for ( AnnotationMirror mirror : annotationMirrors ) {
-			if ( annotationClassNames.contains( mirror.getAnnotationType().toString() ) ) {
-				return mirror;
-			}
-		}
-		return null;
-	}
-
-	private static Object convertToObject(Object o) {
-		if (o instanceof AnnotationValue) {
-			AnnotationValue av = (AnnotationValue)o;
-			Object oss = av.accept(new SimpleAnnotationValueVisitor6<Object, Void>() {
-				@Override
-				public Object visitType(TypeMirror t, Void p) {
-					try {
-						return Class.forName(t.toString());
-					} catch (ClassNotFoundException e) {
-					}
-					return super.visitType(t, p);
-				}
-				@Override
-				protected Object defaultAction(Object o, Void p) {
-					return o;
-				}
-			}, null);
-			return oss;
-		}
-		return o;
-	}
 	
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	public static <T> List<T> convertToList(Object o) {
-		if (o == null) {
-			return null;
-		}
-		if (o instanceof List) {
-			List<T> result = new ArrayList<T>();
-			for (Object object: (List)o) {
-				result.add((T)convertToObject(object));
-			}
-			return result;
-		}
-		if (o.getClass().isArray()) {
-			T[] source = (T[])o;
-			
-			List<T> result = new ArrayList<T>();
-			for (Object object: source) {
-				result.add((T)convertToObject(object));
-			}
-			return result;
-		}
-		List<T> result = new ArrayList<T>();
-		result.add((T)convertToObject(o));
-		return result;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> T getAnnotationValue(AnnotationMirror annotationMirror, String parameterValue) {
-		assert annotationMirror != null;
-		assert parameterValue != null;
-
-		Object returnValue = null;
-		for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues()
-				.entrySet() ) {
-			if ( parameterValue.equals( entry.getKey().getSimpleName().toString() ) ) {
-				returnValue = entry.getValue().getValue();
-				break;
-			}
-		}
-		
-		if (returnValue == null) {
-			String annotationName = annotationMirror.getAnnotationType().toString();
-			try {
-				Class<?> clazz = Class.forName(annotationName);
-				Method method = clazz.getMethod(parameterValue);
-				if (method == null) {
-					return null;
-				}
-				return (T)method.getDefaultValue();
-			} catch (Exception e) {
-				return null;
-			}
-		}
-		
-		return (T)returnValue;
-	}
-
 	public static ExecutableElement getMethodByReturnType(TypeElement typeElement, TypeElement returnType, Types types) {
 		List<ExecutableElement> methods = ElementFilter.methodsIn(typeElement.getEnclosedElements());
 		
@@ -353,5 +250,17 @@ public class ProcessorUtils {
 		}
 
 		return false;
+	}
+	
+	public static ExecutableElement getOverrider(TypeElement element, ExecutableElement method, ProcessingEnvironment processingEnv) {
+		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
+
+		for (ExecutableElement classMethod : methods) {
+			if (processingEnv.getElementUtils().overrides(classMethod, method, element)) {
+				return classMethod;
+			}
+		}
+		
+		return method;
 	}
 }
