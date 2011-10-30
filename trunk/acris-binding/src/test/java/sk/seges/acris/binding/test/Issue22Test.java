@@ -23,8 +23,8 @@ public class Issue22Test extends AnnotationTest {
 	
 	protected File getOutputFile(Class<?> clazz) {
 		MutableDeclaredType inputClass = toMutable(clazz);
-		BeanWrapperType dto = new BeanWrapperType(inputClass, processingEnv);
-		return new File(OUTPUT_DIRECTORY, toPath(dto.getPackageName()) + "/" + dto.getSimpleName() + SOURCE_FILE_SUFFIX);
+		BeanWrapperType beanWrapper = new BeanWrapperType(inputClass, processingEnv);
+		return new File(OUTPUT_DIRECTORY, toPath(beanWrapper.getPackageName()) + "/" + beanWrapper.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 
 	@Override
