@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.metadata.model;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class MetaModelContext {
 		return converter;
 	}
 
+//	public void 
 	public MetaModelContext setConverter(ModelPropertyConverter converter) {
 		this.converter = converter;
 		return this;

@@ -157,28 +157,19 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 		context.setProcessingElement(element);
 
 		if (cache.isProcessed(context, MetaElementType.TYPE)) {
+			context.setProcessingElement(null);
 			return false;
 		}
 
-//		boolean rootType = context.getProperty() == null ? true : context.getProperty().length() == 0;
-				
-//		String previousPrefix = context.getPrefix();
-//		if (context.getProperty() != null && context.getProperty().length() > 0) {
-//			context.setPrefix(previousPrefix + context.getProperty() + ".");
-//		}
-		
 		NestedPrinter nestedPrinter = printerProvider.getNestedPrinter();
 
 		nestedPrinter.initialize(context);
 		
-//		context.setProperty(null);
 		cache.setProcessed(context);
 		processClass(element);
 
 		nestedPrinter.finish(context);
-
-//		context.setPrefix(previousPrefix);
-		//context.setProcessingElement(null);
+		context.setProcessingElement(null);
 
 		return true;
 	}
