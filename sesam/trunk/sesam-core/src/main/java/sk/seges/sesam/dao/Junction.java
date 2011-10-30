@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  */
 public abstract class Junction implements Criterion {
 	private static final long serialVersionUID = 6351399300707045961L;

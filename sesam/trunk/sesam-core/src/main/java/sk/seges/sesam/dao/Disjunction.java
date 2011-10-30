@@ -4,7 +4,7 @@
 package sk.seges.sesam.dao;
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class Disjunction extends Junction {
 	private static final long serialVersionUID = -6937397351955413400L;

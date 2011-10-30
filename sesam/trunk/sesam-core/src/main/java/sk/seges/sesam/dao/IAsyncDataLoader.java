@@ -8,7 +8,7 @@ package sk.seges.sesam.dao;
  * returning results. These constrains should be immutable (except value holders
  * or models if provided), only page is changing.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  * 
  * @param <T>
  *            Type of paged result loaded by loader.

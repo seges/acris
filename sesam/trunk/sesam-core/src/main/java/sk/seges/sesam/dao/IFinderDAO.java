@@ -9,7 +9,7 @@ import java.util.List;
  * Interface for DAO that should implement basic set of finders required for
  * common operations (find all, find based on filter or sort criteria,...).
  * 
- * @author eldzi
+ * @author ladislav.gazo
  * @since 24.10.2007
  */
 public interface IFinderDAO<E> extends IDataAccessObject {

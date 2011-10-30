@@ -10,7 +10,7 @@ import java.io.Serializable;
  * call. Page used for criteria definition is part of this class as well as
  * returning results. Usually results are in form of a collection.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class PagedResult<T> implements Serializable {
 	private static final long serialVersionUID = 7913070730470043908L;
