@@ -50,7 +50,7 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
             }
         }
 
-        criteria.createCriteria(AclEntryMetaModel.SID).add(junction);
+        criteria.createCriteria(AclEntryMetaModel.SID.THIS).add(junction);
 
         // combine sub-queries
         clazzCriteria.add(Subqueries.exists(criteria));

@@ -41,12 +41,12 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
 			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
 			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
-			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.SID
-			+ "=:sid and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
+			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.SID
+			+ "=:sid and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
 			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
-			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.SID
-			+ "=:sid and " + " acl." + AclEntryMetaModel.SID + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
+			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.SID
+			+ "=:sid and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
 
 	@Override
 	public List<AclEntry> findByIdentityId(long aclObjectIdentity) {
