@@ -3,26 +3,16 @@
  */
 package sk.seges.sesam.pap.metadata;
 
-import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -32,11 +22,17 @@ import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
-import sk.seges.sesam.model.metadata.strategy.MetamodelMethodStrategy;
-import sk.seges.sesam.model.metadata.strategy.PojoPropertyConverter;
 import sk.seges.sesam.model.metadata.strategy.api.ModelPropertyConverter;
+import sk.seges.sesam.pap.metadata.cache.MetaCache;
+import sk.seges.sesam.pap.metadata.cache.MetaCache.MetaElementType;
 import sk.seges.sesam.pap.metadata.configurer.MetaModelProcessorConfigurer;
+import sk.seges.sesam.pap.metadata.iterator.ClassIterator;
+import sk.seges.sesam.pap.metadata.iterator.ClassIterator.ElementHandler;
+import sk.seges.sesam.pap.metadata.model.MetaModelContext;
+import sk.seges.sesam.pap.metadata.model.MetaModelConvertProvider;
 import sk.seges.sesam.pap.metadata.model.MetaModelTypeElement;
+import sk.seges.sesam.pap.metadata.printer.MetaPrinterProvider;
+import sk.seges.sesam.pap.metadata.printer.NestedPrinter;
 
 /**
  * Generates meta model interfaces for all relevant classes. The definition of which classes to process is following
@@ -70,12 +66,27 @@ import sk.seges.sesam.pap.metadata.model.MetaModelTypeElement;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class MetaModelProcessor extends MutableAnnotationProcessor {
 
-	public static final String BEAN_CLASS_NAME = "class_";
-	private static final String GETTER_PREFIX = "get";
-	private static final String IS_PREFIX = "is";
+	private MetaModelConvertProvider metaModelConvertProvider;
+	private MetaCache cache;
+	private MetaPrinterProvider printerProvider;
+	private MetaModelContext context;
 
 	private enum AccessType {
-		METHOD, PROPERTY;
+		METHOD {
+			@Override
+			public boolean supports(ModelPropertyConverter converter) {
+				return converter.handleMethods();
+			}
+		}, 
+		
+		PROPERTY {
+			@Override
+			public boolean supports(ModelPropertyConverter converter) {
+				return converter.handleFields();
+			}
+		};
+		
+		public abstract boolean supports(ModelPropertyConverter converter);
 	}
 	
 	protected PackageValidatorProvider getPackageValidatorProvider() {
@@ -89,24 +100,17 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 		};
 	}
 	
-	private MetaModelProcessorConfigurer configurer;
-
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
-		if (configurer == null) {
-			configurer = new MetaModelProcessorConfigurer();
-		}
-		return configurer;
+		return new MetaModelProcessorConfigurer();
 	}
 	
-	protected void processInterfaces(Set<String> classConstantsCache, HashSet<String> hierarchyTypes, PrintWriter pw, TypeElement element) {
-		if (element.getInterfaces() != null && element.getInterfaces().size() > 0) {
-			for (TypeMirror interfaceType: element.getInterfaces()) {
-				if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
-					Element interfaceElement = ((DeclaredType)interfaceType).asElement();
-					if (interfaceElement.getKind().equals(ElementKind.INTERFACE)) {
-						processClass(classConstantsCache, hierarchyTypes, pw, (TypeElement)interfaceElement);
-					}
+	protected void processInterfaces(TypeElement element) {
+		for (TypeMirror interfaceType: element.getInterfaces()) {
+			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+				Element interfaceElement = ((DeclaredType)interfaceType).asElement();
+				if (interfaceElement.getKind().equals(ElementKind.INTERFACE)) {
+					processNestedType((TypeElement)interfaceElement);
 				}
 			}
 		}
@@ -114,289 +118,126 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 	
 	@Override
 	protected void processElement(ProcessorContext context) {
-		HashSet<String> hierarchyTypes = new HashSet<String>();
-		Set<String> classConstantsCache = new HashSet<String>();
 
 		FormattedPrintWriter pw = context.getPrintWriter();
-		TypeElement element = context.getTypeElement();
+
+		metaModelConvertProvider = new MetaModelConvertProvider(context.getTypeElement(), processingEnv);
 		
-		processClass(classConstantsCache, hierarchyTypes, pw, element);
-		processInterfaces(classConstantsCache, hierarchyTypes, pw, element);
+		this.context = new MetaModelContext();
+		this.printerProvider = new MetaPrinterProvider(pw);
+		this.cache = new MetaCache();
 
-		while (element.getSuperclass() != null) {
-			if (element.getSuperclass() instanceof DeclaredType) {
-				element = (TypeElement) ((DeclaredType) element.getSuperclass()).asElement();
+		for (ModelPropertyConverter selectedConverter : metaModelConvertProvider.getConverters()) {
 
-				processClass(classConstantsCache, hierarchyTypes, pw, element);
-				processInterfaces(classConstantsCache, hierarchyTypes, pw, element);
-			} else {
-				break;
-			}
-		}
-	}
-	
-	private void writeMethodsFromClass(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, Element element, Set<ModelPropertyConverter> converterInstances, String prefix,
-			int level) {
-		List<ExecutableElement> methodsOfClass = ElementFilter.methodsIn(element.getEnclosedElements());
-		MetaModel metaModel = element.getAnnotation(MetaModel.class);
-		MetamodelMethodStrategy methodStrategy = (metaModel == null ? MetamodelMethodStrategy.GETTER_SETTER : metaModel.methodStrategy());
-		
-		for (ExecutableElement method : methodsOfClass) {
-			if (method.getModifiers().contains(Modifier.STATIC) || method.getModifiers().contains(Modifier.PRIVATE)
-					|| method.getModifiers().contains(Modifier.PROTECTED)) {
-				continue;
-			}
+			TypeElement element = context.getTypeElement();
 
-			TypeMirror typeMirror = method.asType();
-			String simpleMethodName = method.getSimpleName().toString();
+			this.context.setConverter(selectedConverter);
 			
-			if (simpleMethodName.length() == 0 || (MetamodelMethodStrategy.GETTER_SETTER.equals(methodStrategy) && (!(simpleMethodName.startsWith(GETTER_PREFIX) || simpleMethodName.startsWith(IS_PREFIX))))) {
-				//only getters are interesting
-				continue;
-			}
-
-			if(MetamodelMethodStrategy.GETTER_SETTER.equals(methodStrategy)) {
-				int count = 3;
+			processNestedType(element);
+			processInterfaces(element);
 	
-				String setterMethodName = "set";
-				if (simpleMethodName.startsWith(GETTER_PREFIX)) {
-					setterMethodName = setterMethodName + simpleMethodName.substring(GETTER_PREFIX.length());
-				} else if (simpleMethodName.startsWith(IS_PREFIX)) {
-					count = 2;
-					setterMethodName = setterMethodName + simpleMethodName.substring(IS_PREFIX.length());
-				}
-				ExecutableElement setterMethod = ProcessorUtils.getMethodByParameterType(setterMethodName, element, 0, method.getReturnType(), processingEnv.getTypeUtils());
-				if (setterMethod == null) {
-					//setter method is not accessible
-					continue;
-				}
-	
-				writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.METHOD, getPropertyName(simpleMethodName, count), converterInstances, prefix, level);
-			} else if(MetamodelMethodStrategy.PURE.equals(methodStrategy)) {
-				writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.METHOD, simpleMethodName, converterInstances, prefix, level);
-			} else {
-				throw new RuntimeException("Unknown method strategy = " + methodStrategy);
+			while (element.getSuperclass() instanceof DeclaredType) {
+				element = (TypeElement) ((DeclaredType) element.getSuperclass()).asElement();
+				processNestedType(element);
+				processInterfaces(element);
 			}
 		}
 	}
-
+	
 	protected ElementKind getElementKind() {
 		return ElementKind.INTERFACE;
 	};
-	
-	private String getPropertyName(String simpleMethodName, int count) {
-		if (simpleMethodName.length() > count) {
-			return ("" + simpleMethodName.charAt(count)).toLowerCase() + simpleMethodName.substring(count + 1);
-		}
-		return ("" + simpleMethodName.charAt(count)).toLowerCase();
-	}
+			
+	private boolean processNestedType(TypeElement element) {
 
-	private void writeFieldsFromClass(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, Element element, Set<ModelPropertyConverter> converterInstances, String prefix,
-			int level) {
-		List<? extends Element> fieldsOfClass = ElementFilter.fieldsIn(element.getEnclosedElements());
-
-		for (Element fieldElement : fieldsOfClass) {
-			if (fieldElement.getModifiers().contains(Modifier.STATIC) || fieldElement.getModifiers().contains(Modifier.PRIVATE)
-					|| fieldElement.getModifiers().contains(Modifier.PROTECTED) || fieldElement.getModifiers().contains(Modifier.FINAL)) {
-				continue;
-			}
-
-			TypeMirror typeMirror = fieldElement.asType();
-			String fieldName = fieldElement.getSimpleName().toString();
-
-			String getter = GETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + "()";
-			if (ProcessorUtils.hasMethod(getter, element)) {
-				//this will be processed by another routine.
-				processingEnv.getMessager().printMessage(Kind.WARNING,
-						"Field " + fieldName + " is accessible by public modifier and also using the " + getter + " method.", element);
-				continue;
-			}
-
-			writeForProperty(classConstantsCache, hierarchyTypes, pw, typeMirror, element, AccessType.PROPERTY, fieldElement.getSimpleName().toString(), converterInstances, prefix, level);
-		}
-	}
-
-	private Set<ModelPropertyConverter> getSamePolicyNotProcessedConverters(String property, String convertedProperty,
-			Set<ModelPropertyConverter> processedConverters, Set<ModelPropertyConverter> availableConverters) {
-		Set<ModelPropertyConverter> result = new HashSet<ModelPropertyConverter>();
-
-		for (ModelPropertyConverter beanPropertyConverter : availableConverters) {
-			if (!(processedConverters.contains(beanPropertyConverter))) {
-				if (convertedProperty.equals(beanPropertyConverter.getConvertedPropertyName(property))) {
-					result.add(beanPropertyConverter);
-				}
-			}
+		if (!context.getConverter().supportsHierarchy()) {
+			return false;
 		}
 
-		return result;
-	}
+		context.setProcessingElement(element);
 
-	private boolean writeHierarchy(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, TypeElement classTypeElement, String property,
-			Set<ModelPropertyConverter> converterInstances, String prefix, int level) {
+		if (cache.isProcessed(context, MetaElementType.TYPE)) {
+			return false;
+		}
 
-		Set<ModelPropertyConverter> processedConverters = new HashSet<ModelPropertyConverter>();
-
-		boolean result = false;
-
-		hierarchyTypes.add(property);
-
-		for (ModelPropertyConverter converterInstance : converterInstances) {
-			if (processedConverters.contains(converterInstance)) {
-				continue;
-			}
-
-			String convertedName = converterInstance.getConvertedPropertyName(property);
-
-			Set<ModelPropertyConverter> selectedConverters = getSamePolicyNotProcessedConverters(property, convertedName, processedConverters,
-					converterInstances);
-
-			Set<String> cache = new HashSet<String>();
-
-			for (ModelPropertyConverter selectedConverter : selectedConverters) {
-				processedConverters.add(selectedConverter);
-
-				if (!selectedConverter.supportsHierarchy()) {
-					continue;
-				}
+//		boolean rootType = context.getProperty() == null ? true : context.getProperty().length() == 0;
 				
-				classConstantsCache.add(convertedName);
-				
-				pw.println(indent("public static interface " + convertedName + " {", level));
-				pw.println();
+//		String previousPrefix = context.getPrefix();
+//		if (context.getProperty() != null && context.getProperty().length() > 0) {
+//			context.setPrefix(previousPrefix + context.getProperty() + ".");
+//		}
+		
+		NestedPrinter nestedPrinter = printerProvider.getNestedPrinter();
 
-				String convertedThis = "THIS";
+		nestedPrinter.initialize(context);
+		
+//		context.setProperty(null);
+		cache.setProcessed(context);
+		processClass(element);
 
-				if (cache.add(convertedThis)) {
-					pw.println(indent(
-							"public static final " + String.class.getSimpleName() + " " + convertedThis + " = \"" + prefix
-									+ selectedConverter.getConvertedPropertyValue(property) + "\";", level + 1));
-					pw.println();
-				}
+		nestedPrinter.finish(context);
 
-				processClass(new HashSet<String>(), hierarchyTypes, pw, classTypeElement, selectedConverters, prefix + property + ".", level + 1);
+//		context.setPrefix(previousPrefix);
+		//context.setProcessingElement(null);
 
-				pw.println(indent("}", level));
-				pw.println();
-
-				result = true;
-			}
-		}
-
-		return result;
+		return true;
 	}
 
-	private boolean writeForProperty(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, DeclaredType declaredType, Element element, String property,
-			Set<ModelPropertyConverter> converterInstances, String prefix, int level) {
-		final Element classElement = declaredType.asElement();
-		TypeElement classTypeElement = (TypeElement) classElement;
+	private boolean processProperty(DeclaredType declaredType) {
+
+		TypeElement classTypeElement = (TypeElement) declaredType.asElement();
 		
 		if (configurer.getSupportedAnnotation(classTypeElement) != null) {
-			return writeHierarchy(classConstantsCache, hierarchyTypes, pw, classTypeElement, property, converterInstances, prefix, level);
+			return processNestedType(classTypeElement);
 		}
 		
 		return false;
 	}
 
-	private void writeForProperty(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, TypeMirror typeMirror, Element element, AccessType accessType, String property,
-			Set<ModelPropertyConverter> converterInstances, String prefix, int level) {
+	private void processProperty(Element element, AccessType accessType) {
 		boolean interfaceGenerated = false;
 
-		if (!hierarchyTypes.contains(property)) {
+		if (!cache.isProcessed(context, MetaElementType.TYPE)) {
 			//cycle not detected
-			if (!typeMirror.getKind().isPrimitive()) {
-				if (typeMirror.getKind() == TypeKind.DECLARED && accessType.equals(AccessType.PROPERTY)) {
-					interfaceGenerated = writeForProperty(classConstantsCache, hierarchyTypes, pw, (DeclaredType) typeMirror, element, property, converterInstances, prefix, level);
-				} else if (typeMirror.getKind() == TypeKind.EXECUTABLE && accessType.equals(AccessType.METHOD)) {
-					final TypeMirror returnTypeElement = ((ExecutableType) typeMirror).getReturnType();
-					if (returnTypeElement != null && returnTypeElement.getKind() == TypeKind.DECLARED) {
-						interfaceGenerated = writeForProperty(classConstantsCache, hierarchyTypes, pw, (DeclaredType) returnTypeElement, element, property, converterInstances, prefix, level);
-					}
+			if (element.asType().getKind().equals(TypeKind.DECLARED) && accessType.equals(AccessType.PROPERTY)) {
+				interfaceGenerated = processProperty((DeclaredType) element.asType());
+			} else if (element.asType().getKind().equals(TypeKind.EXECUTABLE) && accessType.equals(AccessType.METHOD)) {
+				final TypeMirror returnTypeElement = ProcessorUtils.getOverrider(context.getProcessingElement(), ((ExecutableElement) element), processingEnv).getReturnType();
+				if (returnTypeElement != null && returnTypeElement.getKind() == TypeKind.DECLARED) {
+					interfaceGenerated = processProperty((DeclaredType) returnTypeElement);
 				}
 			}
 		}
 
-		if (!interfaceGenerated) {
-			writeConstant(classConstantsCache, pw, accessType, property, converterInstances, prefix, level);
+		if (!interfaceGenerated && accessType.supports(context.getConverter()) && !cache.isProcessed(context, MetaElementType.PROPERTY)) {
+			cache.setProcessed(context);
+			printerProvider.getConstantsPrinter().print(context);
 		}
 	}
 
-	private void writeConstant(Set<String> classConstantsCache, PrintWriter pw, AccessType accessType, String property, Set<ModelPropertyConverter> converterInstances, String prefix, int level) {
+	private void processClass(TypeElement element) {
 
-		for (ModelPropertyConverter beanPropertyConverter : converterInstances) {
-			if ((accessType.equals(AccessType.PROPERTY) && beanPropertyConverter.handleFields())
-					|| (accessType.equals(AccessType.METHOD) && beanPropertyConverter.handleMethods())) {
+		ClassIterator classIterator = new ClassIterator(element, processingEnv);
 
-				String convertedName = beanPropertyConverter.getConvertedPropertyName(property);
-				
-				if (!classConstantsCache.contains(convertedName)) {
-					
-					classConstantsCache.add(convertedName);
-
-					pw.println(indent("public final static " + String.class.getSimpleName() + " " + convertedName + " = \""
-							+ beanPropertyConverter.getConvertedPropertyValue(prefix + property) + "\";", level));
-					pw.println();
-				}
-			}
-		}
-	}
-
-	private void processClass(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, Element element) {
-		processClass(classConstantsCache, hierarchyTypes, pw, element, null, "", 1);
-	}
-
-	private Set<ModelPropertyConverter> createInstances(List<Class<? extends ModelPropertyConverter>> converters, Element element) {
-		Set<ModelPropertyConverter> converterInstances = new HashSet<ModelPropertyConverter>();
-
-		for (Class<? extends ModelPropertyConverter> converter : converters) {
-			try {
-				converterInstances.add(converter.getConstructor().newInstance());
-			} catch (Exception e) {
-				processingEnv.getMessager().printMessage(Kind.WARNING,
-						"Unable to instantiate " + converter.getName() + " using default constructor. Naming converter will be skipped", element);
-			}
-		}
-
-		return converterInstances;
-	}
-
-	private void processClass(Set<String> classConstantsCache, Set<String> hierarchyTypes, PrintWriter pw, Element element, Set<ModelPropertyConverter> selectedConverters, String prefix, int level) {
-
-		Set<ModelPropertyConverter> converterInstances = selectedConverters;
-
-		if (converterInstances == null) {
- 			MetaModel annotation = (MetaModel)getConfigurer().getSupportedAnnotation(element);
+		classIterator.iterateFields(new ElementHandler() {
 			
-//			MetaModel annotation = ((TypeElement) element).getAnnotation(MetaModel.class);
-			if (annotation != null) {
-				AnnotationMirror metaModelAnnotation = ProcessorUtils.containsAnnotation(element, MetaModel.class);
-				if (metaModelAnnotation != null) {
-					List<Class<? extends ModelPropertyConverter>> beanPropertyConverter = ProcessorUtils.convertToList(ProcessorUtils.getAnnotationValue(
-							metaModelAnnotation, "beanPropertyConverter"));
-					converterInstances = createInstances(beanPropertyConverter, element);
-				} else {
-					converterInstances = new HashSet<ModelPropertyConverter>();
-				}
-			} else {
-				converterInstances = new HashSet<ModelPropertyConverter>();
+			@Override
+			public void handle(Element element, String propertyName) {
+				context.setProperty(propertyName);
+				processProperty(element, AccessType.PROPERTY);
+				context.setProperty(null);
 			}
-		} else {
-			converterInstances = new HashSet<ModelPropertyConverter>();
-		}
+		});
 
-		if (converterInstances.size() == 0) {
-			converterInstances.add(new PojoPropertyConverter());
-		}
-		
-		writeFieldsFromClass(classConstantsCache, hierarchyTypes, pw, element, converterInstances, prefix, level);
-		writeMethodsFromClass(classConstantsCache, hierarchyTypes, pw, element, converterInstances, prefix, level);
-	}
+		classIterator.iterateMethods(new ElementHandler() {
+			
+			@Override
+			public void handle(Element element, String fieldName) {
+				context.setProperty(fieldName);
+				processProperty(element, AccessType.METHOD);
+				context.setProperty(null);
+			}
+		});
 
-	private String indent(String text, int level) {
-		String result = "";
-
-		for (int i = 0; i < level; i++) {
-			result += "	";
-		}
-		return result + text;
 	}
 }

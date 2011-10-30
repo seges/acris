@@ -13,13 +13,34 @@ import sk.seges.sesam.pap.metadata.model.MetaModelTypeElement;
 import sk.seges.sesam.shared.model.mock.MockBirdGetterInterface;
 import sk.seges.sesam.shared.model.mock.MockBirdInterface;
 import sk.seges.sesam.shared.model.mock.MockEntity;
+import sk.seges.sesam.shared.model.mock.MockHierarchyEntityData;
+import sk.seges.sesam.shared.model.mock.MockiestEntity;
+import sk.seges.sesam.shared.model.mock.MultipleConverterEntity;
 
 public class MetaModelProcessorTest extends AnnotationTest {
 
 	@Test
-	public void testMockEntityDao() {
+	public void testMockEntity() {
 		assertCompilationSuccessful(compileFiles(MockEntity.class));
 		assertOutput(getResourceFile(MockEntity.class), getOutputFile(MockEntity.class));
+	}
+
+	@Test
+	public void testMultipleConverters() {
+		assertCompilationSuccessful(compileFiles(MultipleConverterEntity.class));
+		assertOutput(getResourceFile(MultipleConverterEntity.class), getOutputFile(MultipleConverterEntity.class));
+	}
+
+	@Test
+	public void testInheritance() {
+		assertCompilationSuccessful(compileFiles(MockiestEntity.class));
+		assertOutput(getResourceFile(MockiestEntity.class), getOutputFile(MockiestEntity.class));
+	}
+
+	@Test
+	public void testMockHierarchyEntity() {
+		assertCompilationSuccessful(compileFiles(MockHierarchyEntityData.class));
+		assertOutput(getResourceFile(MockHierarchyEntityData.class), getOutputFile(MockHierarchyEntityData.class));
 	}
 
 	@Test

@@ -59,10 +59,17 @@ public class MethodHelper {
 	}
 
 	public static String toSetter(ExecutableElement method) {
-		if (method.getSimpleName().toString().startsWith(GETTER_PREFIX)) {
-			return toSetter(method.getSimpleName().toString().substring(GETTER_PREFIX.length()));
+		String simpleName = method.getSimpleName().toString();
+		
+		if (simpleName.startsWith(GETTER_PREFIX)) {
+			return toSetter(simpleName.substring(GETTER_PREFIX.length()));
 		}
-		return toSetter(method.getSimpleName().toString());
+		
+		if (simpleName.startsWith(GETTER_IS_PREFIX)) {
+			return toSetter(simpleName.substring(GETTER_IS_PREFIX.length()));
+		}
+		
+		return toSetter(simpleName);
 	}
 
 	public static  String toField(String fieldName) {
@@ -96,10 +103,14 @@ public class MethodHelper {
 
 		String result = "";
 
-		if (getterMethod.getSimpleName().toString().startsWith(GETTER_PREFIX)) {
-			result = getterMethod.getSimpleName().toString().substring(GETTER_PREFIX.length());
+		String simpleName = getterMethod.getSimpleName().toString();
+		
+		if (simpleName.startsWith(GETTER_PREFIX)) {
+			result = simpleName.substring(GETTER_PREFIX.length());
+		} else if (simpleName.startsWith(GETTER_IS_PREFIX)) {
+			result = simpleName.substring(GETTER_IS_PREFIX.length());
 		} else {
-			result = getterMethod.getSimpleName().toString();
+			result = simpleName;
 		}
 
 		if (result.length() < 2) {
@@ -132,7 +143,8 @@ public class MethodHelper {
 	}
 	
 	public static boolean isGetterMethod(ExecutableElement method) {
-		return method.getSimpleName().toString().startsWith(MethodHelper.GETTER_PREFIX);
+		String simpleName = method.getSimpleName().toString();
+		return simpleName.startsWith(GETTER_PREFIX) || simpleName.startsWith(GETTER_IS_PREFIX);
 	}
 
 }
