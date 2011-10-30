@@ -7,7 +7,7 @@ import java.io.Serializable;
  * (ascending/descending). Name of the column usually matches domain
  * object's field.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class SortInfo implements Serializable {
 	private static final long serialVersionUID = -3674913932641601223L;

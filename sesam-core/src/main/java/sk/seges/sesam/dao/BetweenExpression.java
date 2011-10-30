@@ -6,8 +6,7 @@ package sk.seges.sesam.dao;
 import java.io.Serializable;
 
 /**
- * @author eldzi
- *
+ * @author ladislav.gazo
  */
 public class BetweenExpression<T extends Comparable<? extends Serializable>> extends SimpleExpression<T> {
 	private static final long serialVersionUID = -8218796834016497508L;

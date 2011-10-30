@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Supporting class for defining paging results retrieved by a service call.
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class Page implements Serializable {
 	private static final long serialVersionUID = -3246966934600152455L;

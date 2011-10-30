@@ -49,7 +49,7 @@ package sk.seges.sesam.dao;
  * });
  * </pre>
  * 
- * @author eldzi
+ * @author ladislav.gazo
  */
 public interface ICallback<T> {
 	  /**

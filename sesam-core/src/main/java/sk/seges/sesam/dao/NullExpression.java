@@ -5,13 +5,13 @@ package sk.seges.sesam.dao;
 
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  * 
  * @param <T>
  *            Type of value expression has to compare using operation for the
  *            property.
  */
-public class NullExpression implements Criterion {
+public class NullExpression implements Criterion, HasCriterionProperty {
 	private static final long serialVersionUID = -6109098619832880962L;
 
 	private static final String operation = "isNull";
@@ -24,6 +24,7 @@ public class NullExpression implements Criterion {
 		this.property = property;
 	}
 	
+	@Override
 	public String getProperty() {
 		return property;
 	}
@@ -33,6 +34,7 @@ public class NullExpression implements Criterion {
 	 * constructor for construction. This is only because of serialization
 	 * constraints.
 	 */
+	@Override
 	public void setProperty(String property) {
 		this.property = property;
 	}

@@ -4,7 +4,7 @@
 package sk.seges.sesam.dao;
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class NotExpression implements Criterion {
 	private static final long serialVersionUID = -6011585536168355602L;

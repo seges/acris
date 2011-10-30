@@ -6,7 +6,7 @@ package sk.seges.sesam.dao;
 import java.io.Serializable;
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class LikeExpression<T extends Comparable<? extends Serializable>> extends SimpleExpression<T> {
 	private static final String LIKE = "like";

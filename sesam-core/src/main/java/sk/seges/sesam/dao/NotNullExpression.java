@@ -5,13 +5,13 @@ package sk.seges.sesam.dao;
 
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  * 
  * @param <T>
  *            Type of value expression has to compare using operation for the
  *            property.
  */
-public class NotNullExpression implements Criterion {
+public class NotNullExpression implements Criterion, HasCriterionProperty {
 	private static final long serialVersionUID = -6109098619832880962L;
 
 	private static final String operation = "isNotNull";

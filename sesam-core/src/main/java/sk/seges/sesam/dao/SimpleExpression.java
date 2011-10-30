@@ -6,13 +6,13 @@ package sk.seges.sesam.dao;
 import java.io.Serializable;
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  * 
  * @param <T>
  *            Type of value expression has to compare using operation for the
  *            property.
  */
-public class SimpleExpression<T extends Comparable<? extends Serializable>> implements Criterion {
+public class SimpleExpression<T extends Comparable<? extends Serializable>> implements Criterion, HasCriterionProperty {
 	private static final long serialVersionUID = 8159534010141240168L;
 	
 	protected String property;

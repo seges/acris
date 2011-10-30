@@ -5,7 +5,7 @@ import java.io.Serializable;
 import sk.seges.sesam.dao.LikeExpression.MatchMode;
 
 /**
- * @author eldzi
+ * @author ladislav.gazo
  */
 public class Filter {
 	public static final String NE = "ne";
