@@ -1,5 +1,6 @@
 package sk.seges.acris.pap.service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -7,10 +8,13 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
@@ -71,6 +75,9 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(element.getEnclosedElements());
 		
 		for (ExecutableElement method: methodsIn) {
+			
+			printMethodTypeVariablesDefinition(element, method, pw);
+			
 			pw.print("void " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
@@ -78,7 +85,7 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				pw.print(processingEnv.getTypeUtils().toMutableType(parameter.asType()), " " + parameter.getSimpleName().toString());
+				pw.print(toMutableParam(parameter.asType()), " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
@@ -91,6 +98,61 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			pw.println();
 			//TODO add throws
 		}
+	}
+
+	protected void printMethodTypeVariablesDefinition(TypeElement remoteElement, ExecutableElement method, FormattedPrintWriter pw) {
+		
+		boolean first = true;
+		boolean generated = false;
+		
+		List<TypeMirror> types = new LinkedList<TypeMirror>();
+		
+		for (VariableElement parameter: method.getParameters()) {
+			types.add(parameter.asType());
+		}
+		
+		types.add(method.getReturnType());
+		
+		for (TypeMirror type: types) {
+			if (type.getKind().equals(TypeKind.TYPEVAR)) {
+				TypeVariable typeVariable = (TypeVariable)type;
+				
+				boolean found = false;
+				for (TypeParameterElement parameterElement: remoteElement.getTypeParameters()) {
+					if (parameterElement.getSimpleName().toString().equals(typeVariable.asElement().getSimpleName().toString())) {
+						found = true;
+						break;
+					}
+				}
+				
+				if (!found) {
+					generated = true;
+					if (first) {
+						pw.print("<");
+						first = false;
+					} else {
+						pw.print(", ");
+					}
+					
+					pw.print(typeVariable);
+				}
+			}
+		}
+		
+		if (generated) {
+			pw.print("> ");
+		}
+	}
+	
+	protected MutableTypeMirror toMutableParam(TypeMirror type) {
+		switch (type.getKind()) {
+		case TYPEVAR:
+			return processingEnv.getTypeUtils().getTypeVariable(((TypeVariable)type).asElement().getSimpleName().toString());
+		case ARRAY:
+			return processingEnv.getTypeUtils().getArrayType(toMutableParam(((ArrayType)type).getComponentType()));
+		}
+		
+		return processingEnv.getTypeUtils().toMutableType(type);
 	}
 	
 	protected MutableTypeMirror unBoxType(TypeMirror type) {
@@ -108,6 +170,8 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			return processingEnv.getTypeUtils().toMutableType(Void.class);
 		case ARRAY:
 			return processingEnv.getTypeUtils().getArrayType(unBoxType(((ArrayType)type).getComponentType()));
+		case TYPEVAR:
+			return processingEnv.getTypeUtils().getTypeVariable(((TypeVariable)type).asElement().getSimpleName().toString());
 		case ERROR:
 		case NULL:
 		case NONE:
