@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -46,6 +47,8 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	public Dialog() {
 		super();
 		init();
+		
+		sinkEvents(Event.ONCONTEXTMENU);
 	}
 
 	private ClickHandler getHidingClickHandler() {
@@ -83,6 +86,18 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	}
 
 	private boolean initialized = false;
+	
+	@Override
+	public void onBrowserEvent(Event event) {
+		switch (event.getTypeInt()) {
+		case Event.ONCONTEXTMENU:
+			event.preventDefault();
+			break;
+		default:
+			super.onBrowserEvent(event);
+			break;
+		}
+	}
 
 	@Override
 	protected void onLoad() {
