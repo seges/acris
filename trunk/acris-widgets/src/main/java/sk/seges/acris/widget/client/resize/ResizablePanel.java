@@ -5,6 +5,7 @@ import java.util.List;
 
 import sk.seges.acris.widget.client.util.WidgetUtils;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -166,12 +167,16 @@ public class ResizablePanel extends HTML {
 		if (enabled) {
 			switch (DOM.eventGetType(event)) {
 			case Event.ONMOUSEDOWN:
-				event.preventDefault();
-				onMouseDown(event);
+				if (event.getButton() == NativeEvent.BUTTON_LEFT) {
+					event.preventDefault();
+					onMouseDown(event);
+				}
 				break;
 			case Event.ONMOUSEUP:
-				event.preventDefault();
-				onMouseUp(event);
+				if (event.getButton() == NativeEvent.BUTTON_LEFT) {
+					event.preventDefault();
+					onMouseUp(event);
+				}
 				break;
 			case Event.ONMOUSEMOVE:
 				event.preventDefault();
@@ -274,27 +279,49 @@ public class ResizablePanel extends HTML {
 
 				if (cursorResize == Cursor.SE_RESIZE) {
 					if (cursorX > thisX && cursorY > thisY) {
-						width = cursorX - thisX;
 						height = cursorY - thisY;
+
+						if (keepAspect && !event.getShiftKey()) {
+							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+						} else {
+							width = cursorX - thisX;
+						}
 					}
 				} else if (cursorResize == Cursor.NW_RESIZE) {
 					if (cursorX < thisX + this.getOffsetWidth() - 6 && cursorY < thisY + this.getOffsetHeight() - 6) {
-						width = thisX - cursorX + this.getOffsetWidth();
 						height = thisY - cursorY + this.getOffsetHeight();
-						proxyElement.getStyle().setLeft(cursorX + WidgetUtils.getPageScrollX(), Unit.PX);
 						proxyElement.getStyle().setTop(cursorY + WidgetUtils.getPageScrollY(), Unit.PX);
+
+						if (keepAspect && !event.getShiftKey()) {
+							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+							proxyElement.getStyle().setLeft(thisX + this.getOffsetWidth() - width + WidgetUtils.getPageScrollX(), Unit.PX);
+						} else {
+							width = thisX - cursorX + this.getOffsetWidth();
+							proxyElement.getStyle().setLeft(cursorX + WidgetUtils.getPageScrollX(), Unit.PX);
+						}
 					}
 				} else if (cursorResize == Cursor.NE_RESIZE) {
 					if (cursorX > thisX && cursorY < thisY + this.getOffsetHeight() - 6) {
-						width = cursorX - thisX;
 						height = thisY - cursorY + this.getOffsetHeight();
 						proxyElement.getStyle().setTop(cursorY + WidgetUtils.getPageScrollY(), Unit.PX);
+
+						if (keepAspect && !event.getShiftKey()) {
+							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+						} else {
+							width = cursorX - thisX;
+						}
 					}
 				} else if (cursorResize == Cursor.SW_RESIZE) {
 					if (cursorX < thisX + this.getOffsetWidth() - 6 && cursorY > thisY) {
-						width = thisX - cursorX + this.getOffsetWidth();
 						height = cursorY - thisY;
-						proxyElement.getStyle().setLeft(cursorX + WidgetUtils.getPageScrollX(), Unit.PX);
+
+						if (keepAspect && !event.getShiftKey()) {
+							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+							proxyElement.getStyle().setLeft(thisX + this.getOffsetWidth() - width + WidgetUtils.getPageScrollX(), Unit.PX);
+						} else {
+							width = thisX - cursorX + this.getOffsetWidth();
+							proxyElement.getStyle().setLeft(cursorX + WidgetUtils.getPageScrollX(), Unit.PX);
+						}
 					}
 				} else if (cursorResize == Cursor.N_RESIZE) {
 					if (cursorX > thisX && cursorY < thisY + this.getOffsetHeight() - 6) {
