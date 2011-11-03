@@ -45,18 +45,18 @@ public abstract class AnnotationTest {
 	public enum EnvironmentOptions {
 		JAVAC {
 			@Override
-			public CompilerManager getCompiler(Collection<File> compilationUnits) {
-				return new JavacCompilerManager(compilationUnits);
+			public CompilerManager getCompiler() {
+				return new JavacCompilerManager();
 			}
 		}, 
 		ECLIPSE {
 			@Override
-			public CompilerManager getCompiler(Collection<File> compilationUnits) {
-				return new EclipseCompilerManager(compilationUnits);
+			public CompilerManager getCompiler() {
+				return new EclipseCompilerManager();
 			}
 		};
 		
-		public abstract CompilerManager getCompiler(Collection<File> compilationUnits);
+		public abstract CompilerManager getCompiler();
 	}
 	
 	protected enum CompilerOptions {
@@ -149,6 +149,10 @@ public abstract class AnnotationTest {
 		return file;
 	}
 
+	protected File toFile(MutableDeclaredType type) {
+		return new File(OUTPUT_DIRECTORY, toPath(type.getPackageName()) + "/" + type.getSimpleName() + SOURCE_FILE_SUFFIX);
+	}
+	
 	protected static void assertOutput(File expectedResult, File output) {
 		String[] expectedContent = getContents(expectedResult);
 		String[] outputContent = getContents(output);
@@ -328,12 +332,15 @@ public abstract class AnnotationTest {
 		return mergeCompilerOptions(Arrays.asList("-proc:only", "-classpath", getClassPath(), "-Aclasspath=" + getClassPath(), "-AprojectName=" + getClass().getCanonicalName()));
 	}
 
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
+		return compileFiles(EnvironmentOptions.JAVAC, compilationUnits);
+	}
 	
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(EnvironmentOptions options, Collection<File> compilationUnits) {
-		CompilerManager compiler = options.getCompiler(compilationUnits);
+		CompilerManager compiler = options.getCompiler();
 		compiler.setProcessors(Arrays.asList(getProcessors()));
 		compiler.setOptions(getCompilerInternalOptions());
-		return compiler.run();
+		return compiler.compile(compilationUnits);
 	}
 
 	protected static void assertCompilationSuccessful(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
