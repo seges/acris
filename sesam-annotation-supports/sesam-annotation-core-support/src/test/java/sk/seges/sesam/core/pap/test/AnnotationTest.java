@@ -42,7 +42,7 @@ public abstract class AnnotationTest {
 	protected static final String OUTPUT_FILE_SUFFIX = ".output";
 	protected static final String OUTPUT_DIRECTORY = "target/generated-test";
 
-	public enum EnvironmentOptions {
+	public enum Compiler {
 		JAVAC {
 			@Override
 			public CompilerManager getCompiler() {
@@ -183,7 +183,7 @@ public abstract class AnnotationTest {
 		return content.toArray(new String[] {});
 	}
 
-	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(EnvironmentOptions environmentOptions, Type... compilationUnits) {
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Compiler environmentOptions, Type... compilationUnits) {
 		assert (compilationUnits != null);
 
 		List<File> files = new ArrayList<File>();
@@ -214,14 +214,14 @@ public abstract class AnnotationTest {
 	 * @see #compileFiles(String...)
 	 */
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Type... compilationUnits) {
-		return compileFiles(EnvironmentOptions.JAVAC, compilationUnits);
+		return compileFiles(Compiler.JAVAC, compilationUnits);
 	}
 
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Package... compilationUnits) {
-		return compileFiles(EnvironmentOptions.JAVAC, compilationUnits);
+		return compileFiles(Compiler.JAVAC, compilationUnits);
 	}
 	
-	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(EnvironmentOptions environmentOptions, Package... compilationUnits) {
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Compiler environmentOptions, Package... compilationUnits) {
 		assert (compilationUnits != null);
 
 		List<File> files = new ArrayList<File>();
@@ -333,10 +333,10 @@ public abstract class AnnotationTest {
 	}
 
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
-		return compileFiles(EnvironmentOptions.JAVAC, compilationUnits);
+		return compileFiles(Compiler.JAVAC, compilationUnits);
 	}
 	
-	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(EnvironmentOptions options, Collection<File> compilationUnits) {
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Compiler options, Collection<File> compilationUnits) {
 		CompilerManager compiler = options.getCompiler();
 		compiler.setProcessors(Arrays.asList(getProcessors()));
 		compiler.setOptions(getCompilerInternalOptions());
