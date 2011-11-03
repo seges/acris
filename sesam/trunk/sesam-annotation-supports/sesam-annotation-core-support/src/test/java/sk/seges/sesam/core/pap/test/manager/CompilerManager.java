@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.pap.test.manager;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,5 +13,5 @@ public interface CompilerManager {
 	void setOptions(List<String> compilerOptions);
 	void setProcessors(Collection<Processor> processors);
 	
-	List<Diagnostic<? extends JavaFileObject>> run();
+	List<Diagnostic<? extends JavaFileObject>> compile(Collection<File> compilationUnits);
 }

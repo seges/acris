@@ -11,13 +11,9 @@ public abstract class AbstractCompilerManager implements CompilerManager{
 	protected List<String> compilerOptions;
 	protected Collection<Processor> processors;
 
-	protected Collection<File> compilationUnits;
-	
-	public AbstractCompilerManager(Collection<File> compilationUnits) {
-		this.compilationUnits = compilationUnits;
-	}
+	public AbstractCompilerManager() {}
 
-	protected void printCompilerOptions() {
+	protected void printCompilerOptions(Collection<File> compilationUnits) {
 		for (String option : compilerOptions) {
 			System.out.print(option + " ");
 		}
@@ -42,5 +38,4 @@ public abstract class AbstractCompilerManager implements CompilerManager{
 	public void setProcessors(Collection<Processor> processors) {
 		this.processors = processors;
 	}
-
 }

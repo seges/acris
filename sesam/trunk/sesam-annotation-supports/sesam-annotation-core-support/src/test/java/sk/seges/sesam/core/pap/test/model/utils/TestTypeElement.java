@@ -1,6 +1,7 @@
 package sk.seges.sesam.core.pap.test.model.utils;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ class TestTypeElement extends TestElement implements TypeElement {
 	
 	private List<AnnotationMirror> annotationMirrors;
 	private Annotation[] annotations;
+	private Class<?>[] interfaces;
 
 	public TestTypeElement(Class<?> clazz) {
 		super(clazz.isInterface() ? ElementKind.INTERFACE: clazz.isAnnotation() ? ElementKind.ANNOTATION_TYPE:
@@ -33,6 +35,7 @@ class TestTypeElement extends TestElement implements TypeElement {
 		this.packageName = clazz.getPackage().getName().toString();
 		
 		annotations = clazz.getAnnotations();
+		interfaces = clazz.getInterfaces();
 	}
 	
 	@Override
@@ -110,8 +113,14 @@ class TestTypeElement extends TestElement implements TypeElement {
 
 	@Override
 	public List<? extends TypeMirror> getInterfaces() {
-		// TODO Auto-generated method stub
-		return null;
+		if (interfaces == null || interfaces.length == 0) {
+			return new ArrayList<TypeMirror>();
+		}
+		List<TypeMirror> result = new ArrayList<TypeMirror>();
+		for (Class<?> interfaceClass: interfaces) {
+			result.add(new TestTypeElement(interfaceClass).asType());
+		}
+		return result;
 	}
 
 	@Override
