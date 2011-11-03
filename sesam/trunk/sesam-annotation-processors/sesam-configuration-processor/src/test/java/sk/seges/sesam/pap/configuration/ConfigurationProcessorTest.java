@@ -14,9 +14,15 @@ import sk.seges.sesam.pap.configuration.processor.SettingsProcessor;
 
 public class ConfigurationProcessorTest extends AnnotationTest {
 
+//	@Test
+//	public void testConfiguration() {
+//		assertCompilationSuccessful(compileFiles(TestConfiguration.class));
+//		assertOutput(getResourceFile(TestConfiguration.class), getOutputFile(TestConfiguration.class));
+//	}
+
 	@Test
-	public void testMockEntityDao() {
-		assertCompilationSuccessful(compileFiles(TestConfiguration.class));
+	public void testConfigurationInEclipse() {
+		assertCompilationSuccessful(compileFiles(EnvironmentOptions.ECLIPSE, TestConfiguration.class));
 		assertOutput(getResourceFile(TestConfiguration.class), getOutputFile(TestConfiguration.class));
 	}
 
