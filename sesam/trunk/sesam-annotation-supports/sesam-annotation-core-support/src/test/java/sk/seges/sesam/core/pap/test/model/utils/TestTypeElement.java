@@ -26,7 +26,10 @@ class TestTypeElement extends TestElement implements TypeElement {
 	
 	private List<AnnotationMirror> annotationMirrors;
 	private Annotation[] annotations;
+
 	private Class<?>[] interfaces;
+	private Class<?> superclass;
+	private Class<?> enclosingClass;
 
 	public TestTypeElement(Class<?> clazz) {
 		super(clazz.isInterface() ? ElementKind.INTERFACE: clazz.isAnnotation() ? ElementKind.ANNOTATION_TYPE:
@@ -36,6 +39,9 @@ class TestTypeElement extends TestElement implements TypeElement {
 		
 		annotations = clazz.getAnnotations();
 		interfaces = clazz.getInterfaces();
+		
+		superclass = clazz.getSuperclass();
+		enclosingClass = clazz.getEnclosingClass();
 	}
 	
 	@Override
@@ -79,7 +85,10 @@ class TestTypeElement extends TestElement implements TypeElement {
 
 	@Override
 	public Element getEnclosingElement() {
-		// TODO Auto-generated method stub
+		if (enclosingClass != null) {
+			return new TestTypeElement(enclosingClass);
+		}
+		
 		return null;
 	}
 
@@ -107,8 +116,11 @@ class TestTypeElement extends TestElement implements TypeElement {
 
 	@Override
 	public TypeMirror getSuperclass() {
-		// TODO Auto-generated method stub
-		return null;
+		if (superclass != null) {
+			return new TestTypeElement(superclass).asType();
+		}
+		
+		return new TestNoneType();
 	}
 
 	@Override

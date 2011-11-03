@@ -40,7 +40,6 @@ public class AnnotationPrinter {
 			
 			if (!isAnnotationIgnored) {
 				print(annotation);
-				pw.println();
 			}
 		}
 	}
