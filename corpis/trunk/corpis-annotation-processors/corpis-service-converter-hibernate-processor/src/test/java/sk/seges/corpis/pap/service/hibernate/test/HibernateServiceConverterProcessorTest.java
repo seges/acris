@@ -19,7 +19,13 @@ public class HibernateServiceConverterProcessorTest extends AnnotationTest {
 		assertCompilationSuccessful(compileFiles(MockService.class));
 		assertOutput(getResourceFile(MockService.class), getOutputFile(MockService.class));
 	}
-	
+
+	@Test
+	public void testServiceConveterForEclipse() {
+		assertCompilationSuccessful(compileFiles(Compiler.ECLIPSE, MockService.class));
+		assertOutput(getResourceFile(MockService.class), getOutputFile(MockService.class));
+	}
+
 	public File getOutputFile(Class<?> type) {
 		MutableDeclaredType mutableType = toMutable(type);
 		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(processingEnv.getElementUtils().getTypeElement(mutableType.getCanonicalName()), processingEnv);
