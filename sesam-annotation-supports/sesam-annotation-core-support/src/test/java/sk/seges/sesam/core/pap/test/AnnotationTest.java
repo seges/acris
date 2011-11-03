@@ -21,16 +21,15 @@ import java.util.Set;
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
-import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
-import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.model.mutable.utils.TestClass;
+import sk.seges.sesam.core.pap.test.manager.CompilerManager;
+import sk.seges.sesam.core.pap.test.manager.EclipseCompilerManager;
+import sk.seges.sesam.core.pap.test.manager.JavacCompilerManager;
 import sk.seges.sesam.core.pap.test.model.utils.TestProcessingEnvironment;
 import sk.seges.sesam.core.pap.test.model.utils.TestRoundEnvironment;
 import sk.seges.sesam.core.pap.utils.ClassFinder;
@@ -43,11 +42,26 @@ public abstract class AnnotationTest {
 	protected static final String OUTPUT_FILE_SUFFIX = ".output";
 	protected static final String OUTPUT_DIRECTORY = "target/generated-test";
 
-	private static final JavaCompiler COMPILER = ToolProvider.getSystemJavaCompiler();
-
+	public enum EnvironmentOptions {
+		JAVAC {
+			@Override
+			public CompilerManager getCompiler(Collection<File> compilationUnits) {
+				return new JavacCompilerManager(compilationUnits);
+			}
+		}, 
+		ECLIPSE {
+			@Override
+			public CompilerManager getCompiler(Collection<File> compilationUnits) {
+				return new EclipseCompilerManager(compilationUnits);
+			}
+		};
+		
+		public abstract CompilerManager getCompiler(Collection<File> compilationUnits);
+	}
+	
 	protected enum CompilerOptions {
-		GENERATED_SOURCES_DIRECTORY("-s <directory>", "<directory>", "Specify where to place generated source files"), GENERATED_CLASSES_DIRECTORY(
-				"-d <directory>", "<directory>", "Specify where to place generated class files"), ;
+		GENERATED_SOURCES_DIRECTORY("-s <directory>", "<directory>", "Specify where to place generated source files"), 
+		GENERATED_CLASSES_DIRECTORY("-d <directory>", "<directory>", "Specify where to place generated class files"), ;
 
 		private String option;
 		private String description;
@@ -165,18 +179,7 @@ public abstract class AnnotationTest {
 		return content.toArray(new String[] {});
 	}
 
-	/**
-	 * Attempts to compile the given compilation units using the Java Compiler API.
-	 * <p>
-	 * The compilation units and all their dependencies are expected to be on the classpath.
-	 * 
-	 * @param compilationUnits
-	 *            the classes to compile
-	 * @return the {@link Diagnostic diagnostics} returned by the compilation, as demonstrated in the documentation for
-	 *         {@link JavaCompiler}
-	 * @see #compileFiles(String...)
-	 */
-	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Type... compilationUnits) {
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(EnvironmentOptions environmentOptions, Type... compilationUnits) {
 		assert (compilationUnits != null);
 
 		List<File> files = new ArrayList<File>();
@@ -192,17 +195,36 @@ public abstract class AnnotationTest {
 		
 		roundEnv.setRootElements(classes);
 
-		return compileFiles(files);
+		return compileFiles(environmentOptions, files);
+	}
+	
+	/**
+	 * Attempts to compile the given compilation units using the Java Compiler API.
+	 * <p>
+	 * The compilation units and all their dependencies are expected to be on the classpath.
+	 * 
+	 * @param compilationUnits
+	 *            the classes to compile
+	 * @return the {@link Diagnostic diagnostics} returned by the compilation, as demonstrated in the documentation for
+	 *         {@link JavaCompiler}
+	 * @see #compileFiles(String...)
+	 */
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Type... compilationUnits) {
+		return compileFiles(EnvironmentOptions.JAVAC, compilationUnits);
 	}
 
 	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Package... compilationUnits) {
+		return compileFiles(EnvironmentOptions.JAVAC, compilationUnits);
+	}
+	
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(EnvironmentOptions environmentOptions, Package... compilationUnits) {
 		assert (compilationUnits != null);
 
 		List<File> files = new ArrayList<File>();
 
 		addCollection(files, compilationUnits);
 
-		return compileFiles(files);
+		return compileFiles(environmentOptions, files);
 	}
 
 	private void addCollection(List<File> files, Package[] compilationUnits) {
@@ -283,9 +305,7 @@ public abstract class AnnotationTest {
 		return result;
 	}
 
-	protected StandardJavaFileManager fileManager;
-
-	protected String getClassPath() {
+	public static String getClassPath() {
 		String classPath = System.getProperty("maven.test.class.path");
 		if (classPath == null || classPath.length() == 0) {
 			return System.getProperty("java.class.path");
@@ -296,64 +316,24 @@ public abstract class AnnotationTest {
 				+ new File("target\\classes").getAbsolutePath() + "\"";
 	}
 
-	private String getOsName() {
+	public static String getOsName() {
       return System.getProperty("os.name");
 	}
 
-    private boolean isWindows() {
+    public static boolean isWindows() {
 		return getOsName().startsWith("Windows");
 	}
 
-	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(Collection<File> compilationUnits) {
-				
-		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<JavaFileObject>();
-		if (COMPILER == null) {
-			throw new RuntimeException("Please use JDK for runing the tests!");
-		}
-		fileManager = COMPILER.getStandardFileManager(diagnosticCollector, null, null);
+	private List<String> getCompilerInternalOptions() {
+		return mergeCompilerOptions(Arrays.asList("-proc:only", "-classpath", getClassPath(), "-Aclasspath=" + getClassPath(), "-AprojectName=" + getClass().getCanonicalName()));
+	}
 
-		/*
-		 * Call the compiler with the "-proc:only" option. The "class names" option (which could, in principle, be used
-		 * instead of compilation units for annotation processing) isn't useful in this case because only annotations on
-		 * the classes being compiled are accessible.
-		 * 
-		 * Information about the classes being compiled (such as what they are annotated with) is *not* available via
-		 * the RoundEnvironment. However, if these classes are annotations, they certainly need to be validated.
-		 */
-		List<String> compilerOptions = mergeCompilerOptions(Arrays.asList("-proc:only", "-classpath", getClassPath(), "-Aclasspath=" + getClassPath(), "-AprojectName=" + getClass().getCanonicalName()));
-
-		System.out.println();
-		System.out.println("Starting java compiler:");
-		System.out.print("javac ");
-		for (String option : compilerOptions) {
-			System.out.print(option + " ");
-		}
-		CompilationTask task = COMPILER.getTask(null, fileManager, diagnosticCollector, compilerOptions, null,
-				fileManager.getJavaFileObjectsFromFiles(compilationUnits));
-		List<Processor> processors = new ArrayList<Processor>();
-		for (Processor processor : getProcessors()) {
-			processors.add(processor);
-		}
-		task.setProcessors(processors);
-		System.out.print("-processor ");
-		for (Processor processor : processors) {
-			System.out.print(processor.getClass().getCanonicalName() + " ");
-		}
-		System.out.print(" ");
-		for (File file : compilationUnits) {
-			System.out.print(file.getName() + " ");
-		}
-		System.out.println();
-		System.out.println();
-
-		task.call();
-
-		try {
-			fileManager.close();
-		} catch (IOException exception) {
-		}
-
-		return diagnosticCollector.getDiagnostics();
+	
+	protected List<Diagnostic<? extends JavaFileObject>> compileFiles(EnvironmentOptions options, Collection<File> compilationUnits) {
+		CompilerManager compiler = options.getCompiler(compilationUnits);
+		compiler.setProcessors(Arrays.asList(getProcessors()));
+		compiler.setOptions(getCompilerInternalOptions());
+		return compiler.run();
 	}
 
 	protected static void assertCompilationSuccessful(List<Diagnostic<? extends JavaFileObject>> diagnostics) {

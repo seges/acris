@@ -96,6 +96,9 @@
 		<hsqldb.version>1.8.0.7</hsqldb.version>
 		<h2.version>1.1.117</h2.version>
 
+		<!-- Eclipse -->
+		<eclipse.jdt.version>3.7.1</eclipse.jdt.version>
+		
 		<!--
 			JPA version is taken from org.hibernate:ejb3-persistence, it looks
 			maintained. There is also javax.persistence:persistence-api but this
@@ -666,6 +669,11 @@
 			
 			<!-- Eclipse equinox -->
 			<!-- Plugin deps -->
+			<dependency>
+				<groupId>org.eclipse.jdt.core.compiler</groupId>
+				<artifactId>ecj</artifactId>
+				<version>${eclipse.jdt.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.eclipse.core</groupId>
 				<artifactId>org.eclipse.core.runtime</artifactId>
