@@ -22,7 +22,7 @@ public class ConfigurationProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testConfigurationInEclipse() {
-		assertCompilationSuccessful(compileFiles(EnvironmentOptions.ECLIPSE, TestConfiguration.class));
+		assertCompilationSuccessful(compileFiles(Compiler.ECLIPSE, TestConfiguration.class));
 		assertOutput(getResourceFile(TestConfiguration.class), getOutputFile(TestConfiguration.class));
 	}
 
