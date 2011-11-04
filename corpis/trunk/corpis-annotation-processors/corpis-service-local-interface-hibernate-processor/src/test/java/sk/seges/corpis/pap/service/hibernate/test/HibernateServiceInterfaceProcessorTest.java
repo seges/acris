@@ -17,7 +17,7 @@ public class HibernateServiceInterfaceProcessorTest extends AnnotationTest {
 
 	@Test
 	public void testLocalService() {
-		assertCompilationSuccessful(compileFiles(EnvironmentOptions.ECLIPSE, MockRemoteService.class));
+		assertCompilationSuccessful(compileFiles(Compiler.ECLIPSE, MockRemoteService.class));
 		assertOutput(getResourceFile(MockRemoteService.class), getOutputFile(MockRemoteService.class));
 	}
 	
