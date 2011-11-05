@@ -72,7 +72,6 @@
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-annotation-core-support</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
