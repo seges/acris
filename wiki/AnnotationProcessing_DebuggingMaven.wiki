@@ -11,7 +11,7 @@ set MAVEN_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_soc
 }}}
  * *start maven execution*
 {{{
-mvn install
+mvn processor:process
 }}}
  _depends on your [AnnotationProcessing_Maven maven configuration]_
  because of `suspend=y` parameter compiler will wait until the debugger is attached
