@@ -40,6 +40,7 @@ public abstract class AnnotationTest {
 	private static final String MAIN_SOURCE_FOLDER = "src/main/java";
 	protected static final String SOURCE_FILE_SUFFIX = ".java";
 	protected static final String OUTPUT_FILE_SUFFIX = ".output";
+	protected static final String OUTPUT_ECLIPSE_FILE_SUFFIX = "_eclipse.output";
 	protected static final String OUTPUT_DIRECTORY = "target/generated-test";
 
 	public enum Compiler {
@@ -128,6 +129,18 @@ public abstract class AnnotationTest {
 		return packageName.replace(".", "/");
 	}
 
+	protected File getEclipseResourceFile(Class<?> clazz) {
+		URL resource = getClass().getResource(
+				"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_ECLIPSE_FILE_SUFFIX);
+		
+		if (resource == null) {
+			throw new RuntimeException("Unable to find output file " + 
+					"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_ECLIPSE_FILE_SUFFIX);
+		}
+
+		return new File(resource.getFile());
+	}
+
 	protected File getResourceFile(Class<?> clazz) {
 		URL resource = getClass().getResource(
 				"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX);
@@ -152,7 +165,7 @@ public abstract class AnnotationTest {
 	protected File toFile(MutableDeclaredType type) {
 		return new File(OUTPUT_DIRECTORY, toPath(type.getPackageName()) + "/" + type.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
-	
+
 	protected static void assertOutput(File expectedResult, File output) {
 		String[] expectedContent = getContents(expectedResult);
 		String[] outputContent = getContents(output);
