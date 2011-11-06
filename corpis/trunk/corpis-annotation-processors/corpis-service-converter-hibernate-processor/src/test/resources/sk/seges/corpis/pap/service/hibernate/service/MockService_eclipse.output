@@ -14,13 +14,13 @@ import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 public class MockServiceConverter implements MockRemoteService {
 
 	private MockLocalService mockLocalServiceService;
-	private EntityManager entityManager;
+	private EntityManager arg0;
 
 
-	public MockServiceConverter(MockLocalService mockLocalServiceService, EntityManager entityManager) {
+	public MockServiceConverter(MockLocalService mockLocalServiceService, EntityManager arg0) {
 
 		this.mockLocalServiceService = mockLocalServiceService;
-		this.entityManager = entityManager;
+		this.arg0 = arg0;
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class MockServiceConverter implements MockRemoteService {
 	}
 
 	private MockEntityConverter getMockEntityConverter() {
-		return new MockEntityConverter(entityManager);
+		return new MockEntityConverter(arg0);
 	}
 
 }

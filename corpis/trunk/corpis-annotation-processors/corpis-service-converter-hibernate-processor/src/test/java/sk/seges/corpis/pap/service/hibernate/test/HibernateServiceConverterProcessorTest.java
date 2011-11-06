@@ -23,7 +23,7 @@ public class HibernateServiceConverterProcessorTest extends AnnotationTest {
 	@Test
 	public void testServiceConveterForEclipse() {
 		assertCompilationSuccessful(compileFiles(Compiler.ECLIPSE, MockService.class));
-		assertOutput(getResourceFile(MockService.class), getOutputFile(MockService.class));
+		assertOutput(getEclipseResourceFile(MockService.class), getOutputFile(MockService.class));
 	}
 
 	public File getOutputFile(Class<?> type) {
