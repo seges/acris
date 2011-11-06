@@ -205,9 +205,9 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 			@Override
 			public int compare(ExecutableElement o1, ExecutableElement o2) {
-				int size1 = ((ExecutableType)o1.asType()).getTypeVariables().size();
-				int size2 = ((ExecutableType)o2.asType()).getTypeVariables().size();
-				return size1 - size2;
+				int size1 = ((ExecutableType)o1.asType()).getParameterTypes().size();
+				int size2 = ((ExecutableType)o2.asType()).getParameterTypes().size();
+				return size2 - size1;
 			}
 		});
 		

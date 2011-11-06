@@ -37,6 +37,6 @@ public class ConfigurationProcessorTest extends AnnotationTest {
 		return new Processor[] {
 			new SettingsProcessor()
 		};
-	}		
+	}
 
 }
