@@ -1366,5 +1366,72 @@ org.eclipse.jdt.core.compiler.source=1.6]]>
 				</dependency>
 			</dependencies>
 		</profile>
+		
+		<profile>
+			<id>testable</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.testable</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>mockit</groupId>
+					<artifactId>jmockit</artifactId>
+					<scope>test</scope>
+				</dependency>
+			
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		
+		<profile>
+			<id>jee-testable</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.jee-testable</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-test</artifactId>
+					<scope>test</scope>
+				</dependency>
+			
+				<dependency>
+					<groupId>javax.mail</groupId>
+					<artifactId>mail</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.icegreen</groupId>
+					<artifactId>greenmail</artifactId>
+				</dependency>
+		
+				<dependency>
+					<groupId>com.mockrunner</groupId>
+					<artifactId>mockrunner</artifactId>
+					<scope>test</scope>
+				</dependency>
+				
+				<dependency>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+					<scope>test</scope>
+				</dependency>
+		
+				<dependency>
+					<groupId>org.mockejb</groupId>
+					<artifactId>mockejb</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>		
+				
 	</profiles>
 </project>
