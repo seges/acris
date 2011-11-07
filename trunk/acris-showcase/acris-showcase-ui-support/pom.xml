@@ -25,11 +25,11 @@
 
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-binding</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-binding</artifactId>
 			<classifier>sources</classifier>
 		</dependency>

@@ -16,21 +16,21 @@
 
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-theme-shadow</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-theme-shadow</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-showcase-widgets</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-showcase-widgets</artifactId>
 			<classifier>sources</classifier>
 		</dependency>

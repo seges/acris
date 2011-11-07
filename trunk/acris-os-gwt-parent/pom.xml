@@ -328,7 +328,7 @@
 								</goals>
 								<configuration>
 									<stripVersion>true</stripVersion>
-									<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/lib/</outputDirectory>
+									<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/lib/</outputDirectory>
 									<overWriteReleases>true</overWriteReleases>
 									<overWriteSnapshots>true</overWriteSnapshots>
 									<overWriteIfNewer>true</overWriteIfNewer>
@@ -379,14 +379,14 @@
 									<content><![CDATA[
 										eclipse.preferences.version=2
 										jarsExcludedFromWebInfLib=
-										warSrcDir=target/${artifactId}-${version}
+										warSrcDir=target/${artifactId}-${project.version}
 										warSrcDirIsOutput=true
 										]]>
 									</content>
 								</file>
 							</additionalConfig>
 
-							<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
+							<buildOutputDirectory>target/${artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
 							<wtpversion>2.0</wtpversion>
 
 						</configuration>
@@ -402,7 +402,7 @@
 									<goal>copy-resources</goal>
 								</goals>
 								<configuration>
-									<outputDirectory>target/${artifactId}-${version}</outputDirectory>
+									<outputDirectory>target/${artifactId}-${project.version}</outputDirectory>
 									<resources>          
 										<resource>
 											<directory>src/main/webapp</directory>
@@ -463,7 +463,7 @@
 								</goals>
 								<configuration>
 									<stripVersion>true</stripVersion>
-									<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/lib/</outputDirectory>
+									<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/lib/</outputDirectory>
 									<overWriteReleases>true</overWriteReleases>
 									<overWriteSnapshots>true</overWriteSnapshots>
 									<overWriteIfNewer>true</overWriteIfNewer>
@@ -476,8 +476,8 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
-							<hostedWebapp>${project.build.directory}/${artifactId}-${version}</hostedWebapp>
-							<webappDirectory>${project.build.directory}/${artifactId}-${version}</webappDirectory>
+							<hostedWebapp>${project.build.directory}/${artifactId}-${project.version}</hostedWebapp>
+							<webappDirectory>${project.build.directory}/${artifactId}-${project.version}</webappDirectory>
 						</configuration>
 					</plugin>
 					<plugin>
@@ -522,14 +522,14 @@
 									<content><![CDATA[
 										eclipse.preferences.version=2
 										jarsExcludedFromWebInfLib=
-										warSrcDir=target/${artifactId}-${version}
+										warSrcDir=target/${artifactId}-${project.version}
 										warSrcDirIsOutput=true
 										]]>
 									</content>
 								</file>
 							</additionalConfig>
 
-							<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
+							<buildOutputDirectory>target/${artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
 							<wtpversion>2.0</wtpversion>
 
 						</configuration>
@@ -545,7 +545,7 @@
 									<goal>copy-resources</goal>
 								</goals>
 								<configuration>
-									<outputDirectory>target/${artifactId}-${version}</outputDirectory>
+									<outputDirectory>target/${artifactId}-${project.version}</outputDirectory>
 									<resources>          
 										<resource>
 											<directory>src/main/webapp</directory>

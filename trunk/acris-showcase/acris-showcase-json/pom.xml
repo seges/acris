@@ -30,8 +30,8 @@
 						<value>sk.seges.acris.json.ShowcaseSimple</value>
 						<value>sk.seges.acris.json.Facebook</value>
 					</compileTargets>
-					<hostedWebapp>target/${artifactId}-${version}</hostedWebapp>
-					<webappDirectory>target/${artifactId}-${version}</webappDirectory>
+					<hostedWebapp>target/${artifactId}-${project.version}</hostedWebapp>
+					<webappDirectory>target/${artifactId}-${project.version}</webappDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -44,7 +44,7 @@
 
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-json</artifactId>
 			<exclusions>
 				<exclusion>
@@ -54,7 +54,7 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-json</artifactId>
 			<classifier>sources</classifier>
 			<exclusions>

@@ -96,6 +96,11 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-binding-api</artifactId>
 		</dependency>		
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-binding-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>		
 
 		<!-- GWT dependencies -->
 		<dependency>

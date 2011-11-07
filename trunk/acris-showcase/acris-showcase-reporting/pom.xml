@@ -27,7 +27,7 @@
 				<directory>${basedir}/src/main/webapp</directory>
 			</resource>
 		</resources>
-		<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/classes</outputDirectory>
+		<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -41,7 +41,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/lib/</outputDirectory>
+							<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/lib/</outputDirectory>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
@@ -54,8 +54,8 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<configuration>
-					<hostedWebapp>${project.build.directory}/${artifactId}-${version}</hostedWebapp>
-					<webappDirectory>${project.build.directory}/${artifactId}-${version}</webappDirectory>
+					<hostedWebapp>${project.build.directory}/${artifactId}-${project.version}</hostedWebapp>
+					<webappDirectory>${project.build.directory}/${artifactId}-${project.version}</webappDirectory>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -105,7 +105,7 @@
 							<content><![CDATA[
 								eclipse.preferences.version=1
 								jarsExcludedFromWebInfLib=
-								warSrcDir=target/${artifactId}-${version}
+								warSrcDir=target/${artifactId}-${project.version}
 								warSrcDirIsOutput=true
 								]]>
 							</content>
@@ -122,7 +122,7 @@
 						</file>
 					</additionalConfig>
 
-					<buildOutputDirectory>target/${artifactId}-${version}/WEB-INF/classes</buildOutputDirectory>
+					<buildOutputDirectory>target/${artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
 					<wtpversion>2.0</wtpversion>
 
 				</configuration>
@@ -134,27 +134,27 @@
 
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-reporting-appengine</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-reporting-appengine</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-server-appengine</artifactId>
 		</dependency>		
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-reporting-ui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-reporting-ui</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>

@@ -30,8 +30,8 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<configuration>
-					<hostedWebapp>target/${artifactId}-${version}</hostedWebapp>
-					<webappDirectory>target/${artifactId}-${version}</webappDirectory>
+					<hostedWebapp>target/${artifactId}-${project.version}</hostedWebapp>
+					<webappDirectory>target/${artifactId}-${project.version}</webappDirectory>
 				</configuration>
 			</plugin>
 		</plugins>
