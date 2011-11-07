@@ -32,6 +32,15 @@
 		</dependency>		
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>		
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-site-core</artifactId>
 		</dependency>
 		<dependency>
