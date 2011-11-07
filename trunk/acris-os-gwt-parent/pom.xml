@@ -321,8 +321,8 @@
 						<version>2.1</version>
 						<executions>
 							<execution>
-								<id>copy-dependencies</id>
-								<phase>generate-sources</phase>
+								<id>copy-resources</id>
+								<phase>validate</phase>
 								<goals>
 									<goal>copy-dependencies</goal>
 								</goals>
@@ -457,7 +457,7 @@
 						<executions>
 							<execution>
 								<id>copy-dependencies</id>
-								<phase>generate-sources</phase>
+								<phase>validate</phase>
 								<goals>
 									<goal>copy-dependencies</goal>
 								</goals>
