@@ -618,9 +618,8 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-binding-api</artifactId>
 				<version>${project.version}</version>
+				<classifier>sources</classifier>
 			</dependency>
-
-			
 			
 			<dependency>
 				<groupId>org.htmlparser</groupId>

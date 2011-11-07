@@ -16,11 +16,11 @@
 
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-callbacks</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-callbacks</artifactId>
 			<classifier>sources</classifier>
 		</dependency>

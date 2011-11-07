@@ -13,7 +13,7 @@
 	</parent>
   	
   	<build>
-		<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/classes</outputDirectory>  	
+		<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes</outputDirectory>  	
   	</build>
   	
   	<dependencies>

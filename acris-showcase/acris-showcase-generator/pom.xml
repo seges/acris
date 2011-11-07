@@ -20,26 +20,26 @@
 				<directory>${basedir}/src/main/webapp</directory>
 			</resource>
 		</resources>
-		<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/classes</outputDirectory>
+		<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 	</build>
 	<dependencies>
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-generator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-generator</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 		<!-- Acris showcase dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-showcase-applications</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-showcase-applications</artifactId>
 			<classifier>sources</classifier>
 		</dependency>

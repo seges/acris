@@ -20,7 +20,7 @@
 				<directory>${basedir}/src/main/webapp</directory>
 			</resource>
 		</resources>
-		<outputDirectory>${project.build.directory}/${artifactId}-${version}/WEB-INF/classes</outputDirectory>
+		<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 	</build>
 
 	<dependencies>
@@ -33,16 +33,16 @@
 
 		<!-- Acris dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-binding</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-binding</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-core</artifactId>
 			<exclusions>
 				<exclusion>
@@ -56,7 +56,7 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-core</artifactId>
 			<classifier>sources</classifier>
 			<exclusions>
@@ -71,20 +71,20 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-appengine</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-appengine</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-spring</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-security-spring</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
@@ -94,11 +94,11 @@
 		</dependency>
 		<!-- Acris showcase dependencies -->
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-showcase-ui-support</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>acris-showcase-ui-support</artifactId>
 			<classifier>sources</classifier>
 			<exclusions>
