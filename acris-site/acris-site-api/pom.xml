@@ -38,6 +38,15 @@
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>		
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-binding-processor</artifactId>
 			<scope>provided</scope>
 		</dependency>
@@ -50,8 +59,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<scope>runtime</scope>
 		</dependency>
-
 	</dependencies>
 </project>
