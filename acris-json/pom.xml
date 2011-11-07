@@ -53,6 +53,11 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-json-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-json-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 		<!-- JSON -->
 		<!-- dependency>
 			<groupId>com.google.code.gson</groupId>
