@@ -25,10 +25,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-binding-api</artifactId>
-		</dependency>				
+		</dependency>
+
+		<!-- Other dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
