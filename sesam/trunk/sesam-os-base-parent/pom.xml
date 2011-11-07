@@ -848,14 +848,10 @@
 								<goal>copy-dependencies</goal>
 							</goals-->
 							<configuration>
-								<outputDirectory>
-									${project.build.directory}/lib
-								</outputDirectory>
+								<outputDirectory>${project.build.directory}/lib</outputDirectory>
 								<excludeTransitive>false</excludeTransitive>
 								<overWriteReleases>false</overWriteReleases>
-								<overWriteSnapshots>
-									false
-								</overWriteSnapshots>
+								<overWriteSnapshots>false</overWriteSnapshots>
 								<overWriteIfNewer>true</overWriteIfNewer>
 							</configuration>
 						</execution>
@@ -946,27 +942,24 @@
 					<version>${maven-jar-plugin.version}</version>
 				</plugin>
 				<!-- http://jira.codehaus.org/browse/MWAR-187 -->
-	                        <plugin>
-	                                <groupId>org.apache.maven.plugins</groupId>
-	                                <artifactId>maven-war-plugin</artifactId>
-	                                <version>${maven-war-plugin.version}</version>
-	                                <configuration>
-	                                        <useCache>false</useCache>
-	                                </configuration>
-	                        </plugin>
-
+				<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>${maven-war-plugin.version}</version>
+						<configuration>
+								<useCache>false</useCache>
+						</configuration>
+				</plugin>
 				<plugin>                                                                                                                                                    
 					<groupId>org.apache.maven.plugins</groupId>
-	                                <artifactId>maven-antrun-plugin</artifactId>
+					<artifactId>maven-antrun-plugin</artifactId>
 					<version>${maven-antrun-plugin.version}</version>
-	                        </plugin>
-				
+				</plugin>
 				<plugin>                                                                                                                                                    
 					<groupId>org.apache.maven.plugins</groupId>
-	                                <artifactId>maven-assembly-plugin</artifactId>
+					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${maven-assembly-plugin.version}</version>
-	                        </plugin>
-
+				</plugin>
 				<plugin>
 					<groupId>org.zeroturnaround</groupId>
 					<artifactId>javarebel-maven-plugin</artifactId>
@@ -1009,15 +1002,9 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											apt-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.0-alpha-5-acris,)
-										</versionRange>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>apt-maven-plugin</artifactId>
+										<versionRange>[1.0-alpha-5-acris,)</versionRange>
 										<goals>
 											<goal>eclipse</goal>
 										</goals>
@@ -1028,15 +1015,9 @@
 								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>
-											org.bsc.maven
-										</groupId>
-										<artifactId>
-											maven-processor-plugin
-										</artifactId>
-										<versionRange>
-											[2.0.5,)
-										</versionRange>
+										<groupId>org.bsc.maven</groupId>
+										<artifactId>maven-processor-plugin</artifactId>
+										<versionRange>[2.0.5,)</versionRange>
 										<goals>
 											<goal>
 												process-test
@@ -1077,11 +1058,6 @@
 				</plugins>
 			</reporting>
 			<dependencies>
-				<dependency>
-					<groupId>sk.seges.sesam</groupId>
-					<artifactId>sesam-configuration-processor</artifactId>
-					<scope>provided</scope>
-				</dependency>
 				<dependency>
 					<groupId>org.seleniumhq.selenium</groupId>
 					<artifactId>selenium-api</artifactId>
