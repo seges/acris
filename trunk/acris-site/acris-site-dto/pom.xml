@@ -39,5 +39,10 @@
 			<artifactId>acris-site-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>		
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>		
 	</dependencies>
 </project>

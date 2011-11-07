@@ -6,9 +6,9 @@
 		<relativePath>../acris-os-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>acris-json</artifactId>
+	<artifactId>acris-json-api</artifactId>
 	<packaging>jar</packaging>
-	<name>AcrIS JSON</name>
+	<name>AcrIS JSON Api</name>
 
 	<dependencies>
 		<!-- Sesam dependencies -->
@@ -49,21 +49,5 @@
 			<artifactId>acris-client-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-json-api</artifactId>
-		</dependency>
-		<!-- JSON -->
-		<!-- dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>1.4</version>
-			<classifier>sources</classifier>
-		</dependency-->
 	</dependencies>
 </project>

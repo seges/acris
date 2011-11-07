@@ -19,7 +19,11 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-validation</artifactId>
+		</dependency>
+		
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>

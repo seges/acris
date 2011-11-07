@@ -56,6 +56,10 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-site-hibernate</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+		</dependency>
 
 		<!-- Hibernate -->
 		<dependency>

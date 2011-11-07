@@ -10,15 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserPreferences;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
@@ -45,9 +40,10 @@ public class HibernateGenericUser extends GenericUserDTO {
 		return super.getDescription();
 	}
 	
-	@CollectionOfElements
+	/*@CollectionOfElements
 	@Fetch(FetchMode.SUBSELECT)
-	@JoinTable(name = "generic_users_userauthorities", joinColumns = @JoinColumn(name = "generic_users_id"))
+	@JoinTable(name = "generic_users_userauthorities", joinColumns = @JoinColumn(name = "generic_users_id"))*/
+	@Transient
 	public List<String> getUserAuthorities() {
 		return authorities;
 	}

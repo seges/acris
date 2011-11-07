@@ -12,18 +12,12 @@
 	</parent>
 
 	<dependencies>
-
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-theme-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-theme-core</artifactId>
-			<classifier>sources</classifier>
-		</dependency>	
-
+			<artifactId>acris-theme-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>		
 		<!-- Other dependencies -->
 		<dependency>
 			<groupId>log4j</groupId>
