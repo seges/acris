@@ -38,7 +38,8 @@
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding</artifactId>
+			<artifactId>acris-binding-processor</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- GWT dependencies -->

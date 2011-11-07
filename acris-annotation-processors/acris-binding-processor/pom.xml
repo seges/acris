@@ -1,14 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-binding-processor</artifactId>
+	<name>acris-binding-processor</name>
+	<description>Acris Binding processor</description>
+	<packaging>jar</packaging>
+
 	<parent>
 		<groupId>sk.seges.acris</groupId>
-		<artifactId>acris-os-parent</artifactId>
+		<artifactId>acris-annotation-processors</artifactId>
 		<version>1.2.1-SNAPSHOT</version>
-		<relativePath>../acris-os-parent</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>acris-binding</artifactId>
-	<packaging>jar</packaging>
-	<name>AcrIS Binding</name>
 
 	<build>
 		<plugins>
@@ -72,6 +74,10 @@
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-annotation-core-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -86,17 +92,11 @@
 			<artifactId>acris-client-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-	
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>	
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-binding-api</artifactId>
 		</dependency>		
-
+		
 		<!-- GWT dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>

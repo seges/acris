@@ -55,7 +55,12 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-server-components</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>	
+		
 		<!-- Spring security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>

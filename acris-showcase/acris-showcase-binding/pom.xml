@@ -57,6 +57,11 @@
 			<artifactId>acris-binding</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>		
 
 		<!-- GWT dependencies -->
 		<dependency>

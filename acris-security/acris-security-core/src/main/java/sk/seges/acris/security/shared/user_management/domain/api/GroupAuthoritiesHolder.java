@@ -3,6 +3,8 @@ package sk.seges.acris.security.shared.user_management.domain.api;
 import java.io.Serializable;
 import java.util.List;
 
+import sk.seges.acris.security.shared.user_management.domain.dto.RolePermissionDTO;
+
 
 /**
  * <pre>
@@ -19,10 +21,6 @@ import java.util.List;
  */
 public interface GroupAuthoritiesHolder<T extends UserPermission> extends
 		Serializable {
-
-	public List<UserRolePermission> getRolePermissions();
-
-	public void setRolePermissions(List<UserRolePermission> rolePermissions);
 
 	public List<T> getUserPermissions();
 

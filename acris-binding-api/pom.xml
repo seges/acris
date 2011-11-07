@@ -6,9 +6,9 @@
 		<relativePath>../acris-os-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>acris-binding</artifactId>
+	<artifactId>acris-binding-api</artifactId>
 	<packaging>jar</packaging>
-	<name>AcrIS Binding</name>
+	<name>AcrIS Binding Api</name>
 
 	<build>
 		<plugins>
@@ -86,16 +86,7 @@
 			<artifactId>acris-client-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-	
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>	
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-api</artifactId>
-		</dependency>		
+		
 
 		<!-- GWT dependencies -->
 		<dependency>

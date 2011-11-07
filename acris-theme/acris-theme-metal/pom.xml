@@ -58,18 +58,11 @@ org.eclipse.jdt.core.compiler.source=1.6
 		</plugins>
 	</build>
 	<dependencies>
-
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-theme-core</artifactId>
+			<artifactId>acris-theme-processor</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-theme-core</artifactId>
-			<classifier>sources</classifier>
-		</dependency>	
-
 		<!-- Other dependencies -->
 		<dependency>
 			<groupId>log4j</groupId>

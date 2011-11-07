@@ -48,6 +48,11 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-security-hibernate</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>		
 
 		<!-- GWT dependencies -->
 		<dependency>
