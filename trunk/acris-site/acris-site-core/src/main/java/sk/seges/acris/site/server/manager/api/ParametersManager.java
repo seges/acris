@@ -6,8 +6,11 @@ import sk.seges.acris.site.shared.domain.api.ParameterData;
 
 public interface ParametersManager {
 
-	String getParameterValue(ParameterData parameter);
+	Object getParameterValue(ParameterData parameter);
 
 	Collection<? extends ParameterData> getParameters();
-	
+
+	void setParameterValue(ParameterData parameter, Object value);
+
+	void setParameters(String parameters);
 }

@@ -6,13 +6,14 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import sk.seges.acris.site.server.manager.CommaSeparatedParametersManager;
 import sk.seges.acris.site.shared.domain.api.ParameterData;
 
 public class CommaSeparatedParametersManagerTest extends TestCase {
 
 	@Test
 	public void testParameters() {
-		String parameters = "offline.post.processor.inactive=;offline.index.post.processor.inactive=NochacheScriptPostProcessor,PropertiesScriptPostProcessor";
+		String parameters = "offline.post.processor.inactive=;offline.index.post.processor.inactive=NocacheScriptPostProcessor,PropertiesScriptPostProcessor";
 		CommaSeparatedParametersManager commaSeparatedParametersManager = new CommaSeparatedParametersManager(parameters);
 		assertEquals("There should be 2 parameters in the result.", 2, commaSeparatedParametersManager.getParameters().size());
 		Iterator<? extends ParameterData> iterator = commaSeparatedParametersManager.getParameters().iterator();
@@ -22,6 +23,6 @@ public class CommaSeparatedParametersManagerTest extends TestCase {
 
 		ParameterData inactiveIndex = iterator.next();
 		assertEquals("Wrong parameter key", "offline.index.post.processor.inactive", inactiveIndex.getKey());
-		assertEquals("Wrong parameter value", commaSeparatedParametersManager.getParameterValue(inactiveIndex), "NochacheScriptPostProcessor,PropertiesScriptPostProcessor");
+		assertEquals("Wrong parameter value", commaSeparatedParametersManager.getParameterValue(inactiveIndex), "NocacheScriptPostProcessor,PropertiesScriptPostProcessor");
 	}
 }

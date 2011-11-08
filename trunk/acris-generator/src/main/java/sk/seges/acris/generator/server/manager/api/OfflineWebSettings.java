@@ -10,4 +10,5 @@ public interface OfflineWebSettings {
 
 	boolean supportsAutodetectMode();
 
+	boolean publishOnSaveEnabled();
 }

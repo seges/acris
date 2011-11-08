@@ -1,7 +1,8 @@
 package sk.seges.acris.site.shared.domain.api;
 
-public interface ParameterData {
-	
+import java.io.Serializable;
+
+public interface ParameterData extends Serializable {
+
 	String getKey();
-	
 }

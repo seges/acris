@@ -11,21 +11,21 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import sk.seges.acris.generator.server.manager.PlainOfflineWebSettingsTest.PlainOfflineWebSettingsTestLoader;
+import sk.seges.acris.generator.server.manager.JSONOfflineWebSettingsTest.JSONOfflineWebSettingsTestLoader;
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
-import sk.seges.acris.generator.server.spring.configuration.DefaultTestConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.JSONTestConfiguration;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = PlainOfflineWebSettingsTestLoader.class)
-public class PlainOfflineWebSettingsTest extends AbstractProcessorTest {
+@ContextConfiguration(loader = JSONOfflineWebSettingsTestLoader.class)
+public class JSONOfflineWebSettingsTest extends AbstractProcessorTest {
 
-	static class PlainOfflineWebSettingsTestLoader extends ParametrizedAnnotationConfigContextLoader {
-		public PlainOfflineWebSettingsTestLoader() {
-			super(DefaultTestConfiguration.class);
+	static class JSONOfflineWebSettingsTestLoader extends ParametrizedAnnotationConfigContextLoader {
+		public JSONOfflineWebSettingsTestLoader() {
+			super(JSONTestConfiguration.class);
 		}
 	}
 
@@ -34,7 +34,7 @@ public class PlainOfflineWebSettingsTest extends AbstractProcessorTest {
 
 	protected WebSettingsData getWebSettings() {
 		WebSettingsData webSettings = new WebSettingsDTO();
-		String parameters = "offlinePostProcessorInactive=;offlineIndexProcessorInactive=NocacheScriptPostProcessor,PropertiesScriptPostProcessor";
+		String parameters = "{\"offlinePostProcessorInactive\":null,\"offlineIndexProcessorInactive\":[\"NocacheScriptPostProcessor\",\"PropertiesScriptPostProcessor\"],\"offlineAutodetectMode\":false,\"publishOnSaveEnabled\":true}";
 		webSettings.setParameters(parameters);
 		return webSettings;
 	}
@@ -42,12 +42,10 @@ public class PlainOfflineWebSettingsTest extends AbstractProcessorTest {
 	@Test
 	@DirtiesContext
 	public void testOfflineSettings() {
-		PlainOfflineWebSettings plainOfflineWebSettings = new PlainOfflineWebSettings(getWebSettings(), parameterManagerFactory);
-		Assert.assertEquals("There should be no processors in the result.", 1, plainOfflineWebSettings.getInactiveProcessors().size());
-		String processor = plainOfflineWebSettings.getInactiveProcessors().iterator().next();
-		Assert.assertEquals("No processor should be defined", "", processor);
-		Assert.assertEquals("There should be 2 processors in the result.", 2, plainOfflineWebSettings.getInactiveIndexProcessors().size());
-		Iterator<String> iterator = plainOfflineWebSettings.getInactiveIndexProcessors().iterator();
+		JSONOfflineWebSettings offlineWebSettings = new JSONOfflineWebSettings(getWebSettings(), parameterManagerFactory);
+		Assert.assertEquals("There should be no processors in the result.", 0, offlineWebSettings.getInactiveProcessors().size());
+		Assert.assertEquals("There should be 2 processors in the result.", 2, offlineWebSettings.getInactiveIndexProcessors().size());
+		Iterator<String> iterator = offlineWebSettings.getInactiveIndexProcessors().iterator();
 		Assert.assertEquals("Wrong processor is defined", "PropertiesScriptPostProcessor", iterator.next());
 		Assert.assertEquals("Wrong processor is defined", "NocacheScriptPostProcessor", iterator.next());
 	}
