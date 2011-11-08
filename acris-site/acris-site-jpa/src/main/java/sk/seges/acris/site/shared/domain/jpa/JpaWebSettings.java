@@ -99,7 +99,7 @@ public class JpaWebSettings extends WebSettingsDTO {
 	}
 	
 	@Override
-	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, targetEntity = JpaMetaData.class, cascade={CascadeType.ALL})
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaMetaData.class, cascade={CascadeType.ALL})
 	public Set<MetaData> getMetaData() {
 		return super.getMetaData();
 	}

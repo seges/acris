@@ -1,6 +1,6 @@
 package sk.seges.acris.site.server.service.builder;
 
-import sk.seges.acris.generator.server.manager.PlainOfflineWebSettings.OfflineGeneratorParameter;
+import sk.seges.acris.generator.server.manager.data.OfflineGeneratorParameter;
 import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptAnnihilatorPostProcessor;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
