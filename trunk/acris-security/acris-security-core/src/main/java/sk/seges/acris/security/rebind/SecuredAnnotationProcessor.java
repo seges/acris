@@ -31,7 +31,7 @@ public class SecuredAnnotationProcessor implements ISecuredAnnotationProcessor {
 			
 			for (int i = 0; i < authorities.length; i++) {
 				if (authorities[i].length() > 0) {
-					authorities[i] = authorities[i] + "_" + permission.name();
+					authorities[i] = authorities[i];
 				}
 			}
 			return authorities;
