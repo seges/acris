@@ -22,7 +22,7 @@ Chapters about profiles provide more detailed information.
 
 == How-to use profiles ==
 
-There are only 2 steps:
+There are only 3 steps:
 
 Create project with POM file inheriting from:
 
@@ -34,6 +34,14 @@ Create project with POM file inheriting from:
 	</parent>
 }}}
 
-Place desired dot-file (empty file with specific name - e.g. {{{.gwt-client}}} ) to the same directory where POM file is.
+Define which version of AcrIS you would like to use, e.g:
+
+{{{
+<properties>
+	<property>1.2.0</property>
+</properties>
+}}}
+
+Place desired dot-file (empty file with specific name - e.g. {{{.gwt}}} ) to the same directory where POM file is.
 
 That's it!
