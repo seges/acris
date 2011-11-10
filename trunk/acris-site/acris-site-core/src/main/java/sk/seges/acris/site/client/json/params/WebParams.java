@@ -1,5 +1,7 @@
 package sk.seges.acris.site.client.json.params;
 
+import sk.seges.acris.domain.params.ContentParameters;
+
 public interface WebParams extends ContentParameters {
 
 	public static final String OFFLINE_POST_PROCESSOR_INACTIVE = "offlinePostProcessorInactive";
