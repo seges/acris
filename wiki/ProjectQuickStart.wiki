@@ -38,7 +38,7 @@ Define which version of AcrIS you would like to use, e.g:
 
 {{{
 <properties>
-	<property>1.2.0</property>
+	<acris-os.version>1.2.0</acris-os.version>
 </properties>
 }}}
 
