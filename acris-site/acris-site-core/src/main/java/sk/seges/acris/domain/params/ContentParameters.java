@@ -1,4 +1,4 @@
-package sk.seges.acris.site.client.json.params;
+package sk.seges.acris.domain.params;
 
 import java.io.Serializable;
 
