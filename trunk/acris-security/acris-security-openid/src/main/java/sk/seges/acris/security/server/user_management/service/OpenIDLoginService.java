@@ -1,11 +1,10 @@
 package sk.seges.acris.security.server.user_management.service;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
-import sk.seges.acris.security.server.user_management.dao.IGrantsDao;
+import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
 import sk.seges.acris.security.server.utils.TokenConverter;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
@@ -15,7 +14,6 @@ import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.HasOpenIDIdentifier;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.SimpleExpression;
@@ -24,31 +22,22 @@ public class OpenIDLoginService implements LoginService {
 
 	private TokenConverter tokenConverter;
 
-	private IGrantsDao grantsDao;
+	private IGenericUserDao<UserData<?>> userDao;
 
 	private IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao;
 
 	private SessionIDGenerator sessionIDGenerator;
 
-	public OpenIDLoginService(TokenConverter tokenConverter, IGrantsDao grantsDao,
+	public OpenIDLoginService(TokenConverter tokenConverter, IGenericUserDao<UserData<?>> userDao,
 			IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao, SessionIDGenerator sessionIDGenerator) {
 		this.tokenConverter = tokenConverter;
-		this.grantsDao = grantsDao;
+		this.userDao = userDao;
 		this.openIDUserDao = openIDUserDao;
 		this.sessionIDGenerator = sessionIDGenerator;
 	}
 
 	protected UserData<?> convertToDTO(UserData<?> source, LoginToken token) {
-		UserData<Long> target = new GenericUserDTO();
-		target.setEnabled(source.isEnabled());
-		target.setId((Long) source.getId());
-		target.setPassword(source.getPassword());
-		target.setUsername(source.getUsername());
-
-		List<String> authorities = grantsDao.findGrantsForToken(token);
-		List<String> newAuthorities = new ArrayList<String>();
-		newAuthorities.addAll(authorities);
-		target.setUserAuthorities(newAuthorities);
+		UserData<?> target = userDao.findByUsername(source.getUsername());
 
 		return target;
 	}
