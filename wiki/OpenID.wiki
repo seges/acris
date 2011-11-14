@@ -117,7 +117,7 @@ Manages OpenID communications with an OpenID Provider. Provided by the openid4ja
 
 *[http://acris.googlecode.com/svn/trunk/acris-security/acris-security-core/src/main/java/sk/seges/acris/security/server/core/session/ServerSessionProvider.java ServerSessionProvider]*
 
-Provider interface for the server session. The example app uses guice to provide the session through [http://acris.googlecode.com/svn/trunk/acris-showcase/acris-showcase-openid/src/main/java/sk/seges/acris/openid/server/session/servlet/GuiceServerSessionProvider.java GuiceServerSessionProvider], for a spring session use [http://acris.googlecode.com/svn/trunk/acris-security/acris-security-core/src/main/java/sk/seges/acris/security/server/core/session/spring/SpringServerSessionProvider.java SpringServerSessionProvider].
+Provider interface for the server session. The example app uses guice to provide the session through [http://acris.googlecode.com/svn/trunk/acris-showcase/acris-showcase-openid/src/main/java/sk/seges/acris/openid/server/session/servlet/GuiceServerSessionProvider.java GuiceServerSessionProvider], for a spring session use [http://acris.googlecode.com/svn/trunk/acris-security/acris-security-spring/src/main/java/sk/seges/acris/security/server/core/session/spring/SpringServerSessionProvider.java].
 
 Check out our
 [http://1.latest.acris-gwt.appspot.com/sk.seges.acris.demo.OpenID/OpenID.html OpenID demo] on App engine (the implementation is appengine indenpendent and can be used also outside of clouds).
