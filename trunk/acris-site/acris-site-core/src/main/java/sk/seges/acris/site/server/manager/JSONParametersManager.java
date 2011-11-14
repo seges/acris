@@ -41,6 +41,10 @@ public class JSONParametersManager implements ParametersManager {
 	protected void parseParameters(String parameters) {
 		this.parameters = new HashMap<String, ObjectParameterData>();
 
+		if (parameters == null) {
+			return;
+		}
+
 		try {
 			map = mapper.readValue(parameters, new TypeReference<HashMap<String, Object>>() {
 			});
@@ -52,7 +56,7 @@ public class JSONParametersManager implements ParametersManager {
 			e.printStackTrace();
 		}
 
-		if (parameters == null || map == null) {
+		if (map == null) {
 			return;
 		}
 
