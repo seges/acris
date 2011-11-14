@@ -76,7 +76,7 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 
 		String result = "new " + type.toString(serializer, typed) + "(";
 		
-		List<Method> methods = getGetterMethods(Arrays.asList(value.getClass().getMethods()));
+		List<Method> methods = getGetterMethods(Arrays.asList(value.getClass().getDeclaredMethods()));
 		Collections.sort(methods, new MethodComparator());
 		
 		int i = 0;
@@ -85,15 +85,14 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 				result += ", ";
 			}
 			try {
-				result += processingEnv.getTypeUtils().getTypeValue(method.invoke(value));
+				result += processingEnv.getTypeUtils().getTypeValue(method.invoke(value)).toString(serializer, typed);
+				i++;
 			} catch (Exception e) {
-				return "";
 			}
 			
-			i++;
 		}
 		
-		result += ");";
+		result += ")";
 		
 		return result;
 	}

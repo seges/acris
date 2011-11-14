@@ -675,7 +675,7 @@ public class MutableTypes implements Types {
 
 	public MutableTypeValue getTypeValue(Object value) {
 		if (value.getClass().isArray()) {
-			return getTypeValue(toMutableType(value.getClass().getComponentType()), value);
+			return getArrayValue(getArrayType(toMutableType(value.getClass().getComponentType())), (Object[])value);
 		}
 		
 		if (value.getClass().isEnum()) {
