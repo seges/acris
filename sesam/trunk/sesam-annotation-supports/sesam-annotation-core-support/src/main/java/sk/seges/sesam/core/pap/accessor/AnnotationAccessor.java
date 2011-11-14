@@ -3,6 +3,7 @@ package sk.seges.sesam.core.pap.accessor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -79,7 +80,7 @@ public abstract class AnnotationAccessor {
 		
 		@Override
 		public Object visitAnnotation(AnnotationMirror a, AnnotationValue p) {
-			return Enhancer.create(p.accept(new ArrayValueVisitor(processingEnv), null), new AnnotationMirrorProxy(a, processingEnv));
+			return enhance(a, p.accept(new ArrayValueVisitor(processingEnv), null), processingEnv);
 		}
 		
 		@Override
@@ -147,7 +148,7 @@ public abstract class AnnotationAccessor {
 		@Override
 		public Object visitType(TypeMirror t, AnnotationValue p) {
 			try {
-				return Class.forName(processingEnv.getTypeUtils().toMutableType(t).toString(ClassSerializer.CANONICAL, false));
+				return Class.forName(processingEnv.getTypeUtils().toMutableType(t).toString(ClassSerializer.QUALIFIED, false));
 			} catch (ClassNotFoundException e) {
 				return null;
 			}
@@ -165,7 +166,7 @@ public abstract class AnnotationAccessor {
 		@Override
 		public Class<?> visitAnnotation(AnnotationMirror a, Void p) {
 			try {
-				return Class.forName(processingEnv.getTypeUtils().toMutableType(a.getAnnotationType()).toString(ClassSerializer.CANONICAL, false));
+				return Class.forName(processingEnv.getTypeUtils().toMutableType(a.getAnnotationType()).toString(ClassSerializer.QUALIFIED, false));
 			} catch (ClassNotFoundException e) {
 				return null;
 			}
@@ -224,7 +225,7 @@ public abstract class AnnotationAccessor {
 		@Override
 		public Class<?> visitEnumConstant(VariableElement c, Void p) {
 			try {
-				return Class.forName(processingEnv.getTypeUtils().toMutableType(c.asType()).toString(ClassSerializer.CANONICAL, false));
+				return Class.forName(processingEnv.getTypeUtils().toMutableType(c.asType()).toString(ClassSerializer.QUALIFIED, false));
 			} catch (ClassNotFoundException e) {
 				return null;
 			}
@@ -254,7 +255,10 @@ public abstract class AnnotationAccessor {
 			if (method.getName().equals("hashCode")) {
 				return annotationMirror.hashCode();
 			}
-
+			if (method.getName().equals("getAnnotationMirror")) {
+				return annotationMirror;
+			}
+			
 			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationMethod: annotationMirror.getElementValues().entrySet()) {
 				if (annotationMethod.getKey().getSimpleName().toString().equals(method.getName())) {
 					AnnotationValue value = annotationMethod.getValue();
@@ -273,13 +277,26 @@ public abstract class AnnotationAccessor {
 	
 	public abstract boolean isValid();
 
+	private static Object enhance(AnnotationMirror annotationMirror, Class<?> annotationClass, MutableProcessingEnvironment processingEnv) {
+		List<Class<?>> interfaces = new ArrayList<Class<?>>();
+		for (Class<?> interfaceClass: annotationClass.getInterfaces()) {
+			interfaces.add(interfaceClass);
+		}
+		interfaces.add(WrapsAnnotationMirror.class);
+		if (annotationClass.isInterface()) {
+			interfaces.add(annotationClass);
+		}
+		return Enhancer.create(annotationClass, interfaces.toArray(new Class[] {}), new AnnotationMirrorProxy(annotationMirror, processingEnv));
+	}
+	
 	@SuppressWarnings("unchecked")
 	protected <T extends Annotation> T getAnnotation(Element element, Class<T> annotationClass) {
 		AnnotationMirror annotationMirror = getAnnotationMirror(element, new AnnotationTypeFilter(false, annotationClass));
 		if (annotationMirror == null) {
 			return null;
 		}
-		return (T)Enhancer.create(annotationClass, new AnnotationMirrorProxy(annotationMirror, processingEnv));
+
+		return (T)enhance(annotationMirror, annotationClass, processingEnv);
 	}
 	
 	protected AnnotationMirror getAnnotationMirror(Element element, AnnotationFilter... annotationFilters) {
@@ -300,7 +317,7 @@ public abstract class AnnotationAccessor {
 			return toPojo(((WrapsAnnotationMirror)annotation).getAnnotationMirror(), clazz);
 		}
 		
-		throw new RuntimeException("Unsupported annotation: use " + AnnotationMirror.class.getCanonicalName() + " type of obtain annotation using getAnnotation methdom from " + 
+		throw new RuntimeException("Unsupported annotation: use " + AnnotationMirror.class.getCanonicalName() + " type of obtain annotation using getAnnotation method from " + 
 				this.getClass().getCanonicalName() + "!");
 	}
 	

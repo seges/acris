@@ -6,7 +6,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +21,9 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
@@ -278,6 +282,10 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		return type.getPackageName();
 	};
 
+	private boolean isConflictType(MutableTypeValue mutableTypeValue) {
+		return false;
+	}
+	
 	private boolean isConflictType(MutableDeclaredType mutableType) {
 		for (MutableDeclaredType importType: usedTypes) {
 			if (getImportPackage(importType) != null && importType.getSimpleName().equals(mutableType.getSimpleName()) && !getImportPackage(importType).equals(getImportPackage(mutableType))) {
@@ -322,15 +330,19 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 			}
 
 			if (o instanceof MutableTypeValue) {
+
+				ClassSerializer evalSerializer = serializer;
 				if (serializer.equals(ClassSerializer.SIMPLE)) {
-					String res = ((MutableTypeValue)o).toString(ClassSerializer.SIMPLE, typed);
-					length += res.length();
-					super.write(res);
-				} else {
-					String res = ((MutableTypeValue)o).toString(serializer, typed);
-					length += res.length();
-					super.write(res);
+					if (isConflictType((MutableTypeValue)o)) {
+						evalSerializer = ClassSerializer.CANONICAL;
+					} else {
+						usedTypes.addAll(extractValueTypes((MutableTypeValue)o));
+					}
 				}
+
+				String res = ((MutableTypeValue)o).toString(evalSerializer, typed);
+				length += res.length();
+				super.write(res);
 			} else {
 				MutableTypeMirror mutableType = toMutableType(o);
 				
@@ -358,6 +370,78 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		currentPosition += length;
 	}
 	
+	private Set<MutableDeclaredType> extractValueTypes(MutableTypeValue value) {
+		
+		Set<MutableDeclaredType> types = new HashSet<MutableDeclaredType>();
+
+		if (value == null) {
+			return types;
+		}
+
+		if (value instanceof MutableDeclaredTypeValue) {
+
+			//value is clazz
+			if (value.getValue() instanceof MutableType) {
+				return types;
+			}
+
+			MutableTypeMirror type = ((MutableDeclaredTypeValue) value).asType();
+			
+			//primitive types
+			if (type.getKind().equals(MutableTypeKind.PRIMITIVE) || unboxType(processingEnv.getTypeUtils().fromMutableType(type)).getKind().isPrimitive()) {
+				return types;
+			}
+
+			List<Method> methods = getGetterMethods(Arrays.asList(value.getValue().getClass().getDeclaredMethods()));
+			
+			for (Method method: methods) {
+				try {
+					MutableTypeValue typeValue = processingEnv.getTypeUtils().getTypeValue(method.invoke(value.getValue()));
+					if (typeValue instanceof MutableArrayTypeValue) {
+						types.add((MutableDeclaredType)((MutableArrayTypeValue) typeValue).asType().getComponentType());
+					} else if (typeValue instanceof MutableDeclaredTypeValue) {
+						types.add(((MutableDeclaredTypeValue) typeValue).asType());
+					}
+				} catch (Exception e) {
+				}
+			}
+			
+			types.add(((MutableDeclaredTypeValue)value).asType());
+		}
+
+		if (value instanceof MutableArrayTypeValue) {
+			types.add((MutableDeclaredType)((MutableArrayTypeValue) value).asType().getComponentType());
+			
+			MutableTypeValue[] arrayValues = ((MutableArrayTypeValue) value).getValue();
+			
+			if (arrayValues != null && arrayValues.length > 0) {
+				types.addAll(extractValueTypes(arrayValues[0]));
+			}
+		}
+
+		return types;
+	}
+	
+	protected TypeMirror unboxType(TypeMirror type) {
+		try {
+			return processingEnv.getTypeUtils().unboxedType(type);
+		} catch (Exception e) {
+			return type;
+		}
+	}
+
+	private List<Method> getGetterMethods(List<Method> methods) {
+		List<Method> result = new ArrayList<Method>();
+		
+		for (Method method: methods) {
+			if (method.getName().startsWith("get")) {
+				result.add(method);
+			}
+		}
+		
+		return result;
+	}
+
 	public List<MutableDeclaredType> getUsedTypes() {
 		return usedTypes;
 	}
