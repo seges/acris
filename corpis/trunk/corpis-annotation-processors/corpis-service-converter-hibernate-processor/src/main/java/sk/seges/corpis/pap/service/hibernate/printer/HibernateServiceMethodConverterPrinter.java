@@ -8,6 +8,8 @@ import javax.lang.model.element.Element;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.corpis.pap.service.hibernate.accessor.TransactionPropagationAccessor;
+import sk.seges.corpis.service.annotation.TransactionPropagation;
+import sk.seges.corpis.service.annotation.TransactionPropagations;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
@@ -34,6 +36,9 @@ public class HibernateServiceMethodConverterPrinter extends ServiceMethodConvert
 			}
 		}
 
+		result.add(TransactionPropagation.class);
+		result.add(TransactionPropagations.class);
+		
 		if (!transactionPropagationAccessor.isTransactionPropagated()) {
 			result.add(Transactional.class);
 		}
