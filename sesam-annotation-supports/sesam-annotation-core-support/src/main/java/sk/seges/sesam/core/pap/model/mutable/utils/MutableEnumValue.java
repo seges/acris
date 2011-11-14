@@ -5,8 +5,8 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 
 class MutableEnumValue extends MutableDeclaredValue {
 
-	public MutableEnumValue(MutableDeclaredType type, Object value) {
-		super(type, value);
+	public MutableEnumValue(MutableDeclaredType type, Object value, MutableProcessingEnvironment processingEnv) {
+		super(type, value, processingEnv);
 	}
 
 	@Override

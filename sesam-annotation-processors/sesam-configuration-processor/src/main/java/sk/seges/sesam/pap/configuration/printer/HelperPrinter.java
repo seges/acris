@@ -13,10 +13,9 @@ import javax.lang.model.util.ElementFilter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsContext;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
 
-public class HelperPrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
+public class HelperPrinter extends AbstractSettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
 	

@@ -60,6 +60,54 @@ public class MutableTypes implements Types {
 		return this.types.isSameType(t1, t2);
 	}
 
+	public boolean isSameType(MutableTypeMirror type1, MutableTypeMirror type2) {
+		if (type1 == null && type2 == null) {
+			return true;
+		}
+		
+		if (type1 == null || type2 == null) {
+			return false;
+		}
+		
+		if (!type1.getKind().equals(type2.getKind())) {
+			return false;
+		}
+		
+		if (type1 instanceof MutableDeclaredType) {
+			return ((MutableDeclaredType)type1).getCanonicalName().equals(((MutableDeclaredType)type2).getCanonicalName());
+		}
+		
+		if (type1 instanceof MutableTypeVariable) {
+			MutableTypeVariable dtoVariable1 = (MutableTypeVariable)type1;
+			MutableTypeVariable dtoVariable2 = (MutableTypeVariable)type2;
+			
+			if (dtoVariable1.getVariable() != null && dtoVariable2.getVariable() != null && !dtoVariable1.getVariable().equals(dtoVariable2.getVariable())) {
+				return false;
+			}
+			
+			if ((dtoVariable1.getVariable() == null && dtoVariable2.getVariable() != null) ||
+				(dtoVariable2.getVariable() == null && dtoVariable1.getVariable() != null)) {
+				return false;
+			}
+
+			if (!areSameTypes(dtoVariable1.getUpperBounds(), dtoVariable2.getUpperBounds())) {
+				return false;
+			}
+
+			if (!areSameTypes(dtoVariable1.getLowerBounds(), dtoVariable2.getLowerBounds())) {
+				return false;
+			}
+			
+			return true;
+		}
+		
+		if (type1 instanceof MutableArrayType) {
+			return isSameType(((MutableArrayType)type1).getComponentType(), ((MutableArrayType)type2).getComponentType());
+		}
+		
+		return false;
+	}
+
 	@Override
 	public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
 		return this.types.isSubtype(t1, t2);
@@ -536,55 +584,7 @@ public class MutableTypes implements Types {
 		result.setVariable(typeVariable);
 		return result;
 	}
-	
-	public boolean isSameType(MutableTypeMirror type1, MutableTypeMirror type2) {
-		if (type1 == null && type2 == null) {
-			return true;
-		}
 		
-		if (type1 == null || type2 == null) {
-			return false;
-		}
-		
-		if (!type1.getKind().equals(type2.getKind())) {
-			return false;
-		}
-		
-		if (type1 instanceof MutableDeclaredType) {
-			return ((MutableDeclaredType)type1).getCanonicalName().equals(((MutableDeclaredType)type2).getCanonicalName());
-		}
-		
-		if (type1 instanceof MutableTypeVariable) {
-			MutableTypeVariable dtoVariable1 = (MutableTypeVariable)type1;
-			MutableTypeVariable dtoVariable2 = (MutableTypeVariable)type2;
-			
-			if (dtoVariable1.getVariable() != null && dtoVariable2.getVariable() != null && !dtoVariable1.getVariable().equals(dtoVariable2.getVariable())) {
-				return false;
-			}
-			
-			if ((dtoVariable1.getVariable() == null && dtoVariable2.getVariable() != null) ||
-				(dtoVariable2.getVariable() == null && dtoVariable1.getVariable() != null)) {
-				return false;
-			}
-
-			if (!areSameTypes(dtoVariable1.getUpperBounds(), dtoVariable2.getUpperBounds())) {
-				return false;
-			}
-
-			if (!areSameTypes(dtoVariable1.getLowerBounds(), dtoVariable2.getLowerBounds())) {
-				return false;
-			}
-			
-			return true;
-		}
-		
-		if (type1 instanceof MutableArrayType) {
-			return isSameType(((MutableArrayType)type1).getComponentType(), ((MutableArrayType)type2).getComponentType());
-		}
-		
-		return false;
-	}
-	
 	private boolean areSameTypes(Collection<? extends MutableTypeMirror> dtos1, Collection<? extends MutableTypeMirror> dtos2) {
 		if (dtos1 == null && dtos2 == null) {
 			return true;
@@ -673,6 +673,18 @@ public class MutableTypes implements Types {
 		return mutableType;
 	}
 
+	public MutableTypeValue getTypeValue(Object value) {
+		if (value.getClass().isArray()) {
+			return getTypeValue(toMutableType(value.getClass().getComponentType()), value);
+		}
+		
+		if (value.getClass().isEnum()) {
+			return getEnumValue(value);
+		}
+
+		return getTypeValue(toMutableType(value.getClass()), value);
+	}
+	
 	public MutableTypeValue getTypeValue(MutableTypeMirror type, Object value) {
 		
 		if (value != null && value.getClass().isEnum()) {
@@ -691,11 +703,11 @@ public class MutableTypes implements Types {
 	}
 	
 	public MutableDeclaredTypeValue getEnumValue(Object value) {
-		return new MutableEnumValue(toMutableType(value.getClass()), value);
+		return new MutableEnumValue(toMutableType(value.getClass()), value, processingEnv);
 	}
 
 	public MutableDeclaredTypeValue getDeclaredValue(MutableDeclaredType type, Object value) {
-		return new MutableDeclaredValue(type, value);
+		return new MutableDeclaredValue(type, value, processingEnv);
 	}
 	
 	public MutableArrayTypeValue getArrayValue(MutableArrayType array, Object... values) {

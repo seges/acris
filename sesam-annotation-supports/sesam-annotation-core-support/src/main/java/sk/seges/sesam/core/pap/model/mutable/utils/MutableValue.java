@@ -13,5 +13,5 @@ abstract class MutableValue implements MutableTypeValue {
 	@Override
 	public Object getValue() {
 		return value;
-	}
+	}	
 }

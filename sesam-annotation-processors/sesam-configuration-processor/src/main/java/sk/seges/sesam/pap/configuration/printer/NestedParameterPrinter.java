@@ -6,19 +6,18 @@ import sk.seges.sesam.core.configuration.annotation.Settings;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsContext;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
-import sk.seges.sesam.pap.configuration.processor.SettingsProcessor;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
+import sk.seges.sesam.pap.configuration.processor.api.NestableProcessor;
 
-public class NestedParameterPrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
+public class NestedParameterPrinter extends AbstractSettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
-	private SettingsProcessor settingsProcessor;
+	private NestableProcessor settingsProcessor;
 	
-	public NestedParameterPrinter(FormattedPrintWriter pw, SettingsProcessor configurationProcessor, MutableProcessingEnvironment processingEnv) {
+	public NestedParameterPrinter(FormattedPrintWriter pw, NestableProcessor settingsProcessor, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.pw = pw;
-		this.settingsProcessor = configurationProcessor;
+		this.settingsProcessor = settingsProcessor;
 	}
 
 	@Override

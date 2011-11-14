@@ -9,7 +9,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
@@ -102,12 +101,6 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 		this.configurer.init(processingEnv, this);
 	}
 	
-	protected boolean isSupportedKind(ElementKind kind) {
-		return (kind.equals(ElementKind.CLASS) || 
-				kind.equals(ElementKind.INTERFACE) ||
-				kind.equals(ElementKind.ENUM));
-	}
-
 	protected boolean supportProcessorChain() {
 		//Return true in order to run other processors
 		return true;
@@ -140,7 +133,7 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 			for (Element element: processingElements) {
 				if (!ListUtils.contains(processedElement, element)) {
 					processedElement.add(element);
-					if (isSupportedKind(element.getKind())) {
+					if (configurer == null || configurer.isSupportedKind(element.getKind())) {
 						init(element, roundEnv);
 						processElement(element, roundEnv);
 						configurer.flushMessages(processingEnv.getMessager(), element);

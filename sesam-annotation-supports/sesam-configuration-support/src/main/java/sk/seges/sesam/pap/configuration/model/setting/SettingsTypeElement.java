@@ -1,4 +1,4 @@
-package sk.seges.sesam.pap.configuration.model;
+package sk.seges.sesam.pap.configuration.model.setting;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;

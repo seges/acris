@@ -4,9 +4,10 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
+import sk.seges.sesam.pap.configuration.printer.api.AbstractElementPrinter;
 
-public abstract class AbstractSettingsElementPrinter implements SettingsElementPrinter {
+public abstract class AbstractSettingsElementPrinter implements AbstractElementPrinter<SettingsContext> {
 
 	protected MutableProcessingEnvironment processingEnv;
 	
@@ -14,7 +15,7 @@ public abstract class AbstractSettingsElementPrinter implements SettingsElementP
 		this.processingEnv = processingEnv;
 	}
 	
-	protected TypeMirror unboxType(TypeMirror type) {
+	protected TypeMirror boxType(TypeMirror type) {
 		if (type.getKind().isPrimitive()) {
 			return processingEnv.getTypeUtils().boxedClass((PrimitiveType)type).asType();
 		}

@@ -1,19 +1,15 @@
-package sk.seges.sesam.pap.configuration.model;
+package sk.seges.sesam.pap.configuration.model.parameter;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.sesam.core.configuration.annotation.Parameter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 
-public class SettingsContext {
-	
+public abstract class ParameterContext {
+
 	private TypeElement configurationElement;
 	private ExecutableElement method;
 	private String fieldName;
-
-	private Parameter parameter;
-	private String prefix = "";
 	
 	private TypeElement nestedElement;
 	private MutableDeclaredType nestedMutableType;
@@ -43,24 +39,6 @@ public class SettingsContext {
 		this.fieldName = fieldName;
 	}
 	
-	public String getParameterName() {
-		if (parameter == null) {
-			return null;
-		}
-		return prefix + parameter.name();
-	}
-
-	public String getParameterDescription() {
-		if (parameter == null) {
-			return null;
-		}
-		return parameter.description();
-	}
-	
-	public void setParameter(Parameter parameter) {
-		this.parameter = parameter;
-	}
-
 	public void setNestedElement(TypeElement nestedElement) {
 		this.nestedElement = nestedElement;
 	}
@@ -75,14 +53,6 @@ public class SettingsContext {
 	
 	public MutableDeclaredType getNestedMutableType() {
 		return nestedMutableType;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-	
-	public String getPrefix() {
-		return prefix;
 	}
 	
 	public void setNestedElementExists(boolean nestedElementExists) {
