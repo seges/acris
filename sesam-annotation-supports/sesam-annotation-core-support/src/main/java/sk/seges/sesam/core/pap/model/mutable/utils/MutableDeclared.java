@@ -257,7 +257,10 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	};
 	
 	public String getQualifiedName() {
-		return getCanonicalName().replace("$", ".");
+		if (enclosedClass != null) {
+			return enclosedClass.getCanonicalName() + "$" + simpleName;
+		}
+		return getCanonicalName();
 	};
 		
 	public TypeMirror asType() {
