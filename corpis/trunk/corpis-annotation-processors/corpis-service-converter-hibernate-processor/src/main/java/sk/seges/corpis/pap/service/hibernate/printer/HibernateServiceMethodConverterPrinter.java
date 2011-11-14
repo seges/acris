@@ -7,8 +7,7 @@ import javax.lang.model.element.Element;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.corpis.service.annotation.TransactionPropagation;
-import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
+import sk.seges.corpis.pap.service.hibernate.accessor.TransactionPropagationAccessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
@@ -23,7 +22,7 @@ public class HibernateServiceMethodConverterPrinter extends ServiceMethodConvert
 	}
 
 	protected Class<?>[] getIgnoredAnnotations(Element method) {
-		TransactionPropagation transactionPropagation = method.getAnnotation(TransactionPropagation.class);
+		TransactionPropagationAccessor transactionPropagationAccessor = new TransactionPropagationAccessor(method, processingEnv);
 
 		List<Class<?>> result = new ArrayList<Class<?>>();
 		
@@ -34,8 +33,8 @@ public class HibernateServiceMethodConverterPrinter extends ServiceMethodConvert
 				result.add(ignoredAnnotation);
 			}
 		}
-		
-		if (transactionPropagation != null && transactionPropagation.value().equals(PropagationType.ISOLATE)) {
+
+		if (!transactionPropagationAccessor.isTransactionPropagated()) {
 			result.add(Transactional.class);
 		}
 

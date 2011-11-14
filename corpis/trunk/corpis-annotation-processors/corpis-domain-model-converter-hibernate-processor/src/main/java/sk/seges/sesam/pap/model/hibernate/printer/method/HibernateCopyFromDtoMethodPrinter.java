@@ -30,8 +30,8 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
 	@Override
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
     	if (entityResolver.isLazyReference(domainMethod)) {
-    		pw.println("if (", ConverterUtils.class,".convert(" + HibernateParameterResolver.PROPAGATION_TYPE_NAME + ", " + 
-    				HibernateParameterResolver.FIELDS_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
+    		pw.println("if (", ConverterUtils.class,".convert(" + HibernateParameterResolver.TRANSACTION_PROPAGATION_NAME + ", " + 
+    				HibernateParameterResolver.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
         	//pw.println("if (" + HibernateParameterResolver.PROPAGATION_TYPE_NAME + ".equals(", PropagationType.class, ".", PropagationType.PROPAGATE, ")) {");
     		pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " != null) {");
     		pw.println("if (" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField) + " != null) {");

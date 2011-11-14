@@ -136,6 +136,17 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-configuration-processor</artifactId>
+				<version>${sesam-os.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-configuration-api</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-model-metadata-processor</artifactId>
 				<scope>test</scope>
 				<version>${sesam-os.version}</version>

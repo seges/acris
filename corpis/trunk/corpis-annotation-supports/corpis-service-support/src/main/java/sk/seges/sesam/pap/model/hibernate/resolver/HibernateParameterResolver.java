@@ -3,16 +3,16 @@ package sk.seges.sesam.pap.model.hibernate.resolver;
 import javax.lang.model.type.TypeMirror;
 import javax.persistence.EntityManager;
 
-import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
+import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
 
 public class HibernateParameterResolver extends DefaultParametersResolver {
 
 	public static final String ENTITY_MANAGER_NAME = "entityManager";
-	public static final String PROPAGATION_TYPE_NAME = "propagationType";
-	public static final String FIELDS_NAME = "fields";
+	public static final String TRANSACTION_PROPAGATION_NAME = "transactionPropagations";
 
 	public HibernateParameterResolver(MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
@@ -22,7 +22,7 @@ public class HibernateParameterResolver extends DefaultParametersResolver {
 	public ParameterElement[] getConstructorAditionalParameters(TypeMirror domainType) {
 		ParameterElement[] additionalConstructorParameters = super.getConstructorAditionalParameters(domainType);
 
-		int additionalParams = 3;
+		int additionalParams = 2;
 		
 		ParameterElement[] result = new ParameterElement[additionalConstructorParameters.length + additionalParams];
 		
@@ -30,11 +30,11 @@ public class HibernateParameterResolver extends DefaultParametersResolver {
 			result[i + additionalParams] = additionalConstructorParameters[i];
 		}
 		
-		result[0] = new ParameterElement(processingEnv.getTypeUtils().toMutableType(EntityManager.class), ENTITY_MANAGER_NAME, true);
-		result[1] = new ParameterElement(processingEnv.getTypeUtils().toMutableType(PropagationType.class), PROPAGATION_TYPE_NAME, false);
-		result[2] = new ParameterElement(processingEnv.getTypeUtils().getArrayType(processingEnv.getTypeUtils().toMutableType(String.class)), FIELDS_NAME, false);
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+		
+		result[0] = new ParameterElement(typeUtils.toMutableType(EntityManager.class), ENTITY_MANAGER_NAME, true);
+		result[1] = new ParameterElement(typeUtils.getArrayType(typeUtils.toMutableType(TransactionPropagationModel.class)), TRANSACTION_PROPAGATION_NAME, false);
 
 		return result;
-	}
-	
+	}	
 }

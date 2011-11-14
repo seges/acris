@@ -5,11 +5,8 @@ import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import sk.seges.corpis.service.annotation.TransactionPropagation;
-import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
-import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.corpis.pap.service.hibernate.accessor.TransactionPropagationAccessor;
+import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -23,47 +20,32 @@ import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 public class HibernateServiceConverterProviderPrinter extends ConverterProviderPrinter {
 
+	private TransferObjectProcessingEnvironment processingEnv;
+	
 	public HibernateServiceConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
 			ParametersResolver parametersResolver) {
 		super(pw, processingEnv, parametersResolver);
+		this.processingEnv = processingEnv;
 	}
 
 	@Override
 	protected MutableType[] getConverterParametersUsage(ConverterTypeElement converterTypeElement, MutableTypeMirror type, ExecutableElement method) {
 		MutableType[] converterParameters = super.getConverterParametersUsage(converterTypeElement, type, method);
 				
-		TransactionPropagation transactionPropagation = method.getAnnotation(TransactionPropagation.class);
-		Transactional transactional = method.getAnnotation(Transactional.class);
-		
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		
-		MutableDeclaredType propagationType = typeUtils.toMutableType(PropagationType.class);
-		MutableDeclaredType stringType = typeUtils.toMutableType(String.class);
+		MutableDeclaredType transactionPropagationModel = typeUtils.toMutableType(TransactionPropagationModel.class);
+		
+		TransactionPropagationAccessor transactionPropagationAccessor = new TransactionPropagationAccessor(method, processingEnv);
 		
 		List<ConverterParameter> converterParametersTypes = converterTypeElement.getConverterParameters(parametersResolver);
 
 		List<MutableType> generatedParams = new ArrayList<MutableType>();
 		
 		for (ConverterParameter converterParametersType: converterParametersTypes) {
-		
 			if (!converterParametersType.isPropagated()) {
-				if (converterParametersType.getType().toString(ClassSerializer.CANONICAL, false).equals(propagationType.toString(ClassSerializer.CANONICAL, false))) {
-					if (transactionPropagation != null) {
-						generatedParams.add(typeUtils.getEnumValue(transactionPropagation.value()));
-					} else if (transactional != null) {
-						generatedParams.add(typeUtils.getEnumValue(PropagationType.PROPAGATE));
-					} else {
-						generatedParams.add(typeUtils.getEnumValue(PropagationType.ISOLATE));
-					}
-				} else if (converterParametersType.getType().toString(ClassSerializer.CANONICAL, false).equals(
-							typeUtils.getArrayType(stringType).toString(ClassSerializer.CANONICAL, false))) {
-					if (transactionPropagation != null) {
-						generatedParams.add(typeUtils.getArrayValue(typeUtils.getArrayType(stringType), (Object[])transactionPropagation.fields()));
-					} else if (transactional != null) {
-						generatedParams.add(typeUtils.getArrayValue(typeUtils.getArrayType(stringType)));
-					} else {
-						generatedParams.add(typeUtils.getArrayValue(typeUtils.getArrayType(stringType)));
-					}
+				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.getArrayType(transactionPropagationModel))) {
+					generatedParams.add(typeUtils.getArrayValue(typeUtils.getArrayType(transactionPropagationModel), (Object[])transactionPropagationAccessor.getPropagations()));
 				}
 			}
 		}

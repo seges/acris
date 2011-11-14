@@ -6,7 +6,4 @@ import javax.lang.model.SourceVersion;
 import sk.seges.sesam.pap.service.ServiceInterfaceProcessor;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class HibernateServiceInterfaceProcessor extends ServiceInterfaceProcessor {
-
-	
-}
+public class HibernateServiceInterfaceProcessor extends ServiceInterfaceProcessor {	}
