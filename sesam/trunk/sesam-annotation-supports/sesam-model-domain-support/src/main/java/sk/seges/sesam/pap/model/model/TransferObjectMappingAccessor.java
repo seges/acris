@@ -50,7 +50,6 @@ public class TransferObjectMappingAccessor extends AnnotationAccessor {
 	
 	private Set<TransferObjectMapping> mappings = new HashSet<TransferObjectMapping>();
 
-	private MutableProcessingEnvironment processingEnv;
 	private TransferObjectMapping referenceMapping;
 	private Element configurationHolderElement;
 	
@@ -58,8 +57,8 @@ public class TransferObjectMappingAccessor extends AnnotationAccessor {
 	 * TypeElement holds {@link TransferObjectMapping} or {@link TransferObjectMappings} annotation
 	 */
 	public TransferObjectMappingAccessor(Element element, MutableProcessingEnvironment processingEnv) {
+		super(processingEnv);
 		this.configurationHolderElement = element;
-		this.processingEnv = processingEnv;
 		{
 			TransferObjectMapping mapping = element.getAnnotation(TransferObjectMapping.class);
 			if (mapping != null) {

@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -18,14 +17,22 @@ import javax.lang.model.util.SimpleAnnotationValueVisitor6;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
 
 public abstract class AnnotationAccessor {
 
+	protected final MutableProcessingEnvironment processingEnv;
+	
 	public interface AnnotationFilter {
 		boolean isAnnotationIgnored(AnnotationMirror annotation);
 	}
 
+	public AnnotationAccessor(MutableProcessingEnvironment processingEnv) {
+		this.processingEnv = processingEnv;
+	}
+	
 	public static class AnnotationTypeFilter implements AnnotationFilter {
 
 		private final Class<?>[] types;
@@ -53,9 +60,15 @@ public abstract class AnnotationAccessor {
 	
 	private static class MirrorVisitor extends SimpleAnnotationValueVisitor6<Object, AnnotationValue> {
 		
+		private final MutableProcessingEnvironment processingEnv;
+		
+		public MirrorVisitor(MutableProcessingEnvironment processingEnv) {
+			this.processingEnv = processingEnv;
+		}
+
 		@Override
 		public Object visitEnumConstant(VariableElement c, AnnotationValue p) {
-			for (Object o: p.accept(new ArrayValueVisitor(), null).getEnumConstants()) {
+			for (Object o: p.accept(new ArrayValueVisitor(processingEnv), null).getEnumConstants()) {
 				if (o.toString().equals(c.toString())) {
 					return o;
 				}
@@ -66,7 +79,7 @@ public abstract class AnnotationAccessor {
 		
 		@Override
 		public Object visitAnnotation(AnnotationMirror a, AnnotationValue p) {
-			return Enhancer.create(p.accept(new ArrayValueVisitor(), null), new AnnotationMirrorProxy(a));
+			return Enhancer.create(p.accept(new ArrayValueVisitor(processingEnv), null), new AnnotationMirrorProxy(a, processingEnv));
 		}
 		
 		@Override
@@ -77,9 +90,9 @@ public abstract class AnnotationAccessor {
 			int i = 0;
 			for (AnnotationValue val: vals) {
 				if (i == 0) {
-					result = (Object[]) Array.newInstance(val.accept(new ArrayValueVisitor(), null), vals.size());
+					result = (Object[]) Array.newInstance(val.accept(new ArrayValueVisitor(processingEnv), null), vals.size());
 				}
-				result[i] = val.accept(new MirrorVisitor(), val);
+				result[i] = val.accept(new MirrorVisitor(processingEnv), val);
 				i++;
 			}
 
@@ -134,7 +147,7 @@ public abstract class AnnotationAccessor {
 		@Override
 		public Object visitType(TypeMirror t, AnnotationValue p) {
 			try {
-				return Class.forName(t.toString());
+				return Class.forName(processingEnv.getTypeUtils().toMutableType(t).toString(ClassSerializer.CANONICAL, false));
 			} catch (ClassNotFoundException e) {
 				return null;
 			}
@@ -142,10 +155,17 @@ public abstract class AnnotationAccessor {
 	};
 
 	private static class ArrayValueVisitor extends SimpleAnnotationValueVisitor6<Class<?>, Void> {
+
+		private final MutableProcessingEnvironment processingEnv;
+		
+		public ArrayValueVisitor(MutableProcessingEnvironment processingEnv) {
+			this.processingEnv = processingEnv;
+		}
+		
 		@Override
 		public Class<?> visitAnnotation(AnnotationMirror a, Void p) {
 			try {
-				return Class.forName(a.getAnnotationType().toString());
+				return Class.forName(processingEnv.getTypeUtils().toMutableType(a.getAnnotationType()).toString(ClassSerializer.CANONICAL, false));
 			} catch (ClassNotFoundException e) {
 				return null;
 			}
@@ -204,7 +224,7 @@ public abstract class AnnotationAccessor {
 		@Override
 		public Class<?> visitEnumConstant(VariableElement c, Void p) {
 			try {
-				return Class.forName(c.asType().toString());
+				return Class.forName(processingEnv.getTypeUtils().toMutableType(c.asType()).toString(ClassSerializer.CANONICAL, false));
 			} catch (ClassNotFoundException e) {
 				return null;
 			}
@@ -213,17 +233,19 @@ public abstract class AnnotationAccessor {
 
 	private static class AnnotationMirrorProxy implements MethodInterceptor, WrapsAnnotationMirror {
 				
-		private AnnotationMirror annotationMirror;
-
+		private final AnnotationMirror annotationMirror;
+		private final MutableProcessingEnvironment processingEnv;
+		
+		public AnnotationMirrorProxy(AnnotationMirror annotationMirror, MutableProcessingEnvironment processingEnv) {
+			this.annotationMirror = annotationMirror;
+			this.processingEnv = processingEnv;
+		}
+		
 		@Override
 		public AnnotationMirror getAnnotationMirror() {
 			return annotationMirror;
 		}
 		
-	    public AnnotationMirrorProxy(AnnotationMirror annotationMirror) {
-	    	this.annotationMirror = annotationMirror;
-	    }
-	    
 		@Override
 		public Object intercept(Object arg0, Method method, Object[] arg2, MethodProxy arg3) throws Throwable {
 			if (method.getName().equals("toString")) {
@@ -236,7 +258,7 @@ public abstract class AnnotationAccessor {
 			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationMethod: annotationMirror.getElementValues().entrySet()) {
 				if (annotationMethod.getKey().getSimpleName().toString().equals(method.getName())) {
 					AnnotationValue value = annotationMethod.getValue();
-					Object result = value.accept(new MirrorVisitor(), value);
+					Object result = value.accept(new MirrorVisitor(processingEnv), value);
 					if (result == null) {
 						return value;
 					}
@@ -257,7 +279,7 @@ public abstract class AnnotationAccessor {
 		if (annotationMirror == null) {
 			return null;
 		}
-		return (T)Enhancer.create(annotationClass, new AnnotationMirrorProxy(annotationMirror));
+		return (T)Enhancer.create(annotationClass, new AnnotationMirrorProxy(annotationMirror, processingEnv));
 	}
 	
 	protected AnnotationMirror getAnnotationMirror(Element element, AnnotationFilter... annotationFilters) {
@@ -273,16 +295,16 @@ public abstract class AnnotationAccessor {
 		return null;
 	}
 
-	protected <T> T toPojo(Annotation annotation, Class<T> clazz, ProcessingEnvironment processingEnv) {
+	protected <T> T toPojo(Annotation annotation, Class<T> clazz) {
 		if (annotation instanceof WrapsAnnotationMirror) {
-			return toPojo(((WrapsAnnotationMirror)annotation).getAnnotationMirror(), clazz, processingEnv);
+			return toPojo(((WrapsAnnotationMirror)annotation).getAnnotationMirror(), clazz);
 		}
 		
 		throw new RuntimeException("Unsupported annotation: use " + AnnotationMirror.class.getCanonicalName() + " type of obtain annotation using getAnnotation methdom from " + 
 				this.getClass().getCanonicalName() + "!");
 	}
 	
-	protected <T> T toPojo(AnnotationMirror annotation, Class<T> clazz, ProcessingEnvironment processingEnv) {
+	protected <T> T toPojo(AnnotationMirror annotation, Class<T> clazz) {
 		
 		T newInstance = null;
 
@@ -298,7 +320,7 @@ public abstract class AnnotationAccessor {
 		
 		for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationMethod: processingEnv.getElementUtils().getElementValuesWithDefaults(annotation).entrySet()) {
 			AnnotationValue value = annotationMethod.getValue();
-			Object result = value.accept(new MirrorVisitor(), value);
+			Object result = value.accept(new MirrorVisitor(this.processingEnv), value);
 			if (result == null) {
 				result = value;
 			}

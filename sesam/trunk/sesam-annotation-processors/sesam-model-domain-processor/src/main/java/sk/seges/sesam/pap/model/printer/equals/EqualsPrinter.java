@@ -2,11 +2,11 @@ package sk.seges.sesam.pap.model.printer.equals;
 
 import java.util.Arrays;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.TransferObjectProcessor;
 import sk.seges.sesam.pap.model.accessor.GenerateEqualsAccessor;
@@ -29,12 +29,12 @@ import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
  */
 public class EqualsPrinter extends AbstractElementPrinter {
 
-	private final ProcessingEnvironment processingEnv;
+	private final MutableProcessingEnvironment processingEnv;
 	private final EntityResolver entityResolver;
 	
 	private boolean active = true;
 	
-	public EqualsPrinter(EntityResolver entityResolver, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+	public EqualsPrinter(EntityResolver entityResolver, MutableProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(pw);
 		this.processingEnv = processingEnv;
 		this.entityResolver = entityResolver;
@@ -46,7 +46,7 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 
-		active = new GenerateEqualsAccessor(configurationTypeElement.asElement()).generate();
+		active = new GenerateEqualsAccessor(configurationTypeElement.asElement(), processingEnv).generate();
 		
 		if (!active) {
 			return;
