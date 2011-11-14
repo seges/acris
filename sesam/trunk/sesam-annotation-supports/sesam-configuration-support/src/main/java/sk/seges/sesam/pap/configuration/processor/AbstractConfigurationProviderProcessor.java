@@ -12,7 +12,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.ConfigurationProviderTypeElement;
-import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 
 public abstract class AbstractConfigurationProviderProcessor extends MutableAnnotationProcessor {
 

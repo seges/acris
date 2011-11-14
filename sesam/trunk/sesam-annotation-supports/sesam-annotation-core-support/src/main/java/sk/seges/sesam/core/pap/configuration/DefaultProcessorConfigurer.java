@@ -310,7 +310,7 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 	
 	protected abstract Type[] getConfigurationElement(DefaultConfigurationElement element);
 	
-	protected boolean isSupportedKind(ElementKind kind) {
+	public boolean isSupportedKind(ElementKind kind) {
 		return (kind.equals(ElementKind.CLASS) || 
 				kind.equals(ElementKind.INTERFACE) ||
 				kind.equals(ElementKind.ENUM));

@@ -1,6 +1,6 @@
 package sk.seges.sesam.pap.test.selenium.processor.model;
 
-import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 
 
 public class SeleniumSettingsContext {

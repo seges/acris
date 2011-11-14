@@ -10,15 +10,16 @@ import javax.lang.model.util.SimpleTypeVisitor6;
 import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.configuration.utils.ConfigurationUtils;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsContext;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
 
-public class ConfigurationValueConstructorPrinter implements SettingsElementPrinter {
+public class ConfigurationValueConstructorPrinter extends AbstractSettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
 	
-	public ConfigurationValueConstructorPrinter(FormattedPrintWriter pw) {
+	public ConfigurationValueConstructorPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
+		super(processingEnv);
 		this.pw = pw;
 	}
 

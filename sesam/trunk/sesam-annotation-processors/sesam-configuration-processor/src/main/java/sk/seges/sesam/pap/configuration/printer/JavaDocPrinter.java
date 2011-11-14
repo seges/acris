@@ -5,14 +5,14 @@ import javax.lang.model.element.TypeElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsContext;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
 
-public class JavaDocPrinter implements SettingsElementPrinter {
+public class JavaDocPrinter extends AbstractSettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
 	
 	public JavaDocPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment pe) {
+		super(pe);
 		this.pw = pw;
 	}
 	

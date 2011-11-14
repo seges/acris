@@ -14,14 +14,13 @@ import sk.seges.sesam.core.pap.NullCheck;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsContext;
-import sk.seges.sesam.pap.configuration.model.SettingsIterator;
-import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsIterator;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.configuration.printer.AbstractSettingsElementPrinter;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
 
-public class SettingInstancerPrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
-
+public class SettingInstancerPrinter extends AbstractSettingsElementPrinter {
+	
 	private final FormattedPrintWriter pw;
 	private final AnnotationMirror annotationMirror;
 	private int i = 0;

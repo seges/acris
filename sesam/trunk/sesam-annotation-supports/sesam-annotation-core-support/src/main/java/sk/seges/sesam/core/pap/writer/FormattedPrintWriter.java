@@ -136,7 +136,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 	@Override
 	public void write(String text, int off, int len) {
 		if (!processing) {
-			if (text != null && text.length() > off) {
+			if (currentPosition == 0 && text != null && text.length() > off) {
 				setAutoIndent(text.charAt(off));
 			}
 			addIdentation();

@@ -5,7 +5,7 @@ import javax.lang.model.element.AnnotationMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsTypeElement;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.printer.api.SeleniumSettingsElementPrinter;

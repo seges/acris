@@ -36,7 +36,7 @@ public class DefaultPackageValidator implements PackageValidator {
 	}
 
 	public enum LayerType implements SubPackageType {
-		MODEL("model"), DAO("dao"), SERVICE("service") ;
+		ANNOTATION("annotation"), MODEL("model"), DAO("dao"), SERVICE("service") ;
 
 		private String name;
 

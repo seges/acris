@@ -5,12 +5,11 @@ import javax.lang.model.element.TypeElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsContext;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
 
-public class FieldPrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
+public class FieldPrinter extends AbstractSettingsElementPrinter {
 
-	private FormattedPrintWriter pw;
+	protected FormattedPrintWriter pw;
 	
 	public FieldPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
@@ -26,7 +25,7 @@ public class FieldPrinter extends AbstractSettingsElementPrinter implements Sett
 			pw.println("private ", context.getNestedMutableType(), " " + context.getFieldName() + ";");
 			pw.println();
 		} else {
-			pw.println("private ", unboxType(context.getMethod().getReturnType()), " " + context.getMethod().getSimpleName().toString() + ";");
+			pw.println("private ", boxType(context.getMethod().getReturnType()), " " + context.getMethod().getSimpleName().toString() + ";");
 			pw.println();
 		}
 	}

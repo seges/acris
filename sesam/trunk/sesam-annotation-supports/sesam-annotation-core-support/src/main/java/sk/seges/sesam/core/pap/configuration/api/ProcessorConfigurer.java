@@ -9,6 +9,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -30,4 +31,6 @@ public interface ProcessorConfigurer {
 	void flushMessages(Messager messager, Element element);
 	
 	Set<String> getSupportedAnnotations();
+	
+	boolean isSupportedKind(ElementKind kind);
 }

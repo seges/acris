@@ -5,10 +5,9 @@ import javax.lang.model.element.TypeElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.configuration.model.SettingsContext;
-import sk.seges.sesam.pap.configuration.printer.api.SettingsElementPrinter;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
 
-public class EnumeratedConstructorDefinitionPrinter extends AbstractSettingsElementPrinter implements SettingsElementPrinter {
+public class EnumeratedConstructorDefinitionPrinter extends AbstractSettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
 	private int index = 0;
@@ -32,7 +31,7 @@ public class EnumeratedConstructorDefinitionPrinter extends AbstractSettingsElem
 		if (context.getNestedElement() != null) {
 			pw.print(context.getNestedMutableType().getSimpleName() + " " + context.getMethod().getSimpleName().toString());
 		} else {
-			pw.print(unboxType(context.getMethod().getReturnType()), " " + context.getMethod().getSimpleName().toString());
+			pw.print(boxType(context.getMethod().getReturnType()), " " + context.getMethod().getSimpleName().toString());
 		}
 		
 		index++;
