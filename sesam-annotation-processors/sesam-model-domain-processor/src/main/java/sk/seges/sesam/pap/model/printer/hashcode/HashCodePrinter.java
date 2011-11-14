@@ -2,10 +2,10 @@ package sk.seges.sesam.pap.model.printer.hashcode;
 
 import java.util.Arrays;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.accessor.GenerateHashcodeAccessor;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
@@ -27,12 +27,12 @@ import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
  */
 public class HashCodePrinter extends AbstractElementPrinter {
 
-	private ProcessingEnvironment processingEnv;
+	private MutableProcessingEnvironment processingEnv;
 	private EntityResolver entityResolver;
 
 	private boolean active = true;
 	
-	public HashCodePrinter(EntityResolver entityResolver, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+	public HashCodePrinter(EntityResolver entityResolver, MutableProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(pw);
 		this.processingEnv = processingEnv;
 		this.entityResolver = entityResolver;
@@ -44,7 +44,7 @@ public class HashCodePrinter extends AbstractElementPrinter {
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 	
-		active = new GenerateHashcodeAccessor(configurationTypeElement.asElement()).generate();
+		active = new GenerateHashcodeAccessor(configurationTypeElement.asElement(), processingEnv).generate();
 		
 		if (!active) {
 			return;

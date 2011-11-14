@@ -16,12 +16,11 @@ public class MetaModelAccessor extends AnnotationAccessor {
 
 	private final Element element;
 	private final MetaModel metaModelAnnotation;
-	private final MutableProcessingEnvironment processingEnv;
 	
 	public MetaModelAccessor(Element element, MutableProcessingEnvironment processingEnv) {
+		super(processingEnv);
 		this.element = element;
 		this.metaModelAnnotation = this.getAnnotation(element, MetaModel.class);
-		this.processingEnv = processingEnv;
 	}
 	
 	@Override

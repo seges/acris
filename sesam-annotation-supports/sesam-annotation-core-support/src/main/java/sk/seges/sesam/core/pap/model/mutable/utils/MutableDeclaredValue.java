@@ -70,7 +70,7 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 			return value.toString();
 		}
 
-		if (unboxType(type.asType()).getKind().isPrimitive()) {
+		if (unboxType(processingEnv.getTypeUtils().fromMutableType(type)).getKind().isPrimitive()) {
 			return value.toString();
 		}
 

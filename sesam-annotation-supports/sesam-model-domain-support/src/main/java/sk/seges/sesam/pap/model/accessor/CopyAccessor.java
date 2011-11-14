@@ -17,12 +17,10 @@ import sk.seges.sesam.pap.model.annotation.Copy;
 
 public class CopyAccessor extends AnnotationAccessor {
 
-	private final MutableProcessingEnvironment processingEnv;
-	
 	private final Set<Annotations> annotations = new HashSet<Annotations>();
 
 	public CopyAccessor(Element element, MutableProcessingEnvironment processingEnv) {
-		this.processingEnv = processingEnv;
+		super(processingEnv);
 
 		Copy copyAnnotation = getAnnotation(element, Copy.class);
 		
