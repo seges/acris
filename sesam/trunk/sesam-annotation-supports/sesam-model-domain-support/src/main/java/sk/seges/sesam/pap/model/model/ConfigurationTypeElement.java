@@ -142,8 +142,8 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 			if (this.domainDeclaredType == null) {
 				this.dtoTypeElementInitialized = true;
 				this.dtoDeclaredType = null;
-			} else {
-				domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
+//			} else {
+//				domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
 			}
 			
 			this.domainTypeElementInitialized = true;

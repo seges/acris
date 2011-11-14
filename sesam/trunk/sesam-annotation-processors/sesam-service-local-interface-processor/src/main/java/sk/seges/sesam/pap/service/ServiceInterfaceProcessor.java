@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.service;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -17,6 +18,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
@@ -66,11 +68,29 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 		List<ExecutableElement> methods = ElementFilter.methodsIn(context.getTypeElement().getEnclosedElements());
 		
 		FormattedPrintWriter pw = context.getPrintWriter();
-		
+
+		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement(context.getTypeElement(), processingEnv);
+
 		for (ExecutableElement method: methods) {
-			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
+
+			List<MutableTypeMirror> params = new LinkedList<MutableTypeMirror>();
+			List<MutableTypeMirror> types = new LinkedList<MutableTypeMirror>();
 			
-			pw.print(stripVariableTypeVariables(dtoReturnType.getDomain()), " " + method.getSimpleName().toString() + "(");
+			for (VariableElement parameter: method.getParameters()) {
+				DtoType dtoParamType = processingEnv.getTransferObjectUtils().getDtoType(parameter.asType());
+				DomainType domain = dtoParamType.getDomain();
+				params.add(domain);
+				types.add(domain);
+			}
+
+			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
+			DomainType domainReturnType = dtoReturnType.getDomain();
+			
+			types.add(domainReturnType);
+
+			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);
+			
+			pw.print(remoteServiceTypeElement.toParamType(domainReturnType), " " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
@@ -78,9 +98,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 					pw.print(", ");
 				}
 				
-				DtoType dtoParamType = processingEnv.getTransferObjectUtils().getDtoType(parameter.asType());
-
-				pw.print(stripVariableTypeVariables(dtoParamType.getDomain()), " " + parameter.getSimpleName().toString());
+				pw.print(remoteServiceTypeElement.toReturnType(params.get(i)), " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
@@ -88,12 +106,4 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 			pw.println();
 		}
 	}
-
-	private MutableTypeMirror stripVariableTypeVariables(MutableTypeMirror type) {
-		if (type != null && type instanceof MutableDeclaredType) {
-			return ((MutableDeclaredType)type).stripVariableTypeVariables();
-		}
-		return type;
-	}
-
 }

@@ -1,0 +1,14 @@
+package sk.seges.sesam.server.service.service;
+
+import javax.annotation.Generated;
+
+import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
+import sk.seges.sesam.pap.service.model.MockEntity;
+
+@LocalServiceDefinition(remoteService = sk.seges.sesam.pap.service.service.MockRemoteService.class)
+@Generated(value = "sk.seges.sesam.pap.service.ServiceInterfaceProcessor")
+public interface MockRemoteServiceLocal {
+
+	MockEntity find();
+
+}
