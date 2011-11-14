@@ -71,12 +71,22 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 		
 		FormattedPrintWriter pw = context.getPrintWriter();
 		TypeElement element = context.getTypeElement();
+
+		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement(element, processingEnv);
 		
 		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(element.getEnclosedElements());
 		
 		for (ExecutableElement method: methodsIn) {
+
+			List<MutableTypeMirror> types = new LinkedList<MutableTypeMirror>();
 			
-			printMethodTypeVariablesDefinition(element, method, pw);
+			for (VariableElement parameter: method.getParameters()) {
+				types.add(processingEnv.getTypeUtils().toMutableType(parameter.asType()));
+			}
+			
+			types.add(processingEnv.getTypeUtils().toMutableType(method.getReturnType()));
+
+			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);
 			
 			pw.print("void " + method.getSimpleName().toString() + "(");
 			
@@ -85,7 +95,7 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				pw.print(toMutableParam(parameter.asType()), " " + parameter.getSimpleName().toString());
+				pw.print(remoteServiceTypeElement.toParamType(parameter.asType()), " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
@@ -94,100 +104,9 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			if (i > 0) {
 				pw.print(", ");
 			}
-			pw.println(AsyncCallback.class, "<", unBoxType(returnType), "> callback);");
+			pw.println(AsyncCallback.class, "<", remoteServiceTypeElement.toReturnType(returnType), "> callback);");
 			pw.println();
 			//TODO add throws
 		}
-	}
-
-	protected void printMethodTypeVariablesDefinition(TypeElement remoteElement, ExecutableElement method, FormattedPrintWriter pw) {
-		
-		boolean first = true;
-		boolean generated = false;
-		
-		List<TypeMirror> types = new LinkedList<TypeMirror>();
-		
-		for (VariableElement parameter: method.getParameters()) {
-			types.add(parameter.asType());
-		}
-		
-		types.add(method.getReturnType());
-		
-		for (TypeMirror type: types) {
-			if (type.getKind().equals(TypeKind.TYPEVAR)) {
-				TypeVariable typeVariable = (TypeVariable)type;
-				
-				boolean found = false;
-				for (TypeParameterElement parameterElement: remoteElement.getTypeParameters()) {
-					if (parameterElement.getSimpleName().toString().equals(typeVariable.asElement().getSimpleName().toString())) {
-						found = true;
-						break;
-					}
-				}
-				
-				if (!found) {
-					generated = true;
-					if (first) {
-						pw.print("<");
-						first = false;
-					} else {
-						pw.print(", ");
-					}
-					
-					pw.print(typeVariable);
-				}
-			}
-		}
-		
-		if (generated) {
-			pw.print("> ");
-		}
-	}
-	
-	protected MutableTypeMirror toMutableParam(TypeMirror type) {
-		switch (type.getKind()) {
-		case TYPEVAR:
-			return processingEnv.getTypeUtils().getTypeVariable(((TypeVariable)type).asElement().getSimpleName().toString());
-		case ARRAY:
-			return processingEnv.getTypeUtils().getArrayType(toMutableParam(((ArrayType)type).getComponentType()));
-		}
-		
-		return processingEnv.getTypeUtils().toMutableType(type);
-	}
-	
-	protected MutableTypeMirror unBoxType(TypeMirror type) {
-		switch (type.getKind()) {
-		case BOOLEAN:
-		case BYTE:
-		case CHAR:
-		case INT:
-		case LONG:
-		case DOUBLE:
-		case FLOAT:
-		case SHORT:
-			return processingEnv.getTypeUtils().toMutableType(processingEnv.getTypeUtils().boxedClass((PrimitiveType)type).asType());
-		case VOID:
-			return processingEnv.getTypeUtils().toMutableType(Void.class);
-		case ARRAY:
-			return processingEnv.getTypeUtils().getArrayType(unBoxType(((ArrayType)type).getComponentType()));
-		case TYPEVAR:
-			return processingEnv.getTypeUtils().getTypeVariable(((TypeVariable)type).asElement().getSimpleName().toString());
-		case ERROR:
-		case NULL:
-		case NONE:
-		case OTHER:
-		case EXECUTABLE:
-			processingEnv.getMessager().printMessage(Kind.ERROR, " [ERROR] Cannot unbox type " + type.getKind() + " - unsupported type!");
-			return null;
-		}
-
-		return stripVariableTypeVariables((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type));
-	}
-
-	private MutableDeclaredType stripVariableTypeVariables(MutableDeclaredType type) {
-		if (type != null) {
-			return type.stripVariableTypeVariables();
-		}
-		return type;
 	}
 }
