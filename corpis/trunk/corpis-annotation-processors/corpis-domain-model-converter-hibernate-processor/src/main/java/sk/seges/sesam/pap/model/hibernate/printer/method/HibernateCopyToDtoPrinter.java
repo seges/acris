@@ -26,4 +26,5 @@ public class HibernateCopyToDtoPrinter extends CopyToDtoPrinter {
 	protected void printIsInitializedMethod(PrintWriter pw, String instanceName) {
 		pw.println("return " + Hibernate.class.getCanonicalName() + ".isInitialized(" + instanceName + ");");
 	}
+	
 }

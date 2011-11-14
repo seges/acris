@@ -3,7 +3,6 @@ package sk.seges.corpis.pap.service.hibernate.accessor;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -13,17 +12,15 @@ import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType
 import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.corpis.service.annotation.TransactionPropagations;
 import sk.seges.sesam.core.pap.accessor.AnnotationAccessor;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
 public class TransactionPropagationAccessor extends AnnotationAccessor {
 
 	private Transactional transactional;
 	private List<TransactionPropagation> transactionPropagations = new ArrayList<TransactionPropagation>();
 	
-	private final ProcessingEnvironment processingEnv;
-	
-	public TransactionPropagationAccessor(Element element, ProcessingEnvironment processingEnv) {
-		
-		this.processingEnv = processingEnv;
+	public TransactionPropagationAccessor(Element element, MutableProcessingEnvironment processingEnv) {
+		super(processingEnv);
 		
 		TransactionPropagation transactionPropagation = getAnnotation(element, TransactionPropagation.class);
 		
@@ -51,7 +48,7 @@ public class TransactionPropagationAccessor extends AnnotationAccessor {
 		}
 
 		for (TransactionPropagation annotation: transactionPropagations) {
-			result.add(toPojo(annotation, TransactionPropagationModel.class, processingEnv));
+			result.add(toPojo(annotation, TransactionPropagationModel.class));
 		}
 		
 		return result.toArray(new TransactionPropagationModel[] {});
