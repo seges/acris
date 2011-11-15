@@ -1,5 +1,6 @@
 package sk.seges.acris.pap.service;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,19 +9,14 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.PrimitiveType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
-import javax.tools.Diagnostic.Kind;
 
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
 import sk.seges.acris.pap.service.configurer.AsyncServiceProcessorConfigurer;
 import sk.seges.acris.pap.service.model.AsyncRemoteServiceType;
+import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -74,9 +70,11 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 
 		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement(element, processingEnv);
 		
-		List<ExecutableElement> methodsIn = ElementFilter.methodsIn(element.getEnclosedElements());
+		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 		
-		for (ExecutableElement method: methodsIn) {
+		Collections.sort(methods, new ExecutableComparator());
+
+		for (ExecutableElement method: methods) {
 
 			List<MutableTypeMirror> types = new LinkedList<MutableTypeMirror>();
 			
