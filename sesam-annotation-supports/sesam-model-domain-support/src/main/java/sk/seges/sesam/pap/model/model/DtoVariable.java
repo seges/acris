@@ -69,7 +69,7 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 			}
 
 			String variableName = getVariable();
-			if (!getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
+			if (getVariable() != null && !getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
 				variableName = ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variableName;
 			}
 

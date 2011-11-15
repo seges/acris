@@ -17,6 +17,8 @@ public interface TypedRemoteServiceLocal<DOMAIN_T extends Comparable<Serializabl
 
 	List<Serializable> findEmAll();
 
+	List<List<DOMAIN_T>> findMatrix();
+
 	<DOMAIN_S extends Serializable> DOMAIN_S findSomething();
 
 	void put(DOMAIN_T t);

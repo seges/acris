@@ -13,6 +13,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.configuration.annotation.Parameter;
+import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.configuration.model.AbstractParameterHandler;
 import sk.seges.sesam.pap.configuration.model.AbstractParameterIterator;
@@ -96,7 +97,7 @@ public class SettingsIterator extends AbstractParameterIterator<SettingsHandler>
 			}
 		}
 		
-		Collections.sort(result, new MethodComparator());
+		Collections.sort(result, new ExecutableComparator());
 		
 		return result;
 	}

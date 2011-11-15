@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.configuration.model;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,16 +35,6 @@ public abstract class AbstractParameterIterator<T extends AbstractParameterHandl
 		this.processingEnv = processingEnv;
 	}
 
-	protected class MethodComparator implements Comparator<ExecutableElement> {
-		
-		public MethodComparator() {}
-		
-		@Override
-		public int compare(ExecutableElement o1, ExecutableElement o2) {
-			return o1.getSimpleName().toString().compareTo(o2.getSimpleName().toString());
-		}
-	}
-	
 	protected abstract List<ExecutableElement> getSortedMethods(TypeElement type);
 	
 	@Override
