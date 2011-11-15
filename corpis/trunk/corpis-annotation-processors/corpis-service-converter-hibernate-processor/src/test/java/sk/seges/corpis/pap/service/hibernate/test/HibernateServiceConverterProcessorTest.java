@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import sk.seges.corpis.pap.service.hibernate.HibernateServiceConverterProcessor;
 import sk.seges.corpis.pap.service.hibernate.service.MockService;
+import sk.seges.corpis.pap.service.hibernate.service.TransactionalMockService;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
@@ -24,6 +25,12 @@ public class HibernateServiceConverterProcessorTest extends AnnotationTest {
 	public void testServiceConveterForEclipse() {
 		assertCompilationSuccessful(compileFiles(Compiler.ECLIPSE, MockService.class));
 		assertOutput(getEclipseResourceFile(MockService.class), getOutputFile(MockService.class));
+	}
+
+	@Test
+	public void testTransactionalServiceConveter() {
+		assertCompilationSuccessful(compileFiles(TransactionalMockService.class));
+		//assertOutput(getResourceFile(MockService.class), getOutputFile(MockService.class));
 	}
 
 	public File getOutputFile(Class<?> type) {

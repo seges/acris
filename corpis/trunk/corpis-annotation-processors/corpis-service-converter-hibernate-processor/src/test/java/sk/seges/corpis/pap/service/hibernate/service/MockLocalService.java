@@ -7,5 +7,4 @@ import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 public interface MockLocalService {
 
 	MockEntity find();
-
 }
