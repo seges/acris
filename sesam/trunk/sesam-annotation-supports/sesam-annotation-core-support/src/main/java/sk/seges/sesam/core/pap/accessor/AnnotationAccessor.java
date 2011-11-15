@@ -259,7 +259,7 @@ public abstract class AnnotationAccessor {
 				return annotationMirror;
 			}
 			
-			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationMethod: annotationMirror.getElementValues().entrySet()) {
+			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationMethod: processingEnv.getElementUtils().getElementValuesWithDefaults(annotationMirror).entrySet()) {
 				if (annotationMethod.getKey().getSimpleName().toString().equals(method.getName())) {
 					AnnotationValue value = annotationMethod.getValue();
 					Object result = value.accept(new MirrorVisitor(processingEnv), value);
