@@ -125,6 +125,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 			
 			if (domainType != null) {
 				this.domainDeclaredType = new DomainDeclared(domainType, dtoType, this, processingEnv, roundEnv, configurationProviders);
+				domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
 			} else {
 				if (this.domainType == null) {
 					TypeElement domainInterface = transferObjectConfiguration.getDomainInterface();
@@ -142,8 +143,6 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 			if (this.domainDeclaredType == null) {
 				this.dtoTypeElementInitialized = true;
 				this.dtoDeclaredType = null;
-//			} else {
-//				domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
 			}
 			
 			this.domainTypeElementInitialized = true;

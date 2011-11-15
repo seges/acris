@@ -3,7 +3,6 @@ package sk.seges.sesam.pap.service.model;
 import java.util.List;
 
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
@@ -80,6 +79,7 @@ public class RemoteServiceTypeElement extends DelegateMutableDeclaredType {
 	public MutableTypeMirror toReturnType(MutableTypeMirror type) {
 		switch (type.getKind()) {
 		case PRIMITIVE:
+			return type;
 		case VOID:
 			return toReturnType(((MutableDeclaredType)type).asType());
 		case ARRAY:

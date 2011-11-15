@@ -350,7 +350,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 		if (domainType != null) {
 			return domainType;
 		}
-		return dtoType;
+		return dtoType.clone();
 	}
 
 	private DomainType getDomainForType(TypeMirror type) {
