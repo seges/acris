@@ -94,7 +94,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 
 			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);
 			
-			pw.print(remoteServiceTypeElement.toParamType(domainReturnType), " " + method.getSimpleName().toString() + "(");
+			pw.print(remoteServiceTypeElement.toReturnType(domainReturnType), " " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
@@ -102,7 +102,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 					pw.print(", ");
 				}
 				
-				pw.print(remoteServiceTypeElement.toReturnType(params.get(i)), " " + parameter.getSimpleName().toString());
+				pw.print(remoteServiceTypeElement.toParamType(params.get(i)), " " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
