@@ -55,20 +55,22 @@
       * [SeleniumConfiguration Configuration] <sup><font color="red">1.2.1</font></sup>
       * [SeleniumReporting Reporting] <sup><font color="red">1.2.1</font></sup>
       * [SeleniumCI Continuous integration] <sup><font color="red">1.2.1</font></sup>
+  * Plugable Annotation Processors <sup><font color="red">1.2.1</font></sup>
+    * [AnnotationProcessing_OwnProcessor Quick-start Own Annotation Processor]
+    * [AnnotationProcessing_Maven Annotation processing maven integration]
+    * [AnnotationProcessing_Eclipse Annotation processing eclipse integration]
+    * [AnnotationProcessing_DebuggingMaven Debugging annotation processorts using maven]
+    * [AnnotationProcessing_DebuggingEclipse Debugging annotation processors using eclipse]
+    * [AnnotationProcessing_Testing Testing annotation processors] <sup><font color="red">1.2.1</font></sup>
+    * [AnnotationProcessing_MutableAPI Annotation processor Mutable API] <sup><font color="red">1.2.0</font></sup>
+    * [AnnotationProcessing_Configurer Annotation processor delegate configuration] <sup><font color="red">1.2.0</font></sup>
+    * [AnnotationProcessing_Advanced Advanced features of the annotation processors] <sup><font color="red">1.2.0</font></sup>
+    * [CodeGenerationPlatform_Accessors Annotation accessor] <sup><font color="red">1.2.1</font></sup>
+
   * Platform<sup><font color="red">New</font></sup>
     * [CodeGenerationPlatform Generate application skelet]<sup><font color="red">New</font></sup>
-      * [AnnotationProcessing_OwnProcessor Quick-start Own Annotation Processor]
-      * [AnnotationProcessing_Maven Annotation processing maven integration]
-      * [AnnotationProcessing_Eclipse Annotation processing eclipse integration]
-      * [AnnotationProcessing_DebuggingMaven Debugging annotation processorts using maven]
-      * [AnnotationProcessing_DebuggingEclipse Debugging annotation processors using eclipse]
-      * [AnnotationProcessing_Testing Testing annotation processors] <sup><font color="red">1.2.1</font></sup>
-      * [AnnotationProcessing_MutableAPI Annotation processor Mutable API] <sup><font color="red">1.2.0</font></sup>
-      * [AnnotationProcessing_Configurer Annotation processor delegate configuration] <sup><font color="red">1.2.0</font></sup>
-      * [AnnotationProcessing_Advanced Advanced features of the annotation processors] <sup><font color="red">1.2.0</font></sup>
       * [CodeGenerationPlatform_IDAO Data Access Object interface annotation processor]
       * [CodeGenerationPlatform_Async Async remote service] <sup><font color="red">1.2.0</font></sup>
-      * [CodeGenerationPlatform_Accessors Annotation accessor] <sup><font color="red">1.2.1</font></sup>
       * [CodeGeneratorsEvaluation Evalution brainstorming]
     * [PortableApplication Writing portable application]
       * [PortableObjects Portable objects]
