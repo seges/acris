@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.service;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -66,6 +68,8 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 	protected void processElement(ProcessorContext context) {
 
 		List<ExecutableElement> methods = ElementFilter.methodsIn(context.getTypeElement().getEnclosedElements());
+		
+		Collections.sort(methods, new ExecutableComparator());
 		
 		FormattedPrintWriter pw = context.getPrintWriter();
 

@@ -34,6 +34,12 @@ public class ServiceInterfaceProcessorTest extends AnnotationTest {
 		assertOutput(getResourceFile(TypedRemoteService.class), getOutputFile(TypedRemoteService.class));
 	}
 
+	@Test
+	public void testTypedServiceInEclipse() {
+		assertCompilationSuccessful(compileFiles(Compiler.ECLIPSE, TypedRemoteService.class));
+		assertOutput(getResourceFile(TypedRemoteService.class), getOutputFile(TypedRemoteService.class));
+	}
+
 	private File getOutputFile(Class<?> clazz) {
 		MutableDeclaredType inputClass = toMutable(clazz);
 		LocalServiceTypeElement outputClass = new RemoteServiceTypeElement(

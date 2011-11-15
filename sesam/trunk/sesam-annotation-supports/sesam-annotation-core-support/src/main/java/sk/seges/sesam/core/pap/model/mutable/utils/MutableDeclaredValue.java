@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.lang.model.type.TypeMirror;
@@ -14,6 +13,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.core.pareflection.comparator.MethodComparator;
 
 class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeValue {
 
@@ -97,14 +97,6 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 		return result;
 	}
 
-	private class MethodComparator implements Comparator<Method> {
-
-		@Override
-		public int compare(Method o1, Method o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-	}
-	
 	private List<Method> getGetterMethods(List<Method> methods) {
 		List<Method> result = new ArrayList<Method>();
 		
