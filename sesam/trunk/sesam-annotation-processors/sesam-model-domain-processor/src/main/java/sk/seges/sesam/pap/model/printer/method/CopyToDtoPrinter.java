@@ -8,6 +8,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -27,10 +28,10 @@ import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferObjectElementPrinter {
 
-	private final FormattedPrintWriter pw;
+	protected final FormattedPrintWriter pw;
 
-	private ElementHolderTypeConverter elementHolderTypeConverter;
-	private EntityResolver entityResolver;
+	protected ElementHolderTypeConverter elementHolderTypeConverter;
+	protected EntityResolver entityResolver;
 	
 	public CopyToDtoPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, ParametersResolver parametersResolver, 
 			RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
@@ -42,7 +43,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 	
 	@Override
 	public void print(TransferObjectContext context) {
-		copy(context, pw, new CopyToDtoMethodPrinter(converterProviderPrinter, elementHolderTypeConverter, entityResolver, parametersResolver, roundEnv, processingEnv));
+		copy(context, pw, new CopyToDtoMethodPrinter(converterProviderPrinter, elementHolderTypeConverter, parametersResolver, roundEnv, processingEnv));
 	}
 
 	@Override
@@ -53,12 +54,12 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		
 		DomainDeclaredType domainTypeElement = domainType;
 
-		String instanceName = "instance";
+//		String instanceName = "instance";
 		
-		pw.println("protected boolean isInitialized(", Object.class, " " + instanceName + ") {");
-		printIsInitializedMethod(pw, instanceName);
-		pw.println("}");
-		pw.println();
+//		pw.println("protected boolean isInitialized(", Object.class, " " + instanceName + ") {");
+//		printIsInitializedMethod(pw, instanceName);
+//		pw.println("}");
+//		pw.println();
 		
 		pw.println("public ", dtoType, " createDtoInstance(", Serializable.class, " id) {");
 		printDtoInstancer(pw, entityResolver, dtoType);
@@ -171,7 +172,8 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		pw.println();
 	}
 	
-	protected void printIsInitializedMethod(PrintWriter pw, String instanceName) {
+	protected void printIsInitializedMethod(PrintWriter pw, ExecutableElement domainMethod, PathResolver domainPathResolver) {
+//	protected void printIsInitializedMethod(PrintWriter pw, String instanceName) {
 		pw.println("return true;");
 	}
 }
