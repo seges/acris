@@ -43,12 +43,7 @@
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-theme-core</artifactId>
-		</dependency>		
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-theme-core</artifactId>
-			<classifier>sources</classifier>			
-		</dependency>	
+		</dependency>
 		
 		<!-- Other dependencies -->
 		<dependency>
@@ -72,10 +67,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-dev</artifactId>
 		</dependency>
 	</dependencies>
 </project>
