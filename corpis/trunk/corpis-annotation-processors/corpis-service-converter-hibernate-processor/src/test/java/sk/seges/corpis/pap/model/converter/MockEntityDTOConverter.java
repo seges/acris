@@ -1,4 +1,4 @@
-package sk.seges.corpis.pap.model.configuration;
+package sk.seges.corpis.pap.model.converter;
 
 import java.io.Serializable;
 import java.sql.Blob;

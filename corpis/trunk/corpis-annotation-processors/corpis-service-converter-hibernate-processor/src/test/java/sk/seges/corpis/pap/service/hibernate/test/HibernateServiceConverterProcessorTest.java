@@ -30,7 +30,7 @@ public class HibernateServiceConverterProcessorTest extends AnnotationTest {
 	@Test
 	public void testTransactionalServiceConveter() {
 		assertCompilationSuccessful(compileFiles(TransactionalMockService.class));
-		//assertOutput(getResourceFile(MockService.class), getOutputFile(MockService.class));
+		assertOutput(getResourceFile(TransactionalMockService.class), getOutputFile(TransactionalMockService.class));
 	}
 
 	public File getOutputFile(Class<?> type) {

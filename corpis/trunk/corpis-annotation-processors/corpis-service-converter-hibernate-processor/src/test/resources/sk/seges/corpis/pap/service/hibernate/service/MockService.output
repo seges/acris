@@ -3,10 +3,13 @@ package sk.seges.corpis.pap.service.hibernate.service;
 import javax.annotation.Generated;
 import javax.persistence.EntityManager;
 
-import sk.seges.corpis.pap.service.hibernate.model.MockEntityConverter;
-import sk.seges.corpis.pap.service.hibernate.model.MockEntityDTO;
+import sk.seges.corpis.pap.model.converter.MockEntityDTOConverter;
+import sk.seges.corpis.pap.model.dto.MockEntityDTO;
 import sk.seges.corpis.pap.service.hibernate.service.MockLocalService;
 import sk.seges.corpis.pap.service.hibernate.service.MockRemoteService;
+import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationTarget;
+import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
+import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 
 @LocalServiceConverter(remoteServices = {MockRemoteService.class})
@@ -25,11 +28,11 @@ public class MockServiceConverter implements MockRemoteService {
 
 	@Override
 	public MockEntityDTO find(){
-		return (MockEntityDTO)getMockEntityConverter().toDto(mockLocalServiceService.find());
+		return (MockEntityDTO)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE, PropagationTarget.ARGUMENTS}, PropagationType.PROPAGATE)}).toDto(mockLocalServiceService.find());
 	}
 
-	private MockEntityConverter getMockEntityConverter() {
-		return new MockEntityConverter(entityManager);
+	private MockEntityDTOConverter getMockEntityDTOConverter(TransactionPropagationModel[] transactionPropagations) {
+		return new MockEntityDTOConverter(entityManager, transactionPropagations);
 	}
 
 }

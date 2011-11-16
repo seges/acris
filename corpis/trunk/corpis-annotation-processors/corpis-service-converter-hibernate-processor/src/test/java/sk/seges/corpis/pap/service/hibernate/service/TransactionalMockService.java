@@ -2,7 +2,7 @@ package sk.seges.corpis.pap.service.hibernate.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.corpis.pap.service.hibernate.model.MockEntity;
+import sk.seges.corpis.pap.model.entity.MockEntity;
 import sk.seges.corpis.service.annotation.TransactionPropagation;
 import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationTarget;
 import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
