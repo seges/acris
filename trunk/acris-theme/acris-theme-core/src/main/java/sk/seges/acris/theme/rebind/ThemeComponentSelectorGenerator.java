@@ -2,7 +2,6 @@ package sk.seges.acris.theme.rebind;
 
 import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.theme.pap.model.ThemePanelType;
 
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.Generator;
@@ -15,6 +14,8 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 
 public class ThemeComponentSelectorGenerator extends Generator {
+
+	public static final String SUFFIX = "Panel";
 
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext generatorContext, String typeName) throws UnableToCompleteException {
@@ -44,7 +45,7 @@ public class ThemeComponentSelectorGenerator extends Generator {
 				ThemeSupport themeSupport = classType.getAnnotation(ThemeSupport.class);
 				if (theme != null) {
 					if (themeName.equals(theme.value()) && themeSupport.widgetClass().getCanonicalName().equals(typeName)) {
-						return classType.getPackage().getName() + "." + classType.getSimpleSourceName() + ThemePanelType.SUFFIX;
+						return classType.getPackage().getName() + "." + classType.getSimpleSourceName() + SUFFIX;
 					}
 				}
 			}
