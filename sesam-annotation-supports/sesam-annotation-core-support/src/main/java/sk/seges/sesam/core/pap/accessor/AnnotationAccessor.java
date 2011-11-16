@@ -12,14 +12,18 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+import javax.lang.model.util.SimpleTypeVisitor6;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
 
 
 public abstract class AnnotationAccessor {
@@ -59,12 +63,37 @@ public abstract class AnnotationAccessor {
 		AnnotationMirror getAnnotationMirror();
 	}
 	
+	private static class ClassTypeVisitor extends SimpleTypeVisitor6<Class<?>, Void> {
+
+		private final MutableProcessingEnvironment processingEnv;
+
+		public ClassTypeVisitor(MutableProcessingEnvironment processingEnv) {
+			this.processingEnv = processingEnv;
+		}
+		
+		@Override
+		public Class<?> visitArray(ArrayType t, Void p) {
+			return visitDeclared((DeclaredType)t.getComponentType(), p);
+		}
+		
+		@Override
+		public Class<?> visitDeclared(DeclaredType t, Void p) {
+			try {
+				return Class.forName(processingEnv.getTypeUtils().toMutableType(t).toString(ClassSerializer.QUALIFIED, false));
+			} catch (ClassNotFoundException e) {
+				return null;
+			}
+		}
+	}
+	
 	private static class MirrorVisitor extends SimpleAnnotationValueVisitor6<Object, AnnotationValue> {
 		
 		private final MutableProcessingEnvironment processingEnv;
+		private final TypeMirror type;
 		
-		public MirrorVisitor(MutableProcessingEnvironment processingEnv) {
+		public MirrorVisitor(MutableProcessingEnvironment processingEnv, TypeMirror type) {
 			this.processingEnv = processingEnv;
+			this.type = type;
 		}
 
 		@Override
@@ -85,16 +114,12 @@ public abstract class AnnotationAccessor {
 		
 		@Override
 		public Object visitArray(List<? extends AnnotationValue> vals, AnnotationValue p) {
-							
-			Object[] result = null;
+
+			Object[] result = (Object[]) Array.newInstance(type.accept(new ClassTypeVisitor(processingEnv), null), vals.size());
 
 			int i = 0;
 			for (AnnotationValue val: vals) {
-				if (i == 0) {
-					result = (Object[]) Array.newInstance(val.accept(new ArrayValueVisitor(processingEnv), null), vals.size());
-				}
-				result[i] = val.accept(new MirrorVisitor(processingEnv), val);
-				i++;
+				result[i++] = val.accept(new MirrorVisitor(processingEnv, type), val);
 			}
 
 			return result;
@@ -171,7 +196,7 @@ public abstract class AnnotationAccessor {
 				return null;
 			}
 		}
-
+		
 		@Override
 		public Class<?> visitType(TypeMirror t, Void p) {
 			return Class.class;
@@ -262,7 +287,7 @@ public abstract class AnnotationAccessor {
 			for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationMethod: processingEnv.getElementUtils().getElementValuesWithDefaults(annotationMirror).entrySet()) {
 				if (annotationMethod.getKey().getSimpleName().toString().equals(method.getName())) {
 					AnnotationValue value = annotationMethod.getValue();
-					Object result = value.accept(new MirrorVisitor(processingEnv), value);
+					Object result = value.accept(new MirrorVisitor(processingEnv, annotationMethod.getKey().getReturnType()), value);
 					if (result == null) {
 						return value;
 					}
@@ -337,12 +362,12 @@ public abstract class AnnotationAccessor {
 		
 		for (Entry<? extends ExecutableElement, ? extends AnnotationValue> annotationMethod: processingEnv.getElementUtils().getElementValuesWithDefaults(annotation).entrySet()) {
 			AnnotationValue value = annotationMethod.getValue();
-			Object result = value.accept(new MirrorVisitor(this.processingEnv), value);
+			Object result = value.accept(new MirrorVisitor(this.processingEnv, annotationMethod.getKey().getReturnType()), value);
 			if (result == null) {
 				result = value;
 			}
 			
-			String methodName = annotationMethod.getKey().getSimpleName().toString();
+			String methodName = MethodHelper.toMethod(MethodHelper.SETTER_PREFIX, annotationMethod.getKey().getSimpleName().toString());
 			
 			Method method = getMethodByName(clazz.getMethods(), methodName);
 			if (method != null) {
