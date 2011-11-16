@@ -6,6 +6,10 @@ import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 
 public class ConverterUtils {
 
+	public static boolean convertResult(TransactionPropagationModel[] transactionPropagations, String field) {
+		return convert(transactionPropagations, field, PropagationTarget.RETURN_VALUE);
+	}
+
 	public static boolean convertArg(TransactionPropagationModel[] transactionPropagations, String field) {
 		return convert(transactionPropagations, field, PropagationTarget.ARGUMENTS);
 	}

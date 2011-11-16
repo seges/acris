@@ -13,7 +13,6 @@ import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolver;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
-import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -35,7 +34,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	}
 
 	@Override
-	protected EntityResolver getEntityResolver() {
+	protected HibernateEntityResolver getEntityResolver() {
 		return new HibernateEntityResolver(processingEnv);
 	}
 
