@@ -53,11 +53,15 @@ public class TransactionPropagationAccessor extends AnnotationAccessor {
 			result.add(toPojo(annotation, TransactionPropagationModel.class));
 		}
 		
+		if (result.size() == 0 && transactional != null) {
+			result.add(new TransactionPropagationModel());
+		}
+		
 		return result.toArray(new TransactionPropagationModel[] {});
 	}
 	
 	public boolean isTransactionPropagated() {
-		if (transactionPropagations == null) {
+		if (transactionPropagations == null || transactionPropagations.size() == 0) {
 			return transactional != null;
 		}
 		
