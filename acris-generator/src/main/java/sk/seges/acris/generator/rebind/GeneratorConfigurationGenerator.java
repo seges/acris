@@ -15,6 +15,10 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 public class GeneratorConfigurationGenerator extends Generator {
 
+	private static final String WEB_ID_NAME = "webId";
+	private static final String PROPERTIES_NAME = "properties";
+	private static final String LANGUAGE_NAME = "language";
+
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext generatorContext, String typeName)
 			throws UnableToCompleteException {
@@ -38,14 +42,22 @@ public class GeneratorConfigurationGenerator extends Generator {
 		// If an implementation already exists, we don't need to do any work
 		if (out != null) {
 			SourceWriter sw = f.createSourceWriter(generatorContext, out);
-
-			sw.println("public String getWebId() { return \"" + System.getProperty("webId") + "\"; }");
-			sw.println("public String getProperties() { return \"" + System.getProperty("properties") + "\"; }");
-			sw.println("public String getLanguage() { return \"" + System.getProperty("language") + "\"; }");
+			
+			sw.println("public String getWebId() { return " + getStringProperty(WEB_ID_NAME) + "; }");
+			sw.println("public String getProperties() { return " + getStringProperty(PROPERTIES_NAME) + "; }");
+			sw.println("public String getLanguage() { return " + getStringProperty(LANGUAGE_NAME) + "; }");
 		
 			sw.commit(logger);
 		}
 
 		return createdClassName;
+	}
+		
+	private String getStringProperty(String name) {
+		String value = System.getProperty(name);
+		if (value == null) {
+			return null;
+		}
+		return "\"" + value + "\"";
 	}
 }
