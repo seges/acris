@@ -9,6 +9,7 @@ public class LoginConstants {
 	public static final String ACRIS_SESSION_ID_STRING = "sessionid";
 	public static final String ACRIS_API_KEY_STRING = "apikey";
 	public static final String ACRIS_WEB_ID_STRING = "webid";
+	public static final String USER_NAME = "userName";
 
 	// Login token name
 	public static final String LOGIN_TOKEN_NAME = "login.token.name";
