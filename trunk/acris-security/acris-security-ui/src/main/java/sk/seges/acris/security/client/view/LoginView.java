@@ -3,6 +3,7 @@ package sk.seges.acris.security.client.view;
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
+import sk.seges.acris.security.shared.util.LoginConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -10,6 +11,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -178,9 +180,14 @@ public class LoginView extends Composite implements LoginDisplay {
 
 		int rowCounter = 0;
 
+		if (Location.getQueryString().contains(LoginConstants.USER_NAME)) {
+			String userName = Location.getParameter(LoginConstants.USER_NAME);
+			username.setValue(userName);
+		}
 		grid.setCellSpacing(10);
 		grid.setWidget(rowCounter, 0, usernameLabel);
 		grid.setWidget(rowCounter++, 1, username);
+		
 
 		grid.setWidget(rowCounter, 0, passwordLabel);
 		grid.setWidget(rowCounter++, 1, password);
