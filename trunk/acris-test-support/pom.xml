@@ -42,6 +42,10 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-server-components</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-external</artifactId>
+		</dependency>
 
 		<!-- Sesam dependencies -->
 		<dependency>
