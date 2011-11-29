@@ -10,13 +10,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public class DefaultClientFactory implements ClientFactory {
 
 	private static final EventBus eventBus = new SimpleEventBus();
 	private static final PlaceController placeController = new PlaceController(eventBus);
 	private static final CardPayDisplay cardPayView = new CardPayView();
-	private static final CardPayRemoteServiceAsync cardPayService = GWT.create(CardPayRemoteService.class);
+	private static CardPayRemoteServiceAsync cardPayService = null;
 
 	@Override
 	public EventBus getEventBus() {
@@ -35,6 +36,11 @@ public class DefaultClientFactory implements ClientFactory {
 
 	@Override
 	public CardPayRemoteServiceAsync getCardPayService() {
+		if (cardPayService == null ) {
+			cardPayService = GWT.create(CardPayRemoteService.class);
+			ServiceDefTarget endpoint = (ServiceDefTarget) cardPayService;
+			endpoint.setServiceEntryPoint("test-service/cardpay");
+		}
 		return cardPayService;
 	}
 }
