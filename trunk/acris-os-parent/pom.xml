@@ -297,34 +297,34 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-callbacks</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-callbacks</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-common</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-client-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-client-core</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
@@ -375,51 +375,51 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-generator</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-generator</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-json</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-json</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-json-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-json-api</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>	
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-json-processor</artifactId>
 				<version>${project.version}</version>
 				<scope>provided</scope>
 			</dependency>				
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-crypto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>sk.seges.acris</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-crypto</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
