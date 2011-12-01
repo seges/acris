@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.configuration.printer;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -33,4 +34,8 @@ public class FieldPrinter extends AbstractSettingsElementPrinter {
 	@Override
 	public void finish(TypeElement type) {}
 
+	@Override
+	public ElementKind getSupportedType() {
+		return ElementKind.METHOD;
+	}
 }

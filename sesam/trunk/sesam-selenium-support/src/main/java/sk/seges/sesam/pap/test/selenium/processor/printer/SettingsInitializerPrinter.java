@@ -7,6 +7,7 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
+import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.printer.api.SeleniumSettingsElementPrinter;
 
@@ -29,7 +30,6 @@ public class SettingsInitializerPrinter implements SeleniumSettingsElementPrinte
 	@Override
 	public void print(SeleniumSettingsContext settingsContext) {
 
-
 		SettingsTypeElement settingsTypeElement = settingsContext.getSettings();
 
 		pw.println("public ", settingsTypeElement, " get" + settingsTypeElement.getSimpleName() + "() {");
@@ -45,14 +45,16 @@ public class SettingsInitializerPrinter implements SeleniumSettingsElementPrinte
 			pw.println(");");
 		}
 
-		annotationMirror = settingsTypeElement.getAnnotationMirrorForElement(settingsContext.getSeleniumTest().getSeleniumSuite().asElement());
-
-		if (annotationMirror != null) {
-			//merging settings from the test suite
-			pw.print(RESULT_NAME + ".merge(");
-			SettingInstancerPrinter settingInstancerPrinter = new SettingInstancerPrinter(annotationMirror, processingEnv, pw, true);
-			settingInstancerPrinter.print(settingsTypeElement, settingsTypeElement);
-			pw.println(");");
+		for (SeleniumSuiteTypeElement seleniumSuite: settingsContext.getSeleniumTest().getSeleniumSuites()) {
+			annotationMirror = settingsTypeElement.getAnnotationMirrorForElement(seleniumSuite.asElement());
+	
+			if (annotationMirror != null) {
+				//merging settings from the test suite
+				pw.print(RESULT_NAME + ".merge(");
+				SettingInstancerPrinter settingInstancerPrinter = new SettingInstancerPrinter(annotationMirror, processingEnv, pw, true);
+				settingInstancerPrinter.print(settingsTypeElement, settingsTypeElement);
+				pw.println(");");
+			}
 		}
 	}
 	

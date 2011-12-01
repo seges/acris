@@ -4,59 +4,51 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.pap.configuration.model.parameter.ParameterContext;
-import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 
 public abstract class AbstractParameterIterator<T extends AbstractParameterHandler> implements Iterator<T> {
 
-	protected abstract T constructHandler(ExecutableElement method);
+	protected abstract T constructHandler(Element element);
 
-	protected final List<ExecutableElement> methods;
+	protected final List<? extends Element> elements;
 	protected final TypeElement annotationElement;
 	protected final MutableProcessingEnvironment processingEnv;
+	protected final ElementKind kind;
 	
 	private int index = -1;
 	
-	protected AbstractParameterIterator(TypeElement annotationElement, MutableProcessingEnvironment processingEnv) {
+	protected AbstractParameterIterator(TypeElement annotationElement, MutableProcessingEnvironment processingEnv, ElementKind kind) {
+		this.kind = kind;
 		this.annotationElement = annotationElement;
 		this.processingEnv = processingEnv;
-		this.methods = getSortedMethods(annotationElement);
+		this.elements = getSortedElements(annotationElement);
 	}
 
-	protected AbstractParameterIterator(AnnotationMirror annotationMirror, MutableProcessingEnvironment processingEnv) {
+	protected AbstractParameterIterator(AnnotationMirror annotationMirror, MutableProcessingEnvironment processingEnv, ElementKind kind) {
 		TypeElement annotationElement = (TypeElement) annotationMirror.getAnnotationType().asElement();
-		this.methods = getSortedMethods(annotationElement);
+		this.kind = kind;
+		this.elements = getSortedElements(annotationElement);
 		this.annotationElement = annotationElement;
 		this.processingEnv = processingEnv;
 	}
 
-	protected abstract List<ExecutableElement> getSortedMethods(TypeElement type);
+	protected abstract List<? extends Element> getSortedElements(TypeElement type);
 	
 	@Override
 	public boolean hasNext() {
-		return (index + 1) < methods.size();
+		return (index + 1) < elements.size();
 	}
 
 	@Override
 	public T next() {
-		if (index >= methods.size()) {
+		if (index >= elements.size()) {
 			return null;
 		}
-		return constructHandler(methods.get(++index));
-	}
-
-	protected void initializeContext(ParameterContext context) {
-		String fieldName = context.getMethod().getSimpleName().toString();
-		context.setFieldName(fieldName);
-		
-		if (context.getNestedElement() != null) {
-			context.setNestedMutableType(new SettingsTypeElement((DeclaredType) context.getNestedElement().asType(), processingEnv));
-		}
+		return constructHandler(elements.get(++index));
 	}
 
 	@Override

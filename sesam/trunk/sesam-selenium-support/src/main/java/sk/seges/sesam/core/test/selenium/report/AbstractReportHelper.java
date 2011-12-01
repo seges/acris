@@ -8,8 +8,11 @@ public abstract class AbstractReportHelper {
 
 	private static final String RESULT_PATH_PREFIX = "target" + File.separator;
 
+	protected static final String DATE_FORMAT = "yyyy-MM-dd";
+	protected static final String TIME_FORMAT = "HH-mm-ss";
+	
 	protected String getTimeStamp() {
-		return getTimeStamp("yyyy-MM-dd_HH-mm-ss");
+		return getTimeStamp(DATE_FORMAT + "_" + TIME_FORMAT);
 	}
 
 	protected String getTimeStamp(final String simpleDateFormat) {

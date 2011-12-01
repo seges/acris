@@ -6,6 +6,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 //This is not working in the eclipse with the source retention policy
 //@Retention(RetentionPolicy.SOURCE)
-public @interface SeleniumTest {
-	Class<?> suiteRunner();
+public @interface SeleniumTestCase {
+	Class<?>[] suiteRunner();
 }

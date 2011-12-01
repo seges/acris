@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.configuration.printer;
 
 import java.io.PrintWriter;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -30,5 +31,10 @@ public class EnumeratedConstructorBodyPrinter extends AbstractSettingsElementPri
 	public void finish(TypeElement type) {
 		pw.println("}");
 		pw.println();
+	}
+
+	@Override
+	public ElementKind getSupportedType() {
+		return ElementKind.METHOD;
 	}
 }

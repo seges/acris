@@ -36,7 +36,14 @@ public class SettingsTypeElement extends DelegateMutableDeclaredType {
 
 	private static MutableDeclaredType toOutputType(MutableDeclaredType type) {
 		if (type.getEnclosedClass() != null) {
-			return type.clone().setEnclosedClass(getOutputName(type.getEnclosedClass()));
+			MutableDeclaredType currentType = type.clone();
+			MutableDeclaredType result = currentType;
+			while (currentType.getEnclosedClass() != null) {
+				MutableDeclaredType enclosedClass = currentType.getEnclosedClass().getEnclosedClass();
+				currentType.setEnclosedClass(getOutputName(currentType.getEnclosedClass()));
+				currentType = currentType.getEnclosedClass().setEnclosedClass(enclosedClass);
+			}
+			return result;
 		}
 		
 		return type;

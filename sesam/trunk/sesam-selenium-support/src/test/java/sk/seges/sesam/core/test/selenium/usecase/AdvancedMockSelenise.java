@@ -5,11 +5,11 @@ import org.junit.Test;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
-import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestCase;
 import sk.seges.sesam.core.test.selenium.runner.MockSuite;
 
 @Ignore
-@SeleniumTest(suiteRunner = MockSuite.class)
+@SeleniumTestCase(suiteRunner = MockSuite.class)
 public class AdvancedMockSelenise extends AbstractSeleniumTest {
 
 	public AdvancedMockSelenise() {

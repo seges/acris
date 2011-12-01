@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.configuration.printer;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 
@@ -22,4 +23,6 @@ public abstract class AbstractSettingsElementPrinter implements AbstractElementP
 		
 		return type;
 	}
+	
+	public abstract ElementKind getSupportedType();
 }

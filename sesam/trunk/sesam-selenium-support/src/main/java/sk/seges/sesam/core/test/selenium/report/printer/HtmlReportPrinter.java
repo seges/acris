@@ -15,10 +15,10 @@ import org.apache.velocity.runtime.log.LogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
-import sk.seges.sesam.core.test.selenium.report.AbstractReportHelper;
+import sk.seges.sesam.core.test.selenium.report.SupportHelper;
 import sk.seges.sesam.core.test.selenium.report.model.TestResult;
 
-public class HtmlReportPrinter extends AbstractReportHelper implements ReportPrinter, LogChute {
+public class HtmlReportPrinter extends SupportHelper implements ReportPrinter, LogChute {
 
 	enum TemplateLocation {
 		FILE("file"), CLASSPATH("classpath");
@@ -75,6 +75,9 @@ public class HtmlReportPrinter extends AbstractReportHelper implements ReportPri
 	@Override
 	public void initialize(ReportSettings reportSettings, TestResult testInfo) {
 		try {
+			
+			setTestInfo(testInfo);
+
 			ve = new VelocityEngine();
 	
 			context = new VelocityContext();
@@ -103,9 +106,9 @@ public class HtmlReportPrinter extends AbstractReportHelper implements ReportPri
 	public void print(TestResult testInfo) {
 		if (testMethod == null) {
 			testMethod = testInfo.getTestMethod();
-
+			
 			if (testMethod != null) {
-		        File reportFile = new File(getResultDirectory() + reportSettings.getHtml().getSupport().getDirectory(), testInfo.getTestCase().getSimpleName() + "_" + testMethod + "_" + getTimeStamp() + ".html");
+		        File reportFile = new File(getResultDirectory() + getOutputDirectory(reportSettings.getHtml().getSupport()), testInfo.getTestCase().getSimpleName() + "_" + testMethod + "_" + getTimeStamp() + ".html");
 		        try {
 		        	if (!reportFile.getParentFile().exists()) {
 		        		reportFile.getParentFile().mkdirs();

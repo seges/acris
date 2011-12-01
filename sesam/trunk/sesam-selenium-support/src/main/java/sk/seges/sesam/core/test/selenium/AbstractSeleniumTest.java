@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
@@ -11,6 +12,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import sk.seges.sesam.core.test.bromine.BromineTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 import sk.seges.sesam.core.test.selenium.factory.WebDriverFactory;
@@ -40,28 +42,17 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 
 	protected abstract CoreSeleniumSettingsProvider getSettings();
 
-	@Override
-	protected WebDriver createWebDriver(WebDriverFactory webDriverFactory, SeleniumSettings seleniumSettings) {
-		WebDriver webDriver = super.createWebDriver(webDriverFactory, seleniumSettings);
-		
-		if (Boolean.TRUE.equals(ensureSettings().getReportSettings().getHtml().getSupport().getEnabled())) {
-			this.reportSupport = new HtmlReportSupport(this.getClass(), ensureSettings().getReportSettings());
-			webDriver = this.reportSupport.registerTo(new EventFiringWebDriver(webDriver));
-		}
-		
-		if (Boolean.TRUE.equals(ensureSettings().getReportSettings().getScreenshot().getEnabled())) {
-			this.screenshotSupport = new ScreenshotSupport(webDriver, ensureSettings().getReportSettings());
-		}
-		
-		return webDriver;
-	}
-
 	protected CoreSeleniumSettingsProvider ensureSettings() {
 		if (settings == null) {
 			settings = getSettings();
 		}
 		
 		return settings;
+	}
+	
+	@Override
+	protected WebDriver createWebDriver(WebDriverFactory webDriverFactory, SeleniumSettings seleniumSettings) {
+		return new EventFiringWebDriver(super.createWebDriver(webDriverFactory, seleniumSettings));
 	}
 	
 	public void setTestEnvironment(SeleniumSettings testEnvironment) {
@@ -90,7 +81,22 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 
 	@Before
 	public void setUp() {
+		//this should maximize the browser window
+		((JavascriptExecutor)webDriver).executeScript("if (window.screen){window.moveTo(0, 0);window.resizeTo(window.screen.availWidth,window.screen.availHeight);};", new Object[] {});
+		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());
+
+		ReportSettings reportSettings = ensureSettings().getReportSettings();
 		
+		if (Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
+			this.reportSupport = new HtmlReportSupport(this.getClass(), reportSettings);
+			this.reportSupport.registerTo((EventFiringWebDriver)webDriver);
+		}
+		
+		if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
+			this.screenshotSupport = new ScreenshotSupport(webDriver, reportSettings);
+			this.screenshotSupport.registerTo((EventFiringWebDriver)webDriver);
+		}
+
 		if (this.screenshotSupport != null) {
 			this.screenshotSupport.initialize();
 		}
@@ -98,14 +104,8 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 		if (this.reportSupport != null) {
 			this.reportSupport.initialize();
 		}
-		
-		start();
 	}
 
-	protected void start() {
-		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());
-	}
-	
 	@After
 	public void tearDown() {
 

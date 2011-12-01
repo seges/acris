@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.configuration.printer;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -48,4 +49,9 @@ public class AccessorPrinter extends AbstractSettingsElementPrinter {
 
 	@Override
 	public void finish(TypeElement type) {}
+
+	@Override
+	public ElementKind getSupportedType() {
+		return ElementKind.METHOD;
+	}
 }
