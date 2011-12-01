@@ -43,7 +43,15 @@ public enum Browsers implements IsParameter {
 	CHROME("chrome") {
 		@Override
 		public WebDriver getWebDriver() {
-			return new ChromeDriver();
+//			  // see flags here http://peter.sh/experiments/chromium-command-line-switches/
+//		      DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
+//
+//		      //tell chrome browser window to start maximized
+//		      String[] switches = { "start-maximized" };
+//		      capabilities.SetCapability("chrome.switches", switches);
+//
+//		      driver = new ChromeDriver(capabilities); 
+		      return new ChromeDriver();
 		}
 	},
 	HTML_UNIT("html_unit") {

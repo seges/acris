@@ -29,6 +29,37 @@ public class ConfigurationUtils {
 		return null;
 	}
 
+	public static Boolean[] getConfigurationBooleans(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		Boolean[] result = new Boolean[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			try {
+				result[i] = Boolean.getBoolean(configurationValues[i]);
+			} catch (Exception e) {
+				return new Boolean[0];
+			}
+		}
+		
+		return result;
+	}
+	
+	private static final String VALUES_DELIMITER = ",";
+	
+	public static String[] getConfigurationValues(ConfigurationValue[] configurations, String key) {
+		if (configurations == null) {
+			return new String[0];
+		}
+		for (ConfigurationValue configuration: configurations) {
+			if (configuration.getConfiguration().getKey().equals(key)) {
+				return configuration.getValue().split(VALUES_DELIMITER);
+			}
+		}
+		
+		return new String[0];
+	}
+	
 	public static String getConfigurationValue(ConfigurationValue[] configurations, String key) {
 		if (configurations == null) {
 			return null;
@@ -55,6 +86,22 @@ public class ConfigurationUtils {
 		return null;
 	}
 
+	public static int[] getConfigurationInts(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		int[] result = new int[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			try {
+				result[i] = Integer.getInteger(configurationValues[i]).intValue();
+			} catch (Exception e) {
+				return new int[0];
+			}
+		}
+		
+		return result;
+	}
+
 	public static int getConfigurationInt(ConfigurationValue[] configurations, String key) {
 		String configurationValue = getConfigurationValue(configurations, key);
 		if (configurationValue == null) {
@@ -79,6 +126,22 @@ public class ConfigurationUtils {
 		return 0;
 	}
 
+	public static short[] getConfigurationShorts(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		short[] result = new short[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			try {
+				result[i] = Short.parseShort(configurationValues[i]);
+			} catch (Exception e) {
+				return new short[0];
+			}
+		}
+		
+		return result;
+	}
+
 	public static short getConfigurationShort(ConfigurationValue[] configurations, Configuration config) {
 		String configurationValue = getConfigurationValue(configurations, config);
 		if (configurationValue == null) {
@@ -89,6 +152,22 @@ public class ConfigurationUtils {
 		} catch (Exception e) {
 		}
 		return 0;
+	}
+
+	public static byte[] getConfigurationBytes(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		byte[] result = new byte[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			try {
+				result[i] = Byte.parseByte(configurationValues[i]);
+			} catch (Exception e) {
+				return new byte[0];
+			}
+		}
+		
+		return result;
 	}
 
 	public static byte getConfigurationByte(ConfigurationValue[] configurations, Configuration config) {
@@ -103,12 +182,40 @@ public class ConfigurationUtils {
 		return 0;
 	}
 
+	public static char[] getConfigurationChars(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		char[] result = new char[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			result[i] = configurationValues[i].charAt(0);
+		}
+		
+		return result;
+	}
+
 	public static char getConfigurationChar(ConfigurationValue[] configurations, Configuration config) {
 		String configurationValue = getConfigurationValue(configurations, config);
 		if (configurationValue == null || configurationValue.length() == 0) {
 			return 0;
 		}
 		return configurationValue.charAt(0);
+	}
+
+	public static Long[] getConfigurationLongs(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		Long[] result = new Long[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			try {
+				result[i] = Long.getLong(configurationValues[i]).longValue();
+			} catch (Exception e) {
+				return new Long[0];
+			}
+		}
+		
+		return result;
 	}
 
 	public static Long getConfigurationLong(ConfigurationValue[] configurations, String key) {
@@ -123,6 +230,22 @@ public class ConfigurationUtils {
 		return 0L;
 	}
 
+	public static Float[] getConfigurationFloats(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		Float[] result = new Float[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			try {
+				result[i] = Float.valueOf(configurationValues[i]);
+			} catch (Exception e) {
+				return new Float[0];
+			}
+		}
+		
+		return result;
+	}
+
 	public static Float getConfigurationFloat(ConfigurationValue[] configurations, String key) {
 		String configurationValue = getConfigurationValue(configurations, key);
 		if (configurationValue == null) {
@@ -133,6 +256,22 @@ public class ConfigurationUtils {
 		} catch (Exception e) {
 		}
 		return 0F;
+	}
+
+	public static Double[] getConfigurationDoubles(ConfigurationValue[] configurations, String key) {
+		String[] configurationValues = getConfigurationValues(configurations, key);
+		
+		Double[] result = new Double[configurationValues.length];
+		
+		for (int i = 0; i < configurationValues.length; i++) {
+			try {
+				result[i] = Double.valueOf(configurationValues[i]);
+			} catch (Exception e) {
+				return new Double[0];
+			}
+		}
+		
+		return result;
 	}
 
 	public static Double getConfigurationDouble(ConfigurationValue[] configurations, String key) {

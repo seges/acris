@@ -3,17 +3,17 @@ package sk.seges.sesam.core.test.selenium.function;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class ElementVisible extends AbstractElementFunction {
+public class ElementEnabled extends AbstractElementFunction {
 
-	private final boolean visible;
+	private boolean enabled = true;
 	
-	ElementVisible(By locator, boolean multiple, boolean visible) {
+	ElementEnabled(By locator, boolean multiple, boolean enabled) {
 		super(locator, multiple);
-		this.visible = visible;
+		this.enabled = enabled;
 	}
 
 	@Override
 	protected boolean isElementSuitable(WebElement webElement) {
-		return webElement.isDisplayed() == visible;
+		return webElement.isEnabled() == enabled;
 	}
 }

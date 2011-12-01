@@ -1,7 +1,11 @@
 package sk.seges.sesam.pap.configuration.processor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
@@ -44,23 +48,44 @@ public class PojoAnnotationTransformerProcessor extends MutableAnnotationProcess
 				new EnumeratedConstructorBodyPrinter(pw, processingEnv)
 		};
 	}
-			
+
+	protected AbstractSettingsElementPrinter[] getElementPrinters(FormattedPrintWriter pw, ElementKind elementKind) {
+		AbstractSettingsElementPrinter[] elementPrinters = getElementPrinters(pw);
+		
+		List<AbstractSettingsElementPrinter> result = new ArrayList<AbstractSettingsElementPrinter>();
+		
+		for (AbstractSettingsElementPrinter elementPrinter: elementPrinters) {
+			if (elementPrinter.getSupportedType().equals(elementKind)) {
+				result.add(elementPrinter);
+			}
+		}
+		
+		return result.toArray(new AbstractSettingsElementPrinter[] {});
+	}
+	
 	@Override
 	protected void processElement(ProcessorContext context) {
 		processAnnotation(context.getTypeElement(), context.getOutputType(), context.getPrintWriter());
 	}
 
+	
+	protected ElementKind[] getSupportedTypes() {
+		return new ElementKind[] { ElementKind.ANNOTATION_TYPE, ElementKind.METHOD };
+	}
+
 	public void processAnnotation(TypeElement typeElement, MutableDeclaredType outputName, FormattedPrintWriter pw) {
 
-		for (AbstractSettingsElementPrinter printer: getElementPrinters(pw)) {
-			printer.initialize(typeElement, outputName);
-
-			ParametersIterator parametersIterator = new ParametersIterator(typeElement, processingEnv);
-			while (parametersIterator.hasNext()) {
-				parametersIterator.next().handle(printer);
+		for (ElementKind supportedType: getSupportedTypes()) {
+			for (AbstractSettingsElementPrinter printer: getElementPrinters(pw, supportedType)) {
+				printer.initialize(typeElement, outputName);
+	
+				ParametersIterator parametersIterator = new ParametersIterator(typeElement, supportedType, processingEnv);
+				while (parametersIterator.hasNext()) {
+					parametersIterator.next().handle(printer);
+				}
+	
+				printer.finish(typeElement);
 			}
-
-			printer.finish(typeElement);
 		}
 	}
 }

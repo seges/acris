@@ -6,38 +6,61 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
-import sk.seges.sesam.core.test.selenium.report.AbstractReportHelper;
+import sk.seges.sesam.core.test.selenium.report.ScreenshotsWebDriverEventListener;
+import sk.seges.sesam.core.test.selenium.report.SupportHelper;
 
-public class ScreenshotSupport extends AbstractReportHelper implements ReportSupport {
+public class ScreenshotSupport extends SupportHelper implements ReportSupport {
 
 	private final ReportSettings reportSettings;
 	private final WebDriver webDriver;
+	private final ScreenshotsWebDriverEventListener screenshotsWebDriverEventListener;
 	
 	public ScreenshotSupport(WebDriver webDriver, ReportSettings reportSettings) {
 		this.reportSettings = reportSettings;
 		this.webDriver = webDriver;
+		this.screenshotsWebDriverEventListener = new ScreenshotsWebDriverEventListener(this, reportSettings);
 	}
 	
+	public EventFiringWebDriver registerTo(EventFiringWebDriver eventFiringWebDriver) {
+		eventFiringWebDriver.register(screenshotsWebDriverEventListener);
+		return eventFiringWebDriver;
+	}
+
 	public void initialize() {
-		if (!new File(getScreenshotDirectory()).exists()) {
-			new File(getScreenshotDirectory()).mkdirs();
-		}
 	}
 	
 	private String getScreenshotDirectory() {
-		if (reportSettings.getScreenshot().getDirectory() == null) {
-			return getResultDirectory();
+		if (reportSettings.getScreenshot().getSupport().getEnabled() == true && reportSettings.getScreenshot().getSupport().getDirectory() != null) {
+			return getResultDirectory() + File.separator + getOutputDirectory(reportSettings.getScreenshot().getSupport());
 		}
-		return getResultDirectory() + reportSettings.getScreenshot().getDirectory();
+
+		if (reportSettings.getHtml().getSupport().getEnabled() == true && reportSettings.getHtml().getSupport().getDirectory() != null) {
+			return getResultDirectory() + File.separator + getOutputDirectory(reportSettings.getHtml().getSupport());
+		}
+		
+		return getResultDirectory();
 	}
 
-	public void makeScreenshot() {
+	private boolean initialized = false;
+	
+	public void makeScreenshot(String name) {
 		try {
+			if (!initialized) {
+				if (!new File(getScreenshotDirectory()).exists()) {
+					new File(getScreenshotDirectory()).mkdirs();
+				}
+				initialized = true;
+			}
 			File screnshotFile = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screnshotFile, new File(getScreenshotDirectory() + File.separator + "screenshot_" + getTimeStamp() + ".png"));
+			FileUtils.copyFile(screnshotFile, new File(getScreenshotDirectory() + File.separator + name + ".png"));
 		} catch (Exception e) {}
+	}
+	
+	public void makeScreenshot() {
+		makeScreenshot("screenshot_" + getTimeStamp());
 	}
 	
 	@Override

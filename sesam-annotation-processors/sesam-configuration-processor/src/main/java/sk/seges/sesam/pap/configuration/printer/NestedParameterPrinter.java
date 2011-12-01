@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.configuration.printer;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.configuration.annotation.Settings;
@@ -25,9 +26,6 @@ public class NestedParameterPrinter extends AbstractSettingsElementPrinter {
 
 	@Override
 	public void print(SettingsContext context) {
-		if (context.getNestedElement() == null || context.isNestedElementExists()) {
-			return;
-		}
 		pw.println("@", Settings.class, "(configuration = ", context.getNestedElement(), ".class)");
 		pw.println("public static class " + context.getNestedMutableType().getSimpleName() + " {");
 		settingsProcessor.processAnnotation(context.getNestedElement(), context.getNestedMutableType(), pw);
@@ -37,4 +35,9 @@ public class NestedParameterPrinter extends AbstractSettingsElementPrinter {
 
 	@Override
 	public void finish(TypeElement type) {}
+
+	@Override
+	public ElementKind getSupportedType() {
+		return ElementKind.ANNOTATION_TYPE;
+	}
 }

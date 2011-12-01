@@ -34,6 +34,8 @@ public class LoggingWebDriverEventListener implements WebDriverEventListener {
 		this.testInfo.endTest();
 		this.reportPrinter.finish(testInfo);
 	}
+
+	private static final String SETUP_METHOD = "setUp";
 	
 	@Override
 	public void beforeNavigateTo(String url, WebDriver driver) {

@@ -1,20 +1,20 @@
 package sk.seges.sesam.pap.test.selenium.processor.model;
 
+import java.util.List;
+
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
-import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
+import sk.seges.sesam.pap.test.selenium.processor.accessor.SeleniumTestAccessor;
 
 public class SeleniumTestTypeElement extends AbstractSeleniumTypeElement {
 
 	private final TypeElement testCase;
 	
 	private boolean testSuiteInitialized = false;
-	private SeleniumSuiteTypeElement testSuite;
+	private List<SeleniumSuiteTypeElement> testSuites;
 	
 	private boolean configurationInitialized = false;
 	private SeleniumTestConfigurationTypeElement configuration;
@@ -29,29 +29,13 @@ public class SeleniumTestTypeElement extends AbstractSeleniumTypeElement {
 		return (MutableDeclaredType) getMutableTypeUtils().toMutableType(testCase.asType());
 	}
 	
-	public SeleniumSuiteTypeElement getSeleniumSuite() {
+	public List<SeleniumSuiteTypeElement> getSeleniumSuites() {
 		if (!testSuiteInitialized) {
-			SeleniumTest seleniumTestAnnotation = testCase.getAnnotation(SeleniumTest.class);
-			
-			if (seleniumTestAnnotation != null) {
-				TypeElement seleniumSuiteElement = AnnotationClassPropertyHarvester.getTypeOfClassProperty(seleniumTestAnnotation, new AnnotationClassProperty<SeleniumTest>() {
-
-					@Override
-					public Class<?> getClassProperty(SeleniumTest annotation) {
-						return annotation.suiteRunner();
-					}
-					
-				});
-				
-				if (seleniumSuiteElement != null) {
-					testSuite = new SeleniumSuiteTypeElement(seleniumSuiteElement, processingEnv);
-				}
-			}
-			
+			testSuites = new SeleniumTestAccessor(testCase, processingEnv).getSeleniumSuites();
 			testSuiteInitialized = true;
 		}
 		
-		return testSuite;
+		return testSuites;
 	}
 
 	public AnnotationMirror getAnnotationMirror(AnnotationMirror annotationMirror) {

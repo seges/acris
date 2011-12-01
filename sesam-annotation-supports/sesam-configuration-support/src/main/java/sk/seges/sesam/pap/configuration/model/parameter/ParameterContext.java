@@ -13,7 +13,6 @@ public abstract class ParameterContext {
 	
 	private TypeElement nestedElement;
 	private MutableDeclaredType nestedMutableType;
-	private boolean nestedElementExists = false;
 	
 	public void setConfigurationElement(TypeElement configurationElement) {
 		this.configurationElement = configurationElement;
@@ -53,13 +52,5 @@ public abstract class ParameterContext {
 	
 	public MutableDeclaredType getNestedMutableType() {
 		return nestedMutableType;
-	}
-	
-	public void setNestedElementExists(boolean nestedElementExists) {
-		this.nestedElementExists = nestedElementExists;
-	}
-	
-	public boolean isNestedElementExists() {
-		return nestedElementExists;
-	}
+	}	
 }

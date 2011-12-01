@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.configuration.printer;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -34,5 +35,10 @@ public class GroupPrinter extends AbstractSettingsElementPrinter {
 		for (AbstractSettingsElementPrinter printer: printers) {
 			printer.finish(type);
 		}
+	}
+
+	@Override
+	public ElementKind getSupportedType() {
+		return ElementKind.METHOD;
 	}
 }

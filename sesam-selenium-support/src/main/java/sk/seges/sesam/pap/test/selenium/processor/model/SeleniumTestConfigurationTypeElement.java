@@ -21,7 +21,9 @@ public class SeleniumTestConfigurationTypeElement extends AbstractSeleniumTypeEl
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(DefaultTestSettings.class));
 
 		Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
-		interfaces.add(new SeleniumSettingsProviderTypeElement(seleniumTestTypeElement.getSeleniumSuite(), processingEnv));
+		for (SeleniumSuiteTypeElement seleniumSuite: seleniumTestTypeElement.getSeleniumSuites()) {
+			interfaces.add(new SeleniumSettingsProviderTypeElement(seleniumSuite, processingEnv));
+		}
 		setInterfaces(interfaces);
 	}
 	

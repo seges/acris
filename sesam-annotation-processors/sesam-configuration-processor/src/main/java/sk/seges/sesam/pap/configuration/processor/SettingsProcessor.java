@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.configuration.processor;
 
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -13,8 +14,8 @@ import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.configurer.SettingsProcessorConfigurer;
+import sk.seges.sesam.pap.configuration.model.AbstractParameterHandler;
 import sk.seges.sesam.pap.configuration.model.setting.SettingsIterator;
-import sk.seges.sesam.pap.configuration.model.setting.SettingsIterator.SettingsHandler;
 import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.configuration.printer.AbstractSettingsElementPrinter;
 import sk.seges.sesam.pap.configuration.printer.AccessorPrinter;
@@ -71,17 +72,19 @@ public class SettingsProcessor extends PojoAnnotationTransformerProcessor {
 
 	public void processAnnotation(TypeElement typeElement, MutableDeclaredType outputName, FormattedPrintWriter pw) {
 
-		for (AbstractSettingsElementPrinter printer: getElementPrinters(pw)) {
-			printer.initialize(typeElement, outputName);
-
-			SettingsIterator settingsIterator = new SettingsIterator(typeElement, processingEnv);
-			while (settingsIterator.hasNext()) {
-				SettingsHandler handler = settingsIterator.next();
-				handler.handle(printer);
+		for (ElementKind supportedType: getSupportedTypes()) {
+			for (AbstractSettingsElementPrinter printer: getElementPrinters(pw, supportedType)) {
+				printer.initialize(typeElement, outputName);
+	
+				SettingsIterator settingsIterator = new SettingsIterator(typeElement, supportedType, processingEnv);
+				while (settingsIterator.hasNext()) {
+					AbstractParameterHandler handler = settingsIterator.next();
+					handler.handle(printer);
+				}
+	
+				printer.finish(typeElement);
 			}
-
-			printer.finish(typeElement);
-		}
+		}		
 	}
 
 	protected AbstractSettingsElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {

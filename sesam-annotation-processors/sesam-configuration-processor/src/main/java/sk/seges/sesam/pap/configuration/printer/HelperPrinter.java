@@ -77,4 +77,9 @@ public class HelperPrinter extends AbstractSettingsElementPrinter {
 	public void finish(TypeElement type) {
 		pw.println("}");
 	}
+
+	@Override
+	public ElementKind getSupportedType() {
+		return ElementKind.METHOD;
+	}
 }

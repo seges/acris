@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.configuration.printer;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -46,5 +47,10 @@ public class MergePrinter extends AbstractSettingsElementPrinter {
 		pw.println("return this;");
 		pw.println("}");
 		pw.println();
+	}
+
+	@Override
+	public ElementKind getSupportedType() {
+		return ElementKind.METHOD;
 	}
 }

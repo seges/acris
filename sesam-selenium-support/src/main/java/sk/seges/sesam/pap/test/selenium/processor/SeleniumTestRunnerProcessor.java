@@ -16,7 +16,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestCase;
 import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumSuiteProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteTypeElement;
 
@@ -42,7 +42,7 @@ public class SeleniumTestRunnerProcessor extends MutableAnnotationProcessor {
 		
 		pw.println("public void run() {");
 		
-		Set<? extends Element> seleniumTestClasses = getClassPathTypes().getElementsAnnotatedWith(SeleniumTest.class);
+		Set<? extends Element> seleniumTestClasses = getClassPathTypes().getElementsAnnotatedWith(SeleniumTestCase.class);
 
 		for (Element seleniumTestClass: seleniumTestClasses) {
 
