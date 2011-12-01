@@ -301,7 +301,7 @@
 			<id>gwt-client</id>
 			<activation>
 				<file>
-					<exists>${basedir}/.gwt</exists>
+					<exists>${basedir}/.gwt-client</exists>
 				</file>
 			</activation>
 			<build>
