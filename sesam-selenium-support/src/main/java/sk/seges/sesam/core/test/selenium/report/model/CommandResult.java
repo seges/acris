@@ -6,9 +6,18 @@ public class CommandResult {
 	private SeleniumOperation operation;
 	private SeleniumOperationResult result;
 	private SeleniumOperationState state;
+	private String screenshotName;
 	
 	private Object[] parameters;
 	private Throwable throwable;
+	
+	public String getScreenshotName() {
+		return screenshotName;
+	}
+	
+	public void setScreenshotName(String screenshotName) {
+		this.screenshotName = screenshotName;
+	}
 	
 	public void setThrowable(Throwable throwable) {
 		this.throwable = throwable;
@@ -25,7 +34,11 @@ public class CommandResult {
 	public SeleniumOperation getOperation() {
 		return operation;
 	}
-	
+
+	public String getOperationDescription() {
+		return operation.getDescription();
+	}
+
 	public void setResult(SeleniumOperationResult result) {
 		this.result = result;
 	}

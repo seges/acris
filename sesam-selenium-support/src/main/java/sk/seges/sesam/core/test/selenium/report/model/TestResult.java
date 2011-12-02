@@ -60,27 +60,6 @@ public class TestResult {
 		throw new RuntimeException("Unable to identify line number for the test " + testCase.getCanonicalName());
 	}
 
-
-	public void addResult(SeleniumOperationState state, SeleniumOperationResult result, Throwable throwable) {
-		CommandResult commandResult = new CommandResult();
-		if (commandResults.size() > 0) {
-			CommandResult lastCommandResult = commandResults.get(commandResults.size() - 1);
-			commandResult.setOperation(lastCommandResult.getOperation());
-		}
-		commandResult.setState(state);
-		commandResult.setResult(result);
-		commandResult.setThrowable(throwable);
-		commandResults.add(commandResult);
-	}
-	
-	public void addResult(SeleniumOperationState state, SeleniumOperation operation, SeleniumOperationResult result, Object... params) {
-		CommandResult commandResult = new CommandResult();
-		commandResult.setState(state);
-		commandResult.setOperation(operation);
-		commandResult.setResult(result);
-		commandResult.setParameters(params);
-		commandResults.add(commandResult);
-	}
 	
 	public Class<? extends AbstractSeleniumTest> getTestCase() {
 		return testCase;

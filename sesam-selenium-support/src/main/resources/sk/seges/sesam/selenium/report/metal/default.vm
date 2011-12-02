@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jQuery Tools standalone demo</title>
+	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/standalone.css"/>	
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/scrollable-navig.css" />
+	<style>
+	body {
+		padding: 10px
+	}
+	
+	#main {
+		position:fixed;
+		overflow:hidden;
+		height: 620px;
+		left: 428px;
+		width: 840px;		
+	}
+	
+	#pages {
+		position:absolute;
+		height:20000em;
+	}
+	
+	.page {
+		padding:10px;
+		height: 650px;
+		background-color:#222;
+		width:820px;
+	}
+	
+	.scrollable {
+		position:relative;
+		overflow:hidden;
+		width: 810px;
+		height: 650px;
+	}
+	
+	.scrollable .items {
+		width:20000em;
+		position:absolute;
+		clear:both;
+	}
+	
+	.item {
+		float:left;
+		cursor:pointer;
+		width:800px;
+		height:650px;
+		padding:10px;
+	}
+	
+	#main_navi {
+		float:left;
+		padding:0px !important;
+		margin:0px !important;
+	}
+	
+	#main_navi li {
+		background-color:#333;
+		border-top:1px solid #666;
+		clear:both;
+		color:#FFFFFF;
+		font-size:12px;
+		height:75px;
+		list-style-type:none;
+		padding:10px;
+		width:390px;
+		cursor:pointer;
+	}
+	
+	#main_navi li:hover {
+		background-color:#444;
+	}
+	
+	#main_navi li.active {
+		background-color:#555;
+	}
+	
+	#main_navi img {
+		float:left;
+		margin-right:10px;
+	}
+	
+	#main_navi strong {
+		display:block;
+	}
+	
+	#main div.navi {
+		margin-left:250px;
+		cursor:pointer;
+	}
+	</style>
+</head>
+<body>
+Report for $result.getTestCase()<br/>
+Started at $result.getStartDate() and took $result.getTotalTime() ms.<br/>
+<br/>
+<ul id="main_navi">
+#foreach( $commandResult in $result.getCommandResults() )
+		#if ( $commandResult.isFailure() )
+			Failure
+		#else
+			#if ( $commandResult.getState() == "BEFORE" )
+				#if ( $velocityCount > 1)
+	</li>
+				#end
+	<li>
+		<strong>
+				$commandResult.getOperationDescription() 
+				#if ( $commandResult.getParameters() )
+					#foreach( $param in $commandResult.getParameters() )
+						#if( $foreach.hasNext ) , #end
+						#if ( $param ) $param #end
+					#end
+				#end
+		</strong>
+			#else
+			with result $commandResult.getResult()
+			#end
+		#end
+#end
+</ul>
+<div id="main">
+	<div id="pages">
+#foreach( $commandResult in $result.getCommandResults() )
+	#if ( $commandResult.getState() == "BEFORE" )
+		#if ( $rendered )
+				</div>
+			</div>
+		</div>
+		#end
+			
+		#set ($rendered = 1)
+			
+		<div class="page">
+			<div class="navi"></div>
+			<div class="scrollable">
+				<div class="items">
+	#end
+
+		<div class="item">
+	#if ( $commandResult.getScreenshotName() )
+			<img src="${commandResult.getScreenshotName()}.png" width="800"/>
+	#else
+		Not available
+	#end
+		</div>
+#end
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+$("#main").scrollable({
+	vertical: true,
+	keyboard: 'static',
+	onSeek: function(event, i) {
+		horizontal.eq(i).data("scrollable").focus();
+	}
+
+}).navigator("#main_navi");
+var horizontal = $(".scrollable").scrollable({ circular: true }).navigator(".navi");
+horizontal.eq(0).data("scrollable").focus();
+});
+</script>
+
+</body>
+
+</html>

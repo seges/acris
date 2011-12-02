@@ -16,7 +16,10 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 import sk.seges.sesam.core.test.selenium.factory.WebDriverFactory;
-import sk.seges.sesam.core.test.selenium.report.support.HtmlReportSupport;
+import sk.seges.sesam.core.test.selenium.report.LoggingWebDriverEventListener;
+import sk.seges.sesam.core.test.selenium.report.ScreenshotsWebDriverEventListener;
+import sk.seges.sesam.core.test.selenium.report.model.ReportEventListener;
+import sk.seges.sesam.core.test.selenium.report.printer.HtmlReportPrinter;
 import sk.seges.sesam.core.test.selenium.report.support.ScreenshotSupport;
 import sk.seges.sesam.core.test.selenium.support.MailSupport;
 import sk.seges.sesam.core.test.selenium.support.SeleniumSupport;
@@ -33,8 +36,7 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	protected Actions actions;
 	protected CoreSeleniumSettingsProvider settings;
 	
-	private ScreenshotSupport screenshotSupport;
-	private HtmlReportSupport reportSupport;
+	private ReportEventListener reportEventListener;
 	
 	protected AbstractSeleniumTest() {
 		setTestEnvironment(ensureSettings().getSeleniumSettings());
@@ -87,35 +89,38 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 
 		ReportSettings reportSettings = ensureSettings().getReportSettings();
 		
+		reportEventListener = new ReportEventListener(this.getClass(), new HtmlReportPrinter(reportSettings));
+		((EventFiringWebDriver)webDriver).register(reportEventListener);
+		
 		if (Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
-			this.reportSupport = new HtmlReportSupport(this.getClass(), reportSettings);
-			this.reportSupport.registerTo((EventFiringWebDriver)webDriver);
+			reportEventListener.addTestResultCollector(new LoggingWebDriverEventListener());
 		}
 		
 		if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
-			this.screenshotSupport = new ScreenshotSupport(webDriver, reportSettings);
-			this.screenshotSupport.registerTo((EventFiringWebDriver)webDriver);
+			reportEventListener.addTestResultCollector(new ScreenshotsWebDriverEventListener(new ScreenshotSupport(webDriver, reportSettings), reportSettings));
 		}
 
-		if (this.screenshotSupport != null) {
-			this.screenshotSupport.initialize();
-		}
-		
-		if (this.reportSupport != null) {
-			this.reportSupport.initialize();
-		}
+		reportEventListener.initialize();
+//		if (this.screenshotSupport != null) {
+//			this.screenshotSupport.initialize();
+//		}
+//		
+//		if (this.reportSupport != null) {
+//			this.reportSupport.initialize();
+//		}
 	}
 
 	@After
 	public void tearDown() {
 
-		if (this.screenshotSupport != null) {
-			this.screenshotSupport.finish();
-		}
-
-		if (this.reportSupport != null) {
-			this.reportSupport.finish();
-		}
+		reportEventListener.finish();
+//		if (this.screenshotSupport != null) {
+//			this.screenshotSupport.finish();
+//		}
+//
+//		if (this.reportSupport != null) {
+//			this.reportSupport.finish();
+//		}
 
 		super.tearDown();
 	}

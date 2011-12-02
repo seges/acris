@@ -12,7 +12,7 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings
 import sk.seges.sesam.core.test.selenium.report.ScreenshotsWebDriverEventListener;
 import sk.seges.sesam.core.test.selenium.report.SupportHelper;
 
-public class ScreenshotSupport extends SupportHelper implements ReportSupport {
+public class ScreenshotSupport extends SupportHelper {
 
 	private final ReportSettings reportSettings;
 	private final WebDriver webDriver;
@@ -29,8 +29,7 @@ public class ScreenshotSupport extends SupportHelper implements ReportSupport {
 		return eventFiringWebDriver;
 	}
 
-	public void initialize() {
-	}
+	public void initialize() {}
 	
 	private String getScreenshotDirectory() {
 		if (reportSettings.getScreenshot().getSupport().getEnabled() == true && reportSettings.getScreenshot().getSupport().getDirectory() != null) {
@@ -61,10 +60,5 @@ public class ScreenshotSupport extends SupportHelper implements ReportSupport {
 	
 	public void makeScreenshot() {
 		makeScreenshot("screenshot_" + getTimeStamp());
-	}
-	
-	@Override
-	public void finish() {
-		makeScreenshot();
 	}
 }

@@ -14,6 +14,8 @@ import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 //@Retention(RetentionPolicy.SOURCE)
 public @interface Report {
 
+	public static final String CLASSPATH_TEMPLATE_PREFIX = "classpath:";
+
 	public static final String CURRENT_DATE = "%date%";
 	public static final String CURRENT_TIME = "%time%";
 	public static final String TEST_CASE_NAME = "%test_case%";
