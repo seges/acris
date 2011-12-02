@@ -1,58 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>jQuery Tools standalone demo</title>
+	<title>Test result for $result.getTestCase()</title>
 	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/standalone.css"/>	
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/scrollable-navig.css" />
 	<style>
 	body {
-		padding: 10px
+		padding: 0px;
+		margin: 0px;
 	}
-	
+
+	#title {
+		text-align: center;
+		color: #FFFFFF;
+		font-size: 12px;
+		height: 80px;
+		background-color: #333333;
+		border-bottom: 1px solid #666666;
+		width:100%;
+		position: fixed;
+	}
+		
 	#main {
 		position:fixed;
 		overflow:hidden;
-		height: 620px;
-		left: 428px;
-		width: 840px;		
+		top:81px;
+		height:650px;
+		right:0px;
+		left:410px;
 	}
 	
 	#pages {
 		position:absolute;
 		height:20000em;
+		width: 100%;
 	}
 	
 	.page {
-		padding:10px;
 		height: 650px;
 		background-color:#222;
-		width:820px;
+		width:100%;
 	}
 	
 	.scrollable {
 		position:relative;
 		overflow:hidden;
-		width: 810px;
-		height: 650px;
+		width:100%;
+		height:630px;
 	}
 	
 	.scrollable .items {
-		width:20000em;
 		position:absolute;
 		clear:both;
 	}
 	
+	.items {
+		width: 400%;
+	}
+	
 	.item {
-		float:left;
+		float:right;
 		cursor:pointer;
-		width:800px;
-		height:650px;
-		padding:10px;
+		width:50%;
+		height:630px;
+	}
+
+	.item img {
+		max-width:49%;
 	}
 	
 	#main_navi {
-		float:left;
 		padding:0px !important;
 		margin:0px !important;
 	}
@@ -94,9 +112,11 @@
 	</style>
 </head>
 <body>
+<div id="title">
 Report for $result.getTestCase()<br/>
 Started at $result.getStartDate() and took $result.getTotalTime() ms.<br/>
-<br/>
+</div>
+<div style="height:80px"></div>
 <ul id="main_navi">
 #foreach( $commandResult in $result.getCommandResults() )
 		#if ( $commandResult.isFailure() )
@@ -142,7 +162,7 @@ Started at $result.getStartDate() and took $result.getTotalTime() ms.<br/>
 
 		<div class="item">
 	#if ( $commandResult.getScreenshotName() )
-			<img src="${commandResult.getScreenshotName()}.png" width="800"/>
+			<img src="${commandResult.getScreenshotName()}.png"/>
 	#else
 		Not available
 	#end
@@ -151,20 +171,19 @@ Started at $result.getStartDate() and took $result.getTotalTime() ms.<br/>
 	</div>
 </div>
 <script>
-$(document).ready(function() {
-$("#main").scrollable({
-	vertical: true,
-	keyboard: 'static',
-	onSeek: function(event, i) {
-		horizontal.eq(i).data("scrollable").focus();
-	}
-
-}).navigator("#main_navi");
-var horizontal = $(".scrollable").scrollable({ circular: true }).navigator(".navi");
-horizontal.eq(0).data("scrollable").focus();
-});
+	$(document).ready(function() {
+		$("#main").scrollable({
+			vertical: true,
+			keyboard: 'static',
+			onSeek: function(event, i) {
+				horizontal.eq(i).data("scrollable").focus();
+			}
+		
+		}).navigator("#main_navi");
+		
+		var horizontal = $(".scrollable").scrollable({ circular: true }).navigator(".navi");
+		horizontal.eq(0).data("scrollable").focus();
+	});
 </script>
-
 </body>
-
 </html>
