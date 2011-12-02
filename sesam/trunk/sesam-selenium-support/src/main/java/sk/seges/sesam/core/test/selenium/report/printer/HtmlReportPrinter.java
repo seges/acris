@@ -14,6 +14,7 @@ import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.log.LogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import sk.seges.sesam.core.test.selenium.configuration.annotation.Report;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.report.SupportHelper;
 import sk.seges.sesam.core.test.selenium.report.model.TestResult;
@@ -34,8 +35,7 @@ public class HtmlReportPrinter extends SupportHelper implements ReportPrinter, L
 		}
 	}
 	
-	private static final String CLASSPATH_TEMPLATE_PREFIX = "classpath:";
-	private static final String DEFAULT_TEMPLATE_FILE = CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/selenium/report/standard/default.vm";
+	private static final String DEFAULT_TEMPLATE_FILE = Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/selenium/report/standard/default.vm";
 
 	private ReportSettings reportSettings;
 
@@ -50,7 +50,7 @@ public class HtmlReportPrinter extends SupportHelper implements ReportPrinter, L
 	}
 
 	private TemplateLocation getTemplateLocation() {
-		if (getTemplateRawPath().startsWith(CLASSPATH_TEMPLATE_PREFIX)) {
+		if (getTemplateRawPath().startsWith(Report.CLASSPATH_TEMPLATE_PREFIX)) {
 			return TemplateLocation.CLASSPATH;
 		}
 		
@@ -59,12 +59,16 @@ public class HtmlReportPrinter extends SupportHelper implements ReportPrinter, L
 
 	private String getTemplatePath() {
 		if (getTemplateLocation().equals(TemplateLocation.CLASSPATH)) {
-			return getTemplateRawPath().substring(CLASSPATH_TEMPLATE_PREFIX.length());
+			return getTemplateRawPath().substring(Report.CLASSPATH_TEMPLATE_PREFIX.length());
 		}
 		return getTemplateRawPath();
 	}
 	
 	private String getTemplateRawPath() {
+		if (!isHtmlReportEnabled()) {
+			return DEFAULT_TEMPLATE_FILE;
+		}
+		
 		String templatePath = reportSettings.getHtml().getTemplatePath();		
 		if (templatePath == null) {
 			return DEFAULT_TEMPLATE_FILE;
@@ -73,7 +77,11 @@ public class HtmlReportPrinter extends SupportHelper implements ReportPrinter, L
 	}
 	
 	@Override
-	public void initialize(ReportSettings reportSettings, TestResult testInfo) {
+	public void initialize(TestResult testInfo) {
+		if (!isHtmlReportEnabled()) {
+			return;
+		}
+
 		try {
 			
 			setTestInfo(testInfo);
@@ -102,8 +110,24 @@ public class HtmlReportPrinter extends SupportHelper implements ReportPrinter, L
 		}
 	}
 
+	private boolean isHtmlReportEnabled() {
+		if (reportSettings.getHtml() == null) {
+			return false;
+		}
+		
+		if (reportSettings.getHtml().getSupport() == null) {
+			return false;
+		}
+
+		return (reportSettings.getHtml().getSupport().getEnabled() != null && reportSettings.getHtml().getSupport().getEnabled() == true);
+	}
+	
 	@Override
 	public void print(TestResult testInfo) {
+		if (!isHtmlReportEnabled()) {
+			return;
+		}
+
 		if (testMethod == null) {
 			testMethod = testInfo.getTestMethod();
 			
@@ -125,6 +149,9 @@ public class HtmlReportPrinter extends SupportHelper implements ReportPrinter, L
 
 	@Override
 	public void finish(TestResult testInfo) {
+		if (!isHtmlReportEnabled()) {
+			return;
+		}
 
         InputStream input = this.getClass().getClassLoader().getResourceAsStream(getTemplatePath());
         if (input == null) {

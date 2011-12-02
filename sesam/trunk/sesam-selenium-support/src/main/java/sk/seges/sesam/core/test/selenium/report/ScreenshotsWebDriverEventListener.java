@@ -3,19 +3,21 @@ package sk.seges.sesam.core.test.selenium.report;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.ScreenshotSettings.AfterSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.ScreenshotSettings.BeforeSettings;
+import sk.seges.sesam.core.test.selenium.report.model.CommandResult;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationState;
+import sk.seges.sesam.core.test.selenium.report.model.api.TestResultCollector;
 import sk.seges.sesam.core.test.selenium.report.support.ScreenshotSupport;
 
-public class ScreenshotsWebDriverEventListener implements WebDriverEventListener {
+public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 
 	private final ScreenshotSupport screenshotSupport;
 	private final ReportSettings reportSettings;
+	private CommandResult commandResult;
 	private int screenshotIndex = 1;
 
 	public ScreenshotsWebDriverEventListener(ScreenshotSupport screenshotSupport, ReportSettings reportSettings) {
@@ -23,12 +25,29 @@ public class ScreenshotsWebDriverEventListener implements WebDriverEventListener
 		this.reportSettings = reportSettings;
 	}
 
+	@Override
+	public CommandResult getCommandResult() {
+		return commandResult;
+	}
+
+	private String getName(int screenshotIndex, SeleniumOperationState state, SeleniumOperation operation) {
+		return (screenshotIndex < 10 ? "0" : "") + (screenshotIndex++) + "_" + state.name().toLowerCase() + "_" + operation.name().toLowerCase();
+	}
+
+	private CommandResult getCommandResult(String name) {
+		CommandResult commandResult = new CommandResult();
+		commandResult.setScreenshotName(name);
+		return commandResult;
+	}
+	
 	private void makeScreenshot(SeleniumOperationState state, SeleniumOperation operation) {
 		BeforeSettings before = reportSettings.getScreenshot().getBefore();
 		if (state.equals(SeleniumOperationState.BEFORE)) {
 			for (SeleniumOperation definedOperation: before.getValue()) {
 				if (operation.equals(definedOperation)) {
-					screenshotSupport.makeScreenshot((screenshotIndex < 10 ? "0" : "") + (screenshotIndex++) + "_" + state.name().toLowerCase() + "_" + operation.name().toLowerCase());
+					String name = getName(screenshotIndex++, state, operation);
+					commandResult = getCommandResult(name);
+					screenshotSupport.makeScreenshot(name);
 					return;
 				}
 			}
@@ -37,11 +56,15 @@ public class ScreenshotsWebDriverEventListener implements WebDriverEventListener
 		if (state.equals(SeleniumOperationState.AFTER)) {
 			for (SeleniumOperation definedOperation: after.getValue()) {
 				if (operation.equals(definedOperation)) {
-					screenshotSupport.makeScreenshot((screenshotIndex < 10 ? "0" : "") + (screenshotIndex++) + "_" + state.name().toLowerCase() + "_" + operation.name().toLowerCase());
+					String name = getName(screenshotIndex++, state, operation);
+					commandResult = getCommandResult(name);
+					screenshotSupport.makeScreenshot(name);
 					return;
 				}
 			}
 		}
+		
+		commandResult = getCommandResult(null);
 	}
 
 	public void beforeNavigateTo(String url, WebDriver driver) {
@@ -115,4 +138,12 @@ public class ScreenshotsWebDriverEventListener implements WebDriverEventListener
 
 	@Override
 	public void onException(Throwable throwable, WebDriver driver) {}
+
+	@Override
+	public void initialize() {}
+
+	@Override
+	public void finish() {
+		screenshotSupport.makeScreenshot();
+	}
 }
