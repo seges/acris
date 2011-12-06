@@ -83,6 +83,10 @@ public class Page implements Serializable {
 		return sortables;
 	}
 	
+	public void setSortables(List<SortInfo> sortables) {
+		this.sortables = sortables;
+	}
+	
 	public void addSortable(SortInfo sortable) {
 		if(sortables == null) {
 			sortables = new LinkedList<SortInfo>();
