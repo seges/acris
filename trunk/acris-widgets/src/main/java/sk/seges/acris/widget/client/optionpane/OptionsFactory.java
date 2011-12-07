@@ -60,7 +60,7 @@ public class OptionsFactory extends Composite {
             return new Widget[] { createYesButton(optionsHandler, resultListener), createNoButton(optionsHandler, resultListener),
                     createCancelButton(optionsHandler, resultListener) };
         } else if (EPanelOption.YES_NO_OPTION.equals(option)) {
-            return new Widget[] { createYesButton(optionsHandler, resultListener), createNoButton(optionsHandler, resultListener) };
+            return new Widget[] { createNoButton(optionsHandler, resultListener), createYesButton(optionsHandler, resultListener) };
         } else if (EPanelOption.CANCEL_SUBMIT_OPTION.equals(option)) {
             return new Widget[] { createSubmitButton(optionsHandler, resultListener), createCancelButton(optionsHandler, resultListener) };
         } else if (EPanelOption.SUBMIT_OPTION.equals(option)) {
