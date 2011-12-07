@@ -15,7 +15,7 @@ import sk.seges.crm.shared.domain.api.SalesmanModel;
 public interface ActivitiesManagementComposition {
 	@sk.seges.acris.scaffold.annotation.View
 	@Singleselect
-	interface View extends LeadActivityModel {
+	interface Master extends LeadActivityModel {
 		Date when();
 		SalesmanModel executedBy();
 		
@@ -29,7 +29,7 @@ public interface ActivitiesManagementComposition {
 	}
 	
 	@sk.seges.acris.scaffold.annotation.View
-	@SelectedDetail(of = View.class)
+	@SelectedDetail(of = Master.class)
 	interface Detail extends LeadActivityModel {
 		
 	}

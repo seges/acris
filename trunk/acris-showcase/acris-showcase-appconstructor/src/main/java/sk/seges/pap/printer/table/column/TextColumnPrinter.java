@@ -16,16 +16,18 @@ public class TextColumnPrinter extends TableColumnPrinter {
 
 	@Override
 	public void print(ExecutableElement element) {
-		pw.println(TextColumn.class, "<", vto, "> column = new ",
+		String columnVar = element.getSimpleName() + "Column";
+		pw.println(TextColumn.class, "<", vto, "> ", columnVar, " = new ",
 				TextColumn.class, "<", vto, ">() {");
 		pw.println("@Override");
 		pw.println("public String getValue(", vto, " value) {");
-		pw.println("return value.", MethodHelper.toGetter(element), ".toString();");
+		pw.println("return value.", MethodHelper.toGetter(element),
+				".toString();");
 		pw.println("}");
 
 		pw.println("};");
 
-		pw.println("table.addColumn(column, ", "\"", element.getSimpleName(),
-				"\");");
+		pw.println("table.addColumn(", columnVar, ", ", "\"",
+				element.getSimpleName(), "\");");
 	}
 }

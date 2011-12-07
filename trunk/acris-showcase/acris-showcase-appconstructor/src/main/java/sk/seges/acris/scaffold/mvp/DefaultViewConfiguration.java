@@ -3,6 +3,7 @@
  */
 package sk.seges.acris.scaffold.mvp;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class DefaultViewConfiguration {
 	public DefaultViewConfiguration() {
 		HashMap<String, Class<?>> tableRenderComponents = new HashMap<String, Class<?>>();
 		tableRenderComponents.put(String.class.getName(), TextColumnPrinter.class);
+		tableRenderComponents.put(Date.class.getName(), TextColumnPrinter.class);
 		renderComponents.put(Singleselect.class, tableRenderComponents);
 	}
 	
