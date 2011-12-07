@@ -1,0 +1,17 @@
+#summary Building business applications from a model
+
+= Introduction =
+
+* single-select
+  * = table, list, tree, combo, carousel
+
+* multi-select
+  * = table, list, tree
+
+* filter-by
+  * disjunction
+  * conjunction
+  * = form, custom panel (e.g. tree)
+
+* selected detail
+  * = form
