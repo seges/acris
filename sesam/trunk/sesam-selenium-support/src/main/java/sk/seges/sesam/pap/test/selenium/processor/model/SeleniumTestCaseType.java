@@ -9,17 +9,20 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.test.selenium.processor.accessor.SeleniumTestAccessor;
 
-public class SeleniumTestTypeElement extends AbstractSeleniumTypeElement {
+public class SeleniumTestCaseType extends AbstractSeleniumType {
 
 	private final TypeElement testCase;
 	
 	private boolean testSuiteInitialized = false;
-	private List<SeleniumSuiteTypeElement> testSuites;
-	
+	private List<SeleniumSuiteType> testSuites;
+
 	private boolean configurationInitialized = false;
-	private SeleniumTestConfigurationTypeElement configuration;
+	private TypeElement configuration;
+
+	private boolean settingsInitialized = false;
+	private SeleniumTestSettingsType settings;
 	
-	public SeleniumTestTypeElement(TypeElement testCase, MutableProcessingEnvironment processingEnv) {
+	public SeleniumTestCaseType(TypeElement testCase, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.testCase = testCase;
 	}
@@ -29,7 +32,7 @@ public class SeleniumTestTypeElement extends AbstractSeleniumTypeElement {
 		return (MutableDeclaredType) getMutableTypeUtils().toMutableType(testCase.asType());
 	}
 	
-	public List<SeleniumSuiteTypeElement> getSeleniumSuites() {
+	public List<SeleniumSuiteType> getSeleniumSuites() {
 		if (!testSuiteInitialized) {
 			testSuites = new SeleniumTestAccessor(testCase, processingEnv).getSeleniumSuites();
 			testSuiteInitialized = true;
@@ -38,7 +41,7 @@ public class SeleniumTestTypeElement extends AbstractSeleniumTypeElement {
 		return testSuites;
 	}
 
-	public AnnotationMirror getAnnotationMirror(AnnotationMirror annotationMirror) {
+	public AnnotationMirror getAnnotationMirror(AnnotationMirror annotationMirror) { 
 		for (AnnotationMirror testAnnotationMirror: testCase.getAnnotationMirrors()) {
 			if (testAnnotationMirror.getAnnotationType().equals(annotationMirror.getAnnotationType())) {
 				return testAnnotationMirror;
@@ -51,13 +54,22 @@ public class SeleniumTestTypeElement extends AbstractSeleniumTypeElement {
 	public TypeElement asElement() {
 		return testCase;
 	}
-	
-	public SeleniumTestConfigurationTypeElement getConfiguration() {
+
+	public TypeElement getConfiguration() {
 		if (!configurationInitialized) {
-			configuration = new SeleniumTestConfigurationTypeElement(this, processingEnv);
+			configuration = new SeleniumTestAccessor(testCase, processingEnv).getConfiguration();
 			configurationInitialized = true;
 		}
 		
 		return configuration;
+	}
+
+	public SeleniumTestSettingsType getSettings() {
+		if (!settingsInitialized) {
+			settings = new SeleniumTestSettingsType(this, processingEnv);
+			settingsInitialized = true;
+		}
+		
+		return settings;
 	}
 }

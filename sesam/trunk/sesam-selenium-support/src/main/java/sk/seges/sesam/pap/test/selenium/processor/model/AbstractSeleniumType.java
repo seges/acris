@@ -4,11 +4,11 @@ import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredTyp
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 
-public abstract class AbstractSeleniumTypeElement extends DelegateMutableDeclaredType {
+public abstract class AbstractSeleniumType extends DelegateMutableDeclaredType {
 
 	protected MutableProcessingEnvironment processingEnv;
 	
-	protected AbstractSeleniumTypeElement(MutableProcessingEnvironment processingEnv) {
+	protected AbstractSeleniumType(MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 	}
 	

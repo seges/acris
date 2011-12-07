@@ -11,7 +11,7 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestCa
 import sk.seges.sesam.core.test.selenium.runner.MockSuite;
 
 @Ignore
-@SeleniumTestCase(suiteRunner = MockSuite.class)
+@SeleniumTestCase(suiteRunner = MockSuite.class, configuration = TestConfiguration.class)
 @Selenium(
 		testURL = "overridenURL"
 )

@@ -12,10 +12,11 @@
 	}
 
 	#title {
+		margin-top: 10px;
 		text-align: center;
 		color: #FFFFFF;
 		font-size: 12px;
-		height: 80px;
+		height: 70px;
 		background-color: #333333;
 		border-bottom: 1px solid #666666;
 		width:100%;

@@ -5,13 +5,13 @@ import javax.lang.model.element.TypeElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
-public class SeleniumSuiteTypeElement extends AbstractSeleniumTypeElement {
+public class SeleniumSuiteType extends AbstractSeleniumType {
 
 	private final TypeElement suiteElement;
 	
-	private SeleniumSuiteRunnerTypeElement suiteRunner;
+	private SeleniumSuiteRunnerType suiteRunner;
 	
-	public SeleniumSuiteTypeElement(TypeElement suiteElement, MutableProcessingEnvironment processingEnv) {
+	public SeleniumSuiteType(TypeElement suiteElement, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.suiteElement = suiteElement;
 	}
@@ -25,9 +25,9 @@ public class SeleniumSuiteTypeElement extends AbstractSeleniumTypeElement {
 		return suiteElement;
 	}
 	
-	public SeleniumSuiteRunnerTypeElement getSuiteRunner() {
+	public SeleniumSuiteRunnerType getSuiteRunner() {
 		if (suiteRunner == null) {
-			suiteRunner = new SeleniumSuiteRunnerTypeElement(this, processingEnv);
+			suiteRunner = new SeleniumSuiteRunnerType(this, processingEnv);
 		}
 		
 		return suiteRunner;

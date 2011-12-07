@@ -8,7 +8,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.pap.configuration.processor.AbstractConfigurationProviderProcessor;
 import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumSuiteProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsProviderTypeElement;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteTypeElement;
+import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteType;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SeleniumConfigurationProviderProcessor extends AbstractConfigurationProviderProcessor {
@@ -16,7 +16,7 @@ public class SeleniumConfigurationProviderProcessor extends AbstractConfiguratio
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		return new MutableDeclaredType[] { 
-				new SeleniumSettingsProviderTypeElement(new SeleniumSuiteTypeElement(context.getTypeElement(), processingEnv), processingEnv) };
+				new SeleniumSettingsProviderTypeElement(new SeleniumSuiteType(context.getTypeElement(), processingEnv), processingEnv) };
 	}
 
 	@Override

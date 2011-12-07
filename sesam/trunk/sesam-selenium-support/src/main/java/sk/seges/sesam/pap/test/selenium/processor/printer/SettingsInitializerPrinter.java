@@ -1,14 +1,14 @@
 package sk.seges.sesam.pap.test.selenium.processor.printer;
 
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteTypeElement;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
+import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestCaseType;
 import sk.seges.sesam.pap.test.selenium.processor.printer.api.SeleniumSettingsElementPrinter;
 
 public class SettingsInitializerPrinter implements SeleniumSettingsElementPrinter {
@@ -24,7 +24,7 @@ public class SettingsInitializerPrinter implements SeleniumSettingsElementPrinte
 	}
 	
 	@Override
-	public void initialize(SeleniumTestTypeElement seleniumTestElement, MutableDeclaredType outputName) {
+	public void initialize(SeleniumTestCaseType seleniumTestElement, MutableDeclaredType outputName) {
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class SettingsInitializerPrinter implements SeleniumSettingsElementPrinte
 		pw.println("public ", settingsTypeElement, " get" + settingsTypeElement.getSimpleName() + "() {");
 		pw.println(settingsTypeElement, " " + RESULT_NAME + " = new ", settingsTypeElement, "(collectSystemProperties());");
 
-		AnnotationMirror annotationMirror = settingsTypeElement.getAnnotationMirrorForElement(settingsContext.getSeleniumTest().asElement());
+		AnnotationMirror annotationMirror = settingsTypeElement.getAnnotationMirrorForElement(settingsContext.getSeleniumTestCase().asElement());
 		
 		if (annotationMirror != null) {
 			//Settings are defined in the test case, so merge them firstly
@@ -45,16 +45,15 @@ public class SettingsInitializerPrinter implements SeleniumSettingsElementPrinte
 			pw.println(");");
 		}
 
-		for (SeleniumSuiteTypeElement seleniumSuite: settingsContext.getSeleniumTest().getSeleniumSuites()) {
-			annotationMirror = settingsTypeElement.getAnnotationMirrorForElement(seleniumSuite.asElement());
-	
-			if (annotationMirror != null) {
-				//merging settings from the test suite
-				pw.print(RESULT_NAME + ".merge(");
-				SettingInstancerPrinter settingInstancerPrinter = new SettingInstancerPrinter(annotationMirror, processingEnv, pw, true);
-				settingInstancerPrinter.print(settingsTypeElement, settingsTypeElement);
-				pw.println(");");
-			}
+		TypeElement configuration = settingsContext.getSeleniumTestCase().getConfiguration();
+		annotationMirror = settingsTypeElement.getAnnotationMirrorForElement(configuration);
+
+		if (annotationMirror != null) {
+			//merging settings from the test suite
+			pw.print(RESULT_NAME + ".merge(");
+			SettingInstancerPrinter settingInstancerPrinter = new SettingInstancerPrinter(annotationMirror, processingEnv, pw, true);
+			settingInstancerPrinter.print(settingsTypeElement, settingsTypeElement);
+			pw.println(");");
 		}
 	}
 	

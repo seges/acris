@@ -29,6 +29,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 public abstract class AnnotationAccessor {
 
 	protected final MutableProcessingEnvironment processingEnv;
+	private static final String ERROR_TYPE_VALUE = "<error>";
 	
 	public interface AnnotationFilter {
 		boolean isAnnotationIgnored(AnnotationMirror annotation);
@@ -167,6 +168,9 @@ public abstract class AnnotationAccessor {
 		
 		@Override
 		public Object visitString(String s, AnnotationValue p) {
+			if (s != null && s.equals(ERROR_TYPE_VALUE)) {
+				throw new RuntimeException("Unable to process error annotation value! " + type.toString() + " is expected.");
+			}
 			return s;
 		}
 		

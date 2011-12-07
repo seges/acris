@@ -3,6 +3,8 @@ package sk.seges.sesam.pap.configuration.model.setting;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
@@ -70,6 +72,19 @@ public class SettingsTypeElement extends DelegateMutableDeclaredType {
 			}
 		}
 		
+		if (typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
+			return getAnnotationMirrorForElement((TypeElement)((DeclaredType) typeElement.getSuperclass()).asElement());
+		}
+
+		for (TypeMirror interfaceType: typeElement.getInterfaces()) {			
+			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+				AnnotationMirror annotationMirrorForElement = getAnnotationMirrorForElement((TypeElement)((DeclaredType) interfaceType).asElement());
+				if (annotationMirrorForElement != null) {
+					return annotationMirrorForElement;
+				}
+			}
+		}
+
 		return null;
 	}
 	

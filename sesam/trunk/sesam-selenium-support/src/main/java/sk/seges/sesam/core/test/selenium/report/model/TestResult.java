@@ -21,6 +21,16 @@ public class TestResult {
 		this.testCase = testCase;
 	}
 
+	public SeleniumOperationResult getStatus() {
+		for (CommandResult commandResult: commandResults) {
+			if (commandResult.isFailure() || commandResult.getState().equals(SeleniumOperationResult.FAILURE)) {
+				return SeleniumOperationResult.FAILURE;
+			}
+		}
+		
+		return SeleniumOperationResult.OK;
+	}
+	
 	public List<CommandResult> getCommandResults() {
 		return commandResults;
 	}

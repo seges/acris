@@ -7,5 +7,9 @@ import java.lang.annotation.Target;
 //This is not working in the eclipse with the source retention policy
 //@Retention(RetentionPolicy.SOURCE)
 public @interface SeleniumTestCase {
+	
 	Class<?>[] suiteRunner();
+	
+	Class<?> configuration();
+	
 }

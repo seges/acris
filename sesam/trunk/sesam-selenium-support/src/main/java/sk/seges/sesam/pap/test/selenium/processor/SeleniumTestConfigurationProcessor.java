@@ -2,8 +2,6 @@ package sk.seges.sesam.pap.test.selenium.processor;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.processing.SupportedSourceVersion;
@@ -22,12 +20,13 @@ import sk.seges.sesam.core.configuration.annotation.Configuration;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
+import sk.seges.sesam.core.pap.utils.ElementSorter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumTestProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestTypeElement;
+import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumTestCaseType;
 import sk.seges.sesam.pap.test.selenium.processor.printer.SettingsInitializerPrinter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -45,7 +44,7 @@ public class SeleniumTestConfigurationProcessor extends MutableAnnotationProcess
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		return new MutableDeclaredType[] { 
-				new SeleniumTestTypeElement(context.getTypeElement(), processingEnv).getConfiguration()
+				new SeleniumTestCaseType(context.getTypeElement(), processingEnv).getSettings()
 		};
 	}
 	
@@ -122,25 +121,20 @@ public class SeleniumTestConfigurationProcessor extends MutableAnnotationProcess
 
 		ArrayList<Element> configurationElements = new ArrayList<Element>(getClassPathTypes().getElementsAnnotatedWith(Configuration.class, roundEnv));
 		
-		Collections.sort(configurationElements, new Comparator<Element>() {
-
-			@Override
-			public int compare(Element o1, Element o2) {
-				return o1.toString().compareTo(o2.toString());
-			}
-		});
+		ElementSorter.sort(configurationElements);
 
 		SettingsInitializerPrinter settingsInitializerPrinter = new SettingsInitializerPrinter(pw, processingEnv);
 		
-		SeleniumTestTypeElement seleniumTestElement = new SeleniumTestTypeElement(context.getTypeElement(), processingEnv);
+		SeleniumTestCaseType seleniumTestElement = new SeleniumTestCaseType(context.getTypeElement(), processingEnv);
 				
 		for (Element configurationElement: configurationElements) {
 			
 			SettingsTypeElement settingsTypeElement = new SettingsTypeElement((DeclaredType)configurationElement.asType(), processingEnv);
+			//We have to handle all available settings because they can be defined in the command line, not using the annotations
 //			if (settingsTypeElement.exists()) {
 				settingsInitializerPrinter.initialize(seleniumTestElement, context.getOutputType());
 				SeleniumSettingsContext settingsContext = new SeleniumSettingsContext();
-				settingsContext.setSeleniumTest(seleniumTestElement);
+				settingsContext.setSeleniumTestCase(seleniumTestElement);
 				settingsContext.setSettings(settingsTypeElement);
 				settingsInitializerPrinter.print(settingsContext);
 				settingsInitializerPrinter.finish();
