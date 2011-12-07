@@ -8,20 +8,20 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
 
-public class SeleniumTestConfigurationTypeElement extends AbstractSeleniumTypeElement {
+public class SeleniumTestSettingsType extends AbstractSeleniumType {
 
 	public static final String SUFFIX = "Configuration";
 	
-	private SeleniumTestTypeElement seleniumTestTypeElement;
+	private SeleniumTestCaseType seleniumTestTypeElement;
 	
-	SeleniumTestConfigurationTypeElement(SeleniumTestTypeElement seleniumTestTypeElement, MutableProcessingEnvironment processingEnv) {
+	SeleniumTestSettingsType(SeleniumTestCaseType seleniumTestTypeElement, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.seleniumTestTypeElement = seleniumTestTypeElement;
 		
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(DefaultTestSettings.class));
 
 		Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
-		for (SeleniumSuiteTypeElement seleniumSuite: seleniumTestTypeElement.getSeleniumSuites()) {
+		for (SeleniumSuiteType seleniumSuite: seleniumTestTypeElement.getSeleniumSuites()) {
 			interfaces.add(new SeleniumSettingsProviderTypeElement(seleniumSuite, processingEnv));
 		}
 		setInterfaces(interfaces);
@@ -32,7 +32,7 @@ public class SeleniumTestConfigurationTypeElement extends AbstractSeleniumTypeEl
 		return seleniumTestTypeElement.clone().addClassSufix(SUFFIX);
 	}
 	
-	public SeleniumTestTypeElement getSeleniumTest() {
+	public SeleniumTestCaseType getSeleniumTest() {
 		return seleniumTestTypeElement;
 	}
 }

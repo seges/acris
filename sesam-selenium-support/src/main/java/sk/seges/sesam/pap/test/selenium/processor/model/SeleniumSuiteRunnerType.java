@@ -5,15 +5,17 @@ import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredTyp
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.test.selenium.runner.SeleniumSuiteRunner;
 
-public class SeleniumSuiteRunnerTypeElement extends DelegateMutableDeclaredType {
+public class SeleniumSuiteRunnerType extends DelegateMutableDeclaredType {
 
 	public static final String SUFFIX = "Runner";
 
-	private final SeleniumSuiteTypeElement seleniumSuite;
+	private final SeleniumSuiteType seleniumSuite;
 	
-	SeleniumSuiteRunnerTypeElement(SeleniumSuiteTypeElement seleniumSuite, MutableProcessingEnvironment processingEnv) {
+	SeleniumSuiteRunnerType(SeleniumSuiteType seleniumSuite, MutableProcessingEnvironment processingEnv) {
 		this.seleniumSuite = seleniumSuite;
 		
+		setKind(MutableTypeKind.CLASS);
+
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(SeleniumSuiteRunner.class));
 	}
 	
@@ -22,4 +24,7 @@ public class SeleniumSuiteRunnerTypeElement extends DelegateMutableDeclaredType 
 		return seleniumSuite.clone().addClassSufix(SUFFIX);
 	}
 
+	public SeleniumSuiteType getSeleniumSuite() {
+		return seleniumSuite;
+	}
 }

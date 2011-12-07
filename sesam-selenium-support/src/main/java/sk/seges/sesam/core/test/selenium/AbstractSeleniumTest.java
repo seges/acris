@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -16,15 +17,18 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 import sk.seges.sesam.core.test.selenium.factory.WebDriverFactory;
+import sk.seges.sesam.core.test.selenium.junit.runner.SeleniumTestRunner;
 import sk.seges.sesam.core.test.selenium.report.LoggingWebDriverEventListener;
 import sk.seges.sesam.core.test.selenium.report.ScreenshotsWebDriverEventListener;
 import sk.seges.sesam.core.test.selenium.report.model.ReportEventListener;
+import sk.seges.sesam.core.test.selenium.report.model.TestResult;
 import sk.seges.sesam.core.test.selenium.report.printer.HtmlReportPrinter;
 import sk.seges.sesam.core.test.selenium.report.support.ScreenshotSupport;
 import sk.seges.sesam.core.test.selenium.support.MailSupport;
 import sk.seges.sesam.core.test.selenium.support.SeleniumSupport;
 import sk.seges.sesam.core.test.webdriver.WebDriverActions;
 
+@RunWith(SeleniumTestRunner.class)
 public abstract class AbstractSeleniumTest extends BromineTest {
 
 	protected MailSupport mailSupport;
@@ -101,27 +105,17 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 		}
 
 		reportEventListener.initialize();
-//		if (this.screenshotSupport != null) {
-//			this.screenshotSupport.initialize();
-//		}
-//		
-//		if (this.reportSupport != null) {
-//			this.reportSupport.initialize();
-//		}
 	}
 
 	@After
 	public void tearDown() {
 
 		reportEventListener.finish();
-//		if (this.screenshotSupport != null) {
-//			this.screenshotSupport.finish();
-//		}
-//
-//		if (this.reportSupport != null) {
-//			this.reportSupport.finish();
-//		}
 
 		super.tearDown();
+	}
+	
+	public TestResult getTestInfo() {
+		return reportEventListener.getTestInfo();
 	}
 }

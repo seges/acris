@@ -5,7 +5,7 @@ import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 
 public class SeleniumSettingsContext {
 
-	private SeleniumTestTypeElement seleniumTestTypeElement;
+	private SeleniumTestCaseType seleniumTestCaseType;
 	
 	private SettingsTypeElement settingsTypeElement;
 
@@ -17,11 +17,11 @@ public class SeleniumSettingsContext {
 		this.settingsTypeElement = settingsTypeElement;
 	}
 
-	public SeleniumTestTypeElement getSeleniumTest() {
-		return seleniumTestTypeElement;
+	public SeleniumTestCaseType getSeleniumTestCase() {
+		return seleniumTestCaseType;
 	}
 
-	public void setSeleniumTest(SeleniumTestTypeElement seleniumTestTypeElement) {
-		this.seleniumTestTypeElement = seleniumTestTypeElement;
+	public void setSeleniumTestCase(SeleniumTestCaseType seleniumTestCaseType) {
+		this.seleniumTestCaseType = seleniumTestCaseType;
 	}
 }

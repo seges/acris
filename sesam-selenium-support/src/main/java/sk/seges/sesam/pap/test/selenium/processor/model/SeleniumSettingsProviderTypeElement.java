@@ -4,13 +4,13 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 
-public class SeleniumSettingsProviderTypeElement extends AbstractSeleniumTypeElement {
+public class SeleniumSettingsProviderTypeElement extends AbstractSeleniumType {
 
 	public static final String SUFFIX = "SettingsProvider";
 
-	private SeleniumSuiteTypeElement seleniumSuite;
+	private SeleniumSuiteType seleniumSuite;
 	
-	public SeleniumSettingsProviderTypeElement(SeleniumSuiteTypeElement seleniumSuite, MutableProcessingEnvironment processingEnv) {
+	public SeleniumSettingsProviderTypeElement(SeleniumSuiteType seleniumSuite, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.seleniumSuite = seleniumSuite;
 		

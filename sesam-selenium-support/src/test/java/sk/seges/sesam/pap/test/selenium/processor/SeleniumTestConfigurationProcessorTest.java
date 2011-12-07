@@ -10,7 +10,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.core.test.selenium.runner.MockSuite;
 import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
-import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteRunnerTypeElement;
+import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteRunnerType;
 
 public class SeleniumTestConfigurationProcessorTest extends AnnotationTest {
 
@@ -21,7 +21,7 @@ public class SeleniumTestConfigurationProcessorTest extends AnnotationTest {
 	}
 
 	private File getOutputFile(Class<?> clazz) {
-		final MutableDeclaredType outputClass = toMutable(clazz).addClassSufix(SeleniumSuiteRunnerTypeElement.SUFFIX);
+		final MutableDeclaredType outputClass = toMutable(clazz).addClassSufix(SeleniumSuiteRunnerType.SUFFIX);
 		return new File(OUTPUT_DIRECTORY, toPath(outputClass.getPackageName()) + "/" + outputClass.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 

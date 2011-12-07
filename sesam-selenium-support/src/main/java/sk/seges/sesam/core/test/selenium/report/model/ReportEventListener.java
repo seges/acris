@@ -38,6 +38,10 @@ public class ReportEventListener implements WebDriverEventListener {
 		}
 	}
 	
+	public TestResult getTestInfo() {
+		return testInfo;
+	}
+	
 	public void finish() {
 		this.testInfo.endTest();
 		this.reportPrinter.finish(testInfo);
