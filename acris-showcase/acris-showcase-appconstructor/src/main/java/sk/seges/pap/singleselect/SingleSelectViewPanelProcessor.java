@@ -13,10 +13,10 @@ import javax.lang.model.type.TypeMirror;
 import sk.seges.acris.scaffold.model.domain.DomainModel;
 import sk.seges.acris.scaffold.model.view.compose2.Singleselect;
 import sk.seges.acris.scaffold.mvp.DefaultViewConfiguration;
-import sk.seges.pap.ScaffoldConstant;
 import sk.seges.pap.printer.table.column.TableColumnPrinter;
 import sk.seges.pap.type.DisplayType;
 import sk.seges.pap.type.PanelType;
+import sk.seges.pap.type.ViewTransferObjectType;
 import sk.seges.sesam.core.pap.FluentProcessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -58,13 +58,8 @@ public class SingleSelectViewPanelProcessor extends FluentProcessor {
 					"Yet not handled state where there is no background domain model. Maybe in future we can take methods from the interface directly");
 		}
 
-		MutableDeclaredType vto = (MutableDeclaredType) processingEnv
-				.getTypeUtils().toMutableType(vtoMirror);
-		int lastIndexOf = vto.getPackageName().lastIndexOf(".");
-		vto.changePackage(vto.getPackageName().substring(0, lastIndexOf) + "."
-				+ ScaffoldConstant.DTO_PKG);
-		vto.replaceClassSuffix(ScaffoldConstant.MODEL_SUFFIX,
-				ScaffoldConstant.DTO_SUFFIX);
+		ViewTransferObjectType vto = new ViewTransferObjectType((MutableDeclaredType) processingEnv
+				.getTypeUtils().toMutableType(vtoMirror));
 
 		// fields
 		pw.println("protected ", CellTable.class, "<", vto, "> table = new ",
