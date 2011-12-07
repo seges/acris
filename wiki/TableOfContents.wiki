@@ -73,6 +73,7 @@
       * [CodeGeneratorsEvaluation Evalution brainstorming]
     * [PortableApplication Writing portable application]
       * [PortableObjects Portable objects]
+    * [AppConstructor Creating business applications from a model]
   * App engine integration
     * [AppEngineDatanucleus Datanucleus integration - JDO/JPA with maven]
     * [AppEngineSpring Spring with appengine]
