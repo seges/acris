@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -323,8 +324,13 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 	protected void doForAllMembers(TypeElement typeElement, ElementKind kind,
 			@SuppressWarnings("rawtypes") ElementAction action) {
 		List<? extends Element> allMembers = processingEnv.getElementUtils().getAllMembers(typeElement);
-		for (Element member : allMembers) {
+		Iterator<? extends Element> iterator = allMembers.iterator();
+		while(iterator.hasNext()) {
+			Element member = iterator.next();
 			if (kind.equals(member.getKind())) {
+				if(action instanceof SequentialElementAction) {
+					((SequentialElementAction<?>) action).setLast(!iterator.hasNext());
+				}				
 				action.execute(member);
 			}
 		}
@@ -340,6 +346,14 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 
 	public interface ElementAction<T extends Element> {
 		void execute(T element);
+	}
+	
+	public abstract class SequentialElementAction<T extends Element> implements ElementAction<T> {
+		protected boolean last = false;
+		
+		protected void setLast(boolean last) {
+			this.last = last;
+		}
 	}
 
 	/**
