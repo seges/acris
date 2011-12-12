@@ -21,8 +21,8 @@ import sk.seges.sesam.core.test.selenium.junit.runner.SeleniumTestRunner;
 import sk.seges.sesam.core.test.selenium.report.LoggingWebDriverEventListener;
 import sk.seges.sesam.core.test.selenium.report.ScreenshotsWebDriverEventListener;
 import sk.seges.sesam.core.test.selenium.report.model.ReportEventListener;
-import sk.seges.sesam.core.test.selenium.report.model.TestResult;
-import sk.seges.sesam.core.test.selenium.report.printer.HtmlReportPrinter;
+import sk.seges.sesam.core.test.selenium.report.model.TestCaseResult;
+import sk.seges.sesam.core.test.selenium.report.printer.HtmlTestReportPrinter;
 import sk.seges.sesam.core.test.selenium.report.support.ScreenshotSupport;
 import sk.seges.sesam.core.test.selenium.support.MailSupport;
 import sk.seges.sesam.core.test.selenium.support.SeleniumSupport;
@@ -48,7 +48,7 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 
 	protected abstract CoreSeleniumSettingsProvider getSettings();
 
-	protected CoreSeleniumSettingsProvider ensureSettings() {
+	public CoreSeleniumSettingsProvider ensureSettings() {
 		if (settings == null) {
 			settings = getSettings();
 		}
@@ -93,7 +93,7 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 
 		ReportSettings reportSettings = ensureSettings().getReportSettings();
 		
-		reportEventListener = new ReportEventListener(this.getClass(), new HtmlReportPrinter(reportSettings));
+		reportEventListener = new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings));
 		((EventFiringWebDriver)webDriver).register(reportEventListener);
 		
 		if (Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
@@ -112,10 +112,10 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 
 		reportEventListener.finish();
 
-		super.tearDown();
+		super.tearDown();	
 	}
 	
-	public TestResult getTestInfo() {
+	public TestCaseResult getTestInfo() {
 		return reportEventListener.getTestInfo();
 	}
 }

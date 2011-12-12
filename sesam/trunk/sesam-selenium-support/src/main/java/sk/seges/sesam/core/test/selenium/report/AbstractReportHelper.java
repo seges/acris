@@ -6,7 +6,7 @@ import java.util.Date;
 
 public abstract class AbstractReportHelper {
 
-	private static final String RESULT_PATH_PREFIX = "target" + File.separator;
+	private static final String RESULT_PATH_PREFIX = "target" + File.separator + "report";
 
 	protected static final String DATE_FORMAT = "yyyy-MM-dd";
 	protected static final String TIME_FORMAT = "HH-mm-ss";

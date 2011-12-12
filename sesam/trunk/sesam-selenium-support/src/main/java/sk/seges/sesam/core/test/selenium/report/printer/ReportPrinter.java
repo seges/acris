@@ -1,12 +1,11 @@
 package sk.seges.sesam.core.test.selenium.report.printer;
 
-import sk.seges.sesam.core.test.selenium.report.model.TestResult;
 
-public interface ReportPrinter {
+public interface ReportPrinter<T> {
 
-	void initialize(TestResult testInfo);
+	void initialize(T testInfo);
 	
-	void print(TestResult testInfo);
+	void print(T testInfo);
 	
-	void finish(TestResult testInfo);
+	void finish(T testInfo);
 }

@@ -1,12 +1,12 @@
 package sk.seges.sesam.core.test.selenium.usecase;
 
 import org.junit.Ignore;
-import org.junit.Test;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Credentials;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Selenium;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestCase;
 import sk.seges.sesam.core.test.selenium.runner.MockSuite;
 
@@ -21,10 +21,10 @@ import sk.seges.sesam.core.test.selenium.runner.MockSuite;
 )
 public class MockSelenise extends AbstractSeleniumTest {
 
-	@Test
+	@SeleniumTest(description = "mock test method")
 	public void testMethod1() {}
 
-	@Test
+	@SeleniumTest(description = "mock test method 2")
 	public void testMethod2() {}
 
 	@Override

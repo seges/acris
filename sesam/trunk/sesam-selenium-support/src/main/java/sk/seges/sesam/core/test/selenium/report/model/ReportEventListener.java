@@ -15,14 +15,14 @@ import sk.seges.sesam.core.test.selenium.report.printer.ReportPrinter;
 
 public class ReportEventListener implements WebDriverEventListener {
 
-	private final TestResult testInfo;
+	private final TestCaseResult testInfo;
 
-	private ReportPrinter reportPrinter;
+	private ReportPrinter<TestCaseResult> reportPrinter;
 	private List<TestResultCollector> webDriverEventListeners = new ArrayList<TestResultCollector>();
 	
-	public ReportEventListener(Class<? extends AbstractSeleniumTest> testCase, ReportPrinter reportPrinter) {
+	public ReportEventListener(Class<? extends AbstractSeleniumTest> testCase, ReportPrinter<TestCaseResult> reportPrinter) {
 		this.reportPrinter = reportPrinter;
-		this.testInfo = new TestResult(testCase);
+		this.testInfo = new TestCaseResult(testCase);
 	}
 
 	public void addTestResultCollector(TestResultCollector testResultCollector) {
@@ -38,7 +38,7 @@ public class ReportEventListener implements WebDriverEventListener {
 		}
 	}
 	
-	public TestResult getTestInfo() {
+	public TestCaseResult getTestInfo() {
 		return testInfo;
 	}
 	

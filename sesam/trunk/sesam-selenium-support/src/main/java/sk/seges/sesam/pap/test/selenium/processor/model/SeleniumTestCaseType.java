@@ -7,7 +7,7 @@ import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.pap.test.selenium.processor.accessor.SeleniumTestAccessor;
+import sk.seges.sesam.pap.test.selenium.processor.accessor.SeleniumTestCaseAccessor;
 
 public class SeleniumTestCaseType extends AbstractSeleniumType {
 
@@ -34,7 +34,7 @@ public class SeleniumTestCaseType extends AbstractSeleniumType {
 	
 	public List<SeleniumSuiteType> getSeleniumSuites() {
 		if (!testSuiteInitialized) {
-			testSuites = new SeleniumTestAccessor(testCase, processingEnv).getSeleniumSuites();
+			testSuites = new SeleniumTestCaseAccessor(testCase, processingEnv).getSeleniumSuites();
 			testSuiteInitialized = true;
 		}
 		
@@ -57,7 +57,7 @@ public class SeleniumTestCaseType extends AbstractSeleniumType {
 
 	public TypeElement getConfiguration() {
 		if (!configurationInitialized) {
-			configuration = new SeleniumTestAccessor(testCase, processingEnv).getConfiguration();
+			configuration = new SeleniumTestCaseAccessor(testCase, processingEnv).getConfiguration();
 			configurationInitialized = true;
 		}
 		

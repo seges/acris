@@ -30,6 +30,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>
+   		<dependency>
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-core</artifactId>
 		</dependency>
