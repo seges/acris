@@ -18,7 +18,7 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.Report.Support
 		provider = Provider.IMAPS
 )
 @Report(
-		html = @HtmlReport(support = @Support(enabled = true, directory = "result"), templatePath = "path to the report"),
+		html = @HtmlReport(support = @Support(enabled = true, directory = "result"), testTemplatePath = "path to the report"),
 		screenshot = @Screenshot(support = @Support(enabled = true, directory = "screenshots"))
 )
 public interface TestConfiguration {}

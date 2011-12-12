@@ -2,39 +2,50 @@ package sk.seges.sesam.core.test.selenium.runner;
 
 import javax.annotation.Generated;
 
+import sk.seges.sesam.core.test.selenium.runner.MockSuiteRunner;
 import sk.seges.sesam.core.test.selenium.runner.SeleniumSuiteRunner;
 import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
-import sk.seges.sesam.core.test.selenium.usecase.AdvancedMockSelenise;
 
-
-@Generated(value = "sk.seges.sesam.pap.test.selenium.processor.SeleniumTestRunnerProcessor")
+@Generated(value = "sk.seges.sesam.pap.test.selenium.processor.SeleniumSuiteRunnerProcessor")
 public class MockSuiteRunner extends SeleniumSuiteRunner {
 
+	public static void main(String[] args) {
+		new MockSuiteRunner().run();
+	}
+
 	public void run() {
-		{
+
+		try {
 			MockSelenise mockSelenise = new MockSelenise();
+			getPrinter(mockSelenise).initialize(getTestResult(mockSelenise));
 			mockSelenise.setUp();
-			mockSelenise.testMethod1();
-			mockSelenise.tearDown();
+			try {
+				mockSelenise.testMethod1();
+			} catch (Exception ex) {
+				System.out.println(ex);
+			} finally {
+				mockSelenise.tearDown();
+				getTestResult(mockSelenise).addTestCaseResult(mockSelenise.getTestInfo());
+			}
+		} catch (Exception ex) {
+			System.out.println(ex);
 		}
-		{
+		try {
 			MockSelenise mockSelenise = new MockSelenise();
+			getPrinter(mockSelenise).initialize(getTestResult(mockSelenise));
 			mockSelenise.setUp();
-			mockSelenise.testMethod2();
-			mockSelenise.tearDown();
+			try {
+				mockSelenise.testMethod2();
+			} catch (Exception ex) {
+				System.out.println(ex);
+			} finally {
+				mockSelenise.tearDown();
+				getTestResult(mockSelenise).addTestCaseResult(mockSelenise.getTestInfo());
+			}
+		} catch (Exception ex) {
+			System.out.println(ex);
 		}
-		{
-			AdvancedMockSelenise advancedMockSelenise = new AdvancedMockSelenise();
-			advancedMockSelenise.setUp();
-			advancedMockSelenise.testMethod1();
-			advancedMockSelenise.tearDown();
-		}
-		{
-			AdvancedMockSelenise advancedMockSelenise = new AdvancedMockSelenise();
-			advancedMockSelenise.setUp();
-			advancedMockSelenise.testMethod2();
-			advancedMockSelenise.tearDown();
-		}
+		printReports();
 	}
 	
 }

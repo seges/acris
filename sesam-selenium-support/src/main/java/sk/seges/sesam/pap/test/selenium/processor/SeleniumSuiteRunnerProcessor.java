@@ -23,7 +23,7 @@ import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteRunnerType;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteType;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class SeleniumTestRunnerProcessor extends MutableAnnotationProcessor {
+public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
@@ -50,6 +50,8 @@ public class SeleniumTestRunnerProcessor extends MutableAnnotationProcessor {
 		
 		Set<? extends Element> seleniumTestClasses = getClassPathTypes().getElementsAnnotatedWith(SeleniumTestCase.class);
 
+		pw.println();
+		
 		for (Element seleniumTestClass: seleniumTestClasses) {
 
 			if (new SeleniumTestCaseAccessor(seleniumTestClass, processingEnv).isAssignedToRunner((SeleniumSuiteRunnerType)context.getOutputType())) {
@@ -66,6 +68,7 @@ public class SeleniumTestRunnerProcessor extends MutableAnnotationProcessor {
 						String testName = MethodHelper.toField(seleniumTestClass.getSimpleName().toString());
 						
 						pw.println(seleniumTestClass, " " + testName + " = new ", seleniumTestClass, "();");
+						pw.println("getPrinter(" + testName + ").initialize(getTestResult(" + testName + "));");
 						//TODO find before annotation
 						pw.println(testName, ".setUp();");
 						pw.println("try {");
@@ -75,6 +78,7 @@ public class SeleniumTestRunnerProcessor extends MutableAnnotationProcessor {
 						pw.println("} finally {");
 						//TODO find after annotation
 						pw.println(testName, ".tearDown();");
+						pw.println("getTestResult(" + testName + ").addTestCaseResult(" + testName + ".getTestInfo());");
 						pw.println("}");
 						pw.println("} catch (", Exception.class, " ex) {");
 						pw.println(System.class,".out.println(ex);");
@@ -83,6 +87,8 @@ public class SeleniumTestRunnerProcessor extends MutableAnnotationProcessor {
 				}
 			}
 		}
+
+		pw.println("printReports();");
 		
 		pw.println("}");
 		pw.println("");

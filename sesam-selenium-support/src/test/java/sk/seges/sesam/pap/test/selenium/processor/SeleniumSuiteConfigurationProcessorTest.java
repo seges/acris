@@ -9,14 +9,19 @@ import org.junit.Test;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.core.test.selenium.runner.MockSuite;
-import sk.seges.sesam.core.test.selenium.usecase.MockSelenise;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteRunnerType;
 
-public class SeleniumTestConfigurationProcessorTest extends AnnotationTest {
+public class SeleniumSuiteConfigurationProcessorTest extends AnnotationTest {
 
 	@Test
-	public void testTestConfiguration() {
-		assertCompilationSuccessful(compileFiles(MockSelenise.class, MockSuite.class));
+	public void testSuiteConfiguration() {
+		assertCompilationSuccessful(compileFiles(MockSuite.class));
+		assertOutput(getResourceFile(MockSuite.class), getOutputFile(MockSuite.class));
+	}
+
+	@Test
+	public void testSuiteConfigurationForEclipse() {
+		assertCompilationSuccessful(compileFiles(Compiler.ECLIPSE, MockSuite.class));
 		assertOutput(getResourceFile(MockSuite.class), getOutputFile(MockSuite.class));
 	}
 
@@ -28,7 +33,7 @@ public class SeleniumTestConfigurationProcessorTest extends AnnotationTest {
 	@Override
 	protected Processor[] getProcessors() {
 		return new Processor[] {
-			new SeleniumTestRunnerProcessor()
+			new SeleniumSuiteRunnerProcessor()
 		};
 	}
 }

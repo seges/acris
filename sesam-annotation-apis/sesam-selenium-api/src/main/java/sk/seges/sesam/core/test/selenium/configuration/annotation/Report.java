@@ -72,8 +72,11 @@ public @interface Report {
 		@Parameter(name = "report.html", description = "HTML reports")
 		Support support() default @Support;
 		
-		@Parameter(name = "template.path", description = "Defines path to the used template")
-		String templatePath() default Constants.NULL;
+		@Parameter(name = "test.template.path", description = "Defines path to the used template for tests")
+		String testTemplatePath() default Constants.NULL;
+
+		@Parameter(name = "suite.template.path", description = "Defines path to the used template for suite")
+		String suiteTemplatePath() default Constants.NULL;
 	}
 	
 	@Parameter(name = "report.html", description = "HTML reports")

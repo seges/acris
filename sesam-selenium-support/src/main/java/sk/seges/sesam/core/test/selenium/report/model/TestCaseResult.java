@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.report.model.api.ReportData;
 
-public class TestResult {
+public class TestCaseResult implements ReportData {
 
 	private Long startTime = 0L;
 	private Long endTime = 0L;
@@ -17,10 +19,21 @@ public class TestResult {
 
 	private List<CommandResult> commandResults = new LinkedList<CommandResult>();
 	
-	public TestResult(Class<? extends AbstractSeleniumTest> testCase) {
+	private String testMethod;
+	private String fileName;
+	
+	public TestCaseResult(Class<? extends AbstractSeleniumTest> testCase) {
 		this.testCase = testCase;
 	}
 
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+	
 	public SeleniumOperationResult getStatus() {
 		for (CommandResult commandResult: commandResults) {
 			if (commandResult.isFailure() || commandResult.getState().equals(SeleniumOperationResult.FAILURE)) {
@@ -39,14 +52,24 @@ public class TestResult {
 		return new SimpleDateFormat().format(new Date(startTime));
 	}
 	
+	public String getTestDescription() {
+		try {
+			return getTestCase().getMethod(getTestMethod()).getAnnotation(SeleniumTest.class).description();
+		} catch (Exception e) {
+			return "Description is missing";
+		}
+	}
+	
 	public String getTestMethod() {
-		StackTraceElement stackTraceElement = getStackTraceElement();
-		
-		if (stackTraceElement != null) {
-			return stackTraceElement.getMethodName();
+		if (testMethod == null) {
+			StackTraceElement stackTraceElement = getStackTraceElement();
+			
+			if (stackTraceElement != null) {
+				testMethod = stackTraceElement.getMethodName();
+			}
 		}
 		
-		return null;
+		return testMethod;
 	}	
 
 	private StackTraceElement getStackTraceElement() {
@@ -109,6 +132,10 @@ public class TestResult {
 		Long result = time - checkpoint;
 		this.checkpoint = time;
 		return result;
+	}
+	
+	public Long getTotalSeconds() {
+		return getTotalTime() / 1000;
 	}
 	
 	public Long getTotalTime() {

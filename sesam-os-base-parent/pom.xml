@@ -144,6 +144,8 @@
 		<jndi.fscontext.version>1.2-beta-3</jndi.fscontext.version>
 
 		<java-getopts.version>1.0.9</java-getopts.version>
+
+		<javassist.version>3.12.1.GA</javassist.version>
 		
 		<!-- Testing -->
 		<junit.version>4.8.2</junit.version>
@@ -201,6 +203,12 @@
 				<scope>test</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>${javassist.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>org.mockejb</groupId>
 				<artifactId>mockejb</artifactId>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test result</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
+
+	<style>
+
+	body {
+		font-family: "Lucida Grande","bitstream vera sans","trebuchet ms",sans-serif,verdana;
+		padding: 0px;
+		margin: 0px;
+	}
+		
+	.main_navi, .main_secondary_navi {
+		padding:0px !important;
+		margin:0px;
+		width:100%;
+	}
+	
+	.main_secondary_navi {
+		margin-top:20px;
+		display: none;
+	}
+	
+	.pass {
+		background-color:#335a33 !important;
+	}
+
+	.fail {
+		background-color:#5a3333 !important;
+	}
+
+	.main_navi li {
+		background-color:#333;
+		border-top:1px solid #666;
+		clear:both;
+		color:#FFFFFF;
+		font-size:12px;
+		padding:20px;
+		padding-bottom: 10px;
+		list-style-type:none;
+		cursor:pointer;
+	}
+	
+	.main_navi li:hover {
+		background-color:#444;
+	
+	}
+	
+	.main_navi strong {
+		display:block;
+	}
+	
+	.tooltip {
+		display:none;
+		background:transparent url(/tools/img/tooltip/black_arrow.png) no-repeat;
+		font-size:12px;
+		padding:25px;
+		color:#fff;
+	}
+
+	.tooltip .label {
+		color:yellow;
+		width:35px;
+	}
+
+	.tooltip a {
+		color:#ad4;
+		font-size:11px;
+		font-weight:bold;
+	}
+
+	.tooltip.bottom {
+		background:url(http://static.flowplayer.org//tools/img/tooltip/black_arrow_bottom.png) no-repeat;
+		background-size: 100% 100%;
+	}
+
+	.bottom > div {
+		margin: 20px;
+		margin-top: 50px;
+	}	
+	</style>
+</head>
+
+<body>
+
+<ul class="main_navi">
+#foreach( $testCaseCollectionResults in $result.getTestCaseCollectionResults() )
+	<li onclick="$('#$testCaseCollectionResults.getTestName()').slideToggle('slow')">
+		<div style="float: left">
+			<strong id="parent1">$testCaseCollectionResults.getTestName()</strong>
+			$testCaseCollectionResults.getTestCaseResults().size() tests / $testCaseCollectionResults.getFailedTestCaseResults().size() failure(s)
+		</div>
+		<div style="float: right; margin-top: -10px;">
+			<img src="fail_64.png"/>
+			<img src="settings_64.png"/>
+		</div>
+		<ul class="main_secondary_navi" id="${testCaseCollectionResults.getTestName()}">
+			#foreach( $testCaseResult in $testCaseCollectionResults.getTestCaseResults() )
+				<a target="_blank" href="${testCaseResult.getFileName()}">
+					#if ( $testCaseResult.getStatus() == "FAILURE" )
+					<li class="fail">
+						#else 
+					<li class="pass">
+						#end
+						<strong>${testCaseResult.getTestDescription()} [${testCaseResult.getTestMethod()}]</strong>
+						Took $testCaseResult.getTotalSeconds() seconds
+					</li>
+				</a>
+			#end
+		</ul>
+		<div style="clear: both;"></div>
+	</li>
+#end
+</ul>
+</body>
+</html>
