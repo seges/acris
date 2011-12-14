@@ -6,8 +6,6 @@ package sk.seges.acris.binding.pap.configurer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.lang.model.element.AnnotationMirror;
-
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.acris.binding.client.annotations.configuration.BeanWrapperDelegate;
 import sk.seges.sesam.core.pap.configuration.DelegateProcessorConfigurer;
@@ -36,12 +34,9 @@ public class BeanWrapperProcessorConfigurer extends DelegateProcessorConfigurer 
 		return DEFAULT_CONFIG_FILE_LOCATION;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected Class<? extends Annotation>[] getDelegatedAnnotationClasses() {
-		return new Class[] {
-				BeanWrapperDelegate.class
-		};
+	protected Class<? extends Annotation> getDelegatedAnnotationClass() {
+		return BeanWrapperDelegate.class;
 	}
 
 	@Override
@@ -50,10 +45,5 @@ public class BeanWrapperProcessorConfigurer extends DelegateProcessorConfigurer 
 			return ((BeanWrapperDelegate)annotationDelegate).value();
 		}
 		return null;
-	}
-
-	@Override
-	protected AnnotationMirror getAnnotationFromDelegate(AnnotationMirror annotationDelegate) {
-		return (AnnotationMirror)getAnnotationValueByReturnType(BeanWrapper.class, annotationDelegate).getValue();
 	}
 }

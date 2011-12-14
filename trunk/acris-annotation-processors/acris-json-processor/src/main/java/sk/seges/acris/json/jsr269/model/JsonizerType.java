@@ -1,7 +1,7 @@
 package sk.seges.acris.json.jsr269.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import sk.seges.acris.json.client.data.IJsonObject;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -17,7 +17,7 @@ public class JsonizerType extends DelegateMutableDeclaredType {
 	
 	public JsonizerType(MutableDeclaredType type, MutableProcessingEnvironment processingEnv) {
 		this.type = type;
-		Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
+		List<MutableTypeMirror> interfaces = new ArrayList<MutableTypeMirror>();
 		interfaces.add(processingEnv.getTypeUtils().toMutableType(IJsonObject.class).setTypeVariables(processingEnv.getTypeUtils().getTypeVariable(null, type)));
 
 		setInterfaces(interfaces);

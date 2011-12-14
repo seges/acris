@@ -1,7 +1,7 @@
 package sk.seges.acris.binding.pap.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import sk.seges.acris.binding.client.wrappers.BeanWrapper;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -23,10 +23,11 @@ public class BeanWrapperType extends DelegateMutableDeclaredType {
 		
 		setTypeVariables(entityType.getTypeVariables().toArray(new MutableTypeVariable[] {}));
 		
-		Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
+		List<MutableTypeMirror> interfaces = new ArrayList<MutableTypeMirror>();
 		interfaces.add(processingEnv.getTypeUtils().toMutableType(BeanWrapper.class).
 				setTypeVariables(processingEnv.getTypeUtils().getTypeVariable(null, entityType.stripTypeParametersTypes())));
 		setInterfaces(interfaces);
+		setSuperClass(null);
 	}
 	
 	@Override
