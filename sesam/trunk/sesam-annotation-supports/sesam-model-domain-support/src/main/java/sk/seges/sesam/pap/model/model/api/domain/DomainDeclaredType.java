@@ -9,7 +9,7 @@ import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public interface DomainDeclaredType extends DomainType, MutableDeclaredType {
 
-	TypeElement asElement();
+	TypeElement asConfigurationElement();
 
 	DtoDeclaredType getDto();
 

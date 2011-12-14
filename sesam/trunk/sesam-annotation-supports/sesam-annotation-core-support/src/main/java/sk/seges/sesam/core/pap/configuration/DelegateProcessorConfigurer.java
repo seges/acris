@@ -7,74 +7,76 @@ import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;
 
-import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.accessor.AnnotationAccessor;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
 public abstract class DelegateProcessorConfigurer extends DefaultProcessorConfigurer {
 
-	protected abstract Class<? extends Annotation>[] getDelegatedAnnotationClasses();
+	protected abstract Class<? extends Annotation> getDelegatedAnnotationClass();
 
 	protected abstract Annotation getAnnotationFromDelegate(Annotation annotationDelegate);
 
-	protected abstract AnnotationMirror getAnnotationFromDelegate(AnnotationMirror annotationDelegate);
+	protected class DelegateAnnotationAccessor extends AnnotationAccessor {
 
-	protected boolean isDelegateAnnotation(Annotation annotation) {
-		Class<? extends Annotation>[] delegatedAnnotationClasses = getDelegatedAnnotationClasses();
+		private final AnnotationMirror annotationDelegate;
+		private final Class<? extends Annotation> annotationClass;
 		
-		if (delegatedAnnotationClasses == null) {
+		public DelegateAnnotationAccessor(MutableProcessingEnvironment processingEnv, AnnotationMirror annotationDelegate, Class<? extends Annotation> annotationClass) {
+			super(processingEnv);
+			this.annotationDelegate = annotationDelegate;
+			this.annotationClass = annotationClass;
+		}
+
+		@Override
+		public boolean isValid() {
+			return true;
+		}
+		
+		public AnnotationMirror getDelegateAnnotationMirrorValue() {
+			Annotation annotation = super.toAnnotation(annotationDelegate, annotationClass);
+			Annotation annotationFromDelegate = getAnnotationFromDelegate(annotation);
+			return toAnnotationMirror(annotationFromDelegate);
+		}
+	}
+	
+	protected boolean isDelegateAnnotation(Annotation annotation) {
+		Class<? extends Annotation> delegatedAnnotationClass = getDelegatedAnnotationClass();
+		
+		if (delegatedAnnotationClass == null) {
 			return false;
 		}
 		
-		for (Class<? extends Annotation> delegatedAnnotationClass: delegatedAnnotationClasses) {
-			if (annotation.annotationType().getCanonicalName().equals(delegatedAnnotationClass.getCanonicalName())) {
-				return true;
-			}
-		}
-		return false;
+		return annotation.annotationType().getCanonicalName().equals(delegatedAnnotationClass.getCanonicalName());
 	}
 
 	protected boolean isDelegateAnnotation(AnnotationMirror annotation) {
-		Class<? extends Annotation>[] delegatedAnnotationClasses = getDelegatedAnnotationClasses();
+		Class<? extends Annotation> delegatedAnnotationClass = getDelegatedAnnotationClass();
 		
-		if (delegatedAnnotationClasses == null) {
+		if (delegatedAnnotationClass == null) {
 			return false;
 		}
 		
-		for (Class<? extends Annotation> delegatedAnnotationClass: delegatedAnnotationClasses) {
-			if (annotation.getAnnotationType().toString().equals(delegatedAnnotationClass.getCanonicalName())) {
-				return true;
-			}
-		}
-		
-		return false;
+		return annotation.getAnnotationType().toString().equals(delegatedAnnotationClass.getCanonicalName());
 	}
 
-	@Override
-	protected Annotation[] getAnnotations(VariableElement field) {
-
-		List<Annotation> result = new ArrayList<Annotation>();
-		
-		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
-
-		MutableDeclaredType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
-
-		for (AnnotationMirror annotationMirror: annotationMirrors) {
-
-			Annotation annotation = toAnnotation(annotationMirror, field);
-			
-			for (MutableDeclaredType supportedAnnotaion: supportedAnnotations) {
-				if (isDelegateAnnotation(annotation)) {
-					result.add(getAnnotationFromDelegate(annotation));
-				} else if (annotation.getClass().toString().equals(supportedAnnotaion.getCanonicalName())) {
-					result.add(annotation);
-				}
-			}
-		}
-
-		return result.toArray(new Annotation[] {});
+	protected AnnotationMirror getAnnotationFromDelegate(final AnnotationMirror annotationDelegate) {
+		return new DelegateAnnotationAccessor(processingEnv, annotationDelegate, getDelegatedAnnotationClass()).getDelegateAnnotationMirrorValue();
 	}
 
 	@Override
 	protected AnnotationMirror[] getAnnotationMirrors(VariableElement field) {
+		List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
+		for (AnnotationMirror annotation : field.getAnnotationMirrors()) {
+			if (isDelegateAnnotation(annotation)) {
+				result.add(getAnnotationFromDelegate(annotation));
+			} else {
+				result.add(annotation);
+			}
+		}
+		
+		return result.toArray(new AnnotationMirror[] {});
+
+/*		return field.getAnnotationMirrors().toArray(new AnnotationMirror[] {});
 
 		List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
 		
@@ -92,6 +94,6 @@ public abstract class DelegateProcessorConfigurer extends DefaultProcessorConfig
 			}
 		}
 
-		return result.toArray(new AnnotationMirror[] {});
+		return result.toArray(new AnnotationMirror[] {});*/
 	}
 }

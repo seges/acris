@@ -72,7 +72,7 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 					
 					if (variable == null || variable.equals("?")) {
 						processingEnv.getMessager().printMessage(Kind.WARNING, "Method " + getDtoMethod().getSimpleName().toString() + 
-								" returns unsupported type variable " + typeVariable.toString(), configurationTypeElement.asElement());
+								" returns unsupported type variable " + typeVariable.toString(), configurationTypeElement.asConfigurationElement());
 						return null;
 					}
 			

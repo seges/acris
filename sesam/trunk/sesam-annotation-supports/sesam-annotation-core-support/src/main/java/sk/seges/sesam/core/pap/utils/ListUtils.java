@@ -21,6 +21,28 @@ public class ListUtils {
 		return false;
 	}
 
+	public static boolean containsElement(Iterable<? extends MutableDeclaredType> elements, Element element) {
+		String elementString = element.toString();
+		for (MutableDeclaredType listElement: elements) {
+			if (listElement.toString().equals(elementString)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean containsElement(Iterable<? extends MutableDeclaredType> elements, MutableDeclaredType element) {
+		String elementString = element.toString();
+		for (MutableDeclaredType listElement: elements) {
+			if (listElement.toString().equals(elementString)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	@SuppressWarnings("unchecked")
 	public static  <T, S extends T> List<? extends T> addUnique(List<? extends T> source, S t) {
 		if (t == null) {

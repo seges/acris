@@ -123,13 +123,13 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 	private MutableDeclaredType getGeneratedConverterTypeFromConfiguration(ConfigurationTypeElement configurationTypeElement) {
 
-		Element configurationElement = configurationTypeElement.asElement();
+		Element configurationElement = configurationTypeElement.asConfigurationElement();
 		
 		if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
 			return null;
 		}
 		
-		DeclaredType declaredType = (DeclaredType)configurationTypeElement.asElement().asType();
+		DeclaredType declaredType = (DeclaredType)configurationTypeElement.asConfigurationElement().asType();
 		
 		TransferObjectMappingAccessor transferObjectConfiguration = new TransferObjectMappingAccessor((TypeElement)declaredType.asElement(), processingEnv);
 		
@@ -140,7 +140,8 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 		TypeElement domainType = transferObjectConfiguration.getDomain();
 		
-		MutableDeclaredType configurationNameType = getMutableTypesUtils().toMutableType((DeclaredType)configurationTypeElement.asElement().asType());
+		//We are going to modify simple name, so clone is necessary
+		MutableDeclaredType configurationNameType = configurationTypeElement.clone();
 		
 		//Remove configuration suffix if it is there - just to have better naming convention
 		String simpleName = configurationNameType.getSimpleName();
@@ -337,7 +338,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			return result;
 		}
 		
-		TypeElement domainElement = ((DomainDeclaredType)getDomain()).asElement();
+		TypeElement domainElement = ((DomainDeclaredType)getDomain()).asConfigurationElement();
 
 		if (domainElement == null) {
 			return result;

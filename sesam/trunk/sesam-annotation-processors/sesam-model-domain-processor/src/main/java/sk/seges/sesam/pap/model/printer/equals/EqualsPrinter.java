@@ -46,7 +46,7 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 
-		active = new GenerateEqualsAccessor(configurationTypeElement.asElement(), processingEnv).generate();
+		active = new GenerateEqualsAccessor(configurationTypeElement.asConfigurationElement(), processingEnv).generate();
 		
 		if (!active) {
 			return;
@@ -157,7 +157,7 @@ public class EqualsPrinter extends AbstractElementPrinter {
 		case VOID:
 		case TYPEVAR:
 			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getDtoFieldName() + " (" + context.getDtoFieldType().getKind() + ") in the " + 
-					context.getConfigurationTypeElement().asElement(), context.getConfigurationTypeElement().asElement());
+					context.getConfigurationTypeElement().asConfigurationElement(), context.getConfigurationTypeElement().asConfigurationElement());
 			return;
 		}
 	}		

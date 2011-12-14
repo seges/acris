@@ -2,13 +2,11 @@ package sk.seges.sesam.core.pap.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,9 +21,9 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
@@ -340,44 +338,6 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	protected Annotation toAnnotation(String annotationClassName, Element element) {
-		try {
-			return element.getAnnotation((Class<? extends Annotation>)Class.forName(annotationClassName));
-		} catch (ClassNotFoundException e) {
-			getMessager().printMessage(Kind.WARNING, "[WARNING] Unable to find annotation " + annotationClassName);
-		}
-		
-		return null;
-	}
-
-	protected Annotation toAnnotation(MutableDeclaredType type, Element element) {
-		return toAnnotation(type.getCanonicalName(), element);
-	}
-	
-	protected Annotation toAnnotation(AnnotationMirror annotation, Element element) {
-		return toAnnotation(annotation.getAnnotationType().toString(), element);
-	}
-
-	protected Annotation[] getAnnotations(VariableElement field) {
-
-		List<Annotation> result = new ArrayList<Annotation>();
-		
-		List<? extends AnnotationMirror> annotationMirrors = field.getAnnotationMirrors();
-
-		MutableDeclaredType[] supportedAnnotations = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
-
-		for (AnnotationMirror annotation: annotationMirrors) {
-			for (MutableDeclaredType supportedAnnotaion: supportedAnnotations) {
-				if (annotation.getAnnotationType().toString().equals(supportedAnnotaion.getCanonicalName())) {
-					result.add(toAnnotation(annotation, field));
-				}
-			}
-		}
-
-		return result.toArray(new Annotation[] {});
-	}
-	
 	protected AnnotationMirror[] getAnnotationMirrors(VariableElement field) {
 
 		List<AnnotationMirror> result = new ArrayList<AnnotationMirror>();
@@ -576,43 +536,9 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return getAnnotation(annotations, type);
 	}
 
-	public Annotation getSupportedAnnotation(Element element) {
+	public boolean hasSupportedAnnotation(Element element) {
 		Set<MutableDeclaredType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
-		
-		for (MutableDeclaredType annotationType: annotations) {
-			//This is ugly hack, but what can we do
-			Annotation annotation = toAnnotation(annotationType, element);
-			if (annotation != null) {
-				return annotation;
-			}
-		}
-		
-		for (TypeElement configuration: configurations) {
-			List<VariableElement> fields = ElementFilter.fieldsIn(configuration.getEnclosedElements());
-			
-			for (VariableElement field: fields) {
-				
-				
-				if (processingEnv.getTypeUtils().isSameType(processingEnv.getTypeUtils().erasure(field.asType()), 
-														  	processingEnv.getTypeUtils().erasure(element.asType()))) {
-					for (DefaultConfigurationElement configurationElement : DefaultConfigurationElement.values()) {
-						if (configurationElement.hasAnnotationOnField(field) && configurationElement.appliesFor(field, element, processingEnv)) {
-							Annotation[] result = getAnnotations(field);
-							if (result != null && result.length > 0) {
-								return result[0];
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		return null;
-	}
-	
-	public AnnotationMirror getSupportedAnnotationMirror(Element element) {
-		Set<MutableDeclaredType> annotations = ensureConfiguration(DefaultConfigurationElement.PROCESSING_ANNOTATIONS);
-		return getAnnotation(annotations, element);
+		return getAnnotation(annotations, element) != null;
 	}
 
 	protected AnnotationMirror getAnnotation(Collection<MutableDeclaredType> annotationTypes, Collection<? extends AnnotationMirror> annotationMirrors) {
@@ -659,35 +585,36 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 		return false;
 	}
 
-	protected Set<Element> getConfiguredProcessingTypes() {
-		Set<Element> result = new HashSet<Element>();
+	protected Set<MutableDeclaredType> getConfiguredProcessingTypes() {
+		Set<MutableDeclaredType> result = new HashSet<MutableDeclaredType>();
 		MutableDeclaredType[] configuredTypes = getMergedConfiguration(DefaultConfigurationElement.PROCESSING_TYPES);
 		for (MutableDeclaredType configuredType: configuredTypes) {
 			AnnotationMirror supportedAnnotation = getSupportedAnnotation(configuredType);
 			if (supportedAnnotation == null || (supportedAnnotation != null && isSupportedAnnotation(supportedAnnotation))) {
-				result.add(toTypeElement(configuredType));
+				result.add(configuredType);
 			}
 		}
 		return result;
 	}
 	
 	@Override
-	public Set<Element> getElements(RoundEnvironment roundEnvironment) {
+	public Set<MutableDeclaredType> getElements(RoundEnvironment roundEnvironment) {
 		this.roundEnvironment = roundEnvironment;
 		
 		loadFromConfiguration();
 		
-		Set<Element> processingElements = new HashSet<Element>();
+		Set<MutableDeclaredType> processingElements = new HashSet<MutableDeclaredType>();
 		
 		for (Element element : roundEnvironment.getRootElements()) {
-			if (element.getAnnotation(ProcessorConfiguration.class) == null && !ListUtils.contains(processingElements, element)) {
+			if (element.getAnnotation(ProcessorConfiguration.class) == null && !ListUtils.containsElement(processingElements, element) && element.asType().getKind().equals(TypeKind.DECLARED)) {
 				TypeElement typeElement = (TypeElement) element;
 				if (isSupportedByInterface(typeElement)) {
-					processingElements.add(element);
+					MutableDeclaredType mutableType = toMutableType(element);
+					processingElements.add(mutableType);
 				} else {
-					AnnotationMirror supportedAnnotation = getSupportedAnnotationMirror(typeElement);
-					if (supportedAnnotation != null && isSupportedAnnotation(supportedAnnotation) && isSupportedKind(element.getKind())) {
-						processingElements.add(element);
+					if (hasSupportedAnnotation(typeElement) && isSupportedKind(element.getKind())) {
+						MutableDeclaredType mutableType = toMutableType(element);
+						processingElements.add(mutableType);
 					}
 				}
 			}
@@ -704,11 +631,13 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 					
 					Set<? extends Element> els = roundEnvironment.getElementsAnnotatedWith(typeElement);
 					for (Element element : els) {
-						if (isSupportedKind(element.getKind()) && element.getAnnotation(ProcessorConfiguration.class) == null && !ListUtils.contains(processingElements, element)) {
+
+						if (isSupportedKind(element.getKind()) && element.getAnnotation(ProcessorConfiguration.class) == null && !ListUtils.containsElement(processingElements, element)) {
 							List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
 							for (AnnotationMirror annotationMirror: annotationMirrors) {
 								if (isSupportedAnnotation(annotationMirror)) {
-									processingElements.add(element);
+									MutableDeclaredType mutableType = toMutableType(element);
+									processingElements.add(mutableType);
 								}
 							}
 						}
@@ -719,39 +648,26 @@ public abstract class DefaultProcessorConfigurer implements ProcessorConfigurer 
 			}
 		}
 
-		for (Element element: getConfiguredProcessingTypes()) {
-			//Element is not in the list, element is not configuration and element is supported type
-			if (!ListUtils.contains(processingElements, element) && element.getAnnotation(ProcessorConfiguration.class) == null  && isSupportedKind(element.getKind())) {
-				processingElements.add(element);
+		for (MutableDeclaredType mutableType: getConfiguredProcessingTypes()) {
+			TypeElement typeElement = toTypeElement(mutableType);
+			if (!ListUtils.containsElement(processingElements, typeElement) && mutableType.getAnnotation(ProcessorConfiguration.class) == null  && isSupportedKind(typeElement.getKind())) {
+				processingElements.add(mutableType);
 			}
+
 		}
 		
 		return processingElements;
 	}
 
 
-	public AnnotationValue getAnnotationValueByReturnType(Class<?> returnType, AnnotationMirror annotationMirror) {
-		return getAnnotationValueByReturnType(toTypeElement(returnType), annotationMirror);
-	}
-	
-	public AnnotationValue getAnnotationValueByReturnType(TypeElement returnType, AnnotationMirror annotationMirror) {
-		Iterator<ExecutableElement> iterator = ElementFilter.methodsIn(
-				processingEnv.getTypeUtils().asElement(annotationMirror.getAnnotationType()).getEnclosedElements()).iterator();
-		while (iterator.hasNext()) {
-			ExecutableElement executableElement = iterator.next();
-			if (executableElement.getReturnType() != null) {
-				Element returnElement = processingEnv.getTypeUtils().asElement(executableElement.getReturnType());
-				if (processingEnv.getElementUtils().getBinaryName((TypeElement)returnElement).toString().equals(processingEnv.getElementUtils().getBinaryName(returnType).toString())) {
-					return annotationMirror.getElementValues().get(executableElement);
-				}
-			}
-		}
-		return null;
-	}	
-
 	/** Helper methods **/
 	protected TypeElement toTypeElement(Class<?> clazz) {
 		return processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+	}
+
+	protected MutableDeclaredType toMutableType(Element element) {
+		//TODO handle methods
+		return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(element.asType());
 	}
 
 	protected TypeElement toTypeElement(MutableDeclaredType type) {

@@ -3,10 +3,8 @@ package sk.seges.sesam.core.pap;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -45,7 +43,7 @@ public abstract class FluentProcessor extends MutableAnnotationProcessor {
 			setKind(resultKind);
 
 			if (!interfaces.isEmpty()) {
-				Set<MutableDeclaredType> implementedInterfaces = new HashSet<MutableDeclaredType>();
+				List<MutableDeclaredType> implementedInterfaces = new ArrayList<MutableDeclaredType>();
 
 				for (Rule rule : interfaces) {
 					if (rule.evaluate(OutputDefinition.OUTPUT_INTERFACES, fluentInput)) {

@@ -50,7 +50,7 @@ public class DefaultPackageValidator implements PackageValidator {
 	}
 	
 	public enum ImplementationType implements SubPackageType {
-		API("api"), DTO("dto"), HIBERNATE("hibernate"), TWIG_PERSIST("twig"), SPRING("spring");
+		API("api"), DTO("dto"), HIBERNATE("hibernate"), TWIG_PERSIST("twig"), SPRING("spring"), DATA("data"), BASE("base");
 
 		private String name;
 

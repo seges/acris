@@ -41,7 +41,6 @@ public class SeleniumTestCaseAccessor extends SingleAnnotationAccessor<SeleniumT
 		List<SeleniumSuiteType> result = new ArrayList<SeleniumSuiteType>();
 				
 		for (Class<?> suiteRunner: suiteRunners) {
-			//TODO change it to .asElement after peto sloboda will make a commit
 			result.add(new SeleniumSuiteType(processingEnv.getElementUtils().getTypeElement(suiteRunner.getCanonicalName()), processingEnv));
 		}
 

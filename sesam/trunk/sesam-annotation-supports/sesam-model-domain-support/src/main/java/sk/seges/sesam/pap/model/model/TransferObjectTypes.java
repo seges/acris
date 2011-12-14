@@ -49,7 +49,7 @@ public class TransferObjectTypes {
 			return new DomainVariable((MutableWildcardType)type, processingEnv, roundEnv, configurationProviders);
 		}
 
-		throw new RuntimeException("Unsupported domain type! Unable to representet " + type.getKind() + " as a domain.");
+		throw new RuntimeException("Unsupported domain type! Unable to represent " + type.getKind() + " as a domain.");
 	}
 	
 	public DomainType getDomainType(TypeMirror type) {
@@ -64,7 +64,7 @@ public class TransferObjectTypes {
 		case NULL:
 		case OTHER:
 		case PACKAGE:
-			throw new RuntimeException("Unsupported domain type! Unable to representet " + type.getKind() + " as a domain.");
+			throw new RuntimeException("Unsupported domain type! Unable to represent " + type.getKind() + " as a domain.");
 		case TYPEVAR:
 			return new DomainVariable((TypeVariable)type, processingEnv, roundEnv, configurationProviders);
 		case WILDCARD:
@@ -82,7 +82,7 @@ public class TransferObjectTypes {
 			return new DomainDeclared((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type), processingEnv, roundEnv, configurationProviders);
 		}
 		
-		throw new RuntimeException("Unsupported domain type! Unable to representet " + type.getKind() + " as a domain.");
+		throw new RuntimeException("Unsupported domain type! Unable to represent " + type.getKind() + " as a domain.");
 	}
 
 	
@@ -107,7 +107,7 @@ public class TransferObjectTypes {
 			return new DtoVariable((MutableWildcardType)type, processingEnv, roundEnv);
 		}
 
-		throw new RuntimeException("Unsupported DTO type! Unable to representet " + type.getKind() + " as a DTO.");
+		throw new RuntimeException("Unsupported DTO type! Unable to represent " + type.getKind() + " as DTO.");
 	}
 	
 	public DtoType getDtoType(TypeMirror type) {
@@ -122,7 +122,7 @@ public class TransferObjectTypes {
 		case NULL:
 		case OTHER:
 		case PACKAGE:
-			throw new RuntimeException("Unsupported DTO type! Unable to representet " + type.getKind() + " as a DTO.");
+			throw new RuntimeException("Unsupported DTO type! Unable to represent " + type.getKind() + " as DTO.");
 		case TYPEVAR:
 			return new DtoVariable((TypeVariable)type, processingEnv, roundEnv);
 		case WILDCARD:
@@ -140,7 +140,7 @@ public class TransferObjectTypes {
 			return new DtoDeclared((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type), processingEnv, roundEnv, configurationProviders);
 		}
 		
-		throw new RuntimeException("Unsupported DTO type! Unable to representet " + type.getKind() + " as a DTO.");
+		throw new RuntimeException("Unsupported DTO type! Unable to represent " + type.getKind() + " as DTO.");
 	}
 	
 	public boolean isSameType(DtoType dtoType1, DtoType dtoType2) {

@@ -5,7 +5,6 @@ import java.lang.reflect.Type;
 
 import javax.annotation.Generated;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
@@ -15,8 +14,8 @@ import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport.TypePrinterSu
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
@@ -47,6 +46,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 		TypeElement typeElement;
 		MutableDeclaredType outputClass;
 		FormattedPrintWriter printWriter;
+		MutableDeclaredType mutableType;
 		MutableProcessingEnvironment processingEnv;
 		
 		public MutableDeclaredType getOutputType() {
@@ -64,6 +64,10 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 		public MutableProcessingEnvironment getProcessingEnv() {
 			return processingEnv;
 		}
+		
+		public MutableDeclaredType getMutableType() {
+			return mutableType;
+		}
 	}
 	
 	protected Type[] getImports(ProcessorContext context) {
@@ -79,18 +83,19 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 
 	protected abstract void processElement(ProcessorContext context);
 
-	final protected boolean processElement(Element element, RoundEnvironment roundEnv) {
+	@Override
+	final protected boolean processElement(MutableDeclaredType el, RoundEnvironment roundEnv) {
 
-		TypeElement typeElement = (TypeElement) element;
+		TypeElement typeElement = (TypeElement) el.asElement();
 
 		RoundContext roundContext = new RoundContext();
 		roundContext.typeElement = typeElement;
-		roundContext.mutableType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(typeElement.asType());
+		roundContext.mutableType = el;
 		roundContext.processingEnv = processingEnv;
 		
 		MutableDeclaredType[] outputClasses = getOutputClasses(roundContext);
 		
-		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + element.getSimpleName().toString() + " with " + getClass().getSimpleName(), element);
+		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + typeElement.getSimpleName().toString() + " with " + getClass().getSimpleName(), typeElement);
 
 		for (MutableDeclaredType outputClass: outputClasses) {
 			
@@ -103,18 +108,19 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				ProcessorContext context = new ProcessorContext();
 				context.typeElement = typeElement;
 				context.outputClass = outputClass;
+				context.mutableType = el;
 				context.processingEnv = processingEnv;
 
 				if (!checkPreconditions(context, alreadyExists)) {
 					if (alreadyExists) {
-						processingEnv.getMessager().printMessage(Kind.NOTE, "[INFO] File " + outputClass.getCanonicalName() + " already exists.", element);
+						processingEnv.getMessager().printMessage(Kind.NOTE, "[INFO] File " + outputClass.getCanonicalName() + " already exists.", typeElement);
 					}
-					processingEnv.getMessager().printMessage(Kind.NOTE, "[INFO] Skipping file " + outputClass.getCanonicalName() + " processing.", element);
+					processingEnv.getMessager().printMessage(Kind.NOTE, "[INFO] Skipping file " + outputClass.getCanonicalName() + " processing.", typeElement);
 					continue;
 				}
 
 				//TODO Use outputClass.getPackageName() + "." + outputClass.getSimpleName() otherwise you'll have problems with nested classes
-				JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(outputClass.getPackageName() + "." + outputClass.getSimpleName(), element);
+				JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(outputClass.getPackageName() + "." + outputClass.getSimpleName(), typeElement);
 				OutputStream os = createSourceFile.openOutputStream();
 				pw = initializePrintWriter(os);
 
@@ -192,7 +198,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				pw.println("}");
 				pw.flush();
 			} catch (Exception e) {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process element " + e.getMessage(), element);
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process element " + e.getMessage(), typeElement);
 			} finally {
 				if (pw != null) {
 					pw.close();

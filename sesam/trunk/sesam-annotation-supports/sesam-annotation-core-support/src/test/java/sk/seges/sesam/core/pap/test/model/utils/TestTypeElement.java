@@ -42,6 +42,8 @@ class TestTypeElement extends TestElement implements TypeElement {
 		
 		superclass = clazz.getSuperclass();
 		enclosingClass = clazz.getEnclosingClass();
+		
+		//TODO type variables
 	}
 	
 	@Override
@@ -55,7 +57,8 @@ class TestTypeElement extends TestElement implements TypeElement {
 			annotationMirrors = new LinkedList<AnnotationMirror>();
 			
 			for (Annotation annotation: annotations) {
-				annotationMirrors.add(new TestAnnotationMirror(new TestDeclaredType(new TestTypeElement(annotation.getClass()))));
+				TestAnnotationMirror testAnnotationMirror = new TestAnnotationMirror(new TestDeclaredType(new TestTypeElement(annotation.annotationType())), annotation);
+				annotationMirrors.add(testAnnotationMirror);
 			}
 		}
 		return annotationMirrors;

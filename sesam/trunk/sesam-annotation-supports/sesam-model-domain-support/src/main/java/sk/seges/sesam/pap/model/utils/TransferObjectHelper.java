@@ -8,6 +8,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.NullCheck;
@@ -42,23 +43,39 @@ public class TransferObjectHelper {
 		return fieldPath;
 	}
 
+	private boolean isAssignable(TypeMirror type1, TypeMirror type2) {
+		if (type1.getKind().equals(TypeKind.TYPEVAR) && type2.getKind().equals(TypeKind.TYPEVAR)) {
+			return type1.toString().equals(type2.toString());
+		}
+		
+		return processingEnv.getTypeUtils().isAssignable(type1, type2);
+	}
+	
 	public boolean hasSetterMethod(TypeElement element, ExecutableElement method) {
 
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
 		for (ExecutableElement elementMethod : methods) {
 
-			if (elementMethod.getModifiers().contains(Modifier.PUBLIC)
-					&& elementMethod.getSimpleName().toString().equals(MethodHelper.toSetter(method)) && elementMethod.getParameters().size() == 1
-					&& processingEnv.getTypeUtils().isAssignable(method.getReturnType(), elementMethod.getParameters().get(0).asType())) {
+			if (elementMethod.getModifiers().contains(Modifier.PUBLIC) && 
+				elementMethod.getSimpleName().toString().equals(MethodHelper.toSetter(method)) && elementMethod.getParameters().size() == 1 &&
+				isAssignable(method.getReturnType(), elementMethod.getParameters().get(0).asType())) {
 				return true;
 			}
 		}
 		
 		if (element.getSuperclass() != null && element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-			return hasSetterMethod((TypeElement) ((DeclaredType) element.getSuperclass()).asElement(), method);
+			if (hasSetterMethod((TypeElement) ((DeclaredType) element.getSuperclass()).asElement(), method)) {
+				return true;
+			}
 		}
 
+		for (TypeMirror typeInterface: element.getInterfaces()) {
+			if (hasSetterMethod((TypeElement)((DeclaredType)typeInterface).asElement(), method)) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
 }

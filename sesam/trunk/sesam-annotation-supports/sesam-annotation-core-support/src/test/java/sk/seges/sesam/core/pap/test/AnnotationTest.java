@@ -26,7 +26,6 @@ import javax.tools.JavaFileObject;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.core.pap.model.mutable.utils.TestClass;
 import sk.seges.sesam.core.pap.test.manager.CompilerManager;
 import sk.seges.sesam.core.pap.test.manager.EclipseCompilerManager;
 import sk.seges.sesam.core.pap.test.manager.JavacCompilerManager;
@@ -98,7 +97,7 @@ public abstract class AnnotationTest {
 	}
 
 	protected MutableDeclaredType toMutable(Class<?> clazz) {
-		return new TestClass(clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
+		return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(processingEnv.getElementUtils().getTypeElement(clazz.getName()).asType());
 	}
 	
 	protected MutableProcessingEnvironment processingEnv = new MutableProcessingEnvironment(new TestProcessingEnvironment());

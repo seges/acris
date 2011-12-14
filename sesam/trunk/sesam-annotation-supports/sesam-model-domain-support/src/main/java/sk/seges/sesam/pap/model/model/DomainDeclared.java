@@ -147,7 +147,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 			List<ExecutableElement> overridenMethods =  new ArrayList<ExecutableElement>();
 			
 			if (getConfiguration() != null) {
-				overridenMethods = ElementFilter.methodsIn(getConfiguration().asElement().getEnclosedElements());
+				overridenMethods = ElementFilter.methodsIn(getConfiguration().asConfigurationElement().getEnclosedElements());
 			}
 			
 			MappingType mappingType = MappingType.AUTOMATIC;
@@ -167,13 +167,13 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 								this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 								domainMethod.getSimpleName().toString() + " in the configuration " + domainMethod.getEnclosingElement().toString(), 
-								configurationTypeElement.asElement());
+								configurationTypeElement.asConfigurationElement());
 					}
 					this.idMethod = domainMethod;
 				}
 			}
 	
-			TypeElement processingElement = asElement();
+			TypeElement processingElement = asConfigurationElement();
 	
 			while (processingElement != null) {
 	
@@ -181,12 +181,12 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 		
 				if (mappingType.equals(MappingType.AUTOMATIC)) {
 					for (ExecutableElement method: methods) {
-						if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
+						if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
 							if (this.idMethod != null) {
 								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 										this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 										method.getSimpleName().toString() + " in the configuration " + method.getEnclosingElement().toString(), 
-										configurationTypeElement.asElement());
+										configurationTypeElement.asConfigurationElement());
 							}
 							this.idMethod = method;
 						}
@@ -200,7 +200,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 											this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 											idMethod.getSimpleName().toString() + " in the configuration " + idMethod.getEnclosingElement().toString(), 
-											configurationTypeElement.asElement());
+											configurationTypeElement.asConfigurationElement());
 								}
 								this.idMethod = idMethod;
 							}
@@ -221,7 +221,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 								this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 								overridenMethod.getSimpleName().toString() + " in the configuration " + overridenMethod.getEnclosingElement().toString(), 
-								configurationTypeElement.asElement());
+								configurationTypeElement.asConfigurationElement());
 					}
 					idMethod = overridenMethod;
 				}
@@ -262,7 +262,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 			return null;
 		}
 
-		List<ExecutableElement> methods = ElementFilter.methodsIn(asElement().getEnclosedElements());
+		List<ExecutableElement> methods = ElementFilter.methodsIn(asConfigurationElement().getEnclosedElements());
 
 		String fieldName = pathResolver.next();
 
@@ -287,14 +287,14 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 				// incompatible types - nested path is expected, but declared
 				// type was not found
 				processingEnv.getMessager().printMessage(Kind.WARNING,
-						"incompatible types - nested path (" + fieldName + ") is expected, but declared type was not found ", asElement());
+						"incompatible types - nested path (" + fieldName + ") is expected, but declared type was not found ", asConfigurationElement());
 				return null;
 			}
 		}
 
-		if (asElement().getKind().equals(ElementKind.CLASS) || asElement().getKind().equals(ElementKind.INTERFACE)) {
+		if (asConfigurationElement().getKind().equals(ElementKind.CLASS) || asConfigurationElement().getKind().equals(ElementKind.INTERFACE)) {
 
-			TypeElement typeElement = (TypeElement) asElement();
+			TypeElement typeElement = (TypeElement) asConfigurationElement();
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
 				pathResolver.reset();
 				DomainType domainType = getDomainForType(typeElement.getSuperclass());
@@ -373,7 +373,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 		}
 	}
 
-	public TypeElement asElement() {
+	public TypeElement asConfigurationElement() {
 		//TODO it is
 		if (asType().getKind().equals(TypeKind.DECLARED)) {
 			return (TypeElement)((DeclaredType)asType()).asElement();

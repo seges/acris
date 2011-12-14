@@ -9,6 +9,7 @@ import javax.lang.model.type.WildcardType;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainTypeVariable;
 import sk.seges.sesam.pap.model.model.api.dto.DtoTypeVariable;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
@@ -85,7 +86,11 @@ class DomainVariable extends TomBaseVariable implements DomainTypeVariable {
 			for (MutableTypeMirror bound: getLowerBounds()) {
 				dtoLowerBounds.add(processingEnv.getTransferObjectUtils().getDomainType(bound).getDto());
 			}
-			return new DtoVariable(processingEnv.getTypeUtils().getTypeVariable(getVariable(), dtoUpperBounds.toArray(new MutableTypeMirror[] {}), dtoLowerBounds.toArray(new MutableTypeMirror[]{})), processingEnv, roundEnv);
+			String variable = getVariable();
+			if (variable != null && !variable.equals(MutableWildcardType.WILDCARD_NAME)) {
+				variable = ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "_" + getVariable();
+			}
+			return new DtoVariable(processingEnv.getTypeUtils().getTypeVariable(variable, dtoUpperBounds.toArray(new MutableTypeMirror[] {}), dtoLowerBounds.toArray(new MutableTypeMirror[]{})), processingEnv, roundEnv);
 		}
 		
 		return (DtoTypeVariable) getConfiguration().getDto();

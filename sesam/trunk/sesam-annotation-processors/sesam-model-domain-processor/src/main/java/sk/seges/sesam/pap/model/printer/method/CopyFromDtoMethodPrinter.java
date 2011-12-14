@@ -57,14 +57,14 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 				DomainType domainReference = referenceDomainType.getDomainReference(currentPath);
 				
 				if (domainReference == null) {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find getter method for the field " + currentPath + " in the " + domainTypeElement.toString(), context.getConfigurationTypeElement().asElement());
+					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find getter method for the field " + currentPath + " in the " + domainTypeElement.toString(), context.getConfigurationTypeElement().asConfigurationElement());
 					return;
 				}
 
 				if (!domainReference.getKind().isDeclared()) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Invalid mapping specified in the field " + currentPath + ". Current path (" + 
 							fullPath + ") address getter type that is not class/interfaces." +
-							"You probably mistyped this field in the configuration.", context.getConfigurationTypeElement().asElement());
+							"You probably mistyped this field in the configuration.", context.getConfigurationTypeElement().asConfigurationElement());
 
 					return;
 				}
@@ -94,10 +94,10 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			} else {
 				ExecutableElement domainGetterMethod = context.getConfigurationTypeElement().getDomain().getGetterMethod(currentPath);
 				
-				VariableElement field = MethodHelper.getField(domainTypeElement.asElement(), currentPath);
+				VariableElement field = MethodHelper.getField(domainTypeElement.asConfigurationElement(), currentPath);
 				
 				if ((domainGetterMethod == null && field != null && !entityResolver.isIdField(field)) || !entityResolver.isIdMethod(domainGetterMethod)) {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + domainTypeElement.toString(), context.getConfigurationTypeElement().asElement());
+					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + domainTypeElement.toString(), context.getConfigurationTypeElement().asConfigurationElement());
 				}
 			}
 		} else {
@@ -137,10 +137,10 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
 		} else {
 			
-			VariableElement field = MethodHelper.getField(domainTypeElement.asElement(), domainPathResolver.getCurrent());
+			VariableElement field = MethodHelper.getField(domainTypeElement.asConfigurationElement(), domainPathResolver.getCurrent());
 			
 			if ((domainGetterMethod == null && field != null && !entityResolver.isIdField(field)) || !entityResolver.isIdMethod(domainGetterMethod)) {
-				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + domainPathResolver.getCurrent() + " in the class " + domainTypeElement.toString(), configurationTypeElement.asElement());
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + domainPathResolver.getCurrent() + " in the class " + domainTypeElement.toString(), configurationTypeElement.asConfigurationElement());
 				return;
 			}
 		}

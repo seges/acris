@@ -322,6 +322,7 @@ public class MutableTypes implements Types {
 		if (clazz.getEnclosingClass() != null) {
 			return new MutableDeclared(null, toMutableType(clazz.getEnclosingClass()), clazz.getSimpleName(), processingEnv);
 		}
+		//TODO handle type variable also, interfaces etc
 		return new MutableDeclared(null, clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
 	}
 
@@ -339,6 +340,10 @@ public class MutableTypes implements Types {
 
 	public MutableDeclaredType toMutableType(DeclaredType declaredType) {
 		return (MutableDeclaredType) convertToMutableType(declaredType);
+	}
+	
+	public MutableDeclaredType toMutableType(TypeElement typeElement) {
+		return (MutableDeclaredType) toMutableType(typeElement.asType());
 	}
 	
 	private static Map<TypeMirror, MutableTypeMirror> typesCache = new HashMap<TypeMirror, MutableTypeMirror>();
