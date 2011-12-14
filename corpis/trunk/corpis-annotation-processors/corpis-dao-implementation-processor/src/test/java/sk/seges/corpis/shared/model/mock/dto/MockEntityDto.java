@@ -1,8 +1,8 @@
 package sk.seges.corpis.shared.model.mock.dto;
 
-import sk.seges.corpis.shared.model.mock.api.MockEntity;
+import sk.seges.corpis.shared.model.mock.api.MockEntityData;
 
-public class MockEntityDto implements MockEntity {
+public class MockEntityDto implements MockEntityData {
 
 	private static final long serialVersionUID = 7136106580590640853L;
 

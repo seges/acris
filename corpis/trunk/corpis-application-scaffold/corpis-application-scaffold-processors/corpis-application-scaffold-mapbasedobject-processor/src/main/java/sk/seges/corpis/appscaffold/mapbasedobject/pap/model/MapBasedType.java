@@ -1,7 +1,7 @@
 package sk.seges.corpis.appscaffold.mapbasedobject.pap.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -24,7 +24,7 @@ public class MapBasedType extends DelegateMutableDeclaredType {
 
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(MapBasedObject.class));
 
-		Set<MutableDeclaredType> interfaces = new HashSet<MutableDeclaredType>();
+		List<MutableDeclaredType> interfaces = new ArrayList<MutableDeclaredType>();
 		for (TypeMirror interfaceElementMirror : mapBasedElement.getInterfaces()) {
 			MutableTypeMirror mutableInterface = processingEnv.getTypeUtils().toMutableType(interfaceElementMirror);
 			

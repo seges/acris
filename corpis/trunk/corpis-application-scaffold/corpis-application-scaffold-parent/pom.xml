@@ -14,6 +14,18 @@
 
 	<modules>
 		<module>../corpis-application-scaffold-model</module>
+		<module>../corpis-application-scaffold-support/corpis-application-scaffold-support-parent</module>
 		<module>../corpis-application-scaffold-processors/corpis-application-scaffold-processors-parent</module>
 	</modules>
+
+	<dependencyManagement>
+		<dependencies> 
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-application-scaffold-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>	
+			
+		</dependencies> 
+	</dependencyManagement>
 </project>

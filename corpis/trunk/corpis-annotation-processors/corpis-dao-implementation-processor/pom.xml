@@ -39,11 +39,15 @@
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-dao-api-processor</artifactId>
+			<artifactId>corpis-dao-impl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-dao-impl</artifactId>
+			<artifactId>corpis-dao-api-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-dao-implementation-support</artifactId>
 		</dependency>
 	</dependencies>
 </project>

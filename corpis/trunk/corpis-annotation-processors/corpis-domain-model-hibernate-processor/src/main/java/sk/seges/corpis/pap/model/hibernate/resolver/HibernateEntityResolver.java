@@ -133,11 +133,11 @@ public class HibernateEntityResolver implements EntityResolver {
 
 	@Override
 	public boolean shouldHaveIdMethod(DomainDeclaredType domainTypeElement) {
-		if (domainTypeElement.asElement() == null) {
+		if (domainTypeElement.asConfigurationElement() == null) {
 			return false;
 		}
 		
-		TypeElement domainElement = domainTypeElement.asElement();
+		TypeElement domainElement = domainTypeElement.asConfigurationElement();
 		if (domainElement.getAnnotation(Entity.class) != null) {
 			return domainElement.getAnnotation(Embeddable.class) == null;
 		}

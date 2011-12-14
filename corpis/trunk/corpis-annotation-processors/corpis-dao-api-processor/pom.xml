@@ -27,5 +27,9 @@
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-dao-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-dao-api-support</artifactId>
+		</dependency>
 	</dependencies>
 </project>

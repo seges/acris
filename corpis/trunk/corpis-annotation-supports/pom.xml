@@ -14,5 +14,7 @@
 
 	<modules>
 		<module>corpis-service-support</module>
+		<module>corpis-dao-api-support</module>		
+		<module>corpis-dao-implementation-support</module>
 	</modules>
 </project>

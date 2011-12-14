@@ -7,6 +7,8 @@ import javax.lang.model.element.TypeElement;
 
 import org.junit.Test;
 
+import sk.seges.corpis.pap.model.configuration.MockContentConfiguration;
+import sk.seges.corpis.pap.model.configuration.MockContentPkConfiguration;
 import sk.seges.corpis.pap.model.configuration.MockEntityDTOConfiguration;
 import sk.seges.corpis.pap.model.hibernate.HibernateTransferObjectConverterProcessor;
 import sk.seges.sesam.core.pap.test.AnnotationTest;
@@ -15,6 +17,12 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 
 public class HibernateTransferObjectConverterProcessorTest extends AnnotationTest {
 
+	@Test
+	public void testPkDto() {
+		assertCompilationSuccessful(compileFiles(Compiler.JAVAC, MockContentConfiguration.class));
+		assertCompilationSuccessful(compileFiles(Compiler.JAVAC, MockContentPkConfiguration.class));
+	}
+	
 	@Test
 	public void testDto() {
 		assertCompilationSuccessful(compileFiles(Compiler.JAVAC, MockEntityDTOConfiguration.class));

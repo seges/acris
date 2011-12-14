@@ -13,7 +13,8 @@
 	</parent>
 
 	<modules>
-		<module>../corpis-application-scaffold-datainterface-processor</module>
+		<module>../corpis-application-scaffold-data-interface-processor</module>
+		<module>../corpis-application-scaffold-model-base-processor</module>
 		<module>../corpis-application-scaffold-jpamodel-processor</module>
 		<module>../corpis-application-scaffold-mapbasedobject-processor</module>
 	</modules>
@@ -33,18 +34,12 @@
 				<scope>test</scope>
 			</dependency>
 
-
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-application-scaffold-model</artifactId>
+				<artifactId>corpis-application-scaffold-model-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>		
 			
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-application-scaffold-datainterface-processor</artifactId>
-				<version>${project.version}</version>
-			</dependency>		
 		</dependencies>
 	</dependencyManagement>
 </project>
