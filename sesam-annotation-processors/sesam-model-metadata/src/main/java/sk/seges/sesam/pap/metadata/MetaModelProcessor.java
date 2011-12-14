@@ -179,7 +179,7 @@ public class MetaModelProcessor extends MutableAnnotationProcessor {
 
 		TypeElement classTypeElement = (TypeElement) declaredType.asElement();
 		
-		if (configurer.getSupportedAnnotation(classTypeElement) != null) {
+		if (configurer.hasSupportedAnnotation(classTypeElement)) {
 			return processNestedType(classTypeElement);
 		}
 		

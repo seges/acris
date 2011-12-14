@@ -44,7 +44,7 @@ public class HashCodePrinter extends AbstractElementPrinter {
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 	
-		active = new GenerateHashcodeAccessor(configurationTypeElement.asElement(), processingEnv).generate();
+		active = new GenerateHashcodeAccessor(configurationTypeElement.asConfigurationElement(), processingEnv).generate();
 		
 		if (!active) {
 			return;
@@ -115,7 +115,7 @@ public class HashCodePrinter extends AbstractElementPrinter {
 		case VOID:
 		case TYPEVAR:
 			processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getDtoFieldName() + " (" + context.getDtoFieldType().getKind() + ") in the " + 
-					context.getConfigurationTypeElement().asElement(), context.getConfigurationTypeElement().asElement());
+					context.getConfigurationTypeElement().asConfigurationElement(), context.getConfigurationTypeElement().asConfigurationElement());
 			return;
 		}
 	}		

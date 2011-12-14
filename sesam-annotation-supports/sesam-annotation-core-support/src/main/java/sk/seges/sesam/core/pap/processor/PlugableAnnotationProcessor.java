@@ -25,7 +25,7 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter.FlushListener;
 
 public abstract class PlugableAnnotationProcessor extends AbstractProcessor {
 
-	private Map<FormattedPrintWriter, PrintWriter> printersMap = new HashMap<FormattedPrintWriter, PrintWriter>();
+	Map<FormattedPrintWriter, PrintWriter> printersMap = new HashMap<FormattedPrintWriter, PrintWriter>();
 	private Map<FormattedPrintWriter, ByteArrayOutputStream> buffersMap = new HashMap<FormattedPrintWriter, ByteArrayOutputStream>();
 
 	protected final String lineSeparator;

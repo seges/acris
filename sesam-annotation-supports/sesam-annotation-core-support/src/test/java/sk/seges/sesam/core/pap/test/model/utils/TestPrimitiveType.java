@@ -4,8 +4,15 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeVisitor;
 
+import sk.seges.sesam.core.pap.utils.PAPReflectionUtils;
+
 public class TestPrimitiveType extends TestTypeMirror implements PrimitiveType {
 
+	
+	public TestPrimitiveType(Class<?> clazz) {
+		super(PAPReflectionUtils.toPrimitive(clazz));
+	}
+	
 	public TestPrimitiveType(TypeKind kind) {
 		super(kind);
 	}

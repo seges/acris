@@ -1,10 +1,9 @@
 package sk.seges.sesam.pap.model.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
@@ -81,7 +80,7 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 
 		if (superClassDomainType != null) {
 			DtoDeclaredType superclassDto = superClassDomainType.getDto();
-			MutableDeclaredType mutableSuperclassType = processingEnv.getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asElement().asType());
+			MutableDeclaredType mutableSuperclassType = processingEnv.getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asConfigurationElement().asType());
 			
 			if (superclassDto instanceof MutableDeclaredType) {
 				//TODO convert type variables also
@@ -92,21 +91,27 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 			}
 		}
 
-		if (configurationTypeElement.asElement().asType().getKind().equals(TypeKind.DECLARED)) {
-			List<? extends TypeMirror> interfaces = ((TypeElement)configurationTypeElement.asElement()).getInterfaces();
+		if (configurationTypeElement.asConfigurationElement().asType().getKind().equals(TypeKind.DECLARED)) {
+			List<? extends TypeMirror> interfaces = ((TypeElement)configurationTypeElement.asConfigurationElement()).getInterfaces();
 			
-			Set<MutableTypeMirror> interfaceTypes = new HashSet<MutableTypeMirror>();
+			List<MutableTypeMirror> interfaceTypes = new ArrayList<MutableTypeMirror>();
 			
 			if (interfaces != null) {
 				for (TypeMirror interfaceType: interfaces) {
-					interfaceTypes.add(processingEnv.getTypeUtils().toMutableType(interfaceType));
+					MutableDeclaredType mutableType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(interfaceType);
+					mutableType.prefixTypeParameter(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
+					interfaceTypes.add(mutableType);
 				}
 			}
 			
 			MutableTypeMirror superClass = super.getSuperClass();
 			if (superClass == null) {
-				//TODO check if it is not already there
-				interfaceTypes.add(processingEnv.getTypeUtils().toMutableType(Serializable.class));
+				if (configurationTypeElement.getSuperClass() != null) {
+					setSuperClass(configurationTypeElement.getSuperClass());
+				} else {
+					//TODO check if it is not already there
+					interfaceTypes.add(processingEnv.getTypeUtils().toMutableType(Serializable.class));
+				}
 			}
 			
 			setInterfaces(interfaceTypes);
@@ -261,7 +266,7 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 	public ExecutableElement getIdMethod(EntityResolver entityResolver) {
 
 		if (getConfiguration() != null) {
-			List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(getConfiguration().asElement().getEnclosedElements());
+			List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(getConfiguration().asConfigurationElement().getEnclosedElements());
 	
 			DomainDeclaredType domainType = getConfiguration().getDomain();
 	

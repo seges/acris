@@ -92,7 +92,7 @@ public class ConverterEqualsPrinter implements TransferObjectElementPrinter {
 			case VOID:
 			case TYPEVAR:
 				processingEnv.getMessager().printMessage(Kind.WARNING, "[WARNING] Unsupported type " + context.getDtoFieldName() + " (" + context.getDtoFieldType().getKind() + ") in the " + 
-						context.getConfigurationTypeElement().asElement(), context.getConfigurationTypeElement().asElement());
+						context.getConfigurationTypeElement().asConfigurationElement(), context.getConfigurationTypeElement().asConfigurationElement());
 				return;
 			case CLASS:
 			case INTERFACE:

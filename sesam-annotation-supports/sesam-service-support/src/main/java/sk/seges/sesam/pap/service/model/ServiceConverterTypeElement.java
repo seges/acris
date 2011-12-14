@@ -1,8 +1,7 @@
 package sk.seges.sesam.pap.service.model;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
@@ -19,7 +18,7 @@ public class ServiceConverterTypeElement extends DelegateMutableDeclaredType {
 		List<LocalServiceTypeElement> localServiceInterfaces = serviceTypeElement.getLocalServiceInterfaces();
 
 		if (localServiceInterfaces != null && localServiceInterfaces.size() > 0) {
-			Set<MutableDeclaredType> interfaces = new HashSet<MutableDeclaredType>();
+			List<MutableDeclaredType> interfaces = new ArrayList<MutableDeclaredType>();
 
 			for (LocalServiceTypeElement localInterface : localServiceInterfaces) {
 				interfaces.add(localInterface.getRemoteServiceInterface());

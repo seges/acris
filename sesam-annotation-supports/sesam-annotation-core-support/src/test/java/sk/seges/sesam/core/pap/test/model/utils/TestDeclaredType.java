@@ -39,6 +39,11 @@ public class TestDeclaredType extends TestTypeMirror implements DeclaredType {
 	}
 
 	@Override
+	public String toString() {
+		return asElement().toString();
+	}
+	
+	@Override
 	public TypeMirror getEnclosingType() {
 		Element enclosingElement = element.getEnclosingElement();
 		

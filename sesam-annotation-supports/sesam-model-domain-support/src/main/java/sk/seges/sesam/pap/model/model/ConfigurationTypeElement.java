@@ -101,7 +101,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 			return new ConverterTypeElement(this, converter, processingEnv, roundEnv);
 		}
 				
-		Element configurationElement = asElement();
+		Element configurationElement = asConfigurationElement();
 		
 		if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
 			return null;
@@ -187,7 +187,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 				}
 
 				if (this.dtoDeclaredType == null) {
-					Element configurationElement = asElement();
+					Element configurationElement = asConfigurationElement();
 					
 					if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
 						return null;
@@ -197,9 +197,9 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 				}
 			}
 
-			if (dtoDeclaredType != null) {
-				dtoDeclaredType.prefixTypeParameter(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
-			}
+//			if (dtoDeclaredType != null) {
+//				dtoDeclaredType.prefixTypeParameter(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
+//			}
 
 			this.dtoTypeElementInitialized = true;
 		}
@@ -233,7 +233,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 		return null;
 	}
 	
-	public Element asElement() {
+	public Element asConfigurationElement() {
 		return configurationElement;
 	}
 	
@@ -289,7 +289,7 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 
 	boolean isFieldIgnored(String field) {
 
-		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(asElement().getEnclosedElements());
+		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(asConfigurationElement().getEnclosedElements());
 
 		for (ExecutableElement overridenMethod : overridenMethods) {
 

@@ -1,9 +1,11 @@
 package sk.seges.sesam.core.pap.model.mutable.delegate;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -27,6 +29,11 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	public void annotateWith(AnnotationMirror annotationMirror) {
 		ensureDelegateType().annotateWith(annotationMirror);
 	}
+
+	@Override
+    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+    	return ensureDelegateType().getAnnotation(annotationType);
+    }
 
 	@Override
 	public Set<AnnotationMirror> getAnnotations() {
@@ -119,17 +126,22 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	}
 
 	@Override
+	public TypeElement asElement() {
+		return ensureDelegateType().asElement();
+	}
+
+	@Override
 	public MutableDeclaredType setKind(MutableTypeKind kind) {
 		return ensureDelegateType().setKind(kind);
 	}
 	
 	@Override
-	public Set<? extends MutableTypeMirror> getInterfaces() {
+	public List<? extends MutableTypeMirror> getInterfaces() {
 		return ensureDelegateType().getInterfaces();
 	}
 
 	@Override
-	public MutableDeclaredType setInterfaces(Set<? extends MutableTypeMirror> interfaces) {
+	public MutableDeclaredType setInterfaces(List<? extends MutableTypeMirror> interfaces) {
 		return ensureDelegateType().setInterfaces(interfaces);
 	}
 

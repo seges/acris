@@ -20,6 +20,10 @@ public class TestElements implements Elements {
 		return new TestPackageElement(name);
 	}
 
+	public TypeElement getTypeElement(Class<?> clazz) {
+		return new TestTypeElement(clazz);
+	}
+	
 	@Override
 	public TypeElement getTypeElement(CharSequence name) {
 		Class<?> clazz = null;
@@ -34,7 +38,8 @@ public class TestElements implements Elements {
 
 	@Override
 	public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(AnnotationMirror a) {
-		return null;
+		//TODO: add defaults
+		return a.getElementValues();
 	}
 
 	@Override

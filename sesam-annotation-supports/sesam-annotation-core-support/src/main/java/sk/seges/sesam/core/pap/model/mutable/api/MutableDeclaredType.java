@@ -1,8 +1,8 @@
 package sk.seges.sesam.core.pap.model.mutable.api;
 
 import java.util.List;
-import java.util.Set;
 
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
@@ -65,14 +65,15 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
 	String getQualifiedName();
 
 	TypeMirror asType();
+	TypeElement asElement();
 
 	String toString(ClassSerializer serializer);
 	String toString(ClassSerializer serializer, boolean typed);
 
 	MutableDeclaredType setKind(MutableTypeKind kind);
 
-	Set<? extends MutableTypeMirror> getInterfaces();
-	MutableDeclaredType setInterfaces(Set<? extends MutableTypeMirror> interfaces);
+	List<? extends MutableTypeMirror> getInterfaces();
+	MutableDeclaredType setInterfaces(List<? extends MutableTypeMirror> interfaces);
 
 	MutableDeclaredType getSuperClass();
 	MutableDeclaredType setSuperClass(MutableDeclaredType superClass);

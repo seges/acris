@@ -1,7 +1,7 @@
 package sk.seges.sesam.pap.test.selenium.processor.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -20,7 +20,7 @@ public class SeleniumTestSettingsType extends AbstractSeleniumType {
 		
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(DefaultTestSettings.class));
 
-		Set<MutableTypeMirror> interfaces = new HashSet<MutableTypeMirror>();
+		List<MutableTypeMirror> interfaces = new ArrayList<MutableTypeMirror>();
 		for (SeleniumSuiteType seleniumSuite: seleniumTestTypeElement.getSeleniumSuites()) {
 			interfaces.add(new SeleniumSettingsProviderTypeElement(seleniumSuite, processingEnv));
 		}

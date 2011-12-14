@@ -29,6 +29,7 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -110,7 +111,11 @@ public abstract class AnnotationAccessor {
 	private static interface WrapsAnnotationMirror {
 		AnnotationMirror getAnnotationMirror();
 	}
-	
+
+	private static interface WrapsAnnotation {
+		Annotation getAnnotation();
+	}
+
 	private static class ClassTypeVisitor extends SimpleTypeVisitor6<Class<?>, Void> {
 
 		private final MutableProcessingEnvironment processingEnv;
@@ -291,7 +296,7 @@ public abstract class AnnotationAccessor {
 			return AnnotationAccessor.getClass(c.asType(), processingEnv);
 		}
 	}
-
+	
 	private static class AnnotationMirrorProxy implements MethodInterceptor, WrapsAnnotationMirror {
 				
 		private final AnnotationMirror annotationMirror;
@@ -348,15 +353,50 @@ public abstract class AnnotationAccessor {
 		}
 		return Enhancer.create(annotationClass, interfaces.toArray(new Class[] {}), new AnnotationMirrorProxy(annotationMirror, processingEnv));
 	}
-	
+
+	protected AnnotationMirror getAnnotationMirror(MutableDeclaredType mutableType, AnnotationFilter... annotationFilters) {
+		for (AnnotationMirror annotationMirror: mutableType.getAnnotations()) {
+			for (AnnotationFilter annotationFilter: annotationFilters) {
+				if (!annotationFilter.isAnnotationIgnored(annotationMirror)) {
+					return annotationMirror;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
+	protected <T extends Annotation> T getAnnotation(MutableDeclaredType mutableType, Class<T> annotationClass) {
+		AnnotationMirror annotationMirror = getAnnotationMirror(mutableType, new AnnotationTypeFilter(false, annotationClass));
+		if (annotationMirror == null) {
+			return null;
+		}
+
+		return (T)enhance(annotationMirror, annotationClass, processingEnv);
+	}
+
 	protected <T extends Annotation> T getAnnotation(Element element, Class<T> annotationClass) {
 		AnnotationMirror annotationMirror = getAnnotationMirror(element, new AnnotationTypeFilter(false, annotationClass));
 		if (annotationMirror == null) {
 			return null;
 		}
 
+		return toAnnotation(annotationMirror, annotationClass);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T extends Annotation> T toAnnotation(AnnotationMirror annotationMirror, Class<T> annotationClass) {
 		return (T)enhance(annotationMirror, annotationClass, processingEnv);
+	}
+
+	protected AnnotationMirror toAnnotationMirror(Annotation annotation) {
+		if (annotation instanceof WrapsAnnotationMirror) {
+			return ((WrapsAnnotationMirror)annotation).getAnnotationMirror();
+		}
+		
+		throw new RuntimeException("Unsupported annotation: use " + AnnotationMirror.class.getCanonicalName() + " type of obtain annotation using getAnnotation method from " + 
+				this.getClass().getCanonicalName() + "!");
 	}
 	
 	protected AnnotationMirror getAnnotationMirror(Element element, AnnotationFilter... annotationFilters) {
@@ -373,12 +413,7 @@ public abstract class AnnotationAccessor {
 	}
 
 	protected <T> T toPojo(Annotation annotation, Class<T> clazz) {
-		if (annotation instanceof WrapsAnnotationMirror) {
-			return toPojo(((WrapsAnnotationMirror)annotation).getAnnotationMirror(), clazz);
-		}
-		
-		throw new RuntimeException("Unsupported annotation: use " + AnnotationMirror.class.getCanonicalName() + " type of obtain annotation using getAnnotation method from " + 
-				this.getClass().getCanonicalName() + "!");
+		return toPojo(toAnnotationMirror(annotation), clazz);
 	}
 	
 	protected <T> T toPojo(AnnotationMirror annotation, Class<T> clazz) {

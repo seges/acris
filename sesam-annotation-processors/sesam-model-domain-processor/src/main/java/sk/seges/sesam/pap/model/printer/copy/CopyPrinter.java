@@ -25,7 +25,7 @@ public abstract class CopyPrinter extends AbstractElementPrinter {
 	protected List<AnnotationMirror> getSupportedAnnotations(TransferObjectContext context) {
 		
 		if (typeCopyAccessor == null) {
-			typeCopyAccessor = new CopyAccessor(context.getConfigurationTypeElement().asElement(), processingEnv);
+			typeCopyAccessor = new CopyAccessor(context.getConfigurationTypeElement().asConfigurationElement(), processingEnv);
 		}
 		
 		CopyAccessor methodCopyAccessor = new CopyAccessor(context.getDtoMethod(), processingEnv);

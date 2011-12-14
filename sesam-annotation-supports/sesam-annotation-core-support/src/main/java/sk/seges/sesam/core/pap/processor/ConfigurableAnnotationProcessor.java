@@ -1,7 +1,12 @@
 package sk.seges.sesam.core.pap.processor;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -10,13 +15,15 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeKind;
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
 import sk.seges.sesam.core.pap.builder.ClassPathTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.utils.ListUtils;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 
 public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotationProcessor {
 
@@ -29,7 +36,8 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	protected ProcessorConfigurer configurer;
 	protected RoundEnvironment roundEnv;
 
-	private Set<Element> processedElement = new HashSet<Element>();
+	private Set<MutableDeclaredType> processedElements = new HashSet<MutableDeclaredType>();
+	private Set<MutableDeclaredType> waitingElements = new HashSet<MutableDeclaredType>();
 
 	protected ConfigurableAnnotationProcessor() {
 		configurer = getConfigurer();
@@ -98,7 +106,7 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
-		this.configurer.init(processingEnv, this);
+		//this.configurer.init(processingEnv, this);
 	}
 	
 	protected boolean supportProcessorChain() {
@@ -110,12 +118,14 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	public final boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		this.roundEnv = roundEnv;
 		if (!roundEnv.processingOver()) {
-			Set<Element> processingElements = null;
+			Set<MutableDeclaredType> processingElements = null;
 
 			if (configurer != null) {
+				configurer = getConfigurer();
+				configurer.init(processingEnv, this);
 				processingElements = configurer.getElements(roundEnv);
 			} else {
-				processingElements = new HashSet<Element>();
+				processingElements = new HashSet<MutableDeclaredType>();
 
 				for (String annotationType: getSupportedAnnotationTypes()) {
 					if (!annotationType.equals(ProcessorConfiguration.class.getCanonicalName())) {
@@ -123,29 +133,82 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 						if (typeElement != null) {
 							Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(typeElement);
 							for (Element element: elementsAnnotatedWith) {
-								processingElements.add(element);
+								//TODO handle methods
+								processingElements.add((MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(element.asType()));
 							}
 						}
 					}
 				}
 			}
 			
-			for (Element element: processingElements) {
-				if (!ListUtils.contains(processedElement, element)) {
-					processedElement.add(element);
-					if (configurer == null || configurer.isSupportedKind(element.getKind())) {
-						init(element, roundEnv);
-						processElement(element, roundEnv);
-						configurer.flushMessages(processingEnv.getMessager(), element);
+			for (MutableDeclaredType waitingElement: waitingElements) {
+				//TODO handle methods
+				processingElements.add(waitingElement);
+			}
+			
+			waitingElements.clear();
+			
+			List<MutableDeclaredType> result = new LinkedList<MutableDeclaredType>();
+
+			for (MutableDeclaredType element: processingElements) {
+				if (element.getKind().isDeclared()) {
+					//Do not touch this
+					//TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(element.toString());
+
+					TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(element.getCanonicalName().toString());
+					
+					if (!typeElement.getSuperclass().getKind().equals(TypeKind.ERROR)) {
+						result.add(element);
+					} else {
+						processingEnv.getMessager().printMessage(Kind.WARNING, "Skipping processing of the " + typeElement + " type because it has noncompilable superclass");
+						waitingElements.add(element);
 					}
+				} else {
+					result.add(element);
 				}
+			}
+			
+			if (result.size() == 0) {
+				for (MutableDeclaredType element: processingElements) {
+					result.add(element);
+				}
+			}
+
+			int size = printersMap.size();
+
+			processElements(result);
+
+			if (size == printersMap.size()) {
+				processElements(waitingElements);
+				waitingElements.clear();
 			}
 		}
 
 		return !supportProcessorChain();
 	}
 
+	private void processElements(Collection<MutableDeclaredType> elements) {
+		Map<MutableDeclaredType, Element> els = new HashMap<MutableDeclaredType, Element>();
+
+		for (MutableDeclaredType element: elements) {
+			els.put(element, element.asElement());
+		}
+		
+		for (MutableDeclaredType element: elements) {
+			if (!processedElements.contains(element)) {
+				processedElements.add(element);
+				
+				Element el = els.get(element);
+				if (configurer == null || configurer.isSupportedKind(el.getKind())) {
+					init(el, roundEnv);
+					processElement(element, roundEnv);
+					configurer.flushMessages(processingEnv.getMessager(), el);
+				}
+			}
+		}
+	}
+	
 	protected void init(Element element, RoundEnvironment roundEnv) {};
 	
-	protected abstract boolean processElement(Element element, RoundEnvironment roundEnv);
+	protected abstract boolean processElement(MutableDeclaredType element, RoundEnvironment roundEnv);
 }
