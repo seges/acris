@@ -19,7 +19,11 @@ public class TestCaseResult implements ReportData {
 
 	private List<CommandResult> commandResults = new LinkedList<CommandResult>();
 	
+	public static final String SETUP = "setUp";
+	
 	private String testMethod;
+	private String correctedTestMethod;
+	
 	private String fileName;
 	
 	public TestCaseResult(Class<? extends AbstractSeleniumTest> testCase) {
@@ -59,6 +63,10 @@ public class TestCaseResult implements ReportData {
 			return "Description is missing";
 		}
 	}
+
+	public String getCorrectedTestMethod() {
+		return correctedTestMethod;
+	}
 	
 	public String getTestMethod() {
 		if (testMethod == null) {
@@ -66,6 +74,14 @@ public class TestCaseResult implements ReportData {
 			
 			if (stackTraceElement != null) {
 				testMethod = stackTraceElement.getMethodName();
+			}
+		}
+		
+		if (testMethod != null && correctedTestMethod == null && testMethod.equals(SETUP)) {
+			StackTraceElement stackTraceElement = getStackTraceElement();
+			
+			if (stackTraceElement != null) {
+				correctedTestMethod = stackTraceElement.getMethodName();
 			}
 		}
 		

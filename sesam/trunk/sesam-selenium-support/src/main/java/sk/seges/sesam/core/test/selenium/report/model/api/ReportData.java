@@ -5,5 +5,4 @@ public interface ReportData {
 	void setFileName(String fileName);
 	
 	String getFileName();
-
 }
