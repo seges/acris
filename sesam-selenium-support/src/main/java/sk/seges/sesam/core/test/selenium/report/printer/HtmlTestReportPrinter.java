@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.test.selenium.report.printer;
 
+import java.io.File;
+
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Report;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.SupportSettings;
@@ -61,6 +63,26 @@ public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseRes
 			if (testMethod != null) {
 				super.print(testCaseResult);
 			}
+		}
+	}
+
+	@Override
+	public void finish(TestCaseResult resultData) {
+		super.finish(resultData);
+		
+		String correctedTestMethod = resultData.getCorrectedTestMethod();
+		
+		if (correctedTestMethod != null) {
+			//we should rename the directory
+			String outputDir = getOutputDirectory(reportSettings.getHtml().getSupport());
+			
+			File outputDirectory = new File(getResultDirectory(), outputDir);
+			String outputDirectoryPath = outputDirectory.getAbsolutePath();
+			int index = outputDirectoryPath.lastIndexOf(TestCaseResult.SETUP);
+			String replacement = outputDirectoryPath.substring(index).substring(0, index) + outputDirectoryPath.substring(index).replaceFirst(TestCaseResult.SETUP, correctedTestMethod);
+			File result = new File(replacement);
+			outputDirectory.renameTo(result);
+			resultData.setFileName(outputDir);
 		}
 	}
 }
