@@ -24,6 +24,7 @@ import sk.seges.sesam.core.pap.builder.ClassPathTypeUtils;
 import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.utils.ListUtils;
 
 public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotationProcessor {
 
@@ -156,7 +157,7 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 					//TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(element.toString());
 
 					TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(element.getCanonicalName().toString());
-					
+
 					if (!typeElement.getSuperclass().getKind().equals(TypeKind.ERROR)) {
 						result.add(element);
 					} else {
@@ -188,18 +189,17 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	}
 
 	private void processElements(Collection<MutableDeclaredType> elements) {
-		Map<MutableDeclaredType, Element> els = new HashMap<MutableDeclaredType, Element>();
+		Map<String, Element> els = new HashMap<String, Element>();
 
 		for (MutableDeclaredType element: elements) {
-			els.put(element, element.asElement());
+			els.put(element.toString(), element.asElement());
 		}
 		
 		for (MutableDeclaredType element: elements) {
-			if (!processedElements.contains(element)) {
-				processedElements.add(element);
-				
-				Element el = els.get(element);
+			if (!ListUtils.containsElement(processedElements, element)) {
+				Element el = els.get(element.toString());
 				if (configurer == null || configurer.isSupportedKind(el.getKind())) {
+					processedElements.add(element);
 					init(el, roundEnv);
 					processElement(element, roundEnv);
 					configurer.flushMessages(processingEnv.getMessager(), el);
