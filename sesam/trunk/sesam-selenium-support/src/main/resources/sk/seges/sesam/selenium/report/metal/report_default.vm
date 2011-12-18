@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Test result</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
 
@@ -90,12 +91,16 @@
 #foreach( $testCaseCollectionResults in $result.getTestCaseCollectionResults() )
 	<li onclick="$('#$testCaseCollectionResults.getTestName()').slideToggle('slow')">
 		<div style="float: left">
-			<strong id="parent1">$testCaseCollectionResults.getTestName()</strong>
+			<strong id="parent1">$testCaseCollectionResults.getDescription() [${testCaseCollectionResults.getTestName()}]</strong>
 			$testCaseCollectionResults.getTestCaseResults().size() tests / $testCaseCollectionResults.getFailedTestCaseResults().size() failure(s)
 		</div>
 		<div style="float: right; margin-top: -10px;">
-			<img src="fail_64.png"/>
-			<img src="settings_64.png"/>
+			#if ( $testCaseCollectionResults.getFailedTestCaseResults().size() == 0 )
+			<img src="${result.getResourceDir()}success_64.png"/>
+			#else 
+			<img src="${result.getResourceDir()}fail_64.png"/>
+			#end
+			<img src="${result.getResourceDir()}settings_64.png"/>
 		</div>
 		<ul class="main_secondary_navi" id="${testCaseCollectionResults.getTestName()}">
 			#foreach( $testCaseResult in $testCaseCollectionResults.getTestCaseResults() )
@@ -105,8 +110,15 @@
 						#else 
 					<li class="pass">
 						#end
-						<strong>${testCaseResult.getTestDescription()} [${testCaseResult.getTestMethod()}]</strong>
-						Took $testCaseResult.getTotalSeconds() seconds
+						<div style="float: left">
+							<strong>${testCaseResult.getTestDescription()} [${testCaseResult.getTestMethod()}]</strong>
+							Took $testCaseResult.getTotalSeconds() seconds
+						</div>
+						<div style="float: right; margin-top: -10px;">
+							#if ( $testCaseResult.hasBugReported() )
+								<img src="${testCaseResult.getResourceDir()}${testCaseResult.getIssue().tracker().getIconName()}"/>
+							#end
+						</div>
 					</li>
 				</a>
 			#end

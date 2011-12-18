@@ -7,6 +7,7 @@ import java.util.List;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest.Issue;
 import sk.seges.sesam.core.test.selenium.report.model.api.ReportData;
 
 public class TestCaseResult implements ReportData {
@@ -36,6 +37,23 @@ public class TestCaseResult implements ReportData {
 	
 	public String getFileName() {
 		return fileName;
+	}
+	
+	public boolean hasBugReported() {
+		try {
+			return getTestCase().getMethod(getTestMethod()).getAnnotation(SeleniumTest.class).issue().value() != SeleniumTest.UNDEFINED;
+		} catch (Exception e) {
+		}
+		return false;
+	}
+	
+	public Issue getIssue() {
+		try {
+			return getTestCase().getMethod(getTestMethod()).getAnnotation(SeleniumTest.class).issue();
+		} catch (Exception e) {
+		}
+		
+		return null;
 	}
 	
 	public SeleniumOperationResult getStatus() {

@@ -3,11 +3,15 @@ package sk.seges.sesam.core.test.selenium.report.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestCase;
+
 public class TestCaseCollectionResult {
 
 	private List<TestCaseResult> testCases = new ArrayList<TestCaseResult>();
 
 	private String testName;
+	private Class<? extends AbstractSeleniumTest> seleniumTestClass;
 
 	private enum ResultsFilter {
 		
@@ -33,10 +37,19 @@ public class TestCaseCollectionResult {
 		return filteredResult;
 	}
 	
-	public TestCaseCollectionResult(String simpleTestName) {
-		this.testName = simpleTestName;
+	public TestCaseCollectionResult(Class<? extends AbstractSeleniumTest> seleniumTestClass) {
+		this.testName = seleniumTestClass.getSimpleName();
+		this.seleniumTestClass = seleniumTestClass;
 	}
-	
+
+	public String getDescription() {
+		try {
+			return seleniumTestClass.getAnnotation(SeleniumTestCase.class).description();
+		} catch (Exception e) {
+			return "Description is missing";
+		}
+	}
+
 	public String getTestName() {
 		return testName;
 	}

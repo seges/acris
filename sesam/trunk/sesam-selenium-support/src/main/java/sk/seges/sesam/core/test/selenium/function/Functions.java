@@ -40,8 +40,4 @@ public class Functions {
 	public static Function<WebDriver, WebElement> elementContainsText(By locator, String text) {
 		return new ElementContainsText(locator, false, text);
 	}
-
-	public static Function<WebDriver, WebElement> elementPresent(WebElement webElement) {
-		return new ElementPresent(webElement);
-	}
 }
