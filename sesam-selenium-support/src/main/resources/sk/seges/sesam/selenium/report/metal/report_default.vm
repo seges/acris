@@ -86,7 +86,11 @@
 </head>
 
 <body>
-
+<ul class="main_navi">
+	<li>
+		$result.getTestCasesCount() tests / $result.getFailedTestCasesCount() failure(s)
+	</li>
+</ul>
 <ul class="main_navi">
 #foreach( $testCaseCollectionResults in $result.getTestCaseCollectionResults() )
 	<li onclick="$('#$testCaseCollectionResults.getTestName()').slideToggle('slow')">
@@ -116,9 +120,10 @@
 						</div>
 						<div style="float: right; margin-top: -10px;">
 							#if ( $testCaseResult.hasBugReported() )
-								<img src="${testCaseResult.getResourceDir()}${testCaseResult.getIssue().tracker().getIconName()}"/>
+								<img src="${result.getResourceDir()}${testCaseResult.getIssue().tracker().getIconName()}"/>
 							#end
 						</div>
+						<div style="clear: both;"></div>
 					</li>
 				</a>
 			#end

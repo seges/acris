@@ -17,6 +17,24 @@ public class TestResult implements ReportData {
 	public Collection<TestCaseCollectionResult> getTestCaseCollectionResults() {
 		return testCaseCollections.values();
 	}
+
+	public int getTestCasesCount() {
+		int count = 0;
+		for (TestCaseCollectionResult testCaseCollectionResult: getTestCaseCollectionResults()) {
+			count += testCaseCollectionResult.getTestCaseResults().size();
+		}
+		
+		return count;
+	}
+	
+	public int getFailedTestCasesCount() {
+		int count = 0;
+		for (TestCaseCollectionResult testCaseCollectionResult: getTestCaseCollectionResults()) {
+			count += testCaseCollectionResult.getFailedTestCaseResults().size();
+		}
+		
+		return count;
+	}
 	
 	public String getResourceDir() {
 		return RESOURCE_BASE_DIR;

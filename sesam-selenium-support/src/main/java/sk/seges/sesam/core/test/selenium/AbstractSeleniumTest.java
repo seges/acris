@@ -110,8 +110,12 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	@After
 	public void tearDown() {
 
-		reportEventListener.finish();
-
+		try {
+			reportEventListener.finish();
+		} catch (Exception ex) {
+			System.out.println(ex);
+		}
+		
 		super.tearDown();	
 	}
 	
