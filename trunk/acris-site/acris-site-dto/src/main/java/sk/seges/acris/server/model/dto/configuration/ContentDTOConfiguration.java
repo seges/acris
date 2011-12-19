@@ -31,7 +31,7 @@ public interface ContentDTOConfiguration extends IDataTransferObject {
 	void id();
 
 	@Size(min = 1, max = 255)
-	@Pattern(regexp = "[a-zA-Z0-9\\-_]*")
+	@Pattern(regexp = "[a-zA-Z0-9\\-_/]*")
 	void niceUrl();
 
 	@Size(min = 0, max = 255)
