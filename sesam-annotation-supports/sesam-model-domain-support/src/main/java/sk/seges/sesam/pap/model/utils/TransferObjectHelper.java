@@ -9,10 +9,12 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.NullCheck;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.annotation.Field;
 
 public class TransferObjectHelper {
@@ -50,28 +52,43 @@ public class TransferObjectHelper {
 		
 		return processingEnv.getTypeUtils().isAssignable(type1, type2);
 	}
-	
+
 	public boolean hasSetterMethod(TypeElement element, ExecutableElement method) {
+		return hasSetterMethod(element, element, method);
+	}
+	
+	private boolean hasSetterMethod(TypeElement owner, TypeElement element, ExecutableElement method) {
 
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
 		for (ExecutableElement elementMethod : methods) {
 
 			if (elementMethod.getModifiers().contains(Modifier.PUBLIC) && 
-				elementMethod.getSimpleName().toString().equals(MethodHelper.toSetter(method)) && elementMethod.getParameters().size() == 1 &&
-				isAssignable(method.getReturnType(), elementMethod.getParameters().get(0).asType())) {
-				return true;
+				elementMethod.getSimpleName().toString().equals(MethodHelper.toSetter(method)) && elementMethod.getParameters().size() == 1) {
+				TypeMirror asType = elementMethod.getParameters().get(0).asType();
+				if (asType.getKind().equals(TypeKind.TYPEVAR)) {
+					TypeMirror ensuredType = ProcessorUtils.erasure(owner, (TypeVariable) asType);
+					if (ensuredType != null) {
+						asType = ensuredType;
+					}
+				}
+				
+				if (isAssignable(method.getReturnType(), asType)) {
+					return true;
+				}
+				
+				return false;
 			}
 		}
 		
 		if (element.getSuperclass() != null && element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-			if (hasSetterMethod((TypeElement) ((DeclaredType) element.getSuperclass()).asElement(), method)) {
+			if (hasSetterMethod(owner, (TypeElement) ((DeclaredType) element.getSuperclass()).asElement(), method)) {
 				return true;
 			}
 		}
 
 		for (TypeMirror typeInterface: element.getInterfaces()) {
-			if (hasSetterMethod((TypeElement)((DeclaredType)typeInterface).asElement(), method)) {
+			if (hasSetterMethod(owner, (TypeElement)((DeclaredType)typeInterface).asElement(), method)) {
 				return true;
 			}
 		}

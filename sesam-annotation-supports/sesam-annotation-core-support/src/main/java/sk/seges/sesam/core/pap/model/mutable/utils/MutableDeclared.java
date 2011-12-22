@@ -451,7 +451,7 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		for (MutableTypeVariable typeParameter: this.getTypeVariables()) {
 			String variable = typeParameter.getVariable();
 			
-			if (variable != null && !variable.equals("?")) {
+			if (variable != null && !variable.equals(MutableWildcardType.WILDCARD_NAME)) {
 				if (oldName == null || oldName.equals(variable)) {
 					variable = actionType.apply(variable, parameter);
 				}

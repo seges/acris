@@ -22,4 +22,5 @@ public interface DomainDeclaredType extends DomainType, MutableDeclaredType {
 	ExecutableElement getGetterMethod(String fieldName);
 	ExecutableElement getSetterMethod(String fieldName);
 
+	MutableDeclaredType asMutable();
 }

@@ -30,7 +30,7 @@ import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
-class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
+public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 
 	private boolean configurationTypeInitialized = false;
 	protected ConfigurationTypeElement configurationTypeElement;
@@ -44,7 +44,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 	private boolean idMethodInitialized = false;
 	private ExecutableElement idMethod;
 
-	protected DomainDeclared(MutableDeclaredType domainType, MutableDeclaredType dtoType, ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+	public DomainDeclared(MutableDeclaredType domainType, MutableDeclaredType dtoType, ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);
 		
 		this.domainType = domainType;
@@ -373,6 +373,7 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 		}
 	}
 
+	//TODO rename to asDataElement
 	public TypeElement asConfigurationElement() {
 		//TODO it is
 		if (asType().getKind().equals(TypeKind.DECLARED)) {
@@ -383,5 +384,10 @@ class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
 
 	public TypeMirror asType() {
 		return getMutableTypesUtils().fromMutableType(domainType);
+	}
+
+	@Override
+	public MutableDeclaredType asMutable() {
+		return ensureDelegateType();
 	}
 }

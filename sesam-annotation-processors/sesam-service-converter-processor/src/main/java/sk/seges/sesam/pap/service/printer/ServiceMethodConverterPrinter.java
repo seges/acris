@@ -27,7 +27,7 @@ import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 
 public class ServiceMethodConverterPrinter extends AbstractServicePrinter implements ServiceConverterElementPrinter {
 
-	private final FormattedPrintWriter pw;
+	protected final FormattedPrintWriter pw;
 	private final ConverterProviderPrinter converterProviderPrinter;
 	
 	public ServiceMethodConverterPrinter(TransferObjectProcessingEnvironment processingEnv, ParametersResolver parametersResolver, 
@@ -40,6 +40,8 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 	@Override
 	public void initialize(ServiceTypeElement serviceTypeElement, MutableDeclaredType outputName) {}
 
+	protected void printCastLocalMethodResult(DtoType returnDtoType, ServiceConverterPrinterContext context) {}
+	
 	@Override
 	public void print(ServiceConverterPrinterContext context) {
 
@@ -88,7 +90,9 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 					pw.print(".toDto(");
 				}
 			}
-
+			
+			printCastLocalMethodResult(returnDtoType, context);
+			
 			pw.print(context.getLocalServiceFieldName() + "." + localMethod.getSimpleName().toString() + "(");
 
 			for (int i = 0; i < localMethod.getParameters().size(); i++) {

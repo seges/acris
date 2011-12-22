@@ -51,7 +51,7 @@ public class DefaultParametersResolver implements ParametersResolver {
 						MutableTypeVariable domainTypeVariable = processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + typeParameterName);
 						
 						MutableDeclaredType dtoConverterNamedType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType((DeclaredType) dtoConverterType.asType()), dtoTypeVariable, domainTypeVariable);
-						variableElements.add(new ConverterParameterElement(dtoConverterNamedType, TransferObjectContext.LOCAL_CONVERTER_NAME + index, true));
+						variableElements.add(new ConverterParameterElement(dtoConverterNamedType, TransferObjectContext.LOCAL_CONVERTER_NAME + index++, true));
 					} else {
 						//TODO handle type parameter with no variables
 					}

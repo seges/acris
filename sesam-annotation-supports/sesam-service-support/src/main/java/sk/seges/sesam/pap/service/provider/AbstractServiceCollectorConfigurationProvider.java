@@ -108,7 +108,8 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 				result = configurationTypeElement;
 
 				if (result.getDelegateConfigurationTypeElement() == null) {
-					return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
+					return getConfigurationElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement());
+					//return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
 				}
 			}
 		}
@@ -120,7 +121,8 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 		}
 
 		if (result != null) {
-			return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
+			return getConfigurationElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement());
+			//return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
 		}
 
 		return null;
@@ -139,7 +141,8 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 				result = configurationTypeElement;
 
 				if (result.getDelegateConfigurationTypeElement() == null) {
-					return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
+					return getConfigurationElement(domainType, null, (TypeElement)result.asConfigurationElement());
+					//return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
 				}
 			}
 		}
@@ -151,7 +154,8 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 		}
 		
 		if (result != null) {
-			return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
+			return getConfigurationElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement());
+			//return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
 		}
 		
 		return null;
