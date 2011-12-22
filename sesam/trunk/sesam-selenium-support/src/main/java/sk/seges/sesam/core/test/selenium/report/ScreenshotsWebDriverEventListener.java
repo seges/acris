@@ -35,7 +35,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	}
 
 	private CommandResult getCommandResult(String name) {
-		CommandResult commandResult = new CommandResult();
+		CommandResult commandResult = new CommandResult(reportSettings.getHtml().getLocale());
 		commandResult.setScreenshotName(name);
 		return commandResult;
 	}

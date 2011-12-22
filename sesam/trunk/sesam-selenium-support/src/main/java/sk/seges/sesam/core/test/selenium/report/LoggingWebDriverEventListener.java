@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.report.model.CommandResult;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationResult;
@@ -12,35 +13,33 @@ import sk.seges.sesam.core.test.selenium.report.model.api.TestResultCollector;
 
 public class LoggingWebDriverEventListener implements TestResultCollector {
 
-	public LoggingWebDriverEventListener() {}
-
 	private CommandResult commandResult = null;
 
+	private final ReportSettings reportSettings;
+	
+	public LoggingWebDriverEventListener(ReportSettings reportSettings) {
+		this.reportSettings = reportSettings;
+	}
+	
 	@Override
 	public CommandResult getCommandResult() {
 		return commandResult;
 	}
 	
 	private CommandResult getCommandResult(SeleniumOperationState state, SeleniumOperationResult result, Throwable throwable) {
-		CommandResult commandResult = new CommandResult();
-//		if (commandResults.size() > 0) {
-//			CommandResult lastCommandResult = commandResults.get(commandResults.size() - 1);
-//			commandResult.setOperation(lastCommandResult.getOperation());
-//		}
+		CommandResult commandResult = new CommandResult(reportSettings.getHtml().getLocale());
 		commandResult.setState(state);
 		commandResult.setResult(result);
 		commandResult.setThrowable(throwable);
-//		commandResults.add(commandResult);
 		return commandResult;
 	}
 	
 	private CommandResult getCommandResult(SeleniumOperationState state, SeleniumOperation operation, SeleniumOperationResult result, Object... params) {
-		CommandResult commandResult = new CommandResult();
+		CommandResult commandResult = new CommandResult(reportSettings.getHtml().getLocale());
 		commandResult.setState(state);
 		commandResult.setOperation(operation);
 		commandResult.setResult(result);
 		commandResult.setParameters(params);
-//		commandResults.add(commandResult);
 		return commandResult;
 	}
 

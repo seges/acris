@@ -1,4 +1,7 @@
 <HTML>
+<HEAD>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+</HEAD>
 <BODY>
 Report for $result.getTestCase()<br/>
 Started at $result.getStartDate() and took $result.getTotalTime() ms.<br/>

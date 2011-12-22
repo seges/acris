@@ -115,7 +115,7 @@
 					<li class="pass">
 						#end
 						<div style="float: left">
-							<strong>${testCaseResult.getTestDescription()} [${testCaseResult.getTestMethod()}]</strong>
+							<strong>${testCaseResult.getTestDescription()} [${testCaseResult.getCorrectedTestMethod()}]</strong>
 							Took $testCaseResult.getTotalSeconds() seconds
 						</div>
 						<div style="float: right; margin-top: -10px;">

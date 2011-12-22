@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.report.model.api.TestResultCollector;
 import sk.seges.sesam.core.test.selenium.report.printer.ReportPrinter;
 
@@ -19,10 +20,12 @@ public class ReportEventListener implements WebDriverEventListener {
 
 	private ReportPrinter<TestCaseResult> reportPrinter;
 	private List<TestResultCollector> webDriverEventListeners = new ArrayList<TestResultCollector>();
+	private final ReportSettings reportSettings;
 	
-	public ReportEventListener(Class<? extends AbstractSeleniumTest> testCase, ReportPrinter<TestCaseResult> reportPrinter) {
+	public ReportEventListener(Class<? extends AbstractSeleniumTest> testCase, ReportPrinter<TestCaseResult> reportPrinter, ReportSettings reportSettings) {
 		this.reportPrinter = reportPrinter;
 		this.testInfo = new TestCaseResult(testCase);
+		this.reportSettings = reportSettings;
 	}
 
 	public void addTestResultCollector(TestResultCollector testResultCollector) {
@@ -44,15 +47,16 @@ public class ReportEventListener implements WebDriverEventListener {
 	
 	public void finish() {
 		this.testInfo.endTest();
-		this.reportPrinter.finish(testInfo);
 
 		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
 			testInfoCollector.finish();
 		}
+
+		this.reportPrinter.finish(testInfo);
 	}
 
 	private CommandResult merge(List<CommandResult> commandResults) {
-		CommandResult result = new CommandResult();
+		CommandResult result = new CommandResult(reportSettings.getHtml().getLocale());
 		
 		for (CommandResult commandResult: commandResults) {
 			if (commandResult.getOperation() != null) {

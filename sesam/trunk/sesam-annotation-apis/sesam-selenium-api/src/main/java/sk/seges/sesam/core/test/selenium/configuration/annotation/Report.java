@@ -77,6 +77,9 @@ public @interface Report {
 
 		@Parameter(name = "suite.template.path", description = "Defines path to the used template for suite")
 		String suiteTemplatePath() default Constants.NULL;
+
+		@Parameter(name = "suite.template.locale", description = "Defines locale for the generated report")
+		String locale() default "en";
 	}
 	
 	@Parameter(name = "report.html", description = "HTML reports")

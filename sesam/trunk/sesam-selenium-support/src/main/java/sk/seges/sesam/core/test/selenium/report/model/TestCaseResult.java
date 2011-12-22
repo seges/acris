@@ -76,14 +76,22 @@ public class TestCaseResult implements ReportData {
 	
 	public String getTestDescription() {
 		try {
-			return getTestCase().getMethod(getTestMethod()).getAnnotation(SeleniumTest.class).description();
+			return getTestCase().getMethod(getCorrectedTestMethod()).getAnnotation(SeleniumTest.class).description();
 		} catch (Exception e) {
 			return "Description is missing";
 		}
 	}
 
 	public String getCorrectedTestMethod() {
-		return correctedTestMethod;
+		if (correctedTestMethod != null) {
+			return correctedTestMethod;
+		}
+
+		if (!testMethod.equals(SETUP)) {
+			return testMethod;
+		}
+		
+		return null;
 	}
 	
 	public String getTestMethod() {
@@ -99,7 +107,11 @@ public class TestCaseResult implements ReportData {
 			StackTraceElement stackTraceElement = getStackTraceElement();
 			
 			if (stackTraceElement != null) {
-				correctedTestMethod = stackTraceElement.getMethodName();
+				String currentMethod = stackTraceElement.getMethodName();
+				
+				if (!currentMethod.equals(SETUP)) {
+					correctedTestMethod  = currentMethod;
+				}
 			}
 		}
 		
@@ -180,6 +192,5 @@ public class TestCaseResult implements ReportData {
 			throw new RuntimeException("Test was not finished yet!");
 		}
 		return endTime - startTime;
-	}
-	
+	}	
 }
