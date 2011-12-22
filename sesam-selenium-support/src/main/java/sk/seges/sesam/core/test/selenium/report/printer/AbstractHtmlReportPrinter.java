@@ -121,7 +121,7 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 		}
 
 		if (writer != null) {
-			//already printed
+			//already initialized
 			return;
 		}
 		
@@ -136,6 +136,7 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 	        resultData.setFileName(fileName);
 			writer = new BufferedWriter(new FileWriter(new File(outFileName)));
 		} catch (IOException e) {
+        	System.out.println(e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -166,7 +167,11 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 	        writer.flush();
 	        writer.close();
 		} catch (Exception e) {
-			return;
+	        try {
+				writer.close();
+			} catch (IOException e1) {}
+        	System.out.println(e);
+			throw new RuntimeException(e);
 		}
         
         writer = null;

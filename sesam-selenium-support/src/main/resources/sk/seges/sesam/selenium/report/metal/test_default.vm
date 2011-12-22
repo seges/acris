@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Test result for $result.getTestCase()</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
 	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/standalone.css"/>	
 	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/scrollable-navig.css" />
@@ -12,7 +13,7 @@
 	}
 
 	#title {
-		margin-top: 10px;
+		padding-top: 10px;
 		text-align: center;
 		color: #FFFFFF;
 		font-size: 12px;

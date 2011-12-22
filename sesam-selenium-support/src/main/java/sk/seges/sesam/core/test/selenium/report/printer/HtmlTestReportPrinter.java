@@ -57,7 +57,8 @@ public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseRes
 			return;
 		}
 
-		if (testMethod == null) {
+		//TODO identify setup method based on annotation
+		if (testMethod == null || testMethod.equals(TestCaseResult.SETUP)) {
 			testMethod = testCaseResult.getTestMethod();
 			
 			if (testMethod != null) {
@@ -68,9 +69,10 @@ public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseRes
 
 	@Override
 	public void finish(TestCaseResult resultData) {
-		super.finish(resultData);
 		
 		String correctedTestMethod = resultData.getCorrectedTestMethod();
+
+		super.finish(resultData);
 		
 		if (correctedTestMethod != null) {
 			//we should rename the directory
@@ -79,10 +81,14 @@ public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseRes
 			File outputDirectory = new File(getResultDirectory(), outputDir);
 			String outputDirectoryPath = outputDirectory.getAbsolutePath();
 			int index = outputDirectoryPath.lastIndexOf(TestCaseResult.SETUP);
-			String replacement = outputDirectoryPath.substring(index).substring(0, index) + outputDirectoryPath.substring(index).replaceFirst(TestCaseResult.SETUP, correctedTestMethod);
+			
+			String replacement = outputDirectoryPath.substring(0, index) + outputDirectoryPath.substring(index).replaceFirst(TestCaseResult.SETUP, correctedTestMethod);
 			File result = new File(replacement);
+			
+			index = resultData.getFileName().lastIndexOf(TestCaseResult.SETUP);
+			resultData.setFileName(resultData.getFileName().substring(0, index) + resultData.getFileName().substring(index).replaceFirst(TestCaseResult.SETUP, correctedTestMethod));
+			
 			outputDirectory.renameTo(result);
-			resultData.setFileName(outputDir);
 		}
 	}
 }
