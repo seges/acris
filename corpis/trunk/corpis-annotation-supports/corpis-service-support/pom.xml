@@ -18,7 +18,22 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-model-domain-support</artifactId>
 		</dependency>
-		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-domain-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-service-converter-processor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		 
+		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-service-api</artifactId>
@@ -30,5 +45,10 @@
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
 		
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
 	</dependencies>
 </project>

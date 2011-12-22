@@ -8,8 +8,12 @@ import javax.lang.model.element.ExecutableElement;
 import sk.seges.corpis.pap.service.hibernate.accessor.TransactionPropagationAccessor;
 import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActionType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
@@ -59,7 +63,17 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 		}
 
 		for (MutableType converterParameter: converterParameters) {
-			result[i++] = converterParameter;
+			if (converterParameter instanceof MutableTypeMirror && ((MutableTypeMirror)converterParameter).getKind().isDeclared()) {
+				result[i++] = ((MutableDeclaredType)converterParameter).clone().renameTypeParameter(RenameActionType.REPLACE, MutableWildcardType.WILDCARD_NAME);
+			} else if (converterParameter instanceof MutableTypeMirror && ((MutableTypeMirror)converterParameter).getKind().equals(MutableTypeKind.TYPEVAR)) {
+				if (((MutableTypeVariable)converterParameter).clone().getVariable() != null) {
+					result[i++] = ((MutableTypeVariable)converterParameter).clone().setVariable(MutableWildcardType.WILDCARD_NAME);
+				} else {
+					result[i++] = converterParameter;
+				}
+			} else {
+				result[i++] = converterParameter;
+			}
 		}
 
 		return result;
@@ -74,12 +88,13 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 					pw.print(", ");
 				}
 				
-				if (converterParameter.isConverter()) {
+				pw.print(converterParameter.getType(), " " + converterParameter.getName());
+				/*if (converterParameter.isConverter()) {
 					MutableDeclaredType parameterReplacedTypeParameters = ((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(converterParameter.getType())).setTypeVariables(toTypeParameters(converterTypeElement, false));
 					pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
 				} else {
 					pw.print(converterParameter.getType(), " " + converterParameter.getName());
-				}
+				}*/
 				i++;
 			}
 		}

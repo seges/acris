@@ -6,7 +6,9 @@ import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.corpis.appscaffold.model.pap.configurer.ModelBaseProcessorConfigurer;
@@ -17,20 +19,23 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.ElementSorter;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class ModelBaseProcessor extends AbstractDataProcessor {
 
 	@Override
 	protected void processElement(ProcessorContext context) {
-		generateAccessors(context.getPrintWriter(), context.getTypeElement(), new ArrayList<String>());
+		generateAccessors(context.getPrintWriter(), context.getTypeElement(), context.getTypeElement(), new ArrayList<String>());
 	}
 
-	private void generateMethodAccessors(FormattedPrintWriter pw, MutableTypeMirror mutableType, List<String> generatedProperties) {
-		generateMethodAccessors(pw, (TypeElement)((DeclaredType) processingEnv.getTypeUtils().fromMutableType(mutableType)).asElement(), generatedProperties);
+	private void generateMethodAccessors(FormattedPrintWriter pw, TypeElement owner, MutableTypeMirror mutableType, List<String> generatedProperties) {
+		TypeElement typeElement = (TypeElement)((DeclaredType) processingEnv.getTypeUtils().fromMutableType(mutableType)).asElement();
+		
+		generateMethodAccessors(pw, owner, typeElement, generatedProperties);
 	}
 	
-	private void generateMethodAccessors(FormattedPrintWriter pw, TypeElement processingElement, List<String> generatedProperties) {
+	private void generateMethodAccessors(FormattedPrintWriter pw, TypeElement owner, TypeElement processingElement, List<String> generatedProperties) {
 		
 		List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.getEnclosedElements());
 
@@ -48,31 +53,42 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 			
 			generatedProperties.add(MethodHelper.toField(method));
 			
-			MutableTypeMirror returnType = castToDomainDataInterface(method.getReturnType());
+			TypeMirror returnType = method.getReturnType();
+			
+			if (returnType.getKind().equals(TypeKind.TYPEVAR)) {
+				TypeMirror erasuredReturnType = ProcessorUtils.erasure(owner, (TypeVariable) returnType);
+				if (erasuredReturnType != null) {
+					returnType = erasuredReturnType;
+				}
+			}
+			
+			MutableTypeMirror mutableReturnType = castToDomainDataInterface(returnType);
 
 			String fieldName = MethodHelper.toField(method);
 			
-			pw.println("private ", returnType, " " + fieldName + ";");
+			pw.println("private ", mutableReturnType, " " + fieldName + ";");
 			pw.println();
 			
 			//TODO copied from accessors printer
-			pw.println("public ", returnType, " " + MethodHelper.toGetter(fieldName) + " {");
+			pw.println("public ", mutableReturnType, " " + MethodHelper.toGetter(fieldName) + " {");
 			pw.println("return " + fieldName + ";");
 			pw.println("}");
 			pw.println();
-			pw.println("public void " + MethodHelper.toSetter(fieldName) +  "(", returnType, " " + fieldName + ") {");
+			pw.println("public void " + MethodHelper.toSetter(fieldName) +  "(", mutableReturnType, " " + fieldName + ") {");
 			pw.println("this." + fieldName + " = " + fieldName + ";");
 			pw.println("}");
 			pw.println();
 		}
 
 		for (TypeMirror interfaceType: processingElement.getInterfaces()) {
-			generateMethodAccessors(pw, (TypeElement)((DeclaredType)interfaceType).asElement(), generatedProperties);
+			TypeElement interfaceTypeElement = (TypeElement)((DeclaredType)interfaceType).asElement();
+			
+			generateMethodAccessors(pw, owner, interfaceTypeElement, generatedProperties);
 		}
 
 	}
 	
-	private void generateAccessors(FormattedPrintWriter pw, TypeElement typeElement, List<String> generatedProperties) {
+	private void generateAccessors(FormattedPrintWriter pw, TypeElement owner, TypeElement typeElement, List<String> generatedProperties) {
 		
 		TypeElement processingElement = typeElement;
 		
@@ -108,7 +124,7 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 		DomainDataInterfaceType domainDataInterfaceType = new DomainDataInterfaceType((MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(typeElement.asType()), processingEnv);
 		
 		if (domainDataInterfaceType.isHierarchy()) {
-			generateMethodAccessors(pw, domainDataInterfaceType.getInterfaces().iterator().next(), generatedProperties);
+			generateMethodAccessors(pw, owner, domainDataInterfaceType.getInterfaces().iterator().next(), generatedProperties);
 		}
 	}
 	

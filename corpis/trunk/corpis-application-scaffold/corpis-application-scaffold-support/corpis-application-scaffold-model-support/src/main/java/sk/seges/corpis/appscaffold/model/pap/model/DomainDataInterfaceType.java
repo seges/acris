@@ -39,9 +39,11 @@ public class DomainDataInterfaceType extends AbstractDataType {
 			} else {
 				interfaces.add(processingEnv.getTypeUtils().toMutableType(Serializable.class));
 			}
+		} else if (!hasDataInterface()) {
+			hierarchy = true;
 		}
 
-		changePackage(dataDefinition.getPackageName() + "." + LocationType.SHARED.getName() + "." + LayerType.MODEL.getName() + "." + ImplementationType.DATA.getName());
+		changePackage(dataDefinition.getPackageName() + "." + LocationType.SERVER.getName() + "." + LayerType.MODEL.getName() + "." + ImplementationType.DATA.getName());
 		
 		setInterfaces(interfaces);
 
@@ -56,7 +58,17 @@ public class DomainDataInterfaceType extends AbstractDataType {
 	public boolean isHierarchy() {
 		return hierarchy;
 	}
-	
+
+	private boolean hasDataInterface() {
+		for (MutableTypeMirror domainInterface : domainDataType.getInterfaces()) {
+			MutableDeclaredType d = (MutableDeclaredType) domainInterface;
+			if (new DomainInterfaceAccessor(((DeclaredType)d.asType()).asElement(), processingEnv).isValid()) {
+				return true;
+			}
+		}
+		return false;
+	}
+		
 	private List<MutableTypeMirror> getDataInterfaces() {
 		List<MutableTypeMirror> interfaces = new ArrayList<MutableTypeMirror>();
 		
@@ -64,7 +76,7 @@ public class DomainDataInterfaceType extends AbstractDataType {
 			MutableDeclaredType d = (MutableDeclaredType) domainInterface;
 			if (new DomainInterfaceAccessor(((DeclaredType)d.asType()).asElement(), processingEnv).isValid()) {
 				domainInterface = new DomainDataInterfaceType((MutableDeclaredType)domainInterface, processingEnv);
-			}
+			} 
 		
 			interfaces.add(domainInterface);
 		}

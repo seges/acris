@@ -13,24 +13,6 @@
 	</parent>
 
 	<dependencies>
-		<!-- Sesam dependencies -->
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-service-converter-processor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-annotation-core-support</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency> 
-
-		<!-- Spring dependencies -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
-		
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>

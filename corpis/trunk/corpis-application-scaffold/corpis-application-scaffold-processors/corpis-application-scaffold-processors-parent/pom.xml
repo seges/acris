@@ -17,6 +17,8 @@
 		<module>../corpis-application-scaffold-model-base-processor</module>
 		<module>../corpis-application-scaffold-jpamodel-processor</module>
 		<module>../corpis-application-scaffold-mapbasedobject-processor</module>
+		<module>../corpis-application-scaffold-local-service-data-interface-processor</module>
+		<module>../corpis-application-scaffold-data-service-converter-processor</module>
 	</modules>
 	
 	<dependencyManagement>
@@ -39,7 +41,11 @@
 				<artifactId>corpis-application-scaffold-model-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>		
-			
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-service-converter-hibernate-processor</artifactId>
+				<version>${project.version}</version>
+			</dependency>		
 		</dependencies>
 	</dependencyManagement>
 </project>

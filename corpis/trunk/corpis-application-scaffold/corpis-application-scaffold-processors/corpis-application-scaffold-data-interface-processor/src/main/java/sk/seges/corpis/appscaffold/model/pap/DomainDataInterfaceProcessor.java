@@ -11,6 +11,7 @@ import javax.lang.model.util.ElementFilter;
 
 import sk.seges.corpis.appscaffold.model.pap.configurer.DomainDataInterfaceProcessorConfigurer;
 import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
+import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -51,6 +52,12 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 		}
 	}
 
+	@Override
+	protected void printAnnotations(ProcessorContext context) {
+		super.printAnnotations(context);
+		context.getPrintWriter().println("@", DomainData.class);
+	}
+	
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		return new MutableDeclaredType[] { 

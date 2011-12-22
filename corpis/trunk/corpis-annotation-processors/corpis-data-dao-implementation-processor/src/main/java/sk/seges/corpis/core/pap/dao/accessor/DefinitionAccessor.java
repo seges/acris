@@ -18,6 +18,5 @@ public class DefinitionAccessor extends SingleAnnotationAccessor<Definition> {
 		}
 		//TODO: getQualifiedName()
 		return new DefinitionType(processingEnv.getElementUtils().getTypeElement(annotation.value().getCanonicalName().replace("$", ".")), processingEnv);
-		//return new DefinitionType(processingEnv.getElementUtils().getTypeElement(annotation.value().getCanonicalName()), processingEnv);
 	}
 }

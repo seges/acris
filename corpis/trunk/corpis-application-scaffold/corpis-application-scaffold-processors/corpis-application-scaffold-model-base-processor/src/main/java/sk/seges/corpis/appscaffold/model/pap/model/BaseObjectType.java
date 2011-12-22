@@ -39,7 +39,7 @@ public class BaseObjectType extends AbstractDataType {
 		}
 
 		interfaces.add(new DomainDataInterfaceType(dataDefinition, processingEnv));
-		changePackage(dataDefinition.getPackageName() + "." + LocationType.SHARED.getName() + "." + LayerType.MODEL.getName() + "." + ImplementationType.BASE.getName());
+		changePackage(dataDefinition.getPackageName() + "." + LocationType.SERVER.getName() + "." + LayerType.MODEL.getName() + "." + ImplementationType.BASE.getName());
 		
 		setInterfaces(interfaces);
 

@@ -16,5 +16,6 @@
 		<module>corpis-service-support</module>
 		<module>corpis-dao-api-support</module>		
 		<module>corpis-dao-implementation-support</module>
+		<module>corpis-service-converter-hibernate-support </module>
 	</modules>
 </project>
