@@ -61,8 +61,6 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 
 	@Override
 	protected void processElement(ProcessorContext context) {
-
-
 		TypeElement element = context.getTypeElement();
 		
 		ConfigurationTypeElement configurationElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
@@ -205,25 +203,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 			}
 		}
 
-		while (processingElement != null) {
-
-			processType(configurationTypeElement, mappingType, processingElement, domainTypeElement, generated, contexts);
-
-			if (processingElement.getSuperClass() != null) {
-				processingElement = processingElement.getSuperClass();
-			} else {
-				if (processingElement.asConfigurationElement() != null) {
-					TypeMirror superclass = processingElement.asConfigurationElement().getSuperclass();
-					if (superclass.getKind().equals(TypeKind.DECLARED)) {
-						processingElement = (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(superclass);
-					} else {
-						processingElement =  null;
-					}
-				} else {
-					processingElement = null;
-				}
-			}
-		}
+		processType(configurationTypeElement, mappingType, processingElement, domainTypeElement, generated, contexts);
 
 		ExecutableElement idMethod = domainTypeElement.getIdMethod(getEntityResolver());
 		
@@ -254,7 +234,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		printer.finish(configurationTypeElement);
 	}
 	
-	private void processType(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, DomainDeclaredType processingElement, DomainDeclaredType domainTypeElement, List<String> generated, List<TransferObjectContext> contexts) {
+	private void processType(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, final DomainDeclaredType processingElement, DomainDeclaredType domainTypeElement, List<String> generated, List<TransferObjectContext> contexts) {
 		List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.asConfigurationElement().getEnclosedElements());
 		
 		if (mappingType.equals(MappingType.AUTOMATIC)) {
@@ -275,10 +255,21 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 					contexts.add(context);
 				}
 			}
-			
-			for (TypeMirror domainInterface: processingElement.asConfigurationElement().getInterfaces()) {
-				processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainInterface), domainTypeElement, generated, contexts);
+		}
+		
+		if (processingElement.getSuperClass() != null) {
+			processType(configurationTypeElement, mappingType, processingElement.getSuperClass(), domainTypeElement, generated, contexts);
+		} else {
+			if (processingElement.asConfigurationElement() != null) {
+				TypeMirror superclass = processingElement.asConfigurationElement().getSuperclass();
+				if (superclass.getKind().equals(TypeKind.DECLARED)) {
+					processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(superclass), domainTypeElement, generated, contexts);
+				}
 			}
+		}
+
+		for (TypeMirror domainInterface: processingElement.asConfigurationElement().getInterfaces()) {
+			processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainInterface), domainTypeElement, generated, contexts);
 		}
 	}
 }

@@ -182,15 +182,16 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 		
 			List<? extends TypeMirror> typeArguments = ((DeclaredType)configurationTypeElement.getDomain().asType()).getTypeArguments();
 			List<MutableTypeVariable> dtoTypeVariables = new LinkedList<MutableTypeVariable>();
-			for (TypeMirror domainTypeVariable: typeArguments) {
-				DtoType dtoTypeVariable = processingEnv.getTransferObjectUtils().getDomainType(domainTypeVariable).getDto();
-				if (dtoTypeVariable instanceof MutableTypeVariable) {
-					dtoTypeVariables.add((MutableTypeVariable)dtoTypeVariable);
-				} else {
-					dtoTypeVariables.add(processingEnv.getTypeUtils().getTypeVariable(null, dtoTypeVariable));
+			if (typeArguments.size() == getTypeVariables().size()) {
+				for (TypeMirror domainTypeVariable: typeArguments) {
+					DtoType dtoTypeVariable = processingEnv.getTransferObjectUtils().getDomainType(domainTypeVariable).getDto();
+					if (dtoTypeVariable instanceof MutableTypeVariable) {
+						dtoTypeVariables.add((MutableTypeVariable)dtoTypeVariable);
+					} else {
+						dtoTypeVariables.add(processingEnv.getTypeUtils().getTypeVariable(null, dtoTypeVariable));
+					}
 				}
 			}
-
 			setDelegate(getDelegate().clone().setTypeVariables(dtoTypeVariables.toArray(new MutableTypeVariable[] {})).stripTypeParametersTypes());
 		}
 	}

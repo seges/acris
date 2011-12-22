@@ -35,13 +35,13 @@ public class ConfigurationTypeElement extends TomBaseDeclaredType {
 	private boolean converterTypeElementInitialized = false;
 
 	private final Element configurationElement;
-	private final TransferObjectMappingAccessor transferObjectConfiguration;
+	protected final TransferObjectMappingAccessor transferObjectConfiguration;
 
 	private final MutableDeclaredType domainType;
-	private final MutableDeclaredType dtoType;
+	protected final MutableDeclaredType dtoType;
 
 	private final String canonicalName;
-	private ConfigurationProvider[] configurationProviders;
+	protected ConfigurationProvider[] configurationProviders;
 	
 	public ConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(processingEnv, roundEnv);

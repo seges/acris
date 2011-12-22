@@ -13,7 +13,9 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -273,7 +275,7 @@ public class ConverterProviderPrinter {
 	}
 
 	protected MutableType[] getConverterParametersUsage(ConverterTypeElement converterTypeElement, MutableTypeMirror type, ExecutableElement method) {
-		List<MutableTypeMirror> parameters = new ArrayList<MutableTypeMirror>();
+		List<MutableType> parameters = new ArrayList<MutableType>();
 		
 		if (type.getKind().isDeclared() && converterTypeElement.hasTypeParameters()) {
 			
@@ -291,7 +293,7 @@ public class ConverterProviderPrinter {
 			}
 		}
 		
-		return parameters.toArray(new MutableTypeMirror[] {});
+		return parameters.toArray(new MutableType[] {});
 	}
 	
 	private MutableDeclaredType getConvertedResult(ConverterTypeElement converterTypeElement, MutableTypeMirror type, TomBaseElementProvider tomBaseElementProvider) {
@@ -303,27 +305,64 @@ public class ConverterProviderPrinter {
 		}
 
 		if (type.getKind().isDeclared() && converterTypeElement.hasTypeParameters()) {
-			
-			if (((MutableDeclaredType)type).getTypeVariables().size() > 0) {
-				List<MutableTypeVariable> converterArguments = new ArrayList<MutableTypeVariable>();
-				for (MutableTypeMirror typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
-					DtoType dtoType = tomBaseElementProvider.getDtoType(typeArgument);
-					
-					if (dtoType == null) {
-						return null;
-					}
-					
-					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, dtoType));
-				}
-				for (MutableTypeVariable typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
-					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, tomBaseElementProvider.getDomainType(typeArgument)));
-				}
 
-				return converterTypeElement.clone().setTypeVariables(converterArguments.toArray(new MutableTypeVariable[] {}));
-			}
+			return converterTypeElement.clone().setTypeVariables(new MutableTypeVariable[] {});
+
+//			if (((MutableDeclaredType)type).getTypeVariables().size() > 0) {
+//				List<MutableTypeVariable> converterArguments = new ArrayList<MutableTypeVariable>();
+//				for (MutableTypeMirror typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
+//					DtoType dtoType = tomBaseElementProvider.getDtoType(typeArgument);
+//					
+//					if (dtoType == null) {
+//						return null;
+//					}
+//					
+//					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, dtoType));
+//				}
+//				for (MutableTypeVariable typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
+//					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, replaceByWildcard(tomBaseElementProvider.getDomainType(typeArgument), true)));
+//				}
+//
+//				return converterTypeElement.clone().setTypeVariables(converterArguments.toArray(new MutableTypeVariable[] {}));
+//			}
 		}
 		
 		return null;
+	}
+
+	private MutableTypeMirror replaceByWildcard(MutableTypeMirror mutableTypeMirror, boolean clone) {
+		if (mutableTypeMirror.getKind().isDeclared()) {
+			return replaceByWildcard(clone ? ((MutableDeclaredType)mutableTypeMirror).clone() : ((MutableDeclaredType)mutableTypeMirror));
+		}
+
+		if (mutableTypeMirror.getKind().equals(MutableTypeKind.TYPEVAR)) {
+			return replaceByWildcard(clone ? ((MutableTypeVariable)mutableTypeMirror).clone() : ((MutableTypeVariable)mutableTypeMirror));
+		}
+		
+		return mutableTypeMirror;
+	}
+	
+	private MutableDeclaredType replaceByWildcard(MutableDeclaredType mutableType) {
+		for (MutableTypeMirror typeVariable: mutableType.getTypeVariables()) {
+			replaceByWildcard(typeVariable, false);
+		}
+		return mutableType;
+	}
+
+	private MutableTypeVariable replaceByWildcard(MutableTypeVariable typeVariable) {
+		if (typeVariable.getVariable() != null) {
+			typeVariable.setVariable(MutableWildcardType.WILDCARD_NAME);
+		}
+		
+		for (MutableTypeMirror variableUpperType: typeVariable.getUpperBounds()) {
+			replaceByWildcard(variableUpperType, false);
+		}
+
+		for (MutableTypeMirror variableLowerType: typeVariable.getLowerBounds()) {
+			replaceByWildcard(variableLowerType, false);
+		}
+
+		return typeVariable;
 	}
 	
 	private void printConverterMethodName(ConverterTypeElement converterTypeElement, MutableTypeMirror type, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
