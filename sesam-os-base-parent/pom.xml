@@ -185,7 +185,7 @@
 		<maven-antrun-plugin.version>1.6</maven-antrun-plugin.version>
 		<maven-assembly-plugin.version>2.2.1</maven-assembly-plugin.version>
 		<javarebel-maven-plugin.version>1.0.5</javarebel-maven-plugin.version>
-		<apt-maven-plugin.version>1.0-alpha-5-acris</apt-maven-plugin.version>
+		<apt-maven-plugin.version>1.0-alpha-5-acris-2</apt-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
