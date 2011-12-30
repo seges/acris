@@ -1,7 +1,5 @@
 package sk.seges.sesam.core.test.selenium.report.printer;
 
-import java.io.File;
-
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Report;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.SupportSettings;
@@ -11,8 +9,6 @@ public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseRes
 
 	private static final String DEFAULT_TEMPLATE_FILE = Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/selenium/report/standard/test_default.vm";
 
-	private String testMethod;
-	
 	public HtmlTestReportPrinter(ReportSettings reportSettings) {
 		super(reportSettings);
 	}
@@ -43,52 +39,5 @@ public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseRes
 		}
 		
 		return support.getDirectory();
-	}
-
-	@Override
-	public void initialize(TestCaseResult testCaseResult) {
-		super.initialize(testCaseResult);
-        testMethod = null;
-	}
-	
-	@Override
-	public void print(TestCaseResult testCaseResult) {
-		if (!isHtmlReportEnabled()) {
-			return;
-		}
-
-		//TODO identify setup method based on annotation
-		if (testMethod == null || testMethod.equals(TestCaseResult.SETUP)) {
-			testMethod = testCaseResult.getTestMethod();
-			
-			if (testMethod != null) {
-				super.print(testCaseResult);
-			}
-		}
-	}
-
-	@Override
-	public void finish(TestCaseResult resultData) {
-		
-		String correctedTestMethod = resultData.getCorrectedTestMethod();
-
-		super.finish(resultData);
-		
-		if (correctedTestMethod != null) {
-			//we should rename the directory
-			String outputDir = getOutputDirectory(reportSettings.getHtml().getSupport());
-			
-			File outputDirectory = new File(getResultDirectory(), outputDir);
-			String outputDirectoryPath = outputDirectory.getAbsolutePath();
-			int index = outputDirectoryPath.lastIndexOf(TestCaseResult.SETUP);
-			
-			String replacement = outputDirectoryPath.substring(0, index) + outputDirectoryPath.substring(index).replaceFirst(TestCaseResult.SETUP, correctedTestMethod);
-			File result = new File(replacement);
-			
-			index = resultData.getFileName().lastIndexOf(TestCaseResult.SETUP);
-			resultData.setFileName(resultData.getFileName().substring(0, index) + resultData.getFileName().substring(index).replaceFirst(TestCaseResult.SETUP, correctedTestMethod));
-			
-			outputDirectory.renameTo(result);
-		}
 	}
 }

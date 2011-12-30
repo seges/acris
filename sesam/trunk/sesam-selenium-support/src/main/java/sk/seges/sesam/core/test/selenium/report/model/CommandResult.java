@@ -7,7 +7,11 @@ import java.util.ResourceBundle;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import sk.seges.sesam.core.test.selenium.model.EnvironmentInfo;
+import sk.seges.sesam.core.test.selenium.report.ScreenshotsWebDriverEventListener;
 
 public class CommandResult {
 
@@ -604,11 +608,12 @@ public class CommandResult {
 
 		private final WebElement webElement;
 		private String name;
-		private final Point location;
-		private final Dimension size;
+		private Point location;
+		private Dimension size;
 		
-		public WebElementWrapper(WebElement webElement) {
+		public WebElementWrapper(WebElement webElement, WebDriver webDriver) {
 			this.webElement = webElement;
+				
 			try {
 				Tag tag = Tag.of(webElement.getTagName(), webElement.getAttribute("type"));
 				if (tag != null) {
@@ -620,12 +625,12 @@ public class CommandResult {
 					
 					name = result;
 				}
+
+				this.location = this.webElement.getLocation();
+				this.size = this.webElement.getSize();
 			} catch (Exception ex) {
 				name = super.toString();
 			};
-			
-			this.location = this.webElement.getLocation();
-			this.size = this.webElement.getSize();
 		}
 		
 		@Override
@@ -660,12 +665,12 @@ public class CommandResult {
 
 		@Override
 		public Point getLocation() {
-			return webElement.getLocation();
+			return location;
 		}
 
 		@Override
 		public Dimension getSize() {
-			return webElement.getSize();
+			return size;
 		}
 
 		@Override
@@ -702,21 +707,13 @@ public class CommandResult {
 		public void submit() {
 			webElement.submit();
 		}
-		
+				
 		@Override
 		public String toString() {
-			String result = name;
-			if (location != null) {
-				name += " [" + location.getX() + ", " + location.getY() + "]";
-			}
-			if (size != null) {
-				name += " [" + size.getWidth() + ", " + size.getHeight() + "]";
-			}
-			
-			return result;
+			return name;
 		}
 	}
-	
+
 	private SeleniumOperation operation;
 	private SeleniumOperationResult result;
 	private SeleniumOperationState state;
@@ -725,14 +722,38 @@ public class CommandResult {
 	private Object[] parameters;
 	private Throwable throwable;
 	
-	private ResourceBundle bundle;
+	private final ResourceBundle bundle;
 	
-	public CommandResult(String locale) {
-		bundle = ResourceBundle.getBundle(getClass().getPackage().getName() + ".MessagesBundle", new Locale(locale));
+	private final WebDriver webDriver;
+	private final EnvironmentInfo environmentInfo;
+	
+	private final CommandResult previousCommandResult;
+	
+	public CommandResult(CommandResult previousCommandResult, String locale, WebDriver webDriver, EnvironmentInfo environmentInfo) {
+		this.bundle = ResourceBundle.getBundle(getClass().getPackage().getName() + ".MessagesBundle", new Locale(locale));
+		this.webDriver = webDriver;
+		this.environmentInfo = environmentInfo;
+		this.previousCommandResult = previousCommandResult;
+	}
+
+	public boolean isScreenshotUpdated() {
+		return screenshotName != null;
 	}
 	
+	public Long getWindowSize() {
+		return environmentInfo.getWindowSize();
+	}
+
 	public String getScreenshotName() {
-		return screenshotName;
+		if (screenshotName != null) {
+			return screenshotName;
+		}
+		
+		if (previousCommandResult != null) {
+			return previousCommandResult.getScreenshotName();
+		}
+		
+		return ScreenshotsWebDriverEventListener.DEFAULT_SCREENSHOT;
 	}
 	
 	public void setScreenshotName(String screenshotName) {
@@ -741,6 +762,18 @@ public class CommandResult {
 	
 	public void setThrowable(Throwable throwable) {
 		this.throwable = throwable;
+	}
+
+	public String getThrowableMessage() {
+		if (getThrowable() == null) {
+			return null;
+		}
+		ThrowableLocalizer throwableLocalizer = ThrowableLocalizer.get(getThrowable());
+		if (throwableLocalizer == null) {
+			return getThrowable().getLocalizedMessage();
+		}
+		
+		return bundle.getString(throwableLocalizer.getKey());
 	}
 	
 	public Throwable getThrowable() {
@@ -781,7 +814,7 @@ public class CommandResult {
 		int i = 0;
 		for (Object param: parameters) {
 			if (param instanceof WebElement) {
-				params[i++] = new WebElementWrapper((WebElement)param);
+				params[i++] = new WebElementWrapper((WebElement)param, webDriver);
 			} else {
 				params[i++] = param;
 			}

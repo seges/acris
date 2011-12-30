@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.ScreenshotSettings.AfterSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.ScreenshotSettings.BeforeSettings;
+import sk.seges.sesam.core.test.selenium.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.selenium.report.model.CommandResult;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationState;
@@ -19,10 +20,14 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	private final ReportSettings reportSettings;
 	private CommandResult commandResult;
 	private int screenshotIndex = 1;
+	private final WebDriver webDriver;
+	private final EnvironmentInfo environmentInfo;
 
-	public ScreenshotsWebDriverEventListener(ScreenshotSupport screenshotSupport, ReportSettings reportSettings) {
-		this.screenshotSupport = screenshotSupport;
+	public ScreenshotsWebDriverEventListener(ReportSettings reportSettings, WebDriver webDriver, EnvironmentInfo environmentInfo) {
+		this.screenshotSupport = new ScreenshotSupport(webDriver, reportSettings, environmentInfo);
 		this.reportSettings = reportSettings;
+		this.webDriver = webDriver;
+		this.environmentInfo = environmentInfo;
 	}
 
 	@Override
@@ -31,22 +36,32 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	}
 
 	private String getName(int screenshotIndex, SeleniumOperationState state, SeleniumOperation operation) {
-		return (screenshotIndex < 10 ? "0" : "") + (screenshotIndex++) + "_" + state.name().toLowerCase() + "_" + operation.name().toLowerCase();
+		return (screenshotIndex < 10 ? "00" : screenshotIndex < 100 ? "0" : "") + (screenshotIndex++) + "_" + state.name().toLowerCase() + "_" + operation.name().toLowerCase();
 	}
 
 	private CommandResult getCommandResult(String name) {
-		CommandResult commandResult = new CommandResult(reportSettings.getHtml().getLocale());
+		CommandResult commandResult = new CommandResult(getCommandResult(), reportSettings.getHtml().getLocale(), webDriver, environmentInfo);
 		commandResult.setScreenshotName(name);
 		return commandResult;
 	}
+
+	private boolean initialScreenshot = false;
 	
 	private void makeScreenshot(SeleniumOperationState state, SeleniumOperation operation) {
+		
+		if (!initialScreenshot) {
+			screenshotSupport.makeScreenshot(DEFAULT_SCREENSHOT);
+			initialScreenshot = true;
+		}
+		
 		BeforeSettings before = reportSettings.getScreenshot().getBefore();
 		if (state.equals(SeleniumOperationState.BEFORE)) {
 			for (SeleniumOperation definedOperation: before.getValue()) {
 				if (operation.equals(definedOperation)) {
 					String name = getName(screenshotIndex++, state, operation);
 					commandResult = getCommandResult(name);
+					commandResult.setOperation(operation);
+					commandResult.setState(state);
 					screenshotSupport.makeScreenshot(name);
 					return;
 				}
@@ -58,6 +73,8 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 				if (operation.equals(definedOperation)) {
 					String name = getName(screenshotIndex++, state, operation);
 					commandResult = getCommandResult(name);
+					commandResult.setOperation(operation);
+					commandResult.setState(state);
 					screenshotSupport.makeScreenshot(name);
 					return;
 				}
@@ -65,6 +82,8 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 		}
 		
 		commandResult = getCommandResult(null);
+		commandResult.setOperation(operation);
+		commandResult.setState(state);
 	}
 
 	public void beforeNavigateTo(String url, WebDriver driver) {
@@ -137,13 +156,18 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	}
 
 	@Override
-	public void onException(Throwable throwable, WebDriver driver) {}
+	public void onException(Throwable throwable, WebDriver driver) {
+		makeScreenshot(SeleniumOperationState.AFTER, commandResult.getOperation());
+	}
+
+	public static final String DEFAULT_SCREENSHOT = "0_initialize";
+	public static final String FINAL_SCREENSHOT = "0_finalize";
 
 	@Override
 	public void initialize() {}
 
 	@Override
 	public void finish() {
-		screenshotSupport.makeScreenshot();
+		screenshotSupport.makeScreenshot(FINAL_SCREENSHOT);
 	}
 }

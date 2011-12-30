@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
+import sk.seges.sesam.core.test.selenium.model.EnvironmentInfo;
+import sk.seges.sesam.core.test.selenium.model.ValueChangeParameter;
 import sk.seges.sesam.core.test.selenium.report.model.CommandResult;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationResult;
@@ -16,9 +18,13 @@ public class LoggingWebDriverEventListener implements TestResultCollector {
 	private CommandResult commandResult = null;
 
 	private final ReportSettings reportSettings;
+	private final WebDriver webDriver;
+	private final EnvironmentInfo environmentInfo;
 	
-	public LoggingWebDriverEventListener(ReportSettings reportSettings) {
+	public LoggingWebDriverEventListener(ReportSettings reportSettings, WebDriver webDriver, EnvironmentInfo environmentInfo) {
 		this.reportSettings = reportSettings;
+		this.webDriver = webDriver;
+		this.environmentInfo = environmentInfo;
 	}
 	
 	@Override
@@ -27,7 +33,7 @@ public class LoggingWebDriverEventListener implements TestResultCollector {
 	}
 	
 	private CommandResult getCommandResult(SeleniumOperationState state, SeleniumOperationResult result, Throwable throwable) {
-		CommandResult commandResult = new CommandResult(reportSettings.getHtml().getLocale());
+		CommandResult commandResult = new CommandResult(getCommandResult(), reportSettings.getHtml().getLocale(), webDriver, environmentInfo);
 		commandResult.setState(state);
 		commandResult.setResult(result);
 		commandResult.setThrowable(throwable);
@@ -35,11 +41,15 @@ public class LoggingWebDriverEventListener implements TestResultCollector {
 	}
 	
 	private CommandResult getCommandResult(SeleniumOperationState state, SeleniumOperation operation, SeleniumOperationResult result, Object... params) {
-		CommandResult commandResult = new CommandResult(reportSettings.getHtml().getLocale());
+		CommandResult commandResult = new CommandResult(getCommandResult(), reportSettings.getHtml().getLocale(), webDriver, environmentInfo);
 		commandResult.setState(state);
 		commandResult.setOperation(operation);
 		commandResult.setResult(result);
-		commandResult.setParameters(params);
+		if (operation.equals(SeleniumOperationState.AFTER) && params.length == 0) {
+			commandResult.setParameters(commandResult.getParameters());
+		} else {
+			commandResult.setParameters(params);
+		}
 		return commandResult;
 	}
 
@@ -80,7 +90,7 @@ public class LoggingWebDriverEventListener implements TestResultCollector {
 
 	@Override
 	public void afterFindBy(By by, WebElement element, WebDriver driver) {
-		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.FIND_BY, SeleniumOperationResult.OK, by, element);
+		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.FIND_BY, SeleniumOperationResult.OK, by);
 	}
 
 	@Override
@@ -90,17 +100,26 @@ public class LoggingWebDriverEventListener implements TestResultCollector {
 
 	@Override
 	public void afterClickOn(WebElement element, WebDriver driver) {
-		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.CLICK_ON, SeleniumOperationResult.OK, element);
+		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.CLICK_ON, SeleniumOperationResult.OK);
 	}
 
+	private static final String VALUE = "value";
+	
 	@Override
 	public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-		commandResult = getCommandResult(SeleniumOperationState.BEFORE, SeleniumOperation.CHANGE_VALUE, SeleniumOperationResult.NONE, element);
+		ValueChangeParameter valueChangeParameter = new ValueChangeParameter(element.getAttribute(VALUE));
+		commandResult = getCommandResult(SeleniumOperationState.BEFORE, SeleniumOperation.CHANGE_VALUE, SeleniumOperationResult.NONE, element, valueChangeParameter);
 	}
 
 	@Override
 	public void afterChangeValueOf(WebElement element, WebDriver driver) {
-		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.CHANGE_VALUE, SeleniumOperationResult.OK, element);
+		Object[] parameters = commandResult.getParameters();
+		for (Object parameter: parameters) {
+			if (parameter instanceof ValueChangeParameter) {
+				((ValueChangeParameter)parameter).setTextAfterChange(element.getAttribute(VALUE));
+			}
+		}
+		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.CHANGE_VALUE, SeleniumOperationResult.OK);
 	}
 
 	@Override

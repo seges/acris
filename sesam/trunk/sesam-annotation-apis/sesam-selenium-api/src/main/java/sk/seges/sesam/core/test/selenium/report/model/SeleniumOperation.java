@@ -31,7 +31,7 @@ public enum SeleniumOperation {
 	}, CHANGE_VALUE {
 		@Override
 		public String getDescription() {
-			return "Changing value";
+			return "Changing value of";
 		}
 	}, RUN_SCRIPT {
 		@Override

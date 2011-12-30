@@ -110,6 +110,8 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
         	System.out.println(e);
 			throw new RuntimeException(e);
 		}
+
+		getOutputDirectory(reportSettings.getHtml().getSupport());
 	}
 	
 	protected abstract String getReportFileName(T resultData);

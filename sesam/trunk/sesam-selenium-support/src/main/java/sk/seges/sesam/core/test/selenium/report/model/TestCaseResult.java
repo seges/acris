@@ -17,18 +17,15 @@ public class TestCaseResult implements ReportData {
 	private Long checkpoint = 0L;
 	
 	private final Class<? extends AbstractSeleniumTest> testCase;
+	private final String testMethod;
 
 	private List<CommandResult> commandResults = new LinkedList<CommandResult>();
-	
-	public static final String SETUP = "setUp";
-	
-	private String testMethod;
-	private String correctedTestMethod;
-	
+		
 	private String fileName;
 	
-	public TestCaseResult(Class<? extends AbstractSeleniumTest> testCase) {
+	public TestCaseResult(Class<? extends AbstractSeleniumTest> testCase, String testMethod) {
 		this.testCase = testCase;
+		this.testMethod = testMethod;
 	}
 
 	public void setFileName(String fileName) {
@@ -41,15 +38,21 @@ public class TestCaseResult implements ReportData {
 	
 	public boolean hasBugReported() {
 		try {
-			return getTestCase().getMethod(getTestMethod()).getAnnotation(SeleniumTest.class).issue().value() != SeleniumTest.UNDEFINED;
+			String method = getTestMethod();
+			return getTestCase().getMethod(method).getAnnotation(SeleniumTest.class).issue().value() != SeleniumTest.UNDEFINED;
 		} catch (Exception e) {
 		}
 		return false;
 	}
+
+	public String getIssueLink() {
+		return "https://local.seges.sk/mantis/view.php?id=" + getIssue().value();
+	}
 	
 	public Issue getIssue() {
 		try {
-			return getTestCase().getMethod(getTestMethod()).getAnnotation(SeleniumTest.class).issue();
+			String method = getTestMethod();
+			return getTestCase().getMethod(method).getAnnotation(SeleniumTest.class).issue();
 		} catch (Exception e) {
 		}
 		
@@ -76,70 +79,16 @@ public class TestCaseResult implements ReportData {
 	
 	public String getTestDescription() {
 		try {
-			return getTestCase().getMethod(getCorrectedTestMethod()).getAnnotation(SeleniumTest.class).description();
+			return getTestCase().getMethod(getTestMethod()).getAnnotation(SeleniumTest.class).description();
 		} catch (Exception e) {
 			return "Description is missing";
 		}
 	}
 
-	public String getCorrectedTestMethod() {
-		if (correctedTestMethod != null) {
-			return correctedTestMethod;
-		}
-
-		if (!testMethod.equals(SETUP)) {
-			return testMethod;
-		}
-		
-		return null;
-	}
-	
 	public String getTestMethod() {
-		if (testMethod == null) {
-			StackTraceElement stackTraceElement = getStackTraceElement();
-			
-			if (stackTraceElement != null) {
-				testMethod = stackTraceElement.getMethodName();
-			}
-		}
-		
-		if (testMethod != null && correctedTestMethod == null && testMethod.equals(SETUP)) {
-			StackTraceElement stackTraceElement = getStackTraceElement();
-			
-			if (stackTraceElement != null) {
-				String currentMethod = stackTraceElement.getMethodName();
-				
-				if (!currentMethod.equals(SETUP)) {
-					correctedTestMethod  = currentMethod;
-				}
-			}
-		}
-		
 		return testMethod;
 	}	
 
-	private StackTraceElement getStackTraceElement() {
-		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-
-		for (int i = 0; i < stackTrace.length; i++) {
-			if (stackTrace[i].getClassName().equals(testCase.getCanonicalName())) {
-				return stackTrace[i];
-			}
-		}
-		
-		return null;
-	}
-	
-	public int getLineNumber() {
-		StackTraceElement stackTraceElement = getStackTraceElement();
-		
-		if (stackTraceElement != null) {
-			return stackTraceElement.getLineNumber();
-		}
-		throw new RuntimeException("Unable to identify line number for the test " + testCase.getCanonicalName());
-	}
-
-	
 	public Class<? extends AbstractSeleniumTest> getTestCase() {
 		return testCase;
 	}

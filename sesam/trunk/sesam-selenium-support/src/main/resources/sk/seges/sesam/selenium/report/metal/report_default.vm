@@ -81,7 +81,12 @@
 	.bottom > div {
 		margin: 20px;
 		margin-top: 50px;
-	}	
+	}
+	
+	a {
+		color:#FFFFFF;
+		text-decoration:none;
+	}
 	</style>
 </head>
 
@@ -109,18 +114,18 @@
 		<ul class="main_secondary_navi" id="${testCaseCollectionResults.getTestName()}">
 			#foreach( $testCaseResult in $testCaseCollectionResults.getTestCaseResults() )
 				<a target="_blank" href="${testCaseResult.getFileName()}">
-					#if ( $testCaseResult.getStatus() == "FAILURE" )
+				#if ( $testCaseResult.getStatus() == "FAILURE" )
 					<li class="fail">
-						#else 
+				#else 
 					<li class="pass">
-						#end
+				#end
 						<div style="float: left">
-							<strong>${testCaseResult.getTestDescription()} [${testCaseResult.getCorrectedTestMethod()}]</strong>
+							<strong>${testCaseResult.getTestDescription()} [${testCaseResult.getTestMethod()}]</strong>
 							Took $testCaseResult.getTotalSeconds() seconds
 						</div>
 						<div style="float: right; margin-top: -10px;">
 							#if ( $testCaseResult.hasBugReported() )
-								<img src="${result.getResourceDir()}${testCaseResult.getIssue().tracker().getIconName()}"/>
+								<a href="${testCaseResult.getIssueLink()}"><img src="${result.getResourceDir()}${testCaseResult.getIssue().tracker().getIconName()}"/></a>
 							#end
 						</div>
 						<div style="clear: both;"></div>
