@@ -391,6 +391,7 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 				// add the present package
 				map.put(new URL("file://" + dirs[i].getCanonicalPath()), name + dirs[i].getName());
 			} catch (IOException ioe) {
+				processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + name + dirs[i].getName() + "." + ioe.getMessage());
 				return;
 			}
 
@@ -423,10 +424,17 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
 			jar = conn.getJarFile();
 		} catch (Exception e) {
+			try {
+				processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + file.getCanonicalPath() + "." + e.getMessage());
+			} catch (IOException e1) {
+				processingEnv.getMessager().printMessage(Kind.WARNING, e.getMessage() + " -- " + file); 
+			}
 			// not a JAR or disk I/O error
 			// either way, just skip
 			return;
 		}
+
+		processingEnv.getMessager().printMessage(Kind.NOTE, jarURL.toString());
 
 		if (jar == null || jarURL == null) {
 			return;
