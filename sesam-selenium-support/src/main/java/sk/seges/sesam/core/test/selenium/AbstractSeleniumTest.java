@@ -18,12 +18,12 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettin
 import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 import sk.seges.sesam.core.test.selenium.factory.WebDriverFactory;
 import sk.seges.sesam.core.test.selenium.junit.runner.SeleniumTestRunner;
+import sk.seges.sesam.core.test.selenium.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.selenium.report.LoggingWebDriverEventListener;
 import sk.seges.sesam.core.test.selenium.report.ScreenshotsWebDriverEventListener;
 import sk.seges.sesam.core.test.selenium.report.model.ReportEventListener;
 import sk.seges.sesam.core.test.selenium.report.model.TestCaseResult;
 import sk.seges.sesam.core.test.selenium.report.printer.HtmlTestReportPrinter;
-import sk.seges.sesam.core.test.selenium.report.support.ScreenshotSupport;
 import sk.seges.sesam.core.test.selenium.support.MailSupport;
 import sk.seges.sesam.core.test.selenium.support.SeleniumSupport;
 import sk.seges.sesam.core.test.webdriver.WebDriverActions;
@@ -61,6 +61,11 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 		return new EventFiringWebDriver(super.createWebDriver(webDriverFactory, seleniumSettings));
 	}
 	
+	public void setUp(String testName) {
+		this.testName = testName;
+		setUp();
+	}
+	
 	public void setTestEnvironment(SeleniumSettings testEnvironment) {
 		super.setTestEnvironment(testEnvironment);
 		wait = new WebDriverWait(webDriver, 30);
@@ -74,7 +79,7 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	
 	@Override
 	protected String getTestName() {
-		return testName != null ? testName : getClass().getSimpleName();
+		return testName;
 	}
 
 	protected MailSupport getMailSupport() {
@@ -87,31 +92,43 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 
 	@Before
 	public void setUp() {
-		//this should maximize the browser window
-		((JavascriptExecutor)webDriver).executeScript("if (window.screen){window.moveTo(0, 0);window.resizeTo(window.screen.availWidth,window.screen.availHeight);};", new Object[] {});
+		
+		//this maximizes the browser window and returns the actual window width
+		Object width = ((JavascriptExecutor)webDriver).executeScript("if (window.screen){window.moveTo(0, 0);window.resizeTo(window.screen.availWidth,window.screen.availHeight);}; if( typeof( window.innerWidth ) == 'number' ) { return window.innerWidth; } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) { return document.documentElement.clientWidth; } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) { return document.body.clientWidth; } return 0;", new Object[] {});
+		
+		EnvironmentInfo environmentInfo = new EnvironmentInfo();
+		
+		if (width != null) {
+			environmentInfo.setWindowSize((Long)width);
+		}
+
 		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());
 
-		ReportSettings reportSettings = ensureSettings().getReportSettings();
-		
-		reportEventListener = new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings), reportSettings);
-		((EventFiringWebDriver)webDriver).register(reportEventListener);
-		
-		if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
-			reportEventListener.addTestResultCollector(new ScreenshotsWebDriverEventListener(new ScreenshotSupport(webDriver, reportSettings), reportSettings));
+		if (testName != null) {
+			ReportSettings reportSettings = ensureSettings().getReportSettings();
+			
+			reportEventListener = new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings), reportSettings, webDriver, environmentInfo, testName);
+			((EventFiringWebDriver)webDriver).register(reportEventListener);
+			
+			if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
+				reportEventListener.addTestResultCollector(new ScreenshotsWebDriverEventListener(reportSettings, webDriver, environmentInfo));
+			}
+			
+			if (Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
+				reportEventListener.addTestResultCollector(new LoggingWebDriverEventListener(reportSettings, webDriver, environmentInfo));
+			}
+	
+			reportEventListener.initialize();
 		}
-
-		if (Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
-			reportEventListener.addTestResultCollector(new LoggingWebDriverEventListener(reportSettings));
-		}
-		
-		reportEventListener.initialize();
 	}
 
 	@After
 	public void tearDown() {
 
 		try {
-			reportEventListener.finish();
+			if (reportEventListener != null) {
+				reportEventListener.finish();
+			}
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}

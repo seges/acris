@@ -11,6 +11,7 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
+import sk.seges.sesam.core.test.selenium.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.selenium.report.model.api.TestResultCollector;
 import sk.seges.sesam.core.test.selenium.report.printer.ReportPrinter;
 
@@ -21,11 +22,15 @@ public class ReportEventListener implements WebDriverEventListener {
 	private ReportPrinter<TestCaseResult> reportPrinter;
 	private List<TestResultCollector> webDriverEventListeners = new ArrayList<TestResultCollector>();
 	private final ReportSettings reportSettings;
+	private final WebDriver webDriver;
+	private final EnvironmentInfo environmentInfo;
 	
-	public ReportEventListener(Class<? extends AbstractSeleniumTest> testCase, ReportPrinter<TestCaseResult> reportPrinter, ReportSettings reportSettings) {
+	public ReportEventListener(Class<? extends AbstractSeleniumTest> testCase, ReportPrinter<TestCaseResult> reportPrinter, ReportSettings reportSettings, WebDriver webDriver, EnvironmentInfo environmentInfo, String testMethod) {
 		this.reportPrinter = reportPrinter;
-		this.testInfo = new TestCaseResult(testCase);
+		this.testInfo = new TestCaseResult(testCase, testMethod);
 		this.reportSettings = reportSettings;
+		this.webDriver = webDriver;
+		this.environmentInfo = environmentInfo;
 	}
 
 	public void addTestResultCollector(TestResultCollector testResultCollector) {
@@ -56,7 +61,13 @@ public class ReportEventListener implements WebDriverEventListener {
 	}
 
 	private CommandResult merge(List<CommandResult> commandResults) {
-		CommandResult result = new CommandResult(reportSettings.getHtml().getLocale());
+		CommandResult previousResult = null;
+		
+		if (testInfo.getCommandResults().size() > 0) {
+			previousResult = testInfo.getCommandResults().get(testInfo.getCommandResults().size() - 1);
+		}
+		
+		CommandResult result = new CommandResult(previousResult, reportSettings.getHtml().getLocale(), webDriver, environmentInfo);
 		
 		for (CommandResult commandResult: commandResults) {
 			if (commandResult.getOperation() != null) {
@@ -68,7 +79,7 @@ public class ReportEventListener implements WebDriverEventListener {
 			if (commandResult.getResult() != null) {
 				result.setResult(commandResult.getResult());
 			}
-			if (commandResult.getScreenshotName() != null) {
+			if (commandResult.isScreenshotUpdated()) {
 				result.setScreenshotName(commandResult.getScreenshotName());
 			}
 			if (commandResult.getState() != null) {
