@@ -191,15 +191,17 @@ public abstract class BromineTest {
 
 	public synchronized void assertNotEquals(String statement1, String statement2, String comment) {
 		if (supportsBromine()) {
-			assertNotFailed(executeBromineQuery(BromineCommand.ASSERT_NOT_EQUALS.get().statement1(statement1).statement2(statement2).comment(comment)));
+			assertNotFailed(executeBromineQuery(BromineCommand.ASSERT_NOT_EQUALS.get().statement1(statement1)
+					.statement2(statement2).comment(comment)));
 		} else {
-			if (statement1 == null) {
-				if (statement2 == null) {
-					throw new RuntimeException("Statements assertion failed. [" + statement1 + " should not equals " + statement2 + "] " + comment);
-				}
+			if (statement1 == null && statement2 == null) {
+				throw new RuntimeException("Statements assertion failed. [" + statement1 + " should not equals "
+						+ statement2 + "] " + comment);
 			} else {
-				if (statement2 != null || statement1.equals(statement2)) {
-					throw new RuntimeException("Statements assertion failed. [" + statement1 + " should not equals " + statement2 + "] " + comment);
+				if ((statement1 != null && statement1.equals(statement2))
+						|| (statement2 != null && statement2.equals(statement1))) {
+					throw new RuntimeException("Statements assertion failed. [" + statement1 + " should not equals "
+							+ statement2 + "] " + comment);
 				}
 			}
 		}
