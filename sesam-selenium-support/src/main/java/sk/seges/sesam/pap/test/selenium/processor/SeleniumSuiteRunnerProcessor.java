@@ -8,6 +8,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -50,15 +51,23 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 		
 		Set<? extends Element> seleniumTestClasses = getClassPathTypes().getElementsAnnotatedWith(SeleniumTestCase.class);
 
+		processingEnv.getMessager().printMessage(Kind.NOTE, seleniumTestClasses.size() + " configurations found");
+		
 		pw.println();
 		
 		for (Element seleniumTestClass: seleniumTestClasses) {
 
-			if (new SeleniumTestCaseAccessor(seleniumTestClass, processingEnv).isAssignedToRunner((SeleniumSuiteRunnerType)context.getOutputType())) {
+			SeleniumTestCaseAccessor seleniumTestCaseAccessor = new SeleniumTestCaseAccessor(seleniumTestClass, processingEnv);
+			
+			if (seleniumTestCaseAccessor.isAssignedToRunner((SeleniumSuiteRunnerType)context.getOutputType())) {
 			
 				List<ExecutableElement> methods = ElementFilter.methodsIn(seleniumTestClass.getEnclosedElements());
 	
 				ElementSorter.sort(methods);
+
+				if (methods.size() == 0) {
+					processingEnv.getMessager().printMessage(Kind.WARNING, "No runnable test methods in " + seleniumTestClass + ". Use @" + SeleniumTest.class.getCanonicalName() + " to define test method.");
+				}
 				
 				for (ExecutableElement method: methods) {
 					SeleniumTest annotation = method.getAnnotation(SeleniumTest.class);
