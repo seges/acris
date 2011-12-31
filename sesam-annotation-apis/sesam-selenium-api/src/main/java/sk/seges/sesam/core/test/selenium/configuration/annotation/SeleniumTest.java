@@ -13,7 +13,7 @@ public @interface SeleniumTest {
 
 	String description();
 	
-	public static final int UNDEFINED = -1;
+	public static final String UNDEFINED = "";
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.ANNOTATION_TYPE)
@@ -82,7 +82,7 @@ public @interface SeleniumTest {
 
 		IssueTracker tracker();
 
-		int value();
+		String value();
 	}
 	
 	Issue issue() default @Issue(tracker = IssueTracker.OTHER, value = UNDEFINED);

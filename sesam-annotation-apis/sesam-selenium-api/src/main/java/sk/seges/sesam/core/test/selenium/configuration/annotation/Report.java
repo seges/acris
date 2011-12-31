@@ -32,7 +32,7 @@ public @interface Report {
 	}
 	
 	@Parameter(name = "report.screenshot", description = "Defines that screenshot is taken")
-	Screenshot screenshot() default @Screenshot;
+	Screenshot screenshot() default @Screenshot(support = @Support(enabled = false));
 
 	@Target(ElementType.ANNOTATION_TYPE)
 	public @interface Screenshot {
@@ -44,20 +44,22 @@ public @interface Report {
 		@Target(ElementType.ANNOTATION_TYPE)
 		public @interface Before {
 			@Parameter(name = "operations", description = "operations")
-			SeleniumOperation[] value() default {};
+			SeleniumOperation[] value() default { SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
+			  	   SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD };
 		}
 
 		@Target(ElementType.ANNOTATION_TYPE)
 		public @interface After {
 			@Parameter(name = "operations", description = "operations")
-			SeleniumOperation[] value() default {};
+			SeleniumOperation[] value() default { SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
+			  	   SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD };
 		}
 
 		@Parameter(name = "support", description = "Screenshot reports")
 		Support support() default @Support;
 
 		@Parameter(name = "when", description = "on ")
-		When[] when() default When.ON_FAILURE;
+		When[] when() default { When.ON_SUCCESS, When.ON_FAILURE };
 
 		@Parameter(name = "before", description = "before specified")
 		Before before() default @Before;
@@ -70,18 +72,18 @@ public @interface Report {
 	public @interface HtmlReport {
 
 		@Parameter(name = "report.html", description = "HTML reports")
-		Support support() default @Support;
+		Support support() default @Support(directory = Report.CURRENT_DATE + "_" + Report.CURRENT_TIME + "_" + Report.TEST_CASE_NAME + "_" + Report.TEST_NAME);
 		
 		@Parameter(name = "test.template.path", description = "Defines path to the used template for tests")
-		String testTemplatePath() default Constants.NULL;
+		String testTemplatePath() default Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/selenium/report/metal/test_default.vm";
 
 		@Parameter(name = "suite.template.path", description = "Defines path to the used template for suite")
-		String suiteTemplatePath() default Constants.NULL;
+		String suiteTemplatePath() default Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/selenium/report/metal/report_default.vm";
 
 		@Parameter(name = "suite.template.locale", description = "Defines locale for the generated report")
 		String locale() default "en";
 	}
 	
 	@Parameter(name = "report.html", description = "HTML reports")
-	HtmlReport html() default @HtmlReport;
+	HtmlReport html() default @HtmlReport(support = @Support(enabled = false));
 }

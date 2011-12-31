@@ -12,6 +12,11 @@ public class ElementVisible extends AbstractElementFunction {
 		this.visible = visible;
 	}
 
+	ElementVisible(WebElement webElement, boolean visible) {
+		super(webElement, false);
+		this.visible = visible;
+	}
+
 	@Override
 	protected boolean isElementSuitable(WebElement webElement) {
 		return webElement.isDisplayed() == visible;

@@ -21,8 +21,16 @@ public class Functions {
 		return new ElementVisible(locator, false, true);
 	}
 
+	public static Function<WebDriver, WebElement> elementVisible(WebElement element) {
+		return new ElementVisible(element, true);
+	}
+
 	public static Function<WebDriver, WebElement> elementNotVisible(By locator) {
 		return new ElementVisible(locator, false, false);
+	}
+
+	public static Function<WebDriver, WebElement> elementNotVisible(WebElement element) {
+		return new ElementVisible(element, false);
 	}
 
 	public static Function<WebDriver, WebElement> elementsEnabled(By locator) {
