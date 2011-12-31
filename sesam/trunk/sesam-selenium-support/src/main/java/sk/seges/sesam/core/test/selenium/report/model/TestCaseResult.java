@@ -39,7 +39,7 @@ public class TestCaseResult implements ReportData {
 	public boolean hasBugReported() {
 		try {
 			String method = getTestMethod();
-			return getTestCase().getMethod(method).getAnnotation(SeleniumTest.class).issue().value() != SeleniumTest.UNDEFINED;
+			return !getTestCase().getMethod(method).getAnnotation(SeleniumTest.class).issue().value().equals(SeleniumTest.UNDEFINED);
 		} catch (Exception e) {
 		}
 		return false;

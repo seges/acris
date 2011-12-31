@@ -157,6 +157,11 @@
 		text-align: center; 
 		width: 49%;
 	}
+
+	a {
+		color:#FFFFFF;
+		text-decoration:none;
+	}
 	
 	</style>
 </head>

@@ -13,23 +13,34 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 public abstract class AbstractElementFunction implements ExpectedCondition<WebElement> {
 
 	protected final boolean multiple;
-	protected final By locator;
+	protected By locator;
+	protected WebElement element;
 
 	protected AbstractElementFunction(By locator, boolean multiple) {
 		this.multiple = multiple;
 		this.locator = locator;
 	}
-	
+
+	protected AbstractElementFunction(WebElement element, boolean multiple) {
+		this.multiple = multiple;
+		this.element = element;
+	}
+
 	protected List<WebElement> findWebElements(WebDriver webDriver) {
 		List<WebElement> webElements = null;
 		
 		webDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-		if (multiple) {
-			webElements = webDriver.findElements(locator);
+		if (locator != null) {
+			if (multiple) {
+				webElements = webDriver.findElements(locator);
+			} else {
+				webElements = new ArrayList<WebElement>();
+				webElements.add(webDriver.findElement(locator));
+			}
 		} else {
 			webElements = new ArrayList<WebElement>();
-			webElements.add(webDriver.findElement(locator));
+			webElements.add(element);
 		}
 
 		webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MINUTES);
