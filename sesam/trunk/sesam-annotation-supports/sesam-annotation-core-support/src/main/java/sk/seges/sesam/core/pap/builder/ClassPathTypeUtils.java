@@ -434,8 +434,6 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			return;
 		}
 
-		processingEnv.getMessager().printMessage(Kind.NOTE, jarURL.toString());
-
 		if (jar == null || jarURL == null) {
 			return;
 		}
