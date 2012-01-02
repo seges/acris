@@ -150,7 +150,11 @@ We have shown you how you can easily create a test for your web application in 3
 
 So stay tuned!
 
-= Open issues =
+= Maven APT Plugin =
+
+While implementing the Selenium support we come across various issues. One result of it is fixed Maven APT plugin. It means if you want to not encounter problems we did, extend from *sesam-os-base-parent* where correct version (residing in our repository) is defined.
+
+= Resolved issues =
 
   * ~~APT maven plugin creates factory path entries with trailing whitespace~~ - this is problem only on linux environment (see reported issue) - [http://jira.codehaus.org/browse/MOJO-1609] - *SOLVED* with 1.0-alpha-5-SNAPSHOT version of the apt-maven-plugin
   * ~~Chicken-and-egg problem - if your project has compilation errors there is no easy way how to import project into the eclipse (because processors execution is part of the eclipse:eclipse goal and if it fails no eclipse project file is generated)~~ - *SOLVED* processors are no more bound to the generate-source (generate-test-source) phase therefore you can create eclipse project and run processors separatelly
