@@ -14,7 +14,7 @@ import sk.seges.sesam.core.test.selenium.factory.LocalWebDriverFactory;
 import sk.seges.sesam.core.test.selenium.factory.RemoteWebDriverFactory;
 import sk.seges.sesam.core.test.selenium.factory.WebDriverFactory;
 
-public abstract class BromineTest {
+public abstract class BromineTest implements Assertion {
 
 	protected SeleniumSettings testEnvironment;
 
