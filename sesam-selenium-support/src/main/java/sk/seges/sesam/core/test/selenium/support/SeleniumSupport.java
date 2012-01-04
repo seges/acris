@@ -56,4 +56,8 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 	public String getRandomEmail() {
 		return getRandomString(6) + "@" + getRandomString(6) + "." + getRandomString(2);
 	}
+	
+	public Boolean getRandomBoolean() {
+		return random.nextBoolean();
+	}
 }
