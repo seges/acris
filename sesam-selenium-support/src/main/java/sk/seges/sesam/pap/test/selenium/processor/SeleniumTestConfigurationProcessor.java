@@ -13,7 +13,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
-import javax.tools.Diagnostic.Kind;
 
 import org.junit.Ignore;
 
@@ -121,8 +120,6 @@ public class SeleniumTestConfigurationProcessor extends MutableAnnotationProcess
 		}
 
 		ArrayList<Element> configurationElements = new ArrayList<Element>(getClassPathTypes().getElementsAnnotatedWith(Configuration.class, roundEnv));
-		
-		processingEnv.getMessager().printMessage(Kind.NOTE, configurationElements.size() + " configurations found");
 		
 		ElementSorter.sort(configurationElements);
 
