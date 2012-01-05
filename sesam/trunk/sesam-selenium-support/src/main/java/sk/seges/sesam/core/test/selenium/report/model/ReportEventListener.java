@@ -24,6 +24,8 @@ public class ReportEventListener implements WebDriverEventListener {
 	private final ReportSettings reportSettings;
 	private final WebDriver webDriver;
 	private final EnvironmentInfo environmentInfo;
+
+	private boolean processing = false;
 	
 	public ReportEventListener(Class<? extends AbstractSeleniumTest> testCase, ReportPrinter<TestCaseResult> reportPrinter, ReportSettings reportSettings, WebDriver webDriver, EnvironmentInfo environmentInfo, String testMethod) {
 		this.reportPrinter = reportPrinter;
@@ -94,202 +96,310 @@ public class ReportEventListener implements WebDriverEventListener {
 	
 	@Override
 	public void afterChangeValueOf(WebElement webElement, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.afterChangeValueOf(webElement, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.afterChangeValueOf(webElement, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void afterClickOn(WebElement webElement, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.afterClickOn(webElement, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.afterClickOn(webElement, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void afterFindBy(By by, WebElement webElement, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.afterFindBy(by, webElement, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.afterFindBy(by, webElement, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void afterNavigateBack(WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.afterNavigateBack(webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.afterNavigateBack(webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void afterNavigateForward(WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.afterNavigateForward(webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.afterNavigateForward(webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void afterNavigateTo(String url, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.afterNavigateTo(url, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.afterNavigateTo(url, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void afterScript(String script, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.afterScript(script, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.afterScript(script, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void beforeChangeValueOf(WebElement webElement, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.beforeChangeValueOf(webElement, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.beforeChangeValueOf(webElement, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void beforeClickOn(WebElement webElement, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.beforeClickOn(webElement, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.beforeClickOn(webElement, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void beforeFindBy(By by, WebElement webElement, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.beforeFindBy(by, webElement, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.beforeFindBy(by, webElement, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void beforeNavigateBack(WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.beforeNavigateBack(webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.beforeNavigateBack(webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void beforeNavigateForward(WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.beforeNavigateForward(webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.beforeNavigateForward(webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void beforeNavigateTo(String url, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.beforeNavigateTo(url, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.beforeNavigateTo(url, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
 	@Override
 	public void beforeScript(String script, WebDriver webDriver) {
-		List<CommandResult> results = new LinkedList<CommandResult>();
-		
-		for (TestResultCollector testInfoCollector: webDriverEventListeners) {
-			testInfoCollector.beforeScript(script, webDriver);
-			CommandResult commandResult = testInfoCollector.getCommandResult();
-			results.add(commandResult);
+		processing = true;
+		try {
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.beforeScript(script, webDriver);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
 		}
-		
-		testInfo.getCommandResults().add(merge(results));
-		reportPrinter.print(testInfo);
 	}
 
+	private static final String SCREENSHOT_EXCEPTION = "screenshot";
+	
 	@Override
 	public void onException(Throwable exception, WebDriver webDriver) {
+		if (processing) {
+			return;
+		}
+		
+		if (exception.getMessage().contains(SCREENSHOT_EXCEPTION)) {
+			//exception was thrown while making screenshot, so no handling
+			return;
+		}
 		List<CommandResult> results = new LinkedList<CommandResult>();
 		
 		for (TestResultCollector testInfoCollector: webDriverEventListeners) {

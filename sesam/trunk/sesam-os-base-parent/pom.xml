@@ -163,7 +163,7 @@
 		<groovy.version>1.8.0</groovy.version>
 
 		<!-- Selenium -->
-		<selenium.version>2.15.0</selenium.version> 
+		<selenium.version>2.16.0</selenium.version> 
 		<velocity.version>1.6.2</velocity.version>
 		
 		<!-- plugins -->
@@ -186,6 +186,7 @@
 		<maven-assembly-plugin.version>2.2.1</maven-assembly-plugin.version>
 		<javarebel-maven-plugin.version>1.0.5</javarebel-maven-plugin.version>
 		<apt-maven-plugin.version>1.0-alpha-5-acris-2</apt-maven-plugin.version>
+		<exec-maven-plugin.version>1.2.1</exec-maven-plugin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -1156,6 +1157,22 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>${exec-maven-plugin.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<mainClass>sk.seges.sesam.pap.test.selenium.processor.runner.DefaultRunner</mainClass>
+							<classpathScope>test</classpathScope>
+						</configuration>
 					</plugin>
 				</plugins>	
 			</build>

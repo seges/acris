@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.test.selenium.processor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -7,9 +8,12 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.configuration.annotation.Configuration;
+import sk.seges.sesam.core.configuration.api.ConfigurationValue;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
@@ -18,6 +22,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTestCase;
+import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.accessor.SeleniumTestCaseAccessor;
 import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumSuiteProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSuiteRunnerType;
@@ -54,6 +59,16 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 		processingEnv.getMessager().printMessage(Kind.NOTE, seleniumTestClasses.size() + " configurations found");
 		
 		pw.println();
+
+		if (seleniumTestClasses.size() == 0) {
+			pw.println(ConfigurationValue.class, "[] configurationValues = new ", ConfigurationValue.class, "[] {};");
+			ArrayList<Element> configurationElements = new ArrayList<Element>(getClassPathTypes().getElementsAnnotatedWith(Configuration.class, roundEnv));
+			
+			for (Element configurationElement: configurationElements) {
+				SettingsTypeElement settingsTypeElement = new SettingsTypeElement((DeclaredType) configurationElement.asType(), processingEnv); 
+				pw.println("new ", settingsTypeElement, "(configurationValues).printHelp(", System.class, ".out);");
+			}
+		}
 		
 		for (Element seleniumTestClass: seleniumTestClasses) {
 
@@ -97,7 +112,9 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 			}
 		}
 
-		pw.println("printReports();");
+		if (seleniumTestClasses.size() > 0) {
+			pw.println("printReports();");
+		}
 		
 		pw.println("}");
 		pw.println("");

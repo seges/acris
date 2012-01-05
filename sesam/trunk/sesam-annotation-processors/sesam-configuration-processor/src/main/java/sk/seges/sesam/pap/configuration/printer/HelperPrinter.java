@@ -18,6 +18,7 @@ import sk.seges.sesam.pap.configuration.model.setting.SettingsContext;
 public class HelperPrinter extends AbstractSettingsElementPrinter {
 
 	private FormattedPrintWriter pw;
+	private static final int PADDING = 50;
 	
 	public HelperPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
@@ -36,15 +37,15 @@ public class HelperPrinter extends AbstractSettingsElementPrinter {
 	@Override
 	public void print(SettingsContext context) {
 		if (context.getNestedElement() != null) {
-			pw.println(context.getFieldName() + ".printHelp(out, \"" + context.getPrefix() + "\", \"" + context.getParameterDescription() + "\");");
+			pw.println(context.getFieldName() + ".printHelp(out, prefix + \"" + context.getParameterName() + ".\", \"" + context.getParameterDescription() + "\");");
 		} else {
-			pw.print("out.println(prefix + \"" + alignText(context.getParameterName()) + " " + context.getParameterDescription() + "\"");
-			pw.print(" + (name != null ? \"for \" + name : \"\")");
-			pw.println(");");
+			pw.print("out.format(\"%-" + PADDING + "s " + context.getParameterDescription() + "\"");
+			pw.print(" + (name != null ? \" for \" + name : \"\")");
+			pw.println(" + \"\\n\", prefix + \"" + context.getParameterName() + "\");");
 			if (context.getMethod().getReturnType().getKind().equals(TypeKind.DECLARED) && 
 					((DeclaredType) context.getMethod().getReturnType()).asElement().getKind().equals(ElementKind.ENUM)) {
 
-				pw.print("out.println(\"" + alignText("") + " Possible values: \"");
+				pw.print("out.format(\"%-" + PADDING + "s Possible values: \"");
 
 				TypeElement enumType = (TypeElement) ((DeclaredType) context.getMethod().getReturnType()).asElement();
  				List<VariableElement> fields = ElementFilter.fieldsIn(enumType.getEnclosedElements());
@@ -60,19 +61,11 @@ public class HelperPrinter extends AbstractSettingsElementPrinter {
 	 						i++;
  					}
  				}
-				pw.println(");");
+				pw.println(" + \"\\n\", \"\");");
 			}
 		}
 	}
 
-	private String alignText(String text) {
-		String result = "";
-		for (int i = text.length(); i < 30; i++) {
-			result += " ";
-		}
-		return text + result;
-	}
-	
 	@Override
 	public void finish(TypeElement type) {
 		pw.println("}");

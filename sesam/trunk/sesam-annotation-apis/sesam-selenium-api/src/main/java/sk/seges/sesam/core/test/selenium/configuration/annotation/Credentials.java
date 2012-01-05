@@ -7,7 +7,7 @@ import sk.seges.sesam.core.configuration.annotation.Configuration;
 import sk.seges.sesam.core.configuration.annotation.Parameter;
 
 @Configuration
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE })
 //This is not working in the eclipse with the source retention policy
 //@Retention(RetentionPolicy.SOURCE)
 public @interface Credentials {
