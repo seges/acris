@@ -19,6 +19,6 @@ public class ClasspathConfigurationProvider extends RoundEnvConfigurationProvide
 	}
 
 	protected Set<? extends Element> getConfigurationElements() {
-		return classpathUtils.getElementsAnnotatedWith(TransferObjectMapping.class);
+		return classpathUtils.getElementsAnnotatedWith(TransferObjectMapping.class, roundEnv);
 	}
 }
