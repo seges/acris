@@ -54,7 +54,7 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 		pw.println();
 		pw.println("public void run() {");
 		
-		Set<? extends Element> seleniumTestClasses = getClassPathTypes().getElementsAnnotatedWith(SeleniumTestCase.class);
+		Set<? extends Element> seleniumTestClasses = getClassPathTypes().getElementsAnnotatedWith(SeleniumTestCase.class, roundEnv);
 
 		processingEnv.getMessager().printMessage(Kind.NOTE, seleniumTestClasses.size() + " configurations found");
 		
@@ -73,8 +73,23 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 		for (Element seleniumTestClass: seleniumTestClasses) {
 
 			SeleniumTestCaseAccessor seleniumTestCaseAccessor = new SeleniumTestCaseAccessor(seleniumTestClass, processingEnv);
+
+			SeleniumSuiteRunnerType seleniumSuiteRunnerType = (SeleniumSuiteRunnerType)context.getOutputType();
+
+			int i = 0;
+			String suites = "";
 			
-			if (seleniumTestCaseAccessor.isAssignedToRunner((SeleniumSuiteRunnerType)context.getOutputType())) {
+			for (SeleniumSuiteType suite: seleniumTestCaseAccessor.getSeleniumSuites()) {
+				if (i > 0) {
+					suites += ",";
+				}
+				i++;
+				suites += " " + suite;
+			}
+			
+			processingEnv.getMessager().printMessage(Kind.WARNING, seleniumTestClass + " test case has " + suites + " suites. Checking with " + seleniumTestCaseAccessor);
+
+			if (seleniumTestCaseAccessor.isAssignedToRunner(seleniumSuiteRunnerType)) {
 			
 				List<ExecutableElement> methods = ElementFilter.methodsIn(seleniumTestClass.getEnclosedElements());
 	

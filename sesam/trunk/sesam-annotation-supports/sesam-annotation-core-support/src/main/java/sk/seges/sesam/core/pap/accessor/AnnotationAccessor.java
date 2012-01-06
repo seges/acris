@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 
@@ -73,18 +74,30 @@ public abstract class AnnotationAccessor {
 		}
  		
 		ClassPool cp = ClassPool.getDefault();
-		CtClass fakeClass = cp.makeClass(className);
-		fakeClass.stopPruning(true);
+		CtClass fakeClass = cp.getOrNull(className);
+
+		if (fakeClass == null) {
+			fakeClass = cp.makeClass(className);
+			fakeClass.stopPruning(true);
+			try {
+				fakeClass.writeFile();
+				fakeClass.defrost();
+			} catch (Exception e1) {
+				processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + className + "! Returning null.");
+				return null;
+			}
+		}
+		
+		Class<?> result = null;
 		try {
-			fakeClass.writeFile();
-			fakeClass.defrost();
-			Class<?> result = fakeClass.toClass();
-			fakeClasses.put(className, result);
-			return result;
-		} catch (Exception e1) {
+			result = fakeClass.toClass();
+		} catch (CannotCompileException e) {
 			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + className + "! Returning null.");
 			return null;
 		}
+
+		fakeClasses.put(className, result);
+		return result;
 	}
 
 	public static class AnnotationTypeFilter implements AnnotationFilter {
@@ -110,10 +123,6 @@ public abstract class AnnotationAccessor {
 
 	private static interface WrapsAnnotationMirror {
 		AnnotationMirror getAnnotationMirror();
-	}
-
-	private static interface WrapsAnnotation {
-		Annotation getAnnotation();
 	}
 
 	private static class ClassTypeVisitor extends SimpleTypeVisitor6<Class<?>, Void> {
