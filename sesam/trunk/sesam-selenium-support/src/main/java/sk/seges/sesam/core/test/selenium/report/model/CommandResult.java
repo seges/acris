@@ -766,7 +766,7 @@ public class CommandResult {
 
 	public String getThrowableMessage() {
 		if (getThrowable() == null) {
-			return null;
+			return "";
 		}
 		ThrowableLocalizer throwableLocalizer = ThrowableLocalizer.get(getThrowable());
 		if (throwableLocalizer == null) {
@@ -828,6 +828,6 @@ public class CommandResult {
 	}
 	
 	public boolean isFailure() {
-		return throwable != null;
+		return getResult().equals(SeleniumOperationResult.FAILURE);
 	}
 }

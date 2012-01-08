@@ -138,6 +138,30 @@ public class LoggingWebDriverEventListener implements TestResultCollector {
 	}
 
 	@Override
+	public void onAssertion(Boolean result, Boolean statement1, ComparationType type, String comment) {
+		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION, 
+				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
+	}
+
+	@Override
+	public void onAssertion(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION, 
+				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
+	}
+
+	@Override
+	public void onVerification(Boolean result, Boolean statement1, ComparationType type, String comment) {
+		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION, 
+				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
+	}
+
+	@Override
+	public void onVerification(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION, 
+				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
+	}
+
+	@Override
 	public void initialize() {}
 
 	@Override

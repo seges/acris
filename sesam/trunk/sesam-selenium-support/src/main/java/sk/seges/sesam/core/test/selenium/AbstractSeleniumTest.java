@@ -109,6 +109,7 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 			
 			reportEventListener = new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings), reportSettings, webDriver, environmentInfo, testName);
 			((EventFiringWebDriver)webDriver).register(reportEventListener);
+			registerAssertionListener(reportEventListener);
 			
 			if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
 				reportEventListener.addTestResultCollector(new ScreenshotsWebDriverEventListener(reportSettings, webDriver, environmentInfo));

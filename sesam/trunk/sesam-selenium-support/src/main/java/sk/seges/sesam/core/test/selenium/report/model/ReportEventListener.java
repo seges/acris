@@ -14,8 +14,9 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings
 import sk.seges.sesam.core.test.selenium.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.selenium.report.model.api.TestResultCollector;
 import sk.seges.sesam.core.test.selenium.report.printer.ReportPrinter;
+import sk.seges.sesam.core.test.selenium.support.event.AssertionEventListener;
 
-public class ReportEventListener implements WebDriverEventListener {
+public class ReportEventListener implements WebDriverEventListener, AssertionEventListener {
 
 	private final TestCaseResult testInfo;
 
@@ -62,14 +63,19 @@ public class ReportEventListener implements WebDriverEventListener {
 		this.reportPrinter.finish(testInfo);
 	}
 
-	private CommandResult merge(List<CommandResult> commandResults) {
+	private CommandResult getLastCommandResult() {
 		CommandResult previousResult = null;
 		
 		if (testInfo.getCommandResults().size() > 0) {
 			previousResult = testInfo.getCommandResults().get(testInfo.getCommandResults().size() - 1);
 		}
 		
-		CommandResult result = new CommandResult(previousResult, reportSettings.getHtml().getLocale(), webDriver, environmentInfo);
+		return previousResult;
+	}
+	
+	private CommandResult merge(List<CommandResult> commandResults) {
+		
+		CommandResult result = new CommandResult(getLastCommandResult(), reportSettings.getHtml().getLocale(), webDriver, environmentInfo);
 		
 		for (CommandResult commandResult: commandResults) {
 			if (commandResult.getOperation() != null) {
@@ -410,5 +416,111 @@ public class ReportEventListener implements WebDriverEventListener {
 		
 		testInfo.getCommandResults().add(merge(results));
 		reportPrinter.print(testInfo);
+	}
+
+	private CommandResult getBeforeCommandResult(SeleniumOperation operation, Object... params) {
+		CommandResult commandResult = new CommandResult(getLastCommandResult(), reportSettings.getHtml().getLocale(), webDriver, environmentInfo);
+		commandResult.setState(SeleniumOperationState.BEFORE);
+		commandResult.setOperation(operation);
+		commandResult.setResult(SeleniumOperationResult.NONE);
+		commandResult.setParameters(params);
+		return commandResult;
+	}
+
+	@Override
+	public void onAssertion(Boolean result, Boolean statement1, ComparationType type, String comment) {
+		processing = true;
+		try {
+			testInfo.getCommandResults().add(getBeforeCommandResult(SeleniumOperation.ASSERTION, comment));
+			reportPrinter.print(testInfo);
+
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.onAssertion(result, statement1, type, comment);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
+		}
+	}
+
+	@Override
+	public void onAssertion(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+		processing = true;
+		try {
+			testInfo.getCommandResults().add(getBeforeCommandResult(SeleniumOperation.ASSERTION, comment + " ( Expecting: " + statement1 + ", found: " + statement2 + " )"));
+			reportPrinter.print(testInfo);
+
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.onAssertion(result, statement1, statement2, type, comment);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
+		}
+	}
+
+	@Override
+	public void onVerification(Boolean result, Boolean statement1, ComparationType type, String comment) {
+		processing = true;
+		try {
+			
+			testInfo.getCommandResults().add(getBeforeCommandResult(SeleniumOperation.VERIFICATION, comment));
+			reportPrinter.print(testInfo);
+
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.onVerification(result, statement1, type, comment);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
+		}
+	}
+
+	@Override
+	public void onVerification(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+		processing = true;
+		try {
+			testInfo.getCommandResults().add(getBeforeCommandResult(SeleniumOperation.VERIFICATION, comment + " ( Expecting: " + statement1 + ", found: " + statement2 + " )"));
+			reportPrinter.print(testInfo);
+
+			List<CommandResult> results = new LinkedList<CommandResult>();
+			
+			for (TestResultCollector testInfoCollector: webDriverEventListeners) {
+				testInfoCollector.onVerification(result, statement1, statement2, type, comment);
+				CommandResult commandResult = testInfoCollector.getCommandResult();
+				results.add(commandResult);
+			}
+			
+			testInfo.getCommandResults().add(merge(results));
+			reportPrinter.print(testInfo);
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		} finally {
+			processing = false;
+		}
 	}
 }

@@ -160,6 +160,26 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 		makeScreenshot(SeleniumOperationState.AFTER, commandResult.getOperation());
 	}
 
+	@Override
+	public void onAssertion(Boolean result, Boolean statement1, ComparationType type, String comment) {
+		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION);
+	}
+
+	@Override
+	public void onAssertion(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION);
+	}
+
+	@Override
+	public void onVerification(Boolean result, Boolean statement1, ComparationType type, String comment) {
+		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION);
+	}
+
+	@Override
+	public void onVerification(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION);
+	}
+
 	public static final String DEFAULT_SCREENSHOT = "0_initialize";
 	public static final String FINAL_SCREENSHOT = "0_finalize";
 

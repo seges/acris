@@ -1,8 +1,10 @@
 package sk.seges.sesam.core.test.bromine;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 
@@ -13,6 +15,8 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettin
 import sk.seges.sesam.core.test.selenium.factory.LocalWebDriverFactory;
 import sk.seges.sesam.core.test.selenium.factory.RemoteWebDriverFactory;
 import sk.seges.sesam.core.test.selenium.factory.WebDriverFactory;
+import sk.seges.sesam.core.test.selenium.support.event.AssertionEventListener;
+import sk.seges.sesam.core.test.selenium.support.event.AssertionEventListener.ComparationType;
 
 public abstract class BromineTest implements Assertion {
 
@@ -22,9 +26,15 @@ public abstract class BromineTest implements Assertion {
 
 //	private Boolean bromineAccessible;
 	
+	private List<AssertionEventListener> listeners = new ArrayList<AssertionEventListener>();
+	
 	protected BromineTest() {
 	}
 
+	protected void registerAssertionListener(AssertionEventListener listener) {
+		listeners.add(listener);
+	}
+	
 	public void setTestEnvironment(SeleniumSettings testEnvironment) {
 		this.testEnvironment = testEnvironment;
 		webDriver = createWebDriver(getWebDriverFactory(testEnvironment), testEnvironment);
@@ -132,8 +142,9 @@ public abstract class BromineTest implements Assertion {
 
 		if (result.split(",")[1].indexOf("failed") == 0) {
 			customCommand("Assert failed", "failed", "Assertion failed. Test stopped!", "");
-			tearDown();
-			System.exit(-1);
+			throw new RuntimeException("Statement assertion failed with result " + result);
+//			tearDown();
+//			System.exit(-1);
 		}
 	}
 
@@ -146,8 +157,14 @@ public abstract class BromineTest implements Assertion {
 			assertNotFailed(executeBromineQuery(BromineCommand.ASSERT_TRUE.get().statement1(statement1).comment(comment)));
 		} else {
 			if (statement1 == null || statement1.equals(Boolean.FALSE)) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onAssertion(false, statement1, ComparationType.POSITIVE, comment);
+				}
 				throw new RuntimeException("Statement assertion failed. [Expected true] " + comment);
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onAssertion(true, statement1, ComparationType.POSITIVE, comment);
 		}
 	}
 
@@ -160,8 +177,14 @@ public abstract class BromineTest implements Assertion {
 			assertNotFailed(executeBromineQuery(BromineCommand.ASSERT_FALSE.get().statement1(statement1).comment(comment)));
 		} else {
 			if (statement1 == null || statement1.equals(Boolean.TRUE)) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onAssertion(false, statement1, ComparationType.NEGATIVE, comment);
+				}
 				throw new RuntimeException("Statement assertion failed. [Expected false] " + comment);
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onAssertion(true, statement1, ComparationType.NEGATIVE, comment);
 		}
 	}
 
@@ -175,13 +198,22 @@ public abstract class BromineTest implements Assertion {
 		} else {
 			if (statement1 == null) {
 				if (statement2 != null) {
+					for (AssertionEventListener assertionListener: listeners) {
+						assertionListener.onAssertion(false, statement1, statement2, ComparationType.POSITIVE, comment);
+					}
 					throw new RuntimeException("Statements assertion failed. [" + statement1 + " should equals " + statement2 + "] " + comment);
 				}
 			} else {
 				if (statement2 == null || !statement1.equals(statement2)) {
+					for (AssertionEventListener assertionListener: listeners) {
+						assertionListener.onAssertion(false, statement1, statement2, ComparationType.POSITIVE, comment);
+					}
 					throw new RuntimeException("Statements assertion failed. [" + statement1 + " should equals " + statement2 + "] " + comment);
 				}
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onAssertion(true, statement1, statement2, ComparationType.POSITIVE, comment);
 		}
 	}
 
@@ -195,15 +227,23 @@ public abstract class BromineTest implements Assertion {
 					.statement2(statement2).comment(comment)));
 		} else {
 			if (statement1 == null && statement2 == null) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onAssertion(false, statement1, statement2, ComparationType.NEGATIVE, comment);
+				}
 				throw new RuntimeException("Statements assertion failed. [" + statement1 + " should not equals "
 						+ statement2 + "] " + comment);
 			} else {
-				if ((statement1 != null && statement1.equals(statement2))
-						|| (statement2 != null && statement2.equals(statement1))) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onAssertion(false, statement1, statement2, ComparationType.NEGATIVE, comment);
+				}
+				if ((statement1 != null && statement1.equals(statement2)) || (statement2 != null && statement2.equals(statement1))) {
 					throw new RuntimeException("Statements assertion failed. [" + statement1 + " should not equals "
 							+ statement2 + "] " + comment);
 				}
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onAssertion(true, statement1, statement2, ComparationType.NEGATIVE, comment);
 		}
 	}
 
@@ -216,8 +256,14 @@ public abstract class BromineTest implements Assertion {
 			executeBromineQuery(BromineCommand.VERIFY_TRUE.get().statement1(statement1).comment(comment));
 		} else {
 			if (statement1 == null || statement1.equals(Boolean.FALSE)) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onVerification(false, statement1, ComparationType.POSITIVE, comment);
+				}
 				throw new RuntimeException("Statement verification failed. [Expected true] " + comment);
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onVerification(true, statement1, ComparationType.POSITIVE, comment);
 		}
 	}
 
@@ -230,8 +276,14 @@ public abstract class BromineTest implements Assertion {
 			executeBromineQuery(BromineCommand.VERIFY_FALSE.get().statement1(statement1).comment(comment));
 		} else {
 			if (statement1 == null || statement1.equals(Boolean.TRUE)) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onVerification(false, statement1, ComparationType.NEGATIVE, comment);
+				}
 				throw new RuntimeException("Statement verification failed. [Expected false] " + comment);
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onVerification(true, statement1, ComparationType.NEGATIVE, comment);
 		}
 	}
 
@@ -245,13 +297,22 @@ public abstract class BromineTest implements Assertion {
 		} else {
 			if (statement1 == null) {
 				if (statement2 != null) {
+					for (AssertionEventListener assertionListener: listeners) {
+						assertionListener.onVerification(false, statement1, statement2, ComparationType.POSITIVE, comment);
+					}
 					throw new RuntimeException("Statements verification failed. [" + statement1 + " should equals " + statement2 + "] " + comment);
 				}
 			} else {
 				if (statement2 == null || !statement1.equals(statement2)) {
+					for (AssertionEventListener assertionListener: listeners) {
+						assertionListener.onVerification(false, statement1, statement2, ComparationType.POSITIVE, comment);
+					}
 					throw new RuntimeException("Statements verification failed. [" + statement1 + " should equals " + statement2 + "] " + comment);
 				}
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onVerification(true, statement1, statement2, ComparationType.POSITIVE, comment);
 		}
 	}
 
@@ -265,13 +326,22 @@ public abstract class BromineTest implements Assertion {
 		} else {
 			if (statement1 == null) {
 				if (statement2 == null) {
+					for (AssertionEventListener assertionListener: listeners) {
+						assertionListener.onVerification(false, statement1, statement2, ComparationType.NEGATIVE, comment);
+					}
 					throw new RuntimeException("Statements verification failed. [" + statement1 + " should not equals " + statement2 + "] " + comment);
 				}
 			} else {
 				if (statement2 != null || statement1.equals(statement2)) {
+					for (AssertionEventListener assertionListener: listeners) {
+						assertionListener.onVerification(false, statement1, statement2, ComparationType.NEGATIVE, comment);
+					}
 					throw new RuntimeException("Statements verification failed. [" + statement1 + " should not equals " + statement2 + "] " + comment);
 				}
 			}
+		}
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onVerification(true, statement1, statement2, ComparationType.NEGATIVE, comment);
 		}
 	}
 

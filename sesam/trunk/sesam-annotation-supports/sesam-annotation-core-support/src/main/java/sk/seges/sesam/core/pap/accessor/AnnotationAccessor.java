@@ -92,7 +92,7 @@ public abstract class AnnotationAccessor {
 		try {
 			result = fakeClass.toClass();
 		} catch (CannotCompileException e) {
-			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + className + "! Returning null.");
+			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to compile class " + className + "! Returning null.");
 			return null;
 		}
 
