@@ -50,6 +50,17 @@ public class SeleniumSuiteRunner {
 			}
 		});
 	}
+
+	protected void handleTestResult() {
+		int failures = 0;
+		for (Entry<String, TestResult> entrySets: testResults.entrySet()) {
+			failures += entrySets.getValue().getFailedTestCasesCount();
+		}
+
+		if (failures > 0) {
+			throw new RuntimeException(failures + " tests are failing!");
+		}
+	}
 	
 	protected <T> T get(AbstractSeleniumTest testCase, Map<String, T> elements, ElementFactory<T> factory) {
 		CoreSeleniumSettingsProvider settingsProvider = testCase.ensureSettings();

@@ -38,6 +38,16 @@ public enum SeleniumOperation {
 		public String getDescription() {
 			return "Running script";
 		}
+	}, ASSERTION {
+		@Override
+		public String getDescription() {
+			return "Asserting: ";
+		}
+	}, VERIFICATION {
+		@Override
+		public String getDescription() {
+			return "Verificating: ";
+		}
 	};
 
 	public abstract String getDescription();
