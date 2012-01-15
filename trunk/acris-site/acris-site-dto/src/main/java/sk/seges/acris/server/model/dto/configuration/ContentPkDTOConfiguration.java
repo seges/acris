@@ -8,7 +8,7 @@ import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
-@TransferObjectMapping(domainClass = ContentPkBase.class)
+@TransferObjectMapping(domainClass = ContentPkBase.class, generateConverter = false)
 @Mapping(MappingType.AUTOMATIC)
 @GenerateEquals(generate = false)
 @GenerateHashcode(generate = false)
