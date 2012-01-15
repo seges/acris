@@ -1,3 +1,18 @@
+/**
+   Copyright 2011 Seges s.r.o.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 package sk.seges.sesam.pap.model.printer.converter;
 
 import java.util.ArrayList;
@@ -16,6 +31,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -24,7 +40,11 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
+import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
 
+/**
+ * @author Peter Simun (simun@seges.sk)
+ */
 public class ConverterProviderPrinter {
 
 	protected final FormattedPrintWriter pw;
@@ -40,13 +60,31 @@ public class ConverterProviderPrinter {
 		this.parametersResolver = parametersResolver;
 	}
 
+	/**
+	 * Prints type parameters
+	 * 
+	 * @author Peter Simun (simun@seges.sk)
+	 *
+	 */
 	interface ParameterPrinter {
 		
+		/**
+		 * Java API model version
+		 */
 		void print(TypeParameterElement parameter, FormattedPrintWriter pw);
 
+		/**
+		 * Mutable API version
+		 */
 		void print(MutableTypeVariable parameter, FormattedPrintWriter pw);
 	}
 
+	/**
+	 * Converts type parameters into the mutable alternatives and prints them
+	 * 
+	 * @author Peter Simun (simun@seges.sk)
+	 * 
+	 */
 	protected class ParameterTypesPrinter implements ParameterPrinter {
 
 		@Override
@@ -59,7 +97,13 @@ public class ConverterProviderPrinter {
 			pw.print(parameter);
 		}
 	}
-	
+
+	/**
+	 * Printing just simple name/variable of the type parameters
+	 * 
+	 * @author Peter Simun (simun@seges.sk)
+	 *
+	 */
 	protected class ParameterNamesPrinter implements ParameterPrinter {
 
 		@Override
@@ -81,7 +125,19 @@ public class ConverterProviderPrinter {
 		return parameter.getName();
 	}
 
-	protected void printTypeParameters(ConverterTypeElement converterTypeElement, ParameterPrinter parameterPrinter) {
+	/**
+	 * Prints type variables of the parametrized converter including the brackets < and >
+	 * Output should looks like
+	 * <pre>
+	 * <DTO, DOMAIN>
+	 * </pre>
+	 * or 
+	 * <pre>
+	 * <DTO1, DTO2, DOMAIN1, DOMAIN2>
+	 * </pre>
+	 * for more type variables
+	 */
+	protected void printConverterTypeParameters(ConverterTypeElement converterTypeElement, ParameterPrinter parameterPrinter) {
 		pw.print("<");
 		int i = 0;
 
@@ -105,6 +161,15 @@ public class ConverterProviderPrinter {
 		pw.print(">");
 	}
 
+	/**
+	 * Convert type variables from convert type into the mutable type variables without extends. Converting should be done in two ways:
+	 * <ul>
+	 * 	<li>extending mode - generating wildcard <? extends DTO></li>
+	 * 	<li>single mode - generating just type variable <DTO>
+	 * </ul>
+	 * @param converterTypeElement converter type element
+	 * @param addExtends whether generating wildcard types or type variables
+	 */
 	protected MutableTypeVariable[] toTypeParameters(ConverterTypeElement converterTypeElement, boolean addExtends) {
 		
 		List<MutableTypeVariable> result = new ArrayList<MutableTypeVariable>();
@@ -154,21 +219,73 @@ public class ConverterProviderPrinter {
 			}
 		}
 	}
+
+	private void printConverterCast(ConverterTypeElement converterTypeElement) {
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+		pw.print("(", typeUtils.getDeclaredType(typeUtils.toMutableType(InstantiableDtoConverter.class), 
+				typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX), 
+				typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX)), ")");
+	}
 	
+	private void printGenericConverterDefinition(ConverterTypeElement converterTypeElement) {
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+
+		DomainType domain = converterTypeElement.getDomain();
+		pw.print("<");
+		pw.print(typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX, domain.getDto()));
+		pw.print(", ", typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX, domain));
+		pw.print(">");
+		pw.print(" ", typeUtils.getDeclaredType(typeUtils.toMutableType(InstantiableDtoConverter.class), 
+				typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX), 
+				typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX)));
+	}
+	
+	/**
+	 * Method prints getter for domain converter.<br/>
+	 * The result should looks like (for not parametrized domain classes)
+	 * <pre>
+	 * private <DTO extends TransferObjectClass, DOMAIN extends DomainObjectClass> DtoConverter<DTO, DOMAIN> getDomainObjectConverter(TransactionPropagationModel[] arg1) {
+	 * 	return new DomainObjectConverter(required_params, arg1);
+	 * }
+	 * </pre>
+	 * 
+	 * and for parametrized domain classes the result should be:
+	 * 
+	 * <pre>
+	 * private<DTO, DOMAIN> CollectionConverter<? extends DTO, ? extends DOMAIN> getCollectionConverter(DtoConverter<DTO, DOMAIN> arg0) {
+	 * 	return new CollectionConverter<DTO, DOMAIN>(arg0);
+	 * }
+	 * </pre>
+	 * 
+	 * @param converterTypeElement
+	 *            Type representing converter element, e.g. DomainObjectConverter
+	 * @param convertMethod
+	 *            converter method name, e.g. getDomainObjectConverter
+	 * @param supportExtends
+	 *            determines whether generates wildcards or just type variables in the method definition that converts parametrized domain objects,
+	 *            e.g. for List<TransferObjectClass> can be generated <DTO, Domain> or <? extends DTO, ? extends Domain>
+	 * @param constructorIndex
+	 *            determines which converter constructor should be used - constructors are ordered by number of parameters. -1 defines to use last
+	 *            constructor and 0 defines to use the first one
+	 */
 	protected void printConverterMethod(ConverterTypeElement converterTypeElement, String convertMethod, boolean supportExtends, int constructorIndex) {
 
 		List<ConverterParameter> converterParameters = getConverterParametersDefinition(converterTypeElement, constructorIndex);
 
-		pw.print("private");
-		
-		MutableDeclaredType converterReplacedTypeParameters = converterTypeElement;
+		pw.print("private ");
 
+		MutableDeclaredType converterReplacedTypeParameters = converterTypeElement;
+		
 		if (converterTypeElement.hasTypeParameters()) {
-			printTypeParameters(converterTypeElement, new ParameterTypesPrinter());
+			//for parametrized domain class, like Collections<T> or PagedResult<T>
+			printConverterTypeParameters(converterTypeElement, new ParameterTypesPrinter());
 			converterReplacedTypeParameters = converterTypeElement.clone().setTypeVariables(toTypeParameters(converterTypeElement, supportExtends));
+			pw.print(converterReplacedTypeParameters);
+		} else {
+			//instead of printing the concrete type, we should print the generic definition
+			printGenericConverterDefinition(converterTypeElement);
 		}
 		
-		pw.print(" ", converterReplacedTypeParameters);
 		pw.print(" " + convertMethod + "(");
 
 		printConverterParametersDefinition(converterParameters, converterTypeElement);
@@ -177,11 +294,15 @@ public class ConverterProviderPrinter {
 		
 		pw.println(") {");
 
+		pw.print("return ");
+
 		if (converterTypeElement.hasTypeParameters()) {
 			converterReplacedTypeParameters = converterTypeElement.clone().setTypeVariables(toTypeParameters(converterTypeElement, false));
+		} else {
+			printConverterCast(converterTypeElement);
 		}
 		
-		pw.print("return new ", converterReplacedTypeParameters);
+		pw.print("new ", converterReplacedTypeParameters);
 		
 		pw.print("(");
 
@@ -225,11 +346,7 @@ public class ConverterProviderPrinter {
 
 		@Override
 		public ConverterTypeElement getConverter(MutableTypeMirror type) {
-			DomainType domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(type);
-			if (domainTypeElement.getConfiguration() != null) {
-				return domainTypeElement.getConfiguration().getConverter();
-			}
-			return null;
+			return processingEnv.getTransferObjectUtils().getDomainType(type).getConverter();
 		}
 
 		@Override
@@ -247,12 +364,7 @@ public class ConverterProviderPrinter {
 
 		@Override
 		public ConverterTypeElement getConverter(MutableTypeMirror type) {
-			DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
-			if (dtoType.getConfiguration() != null) {
-				return dtoType.getConverter();
-			}
-			
-			return null;
+			return processingEnv.getTransferObjectUtils().getDtoType(type).getConverter();
 		}
 
 		@Override
@@ -305,26 +417,7 @@ public class ConverterProviderPrinter {
 		}
 
 		if (type.getKind().isDeclared() && converterTypeElement.hasTypeParameters()) {
-
 			return converterTypeElement.clone().setTypeVariables(new MutableTypeVariable[] {});
-
-//			if (((MutableDeclaredType)type).getTypeVariables().size() > 0) {
-//				List<MutableTypeVariable> converterArguments = new ArrayList<MutableTypeVariable>();
-//				for (MutableTypeMirror typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
-//					DtoType dtoType = tomBaseElementProvider.getDtoType(typeArgument);
-//					
-//					if (dtoType == null) {
-//						return null;
-//					}
-//					
-//					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, dtoType));
-//				}
-//				for (MutableTypeVariable typeArgument: ((MutableDeclaredType)type).getTypeVariables()) {
-//					converterArguments.add(processingEnv.getTypeUtils().getTypeVariable(null, replaceByWildcard(tomBaseElementProvider.getDomainType(typeArgument), true)));
-//				}
-//
-//				return converterTypeElement.clone().setTypeVariables(converterArguments.toArray(new MutableTypeVariable[] {}));
-//			}
 		}
 		
 		return null;
@@ -417,5 +510,4 @@ public class ConverterProviderPrinter {
 			pw.print(type);
 		}
 	}
-
 }

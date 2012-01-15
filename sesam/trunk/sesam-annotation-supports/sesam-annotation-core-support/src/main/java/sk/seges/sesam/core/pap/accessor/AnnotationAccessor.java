@@ -30,7 +30,7 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.api.HasAnnotations;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -363,8 +363,8 @@ public abstract class AnnotationAccessor {
 		return Enhancer.create(annotationClass, interfaces.toArray(new Class[] {}), new AnnotationMirrorProxy(annotationMirror, processingEnv));
 	}
 
-	protected AnnotationMirror getAnnotationMirror(MutableDeclaredType mutableType, AnnotationFilter... annotationFilters) {
-		for (AnnotationMirror annotationMirror: mutableType.getAnnotations()) {
+	protected AnnotationMirror getAnnotationMirror(HasAnnotations annoationHolder, AnnotationFilter... annotationFilters) {
+		for (AnnotationMirror annotationMirror: annoationHolder.getAnnotations()) {
 			for (AnnotationFilter annotationFilter: annotationFilters) {
 				if (!annotationFilter.isAnnotationIgnored(annotationMirror)) {
 					return annotationMirror;
@@ -376,8 +376,8 @@ public abstract class AnnotationAccessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends Annotation> T getAnnotation(MutableDeclaredType mutableType, Class<T> annotationClass) {
-		AnnotationMirror annotationMirror = getAnnotationMirror(mutableType, new AnnotationTypeFilter(false, annotationClass));
+	protected <T extends Annotation> T getAnnotation(HasAnnotations annotationHolder, Class<T> annotationClass) {
+		AnnotationMirror annotationMirror = getAnnotationMirror(annotationHolder, new AnnotationTypeFilter(false, annotationClass));
 		if (annotationMirror == null) {
 			return null;
 		}

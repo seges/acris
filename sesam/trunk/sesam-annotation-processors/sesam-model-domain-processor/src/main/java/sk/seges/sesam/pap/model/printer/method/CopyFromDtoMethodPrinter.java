@@ -118,13 +118,13 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	protected void printCopyNested(PathResolver domainPathResolver, String fullPath, DomainDeclaredType referenceDomainType, ExecutableElement method, FormattedPrintWriter pw) {
 		if (referenceDomainType.getId(entityResolver) != null) {
 			pw.print(referenceDomainType + " " + domainPathResolver.getCurrent() + " = ");
-			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConfiguration().getConverter(), referenceDomainType, method, pw);
-			pw.println(".getDomainInstance(" + TransferObjectElementPrinter.DTO_NAME + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
+			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConverter(), referenceDomainType, method, pw);
+			pw.println(".getDomainInstance(" + TransferObjectElementPrinter.DTO_NAME + ", " + TransferObjectElementPrinter.DTO_NAME + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
 		} else {
 			pw.println(referenceDomainType + " " + domainPathResolver.getCurrent() + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ";");
 			pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " == null) {");
 			pw.print(domainPathResolver.getCurrent() + " = ");
-			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConfiguration().getConverter(), referenceDomainType, method, pw);
+			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConverter(), referenceDomainType, method, pw);
 			pw.println(".createDomainInstance(null);");
 			pw.println("}");
 		}
@@ -150,7 +150,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
 		String converterName = "converter" + MethodHelper.toMethod("", dtoField);
-		pw.print(converter, " " + converterName + " = ");
+		pw.print(converter.getConverterBase(), " " + converterName + " = ");
 		converterProviderPrinter.printDomainConverterMethodName(converter, domainMethodReturnType, domainMethod, pw);
 		pw.println(";");
 		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");

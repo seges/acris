@@ -13,6 +13,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -88,7 +89,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				domainIdType = domainType.getId(entityResolver);
-				if (domainIdType.getConfiguration() != null) {
+				if (domainIdType.getConfigurations().size() == 0) {
 					DtoType dto = domainIdType.getDto();
 					if (dto != null) {
 						dtoIdType= dto;
@@ -111,10 +112,10 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			}
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-				ConfigurationTypeElement idConfigurationElement = domainIdType.getConfiguration();
+				ConverterTypeElement idConverter = domainIdType.getConverter();
 					//toHelper.getConfigurationElement(domainIdType, roundEnv);
-				if (idConfigurationElement != null && idConfigurationElement.getConverter() != null) {
-					converterProviderPrinter.printDomainConverterMethodName(idConfigurationElement.getConverter(), domainIdType, idMethod, pw);
+				if (idConverter != null) {
+					converterProviderPrinter.printDomainConverterMethodName(idConverter, domainIdType, idMethod, pw);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -155,8 +156,8 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
-		if (domainsuperClass != null && domainsuperClass.getConfiguration().getConverter() != null) {
-			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConfiguration().getConverter(), domainsuperClass, null, pw);
+		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
+			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConverter(), domainsuperClass, null, pw);
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
 		}

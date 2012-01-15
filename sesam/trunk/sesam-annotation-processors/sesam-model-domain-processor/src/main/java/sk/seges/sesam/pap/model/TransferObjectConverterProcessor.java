@@ -27,8 +27,10 @@ import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyToDtoPrinter;
+import sk.seges.sesam.pap.model.provider.ClasspathConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectConverterProcessorContextProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
@@ -49,12 +51,18 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		};
 	}
 	
+	protected ConfigurationProvider[] getConfigurationProviders() {
+		return new ConfigurationProvider[] {
+				new ClasspathConfigurationProvider(getClassPathTypes(), processingEnv, roundEnv)
+		};
+	}
+
 	@Override
 	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
 		
 		ConverterTypeElement converter = configurationTypeElement.getConverter();
-		if (!converter.isGenerated()) {
+		if (converter == null || !converter.isGenerated()) {
 			return false;
 		}
 
@@ -67,7 +75,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
 
 		ConverterTypeElement converter = configurationTypeElement.getConverter();
-		if (!converter.isGenerated()) {
+		if (converter == null || !converter.isGenerated()) {
 			return new MutableDeclaredType[] {};
 		}
 

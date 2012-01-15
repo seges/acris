@@ -49,6 +49,8 @@ public @interface TransferObjectMapping {
 	Class<?> dtoInterface() default Void.class;
 	String dtoInterfaceName() default Constants.NULL;
 
+	boolean generateDto() default true;
+	
 	/**
 	 * Do not modify the name unless change it also in the processor {@link TransferObjectProcessor} and {@link TransferObjectConfiguration} 
 	 */
@@ -70,4 +72,6 @@ public @interface TransferObjectMapping {
 	@SuppressWarnings("rawtypes")
 	Class<? extends DtoConverter> converter() default NotDefinedConverter.class;
 	String converterClassName() default Constants.NULL;
+	
+	boolean generateConverter() default true;
 }

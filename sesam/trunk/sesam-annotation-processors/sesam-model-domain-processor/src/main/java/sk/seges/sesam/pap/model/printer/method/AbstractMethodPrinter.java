@@ -53,8 +53,8 @@ public abstract class AbstractMethodPrinter {
 		
 		DomainType domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(domainType);
 
-		return castToDelegate(domainNamedType, domainTypeElement.getConfiguration() == null ? null : 
-			domainTypeElement.getConfiguration().getDelegateConfigurationTypeElement());
+		return castToDelegate(domainNamedType, domainTypeElement.getDomainDefinitionConfiguration() == null ? null : 
+			domainTypeElement.getDomainDefinitionConfiguration().getDelegateConfigurationTypeElement());
 		
 	}
 	
@@ -63,8 +63,8 @@ public abstract class AbstractMethodPrinter {
 
 		MutableTypeMirror domainNamedType = processingEnv.getTypeUtils().toMutableType(domainType);
 
-		return castToDelegate(domainNamedType, domainTypeElement.getConfiguration() == null ? null : 
-			domainTypeElement.getConfiguration().getDelegateConfigurationTypeElement());
+		return castToDelegate(domainNamedType, domainTypeElement.getDomainDefinitionConfiguration() == null ? null : 
+			domainTypeElement.getDomainDefinitionConfiguration().getDelegateConfigurationTypeElement());
 	}
 	
 	protected MutableTypeMirror castToDelegate(MutableTypeMirror domainNamedType, ConfigurationTypeElement delegateConfigurationTypeElement) {

@@ -199,12 +199,12 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 			}
 		}
 
-		intializeConverter();
+		intializeConverter(configurationProviders);
 		
 		return true;
 	}
 	
-	protected void intializeConverter() {
+	protected void intializeConverter(ConfigurationProvider... configurationProviders) {
 
 		DomainType returnType = getDomainMethodReturnType();
 		
@@ -226,7 +226,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		case CLASS:
 
 			//reads TransferObjectConfiguration annotation from method in the configuration
-			ConverterTypeElement converterTypeElement = new ConfigurationTypeElement(getDtoMethod(), processingEnv, roundEnv).getConverter();
+			ConverterTypeElement converterTypeElement = new ConfigurationTypeElement(getDtoMethod(), (DomainDeclaredType) returnType, processingEnv, roundEnv, configurationProviders).getConverter();
 
 			if (converterTypeElement != null) {
 				this.converterType = converterTypeElement;

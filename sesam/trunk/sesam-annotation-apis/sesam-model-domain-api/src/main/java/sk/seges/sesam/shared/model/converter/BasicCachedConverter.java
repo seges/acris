@@ -3,8 +3,9 @@ package sk.seges.sesam.shared.model.converter;
 import java.io.Serializable;
 
 import sk.seges.sesam.shared.model.converter.api.CachedConverter;
+import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
 
-public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConverter<DTO, DOMAIN>{
+public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConverter<DTO, DOMAIN>, InstantiableDtoConverter<DTO, DOMAIN> {
 
 	protected MapConvertedInstanceCache cache;
 	
@@ -13,7 +14,6 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 	}
 
 	protected abstract DOMAIN createDomainInstance(Serializable id);
-	protected abstract DTO createDtoInstance(Serializable id);
 
 	protected DTO putDtoIntoCache(Object domainSource, DTO result, Serializable id) {
 		if (result != null) {

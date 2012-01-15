@@ -16,7 +16,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.accessor.AnnotationAccessor;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -29,7 +28,6 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	protected String simpleName;
 	private String packageName;
 	private MutableDeclaredType enclosedClass;
-	private Set<AnnotationMirror> annotations;
 	private List<MutableTypeVariable> typeVariables;
 
 	private MutableTypeKind kind;
@@ -39,6 +37,7 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	private boolean superClassInitialized = false;
 	private MutableDeclaredType superClass;
 
+	private final AnnotationHolderDelegate annotationHolderDelegate;
 	//TypeMirror for the primitive types, otherwise DeclaredType
 	private TypeMirror type;
 	private boolean dirty = false;
@@ -57,23 +56,44 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		this.enclosedClass = null;
 
 		initKind();
+		
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv, ((DeclaredType)type).asElement());
+		} else {
+			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv);
+		}
+	}
+
+	public MutableDeclared(TypeMirror type, MutableDeclaredType enclosedClass, String simpleName, MutableProcessingEnvironment processingEnv) {
+		this.processingEnv = processingEnv;
+		this.simpleName = simpleName;
+		this.packageName = enclosedClass.getPackageName();
+		this.enclosedClass = enclosedClass;
+		this.type = type;
+
+		initKind();
+
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv, ((DeclaredType)type).asElement());
+		} else {
+			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv);
+		}
 	}
 
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
-    	return new AnnotationAccessor(processingEnv) {
-
-			@Override
-			public boolean isValid() {
-				return false;
-			}
-    		
-			
-			public A getAnnotation() {
-				return super.getAnnotation(MutableDeclared.this, annotationType);
-			}
-    	}.getAnnotation();
+    	return annotationHolderDelegate.getAnnotation(annotationType);
     }
 
+	public void annotateWith(AnnotationMirror annotation) {
+		//TODO TODO!!!!!!!
+		//dirty();
+		annotationHolderDelegate.annotateWith(annotation);
+	}
+
+	public Set<AnnotationMirror> getAnnotations() {
+		return annotationHolderDelegate.getAnnotations();
+	}
+	
 	private void initKind() {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 			this.kind = convertKind(((DeclaredType)type).asElement().getKind());
@@ -101,15 +121,6 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		throw new RuntimeException("Unsupported kind " + kind + ". Unable to create declared type with this kind.");
 	}
 	
-	public MutableDeclared(TypeMirror type, MutableDeclaredType enclosedClass, String simpleName, MutableProcessingEnvironment processingEnv) {
-		this.processingEnv = processingEnv;
-		this.simpleName = simpleName;
-		this.packageName = enclosedClass.getPackageName();
-		this.enclosedClass = enclosedClass;
-		this.type = type;
-		initKind();
-	}
-
 	private void copySuperclass() {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 			TypeElement typeElement = (TypeElement)((DeclaredType)type).asElement();
@@ -148,14 +159,6 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		}
 	}
 	
-	private void copyAnnotations() {
-		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
-			for (AnnotationMirror annotation: ((DeclaredType)type).asElement().getAnnotationMirrors()) {
-				annotations.add(annotation);
-			}
-		}
-	}
-
 	public MutableDeclaredType getEnclosedClass() {
 		return enclosedClass;
 	};
@@ -285,25 +288,6 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		return type;
 	};
 
-	public void annotateWith(AnnotationMirror annotation) {
-		//TODO TODO!!!!!!!
-		//dirty();
-		initializeAnnotations();
-		annotations.add(annotation);
-	}
-
-	private void initializeAnnotations() {
-		if (annotations == null) {
-			annotations = new HashSet<AnnotationMirror>();
-			copyAnnotations();
-		}
-	}
-	
-	@Override
-	public Set<AnnotationMirror> getAnnotations() {
-		initializeAnnotations();
-		return Collections.unmodifiableSet(annotations);
-	};
 
 	String toString(MutableDeclared declaredType) {
 		if (declaredType.getTypeVariables() == null || declaredType.getTypeVariables().size() == 0) {
@@ -679,13 +663,8 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	public MutableDeclaredType clone() {
 		MutableDeclared result = new MutableDeclared(type, packageName, simpleName, processingEnv);
 		result.enclosedClass = enclosedClass;
-		
-		if (annotations != null) {
-			result.annotations = new HashSet<AnnotationMirror>();
-			for (AnnotationMirror annotationMirror: annotations) {
-				result.annotations.add(annotationMirror);
-			}
-		}
+	
+		annotationHolderDelegate.clone(result.annotationHolderDelegate);
 		
 		if (typeVariables != null) {
 			result.typeVariables = new LinkedList<MutableTypeVariable>();
