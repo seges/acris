@@ -57,7 +57,7 @@ public class PagedResultConverter<DTO_T, DOMAIN_T> extends BasicCachedConverter<
 	}
 
 	@Override
-	protected PagedResult<DTO_T> createDtoInstance(Serializable id) {
+	public PagedResult<DTO_T> createDtoInstance(Serializable id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

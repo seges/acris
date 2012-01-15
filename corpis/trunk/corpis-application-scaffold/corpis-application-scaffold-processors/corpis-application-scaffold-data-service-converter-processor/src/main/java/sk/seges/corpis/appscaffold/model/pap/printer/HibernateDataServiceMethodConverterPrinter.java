@@ -19,7 +19,7 @@ public class HibernateDataServiceMethodConverterPrinter extends HibernateService
 
 	protected void printCastLocalMethodResult(DtoType returnDtoType, ServiceConverterPrinterContext context) {
 		if (returnDtoType != null) {
-			ConfigurationTypeElement configuration = returnDtoType.getConfiguration();
+			ConfigurationTypeElement configuration = returnDtoType.getDomainDefinitionConfiguration();
 		
 			if (configuration instanceof DataConfigurationTypeElement) {
 				pw.print("(", ((DataConfigurationTypeElement)configuration).getDomainEntity(), ")");

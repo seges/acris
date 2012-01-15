@@ -10,7 +10,6 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.provider.ServiceCollectorConfigurationProvider;
 
@@ -26,7 +25,7 @@ public class DataServiceCollectorConfigurationProvider extends ServiceCollectorC
 	}
 
 	@Override
-	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		return new DataConfigurationTypeElement(configurationElement, processingEnv, roundEnv, configurationProviders);
+	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
+		return new DataConfigurationTypeElement(configurationElement, processingEnv, roundEnv, this);
 	}
 }

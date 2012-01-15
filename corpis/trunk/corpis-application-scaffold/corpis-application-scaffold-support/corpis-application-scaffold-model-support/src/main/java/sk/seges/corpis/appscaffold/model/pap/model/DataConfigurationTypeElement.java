@@ -35,7 +35,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 		DomainDeclaredType domainDeclared = super.getDomain();
 		MutableDeclaredType result = findDomainData(domainDeclared.asMutable());
 		if (result != null) {
-			domainDeclared = new DomainDeclared(result, dtoType, this, processingEnv, roundEnv, configurationProviders);
+			domainDeclared = new DomainDeclared(result, dtoType, new ConfigurationTypeElement[] { this }, processingEnv, roundEnv, configurationProviders);
 			domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
 		}
 		
