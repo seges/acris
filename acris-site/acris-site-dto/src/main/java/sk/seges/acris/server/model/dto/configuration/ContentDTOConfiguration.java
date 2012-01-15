@@ -18,7 +18,7 @@ import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.PropertyAccessor;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
-@TransferObjectMapping(domainClass = ContentBase.class)
+@TransferObjectMapping(domainClass = ContentBase.class, generateConverter = false)
 @Mapping(MappingType.AUTOMATIC)
 @Copy(annotations = @Annotations(accessor = PropertyAccessor.PROPERTY, packageOf = Size.class))
 public interface ContentDTOConfiguration extends IDataTransferObject {
