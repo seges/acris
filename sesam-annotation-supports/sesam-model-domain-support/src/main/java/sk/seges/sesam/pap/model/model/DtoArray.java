@@ -1,5 +1,7 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.List;
+
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableArray;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -19,8 +21,8 @@ public class DtoArray extends DelegateMutableArray implements GeneratedClass, Dt
 	}
 
 	@Override
-	public ConfigurationTypeElement getConfiguration() {
-		return dtoType.getConfiguration();
+	public List<ConfigurationTypeElement> getConfigurations() {
+		return dtoType.getConfigurations();
 	}
 
 	@Override
@@ -41,6 +43,11 @@ public class DtoArray extends DelegateMutableArray implements GeneratedClass, Dt
 	@Override
 	protected MutableArrayType getDelegate() {
 		return processingEnv.getTypeUtils().getArrayType(dtoType);
+	}
+
+	@Override
+	public ConfigurationTypeElement getDomainDefinitionConfiguration() {
+		return dtoType.getDomainDefinitionConfiguration();
 	}
 
 }

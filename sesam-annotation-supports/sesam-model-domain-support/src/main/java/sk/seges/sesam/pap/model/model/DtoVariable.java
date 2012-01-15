@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,8 +49,8 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 	}
 
 	@Override
-	public ConfigurationTypeElement getConfiguration() {
-		return null;
+	public List<ConfigurationTypeElement> getConfigurations() {
+		return new ArrayList<ConfigurationTypeElement>();
 	}
 
 	public ConverterTypeElement getConverter() {
@@ -58,7 +59,9 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 
 	public DomainTypeVariable getDomain() {
 
-		if (getConfiguration() == null) {
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		if (domainDefinitionConfiguration == null) {
 			List<MutableTypeMirror> domainUpperBounds = new LinkedList<MutableTypeMirror>();
 			for (MutableTypeMirror bound: getUpperBounds()) {
 				domainUpperBounds.add(processingEnv.getTransferObjectUtils().getDtoType(bound).getDomain());
@@ -76,7 +79,7 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 			return new DomainVariable(processingEnv.getTypeUtils().getTypeVariable(variableName, domainUpperBounds.toArray(new MutableTypeMirror[] {}), domainLowerBounds.toArray(new MutableTypeMirror[]{})), processingEnv, roundEnv);
 		}
 		
-		return (DomainTypeVariable) getConfiguration().getDomain();
+		return (DomainTypeVariable) domainDefinitionConfiguration.getDomain();
 	}
 
 	@Override
@@ -87,5 +90,10 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 	@Override
 	protected MutableTypeVariable getDelegate() {
 		return (MutableTypeVariable)processingEnv.getTypeUtils().toMutableType(dtoType);
+	}
+
+	@Override
+	protected List<ConfigurationTypeElement> getConfigurationsForType() {
+		return new ArrayList<ConfigurationTypeElement>();
 	}
 }

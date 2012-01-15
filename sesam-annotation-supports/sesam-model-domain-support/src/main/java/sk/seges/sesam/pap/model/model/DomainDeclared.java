@@ -30,11 +30,7 @@ import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
-public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclaredType {
-
-	private boolean configurationTypeInitialized = false;
-	protected ConfigurationTypeElement configurationTypeElement;
-	protected final ConfigurationProvider[] configurationProviders;
+public class DomainDeclared extends TomDeclaredConfigurationHolder implements DomainDeclaredType {
 
 	protected MutableDeclaredType domainType;
 	protected MutableDeclaredType dtoType;
@@ -44,13 +40,11 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 	private boolean idMethodInitialized = false;
 	private ExecutableElement idMethod;
 
-	public DomainDeclared(MutableDeclaredType domainType, MutableDeclaredType dtoType, ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv);
+	public DomainDeclared(MutableDeclaredType domainType, MutableDeclaredType dtoType, ConfigurationTypeElement[] configurations, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
+		super(processingEnv, roundEnv, configurations, configurationProviders);
 		
 		this.domainType = domainType;
 		this.dtoType = dtoType;
-		this.configurationTypeElement = configurationTypeElement;
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
 
 		initialize();
 	}
@@ -61,12 +55,11 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 	 */
 	@Deprecated
 	public DomainDeclared(DeclaredType domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv);
+		super(processingEnv, roundEnv, configurationProviders);
 		
 		this.domainType = processingEnv.getTypeUtils().toMutableType(domainType);
 		this.dtoType = null;
 
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
 
 	/**
@@ -75,12 +68,10 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 	 */
 	@Deprecated
 	public DomainDeclared(PrimitiveType domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv);
+		super(processingEnv, roundEnv, configurationProviders);
 		
 		this.domainType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(domainType);
 		this.dtoType = null;
-
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
 
 	/**
@@ -89,56 +80,56 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 	 */
 	@Deprecated
 	public DomainDeclared(MutableDeclaredType domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv);
+		super(processingEnv, roundEnv, configurationProviders);
 		
 		this.domainType = domainType;
 		this.dtoType = null;
-		
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
 	}
+
 
 	@Override
-	public ConfigurationTypeElement getConfiguration() {
-		if (!configurationTypeInitialized) {
-			this.configurationTypeElement = getConfiguration(domainType);
-			this.configurationTypeInitialized = true;
-		}
-		return configurationTypeElement;
+	protected List<ConfigurationTypeElement> getConfigurationsForType() {
+		return getConfigurations(domainType);
 	}
-
-	private ConfigurationTypeElement getConfiguration(MutableTypeMirror domainType) {
-		for (ConfigurationProvider configurationProvider: configurationProviders) {
-			ConfigurationTypeElement configurationForDomain = configurationProvider.getConfigurationForDomain(domainType);
-			if (configurationForDomain != null) {
-				configurationForDomain.setConfigurationProviders(configurationProviders);
-				return configurationForDomain;
+	
+	private List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror domainType) {
+		for (ConfigurationProvider configurationProvider: getConfigurationProviders()) {
+			List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(domainType);
+			if (configurationsForDomain != null && configurationsForDomain.size() > 0) {
+				for (ConfigurationTypeElement configurationTypeElement: configurationsForDomain) {
+					configurationTypeElement.setConfigurationProviders(getConfigurationProviders());
+				}
+				return configurationsForDomain;
 			}
 		}
 		
-		return null;
+		return new ArrayList<ConfigurationTypeElement>();
 	}
 
 	@Override
 	public ConverterTypeElement getConverter() {
-		if (getConfiguration() == null) {
+		ConfigurationTypeElement converterDefinitionConfiguration = getConverterDefinitionConfiguration();
+		
+		if (converterDefinitionConfiguration == null) {
 			return null;
 		}
 		
-		return getConfiguration().getConverter();
+		return converterDefinitionConfiguration.getConverter();
 	}
-
 
 	@Override
 	public DtoDeclaredType getDto() {
-		if (getConfiguration() == null) {
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		if (domainDefinitionConfiguration == null) {
 			if (domainType != null) {
-				return new DtoDeclared(domainType, processingEnv, roundEnv, configurationProviders);
+				return new DtoDeclared(domainType, processingEnv, roundEnv, getConfigurationProviders());
 			}
 			
 			return null;
 		}
 		
-		return getConfiguration().getDto();
+		return domainDefinitionConfiguration.getDto();
 	}
 
 	public ExecutableElement getIdMethod(EntityResolver entityResolver) {
@@ -146,14 +137,16 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 		if (!idMethodInitialized) {
 			List<ExecutableElement> overridenMethods =  new ArrayList<ExecutableElement>();
 			
-			if (getConfiguration() != null) {
-				overridenMethods = ElementFilter.methodsIn(getConfiguration().asConfigurationElement().getEnclosedElements());
+			ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+
+			if (domainDefinitionConfiguration != null) {
+				overridenMethods = ElementFilter.methodsIn(domainDefinitionConfiguration.asConfigurationElement().getEnclosedElements());
 			}
 			
 			MappingType mappingType = MappingType.AUTOMATIC;
 			
-			if (getConfiguration() != null) {
-				mappingType = getConfiguration().getMappingType();
+			if (domainDefinitionConfiguration != null) {
+				mappingType = domainDefinitionConfiguration.getMappingType();
 			}
 			
 			for (ExecutableElement overridenMethod: overridenMethods) {
@@ -162,12 +155,12 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 				
 				ExecutableElement domainMethod = getGetterMethod(fieldName);
 	
-				if (domainMethod != null && entityResolver.isIdMethod(domainMethod)) {
+				if (domainMethod != null && !new PathResolver(fieldName).isNested() && entityResolver.isIdMethod(domainMethod)) {
 					if (this.idMethod != null) {
 						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 								this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 								domainMethod.getSimpleName().toString() + " in the configuration " + domainMethod.getEnclosingElement().toString(), 
-								configurationTypeElement.asConfigurationElement());
+								domainDefinitionConfiguration.asConfigurationElement());
 					}
 					this.idMethod = domainMethod;
 				}
@@ -183,10 +176,7 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 					for (ExecutableElement method: methods) {
 						if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
 							if (this.idMethod != null) {
-								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
-										this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
-										method.getSimpleName().toString() + " in the configuration " + method.getEnclosingElement().toString(), 
-										configurationTypeElement.asConfigurationElement());
+								handleMultipleIdentifiers(method, domainDefinitionConfiguration);
 							}
 							this.idMethod = method;
 						}
@@ -197,10 +187,7 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 							ExecutableElement idMethod = ((DomainDeclared)getDomainForType(interfaceType)).getIdMethod(entityResolver);
 							if (idMethod != null) {
 								if (this.idMethod != null) {
-									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
-											this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
-											idMethod.getSimpleName().toString() + " in the configuration " + idMethod.getEnclosingElement().toString(), 
-											configurationTypeElement.asConfigurationElement());
+									handleMultipleIdentifiers(idMethod, domainDefinitionConfiguration);
 								}
 								this.idMethod = idMethod;
 							}
@@ -218,10 +205,7 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 			for (ExecutableElement overridenMethod: overridenMethods) {
 				if (entityResolver.isIdMethod(overridenMethod)) {
 					if (this.idMethod != null) {
-						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
-								this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
-								overridenMethod.getSimpleName().toString() + " in the configuration " + overridenMethod.getEnclosingElement().toString(), 
-								configurationTypeElement.asConfigurationElement());
+						handleMultipleIdentifiers(overridenMethod, domainDefinitionConfiguration);
 					}
 					idMethod = overridenMethod;
 				}
@@ -232,15 +216,24 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 		
 		return idMethod;
 	}
+
+	private void handleMultipleIdentifiers(ExecutableElement method, ConfigurationTypeElement domainDefinitionConfiguration) {
+		processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
+				this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
+				method.getSimpleName().toString() + " in the configuration " + method.getEnclosingElement().toString(), 
+				domainDefinitionConfiguration.asConfigurationElement());
+	}
 	
 	public DomainType getDomainReference(String fieldName) {
 		ExecutableElement getterMethod = getGetterMethod(fieldName);
 		if (getterMethod == null) {
 			return null;
 		}
-		if (getterMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
+		
+		if (!getterMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 			return null;
 		}
+		
 		return getDomainForType(getterMethod.getReturnType());
 	}
 	
@@ -329,10 +322,10 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 				if (superClassDomainType == null) {
 					TypeMirror domainSuperClass = typeElement.getSuperclass();
 					
-					ConfigurationTypeElement configurationElement = getConfiguration(processingEnv.getTypeUtils().toMutableType(domainSuperClass));
+					List<ConfigurationTypeElement> configurationElements = getConfigurations(processingEnv.getTypeUtils().toMutableType(domainSuperClass));
 					
-					if (configurationElement != null) {
-						superClassDomainType = configurationElement.getDomain();
+					if (configurationElements != null && configurationElements.size() > 0) {
+						superClassDomainType = configurationElements.get(0).getDomain();
 //					} else {
 //						superClassDomainType = (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainSuperClass);
 					}
@@ -354,7 +347,21 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 	}
 
 	private DomainType getDomainForType(TypeMirror type) {
-		return processingEnv.getTransferObjectUtils().getDomainType(type);
+		DomainType domainType = processingEnv.getTransferObjectUtils().getDomainType(type);
+		
+		if (domainType != null) {
+			return domainType;
+		}
+		
+		if (type.getKind().isPrimitive()) {
+			return new DomainDeclared((PrimitiveType)type, processingEnv, roundEnv, getConfigurationProviders());
+		}
+		
+		if (type.getKind().equals(TypeKind.DECLARED)) {
+			return new DomainDeclared((DeclaredType)type, processingEnv, roundEnv, getConfigurationProviders());
+		}
+		
+		return null;
 	}
 
 	private void initialize() {
@@ -373,7 +380,7 @@ public class DomainDeclared extends TomBaseDeclaredType implements DomainDeclare
 		}
 	}
 
-	//TODO rename to asDataElement
+	//TODO rename to asDataElement, Data ?
 	public TypeElement asConfigurationElement() {
 		//TODO it is
 		if (asType().getKind().equals(TypeKind.DECLARED)) {

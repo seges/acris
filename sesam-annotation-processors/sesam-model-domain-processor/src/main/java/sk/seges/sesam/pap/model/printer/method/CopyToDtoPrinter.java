@@ -113,10 +113,10 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			pw.print(dtoIdType, " " + idName + " = ");
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-				if (domainIdTypeElement.getConfiguration() != null && domainIdTypeElement.getConfiguration().getConverter() != null) {
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfiguration().getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), idMethod, pw);
+				if (domainIdTypeElement.getConverter() != null) {
+					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), idMethod, pw);
 					pw.print(".convertToDto(");
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConfiguration().getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), idMethod, pw);
+					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), idMethod, pw);
 					pw.print(".createDtoInstance(null), ");
 					pw.print("(", castToDelegate(idMethod.getReturnType()), ")");
 					useIdConverter = true;
@@ -158,8 +158,8 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
-		if (domainsuperClass != null && domainsuperClass.getConfiguration().getConverter() != null) {
-			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConfiguration().getConverter(), domainsuperClass, null, pw);
+		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
+			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConverter(), domainsuperClass, null, pw);
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
 		}

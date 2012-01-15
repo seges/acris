@@ -29,6 +29,12 @@ public interface MutableTypeMirror extends Type, MutableType {
 				return "interface";
 			}
 		},
+		METHOD {
+			@Override
+			public String toString() {
+				return "method";
+			}
+		},
 		PRIMITIVE,
 		WILDCARD,
 		TYPEVAR,

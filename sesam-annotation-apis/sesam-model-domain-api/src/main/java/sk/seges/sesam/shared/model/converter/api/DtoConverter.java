@@ -1,6 +1,7 @@
 package sk.seges.sesam.shared.model.converter.api;
 
 
+
 public interface DtoConverter<DTO, DOMAIN> {
 
 	DTO convertToDto(DTO result, DOMAIN domain);

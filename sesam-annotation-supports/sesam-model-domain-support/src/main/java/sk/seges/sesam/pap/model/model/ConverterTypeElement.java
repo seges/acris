@@ -22,6 +22,7 @@ import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
@@ -32,6 +33,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
+import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
 
 public class ConverterTypeElement extends TomBaseDeclaredType implements GeneratedClass {
 
@@ -42,6 +44,8 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 	private final TypeElement converterTypeElement;
 	private final ConfigurationTypeElement configurationTypeElement;
+	
+	private MutableDeclaredType converterBase;
 	
 	private final boolean generated;
 	
@@ -65,6 +69,25 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				(MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(BasicCachedConverter.class), configurationTypeElement.getDto(), configurationTypeElement.getDomain()));
 	}
 
+	public MutableDeclaredType getConverterBase() {
+
+		if (ensureDelegateType().hasTypeParameters()) {
+			return ensureDelegateType();
+		}
+		
+		if (converterBase != null) {
+			return converterBase;
+		}
+		
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+
+		DomainType domain = getDomain();
+
+		converterBase = typeUtils.getDeclaredType(typeUtils.toMutableType(InstantiableDtoConverter.class), typeUtils.getTypeVariable(null, domain.getDto()), typeUtils.getTypeVariable(null, domain));	
+		
+		return converterBase;
+	}
+	
 	protected MutableDeclaredType getDelegate() {
 		if (converterTypeElement != null) {
 			return (MutableDeclaredType) getMutableTypesUtils().toMutableType((DeclaredType)converterTypeElement.asType());
@@ -134,14 +157,14 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		TransferObjectMappingAccessor transferObjectConfiguration = new TransferObjectMappingAccessor((TypeElement)declaredType.asElement(), processingEnv);
 		
 		TypeElement converter = transferObjectConfiguration.getConverter();
-		if (converter != null) {
+		if (converter != null || !configurationTypeElement.ensureDelegateType().getKind().isDeclared()) {
 			return null;
 		}
 
 		TypeElement domainType = transferObjectConfiguration.getDomain();
 		
 		//We are going to modify simple name, so clone is necessary
-		MutableDeclaredType configurationNameType = configurationTypeElement.clone();
+		MutableDeclaredType configurationNameType = ((MutableDeclaredType)configurationTypeElement.ensureDelegateType()).clone();
 		
 		//Remove configuration suffix if it is there - just to have better naming convention
 		String simpleName = configurationNameType.getSimpleName();

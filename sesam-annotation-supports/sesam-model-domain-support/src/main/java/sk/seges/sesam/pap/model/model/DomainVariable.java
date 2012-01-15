@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,66 +19,61 @@ class DomainVariable extends TomBaseVariable implements DomainTypeVariable {
 
 	private MutableTypeVariable domainTypeVariable;
 	
-	private boolean configurationTypeInitialized = false;
-	protected ConfigurationTypeElement configurationTypeElement;
-	
-	protected final ConfigurationProvider[] configurationProviders;
-
 	public DomainVariable(MutableTypeVariable domainTypeVariable, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
 			ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv);
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		super(processingEnv, roundEnv, configurationProviders);
 		this.domainTypeVariable = domainTypeVariable;
 	}
 
 	public DomainVariable(TypeVariable domainTypeVariable, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
 			ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv);
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		super(processingEnv, roundEnv, configurationProviders);
 		this.domainTypeVariable = (MutableTypeVariable)processingEnv.getTypeUtils().toMutableType(domainTypeVariable);
 	}
 
 	public DomainVariable(WildcardType wildcardType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
 			ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv);
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
+		super(processingEnv, roundEnv, configurationProviders);
 		this.domainTypeVariable = (MutableTypeVariable)processingEnv.getTypeUtils().toMutableType(wildcardType);
 	}
 
 	@Override
-	public ConfigurationTypeElement getConfiguration() {
-		if (!configurationTypeInitialized) {
-			this.configurationTypeElement = getConfiguration(domainTypeVariable);
-			this.configurationTypeInitialized = true;
-		}
-		return configurationTypeElement;
+	protected List<ConfigurationTypeElement> getConfigurationsForType() {
+		return getConfigurations(domainTypeVariable);
 	}
-
-	private ConfigurationTypeElement getConfiguration(MutableTypeMirror domainType) {
+	
+	private List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror domainType) {
 		for (ConfigurationProvider configurationProvider: configurationProviders) {
-			ConfigurationTypeElement configurationForDomain = configurationProvider.getConfigurationForDomain(domainType);
-			if (configurationForDomain != null) {
-				configurationForDomain.setConfigurationProviders(configurationProviders);
-				return configurationForDomain;
+			List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(domainType);
+			if (configurationsForDomain != null && configurationsForDomain.size() > 0) {
+				for (ConfigurationTypeElement configurationForDomain: configurationsForDomain) {
+					configurationForDomain.setConfigurationProviders(configurationProviders);
+				}
+				return configurationsForDomain;
 			}
 		}
 		
-		return null;
+		return new ArrayList<ConfigurationTypeElement>();
 	}
 
 	@Override
 	public ConverterTypeElement getConverter() {
-		if (getConfiguration() == null) {
+		
+		ConfigurationTypeElement converterDefinitionConfiguration = getConverterDefinitionConfiguration();
+		
+		if (converterDefinitionConfiguration == null) {
 			return null;
 		}
 		
-		return getConfiguration().getConverter();
+		return converterDefinitionConfiguration.getConverter();
 	}
 
 
 	@Override
 	public DtoTypeVariable getDto() {
-		if (getConfiguration() == null) {
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		if (domainDefinitionConfiguration == null) {
 			List<MutableTypeMirror> dtoUpperBounds = new LinkedList<MutableTypeMirror>();
 			for (MutableTypeMirror bound: getUpperBounds()) {
 				dtoUpperBounds.add(processingEnv.getTransferObjectUtils().getDomainType(bound).getDto());
@@ -93,7 +89,7 @@ class DomainVariable extends TomBaseVariable implements DomainTypeVariable {
 			return new DtoVariable(processingEnv.getTypeUtils().getTypeVariable(variable, dtoUpperBounds.toArray(new MutableTypeMirror[] {}), dtoLowerBounds.toArray(new MutableTypeMirror[]{})), processingEnv, roundEnv);
 		}
 		
-		return (DtoTypeVariable) getConfiguration().getDto();
+		return (DtoTypeVariable) domainDefinitionConfiguration.getDto();
 	}
 
 	@Override

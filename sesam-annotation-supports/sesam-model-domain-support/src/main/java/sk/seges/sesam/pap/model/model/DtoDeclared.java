@@ -33,44 +33,36 @@ import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
-class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDeclaredType {
+class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedClass, DtoDeclaredType {
 
-	private final ConfigurationTypeElement configurationTypeElement;
 
 	private final boolean generated;
 	private final MutableDeclaredType dtoType;
-	private ConfigurationProvider[] configurationProviders;
 	
 	private boolean isInterface = false;
 	
-	DtoDeclared(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType dtoTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv);
-		this.configurationTypeElement = configurationTypeElement;
+	DtoDeclared(ConfigurationTypeElement[] configurationTypeElements, MutableDeclaredType dtoTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv, configurationTypeElements, configurationProviders);
 		this.generated = false;
 		this.dtoType = dtoTypeElement;
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
 		
 		initialize();
 	}
 
-	DtoDeclared(ConfigurationTypeElement configurationTypeElement, DeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv);
+	DtoDeclared(ConfigurationTypeElement[] configurationTypeElements, DeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv, configurationTypeElements, configurationProviders);
 		
-		this.configurationTypeElement = configurationTypeElement;
 		this.generated = false;
 		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoType);
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
 		
 		initialize();
 	}
 
-	DtoDeclared(ConfigurationTypeElement configurationTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv);
+	DtoDeclared(ConfigurationTypeElement[] configurationTypeElements, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
+		super(processingEnv, roundEnv, configurationTypeElements, configurationProviders);
 
-		this.configurationTypeElement = configurationTypeElement;
 		this.generated = true;
 		this.dtoType = null;
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
 
 		initialize();
 		
@@ -91,8 +83,10 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 			}
 		}
 
-		if (configurationTypeElement.asConfigurationElement().asType().getKind().equals(TypeKind.DECLARED)) {
-			List<? extends TypeMirror> interfaces = ((TypeElement)configurationTypeElement.asConfigurationElement()).getInterfaces();
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		if (domainDefinitionConfiguration != null && domainDefinitionConfiguration.asConfigurationElement().asType().getKind().equals(TypeKind.DECLARED)) {
+			List<? extends TypeMirror> interfaces = ((TypeElement)domainDefinitionConfiguration.asConfigurationElement()).getInterfaces();
 			
 			List<MutableTypeMirror> interfaceTypes = new ArrayList<MutableTypeMirror>();
 			
@@ -106,8 +100,8 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 			
 			MutableTypeMirror superClass = super.getSuperClass();
 			if (superClass == null) {
-				if (configurationTypeElement.getSuperClass() != null) {
-					setSuperClass(configurationTypeElement.getSuperClass());
+				if (domainDefinitionConfiguration.ensureDelegateType().getKind().isDeclared() && ((MutableDeclaredType) domainDefinitionConfiguration.ensureDelegateType()).getSuperClass() != null) {
+					setSuperClass(((MutableDeclaredType) domainDefinitionConfiguration.ensureDelegateType()).getSuperClass());
 				} else {
 					//TODO check if it is not already there
 					interfaceTypes.add(processingEnv.getTypeUtils().toMutableType(Serializable.class));
@@ -117,70 +111,69 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 			setInterfaces(interfaceTypes);
 		}
 	}
-
+		
 	DtoDeclared(DeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv);
+		super(processingEnv, roundEnv, configurationProviders);
 
 		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoType);
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
-		this.configurationTypeElement = getConfiguration(this.dtoType);
-
 		this.generated = false;
 				
 		initialize();
 	}
 
 	DtoDeclared(PrimitiveType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv);
+		super(processingEnv, roundEnv, configurationProviders);
 
 		this.dtoType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(dtoType);
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
-		this.configurationTypeElement = getConfiguration(this.dtoType);
-
 		this.generated = false;
 				
 		initialize();
 	}
 
 	DtoDeclared(MutableDeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv);
+		super(processingEnv, roundEnv, configurationProviders);
 
 		this.dtoType = dtoType;
-		this.configurationProviders = getConfigurationProviders(configurationProviders);
-		this.configurationTypeElement = getConfiguration(this.dtoType);
-
 		this.generated = false;
 				
 		initialize();
 	}
 
-	private ConfigurationTypeElement getConfiguration(MutableTypeMirror dtoType) {
-		for (ConfigurationProvider configurationProvider: configurationProviders) {
-			ConfigurationTypeElement configurationForDto = configurationProvider.getConfigurationForDto(dtoType);
-			if (configurationForDto != null) {
-				configurationForDto.setConfigurationProviders(configurationProviders);
-				return configurationForDto;
+	protected List<ConfigurationTypeElement> getConfigurationsForType() {
+		return getConfigurations(this.dtoType);
+	};
+
+	private List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror dtoType) {
+		for (ConfigurationProvider configurationProvider: getConfigurationProviders()) {
+			List<ConfigurationTypeElement> configurationsForDto = configurationProvider.getConfigurationsForDto(dtoType);
+			if (configurationsForDto != null && configurationsForDto.size() > 0) {
+				for (ConfigurationTypeElement configurationsTypeElement: configurationsForDto) {
+					configurationsTypeElement.setConfigurationProviders(getConfigurationProviders());
+				}
+				return configurationsForDto;
 			}
 		}
 		
-		return null;
+		return new ArrayList<ConfigurationTypeElement>();
 	}
 	
 	protected MutableDeclaredType getDelegate() {
 		if (dtoType != null) {
 			return (MutableDeclaredType) getMutableTypesUtils().toMutableType(dtoType);
 		}
-		return getGeneratedDtoTypeFromConfiguration(configurationTypeElement);
+		return getGeneratedDtoTypeFromConfiguration();
 	};
 
 	private void initialize() {
-		if (configurationTypeElement == null) {
+		if (getConfigurations().size() == 0) {
 			return;
 		}
 
-		if (configurationTypeElement.getDomain().hasTypeParameters()) {
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+
+		if (domainDefinitionConfiguration.getDomain().hasTypeParameters()) {
 		
-			List<? extends TypeMirror> typeArguments = ((DeclaredType)configurationTypeElement.getDomain().asType()).getTypeArguments();
+			List<? extends TypeMirror> typeArguments = ((DeclaredType)domainDefinitionConfiguration.getDomain().asType()).getTypeArguments();
 			List<MutableTypeVariable> dtoTypeVariables = new LinkedList<MutableTypeVariable>();
 			if (typeArguments.size() == getTypeVariables().size()) {
 				for (TypeMirror domainTypeVariable: typeArguments) {
@@ -200,9 +193,11 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 		return new DefaultPackageValidatorProvider();
 	}
 
-	private MutableDeclaredType getGeneratedDtoTypeFromConfiguration(ConfigurationTypeElement configurationType) {
+	private MutableDeclaredType getGeneratedDtoTypeFromConfiguration() {
 
-		MutableDeclaredType outputType = configurationType.clone();
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		MutableDeclaredType outputType = ((MutableDeclaredType) domainDefinitionConfiguration.ensureDelegateType()).clone();
 		
 		PackageValidator packageValidator = getPackageValidationProvider().get(outputType)
 				.moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);
@@ -219,8 +214,11 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 	
 	public DomainDeclaredType getDomain() {
 		DomainDeclaredType result = null;
-		if (configurationTypeElement != null) {
-			result = configurationTypeElement.getDomain();
+		
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		if (domainDefinitionConfiguration != null) {
+			result = domainDefinitionConfiguration.getDomain();
 		}
 		
 		if (result != null) {
@@ -252,24 +250,24 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 		this.isInterface = isInterface;
 	}
 	
-	public ConfigurationTypeElement getConfiguration() {
-		return configurationTypeElement;
-	}
-	
 	public ConverterTypeElement getConverter() {
-		if (configurationTypeElement == null) {
+		ConfigurationTypeElement converterDefinitionConfiguration = getConverterDefinitionConfiguration();
+		
+		if (converterDefinitionConfiguration == null) {
 			return null;
 		}
 		
-		return configurationTypeElement.getConverter();
+		return converterDefinitionConfiguration.getConverter();
 	}
 
 	public ExecutableElement getIdMethod(EntityResolver entityResolver) {
 
-		if (getConfiguration() != null) {
-			List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(getConfiguration().asConfigurationElement().getEnclosedElements());
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		if (domainDefinitionConfiguration != null) {
+			List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(domainDefinitionConfiguration.asConfigurationElement().getEnclosedElements());
 	
-			DomainDeclaredType domainType = getConfiguration().getDomain();
+			DomainDeclaredType domainType = domainDefinitionConfiguration.getDomain();
 	
 			if (!domainType.asType().getKind().equals(TypeKind.DECLARED)) {
 				return null;
@@ -293,8 +291,8 @@ class DtoDeclared extends TomBaseDeclaredType implements GeneratedClass, DtoDecl
 		
 		ExecutableElement idMethod = getDomain().getIdMethod(entityResolver);
 		
-		if (getConfiguration() != null) {
-			if (idMethod != null && !getConfiguration().isFieldIgnored(MethodHelper.toField(idMethod))) {
+		if (domainDefinitionConfiguration != null) {
+			if (idMethod != null && !domainDefinitionConfiguration.isFieldIgnored(MethodHelper.toField(idMethod))) {
 				return idMethod;
 			}
 			

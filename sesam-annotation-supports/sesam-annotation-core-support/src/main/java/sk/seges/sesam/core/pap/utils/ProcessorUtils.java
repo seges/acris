@@ -96,7 +96,11 @@ public class ProcessorUtils {
 					i++;
 				}
 				
-				erasureSuperclass(currentTypeElement, parameterName, typeElement);
+				TypeMirror erasuredSuperclass = erasureSuperclass(currentTypeElement, parameterName, typeElement);
+				
+				if (erasuredSuperclass != null) {
+					return erasuredSuperclass;
+				}
 			}
 		}
 		

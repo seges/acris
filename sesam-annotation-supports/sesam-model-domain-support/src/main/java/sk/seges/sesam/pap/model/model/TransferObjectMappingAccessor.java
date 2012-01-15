@@ -255,6 +255,30 @@ public class TransferObjectMappingAccessor extends AnnotationAccessor {
 		return getConfiguration(referenceMapping);
 	}
 
+	public boolean isConverterGenerated() {
+		if (referenceMapping == null) {
+			return false;
+		}
+		
+		return isConverterGenerated(referenceMapping);
+	}
+
+	public boolean isDtoGenerated() {
+		if (referenceMapping == null) {
+			return false;
+		}
+		
+		return isDtoGenerated(referenceMapping);
+	}
+
+	boolean isDtoGenerated(TransferObjectMapping mapping) {
+		return mapping.generateDto();
+	}
+
+	boolean isConverterGenerated(TransferObjectMapping mapping) {
+		return mapping.generateConverter();
+	}
+	
 	public TypeElement getConverter() {
 		if (referenceMapping == null) {
 			return null;

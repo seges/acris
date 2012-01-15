@@ -63,7 +63,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 	protected void processElement(ProcessorContext context) {
 		TypeElement element = context.getTypeElement();
 		
-		ConfigurationTypeElement configurationElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
+		ConfigurationTypeElement configurationElement = new ConfigurationTypeElement(element, processingEnv, roundEnv, getConfigurationProviders());
 
 		if (configurationElement.getDomain() == null) {
 			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find domain class reference for " + element.toString(), element);
@@ -168,7 +168,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 					while (pathResolver.hasNext()) {
 						DomainType domainReference = currentElement.getDomainReference(currentPath);
 						
-						if (domainReference != null && !domainReference.getKind().isDeclared()) {
+						if (domainReference != null && domainReference.getKind().isDeclared()) {
 							currentElement = (DomainDeclaredType)domainReference;
 							
 							ExecutableElement nestedIdMethod = currentElement.getIdMethod(getEntityResolver());
@@ -185,7 +185,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 									continue;
 								}
 
-								contexts.add(context);
+								//contexts.add(context);
 //								printer.print(context);
 							}
 						} else {
@@ -234,6 +234,27 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		printer.finish(configurationTypeElement);
 	}
 	
+	private void takeSuperclassMethods(DomainDeclaredType processingElement, DomainDeclaredType domainTypeElement, MappingType mappingType, List<String> generated) {
+		List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.asConfigurationElement().getEnclosedElements());
+		
+		if (mappingType.equals(MappingType.AUTOMATIC)) {
+			for (ExecutableElement method: methods) {
+				
+				String fieldName = TransferObjectHelper.getFieldPath(method);
+				
+				if (!isProcessed(generated, fieldName) && MethodHelper.isGetterMethod(method) && 
+						toHelper.hasSetterMethod(domainTypeElement.asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC)) {
+
+					generated.add(fieldName);
+				}
+			}
+		}
+
+		if (processingElement.getSuperClass() != null) {
+			takeSuperclassMethods(processingElement.getSuperClass(), domainTypeElement, mappingType, generated);
+		}
+	}
+	
 	private void processType(ConfigurationTypeElement configurationTypeElement, MappingType mappingType, final DomainDeclaredType processingElement, DomainDeclaredType domainTypeElement, List<String> generated, List<TransferObjectContext> contexts) {
 		List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.asConfigurationElement().getEnclosedElements());
 		
@@ -257,19 +278,18 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 			}
 		}
 		
-		if (processingElement.getSuperClass() != null) {
-			processType(configurationTypeElement, mappingType, processingElement.getSuperClass(), domainTypeElement, generated, contexts);
-		} else {
-			if (processingElement.asConfigurationElement() != null) {
-				TypeMirror superclass = processingElement.asConfigurationElement().getSuperclass();
-				if (superclass.getKind().equals(TypeKind.DECLARED)) {
-					processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(superclass), domainTypeElement, generated, contexts);
-				}
+		if (processingElement.getSuperClass() == null && processingElement.asConfigurationElement() != null) {
+			TypeMirror superclass = processingElement.asConfigurationElement().getSuperclass();
+			if (superclass.getKind().equals(TypeKind.DECLARED)) {
+				processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(superclass), domainTypeElement, generated, contexts);
 			}
+		} else if (processingElement.getSuperClass() != null) {
+			takeSuperclassMethods(processingElement.getSuperClass(), domainTypeElement, mappingType, generated);
 		}
 
 		for (TypeMirror domainInterface: processingElement.asConfigurationElement().getInterfaces()) {
 			processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainInterface), domainTypeElement, generated, contexts);
 		}
 	}
+	
 }

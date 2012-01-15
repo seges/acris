@@ -1,5 +1,7 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.List;
+
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableArray;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -23,8 +25,8 @@ class DomainArray extends DelegateMutableArray implements DomainArrayType {
 	}
 
 	@Override
-	public ConfigurationTypeElement getConfiguration() {
-		return domainType.getConfiguration();
+	public List<ConfigurationTypeElement> getConfigurations() {
+		return domainType.getConfigurations();
 	}
 
 	@Override
@@ -35,5 +37,10 @@ class DomainArray extends DelegateMutableArray implements DomainArrayType {
 	@Override
 	public DtoType getDto() {
 		return new DtoArray(domainType.getDto(), processingEnv);
+	}
+
+	@Override
+	public ConfigurationTypeElement getDomainDefinitionConfiguration() {
+		return domainType.getDomainDefinitionConfiguration();
 	}
 }

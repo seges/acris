@@ -15,10 +15,18 @@ import sk.seges.sesam.pap.model.printer.constructor.EnumeratedConstructorDefinit
 import sk.seges.sesam.pap.model.printer.equals.EqualsPrinter;
 import sk.seges.sesam.pap.model.printer.field.FieldPrinter;
 import sk.seges.sesam.pap.model.printer.hashcode.HashCodePrinter;
+import sk.seges.sesam.pap.model.provider.ClasspathConfigurationProvider;
+import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectProcessor extends AbstractTransferProcessor {
 	
+	protected ConfigurationProvider[] getConfigurationProviders() {
+		return new ConfigurationProvider[] {
+				new ClasspathConfigurationProvider(getClassPathTypes(), processingEnv, roundEnv)
+		};
+	}
+
 	@Override
 	protected void printAnnotations(ProcessorContext context) {
 		
@@ -33,9 +41,14 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		pw.println("dtoClass = " + getOutputClass(configurationTypeElement).getSimpleName() + ".class,");
 		pw.println("		domainClassName = \"" + configurationTypeElement.getDomain().getQualifiedName().toString() + "\", ");
 		pw.println("		configurationClassName = \"" + context.getTypeElement().toString() + "\", ");
-		pw.print("		converterClassName = \"");
-		pw.print(configurationTypeElement.getConverter().getCanonicalName());
-		pw.print("\"");
+		pw.print("		generateConverter = false, generateDto = false");
+		if (configurationTypeElement.getConverter() != null) {
+			pw.print(", ");
+			pw.print("		converterClassName = \"");
+			pw.print(configurationTypeElement.getConverter().getCanonicalName());
+			pw.print("\"");
+		}
+		
 		pw.println(")");
 		
 		super.printAnnotations(context);
