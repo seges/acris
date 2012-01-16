@@ -19,6 +19,9 @@ import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
 public class APIKeyUserService implements UserProviderService {
 
+	public static final String APIKEY_PARAMETER = "apiKey";
+	public static final String WEBID_PARAMETER = "webId";
+	
 	private static final Logger logger = Logger.getLogger(APIKeyUserService.class);
 	
 	private String apiKeyURL;
@@ -32,7 +35,11 @@ public class APIKeyUserService implements UserProviderService {
 		StringBuilder s = new StringBuilder();
 		try{
 			char[] buf = new char[2048];
-			URLConnection connection = new URL(getUrl(userContext)).openConnection();
+
+			String url = getUrl(userContext);
+			logger.info("Veryfing username against " + url);
+			
+			URLConnection connection = new URL(url).openConnection();
 			connection.connect();
 			InputStream is = connection.getInputStream();
 			Reader r = new InputStreamReader(is, "UTF-8");
@@ -49,13 +56,22 @@ public class APIKeyUserService implements UserProviderService {
 		return createUser(s.toString());
 	}
 	
-	public UserData<?> createUser(String result) {
+	protected Boolean getParsedResult(String result) {
+		logger.info("Response " + result);
+
 		Boolean allowed = false;
 		try {
 			allowed = (Boolean) new JSONObject(result).get("allowed");
 		} catch (Exception e) {
 			logger.error("APIKey service do not return correct result", e);
 		}
+		
+		return allowed;
+	}
+	
+	public UserData<?> createUser(String result) {
+		
+		Boolean allowed = getParsedResult(result);
 		
 		if (allowed) {
 			UserData<?> adminUser = (UserData<?>) new GenericUserDTO();
@@ -74,8 +90,8 @@ public class APIKeyUserService implements UserProviderService {
 	
 	private String getUrl(UserContext userContext) {
 		String url = apiKeyURL;
-		url += "&" + ((APIKeyUserContext) userContext).getWebId();
-		url += "&" + ((APIKeyUserContext) userContext).getApiKey();
+		url += apiKeyURL.contains("?") ? "&" : "?" + WEBID_PARAMETER + "=" + ((APIKeyUserContext) userContext).getWebId();
+		url += "&" + APIKEY_PARAMETER + "=" + ((APIKeyUserContext) userContext).getApiKey();
 		return url;
 	}
 }

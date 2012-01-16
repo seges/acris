@@ -9,11 +9,13 @@ import javax.ws.rs.core.MediaType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import sk.seges.acris.security.server.core.user_management.context.APIKeyUserService;
+
 @Path("/auth")
 public class RestAuthenticationResource {
 	
 	@GET
-	@Path("/user&{webId}&{apiKey}")
+	@Path("/user?" + APIKeyUserService.APIKEY_PARAMETER + "={webId}&" + APIKeyUserService.APIKEY_PARAMETER + "={apiKey}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public JSONObject authenticateUser(@PathParam("webId") String webId, @PathParam("apiKey") String apiKey) throws JSONException {
 		JSONObject result;
