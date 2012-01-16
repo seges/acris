@@ -521,7 +521,7 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 
 	@Override
 	public MutableDeclaredType cloneTypeVariables(MutableDeclaredType declaredType) {
-		dirty();
+//		dirty();
 		
 		this.typeVariables = new LinkedList<MutableTypeVariable>();
 		
@@ -532,11 +532,7 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		return this;
 	}
 
-	@Override
 	public MutableDeclaredType setTypeVariables(MutableTypeVariable... mutableTypeVariables) {
-		
-		dirty();
-		
 		this.typeVariables = new LinkedList<MutableTypeVariable>();
 		
 		for (MutableTypeVariable typeVariable: mutableTypeVariables) {
@@ -545,10 +541,16 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 		
 		return this;
 	}
+	
+//	@Override
+//	public MutableDeclaredType setTypeVariables(MutableTypeVariable... mutableTypeVariables) {
+//	//	dirty();
+//		return initializeTypeVariables(mutableTypeVariables);
+//	}
 
 	@Override
 	public MutableDeclaredType addTypeVariable(MutableTypeVariable typeVariable) {
-		dirty();
+//		dirty();
 		ensureTypeVariables().add(typeVariable);
 		return this;
 	}

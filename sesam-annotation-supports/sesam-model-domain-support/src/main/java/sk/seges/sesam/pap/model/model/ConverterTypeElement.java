@@ -69,9 +69,13 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				(MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(BasicCachedConverter.class), configurationTypeElement.getDto(), configurationTypeElement.getDomain()));
 	}
 
+	public boolean isConverterInstantiable() {
+		return processingEnv.getTypeUtils().implementsType(this, processingEnv.getTypeUtils().toMutableType(InstantiableDtoConverter.class));
+	}
+
 	public MutableDeclaredType getConverterBase() {
 
-		if (ensureDelegateType().hasTypeParameters()) {
+		if (ensureDelegateType().hasTypeParameters() || !isConverterInstantiable()) {
 			return ensureDelegateType();
 		}
 		
