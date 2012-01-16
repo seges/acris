@@ -30,7 +30,7 @@ import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
-class DomainDeclared extends TomDeclaredConfigurationHolder implements DomainDeclaredType {
+public class DomainDeclared extends TomDeclaredConfigurationHolder implements DomainDeclaredType {
 
 	protected MutableDeclaredType domainType;
 	protected MutableDeclaredType dtoType;
