@@ -276,14 +276,18 @@ public class ConverterProviderPrinter {
 
 		MutableDeclaredType converterReplacedTypeParameters = converterTypeElement;
 		
+		boolean converterInstantiable = converterTypeElement.isConverterInstantiable();
+		
 		if (converterTypeElement.hasTypeParameters()) {
 			//for parametrized domain class, like Collections<T> or PagedResult<T>
 			printConverterTypeParameters(converterTypeElement, new ParameterTypesPrinter());
 			converterReplacedTypeParameters = converterTypeElement.clone().setTypeVariables(toTypeParameters(converterTypeElement, supportExtends));
 			pw.print(converterReplacedTypeParameters);
-		} else {
+		} else if (converterInstantiable) {
 			//instead of printing the concrete type, we should print the generic definition
 			printGenericConverterDefinition(converterTypeElement);
+		} else {
+			pw.print(converterTypeElement);
 		}
 		
 		pw.print(" " + convertMethod + "(");
@@ -298,7 +302,7 @@ public class ConverterProviderPrinter {
 
 		if (converterTypeElement.hasTypeParameters()) {
 			converterReplacedTypeParameters = converterTypeElement.clone().setTypeVariables(toTypeParameters(converterTypeElement, false));
-		} else {
+		} else if (converterInstantiable) {
 			printConverterCast(converterTypeElement);
 		}
 		
@@ -319,7 +323,7 @@ public class ConverterProviderPrinter {
 		pw.println("}");
 		pw.println();
 	}
-	
+		
 	protected String getConverterMethodName(ConverterTypeElement converterTypeElement) {
 		if (converterTypeElement == null) {
 			return null;

@@ -324,8 +324,16 @@ public class MutableTypes implements Types {
 		if (clazz.getEnclosingClass() != null) {
 			return new MutableDeclared(null, toMutableType(clazz.getEnclosingClass()), clazz.getSimpleName(), processingEnv);
 		}
+		
 		//TODO handle type variable also, interfaces etc
-		return new MutableDeclared(null, clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
+		TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+		TypeMirror type = null;
+		
+		if (typeElement != null) {
+			type = typeElement.asType();
+		}
+		
+		return new MutableDeclared(type, clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
 	}
 
 	public MutableTypeMirror toMutableType(Type javaType) {
