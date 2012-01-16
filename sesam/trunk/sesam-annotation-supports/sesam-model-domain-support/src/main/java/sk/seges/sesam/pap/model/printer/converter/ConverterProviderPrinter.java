@@ -297,7 +297,7 @@ public class ConverterProviderPrinter {
 
 		List<ConverterParameter> converterParameters = getConverterParametersDefinition(converterTypeElement, constructorIndex);
 
-		pw.print("private ");
+		pw.print("protected ");
 
 		MutableDeclaredType converterReplacedTypeParameters = converterTypeElement;
 		
