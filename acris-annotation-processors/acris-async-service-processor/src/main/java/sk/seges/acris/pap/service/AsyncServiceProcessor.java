@@ -20,6 +20,10 @@ import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
@@ -62,6 +66,19 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 		return context.getTypeElement().getAnnotation(Generated.class) == null;
 	}
 	
+	private MutableTypeVariable toTypeVariable(MutableTypeMirror mutableType) {
+		if (mutableType.getKind().isDeclared() ||
+			mutableType.getKind().equals(MutableTypeKind.ARRAY)) {
+			return processingEnv.getTypeUtils().getTypeVariable(null, mutableType);
+		}
+
+		if (mutableType.getKind().equals(MutableTypeKind.TYPEVAR)) {
+			return (MutableTypeVariable)mutableType;
+		}
+		
+		throw new RuntimeException("Unsupported return type " + mutableType.getKind() + ". " + mutableType.toString());
+	}
+	
 	@Override
 	protected void processElement(ProcessorContext context) {
 		
@@ -74,6 +91,9 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 		
 		Collections.sort(methods, new ExecutableComparator());
 
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+		MutableDeclaredType asyncCallbackMutableType = typeUtils.toMutableType(AsyncCallback.class);
+		
 		for (ExecutableElement method: methods) {
 
 			List<MutableTypeMirror> types = new LinkedList<MutableTypeMirror>();
@@ -102,7 +122,10 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			if (i > 0) {
 				pw.print(", ");
 			}
-			pw.println(AsyncCallback.class, "<", remoteServiceTypeElement.toReturnType(returnType), "> callback);");
+			
+			MutableTypeMirror mutableReturnType = remoteServiceTypeElement.toReturnType(returnType);
+			
+			pw.println(typeUtils.getDeclaredType(asyncCallbackMutableType, toTypeVariable(mutableReturnType)), " callback);");
 			pw.println();
 			//TODO add throws
 		}
