@@ -1,6 +1,8 @@
 package sk.seges.sesam.pap.service.printer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -32,5 +34,13 @@ public abstract class AbstractPatameterCollectorPrinter extends AbstractServiceP
 	public void print(ServiceConverterPrinterContext context) {
 		List<ConverterParameter> newParams = parametersFilter.getPropagatedParameters(getConverterParameters(context.getService(), context.getLocalServiceInterface()));
 		converterParameters = unifyParameterNames(converterParameters, newParams);
+		
+		Collections.sort(converterParameters, new Comparator<ConverterParameter>() {
+
+			@Override
+			public int compare(ConverterParameter o1, ConverterParameter o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 	}
 }

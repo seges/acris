@@ -15,12 +15,20 @@ public class ConverterParameterFieldPrinter extends AbstractPatameterCollectorPr
 		super(processingEnv, parametersFilter, parametersResolver, pw);
 	}
 
+	protected String getParameterName(ConverterParameter parameter) {
+		if (parameter.getSameParameter() != null) {
+			return parameter.getSameParameter().getName();
+		}
+
+		return parameter.getName();
+	}
+	
 	@Override
 	public void finish(ServiceTypeElement serviceTypeElement) {
 		List<ConverterParameter> params = mergeSameParams(converterParameters);
 
 		for (ConverterParameter converterParameter: params) {
-			pw.println("private ", converterParameter.getType(), " " + converterParameter.getName() + ";");
+			pw.println("private ", converterParameter.getType(), " " + getParameterName(converterParameter) + ";");
 			pw.println();
 		}
 	}	

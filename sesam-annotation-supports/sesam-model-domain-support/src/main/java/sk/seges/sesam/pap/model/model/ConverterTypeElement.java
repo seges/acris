@@ -259,7 +259,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			return result;
 		} catch (Exception e) {
 		}
-		
+
 		List<? extends TypeMirror> parameterTypes = ((ExecutableType)method.asType()).getParameterTypes();
 
 		
