@@ -19,7 +19,7 @@ public class LocalServiceFieldPrinter implements ServiceConverterElementPrinter 
 
 	@Override
 	public void print(ServiceConverterPrinterContext context) {
-		pw.println("private ", context.getLocalServiceInterface(), " " + context.getLocalServiceFieldName() + ";");
+		pw.println("protected ", context.getLocalServiceInterface(), " " + context.getLocalServiceFieldName() + ";");
 	}
 
 	@Override

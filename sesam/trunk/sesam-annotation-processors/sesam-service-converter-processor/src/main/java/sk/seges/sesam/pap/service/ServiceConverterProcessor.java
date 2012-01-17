@@ -151,13 +151,6 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		return new DefaultParametersResolver(processingEnv);
 	}	
 
-//	protected List<ConverterParameter> getConverterParameters(ConverterTypeElement converter, List<ConverterParameter> parameters) {
-//		ConverterParameter dummyParameter = new ConverterParameter();
-//		dummyParameter.setConverter(converter);
-//		return ParameterFilter.CONVERTER.filterBy(parameters, dummyParameter);
-//	}
-	
-
 	protected String getConverterMethodName(MutableDeclaredType domainClass) {
 		return "getConverter";
 	}

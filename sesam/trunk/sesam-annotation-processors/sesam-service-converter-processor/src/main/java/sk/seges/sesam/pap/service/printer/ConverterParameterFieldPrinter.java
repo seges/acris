@@ -28,7 +28,7 @@ public class ConverterParameterFieldPrinter extends AbstractPatameterCollectorPr
 		List<ConverterParameter> params = mergeSameParams(converterParameters);
 
 		for (ConverterParameter converterParameter: params) {
-			pw.println("private ", converterParameter.getType(), " " + getParameterName(converterParameter) + ";");
+			pw.println("protected ", converterParameter.getType(), " " + getParameterName(converterParameter) + ";");
 			pw.println();
 		}
 	}	
