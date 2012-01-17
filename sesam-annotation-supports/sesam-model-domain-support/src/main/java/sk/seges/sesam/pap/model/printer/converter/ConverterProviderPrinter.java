@@ -230,17 +230,10 @@ public class ConverterProviderPrinter {
 	}
 	
 	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
-		int i = 0;
 		for (ConverterParameter converterParameter: converterParameters) {
 			if (converterParameter.isConverter()) {
-				if (i > 0) {
-					pw.print(", ");
-				}
-				
 				MutableDeclaredType parameterReplacedTypeParameters = ((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(converterParameter.getType())).setTypeVariables(toTypeParameters(converterTypeElement, false));
-				pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
-				
-				i++;
+				pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName() + ", ");
 			}
 		}
 	}
@@ -318,10 +311,8 @@ public class ConverterProviderPrinter {
 		pw.print(" " + convertMethod + "(");
 
 		printConverterParametersDefinition(converterParameters, converterTypeElement);
-		
-		int i = 0;
-		
-		pw.println(") {");
+
+		pw.println("Class<?> domainClass) {");
 
 		pw.print("return ");
 
@@ -335,7 +326,7 @@ public class ConverterProviderPrinter {
 		
 		pw.print("(");
 
-		i = 0;
+		int i = 0;
 		for (ConverterParameter parameter : converterParameters) {
 			if (i > 0) {
 				pw.print(", ");
@@ -508,10 +499,21 @@ public class ConverterProviderPrinter {
 			printConverterParameter(tomBaseElementProvider, method, parameter, i);
 			i++;
 		}
+
+		if (i > 0) {
+			pw.print(", ");
+		}
 		
+		if (type.getKind().isDeclared()) {
+			type = ((MutableDeclaredType)type).clone().setTypeVariables(new MutableTypeVariable[] {});
+		}
+		
+		pw.print(type, ".class");		
+
 		if (convertedResult != null) {
 			pw.print(")");
 		}
+		
 		pw.print(")");
 	}
 	
