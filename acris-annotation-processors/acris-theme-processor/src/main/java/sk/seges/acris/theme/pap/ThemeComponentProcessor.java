@@ -11,9 +11,12 @@ import sk.seges.acris.theme.client.annotation.ThemeResources.ThemeResource;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 import sk.seges.acris.theme.pap.configurer.ThemeProcessorConfigurer;
 import sk.seges.acris.theme.pap.model.ThemeConfigurationType;
+import sk.seges.acris.theme.pap.model.ThemeUiBinderType;
 import sk.seges.sesam.core.pap.Constants;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.printer.TypePrinter;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
@@ -21,7 +24,6 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 
@@ -58,7 +60,11 @@ public class ThemeComponentProcessor extends MutableAnnotationProcessor {
 		} else {
 			pw.println("@", UiTemplate.class, "(\"" + name + ".ui.xml\")");
 		}
- 		pw.println("interface " + name + UiBinder.class.getSimpleName() + " extends ", UiBinder.class, "<", Element.class, ", ", context.getOutputType(), "> {}");
+		
+		ThemeUiBinderType themeUiBinderType = new ThemeUiBinderType(name, context.getOutputType(), processingEnv);
+		
+		new TypePrinter(pw).printTypeDefinition(null, themeUiBinderType);
+ 		pw.println(" {}");
 		pw.println();
 				
 		//UiField annotation
@@ -97,7 +103,7 @@ public class ThemeComponentProcessor extends MutableAnnotationProcessor {
 		}
 		
 		pw.println("public " + context.getOutputType().getSimpleName() + "() {");
-		pw.println(name, UiBinder.class, " uiBinder = ", GWT.class, ".create(" + name, UiBinder.class, ".class);");
+		pw.println(themeUiBinderType.toString(ClassSerializer.SIMPLE, true), " uiBinder = ", GWT.class, ".create(", themeUiBinderType.toString(ClassSerializer.SIMPLE), ".class);");
 		pw.println("setElement(uiBinder.createAndBindUi(this));");
 		pw.println("parentElement = " +  themeSupportAnnotation.elementName() + ".getParentElement();");
 		pw.println("}");
