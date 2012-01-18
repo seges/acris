@@ -70,6 +70,10 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 		return Collections.unmodifiableSet(set);
     }
 
+    protected String getSupportedPackage() {
+    	return SUPPORTED_PACKAGE;
+    }
+    
     protected ClassPathTypes getClassPathTypes() {
 	    String projectName = processingEnv.getOptions().get(PROJECT_NAME_OPTION);
 	    
@@ -77,7 +81,7 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	    	projectName = getClass().getCanonicalName();
 	    }
 
-		return new ClassPathTypeUtils(processingEnv, projectName, SUPPORTED_PACKAGE);
+		return new ClassPathTypeUtils(processingEnv, projectName, getSupportedPackage());
     }
 
 	@Override
