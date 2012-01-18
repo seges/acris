@@ -17,6 +17,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
@@ -347,6 +348,32 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			}
 		}
 
+		
+		DomainType domain = getDomain();
+		ParameterElement[] constructorAditionalParameters = null;
+		
+		if (domain != null && domain.getKind().isDeclared()) {
+			TypeMirror domainType = ((DomainDeclaredType)domain).asType();
+			if (domainType != null) {
+				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(domainType);
+			}
+		}
+		
+		if (constructorAditionalParameters == null) {
+			processingEnv.getMessager().printMessage(Kind.NOTE, "No additional parameters for " + domain);
+		}
+		
+		for (ConverterParameter converterParameter: parameters) {
+			if (asElement() == null && constructorAditionalParameters != null) {
+				for (ParameterElement additionalParameter: constructorAditionalParameters) {
+					if (processingEnv.getTypeUtils().isSameType(additionalParameter.getType(), converterParameter.getType())) {
+						processingEnv.getMessager().printMessage(Kind.NOTE, "Renaming " + converterParameter.getName() + " with new name " + additionalParameter.getName() + " for " + this);
+						converterParameter.setName(additionalParameter.getName());
+					}
+				}
+			}
+		}
+		
 		return parameters;
 	}
 	

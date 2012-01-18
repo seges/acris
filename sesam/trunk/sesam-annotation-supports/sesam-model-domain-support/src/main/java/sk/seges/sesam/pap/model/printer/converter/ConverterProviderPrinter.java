@@ -23,10 +23,8 @@ import java.util.Map.Entry;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
-import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -38,7 +36,6 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
@@ -204,29 +201,7 @@ public class ConverterProviderPrinter {
 	}
 
 	public List<ConverterParameter> getConverterParametersDefinition(ConverterTypeElement converterTypeElement, int constructorIndex) {
-		List<ConverterParameter> converterParameters = converterTypeElement.getConverterParameters(parametersResolver, constructorIndex);
-
-		DomainType domain = converterTypeElement.getDomain();
-		ParameterElement[] constructorAditionalParameters = null;
-		
-		if (domain != null && domain.getKind().isDeclared()) {
-			TypeMirror domainType = ((DomainDeclaredType)domain).asType();
-			if (domainType != null) {
-				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(domainType);
-			}
-		}
-		
-		for (ConverterParameter converterParameter: converterParameters) {
-			if (converterTypeElement.asElement() == null && constructorAditionalParameters != null) {
-				for (ParameterElement additionalParameter: constructorAditionalParameters) {
-					if (processingEnv.getTypeUtils().isSameType(additionalParameter.getType(), converterParameter.getType())) {
-						converterParameter.setName(additionalParameter.getName());
-					}
-				}
-			}
-		}
-		
-		return converterParameters;
+		return converterTypeElement.getConverterParameters(parametersResolver, constructorIndex);
 	}
 	
 	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
