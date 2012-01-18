@@ -13,10 +13,8 @@ import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport;
 import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport.TypePrinterSupport;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.printer.TypePrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 @PrintSupport(autoIdent = true, printer = @TypePrinterSupport(printSerializer = ClassSerializer.SIMPLE))
@@ -134,64 +132,8 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				
 				pw.println("@", Generated.class, "(value = \"" + this.getClass().getCanonicalName() + "\")");
 
-				MutableTypeMirror superClassType = outputClass.getSuperClass();
+				new TypePrinter(pw).printTypeDefinition(outputClass);
 
-				pw.print("public " + outputClass.getKind().toString() + " " + outputClass.toString(ClassSerializer.SIMPLE, false));
-				
-				if (outputClass.getTypeVariables().size() > 0) {
-					pw.print("<");
-
-					int i = 0;
-
-					for (MutableTypeVariable typeParameter : outputClass.getTypeVariables()) {
-						if (i > 0) {
-							pw.print(", ");
-						}
-						pw.print(typeParameter);
-						i++;
-					}
-
-					pw.print(">");
-				}
-				
-				if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && !outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
-					pw.print(" extends ", superClassType);
-				}
-	
-				if (outputClass.getInterfaces() != null && outputClass.getInterfaces().size() > 0) {
-
-					boolean supportedType = false;
-					
-					if (outputClass.getKind().equals(MutableTypeKind.CLASS)) {
-						pw.print(" implements ");
-						supportedType = true;
-					} else 	if (outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
-						pw.print(" extends ");
-						supportedType = true;
-					}
-	
-					if (supportedType) {
-						int i = 0;
-
-						if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && 
-								outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
-							pw.print(superClassType);
-							i++;
-						}
-						
-						for (MutableTypeMirror type : outputClass.getInterfaces()) {
-							if (i > 0) {
-								pw.print(", ");
-							}
-							pw.print(type);
-							i++;
-						}
-					}
-				} else if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && 
-								outputClass.getKind().equals(MutableTypeKind.INTERFACE)) {
-					pw.print(" extends ");
-					pw.print(superClassType);
-				}
 				pw.println(" {");
 				pw.println();
 				processElement(context);
