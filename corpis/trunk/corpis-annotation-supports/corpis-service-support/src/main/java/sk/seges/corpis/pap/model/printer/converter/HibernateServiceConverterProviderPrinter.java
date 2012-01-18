@@ -81,21 +81,9 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 	
 	@Override
 	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
-		int i = 0;
 		for (ConverterParameter converterParameter: converterParameters) {
 			if (converterParameter.isConverter() || !converterParameter.isPropagated()) {
-				if (i > 0) {
-					pw.print(", ");
-				}
-				
-				pw.print(converterParameter.getType(), " " + converterParameter.getName());
-				/*if (converterParameter.isConverter()) {
-					MutableDeclaredType parameterReplacedTypeParameters = ((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(converterParameter.getType())).setTypeVariables(toTypeParameters(converterTypeElement, false));
-					pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
-				} else {
-					pw.print(converterParameter.getType(), " " + converterParameter.getName());
-				}*/
-				i++;
+				pw.print(converterParameter.getType(), " " + converterParameter.getName() + ", ");
 			}
 		}
 	}
