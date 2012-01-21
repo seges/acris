@@ -1,0 +1,12 @@
+package sk.seges.sesam.core.pap.test.cases.model;
+
+import java.io.Serializable;
+
+import javax.annotation.Generated;
+
+import sk.seges.sesam.core.pap.test.cases.model.MultipleBoundsModel;
+
+@Generated(value = "sk.seges.sesam.core.pap.test.cases.processor.SuperclassProcessor")
+public class MultipleBoundsModelGenerated<T extends Serializable & Cloneable> extends MultipleBoundsModel<T> {
+
+}
