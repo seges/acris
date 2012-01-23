@@ -62,7 +62,7 @@
 		<!-- from Sonatype -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
-		<jsr269.generated.dir>target/generated</jsr269.generated.dir>
+		<jsr269.generated.dir>${project.build.directory}/generated</jsr269.generated.dir>
 	
 		<maven.version>[2.1.0,)</maven.version>
 		<jdk.version>1.6</jdk.version>
@@ -800,6 +800,11 @@
 					<version>${apt-maven-plugin.version}</version>
 					<configuration>
 						<outputDirectory>${jsr269.generated.dir}</outputDirectory>
+						<options>
+							<param>rootDirectory=%PROJECT.DIR%</param>
+							<param>M2_REPO=%M2_REPO%</param>
+							<param>projectName=${project.artifactId}:${project.groupId}</param>
+						</options>
 					</configuration>
 					<executions>
 						<execution>
@@ -830,19 +835,6 @@
 							</configuration>
 						</execution>
 					</executions>
-				</plugin>
-				<plugin>
-					<artifactId>maven-clean-plugin</artifactId>
-					<configuration>
-						<filesets>
-							<fileset>
-								<directory>.</directory>
-								<includes>
-									<include>**/*.factorypath</include>
-								</includes>
-							</fileset>
-						</filesets>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1226,7 +1218,11 @@ org.eclipse.jdt.core.compiler.processAnnotations=enabled
 org.eclipse.jdt.core.compiler.source=1.6]]>
 									</content>
 								</file>
-
+								<file>
+									<name>.factorypath</name>
+									<content><![CDATA[<<USELESS_CONTENT>>]]>
+									</content>
+								</file>
 							</additionalConfig>
 						</configuration>
 					</plugin>
