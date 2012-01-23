@@ -33,8 +33,8 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 	}
 
 	@Override
-	protected MutableType[] getConverterParametersUsage(ConverterTypeElement converterTypeElement, ExecutableElement method) {
-		MutableType[] converterParameters = super.getConverterParametersUsage(converterTypeElement, method);
+	protected MutableType[] getConverterParametersUsage(ConverterTypeElement converterTypeElement, MutableTypeMirror type, ExecutableElement method) {
+		MutableType[] converterParameters = super.getConverterParametersUsage(converterTypeElement, type, method);
 				
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		
@@ -82,7 +82,7 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 	@Override
 	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
 		for (ConverterParameter converterParameter: converterParameters) {
-			if (!converterParameter.isPropagated()) {
+			if (converterParameter.isConverter() || !converterParameter.isPropagated()) {
 				pw.print(converterParameter.getType(), " " + converterParameter.getName() + ", ");
 			}
 		}
