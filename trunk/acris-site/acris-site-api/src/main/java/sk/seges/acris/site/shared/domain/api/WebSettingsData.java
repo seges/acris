@@ -106,4 +106,12 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 	Set<MetaData> getMetaData();
 	
 	void setMetaData(Set<MetaData> metaData);
+	
+	Boolean getStockCountdown();
+	
+	void setStockCountdown(Boolean stockCountdown);
+	
+	Integer getStockAmountForWhichTheProductDisplay();
+	
+	void setStockAmountForWhichTheProductDisplay(Integer stockAmountForWhichTheProductDisplay);
 }
