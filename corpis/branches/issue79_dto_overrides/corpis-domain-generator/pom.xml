@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-domain-generator</artifactId>
+	<name>CorpIS Domain Generator</name>
+	
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+		<version>1.2.1-SNAPSHOT</version>
+		<relativePath>../corpis-os/pom.xml</relativePath>
+	</parent>
+
+	<description>Domain generator</description>
+	
+	<dependencies>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-domain-generator-import</artifactId>
+				<scope>import</scope>
+				<type>pom</type>
+				<version>${project.version}</version>
+			</dependency>	
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<downloadSources>false</downloadSources>
+					<classpathContainers>
+	   					<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+	   				</classpathContainers>
+					<additionalBuildcommands>
+					   <buildCommand>
+					     <name>org.eclipse.xtend.shared.ui.xtendBuilder</name>
+					   </buildCommand>
+					</additionalBuildcommands>
+					<additionalConfig>
+						<file>
+						<name>.settings/org.eclipse.xtend.shared.ui.prefs</name>
+							<content>
+						       <![CDATA[eclipse.preferences.version=1
+									metamodelContributor=org.eclipse.xtend.typesystem.emf.ui.EmfMetamodelContributor,org.eclipse.xtend.shared.ui.core.metamodel.jdt.javabean.JavaBeanMetamodelContributor
+									project.specific.metamodel=true]]>
+							</content>
+						</file>
+					</additionalConfig>
+					<additionalProjectnatures>
+					   <projectnature>org.eclipse.xtend.shared.ui.xtendXPandNature</projectnature>
+					</additionalProjectnatures>		   				
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

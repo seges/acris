@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context">
+	
+	<import resource="classpath:test-context.xml"/>
+	
+	<bean id="initializingHelper" class="sk.seges.corpis.dao.hibernate.InitializerHelper" depends-on="corpisEntityManagerFactory" />
+	
+	<bean class="sk.seges.corpis.dao.hibernate.Initializer" init-method="createSequence">
+		<property name="helper" ref="initializingHelper" />
+		
+		<property name="sequenceName" value="hibernate_sequence" />
+		<property name="incrementSize" value="1" />
+		<property name="initialValue" value="1" />
+	</bean>
+	
+<!--	<bean id="newsDAO" class="sk.seges.corpis.dao.hibernate.NewsItemDAO" />-->
+</beans>
