@@ -300,7 +300,7 @@ public class ConverterProviderPrinter {
 			public MutableTypeMirror getObject(ConverterTypeElement converterType, MutableProcessingEnvironment processingEnv) {
 				DtoType dto = converterType.getDto();
 				if (dto != null && dto.getKind().isDeclared()) {
-					DtoDeclaredType dtoDeclared = (DtoDeclaredType) ((DtoDeclaredType)dto).clone();
+					MutableDeclaredType dtoDeclared = ((DtoDeclaredType)dto).clone();
 					
 					MutableTypeVariable[] typeVariables = new MutableTypeVariable[dtoDeclared.getTypeVariables().size()];
 					
@@ -329,7 +329,7 @@ public class ConverterProviderPrinter {
 			public MutableTypeMirror getObject(ConverterTypeElement converterType, MutableProcessingEnvironment processingEnv) {
 				DomainType domain = converterType.getDomain();
 				if (domain != null && domain.getKind().isDeclared()) {
-					DomainDeclaredType domainDeclared = (DomainDeclaredType) ((DomainDeclaredType)domain).clone();
+					MutableDeclaredType domainDeclared = ((DomainDeclaredType)domain).clone();
 					
 					MutableTypeVariable[] typeVariables = new MutableTypeVariable[domainDeclared.getTypeVariables().size()];
 					
