@@ -16,4 +16,5 @@ public class HibernateWebSettingsDao extends AbstractHibernateCRUD<WebSettingsDa
 	public JpaWebSettings createDefaultEntity() {
 		return new JpaWebSettings();
 	}
+	
 }

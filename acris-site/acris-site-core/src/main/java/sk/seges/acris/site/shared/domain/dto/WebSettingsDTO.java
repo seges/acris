@@ -67,6 +67,10 @@ public class WebSettingsDTO implements WebSettingsData {
 	
 	private String parameters;
 	
+	private Boolean stockCountdown;
+	
+	private Integer stockAmountForWhichTheProductDisplay;
+	
 	public WebSettingsDTO() {
 	}
 	
@@ -143,4 +147,26 @@ public class WebSettingsDTO implements WebSettingsData {
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
+
+	@Override
+	public Boolean getStockCountdown() {
+		return stockCountdown;
+	}
+
+	@Override
+	public void setStockCountdown(Boolean stockCountdown) {
+		this.stockCountdown = stockCountdown;
+	}
+
+	@Override
+	public Integer getStockAmountForWhichTheProductDisplay() {
+		return stockAmountForWhichTheProductDisplay;
+	}
+
+	@Override
+	public void setStockAmountForWhichTheProductDisplay(Integer stockAmountForWhichTheProductDisplay) {
+		this.stockAmountForWhichTheProductDisplay = stockAmountForWhichTheProductDisplay;
+	}
+	
+	
 }

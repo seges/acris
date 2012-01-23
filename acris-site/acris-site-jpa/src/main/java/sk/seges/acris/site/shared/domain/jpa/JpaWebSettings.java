@@ -103,4 +103,19 @@ public class JpaWebSettings extends WebSettingsDTO {
 	public Set<MetaData> getMetaData() {
 		return super.getMetaData();
 	}
+	
+	@Override
+	@Column
+	public Boolean getStockCountdown() {
+		return super.getStockCountdown();
+	}
+	
+	
+	@Override
+	@Column
+	public Integer getStockAmountForWhichTheProductDisplay() {
+		return super.getStockAmountForWhichTheProductDisplay();
+	}
+	
+	
 }
