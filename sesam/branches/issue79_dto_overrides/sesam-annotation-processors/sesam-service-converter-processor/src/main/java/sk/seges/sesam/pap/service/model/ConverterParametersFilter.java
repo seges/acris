@@ -13,7 +13,7 @@ public class ConverterParametersFilter implements ParametersFilter {
 	public List<ConverterParameter> getPropagatedParameters(List<ConverterParameter> parameters) {
 		List<ConverterParameter> result = new ArrayList<ConverterParameter>();
 		for (ConverterParameter parameter: parameters) {
- 			if (parameter.isPropagated() && !parameter.isConverter()) {
+ 			if (parameter.isPropagated()) {
  				result.add(parameter);
  			}
 		}

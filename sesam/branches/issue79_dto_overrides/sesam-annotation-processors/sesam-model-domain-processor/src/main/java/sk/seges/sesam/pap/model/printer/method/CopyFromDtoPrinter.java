@@ -115,7 +115,8 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 				ConverterTypeElement idConverter = domainIdType.getConverter();
 					//toHelper.getConfigurationElement(domainIdType, roundEnv);
 				if (idConverter != null) {
-					converterProviderPrinter.printDomainConverterMethodName(idConverter, domainIdType, idMethod, pw);
+					converterProviderPrinter.printDtoConverterMethodName(idConverter, domainIdType.getDto(), 
+							DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), idMethod, pw);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -157,7 +158,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
-			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConverter(), domainsuperClass, null, pw);
+			converterProviderPrinter.printDtoConverterMethodName(domainsuperClass.getConverter(), domainsuperClass, DTO_NAME, null, pw);
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
 		}

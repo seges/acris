@@ -25,13 +25,12 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
-import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
-import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
 
 public class ConverterTypeElement extends TomBaseDeclaredType implements GeneratedClass {
@@ -209,19 +208,19 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		ConverterParameter converterParameter = new ConverterParameter();
 		converterParameter.setType(parameter.getType());
 		converterParameter.setName(parameter.getName());
-		converterParameter.setConverter(this);
-		converterParameter.setConverter(parameter.isConverter());
+//		converterParameter.setConverter(this);
+//		converterParameter.setConverter(parameter.isConverter());
 		converterParameter.setPropagated(parameter.isPropagated());
 		return converterParameter;
 	}
 	
 	private ConverterParameter toConverterParameter(VariableElement constructorParameter) {
 		ConverterParameter converterParameter = new ConverterParameter();
-		TypeElement dtoConverterTypeElement = processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName());
-		converterParameter.setConverter(ProcessorUtils.implementsType(constructorParameter.asType(), dtoConverterTypeElement.asType()));
+//		TypeElement dtoConverterTypeElement = processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName());
+//		converterParameter.setConverter(ProcessorUtils.implementsType(constructorParameter.asType(), dtoConverterTypeElement.asType()));
 		converterParameter.setType(getMutableTypesUtils().toMutableType(constructorParameter.asType()));
 		converterParameter.setName(constructorParameter.getSimpleName().toString());
-		converterParameter.setConverter(this);
+//		converterParameter.setConverter(this);
 		converterParameter.setPropagated(true);
 		return converterParameter;
 	}
@@ -265,11 +264,11 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		int i = 0;
 		for (TypeMirror parameterType: parameterTypes) {
 			ConverterParameter converterParameter = new ConverterParameter();
-			TypeElement dtoConverterTypeElement = processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName());
-			converterParameter.setConverter(ProcessorUtils.implementsType(parameterType, dtoConverterTypeElement.asType()));
+//			TypeElement dtoConverterTypeElement = processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName());
+//			converterParameter.setConverter(ProcessorUtils.implementsType(parameterType, dtoConverterTypeElement.asType()));
 			converterParameter.setType(getMutableTypesUtils().toMutableType(parameterType));
 			converterParameter.setName("arg" + i++);
-			converterParameter.setConverter(this);
+//			converterParameter.setConverter(this);
 			converterParameter.setPropagated(true);
 			result.add(converterParameter);
 		}
@@ -368,6 +367,16 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		}
 		
 		return parameters;
+	}
+	
+	public DtoType getDto() {
+		DomainType domain = getDomain();
+		
+		if (domain == null) {
+			return null;
+		}
+		
+		return domain.getDto();
 	}
 	
 	public DomainType getDomain() {

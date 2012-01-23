@@ -4,13 +4,21 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
 public class ConverterParameter {
 
-	private boolean isConverter = false;
+//	private boolean isConverter = false;
 	private boolean isPropagated = true;
 	private String name;
 	private MutableTypeMirror type;
-	private ConverterTypeElement converter;
+//	private ConverterTypeElement converter;
 	private ConverterParameter sameParameter;
 
+	public ConverterParameter() {}
+	
+	public ConverterParameter(MutableTypeMirror type, String name, boolean isPropagated) {
+		this.type = type;
+		this.name = name;
+		this.isPropagated = isPropagated;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -29,14 +37,14 @@ public class ConverterParameter {
 		return this;
 	}
 
-	public ConverterTypeElement getConverter() {
-		return converter;
-	}
-
-	public ConverterParameter setConverter(ConverterTypeElement converter) {
-		this.converter = converter;
-		return this;
-	}
+//	public ConverterTypeElement getConverter() {
+//		return converter;
+//	}
+//
+//	public ConverterParameter setConverter(ConverterTypeElement converter) {
+//		this.converter = converter;
+//		return this;
+//	}
 
 	public ConverterParameter getSameParameter() {
 		return sameParameter;
@@ -47,14 +55,14 @@ public class ConverterParameter {
 		return this;
 	}
 	
-	public boolean isConverter() {
-		return isConverter;
-	}
+//	public boolean isConverter() {
+//		return isConverter;
+//	}
 
-	public ConverterParameter setConverter(boolean converter) {
-		this.isConverter = converter;
-		return this;
-	}
+//	public ConverterParameter setConverter(boolean converter) {
+//		this.isConverter = converter;
+//		return this;
+//	}
 	
 	public void setPropagated(boolean isPropagated) {
 		this.isPropagated = isPropagated;

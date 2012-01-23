@@ -21,6 +21,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
@@ -108,8 +109,9 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	protected void printCopy(PathResolver pathResolver, TransferObjectContext context, FormattedPrintWriter pw) {
 		if (context.getConverter() != null) {
 			printCopyByConverter(context.getConverter(), context.getDomainMethod(), pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
-		} else if (context.getLocalConverterName() != null) {
-			printCopyByLocalConverter(context.getLocalConverterName(), pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
+		} else if (context.isLocalConverter()) {
+			String converterName = printLocalConverter(context, ConverterTargetType.DTO, pw);
+			printCopyByLocalConverter(converterName, pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
 		} else {
 			printCopySimple(pathResolver, context.getConfigurationTypeElement().getDomain(), context.getConfigurationTypeElement(), context.getDtoFieldName(), pw);
 		}
@@ -118,13 +120,15 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	protected void printCopyNested(PathResolver domainPathResolver, String fullPath, DomainDeclaredType referenceDomainType, ExecutableElement method, FormattedPrintWriter pw) {
 		if (referenceDomainType.getId(entityResolver) != null) {
 			pw.print(referenceDomainType + " " + domainPathResolver.getCurrent() + " = ");
-			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConverter(), referenceDomainType, method, pw);
+			converterProviderPrinter.printDtoConverterMethodName(referenceDomainType.getConverter(), referenceDomainType.getDto(), 
+					TransferObjectElementPrinter.DTO_NAME, method, pw);
 			pw.println(".getDomainInstance(" + TransferObjectElementPrinter.DTO_NAME + ", " + TransferObjectElementPrinter.DTO_NAME + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
 		} else {
 			pw.println(referenceDomainType + " " + domainPathResolver.getCurrent() + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ";");
 			pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " == null) {");
 			pw.print(domainPathResolver.getCurrent() + " = ");
-			converterProviderPrinter.printDomainConverterMethodName(referenceDomainType.getConverter(), referenceDomainType, method, pw);
+			converterProviderPrinter.printDtoConverterMethodName(referenceDomainType.getConverter(), referenceDomainType.getDto(), 
+					TransferObjectElementPrinter.DTO_NAME, method, pw);
 			pw.println(".createDomainInstance(null);");
 			pw.println("}");
 		}
@@ -151,7 +155,8 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
 		String converterName = "converter" + MethodHelper.toMethod("", dtoField);
 		pw.print(converter.getConverterBase(), " " + converterName + " = ");
-		converterProviderPrinter.printDomainConverterMethodName(converter, domainMethodReturnType, domainMethod, pw);
+		converterProviderPrinter.printDtoConverterMethodName(converter, domainMethodReturnType.getDto(), 
+				TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField), domainMethod, pw);
 		pw.println(";");
 		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
 		pw.print("(", castToDelegate(domainMethodReturnType), ")");

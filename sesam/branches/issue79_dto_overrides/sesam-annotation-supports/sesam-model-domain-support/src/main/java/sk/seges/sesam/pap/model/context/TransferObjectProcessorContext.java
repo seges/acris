@@ -4,17 +4,14 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
-import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -43,7 +40,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 	protected String domainFieldPath;
 
 	protected ConverterTypeElement converterType;
-	protected String localConverterName;
+	protected boolean localConverter;
 
 	public TransferObjectProcessorContext(ConfigurationTypeElement configurationTypeElement, Modifier modifier, ExecutableElement method) {
 		this(configurationTypeElement, modifier, method, method);
@@ -88,7 +85,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		return ProcessorUtils.erasure(typeElement, typeVar);
 	}
 
-	private TypeParametersSupport typeParametersSupport;
+
 	private TransferObjectProcessingEnvironment processingEnv;
 	private TransferObjectHelper toHelper;
 	protected RoundEnvironment roundEnv;
@@ -102,7 +99,6 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		this.processingEnv = processingEnv;
 		this.roundEnv = roundEnv;
 		this.toHelper = new TransferObjectHelper(processingEnv);
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
 		
 		if (path == null) {
 			this.domainFieldPath = TransferObjectHelper.getFieldPath(getDtoMethod());
@@ -213,10 +209,11 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 			TypeMirror domainType = configurationTypeElement.getDomain().asType();
 			
 			if (domainType.getKind().equals(TypeKind.DECLARED)) {
-				Integer parameterIndex = typeParametersSupport.getParameterIndexByName((DeclaredType)domainType, ((MutableTypeVariable)returnType).getVariable());
-				if (parameterIndex != null) {
-					this.localConverterName = LOCAL_CONVERTER_NAME + parameterIndex;
-				}
+//				Integer parameterIndex = typeParametersSupport.getParameterIndexByName((DeclaredType)domainType, ((MutableTypeVariable)returnType).getVariable());
+//				if (parameterIndex != null) {
+//					this.localConverterName = LOCAL_CONVERTER_NAME + parameterIndex;
+//				}
+				this.localConverter = true;
 			}
 			break;
 		case ARRAY:
@@ -293,8 +290,8 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 	public ConverterTypeElement getConverter() {
 		return converterType;
 	}
-	
-	public String getLocalConverterName() {
-		return localConverterName;
+
+	public boolean isLocalConverter() {
+		return localConverter;
 	}
 }

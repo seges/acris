@@ -250,7 +250,7 @@ public class MutableTypes implements Types {
 		Set<MutableTypeMirror> bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: upperBounds) {
 			if (bound != null) {
-				if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
+				if (bound != null && (!bound.getKind().isDeclared() || name == null || !bound.toString().equals(Object.class.getCanonicalName()))) {
 					bounds.add(bound);
 				}
 			}

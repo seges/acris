@@ -315,6 +315,19 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		return currentPosition;
 	}
 	
+	public int printAll(Object[] params) {
+		int i = 0;
+		for (Object parameter : params) {
+			if (i > 0) {
+				print(", ");
+			}
+			print(parameter);
+			i++;
+		}
+		
+		return i;
+	}
+	
 	@Override
 	public void print(Object... x) {
 		

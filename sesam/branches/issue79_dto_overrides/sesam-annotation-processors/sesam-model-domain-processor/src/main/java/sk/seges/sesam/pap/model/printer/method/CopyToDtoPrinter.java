@@ -11,6 +11,7 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
@@ -112,18 +113,24 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			
 			pw.print(dtoIdType, " " + idName + " = ");
 			
+			MutableTypes typeUtils = processingEnv.getTypeUtils();
+
+			String methodName = DOMAIN_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(idMethod));
+
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				if (domainIdTypeElement.getConverter() != null) {
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), idMethod, pw);
+					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConverter(), typeUtils.toMutableType(idMethod.getReturnType()), 
+							methodName, idMethod, pw);
 					pw.print(".convertToDto(");
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConverter(), processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType()), idMethod, pw);
+					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement.getConverter(), typeUtils.toMutableType(idMethod.getReturnType()), 
+							methodName, idMethod, pw);
 					pw.print(".createDtoInstance(null), ");
 					pw.print("(", castToDelegate(idMethod.getReturnType()), ")");
 					useIdConverter = true;
 				}
 			}
 
-			pw.print(DOMAIN_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(idMethod)));
+			pw.print(methodName);
 
 			if (useIdConverter) {
 				pw.print(")");
@@ -159,7 +166,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
-			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConverter(), domainsuperClass, null, pw);
+			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass.getConverter(), domainsuperClass, DOMAIN_NAME, null, pw);
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
 		}
