@@ -33,7 +33,7 @@ public class HibernateParameterResolver extends DefaultParametersResolver {
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		
 		result[0] = new ParameterElement(typeUtils.toMutableType(EntityManager.class), ENTITY_MANAGER_NAME, true);
-		result[1] = new ParameterElement(typeUtils.getArrayType(typeUtils.toMutableType(TransactionPropagationModel.class)), TRANSACTION_PROPAGATION_NAME, false);
+		result[1] = new ParameterElement(typeUtils.getArrayType(typeUtils.toMutableType(TransactionPropagationModel.class)), TRANSACTION_PROPAGATION_NAME, true);
 
 		return result;
 	}	
