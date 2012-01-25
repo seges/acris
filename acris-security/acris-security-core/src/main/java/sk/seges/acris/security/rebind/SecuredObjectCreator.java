@@ -216,7 +216,7 @@ public class SecuredObjectCreator {
 		sourceWriter.println("if (user != null) {");
 		sourceWriter.indent();
 		sourceWriter.println("hasViewPermission = "
-				+ generateCheckUserAuthority(PERMISSION_VIEW_NAME, fieldAnnots, useModifiers) + ";");
+				+ generateCheckUserAuthority(Permission.VIEW_SUFFIX, fieldAnnots, useModifiers) + ";");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
@@ -232,7 +232,7 @@ public class SecuredObjectCreator {
 						Focusable.class.getName())) || ((JClassType) param.getType()).isAssignableTo(context
 						.getTypeOracle().getType(DateBox.class.getName())))) {
 			sourceWriter.println("hasEditPermission = "
-					+ generateCheckUserAuthority(PERMISSION_EDIT_NAME, fieldAnnots, useModifiers) + ";");
+					+ generateCheckUserAuthority(Permission.EDIT_SUFFIX, fieldAnnots, useModifiers) + ";");
 			sourceWriter.println(param.getName() + ".setEnabled(hasEditPermission);");
 		}
 		sourceWriter.outdent();
@@ -259,7 +259,7 @@ public class SecuredObjectCreator {
 		for (String fieldUserAuthority : fieldUserAuthorities) {
 			size--;
 			if (useModifier) {
-				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
+				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + modifier + "\"))");
 			} else {
 				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
 			}
