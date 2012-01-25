@@ -24,10 +24,14 @@ import java.util.Map.Entry;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeParameterElement;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -155,39 +159,6 @@ public class ConverterProviderPrinter {
 		pw.print(">");
 	}
 
-	/**
-	 * Convert type variables from convert type into the mutable type variables without extends. Converting should be done in two ways:
-	 * <ul>
-	 * 	<li>extending mode - generating wildcard <? extends DTO></li>
-	 * 	<li>single mode - generating just type variable <DTO>
-	 * </ul>
-	 * @param converterTypeElement converter type element
-	 * @param addExtends whether generating wildcard types or type variables
-	 */
-	protected MutableTypeVariable[] toTypeParameters(ConverterTypeElement converterTypeElement, boolean addExtends) {
-		
-		List<MutableTypeVariable> result = new ArrayList<MutableTypeVariable>();
-
-		if (converterTypeElement.asElement() != null) {
-			for (TypeParameterElement converterTypeParameter: converterTypeElement.asElement().getTypeParameters()) {
-				if (addExtends) {
-					result.add(processingEnv.getTypeUtils().getWildcardType(processingEnv.getTypeUtils().getTypeVariable(converterTypeParameter.getSimpleName().toString()), null));
-				} else {
-					result.add(processingEnv.getTypeUtils().getTypeVariable(converterTypeParameter.getSimpleName().toString()));
-				}
-			}
-		} else {
-			for (MutableTypeVariable converterTypeParameter: converterTypeElement.getTypeVariables()) {
-				if (addExtends) {
-					result.add(processingEnv.getTypeUtils().getWildcardType(processingEnv.getTypeUtils().getTypeVariable(converterTypeParameter.getVariable()), null));
-				} else {
-					result.add(processingEnv.getTypeUtils().getTypeVariable(converterTypeParameter.getVariable()));
-				}
-			}
-		}
-		return result.toArray(new MutableTypeVariable[] {});
-	}
-
 	public void printConverterMethods(boolean supportExtends, int constructorIndex) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
 			printConverterMethodProvider(converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, constructorIndex);
@@ -208,15 +179,15 @@ public class ConverterProviderPrinter {
 				if (i > 0) {
 					pw.print(", ");
 				}
-				MutableTypeMirror parameterReplacedTypeParameters = processingEnv.getTypeUtils().toMutableType(converterParameter.getType());
-				pw.print(parameterReplacedTypeParameters, " " + converterParameter.getName());
+				pw.print(converterParameter.getType(), " " + converterParameter.getName());
 				i++;
 			}
 		}
 	}
 
 	protected MutableType[] getConverterParametersUsage(ConverterTypeElement converterTypeElement, ExecutableElement method) {
-		return new MutableType[] {};
+		return new MutableType[] {
+		};
 	}
 	
 	protected void printConverterParametersUsage(List<ConverterParameter> converterParameters) {
@@ -298,7 +269,7 @@ public class ConverterProviderPrinter {
 
 			@Override
 			public MutableTypeMirror getObject(ConverterTypeElement converterType, MutableProcessingEnvironment processingEnv) {
-				DtoType dto = converterType.getDto();
+				DtoType dto = converterType.getConfiguration().getRawDto();
 				if (dto != null && dto.getKind().isDeclared()) {
 					MutableDeclaredType dtoDeclared = ((DtoDeclaredType)dto).clone();
 					
@@ -327,7 +298,7 @@ public class ConverterProviderPrinter {
 
 			@Override
 			public MutableTypeMirror getObject(ConverterTypeElement converterType, MutableProcessingEnvironment processingEnv) {
-				DomainType domain = converterType.getDomain();
+				DomainType domain = converterType.getConfiguration().getRawDomain();
 				if (domain != null && domain.getKind().isDeclared()) {
 					MutableDeclaredType domainDeclared = ((DomainDeclaredType)domain).clone();
 					
@@ -449,7 +420,7 @@ public class ConverterProviderPrinter {
 		boolean converterInstantiable = converterTypeElement.isConverterInstantiable();
 
 		if (converterTypeElement.hasTypeParameters()) {
-			converterReplacedTypeParameters = converterTypeElement.clone().setTypeVariables(toTypeParameters(converterTypeElement, false));
+			converterReplacedTypeParameters = getTypedConverter(converterTypeElement.clone(), true);
 		} else if (converterInstantiable) {
 			printConverterCast(converterTypeElement);
 		}
@@ -603,6 +574,25 @@ public class ConverterProviderPrinter {
 		return typeVariable;
 	}
 	
+	public void printConverterParams(ConverterTypeElement converterTypeElement, ExecutableElement method, FormattedPrintWriter pw) {
+		MutableType[] converterParametersUsage = getConverterParametersUsage(converterTypeElement, method);
+
+		for (MutableType parameterType: converterParametersUsage) {
+			if (parameterType instanceof MutableReferenceType) {
+				if (((MutableReferenceType)parameterType).getReference() != null) {
+					MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
+					if (reference instanceof MutableArrayTypeValue) {
+						pw.print(((MutableArrayTypeValue) reference).asType());
+					} else if (reference instanceof MutableDeclaredTypeValue) {
+						pw.print(((MutableDeclaredTypeValue) reference).asType());
+					}
+					pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
+					pw.println(((MutableReferenceType)parameterType).getReference(), ";");
+				}
+			}
+		}
+	}
+	
 	private void printConverterMethodName(ConverterTypeElement converterTypeElement, ConverterTargetType targetType, MutableTypeMirror type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
 		
 		String methodName = getEnsuredConverterMethodName(converterTypeElement, targetType);
@@ -610,16 +600,18 @@ public class ConverterProviderPrinter {
 		if (methodName == null) {
 			return;
 		}
-		
-		MutableDeclaredType convertedResult = getConvertedResult(converterTypeElement, targetType, type, tomBaseElementProvider);
 
+		MutableType[] converterParametersUsage = getConverterParametersUsage(converterTypeElement, method);
+
+		MutableDeclaredType convertedResult = getConvertedResult(converterTypeElement, targetType, type, tomBaseElementProvider);
+		
 		if (convertedResult != null) {
 			pw.print("((", convertedResult, ")");
 		}
 		
 		pw.print(methodName + "(");
-
-		if (pw.printAll(getConverterParametersUsage(converterTypeElement, method)) > 0) {
+				
+		if (pw.printAll(converterParametersUsage) > 0) {
 			pw.print(", ");
         }
 

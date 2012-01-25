@@ -50,7 +50,6 @@ public class ServiceTypeElement extends DelegateMutableDeclaredType {
 			}
 		}
 
-
 		if (element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
 			TypeElement superclassElement = (TypeElement)((DeclaredType)element.getSuperclass()).asElement();
 			result.addAll(getLocalServiceInterfaces(superclassElement));
@@ -65,7 +64,7 @@ public class ServiceTypeElement extends DelegateMutableDeclaredType {
 	
 	public ServiceConverterTypeElement getServiceConverter() {
 		if (serviceConverter == null) {
-			serviceConverter = new ServiceConverterTypeElement(this);
+			serviceConverter = new ServiceConverterTypeElement(this, processingEnv);
 		}
 		
 		return serviceConverter;

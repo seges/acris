@@ -63,6 +63,7 @@ abstract class TomBaseVariable extends DelegateMutableVariable {
 			this.configurationTypeElements = getConfigurationsForType();
 			this.configurationTypeInitialized = true;
 		}
+
 		return configurationTypeElements;
 	}
 

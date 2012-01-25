@@ -42,6 +42,8 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 
 	protected void printCastLocalMethodResult(DtoType returnDtoType, ServiceConverterPrinterContext context) {}
 	
+	public static final String RESULT_VARIABLE_NAME = "result";
+	
 	@Override
 	public void print(ServiceConverterPrinterContext context) {
 
@@ -82,13 +84,11 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 				
-				if (returnDtoType.getConverter() == null) {
-					pw.print("return ");
-				} else {
-					pw.print("return (", processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType()), ")");
-					converterProviderPrinter.printDtoConverterMethodName(returnDtoType.getConverter(), returnDtoType, "TODOTODOTODO", localMethod, pw);
-					pw.print(".toDto(");
-				}
+//				if (returnDtoType.getConverter() == null) {
+//					pw.print("return ");
+//				} else {
+				pw.print(localMethod.getReturnType(), " " + RESULT_VARIABLE_NAME + " = ");
+//				}
 			}
 			
 			printCastLocalMethodResult(returnDtoType, context);
@@ -123,9 +123,18 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 			pw.print(")");
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && returnDtoType.getConverter() != null) {
-				pw.print(")");
+				pw.println(";");
+				
+				converterProviderPrinter.printConverterParams(returnDtoType.getConverter(), localMethod, pw);
+				pw.print("return (", processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType()), ")");
+				converterProviderPrinter.printDomainConverterMethodName(returnDtoType.getConverter(), returnDtoType.getDomain(), RESULT_VARIABLE_NAME, localMethod, pw);
+				pw.println(".toDto(" + RESULT_VARIABLE_NAME + ");");
+			} else if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
+				pw.println(";");
+				pw.println("return " + RESULT_VARIABLE_NAME + ";");
 			}
-			pw.println(";");
+			
+//			pw.println(";");
 			pw.println("}");
 			pw.println();
 		}
@@ -139,5 +148,4 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 			SuppressWarnings.class
 		};
 	}
-
 }

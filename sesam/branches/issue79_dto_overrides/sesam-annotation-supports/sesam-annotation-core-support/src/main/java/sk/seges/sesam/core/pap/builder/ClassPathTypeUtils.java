@@ -293,6 +293,8 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			}
 		}
 
+		processingEnv.getMessager().printMessage(Kind.WARNING, "No classpath is defined! Check your eclipse or maven settings.");
+		
 		final String rootDirectory = processingEnv.getOptions().get(ROOT_DIRECTORY_OPTION);
 		String m2Repo = processingEnv.getOptions().get(M2_REPO_OPTION);
 		

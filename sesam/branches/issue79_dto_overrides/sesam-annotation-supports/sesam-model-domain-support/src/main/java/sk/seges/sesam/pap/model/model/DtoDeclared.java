@@ -35,7 +35,6 @@ import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedClass, DtoDeclaredType {
 
-
 	private final boolean generated;
 	private final MutableDeclaredType dtoType;
 	

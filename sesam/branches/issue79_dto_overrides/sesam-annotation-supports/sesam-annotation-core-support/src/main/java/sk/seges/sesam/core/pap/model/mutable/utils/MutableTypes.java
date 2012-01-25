@@ -34,6 +34,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -166,6 +167,10 @@ public class MutableTypes implements Types {
 //		return this.types.directSupertypes(t);
 	}
 
+	public MutableReferenceType getReference(MutableTypeValue type, String name) {
+		return new MutableReference(type, name);
+	}
+	
 	@Override
 	public TypeMirror erasure(TypeMirror t) {
 		return this.types.erasure(t);

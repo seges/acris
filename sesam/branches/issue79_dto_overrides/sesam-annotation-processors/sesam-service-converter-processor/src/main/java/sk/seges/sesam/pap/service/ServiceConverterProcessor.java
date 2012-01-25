@@ -19,7 +19,6 @@ import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
-import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 import sk.seges.sesam.pap.service.configurer.ServiceConverterProcessorConfigurer;
@@ -35,6 +34,7 @@ import sk.seges.sesam.pap.service.printer.ServiceMethodConverterPrinter;
 import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 import sk.seges.sesam.pap.service.provider.ServiceCollectorConfigurationProvider;
+import sk.seges.sesam.pap.service.resolver.ServiceParametersResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ServiceConverterProcessor extends MutableAnnotationProcessor {
@@ -55,7 +55,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 				new ServiceTypeElement(context.getTypeElement(), processingEnv).getServiceConverter()
 		};
 	}
-	
+
 	protected PackageValidatorProvider getPackageValidatorProvider() {
 		return new DefaultPackageValidatorProvider();
 	}
@@ -114,8 +114,8 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 	@Override
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
-		ServiceTypeElement serviceTypeElement = new ServiceTypeElement((TypeElement) element, processingEnv);
 		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv);
+		ServiceTypeElement serviceTypeElement = new ServiceTypeElement((TypeElement) element, processingEnv);
 		this.processingEnv.setConfigurationProviders(getConfigurationProviders(serviceTypeElement));
 	}
 	
@@ -148,7 +148,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 	}
 
 	protected ParametersResolver getParametersResolver() {
-		return new DefaultParametersResolver(processingEnv);
+		return new ServiceParametersResolver(processingEnv);
 	}	
 
 	protected String getConverterMethodName(MutableDeclaredType domainClass) {

@@ -342,6 +342,7 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 
 	@Override
 	public String toString(ClassSerializer serializer, boolean typed) {
+		
 		String resultName = this.toString(serializer);
 		
 		if (!typed || this.getTypeVariables() == null || this.getTypeVariables().size() == 0) {
@@ -665,7 +666,6 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	public MutableDeclaredType clone() {
 		MutableDeclared result = new MutableDeclared(type, packageName, simpleName, processingEnv);
 		result.enclosedClass = enclosedClass;
-	
 		annotationHolderDelegate.clone(result.annotationHolderDelegate);
 		
 		if (typeVariables != null) {

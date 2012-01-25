@@ -131,6 +131,24 @@ public class ConfigurationTypeElement extends TomBaseType {
 		return new ConverterTypeElement(this, processingEnv, roundEnv);
 	}
 
+	public DomainDeclaredType getRawDomain() {
+		if (getDelegateConfigurationTypeElement() != null) {
+			return getDelegateConfigurationTypeElement().getRawDomain();
+		}
+
+		if (transferObjectConfiguration.isValid()) {
+			TypeElement domainInterface = transferObjectConfiguration.getDomainInterface();
+			if (domainInterface != null) {
+				DomainDeclared result = new DomainDeclared((MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(domainInterface.asType()), dtoType, new ConfigurationTypeElement[] { this }, 
+						processingEnv, roundEnv, configurationProviders);
+				this.domainDeclaredType.setKind(MutableTypeKind.INTERFACE);
+				return result;
+			}
+		}
+		
+		return getDomain();
+	}
+
 	public DomainDeclaredType getDomain() {
 		if (!domainTypeElementInitialized) {
 			MutableDeclaredType domainType = null;
@@ -190,6 +208,24 @@ public class ConfigurationTypeElement extends TomBaseType {
 	
 	boolean hasDtoSpecified() {
 		return transferObjectConfiguration.getDto() != null || transferObjectConfiguration.getDtoInterface() != null;
+	}
+	
+	public DtoDeclaredType getRawDto() {
+		if (getDelegateConfigurationTypeElement() != null) {
+			return getDelegateConfigurationTypeElement().getRawDto();
+		}
+
+		if (transferObjectConfiguration.isValid()) {
+			TypeElement dtoInterface = transferObjectConfiguration.getDtoInterface();
+			if (dtoInterface != null) {
+				DtoDeclared result = new DtoDeclared(new ConfigurationTypeElement[] { this }, 
+						processingEnv.getTypeUtils().toMutableType((DeclaredType) dtoInterface.asType()), processingEnv, roundEnv, configurationProviders);
+				result.setInterface(true);
+				return result;
+			}
+		}
+		
+		return getDto();
 	}
 	
 	public DtoDeclaredType getDto() {
