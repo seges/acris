@@ -8,7 +8,7 @@ import sk.seges.corpis.shared.converter.utils.ConverterUtils;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolver;
+import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolverDelegate;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -30,7 +30,7 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
 	@Override
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
     	if (entityResolver.isLazyReference(domainMethod)) {
-    		pw.println("if (", ConverterUtils.class,".convertArg(" + HibernateParameterResolver.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
+    		pw.println("if (", ConverterUtils.class,".convertArg(" + HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
         	//pw.println("if (" + HibernateParameterResolver.PROPAGATION_TYPE_NAME + ".equals(", PropagationType.class, ".", PropagationType.PROPAGATE, ")) {");
     		pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " != null) {");
     		pw.println("if (" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField) + " != null) {");

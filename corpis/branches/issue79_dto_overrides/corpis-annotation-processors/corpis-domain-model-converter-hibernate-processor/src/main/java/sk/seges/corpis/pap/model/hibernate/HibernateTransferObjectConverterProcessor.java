@@ -9,7 +9,7 @@ import sk.seges.corpis.pap.model.hibernate.printer.method.HibernateCopyToDtoPrin
 import sk.seges.corpis.pap.model.hibernate.resolver.HibernateEntityResolver;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.TransferObjectConverterProcessor;
-import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolver;
+import sk.seges.sesam.pap.model.hibernate.resolver.HibernateConverterParameterResolver;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
@@ -25,7 +25,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 
 	@Override
 	protected ParametersResolver getParametersResolver() {
-		return new HibernateParameterResolver(processingEnv);
+		return new HibernateConverterParameterResolver(processingEnv);
 	}
 	
 	@Override

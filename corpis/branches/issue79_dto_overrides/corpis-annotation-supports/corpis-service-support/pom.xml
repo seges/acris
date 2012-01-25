@@ -38,6 +38,10 @@
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-service-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-service-support</artifactId>
+		</dependency>
 		
 		<!-- Hibernate dependencies -->
 		<dependency>

@@ -172,7 +172,7 @@
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-service-local-interface-processor</artifactId>
 				<version>${sesam-os.version}</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-service-support</artifactId>

@@ -16,15 +16,18 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolverDelegate;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 public class HibernateServiceConverterProviderPrinter extends ConverterProviderPrinter {
 
 	private TransferObjectProcessingEnvironment processingEnv;
+	private static final String THIS = "this";
 	
 	public HibernateServiceConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
 			ParametersResolver parametersResolver) {
@@ -35,7 +38,7 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 	@Override
 	protected MutableType[] getConverterParametersUsage(ConverterTypeElement converterTypeElement, ExecutableElement method) {
 		MutableType[] converterParameters = super.getConverterParametersUsage(converterTypeElement, method);
-				
+		
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		
 		MutableDeclaredType transactionPropagationModel = typeUtils.toMutableType(TransactionPropagationModel.class);
@@ -45,11 +48,16 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 		List<ConverterParameter> converterParametersTypes = converterTypeElement.getConverterParameters(parametersResolver);
 
 		List<MutableType> generatedParams = new ArrayList<MutableType>();
-		
+
+		//TODO - ugly implementation
 		for (ConverterParameter converterParametersType: converterParametersTypes) {
 			if (!converterParametersType.isPropagated()) {
 				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.getArrayType(transactionPropagationModel))) {
-					generatedParams.add(typeUtils.getArrayValue(typeUtils.getArrayType(transactionPropagationModel), (Object[])transactionPropagationAccessor.getPropagations()));
+					generatedParams.add(processingEnv.getTypeUtils().getReference(typeUtils.getArrayValue(typeUtils.getArrayType(transactionPropagationModel), (Object[])transactionPropagationAccessor.getPropagations()),
+							HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME));
+				}
+				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.toMutableType(ConverterProvider.class))) {
+					generatedParams.add(processingEnv.getTypeUtils().getReference(null, THIS));
 				}
 			}
 		}
@@ -78,14 +86,4 @@ public class HibernateServiceConverterProviderPrinter extends ConverterProviderP
 
 		return result;
 	}
-	
-	@Override
-	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
-		for (ConverterParameter converterParameter: converterParameters) {
-			if (!converterParameter.isPropagated()) {
-				pw.print(converterParameter.getType(), " " + converterParameter.getName() + ", ");
-			}
-		}
-	}
-
 }
