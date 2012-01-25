@@ -85,6 +85,8 @@ public class RemoteContextSerializationPolicy implements ICustomSerializationPol
 				URL url;
 				url = new URL(moduleBaseURL + serializationPolicyFilePath);
 				connection = url.openConnection();
+				// cloudflare does not accept direct requests without user agent being specified
+				connection.addRequestProperty("User-Agent","acris");
 				connection.connect();
 				is = connection.getInputStream();
 
