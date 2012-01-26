@@ -171,7 +171,7 @@ public class SecuredObjectCreator {
 			sourceWriter.println("if (user != null) {");
 			sourceWriter.indent();
 			sourceWriter.println("hasViewPermission = "
-					+ generateCheckUserAuthority(PERMISSION_VIEW_NAME, classAnnots, useModifier) + ";");
+					+ generateCheckUserAuthority(Permission.VIEW_SUFFIX, classAnnots, useModifier) + ";");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
 			sourceWriter.println("if( !hasViewPermission ){");

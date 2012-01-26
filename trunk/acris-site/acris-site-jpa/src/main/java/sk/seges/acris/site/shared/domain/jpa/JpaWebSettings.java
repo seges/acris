@@ -117,5 +117,17 @@ public class JpaWebSettings extends WebSettingsDTO {
 		return super.getStockAmountForWhichTheProductDisplay();
 	}
 	
+	@Override
+	@Column
+	public String getConstantSymbol() {
+		return super.getConstantSymbol();
+	}
+	
+	@Override
+	@Column
+	public Integer getTermOfPayment() {
+		return super.getTermOfPayment();
+	}
+	
 	
 }
