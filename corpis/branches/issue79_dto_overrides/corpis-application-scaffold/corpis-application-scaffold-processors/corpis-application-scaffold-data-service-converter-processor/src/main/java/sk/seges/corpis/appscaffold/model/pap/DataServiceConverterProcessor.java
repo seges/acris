@@ -13,6 +13,7 @@ import sk.seges.sesam.pap.service.printer.ConverterParameterFieldPrinter;
 import sk.seges.sesam.pap.service.printer.LocalServiceFieldPrinter;
 import sk.seges.sesam.pap.service.printer.ServiceConstructorBodyPrinter;
 import sk.seges.sesam.pap.service.printer.ServiceConstructorDefinitionPrinter;
+import sk.seges.sesam.pap.service.printer.ServiceDomainConverterProviderPrinter;
 import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -31,7 +32,8 @@ public class DataServiceConverterProcessor extends HibernateServiceConverterProc
 				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
 				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
 				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
-				new HibernateDataServiceMethodConverterPrinter(processingEnv, getParametersResolver(), pw, converterProviderPrinter)
+				new HibernateDataServiceMethodConverterPrinter(processingEnv, getParametersResolver(), pw, converterProviderPrinter),
+				new ServiceDomainConverterProviderPrinter(processingEnv, getParametersResolver(), pw, converterProviderPrinter)
 		};
 	}
 }
