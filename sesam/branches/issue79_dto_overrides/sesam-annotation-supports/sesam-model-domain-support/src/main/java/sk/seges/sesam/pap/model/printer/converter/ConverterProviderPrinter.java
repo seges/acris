@@ -17,9 +17,11 @@ package sk.seges.sesam.pap.model.printer.converter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeParameterElement;
@@ -574,9 +576,11 @@ public class ConverterProviderPrinter {
 		return typeVariable;
 	}
 	
-	public void printConverterParams(ConverterTypeElement converterTypeElement, ExecutableElement method, FormattedPrintWriter pw) {
+	public Set<String> printConverterParams(ConverterTypeElement converterTypeElement, ExecutableElement method, FormattedPrintWriter pw) {
 		MutableType[] converterParametersUsage = getConverterParametersUsage(converterTypeElement, method);
 
+		Set<String> parameterNames = new HashSet<String>();
+		
 		for (MutableType parameterType: converterParametersUsage) {
 			if (parameterType instanceof MutableReferenceType) {
 				if (((MutableReferenceType)parameterType).getReference() != null) {
@@ -586,11 +590,14 @@ public class ConverterProviderPrinter {
 					} else if (reference instanceof MutableDeclaredTypeValue) {
 						pw.print(((MutableDeclaredTypeValue) reference).asType());
 					}
+					parameterNames.add(((MutableReferenceType)parameterType).toString());
 					pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
 					pw.println(((MutableReferenceType)parameterType).getReference(), ";");
 				}
 			}
 		}
+		
+		return parameterNames;
 	}
 	
 	private void printConverterMethodName(ConverterTypeElement converterTypeElement, ConverterTargetType targetType, MutableTypeMirror type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {

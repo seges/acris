@@ -82,6 +82,15 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 			
 			pw.println("{");
 
+			for (int i = 0; i < localMethod.getParameters().size(); i++) {
+				TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
+				DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
+				
+				if (parameterDtoType.getConverter() != null) {
+					converterProviderPrinter.printConverterParams(returnDtoType.getConverter(), localMethod, pw);
+				}
+			}
+			
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 				
 //				if (returnDtoType.getConverter() == null) {
@@ -121,20 +130,16 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 			}
 
 			pw.print(")");
+			pw.println(";");
 
-			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && returnDtoType.getConverter() != null) {
-				pw.println(";");
-				
-				converterProviderPrinter.printConverterParams(returnDtoType.getConverter(), localMethod, pw);
+			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && returnDtoType.getConverter() != null) {				
 				pw.print("return (", processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType()), ")");
 				converterProviderPrinter.printDomainConverterMethodName(returnDtoType.getConverter(), returnDtoType.getDomain(), RESULT_VARIABLE_NAME, localMethod, pw);
 				pw.println(".toDto(" + RESULT_VARIABLE_NAME + ");");
 			} else if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
-				pw.println(";");
 				pw.println("return " + RESULT_VARIABLE_NAME + ";");
 			}
 			
-//			pw.println(";");
 			pw.println("}");
 			pw.println();
 		}
