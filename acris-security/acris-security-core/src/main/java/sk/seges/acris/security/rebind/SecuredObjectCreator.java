@@ -259,7 +259,7 @@ public class SecuredObjectCreator {
 		for (String fieldUserAuthority : fieldUserAuthorities) {
 			size--;
 			if (useModifier) {
-				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + modifier + "\"))");
+				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
 			} else {
 				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
 			}
