@@ -114,4 +114,12 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 	Integer getStockAmountForWhichTheProductDisplay();
 	
 	void setStockAmountForWhichTheProductDisplay(Integer stockAmountForWhichTheProductDisplay);
+	
+	String getConstantSymbol();
+	
+	void setConstantSymbol(String constantSymbol);
+	
+	Integer getTermOfPayment();
+	
+	void setTermOfPayment(Integer termOfPayment);
 }

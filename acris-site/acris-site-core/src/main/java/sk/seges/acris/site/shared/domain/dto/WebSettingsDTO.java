@@ -71,6 +71,10 @@ public class WebSettingsDTO implements WebSettingsData {
 	
 	private Integer stockAmountForWhichTheProductDisplay;
 	
+	private String constantSymbol;
+	
+	private Integer termOfPayment;
+	
 	public WebSettingsDTO() {
 	}
 	
@@ -166,6 +170,26 @@ public class WebSettingsDTO implements WebSettingsData {
 	@Override
 	public void setStockAmountForWhichTheProductDisplay(Integer stockAmountForWhichTheProductDisplay) {
 		this.stockAmountForWhichTheProductDisplay = stockAmountForWhichTheProductDisplay;
+	}
+
+	@Override
+	public String getConstantSymbol() {
+		return constantSymbol;
+	}
+
+	@Override
+	public void setConstantSymbol(String constantSymbol) {
+		this.constantSymbol = constantSymbol;
+	}
+
+	@Override
+	public Integer getTermOfPayment() {
+		return termOfPayment;
+	}
+
+	@Override
+	public void setTermOfPayment(Integer termOfPayment) {
+		this.termOfPayment = termOfPayment;
 	}
 	
 	
