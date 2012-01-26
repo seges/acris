@@ -116,7 +116,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 
 		TypeElement cachedConverterType = processingEnv.getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
 		
-		ParameterElement[] constructorAditionalParameters = getParametersResolver().getConstructorAditionalParameters(new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv).getDomain().asType());
+		ParameterElement[] constructorAditionalParameters = getParametersResolver().getConstructorAditionalParameters();
 		
 		ConstructorPrinter constructorPrinter = new ConstructorPrinter(pw, context.getOutputType());
 		constructorPrinter.printConstructors(cachedConverterType, constructorAditionalParameters);

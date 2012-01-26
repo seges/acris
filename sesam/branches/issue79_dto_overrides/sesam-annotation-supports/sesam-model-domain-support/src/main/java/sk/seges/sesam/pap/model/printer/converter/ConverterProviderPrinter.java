@@ -223,7 +223,6 @@ public class ConverterProviderPrinter {
 	}
 	
 	private void printConverterCast(ConverterTypeElement converterTypeElement) {
-//		pw.print("(", getTypedConverter(InstantiableDtoConverter.class), ")");
 		pw.print("(", getTypedConverter(converterTypeElement.clone(), isTyped(converterTypeElement)), ")");
 	}
 	
@@ -241,7 +240,6 @@ public class ConverterProviderPrinter {
 		} else {
 			pw.print(converterTypeElement);
 		}
-//		pw.print(" ", getTypedConverter(InstantiableDtoConverter.class));
 	}
 		
 	protected MutableDeclaredType printConverterMethodDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement, 
@@ -250,7 +248,7 @@ public class ConverterProviderPrinter {
 
 		MutableDeclaredType converterReplacedTypeParameters = converterTypeElement;
 		
-		printConverterType(converterTypeElement);
+		printGenericConverterDefinition(converterTypeElement);
 
 		pw.print(" " + methodName + "(");
 
@@ -326,16 +324,6 @@ public class ConverterProviderPrinter {
 		public abstract String getMethodPrefix();
 		public abstract MutableTypeMirror getObject(ConverterTypeElement converterType, MutableProcessingEnvironment processingEnv);
 		public abstract String getConverterMethodName();
-	}
-	
-	private void printConverterType(ConverterTypeElement converterTypeElement) {
-//		boolean converterInstantiable = converterTypeElement.isConverterInstantiable();
-
-//		if (converterInstantiable) {
-			printGenericConverterDefinition(converterTypeElement);
-//		} else {
-//			pw.print(converterTypeElement);
-//		}
 	}
 	
 	protected void printConverterMethodProvider(ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType, 
@@ -576,7 +564,7 @@ public class ConverterProviderPrinter {
 		return typeVariable;
 	}
 	
-	public Set<String> printConverterParams(ConverterTypeElement converterTypeElement, ExecutableElement method, FormattedPrintWriter pw) {
+	public Set<String> printConverterParams(ConverterTypeElement converterTypeElement, ExecutableElement method, Set<String> printedParameterNames, FormattedPrintWriter pw) {
 		MutableType[] converterParametersUsage = getConverterParametersUsage(converterTypeElement, method);
 
 		Set<String> parameterNames = new HashSet<String>();
@@ -584,15 +572,21 @@ public class ConverterProviderPrinter {
 		for (MutableType parameterType: converterParametersUsage) {
 			if (parameterType instanceof MutableReferenceType) {
 				if (((MutableReferenceType)parameterType).getReference() != null) {
-					MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
-					if (reference instanceof MutableArrayTypeValue) {
-						pw.print(((MutableArrayTypeValue) reference).asType());
-					} else if (reference instanceof MutableDeclaredTypeValue) {
-						pw.print(((MutableDeclaredTypeValue) reference).asType());
+					String parameterName = ((MutableReferenceType)parameterType).toString();
+					
+					if (!printedParameterNames.contains(parameterName)) {
+						MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
+						if (reference instanceof MutableArrayTypeValue) {
+							pw.print(((MutableArrayTypeValue) reference).asType());
+						} else if (reference instanceof MutableDeclaredTypeValue) {
+							pw.print(((MutableDeclaredTypeValue) reference).asType());
+						}
+						
+						parameterNames.add(parameterName);
+						
+						pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
+						pw.println(((MutableReferenceType)parameterType).getReference(), ";");
 					}
-					parameterNames.add(((MutableReferenceType)parameterType).toString());
-					pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
-					pw.println(((MutableReferenceType)parameterType).getReference(), ";");
 				}
 			}
 		}

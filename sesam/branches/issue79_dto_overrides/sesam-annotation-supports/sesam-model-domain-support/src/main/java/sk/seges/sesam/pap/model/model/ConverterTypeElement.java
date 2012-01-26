@@ -288,7 +288,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			ParameterElement[] constructorAditionalParameters = new ParameterElement[0];
 			
 			if (getConfiguration() != null && getConfiguration().getDomain() != null) {
-				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(getConfiguration().getDomain().asType());
+				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters();
 			}
 			
 			if (constructors != null) {
@@ -338,7 +338,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				}
 			}
 
-			ParameterElement[] constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(getConfiguration().getDomain().asType());
+			ParameterElement[] constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters();
 
 			for (ParameterElement constructorAditionalParameter: constructorAditionalParameters) {
 				parameters.add(toConverterParameter(constructorAditionalParameter));
@@ -352,7 +352,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		if (domain != null && domain.getKind().isDeclared()) {
 			TypeMirror domainType = ((DomainDeclaredType)domain).asType();
 			if (domainType != null) {
-				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters(domainType);
+				constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters();
 			}
 		}
 		

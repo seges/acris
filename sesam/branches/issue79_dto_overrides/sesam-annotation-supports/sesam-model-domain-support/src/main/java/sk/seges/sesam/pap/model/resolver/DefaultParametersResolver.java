@@ -1,8 +1,5 @@
 package sk.seges.sesam.pap.model.resolver;
 
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
@@ -22,14 +19,13 @@ public class DefaultParametersResolver implements ParametersResolver {
 	}
 	
 	@Override
-	public ParameterElement[] getConstructorAditionalParameters(TypeMirror domainType) {
-		if (!domainType.getKind().equals(TypeKind.DECLARED)) {
-			return new ParameterElement[0];
-		}
+	public ParameterElement[] getConstructorAditionalParameters() {
+//		if (!domainType.getKind().equals(TypeKind.DECLARED)) {
+//			return new ParameterElement[0];
+//		}
 
 		ParameterElement[] variableElements = new ParameterElement[1];
 		variableElements[0] = getConverterProviderParameter();
-
 		return variableElements;
 	}
 }
