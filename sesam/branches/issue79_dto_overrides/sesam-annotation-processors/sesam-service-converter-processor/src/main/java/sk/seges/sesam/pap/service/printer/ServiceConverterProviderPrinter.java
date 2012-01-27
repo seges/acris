@@ -33,8 +33,9 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 	}
 	
 	@Override
-	public void initialize(ServiceTypeElement serviceTypeElement, MutableDeclaredType outputName) {
+	public void initialize(ServiceTypeElement serviceTypeElement, MutableDeclaredType outputName) {}
 
+	private void initialize(ServiceTypeElement serviceTypeElement) {
 		MutableDeclaredType converterProviderType = processingEnv.getTypeUtils().toMutableType(ConverterProvider.class);
 		
 		new TypePrinter(pw).printTypeDefinition(null, new ServiceConvertProviderType(serviceTypeElement, processingEnv));
@@ -92,12 +93,14 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 		super.print(context);
 		
 		if (converterVerifier.isContainsConverter()) {
+			initialize(context.getService());
 			for (NestedServiceConverterElementPrinter nestedPrinter: getNestedPrinters()) {
 				nestedPrinter.initialize();
 				context.setNestedPrinter(nestedPrinter);
 				super.print(context);
 				nestedPrinter.finish();
 			}
+			pw.println("}");
 		}
 	}
 	
@@ -126,6 +129,5 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 	
 	@Override
 	public void finish(ServiceTypeElement serviceTypeElement) {
-		pw.println("}");
 	}
 }
