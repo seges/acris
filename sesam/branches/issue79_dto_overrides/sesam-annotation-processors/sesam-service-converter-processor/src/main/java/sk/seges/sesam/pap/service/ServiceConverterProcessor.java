@@ -102,7 +102,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		return new ConverterParametersFilter();
 	}
 	
-	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
+	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw, ServiceTypeElement serviceTypeElement) {
 		return new ServiceConverterElementPrinter[] {
 				new LocalServiceFieldPrinter(pw),
 				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
@@ -134,7 +134,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		
 		this.converterProviderPrinter = getConverterProviderPrinter(pw);
 
-		for (ServiceConverterElementPrinter elementPrinter: getElementPrinters(pw)) {
+		for (ServiceConverterElementPrinter elementPrinter: getElementPrinters(pw, serviceTypeElement)) {
 			elementPrinter.initialize(serviceTypeElement, context.getOutputType());
 			for (LocalServiceTypeElement localServiceInterface: serviceTypeElement.getLocalServiceInterfaces()) {
 				ServiceConverterPrinterContext printerContext = new ServiceConverterPrinterContext();

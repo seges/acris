@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.service.printer;
 
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -27,7 +28,7 @@ public class ServiceDomainConverterProviderPrinter extends AbstractServiceObject
 			}
 			
 			types.add(context.getRawDomain().getCanonicalName());
-			pw.println("if (" + DOMAIN_PARAMETER_NAME + " instanceof ", context.getRawDomain(), ") {");
+			pw.println("if (" + DOMAIN_PARAMETER_NAME + " instanceof ", context.getRawDomain().toString(ClassSerializer.SIMPLE, false), ") {");
 			String fieldName = MethodHelper.toField(context.getRawDomain().getSimpleName());
 			pw.println(context.getRawDomain(), " " + fieldName + " = (", context.getRawDomain(), ")" + DOMAIN_PARAMETER_NAME + ";");
 			pw.print("return (", getTypedDtoConverter(), ") ");

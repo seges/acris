@@ -1,8 +1,5 @@
 package sk.seges.sesam.pap.service.printer;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
@@ -45,11 +42,11 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 		
 		pw.println("{");
 
-		Set<String> converterParameterNames = new HashSet<String>();
-
+		boolean hasConverter = false;
+		
 		if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 			if (returnDtoType.getConverter() != null) {
-				converterParameterNames.addAll(converterProviderPrinter.printConverterParams(returnDtoType.getConverter(), localMethod, converterParameterNames, pw));
+				hasConverter = true;
 			}
 		}
 		
@@ -58,8 +55,13 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 			DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
 			
 			if (parameterDtoType.getConverter() != null) {
-				converterParameterNames.addAll(converterProviderPrinter.printConverterParams(returnDtoType.getConverter(), localMethod, converterParameterNames, pw));
+				hasConverter = true;
+				break;
 			}
+		}
+
+		if (hasConverter) {
+			converterProviderPrinter.printConverterParams(localMethod, pw);
 		}
 		
 		if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {

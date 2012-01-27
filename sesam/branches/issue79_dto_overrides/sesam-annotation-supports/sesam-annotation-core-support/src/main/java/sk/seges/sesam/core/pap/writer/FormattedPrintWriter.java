@@ -403,7 +403,9 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 			MutableTypeMirror type = ((MutableDeclaredTypeValue) value).asType();
 			
 			//primitive types
-			if (type.getKind().equals(MutableTypeKind.PRIMITIVE) || unboxType(processingEnv.getTypeUtils().fromMutableType(type)).getKind().isPrimitive()) {
+			TypeMirror javaType = processingEnv.getTypeUtils().fromMutableType(type);
+			
+			if (type.getKind().equals(MutableTypeKind.PRIMITIVE) || (javaType != null && unboxType(javaType).getKind().isPrimitive())) {
 				return types;
 			}
 

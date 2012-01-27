@@ -36,7 +36,7 @@ public abstract class PlugableAnnotationProcessor extends AbstractProcessor {
 	
 	class ImportPrinter implements FlushListener {
 
-		private final PrintWriter outputPrintWriter;
+		protected final PrintWriter outputPrintWriter;
 		
 		ImportPrinter(PrintWriter outputPrintWriter) {
 			this.outputPrintWriter = outputPrintWriter;
@@ -105,7 +105,7 @@ public abstract class PlugableAnnotationProcessor extends AbstractProcessor {
 					outputPrintWriter.println();
 				}
 				//TODO do no print types that are nested in the output class
-				outputPrintWriter.println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
+				printImport(importType);
 				previousPackage = getVeryTopPackage(importType);
 			}
 
@@ -119,6 +119,10 @@ public abstract class PlugableAnnotationProcessor extends AbstractProcessor {
 			outputPrintWriter.print(afterImports);
 
 			outputPrintWriter.flush();
+		}
+		
+		protected void printImport(MutableDeclaredType importType) {
+			outputPrintWriter.println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
 		}
 	}
 	
@@ -181,14 +185,17 @@ public abstract class PlugableAnnotationProcessor extends AbstractProcessor {
 		return pw;
 	}
 
-	protected void printImports(FormattedPrintWriter pw) {
+	protected ImportPrinter getImportPrinter(PrintWriter printWriter, String packageName) {
+		return new ImportPrinter(printWriter);
+	}
+
+	protected void printImports(FormattedPrintWriter pw, String packageName) {
 		PrintWriter printWriter = printersMap.get(pw);
 		if (printWriter == null) {
 			throw new RuntimeException("Unknown print writer. Use initializePrintWriter in order to intialize print wirter correctly.");
 		}
 		pw.flush();
-		
-		pw.addFlushListener(new ImportPrinter(printWriter));
+		pw.addFlushListener(getImportPrinter(printWriter, packageName));
 
 		ByteArrayOutputStream byteArrayOutputStream = buffersMap.get(pw);		
 

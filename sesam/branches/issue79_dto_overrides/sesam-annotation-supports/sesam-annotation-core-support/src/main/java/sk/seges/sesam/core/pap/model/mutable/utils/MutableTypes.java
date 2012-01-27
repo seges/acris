@@ -35,6 +35,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -337,6 +338,10 @@ public class MutableTypes implements Types {
 		if (typeElement != null) {
 			type = typeElement.asType();
 		}
+
+		if (clazz.getPackage() == null) {
+			return new MutableDeclared(type, (String)null, clazz.getSimpleName(), processingEnv);
+		}
 		
 		return new MutableDeclared(type, clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
 	}
@@ -516,6 +521,11 @@ public class MutableTypes implements Types {
 			List<TypeMirror> typeArgs = new ArrayList<TypeMirror>();
 
 			TypeElement typeElement = elements.getTypeElement(mutableDeclaredType.getCanonicalName());
+			
+			//Generated, does not exists in the java world
+			if (typeElement == null) {
+				return null;
+			}
 			
 			int i = 0;
 
@@ -697,6 +707,10 @@ public class MutableTypes implements Types {
 		return mutableType;
 	}
 
+	public MutableReferenceTypeValue getReferenceValue(MutableDeclaredType declaredType, MutableReferenceType referenceType) {
+		return new MutableDeclaredReferenceValue(declaredType, referenceType);
+	}
+	
 	public MutableTypeValue getTypeValue(Object value) {
 		if (value.getClass().isArray()) {
 			return getArrayValue(getArrayType(toMutableType(value.getClass().getComponentType())), (Object[])value);

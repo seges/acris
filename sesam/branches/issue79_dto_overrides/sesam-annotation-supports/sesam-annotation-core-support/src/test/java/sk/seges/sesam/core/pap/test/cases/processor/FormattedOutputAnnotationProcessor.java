@@ -53,9 +53,11 @@ public class FormattedOutputAnnotationProcessor extends PlugableAnnotationProces
 						e.printStackTrace();
 					}
 					
-					pw.println("package " + processingEnv.getElementUtils().getPackageOf(annotatedElement).toString() + ";");
+					String packageName = processingEnv.getElementUtils().getPackageOf(annotatedElement).toString();
 					
-					printImports(pw);
+					pw.println("package " + packageName + ";");
+					
+					printImports(pw, packageName);
 					
 					pw.println();
 					pw.println("public class " + annotatedElement.toString() + SUFFIX + " {");

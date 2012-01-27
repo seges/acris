@@ -20,7 +20,7 @@ public class NestedServiceConverterPrinterContext {
 		this.converterType = converterType;
 		this.localMethod = localMethod;
 	}
-
+	
 	public ConverterTypeElement getConverterType() {
 		return converterType;
 	}

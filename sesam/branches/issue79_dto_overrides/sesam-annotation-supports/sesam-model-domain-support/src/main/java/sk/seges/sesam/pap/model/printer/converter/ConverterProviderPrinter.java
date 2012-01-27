@@ -30,6 +30,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
@@ -564,8 +565,8 @@ public class ConverterProviderPrinter {
 		return typeVariable;
 	}
 	
-	public Set<String> printConverterParams(ConverterTypeElement converterTypeElement, ExecutableElement method, Set<String> printedParameterNames, FormattedPrintWriter pw) {
-		MutableType[] converterParametersUsage = getConverterParametersUsage(converterTypeElement, method);
+	public void printConverterParams(ExecutableElement method, FormattedPrintWriter pw) {
+		MutableType[] converterParametersUsage = getConverterParametersUsage(null, method);
 
 		Set<String> parameterNames = new HashSet<String>();
 		
@@ -574,24 +575,22 @@ public class ConverterProviderPrinter {
 				if (((MutableReferenceType)parameterType).getReference() != null) {
 					String parameterName = ((MutableReferenceType)parameterType).toString();
 					
-					if (!printedParameterNames.contains(parameterName)) {
-						MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
-						if (reference instanceof MutableArrayTypeValue) {
-							pw.print(((MutableArrayTypeValue) reference).asType());
-						} else if (reference instanceof MutableDeclaredTypeValue) {
-							pw.print(((MutableDeclaredTypeValue) reference).asType());
-						}
-						
-						parameterNames.add(parameterName);
-						
-						pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
-						pw.println(((MutableReferenceType)parameterType).getReference(), ";");
+					MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
+					if (reference instanceof MutableArrayTypeValue) {
+						pw.print(((MutableArrayTypeValue) reference).asType());
+					} else if (reference instanceof MutableDeclaredTypeValue) {
+						pw.print(((MutableDeclaredTypeValue) reference).asType());
+					} else if (reference instanceof MutableReferenceTypeValue) {
+						pw.print(((MutableReferenceTypeValue) reference).asType());
 					}
+					
+					parameterNames.add(parameterName);
+					
+					pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
+					pw.println(((MutableReferenceType)parameterType).getReference(), ";");
 				}
 			}
 		}
-		
-		return parameterNames;
 	}
 	
 	private void printConverterMethodName(ConverterTypeElement converterTypeElement, ConverterTargetType targetType, MutableTypeMirror type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
