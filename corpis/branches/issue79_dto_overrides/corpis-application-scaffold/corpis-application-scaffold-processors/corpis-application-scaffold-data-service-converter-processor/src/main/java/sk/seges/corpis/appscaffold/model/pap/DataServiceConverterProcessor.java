@@ -3,9 +3,9 @@ package sk.seges.corpis.appscaffold.model.pap;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 
-import sk.seges.corpis.appscaffold.model.pap.printer.HibernateDataServiceMethodConverterPrinter;
 import sk.seges.corpis.appscaffold.model.pap.provider.DataServiceCollectorConfigurationProvider;
 import sk.seges.corpis.pap.service.hibernate.HibernateServiceConverterProcessor;
+import sk.seges.corpis.pap.service.hibernate.printer.HibernateServiceMethodConverterPrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
@@ -25,14 +25,15 @@ public class DataServiceConverterProcessor extends HibernateServiceConverterProc
 				new DataServiceCollectorConfigurationProvider(getClassPathTypes(), service, processingEnv, roundEnv)
 		};
 	}
-	
-	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
+
+	@Override
+	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw, ServiceTypeElement serviceTypeElement) {
 		return new ServiceConverterElementPrinter[] {
 				new LocalServiceFieldPrinter(pw),
 				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
 				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
 				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolver(), pw),
-				new HibernateDataServiceMethodConverterPrinter(processingEnv, getParametersResolver(), pw, converterProviderPrinter),
+				new HibernateServiceMethodConverterPrinter(processingEnv, getParametersResolver(), pw, getConverterProviderPrinter(pw, serviceTypeElement)),
 				new ServiceConverterProviderPrinter(processingEnv, getParametersResolver(), pw, converterProviderPrinter)
 		};
 	}
