@@ -212,19 +212,28 @@ public class ConverterProviderPrinter {
 		return (domain != null && domain.getKind().isDeclared() && ((DomainDeclaredType)domain).hasTypeParameters());
 	}
 	
-	private MutableDeclaredType getTypedConverter(MutableDeclaredType converterType, boolean typed) {
-		if (typed) {
-			MutableTypes typeUtils = processingEnv.getTypeUtils();
-			return typeUtils.getDeclaredType(converterType, 
-					typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX), 
-					typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX));
+	private MutableTypeVariable[] toTypeVariables(MutableDeclaredType domainType) {
+		MutableTypeVariable[] typeVariables = new MutableTypeVariable[domainType.getTypeVariables().size() * 2];
+		
+		for (int i = 0; i < domainType.getTypeVariables().size(); i++) {
+			typeVariables[i*2] = processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
+			typeVariables[i*2 + 1] = processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
+		}
+
+		return typeVariables;
+	}
+	
+	private MutableDeclaredType getTypedConverter(ConverterTypeElement converterType, boolean typed) {
+		if (typed && converterType.getConfiguration().getRawDomain().getKind().isDeclared()) {
+			return processingEnv.getTypeUtils().getDeclaredType(converterType.clone(), 
+					toTypeVariables((MutableDeclaredType) converterType.getConfiguration().getRawDomain()));
 		}
 		
 		return converterType;
 	}
 	
 	private void printConverterCast(ConverterTypeElement converterTypeElement) {
-		pw.print("(", getTypedConverter(converterTypeElement.clone(), isTyped(converterTypeElement)), ")");
+		pw.print("(", getTypedConverter(converterTypeElement, isTyped(converterTypeElement)), ")");
 	}
 	
 	private void printGenericConverterDefinition(ConverterTypeElement converterTypeElement) {
@@ -237,7 +246,7 @@ public class ConverterProviderPrinter {
 			pw.print(typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX, domain.getDto()));
 			pw.print(", ", typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX, domain));
 			pw.print(">");
-			pw.print(" ", getTypedConverter(converterTypeElement.clone(), isTyped(converterTypeElement)));
+			pw.print(" ", getTypedConverter(converterTypeElement, isTyped(converterTypeElement)));
 		} else {
 			pw.print(converterTypeElement);
 		}
@@ -343,7 +352,7 @@ public class ConverterProviderPrinter {
 		pw.println(".", converterTargetType.getConverterMethodName() + "(" + TARGET_PARAMETER_NAME + ");");
 		pw.println("if (" + CONVERTER_LOCAL_FIELD_NAME + " != null) {");
 		pw.print("return (");
-		pw.print(getTypedConverter(converterTypeElement.clone(), isTyped(converterTypeElement)));
+		pw.print(getTypedConverter(converterTypeElement, isTyped(converterTypeElement)));
 		pw.println(") " + CONVERTER_LOCAL_FIELD_NAME + ";");
 		pw.println("}");
 		pw.print("return " + getConverterMethodName(converterTypeElement, converterTargetType), "(");
@@ -411,7 +420,7 @@ public class ConverterProviderPrinter {
 		boolean converterInstantiable = converterTypeElement.isConverterInstantiable();
 
 		if (converterTypeElement.hasTypeParameters()) {
-			converterReplacedTypeParameters = getTypedConverter(converterTypeElement.clone(), true);
+			converterReplacedTypeParameters = getTypedConverter(converterTypeElement, true);
 		} else if (converterInstantiable) {
 			printConverterCast(converterTypeElement);
 		}

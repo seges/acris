@@ -23,7 +23,7 @@ public class ServiceDtoConverterProviderPrinter extends AbstractServiceObjectCon
 		if (!types.contains(context.getRawDto().getCanonicalName())) {
 			
 			if (types.size() == 0) {
-				pw.println("public <" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX +
+				pw.println("public <"	+ ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX +
 						"> ", getTypedDtoConverter(), " getConverterForDto(" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + " " + DTO_PARAMETER_NAME + ") {");
 			}
 			
