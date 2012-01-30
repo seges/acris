@@ -17,6 +17,9 @@ import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	
+	private DomainDeclaredType domainType;
+	private boolean domainTypeInitialized = false;
+	
 	public DataConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, 
 			TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
 		super(domainType, dtoType, configurationElement, processingEnv, roundEnv, configurationProviders);
@@ -32,14 +35,20 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	
 	@Override
 	public DomainDeclaredType getDomain() {
-		DomainDeclaredType domainDeclared = super.getDomain();
-		MutableDeclaredType result = findDomainData(domainDeclared.asMutable());
-		if (result != null) {
-			domainDeclared = new DomainDeclared(result, dtoType, new ConfigurationTypeElement[] { this }, processingEnv, roundEnv, configurationProviders);
-			domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
+		
+		if (!domainTypeInitialized) {
+			DomainDeclaredType domainDeclared = super.getDomain();
+			MutableDeclaredType result = findDomainData(domainDeclared.asMutable());
+			if (result != null) {
+				domainDeclared = new DomainDeclared(result, dtoType, new ConfigurationTypeElement[] { this }, processingEnv, roundEnv, configurationProviders);
+				domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
+			}
+			
+			this.domainType = domainDeclared;
+			this.domainTypeInitialized = true;
 		}
 		
-		return domainDeclared;
+		return domainType;
 	}
 	
 	private MutableDeclaredType findDomainData(MutableDeclaredType declaredType) {
