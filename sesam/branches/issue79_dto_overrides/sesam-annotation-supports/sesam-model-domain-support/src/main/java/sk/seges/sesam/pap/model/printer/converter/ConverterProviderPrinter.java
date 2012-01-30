@@ -43,6 +43,7 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.HasConverter;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
@@ -516,12 +517,12 @@ public class ConverterProviderPrinter {
 		}
 	}
 
-	public void printDtoConverterMethodName(ConverterTypeElement converterTypeElement, MutableTypeMirror type, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printConverterMethodName(converterTypeElement, ConverterTargetType.DTO, type, parameterName, new DtoTypeElementProvider(), method, pw);
+	public void printDtoConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
+		printConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw);
 	}
 
-	public void printDomainConverterMethodName(ConverterTypeElement converterTypeElement, MutableTypeMirror type, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printConverterMethodName(converterTypeElement, ConverterTargetType.DOMAIN, type, parameterName, new DomainTypeElementProvider(), method, pw);
+	public void printDomainConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
+		printConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw);
 	}
 
 	private MutableDeclaredType getConvertedResult(ConverterTypeElement converterTypeElement, ConverterTargetType targetType, MutableTypeMirror type, TomBaseElementProvider tomBaseElementProvider) {
@@ -602,9 +603,9 @@ public class ConverterProviderPrinter {
 		}
 	}
 	
-	private void printConverterMethodName(ConverterTypeElement converterTypeElement, ConverterTargetType targetType, MutableTypeMirror type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
+	private <T extends MutableTypeMirror & HasConverter> void printConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
 		
-		String methodName = getEnsuredConverterMethodName(converterTypeElement, targetType);
+		String methodName = getEnsuredConverterMethodName(type.getConverter(), targetType);
 		
 		if (methodName == null) {
 			return;
