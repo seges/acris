@@ -3,7 +3,7 @@ package sk.seges.acris.common.util;
 public class URLUtils {
 	private static final String PROTOCOL_SEPARATOR = "://";
 	private static final String URL_SEPARATOR = "/";
-	private static final String QUERY_LOCALE = "?locale=";
+	private static final String QUERY_LOCALE = "locale=";
 
 	public static String getLocalizedServerHost(String originalServerHost, String domainExtension) {
 		int lastIndex = originalServerHost.lastIndexOf(".");
@@ -98,10 +98,10 @@ public class URLUtils {
 	private static String appendLocale(String href, String targetLanguage) {
 		int index = href.indexOf("#");
 		if(index == -1) {
-			return href + QUERY_LOCALE + targetLanguage;
+			return href + (href.contains("?") ? "&" : "?") + QUERY_LOCALE + targetLanguage;
 		}
 		
-		return href.substring(0, index) + QUERY_LOCALE + targetLanguage + href.substring(index, href.length());
+		return href.substring(0, index) + (href.contains("?") ? "&" : "?")+  QUERY_LOCALE + targetLanguage + href.substring(index, href.length());
 	}
 	
 	private static String replaceLocale(String href, int localeIndex, String currentLocale, String targetLanguage) {
