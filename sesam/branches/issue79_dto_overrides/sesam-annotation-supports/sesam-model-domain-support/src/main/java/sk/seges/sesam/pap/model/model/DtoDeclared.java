@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -40,25 +39,26 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 	
 	private boolean isInterface = false;
 	
-	DtoDeclared(ConfigurationTypeElement[] configurationTypeElements, MutableDeclaredType dtoTypeElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv, configurationTypeElements, configurationProviders);
+	DtoDeclared(MutableDeclaredType dtoType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
+
+		this.dtoType = dtoType;
 		this.generated = false;
-		this.dtoType = dtoTypeElement;
-		
+				
 		initialize();
 	}
 
-	DtoDeclared(ConfigurationTypeElement[] configurationTypeElements, DeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv, configurationTypeElements, configurationProviders);
-		
+	DtoDeclared(DeclaredType dtoType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
+
+		this.dtoType = getTypeUtils().toMutableType(dtoType);
 		this.generated = false;
-		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoType);
-		
+				
 		initialize();
 	}
 
-	DtoDeclared(ConfigurationTypeElement[] configurationTypeElements, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv, configurationTypeElements, configurationProviders);
+	DtoDeclared(EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
 
 		this.generated = true;
 		this.dtoType = null;
@@ -71,7 +71,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 
 		if (superClassDomainType != null) {
 			DtoDeclaredType superclassDto = superClassDomainType.getDto();
-			MutableDeclaredType mutableSuperclassType = processingEnv.getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asConfigurationElement().asType());
+			MutableDeclaredType mutableSuperclassType = getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asConfigurationElement().asType());
 			
 			if (superclassDto instanceof MutableDeclaredType) {
 				//TODO convert type variables also
@@ -91,7 +91,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 			
 			if (interfaces != null) {
 				for (TypeMirror interfaceType: interfaces) {
-					MutableDeclaredType mutableType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(interfaceType);
+					MutableDeclaredType mutableType = (MutableDeclaredType) getTypeUtils().toMutableType(interfaceType);
 					mutableType.prefixTypeParameter(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
 					interfaceTypes.add(mutableType);
 				}
@@ -103,7 +103,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 					setSuperClass(((MutableDeclaredType) domainDefinitionConfiguration.ensureDelegateType()).getSuperClass());
 				} else {
 					//TODO check if it is not already there
-					interfaceTypes.add(processingEnv.getTypeUtils().toMutableType(Serializable.class));
+					interfaceTypes.add(getTypeUtils().toMutableType(Serializable.class));
 				}
 			}
 			
@@ -111,28 +111,10 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		}
 	}
 		
-	DtoDeclared(DeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
+	DtoDeclared(PrimitiveType dtoType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
 
-		this.dtoType = processingEnv.getTypeUtils().toMutableType(dtoType);
-		this.generated = false;
-				
-		initialize();
-	}
-
-	DtoDeclared(PrimitiveType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
-
-		this.dtoType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(dtoType);
-		this.generated = false;
-				
-		initialize();
-	}
-
-	DtoDeclared(MutableDeclaredType dtoType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider ...configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
-
-		this.dtoType = dtoType;
+		this.dtoType = (MutableDeclaredType) getTypeUtils().toMutableType(dtoType);
 		this.generated = false;
 				
 		initialize();
@@ -146,9 +128,6 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		for (ConfigurationProvider configurationProvider: getConfigurationProviders()) {
 			List<ConfigurationTypeElement> configurationsForDto = configurationProvider.getConfigurationsForDto(dtoType);
 			if (configurationsForDto != null && configurationsForDto.size() > 0) {
-				for (ConfigurationTypeElement configurationsTypeElement: configurationsForDto) {
-					configurationsTypeElement.setConfigurationProviders(getConfigurationProviders());
-				}
 				return configurationsForDto;
 			}
 		}
@@ -158,7 +137,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 	
 	protected MutableDeclaredType getDelegate() {
 		if (dtoType != null) {
-			return (MutableDeclaredType) getMutableTypesUtils().toMutableType(dtoType);
+			return (MutableDeclaredType) getTypeUtils().toMutableType(dtoType);
 		}
 		return getGeneratedDtoTypeFromConfiguration();
 	};
@@ -176,11 +155,11 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 			List<MutableTypeVariable> dtoTypeVariables = new LinkedList<MutableTypeVariable>();
 			if (typeArguments.size() == getTypeVariables().size()) {
 				for (TypeMirror domainTypeVariable: typeArguments) {
-					DtoType dtoTypeVariable = processingEnv.getTransferObjectUtils().getDomainType(domainTypeVariable).getDto();
+					DtoType dtoTypeVariable = getTransferObjectUtils().getDomainType(domainTypeVariable).getDto();
 					if (dtoTypeVariable instanceof MutableTypeVariable) {
 						dtoTypeVariables.add((MutableTypeVariable)dtoTypeVariable);
 					} else {
-						dtoTypeVariables.add(processingEnv.getTypeUtils().getTypeVariable(null, dtoTypeVariable));
+						dtoTypeVariables.add(getTypeUtils().getTypeVariable(null, dtoTypeVariable));
 					}
 				}
 			}
@@ -225,7 +204,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		}
 
 		if (dtoType != null) {
-			return (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(dtoType);
+			return (DomainDeclaredType) getTransferObjectUtils().getDomainType(dtoType);
 		}
 
 		return null;
@@ -235,7 +214,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 
 		MutableDeclaredType superClassDelegate = ensureDelegateType().getSuperClass();
 		if (superClassDelegate != null) {
-			return (DtoDeclared) processingEnv.getTransferObjectUtils().getDtoType(superClassDelegate);
+			return (DtoDeclared) getTransferObjectUtils().getDtoType(superClassDelegate);
 		}
 
 		return null;

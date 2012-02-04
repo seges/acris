@@ -23,7 +23,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	
 	protected ConfigurationProvider[] getConfigurationProviders() {
 		return new ConfigurationProvider[] {
-				new ClasspathConfigurationProvider(getClassPathTypes(), processingEnv, roundEnv)
+				new ClasspathConfigurationProvider(getClassPathTypes(), getEnvironmentContext())
 		};
 	}
 
@@ -34,7 +34,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		
 		pw.println("@SuppressWarnings(\"serial\")");
 		//TODO context.getOutputClass is DTO - get configuration element from there
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
+		ConfigurationTypeElement configurationTypeElement = getConfigurationElement(context);
 		
 		pw.print("@", TransferObjectMapping.class, "(");
 
@@ -57,7 +57,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	@Override
 	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
 		//TODO context.getOutputClass is DTO, so use it!
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
+		ConfigurationTypeElement configurationTypeElement = getConfigurationElement(context);
 		if (!configurationTypeElement.getDto().isGenerated()) {
 			return false;
 		}
@@ -67,7 +67,7 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		return new MutableDeclaredType[] {
-				new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv, getConfigurationProviders()).getDto()
+				getConfigurationElement(context).getDto()
 		};
 	}
 	

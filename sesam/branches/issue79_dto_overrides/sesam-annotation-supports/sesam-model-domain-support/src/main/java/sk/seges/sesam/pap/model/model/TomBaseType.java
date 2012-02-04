@@ -1,43 +1,28 @@
 package sk.seges.sesam.pap.model.model;
 
-import javax.annotation.processing.RoundEnvironment;
-
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
-import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
-import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 abstract class TomBaseType extends DelegateMutableType {
 
-	protected final TransferObjectProcessingEnvironment processingEnv;
-	protected final RoundEnvironment roundEnv;
-
+	protected final EnvironmentContext<TransferObjectProcessingEnvironment> envContext;
+	
 	protected final TransferObjectHelper toHelper;
 	protected final TypeParametersSupport typeParametersSupport;
 	
-	protected TomBaseType(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		this.roundEnv = roundEnv;
-		this.processingEnv = processingEnv;
-
-		this.toHelper = new TransferObjectHelper(processingEnv);
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
+	protected TomBaseType(EnvironmentContext<TransferObjectProcessingEnvironment> envContext) {
+		this.envContext = envContext;
+		this.toHelper = new TransferObjectHelper(envContext.getProcessingEnv());
+		this.typeParametersSupport = new TypeParametersSupport(envContext.getProcessingEnv());
 	}
 	
 	protected MutableTypes getMutableTypesUtils() {
-		return processingEnv.getTypeUtils();
+		return envContext.getProcessingEnv().getTypeUtils();
 	}
 	
-	protected ConfigurationProvider[] getConfigurationProviders(ConfigurationProvider[] configurationProviders) {
-		if (configurationProviders != null && configurationProviders.length > 0) {
-			return configurationProviders;
-		}
-
-		ConfigurationProvider[] result = new ConfigurationProvider[1];
-		result[0] = new RoundEnvConfigurationProvider(processingEnv, roundEnv);
-		
-		return result;
+	protected MutableTypes getTypeUtils() {
+		return envContext.getProcessingEnv().getTypeUtils();
 	}
-
 }

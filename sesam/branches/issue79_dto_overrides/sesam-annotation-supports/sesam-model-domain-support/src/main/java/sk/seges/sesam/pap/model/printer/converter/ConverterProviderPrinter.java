@@ -611,9 +611,9 @@ public class ConverterProviderPrinter {
 			return;
 		}
 
-		MutableType[] converterParametersUsage = getConverterParametersUsage(converterTypeElement, method);
+		MutableType[] converterParametersUsage = getConverterParametersUsage(type.getConverter(), method);
 
-		MutableDeclaredType convertedResult = getConvertedResult(converterTypeElement, targetType, type, tomBaseElementProvider);
+		MutableDeclaredType convertedResult = getConvertedResult(type.getConverter(), targetType, type, tomBaseElementProvider);
 		
 		if (convertedResult != null) {
 			pw.print("((", convertedResult, ")");

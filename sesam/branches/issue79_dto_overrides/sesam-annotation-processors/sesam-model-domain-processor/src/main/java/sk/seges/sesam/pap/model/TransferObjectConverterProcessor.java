@@ -18,7 +18,6 @@ import sk.seges.sesam.core.pap.printer.ConstructorPrinter;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
@@ -53,15 +52,14 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	
 	protected ConfigurationProvider[] getConfigurationProviders() {
 		return new ConfigurationProvider[] {
-				new ClasspathConfigurationProvider(getClassPathTypes(), processingEnv, roundEnv)
+				new ClasspathConfigurationProvider(getClassPathTypes(), getEnvironmentContext())
 		};
 	}
 
 	@Override
 	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
 		
-		ConverterTypeElement converter = configurationTypeElement.getConverter();
+		ConverterTypeElement converter = getConfigurationElement(context).getConverter();
 		if (converter == null || !converter.isGenerated()) {
 			return false;
 		}
@@ -72,9 +70,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv);
-
-		ConverterTypeElement converter = configurationTypeElement.getConverter();
+		ConverterTypeElement converter = getConfigurationElement(context).getConverter();
 		if (converter == null || !converter.isGenerated()) {
 			return new MutableDeclaredType[] {};
 		}
@@ -96,7 +92,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	}
 	
 	protected TransferObjectProcessorContextProvider getProcessorContextProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		return new TransferObjectConverterProcessorContextProvider(processingEnv, roundEnv, getEntityResolver());
+		return new TransferObjectConverterProcessorContextProvider(getEnvironmentContext(), getEntityResolver());
 	}
 
 	protected ParametersResolver getParametersResolver() {

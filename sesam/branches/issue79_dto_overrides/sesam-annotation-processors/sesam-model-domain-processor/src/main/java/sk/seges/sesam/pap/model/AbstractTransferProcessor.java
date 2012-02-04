@@ -27,11 +27,15 @@ import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.configurer.TrasferObjectProcessorConfigurer;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
+import sk.seges.sesam.pap.model.model.ConfigurationContext;
+import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
+import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
@@ -45,11 +49,26 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 	protected TransferObjectProcessorContextProvider transferObjectContextProvider;
 	
 	protected TransferObjectProcessingEnvironment processingEnv;
+	protected EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext;
 	
 	protected EntityResolver getEntityResolver() {
 		return new DefaultEntityResolver();
 	}
 
+	protected ConfigurationCache getConfigurationCache() {
+		return new ConfigurationCache();
+	}
+	
+	protected EnvironmentContext<TransferObjectProcessingEnvironment> getEnvironmentContext() {
+		if (environmentContext == null) {
+			ConfigurationEnvironment configurationEnv = new ConfigurationEnvironment(processingEnv, roundEnv, getConfigurationCache());
+			environmentContext = configurationEnv.getEnvironmentContext();
+			configurationEnv.setConfigurationProviders(getConfigurationProviders());
+		}
+		
+		return environmentContext;
+	}
+	
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
 		return new TrasferObjectProcessorConfigurer();
@@ -59,11 +78,27 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		return generated.contains(fieldName);
 	}
 
+	protected ConfigurationTypeElement getConfigurationElement(ProcessorContext context) {
+		return getConfigurationTypeElement(context.getTypeElement());
+	}
+
+	protected ConfigurationTypeElement getConfigurationElement(RoundContext context) {
+		return getConfigurationTypeElement(context.getTypeElement());
+	}
+
+	private ConfigurationTypeElement getConfigurationTypeElement(TypeElement typeElement) {
+		ConfigurationContext configurationContext = new ConfigurationContext(environmentContext.getConfigurationEnv());
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(typeElement, getEnvironmentContext(), configurationContext);
+		configurationContext.addConfiguration(configurationTypeElement);
+		
+		return configurationTypeElement;
+	}
+	
 	@Override
 	protected void processElement(ProcessorContext context) {
 		TypeElement element = context.getTypeElement();
 		
-		ConfigurationTypeElement configurationElement = new ConfigurationTypeElement(element, processingEnv, roundEnv, getConfigurationProviders());
+		ConfigurationTypeElement configurationElement = getConfigurationElement(context);
 
 		if (configurationElement.getDomain() == null) {
 			processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find domain class reference for " + element.toString(), element);
@@ -86,17 +121,17 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 	protected abstract TransferObjectElementPrinter[] getElementPrinters(FormattedPrintWriter pw);
 	
 	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
-		return new ConfigurationTypeElement(context.getTypeElement(), processingEnv, roundEnv).getDelegateConfigurationTypeElement() == null;
+		return getConfigurationElement(context).getDelegateConfigurationTypeElement() == null;
 	}
 
 	protected TransferObjectProcessorContextProvider getProcessorContextProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		return new TransferObjectProcessorContextProvider(processingEnv, roundEnv, getEntityResolver());
+		return new TransferObjectProcessorContextProvider(getEnvironmentContext(), getEntityResolver());
 	}
 
 	@Override
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
-		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv);
+		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationCache());
 		this.processingEnv.setConfigurationProviders(getConfigurationProviders());
 		this.toHelper = new TransferObjectHelper(processingEnv);
 		this.transferObjectContextProvider = getProcessorContextProvider(processingEnv, roundEnv);
@@ -104,7 +139,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 	
 	protected ConfigurationProvider[] getConfigurationProviders() {
 		return new ConfigurationProvider[] {
-				new RoundEnvConfigurationProvider(processingEnv, roundEnv)
+				new RoundEnvConfigurationProvider(getEnvironmentContext())
 		};
 	}
 

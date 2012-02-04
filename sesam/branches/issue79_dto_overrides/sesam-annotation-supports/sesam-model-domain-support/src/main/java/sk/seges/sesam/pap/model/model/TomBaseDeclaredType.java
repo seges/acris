@@ -1,43 +1,58 @@
 package sk.seges.sesam.pap.model.model;
 
-import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.Messager;
+import javax.lang.model.util.Elements;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
-import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
-import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 abstract class TomBaseDeclaredType extends DelegateMutableDeclaredType {
 
-	protected final TransferObjectProcessingEnvironment processingEnv;
-	protected final RoundEnvironment roundEnv;
+	protected final EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext;
 
 	protected final TransferObjectHelper toHelper;
 	protected final TypeParametersSupport typeParametersSupport;
 	
-	protected TomBaseDeclaredType(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		this.roundEnv = roundEnv;
-		this.processingEnv = processingEnv;
-
-		this.toHelper = new TransferObjectHelper(processingEnv);
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
+	protected TomBaseDeclaredType(EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext) {
+		this.environmentContext = environmentContext;
+		this.toHelper = new TransferObjectHelper(environmentContext.getProcessingEnv());
+		this.typeParametersSupport = new TypeParametersSupport(environmentContext.getProcessingEnv());
 	}
 	
-	protected MutableTypes getMutableTypesUtils() {
-		return processingEnv.getTypeUtils();
+	protected Messager getMessager() {
+		return environmentContext.getProcessingEnv().getMessager();
 	}
 	
-	protected ConfigurationProvider[] getConfigurationProviders(ConfigurationProvider[] configurationProviders) {
-		if (configurationProviders != null && configurationProviders.length > 0) {
-			return configurationProviders;
+	protected MutableTypes getTypeUtils() {
+		return environmentContext.getProcessingEnv().getTypeUtils();
+	}
+	
+	protected TransferObjectTypes getTransferObjectUtils() {
+		return environmentContext.getProcessingEnv().getTransferObjectUtils();
+	}
+	
+	protected Elements getElementUtils() {
+		return environmentContext.getProcessingEnv().getElementUtils();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (!(obj instanceof MutableDeclaredType)) {
+			return false;
 		}
 
-		ConfigurationProvider[] result = new ConfigurationProvider[1];
-		result[0] = new RoundEnvConfigurationProvider(processingEnv, roundEnv);
-		
-		return result;
+		return getCanonicalName().equals(((MutableDeclaredType)obj).getCanonicalName());
 	}
 
+	@Override
+	public int hashCode() {
+		return getCanonicalName().hashCode();
+	}
 }

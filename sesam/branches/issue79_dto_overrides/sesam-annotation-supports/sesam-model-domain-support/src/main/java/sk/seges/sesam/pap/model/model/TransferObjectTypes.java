@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.model;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
@@ -14,18 +13,13 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
-import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public class TransferObjectTypes {
 
-	private final RoundEnvironment roundEnv;
-	private final ConfigurationProvider[] configurationProviders;
-	private final TransferObjectProcessingEnvironment processingEnv;
+	private final EnvironmentContext<TransferObjectProcessingEnvironment> envContext;
 	
-	public TransferObjectTypes(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider[] configurationProviders) {
-		this.processingEnv = processingEnv;
-		this.roundEnv = roundEnv;
-		this.configurationProviders = configurationProviders;
+	public TransferObjectTypes(EnvironmentContext<TransferObjectProcessingEnvironment> envContext) {
+		this.envContext = envContext;
 	}
 
 	public DomainType getDomainType(MutableTypeMirror type) {
@@ -35,18 +29,18 @@ public class TransferObjectTypes {
 		
 		switch (type.getKind()) {
 		case ARRAY:
-			return new DomainArray(getDomainType(type), processingEnv);
+			return new DomainArray(getDomainType(type), envContext.getProcessingEnv());
 		case ANNOTATION_TYPE:
 		case CLASS:
 		case ENUM:
 		case INTERFACE:
 		case PRIMITIVE:
 		case VOID:
-			return new DomainDeclared((MutableDeclaredType) type, processingEnv, roundEnv, configurationProviders);
+			return new DomainDeclared((MutableDeclaredType) type, envContext, null);
 		case TYPEVAR:
-			return new DomainVariable((MutableTypeVariable)type, processingEnv, roundEnv, configurationProviders);
+			return new DomainVariable((MutableTypeVariable)type, envContext, null);
 		case WILDCARD:
-			return new DomainVariable((MutableWildcardType)type, processingEnv, roundEnv, configurationProviders);
+			return new DomainVariable((MutableWildcardType)type, envContext, null);
 		}
 
 		throw new RuntimeException("Unsupported domain type! Unable to represent " + type.getKind() + " as a domain.");
@@ -55,9 +49,9 @@ public class TransferObjectTypes {
 	public DomainType getDomainType(TypeMirror type) {
 		switch (type.getKind()) {
 		case ARRAY:
-			return new DomainArray(getDomainType(((ArrayType)type).getComponentType()), processingEnv);
+			return new DomainArray(getDomainType(((ArrayType)type).getComponentType()), envContext.getProcessingEnv());
 		case DECLARED:
-			return new DomainDeclared((DeclaredType) type, processingEnv, roundEnv, configurationProviders);
+			return new DomainDeclared((DeclaredType) type, envContext, null);
 		case ERROR:
 		case EXECUTABLE:
 		case NONE:
@@ -66,9 +60,9 @@ public class TransferObjectTypes {
 		case PACKAGE:
 			throw new RuntimeException("Unsupported domain type! Unable to represent " + type.getKind() + " as a domain.");
 		case TYPEVAR:
-			return new DomainVariable((TypeVariable)type, processingEnv, roundEnv, configurationProviders);
+			return new DomainVariable((TypeVariable)type, envContext, null);
 		case WILDCARD:
-			return new DomainVariable((WildcardType)type, processingEnv, roundEnv, configurationProviders);
+			return new DomainVariable((WildcardType)type, envContext, null);
 		case BOOLEAN:
 		case BYTE:
 		case CHAR:
@@ -77,9 +71,9 @@ public class TransferObjectTypes {
 		case INT:
 		case LONG:
 		case SHORT:
-			return new DomainDeclared((PrimitiveType) type, processingEnv, roundEnv, configurationProviders);
+			return new DomainDeclared((PrimitiveType) type, envContext, null);
 		case VOID:
-			return new DomainDeclared((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type), processingEnv, roundEnv, configurationProviders);
+			return new DomainDeclared((MutableDeclaredType)envContext.getProcessingEnv().getTypeUtils().toMutableType(type), envContext, null);
 		}
 		
 		throw new RuntimeException("Unsupported domain type! Unable to represent " + type.getKind() + " as a domain.");
@@ -93,18 +87,18 @@ public class TransferObjectTypes {
 		
 		switch (type.getKind()) {
 		case ARRAY:
-			return new DtoArray(getDtoType(type), processingEnv);
+			return new DtoArray(getDtoType(type), envContext.getProcessingEnv());
 		case ANNOTATION_TYPE:
 		case CLASS:
 		case ENUM:
 		case INTERFACE:
 		case PRIMITIVE:
 		case VOID:
-			return new DtoDeclared((MutableDeclaredType) type, processingEnv, roundEnv, configurationProviders);
+			return new DtoDeclared((MutableDeclaredType) type, envContext, null);
 		case TYPEVAR:
-			return new DtoVariable((MutableTypeVariable)type, processingEnv, roundEnv);
+			return new DtoVariable((MutableTypeVariable)type, envContext, null);
 		case WILDCARD:
-			return new DtoVariable((MutableWildcardType)type, processingEnv, roundEnv);
+			return new DtoVariable((MutableWildcardType)type, envContext, null);
 		}
 
 		throw new RuntimeException("Unsupported DTO type! Unable to represent " + type.getKind() + " as DTO.");
@@ -113,9 +107,9 @@ public class TransferObjectTypes {
 	public DtoType getDtoType(TypeMirror type) {
 		switch (type.getKind()) {
 		case ARRAY:
-			return new DtoArray(getDtoType(((ArrayType)type).getComponentType()), processingEnv);
+			return new DtoArray(getDtoType(((ArrayType)type).getComponentType()), envContext.getProcessingEnv());
 		case DECLARED:
-			return new DtoDeclared((DeclaredType) type, processingEnv, roundEnv, configurationProviders);
+			return new DtoDeclared((DeclaredType) type, envContext, null);
 		case ERROR:
 		case EXECUTABLE:
 		case NONE:
@@ -124,9 +118,9 @@ public class TransferObjectTypes {
 		case PACKAGE:
 			throw new RuntimeException("Unsupported DTO type! Unable to represent " + type.getKind() + " as DTO.");
 		case TYPEVAR:
-			return new DtoVariable((TypeVariable)type, processingEnv, roundEnv);
+			return new DtoVariable((TypeVariable)type, envContext, null);
 		case WILDCARD:
-			return new DtoVariable((WildcardType)type, processingEnv, roundEnv);
+			return new DtoVariable((WildcardType)type, envContext, null);
 		case BOOLEAN:
 		case BYTE:
 		case CHAR:
@@ -135,15 +129,16 @@ public class TransferObjectTypes {
 		case INT:
 		case LONG:
 		case SHORT:
-			return new DtoDeclared((PrimitiveType) type, processingEnv, roundEnv, configurationProviders);
+			return new DtoDeclared((PrimitiveType) type, envContext, null);
 		case VOID:
-			return new DtoDeclared((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type), processingEnv, roundEnv, configurationProviders);
+			return new DtoDeclared((MutableDeclaredType) envContext.getProcessingEnv().getTypeUtils().toMutableType(type), 
+					envContext, null);
 		}
 		
 		throw new RuntimeException("Unsupported DTO type! Unable to represent " + type.getKind() + " as DTO.");
 	}
 	
 	public boolean isSameType(DtoType dtoType1, DtoType dtoType2) {
-		return processingEnv.getTypeUtils().isSameType(dtoType1, dtoType2);
+		return envContext.getProcessingEnv().getTypeUtils().isSameType(dtoType1, dtoType2);
 	}
 }

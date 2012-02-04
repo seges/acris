@@ -15,9 +15,12 @@ import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
+import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
@@ -45,6 +48,8 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 	protected ConverterProviderPrinter converterProviderPrinter;
 	protected TransferObjectProcessingEnvironment processingEnv;
 
+	protected EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext;
+
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
 		return new ServiceConverterProcessorConfigurer();
@@ -61,10 +66,30 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		return new DefaultPackageValidatorProvider();
 	}
 
-	protected ConfigurationProvider[] getConfigurationProviders(ServiceTypeElement service) {
-		return new ConfigurationProvider[] {
-				new ServiceCollectorConfigurationProvider(getClassPathTypes(), service, processingEnv, roundEnv)
-		};
+	protected ConfigurationCache getConfigurationCache() {
+		return new ConfigurationCache();
+	}
+
+	protected EnvironmentContext<TransferObjectProcessingEnvironment> getEnvironmentContext(ServiceTypeElement service) {
+		if (environmentContext == null) {
+			ConfigurationEnvironment configurationEnv = new ConfigurationEnvironment(processingEnv, roundEnv, getConfigurationCache());
+			environmentContext = configurationEnv.getEnvironmentContext();
+			configurationEnv.setConfigurationProviders(getConfigurationProviders(service, environmentContext));
+		}
+		
+		return environmentContext;
+	}
+
+	private ConfigurationProvider[] configurationProviders = null;
+			
+	protected ConfigurationProvider[] getConfigurationProviders(ServiceTypeElement service, EnvironmentContext<TransferObjectProcessingEnvironment> context) {
+		if (configurationProviders == null) {
+			configurationProviders = new ConfigurationProvider[] {
+					new ServiceCollectorConfigurationProvider(service, getClassPathTypes(), context)
+			};
+		}
+		
+		return configurationProviders;
 	}
 
 	@Override
@@ -113,12 +138,17 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		};
 	}
 
+	protected ConfigurationCache getConverterCache() {
+		return new ConfigurationCache();
+	}
+	
 	@Override
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
-		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv);
+		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConverterCache());
 		ServiceTypeElement serviceTypeElement = new ServiceTypeElement((TypeElement) element, processingEnv);
-		this.processingEnv.setConfigurationProviders(getConfigurationProviders(serviceTypeElement));
+		EnvironmentContext<TransferObjectProcessingEnvironment> context = getEnvironmentContext(serviceTypeElement);
+		this.processingEnv.setConfigurationProviders(getConfigurationProviders(serviceTypeElement, context));
 	}
 	
 	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw) {

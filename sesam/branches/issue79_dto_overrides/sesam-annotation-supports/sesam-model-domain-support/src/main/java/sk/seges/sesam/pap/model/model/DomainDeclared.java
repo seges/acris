@@ -3,7 +3,6 @@ package sk.seges.sesam.pap.model.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -40,8 +39,8 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	private boolean idMethodInitialized = false;
 	private ExecutableElement idMethod;
 
-	public DomainDeclared(MutableDeclaredType domainType, MutableDeclaredType dtoType, ConfigurationTypeElement[] configurations, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv, configurations, configurationProviders);
+	public DomainDeclared(MutableDeclaredType domainType, MutableDeclaredType dtoType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
 		
 		this.domainType = domainType;
 		this.dtoType = dtoType;
@@ -51,13 +50,13 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 
 	/**
 	 * When there is only one configuration for domain type, it is OK ... but for multiple DTOs created from one domain type it can
-	 * leads to unexpected results
+	 * lead to unexpected results
 	 */
 	@Deprecated
-	public DomainDeclared(DeclaredType domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
+	public DomainDeclared(DeclaredType domainType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
 		
-		this.domainType = processingEnv.getTypeUtils().toMutableType(domainType);
+		this.domainType = envContext.getProcessingEnv().getTypeUtils().toMutableType(domainType);
 		this.dtoType = null;
 
 	}
@@ -67,10 +66,10 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	 * leads to unexpected results
 	 */
 	@Deprecated
-	public DomainDeclared(PrimitiveType domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
+	public DomainDeclared(PrimitiveType domainType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
 		
-		this.domainType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(domainType);
+		this.domainType = (MutableDeclaredType) envContext.getProcessingEnv().getTypeUtils().toMutableType(domainType);
 		this.dtoType = null;
 	}
 
@@ -79,8 +78,8 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	 * leads to unexpected results
 	 */
 	@Deprecated
-	public DomainDeclared(MutableDeclaredType domainType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
+	public DomainDeclared(MutableDeclaredType domainType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
 		
 		this.domainType = domainType;
 		this.dtoType = null;
@@ -96,9 +95,6 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		for (ConfigurationProvider configurationProvider: getConfigurationProviders()) {
 			List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(domainType);
 			if (configurationsForDomain != null && configurationsForDomain.size() > 0) {
-				for (ConfigurationTypeElement configurationTypeElement: configurationsForDomain) {
-					configurationTypeElement.setConfigurationProviders(getConfigurationProviders());
-				}
 				return configurationsForDomain;
 			}
 		}
@@ -123,7 +119,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		
 		if (domainDefinitionConfiguration == null) {
 			if (domainType != null) {
-				return new DtoDeclared(domainType, processingEnv, roundEnv, getConfigurationProviders());
+				return new DtoDeclared(domainType, environmentContext, configurationContext);
 			}
 			
 			return null;
@@ -157,7 +153,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	
 				if (domainMethod != null && !new PathResolver(fieldName).isNested() && entityResolver.isIdMethod(domainMethod)) {
 					if (this.idMethod != null) {
-						processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
+						getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 								this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 								domainMethod.getSimpleName().toString() + " in the configuration " + domainMethod.getEnclosingElement().toString(), 
 								domainDefinitionConfiguration.asConfigurationElement());
@@ -218,7 +214,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	}
 
 	private void handleMultipleIdentifiers(ExecutableElement method, ConfigurationTypeElement domainDefinitionConfiguration) {
-		processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
+		getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 				this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 				method.getSimpleName().toString() + " in the configuration " + method.getEnclosingElement().toString(), 
 				domainDefinitionConfiguration.asConfigurationElement());
@@ -279,7 +275,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 
 				// incompatible types - nested path is expected, but declared
 				// type was not found
-				processingEnv.getMessager().printMessage(Kind.WARNING,
+				getMessager().printMessage(Kind.WARNING,
 						"incompatible types - nested path (" + fieldName + ") is expected, but declared type was not found ", asConfigurationElement());
 				return null;
 			}
@@ -322,7 +318,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 				if (superClassDomainType == null) {
 					TypeMirror domainSuperClass = typeElement.getSuperclass();
 					
-					List<ConfigurationTypeElement> configurationElements = getConfigurations(processingEnv.getTypeUtils().toMutableType(domainSuperClass));
+					List<ConfigurationTypeElement> configurationElements = getConfigurations(getTypeUtils().toMutableType(domainSuperClass));
 					
 					if (configurationElements != null && configurationElements.size() > 0) {
 						superClassDomainType = configurationElements.get(0).getDomain();
@@ -347,18 +343,18 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	}
 
 	private DomainType getDomainForType(TypeMirror type) {
-		DomainType domainType = processingEnv.getTransferObjectUtils().getDomainType(type);
+		DomainType domainType = getTransferObjectUtils().getDomainType(type);
 		
 		if (domainType != null) {
 			return domainType;
 		}
 		
 		if (type.getKind().isPrimitive()) {
-			return new DomainDeclared((PrimitiveType)type, processingEnv, roundEnv, getConfigurationProviders());
+			return new DomainDeclared((PrimitiveType)type, environmentContext, configurationContext);
 		}
 		
 		if (type.getKind().equals(TypeKind.DECLARED)) {
-			return new DomainDeclared((DeclaredType)type, processingEnv, roundEnv, getConfigurationProviders());
+			return new DomainDeclared((DeclaredType)type, environmentContext, configurationContext);
 		}
 		
 		return null;
@@ -371,7 +367,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			
 			int i = 0;
 			for (MutableTypeVariable typeVariable: dtoType.getTypeVariables()) {
-				typeVariables[i++] = (DomainTypeVariable)processingEnv.getTransferObjectUtils().getDtoType(typeVariable).getDomain();
+				typeVariables[i++] = (DomainTypeVariable)getTransferObjectUtils().getDtoType(typeVariable).getDomain();
 			}
 			
 			MutableDeclaredType result = setTypeVariables(typeVariables);
@@ -390,7 +386,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	}
 
 	public TypeMirror asType() {
-		return getMutableTypesUtils().fromMutableType(domainType);
+		return getTypeUtils().fromMutableType(domainType);
 	}
 
 	@Override

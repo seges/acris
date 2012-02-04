@@ -32,7 +32,7 @@ public class ServiceDtoConverterProviderPrinter extends AbstractServiceObjectCon
 			String fieldName = MethodHelper.toField(context.getRawDto().getSimpleName());
 			pw.println(context.getRawDto(), " " + fieldName + " = (", context.getRawDto(), ")" + DTO_PARAMETER_NAME + ";");
 			pw.print("return (", getTypedDtoConverter(), ") ");
-			converterProviderPrinter.printDtoConverterMethodName(context.getConverterType(), context.getRawDto(), fieldName, context.getLocalMethod(), pw);
+			converterProviderPrinter.printDtoConverterMethodName(context.getRawDto(), fieldName, context.getLocalMethod(), pw);
 			pw.println(";");
 			pw.println("}");
 			pw.println();
