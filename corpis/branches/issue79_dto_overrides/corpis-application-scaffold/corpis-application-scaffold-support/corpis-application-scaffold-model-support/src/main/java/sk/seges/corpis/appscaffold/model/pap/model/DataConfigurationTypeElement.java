@@ -1,7 +1,7 @@
 package sk.seges.corpis.appscaffold.model.pap.model;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
@@ -9,24 +9,30 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.pap.model.model.ConfigurationContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DomainDeclared;
+import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
-import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	
 	private DomainDeclaredType domainType;
 	private boolean domainTypeInitialized = false;
 	
-	public DataConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, 
-			TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(domainType, dtoType, configurationElement, processingEnv, roundEnv, configurationProviders);
-	} 
+	public DataConfigurationTypeElement(Element configurationElement, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(configurationElement, envContext, configurationContext);
+	}
 
-	public DataConfigurationTypeElement(Element configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		super(configurationElement, processingEnv, roundEnv, configurationProviders);
+	public DataConfigurationTypeElement(ExecutableElement configurationElementMethod, DomainDeclaredType returnType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext,
+			ConfigurationContext configurationContext) {
+		super(configurationElementMethod, returnType, envContext, configurationContext);
+	}
+
+	public DataConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, EnvironmentContext<TransferObjectProcessingEnvironment> envContext,
+			ConfigurationContext configurationContext) {
+		super(domainType, dtoType, configurationElement, envContext, configurationContext);
 	}
 
 	public DomainDeclaredType getDomainEntity() {
@@ -40,7 +46,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 			DomainDeclaredType domainDeclared = super.getDomain();
 			MutableDeclaredType result = findDomainData(domainDeclared.asMutable());
 			if (result != null) {
-				domainDeclared = new DomainDeclared(result, dtoType, new ConfigurationTypeElement[] { this }, processingEnv, roundEnv, configurationProviders);
+				domainDeclared = new DomainDeclared(result, dtoType, envContext, configurationContext);
 				domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
 			}
 			
@@ -77,8 +83,8 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	public boolean appliesForDomainType(MutableTypeMirror domainType) {
 		TypeElement declaredDomainType = transferObjectConfiguration.getDomain();
 		if (declaredDomainType != null) {
-			MutableDeclaredType mutableDomainData = findDomainData(processingEnv.getTypeUtils().toMutableType(declaredDomainType));
-			if (mutableDomainData != null && processingEnv.getTypeUtils().isSameType(mutableDomainData, domainType)) {
+			MutableDeclaredType mutableDomainData = findDomainData(getTypeUtils().toMutableType(declaredDomainType));
+			if (mutableDomainData != null && getTypeUtils().isSameType(mutableDomainData, domainType)) {
 				return true;
 			}
 		}
@@ -95,7 +101,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 		if (domainDeclared.getTypeVariables().size() > 0) {
 			MutableTypeVariable[] typeVariables = new MutableTypeVariable[domainDeclared.getTypeVariables().size()];
 			for (int i = 0; i < domainDeclared.getTypeVariables().size(); i++) {
-				typeVariables[i] = processingEnv.getTypeUtils().getTypeVariable(MutableWildcardType.WILDCARD_NAME);
+				typeVariables[i] = getTypeUtils().getTypeVariable(MutableWildcardType.WILDCARD_NAME);
 			}
 			domainDeclared.setTypeVariables(typeVariables);
 		}

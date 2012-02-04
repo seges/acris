@@ -11,7 +11,6 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolverDelegate;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoMethodPrinter;
@@ -28,7 +27,7 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
 		this.entityResolver = (HibernateEntityResolver)entityResolver;
 	}
 	@Override
-    protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
+    protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, String dtoField, FormattedPrintWriter pw) {
     	if (entityResolver.isLazyReference(domainMethod)) {
     		pw.println("if (", ConverterUtils.class,".convertArg(" + HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
         	//pw.println("if (" + HibernateParameterResolver.PROPAGATION_TYPE_NAME + ".equals(", PropagationType.class, ".", PropagationType.PROPAGATE, ")) {");
@@ -36,11 +35,11 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     		pw.println("if (" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField) + " != null) {");
     		String converterName = "converter" + MethodHelper.toMethod("", dtoField);
     		pw.print(converter.getConverterBase(), " " + converterName + " = ");
-    		converterProviderPrinter.printDtoConverterMethodName(converter, domainMethodReturnType.getDto(), 
+    		converterProviderPrinter.printDtoConverterMethodName(converter.getDto(), 
     				TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField), domainMethod, pw);
     		pw.println(";");
     		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
-    		pw.print("(", castToDelegate(domainMethodReturnType), ")");
+    		pw.print("(", castToDelegate(converter.getDomain()), ")");
     		pw.print(converterName + ".convertFromDto(");
     		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ",");
     		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
@@ -49,11 +48,11 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
         	pw.println(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(null);");
         	pw.println("}");
         	pw.println("} else {");
-    		super.printCopyByConverter(converter, domainMethod, domainPathResolver, domainMethodReturnType, dtoField, pw);
+    		super.printCopyByConverter(converter, domainMethod, domainPathResolver, dtoField, pw);
         	pw.println("}");
         	pw.println("}");
     	} else {
-    		super.printCopyByConverter(converter, domainMethod, domainPathResolver, domainMethodReturnType, dtoField, pw);
+    		super.printCopyByConverter(converter, domainMethod, domainPathResolver, dtoField, pw);
     	}
     }    
 }

@@ -7,6 +7,8 @@ import sk.seges.corpis.appscaffold.model.pap.provider.DataServiceCollectorConfig
 import sk.seges.corpis.pap.service.hibernate.HibernateServiceConverterProcessor;
 import sk.seges.corpis.pap.service.hibernate.printer.HibernateServiceMethodConverterPrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.model.EnvironmentContext;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.ConverterParameterFieldPrinter;
@@ -20,9 +22,9 @@ import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
 public class DataServiceConverterProcessor extends HibernateServiceConverterProcessor {
 
 	@Override
-	protected ConfigurationProvider[] getConfigurationProviders(ServiceTypeElement service) {
+	protected ConfigurationProvider[] getConfigurationProviders(ServiceTypeElement service, EnvironmentContext<TransferObjectProcessingEnvironment> context) {
 		return new ConfigurationProvider[] {
-				new DataServiceCollectorConfigurationProvider(getClassPathTypes(), service, processingEnv, roundEnv)
+				new DataServiceCollectorConfigurationProvider(service, getClassPathTypes(), context)
 		};
 	}
 

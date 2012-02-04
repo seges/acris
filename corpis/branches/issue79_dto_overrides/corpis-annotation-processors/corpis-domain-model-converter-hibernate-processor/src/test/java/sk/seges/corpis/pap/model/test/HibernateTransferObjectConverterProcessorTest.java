@@ -14,6 +14,7 @@ import sk.seges.corpis.pap.model.hibernate.HibernateTransferObjectConverterProce
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 
 public class HibernateTransferObjectConverterProcessorTest extends AnnotationTest {
 
@@ -31,8 +32,8 @@ public class HibernateTransferObjectConverterProcessorTest extends AnnotationTes
 	
 	public File getOutputFile(Class<?> clazz) {
 		TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
-		TransferObjectProcessingEnvironment transferObjectProcessingEnvironment = new TransferObjectProcessingEnvironment(processingEnv, roundEnv);
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, transferObjectProcessingEnvironment, roundEnv);
+		TransferObjectProcessingEnvironment transferObjectProcessingEnvironment = new TransferObjectProcessingEnvironment(processingEnv, roundEnv, new ConfigurationCache());
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, transferObjectProcessingEnvironment.getEnvironmentContext(), null);
 		return toFile(configurationTypeElement.getConverter());
 	}
 	
