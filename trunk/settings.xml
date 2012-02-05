@@ -80,7 +80,7 @@
 				
 				<repository>
 					<id>jboss-repo</id>
-					<url>http://repository.jboss.com/maven2</url>
+					<url>http://repository.jboss.org/nexus/content/groups/public</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
