@@ -25,7 +25,10 @@ public class DomainDataConfigurationProvider extends ClasspathConfigurationProvi
 	}
 	
 	@Override
-	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement, ConfigurationContext context) {
-		return new DataConfigurationTypeElement(configurationElement, envContext, context);
+	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement) {
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		ConfigurationTypeElement configurationTypeElement = new DataConfigurationTypeElement(configurationElement, envContext, configurationContext);
+		configurationContext.addConfiguration(configurationTypeElement);
+		return configurationTypeElement;
 	}
 }
