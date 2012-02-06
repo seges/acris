@@ -1,12 +1,11 @@
 package sk.seges.acris.site.server.service;
 
+import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public class MockWebSettingsService implements IWebSettingsService {
-
-	private static final long serialVersionUID = 1337432311249783469L;
 
 	protected Boolean localeSensitiveServer;
 
@@ -51,5 +50,16 @@ public class MockWebSettingsService implements IWebSettingsService {
 
 	@Override
 	public void saveWebSettings(WebSettingsData webSettingsData) {
+	}
+
+	@Override
+	public void saveFTPWebSettings(String webId, FTPWebSettingsData ftpWebSettings) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public FTPWebSettingsData getFTPWebSettings(String webId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

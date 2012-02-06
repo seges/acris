@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.server.service.WebSettingsService;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
@@ -24,5 +25,10 @@ public class SpringWebSettingsService extends WebSettingsService {
 	@Transactional
 	public WebSettingsData getWebSettings(String webId) {
 		return super.getWebSettings(webId);
+	}
+
+	@Transactional
+	public void saveFTPWebSettings(String webId, FTPWebSettingsData ftpWebSettings) {
+		super.saveFTPWebSettings(webId, ftpWebSettings);
 	}
 }

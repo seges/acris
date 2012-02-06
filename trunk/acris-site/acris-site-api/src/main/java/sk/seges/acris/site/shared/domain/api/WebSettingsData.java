@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.corpis.shared.domain.api.CountryData;
 import sk.seges.corpis.shared.domain.api.HasLanguage;
 import sk.seges.corpis.shared.domain.api.HasWebId;
@@ -28,7 +29,7 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 		
 		void setContent(String value);
 	}
-
+	
 	public static interface ContentType {
 		String name();
 		
@@ -122,4 +123,8 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 	Integer getTermOfPayment();
 	
 	void setTermOfPayment(Integer termOfPayment);
+	
+	FTPWebSettingsData getFTPWebSettingsData();
+	
+	void setFTPWebSettingsData(FTPWebSettingsData ftpWebSettingsData);
 }

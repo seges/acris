@@ -29,7 +29,12 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-site-core</artifactId>
 			<classifier>sources</classifier>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-jpa</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-binding-processor</artifactId>

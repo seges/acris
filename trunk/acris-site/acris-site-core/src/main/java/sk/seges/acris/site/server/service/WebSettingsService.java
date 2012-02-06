@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData.MetaData;
@@ -64,5 +65,21 @@ public class WebSettingsService implements IWebSettingsService {
 	@Override
 	public void saveWebSettings(@Valid WebSettingsData webSettingsData) {
 		webSettingsData = webSettingsDao.merge(webSettingsData);
+	}
+
+	@Override
+	public void saveFTPWebSettings(String webId, FTPWebSettingsData ftpWebSettings) {
+		WebSettingsData webSettings = getWebSettings(webId);
+		webSettings.setFTPWebSettingsData(ftpWebSettings);
+		saveWebSettings(webSettings);
+	}
+
+	@Override
+	public FTPWebSettingsData getFTPWebSettings(String webId) {
+		WebSettingsData webSettings = getWebSettings(webId);
+		if (webSettings != null) {
+			return webSettings.getFTPWebSettingsData();
+		}
+		return null;
 	}	
 }

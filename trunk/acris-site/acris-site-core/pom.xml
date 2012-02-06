@@ -12,7 +12,6 @@
 	</parent>
 
 	<dependencies>
-
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
