@@ -6,14 +6,14 @@ import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public abstract class TomDeclaredConfigurationHolder extends TomBaseDeclaredType {
 
-	protected ConfigurationContext configurationContext;
+	private ConfigurationContext configurationContext;
 	
 	protected TomDeclaredConfigurationHolder(EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext, ConfigurationContext configurationContext) {
 		super(environmentContext);
 		this.configurationContext = configurationContext;
 	}
 
-	private ConfigurationContext ensureConfigurationContext() {
+	protected ConfigurationContext ensureConfigurationContext() {
 		if (configurationContext == null) {
 			configurationContext = new ConfigurationContext(environmentContext.getConfigurationEnv());
 			configurationContext.setConfigurations(getConfigurationsForType());

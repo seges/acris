@@ -17,7 +17,7 @@ enum TomType {
 	CONVERTER_DEFINED {
 		@Override
 		boolean appliesFor(ConfigurationTypeElement configuration) {
-			return configuration.hasConverterSpecified();
+			return configuration.getDelegateConfigurationTypeElement() == null || configuration.hasConverterSpecified();
 		}
 	},
 	CONVERTER_GENERATED {

@@ -50,16 +50,18 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 			}
 		}
 		
-		for (int i = 0; i < localMethod.getParameters().size(); i++) {
-			TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
-			DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
-			
-			if (parameterDtoType.getConverter() != null) {
-				hasConverter = true;
-				break;
+		if (!hasConverter) {
+			for (int i = 0; i < localMethod.getParameters().size(); i++) {
+				TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
+				DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
+				
+				if (parameterDtoType.getConverter() != null) {
+					hasConverter = true;
+					break;
+				}
 			}
 		}
-
+	
 		if (hasConverter) {
 			converterProviderPrinter.printConverterParams(localMethod, pw);
 		}

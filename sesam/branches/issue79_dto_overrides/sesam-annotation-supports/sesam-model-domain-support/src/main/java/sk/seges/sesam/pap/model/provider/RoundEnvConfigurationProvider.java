@@ -130,28 +130,39 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		return false;
 	}
 	
-	protected List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type) {
+	protected final List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type) {
+
+		List<ConfigurationTypeElement> cachedConfigurations = targetType.retrieveConfigurations(type, envContext.getConfigurationEnv().getCache());
+		
+		if (cachedConfigurations != null) {
+			return cachedConfigurations;
+		}
+
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		List<ConfigurationTypeElement> result = getConfigurationElementsForType(targetType, type, configurationContext);
+		configurationContext.setConfigurations(result);
+		
+		Collections.sort(result, new ConfigurationComparator());
+
+		targetType.storeConfigurations(type, result, envContext.getConfigurationEnv().getCache());
+
+		return result;
+	}
+	
+	protected List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type, ConfigurationContext context) {
 		
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 
 		if (!isSupportedType(type)) {
 			return result;
 		};
-
-		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
-		
-		List<ConfigurationTypeElement> cachedConfigurations = targetType.retrieveConfigurations(type, envContext.getConfigurationEnv().getCache());
-		
-		if (cachedConfigurations != null && cachedConfigurations.size() > 0) {
-			return cachedConfigurations;
-		}
-		
+				
 		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
 		for (Element annotatedElement : elementsAnnotatedWith) {
 			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED) && !contains(annotatedElement, result)) {
 				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement);
 				if (targetType.appliesForType(type, configurationTypeElement)) {
-					result.add(targetType.getConfiguration(type, annotatedElement, this, configurationContext));
+					result.add(targetType.getConfiguration(type, annotatedElement, this, context));
 				}
 			}
 		}
@@ -162,17 +173,12 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
 					ConfigurationTypeElement configurationTypeElement = getConfigurationElement(configurationElement);
 					if (targetType.appliesForType(type, configurationTypeElement)) {
-						result.add(targetType.getConfiguration(type, configurationElement, this, configurationContext));
+						result.add(targetType.getConfiguration(type, configurationElement, this, context));
 					}
 				}
 			}
 		}
-
-		Collections.sort(result, new ConfigurationComparator());
-		
-		targetType.storeConfigurations(type, result, envContext.getConfigurationEnv().getCache());
-		configurationContext.setConfigurations(result);
-		
+				
 		return result;
 	}
 

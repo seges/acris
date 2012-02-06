@@ -107,24 +107,20 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 	protected abstract List<ConfigurationTypeElement> collectConfigurations();
 
 	@Override
-	protected List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type) {
+	protected List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type, ConfigurationContext context) {
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 		
 		if (!isSupportedType(type)) {
 			return result;
 		};
 
-		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
-
 		for (ConfigurationTypeElement configurationTypeElement : collectConfigurations()) {
 			if (targetType.appliesForType(type, configurationTypeElement)) {
-				result.add(targetType.getConfiguration(type, configurationTypeElement.asConfigurationElement(), this, configurationContext));
+				result.add(targetType.getConfiguration(type, configurationTypeElement.asConfigurationElement(), this, context));
 			}
 		}
 		
-		result.addAll(super.getConfigurationElementsForType(targetType, type));
-
-		Collections.sort(result, new ConfigurationComparator());
+		result.addAll(super.getConfigurationElementsForType(targetType, type, context));
 
 		return result;
 	}	

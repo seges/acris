@@ -119,7 +119,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		
 		if (domainDefinitionConfiguration == null) {
 			if (domainType != null) {
-				return new DtoDeclared(domainType, environmentContext, configurationContext);
+				return new DtoDeclared(domainType, environmentContext, ensureConfigurationContext());
 			}
 			
 			return null;
@@ -350,11 +350,11 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		}
 		
 		if (type.getKind().isPrimitive()) {
-			return new DomainDeclared((PrimitiveType)type, environmentContext, configurationContext);
+			return new DomainDeclared((PrimitiveType)type, environmentContext, ensureConfigurationContext());
 		}
 		
 		if (type.getKind().equals(TypeKind.DECLARED)) {
-			return new DomainDeclared((DeclaredType)type, environmentContext, configurationContext);
+			return new DomainDeclared((DeclaredType)type, environmentContext, ensureConfigurationContext());
 		}
 		
 		return null;
