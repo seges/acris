@@ -16,6 +16,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
@@ -281,7 +282,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 		TypeElement converterTypeElement = getElementUtils().getTypeElement(getCanonicalName());
 
-		if (converterTypeElement != null) {
+		if (converterTypeElement != null && !isGenerated()) {
 			List<ExecutableElement> constructors = getSortedConstructorMethods(converterTypeElement);
 			
 			ParameterElement[] constructorAditionalParameters = new ParameterElement[0];
@@ -315,7 +316,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 							break;
 						}
 					}
-					
+
 					parameters.add(converterParameter);
 				}
 			}
@@ -360,6 +361,9 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				for (ParameterElement additionalParameter: constructorAditionalParameters) {
 					if (getTypeUtils().isSameType(additionalParameter.getType(), converterParameter.getType())) {
 						converterParameter.setName(additionalParameter.getName());
+						if (converterParameter.getName().equals("arg0")) {
+							getMessager().printMessage(Kind.ERROR, "[2] Additional parameter is arg0 for " + this.getCanonicalName());
+						}
 					}
 				}
 			}

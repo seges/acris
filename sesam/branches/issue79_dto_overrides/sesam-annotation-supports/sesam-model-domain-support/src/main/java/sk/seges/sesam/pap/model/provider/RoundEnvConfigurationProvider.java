@@ -72,7 +72,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 
 			@Override
 			public ConfigurationTypeElement getConfiguration(MutableTypeMirror type, Element configurationElement, RoundEnvConfigurationProvider configurationProvider, ConfigurationContext context) {
-				return configurationProvider.getConfigurationElement(type, null, configurationElement, context);
+				return configurationProvider.getConfigurationElement(null, type, configurationElement, context);
 			}
 
 			@Override
@@ -92,7 +92,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 
 			@Override
 			public ConfigurationTypeElement getConfiguration(MutableTypeMirror type, Element configurationElement, RoundEnvConfigurationProvider configurationProvider, ConfigurationContext context) {
-				return configurationProvider.getConfigurationElement(null, type, configurationElement, context);
+				return configurationProvider.getConfigurationElement(type, null, configurationElement, context);
 			}
 
 			@Override
@@ -149,7 +149,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
 		for (Element annotatedElement : elementsAnnotatedWith) {
 			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED) && !contains(annotatedElement, result)) {
-				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement, configurationContext);
+				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement);
 				if (targetType.appliesForType(type, configurationTypeElement)) {
 					result.add(targetType.getConfiguration(type, annotatedElement, this, configurationContext));
 				}
@@ -160,7 +160,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 			for (Class<?> clazz: getCommonConfigurations()) {
 				TypeElement configurationElement = envContext.getProcessingEnv().getElementUtils().getTypeElement(clazz.getCanonicalName());
 				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
-					ConfigurationTypeElement configurationTypeElement = getConfigurationElement(configurationElement, configurationContext);
+					ConfigurationTypeElement configurationTypeElement = getConfigurationElement(configurationElement);
 					if (targetType.appliesForType(type, configurationTypeElement)) {
 						result.add(targetType.getConfiguration(type, configurationElement, this, configurationContext));
 					}
@@ -179,8 +179,12 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 	protected ConfigurationTypeElement getConfigurationElement(MutableTypeMirror domainType, MutableTypeMirror dtoType, Element annotatedElement, ConfigurationContext configurationContext) {
 		return new ConfigurationTypeElement((MutableDeclaredType)domainType, (MutableDeclaredType)dtoType, (TypeElement)annotatedElement, envContext, configurationContext);
 	}
-	
-	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement, ConfigurationContext configurationContext) {
-		return new ConfigurationTypeElement(configurationElement, envContext, configurationContext);
+
+	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement) {
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, envContext, configurationContext);
+		configurationContext.addConfiguration(configurationTypeElement);
+		
+		return configurationTypeElement;
 	}
 }

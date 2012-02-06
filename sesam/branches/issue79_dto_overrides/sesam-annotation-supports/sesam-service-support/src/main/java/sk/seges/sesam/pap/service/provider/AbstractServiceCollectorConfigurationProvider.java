@@ -27,13 +27,20 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 	}
 
 	protected List<ConfigurationTypeElement> getConfigurationsFromType(DeclaredType type, List<String> processedElements) {
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		return getConfigurationsFromType(type, processedElements, configurationContext);
+	}
+	
+	protected List<ConfigurationTypeElement> getConfigurationsFromType(DeclaredType type, List<String> processedElements, ConfigurationContext configurationContext) {
 
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 
+//		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		
 		if (type.getTypeArguments().size() > 0) {
 			for (TypeMirror typeArgument: type.getTypeArguments()) {
 				if (typeArgument.getKind().equals(TypeKind.DECLARED)) {
-					result.addAll(getConfigurationsFromType((DeclaredType)typeArgument, processedElements));
+					result.addAll(getConfigurationsFromType((DeclaredType)typeArgument, processedElements, configurationContext));
 				}
 			}
 		}
@@ -50,27 +57,29 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 		
 		processedElements.add(element.getQualifiedName().toString());
 		
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, envContext, null);
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, envContext, configurationContext);
+		
 		if (configurationTypeElement.isValid()) {
+			configurationContext.addConfiguration(configurationTypeElement);
 			result.add(configurationTypeElement);
 		}
 		
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 		
 		for (ExecutableElement method: methods) {
-			result.addAll(getConfigurationsFromMethod(method, processedElements));
+			result.addAll(getConfigurationsFromMethod(method, processedElements, configurationContext));
 		}
 
 		List<VariableElement> fields = ElementFilter.fieldsIn(element.getEnclosedElements());
 
 		for (VariableElement variableElement: fields) {
 			if (variableElement.asType().getKind().equals(TypeKind.DECLARED)) {
-				result.addAll(getConfigurationsFromType((DeclaredType)variableElement.asType(), processedElements));
+				result.addAll(getConfigurationsFromType((DeclaredType)variableElement.asType(), processedElements, configurationContext));
 			}
 		}
 		
 		if (element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-			result.addAll(getConfigurationsFromType((DeclaredType)element.getSuperclass(), processedElements));
+			result.addAll(getConfigurationsFromType((DeclaredType)element.getSuperclass(), processedElements, configurationContext));
 		}
 		
 		Collections.sort(result, new ConfigurationComparator());
@@ -78,22 +87,20 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 		return result;
 	}
 
-	protected List<ConfigurationTypeElement> getConfigurationsFromMethod(ExecutableElement method, List<String> processedElements) {
+	protected List<ConfigurationTypeElement> getConfigurationsFromMethod(ExecutableElement method, List<String> processedElements, ConfigurationContext configurationContext) {
 		
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 		
 		if (method.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-			result.addAll(getConfigurationsFromType((DeclaredType)method.getReturnType(), processedElements));
+			result.addAll(getConfigurationsFromType((DeclaredType)method.getReturnType(), processedElements, configurationContext));
 		}
 		
 		for (VariableElement parameter: method.getParameters()) {
 			if (parameter.asType().getKind().equals(TypeKind.DECLARED)) {
-				result.addAll(getConfigurationsFromType((DeclaredType)parameter.asType(), processedElements));
+				result.addAll(getConfigurationsFromType((DeclaredType)parameter.asType(), processedElements, configurationContext));
 			}
 		}
 		
-		Collections.sort(result, new ConfigurationComparator());
-
 		return result;
 	}
 	

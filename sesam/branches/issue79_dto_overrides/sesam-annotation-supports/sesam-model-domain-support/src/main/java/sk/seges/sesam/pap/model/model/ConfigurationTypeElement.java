@@ -43,7 +43,7 @@ public class ConfigurationTypeElement extends TomBaseType {
 
 	private final String canonicalName;
 
-	private final ConfigurationContext configurationContext;
+	protected final ConfigurationContext configurationContext;
 	
 	public ConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
 		super(envContext);
