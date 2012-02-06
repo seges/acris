@@ -107,7 +107,11 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 						String testName = MethodHelper.toField(seleniumTestClass.getSimpleName().toString());
 						
 						pw.println(seleniumTestClass, " " + testName + " = new ", seleniumTestClass, "();");
+						pw.println("if (" + testName + ".ensureSettings().getReportSettings().getHtml().getSupport().getEnabled() != null && " + testName + "" +
+								".ensureSettings().getReportSettings().getHtml().getSupport().getEnabled()) {");
 						pw.println("getPrinter(" + testName + ").initialize(getTestResult(" + testName + "));");
+						pw.println("}");
+						
 						//TODO find before annotation
 						pw.println("try {");
 						pw.println(testName, ".setUp(\"" + method.getSimpleName().toString() + "\");");
@@ -117,7 +121,9 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 						pw.println("} finally {");
 						//TODO find after annotation
 						pw.println(testName, ".tearDown();");
+						pw.println("if (getTestResult(" + testName + ") != null) {");
 						pw.println("getTestResult(" + testName + ").addTestCaseResult(" + testName + ".getTestInfo());");
+						pw.println("}");
 						pw.println("}");
 						pw.println("} catch (", Exception.class, " ex) {");
 						pw.println(System.class,".out.println(ex);");

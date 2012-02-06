@@ -730,6 +730,9 @@ public class CommandResult {
 	private final CommandResult previousCommandResult;
 	
 	public CommandResult(CommandResult previousCommandResult, String locale, WebDriver webDriver, EnvironmentInfo environmentInfo) {
+		if (locale == null) {
+			locale = Locale.getDefault().getCountry();
+		}
 		this.bundle = ResourceBundle.getBundle(getClass().getPackage().getName() + ".MessagesBundle", new Locale(locale));
 		this.webDriver = webDriver;
 		this.environmentInfo = environmentInfo;
