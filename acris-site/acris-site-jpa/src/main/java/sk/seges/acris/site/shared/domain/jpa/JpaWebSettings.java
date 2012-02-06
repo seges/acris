@@ -9,9 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
 import sk.seges.corpis.shared.domain.api.CountryData;
 import sk.seges.corpis.shared.domain.api.DBConstraints;
@@ -129,5 +131,9 @@ public class JpaWebSettings extends WebSettingsDTO {
 		return super.getTermOfPayment();
 	}
 	
-	
+	@Override
+	@OneToOne(targetEntity = JpaFTPWebSettings.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+	public FTPWebSettingsData getFTPWebSettingsData() {
+		return super.getFTPWebSettingsData();
+	}
 }

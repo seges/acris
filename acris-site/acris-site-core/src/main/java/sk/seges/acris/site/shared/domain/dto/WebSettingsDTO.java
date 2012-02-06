@@ -2,6 +2,7 @@ package sk.seges.acris.site.shared.domain.dto;
 
 import java.util.Set;
 
+import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.corpis.shared.domain.api.CountryData;
 
@@ -74,6 +75,8 @@ public class WebSettingsDTO implements WebSettingsData {
 	private String constantSymbol;
 	
 	private Integer termOfPayment;
+	
+	private FTPWebSettingsData ftpWebSettings;
 	
 	public WebSettingsDTO() {
 	}
@@ -191,6 +194,14 @@ public class WebSettingsDTO implements WebSettingsData {
 	public void setTermOfPayment(Integer termOfPayment) {
 		this.termOfPayment = termOfPayment;
 	}
-	
-	
+
+	@Override
+	public FTPWebSettingsData getFTPWebSettingsData() {
+		return ftpWebSettings;
+	}
+
+	@Override
+	public void setFTPWebSettingsData(FTPWebSettingsData ftpWebSettingsData) {
+		this.ftpWebSettings = ftpWebSettingsData;
+	}
 }
