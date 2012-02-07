@@ -15,7 +15,7 @@ import sk.seges.acris.security.server.core.user_management.context.APIKeyUserSer
 public class RestAuthenticationResource {
 	
 	@GET
-	@Path("/user?" + APIKeyUserService.APIKEY_PARAMETER + "={webId}&" + APIKeyUserService.APIKEY_PARAMETER + "={apiKey}")
+	@Path("/user?" + APIKeyUserService.WEBID_PARAMETER + "={webId}&" + APIKeyUserService.APIKEY_PARAMETER + "={apiKey}")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public JSONObject authenticateUser(@PathParam("webId") String webId, @PathParam("apiKey") String apiKey) throws JSONException {
 		JSONObject result;
