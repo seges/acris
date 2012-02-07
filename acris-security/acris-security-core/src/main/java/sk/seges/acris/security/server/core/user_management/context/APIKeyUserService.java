@@ -61,7 +61,7 @@ public class APIKeyUserService implements UserProviderService {
 
 		Boolean allowed = false;
 		try {
-			allowed = (Boolean) new JSONObject(result).get("allowed");
+			allowed = (Boolean.valueOf((String)new JSONObject(result).get("allowed")));
 		} catch (Exception e) {
 			logger.error("APIKey service do not return correct result", e);
 		}
