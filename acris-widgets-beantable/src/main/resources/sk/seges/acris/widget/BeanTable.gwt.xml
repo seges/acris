@@ -4,8 +4,6 @@
 	<inherits name='com.google.gwt.gen2.picker.Picker' />
 	<inherits name='sk.seges.sesam.Core' />
 	
-	<stylesheet src="acris-styles/widgets-beantable.css" />
-	
 	<generate-with
 		class="sk.seges.acris.widget.rebind.table.BeanTableSpecGenerator">
 		<when-type-assignable
