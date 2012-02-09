@@ -28,6 +28,8 @@ import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 public abstract class CSVImportExportService {
 	private static final String ENTRY_MAPPING_METHOD = "getMapping";
 	private static final Logger log = LoggerFactory.getLogger(CSVImportExportService.class);
+	
+	private static final String CUSTOM_SUFFIX = "_CUSTOM";
 
 	protected Map<String, CSVHandler<?, ?>> handlerMapping;
 	private final CsvEntryMappingLoader mappingLoader;
@@ -48,31 +50,28 @@ public abstract class CSVImportExportService {
 	public List<ImportExportViolation> importCSV(RowBasedHandlerContext contextTemplate) {
 		List<ImportExportViolation> violations = new ArrayList<ImportExportViolation>();
 
-		CSVHandler handler = handlerMapping.get(detectFormat());
+		
+		String format = detectFormat();
+		
+		CSVHandler handler = handlerMapping.get(format);
 
-		CsvToBean csv = new CsvToBean();
-		HeaderColumnNameTranslateMappingStrategy strat = new HeaderColumnNameTranslateMappingStrategy();
 		Class handledCsvEntryClass = handler.getHandledCsvEntryClass();
-		strat.setType(handledCsvEntryClass);
-		strat.setColumnMapping(mappingLoader.loadMapping(handledCsvEntryClass));
 
 		Map<String, String> fieldToColumnMapping = mappingLoader.loadFieldToColumnMapping(handledCsvEntryClass);
 		handler.setFieldToColumnMapping(fieldToColumnMapping);
 		
 		String file = getDestination(contextTemplate);
-
-		List<CsvEntry> entries = null;
-		try {
-//			Reader in = new BufferedReader(new FileReader(file));
-			Reader in = new InputStreamReader(new FileInputStream(file), "UTF-8");
-			entries = csv.parse(strat, in, ',');
-		} catch (FileNotFoundException e) {
-			log.warn("CSV File not found = " + file, e);
-			violations.add(new ImportExportViolation(ViolationConstants.FILE_NOT_FOUND, file));
-			return violations;
-		} catch (UnsupportedEncodingException e) {
-			log.warn("CSV File not found = " + file, e);
-			violations.add(new ImportExportViolation(ViolationConstants.UNSUPPORTED_ENCODING, file));
+		
+		
+		List<CsvEntry> entries  = null;
+		
+		if (format.toUpperCase().endsWith(CUSTOM_SUFFIX)) {
+			entries = readCustomEntries(file, violations);
+		} else {
+			entries = readCsvEntries(file, handledCsvEntryClass, violations);
+		}
+		
+		if (!violations.isEmpty()) {
 			return violations;
 		}
 		
@@ -88,4 +87,42 @@ public abstract class CSVImportExportService {
 
 		return violations;
 	}
+	
+	private List<CsvEntry> readCsvEntries(String file, Class handledCsvEntryClass, List<ImportExportViolation> violations) {
+		List<CsvEntry> entries = null;
+		
+		CsvToBean csv = new CsvToBean();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+		HeaderColumnNameTranslateMappingStrategy strat = new HeaderColumnNameTranslateMappingStrategy();
+		strat.setType(handledCsvEntryClass);
+		strat.setColumnMapping(mappingLoader.loadMapping(handledCsvEntryClass));
+		
+		try {
+//			Reader in = new BufferedReader(new FileReader(file));
+			Reader in = new InputStreamReader(new FileInputStream(file), "UTF-8");
+			entries = csv.parse(strat, in, ',');
+		} catch (FileNotFoundException e) {
+			log.warn("CSV File not found = " + file, e);
+			violations.add(new ImportExportViolation(ViolationConstants.FILE_NOT_FOUND, file));
+		} catch (UnsupportedEncodingException e) {
+			log.warn("Unsupported encoding = " + file, e);
+			violations.add(new ImportExportViolation(ViolationConstants.UNSUPPORTED_ENCODING, file));
+		}
+		return entries;
+	}
+	
+	
+	/**
+	 * Dummy method, should be overridden for custom import 
+	 * 
+	 * @param file
+	 * @param violations
+	 * @return
+	 */
+	protected List<CsvEntry> readCustomEntries(String file, List<ImportExportViolation> violations) {
+		return null;
+	}
+	
+	
+	
+	
 }
