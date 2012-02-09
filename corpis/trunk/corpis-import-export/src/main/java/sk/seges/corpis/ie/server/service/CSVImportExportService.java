@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public abstract class CSVImportExportService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ImportExportViolation> importCSV(RowBasedHandlerContext contextTemplate) {
+	public List<ImportExportViolation> importCSV(RowBasedHandlerContext contextTemplate, Set<String> fieldNames) {
 		List<ImportExportViolation> violations = new ArrayList<ImportExportViolation>();
 
 		
@@ -81,7 +82,7 @@ public abstract class CSVImportExportService {
 			RowBasedHandlerContext newContext = instantiateContext();
 			contextTemplate.injectInto(newContext);
 			newContext.setRow(i);
-			violations.addAll(handler.handle(newContext, entry));
+			violations.addAll(handler.handle(newContext, entry, fieldNames));
 			i++;
 		}
 
