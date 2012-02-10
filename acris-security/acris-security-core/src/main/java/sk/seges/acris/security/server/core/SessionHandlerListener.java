@@ -2,6 +2,7 @@ package sk.seges.acris.security.server.core;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,7 +21,8 @@ public class SessionHandlerListener implements HttpSessionListener {
 	private static Map<String, Long> lastSessionAccessTimes = new Hashtable<String, Long>();
 	private static Map<String, String> sessionsMappings = new Hashtable<String, String>();
 	private static Map<String, MaxInactiveIntervalHistory> actualMaxInactiveIntervalMap = new Hashtable<String, MaxInactiveIntervalHistory>();
-
+	private static Map<String, DummySession> dummySessions = new HashMap<String, DummySession>();
+	
 	private static final String DEFAULT_TIMEOUT = "DEFAULT_TIMEOUT";
 
 	synchronized private void sessionActivate(HttpSessionEvent event) {
@@ -41,7 +43,14 @@ public class SessionHandlerListener implements HttpSessionListener {
 	}
 
 	public static void mapSessions(String containerSessionId, String clientSessionId) {
+		if (dummySessions.get(clientSessionId) != null) {
+			copyAtributesFromDummy(containerSessionId, clientSessionId);
+		}
 		sessionsMappings.put(clientSessionId, containerSessionId);
+	}
+	
+	public static void addDummySession(String sessionId, DummySession dummySession) {
+		dummySessions.put(sessionId, dummySession);
 	}
 
 	public static HttpSession getSession(String sessionId) {
@@ -136,5 +145,14 @@ public class SessionHandlerListener implements HttpSessionListener {
 		if (actualMaxInactiveIntervalMap.containsKey(sessionId)) {
 			actualMaxInactiveIntervalMap.get(sessionId).revert();
 		}
+	}
+	
+	private static void copyAtributesFromDummy(String containerSessionId, String clientSessionId) {
+		HttpSession session = activeSession.get(containerSessionId);
+		DummySession dummySession = dummySessions.get(clientSessionId);
+		for (String key : dummySession.getAttributes().keySet()) {
+			session.setAttribute(key, dummySession.getAttribute(key));
+		}
+		dummySessions.remove(clientSessionId);
 	}
 }
