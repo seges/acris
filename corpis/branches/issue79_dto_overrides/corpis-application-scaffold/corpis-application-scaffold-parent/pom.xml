@@ -24,8 +24,7 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-application-scaffold-model</artifactId>
 				<version>${project.version}</version>
-			</dependency>	
-			
+			</dependency>
 		</dependencies> 
 	</dependencyManagement>
 </project>

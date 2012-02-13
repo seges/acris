@@ -22,7 +22,7 @@ public class HibernateDataServiceMethodConverterPrinter extends HibernateService
 			ConfigurationTypeElement configuration = returnDtoType.getDomainDefinitionConfiguration();
 		
 			if (configuration instanceof DataConfigurationTypeElement) {
-				pw.print("(", ((DataConfigurationTypeElement)configuration).getDomainEntity(), ")");
+				pw.print("(", ((DataConfigurationTypeElement)configuration).getInstantiableDomain(), ")");
 			}
 		}
 	}

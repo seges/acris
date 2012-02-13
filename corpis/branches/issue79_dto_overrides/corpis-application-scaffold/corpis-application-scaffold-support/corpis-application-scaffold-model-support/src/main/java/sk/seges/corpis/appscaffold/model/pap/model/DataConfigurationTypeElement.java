@@ -35,10 +35,11 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 		super(domainType, dtoType, configurationElement, envContext, configurationContext);
 	}
 
-	public DomainDeclaredType getDomainEntity() {
+	@Override
+	public DomainDeclaredType getInstantiableDomain() {
 		return super.getDomain();
 	}
-	
+
 	@Override
 	public DomainDeclaredType getDomain() {
 		
@@ -62,7 +63,16 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 		if (declaredType.getAnnotation(DomainData.class) != null) {
 			return declaredType;
 		}
-		
+
+		//We need to iterate over interfaces firstly - for cases that some data interfaces will be in hierarchy we have
+		//to find most specified data interface
+		for (MutableTypeMirror interfaces : declaredType.getInterfaces()) {
+			MutableDeclaredType result = findDomainData((MutableDeclaredType)interfaces);
+			if (result != null) {
+				return result;
+			}
+		}
+
 		if (declaredType.getSuperClass() != null) {
 			MutableDeclaredType result = findDomainData(declaredType.getSuperClass());
 			if (result != null) {
@@ -70,12 +80,6 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 			}
 		}
 		
-		for (MutableTypeMirror interfaces : declaredType.getInterfaces()) {
-			MutableDeclaredType result = findDomainData((MutableDeclaredType)interfaces);
-			if (result != null) {
-				return result;
-			}
-		}
 		return null;
 	}
 	
