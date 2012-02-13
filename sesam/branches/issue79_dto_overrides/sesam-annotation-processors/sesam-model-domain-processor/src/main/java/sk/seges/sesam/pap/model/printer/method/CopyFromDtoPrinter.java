@@ -59,7 +59,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		
 		pw.println("public ", domainType, " createDomainInstance(", Serializable.class, " id) {");
 		
-		printDomainInstancer(pw, domainType);
+		printDomainInstancer(pw, configurationElement.getInstantiableDomain());
 		pw.println("}");
 		pw.println();
 

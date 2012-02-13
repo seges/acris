@@ -145,6 +145,10 @@ public class ConfigurationTypeElement extends TomBaseType {
 		return getDomain();
 	}
 
+	public DomainDeclaredType getInstantiableDomain() {
+		return getDomain();
+	}
+	
 	public DomainDeclaredType getDomain() {
 		if (!domainTypeElementInitialized) {
 			MutableDeclaredType domainType = null;

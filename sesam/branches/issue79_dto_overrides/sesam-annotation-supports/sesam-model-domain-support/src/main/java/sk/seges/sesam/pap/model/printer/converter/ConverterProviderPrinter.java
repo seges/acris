@@ -240,12 +240,14 @@ public class ConverterProviderPrinter {
 	private void printGenericConverterDefinition(ConverterTypeElement converterTypeElement) {
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 
-		DomainType domain = converterTypeElement.getDomain();
+		MutableDeclaredType converterBase = converterTypeElement.getConverterBase();
 		
-		if (domain != null && domain.getKind().isDeclared() && ((DomainDeclaredType)domain).hasTypeParameters()) {
+		//DomainType domain = converterTypeElement.getDomain();
+		
+		if (converterBase.hasTypeParameters()) {
 			pw.print("<");
-			pw.print(typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX, domain.getDto()));
-			pw.print(", ", typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX, domain));
+			pw.print(typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX, converterBase.getTypeVariables().get(0)));
+			pw.print(", ",typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX, converterBase.getTypeVariables().get(1)));
 			pw.print(">");
 			pw.print(" ", getTypedConverter(converterTypeElement, isTyped(converterTypeElement)));
 		} else {

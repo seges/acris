@@ -287,7 +287,20 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
 				pathResolver.reset();
 				DomainType domainType = getDomainForType(typeElement.getSuperclass());
-				return ((DomainDeclared)domainType).getMethod(pathResolver, prefix);
+				ExecutableElement method = ((DomainDeclared)domainType).getMethod(pathResolver, prefix);
+				if (method != null) {
+					return method;
+				}
+			}
+			
+			List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
+			for (TypeMirror interfaceType: interfaces) {
+				pathResolver.reset();
+				DomainType domainType = getDomainForType(interfaceType);
+				ExecutableElement method = ((DomainDeclared)domainType).getMethod(pathResolver, prefix);
+				if (method != null) {
+					return method;
+				}
 			}
 		}
 

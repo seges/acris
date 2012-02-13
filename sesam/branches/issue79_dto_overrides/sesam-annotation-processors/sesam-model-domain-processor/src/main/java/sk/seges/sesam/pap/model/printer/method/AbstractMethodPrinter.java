@@ -10,6 +10,7 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -96,8 +97,12 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 					while (iterator.hasNext()) {
 						convertedBounds[i++] = castToDelegate(iterator.next());
 					}
-					
-					convertedParameters[j++] = processingEnv.getTypeUtils().getTypeVariable(typeParameter.getVariable(), convertedBounds);
+
+					if (typeParameter.getVariable() != null && typeParameter.getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
+						convertedParameters[j++] = processingEnv.getTypeUtils().getTypeVariable(null, convertedBounds);
+					} else {
+						convertedParameters[j++] = processingEnv.getTypeUtils().getTypeVariable(typeParameter.getVariable(), convertedBounds);
+					}
 				} else {
 					convertedParameters[j++] = processingEnv.getTypeUtils().getTypeVariable(typeParameter.getVariable());
 				}

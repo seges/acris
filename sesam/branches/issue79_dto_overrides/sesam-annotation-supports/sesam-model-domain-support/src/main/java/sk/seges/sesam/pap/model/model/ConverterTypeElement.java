@@ -21,7 +21,9 @@ import javax.tools.Diagnostic.Kind;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
@@ -71,10 +73,51 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		return getTypeUtils().implementsType(this, getTypeUtils().toMutableType(InstantiableDtoConverter.class));
 	}
 
+	private MutableTypeMirror stripWildcards(MutableTypeMirror converter) {
+		if (converter.getKind().isDeclared()) {
+			return stripWildcards((MutableDeclaredType)converter);
+		}
+		
+		return converter;
+	}
+	
+	private MutableDeclaredType stripWildcards(MutableDeclaredType converter) {
+
+		List<? extends MutableTypeVariable> typeVariables = converter.getTypeVariables();
+		
+		MutableTypeVariable[] strippedTypeVariables = new MutableTypeVariable[typeVariables.size()];
+
+		int i = 0;
+		for (MutableTypeVariable typeVariable: typeVariables) {
+			if (typeVariable.getKind().equals(MutableTypeKind.WILDCARD)) {
+				MutableWildcardType wildcardType = (MutableWildcardType)typeVariable;
+				if (wildcardType.getSuperBound() != null) {
+					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, stripWildcards(wildcardType.getSuperBound()));
+				} else if (wildcardType.getExtendsBound() != null) {
+					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, stripWildcards(wildcardType.getExtendsBound()));
+				} else {
+					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, 
+							environmentContext.getProcessingEnv().getTypeUtils().toMutableType(Object.class));
+				}
+			} else if (typeVariable.getVariable() != null && typeVariable.getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
+				if (typeVariable.getUpperBounds().size() == 1) {
+					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, stripWildcards(typeVariable.getUpperBounds().iterator().next()));
+				} else if (typeVariable.getLowerBounds().size() == 1) {
+					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, stripWildcards(typeVariable.getLowerBounds().iterator().next()));
+				}
+			}
+			strippedTypeVariables[i++] = typeVariable;
+		}
+		
+		converter.setTypeVariables(strippedTypeVariables);
+		
+		return converter;
+	}
+	
 	public MutableDeclaredType getConverterBase() {
 
 		if (ensureDelegateType().hasTypeParameters() || !isConverterInstantiable()) {
-			return ensureDelegateType();
+			return stripWildcards(ensureDelegateType().clone());
 		}
 		
 		if (converterBase != null) {
@@ -85,7 +128,9 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 		DomainType domain = getDomain();
 
-		converterBase = typeUtils.getDeclaredType(typeUtils.toMutableType(InstantiableDtoConverter.class), typeUtils.getTypeVariable(null, domain.getDto()), typeUtils.getTypeVariable(null, domain));	
+		converterBase = typeUtils.getDeclaredType(typeUtils.toMutableType(InstantiableDtoConverter.class), 
+				typeUtils.getTypeVariable(null, domain.getDto()), 
+				typeUtils.getTypeVariable(null, domain));	
 		
 		return converterBase;
 	}

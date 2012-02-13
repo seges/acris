@@ -86,7 +86,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		return getConfigurationTypeElement(context.getTypeElement());
 	}
 
-	private ConfigurationTypeElement getConfigurationTypeElement(TypeElement typeElement) {
+	protected ConfigurationTypeElement getConfigurationTypeElement(TypeElement typeElement) {
 		ConfigurationContext configurationContext = new ConfigurationContext(environmentContext.getConfigurationEnv());
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(typeElement, getEnvironmentContext(), configurationContext);
 		configurationContext.addConfiguration(configurationTypeElement);
