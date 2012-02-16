@@ -3,8 +3,9 @@ package sk.seges.test.various.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.dnd.client.HasDragHandle;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
+import com.allen_sauer.gwt.dnd.client.drop.FlowPanelDropController;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -33,7 +34,6 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import com.google.gwt.place.shared.Prefix;
 import com.google.gwt.place.shared.WithTokenizers;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -57,20 +57,30 @@ public class VariousHacks2 implements EntryPoint {
 	public interface MyPlaceMapper extends PlaceHistoryMapper {
 	}
 
-	@Prefix("hehe")
-	public static class FirstTokenizer implements PlaceTokenizer<Place> {
+	public static class KvakPlace extends Place {
+		@Override
+		public String toString() {
+			return "kvak";
+		}		
+	}
+	
+	//@Prefix("hehe")
+	public static class FirstTokenizer implements PlaceTokenizer<KvakPlace> {
 
 		@Override
-		public Place getPlace(String token) {
-			return new Place() {
-			};
+		public KvakPlace getPlace(String token) {
+			return new KvakPlace();
 		}
 
 		@Override
-		public String getToken(Place place) {
+		public String getToken(KvakPlace place) {
 			return "tkn";
 		}
 	}
+	
+	private native Element getMe() /*-{
+		return $doc.getElementById("root");
+	}-*/;
 	
 //	@Prefix("huhu")
 //	public interface SecondTokenizer extends PlaceTokenizer<Place> {
@@ -108,6 +118,8 @@ public class VariousHacks2 implements EntryPoint {
 	    });
 	  }
 
+	RootPanel boundaryPanel;
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -121,18 +133,32 @@ public class VariousHacks2 implements EntryPoint {
 			}
 		};
 		
-		ctrl = new PickupDragController(RootPanel.get("root"), true);
+		boundaryPanel = RootPanel.get();
+		ctrl = new MyDragController(boundaryPanel, false);
+		ctrl.setBehaviorDragProxy(true);
+		ctrl.setBehaviorDragStartSensitivity(1);
+		
 		
 		PlaceHistoryMapper mapper = GWT.create(MyPlaceMapper.class);
 		PlaceHistoryHandler handler = new PlaceHistoryHandler(mapper);
 		handler.register(placeController, bus, Place.NOWHERE);
 		
-		Element inner = getSourceHTML();
-		ElementFlowPanel root = new ElementFlowPanel(RootPanel.get("root").getElement());
+		Element inner = getMe();
+		ElementFlowPanel root = new ElementFlowPanel(inner);
 		final ProcessingContext context = new ProcessingContext();
 		context.root = root;
 		context.parent = root;
 		parseTemplate(inner, context);
+		
+//		String newHtml = "<div class=\"place-center\"><div class=\"textBlock\">hehe textik</div></div>";
+//		inner = root.getElement();
+//		context.places.clear();
+//		context.root.clear();
+//
+//		root.getElement().setInnerHTML(newHtml);
+//		context.parent = root;
+//
+//		parseTemplate(inner, context);
 		
 		bus.addHandler(PlaceChangeEvent.TYPE, new PlaceChangeEvent.Handler() {
 			@Override
@@ -168,10 +194,12 @@ public class VariousHacks2 implements EntryPoint {
 			}
 			
 			if(child.hasChildNodes()) {
+				ProcessingContext nextContext = context;
 				if(wrapped != null) {
-					context.parent = wrapped;
+					nextContext = context.copy();
+					nextContext.parent = wrapped;
 				}
-				process(context, child);
+				process(nextContext, child);
 			}
 			
 			child = child.getNextSiblingElement();
@@ -215,7 +243,7 @@ public class VariousHacks2 implements EntryPoint {
 		panel.addStyleName("wrapped-place");
 		
 		context.places.add(panel);
-		SimpleDropController drop = new SimpleDropController(panel);
+		FlowPanelDropController drop = new FlowPanelDropController(panel);
 		ctrl.registerDropController(drop);
 		
 		if(context.parent != null) {
@@ -229,7 +257,7 @@ public class VariousHacks2 implements EntryPoint {
 		return RootPanel.get("root").getElement();
 	}
 	
-	class ElementFlowPanel extends FlowPanel implements HasClickHandlers, HasAllMouseHandlers {
+	class ElementFlowPanel extends FlowPanel implements HasClickHandlers, HasAllMouseHandlers, HasDragHandle {
 
 		protected Element element;
 
@@ -276,18 +304,44 @@ public class VariousHacks2 implements EntryPoint {
 	    public HandlerRegistration addClickHandler(ClickHandler handler) {
 	        return addDomHandler(handler, ClickEvent.getType());
 	    }
-	    
-	    protected void add(Widget child, Element container) {
+
+	    @Override
+	    protected void add(Widget child,
+	    		com.google.gwt.user.client.Element container) {
 	        // Detach new child.
 	        child.removeFromParent();
 
 	        // Logical attach.
 	        getChildren().add(child);
 
+	        if(!(child instanceof ElementFlowPanel) && !child.isAttached()) {
+	        	// Physical attach.
+	        	DOM.appendChild(container, child.getElement());
+	        }
 	       
 	        // Adopt.
 	        adopt(child);
 	    }
+
+		@Override
+		public Widget getDragHandle() {
+//			if(draggable == null) {
+//				draggable = new AbsolutePanel();
+//				DOM.setStyleAttribute(draggable.getElement(), "position", "absolute");
+//				draggable.setStyleName("draggable-proxy");
+//				draggable.setWidth("100px");
+//				draggable.setHeight("100px");
+//				int absoluteTop = draggable.getAbsoluteTop();
+//				DOM.setElementPropertyInt(draggable.getElement(), "top", absoluteTop);
+//				int absoluteLeft = draggable.getAbsoluteLeft();
+//				DOM.setElementPropertyInt(draggable.getElement(), "left", absoluteLeft);
+//				boundaryPanel.add(draggable);
+//			}
+//			return draggable;
+			return this;
+		}
+	    
+		private Widget draggable;
 	}
 	
 	private class ProcessingContext {
@@ -295,5 +349,14 @@ public class VariousHacks2 implements EntryPoint {
 		public List<Widget> components = new ArrayList<Widget>();
 		public FlowPanel root;
 		public Panel parent;
+		
+		public ProcessingContext copy() {
+			ProcessingContext context = new ProcessingContext();
+			context.places = places;
+			context.components = components;
+			context.root = root;
+			context.parent = parent;
+			return context;
+		}
 	}
 }
