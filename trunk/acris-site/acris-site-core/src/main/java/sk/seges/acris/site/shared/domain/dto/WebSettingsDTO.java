@@ -78,6 +78,10 @@ public class WebSettingsDTO implements WebSettingsData {
 	
 	private FTPWebSettingsData ftpWebSettings;
 	
+	private Integer thumbnailMaxHeight;
+	
+	private Integer thumbnailMaxWidth;
+	
 	public WebSettingsDTO() {
 	}
 	
@@ -204,4 +208,25 @@ public class WebSettingsDTO implements WebSettingsData {
 	public void setFTPWebSettingsData(FTPWebSettingsData ftpWebSettingsData) {
 		this.ftpWebSettings = ftpWebSettingsData;
 	}
+
+	@Override
+	public Integer getThumbnailMaxHeight() {
+		return thumbnailMaxHeight;
+	}
+
+	@Override
+	public void setThumbnailMaxHeight(Integer thumbnailMaxHeight) {
+		this.thumbnailMaxHeight = thumbnailMaxHeight;
+	}
+
+	@Override
+	public Integer getThumbnailMaxWidth() {
+		return thumbnailMaxWidth;
+	}
+
+	@Override
+	public void setThumbnailMaxWidth(Integer thumbnailMaxWidth) {
+		this.thumbnailMaxWidth = thumbnailMaxWidth;
+	}
+	
 }

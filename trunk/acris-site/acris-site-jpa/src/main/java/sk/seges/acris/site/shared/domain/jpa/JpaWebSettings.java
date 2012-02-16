@@ -136,4 +136,17 @@ public class JpaWebSettings extends WebSettingsDTO {
 	public FTPWebSettingsData getFTPWebSettingsData() {
 		return super.getFTPWebSettingsData();
 	}
+	
+	@Override
+	@Column
+	public Integer getThumbnailMaxHeight() {
+		return super.getThumbnailMaxHeight();
+	}
+	
+	@Override
+	@Column
+	public Integer getThumbnailMaxWidth() {
+		return super.getThumbnailMaxWidth();
+	}
+	
 }

@@ -127,4 +127,12 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 	FTPWebSettingsData getFTPWebSettingsData();
 	
 	void setFTPWebSettingsData(FTPWebSettingsData ftpWebSettingsData);
+	
+	Integer getThumbnailMaxHeight();
+	
+	void setThumbnailMaxHeight(Integer maxHeight);
+	
+	Integer getThumbnailMaxWidth();
+	
+	void setThumbnailMaxWidth(Integer maxWidth);
 }
