@@ -1,6 +1,7 @@
 package sk.seges.corpis.pap.model.hibernate.provider;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.corpis.appscaffold.model.pap.model.DataConfigurationTypeElement;
@@ -11,12 +12,18 @@ import sk.seges.sesam.pap.model.model.ConfigurationContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.provider.ClasspathConfigurationProvider;
 
 public class DataClasspathConfigurationProvider extends ClasspathConfigurationProvider {
 
 	public DataClasspathConfigurationProvider(ClassPathTypes classpathUtils, EnvironmentContext<TransferObjectProcessingEnvironment> envContext) {
 		super(classpathUtils, envContext);
+	}
+
+	@Override
+	public ConfigurationTypeElement getConfiguration(ExecutableElement configurationElementMethod, DomainDeclaredType returnType, ConfigurationContext configurationContext) {
+		return new DataConfigurationTypeElement(configurationElementMethod, returnType, envContext, configurationContext);
 	}
 
 	@Override
