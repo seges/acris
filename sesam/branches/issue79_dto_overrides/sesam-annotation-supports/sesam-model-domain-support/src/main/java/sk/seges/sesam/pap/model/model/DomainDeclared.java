@@ -163,41 +163,9 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			}
 	
 			TypeElement processingElement = asConfigurationElement();
-	
-			while (processingElement != null) {
-	
-				List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.getEnclosedElements());
-		
-				if (mappingType.equals(MappingType.AUTOMATIC)) {
-					for (ExecutableElement method: methods) {
-						if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
-							if (this.idMethod != null) {
-								handleMultipleIdentifiers(method, domainDefinitionConfiguration);
-							}
-							this.idMethod = method;
-						}
-					}
-	
-					for (TypeMirror interfaceType : processingElement.getInterfaces()) {
-						if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
-							ExecutableElement idMethod = ((DomainDeclared)getDomainForType(interfaceType)).getIdMethod(entityResolver);
-							if (idMethod != null) {
-								if (this.idMethod != null) {
-									handleMultipleIdentifiers(idMethod, domainDefinitionConfiguration);
-								}
-								this.idMethod = idMethod;
-							}
-						}
-					}
-				}
-								
-				if (processingElement.getSuperclass() != null && processingElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-					processingElement = (TypeElement)((DeclaredType)processingElement.getSuperclass()).asElement();
-				} else {
-					processingElement = null;
-				}
-			}
-	
+			
+			findIdMethod(processingElement, mappingType, domainDefinitionConfiguration, entityResolver);
+			
 			for (ExecutableElement overridenMethod: overridenMethods) {
 				if (entityResolver.isIdMethod(overridenMethod)) {
 					if (this.idMethod != null) {
@@ -207,10 +175,51 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 				}
 			}
 			
+			if (this.idMethod == null) {
+				findIdMethod(processingElement, MappingType.AUTOMATIC, domainDefinitionConfiguration, entityResolver);
+			}
+			
 			idMethodInitialized = true;
 		}
 		
 		return idMethod;
+	}
+
+	private void findIdMethod(TypeElement processingElement, MappingType mappingType, ConfigurationTypeElement domainDefinitionConfiguration, EntityResolver entityResolver) {
+	
+		while (processingElement != null) {
+
+			List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.getEnclosedElements());
+	
+			if (mappingType.equals(MappingType.AUTOMATIC)) {
+				for (ExecutableElement method: methods) {
+					if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
+						if (this.idMethod != null) {
+							handleMultipleIdentifiers(method, domainDefinitionConfiguration);
+						}
+						this.idMethod = method;
+					}
+				}
+
+				for (TypeMirror interfaceType : processingElement.getInterfaces()) {
+					if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+						ExecutableElement idMethod = ((DomainDeclared)getDomainForType(interfaceType)).getIdMethod(entityResolver);
+						if (idMethod != null) {
+							if (this.idMethod != null) {
+								handleMultipleIdentifiers(idMethod, domainDefinitionConfiguration);
+							}
+							this.idMethod = idMethod;
+						}
+					}
+				}
+			}
+							
+			if (processingElement.getSuperclass() != null && processingElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
+				processingElement = (TypeElement)((DeclaredType)processingElement.getSuperclass()).asElement();
+			} else {
+				processingElement = null;
+			}
+		}
 	}
 
 	private void handleMultipleIdentifiers(ExecutableElement method, ConfigurationTypeElement domainDefinitionConfiguration) {
