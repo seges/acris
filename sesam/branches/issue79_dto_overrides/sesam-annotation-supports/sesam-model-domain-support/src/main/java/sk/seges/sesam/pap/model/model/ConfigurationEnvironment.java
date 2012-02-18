@@ -1,7 +1,9 @@
 package sk.seges.sesam.pap.model.model;
 
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.ExecutableElement;
 
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
@@ -35,6 +37,23 @@ public class ConfigurationEnvironment {
 		}
 		
 		return environmentContext;
+	}
+	
+	public ConfigurationTypeElement getConfiguration(ExecutableElement configurationElementMethod, DomainDeclaredType returnType, 
+			ConfigurationContext configurationContext) {
+		if (configurationProviders == null) {
+			return null;
+		}
+		
+		for (ConfigurationProvider configurationProvider: configurationProviders) {
+			ConfigurationTypeElement configuration = configurationProvider.getConfiguration(configurationElementMethod, returnType, configurationContext);
+			
+			if (configuration != null) {
+				return configuration;
+			}
+		}
+		
+		return null;
 	}
 	
 	protected ConfigurationProvider[] getConfigurationProviders(ConfigurationProvider[] configurationProviders, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationCache cache) {

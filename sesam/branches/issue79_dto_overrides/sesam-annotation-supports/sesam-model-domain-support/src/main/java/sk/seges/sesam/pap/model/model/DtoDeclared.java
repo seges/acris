@@ -57,6 +57,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		initialize();
 	}
 
+	
 	DtoDeclared(EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
 		super(envContext, configurationContext);
 
@@ -142,6 +143,17 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		return getGeneratedDtoTypeFromConfiguration();
 	};
 
+	@Override
+	public ConfigurationTypeElement getDomainDefinitionConfiguration() {
+		ConfigurationTypeElement domainDefinitionConfiguration = super.getDomainDefinitionConfiguration();
+
+		if (domainDefinitionConfiguration != null && domainDefinitionConfiguration.getDelegateConfigurationTypeElement() != null) {
+			domainDefinitionConfiguration = domainDefinitionConfiguration.getDelegateConfigurationTypeElement();
+		}
+		
+		return domainDefinitionConfiguration;
+	}
+	
 	private void initialize() {
 		if (getConfigurations().size() == 0) {
 			return;

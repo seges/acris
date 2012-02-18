@@ -99,11 +99,14 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, 
 							environmentContext.getProcessingEnv().getTypeUtils().toMutableType(Object.class));
 				}
-			} else if (typeVariable.getVariable() != null && typeVariable.getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
+			} else if (typeVariable.getVariable() != null /*&& typeVariable.getVariable().equals(MutableWildcardType.WILDCARD_NAME)*/) {
 				if (typeVariable.getUpperBounds().size() == 1) {
 					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, stripWildcards(typeVariable.getUpperBounds().iterator().next()));
 				} else if (typeVariable.getLowerBounds().size() == 1) {
 					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, stripWildcards(typeVariable.getLowerBounds().iterator().next()));
+				} else {
+					typeVariable = environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(null, 
+							environmentContext.getProcessingEnv().getTypeUtils().toMutableType(Object.class));
 				}
 			}
 			strippedTypeVariables[i++] = typeVariable;

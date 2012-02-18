@@ -23,7 +23,7 @@ enum TomType {
 	CONVERTER_GENERATED {
 		@Override
 		boolean appliesFor(ConfigurationTypeElement configuration) {
-			return configuration.hasGeneratedConverter();
+			return configuration.hasGeneratedConverter() && configuration.getDelegateConfigurationTypeElement() == null;
 		}
 	};
 	
