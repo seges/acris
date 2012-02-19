@@ -12,6 +12,7 @@
 	</parent>
 
 	<modules>
+		<module>../acris-site-scaffold-model</module>
 		<module>../acris-site-api</module>
 		<module>../acris-site-dto</module>
 		<module>../acris-site-core</module>
