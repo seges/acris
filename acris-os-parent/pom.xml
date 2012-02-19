@@ -80,6 +80,7 @@
 		<module>../acris-server-components</module>
 		<module>../acris-test-support</module>
 		<module>../acris-asmant</module>
+		<!--module>../acris-pivo</module-->
 	</modules>
 
 	<properties>
@@ -616,6 +617,18 @@
 				<artifactId>acris-site-spring</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-scaffold-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-scaffold-model</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-server-appengine</artifactId>
