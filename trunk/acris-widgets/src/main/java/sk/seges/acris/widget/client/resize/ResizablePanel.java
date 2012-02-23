@@ -413,7 +413,7 @@ public class ResizablePanel extends HTML {
 		return Cursor.AUTO;
 	}
 
-	private void onResize(int width, int height) {
+	protected void onResize(int width, int height) {
 		for (ResizableListener listener : resizableListeners) {
 			listener.onResize(width, height);
 		}
