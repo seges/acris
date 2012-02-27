@@ -37,7 +37,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 
 	@Override
 	public DomainDeclaredType getInstantiableDomain() {
-		return super.getDomain();
+		return super.getInstantiableDomain();
 	}
 
 	@Override
