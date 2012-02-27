@@ -13,6 +13,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 
 public class MethodHelper {
 
@@ -58,9 +59,15 @@ public class MethodHelper {
 		return prefix + toMethod(fieldName);
 	}
 
+	public static String toSetter(MutableExecutableElement method) {
+		return toSetterFromSimleName(method.getSimpleName());		
+	}
+	
 	public static String toSetter(ExecutableElement method) {
-		String simpleName = method.getSimpleName().toString();
-		
+		return toSetterFromSimleName(method.getSimpleName().toString());		
+	}
+
+	private static String toSetterFromSimleName(String simpleName) {
 		if (simpleName.startsWith(GETTER_PREFIX)) {
 			return toSetter(simpleName.substring(GETTER_PREFIX.length()));
 		}
@@ -71,7 +78,7 @@ public class MethodHelper {
 		
 		return toSetter(simpleName);
 	}
-
+	
 	public static  String toField(String fieldName) {
 		String[] pathParts = fieldName.split("\\.");
 		String result = "";
@@ -99,11 +106,18 @@ public class MethodHelper {
 		return toMethod(SETTER_PREFIX, fieldName);
 	}
 
+	public static String toField(MutableExecutableElement getterMethod) {
+		return toFieldFromSimpleName(getterMethod.getSimpleName());
+	}
+	
 	public static String toField(ExecutableElement getterMethod) {
+		return toFieldFromSimpleName(getterMethod.getSimpleName().toString());
+	}
+	
+	private static String toFieldFromSimpleName(String simpleName) {
 
 		String result = "";
 
-		String simpleName = getterMethod.getSimpleName().toString();
 		
 		if (simpleName.startsWith(GETTER_PREFIX)) {
 			result = simpleName.substring(GETTER_PREFIX.length());

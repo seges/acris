@@ -102,8 +102,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		return new ArrayList<ConfigurationTypeElement>();
 	}
 
-	@Override
-	public ConverterTypeElement getConverter() {
+	private ConverterTypeElement getDeclaredConverter() {
 		ConfigurationTypeElement converterDefinitionConfiguration = getConverterDefinitionConfiguration();
 		
 		if (converterDefinitionConfiguration == null) {
@@ -111,6 +110,17 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		}
 		
 		return converterDefinitionConfiguration.getConverter();
+	}
+
+	@Override
+	public ConverterTypeElement getConverter() {
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+		
+		if (domainDefinitionConfiguration == null) {
+			return null;
+		}
+		
+		return ((DomainDeclared)domainDefinitionConfiguration.getInstantiableDomain()).getDeclaredConverter();
 	}
 
 	@Override

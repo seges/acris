@@ -76,9 +76,9 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		ExecutableElement idMethod = null;
 		
 		if (domainType.getKind().isDeclared()) {
-			idMethod = domainTypeElement.getIdMethod(entityResolver);
+			idMethod = configurationElement.getInstantiableDomain().getIdMethod(entityResolver);
 			
-			if (idMethod == null && entityResolver.shouldHaveIdMethod(domainTypeElement)) {
+			if (idMethod == null && entityResolver.shouldHaveIdMethod(configurationElement.getInstantiableDomain())) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for " + configurationElement.toString(), configurationElement.asConfigurationElement());
 				return;
 			}
@@ -95,7 +95,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			DomainType domainIdTypeElement = null;
 			
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-				domainIdTypeElement = domainTypeElement.getId(entityResolver);
+				domainIdTypeElement = configurationElement.getInstantiableDomain().getId(entityResolver);
 				DtoType dto = domainIdTypeElement.getDto();
 				if (dto != null) {
 					dtoIdType= dto;

@@ -218,6 +218,9 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 	protected void intializeConverter() {
 
 		DomainType returnType = getDomainMethodReturnType();
+//		if (returnType.getDomainDefinitionConfiguration() != null) {
+//			returnType = returnType.getDomainDefinitionConfiguration().getInstantiableDomain();
+//		}
 		
 		switch (returnType.getKind()) {
 		case TYPEVAR:
@@ -237,8 +240,6 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		case INTERFACE:
 		case CLASS:
 
-			envContext.getConfigurationEnv();
-			
 			ConfigurationContext context = new ConfigurationContext(envContext.getConfigurationEnv());
 			ConfigurationTypeElement configurationType = envContext.getConfigurationEnv().getConfiguration(getDtoMethod(), (DomainDeclaredType) returnType, context);
 			List<ConfigurationTypeElement> configurations = new ArrayList<ConfigurationTypeElement>();

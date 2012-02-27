@@ -9,6 +9,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
@@ -18,7 +19,6 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
-import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -46,12 +46,12 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		DtoDeclaredType dtoType = configurationElement.getDto();
 		DomainDeclaredType domainType = configurationElement.getDomain();
 		
-		ExecutableElement idMethod = null;
+		ExecutableElement domainIdMethod = null;
 		
 		if (domainType.getKind().isDeclared()) {
-			idMethod = domainType.getIdMethod(entityResolver);
+			domainIdMethod = configurationElement.getInstantiableDomain().getIdMethod(entityResolver);
 			
-			if (idMethod == null && entityResolver.shouldHaveIdMethod(domainType)) {
+			if (domainIdMethod == null && entityResolver.shouldHaveIdMethod(configurationElement.getInstantiableDomain())) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for " + configurationElement.toString(), configurationElement.asConfigurationElement());
 				return;
 			}
@@ -70,9 +70,9 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		pw.println("}");
 		pw.println();
 		
-		ExecutableElement dtoIdMethod = configurationElement.getDto().getIdMethod(entityResolver);
+		MutableExecutableElement dtoIdMethod = configurationElement.getDto().getIdMethod(entityResolver);
 		
-		if (dtoIdMethod == null && entityResolver.shouldHaveIdMethod(domainType)) {
+		if (dtoIdMethod == null && entityResolver.shouldHaveIdMethod(configurationElement.getInstantiableDomain())) {
 			processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method for DTO class " + dtoType.getCanonicalName(), configurationElement.asConfigurationElement());
 			return;
 		}
@@ -84,18 +84,19 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 
 			boolean useIdConverter = false;
 
-			MutableTypeMirror dtoIdType = processingEnv.getTypeUtils().toMutableType(idMethod.getReturnType());
-			DomainType domainIdType = null;
+			MutableTypeMirror dtoIdType = dtoIdMethod.getReturnType();
+			//processingEnv.getTypeUtils().toMutableType(domainIdMethod.getReturnType());
+			DomainType domainIdType = processingEnv.getTransferObjectUtils().getDtoType(dtoIdType).getDomain();
 			
-			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-				domainIdType = domainType.getId(entityResolver);
-				if (domainIdType.getConfigurations().size() == 0) {
-					DtoType dto = domainIdType.getDto();
-					if (dto != null) {
-						dtoIdType= dto;
-					}
-				}
-			}
+//			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+//				domainIdType = configurationElement.getInstantiableDomain().getId(entityResolver);
+//				if (domainIdType.getConfigurations().size() == 0) {
+//					DtoType dto = domainIdType.getDto();
+//					if (dto != null) {
+//						dtoIdType= dto;
+//					}
+//				}
+//			}
 
 			pw.println(domainType, " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + ", " + DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)) + ");");
 			pw.println("if (" + RESULT_NAME + " != null) {");
@@ -111,12 +112,12 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 				pw.print(dtoIdType, " " + idName + " = ");
 			}
 			
-			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
+			if (domainIdMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				ConverterTypeElement idConverter = domainIdType.getConverter();
 					//toHelper.getConfigurationElement(domainIdType, roundEnv);
 				if (idConverter != null) {
 					converterProviderPrinter.printDtoConverterMethodName(domainIdType.getDto(), 
-							DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), idMethod, pw);
+							DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), domainIdMethod, pw);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -151,7 +152,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			pw.println("return domainFromCache;");
 			pw.println("}");
 			pw.println();
-			pw.println("putDomainIntoCache(" + DTO_NAME + ", " + RESULT_NAME + "," + RESULT_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(idMethod)) + ");");
+			pw.println("putDomainIntoCache(" + DTO_NAME + ", " + RESULT_NAME + "," + RESULT_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(domainIdMethod)) + ");");
 			pw.println();
 		}
 		

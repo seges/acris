@@ -30,9 +30,9 @@ public abstract class TomDeclaredConfigurationHolder extends TomBaseDeclaredType
 		return ensureConfigurationContext().getDomainDefinitionConfiguration();
 	}
 
-	protected ConfigurationTypeElement getDtoDefinitionConfiguration() {
-		return ensureConfigurationContext().getDtoDefinitionConfiguration();
-	}
+//	protected ConfigurationTypeElement getDtoDefinitionConfiguration() {
+//		return ensureConfigurationContext().getDtoDefinitionConfiguration();
+//	}
 
 	protected ConfigurationTypeElement getConverterDefinitionConfiguration() {
 		return ensureConfigurationContext().getConverterDefinitionConfiguration();

@@ -3,7 +3,6 @@ package sk.seges.sesam.pap.model.printer.method;
 import java.util.Iterator;
 
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
@@ -11,6 +10,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -119,8 +119,8 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 	protected void printDtoInstancer(FormattedPrintWriter pw, EntityResolver entityResolver, DtoType type) {
 		pw.println(type," " + RESULT + " = new ", type, "();");
 		if ((type instanceof DtoDeclaredType) && entityResolver.shouldHaveIdMethod((DomainDeclaredType) type.getDomain())) {
-			ExecutableElement idMethod = ((DtoDeclaredType)type).getIdMethod(entityResolver);			
-			pw.println(RESULT + "." + MethodHelper.toSetter(idMethod) + "((", processingEnv.getTransferObjectUtils().getDomainType(idMethod.getReturnType()).getDto(), ")id);");
+			MutableExecutableElement idMethod = ((DtoDeclaredType)type).getIdMethod(entityResolver);			
+			pw.println(RESULT + "." + MethodHelper.toSetter(idMethod) + "((", idMethod.getReturnType(), ")id);");
 		}
 		pw.println("return " + RESULT + ";");
 	}

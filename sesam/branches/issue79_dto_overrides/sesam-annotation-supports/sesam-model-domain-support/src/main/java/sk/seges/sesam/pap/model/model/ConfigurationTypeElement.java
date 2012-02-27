@@ -26,8 +26,11 @@ public class ConfigurationTypeElement extends TomBaseType {
 	private DtoDeclared dtoDeclaredType;
 	private boolean dtoTypeElementInitialized = false;
 
-	private DomainDeclared domainDeclaredType;
+	private DomainDeclaredType domainDeclaredType;
 	private boolean domainTypeElementInitialized = false;
+	
+	private DomainDeclaredType instantiableDomainType;
+	private boolean instantiableDomainTypeInitialized = false;
 	
 	private ConfigurationTypeElement delegateConfigurationTypeElement;
 	private boolean delegateConfigurationTypeElementInitialized = false;
@@ -95,7 +98,7 @@ public class ConfigurationTypeElement extends TomBaseType {
 	@Override
 	protected MutableTypeMirror getDelegate() {
 		if (configurationElement.getKind().equals(ElementKind.METHOD)) {
-			return getTypeUtils().toMutableType((ExecutableElement) configurationElement);
+			return envContext.getProcessingEnv().getElementUtils().toMutableElement((ExecutableElement) configurationElement).asType();
 		}
 		return getTypeUtils().toMutableType((DeclaredType)configurationElement.asType());
 	}
@@ -145,47 +148,94 @@ public class ConfigurationTypeElement extends TomBaseType {
 		return getDomain();
 	}
 
-	public DomainDeclaredType getInstantiableDomain() {
-		return getDomain();
+	private ConfigurationContext getConfigurationContextForDto(MutableDeclaredType dtoType) {
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		List<ConfigurationTypeElement> configurations = envContext.getConfigurationEnv().getConfigurations(dtoType);
+		if (configurations == null || configurations.size() == 0) {
+			return null;
+		}
+		configurationContext.setConfigurations(configurations);
+		return configurationContext;
 	}
 	
 	public DomainDeclaredType getDomain() {
-		if (!domainTypeElementInitialized) {
-			MutableDeclaredType domainType = null;
+		
+		if (!this.domainTypeElementInitialized) {
+			MutableDeclaredType dtoType = getDtoType();
 			
-			if (this.domainType != null) {
-				domainType = this.domainType;
-			} else {
-				TypeElement domainTypeElement = transferObjectConfiguration.getEvaluatedDomainType();
-				if (domainTypeElement != null) {
-					domainType = getTypeUtils().toMutableType((DeclaredType) domainTypeElement.asType());
+			if (dtoType != null) {
+				ConfigurationContext configurationContextForDto = getConfigurationContextForDto(dtoType);
+				if (configurationContextForDto != null) {
+					this.domainDeclaredType = getDomain(configurationContextForDto.getDelegateDomainDefinitionConfiguration());
+				} else {
+					this.domainDeclaredType = getDomain(this);
 				}
-			}
-
-			if (domainType != null) {
-				this.domainDeclaredType = new DomainDeclared(domainType, dtoType, envContext, configurationContext);
-				domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
 			} else {
-				if (this.domainType == null) {
-					TypeElement domainInterface = transferObjectConfiguration.getDomainInterface();
-					if (domainInterface != null) {
-						if (dtoType != null && getTypeUtils().implementsType(dtoType, getTypeUtils().toMutableType(domainInterface.asType()))) {
-							this.domainDeclaredType = new DomainDeclared(null, dtoType, envContext, configurationContext);
-						} else {
-							this.domainDeclaredType = new DomainDeclared((MutableDeclaredType) getTypeUtils().toMutableType(domainInterface.asType()), dtoType, envContext, configurationContext);
-							this.domainDeclaredType.setKind(MutableTypeKind.INTERFACE);
-						}
+				this.domainDeclaredType = getDomain(this);
+			}
+			this.domainTypeElementInitialized = true;
+		}
+		
+		return domainDeclaredType;
+	}
+
+	public DomainDeclaredType getInstantiableDomain() {
+		if (!instantiableDomainTypeInitialized) {
+			MutableDeclaredType dtoType = getDtoType();
+			if (dtoType != null) {
+				ConfigurationContext configurationContextForDto = getConfigurationContextForDto(dtoType);
+				if (configurationContextForDto != null && configurationContextForDto.getConverterDefinitionConfiguration() != null) {
+					this.instantiableDomainType = getDomain(configurationContextForDto.getConverterDefinitionConfiguration());
+				} else {
+					this.instantiableDomainType = getDomain(this);
+				}
+			} else {
+				this.instantiableDomainType = getDomain(this);
+			}
+//			this.instantiableDomainType = getDomain(this);
+			this.instantiableDomainTypeInitialized = true;	
+		}
+		return instantiableDomainType;
+	}
+	
+	private DomainDeclared getDomain(ConfigurationTypeElement configuration) {
+
+		DomainDeclared domainDeclaredType = null;
+		
+		MutableDeclaredType domainType = null;
+		
+		if (configuration.domainType != null) {
+			domainType = configuration.domainType;
+		} else {
+			TypeElement domainTypeElement = configuration.transferObjectConfiguration.getEvaluatedDomainType();
+			if (domainTypeElement != null) {
+				domainType = getTypeUtils().toMutableType((DeclaredType) domainTypeElement.asType());
+			}
+		}
+
+		if (domainType != null) {
+			domainDeclaredType = new DomainDeclared(domainType, configuration.dtoType, configuration.envContext, configuration.configurationContext);
+			domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
+		} else {
+			if (configuration.domainType == null) {
+				TypeElement domainInterface = configuration.transferObjectConfiguration.getDomainInterface();
+				if (domainInterface != null) {
+					if (configuration.dtoType != null && getTypeUtils().implementsType(configuration.dtoType, getTypeUtils().toMutableType(domainInterface.asType()))) {
+						domainDeclaredType = new DomainDeclared(null, configuration.dtoType, configuration.envContext, configuration.configurationContext);
+					} else {
+						domainDeclaredType = new DomainDeclared((MutableDeclaredType) getTypeUtils().toMutableType(domainInterface.asType()), 
+								configuration.dtoType, configuration.envContext, configuration.configurationContext);
+						domainDeclaredType.setKind(MutableTypeKind.INTERFACE);
 					}
 				}
 			}
-
-			if (this.domainDeclaredType == null) {
-				this.dtoTypeElementInitialized = true;
-				this.dtoDeclaredType = null;
-			}
-			
-			this.domainTypeElementInitialized = true;
 		}
+
+		if (domainDeclaredType == null) {
+			configuration.dtoTypeElementInitialized = true;
+			configuration.dtoDeclaredType = null;
+		}
+		
 		return domainDeclaredType;
 	}
 
@@ -226,6 +276,45 @@ public class ConfigurationTypeElement extends TomBaseType {
 		return getDto();
 	}
 	
+	private MutableDeclaredType getDtoType() {
+		
+		if (getDelegateConfigurationTypeElement() != null) {
+			return getDelegateConfigurationTypeElement().getDtoType();
+		}
+
+		if (this.dtoType != null) {
+			return this.dtoType;
+		}
+
+		if (transferObjectConfiguration.isValid()) {
+			TypeElement dtoTypeElement = transferObjectConfiguration.getDto();
+			if (dtoTypeElement != null) {
+				return getTypeUtils().toMutableType((DeclaredType) dtoTypeElement.asType());
+			}
+
+			TypeElement dtoInterface = transferObjectConfiguration.getDtoInterface();
+			if (dtoInterface != null) {
+				if (domainType != null && getTypeUtils().implementsType(domainType, getTypeUtils().toMutableType(dtoInterface.asType()))) {
+					return domainType;
+				}
+				
+				return getTypeUtils().toMutableType((DeclaredType) dtoInterface.asType());
+			}
+		}
+
+		if (this.dtoDeclaredType == null) {
+			Element configurationElement = asConfigurationElement();
+			
+			if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
+				return null;
+			}
+
+			return new DtoDeclared(envContext, new ConfigurationContext(envContext.getConfigurationEnv()).addConfiguration(this));
+		}
+
+		return dtoDeclaredType;
+	}
+
 	public DtoDeclaredType getDto() {
 		
 		if (getDelegateConfigurationTypeElement() != null) {
@@ -270,6 +359,7 @@ public class ConfigurationTypeElement extends TomBaseType {
 					}
 
 					this.dtoDeclaredType = new DtoDeclared(envContext, configurationContext);
+					this.dtoDeclaredType.setup();
 				}
 			}
 
@@ -348,7 +438,8 @@ public class ConfigurationTypeElement extends TomBaseType {
 		}
 
 		if (this.dtoType == null) {
-			return (getDto() != null && getDto().getCanonicalName().equals(dtoType.toString(ClassSerializer.CANONICAL, false)));
+			String dtoClassName = getDtoType().getCanonicalName();
+			return (dtoClassName != null && dtoClassName.equals(dtoType.toString(ClassSerializer.CANONICAL, false)));
 		}
 		
 		return false;

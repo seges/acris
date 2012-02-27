@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -33,7 +32,6 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -44,9 +42,9 @@ import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredTyp
 
 public class MutableTypes implements Types {
 
-	private Types types;
-	private Elements elements;
-	private MutableProcessingEnvironment processingEnv;
+	private final Types types;
+	private final Elements elements;
+	private final MutableProcessingEnvironment processingEnv;
 	
 	public MutableTypes(MutableProcessingEnvironment processingEnv, Elements elements, Types types) {
 		this.types = types;
@@ -361,11 +359,7 @@ public class MutableTypes implements Types {
 	public MutableDeclaredType toMutableType(DeclaredType declaredType) {
 		return (MutableDeclaredType) convertToMutableType(declaredType);
 	}
-	
-	public MutableExecutableType toMutableType(ExecutableElement executableElement) {
-		return new MutableExecutable(executableElement, processingEnv);
-	}
-	
+		
 	public MutableDeclaredType toMutableType(TypeElement typeElement) {
 		return (MutableDeclaredType) toMutableType(typeElement.asType());
 	}

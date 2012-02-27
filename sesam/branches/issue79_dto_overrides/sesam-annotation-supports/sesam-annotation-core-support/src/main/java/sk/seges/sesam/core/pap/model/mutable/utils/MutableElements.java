@@ -13,12 +13,16 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
+
 public class MutableElements implements Elements {
 
 	private Elements elements;
-	
-	public MutableElements(Elements elements) {
+	private MutableProcessingEnvironment processingEnv;
+
+	public MutableElements(MutableProcessingEnvironment processingEnv, Elements elements) {
 		this.elements = elements;
+		this.processingEnv = processingEnv;
 	}
 
 	@Override
@@ -89,5 +93,9 @@ public class MutableElements implements Elements {
 	@Override
 	public Name getName(CharSequence cs) {
 		return this.elements.getName(cs);
+	}
+	
+	public MutableExecutableElement toMutableElement(ExecutableElement executableElement) {
+		return new MutableExecutable(executableElement, processingEnv);
 	}
 }

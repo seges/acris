@@ -111,7 +111,8 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 			DtoType returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(remoteMethod.getReturnType());
 
 			if (returnDtoType.getConverter() != null) {
-				DomainDeclaredType rawDomain = returnDtoType.getConverter().getConfiguration().getRawDomain();
+				DomainDeclaredType rawDomain = (DomainDeclaredType)returnDtoType.getDomain();
+				//returnDtoType.getConverter().getConfiguration().getRawDomain();
 				DtoDeclaredType rawDto = returnDtoType.getConverter().getConfiguration().getRawDto();
 				nestedPrinter.print(new NestedServiceConverterPrinterContext(rawDomain, rawDto, returnDtoType.getConverter(), localMethod));
 			}

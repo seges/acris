@@ -118,8 +118,8 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		return getConfigurationElementsForType(TargetType.DOMAIN, domainType);
 	}
 
-	public final List<ConfigurationTypeElement> getConfigurationsForDto(MutableTypeMirror domainType) {
-		return getConfigurationElementsForType(TargetType.DTO, domainType);
+	public final List<ConfigurationTypeElement> getConfigurationsForDto(MutableTypeMirror dtoType) {
+		return getConfigurationElementsForType(TargetType.DTO, dtoType);
 	}
 
 	private boolean contains(Element element, List<ConfigurationTypeElement> configurations) {

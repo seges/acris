@@ -30,8 +30,8 @@ public class ConfigurationContext {
 		return Collections.unmodifiableList(configurations);
 	}
 		
-	ConfigurationTypeElement ensureConfiguration(TomType tomType) {
-		ConfigurationTypeElement configuration = getConfiguration(tomType);
+	ConfigurationTypeElement ensureConfiguration(TomType... tomTypes) {
+		ConfigurationTypeElement configuration = getConfiguration(tomTypes);
 		
 		if (configuration != null) {
 			return configuration;
@@ -44,9 +44,9 @@ public class ConfigurationContext {
 		return configurations.get(0);
 	}
 	
-	ConfigurationTypeElement getConfiguration(TomType tomType) {
+	ConfigurationTypeElement getConfiguration(TomType... tomTypes) {
 		for (ConfigurationTypeElement configuration: configurations) {
-			if (tomType.appliesFor(configuration)) {
+			if (TomType.appliesFor(configuration, tomTypes)) {
 				return configuration;
 			}
 		}
@@ -54,13 +54,27 @@ public class ConfigurationContext {
 		return null;
 	}
 
+	public ConfigurationTypeElement getDelegateDomainDefinitionConfiguration() {
+		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+
+		if (domainDefinitionConfiguration != null && domainDefinitionConfiguration.getDelegateConfigurationTypeElement() != null) {
+			domainDefinitionConfiguration = domainDefinitionConfiguration.getDelegateConfigurationTypeElement();
+		}
+		
+		return domainDefinitionConfiguration;
+	}
+
 	ConfigurationTypeElement getDomainDefinitionConfiguration() {
+		ConfigurationTypeElement configuration = getConfiguration(TomType.DOMAIN, TomType.DTO_NOT_DEFINED);
+		if (configuration != null) {
+			return configuration;
+		}
 		return ensureConfiguration(TomType.DOMAIN);
 	}
 
-	ConfigurationTypeElement getDtoDefinitionConfiguration() {
-		return ensureConfiguration(TomType.DTO_DEFINED);
-	}
+//	ConfigurationTypeElement getDtoDefinitionConfiguration() {
+//		return ensureConfiguration(TomType.DTO_DEFINED);
+//	}
 
 	ConfigurationTypeElement getConverterDefinitionConfiguration() {
 		ConfigurationTypeElement configuration = getConfiguration(TomType.CONVERTER_DEFINED);

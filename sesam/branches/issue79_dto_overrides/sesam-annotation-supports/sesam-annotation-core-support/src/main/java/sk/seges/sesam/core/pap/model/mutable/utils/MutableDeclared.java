@@ -1,6 +1,5 @@
 package sk.seges.sesam.core.pap.model.mutable.utils;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
@@ -23,7 +21,8 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
-class MutableDeclared extends MutableType implements MutableDeclaredType {
+//TODO rename to MutableType
+class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 
 	protected String simpleName;
 	private String packageName;
@@ -37,63 +36,34 @@ class MutableDeclared extends MutableType implements MutableDeclaredType {
 	private boolean superClassInitialized = false;
 	private MutableDeclaredType superClass;
 
-	private final AnnotationHolderDelegate annotationHolderDelegate;
 	//TypeMirror for the primitive types, otherwise DeclaredType
 	private TypeMirror type;
 	private boolean dirty = false;
-	
-	private final MutableProcessingEnvironment processingEnv;
-	
+		
 	public MutableDeclared(String packageName, String simpleName, MutableProcessingEnvironment processingEnv) {
 		this(null, packageName, simpleName, processingEnv);
 	}
 
 	public MutableDeclared(TypeMirror type, String packageName, String simpleName, MutableProcessingEnvironment processingEnv) {
-		this.processingEnv = processingEnv;
+		super(processingEnv, type);
 		this.simpleName = simpleName;
 		this.packageName = packageName;
 		this.type = type;
 		this.enclosedClass = null;
 
 		initKind();
-		
-		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
-			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv, ((DeclaredType)type).asElement());
-		} else {
-			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv);
-		}
 	}
 
 	public MutableDeclared(TypeMirror type, MutableDeclaredType enclosedClass, String simpleName, MutableProcessingEnvironment processingEnv) {
-		this.processingEnv = processingEnv;
+		super(processingEnv, type);
 		this.simpleName = simpleName;
 		this.packageName = enclosedClass.getPackageName();
 		this.enclosedClass = enclosedClass;
 		this.type = type;
 
 		initKind();
-
-		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
-			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv, ((DeclaredType)type).asElement());
-		} else {
-			this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv);
-		}
 	}
 
-    public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
-    	return annotationHolderDelegate.getAnnotation(annotationType);
-    }
-
-	public void annotateWith(AnnotationMirror annotation) {
-		//TODO TODO!!!!!!!
-		//dirty();
-		annotationHolderDelegate.annotateWith(annotation);
-	}
-
-	public Set<AnnotationMirror> getAnnotations() {
-		return annotationHolderDelegate.getAnnotations();
-	}
-	
 	private void initKind() {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 			this.kind = convertKind(((DeclaredType)type).asElement().getKind());

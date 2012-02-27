@@ -37,15 +37,15 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 		pw.println("public boolean equals(", configurationTypeElement.getDomain(), " " + DOMAIN_NAME + ",",
 											 configurationTypeElement.getDto(), " " + DTO_NAME + ") {");
-		if (entityResolver.shouldHaveIdMethod(configurationTypeElement.getDomain())) {
+		if (entityResolver.shouldHaveIdMethod(configurationTypeElement.getInstantiableDomain())) {
 
-			DomainType domainId = configurationTypeElement.getDomain().getId(entityResolver);
+			DomainType domainId = configurationTypeElement.getInstantiableDomain().getId(entityResolver);
 
-			String methodName = DOMAIN_NAME + "." + configurationTypeElement.getDomain().getIdMethod(entityResolver).getSimpleName().toString() + "()";
+			String methodName = DOMAIN_NAME + "." + configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver).getSimpleName().toString() + "()";
 			
 			if (domainId.getConverter() != null) {
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
-				converterProviderPrinter.printDomainConverterMethodName(domainId, methodName, configurationTypeElement.getDomain().getIdMethod(entityResolver), pw);
+				converterProviderPrinter.printDomainConverterMethodName(domainId, methodName, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw);
 				pw.print(".toDto(");
 			} else {
 				pw.print(domainId, " " + DTO_ID + " = ");
@@ -70,7 +70,7 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 	@Override
 	public void print(TransferObjectContext context) {
 		
-		if (entityResolver.shouldHaveIdMethod(context.getConfigurationTypeElement().getDomain())) {
+		if (entityResolver.shouldHaveIdMethod(context.getConfigurationTypeElement().getInstantiableDomain())) {
 			return;
 		}
 		
@@ -121,7 +121,7 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 
 	@Override
 	public void finish(ConfigurationTypeElement configurationTypeElement) {
-		if (!entityResolver.shouldHaveIdMethod(configurationTypeElement.getDomain())) {
+		if (!entityResolver.shouldHaveIdMethod(configurationTypeElement.getInstantiableDomain())) {
 			pw.println("return true;");
 		}
 		pw.println("}");

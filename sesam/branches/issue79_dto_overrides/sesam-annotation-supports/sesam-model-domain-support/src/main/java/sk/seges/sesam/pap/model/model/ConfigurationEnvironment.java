@@ -1,8 +1,12 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
@@ -39,6 +43,17 @@ public class ConfigurationEnvironment {
 		return environmentContext;
 	}
 	
+	public List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror dtoType) {
+		for (ConfigurationProvider configurationProvider: configurationProviders) {
+			List<ConfigurationTypeElement> configurationsForDto = configurationProvider.getConfigurationsForDto(dtoType);
+			if (configurationsForDto != null && configurationsForDto.size() > 0) {
+				return configurationsForDto;
+			}
+		}
+		
+		return new ArrayList<ConfigurationTypeElement>();
+	}
+
 	public ConfigurationTypeElement getConfiguration(ExecutableElement configurationElementMethod, DomainDeclaredType returnType, 
 			ConfigurationContext configurationContext) {
 		if (configurationProviders == null) {
