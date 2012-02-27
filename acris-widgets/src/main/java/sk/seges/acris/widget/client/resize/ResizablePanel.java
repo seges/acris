@@ -222,6 +222,8 @@ public class ResizablePanel extends HTML {
 				proxyElement.getStyle().setWidth(getBorderSize(this.getOffsetWidth()), Unit.PX);
 				proxyElement.getStyle().setHeight(getBorderSize(this.getOffsetHeight()), Unit.PX);
 				proxyElement.getStyle().setDisplay(Display.BLOCK);
+				
+				onResizing(this.getOffsetWidth(), this.getOffsetHeight());
 			}
 		}
 	}
@@ -370,6 +372,8 @@ public class ResizablePanel extends HTML {
 				if (width > 0 && height > 0) {
 					proxyElement.getStyle().setWidth(getBorderSize(width), Unit.PX);
 					proxyElement.getStyle().setHeight(getBorderSize(height), Unit.PX);
+					
+					onResizing(width, height);
 				}
 			}
 		}
@@ -416,6 +420,12 @@ public class ResizablePanel extends HTML {
 	protected void onResize(int width, int height) {
 		for (ResizableListener listener : resizableListeners) {
 			listener.onResize(width, height);
+		}
+	}
+
+	protected void onResizing(int width, int height) {
+		for (ResizableListener listener : resizableListeners) {
+			listener.onResizing(width, height);
 		}
 	}
 

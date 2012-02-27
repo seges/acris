@@ -1,6 +1,8 @@
 package sk.seges.acris.widget.client.resize;
 
-public interface ResizableListener {
+public abstract class ResizableListener {
 
-	public void onResize(int width, int height);
+	abstract public void onResize(int width, int height);
+	
+	public void onResizing(int width, int height) {}
 }
