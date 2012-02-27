@@ -95,7 +95,7 @@ public class JpaWebSettings extends WebSettingsDTO {
 	}
 	
 	@Override
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaCountry.class)
+	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaCountry.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	public Set<CountryData<?>> getTranslations() {
 		return super.getTranslations();
 	}
