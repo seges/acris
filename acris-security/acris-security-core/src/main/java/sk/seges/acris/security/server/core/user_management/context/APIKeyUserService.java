@@ -57,13 +57,15 @@ public class APIKeyUserService implements UserProviderService {
 	}
 	
 	protected Boolean getParsedResult(String result) {
-		logger.info("Response " + result);
+		logger.info("Response =" + result);
 
 		Boolean allowed = false;
-		try {
-			allowed = (Boolean.valueOf((String)new JSONObject(result).get("allowed")));
-		} catch (Exception e) {
-			logger.error("APIKey service do not return correct result", e);
+		if (result != null && !result.isEmpty()) {
+			try {
+				allowed = (Boolean.valueOf((String)new JSONObject(result).get("allowed")));
+			} catch (Exception e) {
+				logger.error("APIKey service do not return correct result = " + result, e);
+			}
 		}
 		
 		return allowed;
