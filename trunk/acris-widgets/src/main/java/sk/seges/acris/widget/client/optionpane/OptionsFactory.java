@@ -128,4 +128,8 @@ public class OptionsFactory extends Composite {
     public Widget[] createSelectCancelOptions(ClickHandler okHandler) {
         return createOKCancelCustomizedOptions(labels.select(), okHandler);
     }
+    
+    public Widget createOKOption(ClickHandler okHandler) {
+        return widgetFactory.button(labels.ok(), okHandler);
+    }
 }
