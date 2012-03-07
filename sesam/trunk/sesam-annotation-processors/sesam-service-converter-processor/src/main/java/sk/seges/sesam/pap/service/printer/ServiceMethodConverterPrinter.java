@@ -62,8 +62,8 @@ public class ServiceMethodConverterPrinter extends AbstractServicePrinter implem
 			ExecutableElement localMethod = getDomainMethodPair(remoteMethod, serviceTypeElement);
 			if (localMethod == null) {
 				processingEnv.getMessager().printMessage(Kind.ERROR,
-						"[ERROR] Service class does not implements local service method " + remoteMethod.toString()
-								+ ". Please specify correct service implementation.", serviceTypeElement.asElement());
+						"[ERROR] Service class does not implement local service method " + remoteMethod.toString()
+								+ ". Please specify a correct service implementation.", serviceTypeElement.asElement());
 				continue;
 			}
 
