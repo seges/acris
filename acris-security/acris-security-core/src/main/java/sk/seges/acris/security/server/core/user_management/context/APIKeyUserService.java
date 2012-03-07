@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
+import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.user_management.context.APIKeyUserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.util.LoginConstants;
 
 public class APIKeyUserService implements UserProviderService {
 
@@ -25,9 +27,11 @@ public class APIKeyUserService implements UserProviderService {
 	private static final Logger logger = Logger.getLogger(APIKeyUserService.class);
 	
 	private String apiKeyURL;
+	private ServerSessionProvider sessionProvider;
 	
-	public APIKeyUserService(String apiKeyURL) { 
+	public APIKeyUserService(String apiKeyURL, ServerSessionProvider sessionProvider) { 
 		this.apiKeyURL = apiKeyURL;
+		this.sessionProvider = sessionProvider;
 	}
 	
 	@Override
@@ -53,7 +57,14 @@ public class APIKeyUserService implements UserProviderService {
 		} catch (Exception e) {
 			logger.error("Comunication with APIKey service failed", e);
 		}
-		return createUser(s.toString());
+
+		Boolean allowed = getParsedResult(s.toString());
+		if (allowed) {
+			sessionProvider.getSession().setAttribute(LoginConstants.ACRIS_API_KEY_STRING, ((APIKeyUserContext) userContext).getApiKey());
+			return createUser();
+		}
+
+		return null;
 	}
 	
 	protected Boolean getParsedResult(String result) {
@@ -71,18 +82,11 @@ public class APIKeyUserService implements UserProviderService {
 		return allowed;
 	}
 	
-	public UserData<?> createUser(String result) {
-		
-		Boolean allowed = getParsedResult(result);
-		
-		if (allowed) {
-			UserData<?> adminUser = (UserData<?>) new GenericUserDTO();
-			adminUser.setEnabled(true);
-			adminUser.setUserAuthorities(new ArrayList<String>());
-			return adminUser;
-		}
-		
-		return null;
+	public UserData<?> createUser() {
+		UserData<?> adminUser = (UserData<?>) new GenericUserDTO();
+		adminUser.setEnabled(true);
+		adminUser.setUserAuthorities(new ArrayList<String>());
+		return adminUser;
 	}
 
 	@Override
