@@ -24,7 +24,7 @@ public class APIKeyUserService implements UserProviderService {
 	public static final String APIKEY_PARAMETER = "apiKey";
 	public static final String WEBID_PARAMETER = "webId";
 	
-	private static final Logger logger = Logger.getLogger(APIKeyUserService.class);
+	private static final Logger log = Logger.getLogger(APIKeyUserService.class);
 	
 	private String apiKeyURL;
 	private ServerSessionProvider sessionProvider;
@@ -36,12 +36,28 @@ public class APIKeyUserService implements UserProviderService {
 	
 	@Override
 	public UserData<?> getLoggedUser(UserContext userContext) {
+		if (isValid(userContext)) {
+			sessionProvider.getSession().setAttribute(LoginConstants.ACRIS_API_KEY_STRING, ((APIKeyUserContext) userContext).getApiKey());
+			return createUser();
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Validate apiKey with webId from request
+	 * against third party service
+	 * 
+	 * @return - true if apiKey is valid for webId
+	 * otherwise return false
+	 */
+	public Boolean isValid(UserContext userContext) {
 		StringBuilder s = new StringBuilder();
 		try{
 			char[] buf = new char[2048];
 
 			String url = getUrl(userContext);
-			logger.info("Veryfing username against " + url);
+			log.info("Veryfing user against " + url);
 			
 			URLConnection connection = new URL(url).openConnection();
 			connection.connect();
@@ -55,27 +71,27 @@ public class APIKeyUserService implements UserProviderService {
 			  }
 			is.close();	
 		} catch (Exception e) {
-			logger.error("Comunication with APIKey service failed", e);
+			log.error("Comunication with APIKey service failed", e);
 		}
 
-		Boolean allowed = getParsedResult(s.toString());
-		if (allowed) {
-			sessionProvider.getSession().setAttribute(LoginConstants.ACRIS_API_KEY_STRING, ((APIKeyUserContext) userContext).getApiKey());
-			return createUser();
-		}
-
-		return null;
+		return getParsedResult(s.toString());
 	}
 	
+	/**
+	 * Parse result from third party service
+	 * to boolean representation
+	 * Expected result:
+	 * {"allowed" : boolean}
+	 */
 	protected Boolean getParsedResult(String result) {
-		logger.info("Response =" + result);
+		log.info("Response =" + result);
 
 		Boolean allowed = false;
 		if (result != null && !result.isEmpty()) {
 			try {
 				allowed = (Boolean.valueOf((String)new JSONObject(result).get("allowed")));
 			} catch (Exception e) {
-				logger.error("APIKey service do not return correct result = " + result, e);
+				log.error("APIKey service do not return correct result = " + result, e);
 			}
 		}
 		
