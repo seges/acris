@@ -47,6 +47,7 @@ public class OpenIDLoginToken implements LoginToken {
 		this.provider = provider;
 	}
 	
+	@Override
 	public String getWebId() {
 		return webId;
 	}
