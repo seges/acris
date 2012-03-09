@@ -7,6 +7,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -14,6 +16,7 @@ import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.user_management.context.APIKeyUserContext;
+import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
@@ -37,11 +40,23 @@ public class APIKeyUserService implements UserProviderService {
 	@Override
 	public UserData<?> getLoggedUser(UserContext userContext) {
 		if (isValid(userContext)) {
-			sessionProvider.getSession().setAttribute(LoginConstants.ACRIS_API_KEY_STRING, ((APIKeyUserContext) userContext).getApiKey());
+			HttpSession session = sessionProvider.getSession();
+			session.setAttribute(LoginConstants.ACRIS_API_KEY_STRING, ((APIKeyUserContext) userContext).getApiKey());
+			session.setAttribute(LoginConstants.LOGIN_TOKEN_NAME, createLoginToken(((APIKeyUserContext) userContext).getWebId())); 
 			return createUser();
 		}
-
+		
 		return null;
+	}
+	
+	private LoginToken createLoginToken(final String webId) {
+		return new LoginToken() {
+			private static final long serialVersionUID = 6945107263245752855L;
+			@Override
+			public String getWebId() {
+				return webId;
+			}
+		};
 	}
 	
 	/**
@@ -94,7 +109,6 @@ public class APIKeyUserService implements UserProviderService {
 				log.error("APIKey service do not return correct result = " + result, e);
 			}
 		}
-		
 		return allowed;
 	}
 	

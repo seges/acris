@@ -60,6 +60,7 @@ public class UserPasswordLoginToken implements LoginToken {
 		this.language = language;
 	}
 
+	@Override
 	public String getWebId() {
 		return webId;
 	}
