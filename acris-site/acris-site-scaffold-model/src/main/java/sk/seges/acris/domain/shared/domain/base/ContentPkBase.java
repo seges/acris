@@ -2,7 +2,7 @@ package sk.seges.acris.domain.shared.domain.base;
 
 import sk.seges.acris.domain.shared.domain.api.ContentPkData;
 
-public class ContentPkBase implements ContentPkData<Long> {
+public class ContentPkBase implements ContentPkData {
 
 	private static final long serialVersionUID = -7464299695597839783L;
 
