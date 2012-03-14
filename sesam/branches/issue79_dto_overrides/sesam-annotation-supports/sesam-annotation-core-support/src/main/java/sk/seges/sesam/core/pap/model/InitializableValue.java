@@ -1,4 +1,4 @@
-package sk.seges.sesam.pap.model.utils;
+package sk.seges.sesam.core.pap.model;
 
 public class InitializableValue<T> {
 	

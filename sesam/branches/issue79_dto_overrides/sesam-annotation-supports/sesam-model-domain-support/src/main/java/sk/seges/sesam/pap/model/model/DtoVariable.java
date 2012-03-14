@@ -71,9 +71,9 @@ class DtoVariable extends TomBaseVariable implements GeneratedClass, DtoTypeVari
 			}
 
 			String variableName = getVariable();
-			if (getVariable() != null && !getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
-				variableName = ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variableName;
-			}
+//			if (getVariable() != null && !getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
+//				variableName = ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variableName;
+//			}
 
 			return new DomainVariable(getTypeUtils().getTypeVariable(variableName, domainUpperBounds.toArray(new MutableTypeMirror[] {}), domainLowerBounds.toArray(new MutableTypeMirror[]{})), envContext, configurationContext);
 		}

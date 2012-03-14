@@ -464,7 +464,23 @@ public class ConverterProviderPrinter {
 		
 		return converterMethod;
 	}
-	
+
+	protected String getGetConverterMethodName(ConverterTypeElement converterTypeElement, ConverterTargetType targetType) {
+		if (converterTypeElement == null) {
+			return null;
+		}
+
+		String converterMethod = GET_CONVERTER_METHOD_PREFIX + targetType.getMethodPrefix() + converterTypeElement.getSimpleName();
+
+		if (converterCache.containsKey(converterTypeElement.getSimpleName())) {
+			return converterMethod;
+		}
+		
+		converterCache.put(converterTypeElement.getSimpleName(), converterTypeElement);
+		
+		return converterMethod;
+	}
+
 	protected String getConverterMethodName(ConverterTypeElement converterTypeElement, ConverterTargetType targetType) {
 		return getConverterMethodName(converterTypeElement, targetType, GET_CONVERTER_METHOD_PREFIX);
 	}
@@ -519,12 +535,20 @@ public class ConverterProviderPrinter {
 		}
 	}
 
-	public void printDtoConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw);
+	public void printDtoEnsuredConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
+		printEnsuredConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw);
 	}
 
-	public void printDomainConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw);
+	public void printDtoGetConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
+		printGetConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw);
+	}
+
+	public void printDomainEnsuredConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
+		printEnsuredConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw);
+	}
+
+	public void printDomainGetConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
+		printGetConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw);
 	}
 
 	private MutableDeclaredType getConvertedResult(ConverterTypeElement converterTypeElement, ConverterTargetType targetType, MutableTypeMirror type, TomBaseElementProvider tomBaseElementProvider) {
@@ -605,9 +629,15 @@ public class ConverterProviderPrinter {
 		}
 	}
 	
-	private <T extends MutableTypeMirror & HasConverter> void printConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
-		
-		String methodName = getEnsuredConverterMethodName(type.getConverter(), targetType);
+	private <T extends MutableTypeMirror & HasConverter> void printEnsuredConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
+		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getEnsuredConverterMethodName(type.getConverter(), targetType));
+	}
+
+	private <T extends MutableTypeMirror & HasConverter> void printGetConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
+		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getGetConverterMethodName(type.getConverter(), targetType));
+	}
+
+	private <T extends MutableTypeMirror & HasConverter> void printConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, String methodName) {
 		
 		if (methodName == null) {
 			return;

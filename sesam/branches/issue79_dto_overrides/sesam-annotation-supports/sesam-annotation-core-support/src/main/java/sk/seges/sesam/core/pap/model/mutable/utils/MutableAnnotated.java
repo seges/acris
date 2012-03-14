@@ -9,9 +9,8 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.api.HasAnnotations;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
-abstract class MutableAnnotated extends MutableType implements MutableTypeMirror, HasAnnotations {
+abstract class MutableAnnotated extends MutableType implements HasAnnotations {
 
 	protected final AnnotationHolderDelegate annotationHolderDelegate;
 	protected final MutableProcessingEnvironment processingEnv;

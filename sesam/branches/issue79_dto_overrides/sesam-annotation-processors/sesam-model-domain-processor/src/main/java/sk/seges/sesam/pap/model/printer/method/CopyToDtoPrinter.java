@@ -98,7 +98,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 				domainIdTypeElement = configurationElement.getInstantiableDomain().getId(entityResolver);
 				DtoType dto = domainIdTypeElement.getDto();
 				if (dto != null) {
-					dtoIdType= dto;
+					dtoIdType = dto;
 				}
 			}
 							
@@ -116,9 +116,9 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				if (domainIdTypeElement.getConverter() != null) {
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement, methodName, idMethod, pw);
+					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, methodName, idMethod, pw);
 					pw.print(".convertToDto(");
-					converterProviderPrinter.printDomainConverterMethodName(domainIdTypeElement, methodName, idMethod, pw);
+					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, methodName, idMethod, pw);
 					pw.print(".createDtoInstance(null), ");
 					pw.print("(", castToDelegate(idMethod.getReturnType()), ")");
 					useIdConverter = true;
@@ -161,7 +161,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
-			converterProviderPrinter.printDomainConverterMethodName(domainsuperClass, DOMAIN_NAME, null, pw);
+			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, DOMAIN_NAME, null, pw);
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
 		}

@@ -9,48 +9,49 @@ import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.type.ExecutableType;
 
-import sk.seges.sesam.core.pap.model.api.ClassSerializer;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.InitializableValue;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElement;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElementKind;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
-import sk.seges.sesam.core.pap.model.mutable.api.value.MutableAnnotationValue;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableTypeParameterElement;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 
 class MutableExecutable implements MutableExecutableElement {
 
 	private final AnnotationHolderDelegate annotationHolderDelegate;
 	private final ExecutableElement executableElement;
 	private final MutableProcessingEnvironment processingEnv;
-	
-	private MutableTypeMirror returnType;
-	private boolean returnTypeInitialized = false;
+
+	private final InitializableValue<MutableExecutableType> type = new InitializableValue<MutableExecutableType>();
+	private final InitializableValue<String> simpleName = new InitializableValue<String>();
 	
 	MutableExecutable(ExecutableElement executableElement, MutableProcessingEnvironment processingEnv) {
 		this.executableElement = executableElement;
 		this.processingEnv = processingEnv;
 		this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv, executableElement);
 	}
-	
+
+	MutableExecutable(String simpleName, MutableProcessingEnvironment processingEnv) {
+		this.executableElement = null;
+		this.simpleName.setValue(simpleName);
+		this.processingEnv = processingEnv;
+		this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv);
+	}
+
 	@Override
-	public MutableTypeMirror asType() {
-		return new MutableAnnotated(processingEnv, executableElement.asType()) {
-			
-			@Override
-			public String toString(ClassSerializer serializer) {
-				return MutableExecutable.this.toString();
+	public MutableExecutableType asType() {
+		if (!this.type.isInitialized()) {
+			if (this.executableElement != null) {
+				this.type.setValue(new MutableMethod(processingEnv, (ExecutableType) this.executableElement.asType()));
+			} else {
+				this.type.setValue(new MutableMethod(processingEnv, getSimpleName()));
 			}
-
-			@Override
-			public String toString(ClassSerializer serializer, boolean typed) {
-				return MutableExecutable.this.toString();
-			}
-
-			@Override
-			public MutableTypeKind getKind() {
-				return MutableTypeKind.METHOD;
-			}			
-		};
+		}
+		
+		return this.type.getValue();
 	}
 
 	@Override
@@ -64,11 +65,18 @@ class MutableExecutable implements MutableExecutableElement {
 	}
 
 	@Override
-	public String toString() {
-		//TODO
-		return executableElement.getSimpleName().toString();
+	public String getSimpleName() {
+		if (!this.simpleName.isInitialized()) {
+			if (this.executableElement != null) {
+				this.simpleName.setValue(executableElement.getSimpleName().toString());
+			} else {
+				throw new RuntimeException("No executable element nor simple name was specified!");
+			}
+		}
+		
+		return this.simpleName.getValue();
 	}
-	
+
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
     	return annotationHolderDelegate.getAnnotation(annotationType);
     }
@@ -82,58 +90,58 @@ class MutableExecutable implements MutableExecutableElement {
 	public Set<AnnotationMirror> getAnnotations() {
 		return annotationHolderDelegate.getAnnotations();
 	}
-
+	
 	@Override
 	public MutableExecutableElement clone() {
-		MutableExecutable result = new MutableExecutable(executableElement, processingEnv);
+		MutableExecutable result = null;
 		
+		if (executableElement != null) {
+			result = new MutableExecutable(executableElement, processingEnv);
+		} else {
+			result = new MutableExecutable(getSimpleName(), processingEnv);
+		}
+
 		annotationHolderDelegate.clone(result.annotationHolderDelegate);
 
-		if (returnTypeInitialized) {
-			result.setReturnType(returnType);
+		if (type.isInitialized()) {
+			result.type.setValue(this.type.getValue());
 		}
-		
+
 		return result;
 	}
 
 	@Override
-	public String getSimpleName() {
-		return executableElement.getSimpleName().toString();
+	public String toString() {
+		//TODO
+		return getSimpleName();
 	}
 
 	@Override
 	public MutableElement getEnclosingElement() {
+		//TODO
 		throw new RuntimeException("Not supported yet");
 	}
 
 	@Override
 	public List<MutableElement> getEnclosedElements() {
+		//TODO
 		return new ArrayList<MutableElement>();
 	}
 
-	@Override
-	public MutableTypeMirror getReturnType() {
-		if (!this.returnTypeInitialized) {
-			this.returnType = processingEnv.getTypeUtils().toMutableType(executableElement.getReturnType());
-			this.returnTypeInitialized = true;
-		}
-		return this.returnType;
-	}
-
-	@Override
-	public MutableExecutableElement setReturnType(MutableTypeMirror type) {
-		this.returnType = type;
-		this.returnTypeInitialized = true;
-		return this;
-	}
-
 	public boolean isVarArgs() {
+		//TODO
 		return executableElement.isVarArgs();
 	}
 
 	@Override
-	public MutableAnnotationValue getDefaultValue() {
-		//TODO
+	public List<MutableTypeParameterElement> getTypeParameters() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<MutableVariableElement> getParameters() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

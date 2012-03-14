@@ -34,8 +34,10 @@ class AnnotationHolderDelegate implements HasAnnotations {
 	}
 
 	private void copyAnnotations() {
-		for (AnnotationMirror annotation: element.getAnnotationMirrors()) {
-			annotations.add(annotation);
+		if (element != null) {
+			for (AnnotationMirror annotation: element.getAnnotationMirrors()) {
+				annotations.add(annotation);
+			}
 		}
 	}
 

@@ -38,6 +38,8 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
+import sk.seges.sesam.core.pap.model.mutable.api.reference.ExecutableElementReference;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 
 public class MutableTypes implements Types {
@@ -118,6 +120,25 @@ public class MutableTypes implements Types {
 	@Override
 	public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
 		return this.types.isAssignable(t1, t2);
+	}
+
+	public boolean isAssignable(MutableTypeMirror t1, MutableTypeMirror t2) {
+		if (isSameType(t1, t2)) {
+			return true;
+		}
+
+		if (implementsType(t1, t2)) {
+			return true;
+		}
+
+		if (t1.getKind().isDeclared()) {
+			if (((MutableDeclaredType)t1).getSuperClass() == null) {
+				return false;
+			}
+			return isAssignable(((MutableDeclaredType)t1).getSuperClass(), t2);
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -699,6 +720,10 @@ public class MutableTypes implements Types {
 		}
 		
 		return mutableType;
+	}
+
+	public ExecutableElementReference getReferenceToMethod(MutableExecutableElement executableElement, MutableReferenceType referenceType) {
+		return new ExecutableReference(executableElement, referenceType);
 	}
 
 	public MutableReferenceTypeValue getReferenceValue(MutableDeclaredType declaredType, MutableReferenceType referenceType) {

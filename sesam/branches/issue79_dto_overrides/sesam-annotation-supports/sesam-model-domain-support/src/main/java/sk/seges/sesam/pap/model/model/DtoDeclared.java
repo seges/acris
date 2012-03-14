@@ -13,6 +13,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.model.InitializableValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -31,7 +32,6 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.utils.InitializableValue;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedClass, DtoDeclaredType {
@@ -204,7 +204,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 			}
 			
 			if (this.domainType.getValue() == null && dtoType != null) {
-				this.domainType.setValue((DomainDeclaredType) getTransferObjectUtils().getDomainType(dtoType));
+				this.domainType.setValue((DomainDeclaredType) getTransferObjectUtils().getDomainType(dtoType.clone()));
 			}
 
 			this.domainType.setInitialized();
@@ -266,7 +266,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 	
 	private MutableExecutableElement toMutableMethod(ExecutableElement domainMethod) {
 		MutableExecutableElement dtoMethod = getElements().toMutableElement(domainMethod);
-		dtoMethod.setReturnType(getTransferObjectUtils().getDomainType(domainMethod.getReturnType()));
+		dtoMethod.asType().setReturnType(getTransferObjectUtils().getDomainType(domainMethod.getReturnType()).getDto());
 		return dtoMethod;
 	}
 	
@@ -319,7 +319,11 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 				}
 			}
 			
-			return this.idMethod.setValue(getElements().toMutableElement(idMethod));
+			if (idMethod != null) {
+				return this.idMethod.setValue(getElements().toMutableElement(idMethod));
+			}
+			
+			return this.idMethod.setValue(null);
 		}
 		
 		return this.idMethod.getValue();

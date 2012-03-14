@@ -17,11 +17,14 @@ import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActionType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.provider.ConfigurationCache;
@@ -108,6 +111,9 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 
 			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
 			DomainType domainReturnType = dtoReturnType.getDomain();
+			if (domainReturnType.getKind().isDeclared()) {
+				((DomainDeclaredType) domainReturnType).renameTypeParameter(RenameActionType.PREFIX, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_", null, true);
+			}
 			
 			types.add(domainReturnType);
 

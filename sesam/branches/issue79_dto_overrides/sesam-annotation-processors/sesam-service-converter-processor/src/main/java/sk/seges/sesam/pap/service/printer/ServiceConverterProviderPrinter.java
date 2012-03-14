@@ -1,16 +1,13 @@
 package sk.seges.sesam.pap.service.printer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.printer.TypePrinter;
-import sk.seges.sesam.core.pap.utils.ParametersFilter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
@@ -23,7 +20,6 @@ import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
 import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinter {
 
@@ -35,30 +31,22 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 	@Override
 	public void initialize(ServiceTypeElement serviceTypeElement, MutableDeclaredType outputName) {}
 
-	private void initialize(ServiceTypeElement serviceTypeElement) {
-		MutableDeclaredType converterProviderType = processingEnv.getTypeUtils().toMutableType(ConverterProvider.class);
+	protected void initialize(ServiceTypeElement serviceTypeElement) {
 		
-		new TypePrinter(pw).printTypeDefinition(null, new ServiceConvertProviderType(serviceTypeElement, processingEnv));
+		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
+		
+		new TypePrinter(pw).printTypeDefinition(Modifier.PROTECTED, serviceConvertProviderType);
 		pw.println(" {");
 		pw.println();
 		
-		ParameterElement[] generatedParameters = ParametersFilter.NOT_PROPAGATED.filterParameters(parametersResolver.getConstructorAditionalParameters());
-
-		List<ParameterElement> filteredParameters = new ArrayList<ParameterElement>();
-		for (ParameterElement generatedParameter: generatedParameters) {
-			if (!generatedParameter.getType().equals(converterProviderType)) {
-				filteredParameters.add(generatedParameter);
-			}
-		}
-		
-		generatedParameters = filteredParameters.toArray(new ParameterElement[] {});
+		ParameterElement[] generatedParameters = serviceConvertProviderType.getConverterParameters(parametersResolver);
 		
 		for (ParameterElement generatedParameter: generatedParameters) {
-			pw.println("private final ", generatedParameter.getType(), " " + generatedParameter.getName() + ";");
+			pw.println(Modifier.PROTECTED.toString() + " " + Modifier.FINAL.toString() + " ", generatedParameter.getType(), " " + generatedParameter.getName() + ";");
 			pw.println();
 		}
 		
-		pw.print(serviceTypeElement.getSimpleName() + ServiceConvertProviderType.CONVERTER_PROVIDER_SUFFIX + "(");
+		pw.print(Modifier.PROTECTED.toString() + " ", serviceTypeElement.getSimpleName() + ServiceConvertProviderType.CONVERTER_PROVIDER_SUFFIX + "(");
 		
 		int i = 0;
 		for (ParameterElement generatedParameter: generatedParameters) {

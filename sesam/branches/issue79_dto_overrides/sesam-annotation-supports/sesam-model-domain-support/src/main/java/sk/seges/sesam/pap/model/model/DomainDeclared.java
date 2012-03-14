@@ -129,7 +129,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		
 		if (domainDefinitionConfiguration == null) {
 			if (domainType != null) {
-				return new DtoDeclared(domainType, environmentContext, ensureConfigurationContext());
+				return new DtoDeclared(domainType.clone(), environmentContext, ensureConfigurationContext());
 			}
 			
 			return null;
@@ -369,7 +369,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	@Override
 	protected MutableDeclaredType getDelegate() {
 		if (domainType != null) {
-			return domainType;
+			return domainType.clone();
 		}
 		return dtoType.clone();
 	}
@@ -399,7 +399,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			
 			int i = 0;
 			for (MutableTypeVariable typeVariable: dtoType.getTypeVariables()) {
-				typeVariables[i++] = (DomainTypeVariable)getTransferObjectUtils().getDtoType(typeVariable).getDomain();
+				typeVariables[i++] = (DomainTypeVariable)getTransferObjectUtils().getDtoType(typeVariable.clone()).getDomain();
 			}
 			
 			MutableDeclaredType result = setTypeVariables(typeVariables);

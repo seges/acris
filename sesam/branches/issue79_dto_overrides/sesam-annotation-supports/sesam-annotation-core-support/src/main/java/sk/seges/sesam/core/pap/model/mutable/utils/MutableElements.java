@@ -35,6 +35,10 @@ public class MutableElements implements Elements {
 		return this.elements.getTypeElement(name);
 	}
 
+	public MutableExecutableElement getExecutableElement(String name) {
+		return new MutableExecutable(name, processingEnv);
+	}
+	
 	@Override
 	public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(AnnotationMirror a) {
 		return this.elements.getElementValuesWithDefaults(a);
