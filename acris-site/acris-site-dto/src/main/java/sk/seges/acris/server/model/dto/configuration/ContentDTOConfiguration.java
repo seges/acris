@@ -11,7 +11,6 @@ import sk.seges.acris.node.MenuItem;
 import sk.seges.sesam.pap.model.annotation.Annotations;
 import sk.seges.sesam.pap.model.annotation.Copy;
 import sk.seges.sesam.pap.model.annotation.Field;
-import sk.seges.sesam.pap.model.annotation.Id;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
@@ -25,9 +24,6 @@ public interface ContentDTOConfiguration extends IDataTransferObject {
 
 	@Ignore
 	void webId();
-
-	@Id
-	void id();
 
 	@Size(min = 1, max = 255)
 	@Pattern(regexp = "[a-zA-Z0-9\\-_/]*")
