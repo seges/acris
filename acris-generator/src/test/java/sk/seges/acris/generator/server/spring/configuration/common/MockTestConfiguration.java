@@ -19,7 +19,7 @@ public class MockTestConfiguration {
 	class MockLightContentFactory implements MockContentFactory {
 
 		@Override
-		public ContentData<Long> constructMockContent() {
+		public ContentData constructMockContent() {
 			return new MockContent();
 		}
 	}

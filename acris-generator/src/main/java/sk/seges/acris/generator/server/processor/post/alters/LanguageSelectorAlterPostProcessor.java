@@ -92,7 +92,7 @@ public class LanguageSelectorAlterPostProcessor extends AbstractAlterPostProcess
 				continue;
 			}
 			
-			ContentData<?> content = contentDataProvider.getContentForLanguage(generatorEnvironment.getContent(), languageValue);
+			ContentData content = contentDataProvider.getContentForLanguage(generatorEnvironment.getContent(), languageValue);
 			
 			if (content == null) {
 				continue;

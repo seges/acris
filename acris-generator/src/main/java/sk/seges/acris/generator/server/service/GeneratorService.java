@@ -41,8 +41,6 @@ import sk.seges.acris.site.shared.service.IWebSettingsService;
  */
 public class GeneratorService implements IGeneratorService {
 
-	private static final long serialVersionUID = 6944837756691206504L;
-
 	private HtmlProcessorFactory htmlProcessorFactory;
 	private IWebSettingsService webSettingsService;
 
@@ -82,7 +80,7 @@ public class GeneratorService implements IGeneratorService {
 		result.setLanguage(language);
 		result.setDefaultToken(true);
 		
-		ContentData<?> content = contentDataProvider.getContent(result);
+		ContentData content = contentDataProvider.getContent(result);
 		if (content != null) {
 			result.setNiceUrl(content.getNiceUrl());
 		} else {

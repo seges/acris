@@ -70,7 +70,7 @@ public class HtmlPostProcessor {
 	}
 
 	protected GeneratorEnvironment getGeneratorEnvironment(GeneratorToken generatorToken, boolean indexFile) {
-		ContentData<?> content = contentMetaDataProvider.getContent(generatorToken);
+		ContentData content = contentMetaDataProvider.getContent(generatorToken);
 		return new DefaultGeneratorEnvironment(webSettings, generatorToken, content, indexFile);
 	}
 	

@@ -14,7 +14,7 @@ public class MockContentInfoProvider implements ContentDataProvider {
 		this.factory = factory;
 	}
 	
-	public ContentData<?> getContentForLanguage(ContentData<?> content, String targetLanguage) {
+	public ContentData getContentForLanguage(ContentData content, String targetLanguage) {
 		return content;
 	}
 	
@@ -23,14 +23,14 @@ public class MockContentInfoProvider implements ContentDataProvider {
 	}
 	
 	public List<String> getAvailableNiceurls(String lang, String webId) {
-		ContentData<Long> mockContent = factory.constructMockContent();
+		ContentData mockContent = factory.constructMockContent();
 		List<String> contents = new ArrayList<String>();
 		contents.add(mockContent.getNiceUrl());
 		return contents;
 	}
 
 	@Override
-	public ContentData<?> getContent(GeneratorToken token) {
+	public ContentData getContent(GeneratorToken token) {
 		return factory.constructMockContent();
 	}
 }

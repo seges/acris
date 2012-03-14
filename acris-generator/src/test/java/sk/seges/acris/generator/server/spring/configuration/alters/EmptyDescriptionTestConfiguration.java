@@ -21,7 +21,7 @@ public class EmptyDescriptionTestConfiguration {
 
 		@SuppressWarnings("serial")
 		@Override
-		public ContentData<Long> constructMockContent() {
+		public ContentData constructMockContent() {
 			return new MockContent() {
 				@Override
 				public String getDescription() {
