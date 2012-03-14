@@ -4,20 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import sk.seges.acris.domain.shared.domain.api.ContentData;
+import sk.seges.acris.domain.shared.domain.api.ContentPkData;
 
 
-public class MockContent implements ContentData<Long> {
+public class MockContent implements ContentData {
 
 	private static final long serialVersionUID = 7293316505683824943L;
 
-	@Override
-	public void setId(Long t) {
-	}
-
-	@Override
-	public Long getId() {
-		return 0L;
-	}
 
 	@Override
 	public String getKeywords() {
@@ -84,30 +77,6 @@ public class MockContent implements ContentData<Long> {
 
 	@Override
 	public void setToken(String token) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<ContentData<Long>> getSubContents() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setSubContents(List<? extends ContentData<Long>> subContents) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ContentData<Long> getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setParent(ContentData<Long> parent) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -288,6 +257,71 @@ public class MockContent implements ContentData<Long> {
 
 	@Override
 	public void setParams(String params) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setId(ContentPkData t) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ContentPkData getId() {
+		return new ContentPkData() {
+			
+			@Override
+			public void setLanguage(String language) {
+			}
+			
+			@Override
+			public String getLanguage() {
+				return "sk";
+			}
+			
+			@Override
+			public void setWebId(String webId) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public String getWebId() {
+				return "test";
+			}
+			
+			@Override
+			public Long getId() {
+				return 0L;
+			}
+			
+			@Override
+			public void setId(Long t) {
+			}
+		};
+	}
+
+	@Override
+	public List<? extends ContentData> getSubContents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSubContents(List<? extends ContentData> subContents) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ContentData getParent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setParent(ContentData parent) {
 		// TODO Auto-generated method stub
 		
 	}

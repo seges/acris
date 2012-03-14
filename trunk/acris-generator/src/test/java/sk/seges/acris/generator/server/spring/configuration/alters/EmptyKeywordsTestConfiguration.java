@@ -21,7 +21,7 @@ public class EmptyKeywordsTestConfiguration {
 
 		@SuppressWarnings("serial")
 		@Override
-		public ContentData<Long> constructMockContent() {
+		public ContentData constructMockContent() {
 			return new MockContent() {
 
 				@Override

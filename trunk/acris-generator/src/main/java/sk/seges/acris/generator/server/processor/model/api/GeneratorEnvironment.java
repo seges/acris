@@ -8,7 +8,7 @@ public interface GeneratorEnvironment {
 
 	GeneratorToken getGeneratorToken();
 	
-	ContentData<?> getContent();
+	ContentData getContent();
 	
 	WebSettingsData getWebSettings();
 		

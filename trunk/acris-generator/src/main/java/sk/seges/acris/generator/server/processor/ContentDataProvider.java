@@ -9,8 +9,8 @@ public interface ContentDataProvider {
 
 	List<String> getAvailableNiceurls(String lang, String webId);
 
-	ContentData<?> getContentForLanguage(ContentData<?> contentData, String targetLanguage);
-	ContentData<?> getContent(GeneratorToken token);
+	ContentData getContentForLanguage(ContentData contentData, String targetLanguage);
+	ContentData getContent(GeneratorToken token);
 
 	boolean exists(GeneratorToken token);
 }

@@ -7,11 +7,11 @@ import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 
 	private GeneratorToken generatorToken;
-	private ContentData<?> content;
+	private ContentData content;
 	private WebSettingsData webSettings;
 	private boolean indexFile;
 	
-	public DefaultGeneratorEnvironment(WebSettingsData webSettings, GeneratorToken generatorToken, ContentData<?> content, boolean indexFile) {
+	public DefaultGeneratorEnvironment(WebSettingsData webSettings, GeneratorToken generatorToken, ContentData content, boolean indexFile) {
 		this.generatorToken = generatorToken;
 		this.webSettings = webSettings;
 		this.content = content;
@@ -22,7 +22,7 @@ public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 		return generatorToken;
 	}
 	
-	public ContentData<?> getContent() {
+	public ContentData getContent() {
 		return content;
 	}
 	

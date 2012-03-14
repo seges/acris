@@ -24,7 +24,7 @@ public class DisabledCacheScriptTestConfiguration {
 	class MockLightContentFactory implements MockContentFactory {
 
 		@Override
-		public ContentData<Long> constructMockContent() {
+		public ContentData constructMockContent() {
 			return new MockContent();
 		}
 	}
