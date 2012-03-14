@@ -7,9 +7,10 @@ import java.util.List;
 
 import sk.seges.acris.domain.server.domain.api.ContentBlobData;
 import sk.seges.acris.domain.shared.domain.api.ContentData;
+import sk.seges.acris.domain.shared.domain.api.ContentPkData;
 import sk.seges.acris.domain.shared.domain.base.ContentPkBase;
 
-public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData {
+public class ContentBase implements ContentData, ContentBlobData {
 
 	private static final long serialVersionUID = 1744660288284574333L;
 
@@ -69,8 +70,8 @@ public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData 
 	}
 
 	@Override
-	public void setId(ContentPkBase id) {
-		this.id = id;
+	public void setId(ContentPkData id) {
+		this.id = (ContentPkBase) id;
 	}
 
 	@Override
@@ -146,23 +147,23 @@ public class ContentBase implements ContentData<ContentPkBase>, ContentBlobData 
 	}
 
 	@Override
-	public List<? extends ContentData<ContentPkBase>> getSubContents() {
+	public List<ContentBase> getSubContents() {
 		return subContents;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void setSubContents(List<? extends ContentData<ContentPkBase>> subContents) {
+	public void setSubContents(List<? extends ContentData> subContents) {
 		this.subContents = (List<ContentBase>) subContents;
 	}
 
 	@Override
-	public ContentData<ContentPkBase> getParent() {
+	public ContentBase getParent() {
 		return parent;
 	}
 
 	@Override
-	public void setParent(ContentData<ContentPkBase> parent) {
+	public void setParent(ContentData parent) {
 		this.parent = (ContentBase) parent;
 	}
 
