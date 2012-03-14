@@ -10,7 +10,7 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
 @BeanWrapper
 @MetaModel
-public interface ContentData<T> extends IMutableDomainObject<T>, HasWebId {
+public interface ContentData extends IMutableDomainObject<ContentPkData>, HasWebId {
 
 	String getTitle();
 
@@ -36,13 +36,13 @@ public interface ContentData<T> extends IMutableDomainObject<T>, HasWebId {
 
 	void setToken(String token);
 
-	List<? extends ContentData<T>> getSubContents();
+	List<? extends ContentData> getSubContents();
 
-	void setSubContents(List<? extends ContentData<T>> subContents);
+	void setSubContents(List<? extends ContentData> subContents);
 
-	ContentData<T> getParent();
+	ContentData getParent();
 
-	void setParent(ContentData<T> parent);
+	void setParent(ContentData parent);
 
 	String getLabel();
 

@@ -8,5 +8,4 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
 @BeanWrapper
 @MetaModel
-public interface ContentPkData<T> extends IMutableDomainObject<T>, HasWebId, HasLanguage {
-}
+public interface ContentPkData extends IMutableDomainObject<Long>, HasWebId, HasLanguage {}
