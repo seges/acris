@@ -3,7 +3,7 @@ package sk.seges.sesam.pap.model.model;
 import java.util.LinkedList;
 import java.util.List;
 
-public enum ParameterFilter {
+public enum ConverterParameterFilter {
 
 	NAME {
 		@Override

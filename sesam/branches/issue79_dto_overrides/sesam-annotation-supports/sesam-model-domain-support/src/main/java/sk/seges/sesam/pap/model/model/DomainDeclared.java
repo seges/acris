@@ -425,4 +425,42 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	public MutableDeclaredType asMutable() {
 		return ensureDelegateType();
 	}
+
+	public DomainDeclaredType getBaseType() {
+		return getBaseType(this);
+	}
+	
+//	private Set<MutableTypeMirror> getBaseBounds(Set<? extends MutableTypeMirror> bounds) {
+//		
+//		Set<MutableTypeMirror> baseBounds = new HashSet<MutableTypeMirror>();
+//		
+//		for (MutableTypeMirror lowerBound : bounds) {
+//			DomainType domainType = environmentContext.getProcessingEnv().getTransferObjectUtils().getDomainType(lowerBound);
+//			if (domainType.getKind().isDeclared()) {
+//				baseBounds.add(((DomainDeclaredType)domainType).getBaseType());
+//			} else {
+//				baseBounds.add(domainType);
+//			}
+//		}
+//		
+//		return baseBounds;
+//	}
+	
+	private DomainDeclaredType getBaseType(DomainDeclared domain) {
+//		for (ConfigurationTypeElement configuration: domain.getDto().getConfigurations()) {
+//			DomainDeclaredType instantiableDomain = configuration.getDomain();
+//			if (instantiableDomain != null) {
+//				if (instantiableDomain.getTypeVariables().size() > 0) {
+//					
+//					for (MutableTypeVariable typeVariable: instantiableDomain.getTypeVariables()) {
+//						typeVariable.setLowerBounds(getBaseBounds(typeVariable.getLowerBounds()));
+//						typeVariable.setUpperBounds(getBaseBounds(typeVariable.getUpperBounds()));
+//					}
+//				}
+//				return instantiableDomain;
+//			}
+//		}
+//		
+		return this;
+	}
 }

@@ -31,6 +31,7 @@ import sk.seges.sesam.pap.model.model.api.GeneratedClass;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
+import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
@@ -289,7 +290,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 	}
 
 	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver) {
-		return getConverterParameters(parametersResolver, 0);
+		return getConverterParameters(parametersResolver, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 	}
 	
 	private List<ConverterParameter> getConstructorParameters(ExecutableElement method) {
@@ -324,7 +325,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		return result;
 	}
 	
-	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver, int constructorIndex) {
+	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver, ConverterInstancerType converterInstancerType) {
 
 		List<ConverterParameter> parameters = new LinkedList<ConverterParameter>();
 
@@ -344,9 +345,9 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				List<ConverterParameter> constructorParameters = null;
 				
 				//TODO
-				if (constructorIndex != -1) {
-					if (constructors.size() > constructorIndex) {
-						constructorParameters = getConstructorParameters(constructors.get(constructorIndex));
+				if (converterInstancerType.getConstructorIndex() != -1) {
+					if (constructors.size() > converterInstancerType.getConstructorIndex()) {
+						constructorParameters = getConstructorParameters(constructors.get(converterInstancerType.getConstructorIndex()));
 					} else {
 						constructorParameters = getConstructorParameters(constructors.get(0));
 					}
@@ -372,11 +373,11 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			TypeElement cachedConverterType = getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
 			List<ExecutableElement> constructors = getSortedConstructorMethods(cachedConverterType);
 
-			if (constructors != null && constructors.size() > constructorIndex) {
+			if (constructors != null && constructors.size() > converterInstancerType.getConstructorIndex()) {
 
 				List<? extends VariableElement> constructorParameters = null;
-				if (constructorIndex != -1) {
-					constructorParameters = constructors.get(constructorIndex).getParameters();
+				if (converterInstancerType.getConstructorIndex() != -1) {
+					constructorParameters = constructors.get(converterInstancerType.getConstructorIndex()).getParameters();
 				} else {
 					constructorParameters = constructors.get(constructors.size() - 1).getParameters();
 				}

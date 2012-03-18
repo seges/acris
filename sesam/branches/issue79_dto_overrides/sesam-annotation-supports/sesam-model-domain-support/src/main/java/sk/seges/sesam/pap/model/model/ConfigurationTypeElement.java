@@ -1,6 +1,8 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -13,6 +15,7 @@ import javax.lang.model.util.ElementFilter;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
@@ -276,6 +279,17 @@ public class ConfigurationTypeElement extends TomBaseType {
 		return getDto();
 	}
 	
+	private Set<MutableTypeMirror> getDtoBounds(Set<? extends MutableTypeMirror> bounds) {
+	
+		Set<MutableTypeMirror> baseBounds = new HashSet<MutableTypeMirror>();
+		
+		for (MutableTypeMirror lowerBound : bounds) {
+			baseBounds.add(envContext.getProcessingEnv().getTransferObjectUtils().getDomainType(lowerBound).getDto());
+		}
+		
+		return baseBounds;
+	}
+
 	private MutableDeclaredType getDtoType() {
 		
 		if (getDelegateConfigurationTypeElement() != null) {
@@ -292,13 +306,20 @@ public class ConfigurationTypeElement extends TomBaseType {
 				return getTypeUtils().toMutableType((DeclaredType) dtoTypeElement.asType());
 			}
 
-			TypeElement dtoInterface = transferObjectConfiguration.getDtoInterface();
-			if (dtoInterface != null) {
-				if (domainType != null && getTypeUtils().implementsType(domainType, getTypeUtils().toMutableType(dtoInterface.asType()))) {
-					return domainType;
+			if (dtoDeclaredType == null) {
+				TypeElement dtoInterface = transferObjectConfiguration.getDtoInterface();
+				if (dtoInterface != null) {
+					if (domainType != null && getTypeUtils().implementsType(domainType, getTypeUtils().toMutableType(dtoInterface.asType()))) {
+						MutableDeclaredType domain = domainType.clone();
+						for (MutableTypeVariable typeVariable: domain.getTypeVariables()) {
+							typeVariable.setLowerBounds(getDtoBounds(typeVariable.getLowerBounds()));
+							typeVariable.setUpperBounds(getDtoBounds(typeVariable.getUpperBounds()));
+						}
+						return domain;
+					}
+					
+					return getTypeUtils().toMutableType((DeclaredType) dtoInterface.asType());
 				}
-				
-				return getTypeUtils().toMutableType((DeclaredType) dtoInterface.asType());
 			}
 		}
 
@@ -371,7 +392,7 @@ public class ConfigurationTypeElement extends TomBaseType {
 	
 	public ConverterTypeElement getConverter() {
 
-		if (!converterTypeElementInitialized) {
+		if (!converterTypeElementInitialized || getDomain().hasTypeParameters()) {
 			this.converterTypeElement = getConverter(transferObjectConfiguration);
 			this.converterTypeElementInitialized = true;
 		}

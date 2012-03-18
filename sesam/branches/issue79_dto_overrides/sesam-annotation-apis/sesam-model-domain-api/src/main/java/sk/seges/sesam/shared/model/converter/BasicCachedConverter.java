@@ -22,9 +22,9 @@ import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
 
 public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConverter<DTO, DOMAIN>, InstantiableDtoConverter<DTO, DOMAIN> {
 
-	protected MapConvertedInstanceCache cache;
+	protected ConvertedInstanceCache cache;
 	
-	public BasicCachedConverter(MapConvertedInstanceCache cache) {
+	public BasicCachedConverter(ConvertedInstanceCache cache) {
 		this.cache = cache;
 	}
 

@@ -242,7 +242,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 	}
 		
 	public ConverterTypeElement getConverter() {
-		if (!this.converterType.isInitialized()) {
+		if (!this.converterType.isInitialized() || hasTypeParameters()) {
 	 		ConfigurationTypeElement converterDefinitionConfiguration = getConverterDefinitionConfiguration();
 			
 			if (converterDefinitionConfiguration != null) {

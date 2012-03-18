@@ -19,15 +19,16 @@ import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 import sk.seges.sesam.pap.service.configurer.ServiceConverterProcessorConfigurer;
-import sk.seges.sesam.pap.service.model.ConverterParametersFilter;
+import sk.seges.sesam.pap.service.model.DefaultServiceConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
-import sk.seges.sesam.pap.service.model.ParametersFilter;
+import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.ConverterParameterFieldPrinter;
 import sk.seges.sesam.pap.service.printer.LocalServiceFieldPrinter;
@@ -123,8 +124,8 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		super.printAnnotations(context);
 	}
 	
-	protected ParametersFilter getParametersFilter() {
-		return new ConverterParametersFilter();
+	protected ServiceConverterParametersFilter getParametersFilter() {
+		return new DefaultServiceConverterParametersFilter();
 	}
 	
 	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw, ServiceTypeElement serviceTypeElement) {
@@ -176,7 +177,7 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 			elementPrinter.finish(serviceTypeElement);
 		}
 	
-		this.converterProviderPrinter.printConverterMethods(true, 1);
+		this.converterProviderPrinter.printConverterMethods(true, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
 	}
 
 	protected ParametersResolver getParametersResolver() {
@@ -194,5 +195,4 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 
 		return parameter.getName();
 	}
-
 }

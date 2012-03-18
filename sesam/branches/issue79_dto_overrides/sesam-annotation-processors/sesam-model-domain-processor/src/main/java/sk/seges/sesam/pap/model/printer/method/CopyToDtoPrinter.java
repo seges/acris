@@ -161,7 +161,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
-			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, DOMAIN_NAME, null, pw);
+			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, domainsuperClass.getSimpleName() + ".class", null, pw);
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
 		}

@@ -21,7 +21,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter.ConverterTargetType;
+import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
@@ -78,7 +78,8 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 					//TODO check if getId is null
 
 					if (referenceDomainType.getKind().isDeclared()) {
-						printCopyNested(pathResolver, fullPath, referenceDomainType, context.getDomainMethod(), pw, null, dtoName);
+						String parameterName = "(" + Class.class.getSimpleName() + "<" + referenceDomainType.getDto().getSimpleName() + ">)null";
+						printCopyNested(pathResolver, fullPath, referenceDomainType, context.getDomainMethod(), pw, parameterName, dtoName);
 						instances.add(fullPath);
 					}
 					

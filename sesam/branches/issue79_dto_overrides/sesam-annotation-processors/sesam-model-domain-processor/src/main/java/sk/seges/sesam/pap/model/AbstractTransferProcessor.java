@@ -149,7 +149,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		
 		List<ExecutableElement> overridenMethods = ElementFilter.methodsIn(configurationTypeElement.asConfigurationElement().getEnclosedElements());
 		
-		DomainDeclaredType domainTypeElement = configurationTypeElement.getDomain();
+		DomainDeclaredType domainTypeElement = configurationTypeElement.getInstantiableDomain();
 		DomainDeclaredType processingElement = domainTypeElement;
 	
 		List<String> generated = new ArrayList<String>();

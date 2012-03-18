@@ -20,14 +20,23 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
+import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection<DTO>, Collection<DOMAIN>> {
 
-	private ConverterProvider converterProvider;
-
+	private final ConverterProvider converterProvider;
+	private final ConvertedInstanceCache cache;
+	
+	public CollectionConverter(ConvertedInstanceCache cache, ConverterProvider converterProvider) {
+		this.cache = cache;
+		this.converterProvider = converterProvider;
+	}
+	
 	public CollectionConverter(ConverterProvider converterProvider) {
+		this.cache = new MapConvertedInstanceCache();
 		this.converterProvider = converterProvider;
 	}
 
@@ -95,7 +104,7 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		while (iterator.hasNext()) {
 			DOMAIN domain = (DOMAIN)iterator.next();
 			
-			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDomain(domain);
+			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDomain(domain, cache);
 			
 			if (converter == null) {
 				result.add((DTO)domain);
@@ -125,7 +134,7 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		while (dtoIterator.hasNext()) {
 			DTO dto = (DTO)dtoIterator.next();
 
-			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDto(dto);
+			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDto(dto, cache);
 
 			if (converter == null) {
 				result.add((DOMAIN)dto);
@@ -153,7 +162,7 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		while (iterator.hasNext()) {
 
 			DOMAIN domain = (DOMAIN)iterator.next();
-			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDto(dto);
+			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDto(dto, cache);
 
 			if (converter == null && dto.equals(domain)) {
 				return domain;

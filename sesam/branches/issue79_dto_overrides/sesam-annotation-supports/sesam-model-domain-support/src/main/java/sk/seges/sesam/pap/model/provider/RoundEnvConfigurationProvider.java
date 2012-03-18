@@ -134,7 +134,11 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 	
 	protected final List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type) {
 
-		List<ConfigurationTypeElement> cachedConfigurations = targetType.retrieveConfigurations(type, envContext.getConfigurationEnv().getCache());
+		List<ConfigurationTypeElement> cachedConfigurations = null;
+		
+		if (!type.getKind().isDeclared() || !((MutableDeclaredType)type).hasTypeParameters()) {
+			 cachedConfigurations = targetType.retrieveConfigurations(type, envContext.getConfigurationEnv().getCache());
+		}
 		
 		if (cachedConfigurations != null) {
 			return cachedConfigurations;
@@ -146,8 +150,10 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		
 		Collections.sort(result, new ConfigurationComparator());
 
-		targetType.storeConfigurations(type, result, envContext.getConfigurationEnv().getCache());
-
+		if (!type.getKind().isDeclared() || !((MutableDeclaredType)type).hasTypeParameters()) {
+			targetType.storeConfigurations(type, result, envContext.getConfigurationEnv().getCache());
+		}
+		
 		return result;
 	}
 	

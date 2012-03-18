@@ -27,7 +27,7 @@ public class ConstructorPrinter {
 		this.outputName = outputName;
 	}
 
-	interface ConstructorHelper {
+	protected interface ConstructorHelper {
 
 		boolean existsParameter(String field, ExecutableElement constructor);
 		boolean existsField(String field, ExecutableElement constructor);
@@ -38,7 +38,7 @@ public class ConstructorPrinter {
 		void finish(List<String> initializedFields, ExecutableElement superConstructor, FormattedPrintWriter pw);
 	}
 
-	class DefaultConstructorHelper implements ConstructorHelper {
+	protected class DefaultConstructorHelper implements ConstructorHelper {
 
 		@Override
 		public boolean existsParameter(String field, ExecutableElement constructor) {
@@ -112,11 +112,11 @@ public class ConstructorPrinter {
 		}
 	}
 	
-	private void printConstructor(ExecutableElement constructor, ParameterElement... additionalParameters) {
+	protected void printConstructor(ExecutableElement constructor, ParameterElement... additionalParameters) {
 		printConstructor(constructor, constructor, new DefaultConstructorHelper(), true, additionalParameters);
 	}
 		
-	private void printConstructor(ExecutableElement constructor, ExecutableElement superConstructor, ConstructorHelper constructorPrinter, boolean callSuperConstructor, ParameterElement... additionalParameters) {
+	protected void printConstructor(ExecutableElement constructor, ExecutableElement superConstructor, ConstructorHelper constructorPrinter, boolean callSuperConstructor, ParameterElement... additionalParameters) {
 
 		List<String> initializedFields = new ArrayList<String>();
 		

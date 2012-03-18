@@ -8,13 +8,13 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.printer.converter.AbstractConverterPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
-public abstract class AbstractServiceObjectConverterProviderPrinter implements NestedServiceConverterElementPrinter {
+public abstract class AbstractServiceObjectConverterProviderPrinter extends AbstractConverterPrinter implements NestedServiceConverterElementPrinter {
 
-	protected final TransferObjectProcessingEnvironment processingEnv;
 	protected final FormattedPrintWriter pw;
 	protected final ConverterProviderPrinter converterProviderPrinter;
 	
@@ -22,7 +22,7 @@ public abstract class AbstractServiceObjectConverterProviderPrinter implements N
 
 	public AbstractServiceObjectConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw,
 			ConverterProviderPrinter converterProviderPrinter) {
-		this.processingEnv = processingEnv;
+		super(processingEnv);
 		this.pw = pw;
 		this.converterProviderPrinter = converterProviderPrinter;
 	}

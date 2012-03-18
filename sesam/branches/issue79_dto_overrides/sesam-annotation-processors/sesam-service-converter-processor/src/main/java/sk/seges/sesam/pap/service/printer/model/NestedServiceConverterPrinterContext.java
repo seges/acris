@@ -8,17 +8,23 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 
 public class NestedServiceConverterPrinterContext {
 
-	private DomainDeclaredType rawDomain;
-	private DtoDeclaredType rawDto;
+	private final DomainDeclaredType rawDomain;
+	private final DomainDeclaredType domain;
+
+	private final DtoDeclaredType rawDto;
+	private final DtoDeclaredType dto;
 	
-	private ConverterTypeElement converterType;
-	private ExecutableElement localMethod;
+	private final ConverterTypeElement converterType;
+	private final ExecutableElement localMethod;
 	
-	public NestedServiceConverterPrinterContext(DomainDeclaredType rawDomain, DtoDeclaredType rawDto, ConverterTypeElement converterType, ExecutableElement localMethod) {
+	public NestedServiceConverterPrinterContext(DomainDeclaredType rawDomain, DomainDeclaredType domain, DtoDeclaredType rawDto, 
+			DtoDeclaredType dto, ConverterTypeElement converterType, ExecutableElement localMethod) {
 		this.rawDomain = rawDomain;
 		this.rawDto = rawDto;
 		this.converterType = converterType;
 		this.localMethod = localMethod;
+		this.dto = dto;
+		this.domain = domain;
 	}
 	
 	public ConverterTypeElement getConverterType() {
@@ -35,5 +41,13 @@ public class NestedServiceConverterPrinterContext {
 	
 	public DtoDeclaredType getRawDto() {
 		return rawDto;
+	}
+	
+	public DomainDeclaredType getDomain() {
+		return domain;
+	}
+	
+	public DtoDeclaredType getDto() {
+		return dto;
 	}
 }

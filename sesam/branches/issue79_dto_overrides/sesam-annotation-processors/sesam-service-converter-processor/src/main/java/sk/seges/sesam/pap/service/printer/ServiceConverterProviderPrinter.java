@@ -100,9 +100,11 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 
 			if (returnDtoType.getConverter() != null) {
 				DomainDeclaredType rawDomain = (DomainDeclaredType)returnDtoType.getDomain();
+				//TODO why not raw domain
 				//returnDtoType.getConverter().getConfiguration().getRawDomain();
 				DtoDeclaredType rawDto = returnDtoType.getConverter().getConfiguration().getRawDto();
-				nestedPrinter.print(new NestedServiceConverterPrinterContext(rawDomain, rawDto, returnDtoType.getConverter(), localMethod));
+				nestedPrinter.print(new NestedServiceConverterPrinterContext(rawDomain, rawDomain, rawDto, 
+						returnDtoType.getConverter().getConfiguration().getDto(), returnDtoType.getConverter(), localMethod));
 			}
 		}
 
@@ -111,7 +113,8 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 			DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
 			if (parameterDtoType.getConverter() != null) {
 				nestedPrinter.print(new NestedServiceConverterPrinterContext(parameterDtoType.getConverter().getConfiguration().getRawDomain(), 
-						parameterDtoType.getConverter().getConfiguration().getRawDto(), parameterDtoType.getConverter(), localMethod));
+						(DomainDeclaredType) parameterDtoType.getDomain(), parameterDtoType.getConverter().getConfiguration().getRawDto(),
+						(DtoDeclaredType) parameterDtoType, parameterDtoType.getConverter(), localMethod));
 			}
 		}
 	}

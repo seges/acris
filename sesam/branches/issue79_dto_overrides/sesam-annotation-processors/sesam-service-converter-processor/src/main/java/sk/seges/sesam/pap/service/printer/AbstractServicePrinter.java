@@ -17,10 +17,11 @@ import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.ParameterFilter;
+import sk.seges.sesam.pap.model.model.ConverterParameterFilter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
+import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
 import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
@@ -69,7 +70,7 @@ public class AbstractServicePrinter {
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 			
 				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolver, 1));
+					parameters.addAll(converter.getConverterParameters(parametersResolver, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
 					converters.add(converter);
 				}
 			}
@@ -82,7 +83,7 @@ public class AbstractServicePrinter {
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 
 				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolver, 1));
+					parameters.addAll(converter.getConverterParameters(parametersResolver, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
 					converters.add(converter);
 				}
 			}
@@ -138,7 +139,7 @@ public class AbstractServicePrinter {
 		for (ConverterParameter parameter : parameters) {
 			int index = 1;
 			String name = parameter.getName();
-			while (ParameterFilter.NAME.filterBy(allPparameters, parameter).size() > 0) {
+			while (ConverterParameterFilter.NAME.filterBy(allPparameters, parameter).size() > 0) {
 				parameter.setName(name + index++);
 			}
 			allPparameters.add(parameter);
@@ -174,5 +175,4 @@ public class AbstractServicePrinter {
 
 		return null;
 	}
-
 }

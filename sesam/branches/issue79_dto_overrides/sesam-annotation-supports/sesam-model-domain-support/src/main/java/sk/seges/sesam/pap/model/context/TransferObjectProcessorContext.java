@@ -241,7 +241,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		case CLASS:
 
 			ConfigurationContext context = new ConfigurationContext(envContext.getConfigurationEnv());
-			ConfigurationTypeElement configurationType = envContext.getConfigurationEnv().getConfiguration(getDtoMethod(), (DomainDeclaredType) returnType, context);
+			ConfigurationTypeElement configurationType = envContext.getConfigurationEnv().getConfiguration(getDtoMethod(), ((DomainDeclaredType) returnType).getBaseType(), context);
 			List<ConfigurationTypeElement> configurations = new ArrayList<ConfigurationTypeElement>();
 			configurations.add(configurationType);
 			context.setConfigurations(configurations);
