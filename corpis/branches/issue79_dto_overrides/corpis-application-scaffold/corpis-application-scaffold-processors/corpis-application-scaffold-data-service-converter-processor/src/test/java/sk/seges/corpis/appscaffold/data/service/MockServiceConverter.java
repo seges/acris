@@ -10,13 +10,12 @@ import sk.seges.corpis.appscaffold.data.model.configuration.PagedResultConverter
 import sk.seges.corpis.appscaffold.data.model.converter.MockEntityDTOConverter;
 import sk.seges.corpis.appscaffold.data.model.dto.MockEntityDTO;
 import sk.seges.corpis.appscaffold.data.model.entity.MockEntity;
-import sk.seges.corpis.appscaffold.data.service.MockLocalService;
-import sk.seges.corpis.appscaffold.data.service.MockRemoteService;
 import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationTarget;
 import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
 import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
+import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 import sk.seges.sesam.shared.model.converter.common.CollectionConverter;
@@ -61,29 +60,38 @@ public class MockServiceConverter implements MockRemoteService, ConverterProvide
 	}
 
 	@Override
-	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDomain(DOMAIN domain) {
-		if (domain.getClass().isAssignableFrom(Collection.class)) {
-			return (DtoConverter<DTO, DOMAIN>) new CollectionConverter<DTO, DOMAIN>(this);
+	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDomain(Class<DOMAIN> domainClass, ConvertedInstanceCache cache) {
+		if (domainClass.isAssignableFrom(Collection.class)) {
+			return (DtoConverter<DTO, DOMAIN>) new CollectionConverter<DTO, DOMAIN>(cache, this);
 		}
 		
-		if (domain.getClass().isAssignableFrom(PagedResult.class)) {
-			return (DtoConverter<DTO, DOMAIN>) new PagedResultConverter<DTO, DOMAIN>(this);
+		if (domainClass.isAssignableFrom(PagedResult.class)) {
+			return (DtoConverter<DTO, DOMAIN>) new PagedResultConverter<DTO, DOMAIN>(cache, this);
 		}
 
 		return null;
 	}
 
 	@Override
-	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDto(DTO dto) {
-		if (dto.getClass().isAssignableFrom(Collection.class)) {
-			return (DtoConverter<DTO, DOMAIN>) new CollectionConverter<DTO, DOMAIN>(this);
+	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDto(Class<DTO> dtoClass, ConvertedInstanceCache cache) {
+		if (dtoClass.isAssignableFrom(Collection.class)) {
+			return (DtoConverter<DTO, DOMAIN>) new CollectionConverter<DTO, DOMAIN>(cache, this);
 		}
 		
-		if (dto.getClass().isAssignableFrom(PagedResult.class)) {
-			return (DtoConverter<DTO, DOMAIN>) new PagedResultConverter<DTO, DOMAIN>(this);
+		if (dtoClass.getClass().isAssignableFrom(PagedResult.class)) {
+			return (DtoConverter<DTO, DOMAIN>) new PagedResultConverter<DTO, DOMAIN>(cache, this);
 		}
 
 		return null;
 	}
 
+	@Override
+	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDomain(DOMAIN domain, ConvertedInstanceCache cache) {
+		return (DtoConverter<DTO, DOMAIN>) getConverterForDomain(domain.getClass(), cache);
+	}
+
+	@Override
+	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDto(DTO dto, ConvertedInstanceCache cache) {
+		return (DtoConverter<DTO, DOMAIN>) getConverterForDto(dto.getClass(), cache);
+	}
 }

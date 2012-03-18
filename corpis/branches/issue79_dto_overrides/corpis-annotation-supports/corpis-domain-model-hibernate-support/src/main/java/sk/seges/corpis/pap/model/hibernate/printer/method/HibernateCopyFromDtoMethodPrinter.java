@@ -30,7 +30,6 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, String dtoField, FormattedPrintWriter pw) {
     	if (entityResolver.isLazyReference(domainMethod)) {
     		pw.println("if (", ConverterUtils.class,".convertArg(" + HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
-        	//pw.println("if (" + HibernateParameterResolver.PROPAGATION_TYPE_NAME + ".equals(", PropagationType.class, ".", PropagationType.PROPAGATE, ")) {");
     		pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " != null) {");
     		pw.println("if (" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField) + " != null) {");
     		String converterName = "converter" + MethodHelper.toMethod("", dtoField);
@@ -41,6 +40,7 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
     		pw.print("(", castToDelegate(converter.getDomain()), ")");
     		pw.print(converterName + ".convertFromDto(");
+    		pw.print("(", castToDelegate(converter.getDomain()), ")");
     		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ",");
     		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
     		pw.println("));");
