@@ -5,8 +5,6 @@ import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public abstract class AbstractConverterProvider implements ConverterProvider {
 
-	//TODO - verzie bez cache - vytvori sa cache
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDomain(DOMAIN domain, ConvertedInstanceCache cache) {
