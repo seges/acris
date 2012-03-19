@@ -111,6 +111,7 @@ public abstract class CSVImportExportService {
 		return entries;
 	}
 	
+	
 	/**
 	 * Dummy method, should be overridden for custom import 
 	 * 
@@ -120,5 +121,9 @@ public abstract class CSVImportExportService {
 	 */
 	protected List<CsvEntry> readCustomEntries(String file, List<ImportExportViolation> violations) {
 		return null;
-	}	
+	}
+	
+	
+	
+	
 }
