@@ -195,21 +195,6 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	}
 	
 	private void findIdMethod(TypeElement processingElement, MappingType mappingType, ConfigurationTypeElement domainDefinitionConfiguration, EntityResolver entityResolver) {
-		while (processingElement != null) {
-			
-			List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.getEnclosedElements());
-	
-			if (mappingType.equals(MappingType.AUTOMATIC)) {
-				for (ExecutableElement method: methods) {
-					if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
-						if (this.idMethod != null) {
-							handleMultipleIdentifiers(method, domainDefinitionConfiguration);
-						}
-						this.idMethod = method;
-					}
-				}
-
-	private void findIdMethod(TypeElement processingElement, MappingType mappingType, ConfigurationTypeElement domainDefinitionConfiguration, EntityResolver entityResolver) {
 	
 		while (processingElement != null) {
 
