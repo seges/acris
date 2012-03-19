@@ -20,16 +20,20 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
+import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection<DTO>, Collection<DOMAIN>> {
 
-	private DtoConverter<DTO, DOMAIN> converter;
-
-	public CollectionConverter(DtoConverter<DTO, DOMAIN> converter) {
-		this.converter = converter;
+	private final ConverterProvider converterProvider;
+	private final ConvertedInstanceCache cache;
+	
+	public CollectionConverter(ConvertedInstanceCache cache, ConverterProvider converterProvider) {
+		this.cache = cache;
+		this.converterProvider = converterProvider;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public <T extends Collection<DTO>> T toDto(Collection<DOMAIN> domains, Class<T> targetClass) {
 		if (domains == null) {
@@ -92,10 +96,14 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		}
 		
 		while (iterator.hasNext()) {
+			DOMAIN domain = (DOMAIN)iterator.next();
+			
+			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDomain(domain, cache);
+			
 			if (converter == null) {
-				result.add((DTO)iterator.next());
+				result.add((DTO)domain);
 			} else {
-				result.add(converter.toDto((DOMAIN)iterator.next()));
+				result.add(converter.toDto(domain));
 			}
 		}
 		
@@ -105,39 +113,35 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<DOMAIN> convertFromDto(Collection<DOMAIN> result, Collection<DTO> dtos) {
-		Iterator<?> iterator = dtos.iterator();
+		Iterator<?> dtoIterator = dtos.iterator();
 		
-		List<DOMAIN> removed = new ArrayList<DOMAIN>();
+		List<DOMAIN> originals = new ArrayList<DOMAIN>();
 		
 		Iterator<?> domainIterator = result.iterator();
 
-		if (converter != null) {
-			while (domainIterator.hasNext()) {
-				removed.add((DOMAIN)domainIterator.next());
-			}
-		} else {
-			result.clear();
+		while (domainIterator.hasNext()) {
+			originals.add((DOMAIN)domainIterator.next());
 		}
+
+		result.clear();
 		
-		while (iterator.hasNext()) {
+		while (dtoIterator.hasNext()) {
+			DTO dto = (DTO)dtoIterator.next();
+
+			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDto(dto, cache);
+
 			if (converter == null) {
-				result.add((DOMAIN)iterator.next());
+				result.add((DOMAIN)dto);
 			} else {
-				DTO dto = (DTO)iterator.next();
-				DOMAIN domain = getDomain(result, dto);
+				DOMAIN domain = getDomain(originals, dto);
 				if (domain != null) {
-					converter.convertFromDto(domain, dto);
-					removed.remove(domain);
+					result.add(converter.convertFromDto(domain, dto));
 				} else {
 					result.add(converter.fromDto(dto));
 				}
 			}
 		}
 
-		for (DOMAIN domain: removed) {
-			result.remove(domain);
-		}
-		
 		return result;
 	}
 	
@@ -146,24 +150,18 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		if (dto == null) {
 			return null;
 		}
-		
-		if (converter == null) {
-			Iterator<?> iterator = domains.iterator();
-			
-			while (iterator.hasNext()) {
-				DOMAIN domain = (DOMAIN)iterator.next();
-				if (dto.equals(domain)) {
-					return domain;
-				}
-			}
-		} else {
-			Iterator<?> iterator = domains.iterator();
-	
-			while (iterator.hasNext()) {
-				DOMAIN domain = (DOMAIN)iterator.next();
-				if (converter.equals(domain, dto)) {
-					return domain;
-				}
+
+		Iterator<?> iterator = domains.iterator();
+
+		while (iterator.hasNext()) {
+
+			DOMAIN domain = (DOMAIN)iterator.next();
+			DtoConverter<DTO, DOMAIN> converter = converterProvider.getConverterForDto(dto, cache);
+
+			if (converter == null && dto.equals(domain)) {
+				return domain;
+			} else if (converter != null && converter.equals(domain, dto)) {
+				return domain;
 			}
 		}
 		

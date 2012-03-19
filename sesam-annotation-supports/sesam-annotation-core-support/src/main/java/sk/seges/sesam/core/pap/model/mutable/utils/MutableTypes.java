@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -33,18 +32,21 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
+import sk.seges.sesam.core.pap.model.mutable.api.reference.ExecutableElementReference;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 
 public class MutableTypes implements Types {
 
-	private Types types;
-	private Elements elements;
-	private MutableProcessingEnvironment processingEnv;
+	private final Types types;
+	private final Elements elements;
+	private final MutableProcessingEnvironment processingEnv;
 	
 	public MutableTypes(MutableProcessingEnvironment processingEnv, Elements elements, Types types) {
 		this.types = types;
@@ -120,6 +122,25 @@ public class MutableTypes implements Types {
 		return this.types.isAssignable(t1, t2);
 	}
 
+	public boolean isAssignable(MutableTypeMirror t1, MutableTypeMirror t2) {
+		if (isSameType(t1, t2)) {
+			return true;
+		}
+
+		if (implementsType(t1, t2)) {
+			return true;
+		}
+
+		if (t1.getKind().isDeclared()) {
+			if (((MutableDeclaredType)t1).getSuperClass() == null) {
+				return false;
+			}
+			return isAssignable(((MutableDeclaredType)t1).getSuperClass(), t2);
+		}
+		
+		return false;
+	}
+
 	@Override
 	public boolean contains(TypeMirror t1, TypeMirror t2) {
 		return this.types.contains(t1, t2);
@@ -166,6 +187,10 @@ public class MutableTypes implements Types {
 //		return this.types.directSupertypes(t);
 	}
 
+	public MutableReferenceType getReference(MutableTypeValue type, String name) {
+		return new MutableReference(type, name);
+	}
+	
 	@Override
 	public TypeMirror erasure(TypeMirror t) {
 		return this.types.erasure(t);
@@ -250,7 +275,7 @@ public class MutableTypes implements Types {
 		Set<MutableTypeMirror> bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: upperBounds) {
 			if (bound != null) {
-				if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
+				if (bound != null && (!bound.getKind().isDeclared() || name == null || !bound.toString().equals(Object.class.getCanonicalName()))) {
 					bounds.add(bound);
 				}
 			}
@@ -332,6 +357,10 @@ public class MutableTypes implements Types {
 		if (typeElement != null) {
 			type = typeElement.asType();
 		}
+
+		if (clazz.getPackage() == null) {
+			return new MutableDeclared(type, (String)null, clazz.getSimpleName(), processingEnv);
+		}
 		
 		return new MutableDeclared(type, clazz.getPackage().getName(), clazz.getSimpleName(), processingEnv);
 	}
@@ -351,11 +380,7 @@ public class MutableTypes implements Types {
 	public MutableDeclaredType toMutableType(DeclaredType declaredType) {
 		return (MutableDeclaredType) convertToMutableType(declaredType);
 	}
-	
-	public MutableExecutableType toMutableType(ExecutableElement executableElement) {
-		return new MutableExecutable(executableElement, processingEnv);
-	}
-	
+		
 	public MutableDeclaredType toMutableType(TypeElement typeElement) {
 		return (MutableDeclaredType) toMutableType(typeElement.asType());
 	}
@@ -511,6 +536,11 @@ public class MutableTypes implements Types {
 			List<TypeMirror> typeArgs = new ArrayList<TypeMirror>();
 
 			TypeElement typeElement = elements.getTypeElement(mutableDeclaredType.getCanonicalName());
+			
+			//Generated, does not exists in the java world
+			if (typeElement == null) {
+				return null;
+			}
 			
 			int i = 0;
 
@@ -692,6 +722,14 @@ public class MutableTypes implements Types {
 		return mutableType;
 	}
 
+	public ExecutableElementReference getReferenceToMethod(MutableExecutableElement executableElement, MutableReferenceType referenceType) {
+		return new ExecutableReference(executableElement, referenceType);
+	}
+
+	public MutableReferenceTypeValue getReferenceValue(MutableDeclaredType declaredType, MutableReferenceType referenceType) {
+		return new MutableDeclaredReferenceValue(declaredType, referenceType);
+	}
+	
 	public MutableTypeValue getTypeValue(Object value) {
 		if (value.getClass().isArray()) {
 			return getArrayValue(getArrayType(toMutableType(value.getClass().getComponentType())), (Object[])value);

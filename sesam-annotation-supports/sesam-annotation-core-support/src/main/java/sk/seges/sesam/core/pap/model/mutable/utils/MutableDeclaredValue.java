@@ -74,6 +74,7 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 			return value.toString();
 		}
 
+		//annotation value
 		String result = "new " + type.toString(serializer, typed) + "(";
 		
 		List<Method> methods = getGetterMethods(Arrays.asList(value.getClass().getDeclaredMethods()));
@@ -101,7 +102,7 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 		List<Method> result = new ArrayList<Method>();
 		
 		for (Method method: methods) {
-			if (method.getName().startsWith("get")) {
+			if (method.getName().startsWith("get") && method.getParameterTypes().length == 0) {
 				result.add(method);
 			}
 		}

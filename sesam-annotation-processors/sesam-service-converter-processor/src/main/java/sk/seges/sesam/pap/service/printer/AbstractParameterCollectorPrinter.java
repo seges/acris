@@ -9,19 +9,19 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
-import sk.seges.sesam.pap.service.model.ParametersFilter;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 
-public abstract class AbstractPatameterCollectorPrinter extends AbstractServicePrinter implements ServiceConverterElementPrinter {
+public abstract class AbstractParameterCollectorPrinter extends AbstractServicePrinter implements ServiceConverterElementPrinter {
 
 	protected List<ConverterParameter> converterParameters = new ArrayList<ConverterParameter>();
 	protected final FormattedPrintWriter pw;
-	protected final ParametersFilter parametersFilter;
+	protected final ServiceConverterParametersFilter parametersFilter;
 	
-	protected AbstractPatameterCollectorPrinter(TransferObjectProcessingEnvironment processingEnv, ParametersFilter parametersFilter, ParametersResolver parametersResolver, FormattedPrintWriter pw) {
+	protected AbstractParameterCollectorPrinter(TransferObjectProcessingEnvironment processingEnv, ServiceConverterParametersFilter parametersFilter, ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw) {
 		super(processingEnv, parametersResolver);
 		this.pw = pw;
 		this.parametersFilter = parametersFilter;
@@ -33,7 +33,7 @@ public abstract class AbstractPatameterCollectorPrinter extends AbstractServiceP
 	@Override
 	public void print(ServiceConverterPrinterContext context) {
 		List<ConverterParameter> newParams = parametersFilter.getPropagatedParameters(getConverterParameters(context.getService(), context.getLocalServiceInterface()));
-		converterParameters = unifyParameterNames(converterParameters, newParams);
+		converterParameters = unifyParameterNames(converterParameters, mergeSameParams(newParams));
 		
 		Collections.sort(converterParameters, new Comparator<ConverterParameter>() {
 

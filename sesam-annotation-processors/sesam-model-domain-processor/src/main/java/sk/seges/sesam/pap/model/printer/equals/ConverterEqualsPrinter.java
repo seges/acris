@@ -2,7 +2,6 @@ package sk.seges.sesam.pap.model.printer.equals;
 
 import java.util.Arrays;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
@@ -11,44 +10,49 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
+import sk.seges.sesam.pap.model.printer.AbstractDtoPrinter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
-public class ConverterEqualsPrinter implements TransferObjectElementPrinter {
+public class ConverterEqualsPrinter extends AbstractDtoPrinter implements TransferObjectElementPrinter {
 
 	private static final String DTO_ID = "dtoId";
 
-	private final FormattedPrintWriter pw;
 	private final ConverterProviderPrinter converterProviderPrinter;
 	private final EntityResolver entityResolver;
-	private final ProcessingEnvironment processingEnv;
+	private final FormattedPrintWriter pw;
 
-	public ConverterEqualsPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
-		this.pw = pw;
+	public ConverterEqualsPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+		super(parametersResolver, processingEnv);
 		this.entityResolver = entityResolver;
-		this.processingEnv = processingEnv;
 		this.converterProviderPrinter = converterProviderPrinter;
+		this.pw = pw;
 	}
 
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 		pw.println("public boolean equals(", configurationTypeElement.getDomain(), " " + DOMAIN_NAME + ",",
 											 configurationTypeElement.getDto(), " " + DTO_NAME + ") {");
-		if (entityResolver.shouldHaveIdMethod(configurationTypeElement.getDomain())) {
+		if (entityResolver.shouldHaveIdMethod(configurationTypeElement.getInstantiableDomain())) {
 
-			DomainType domainId = configurationTypeElement.getDomain().getId(entityResolver);
+			DomainType domainId = configurationTypeElement.getInstantiableDomain().getId(entityResolver);
 
+			String methodName = DOMAIN_NAME + "." + configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver).getSimpleName().toString() + "()";
+			
 			if (domainId.getConverter() != null) {
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
-				converterProviderPrinter.printDomainConverterMethodName(domainId.getConverter(), domainId, configurationTypeElement.getDomain().getIdMethod(entityResolver), pw);
+				converterProviderPrinter.printDomainEnsuredConverterMethodName(domainId, methodName, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw);
 				pw.print(".toDto(");
 			} else {
 				pw.print(domainId, " " + DTO_ID + " = ");
 			}
 
-			pw.print(DOMAIN_NAME + "." + configurationTypeElement.getDomain().getIdMethod(entityResolver).getSimpleName().toString() + "()");
+			pw.print(methodName);
 
 			if (domainId.getConverter() != null) {
 				pw.print(")");
@@ -67,12 +71,13 @@ public class ConverterEqualsPrinter implements TransferObjectElementPrinter {
 	@Override
 	public void print(TransferObjectContext context) {
 		
-		if (entityResolver.shouldHaveIdMethod(context.getConfigurationTypeElement().getDomain())) {
+		if (entityResolver.shouldHaveIdMethod(context.getConfigurationTypeElement().getInstantiableDomain())) {
 			return;
 		}
 		
-		if (context.getLocalConverterName() != null) {
-			pw.println("if (!" + context.getLocalConverterName() + ".equals(" + DOMAIN_NAME + "." + context.getDomainFieldName() + "," +
+		if (context.isLocalConverter()) {
+			String localConverter = printLocalConverter(context, ConverterTargetType.DOMAIN, pw);
+			pw.println("if (!" + localConverter + ".equals(" + DOMAIN_NAME + "." + context.getDomainFieldName() + "," +
 					DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + "))");
 			pw.println("	return false;");
 		} else {
@@ -117,7 +122,7 @@ public class ConverterEqualsPrinter implements TransferObjectElementPrinter {
 
 	@Override
 	public void finish(ConfigurationTypeElement configurationTypeElement) {
-		if (!entityResolver.shouldHaveIdMethod(configurationTypeElement.getDomain())) {
+		if (!entityResolver.shouldHaveIdMethod(configurationTypeElement.getInstantiableDomain())) {
 			pw.println("return true;");
 		}
 		pw.println("}");

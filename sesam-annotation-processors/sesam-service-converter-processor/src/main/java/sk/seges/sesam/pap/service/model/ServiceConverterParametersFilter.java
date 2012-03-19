@@ -4,7 +4,7 @@ import java.util.List;
 
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 
-public interface ParametersFilter {
+public interface ServiceConverterParametersFilter {
 
 	List<ConverterParameter> getPropagatedParameters(List<ConverterParameter> parameters);
 

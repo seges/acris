@@ -14,6 +14,7 @@ public interface DomainDeclaredType extends DomainType, MutableDeclaredType {
 	DtoDeclaredType getDto();
 
 	DomainDeclaredType getSuperClass();
+	DomainDeclaredType getBaseType();
 
 	DomainType getId(EntityResolver entityResolver);
 	DomainType getDomainReference(String fieldName);

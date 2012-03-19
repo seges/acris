@@ -1,97 +1,69 @@
 package sk.seges.sesam.pap.model.model;
 
-import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.processing.RoundEnvironment;
 
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
-import sk.seges.sesam.pap.model.provider.RoundEnvConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 abstract class TomBaseVariable extends DelegateMutableVariable {
 
-	protected final TransferObjectProcessingEnvironment processingEnv;
-	protected final RoundEnvironment roundEnv;
-
+	protected final EnvironmentContext<TransferObjectProcessingEnvironment> envContext;
+	protected ConfigurationContext configurationContext;
+	
 	protected final TransferObjectHelper toHelper;
 	protected final TypeParametersSupport typeParametersSupport;
-
-	private TomConfigurationHolderDelegate tomConfigurationHolderDelegate;
-
-	private boolean configurationTypeInitialized = false;
-	private List<ConfigurationTypeElement> configurationTypeElements;
-
-	protected final ConfigurationProvider[] configurationProviders;
-
-	protected TomBaseVariable(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationTypeElement[] configurationTypeElements, ConfigurationProvider... configurationProviders) {
-		this.roundEnv = roundEnv;
-		this.processingEnv = processingEnv;
-
-		this.configurationProviders = configurationProviders;
-		
-		this.configurationTypeElements = Arrays.asList(configurationTypeElements);
-		this.configurationTypeInitialized = true;
-		
-		this.toHelper = new TransferObjectHelper(processingEnv);
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
-	}
-
-	protected TomBaseVariable(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv, ConfigurationProvider... configurationProviders) {
-		this.roundEnv = roundEnv;
-		this.processingEnv = processingEnv;
-
-		this.configurationProviders = configurationProviders;
-		
-		this.toHelper = new TransferObjectHelper(processingEnv);
-		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
+	
+	protected TomBaseVariable(EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		this.envContext = envContext;
+		this.configurationContext = configurationContext;
+		this.toHelper = new TransferObjectHelper(envContext.getProcessingEnv());
+		this.typeParametersSupport = new TypeParametersSupport(envContext.getProcessingEnv());
 	}
 	
-	private TomConfigurationHolderDelegate ensureTomConfigurationHolderDelegate() {
-		if (this.tomConfigurationHolderDelegate == null) {
-			this.tomConfigurationHolderDelegate = new TomConfigurationHolderDelegate(getConfigurations());
+	private ConfigurationContext ensureConfigurationContext() {
+		if (configurationContext == null) {
+			configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+			configurationContext.setConfigurations(getConfigurationsForType());
 		}
 		
-		return this.tomConfigurationHolderDelegate;
+		return configurationContext;
+	}
+
+	protected MutableTypes getMutableTypesUtils() {
+		return envContext.getProcessingEnv().getTypeUtils();
+	}
+	
+	protected MutableTypes getTypeUtils() {
+		return envContext.getProcessingEnv().getTypeUtils();
+	}
+
+	protected TransferObjectTypes getTransferObjectUtils() {
+		return envContext.getProcessingEnv().getTransferObjectUtils();
+	}
+	
+	public ConfigurationProvider[] getConfigurationProviders() {
+		return envContext.getConfigurationEnv().getConfigurationProviders();
+	};
+	
+	public ConfigurationTypeElement getDomainDefinitionConfiguration() {
+		return ensureConfigurationContext().getDomainDefinitionConfiguration();
+	}
+
+//	protected ConfigurationTypeElement getDtoDefinitionConfiguration() {
+//		return ensureConfigurationContext().getDtoDefinitionConfiguration();
+//	}
+
+	protected ConfigurationTypeElement getConverterDefinitionConfiguration() {
+		return ensureConfigurationContext().getConverterDefinitionConfiguration();
 	}
 
 	public List<ConfigurationTypeElement> getConfigurations() {
-		if (!configurationTypeInitialized) {
-			this.configurationTypeElements = getConfigurationsForType();
-			this.configurationTypeInitialized = true;
-		}
-		return configurationTypeElements;
+		return ensureConfigurationContext().getConfigurations();
 	}
 
 	protected abstract List<ConfigurationTypeElement> getConfigurationsForType();
 	
-	public ConfigurationTypeElement getDomainDefinitionConfiguration() {
-		return ensureTomConfigurationHolderDelegate().getDomainDefinitionConfiguration();
-	}
-
-	protected ConfigurationTypeElement getDtoDefinitionConfiguration() {
-		return ensureTomConfigurationHolderDelegate().getDtoDefinitionConfiguration();
-	}
-
-	protected ConfigurationTypeElement getConverterDefinitionConfiguration() {
-		return ensureTomConfigurationHolderDelegate().getConverterDefinitionConfiguration();
-	}
-
-	protected MutableTypes getMutableTypesUtils() {
-		return processingEnv.getTypeUtils();
-	}
-	
-	protected ConfigurationProvider[] getConfigurationProviders(ConfigurationProvider[] configurationProviders) {
-		if (configurationProviders != null && configurationProviders.length > 0) {
-			return configurationProviders;
-		}
-
-		ConfigurationProvider[] result = new ConfigurationProvider[1];
-		result[0] = new RoundEnvConfigurationProvider(processingEnv, roundEnv);
-		
-		return result;
-	}
 }

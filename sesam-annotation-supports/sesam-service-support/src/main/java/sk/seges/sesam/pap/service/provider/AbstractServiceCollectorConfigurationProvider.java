@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -14,34 +13,41 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.pap.model.model.ConfigurationContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.provider.ClasspathConfigurationProvider;
 
 public abstract class AbstractServiceCollectorConfigurationProvider extends ClasspathConfigurationProvider {
 
-	public AbstractServiceCollectorConfigurationProvider(ClassPathTypes classpathUtils,
-			TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		super(classpathUtils, processingEnv, roundEnv);
+	public AbstractServiceCollectorConfigurationProvider(ClassPathTypes classpathUtils, EnvironmentContext<TransferObjectProcessingEnvironment> envContext) {
+		super(classpathUtils, envContext);
 	}
 
 	protected List<ConfigurationTypeElement> getConfigurationsFromType(DeclaredType type, List<String> processedElements) {
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		return getConfigurationsFromType(type, processedElements, configurationContext);
+	}
+	
+	protected List<ConfigurationTypeElement> getConfigurationsFromType(DeclaredType type, List<String> processedElements, ConfigurationContext configurationContext) {
 
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 
+//		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		
 		if (type.getTypeArguments().size() > 0) {
 			for (TypeMirror typeArgument: type.getTypeArguments()) {
 				if (typeArgument.getKind().equals(TypeKind.DECLARED)) {
-					result.addAll(getConfigurationsFromType((DeclaredType)typeArgument, processedElements));
+					result.addAll(getConfigurationsFromType((DeclaredType)typeArgument, processedElements, configurationContext));
 				}
 			}
 		}
 
 		TypeElement element = (TypeElement)type.asElement();
 		
-		if (processingEnv.getElementUtils().getPackageOf(element).toString().startsWith("java.")) {
+		if (envContext.getProcessingEnv().getElementUtils().getPackageOf(element).toString().startsWith("java.")) {
 			return result;
 		}
 
@@ -51,43 +57,47 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 		
 		processedElements.add(element.getQualifiedName().toString());
 		
-		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, processingEnv, roundEnv);
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(element, envContext, configurationContext);
+		
 		if (configurationTypeElement.isValid()) {
+			configurationContext.addConfiguration(configurationTypeElement);
 			result.add(configurationTypeElement);
 		}
 		
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 		
 		for (ExecutableElement method: methods) {
-			result.addAll(getConfigurationsFromMethod(method, processedElements));
+			result.addAll(getConfigurationsFromMethod(method, processedElements, configurationContext));
 		}
 
 		List<VariableElement> fields = ElementFilter.fieldsIn(element.getEnclosedElements());
 
 		for (VariableElement variableElement: fields) {
 			if (variableElement.asType().getKind().equals(TypeKind.DECLARED)) {
-				result.addAll(getConfigurationsFromType((DeclaredType)variableElement.asType(), processedElements));
+				result.addAll(getConfigurationsFromType((DeclaredType)variableElement.asType(), processedElements, configurationContext));
 			}
 		}
 		
 		if (element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-			result.addAll(getConfigurationsFromType((DeclaredType)element.getSuperclass(), processedElements));
+			result.addAll(getConfigurationsFromType((DeclaredType)element.getSuperclass(), processedElements, configurationContext));
 		}
 		
+		Collections.sort(result, new ConfigurationComparator());
+
 		return result;
 	}
 
-	protected List<ConfigurationTypeElement> getConfigurationsFromMethod(ExecutableElement method, List<String> processedElements) {
+	protected List<ConfigurationTypeElement> getConfigurationsFromMethod(ExecutableElement method, List<String> processedElements, ConfigurationContext configurationContext) {
 		
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 		
 		if (method.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-			result.addAll(getConfigurationsFromType((DeclaredType)method.getReturnType(), processedElements));
+			result.addAll(getConfigurationsFromType((DeclaredType)method.getReturnType(), processedElements, configurationContext));
 		}
 		
 		for (VariableElement parameter: method.getParameters()) {
 			if (parameter.asType().getKind().equals(TypeKind.DECLARED)) {
-				result.addAll(getConfigurationsFromType((DeclaredType)parameter.asType(), processedElements));
+				result.addAll(getConfigurationsFromType((DeclaredType)parameter.asType(), processedElements, configurationContext));
 			}
 		}
 		
@@ -97,71 +107,21 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 	protected abstract List<ConfigurationTypeElement> collectConfigurations();
 
 	@Override
-	public List<ConfigurationTypeElement> getConfigurationsForDto(MutableTypeMirror dtoType) {
-
+	protected List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type, ConfigurationContext context) {
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 		
-		if (!isSupportedType(dtoType)) {
+		if (!isSupportedType(type)) {
 			return result;
 		};
 
 		for (ConfigurationTypeElement configurationTypeElement : collectConfigurations()) {
-			if (configurationTypeElement.appliesForDtoType(dtoType)) {
-				//result = configurationTypeElement;
-
-//				if (result.getDelegateConfigurationTypeElement() == null) {
-					result.add(getConfigurationElement(null, (MutableDeclaredType)dtoType, (TypeElement)configurationTypeElement.asConfigurationElement()));
-					//return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
-//				}
+			if (targetType.appliesForType(type, configurationTypeElement)) {
+				result.add(targetType.getConfiguration(type, configurationTypeElement.asConfigurationElement(), this, context));
 			}
 		}
 		
-		result.addAll(super.getConfigurationsForDto(dtoType));
+		result.addAll(super.getConfigurationElementsForType(targetType, type, context));
 
-		Collections.sort(result, new ConfigurationComparator());
-
-//		if (result.size() > 0) {
-			return result;
-//		}
-
-//		if (result != null) {
-//			return getConfigurationElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement());
-//			//return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
-//		}
-
-//		return super.getConfigurationsForDto(dtoType);
-	}
-
-	@Override
-	public List<ConfigurationTypeElement> getConfigurationsForDomain(MutableTypeMirror domainType) {
-		
-		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
-				
-		if (!isSupportedType(domainType)) {
-			return result;
-		};
-
-		for (ConfigurationTypeElement configurationTypeElement : collectConfigurations()) {
-			if (configurationTypeElement.appliesForDomainType(domainType)) {
-//				result = configurationTypeElement;
-				result.add(getConfigurationElement(domainType, null, (TypeElement)configurationTypeElement.asConfigurationElement()));
-
-//				if (result.getDelegateConfigurationTypeElement() == null) {
-//					return getConfigurationElement(domainType, null, (TypeElement)result.asConfigurationElement());
-//					//return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
-//				}
-			}
-		}
-
-		result.addAll(super.getConfigurationsForDomain(domainType));
-
-		Collections.sort(result, new ConfigurationComparator());
-				
-//		if (result != null) {
-//			return getConfigurationElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement());
-//			//return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result.asConfigurationElement(), processingEnv, roundEnv);
-//		}
-		
 		return result;
-	}
+	}	
 }

@@ -189,6 +189,8 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 			}
 		}
 
+		getClassPathTypes().setTargetChanged();
+		
 		return !supportProcessorChain();
 	}
 

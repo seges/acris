@@ -6,10 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 
 import sk.seges.sesam.core.model.converter.CollectionConfiguration;
@@ -17,19 +16,19 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
+import sk.seges.sesam.pap.model.model.ConfigurationContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
-import sk.seges.sesam.pap.model.model.TransferObjectMappingAccessor;
+import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 
-	protected final TransferObjectProcessingEnvironment processingEnv;
-	protected final RoundEnvironment roundEnv;
+	protected final EnvironmentContext<TransferObjectProcessingEnvironment> envContext;
 	
-	public RoundEnvConfigurationProvider(TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		this.processingEnv = processingEnv;
-		this.roundEnv = roundEnv;
+	public RoundEnvConfigurationProvider(EnvironmentContext<TransferObjectProcessingEnvironment> envContext) {
+		this.envContext = envContext;
 	}
 	
 	protected Class<?>[] getCommonConfigurations() {
@@ -43,7 +42,7 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 	}
 	
 	protected Set<? extends Element> getConfigurationElements() {
-		return roundEnv.getElementsAnnotatedWith(TransferObjectMapping.class);
+		return envContext.getRoundEnv().getElementsAnnotatedWith(TransferObjectMapping.class);
 	}
 
 	public class ConfigurationComparator implements Comparator<ConfigurationTypeElement> {
@@ -66,121 +65,145 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		
 	}
 	
-	public List<ConfigurationTypeElement> getConfigurationsForDomain(MutableTypeMirror domainType) {
+	protected enum TargetType {
+		DTO {
+			@Override
+			public boolean appliesForType(MutableTypeMirror type, ConfigurationTypeElement configurationTypeElement) {
+				return configurationTypeElement.appliesForDtoType(type);
+			}
 
+			@Override
+			public ConfigurationTypeElement getConfiguration(MutableTypeMirror type, Element configurationElement, RoundEnvConfigurationProvider configurationProvider, ConfigurationContext context) {
+				return configurationProvider.getConfigurationElement(null, type, configurationElement, context);
+			}
+
+			@Override
+			public List<ConfigurationTypeElement> retrieveConfigurations(MutableTypeMirror type, ConfigurationCache cache) {
+				return cache.getConfigurationForDTO(type);
+			}
+
+			@Override
+			public void storeConfigurations(MutableTypeMirror type, List<ConfigurationTypeElement> configurations,	ConfigurationCache cache) {
+				cache.registerDto(type, configurations);
+			}
+		}, DOMAIN {
+			@Override
+			public boolean appliesForType(MutableTypeMirror type, ConfigurationTypeElement configurationTypeElement) {
+				return configurationTypeElement.appliesForDomainType(type);
+			}
+
+			@Override
+			public ConfigurationTypeElement getConfiguration(MutableTypeMirror type, Element configurationElement, RoundEnvConfigurationProvider configurationProvider, ConfigurationContext context) {
+				return configurationProvider.getConfigurationElement(type, null, configurationElement, context);
+			}
+
+			@Override
+			public List<ConfigurationTypeElement> retrieveConfigurations(MutableTypeMirror type, ConfigurationCache cache) {
+				return cache.getConfigurationForDomain(type);
+			}
+
+			@Override
+			public void storeConfigurations(MutableTypeMirror type, List<ConfigurationTypeElement> configurations, ConfigurationCache cache) {
+				cache.registerDomain(type, configurations);
+			}
+		};
+		
+		abstract public boolean appliesForType(MutableTypeMirror type, ConfigurationTypeElement configurationTypeElement);
+		abstract public ConfigurationTypeElement getConfiguration(MutableTypeMirror type, Element configurationElement, RoundEnvConfigurationProvider configurationProvider, ConfigurationContext context);
+		abstract public List<ConfigurationTypeElement> retrieveConfigurations(MutableTypeMirror type, ConfigurationCache cache);
+		abstract public void storeConfigurations(MutableTypeMirror type, List<ConfigurationTypeElement> configurations, ConfigurationCache cache);
+	}
+	
+	public final List<ConfigurationTypeElement> getConfigurationsForDomain(MutableTypeMirror domainType) {
+		return getConfigurationElementsForType(TargetType.DOMAIN, domainType);
+	}
+
+	public final List<ConfigurationTypeElement> getConfigurationsForDto(MutableTypeMirror dtoType) {
+		return getConfigurationElementsForType(TargetType.DTO, dtoType);
+	}
+
+	private boolean contains(Element element, List<ConfigurationTypeElement> configurations) {
+		for (ConfigurationTypeElement configuration: configurations) {
+			if (configuration.asConfigurationElement().equals(configuration)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	protected final List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type) {
+
+		List<ConfigurationTypeElement> cachedConfigurations = null;
+		
+		if (!type.getKind().isDeclared() || !((MutableDeclaredType)type).hasTypeParameters()) {
+			 cachedConfigurations = targetType.retrieveConfigurations(type, envContext.getConfigurationEnv().getCache());
+		}
+		
+		if (cachedConfigurations != null) {
+			return cachedConfigurations;
+		}
+
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		List<ConfigurationTypeElement> result = getConfigurationElementsForType(targetType, type, configurationContext);
+		configurationContext.setConfigurations(result);
+		
+		Collections.sort(result, new ConfigurationComparator());
+
+		if (!type.getKind().isDeclared() || !((MutableDeclaredType)type).hasTypeParameters()) {
+			targetType.storeConfigurations(type, result, envContext.getConfigurationEnv().getCache());
+		}
+		
+		return result;
+	}
+	
+	protected List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type, ConfigurationContext context) {
+		
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
 
-		if (!isSupportedType(domainType)) {
+		if (!isSupportedType(type)) {
 			return result;
 		};
-
 				
 		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
 		for (Element annotatedElement : elementsAnnotatedWith) {
-			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
-				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement, processingEnv, roundEnv);
-				if (configurationTypeElement.appliesForDomainType(domainType)) {
-					result.add(getConfigurationElement(domainType, null, annotatedElement));
-//					if (configurationTypeElement.getDelegateConfigurationTypeElement() == null) {
-//						return getConfigurationElement(domainType, null, annotatedElement);
-//						//return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)annotatedElement, processingEnv, roundEnv);
-//					}
+			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED) && !contains(annotatedElement, result)) {
+				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement);
+				if (targetType.appliesForType(type, configurationTypeElement)) {
+					result.add(targetType.getConfiguration(type, annotatedElement, this, context));
 				}
 			}
 		}
 
 		if (getCommonConfigurations() != null) {
 			for (Class<?> clazz: getCommonConfigurations()) {
-				TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+				TypeElement configurationElement = envContext.getProcessingEnv().getElementUtils().getTypeElement(clazz.getCanonicalName());
 				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
-
-					ConfigurationTypeElement configurationTypeElement = getConfigurationElement(configurationElement, processingEnv, roundEnv);
-
-					if (configurationTypeElement.appliesForDomainType(domainType)) {
-						result.add(getConfigurationElement(domainType, null, configurationElement));
-
-						//return getConfigurationElement(domainType, null, configurationElement);
-						//return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, configurationElement, processingEnv, roundEnv);
+					ConfigurationTypeElement configurationTypeElement = getConfigurationElement(configurationElement);
+					if (targetType.appliesForType(type, configurationTypeElement)) {
+						result.add(targetType.getConfiguration(type, configurationElement, this, context));
 					}
 				}
 			}
 		}
-
-//		if (result != null) {
-//			return getConfigurationElement(domainType, null,  result);
-//			//return new ConfigurationTypeElement((MutableDeclaredType)domainType, null, (TypeElement)result, processingEnv, roundEnv);
-//		}
-
-		Collections.sort(result, new ConfigurationComparator());
-		
+				
 		return result;
 	}
 
-	public List<ConfigurationTypeElement> getConfigurationsForDto(MutableTypeMirror dtoType) {
-
-		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
-
-		if (!isSupportedType(dtoType)) {
-			return result;
-		};
-		
-		
-		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
-		for (Element annotatedElement : elementsAnnotatedWith) {
-			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED)) {
-				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement, processingEnv, roundEnv);
-	
-				if (configurationTypeElement.appliesForDtoType(dtoType)) {
-					result.add(getConfigurationElement(null, dtoType, annotatedElement));
-//					result = annotatedElement;
-					
-//					if (configurationTypeElement.getDelegateConfigurationTypeElement() == null) {
-//						return getConfigurationElement(null, dtoType, annotatedElement);
-//						//return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv);
-//					}
-				}
-			}
-		}
-
-		if (getCommonConfigurations() != null) {
-			for (Class<?> clazz: getCommonConfigurations()) {
-				TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
-				if (configurationElement.getAnnotation(TransferObjectMapping.class) != null) {
-
-					ConfigurationTypeElement configurationTypeElement = getConfigurationElement(configurationElement, processingEnv, roundEnv);
-
-					if (configurationTypeElement.appliesForDtoType(dtoType)) {
-						result.add(getConfigurationElement(null, dtoType, configurationElement));
-						//return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, configurationElement, processingEnv, roundEnv);
-					}
-				}
-			}
-		}
-
-//		if (result != null) {
-//			return getConfigurationElement(null, dtoType, result);
-//			//return new ConfigurationTypeElement(null, (MutableDeclaredType)dtoType, (TypeElement)result, processingEnv, roundEnv);
-//		}
-
-		//Configuration should be directly in the DTO - when its generated
-		if (dtoType.getKind().isDeclared() && (((MutableDeclaredType)dtoType).asType()) != null && ((MutableDeclaredType)dtoType).asType().getKind().equals(TypeKind.DECLARED)) {
-			TransferObjectMappingAccessor transferObjectConfiguration = new TransferObjectMappingAccessor(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv);
-			if (transferObjectConfiguration.getMappingForDto((MutableDeclaredType)dtoType) != null) {
-				result.add(getConfigurationElement(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv, roundEnv));
-				//return new ConfigurationTypeElement(((DeclaredType)((MutableDeclaredType)dtoType).asType()).asElement(), processingEnv, roundEnv);
-			}
-		}
-		
-		Collections.sort(result, new ConfigurationComparator());
-
-		return result;
+	@Override
+	public ConfigurationTypeElement getConfiguration(ExecutableElement configurationElementMethod, DomainDeclaredType returnType, ConfigurationContext configurationContext) {
+		return new ConfigurationTypeElement(configurationElementMethod, returnType, envContext, configurationContext);
 	}
 	
-	protected ConfigurationTypeElement getConfigurationElement(MutableTypeMirror domainType, MutableTypeMirror dtoType, Element annotatedElement) {
-		return new ConfigurationTypeElement((MutableDeclaredType)domainType, (MutableDeclaredType)dtoType, (TypeElement)annotatedElement, processingEnv, roundEnv, this);
+	protected ConfigurationTypeElement getConfigurationElement(MutableTypeMirror domainType, MutableTypeMirror dtoType, Element annotatedElement, ConfigurationContext configurationContext) {
+		return new ConfigurationTypeElement((MutableDeclaredType)domainType, (MutableDeclaredType)dtoType, (TypeElement)annotatedElement, envContext, configurationContext);
 	}
-	
-	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv) {
-		return new ConfigurationTypeElement(configurationElement, processingEnv, roundEnv, this);
+
+	protected ConfigurationTypeElement getConfigurationElement(Element configurationElement) {
+		ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, envContext, configurationContext);
+		configurationContext.addConfiguration(configurationTypeElement);
+		
+		return configurationTypeElement;
 	}
 }

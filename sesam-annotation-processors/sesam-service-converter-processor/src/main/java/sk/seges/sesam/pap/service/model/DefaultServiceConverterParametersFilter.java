@@ -5,17 +5,17 @@ import java.util.List;
 
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 
-public class ConverterParametersFilter implements ParametersFilter {
+public class DefaultServiceConverterParametersFilter implements ServiceConverterParametersFilter {
 
-	public ConverterParametersFilter() {
+	public DefaultServiceConverterParametersFilter() {
 	}
-	
+
 	public List<ConverterParameter> getPropagatedParameters(List<ConverterParameter> parameters) {
 		List<ConverterParameter> result = new ArrayList<ConverterParameter>();
-		for (ConverterParameter parameter: parameters) {
- 			if (parameter.isPropagated() && !parameter.isConverter()) {
- 				result.add(parameter);
- 			}
+		for (ConverterParameter parameter : parameters) {
+			if (parameter.isPropagated()) {
+				result.add(parameter);
+			}
 		}
 
 		return result;

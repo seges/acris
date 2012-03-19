@@ -9,6 +9,8 @@ import javax.lang.model.element.TypeElement;
 
 public interface ClassPathTypes {
 
+	void setTargetChanged();
+
     Set<? extends Element> getElementsAnnotatedWith(TypeElement a);
     Set<? extends Element> getElementsAnnotatedWith(TypeElement a, RoundEnvironment roundEnv);
     

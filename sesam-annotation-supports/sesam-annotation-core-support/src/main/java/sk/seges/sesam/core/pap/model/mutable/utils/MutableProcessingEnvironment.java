@@ -16,7 +16,7 @@ public class MutableProcessingEnvironment implements ProcessingEnvironment {
 	
 	public MutableProcessingEnvironment(ProcessingEnvironment processingEnvironment) {
 		this.processingEnvironment = processingEnvironment;
-		this.elements = new MutableElements(processingEnvironment.getElementUtils());
+		this.elements = new MutableElements(this, processingEnvironment.getElementUtils());
 		this.types = new MutableTypes(this, elements, processingEnvironment.getTypeUtils());
 	}
 

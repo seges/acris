@@ -13,10 +13,8 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActio
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
-import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
-import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
@@ -32,9 +30,9 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 	}
 	
 	@Override
-	protected DtoType handleDomainTypeParameter(TransferObjectProcessingEnvironment processingEnv, TransferObjectHelper toHelper, EntityResolver entityResolver, ConfigurationProvider[] configurationProviders) {
+	protected DtoType handleDomainTypeParameter(TransferObjectHelper toHelper, EntityResolver entityResolver) {
 		
-		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(processingEnv);
+		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(envContext.getProcessingEnv());
 
 		DomainDeclaredType domainTypeElement = configurationTypeElement.getDomain();
 
@@ -46,7 +44,7 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 
 			switch (returnType.getKind()) {
 				case DECLARED:
-					DtoType type = processingEnv.getTransferObjectUtils().getDomainType(returnType).getDto();
+					DtoType type = getTransferObjectUtils().getDomainType(returnType).getDto();
 					
 					if (type instanceof MutableDeclaredType) {
 		
@@ -71,18 +69,18 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 					String variable = typeVariable.asElement().getSimpleName().toString();
 					
 					if (variable == null || variable.equals("?")) {
-						processingEnv.getMessager().printMessage(Kind.WARNING, "Method " + getDtoMethod().getSimpleName().toString() + 
+						getMessager().printMessage(Kind.WARNING, "Method " + getDtoMethod().getSimpleName().toString() + 
 								" returns unsupported type variable " + typeVariable.toString(), configurationTypeElement.asConfigurationElement());
 						return null;
 					}
 			
 					if (typeParametersSupport.hasParameterByName(declaredDomainType, variable)) {
-						return processingEnv.getTransferObjectUtils().getDtoType(processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variable));
+						return getTransferObjectUtils().getDtoType(getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variable));
 					}
 					break;
 			}
 		}
 
-		return super.handleDomainTypeParameter(processingEnv, toHelper, entityResolver, configurationProviders);
+		return super.handleDomainTypeParameter(toHelper, entityResolver);
 	}
 }

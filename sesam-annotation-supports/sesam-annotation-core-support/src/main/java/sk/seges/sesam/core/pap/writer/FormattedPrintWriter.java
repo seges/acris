@@ -21,6 +21,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
@@ -315,6 +316,19 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		return currentPosition;
 	}
 	
+	public int printAll(Object[] params) {
+		int i = 0;
+		for (Object parameter : params) {
+			if (i > 0) {
+				print(", ");
+			}
+			print(parameter);
+			i++;
+		}
+		
+		return i;
+	}
+	
 	@Override
 	public void print(Object... x) {
 		
@@ -343,11 +357,12 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 				String res = ((MutableTypeValue)o).toString(evalSerializer, typed);
 				length += res.length();
 				super.write(res);
+			} else if (o instanceof MutableReferenceType) {
+				super.write(((MutableReferenceType)o).toString());
 			} else {
 				MutableTypeMirror mutableType = toMutableType(o);
 				
 				if (mutableType != null) {
-					
 					ClassSerializer evalSerializer = serializer;
 					if (serializer.equals(ClassSerializer.SIMPLE)) {
 						if (isConflictType(mutableType)) {
@@ -388,7 +403,9 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 			MutableTypeMirror type = ((MutableDeclaredTypeValue) value).asType();
 			
 			//primitive types
-			if (type.getKind().equals(MutableTypeKind.PRIMITIVE) || unboxType(processingEnv.getTypeUtils().fromMutableType(type)).getKind().isPrimitive()) {
+			TypeMirror javaType = processingEnv.getTypeUtils().fromMutableType(type);
+			
+			if (type.getKind().equals(MutableTypeKind.PRIMITIVE) || (javaType != null && unboxType(javaType).getKind().isPrimitive())) {
 				return types;
 			}
 

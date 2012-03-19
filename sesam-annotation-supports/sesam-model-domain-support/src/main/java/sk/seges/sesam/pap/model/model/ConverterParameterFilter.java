@@ -3,7 +3,7 @@ package sk.seges.sesam.pap.model.model;
 import java.util.LinkedList;
 import java.util.List;
 
-public enum ParameterFilter {
+public enum ConverterParameterFilter {
 
 	NAME {
 		@Override
@@ -41,12 +41,12 @@ public enum ParameterFilter {
 			return parameter1.getType().equals(parameter2.getType());
 		}
 	},
-	CONVERTER {
-		@Override
-		protected boolean equalsBy(ConverterParameter parameter1, ConverterParameter parameter2) {
-			return parameter1.getConverter().equals(parameter2.getConverter());
-		}
-	};
+//	CONVERTER {
+//		@Override
+//		protected boolean equalsBy(ConverterParameter parameter1, ConverterParameter parameter2) {
+//			return parameter1.getConverter().equals(parameter2.getConverter());
+//		}	}
+	;
 
 	public List<ConverterParameter> filterBy(List<ConverterParameter> parameters, ConverterParameter parameter) {
 		return by(parameters, parameter, true);

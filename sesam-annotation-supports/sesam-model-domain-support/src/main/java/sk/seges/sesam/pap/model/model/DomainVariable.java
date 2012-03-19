@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 
@@ -19,22 +18,19 @@ class DomainVariable extends TomBaseVariable implements DomainTypeVariable {
 
 	private MutableTypeVariable domainTypeVariable;
 	
-	public DomainVariable(MutableTypeVariable domainTypeVariable, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
-			ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
+	public DomainVariable(MutableTypeVariable domainTypeVariable, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
 		this.domainTypeVariable = domainTypeVariable;
 	}
 
-	public DomainVariable(TypeVariable domainTypeVariable, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
-			ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
-		this.domainTypeVariable = (MutableTypeVariable)processingEnv.getTypeUtils().toMutableType(domainTypeVariable);
+	public DomainVariable(TypeVariable domainTypeVariable, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
+		this.domainTypeVariable = (MutableTypeVariable)getTypeUtils().toMutableType(domainTypeVariable);
 	}
 
-	public DomainVariable(WildcardType wildcardType, TransferObjectProcessingEnvironment processingEnv, RoundEnvironment roundEnv,
-			ConfigurationProvider... configurationProviders) {
-		super(processingEnv, roundEnv, configurationProviders);
-		this.domainTypeVariable = (MutableTypeVariable)processingEnv.getTypeUtils().toMutableType(wildcardType);
+	public DomainVariable(WildcardType wildcardType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+		super(envContext, configurationContext);
+		this.domainTypeVariable = (MutableTypeVariable)getTypeUtils().toMutableType(wildcardType);
 	}
 
 	@Override
@@ -43,12 +39,9 @@ class DomainVariable extends TomBaseVariable implements DomainTypeVariable {
 	}
 	
 	private List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror domainType) {
-		for (ConfigurationProvider configurationProvider: configurationProviders) {
+		for (ConfigurationProvider configurationProvider: getConfigurationProviders()) {
 			List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(domainType);
 			if (configurationsForDomain != null && configurationsForDomain.size() > 0) {
-				for (ConfigurationTypeElement configurationForDomain: configurationsForDomain) {
-					configurationForDomain.setConfigurationProviders(configurationProviders);
-				}
 				return configurationsForDomain;
 			}
 		}
@@ -76,17 +69,19 @@ class DomainVariable extends TomBaseVariable implements DomainTypeVariable {
 		if (domainDefinitionConfiguration == null) {
 			List<MutableTypeMirror> dtoUpperBounds = new LinkedList<MutableTypeMirror>();
 			for (MutableTypeMirror bound: getUpperBounds()) {
-				dtoUpperBounds.add(processingEnv.getTransferObjectUtils().getDomainType(bound).getDto());
+				dtoUpperBounds.add(getTransferObjectUtils().getDomainType(bound).getDto());
 			}
 			List<MutableTypeMirror> dtoLowerBounds = new LinkedList<MutableTypeMirror>();
 			for (MutableTypeMirror bound: getLowerBounds()) {
-				dtoLowerBounds.add(processingEnv.getTransferObjectUtils().getDomainType(bound).getDto());
+				dtoLowerBounds.add(getTransferObjectUtils().getDomainType(bound).getDto());
 			}
 			String variable = getVariable();
 			if (variable != null && !variable.equals(MutableWildcardType.WILDCARD_NAME)) {
 				variable = ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "_" + getVariable();
 			}
-			return new DtoVariable(processingEnv.getTypeUtils().getTypeVariable(variable, dtoUpperBounds.toArray(new MutableTypeMirror[] {}), dtoLowerBounds.toArray(new MutableTypeMirror[]{})), processingEnv, roundEnv);
+			//TODO configurations here?
+			return new DtoVariable(getTypeUtils().getTypeVariable(variable, dtoUpperBounds.toArray(new MutableTypeMirror[] {}), dtoLowerBounds.toArray(new MutableTypeMirror[]{})), 
+					envContext, configurationContext);
 		}
 		
 		return (DtoTypeVariable) domainDefinitionConfiguration.getDto();

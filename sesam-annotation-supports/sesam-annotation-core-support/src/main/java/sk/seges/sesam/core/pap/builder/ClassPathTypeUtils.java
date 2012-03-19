@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,9 +56,18 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 
 		private String projectName;
 		private Map<String, Set<String>> annotatedElements;
-
+		private boolean targetChanged = true;
+		
 		private Project(String projectName) {
 			this.projectName = projectName;
+		}
+		
+		public boolean isTargetChanged() {
+			return targetChanged;
+		}
+		
+		public void setTargetChanged(boolean targetChanged) {
+			this.targetChanged = targetChanged;
 		}
 		
 		public static Project get(String projectName) {
@@ -293,6 +303,8 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			}
 		}
 
+		processingEnv.getMessager().printMessage(Kind.WARNING, "No classpath is defined! Check your eclipse or maven settings.");
+		
 		final String rootDirectory = processingEnv.getOptions().get(ROOT_DIRECTORY_OPTION);
 		String m2Repo = processingEnv.getOptions().get(M2_REPO_OPTION);
 		
@@ -576,18 +588,25 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		if (!project.isInitialized()) {
 			project.setAnnotatedElementNames(getSubclasses());
 		}
-
-		final String rootDirectory = processingEnv.getOptions().get(ROOT_DIRECTORY_OPTION);
 		
-		if (rootDirectory != null) {
-			//TODO read from options
-			String classPath = rootDirectory + File.separator + "target" + File.separator + "classes";
-			classPath += System.getProperty(PATH_SEPARATOR) + rootDirectory + File.separator + "target" + File.separator + "test-classes";
-			if (File.separator.equals("\\")) {
-				classPath = classPath.replace("\\", "/");
+		if (project.isTargetChanged()) {
+			final String rootDirectory = processingEnv.getOptions().get(ROOT_DIRECTORY_OPTION);
+			
+			if (rootDirectory != null) {
+				//TODO read from options
+				long start = new Date().getTime();
+				String classPath = rootDirectory + File.separator + "target" + File.separator + "classes";
+				classPath += System.getProperty(PATH_SEPARATOR) + rootDirectory + File.separator + "target" + File.separator + "test-classes";
+				if (File.separator.equals("\\")) {
+					classPath = classPath.replace("\\", "/");
+				}
+	
+				project.addAnnotatedElementNames(getSubclasses(classPath));
+				long totalTime = new Date().getTime() - start;
+				processingEnv.getMessager().printMessage(Kind.NOTE, "[1]Processing classpath classes tooks " + totalTime / 1000 + "s, " + totalTime % 1000 + " ms.");
 			}
-
-			project.addAnnotatedElementNames(getSubclasses(classPath));
+			
+			project.setTargetChanged(false);
 		}
 		
 		Set<String> annotatedClassNames = project.getAnnotatedElementNames(a.getQualifiedName().toString());
@@ -605,9 +624,15 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			}
 		}
 		
+				
 		return annotatedClassSet;
 	}
 
+	@Override
+	public void setTargetChanged() {
+		project.setTargetChanged(true);
+	}
+	
 	@Override
 	public Set<? extends Element> getElementsAnnotatedWith(Class<? extends Annotation> a) {
 		return getElementsAnnotatedWith(processingEnv.getElementUtils().getTypeElement(a.getCanonicalName()));

@@ -17,11 +17,17 @@ import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActionType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
+import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 import sk.seges.sesam.pap.service.configurer.ServiceInterfaceProcessorConfigurer;
@@ -32,6 +38,7 @@ import sk.seges.sesam.pap.service.provider.RemoteServiceCollectorConfigurationPr
 public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 
 	protected TransferObjectProcessingEnvironment processingEnv;
+	protected EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext;
 
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
@@ -50,18 +57,33 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 		context.getPrintWriter().println("@", LocalServiceDefinition.class, "(remoteService = " + context.getTypeElement().toString() + ".class)");
 	}
 	
-	protected ConfigurationProvider[] getConfigurationProviders(RemoteServiceTypeElement remoteServiceInterfaceElement) {
+	protected ConfigurationProvider[] getConfigurationProviders(RemoteServiceTypeElement remoteServiceInterfaceElement, EnvironmentContext<TransferObjectProcessingEnvironment> context) {
 		return new ConfigurationProvider[] {
-				new RemoteServiceCollectorConfigurationProvider(getClassPathTypes(), remoteServiceInterfaceElement, processingEnv, roundEnv)
+				new RemoteServiceCollectorConfigurationProvider(remoteServiceInterfaceElement, getClassPathTypes(), context)
 		};
+	}
+
+	protected ConfigurationCache getConfigurationCache() {
+		return new ConfigurationCache();
+	}
+
+	protected EnvironmentContext<TransferObjectProcessingEnvironment> getEnvironmentContext(RemoteServiceTypeElement remoteServiceInterfaceElement) {
+		if (environmentContext == null) {
+			ConfigurationEnvironment configurationEnv = new ConfigurationEnvironment(processingEnv, roundEnv, getConfigurationCache());
+			environmentContext = configurationEnv.getEnvironmentContext();
+			configurationEnv.setConfigurationProviders(getConfigurationProviders(remoteServiceInterfaceElement, environmentContext));
+		}
+		
+		return environmentContext;
 	}
 
 	@Override
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
 		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement((TypeElement)element, super.processingEnv);
-		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv);
-		this.processingEnv.setConfigurationProviders(getConfigurationProviders(remoteServiceTypeElement));
+		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationCache());
+		EnvironmentContext<TransferObjectProcessingEnvironment> context = getEnvironmentContext(remoteServiceTypeElement);
+		this.processingEnv.setConfigurationProviders(getConfigurationProviders(remoteServiceTypeElement, context));
 	}
 
 	@Override
@@ -89,6 +111,9 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 
 			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
 			DomainType domainReturnType = dtoReturnType.getDomain();
+			if (domainReturnType.getKind().isDeclared()) {
+				((DomainDeclaredType) domainReturnType).renameTypeParameter(RenameActionType.PREFIX, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_", null, true);
+			}
 			
 			types.add(domainReturnType);
 

@@ -1,7 +1,9 @@
 package sk.seges.sesam.core.pap.processor;
 
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.util.Date;
 
 import javax.annotation.Generated;
 import javax.annotation.processing.RoundEnvironment;
@@ -81,6 +83,31 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 
 	protected abstract void processElement(ProcessorContext context);
 
+	class MutableImportPrinter extends ImportPrinter {
+
+		private String packageName;
+		
+		MutableImportPrinter(PrintWriter outputPrintWriter, String packageName) {
+			super(outputPrintWriter);
+			this.packageName = packageName;
+		}
+		
+		protected String getImportPackage(MutableDeclaredType importType) {
+			return importType.getCanonicalName().replace("." + importType.getSimpleName(), "");	
+		}
+		
+		protected void printImport(MutableDeclaredType importType) {
+			if (packageName == null || !packageName.equals(getImportPackage(importType))) {
+				super.printImport(importType);
+			}
+		}
+	}
+
+	@Override
+	protected ImportPrinter getImportPrinter(PrintWriter printWriter, String packageName) {
+		return new MutableImportPrinter(printWriter, packageName);
+	}
+	
 	@Override
 	final protected boolean processElement(MutableDeclaredType el, RoundEnvironment roundEnv) {
 
@@ -94,7 +121,9 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 		MutableDeclaredType[] outputClasses = getOutputClasses(roundContext);
 		
 		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + typeElement.getSimpleName().toString() + " with " + getClass().getSimpleName(), typeElement);
-
+		
+		long startTime = new Date().getTime();
+		
 		for (MutableDeclaredType outputClass: outputClasses) {
 			
 			FormattedPrintWriter pw = null;
@@ -127,7 +156,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				pw.println("package " + outputClass.getPackageName() + ";");
 				pw.println();
 
-				printImports(pw);
+				printImports(pw, outputClass.getPackageName());
 				printAnnotations(context);
 				
 				pw.println("@", Generated.class, "(value = \"" + this.getClass().getCanonicalName() + "\")");
@@ -147,6 +176,9 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				}
 			}
 		}
+
+		long totalTime = new Date().getTime() - startTime;
+		processingEnv.getMessager().printMessage(Kind.NOTE, "Took " + (totalTime / 1000) + "s, " + (totalTime % 1000) + " ms", typeElement);
 
 		return !supportProcessorChain();
 	}

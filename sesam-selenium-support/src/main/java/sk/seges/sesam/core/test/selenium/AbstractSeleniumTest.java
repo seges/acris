@@ -120,7 +120,9 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 			}
 	
 			reportEventListener.initialize();
+			
 		}
+		navigateToTestPage();
 	}
 
 	@After
@@ -139,5 +141,11 @@ public abstract class AbstractSeleniumTest extends BromineTest {
 	
 	public TestCaseResult getTestInfo() {
 		return reportEventListener.getTestInfo();
+	}
+	
+	protected void navigateToTestPage () {
+		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());
+		
+		
 	}
 }
