@@ -16,10 +16,8 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
-import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -32,7 +30,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
 
@@ -289,7 +287,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		return constructors;
 	}
 
-	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver) {
+	public List<ConverterParameter> getConverterParameters(ConverterConstructorParametersResolver parametersResolver) {
 		return getConverterParameters(parametersResolver, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 	}
 	
@@ -325,11 +323,13 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		return result;
 	}
 	
-	public List<ConverterParameter> getConverterParameters(ParametersResolver parametersResolver, ConverterInstancerType converterInstancerType) {
+	public List<ConverterParameter> getConverterParameters(ConverterConstructorParametersResolver parametersResolver, ConverterInstancerType converterInstancerType) {
 
 		List<ConverterParameter> parameters = new LinkedList<ConverterParameter>();
 
 		TypeElement converterTypeElement = getElementUtils().getTypeElement(getCanonicalName());
+
+		MutableTypes typeUtils = environmentContext.getProcessingEnv().getTypeUtils();
 
 		if (converterTypeElement != null && !isGenerated()) {
 			List<ExecutableElement> constructors = getSortedConstructorMethods(converterTypeElement);
@@ -356,11 +356,9 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				}
 				
 				for (ConverterParameter converterParameter : constructorParameters) {
-					
+
 					for (ParameterElement constructorAditionalParameter: constructorAditionalParameters) {
-						if (!constructorAditionalParameter.isPropagated() &&
-								converterParameter.getType().toString(ClassSerializer.CANONICAL, false).equals(
-										constructorAditionalParameter.getType().toString(ClassSerializer.CANONICAL, false))) {
+						if (!constructorAditionalParameter.isPropagated() && typeUtils.isSameType(typeUtils.toMutableType(converterParameter.getType()), constructorAditionalParameter.getType())) {
 							converterParameter.setPropagated(false);
 							break;
 						}
@@ -373,6 +371,8 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			TypeElement cachedConverterType = getElementUtils().getTypeElement(BasicCachedConverter.class.getCanonicalName());
 			List<ExecutableElement> constructors = getSortedConstructorMethods(cachedConverterType);
 
+			ParameterElement[] constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters();
+
 			if (constructors != null && constructors.size() > converterInstancerType.getConstructorIndex()) {
 
 				List<? extends VariableElement> constructorParameters = null;
@@ -383,11 +383,20 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				}
 
 				for (VariableElement constructorParameter : constructorParameters) {
-					parameters.add(toConverterParameter(constructorParameter));
+					boolean isAdditional = false;
+					
+					for (ParameterElement constructorAditionalParameter: constructorAditionalParameters) {
+						if (typeUtils.isSameType(typeUtils.toMutableType(constructorParameter.asType()), constructorAditionalParameter.getType())) {
+							isAdditional = true;
+							break;
+						}
+					}
+
+					if (!isAdditional) {
+						parameters.add(toConverterParameter(constructorParameter));
+					}
 				}
 			}
-
-			ParameterElement[] constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters();
 
 			for (ParameterElement constructorAditionalParameter: constructorAditionalParameters) {
 				parameters.add(toConverterParameter(constructorAditionalParameter));
@@ -410,9 +419,6 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 				for (ParameterElement additionalParameter: constructorAditionalParameters) {
 					if (getTypeUtils().isSameType(additionalParameter.getType(), converterParameter.getType())) {
 						converterParameter.setName(additionalParameter.getName());
-						if (converterParameter.getName().equals("arg0")) {
-							getMessager().printMessage(Kind.ERROR, "[2] Additional parameter is arg0 for " + this.getCanonicalName());
-						}
 					}
 				}
 			}

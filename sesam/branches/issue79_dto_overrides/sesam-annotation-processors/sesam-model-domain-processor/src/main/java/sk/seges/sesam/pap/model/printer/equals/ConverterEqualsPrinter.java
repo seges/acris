@@ -16,6 +16,7 @@ import sk.seges.sesam.pap.model.printer.AbstractDtoPrinter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class ConverterEqualsPrinter extends AbstractDtoPrinter implements TransferObjectElementPrinter {
@@ -26,8 +27,8 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 	private final EntityResolver entityResolver;
 	private final FormattedPrintWriter pw;
 
-	public ConverterEqualsPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
-		super(processingEnv);
+	public ConverterEqualsPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+		super(parametersResolver, processingEnv);
 		this.entityResolver = entityResolver;
 		this.converterProviderPrinter = converterProviderPrinter;
 		this.pw = pw;

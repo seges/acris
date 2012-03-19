@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
@@ -35,11 +34,6 @@ public class CollectionConverter<DTO, DOMAIN> implements DtoConverter<Collection
 		this.converterProvider = converterProvider;
 	}
 	
-	public CollectionConverter(ConverterProvider converterProvider) {
-		this.cache = new MapConvertedInstanceCache();
-		this.converterProvider = converterProvider;
-	}
-
 	@SuppressWarnings("unchecked")
 	public <T extends Collection<DTO>> T toDto(Collection<DOMAIN> domains, Class<T> targetClass) {
 		if (domains == null) {

@@ -23,7 +23,7 @@ import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
 import sk.seges.sesam.pap.service.configurer.ServiceConverterProcessorConfigurer;
 import sk.seges.sesam.pap.service.model.DefaultServiceConverterParametersFilter;
@@ -39,7 +39,7 @@ import sk.seges.sesam.pap.service.printer.ServiceMethodConverterPrinter;
 import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 import sk.seges.sesam.pap.service.provider.ServiceCollectorConfigurationProvider;
-import sk.seges.sesam.pap.service.resolver.ServiceParametersResolver;
+import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ServiceConverterProcessor extends MutableAnnotationProcessor {
@@ -180,8 +180,8 @@ public class ServiceConverterProcessor extends MutableAnnotationProcessor {
 		this.converterProviderPrinter.printConverterMethods(true, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
 	}
 
-	protected ParametersResolver getParametersResolver() {
-		return new ServiceParametersResolver(processingEnv);
+	protected ConverterConstructorParametersResolver getParametersResolver() {
+		return new ServiceConverterConstructorParametersResolver(processingEnv);
 	}	
 
 	protected String getConverterMethodName(MutableDeclaredType domainClass) {

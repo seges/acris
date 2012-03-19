@@ -22,14 +22,14 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 
 public class CopyFromDtoPrinter extends AbstractMethodPrinter implements TransferObjectElementPrinter {
 
 	protected final FormattedPrintWriter pw;
 	protected final EntityResolver entityResolver;
 	
-	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.pw = pw;
 		this.entityResolver = entityResolver;
@@ -85,19 +85,8 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			boolean useIdConverter = false;
 
 			MutableTypeMirror dtoIdType = dtoIdMethod.asType().getReturnType();
-			//processingEnv.getTypeUtils().toMutableType(domainIdMethod.getReturnType());
 			DomainType domainIdType = processingEnv.getTransferObjectUtils().getDtoType(dtoIdType).getDomain();
 			
-//			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-//				domainIdType = configurationElement.getInstantiableDomain().getId(entityResolver);
-//				if (domainIdType.getConfigurations().size() == 0) {
-//					DtoType dto = domainIdType.getDto();
-//					if (dto != null) {
-//						dtoIdType= dto;
-//					}
-//				}
-//			}
-
 			pw.println(domainType, " " + RESULT_NAME + " = getDomainInstance(" + DTO_NAME + ", " + DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)) + ");");
 			pw.println("if (" + RESULT_NAME + " != null) {");
 			pw.println("return " + RESULT_NAME + ";");
@@ -152,8 +141,6 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			pw.println("return domainFromCache;");
 			pw.println("}");
 			pw.println();
-			pw.println("putDomainIntoCache(" + DTO_NAME + ", " + RESULT_NAME + "," + RESULT_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(domainIdMethod)) + ");");
-			pw.println();
 		}
 		
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
@@ -161,6 +148,11 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
 			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), domainsuperClass.getDto().getSimpleName() + ".class", null, pw);
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
+			pw.println();
+		}
+
+		if (dtoIdMethod != null) {
+			pw.println("putDomainIntoCache(" + DTO_NAME + ", " + RESULT_NAME + "," + RESULT_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(domainIdMethod)) + ");");
 			pw.println();
 		}
 	}

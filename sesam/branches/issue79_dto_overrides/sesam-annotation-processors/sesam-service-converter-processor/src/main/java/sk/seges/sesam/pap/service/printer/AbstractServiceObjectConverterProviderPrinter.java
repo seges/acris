@@ -10,6 +10,7 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.AbstractConverterPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
@@ -21,8 +22,8 @@ public abstract class AbstractServiceObjectConverterProviderPrinter extends Abst
 	protected Set<String> types = new HashSet<String>();
 
 	public AbstractServiceObjectConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw,
-			ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv);
+			ConverterProviderPrinter converterProviderPrinter, ConverterConstructorParametersResolver parametersResover) {
+		super(parametersResover, processingEnv);
 		this.pw = pw;
 		this.converterProviderPrinter = converterProviderPrinter;
 	}

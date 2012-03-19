@@ -5,14 +5,15 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
 public class ServiceDomainConverterProviderPrinter extends AbstractServiceObjectConverterProviderPrinter {
 
-	public ServiceDomainConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv,
+	public ServiceDomainConverterProviderPrinter(ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv,
 			FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, pw, converterProviderPrinter);
+		super(processingEnv, pw, converterProviderPrinter, parametersResolver);
 	}
 
 	private static final String DOMAIN_CLASS_PARAMETER_NAME = "domainClass";

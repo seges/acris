@@ -46,8 +46,8 @@ import sk.seges.sesam.pap.model.model.api.HasConverter;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
-import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
@@ -59,14 +59,11 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 
 	protected final FormattedPrintWriter pw;
 	
-	protected final ParametersResolver parametersResolver;
-	
 	private Map<String, ConverterTypeElement> converterCache = new HashMap<String, ConverterTypeElement>();
 	
-	public ConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv, ParametersResolver parametersResolver) {
-		super(processingEnv);
+	public ConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolver parametersResolver) {
+		super(parametersResolver, processingEnv);
 		this.pw = pw;
-		this.parametersResolver = parametersResolver;
 	}
 
 	/**
@@ -391,15 +388,13 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		pw.println(" {");
 
 		pw.print(replaceTypeParametersByWildcards(processingEnv.getTypeUtils().toMutableType(DtoConverter.class)), " converter = ");
-		pw.print(DefaultParametersResolver.CONVERTER_PROVIDER_NAME);
+		pw.print(DefaultConverterConstructorParametersResolver.CONVERTER_PROVIDER_NAME);
 		
 		pw.print(".", converterTargetType.getConverterMethodName() + "(" + TARGET_CLASS_PARAMETER_NAME);
-//		if (converterInstancerType.equals(ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER)) {
-			String cacheParameterName = getConstructorParameterName(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class));
-			if (cacheParameterName != null) {
-				pw.print(", " + cacheParameterName);
-			}
-//		}
+		String cacheParameterName = getConstructorParameterName(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class));
+		if (cacheParameterName != null) {
+			pw.print(", " + cacheParameterName);
+		}
 		pw.println(");");
 		pw.println("if (" + CONVERTER_LOCAL_FIELD_NAME + " != null) {");
 		pw.print("return (");

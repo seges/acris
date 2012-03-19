@@ -18,13 +18,13 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 
 public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements CopyMethodPrinter {
 
 	private ElementHolderTypeConverter elementHolderTypeConverter;
 	
-	public CopyToDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, ParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
+	public CopyToDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.elementHolderTypeConverter = elementHolderTypeConverter;
 	}

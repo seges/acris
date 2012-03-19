@@ -22,7 +22,6 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
-import sk.seges.sesam.pap.model.printer.constructor.ConverterConstructorPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
@@ -32,10 +31,9 @@ import sk.seges.sesam.pap.model.provider.ClasspathConfigurationProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectConverterProcessorContextProvider;
 import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
-import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
-import sk.seges.sesam.shared.model.converter.BasicConverter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class TransferObjectConverterProcessor extends AbstractTransferProcessor {
@@ -87,7 +85,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	@Override
 	protected TransferObjectElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new TransferObjectElementPrinter[] {
-				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), processingEnv, pw),
+				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), processingEnv, pw),
 				new CopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(),getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
 				new CopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
@@ -97,8 +95,8 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		return new TransferObjectConverterProcessorContextProvider(getEnvironmentContext(), getEntityResolver());
 	}
 
-	protected ParametersResolver getParametersResolver() {
-		return new DefaultParametersResolver(processingEnv);
+	protected ConverterConstructorParametersResolver getParametersResolver() {
+		return new DefaultConverterConstructorParametersResolver(processingEnv);
 	}
 	
 	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw) {
@@ -116,31 +114,30 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		
 		ParameterElement[] constructorAditionalParameters = getParametersResolver().getConstructorAditionalParameters();
 		
-		ConstructorPrinter constructorPrinter = new ConverterConstructorPrinter(pw, context.getOutputType(), processingEnv);
-		constructorPrinter.printConstructors(cachedConverterType, constructorAditionalParameters);
-
-		List<ExecutableElement> constructors = ElementFilter.constructorsIn(cachedConverterType.getEnclosedElements());
-
-		if (constructors.size() > 0) {
-			ExecutableElement constructor = constructors.iterator().next();
-			
-			TypeElement basicConverterType = processingEnv.getElementUtils().getTypeElement(BasicConverter.class.getCanonicalName());
-			constructorPrinter.printConstructors(basicConverterType, constructor, false, constructorAditionalParameters);
-			
-			for (VariableElement parameter: constructor.getParameters()) {
-				String name = parameter.getSimpleName().toString();
-				if (!existsField(name, constructor)) {
-					pw.println("private ", parameter.asType(), " " + name + ";");
-					pw.println();
-				}
-			}
-		}
-		
 		for (ParameterElement parameter: constructorAditionalParameters) {
 			pw.println("private ", parameter.getType(), " " + parameter.getName().toString() + ";");
 			pw.println();
 		}
-		
+
+		ConstructorPrinter constructorPrinter = new ConstructorPrinter(pw, context.getOutputType(),processingEnv);
+		constructorPrinter.printConstructors(cachedConverterType, constructorAditionalParameters);
+
+//		List<ExecutableElement> constructors = ElementFilter.constructorsIn(cachedConverterType.getEnclosedElements());
+//
+//		if (constructors.size() > 0) {
+//			ExecutableElement constructor = constructors.iterator().next();
+//			
+//			TypeElement basicConverterType = processingEnv.getElementUtils().getTypeElement(BasicConverter.class.getCanonicalName());
+//			constructorPrinter.printConstructors(basicConverterType, constructor, false, constructorAditionalParameters);
+//			
+//			for (VariableElement parameter: constructor.getParameters()) {
+//				String name = parameter.getSimpleName().toString();
+//				if (!existsField(name, constructor)) {
+//					pw.println("private ", parameter.asType(), " " + name + ";");
+//					pw.println();
+//				}
+//			}
+//		}		
 		
 		super.processElement(context);
 		

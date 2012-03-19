@@ -5,14 +5,14 @@ import java.util.List;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 
 public class ServiceConstructorBodyPrinter extends AbstractParameterCollectorPrinter {
 
-	public ServiceConstructorBodyPrinter(TransferObjectProcessingEnvironment processingEnv, ServiceConverterParametersFilter parametersFilter, ParametersResolver parametersResolver, FormattedPrintWriter pw) {
+	public ServiceConstructorBodyPrinter(TransferObjectProcessingEnvironment processingEnv, ServiceConverterParametersFilter parametersFilter, ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw) {
 		super(processingEnv, parametersFilter, parametersResolver, pw);
 	}
 

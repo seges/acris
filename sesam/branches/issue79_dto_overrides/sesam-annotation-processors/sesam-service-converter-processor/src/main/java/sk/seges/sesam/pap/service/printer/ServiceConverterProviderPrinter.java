@@ -14,7 +14,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
@@ -24,7 +24,7 @@ import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinter {
 
 	public ServiceConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ParametersResolver parametersResolver, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
+			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
 		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
 	}
 	
@@ -69,8 +69,8 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 	
 	protected NestedServiceConverterElementPrinter[] getNestedPrinters() {
 		return new NestedServiceConverterElementPrinter[] {
-			new ServiceDomainConverterProviderPrinter(processingEnv, pw, converterProviderPrinter),
-			new ServiceDtoConverterProviderPrinter(processingEnv, pw, converterProviderPrinter)	
+			new ServiceDomainConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter),
+			new ServiceDtoConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter)	
 		};
 	}
 	

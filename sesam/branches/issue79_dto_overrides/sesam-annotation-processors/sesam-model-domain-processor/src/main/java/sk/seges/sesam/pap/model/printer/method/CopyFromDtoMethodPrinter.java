@@ -23,7 +23,7 @@ import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 
 public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements CopyMethodPrinter {
 
@@ -31,7 +31,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	
 	private Set<String> instances = new HashSet<String>();
 	
-	public CopyFromDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
+	public CopyFromDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
 		this.entityResolver = entityResolver;
 	}

@@ -12,14 +12,15 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.AbstractConverterPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
-import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
+import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class AbstractDtoPrinter extends AbstractConverterPrinter {
 
-	protected AbstractDtoPrinter(TransferObjectProcessingEnvironment processingEnv) {
-		super(processingEnv);
+	protected AbstractDtoPrinter(ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv) {
+		super(parametersResolver, processingEnv);
 	}
 	
 	protected String printLocalConverter(TransferObjectContext context, ConverterTargetType targetType, FormattedPrintWriter pw) {
@@ -41,9 +42,9 @@ public class AbstractDtoPrinter extends AbstractConverterPrinter {
 		String cacheParameterName = getConstructorParameterName(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class));
 		
 		if (targetType.equals(ConverterTargetType.DOMAIN)) {
-			pw.print(DefaultParametersResolver.CONVERTER_PROVIDER_NAME + ".getConverterForDomain(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
+			pw.print(DefaultConverterConstructorParametersResolver.CONVERTER_PROVIDER_NAME + ".getConverterForDomain(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
 		} else {
-			pw.print(DefaultParametersResolver.CONVERTER_PROVIDER_NAME + ".getConverterForDomain(" + TransferObjectElementPrinter.RESULT_NAME  + "." + context.getDomainFieldName());
+			pw.print(DefaultConverterConstructorParametersResolver.CONVERTER_PROVIDER_NAME + ".getConverterForDomain(" + TransferObjectElementPrinter.RESULT_NAME  + "." + context.getDomainFieldName());
 		}
 		if (cacheParameterName != null) {
 			pw.print(", " + cacheParameterName);

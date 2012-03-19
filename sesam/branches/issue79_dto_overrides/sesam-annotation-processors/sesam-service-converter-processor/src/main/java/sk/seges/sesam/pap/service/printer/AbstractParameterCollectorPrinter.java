@@ -9,7 +9,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.api.ServiceConverterElementPrinter;
@@ -21,7 +21,7 @@ public abstract class AbstractParameterCollectorPrinter extends AbstractServiceP
 	protected final FormattedPrintWriter pw;
 	protected final ServiceConverterParametersFilter parametersFilter;
 	
-	protected AbstractParameterCollectorPrinter(TransferObjectProcessingEnvironment processingEnv, ServiceConverterParametersFilter parametersFilter, ParametersResolver parametersResolver, FormattedPrintWriter pw) {
+	protected AbstractParameterCollectorPrinter(TransferObjectProcessingEnvironment processingEnv, ServiceConverterParametersFilter parametersFilter, ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw) {
 		super(processingEnv, parametersResolver);
 		this.pw = pw;
 		this.parametersFilter = parametersFilter;

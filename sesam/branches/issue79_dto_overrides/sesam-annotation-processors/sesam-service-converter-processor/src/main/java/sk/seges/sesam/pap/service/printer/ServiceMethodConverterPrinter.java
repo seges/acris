@@ -13,13 +13,13 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 
 public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter {
 
 	public ServiceMethodConverterPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ParametersResolver parametersResolver, FormattedPrintWriter pw,
+			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw,
 			ConverterProviderPrinter converterProviderPrinter) {
 		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
 	}
