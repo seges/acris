@@ -6,7 +6,7 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolverDelegate;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 
@@ -15,7 +15,7 @@ public class HibernateServiceConverterProviderPrinter extends AbstractHibernateC
 	private final ServiceTypeElement serviceTypeElement;
 	
 	public HibernateServiceConverterProviderPrinter(FormattedPrintWriter pw,
-			TransferObjectProcessingEnvironment processingEnv, ParametersResolver parametersResolver, ServiceTypeElement serviceTypeElement) {
+			TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolver parametersResolver, ServiceTypeElement serviceTypeElement) {
 		super(pw, processingEnv, parametersResolver);
 		this.serviceTypeElement = serviceTypeElement;
 	}
@@ -34,5 +34,5 @@ public class HibernateServiceConverterProviderPrinter extends AbstractHibernateC
 					typeUtils.getReferenceToMethod(converterProviderMethod,
 							typeUtils.getReference(null, HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME)), 
 				CONVERTER_PROVIDER_REFERENCE);
-	}
+	}	
 }

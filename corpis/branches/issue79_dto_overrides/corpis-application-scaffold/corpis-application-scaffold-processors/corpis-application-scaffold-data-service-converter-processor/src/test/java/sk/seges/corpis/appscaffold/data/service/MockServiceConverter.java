@@ -44,8 +44,8 @@ public class MockServiceConverter implements MockRemoteService, ConverterProvide
 		return (PagedResult<List<MockEntityDTO>>)((PagedResultConverter)getPagedResultConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE, PropagationTarget.ARGUMENTS}, PropagationType.ISOLATE)})).toDto((PagedResult<List<MockEntity>>)mockLocalServiceService.findAll());
 	}
 
-	private<DTO, DOMAIN> CollectionConverter<? extends DTO, ? extends DOMAIN> getCollectionConverter() {
-		return new CollectionConverter<DTO, DOMAIN>(this);
+	private<DTO, DOMAIN> CollectionConverter<? extends DTO, ? extends DOMAIN> getCollectionConverter(ConvertedInstanceCache cache) {
+		return new CollectionConverter<DTO, DOMAIN>(cache, this);
 	}
 
 	private<DTO_T, DOMAIN_T> PagedResultConverter<? extends DTO_T, ? extends DOMAIN_T> getPagedResultConverter(TransactionPropagationModel[] transactionPropagations) {

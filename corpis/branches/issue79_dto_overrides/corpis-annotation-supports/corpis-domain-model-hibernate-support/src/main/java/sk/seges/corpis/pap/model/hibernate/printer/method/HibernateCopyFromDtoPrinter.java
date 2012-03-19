@@ -9,13 +9,13 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoPrinter;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
 
 public class HibernateCopyFromDtoPrinter extends CopyFromDtoPrinter {
 	
 	public HibernateCopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver,
-			ParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv,
+			ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv,
 			FormattedPrintWriter pw) {
 		super(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv, pw);
 	}

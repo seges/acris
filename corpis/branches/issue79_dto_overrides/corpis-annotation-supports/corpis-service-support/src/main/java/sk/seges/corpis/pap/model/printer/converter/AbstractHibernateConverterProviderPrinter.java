@@ -23,7 +23,10 @@ import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
+import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
+import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 public abstract class AbstractHibernateConverterProviderPrinter extends ConverterProviderPrinter {
@@ -31,7 +34,7 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 	protected TransferObjectProcessingEnvironment processingEnv;
 	
 	public AbstractHibernateConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
-			ParametersResolver parametersResolver) {
+			ConverterConstructorParametersResolver parametersResolver) {
 		super(pw, processingEnv, parametersResolver);
 		this.processingEnv = processingEnv;
 	}
@@ -45,6 +48,13 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 	}
 	
 	protected abstract MutableReferenceType getConverterProviderReference();
+
+	protected MutableReferenceType getCacheReference() {
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+		MutableDeclaredType cacheInstance = typeUtils.toMutableType(MapConvertedInstanceCache.class);
+		
+		return typeUtils.getReference(typeUtils.getTypeValue(cacheInstance, new MapConvertedInstanceCache()), ServiceConverterConstructorParametersResolver.CONVERTER_CACHE_NAME);
+	}
 
 	private ParameterElement toParameter(ConverterParameter converterParameter) {
 		return new ParameterElement(converterParameter.getType(), converterParameter.getName(), converterParameter.isPropagated());
@@ -87,6 +97,9 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 				}
 				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.toMutableType(ConverterProvider.class))) {
 					generatedParams.add(getConverterProviderReference());
+				}
+				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.toMutableType(ConvertedInstanceCache.class))) {
+					generatedParams.add(getCacheReference());
 				}
 			}
 		}

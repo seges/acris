@@ -4,12 +4,13 @@ import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
+import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
-public class HibernateServiceParameterResolver extends ServiceConverterConstructorParametersResolver {
+public class HibernateConverterProviderParameterResolver extends ServiceConverterConstructorParametersResolver {
 
 	private final HibernateParameterResolverDelegate hibernateParameterResolverDelegate;
 
-	public HibernateServiceParameterResolver(MutableProcessingEnvironment processingEnv) {
+	public HibernateConverterProviderParameterResolver(MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.hibernateParameterResolverDelegate = new HibernateParameterResolverDelegate(processingEnv) {
 			protected ParameterElement getTransactionPropagationModel() {
@@ -22,4 +23,10 @@ public class HibernateServiceParameterResolver extends ServiceConverterConstruct
 	public ParameterElement[] getConstructorAditionalParameters() {
 		return hibernateParameterResolverDelegate.getConstructorAditionalParameters(super.getConstructorAditionalParameters());
 	}	
+	
+	@Override
+	protected ParameterElement getConverterCacheParameter() {
+		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), CONVERTER_CACHE_NAME,  true);
+	}
+
 }

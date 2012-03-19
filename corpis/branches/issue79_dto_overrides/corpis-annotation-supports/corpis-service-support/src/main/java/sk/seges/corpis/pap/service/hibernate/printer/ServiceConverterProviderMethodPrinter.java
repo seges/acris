@@ -7,7 +7,7 @@ import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.ServiceConverterProviderPrinter;
@@ -15,7 +15,7 @@ import sk.seges.sesam.pap.service.printer.ServiceConverterProviderPrinter;
 public class ServiceConverterProviderMethodPrinter extends ServiceConverterProviderPrinter {
 
 	public ServiceConverterProviderMethodPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ParametersResolver parametersResolver, FormattedPrintWriter pw,
+			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw,
 			ConverterProviderPrinter converterProviderPrinter) {
 		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
 	}
@@ -34,6 +34,7 @@ public class ServiceConverterProviderMethodPrinter extends ServiceConverterProvi
 				pw.print(", ");
 			}
 			pw.print(generatedParameter.getType(), " " + generatedParameter.getName());
+			i++;
 		}
 
 		pw.println(") {");
@@ -44,9 +45,11 @@ public class ServiceConverterProviderMethodPrinter extends ServiceConverterProvi
 				pw.print(", ");
 			}
 			pw.print(generatedParameter.getName());
+			i++;
 		}
 		pw.println(");");
 		pw.println("}");
+		pw.println();
 		super.initialize(serviceTypeElement);
 	}	
 }

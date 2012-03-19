@@ -2,9 +2,9 @@ package sk.seges.sesam.pap.model.hibernate.resolver;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.pap.model.resolver.DefaultParametersResolver;
+import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
 
-public class HibernateConverterParameterResolver extends DefaultParametersResolver {
+public class HibernateConverterParameterResolver extends DefaultConverterConstructorParametersResolver {
 
 	private final HibernateParameterResolverDelegate hibernateParameterResolverDelegate;
 

@@ -13,7 +13,7 @@ import sk.seges.sesam.pap.model.hibernate.resolver.HibernateConverterParameterRe
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class HibernateTransferObjectConverterProcessor extends TransferObjectConverterProcessor {
@@ -24,7 +24,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	}
 
 	@Override
-	protected ParametersResolver getParametersResolver() {
+	protected ConverterConstructorParametersResolver getParametersResolver() {
 		return new HibernateConverterParameterResolver(processingEnv);
 	}
 	
@@ -41,7 +41,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	@Override
 	protected TransferObjectElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new TransferObjectElementPrinter[] {
-				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), processingEnv, pw),
+				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), processingEnv, pw),
 				new HibernateCopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
 				new HibernateCopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
