@@ -23,4 +23,5 @@ public interface PanelRef {
 	public static final String FLOW_WIZARD_STEP_LAYOUT = "layout.wizard.step.flow";
 	public static final String BOUND_FIELD_LAYOUT = "layout.boundField";
 	public static final String SLIDER_FLOW_LAYOUT_PANEL = "sliderFlowLP";
+	public static final String DIALOG_LAYOUT_PANEL = "dialogLP";
 }
