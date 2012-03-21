@@ -358,7 +358,12 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 				length += res.length();
 				super.write(res);
 			} else if (o instanceof MutableReferenceType) {
-				super.write(((MutableReferenceType)o).toString());
+				String name = ((MutableReferenceType)o).toString();
+				if (name != null && name.length() > 0) {
+					super.write(name);
+				} else {
+					print(((MutableReferenceType)o).getReference());
+				}
 			} else {
 				MutableTypeMirror mutableType = toMutableType(o);
 				
