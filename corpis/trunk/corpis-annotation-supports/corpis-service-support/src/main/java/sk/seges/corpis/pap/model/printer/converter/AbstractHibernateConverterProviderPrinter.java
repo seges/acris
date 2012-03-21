@@ -24,7 +24,6 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
-import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
@@ -53,7 +52,8 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		MutableDeclaredType cacheInstance = typeUtils.toMutableType(MapConvertedInstanceCache.class);
 		
-		return typeUtils.getReference(typeUtils.getTypeValue(cacheInstance, new MapConvertedInstanceCache()), ServiceConverterConstructorParametersResolver.CONVERTER_CACHE_NAME);
+		//ServiceConverterConstructorParametersResolver.CONVERTER_CACHE_NAME
+		return typeUtils.getReference(typeUtils.getTypeValue(cacheInstance, new MapConvertedInstanceCache()), "");
 	}
 
 	private ParameterElement toParameter(ConverterParameter converterParameter) {
@@ -90,6 +90,7 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 		List<MutableType> generatedParams = new ArrayList<MutableType>();
 
 		//TODO - ugly implementation. Is it?
+		//TODO move something to the sesam part
 		for (ParameterElement converterParametersType: converterParametersTypes) {
 			if (!converterParametersType.isPropagated()) {
 				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.getArrayType(transactionPropagationModel))) {
