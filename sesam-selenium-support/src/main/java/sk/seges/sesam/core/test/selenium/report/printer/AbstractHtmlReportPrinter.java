@@ -127,7 +127,7 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 			return;
 		}
 		
-		String fileName = getOutputDirectory(reportSettings.getHtml().getSupport()) + File.separator + getReportFileName(resultData);
+		String fileName = getOutputDirectory(reportSettings.getHtml().getSupport()) + "/" + getReportFileName(resultData);
         File reportFile = new File(getResultDirectory(), fileName);
         try {
         	if (!reportFile.getParentFile().exists()) {
