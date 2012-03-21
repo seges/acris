@@ -76,6 +76,12 @@ public abstract class CSVImportExportService {
 			return violations;
 		}
 		
+		if (fieldNames != null && fieldNames.contains("hide")) {
+			RowBasedHandlerContext newContext = instantiateContext();
+			contextTemplate.injectInto(newContext);
+			handler.hideAllProducts(newContext);
+		}
+		
 		// one for header and one for not starting at 0
 		int i = 2;
 		for (CsvEntry entry : entries) {

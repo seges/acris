@@ -21,6 +21,8 @@ public interface CSVHandler<T extends CsvEntry, C extends RowBasedHandlerContext
 	void setFieldToColumnMapping(Map<String, String> fieldToColumnMapping);
 
 	List<ImportExportViolation> handle(C context, T entry, Set<String> fieldNames);
+	
+	ImportExportViolation hideAllProducts(C context);
 
 	Class<T> getHandledCsvEntryClass();
 }
