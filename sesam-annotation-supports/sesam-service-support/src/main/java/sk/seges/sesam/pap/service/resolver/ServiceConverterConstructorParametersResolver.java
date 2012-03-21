@@ -19,7 +19,7 @@ public class ServiceConverterConstructorParametersResolver extends DefaultConver
 
 	@Override
 	protected ParameterElement getConverterCacheParameter() {
-		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), CONVERTER_CACHE_NAME,  false);
+		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), CONVERTER_CACHE_NAME, false);
 	}
 
 //	@Override

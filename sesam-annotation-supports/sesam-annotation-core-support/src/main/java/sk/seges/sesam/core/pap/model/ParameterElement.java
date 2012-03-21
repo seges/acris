@@ -6,12 +6,12 @@ public class ParameterElement {
 
 	private MutableTypeMirror type;
 	private String name;
-	private boolean isPropagated;
+	private boolean propagated;
 	
 	public ParameterElement(MutableTypeMirror type, String name, boolean isPropagated) {
 		this.type = type;
 		this.name = name;
-		this.isPropagated = isPropagated;
+		this.propagated = isPropagated;
 	}
 
 	public MutableTypeMirror getType() {
@@ -27,6 +27,6 @@ public class ParameterElement {
 	}
 	
 	public boolean isPropagated() {
-		return isPropagated;
+		return propagated;
 	}
 }

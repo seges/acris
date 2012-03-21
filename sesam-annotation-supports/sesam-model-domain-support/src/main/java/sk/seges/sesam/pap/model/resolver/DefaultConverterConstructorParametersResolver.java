@@ -22,7 +22,7 @@ public class DefaultConverterConstructorParametersResolver implements ConverterC
 	}
 
 	protected ParameterElement getConverterCacheParameter() {
-		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), CONVERTER_CACHE_NAME,  true);
+		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), CONVERTER_CACHE_NAME, true);
 	}
 
 	@Override

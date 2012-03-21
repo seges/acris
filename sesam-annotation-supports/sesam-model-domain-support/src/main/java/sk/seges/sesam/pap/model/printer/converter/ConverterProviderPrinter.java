@@ -627,19 +627,21 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 				if (((MutableReferenceType)parameterType).getReference() != null) {
 					String parameterName = ((MutableReferenceType)parameterType).toString();
 					
-					MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
-					if (reference instanceof MutableArrayTypeValue) {
-						pw.print(((MutableArrayTypeValue) reference).asType());
-					} else if (reference instanceof MutableDeclaredTypeValue) {
-						pw.print(((MutableDeclaredTypeValue) reference).asType());
-					} else if (reference instanceof MutableReferenceTypeValue) {
-						pw.print(((MutableReferenceTypeValue) reference).asType());
+					if (parameterName != null && parameterName.length() > 0) {
+						MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
+						if (reference instanceof MutableArrayTypeValue) {
+							pw.print(((MutableArrayTypeValue) reference).asType());
+						} else if (reference instanceof MutableDeclaredTypeValue) {
+							pw.print(((MutableDeclaredTypeValue) reference).asType());
+						} else if (reference instanceof MutableReferenceTypeValue) {
+							pw.print(((MutableReferenceTypeValue) reference).asType());
+						}
+						
+						parameterNames.add(parameterName);
+						
+						pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
+						pw.println(((MutableReferenceType)parameterType).getReference(), ";");
 					}
-					
-					parameterNames.add(parameterName);
-					
-					pw.print(" ", ((MutableReferenceType)parameterType).toString(), " = ");
-					pw.println(((MutableReferenceType)parameterType).getReference(), ";");
 				}
 			}
 		}
