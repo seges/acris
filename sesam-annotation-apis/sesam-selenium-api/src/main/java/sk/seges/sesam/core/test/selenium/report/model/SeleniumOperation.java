@@ -23,10 +23,35 @@ public enum SeleniumOperation {
 		public String getDescription() {
 			return "Finding by";
 		}
+	}, KEY_DOWN {
+		@Override
+		public String getDescription() {
+			return "Pressing key down";
+		}
+	}, SEND_KEYS {
+		@Override
+		public String getDescription() {
+			return "Sending keys";
+		}
+	}, KEY_UP {
+		@Override
+		public String getDescription() {
+			return "Pushing key up";
+		}
 	}, CLICK_ON {
 		@Override
 		public String getDescription() {
 			return "Clicking on";
+		}
+	}, DOUBLE_CLICK_ON {
+		@Override
+		public String getDescription() {
+			return "Double clicking on";
+		}
+	}, CLICK_AND_HOLD {
+		@Override
+		public String getDescription() {
+			return "Clicking on holding";
 		}
 	}, CHANGE_VALUE {
 		@Override

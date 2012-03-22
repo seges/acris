@@ -8,10 +8,12 @@ class MutableReference implements MutableReferenceType {
 
 	private final MutableTypeValue reference;
 	private String name;
+	private boolean inline; 
 	
-	MutableReference(MutableTypeValue reference, String name) {
+	MutableReference(MutableTypeValue reference, String name, boolean inline) {
 		this.reference = reference;
 		this.name = name;
+		this.inline = inline;
 	}
 	
 	@Override
@@ -36,5 +38,10 @@ class MutableReference implements MutableReferenceType {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public boolean isInline() {
+		return inline;
 	}
 }

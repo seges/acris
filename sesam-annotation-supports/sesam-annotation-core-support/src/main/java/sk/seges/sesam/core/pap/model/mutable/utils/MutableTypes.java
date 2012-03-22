@@ -187,8 +187,12 @@ public class MutableTypes implements Types {
 //		return this.types.directSupertypes(t);
 	}
 
+	public MutableReferenceType getReference(MutableTypeValue type, String name, boolean inline) {
+		return new MutableReference(type, name, inline);
+	}
+	
 	public MutableReferenceType getReference(MutableTypeValue type, String name) {
-		return new MutableReference(type, name);
+		return getReference(type, name, false);
 	}
 	
 	@Override

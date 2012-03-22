@@ -5,5 +5,6 @@ public interface MutableReferenceType extends MutableType {
 	MutableTypeValue getReference();
 	
 	void setName(String name);
-	
+
+	boolean isInline();
 }

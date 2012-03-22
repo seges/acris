@@ -551,20 +551,20 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		}
 	}
 
-	public void printDtoEnsuredConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printEnsuredConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw);
+	public void printDtoEnsuredConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printEnsuredConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw, inlineAware);
 	}
 
-	public void printDtoGetConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printGetConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw);
+	public void printDtoGetConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printGetConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw, inlineAware);
 	}
 
-	public void printDomainEnsuredConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printEnsuredConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw);
+	public void printDomainEnsuredConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printEnsuredConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw, inlineAware);
 	}
 
-	public void printDomainGetConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw) {
-		printGetConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw);
+	public void printDomainGetConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printGetConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw, inlineAware);
 	}
 
 	private MutableDeclaredType getConvertedResult(ConverterTypeElement converterTypeElement, ConverterTargetType targetType, MutableTypeMirror type, TomBaseElementProvider tomBaseElementProvider) {
@@ -627,7 +627,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 				if (((MutableReferenceType)parameterType).getReference() != null) {
 					String parameterName = ((MutableReferenceType)parameterType).toString();
 					
-					if (parameterName != null && parameterName.length() > 0) {
+					if (parameterName != null && parameterName.length() > 0 && !((MutableReferenceType)parameterType).isInline()) {
 						MutableTypeValue reference = ((MutableReferenceType)parameterType).getReference();
 						if (reference instanceof MutableArrayTypeValue) {
 							pw.print(((MutableArrayTypeValue) reference).asType());
@@ -647,15 +647,15 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		}
 	}
 	
-	private <T extends MutableTypeMirror & HasConverter> void printEnsuredConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
-		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getEnsuredConverterMethodName(type.getConverter(), targetType));
+	private <T extends MutableTypeMirror & HasConverter> void printEnsuredConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getEnsuredConverterMethodName(type.getConverter(), targetType), inlineAware);
 	}
 
-	private <T extends MutableTypeMirror & HasConverter> void printGetConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw) {
-		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getGetConverterMethodName(type.getConverter(), targetType));
+	private <T extends MutableTypeMirror & HasConverter> void printGetConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getGetConverterMethodName(type.getConverter(), targetType), inlineAware);
 	}
 
-	private <T extends MutableTypeMirror & HasConverter> void printConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, String methodName) {
+	private <T extends MutableTypeMirror & HasConverter> void printConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, String methodName, boolean inlineAware) {
 		
 		if (methodName == null) {
 			return;
@@ -670,10 +670,23 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		}
 		
 		pw.print(methodName + "(");
-				
-		if (pw.printAll(converterParametersUsage) > 0) {
+		
+		int i = 0;
+		for (MutableType parameter: converterParametersUsage) {
+			if (i > 0) {
+				pw.print(", ");
+			}
+			if (inlineAware && parameter instanceof MutableReferenceType && ((MutableReferenceType)parameter).isInline()) {
+				pw.print(((MutableReferenceType)parameter).getReference());
+			} else {
+				pw.print(parameter);
+			}
+			i++;
+		}
+		
+		if (i > 0) {
 			pw.print(", ");
-        }
+		}
 
         pw.print(parameterName);
         

@@ -45,7 +45,7 @@ public class ServiceDomainConverterProviderPrinter extends AbstractServiceObject
 			//pw.println(context.getRawDomain(), " " + fieldName + " = (", context.getRawDomain(), ")" + DOMAIN_PARAMETER_NAME + ";");
 			pw.print("return (", getTypedDtoConverter(), ") ");
 			converterProviderPrinter.printDomainGetConverterMethodName(context.getRawDomain(), 
-					"(" + Class.class.getSimpleName() + "<" + context.getDomain().toString(ClassSerializer.SIMPLE, true) + ">)" + DOMAIN_CLASS_PARAMETER_NAME, context.getLocalMethod(), pw);
+					"(" + Class.class.getSimpleName() + "<" + context.getDomain().toString(ClassSerializer.SIMPLE, true) + ">)" + DOMAIN_CLASS_PARAMETER_NAME, context.getLocalMethod(), pw, false);
 			pw.println(";");
 			pw.println("}");
 			pw.println();
