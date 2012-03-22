@@ -144,6 +144,16 @@ public class ResizablePanel extends HTML {
 		return offsetSize >= 8 ? offsetSize - 2 : 6;
 	}
 
+	private int getAspectWidth(int height) {
+		int width = (height * this.getOffsetWidth()) / this.getOffsetHeight();
+		return width > 0 ? width : 1;
+	}
+
+	private int getAspectHeight(int width) {
+		int height = (width * this.getOffsetHeight()) / this.getOffsetWidth();
+		return height > 0 ? height : 1;
+	}
+
 	@Override
 	public String getHTML() {
 		return contentElement.getInnerHTML();
@@ -222,7 +232,7 @@ public class ResizablePanel extends HTML {
 				proxyElement.getStyle().setWidth(getBorderSize(this.getOffsetWidth()), Unit.PX);
 				proxyElement.getStyle().setHeight(getBorderSize(this.getOffsetHeight()), Unit.PX);
 				proxyElement.getStyle().setDisplay(Display.BLOCK);
-				
+
 				onResizing(this.getOffsetWidth(), this.getOffsetHeight());
 			}
 		}
@@ -284,7 +294,7 @@ public class ResizablePanel extends HTML {
 						height = cursorY - thisY;
 
 						if (keepAspect && !event.getShiftKey()) {
-							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+							width = getAspectWidth(height);
 						} else {
 							width = cursorX - thisX;
 						}
@@ -295,7 +305,7 @@ public class ResizablePanel extends HTML {
 						proxyElement.getStyle().setTop(cursorY + WidgetUtils.getPageScrollY(), Unit.PX);
 
 						if (keepAspect && !event.getShiftKey()) {
-							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+							width = getAspectWidth(height);
 							proxyElement.getStyle().setLeft(thisX + this.getOffsetWidth() - width + WidgetUtils.getPageScrollX(), Unit.PX);
 						} else {
 							width = thisX - cursorX + this.getOffsetWidth();
@@ -308,7 +318,7 @@ public class ResizablePanel extends HTML {
 						proxyElement.getStyle().setTop(cursorY + WidgetUtils.getPageScrollY(), Unit.PX);
 
 						if (keepAspect && !event.getShiftKey()) {
-							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+							width = getAspectWidth(height);
 						} else {
 							width = cursorX - thisX;
 						}
@@ -318,7 +328,7 @@ public class ResizablePanel extends HTML {
 						height = cursorY - thisY;
 
 						if (keepAspect && !event.getShiftKey()) {
-							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+							width = getAspectWidth(height);
 							proxyElement.getStyle().setLeft(thisX + this.getOffsetWidth() - width + WidgetUtils.getPageScrollX(), Unit.PX);
 						} else {
 							width = thisX - cursorX + this.getOffsetWidth();
@@ -330,8 +340,8 @@ public class ResizablePanel extends HTML {
 						height = thisY - cursorY + this.getOffsetHeight();
 						proxyElement.getStyle().setTop(cursorY + WidgetUtils.getPageScrollY(), Unit.PX);
 
-						if (keepAspect) {
-							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+						if (keepAspect && !event.getShiftKey()) {
+							width = getAspectWidth(height);
 						} else {
 							width = this.getOffsetWidth();
 						}
@@ -340,8 +350,8 @@ public class ResizablePanel extends HTML {
 					if (cursorX > thisX && cursorY > thisY) {
 						width = cursorX - thisX;
 
-						if (keepAspect) {
-							height = (int) ((double) width / ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+						if (keepAspect && !event.getShiftKey()) {
+							height = getAspectHeight(width);
 						} else {
 							height = this.getOffsetHeight();
 						}
@@ -350,8 +360,8 @@ public class ResizablePanel extends HTML {
 					if (cursorX > thisX && cursorY > thisY) {
 						height = cursorY - thisY;
 
-						if (keepAspect) {
-							width = (int) ((double) height * ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+						if (keepAspect && !event.getShiftKey()) {
+							width = getAspectWidth(height);
 						} else {
 							width = this.getOffsetWidth();
 						}
@@ -361,8 +371,8 @@ public class ResizablePanel extends HTML {
 						width = thisX - cursorX + this.getOffsetWidth();
 						proxyElement.getStyle().setLeft(cursorX + WidgetUtils.getPageScrollX(), Unit.PX);
 
-						if (keepAspect) {
-							height = (int) ((double) width / ((double) this.getOffsetWidth() / (double) this.getOffsetHeight()));
+						if (keepAspect && !event.getShiftKey()) {
+							height = getAspectHeight(width);
 						} else {
 							height = this.getOffsetHeight();
 						}
@@ -372,7 +382,7 @@ public class ResizablePanel extends HTML {
 				if (width > 0 && height > 0) {
 					proxyElement.getStyle().setWidth(getBorderSize(width), Unit.PX);
 					proxyElement.getStyle().setHeight(getBorderSize(height), Unit.PX);
-					
+
 					onResizing(width, height);
 				}
 			}
