@@ -46,7 +46,7 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 			
 			if (domainId.getConverter() != null) {
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
-				converterProviderPrinter.printDomainEnsuredConverterMethodName(domainId, methodName, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw);
+				converterProviderPrinter.printDomainEnsuredConverterMethodName(domainId, methodName, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw, false);
 				pw.print(".toDto(");
 			} else {
 				pw.print(domainId, " " + DTO_ID + " = ");
