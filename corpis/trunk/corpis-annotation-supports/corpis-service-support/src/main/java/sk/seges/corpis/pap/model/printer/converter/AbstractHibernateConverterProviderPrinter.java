@@ -24,6 +24,7 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
@@ -52,8 +53,7 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		MutableDeclaredType cacheInstance = typeUtils.toMutableType(MapConvertedInstanceCache.class);
 		
-		//ServiceConverterConstructorParametersResolver.CONVERTER_CACHE_NAME
-		return typeUtils.getReference(typeUtils.getTypeValue(cacheInstance, new MapConvertedInstanceCache()), "");
+		return typeUtils.getReference(typeUtils.getTypeValue(cacheInstance, new MapConvertedInstanceCache()), ServiceConverterConstructorParametersResolver.CONVERTER_CACHE_NAME, true);
 	}
 
 	private ParameterElement toParameter(ConverterParameter converterParameter) {
