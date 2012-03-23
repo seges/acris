@@ -149,4 +149,16 @@ public class JpaWebSettings extends WebSettingsDTO {
 		return super.getThumbnailMaxWidth();
 	}
 	
+	@Override
+	@Column
+	public Integer getImageMaxHeight() {
+		return super.getImageMaxHeight();
+	}
+	
+	@Override
+	@Column
+	public Integer getImageMaxWidth() {
+		return super.getImageMaxWidth();
+	}
+	
 }
