@@ -82,6 +82,10 @@ public class WebSettingsDTO implements WebSettingsData {
 	
 	private Integer thumbnailMaxWidth;
 	
+	private Integer imageMaxHeight;
+	
+	private Integer imageMaxWidth;
+	
 	public WebSettingsDTO() {
 	}
 	
@@ -228,5 +232,27 @@ public class WebSettingsDTO implements WebSettingsData {
 	public void setThumbnailMaxWidth(Integer thumbnailMaxWidth) {
 		this.thumbnailMaxWidth = thumbnailMaxWidth;
 	}
+
+	@Override
+	public Integer getImageMaxHeight() {
+		return imageMaxHeight;
+	}
+
+	@Override
+	public void setImageMaxHeight(Integer imageMaxHeight) {
+		this.imageMaxHeight = imageMaxHeight;
+	}
+
+	@Override
+	public Integer getImageMaxWidth() {
+		return imageMaxWidth;
+	}
+
+	@Override
+	public void setImageMaxWidth(Integer imageMaxWidth) {
+		this.imageMaxWidth = imageMaxWidth;
+	}
+	
+	
 	
 }
