@@ -135,4 +135,12 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 	Integer getThumbnailMaxWidth();
 	
 	void setThumbnailMaxWidth(Integer maxWidth);
+	
+	Integer getImageMaxHeight();
+	
+	void setImageMaxHeight(Integer maxHeight);
+	
+	Integer getImageMaxWidth();
+	
+	void setImageMaxWidth(Integer maxWidth);
 }
