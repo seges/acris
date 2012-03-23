@@ -1,5 +1,7 @@
 package sk.seges.sesam.pap.service.printer;
 
+import java.util.Set;
+
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
@@ -7,10 +9,13 @@ import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.printer.TypePrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
@@ -103,8 +108,14 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 				//TODO why not raw domain
 				//returnDtoType.getConverter().getConfiguration().getRawDomain();
 				DtoDeclaredType rawDto = returnDtoType.getConverter().getConfiguration().getRawDto();
-				nestedPrinter.print(new NestedServiceConverterPrinterContext(rawDomain, rawDomain, rawDto, 
-						returnDtoType.getConverter().getConfiguration().getDto(), returnDtoType.getConverter(), localMethod));
+				nestedPrinter.print(getDtoContext(rawDto, localMethod));
+
+				if (rawDomain.getTypeVariables().size() > 0) {
+					for (MutableTypeVariable typeVariable: rawDomain.getTypeVariables()) {
+						printDtoTypeVariables(typeVariable.getLowerBounds(), localMethod, nestedPrinter);
+						printDtoTypeVariables(typeVariable.getUpperBounds(), localMethod, nestedPrinter);
+					}
+				}
 			}
 		}
 
@@ -112,11 +123,51 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 			TypeMirror dtoType = remoteMethod.getParameters().get(i).asType();
 			DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
 			if (parameterDtoType.getConverter() != null) {
-				nestedPrinter.print(new NestedServiceConverterPrinterContext(parameterDtoType.getConverter().getConfiguration().getRawDomain(), 
-						(DomainDeclaredType) parameterDtoType.getDomain(), parameterDtoType.getConverter().getConfiguration().getRawDto(),
-						(DtoDeclaredType) parameterDtoType, parameterDtoType.getConverter(), localMethod));
+				DomainDeclaredType rawDomain = parameterDtoType.getConverter().getConfiguration().getRawDomain();
+				nestedPrinter.print(getDomainContext(rawDomain, localMethod));
+				
+				if (rawDomain.getTypeVariables().size() > 0) {
+					for (MutableTypeVariable typeVariable: rawDomain.getTypeVariables()) {
+						printDomainTypeVariables(typeVariable.getLowerBounds(), localMethod, nestedPrinter);
+						printDomainTypeVariables(typeVariable.getUpperBounds(), localMethod, nestedPrinter);
+					}
+				}
 			}
 		}
+	}
+
+	private void printDtoTypeVariables(Set<? extends MutableTypeMirror> types, ExecutableElement localMethod, NestedServiceConverterElementPrinter nestedPrinter) {
+		for (MutableTypeMirror type: types) {
+			DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
+			if (dtoType.getKind().isDeclared() && dtoType.getConverter() != null) {
+				NestedServiceConverterPrinterContext context = getDtoContext((DtoDeclaredType)dtoType, localMethod);
+				nestedPrinter.print(context);
+			}
+		}
+	}
+
+	private void printDomainTypeVariables(Set<? extends MutableTypeMirror> types, ExecutableElement localMethod, NestedServiceConverterElementPrinter nestedPrinter) {
+		for (MutableTypeMirror type: types) {
+			DomainType domainType = processingEnv.getTransferObjectUtils().getDomainType(type);
+			if (domainType.getKind().isDeclared() && domainType.getConverter() != null) {
+				NestedServiceConverterPrinterContext context = getDomainContext((DomainDeclaredType)domainType, localMethod);
+				nestedPrinter.print(context);
+			}
+		}
+	}
+	
+	private NestedServiceConverterPrinterContext getDtoContext(DtoDeclaredType dtoType, ExecutableElement localMethod) {
+		DomainDeclaredType rawDomain = (DomainDeclaredType)dtoType.getDomain();
+		DtoDeclaredType rawDto = dtoType.getConverter().getConfiguration().getRawDto();
+		return new NestedServiceConverterPrinterContext(rawDomain, rawDomain, rawDto, 
+				dtoType.getConverter().getConfiguration().getDto(), dtoType.getConverter(), localMethod);
+	}
+
+	private NestedServiceConverterPrinterContext getDomainContext(DomainDeclaredType domainType, ExecutableElement localMethod) {
+		DtoType dto = domainType.getDto();
+		return new NestedServiceConverterPrinterContext(domainType,
+				(DomainDeclaredType) dto.getDomain(), dto.getConverter().getConfiguration().getRawDto(),
+				(DtoDeclaredType) dto, dto.getConverter(), localMethod);
 	}
 	
 	@Override
