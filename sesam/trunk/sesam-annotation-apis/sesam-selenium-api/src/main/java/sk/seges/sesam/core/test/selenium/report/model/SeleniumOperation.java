@@ -66,12 +66,32 @@ public enum SeleniumOperation {
 	}, ASSERTION {
 		@Override
 		public String getDescription() {
-			return "Asserting: ";
+			return "Asserting ";
 		}
 	}, VERIFICATION {
 		@Override
 		public String getDescription() {
-			return "Verificating: ";
+			return "Verificating ";
+		}
+	}, BUTTON_RELEASE {
+		@Override
+		public String getDescription() {
+			return "Releasing button ";
+		}
+	}, MOUSE_MOVE {
+		@Override
+		public String getDescription() {
+			return "Moving mouse ";
+		}
+	}, MOVE_TO_OFFSET {
+		@Override
+		public String getDescription() {
+			return "Moving to offset ";
+		}
+	}, CONTEXT_CLICK {
+		@Override
+		public String getDescription() {
+			return "Invoking context menu ";
 		}
 	};
 
