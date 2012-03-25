@@ -1,12 +1,12 @@
 package sk.seges.sesam.core.test.selenium.usecase;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Mail;
-import sk.seges.sesam.core.test.selenium.configuration.annotation.Report;
-import sk.seges.sesam.core.test.selenium.configuration.annotation.Selenium;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Mail.Provider;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.Report;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Report.HtmlReport;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Report.Screenshot;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Report.Support;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.Selenium;
 
 @Selenium(
 		testURL="testURL"

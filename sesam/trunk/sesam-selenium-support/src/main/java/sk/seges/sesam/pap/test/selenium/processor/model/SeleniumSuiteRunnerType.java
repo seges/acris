@@ -3,7 +3,7 @@ package sk.seges.sesam.pap.test.selenium.processor.model;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.core.test.selenium.runner.SeleniumSuiteRunner;
+import sk.seges.sesam.core.test.webdriver.runner.SeleniumSuiteRunner;
 
 public class SeleniumSuiteRunnerType extends DelegateMutableDeclaredType {
 

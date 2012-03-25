@@ -29,7 +29,7 @@ public class WebDriverActions extends Actions {
 
 	protected Mouse mouse;
 	protected Keyboard keyboard;
-	private CompositeAction action;
+	protected CompositeAction action;
 	protected WebDriver webDriver;
 	
 	public WebDriverActions(WebDriver webDriver, SeleniumSettings testEnvironment) {
