@@ -23,7 +23,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.ElementSorter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.core.test.selenium.AbstractSeleniumTest;
+import sk.seges.sesam.core.test.webdriver.AbstractWebdriverTest;
 import sk.seges.sesam.pap.configuration.model.setting.SettingsTypeElement;
 import sk.seges.sesam.pap.test.selenium.processor.configurer.SeleniumTestProcessorConfigurer;
 import sk.seges.sesam.pap.test.selenium.processor.model.SeleniumSettingsContext;
@@ -101,7 +101,7 @@ public class SeleniumTestConfigurationProcessor extends MutableAnnotationProcess
 	@Override
 	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
 		return processingEnv.getTypeUtils().isAssignable(context.getTypeElement().asType(), 
-				processingEnv.getElementUtils().getTypeElement(AbstractSeleniumTest.class.getCanonicalName()).asType());
+				processingEnv.getElementUtils().getTypeElement(AbstractWebdriverTest.class.getCanonicalName()).asType());
 	}
 	
 	@Override

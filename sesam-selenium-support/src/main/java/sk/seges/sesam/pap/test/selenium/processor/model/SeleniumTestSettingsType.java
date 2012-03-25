@@ -6,7 +6,7 @@ import java.util.List;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
+import sk.seges.sesam.core.test.webdriver.configuration.DefaultTestSettings;
 
 public class SeleniumTestSettingsType extends AbstractSeleniumType {
 
