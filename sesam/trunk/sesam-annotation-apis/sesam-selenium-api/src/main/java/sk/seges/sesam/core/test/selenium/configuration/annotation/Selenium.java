@@ -23,15 +23,6 @@ public @interface Selenium {
 	@Parameter(name = "test.testRemote", description = "Bindings connect to the remote server instance.")
 	boolean seleniumRemote() default false;
 
-	@Parameter(name = "test.bromineHost", description = "Defines host name where the bromine server is located.")
-	String bromineServer() default "localhost";
-
-	@Parameter(name = "test.brominePort", description = "Defines port name where the bromine server is located.")
-	int brominePort() default 8080;
-
-	@Parameter(name = "test.bromineEnabled", description = "Enables/disables support for bromine.")
-	boolean bromine() default false;
-
 	@Parameter(name = "test.testHost", description = "Defines root URL of the testing site.")
 	String testURL() default Constants.NULL;
 
