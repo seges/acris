@@ -18,15 +18,19 @@ public class Color {
 	}
 
 	public Color(String hex) {
-		setHex(hex);
+		this.hex = hex;
 	}
 	
-	public Color(Float h, Float s, Float v) throws Exception {
-		setHSV(h, s, v);
+	public Color(Float h, Float s, Float v) {
+		this.h = h;
+		this.s = s / 100;
+		this.v = v / 100;
 	}
 	
-	public Color(Long r, Long g, Long b) throws Exception {
-		setRGB(r.intValue(), g.intValue(), b.intValue());
+	public Color(Long r, Long g, Long b) {
+		this.r = r / 255f;
+		this.g = g / 255f;
+		this.b = b / 255f;
 	}
 	
 	public Color(int colorPickerXPosition, int colorPickerYPosition, int range) {
@@ -48,7 +52,12 @@ public class Color {
 	}
 	
 	public boolean equals(Color color) {
-		return r == color.r && g == color.g && b == color.b;
+		if (r !=  null && color.r !=  null && g !=  null && color.g !=  null && b !=  null && color.b !=  null) {
+			return getGreen().equals(color.getGreen()) && getRed().equals(color.getRed()) && getBlue().equals(color.getBlue());
+		} else if (h !=  null && color.h !=  null && s !=  null && color.s !=  null && v !=  null && color.v !=  null) {
+			return getHue().equals(color.getHue()) && getSaturation().equals(color.getSaturation()) && getValue().equals(color.getValue());
+		}
+		return hex == null ? false : hex.equals(color.hex);
 	}
 	
 	public void setHSV(float h, float s, float v) throws Exception {
@@ -161,22 +170,25 @@ public class Color {
 		return (int) (b * 255);
 	}
 
-	public Float getHue() {
-		return h;
+	public Integer getHue() {
+		if (h == null) {
+			return null;
+		}
+		return h.intValue();
 	}
 
-	public Float getSaturation() {
+	public Integer getSaturation() {
 		if (s == null) {
-			return s;
-		}
-		return s * 100;
+			return null;
+		} 
+		return ((Float)(s * 100)).intValue();
 	}
 
-	public Float getValue() {
+	public Integer getValue() {
 		if (v == null) {
-			return v;
+			return null;
 		}
-		return v * 100;
+		return ((Float)(v * 100)).intValue();
 	}
 
 	public String getHex() {
