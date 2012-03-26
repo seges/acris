@@ -18,19 +18,15 @@ public class Color {
 	}
 
 	public Color(String hex) {
-		this.hex = hex;
+		setHex(hex);
 	}
 	
-	public Color(Float h, Float s, Float v) {
-		this.h = h;
-		this.s = s / 100;
-		this.v = v / 100;
+	public Color(Float h, Float s, Float v) throws Exception {
+		setHSV(h, s, v);
 	}
 	
-	public Color(Long r, Long g, Long b) {
-		this.r = r / 255f;
-		this.g = g / 255f;
-		this.b = b / 255f;
+	public Color(Long r, Long g, Long b) throws Exception {
+		setRGB(r.intValue(), g.intValue(), b.intValue());
 	}
 	
 	public Color(int colorPickerXPosition, int colorPickerYPosition, int range) {
