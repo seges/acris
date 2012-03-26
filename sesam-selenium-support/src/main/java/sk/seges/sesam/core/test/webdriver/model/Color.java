@@ -181,14 +181,14 @@ public class Color {
 		if (s == null) {
 			return null;
 		} 
-		return ((Float)(s * 100)).intValue();
+		return Math.round((Float)(s * 100));
 	}
 
 	public Integer getValue() {
 		if (v == null) {
 			return null;
 		}
-		return ((Float)(v * 100)).intValue();
+		return Math.round((Float)(v * 100));
 	}
 
 	public String getHex() {
