@@ -163,7 +163,7 @@
 		<groovy.version>1.8.0</groovy.version>
 
 		<!-- Selenium -->
-		<selenium.version>2.17.0</selenium.version> 
+		<selenium.version>2.20.0</selenium.version> 
 		<velocity.version>1.6.2</velocity.version>
 		
 		<!-- plugins -->
