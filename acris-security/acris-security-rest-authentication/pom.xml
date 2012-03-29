@@ -18,6 +18,10 @@
 			<artifactId>acris-security-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-crypto</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>jsr311-api</artifactId>
 		</dependency>	
