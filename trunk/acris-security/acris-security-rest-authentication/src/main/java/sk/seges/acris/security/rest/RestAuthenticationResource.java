@@ -25,9 +25,9 @@ public class RestAuthenticationResource {
 		JSONObject result = null;
 		try {
 			if (webId != null && (Hasher.getSHAHexDigest(webId).equals(apiKey))) {
-				result = new JSONObject().put("allowed", true);
+				result = new JSONObject().put("allowed", "TRUE");
 			} else {
-				result = new JSONObject().put("allowed", false);
+				result = new JSONObject().put("allowed", "FALSE");
 			}
 		} catch (JSONException e) {
 			log.error("Could not parse json, cause:" , e);
