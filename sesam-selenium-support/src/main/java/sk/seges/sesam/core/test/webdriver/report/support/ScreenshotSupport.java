@@ -10,9 +10,9 @@ import org.openqa.selenium.WebDriver;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.webdriver.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.webdriver.report.SupportHelper;
-import sk.seges.sesam.core.test.webdriver.report.model.api.ReportData;
+import sk.seges.sesam.core.test.webdriver.report.model.TestCaseResult;
 
-public class ScreenshotSupport extends SupportHelper<ReportData> {
+public class ScreenshotSupport extends SupportHelper<TestCaseResult> {
 
 	private final ReportSettings reportSettings;
 	private final WebDriver webDriver;
@@ -21,8 +21,6 @@ public class ScreenshotSupport extends SupportHelper<ReportData> {
 		this.reportSettings = reportSettings;
 		this.webDriver = webDriver;
 	}
-	
-	public void initialize() {}
 	
 	private String getScreenshotDirectory() {
 		if (reportSettings.getScreenshot().getSupport().getEnabled() == true && reportSettings.getScreenshot().getSupport().getDirectory() != null) {
@@ -50,7 +48,9 @@ public class ScreenshotSupport extends SupportHelper<ReportData> {
 			}
 			File screnshotFile = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(screnshotFile, new File(getScreenshotDirectory() + File.separator + name + DEFAULT_SCREENSHOT_EXTENSION));
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void makeScreenshot() {

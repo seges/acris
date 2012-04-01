@@ -4,7 +4,7 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.Report;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.SupportSettings;
 
 
-public class SupportHelper<T> extends AbstractReportHelper  {
+public class SupportHelper<T> extends AbstractReportHelper {
 
 	protected T resultData;
 	
@@ -16,7 +16,7 @@ public class SupportHelper<T> extends AbstractReportHelper  {
 		if (support.getDirectory().contains(Report.CURRENT_DATE) || support.getDirectory().contains(Report.CURRENT_TIME)) {
 			support.setDirectory(support.getDirectory().replaceAll(Report.CURRENT_DATE, getCurrentDate()).replaceAll(Report.CURRENT_TIME, getCurrentTime()));
 		}
-		
+
 		return support.getDirectory();
 	}
 

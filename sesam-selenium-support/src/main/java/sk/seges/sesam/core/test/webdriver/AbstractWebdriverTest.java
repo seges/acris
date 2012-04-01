@@ -34,7 +34,9 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 
 	private String testName;
 	protected Wait<WebDriver> wait;
-	
+
+	private ReportSettings reportSettings;
+
 	protected Actions actions;
 	protected CoreSeleniumSettingsProvider settings;
 	
@@ -66,7 +68,7 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 		this.testName = testName;
 
 		if (testName != null) {
-			ReportSettings reportSettings = ensureSettings().getReportSettings();
+			reportSettings = ensureSettings().getReportSettings();
 			
 			this.testName = testName;
 			reportEventListener = new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings), reportSettings, webDriver, environmentInfo);
@@ -117,20 +119,18 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 			
 			this.reportEventListener.setTestMethod(testName);
 			
-			ReportSettings reportSettings = ensureSettings().getReportSettings();
-			
 			registerAssertionListener(reportEventListener);
 
 			((EventFiringWebDriver)webDriver).register(reportEventListener);
 
-			if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
-				reportEventListener.addTestResultCollector(new ScreenshotsWebDriverEventListener(reportSettings, webDriver, environmentInfo));
-			}
-			
 			if (Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
 				reportEventListener.addTestResultCollector(new LoggingWebDriverEventListener(reportSettings, webDriver, environmentInfo));
 			}
-	
+
+			if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
+				reportEventListener.addTestResultCollector(new ScreenshotsWebDriverEventListener(reportSettings, webDriver, environmentInfo));
+			}
+				
 			reportEventListener.initialize();
 		}
 		
@@ -157,8 +157,6 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 	}
 	
 	protected void navigateToTestPage () {
-		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());
-		
-		
+		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());		
 	}
 }
