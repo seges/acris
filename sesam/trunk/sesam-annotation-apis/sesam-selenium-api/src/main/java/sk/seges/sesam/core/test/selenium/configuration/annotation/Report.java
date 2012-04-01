@@ -75,10 +75,10 @@ public @interface Report {
 		Support support() default @Support(directory = Report.CURRENT_DATE + "_" + Report.CURRENT_TIME + "_" + Report.TEST_CASE_NAME + "_" + Report.TEST_NAME);
 		
 		@Parameter(name = "test.template.path", description = "Defines path to the used template for tests")
-		String testTemplatePath() default Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/selenium/report/metal/test_default.vm";
+		String testTemplatePath() default Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/webdriver/report/metal/test_default.vm";
 
 		@Parameter(name = "suite.template.path", description = "Defines path to the used template for suite")
-		String suiteTemplatePath() default Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/selenium/report/metal/report_default.vm";
+		String suiteTemplatePath() default Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/webdriver/report/metal/report_default.vm";
 
 		@Parameter(name = "suite.template.locale", description = "Defines locale for the generated report")
 		String locale() default "en";
