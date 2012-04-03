@@ -6,6 +6,9 @@ import org.openqa.selenium.WebElement;
 
 public interface ActionsListener {
 
+	void beforeClickOn(WebElement element, WebDriver driver);
+	void afterClickOn(WebElement element, WebDriver driver);
+	
 	void beforeClickAndHold(WebElement element, WebDriver driver);
 	void afterClickAndHold(WebElement element, WebDriver driver);
 

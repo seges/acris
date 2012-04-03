@@ -23,8 +23,8 @@ public class LoggingClickAction extends ClickAction {
 
 	@Override
 	public void perform() {
-		listener.beforeClickAndHold(webElement, webDriver);
+		listener.beforeClickOn(webElement, webDriver);
 		super.perform();
-		listener.afterClickAndHold(webElement, webDriver);
+		listener.afterClickOn(webElement, webDriver);
 	}
 }
