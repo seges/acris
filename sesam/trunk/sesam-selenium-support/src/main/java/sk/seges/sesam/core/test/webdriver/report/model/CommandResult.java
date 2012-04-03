@@ -611,7 +611,7 @@ public class CommandResult {
 		private final WebElement webElement;
 		private String name;
 		private Point location;
-		private Dimension size;
+		private Dimension size = new Dimension(30, 30);
 		
 		public WebElementWrapper(WebElement webElement, WebDriver webDriver) {
 			this.webElement = webElement;
@@ -629,7 +629,8 @@ public class CommandResult {
 				}
 
 				this.location = this.webElement.getLocation();
-				this.size = this.webElement.getSize();
+				//TODO: Fixme - doing scroll to element
+				//this.size = this.webElement.getSize();
 			} catch (Exception ex) {
 				name = super.toString();
 			};
