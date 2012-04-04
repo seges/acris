@@ -98,6 +98,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	private Set<ColumnDefinition<T, ?>> filterableColumnDefinitions = new HashSet<ColumnDefinition<T, ?>>();
 	private PropertyChangeListener filterableListener;
 	private Set<Criterion> staticFilterables = new HashSet<Criterion>();
+	private Set<SortInfo> staticSortables = new HashSet<SortInfo>();
 	private List<Callback> additionalLoadCallbacks;
 	private boolean reloadOnEveryOnLoadCall = true;
 	private boolean firstOnLoadCall = true;
@@ -292,6 +293,14 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 	public void clearStaticFilterables() {
 		staticFilterables.clear();
+	}
+
+	public void addStaticSortable(SortInfo sortable) {
+		staticSortables.add(sortable);
+	}
+
+	public void clearStaticSortables() {
+		staticSortables.clear();
 	}
 
 	private void reconstructFilterable() {
@@ -600,6 +609,9 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		private void enrichWithSortables(final Request request, Page page) {
 			if (request.getColumnSortList() == null) {
 				return;
+			}
+			for (SortInfo info : staticSortables) {
+				page.addSortable(info);
 			}
 			for (ColumnSortInfo sortInfo : request.getColumnSortList()) {
 				ColumnDefinition<T, ?> columnDef = definition.getColumnDefinition(sortInfo.getColumn());
