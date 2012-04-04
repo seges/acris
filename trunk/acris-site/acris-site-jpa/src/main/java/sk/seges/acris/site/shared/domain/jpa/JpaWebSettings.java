@@ -160,5 +160,11 @@ public class JpaWebSettings extends WebSettingsDTO {
 	public Integer getImageMaxWidth() {
 		return super.getImageMaxWidth();
 	}
+		
+	@Override
+	@Column
+	public Integer getMaxProductCount() {
+		return super.getMaxProductCount();
+	}
 	
 }

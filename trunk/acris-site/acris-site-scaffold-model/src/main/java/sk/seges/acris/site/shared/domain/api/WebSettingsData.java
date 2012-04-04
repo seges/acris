@@ -143,4 +143,8 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 	Integer getImageMaxWidth();
 	
 	void setImageMaxWidth(Integer maxWidth);
+
+	Integer getMaxProductCount();
+
+	void setMaxProductCount(Integer maxProductCount);
 }
