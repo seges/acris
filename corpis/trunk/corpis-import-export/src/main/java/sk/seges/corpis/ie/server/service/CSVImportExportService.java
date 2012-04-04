@@ -72,6 +72,10 @@ public abstract class CSVImportExportService {
 			entries = readCsvEntries(file, handledCsvEntryClass, violations);
 		}
 		
+		RowBasedHandlerContext restrContext = instantiateContext();
+		contextTemplate.injectInto(restrContext);
+		violations.addAll(handler.checkRestrictions(restrContext, entries));
+		
 		if (!violations.isEmpty()) {
 			return violations;
 		}
