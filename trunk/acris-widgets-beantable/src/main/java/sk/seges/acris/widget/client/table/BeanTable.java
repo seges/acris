@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -610,14 +611,18 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			if (request.getColumnSortList() == null) {
 				return;
 			}
-			for (SortInfo info : staticSortables) {
-				page.addSortable(info);
-			}
+			Set<SortInfo> infoSet = new LinkedHashSet<SortInfo>();
 			for (ColumnSortInfo sortInfo : request.getColumnSortList()) {
 				ColumnDefinition<T, ?> columnDef = definition.getColumnDefinition(sortInfo.getColumn());
 				DomainObjectProperty domainObjectProperty = checkAndGetDomainObjectProperty(columnDef);
 				SortInfo info = new SortInfo(sortInfo.isAscending(), domainObjectProperty.getField());
-				page.addSortable(info);
+				infoSet.add(info);
+			}
+			for (SortInfo info : staticSortables) {
+				infoSet.add(info);
+			}
+			for (SortInfo sortInfo : infoSet) {
+				page.addSortable(sortInfo);
 			}
 		}
 	}
