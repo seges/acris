@@ -86,6 +86,8 @@ public class WebSettingsDTO implements WebSettingsData {
 	
 	private Integer imageMaxWidth;
 	
+	private Integer maxProductCount;
+	
 	public WebSettingsDTO() {
 	}
 	
@@ -254,5 +256,15 @@ public class WebSettingsDTO implements WebSettingsData {
 	}
 	
 	
+
+	@Override
+	public Integer getMaxProductCount() {
+		return maxProductCount;
+	}
+
+	@Override
+	public void setMaxProductCount(Integer maxProductCount) {
+		this.maxProductCount = maxProductCount;
+	}
 	
 }
