@@ -8,7 +8,7 @@ import sk.seges.sesam.core.test.webdriver.report.model.api.ReportData;
 
 public class TestResult implements ReportData {
 
-	private static final String RESOURCE_BASE_DIR = "http://acris.googlecode.com/svn/sesam/trunk/sesam-selenium-support/src/main/resources/sk/seges/sesam/selenium/report/metal/images/";
+	private static final String RESOURCE_BASE_DIR = "http://acris.googlecode.com/svn/sesam/trunk/sesam-selenium-support/src/main/resources/sk/seges/sesam/webdriver/report/metal/images/";
 	
 	private Map<String, TestCaseCollectionResult> testCaseCollections = new HashMap<String, TestCaseCollectionResult>();
 	
