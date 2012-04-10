@@ -15,7 +15,7 @@ public class LoggingContextClickAction extends ContextClickAction {
 	private final WebElement webElement;
 
 	public LoggingContextClickAction(Mouse mouse, WebElement webElement, ActionsListener listener, WebDriver webDriver) {
-		super(mouse, (Locatable)webDriver);
+		super(mouse, (Locatable)webElement);
 		this.listener = listener;
 		this.webDriver = webDriver;
 		this.webElement = webElement; 
