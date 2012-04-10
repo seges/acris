@@ -35,7 +35,7 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 	private String testName;
 	protected Wait<WebDriver> wait;
 
-	private ReportSettings reportSettings;
+	protected ReportSettings reportSettings;
 
 	protected Actions actions;
 	protected CoreSeleniumSettingsProvider settings;
