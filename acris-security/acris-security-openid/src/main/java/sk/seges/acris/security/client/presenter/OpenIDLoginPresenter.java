@@ -161,8 +161,8 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.SEZNAM_IDENTIFIER),
 				"acris-login-seznam-button"));
 
-		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.MYOPENID_IDENTIFIER),
-				"acris-login-myopenid-button"));
+//		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.MYOPENID_IDENTIFIER),
+//				"acris-login-myopenid-button"));
 	}
 
 	@Override
