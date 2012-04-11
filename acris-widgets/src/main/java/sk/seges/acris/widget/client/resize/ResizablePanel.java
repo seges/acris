@@ -66,6 +66,8 @@ public class ResizablePanel extends HTML {
 		super.onAttach();
 		if (enabled) {
 			sinkEvents(Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE);
+		} else {
+			sinkEvents(Event.ONMOUSEDOWN | Event.ONMOUSEUP);
 		}
 	}
 
@@ -197,7 +199,23 @@ public class ResizablePanel extends HTML {
 				break;
 			}
 		} else {
-			super.onBrowserEvent(event);
+			switch (DOM.eventGetType(event)) {
+			case Event.ONMOUSEDOWN:
+				if (event.getButton() == NativeEvent.BUTTON_LEFT) {
+					event.preventDefault();
+					onMouseDown(event);
+				}
+				break;
+			case Event.ONMOUSEUP:
+				if (event.getButton() == NativeEvent.BUTTON_LEFT) {
+					event.preventDefault();
+					onMouseUp(event);
+				}
+				break;
+			default:
+				super.onBrowserEvent(event);
+				break;
+			}
 		}
 	}
 
@@ -206,7 +224,7 @@ public class ResizablePanel extends HTML {
 	}
 
 	protected void onMouseDown(Event event) {
-		if (!dragging) {
+		if (enabled && !dragging) {
 			cursorResize = getCursorResize(event);
 			if (isCursorResize(cursorResize)) {
 				dragging = true;
@@ -239,7 +257,7 @@ public class ResizablePanel extends HTML {
 	}
 
 	protected void onMouseUp(Event event) {
-		if (dragging) {
+		if (enabled && dragging) {
 			dragging = false;
 			DOM.releaseCapture(this.getElement());
 			event.stopPropagation();
@@ -276,7 +294,7 @@ public class ResizablePanel extends HTML {
 	}
 
 	protected void onMouseMove(Event event) {
-		if (dragging) {
+		if (enabled && dragging) {
 			event.stopPropagation();
 
 			if (this.getOffsetWidth() > 0 && this.getOffsetHeight() > 0) {
