@@ -132,4 +132,8 @@ public class OptionsFactory extends Composite {
     public Widget createOKOption(ClickHandler okHandler) {
         return widgetFactory.button(labels.ok(), okHandler);
     }
+    
+    public Widget createSelectOption(ClickHandler okHandler) {
+    	return createOKCustomizedOption(labels.select(), okHandler);
+    }
 }
