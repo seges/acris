@@ -21,7 +21,6 @@
             <property name="hibernate.cache.use_query_cache" value="false" />
             <property name="hibernate.hbm2ddl.auto" value="create-drop" />
             <property name="current_session_context_class" value="thread" />
-            <property name="hibernate.search.default.indexBase" value="index" />
         </properties>
                 
     </persistence-unit>
