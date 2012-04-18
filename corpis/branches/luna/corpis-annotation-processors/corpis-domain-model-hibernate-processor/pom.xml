@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>corpis-domain-model-hibernate-processor</artifactId>
+	<name>corpis-domain-model-hibernate-processor</name>
+	<description>Corpis transfer object processor with hibernate support</description>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-annotation-processors</artifactId>
+		<version>1.2.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath> 
+	</parent>
+
+	<dependencies>
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-domain-processor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+		</dependency>
+		<!-- Hibernate dependencies -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+	</dependencies>
+</project>
