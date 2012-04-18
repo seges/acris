@@ -21,8 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import sk.seges.corpis.server.domain.invoice.PriceData;
 import sk.seges.corpis.server.domain.invoice.base.RemittanceBase;
-import sk.seges.corpis.shared.domain.invoice.api.PriceData;
 
 /**
  * @author eldzi

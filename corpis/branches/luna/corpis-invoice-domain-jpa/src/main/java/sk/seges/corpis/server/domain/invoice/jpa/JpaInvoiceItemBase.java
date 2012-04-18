@@ -18,8 +18,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import sk.seges.corpis.server.domain.invoice.PriceData;
 import sk.seges.corpis.server.domain.invoice.base.InvoiceItemBase;
-import sk.seges.corpis.shared.domain.invoice.api.PriceData;
 
 @Entity
 @Table(name = "invoice_items")//$NON-NLS-1$

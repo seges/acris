@@ -1,11 +1,9 @@
 /**
  * 
  */
-package sk.seges.corpis.shared.domain.customer.api;
+package sk.seges.corpis.server.domain;
 
 import java.io.Serializable;
-
-import sk.seges.corpis.shared.domain.customer.api.Salutation;
 
 
 /**

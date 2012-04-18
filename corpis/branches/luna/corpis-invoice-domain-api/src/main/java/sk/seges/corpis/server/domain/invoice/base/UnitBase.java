@@ -1,7 +1,7 @@
 package sk.seges.corpis.server.domain.invoice.base;
 
-import sk.seges.corpis.shared.domain.invoice.api.UnitData;
-import sk.seges.corpis.shared.domain.invoice.api.UnitType;
+import sk.seges.corpis.server.domain.invoice.UnitData;
+import sk.seges.corpis.server.domain.invoice.UnitType;
 
 @SuppressWarnings("serial")
 public abstract class UnitBase<K> implements UnitData<K> {

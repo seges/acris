@@ -3,8 +3,8 @@ package sk.seges.corpis.server.domain.invoice.base;
 import java.beans.PropertyChangeSupport;
 import java.util.Date;
 
+import sk.seges.corpis.server.domain.invoice.PriceData;
 import sk.seges.corpis.shared.domain.invoice.api.InvoiceData;
-import sk.seges.corpis.shared.domain.invoice.api.PriceData;
 import sk.seges.corpis.shared.domain.invoice.api.RemittanceData;
 
 @SuppressWarnings("serial")

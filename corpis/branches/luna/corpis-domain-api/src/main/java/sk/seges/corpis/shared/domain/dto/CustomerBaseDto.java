@@ -6,7 +6,6 @@ package sk.seges.corpis.shared.domain.dto;
 import sk.seges.corpis.shared.domain.api.AddressData;
 import sk.seges.corpis.shared.domain.api.BasicContactData;
 import sk.seges.corpis.shared.domain.api.CompanyNameData;
-import sk.seges.corpis.shared.domain.api.CustomerBaseData;
 import sk.seges.corpis.shared.domain.api.PersonNameData;
 
 /**

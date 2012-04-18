@@ -2,11 +2,11 @@ package sk.seges.corpis.server.domain.invoice.base;
 
 import java.beans.PropertyChangeSupport;
 
+import sk.seges.corpis.server.domain.invoice.PriceData;
+import sk.seges.corpis.server.domain.invoice.UnitData;
+import sk.seges.corpis.server.domain.invoice.VatData;
 import sk.seges.corpis.shared.domain.invoice.api.InvoiceData;
 import sk.seges.corpis.shared.domain.invoice.api.InvoiceItemData;
-import sk.seges.corpis.shared.domain.invoice.api.PriceData;
-import sk.seges.corpis.shared.domain.invoice.api.UnitData;
-import sk.seges.corpis.shared.domain.invoice.api.VatData;
 
 @SuppressWarnings("serial")
 public class InvoiceItemBase<T> implements InvoiceItemData<T> {

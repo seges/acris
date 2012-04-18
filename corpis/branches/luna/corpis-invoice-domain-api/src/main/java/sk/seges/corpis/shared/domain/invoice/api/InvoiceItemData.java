@@ -1,5 +1,8 @@
 package sk.seges.corpis.shared.domain.invoice.api;
 
+import sk.seges.corpis.server.domain.invoice.HasPrice;
+import sk.seges.corpis.server.domain.invoice.UnitData;
+import sk.seges.corpis.server.domain.invoice.VatData;
 import sk.seges.corpis.shared.domain.api.HasDescription;
 import sk.seges.corpis.shared.domain.api.HasVersion;
 import sk.seges.sesam.domain.IMutableDomainObject;

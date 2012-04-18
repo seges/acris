@@ -13,13 +13,13 @@ import sk.seges.corpis.server.domain.customer.jpa.JpaAddress;
 import sk.seges.corpis.server.domain.customer.jpa.JpaBasicContact;
 import sk.seges.corpis.server.domain.customer.jpa.JpaCompanyName;
 import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
+import sk.seges.corpis.server.domain.invoice.EOrderStatus;
+import sk.seges.corpis.server.domain.invoice.EPaymentType;
+import sk.seges.corpis.server.domain.invoice.ETransports;
 import sk.seges.corpis.shared.domain.customer.api.AddressData;
 import sk.seges.corpis.shared.domain.customer.api.BasicContactData;
 import sk.seges.corpis.shared.domain.customer.api.CompanyNameData;
 import sk.seges.corpis.shared.domain.customer.api.PersonNameData;
-import sk.seges.corpis.shared.domain.invoice.api.EOrderStatus;
-import sk.seges.corpis.shared.domain.invoice.api.EPaymentType;
-import sk.seges.corpis.shared.domain.invoice.api.ETransports;
 import sk.seges.corpis.shared.domain.invoice.api.OrderData;
 
 /**

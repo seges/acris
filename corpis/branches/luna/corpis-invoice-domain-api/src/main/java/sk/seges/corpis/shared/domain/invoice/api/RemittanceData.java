@@ -2,6 +2,7 @@ package sk.seges.corpis.shared.domain.invoice.api;
 
 import java.util.Date;
 
+import sk.seges.corpis.server.domain.invoice.HasPrice;
 import sk.seges.corpis.shared.domain.api.HasName;
 import sk.seges.sesam.domain.IMutableDomainObject;
 

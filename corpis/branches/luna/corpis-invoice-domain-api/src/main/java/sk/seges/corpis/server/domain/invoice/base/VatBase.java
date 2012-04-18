@@ -3,7 +3,7 @@ package sk.seges.corpis.server.domain.invoice.base;
 import java.beans.PropertyChangeSupport;
 import java.util.Date;
 
-import sk.seges.corpis.shared.domain.invoice.api.VatData;
+import sk.seges.corpis.server.domain.invoice.VatData;
 
 @SuppressWarnings("serial")
 public class VatBase implements VatData<Short> {

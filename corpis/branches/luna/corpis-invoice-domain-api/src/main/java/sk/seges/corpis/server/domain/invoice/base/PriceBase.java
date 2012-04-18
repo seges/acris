@@ -2,8 +2,8 @@ package sk.seges.corpis.server.domain.invoice.base;
 
 import java.math.BigDecimal;
 
+import sk.seges.corpis.server.domain.invoice.PriceData;
 import sk.seges.corpis.shared.domain.invoice.api.CurrencyData;
-import sk.seges.corpis.shared.domain.invoice.api.PriceData;
 
 @SuppressWarnings("serial")
 public class PriceBase implements PriceData {

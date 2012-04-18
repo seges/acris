@@ -1,9 +1,9 @@
 package sk.seges.corpis.server.domain.invoice.base;
 
+import sk.seges.corpis.server.domain.invoice.PriceData;
+import sk.seges.corpis.server.domain.invoice.UnitData;
+import sk.seges.corpis.server.domain.invoice.VatData;
 import sk.seges.corpis.shared.domain.invoice.api.AccountableItemData;
-import sk.seges.corpis.shared.domain.invoice.api.PriceData;
-import sk.seges.corpis.shared.domain.invoice.api.UnitData;
-import sk.seges.corpis.shared.domain.invoice.api.VatData;
 
 public class AccountableItemBase implements AccountableItemData {
 
