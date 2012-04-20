@@ -159,4 +159,12 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 	protected void navigateToTestPage () {
 		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());		
 	}
+	
+	public ReportEventListener getReportEventListener() {
+		return reportEventListener;
+	}
+
+	public WebDriver getWebDriver() {
+		return webDriver;
+	}
 }
