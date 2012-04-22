@@ -13,3 +13,4 @@ you have to have use acris-os-gwt-parent as your parent project
 
 || *Profile* || *Activation* || *Purpose* ||
 || *gwt-client* || file activation - *.gwt-client* || GWT configuration for maven and eclipse ||  
+|| *gwt-project* || file activatiob - *.gwt-project* || Maven and eclipse configuration for GWT projects that are not web applications ||
