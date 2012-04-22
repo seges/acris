@@ -15,4 +15,5 @@ you have to have use sesam-os-base-parent as your parent project
 || *pap* || file activation - *.pap* || annotation processor configuration for maven and eclipse ||  
 || *selenium* || file activation - *.selenium* || selenium based project - with all selenium dependencies ||
 || *generate-site* || property activation - *generateSite=true* || generates documentation before release ||
+|| *server* || file activation - *.server* || spring based server side project configuration ||
 || selenium-api || file activation - .selenium-api || *Deprecated* ||
