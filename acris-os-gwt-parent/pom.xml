@@ -298,6 +298,26 @@
 
 	<profiles>
 		<profile>
+			<id>gwt-project</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.gwt-project</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-user</artifactId>
+					<scope>provided</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-servlet</artifactId>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>gwt-client</id>
 			<activation>
 				<file>
@@ -327,7 +347,7 @@
 								</goals>
 								<configuration>
 									<stripVersion>true</stripVersion>
-									<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/lib/</outputDirectory>
+									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/lib/</outputDirectory>
 									<overWriteReleases>true</overWriteReleases>
 									<overWriteSnapshots>true</overWriteSnapshots>
 									<overWriteIfNewer>true</overWriteIfNewer>
@@ -378,14 +398,14 @@
 									<content><![CDATA[
 										eclipse.preferences.version=2
 										jarsExcludedFromWebInfLib=
-										warSrcDir=target/${artifactId}-${project.version}
+										warSrcDir=target/${project.artifactId}-${project.version}
 										warSrcDirIsOutput=true
 										]]>
 									</content>
 								</file>
 							</additionalConfig>
 
-							<buildOutputDirectory>target/${artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
+							<buildOutputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
 							<wtpversion>2.0</wtpversion>
 
 						</configuration>
@@ -401,7 +421,7 @@
 									<goal>copy-resources</goal>
 								</goals>
 								<configuration>
-									<outputDirectory>target/${artifactId}-${project.version}</outputDirectory>
+									<outputDirectory>target/${project.artifactId}-${project.version}</outputDirectory>
 									<resources>          
 										<resource>
 											<directory>src/main/webapp</directory>
@@ -462,7 +482,7 @@
 								</goals>
 								<configuration>
 									<stripVersion>true</stripVersion>
-									<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/lib/</outputDirectory>
+									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/lib/</outputDirectory>
 									<overWriteReleases>true</overWriteReleases>
 									<overWriteSnapshots>true</overWriteSnapshots>
 									<overWriteIfNewer>true</overWriteIfNewer>
@@ -475,8 +495,8 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
-							<hostedWebapp>${project.build.directory}/${artifactId}-${project.version}</hostedWebapp>
-							<webappDirectory>${project.build.directory}/${artifactId}-${project.version}</webappDirectory>
+							<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
+							<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}</webappDirectory>
 						</configuration>
 					</plugin>
 					<plugin>
@@ -521,14 +541,14 @@
 									<content><![CDATA[
 										eclipse.preferences.version=2
 										jarsExcludedFromWebInfLib=
-										warSrcDir=target/${artifactId}-${project.version}
+										warSrcDir=target/${project.artifactId}-${project.version}
 										warSrcDirIsOutput=true
 										]]>
 									</content>
 								</file>
 							</additionalConfig>
 
-							<buildOutputDirectory>target/${artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
+							<buildOutputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</buildOutputDirectory>
 							<wtpversion>2.0</wtpversion>
 
 						</configuration>
@@ -544,7 +564,7 @@
 									<goal>copy-resources</goal>
 								</goals>
 								<configuration>
-									<outputDirectory>target/${artifactId}-${project.version}</outputDirectory>
+									<outputDirectory>target/${project.artifactId}-${project.version}</outputDirectory>
 									<resources>          
 										<resource>
 											<directory>src/main/webapp</directory>
