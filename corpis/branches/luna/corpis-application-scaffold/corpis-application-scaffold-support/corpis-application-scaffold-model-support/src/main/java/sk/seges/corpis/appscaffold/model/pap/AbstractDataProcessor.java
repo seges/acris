@@ -14,10 +14,20 @@ import sk.seges.corpis.appscaffold.model.pap.accessor.DomainInterfaceAccessor;
 import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 
 public abstract class AbstractDataProcessor extends MutableAnnotationProcessor {
+
+	protected MutableTypeMirror toPrintableType(MutableTypeMirror mutableType) {
+		
+		if (mutableType.getKind().equals(MutableTypeKind.TYPEVAR)) {
+			return processingEnv.getTypeUtils().getTypeVariable(((MutableTypeVariable)mutableType).getVariable());
+		}
+		
+		return mutableType;
+	}
 
 	protected MutableTypeMirror castToDomainDataInterface(TypeMirror type) {
 		

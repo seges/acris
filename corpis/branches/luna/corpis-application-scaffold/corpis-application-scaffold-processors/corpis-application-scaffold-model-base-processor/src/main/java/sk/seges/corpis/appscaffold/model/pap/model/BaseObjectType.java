@@ -3,13 +3,6 @@ package sk.seges.corpis.appscaffold.model.pap.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-
-import sk.seges.corpis.appscaffold.model.pap.accessor.PersistentObjectAccessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -26,23 +19,32 @@ public class BaseObjectType extends AbstractDataType {
 
 		List<MutableTypeMirror> interfaces = new ArrayList<MutableTypeMirror>();
 		
-		Element element = ((DeclaredType)dataDefinition.asType()).asElement();
+//		Element element = ((DeclaredType)dataDefinition.asType()).asElement();
+//
+//		for (TypeMirror dataInterface: ((TypeElement) element).getInterfaces()) {
+//			if (dataInterface.getKind().equals(TypeKind.DECLARED) && new PersistentObjectAccessor(((DeclaredType) dataInterface).asElement(), processingEnv).isEntity()) {
+//				MutableDeclaredType mutableInterfaceType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(dataInterface);
+//				
+//				if (getSuperClass() == null) {
+//					setSuperClass(new BaseObjectType(mutableInterfaceType, processingEnv));
+//				}
+//			}
+//		}
 
-		for (TypeMirror dataInterface: ((TypeElement) element).getInterfaces()) {
-			if (dataInterface.getKind().equals(TypeKind.DECLARED) && new PersistentObjectAccessor(((DeclaredType) dataInterface).asElement(), processingEnv).isEntity()) {
-				MutableDeclaredType mutableInterfaceType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(dataInterface);
-				
-				if (getSuperClass() == null) {
-					setSuperClass(new BaseObjectType(mutableInterfaceType, processingEnv));
-				}
-			}
-		}
-
-		interfaces.add(new DomainDataInterfaceType(dataDefinition, processingEnv));
+		DomainDataInterfaceType domainDataInterfaceType = new DomainDataInterfaceType(dataDefinition, processingEnv);
+		
+		interfaces.add(domainDataInterfaceType);
 		changePackage(dataDefinition.getPackageName() + "." + LocationType.SERVER.getName() + "." + LayerType.MODEL.getName() + "." + ImplementationType.BASE.getName());
 		
 		setInterfaces(interfaces);
 
+		List<MutableDeclaredType> baseObjects = domainDataInterfaceType.getBaseObjects();
+		
+		if (baseObjects.size() == 1) {
+			//TODO identify cycle references
+			setSuperClass(new BaseObjectType(baseObjects.get(0), processingEnv));
+		}
+		
 		setKind(MutableTypeKind.CLASS);
 	}
 	

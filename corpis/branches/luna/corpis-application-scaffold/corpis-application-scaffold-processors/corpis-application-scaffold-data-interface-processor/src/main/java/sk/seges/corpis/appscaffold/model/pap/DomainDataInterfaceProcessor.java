@@ -1,6 +1,5 @@
 package sk.seges.corpis.appscaffold.model.pap;
 
-import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,8 +15,6 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
@@ -37,7 +34,7 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 		Collections.sort(methods, new Comparator<ExecutableElement>() {
 			@Override
 			public int compare(ExecutableElement method1, ExecutableElement method2) {
-				return method1.getSimpleName().toString().compareTo(method2.getSimpleName().toString());
+				return method1.getSimpleName().toString().compareTo(method2.getSimpleName().toString());	
 			}
 		});
 		FormattedPrintWriter pw = context.getPrintWriter();
@@ -48,22 +45,11 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 			
 			pw.println("public static final String " + method.getSimpleName().toString().toUpperCase() + " = \"" + method.getSimpleName() + "\";");
 			pw.println();
-			printType(returnType, pw);
-			pw.println(" " + MethodHelper.toGetter(method) + ";");
+			pw.println(toPrintableType(returnType), " " + MethodHelper.toGetter(method) + ";");
 			pw.println();
-			pw.println("void ", MethodHelper.toSetter(method) + "(");
-			printType(returnType, pw);
-			pw.println(" " + method.getSimpleName() + ");");
+			pw.println("void ", MethodHelper.toSetter(method) + "(", toPrintableType(returnType), " " + method.getSimpleName() + ");");
 			pw.println();
 		}
-	}
-
-	private void printType(MutableTypeMirror mutableType, PrintWriter pw) {
-		if (mutableType.getKind().equals(MutableTypeKind.TYPEVAR)) {
-			pw.print(((MutableTypeVariable)mutableType).getVariable());
-		} else {
-			pw.print(mutableType);
-		}	
 	}
 	
 	@Override

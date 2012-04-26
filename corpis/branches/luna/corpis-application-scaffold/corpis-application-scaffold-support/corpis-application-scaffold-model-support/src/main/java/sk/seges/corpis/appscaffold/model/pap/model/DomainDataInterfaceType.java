@@ -7,7 +7,9 @@ import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.tools.Diagnostic.Kind;
 
+import sk.seges.corpis.appscaffold.model.pap.accessor.BaseObjectAccessor;
 import sk.seges.corpis.appscaffold.model.pap.accessor.DomainInterfaceAccessor;
 import sk.seges.corpis.appscaffold.model.pap.accessor.PersistentObjectAccessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -21,26 +23,25 @@ import sk.seges.sesam.domain.IMutableDomainObject;
 public class DomainDataInterfaceType extends AbstractDataType {
 
 	private static final String SUFFIX = "Data";
-	private boolean hierarchy = false;
 	
 	public DomainDataInterfaceType(MutableDeclaredType dataDefinition, MutableProcessingEnvironment processingEnv) {
 		super(dataDefinition, processingEnv);		
 
 		Element element = processingEnv.getElementUtils().getTypeElement(dataDefinition.getCanonicalName());
-		//Element element = ((DeclaredType)dataDefinition.asType()).asElement();
 
-		List<MutableTypeMirror> interfaces = getDataInterfaces();
-		
-		if (dataDefinition.getInterfaces().size() == 0) {
-			hierarchy = true;
+		if (getBaseObjects().size() > 1) {
+			processingEnv.getMessager().printMessage(Kind.ERROR, "Multiple base objects interfaces are defined in " + domainDataType + ". You should define only one base object interface!", domainDataType.asElement());
+		}
+
+		List<MutableDeclaredType> interfaces = getDataInterfaces();
+
+		if (interfaces.size() == 0) {
 			if (new PersistentObjectAccessor(element, processingEnv).isEntity()) {
 				MutableDeclaredType dmainObjectMutableType = processingEnv.getTypeUtils().toMutableType(IMutableDomainObject.class.getName());
 				interfaces.add(dmainObjectMutableType);
 			} else {
 				interfaces.add(processingEnv.getTypeUtils().toMutableType(Serializable.class));
 			}
-		} else if (!hasDataInterface()) {
-			hierarchy = true;
 		}
 
 		changePackage(dataDefinition.getPackageName() + "." + LocationType.SERVER.getName() + "." + LayerType.MODEL.getName() + "." + ImplementationType.DATA.getName());
@@ -54,31 +55,32 @@ public class DomainDataInterfaceType extends AbstractDataType {
 		super(null, processingEnv);
 		setDelegate(processingEnv.getTypeUtils().toMutableType(dataInterfaceType.asType()));
 	}
-	
-	public boolean isHierarchy() {
-		return hierarchy;
-	}
 
-	private boolean hasDataInterface() {
+	public List<MutableDeclaredType> getBaseObjects() {
+		List<MutableDeclaredType> baseObjects = new ArrayList<MutableDeclaredType>();
+		
 		for (MutableTypeMirror domainInterface : domainDataType.getInterfaces()) {
 			MutableDeclaredType d = (MutableDeclaredType) domainInterface;
-			if (new DomainInterfaceAccessor(((DeclaredType)d.asType()).asElement(), processingEnv).isValid()) {
-				return true;
+			if (new BaseObjectAccessor(((DeclaredType)d.asType()).asElement(), processingEnv).isValid()) {
+				baseObjects.add(d);
 			}
 		}
-		return false;
-	}
 		
-	private List<MutableTypeMirror> getDataInterfaces() {
-		List<MutableTypeMirror> interfaces = new ArrayList<MutableTypeMirror>();
+		return baseObjects;
+	}
+	
+	public List<MutableDeclaredType> getDataInterfaces() {
+		List<MutableDeclaredType> interfaces = new ArrayList<MutableDeclaredType>();
 		
 		for (MutableTypeMirror domainInterface : domainDataType.getInterfaces()) {
 			MutableDeclaredType d = (MutableDeclaredType) domainInterface;
 			if (new DomainInterfaceAccessor(((DeclaredType)d.asType()).asElement(), processingEnv).isValid()) {
-				domainInterface = new DomainDataInterfaceType((MutableDeclaredType)domainInterface, processingEnv);
-			} 
+				DomainDataInterfaceType domainDataInterfaceType = new DomainDataInterfaceType((MutableDeclaredType)domainInterface, processingEnv);
+				interfaces.add(domainDataInterfaceType);
+			} else {
+				interfaces.add(d);
+			}
 		
-			interfaces.add(domainInterface);
 		}
 		
 		return interfaces;
