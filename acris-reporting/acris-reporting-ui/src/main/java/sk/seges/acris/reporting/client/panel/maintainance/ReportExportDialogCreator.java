@@ -66,9 +66,16 @@ public class ReportExportDialogCreator {
 	public Dialog createReportExportDialog(ReportDescriptionData report,
 			Map<ReportParameterData, String> predefinedParams,
 			ParameterTypeSelector parameterTypeSelector, String webId) {
+		return createReportExportDialog(report, predefinedParams, parameterTypeSelector, webId, null);
+	}
+	
+	public Dialog createReportExportDialog(ReportDescriptionData report,
+			Map<ReportParameterData, String> predefinedParams,
+			ParameterTypeSelector parameterTypeSelector, String webId, String reportName) {
+		
 		this.webId = webId;
 		this.predefinedParams = predefinedParams;
-		this.init(report, predefinedParams, parameterTypeSelector);
+		this.init(report, predefinedParams, parameterTypeSelector, reportName);
 		return dialog;
 	}
 
@@ -82,11 +89,11 @@ public class ReportExportDialogCreator {
 
 	void init(ReportDescriptionData report,
 			Map<ReportParameterData, String> predefinedParams,
-			ParameterTypeSelector parameterTypeSelector) {
+			ParameterTypeSelector parameterTypeSelector, String reportName) {
 		dialog = widgetFactory.dialog();
 		dialog.setModal(false);
 		paramWidgets = new ArrayList<IParameterTypePanel<?>>();
-		dialog.setCaption((report.getDisplayName() == null) ? report.getName() : report.getDisplayName());
+		dialog.setCaption(reportName != null ? reportName : (report.getDisplayName() == null) ? report.getName() : report.getDisplayName());
 		dialog.addStyleName("report-export-dialog");
 
 		FlowPanel contentPanel = createDownloadDialogContent(report,
