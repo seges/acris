@@ -161,7 +161,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				
 				pw.println("@", Generated.class, "(value = \"" + this.getClass().getCanonicalName() + "\")");
 
-				new TypePrinter(pw).printTypeDefinition(outputClass);
+				new TypePrinter(processingEnv, pw).printTypeDefinition(outputClass);
 
 				pw.println(" {");
 				pw.println();

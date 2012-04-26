@@ -1,5 +1,8 @@
 package sk.seges.sesam.core.pap.printer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.Modifier;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
@@ -7,14 +10,17 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class TypePrinter {
 
 	private final FormattedPrintWriter pw;
+	private final MutableProcessingEnvironment processingEnv;
 	
-	public TypePrinter(FormattedPrintWriter pw) {
+	public TypePrinter(MutableProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		this.pw = pw;
+		this.processingEnv = processingEnv;
 	}
 
 	public void printTypeDefinition(MutableDeclaredType type) {
@@ -66,7 +72,7 @@ public class TypePrinter {
 
 				if (superClassType != null && !superClassType.toString(ClassSerializer.CANONICAL).equals(Object.class.getCanonicalName()) && 
 						type.getKind().equals(MutableTypeKind.INTERFACE)) {
-					pw.print(superClassType);
+					pw.print(toPrintableType(superClassType));
 					i++;
 				}
 				
@@ -74,7 +80,7 @@ public class TypePrinter {
 					if (i > 0) {
 						pw.print(", ");
 					}
-					pw.print(interfaceType);
+					pw.print(toPrintableType(interfaceType));
 					i++;
 				}
 			}
@@ -84,4 +90,23 @@ public class TypePrinter {
 			pw.print(superClassType);
 		}
 	}
+	
+	protected MutableTypeMirror toPrintableType(MutableTypeMirror mutableType) {
+		if (mutableType.getKind().isDeclared()) {
+			MutableDeclaredType declaredType = (MutableDeclaredType)mutableType;
+			List<? extends MutableTypeVariable> typeVariables = declaredType.getTypeVariables();
+			List<MutableTypeVariable> strippedTypeVariables = new ArrayList<MutableTypeVariable>();
+			for (MutableTypeVariable typeVariable: typeVariables) {
+				if (typeVariable.getVariable() != null) {
+					strippedTypeVariables.add(processingEnv.getTypeUtils().getTypeVariable(typeVariable.getVariable()));
+				} else {
+					strippedTypeVariables.add(typeVariable);
+				}
+			}
+			return declaredType.clone().setTypeVariables(strippedTypeVariables.toArray(new MutableTypeVariable[] {}));
+		}
+		
+		return mutableType;
+	}
+
 }

@@ -40,7 +40,7 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 		
 		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
 		
-		new TypePrinter(pw).printTypeDefinition(Modifier.PROTECTED, serviceConvertProviderType);
+		new TypePrinter(processingEnv, pw).printTypeDefinition(Modifier.PROTECTED, serviceConvertProviderType);
 		pw.println(" {");
 		pw.println();
 		
