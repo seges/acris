@@ -57,8 +57,8 @@
 		
 	<modules>
 		<module>corpis-core-domain-api</module>
-		<module>corpis-customer-domain-model</module>
 		<module>corpis-core-domain-model</module>
+		<module>corpis-customer-domain-model</module>
 		<module>corpis-invoice-domain-model</module>
 	</modules>
 </project>
