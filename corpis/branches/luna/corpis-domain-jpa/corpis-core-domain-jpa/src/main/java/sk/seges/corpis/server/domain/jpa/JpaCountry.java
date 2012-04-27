@@ -10,8 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.shared.domain.api.DBConstraints;
-import sk.seges.corpis.shared.domain.base.CountryBase;
+import sk.seges.corpis.server.domain.DBConstraints;
+import sk.seges.corpis.server.domain.server.model.base.CountryBase;
 
 /**
  * @author ladislav.gazo
@@ -19,13 +19,13 @@ import sk.seges.corpis.shared.domain.base.CountryBase;
 @Entity
 @Table(name = "country")
 @SequenceGenerator(name = "country_id_seq", sequenceName = "country_id_seq", initialValue = 1)
-public class JpaCountry extends CountryBase<Integer> {
+public class JpaCountry extends CountryBase {
 	private static final long serialVersionUID = 8388027517830828966L;
 	
 	@Id
 	@GeneratedValue(generator="country_id_seq")
 	@Override
-	public Integer getId() {
+	public Long getId() {
 		return super.getId();
 	}
 	
@@ -51,5 +51,4 @@ public class JpaCountry extends CountryBase<Integer> {
 	public String getLanguage() {
 		return super.getLanguage();
 	}
-
 }

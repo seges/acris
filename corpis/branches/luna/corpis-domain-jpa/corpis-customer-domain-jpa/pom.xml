@@ -12,11 +12,6 @@
 	</parent>
 
 	<dependencies>	
-		<!-- Sesam dependencies -->
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-core</artifactId>
-		</dependency>
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -25,15 +20,6 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>corpis-customer-domain-model</artifactId>
-		</dependency>
-		<!-- JPA dependencies -->
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>
