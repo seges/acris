@@ -49,8 +49,10 @@ public class DomainDataInterfaceType extends AbstractDataType {
 		setInterfaces(interfaces);
 
 		setKind(MutableTypeKind.INTERFACE);
+		
+		setDataTypeVariables();
 	}
-
+	
 	public DomainDataInterfaceType(TypeElement dataInterfaceType, MutableProcessingEnvironment processingEnv) {
 		super(null, processingEnv);
 		setDelegate(processingEnv.getTypeUtils().toMutableType(dataInterfaceType.asType()));

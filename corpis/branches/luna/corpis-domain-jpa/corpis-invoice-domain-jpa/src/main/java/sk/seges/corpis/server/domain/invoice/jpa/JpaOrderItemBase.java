@@ -13,7 +13,7 @@ import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
  * @author eldzi
  */
 @MappedSuperclass
-public abstract class JpaOrderItemBase<O extends JpaOrderBase> extends JpaAccountableItem implements OrderItemData {
+public abstract class JpaOrderItemBase<O extends JpaOrderBase> extends JpaAccountableItem implements OrderItemData<O> {
 	private static final long serialVersionUID = -7389416843335701988L;
 	
 	@ManyToOne(fetch=FetchType.LAZY)

@@ -3,6 +3,7 @@ package sk.seges.corpis.server.domain.invoice.jpa;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
+import sk.seges.corpis.server.domain.invoice.EUnitType;
 import sk.seges.corpis.server.domain.invoice.server.model.base.UnitBase;
 
 /**
@@ -20,7 +21,7 @@ public abstract class JpaUnitBase extends UnitBase {
 	}
 
 	@Column
-	public UnitType getType() {
+	public EUnitType getType() {
 		return super.getType();
 	}
 }

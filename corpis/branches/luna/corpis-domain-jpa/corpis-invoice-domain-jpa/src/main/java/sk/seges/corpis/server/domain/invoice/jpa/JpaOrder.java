@@ -12,7 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
+import sk.seges.corpis.server.domain.invoice.HasOrderItems;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 
 @Entity
@@ -45,10 +45,5 @@ public class JpaOrder extends JpaOrderBase implements HasOrderItems<JpaOrder> {
 
 	public void setOrderItems(List<OrderItemData<JpaOrder>> orderItems) {
 		this.orderItems = orderItems;
-	}
-	
-	@Override
-	public List<? extends AccountableItemData> getAccountableItems() {
-		return orderItems;
 	}
 }

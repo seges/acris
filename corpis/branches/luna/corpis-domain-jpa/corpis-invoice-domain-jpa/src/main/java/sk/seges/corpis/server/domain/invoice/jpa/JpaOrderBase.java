@@ -16,6 +16,7 @@ import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.invoice.EOrderStatus;
 import sk.seges.corpis.server.domain.invoice.EPaymentType;
 import sk.seges.corpis.server.domain.invoice.ETransports;
+import sk.seges.corpis.server.domain.invoice.server.model.data.DeliveryPersonData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderData;
 import sk.seges.corpis.server.domain.server.model.data.AddressData;
 import sk.seges.corpis.server.domain.server.model.data.BasicContactData;
@@ -66,6 +67,10 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 
 	private String projectNumber;
 		
+	private DeliveryPersonData deliveryPerson;
+
+	private Boolean sameDeliveryAddress;
+
 	@Column
 	public String getOrderId() {
 		return orderId;
@@ -220,6 +225,28 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 
 	public void setProjectNumber(String projectNumber) {
 		this.projectNumber = projectNumber;
+	}
+
+	@Embedded
+	@AttributeOverrides( {
+		@AttributeOverride(name = DeliveryPersonData.COMPANY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + DeliveryPersonData.COMPANY)),
+		@AttributeOverride(name = DeliveryPersonData.PERSON, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + DeliveryPersonData.PERSON)) })
+	public DeliveryPersonData getDeliveryPerson() {
+		return deliveryPerson;
+	}
+
+	public void setDeliveryPerson(DeliveryPersonData deliveryPerson) {
+		this.deliveryPerson = deliveryPerson;
+	}
+
+	@Column(name = "SAME_DELIVERY_ADDRESS")
+	public Boolean getSameDeliveryAddress() {
+		return sameDeliveryAddress;
+	}
+
+	@Override
+	public void setSameDeliveryAddress(Boolean sameDeliveryAddress) {
+		this.sameDeliveryAddress = sameDeliveryAddress;
 	}
 
 	@Override

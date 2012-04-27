@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import sk.seges.corpis.server.domain.HasWebId;
-import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
+import sk.seges.corpis.server.domain.invoice.HasOrderItems;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 
 /**
@@ -69,11 +69,6 @@ public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId, HasOrd
 		this.orderItems = orderItems;
 	}
 
-	@Override
-	public List<? extends AccountableItemData> getAccountableItems() {
-		return orderItems;
-	}
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

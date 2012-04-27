@@ -12,7 +12,7 @@ import sk.seges.sesam.domain.IDomainObject;
 @BaseObject
 public interface Order extends IDomainObject<Long> {
 
-	String oderId();
+	String orderId();
 	String note();
 	ETransports deliveredBy();
 	String trackingNumber();

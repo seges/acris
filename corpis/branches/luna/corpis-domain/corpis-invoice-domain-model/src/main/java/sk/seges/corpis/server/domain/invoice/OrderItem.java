@@ -7,5 +7,5 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 @BaseObject
 public interface OrderItem<O extends Order> extends AccountableItem {
 
-	O getOrder();
+	O order();
 }

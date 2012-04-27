@@ -46,6 +46,8 @@ public class BaseObjectType extends AbstractDataType {
 		}
 		
 		setKind(MutableTypeKind.CLASS);
+		
+		setDataTypeVariables();
 	}
 	
 	@Override

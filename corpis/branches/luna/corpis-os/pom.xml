@@ -51,12 +51,8 @@
 		<module>../corpis-dao-api</module>
 		<module>../corpis-dao-impl</module>
 		<module>../corpis-lang-api</module>
-		<module>../corpis-domain-api</module>
+		<module>../corpis-domain</module>
 		<module>../corpis-domain-jpa</module>
-		<module>../corpis-customer-domain-api</module>
-		<module>../corpis-customer-domain-jpa</module>
-		<module>../corpis-invoice-domain-api</module>
-		<module>../corpis-invoice-domain-jpa</module>
 		<module>../corpis-domain-generator-import</module>
 		<module>../corpis-domain-generator</module>
 		<module>../corpis-import-export-api</module>
@@ -66,7 +62,6 @@
 		<module>../corpis-import-export</module>
 		<module>../corpis-payment-api</module>
 		<module>../corpis-payment</module>
-		<module>../corpis-domain</module>
 		<module>../corpis-application-scaffold/corpis-application-scaffold-parent</module>
 	</modules>
 
