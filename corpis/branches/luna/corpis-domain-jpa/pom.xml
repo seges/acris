@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>corpis-domain-jpa</artifactId>
+	<name>corpis-domain-jpa</name>
+	<description>Corpis domain JPA</description>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+		<version>1.2.1-SNAPSHOT</version>
+		<relativePath>../corpis-os/pom.xml</relativePath>
+	</parent>
+
+	<dependencyManagement>
+		<dependencies> 
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-core-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-customer-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-invoice-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-customer-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-core-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies> 
+	</dependencyManagement>
+		
+	<modules>
+		<module>corpis-core-domain-jpa</module>
+		<module>corpis-customer-domain-jpa</module>
+		<module>corpis-invoice-domain-jpa</module>
+	</modules>
+</project>
