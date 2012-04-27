@@ -15,11 +15,11 @@
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-customer-domain-jpa</artifactId>
+			<artifactId>corpis-invoice-domain-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-invoice-domain-model</artifactId>
+			<artifactId>corpis-customer-domain-jpa</artifactId>
 		</dependency>
 	</dependencies>
 </project>

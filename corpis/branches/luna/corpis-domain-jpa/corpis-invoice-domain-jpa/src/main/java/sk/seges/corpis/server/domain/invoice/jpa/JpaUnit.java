@@ -11,15 +11,14 @@ public class JpaUnit extends JpaUnitBase {
 
 	public static final String ID = "id";
 		
-	private Integer id;
+	private Long id;
 		
-	@Override
 	@Id
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

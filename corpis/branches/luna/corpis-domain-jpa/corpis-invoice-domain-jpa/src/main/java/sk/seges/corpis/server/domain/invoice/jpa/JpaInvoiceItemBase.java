@@ -18,8 +18,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import sk.seges.corpis.server.domain.invoice.PriceData;
-import sk.seges.corpis.server.domain.invoice.base.InvoiceItemBase;
+import sk.seges.corpis.server.domain.invoice.server.model.base.InvoiceItemBase;
+import sk.seges.corpis.server.domain.invoice.server.model.data.PriceData;
 
 @Entity
 @Table(name = "invoice_items")//$NON-NLS-1$
@@ -27,7 +27,7 @@ import sk.seges.corpis.server.domain.invoice.base.InvoiceItemBase;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType=DiscriminatorType.INTEGER)
 @DiscriminatorValue(value="1")
-public class JpaInvoiceItemBase extends InvoiceItemBase<Long> {
+public class JpaInvoiceItemBase extends InvoiceItemBase {
 	private static final long serialVersionUID = 207883043243372294L;
 
 

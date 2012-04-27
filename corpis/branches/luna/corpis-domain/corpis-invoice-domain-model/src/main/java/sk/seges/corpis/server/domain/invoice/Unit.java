@@ -9,6 +9,6 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 @BaseObject
 public interface Unit extends Serializable {
 	
-	String getLabelKey();
-	EUnitType getType();
+	String labelKey();
+	EUnitType type();
 }

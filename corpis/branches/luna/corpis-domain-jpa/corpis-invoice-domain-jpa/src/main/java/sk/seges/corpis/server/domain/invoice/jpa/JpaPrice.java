@@ -9,7 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
-import sk.seges.corpis.server.domain.invoice.base.PriceBase;
+import sk.seges.corpis.server.domain.invoice.server.model.base.PriceBase;
 
 /**
  * @author eldzi

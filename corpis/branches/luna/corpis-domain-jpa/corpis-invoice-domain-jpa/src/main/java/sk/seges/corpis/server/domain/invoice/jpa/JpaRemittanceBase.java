@@ -21,8 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.invoice.PriceData;
-import sk.seges.corpis.server.domain.invoice.base.RemittanceBase;
+import sk.seges.corpis.server.domain.invoice.server.model.base.RemittanceBase;
+import sk.seges.corpis.server.domain.invoice.server.model.data.PriceData;
 
 /**
  * @author eldzi
@@ -34,7 +34,7 @@ import sk.seges.corpis.server.domain.invoice.base.RemittanceBase;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType=DiscriminatorType.INTEGER)
 @DiscriminatorValue(value="1")
-public class JpaRemittanceBase extends RemittanceBase<Integer> {
+public class JpaRemittanceBase extends RemittanceBase {
 	private static final long serialVersionUID = 393743153284623144L;
 
 	private static final byte NAME_LENGTH = 100;
@@ -51,7 +51,7 @@ public class JpaRemittanceBase extends RemittanceBase<Integer> {
 
 	@Id
 	@GeneratedValue(generator = "seqRemittances")//$NON-NLS-1$
-	public Integer getId() {
+	public Long getId() {
 		return super.getId();
 	}
 

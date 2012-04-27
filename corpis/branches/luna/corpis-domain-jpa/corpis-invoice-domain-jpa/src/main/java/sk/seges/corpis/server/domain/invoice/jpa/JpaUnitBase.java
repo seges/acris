@@ -3,14 +3,13 @@ package sk.seges.corpis.server.domain.invoice.jpa;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import sk.seges.corpis.server.domain.invoice.UnitType;
-import sk.seges.corpis.server.domain.invoice.base.UnitBase;
+import sk.seges.corpis.server.domain.invoice.server.model.base.UnitBase;
 
 /**
  * @author eldzi
  */
 @MappedSuperclass
-public abstract class JpaUnitBase extends UnitBase<Integer> {
+public abstract class JpaUnitBase extends UnitBase {
 	private static final long serialVersionUID = -6693153258172598222L;
 	
 	private static final short LABEL_KEY_LENGTH = 250;

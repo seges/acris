@@ -16,17 +16,17 @@ import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.invoice.EOrderStatus;
 import sk.seges.corpis.server.domain.invoice.EPaymentType;
 import sk.seges.corpis.server.domain.invoice.ETransports;
-import sk.seges.corpis.shared.domain.customer.api.AddressData;
-import sk.seges.corpis.shared.domain.customer.api.BasicContactData;
-import sk.seges.corpis.shared.domain.customer.api.CompanyNameData;
-import sk.seges.corpis.shared.domain.customer.api.PersonNameData;
-import sk.seges.corpis.shared.domain.invoice.api.OrderData;
+import sk.seges.corpis.server.domain.invoice.server.model.data.OrderData;
+import sk.seges.corpis.server.domain.server.model.data.AddressData;
+import sk.seges.corpis.server.domain.server.model.data.BasicContactData;
+import sk.seges.corpis.server.domain.server.model.data.CompanyNameData;
+import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
 
 /**
  * @author eldzi
  */
 @MappedSuperclass
-public abstract class JpaOrderBase extends JpaAccountable implements OrderData<Long> {
+public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 
 	private static final long serialVersionUID = -6186188601422302822L;
 

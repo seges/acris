@@ -15,7 +15,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.invoice.base.VatBase;
+import sk.seges.corpis.server.domain.invoice.server.model.base.VatBase;
 
 /**
  * @author eldzi

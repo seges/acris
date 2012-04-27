@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.invoice.base.CurrencyBase;
+import sk.seges.corpis.server.domain.invoice.server.model.base.CurrencyBase;
 
 @Entity
 @Table(name = "currencies")

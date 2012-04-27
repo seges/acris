@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.corpis.shared.domain.api.HasWebId;
+import sk.seges.corpis.server.domain.HasWebId;
 
 /**
  * @author eldzi
@@ -21,17 +21,16 @@ public class JpaWebIDAwareUnit extends JpaUnitBase implements HasWebId {
 
 	public static final String WEB_ID = "webId";
 
-	private Integer id;
+	private Long id;
 		
 	private String webId;
 	
-	@Override
 	@Id
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

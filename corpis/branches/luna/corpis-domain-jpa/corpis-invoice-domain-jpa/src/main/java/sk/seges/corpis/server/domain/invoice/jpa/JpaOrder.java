@@ -12,9 +12,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.corpis.shared.domain.invoice.api.AccountableItemData;
-import sk.seges.corpis.shared.domain.invoice.api.HasOrderItems;
-import sk.seges.corpis.shared.domain.invoice.api.OrderItemData;
+import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
+import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 
 @Entity
 @SequenceGenerator(name = JpaOrder.SEQ_ORDERS, sequenceName = "seq_orders", initialValue = 1)

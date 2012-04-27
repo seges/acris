@@ -24,9 +24,9 @@ import sk.seges.corpis.server.domain.customer.jpa.JpaCustomerBase;
 import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.invoice.RemittanceType;
 import sk.seges.corpis.server.domain.invoice.TransportType;
-import sk.seges.corpis.server.domain.invoice.base.InvoiceBase;
-import sk.seges.corpis.shared.domain.invoice.api.InvoiceItemData;
-import sk.seges.corpis.shared.domain.invoice.api.RemittanceData;
+import sk.seges.corpis.server.domain.invoice.server.model.base.InvoiceBase;
+import sk.seges.corpis.server.domain.invoice.server.model.data.InvoiceItemData;
+import sk.seges.corpis.server.domain.invoice.server.model.data.RemittanceData;
 
 @Entity
 @SequenceGenerator(name = "seqInvoices", sequenceName = "SEQ_INVOICES", initialValue = 1)//$NON-NLS-1$ //$NON-NLS-2$
@@ -34,13 +34,13 @@ import sk.seges.corpis.shared.domain.invoice.api.RemittanceData;
 @DiscriminatorColumn(discriminatorType=DiscriminatorType.INTEGER)
 @DiscriminatorValue(value="1")
 @Table(name = "INVOICE"/*, uniqueConstraints = {@UniqueConstraint(columnNames = {"invoiceId","prepaid","incomingInvoiceType"})}*/)//$NON-NLS-1$
-public class JpaInvoiceBase extends InvoiceBase<Integer> {
+public class JpaInvoiceBase extends InvoiceBase {
 
 	private static final long serialVersionUID = 7242853578333348764L;
 
 	public JpaInvoiceBase() {
-		setInvoiceItems(new HashSet<InvoiceItemData<?>>());
-		setRemittances(new HashSet<RemittanceData<?>>());
+		setInvoiceItems(new HashSet<InvoiceItemData>());
+		setRemittances(new HashSet<RemittanceData>());
 	}
 
 	@Column(name = "TAX_DATE")//$NON-NLS-1$
@@ -70,7 +70,7 @@ public class JpaInvoiceBase extends InvoiceBase<Integer> {
 
 	@Id
 	@GeneratedValue(generator = "seqInvoices")//$NON-NLS-1$
-	public Integer getId() {
+	public Long getId() {
 		return super.getId();
 	}
 
@@ -105,7 +105,7 @@ public class JpaInvoiceBase extends InvoiceBase<Integer> {
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.PERSIST })//$NON-NLS-1$
-	public Set<InvoiceItemData<?>> getInvoiceItems() {
+	public Set<InvoiceItemData> getInvoiceItems() {
 		return super.getInvoiceItems();
 	}
 
@@ -120,7 +120,7 @@ public class JpaInvoiceBase extends InvoiceBase<Integer> {
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.PERSIST }, targetEntity = JpaRemittanceBase.class) //$NON-NLS-1$
-	public Set<RemittanceData<?>> getRemittances() {
+	public Set<RemittanceData> getRemittances() {
 		return super.getRemittances();
 	}
 

@@ -8,7 +8,7 @@ import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
-import sk.seges.corpis.server.domain.invoice.base.AccountableItemBase;
+import sk.seges.corpis.server.domain.invoice.server.model.base.AccountableItemBase;
 
 /**
  * @author eldzi

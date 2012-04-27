@@ -11,7 +11,7 @@ import sk.seges.sesam.domain.IMutableDomainObject;
 public interface InvoiceItem extends IMutableDomainObject<Long>, HasVersion, HasDescription, HasPrice {
 
 	Invoice invoice();
-	Float getCount();
+	Float count();
 	Unit unit();
 	Vat vat();
 }
