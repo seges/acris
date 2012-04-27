@@ -1,6 +1,7 @@
 package sk.seges.acris.security.server.spring.user_management.dao.user.hibernate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -63,7 +64,7 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData<?>> 
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, addMode));
 	}
 
-	private List<String> extractAuthorities(List<?> userPermissions) {
+	protected List<String> extractAuthorities(Collection<?> userPermissions) {
 		if (!Hibernate.isInitialized(userPermissions)) {
 			Hibernate.initialize(userPermissions);
 		}
