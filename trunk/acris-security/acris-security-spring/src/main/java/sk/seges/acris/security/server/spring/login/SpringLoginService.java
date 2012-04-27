@@ -95,7 +95,7 @@ public class SpringLoginService implements LoginService {
 	 * 
 	 * @param clientSession
 	 */
-	protected void postProcessLogin(ClientSession clientSession) {
+	protected void postProcessLogin(ClientSession clientSession, LoginToken token) {
 	}
 
 	@Transactional
@@ -129,7 +129,7 @@ public class SpringLoginService implements LoginService {
 			}
 		}
 
-		postProcessLogin(clientSession);
+		postProcessLogin(clientSession, token);
 		return clientSession;
 	}
 
