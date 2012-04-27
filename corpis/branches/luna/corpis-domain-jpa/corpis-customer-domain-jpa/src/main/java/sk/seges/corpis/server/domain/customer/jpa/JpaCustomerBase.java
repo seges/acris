@@ -45,17 +45,17 @@ public class JpaCustomerBase extends CustomerBase {
 	private static final long serialVersionUID = -7070969291047080272L;
 
 	public JpaCustomerBase() {
-		company = new JpaCompanyName();
-		person = new JpaPersonName();
-		address = new JpaAddress();
-		contact = new JpaBasicContact();
+		setCompany(new JpaCompanyName());
+		setPerson(new JpaPersonName());
+		setAddress(new JpaAddress());
+		setContact(new JpaBasicContact());
 	}
 
 	private Integer version;
 
 	@Id
 	@GeneratedValue(generator = "seqCustomers")
-	public Integer getId() {
+	public Long getId() {
 		return super.getId();
 	}
 
@@ -188,6 +188,4 @@ public class JpaCustomerBase extends CustomerBase {
 	public JpaBasicContact getCorrespContact() {
 		return (JpaBasicContact) super.getCorrespContact();
 	}
-
-
 }

@@ -43,7 +43,7 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 			
 			MutableTypeMirror returnType = castToDomainDataInterface(method.getReturnType());
 			
-			pw.println("public static final String " + method.getSimpleName().toString().toUpperCase() + " = \"" + method.getSimpleName() + "\";");
+			pw.println("public static final String " + getConvertedPropertyName(method.getSimpleName().toString()) + " = \"" + method.getSimpleName() + "\";");
 			pw.println();
 			pw.println(toPrintableType(returnType), " " + MethodHelper.toGetter(method) + ";");
 			pw.println();
@@ -51,7 +51,22 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 			pw.println();
 		}
 	}
-	
+
+	//TODO copied from PojoPropertyConverter
+	private String getConvertedPropertyName(String originalPropertyName) {
+		String result = "";
+
+		for (int i = 0; i < originalPropertyName.length(); i++) {
+			char c = originalPropertyName.charAt(i);
+			if (Character.isUpperCase(c)) {
+				result += "_";
+			}
+			result += c;
+		}
+
+		return result.toUpperCase();
+	}
+
 	@Override
 	protected void printAnnotations(ProcessorContext context) {
 		super.printAnnotations(context);
