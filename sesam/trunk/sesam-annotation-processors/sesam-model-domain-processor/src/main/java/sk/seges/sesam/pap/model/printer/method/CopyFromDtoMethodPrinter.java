@@ -47,7 +47,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		String fullPath = currentPath;
 		String previousPath = TransferObjectElementPrinter.RESULT_NAME;
 		
-		DomainDeclaredType domainTypeElement = context.getConfigurationTypeElement().getDomain();
+		DomainDeclaredType domainTypeElement = context.getConfigurationTypeElement().getInstantiableDomain();
 		
 		if (nested && context.getConfigurationTypeElement().getDomain() != null) {
 			
@@ -118,7 +118,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			String converterName = printLocalConverter(context, ConverterTargetType.DTO, pw);
 			printCopyByLocalConverter(converterName, pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
 		} else {
-			printCopySimple(pathResolver, context.getConfigurationTypeElement().getDomain(), context.getConfigurationTypeElement(), context.getDtoFieldName(), pw);
+			printCopySimple(pathResolver, context.getConfigurationTypeElement().getInstantiableDomain(), context.getConfigurationTypeElement(), context.getDtoFieldName(), pw);
 		}
 	}
 	
@@ -140,7 +140,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	protected void printCopySimple(PathResolver domainPathResolver, DomainDeclaredType domainTypeElement, ConfigurationTypeElement configurationTypeElement, String dtoField, FormattedPrintWriter pw) {
 		ExecutableElement domainGetterMethod = domainTypeElement.getGetterMethod(domainPathResolver.getCurrent());
 		
-		if (configurationTypeElement.getDomain().getSetterMethod(domainPathResolver.getPath()) != null) {
+		if (configurationTypeElement.getInstantiableDomain().getSetterMethod(domainPathResolver.getPath()) != null) {
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
 		} else {
 			
