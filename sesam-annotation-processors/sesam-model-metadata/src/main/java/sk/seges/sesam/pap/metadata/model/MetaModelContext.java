@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.metadata.model;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
