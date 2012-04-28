@@ -63,7 +63,7 @@ public class ThemeComponentProcessor extends MutableAnnotationProcessor {
 		
 		ThemeUiBinderType themeUiBinderType = new ThemeUiBinderType(name, context.getOutputType(), processingEnv);
 		
-		new TypePrinter(pw).printTypeDefinition(null, themeUiBinderType);
+		new TypePrinter(processingEnv, pw).printTypeDefinition(null, themeUiBinderType);
  		pw.println(" {}");
 		pw.println();
 				
