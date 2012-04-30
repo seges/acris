@@ -6,6 +6,7 @@ import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -19,6 +20,7 @@ import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.utils.CastUtils;
 
 public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements CopyMethodPrinter {
 
@@ -76,9 +78,12 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(");
 
 			pw.print(converterName + ".toDto(");
-			pw.print("(", castToDelegate(context.getConverter().getDomain()), ")");
-
+			pw.print(CastUtils.class, ".cast(");
+			MutableTypeMirror delegateCast = getDelegateCast(context.getConverter().getDomain());
+			pw.print("(", getWildcardDelegate(delegateCast), ")");
 			pw.print(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
+			pw.print(", ", getTypeVariableDelegate(delegateCast), ".class)");
+
 		} else if (context.isLocalConverter()) {
 			String converterName = printLocalConverter(context, ConverterTargetType.DOMAIN, pw);
 			pw.println("if (" + converterName + " != null) {");

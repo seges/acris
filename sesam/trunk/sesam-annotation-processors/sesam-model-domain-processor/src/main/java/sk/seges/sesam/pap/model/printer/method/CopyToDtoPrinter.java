@@ -111,7 +111,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 					pw.print(".convertToDto(");
 					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, methodName, idMethod, pw, false);
 					pw.print(".createDtoInstance(null), ");
-					pw.print("(", castToDelegate(idMethod.getReturnType()), ")");
+					pw.print("(", getDelegateCast(idMethod.getReturnType()), ")");
 					useIdConverter = true;
 				}
 			}

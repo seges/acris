@@ -23,8 +23,8 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.AbstractDtoPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
@@ -45,7 +45,30 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
 	}
 
-	protected MutableTypeMirror castToDelegate(MutableTypeMirror domainNamedType) {
+	protected MutableTypeMirror getWildcardDelegate(MutableTypeMirror domainDelegate) {
+		if (domainDelegate.getKind().isDeclared() && ((MutableDeclaredType)domainDelegate).getTypeVariables().size() == 1) {
+			return ((MutableDeclaredType)domainDelegate).clone().setTypeVariables(processingEnv.getTypeUtils().getWildcardType((MutableTypeMirror)null, (MutableTypeMirror)null));
+		}
+		
+		return domainDelegate;
+	}
+	
+	protected MutableTypeMirror getTypeVariableDelegate(MutableTypeMirror domainDelegate) {
+		if (domainDelegate.getKind().isDeclared() && ((MutableDeclaredType)domainDelegate).getTypeVariables().size() == 1) {
+			MutableTypeVariable mutableTypeVariable = ((MutableDeclaredType)domainDelegate).getTypeVariables().get(0);
+			if (mutableTypeVariable.getUpperBounds().size() == 1) {
+				return mutableTypeVariable.getUpperBounds().iterator().next();
+			}
+			if (mutableTypeVariable.getLowerBounds().size() == 1) {
+				return mutableTypeVariable.getLowerBounds().iterator().next();
+			}
+			return mutableTypeVariable;
+		}
+		
+		return domainDelegate;
+	}
+	
+	protected MutableTypeMirror getDelegateCast(MutableTypeMirror domainNamedType) {
 		TypeMirror domainType = processingEnv.getTypeUtils().fromMutableType(domainNamedType);
 		
 		if (domainType == null) {
@@ -56,10 +79,10 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 
 		return castToDelegate(domainNamedType, domainTypeElement.getDomainDefinitionConfiguration() == null ? null : 
 			domainTypeElement.getDomainDefinitionConfiguration().getDelegateConfigurationTypeElement());
-		
+
 	}
 	
-	public MutableTypeMirror castToDelegate(TypeMirror domainType) {
+	public MutableTypeMirror getDelegateCast(TypeMirror domainType) {
 		DomainType domainTypeElement = processingEnv.getTransferObjectUtils().getDomainType(domainType);
 
 		MutableTypeMirror domainNamedType = processingEnv.getTypeUtils().toMutableType(domainType);
@@ -68,7 +91,7 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 			domainTypeElement.getDomainDefinitionConfiguration().getDelegateConfigurationTypeElement());
 	}
 	
-	protected MutableTypeMirror castToDelegate(MutableTypeMirror domainNamedType, ConfigurationTypeElement delegateConfigurationTypeElement) {
+	private MutableTypeMirror castToDelegate(MutableTypeMirror domainNamedType, ConfigurationTypeElement delegateConfigurationTypeElement) {
 
 		if (delegateConfigurationTypeElement != null) {
 			DomainDeclaredType replacementType = delegateConfigurationTypeElement.getDomain();
@@ -95,7 +118,7 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 					Iterator<? extends MutableTypeMirror> iterator = typeParameter.getUpperBounds().iterator();
 					
 					while (iterator.hasNext()) {
-						convertedBounds[i++] = castToDelegate(iterator.next());
+						convertedBounds[i++] = getDelegateCast(iterator.next());
 					}
 
 					if (typeParameter.getVariable() != null && typeParameter.getVariable().equals(MutableWildcardType.WILDCARD_NAME)) {
