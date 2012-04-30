@@ -11,12 +11,12 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.hibernate.IHibernateSecurityRoleDao;
-import sk.seges.acris.security.server.utils.CastUtils;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateSecurityRole;
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaSecurityRole;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.utils.CastUtils;
 
 public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> implements IHibernateSecurityRoleDao<RoleData> {
 
@@ -53,7 +53,7 @@ public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> im
 
 	@Override
 	public RoleData findUnique(Page page) {
-		List<RoleData> result = CastUtils.castList(findByCriteria(createCriteria(), page), RoleData.class);
+		List<RoleData> result = CastUtils.cast(findByCriteria(createCriteria(), page), RoleData.class);
 		
 		if (result == null || result.size() == 0) {
 			throw new RuntimeException("Unable to obtain unique result. No results found!");

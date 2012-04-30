@@ -200,17 +200,6 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-core-api</artifactId>
-				<version>${sesam-os.version}</version>
-				<classifier>sources</classifier>
-			</dependency>
-			<dependency>
-				<groupId>sk.seges.sesam</groupId>
-				<artifactId>sesam-core-api</artifactId>
-				<version>${sesam-os.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-spring</artifactId>
 				<version>${sesam-os.version}</version>
 			</dependency>

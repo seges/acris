@@ -17,10 +17,10 @@ import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescrip
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSidMetaModel;
-import sk.seges.acris.security.server.utils.CastUtils;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.utils.CastUtils;
 
 public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> implements IAclRecordDao<JpaAclEntry> {
 
@@ -54,7 +54,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		//FIXME .id
 		criteria.add(Restrictions.eq(AclEntryMetaModel.OBJECT_IDENTITY.THIS + ".id", aclObjectIdentity));
 		List<JpaAclEntry> result = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
-		return CastUtils.castList(result, AclEntry.class);
+		return CastUtils.cast(result, AclEntry.class);
 	}
 
 	@Override
