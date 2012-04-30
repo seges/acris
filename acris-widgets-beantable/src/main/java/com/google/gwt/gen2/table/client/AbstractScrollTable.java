@@ -1066,7 +1066,7 @@ public abstract class AbstractScrollTable extends ComplexPanel implements
    */
   public AbstractScrollTable(CustomFixedWidthGrid dataTable,
       FixedWidthFlexTable headerTable) {
-    this(dataTable, headerTable, null, new DefatulScrollTableResources());
+    this(dataTable, headerTable, null, (ScrollTableResources)GWT.create(DefatulScrollTableResources.class));
   }
 
   public AbstractScrollTable(CustomFixedWidthGrid dataTable,

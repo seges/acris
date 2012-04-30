@@ -33,15 +33,6 @@
 
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-callbacks</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-callbacks</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-client-core</artifactId>
 		</dependency>
 		<dependency>
@@ -59,8 +50,21 @@
 			<artifactId>acris-widgets</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-callbacks</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-callbacks</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 	
 		<!-- GWT dependencies -->
+		<dependency>
+			<groupId>com.google.code.gwtx</groupId>
+  			<artifactId>gwtx</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
