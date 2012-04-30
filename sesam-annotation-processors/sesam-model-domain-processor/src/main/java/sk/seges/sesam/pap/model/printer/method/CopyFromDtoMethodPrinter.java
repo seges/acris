@@ -22,8 +22,9 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
-import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
+import sk.seges.sesam.utils.CastUtils;
 
 public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements CopyMethodPrinter {
 
@@ -162,12 +163,15 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 				TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField), domainMethod, pw, false);
 		pw.println(";");
 		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
-		pw.print("(", castToDelegate(converter.getDomain()), ")");
+		pw.print(CastUtils.class, ".cast(");
+		//, _domain.getOrderItems(), JpaOrderItem.class)
+		//pw.print("(", castToDelegate(converter.getDomain()), ")");
+		pw.print("(", getWildcardDelegate(converter.getDto()), ")");
 		pw.print(converterName + ".fromDto(");
 		//TODO check for the nested
 		//pw.print("(", castToDelegate(domainMethodReturnType), ")");
 		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
-		pw.println("));");
+		pw.println("), ", getTypeVariableDelegate(getDelegateCast(converter.getDomain())), ".class));");
 	}
 	
 	protected void printCopyByLocalConverter(String localConverterName, PathResolver domainPathResolver, DomainType domainMethodReturnType, String dtoField, FormattedPrintWriter pw) {
