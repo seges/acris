@@ -24,6 +24,7 @@ import java.util.Set;
 
 import sk.seges.acris.widget.client.table.CustomFixedWidthGrid;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -440,7 +441,7 @@ public class PagingScrollTable<RowType> extends AbstractScrollTable implements H
 	 */
 	public PagingScrollTable(TableModel<RowType> tableModel, CustomFixedWidthGrid dataTable,
 			FixedWidthFlexTable headerTable, TableDefinition<RowType> tableDefinition) {
-		this(tableModel, dataTable, headerTable, tableDefinition, new DefatulScrollTableResources());
+		this(tableModel, dataTable, headerTable, tableDefinition, (ScrollTableResources)GWT.create(DefatulScrollTableResources.class));
 	}
 
 	/**
