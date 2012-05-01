@@ -166,7 +166,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		pw.print(CastUtils.class, ".cast(");
 		//, _domain.getOrderItems(), JpaOrderItem.class)
 		//pw.print("(", castToDelegate(converter.getDomain()), ")");
-		pw.print("(", getWildcardDelegate(converter.getDto()), ")");
+		pw.print("(", getWildcardDelegate(converter.getDomain()), ")");
 		pw.print(converterName + ".fromDto(");
 		//TODO check for the nested
 		//pw.print("(", castToDelegate(domainMethodReturnType), ")");
