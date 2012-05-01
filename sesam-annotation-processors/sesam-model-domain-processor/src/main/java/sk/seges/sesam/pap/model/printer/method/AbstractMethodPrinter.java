@@ -65,6 +65,10 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 			return mutableTypeVariable;
 		}
 		
+		if (domainDelegate.getKind().isDeclared()) {
+			return ((MutableDeclaredType)domainDelegate).clone().setTypeVariables();
+		}
+		
 		return domainDelegate;
 	}
 	
