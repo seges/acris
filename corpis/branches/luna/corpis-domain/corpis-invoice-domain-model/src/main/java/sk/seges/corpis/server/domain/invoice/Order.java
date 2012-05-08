@@ -6,6 +6,9 @@ import sk.seges.corpis.server.domain.Address;
 import sk.seges.corpis.server.domain.BasicContact;
 import sk.seges.corpis.server.domain.CompanyName;
 import sk.seges.corpis.server.domain.PersonName;
+import sk.seges.corpis.shared.domain.invoice.EOrderStatus;
+import sk.seges.corpis.shared.domain.invoice.EPaymentType;
+import sk.seges.corpis.shared.domain.invoice.ETransports;
 import sk.seges.sesam.domain.IDomainObject;
 
 @DomainInterface

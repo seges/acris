@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.corpis.server.domain.invoice;
+package sk.seges.corpis.shared.domain.invoice;
 
 public enum TransportType {
 	NOT_SPECIFIC("TransportType.not_specific"), //$NON-NLS-1$

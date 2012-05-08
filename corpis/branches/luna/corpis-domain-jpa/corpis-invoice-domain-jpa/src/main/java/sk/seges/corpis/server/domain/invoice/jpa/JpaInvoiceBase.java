@@ -22,11 +22,11 @@ import javax.persistence.Version;
 
 import sk.seges.corpis.server.domain.customer.jpa.JpaCustomerBase;
 import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
-import sk.seges.corpis.server.domain.invoice.RemittanceType;
-import sk.seges.corpis.server.domain.invoice.TransportType;
 import sk.seges.corpis.server.domain.invoice.server.model.base.InvoiceBase;
 import sk.seges.corpis.server.domain.invoice.server.model.data.InvoiceItemData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.RemittanceData;
+import sk.seges.corpis.shared.domain.invoice.RemittanceType;
+import sk.seges.corpis.shared.domain.invoice.TransportType;
 
 @Entity
 @SequenceGenerator(name = "seqInvoices", sequenceName = "SEQ_INVOICES", initialValue = 1)//$NON-NLS-1$ //$NON-NLS-2$

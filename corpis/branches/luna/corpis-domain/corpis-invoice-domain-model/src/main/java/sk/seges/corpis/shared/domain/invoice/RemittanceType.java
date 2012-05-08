@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.corpis.server.domain.invoice;
+package sk.seges.corpis.shared.domain.invoice;
 
 public enum RemittanceType {
 	ACCOUNT_TRANSFER("RemittanceType.account_transfer"),  //$NON-NLS-1$

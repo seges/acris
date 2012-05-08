@@ -14,4 +14,6 @@ public interface InvoiceItem extends IMutableDomainObject<Long>, HasVersion, Has
 	Float count();
 	Unit unit();
 	Vat vat();
+	
+	OrderItem<?> orderItem();
 }

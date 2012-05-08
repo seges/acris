@@ -3,8 +3,8 @@ package sk.seges.corpis.server.domain.invoice.jpa;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import sk.seges.corpis.server.domain.invoice.EUnitType;
 import sk.seges.corpis.server.domain.invoice.server.model.base.UnitBase;
+import sk.seges.corpis.shared.domain.invoice.EUnitType;
 
 /**
  * @author eldzi

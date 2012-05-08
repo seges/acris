@@ -1,4 +1,4 @@
-package sk.seges.corpis.server.domain.invoice;
+package sk.seges.corpis.shared.domain.invoice;
 
 public enum EOrderStatus {
 	PROCESSING,
