@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -38,6 +39,21 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	@Override
 	public Set<AnnotationMirror> getAnnotations() {
 		return ensureDelegateType().getAnnotations();
+	}
+
+	@Override
+	public List<Modifier> getModifiers() {
+		return ensureDelegateType().getModifiers();
+	}
+	
+	@Override
+	public MutableDeclaredType addModifier(Modifier... modifiers) {
+		return ensureDelegateType().addModifier(modifiers);
+	}
+
+	@Override
+	public MutableDeclaredType setModifier(Modifier... modifiers) {
+		return ensureDelegateType().setModifier(modifiers);
 	}
 
 	@Override

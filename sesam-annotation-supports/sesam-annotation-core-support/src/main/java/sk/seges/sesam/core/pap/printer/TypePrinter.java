@@ -24,13 +24,11 @@ public class TypePrinter {
 	}
 
 	public void printTypeDefinition(MutableDeclaredType type) {
-		printTypeDefinition(Modifier.PUBLIC, type);
-	}
-	
-	public void printTypeDefinition(Modifier modifier, MutableDeclaredType type) {
-		if (modifier != null) {
+		
+		for (Modifier modifier: type.getModifiers()) {
 			pw.print(modifier.name().toLowerCase() + " ");
 		}
+		
 		pw.print(type.getKind().toString() + " " + type.toString(ClassSerializer.SIMPLE, false));
 		
 		MutableDeclaredType superClassType = type.getSuperClass();

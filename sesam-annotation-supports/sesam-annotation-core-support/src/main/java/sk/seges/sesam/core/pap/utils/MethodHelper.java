@@ -161,4 +161,8 @@ public class MethodHelper {
 		return simpleName.startsWith(GETTER_PREFIX) || simpleName.startsWith(GETTER_IS_PREFIX);
 	}
 
+	public static boolean isSetterMethod(ExecutableElement method) {
+		String simpleName = method.getSimpleName().toString();
+		return simpleName.startsWith(SETTER_PREFIX);
+	}
 }
