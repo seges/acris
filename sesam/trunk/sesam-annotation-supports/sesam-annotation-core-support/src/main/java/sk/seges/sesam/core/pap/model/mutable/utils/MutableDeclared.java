@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -36,6 +38,8 @@ class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 	private boolean superClassInitialized = false;
 	private MutableDeclaredType superClass;
 
+	private List<Modifier> modifiers;
+	
 	//TypeMirror for the primitive types, otherwise DeclaredType
 	private TypeMirror type;
 	private boolean dirty = false;
@@ -63,7 +67,69 @@ class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 
 		initKind();
 	}
+	
+	private List<Modifier> ensureModifiers() {
+		if (modifiers == null) {
+			copyModifiers();
+		}
+		return modifiers;
+	}
 
+	public List<Modifier> getModifiers() {
+		return Collections.unmodifiableList(ensureModifiers());
+
+	}
+
+	private int getModifierType(Modifier modifier) {
+		switch (modifier) {
+			case PUBLIC:
+			case PRIVATE:
+			case PROTECTED:
+				return 1;
+				
+			case ABSTRACT:
+			case FINAL:
+				return 2;
+				
+			case NATIVE:
+				return 3;
+			case STATIC:
+				return 4;
+			case STRICTFP:
+				return 5;
+			case SYNCHRONIZED:
+				return 6;
+			case TRANSIENT:
+				return 7;
+			case VOLATILE:
+				return 8;
+		}
+		
+		return 0;
+	}
+
+	public MutableDeclaredType setModifier(Modifier... modifiers) {
+		dirty();
+		ensureModifiers().clear();
+		return addModifier(modifiers);
+	}
+	
+	public MutableDeclaredType addModifier(Modifier... modifiers) {
+		dirty();
+		List<Modifier> result = new ArrayList<Modifier>();
+		for (Modifier modifier: modifiers) {
+			for (Modifier mod: ensureModifiers()) {
+				if (getModifierType(mod) != getModifierType(modifier)) {
+					result.add(mod);
+				}
+			}
+			result.add(modifier);
+		}
+		
+		this.modifiers = result;
+		return this;
+	}
+	
 	private void initKind() {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 			this.kind = convertKind(((DeclaredType)type).asElement().getKind());
@@ -91,6 +157,18 @@ class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 		throw new RuntimeException("Unsupported kind " + kind + ". Unable to create declared type with this kind.");
 	}
 	
+	private void copyModifiers() {
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+		
+			TypeElement typeElement = (TypeElement)((DeclaredType)type).asElement();	
+			this.modifiers.clear();
+			this.modifiers.addAll(typeElement.getModifiers());
+		} else {
+			this.modifiers = new ArrayList<Modifier>();
+			this.modifiers.add(Modifier.PUBLIC);
+		}
+	}
+
 	private void copySuperclass() {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 			TypeElement typeElement = (TypeElement)((DeclaredType)type).asElement();
@@ -527,7 +605,15 @@ class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 	}
 
 	public boolean hasTypeParameters() {
-		return getTypeVariables().size() > 0;
+		if (typeVariables != null) {
+			return typeVariables.size() > 0;
+		}
+		
+		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			return ((DeclaredType)type).getTypeArguments().size() > 0;
+		}
+		
+		return false;
 	}
 
 	public boolean hasVariableParameterTypes() {
@@ -535,9 +621,21 @@ class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 			return false;
 		}
 		
-		for (MutableTypeVariable typeParameter: getTypeVariables()) {
-			if (typeParameter.getVariable() != null && typeParameter.getVariable().length() > 0 && !typeParameter.getVariable().equals(MutableWildcard.WILDCARD_NAME)) {
-				return true;
+		if (typeVariables != null) {
+			for (MutableTypeVariable typeParameter: getTypeVariables()) {
+				if (typeParameter.getVariable() != null && typeParameter.getVariable().length() > 0 && !typeParameter.getVariable().equals(MutableWildcard.WILDCARD_NAME)) {
+					return true;
+				}
+			}
+		} else if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
+			for (TypeMirror typeArgument: ((DeclaredType)type).getTypeArguments()) {
+				switch (typeArgument.getKind()) {
+				case TYPEVAR:
+					String variableName = ((TypeVariable)typeArgument).asElement().getSimpleName().toString();
+					if (variableName != null && variableName.length() > 0 && !variableName.equals(MutableWildcard.WILDCARD_NAME)) {
+						return true;
+					}
+				}
 			}
 		}
 		
@@ -652,6 +750,13 @@ class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 			result.interfaces = new ArrayList<MutableTypeMirror>();
 			for (MutableTypeMirror interfaceType: interfaces) {
 				result.interfaces.add(interfaceType);
+			}
+		}
+		
+		if (modifiers != null) {
+			result.modifiers = new ArrayList<Modifier>();
+			for (Modifier modifier: modifiers) {
+				result.modifiers.add(modifier);
 			}
 		}
 		

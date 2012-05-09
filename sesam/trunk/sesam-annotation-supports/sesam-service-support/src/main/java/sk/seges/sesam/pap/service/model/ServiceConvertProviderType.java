@@ -3,6 +3,8 @@ package sk.seges.sesam.pap.service.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.lang.model.element.Modifier;
+
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
@@ -25,6 +27,7 @@ public class ServiceConvertProviderType extends DelegateMutableDeclaredType {
 
 		setKind(MutableTypeKind.CLASS);
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(AbstractConverterProvider.class));
+		addModifier(Modifier.PROTECTED);
 	}
 	
 	public ParameterElement[] getConverterParameters(ConverterConstructorParametersResolver parametersResolver) {

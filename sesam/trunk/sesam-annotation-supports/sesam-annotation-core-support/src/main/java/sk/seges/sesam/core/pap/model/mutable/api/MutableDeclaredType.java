@@ -2,6 +2,7 @@ package sk.seges.sesam.core.pap.model.mutable.api;
 
 import java.util.List;
 
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -91,4 +92,8 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
 	MutableTypeVariable[] getVariableParameterTypes();
 
 	MutableDeclaredType clone();
+
+	List<Modifier> getModifiers();
+	MutableDeclaredType setModifier(Modifier... modifiers);
+	MutableDeclaredType addModifier(Modifier... modifiers);
 }
