@@ -115,6 +115,11 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		this.envContext = envContext;
 		this.toHelper = new TransferObjectHelper(envContext.getProcessingEnv());
 		
+		if (getDtoMethod() == null) {
+			getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find DTO method for property " + path, configurationTypeElement.asConfigurationElement());
+			return false;
+		}
+		
 		if (path == null) {
 			this.domainFieldPath = TransferObjectHelper.getFieldPath(getDtoMethod());
 			this.fieldName = MethodHelper.toField(getDtoMethod());

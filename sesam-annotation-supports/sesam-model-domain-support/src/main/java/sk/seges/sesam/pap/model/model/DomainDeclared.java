@@ -238,7 +238,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 				domainDefinitionConfiguration.asConfigurationElement());
 	}
 	
-	public DomainType getDomainReference(String fieldName) {
+	public DomainType getDomainReference(EntityResolver entityResolver, String fieldName) {
 		ExecutableElement getterMethod = getGetterMethod(fieldName);
 		if (getterMethod == null) {
 			return null;
@@ -248,7 +248,9 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			return null;
 		}
 		
-		return getDomainForType(getterMethod.getReturnType());
+		TypeMirror targetEntityType = entityResolver.getTargetEntityType(getterMethod);
+		
+		return getDomainForType(targetEntityType);
 	}
 	
 	public ExecutableElement getGetterMethod(String fieldName) {

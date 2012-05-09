@@ -58,7 +58,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			
 			while (pathResolver.hasNext()) {
 
-				DomainType domainReference = referenceDomainType.getDomainReference(currentPath);
+				DomainType domainReference = referenceDomainType.getDomainReference(entityResolver, currentPath);
 				
 				if (domainReference == null) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find getter method for the field " + currentPath + " in the " + domainTypeElement.toString(), context.getConfigurationTypeElement().asConfigurationElement());

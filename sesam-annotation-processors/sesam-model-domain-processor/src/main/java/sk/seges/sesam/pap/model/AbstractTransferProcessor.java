@@ -201,7 +201,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 					DomainDeclaredType currentElement = processingElement;
 	
 					while (pathResolver.hasNext()) {
-						DomainType domainReference = currentElement.getDomainReference(currentPath);
+						DomainType domainReference = currentElement.getDomainReference(getEntityResolver(), currentPath);
 						
 						if (domainReference != null && domainReference.getKind().isDeclared()) {
 							currentElement = (DomainDeclaredType)domainReference;
@@ -214,6 +214,10 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 										". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
 										Id.class.getCanonicalName() + " annotation.", configurationTypeElement.asConfigurationElement());
 							} else {
+								if (nestedIdMethod == null) {
+									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + currentElement.getCanonicalName() + ".", 
+											configurationTypeElement.asConfigurationElement());
+								}
 								//TODO Check if is not already generated
 								context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath, getConfigurationProviders());
 								if (context == null) {
