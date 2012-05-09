@@ -45,9 +45,9 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 			
 			pw.println("public static final String " + getConvertedPropertyName(method.getSimpleName().toString()) + " = \"" + method.getSimpleName() + "\";");
 			pw.println();
-			pw.println(toPrintableType(returnType), " " + MethodHelper.toGetter(method) + ";");
+			pw.println(toPrintableType(context.getTypeElement(), returnType), " " + MethodHelper.toGetter(method) + ";");
 			pw.println();
-			pw.println("void ", MethodHelper.toSetter(method) + "(", toPrintableType(returnType), " " + method.getSimpleName() + ");");
+			pw.println("void ", MethodHelper.toSetter(method) + "(", toPrintableType(context.getTypeElement(), returnType), " " + method.getSimpleName() + ");");
 			pw.println();
 		}
 	}

@@ -15,5 +15,5 @@ public interface InvoiceItem extends IMutableDomainObject<Long>, HasVersion, Has
 	Unit unit();
 	Vat vat();
 	
-	OrderItem<?> orderItem();
+	AccountableItem orderItem();
 }

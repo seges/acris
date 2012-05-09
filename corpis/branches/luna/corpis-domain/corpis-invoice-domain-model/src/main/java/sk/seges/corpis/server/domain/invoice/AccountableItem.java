@@ -1,6 +1,7 @@
 package sk.seges.corpis.server.domain.invoice;
 
 import java.io.Serializable;
+import java.util.List;
 
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
@@ -13,4 +14,6 @@ public interface AccountableItem extends HasPrice, HasDescription, Serializable 
 	Float amount();
 	Unit unit();
 	Vat vat();
+
+	List<InvoiceItem> invoiceItems();
 }

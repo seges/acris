@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import sk.seges.corpis.server.domain.HasWebId;
-import sk.seges.corpis.server.domain.invoice.HasOrderItems;
+import sk.seges.corpis.server.domain.invoice.server.model.data.OrderData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 
 /**
@@ -26,7 +26,7 @@ import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 @Entity
 @Table(name = "webid_aware_orders", uniqueConstraints = @UniqueConstraint(columnNames = { JpaWebIDAwareOrder.WEB_ID,JpaOrderBase.ORDER_ID }) )
 @SequenceGenerator(name = JpaWebIDAwareOrder.SEQ_ORDERS, sequenceName = "seq_orders", initialValue = 1) 
-public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId, HasOrderItems<JpaWebIDAwareOrder> {
+public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId {
 	private static final long serialVersionUID = 5948016788551732181L;
 	
 	protected static final String SEQ_ORDERS = "seqOrders";
@@ -37,7 +37,7 @@ public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId, HasOrd
 	
 	private String webId;
 
-	private List<OrderItemData<JpaWebIDAwareOrder>> orderItems;
+	private List<OrderItemData<OrderData>> orderItems;
 	
 	@Override
 	@Id
@@ -60,12 +60,12 @@ public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId, HasOrd
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order", targetEntity = JpaWebIDAwareOrderItem.class)
-	public List<OrderItemData<JpaWebIDAwareOrder>> getOrderItems() {
+	public List<OrderItemData<OrderData>> getOrderItems() {
 		return orderItems;
 	}
 
 	@Override
-	public void setOrderItems(List<OrderItemData<JpaWebIDAwareOrder>> orderItems) {
+	public void setOrderItems(List<OrderItemData<OrderData>> orderItems) {
 		this.orderItems = orderItems;
 	}
 
