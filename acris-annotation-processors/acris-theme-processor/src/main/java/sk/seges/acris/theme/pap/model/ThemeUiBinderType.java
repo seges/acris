@@ -19,6 +19,8 @@ public class ThemeUiBinderType extends DelegateMutableDeclaredType {
 
 		setKind(MutableTypeKind.INTERFACE);
  		setSuperClass(mutableTypes.toMutableType(UiBinder.class).setTypeVariables(mutableTypes.getTypeVariable(null, mutableTypes.toMutableType(Element.class)), mutableTypes.getTypeVariable(null, type)));
+ 		
+ 		setModifier();
 	}
 
 	@Override
