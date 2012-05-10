@@ -290,12 +290,14 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 
 					generated.add(fieldName);
 					
-					TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method, getConfigurationProviders());
-					if (context == null) {
-						continue;
+					if (processingElement.getDomainDefinitionConfiguration() == null) {
+						TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method, getConfigurationProviders());
+						if (context == null) {
+							continue;
+						}
+						contexts.add(context);
 					}
-
-					contexts.add(context);
+					
 				} else if (!isProcessed && isGetter && !hasSetter && isPublic) {
 					processingEnv.getMessager().printMessage(Kind.WARNING, "Method " + method.getSimpleName() + " does not have setter, type = " + processingElement.asConfigurationElement());
 				}
