@@ -233,8 +233,8 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @return
 	 */
 	public EPanelResult showMessageDialog(String message, String title, EMessageType type) {
-
 		final Dialog dialog = widgetFactory.modalDialog();
+		dialog.addStyleName("acris-message-dialog");
 		dialog.setCaption(title);
 
 		OptionPane pane = createOptionPaneFromMessage(message, type);
