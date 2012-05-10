@@ -273,7 +273,8 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		printer.finish(configurationTypeElement);
 	}
 	
-	private void takeSuperclassMethods(DomainDeclaredType processingElement, DomainDeclaredType domainTypeElement, MappingType mappingType, List<String> generated) {
+	private void takeSuperclassMethods(ConfigurationTypeElement configurationTypeElement, DomainDeclaredType processingElement, DomainDeclaredType domainTypeElement, MappingType mappingType, List<String> generated,
+			List<TransferObjectContext> contexts) {
 		List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.asConfigurationElement().getEnclosedElements());
 		
 		if (mappingType.equals(MappingType.AUTOMATIC)) {
@@ -281,16 +282,28 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 				
 				String fieldName = TransferObjectHelper.getFieldPath(method);
 				
-				if (!isProcessed(generated, fieldName) && MethodHelper.isGetterMethod(method) && 
-						toHelper.hasSetterMethod(domainTypeElement.asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC)) {
+				boolean isProcessed = isProcessed(generated, fieldName);
+				boolean isGetter = MethodHelper.isGetterMethod(method);
+				boolean hasSetter = toHelper.hasSetterMethod(domainTypeElement.asConfigurationElement(), method);
+				boolean isPublic = method.getModifiers().contains(Modifier.PUBLIC);
+				if (!isProcessed && isGetter && hasSetter && isPublic) {
 
 					generated.add(fieldName);
+					
+					TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method, getConfigurationProviders());
+					if (context == null) {
+						continue;
+					}
+
+					contexts.add(context);
+				} else if (!isProcessed && isGetter && !hasSetter && isPublic) {
+					processingEnv.getMessager().printMessage(Kind.WARNING, "Method " + method.getSimpleName() + " does not have setter, type = " + processingElement.asConfigurationElement());
 				}
 			}
 		}
 
 		if (processingElement.getSuperClass() != null) {
-			takeSuperclassMethods(processingElement.getSuperClass(), domainTypeElement, mappingType, generated);
+			takeSuperclassMethods(configurationTypeElement, processingElement.getSuperClass(), domainTypeElement, mappingType, generated, contexts);
 		}
 	}
 	
@@ -323,7 +336,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 				processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(superclass), domainTypeElement, generated, contexts);
 			}
 		} else if (processingElement.getSuperClass() != null) {
-			takeSuperclassMethods(processingElement.getSuperClass(), domainTypeElement, mappingType, generated);
+			takeSuperclassMethods(configurationTypeElement, processingElement.getSuperClass(), domainTypeElement, mappingType, generated, contexts);
 		}
 
 		for (TypeMirror domainInterface: processingElement.asConfigurationElement().getInterfaces()) {
