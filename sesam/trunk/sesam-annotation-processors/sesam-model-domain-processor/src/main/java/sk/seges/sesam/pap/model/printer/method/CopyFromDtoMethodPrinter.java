@@ -98,7 +98,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 
 			if (context.getConfigurationTypeElement().getDomain() != null && domainTypeElement.getSetterMethod(context.getDomainFieldPath()) != null) {
 				printCopy(pathResolver, context, pw);
-			} else {
+			} else if (!entityResolver.isImmutable(context.getConfigurationTypeElement().getDomain().asElement())) {
 				ExecutableElement domainGetterMethod = context.getConfigurationTypeElement().getDomain().getGetterMethod(currentPath);
 				
 				VariableElement field = MethodHelper.getField(domainTypeElement.asConfigurationElement(), currentPath);
@@ -143,7 +143,8 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		
 		if (configurationTypeElement.getInstantiableDomain().getSetterMethod(domainPathResolver.getPath()) != null) {
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
-		} else {
+
+		} else if (!entityResolver.isImmutable(domainTypeElement.asElement())) {
 			
 			VariableElement field = MethodHelper.getField(domainTypeElement.asConfigurationElement(), domainPathResolver.getCurrent());
 			

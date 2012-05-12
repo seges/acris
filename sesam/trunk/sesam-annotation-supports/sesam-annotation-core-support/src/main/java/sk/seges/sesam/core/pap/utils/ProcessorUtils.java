@@ -242,14 +242,30 @@ public class ProcessorUtils {
 		return te.getQualifiedName().getClass().toString().equals(type.getQualifiedName());
 	}
 
-	public static boolean hasMethod(String name, Element classElement) {
+	public static boolean hasMethod(String name, Element element) {
 		assert name != null;
-		assert classElement != null;
-		List<ExecutableElement> methods = ElementFilter.methodsIn(classElement.getEnclosedElements());
+		assert element != null;
+		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
 		for (ExecutableElement method : methods) {
 			if (method.toString().equals(name)) {
 				return true;
+			}
+		}
+
+		TypeElement typeElement = (TypeElement)element;
+		
+		if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
+			if (hasMethod(name, ((DeclaredType)typeElement.getSuperclass()).asElement())) {
+				return true;
+			}
+		}
+		
+		for (TypeMirror interfaceType: typeElement.getInterfaces()) {
+			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+				if (hasMethod(name, ((DeclaredType)interfaceType).asElement())) {
+					return true;
+				}
 			}
 		}
 

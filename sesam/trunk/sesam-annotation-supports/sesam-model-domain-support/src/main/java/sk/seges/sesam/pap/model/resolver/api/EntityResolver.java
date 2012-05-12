@@ -15,4 +15,6 @@ public interface EntityResolver {
 	
 	boolean isIdField(VariableElement field);
 	boolean isIdMethod(ExecutableElement method);
+	
+	boolean isImmutable(Element element);
 }
