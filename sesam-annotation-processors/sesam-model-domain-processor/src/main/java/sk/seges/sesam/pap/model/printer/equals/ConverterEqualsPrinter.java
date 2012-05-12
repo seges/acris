@@ -36,7 +36,7 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
-		pw.println("public boolean equals(", configurationTypeElement.getDomain(), " " + DOMAIN_NAME + ",",
+		pw.println("public boolean equals(", configurationTypeElement.getDomain(), " " + DOMAIN_NAME + ", ",
 											 configurationTypeElement.getDto(), " " + DTO_NAME + ") {");
 		if (entityResolver.shouldHaveIdMethod(configurationTypeElement.getInstantiableDomain())) {
 

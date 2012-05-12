@@ -34,4 +34,9 @@ public class DefaultEntityResolver implements EntityResolver {
 	public boolean isIdField(VariableElement field) {
 		return field.getAnnotation(Id.class) != null;
 	}
+
+	@Override
+	public boolean isImmutable(Element element) {
+		return false;
+	}
 }
