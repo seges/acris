@@ -5,14 +5,13 @@ import java.util.List;
 
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.dao.ICrudDAO;
 
 public class DaoApiType extends AbstractDaoApiType {
 
-	public DaoApiType(DomainDataInterfaceType dataInterfaceType, MutableProcessingEnvironment processingEnv) {
+	public DaoApiType(MutableDeclaredType dataInterfaceType, MutableProcessingEnvironment processingEnv) {
 		super(dataInterfaceType, processingEnv);
 	}
 

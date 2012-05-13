@@ -205,6 +205,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-domain-model-converter-hibernate-processor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-customer-domain-jpa</artifactId>
 				<version>${project.version}</version>
 			</dependency>

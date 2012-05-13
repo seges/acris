@@ -18,5 +18,6 @@
 		<module>corpis-dao-implementation-support</module>
 		<module>corpis-service-converter-hibernate-support </module>
 		<module>corpis-domain-model-hibernate-support</module>
+		<module>corpis-model-domain-configurations</module>
 	</modules>
 </project>

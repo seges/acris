@@ -17,8 +17,18 @@ public class DataDaoApiType extends AbstractDaoApiType  {
 
 	public DataDaoApiType(MutableDeclaredType mutableDeclaredType, MutableProcessingEnvironment processingEnv) {
 		super(mutableDeclaredType, processingEnv);
+		
 	}
 
+	@Override
+	protected MutableDeclaredType getDelegate() {
+		MutableDeclaredType delegate = super.getDelegate();
+		if (mutableDeclaredType.getAnnotation(DomainInterface.class) == null) {
+			delegate.setSuperClass(null);
+		}
+		return delegate;
+	}
+	
 	protected MutableDeclaredType getDataType(MutableDeclaredType inputType) {
 		if (inputType.getTypeVariables().size() > 0) {
 			MutableTypeVariable[] typeVariables = new MutableTypeVariable[inputType.getTypeVariables().size()];
@@ -32,8 +42,6 @@ public class DataDaoApiType extends AbstractDaoApiType  {
 			return new DomainDataInterfaceType(inputType, processingEnv);
 		} 
 
-		//TODO this isn't the best place for setting the super class
-		setSuperClass(null);
 		return inputType;
 	}
 

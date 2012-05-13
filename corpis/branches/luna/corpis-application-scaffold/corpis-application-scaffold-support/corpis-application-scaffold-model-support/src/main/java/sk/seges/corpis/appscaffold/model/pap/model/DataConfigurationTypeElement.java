@@ -7,6 +7,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
@@ -48,14 +50,36 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	}
 
 	private boolean hasCustomProperties(DomainDeclaredType domainDeclared, MutableDeclaredType dataType) {
-		List<ExecutableElement> methods = ElementFilter.methodsIn(domainDeclared.asElement().getEnclosedElements());
+		Element domainElement = domainDeclared.asElement();
+		
+		if (domainElement == null) {
+			TypeMirror fromMutableType = envContext.getProcessingEnv().getTypeUtils().fromMutableType(domainDeclared);
+			domainElement = ((DeclaredType)fromMutableType).asElement();
+		}
+		
+		if (domainElement == null) {
+			return false;
+		}
+		
+		Element dataElement = dataType.asElement();
+
+		if (dataElement == null) {
+			TypeMirror fromMutableType = envContext.getProcessingEnv().getTypeUtils().fromMutableType(dataType);
+			dataElement = ((DeclaredType)fromMutableType).asElement();
+		}
+
+		if (dataElement == null) {
+			return false;
+		}
+		
+		List<ExecutableElement> methods = ElementFilter.methodsIn(domainElement.getEnclosedElements());
 
 		for (ExecutableElement method: methods) {
 			boolean isGetter = MethodHelper.isGetterMethod(method);
 			boolean isPublic = method.getModifiers().contains(Modifier.PUBLIC);
 
 			if (isGetter && isPublic) {
-				if (!ProcessorUtils.hasMethod(method.getSimpleName().toString(), dataType.asElement())) {
+				if (!ProcessorUtils.hasMethod(method.getSimpleName().toString(), dataElement)) {
 					return true;
 				}
 			}
