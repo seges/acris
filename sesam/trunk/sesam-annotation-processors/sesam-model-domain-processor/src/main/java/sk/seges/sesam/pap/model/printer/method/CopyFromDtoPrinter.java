@@ -1,6 +1,7 @@
 package sk.seges.sesam.pap.model.printer.method;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
@@ -28,16 +29,18 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 
 	protected final FormattedPrintWriter pw;
 	protected final EntityResolver entityResolver;
+	protected final Set<String> nestedInstances;
 	
-	public CopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+	public CopyFromDtoPrinter(Set<String> nestedInstances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
+		this.nestedInstances = nestedInstances;
 		this.pw = pw;
 		this.entityResolver = entityResolver;
 	}
 	
 	@Override
 	public void print(TransferObjectContext context) {
-		copy(context, pw, new CopyFromDtoMethodPrinter(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv));
+		copy(context, pw, new CopyFromDtoMethodPrinter(nestedInstances, converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv));
 	}
 
 	@Override
