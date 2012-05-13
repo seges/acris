@@ -1,6 +1,5 @@
 package sk.seges.corpis.core.pap.dao.model;
 
-import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
 import sk.seges.corpis.core.pap.dao.accessor.DefinitionAccessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -23,7 +22,7 @@ public class HibernateDataDaoType extends HibernateDaoType {
 	}
 	
 	@Override
-	protected DomainDataInterfaceType getDataInterface() {
+	protected MutableDeclaredType getDataInterface() {
 		DefinitionType definition = new DefinitionAccessor(mutableDomainType, processingEnv).getDefinition();
 		
 		if (definition != null) {

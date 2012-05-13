@@ -176,6 +176,7 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		return findPagedResultByCriteria(createCriteria(), requestedPage);
 	}
 
+	@Transactional
 	@Override
 	public T findUnique(Page requestedPage) {
 		PagedResult<List<T>> resultList = findAll(requestedPage);

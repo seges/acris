@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
+import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
@@ -26,7 +27,14 @@ public class DataDaoApiType extends AbstractDaoApiType  {
 			}
 			inputType = inputType.clone().setTypeVariables(typeVariables);
 		}
-		return new DomainDataInterfaceType(inputType, processingEnv);
+		
+		if (inputType.getAnnotation(DomainInterface.class) != null) {
+			return new DomainDataInterfaceType(inputType, processingEnv);
+		} 
+
+		//TODO this isn't the best place for setting the super class
+		setSuperClass(null);
+		return inputType;
 	}
 
 	@Override

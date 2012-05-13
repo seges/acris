@@ -33,7 +33,7 @@ public abstract class AbstractHibernateDaoType extends DelegateMutableDeclaredTy
 	protected final MutableProcessingEnvironment processingEnv;
 
 	private boolean interfaceClassInitialized = false;
-	private DomainDataInterfaceType interfaceClass;
+	private MutableDeclaredType interfaceClass;
 
 	private static final String DAO_API_CLASS_SUFFIX = "Dao";
 	private static final String DAO_API_CLASS_PREFIX = "Hibernate";
@@ -173,13 +173,22 @@ public abstract class AbstractHibernateDaoType extends DelegateMutableDeclaredTy
 		return (TypeElement) ((DeclaredType) processingEnv.getTypeUtils().fromMutableType(mutableDeclaredType)).asElement();
 	}
 	
-	protected DomainDataInterfaceType getDataInterface() {
+	protected MutableDeclaredType getDataInterface() {
 		if (!interfaceClassInitialized) {
 			interfaceClass = new DataAccessObjectAccessor(mutableDomainType, processingEnv).getDataType();
 
 			if (interfaceClass == null) {
-				interfaceClass = new DomainDataInterfaceType(getDataInterface(fromMutable(mutableDomainType)), processingEnv);
+				TypeElement dataInterface = getDataInterface(fromMutable(mutableDomainType));
+				
+				if (dataInterface != null) {
+					interfaceClass = new DomainDataInterfaceType(dataInterface, processingEnv);
+				}
 			}
+			
+			if (interfaceClass == null) {
+				interfaceClass = mutableDomainType;
+			}
+			
 			interfaceClassInitialized = true;
 		}
 		return interfaceClass;
