@@ -1,6 +1,5 @@
 package sk.seges.sesam.pap.model.printer.method;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -30,10 +29,11 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 
 	private EntityResolver entityResolver;
 	
-	private Set<String> instances = new HashSet<String>();
+	private final Set<String> instances;
 	
-	public CopyFromDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
+	public CopyFromDtoMethodPrinter(Set<String> instances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
 		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
+		this.instances = instances;
 		this.entityResolver = entityResolver;
 	}
 
@@ -118,7 +118,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		} else if (context.isLocalConverter()) {
 			String converterName = printLocalConverter(context, ConverterTargetType.DTO, pw);
 			printCopyByLocalConverter(converterName, pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
-		} else {
+		} else if (!pathResolver.isNested()){
 			printCopySimple(pathResolver, context.getConfigurationTypeElement().getInstantiableDomain(), context.getConfigurationTypeElement(), context.getDtoFieldName(), pw);
 		}
 	}
@@ -126,8 +126,11 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	protected void printCopyNested(PathResolver domainPathResolver, String fullPath, DomainDeclaredType referenceDomainType, ExecutableElement method, FormattedPrintWriter pw, String fieldName, String dtoName) {
 		if (referenceDomainType.getId(entityResolver) != null) {
 			pw.print(referenceDomainType + " " + domainPathResolver.getCurrent() + " = ");
+			if (referenceDomainType.getConverter() == null) {
+				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] No converter/configuration for " + referenceDomainType + " was found. Please, define configuration for " + referenceDomainType);
+			}
 			converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), fieldName, method, pw, false);
-			pw.println(".getDomainInstance(" + dtoName + ", " + dtoName + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
+			pw.println(".createDomainInstance(" + dtoName + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
 		} else {
 			pw.println(referenceDomainType + " " + domainPathResolver.getCurrent() + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ";");
 			pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " == null) {");
@@ -143,7 +146,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		
 		if (configurationTypeElement.getInstantiableDomain().getSetterMethod(domainPathResolver.getPath()) != null) {
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
-
+			pw.println(");");
 		} else if (!entityResolver.isImmutable(domainTypeElement.asElement())) {
 			
 			VariableElement field = MethodHelper.getField(domainTypeElement.asConfigurationElement(), domainPathResolver.getCurrent());
@@ -153,8 +156,6 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 				return;
 			}
 		}
-	
-		pw.println(");");
 	}
 
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, String dtoField, FormattedPrintWriter pw) {

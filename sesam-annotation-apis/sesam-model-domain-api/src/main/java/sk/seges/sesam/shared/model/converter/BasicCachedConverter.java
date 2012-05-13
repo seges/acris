@@ -28,8 +28,6 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 		this.cache = cache;
 	}
 
-	protected abstract DOMAIN createDomainInstance(Serializable id);
-
 	protected DTO putDtoIntoCache(Object domainSource, DTO result, Serializable id) {
 		if (result != null) {
 			if (id != null) {

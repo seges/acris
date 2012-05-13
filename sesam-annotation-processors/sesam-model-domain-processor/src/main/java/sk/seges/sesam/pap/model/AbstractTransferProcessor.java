@@ -190,7 +190,6 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 					continue;
 				}
 				contexts.add(context);
-//				printer.print(context);					
 				
 				PathResolver pathResolver = new PathResolver(fieldName);
 				String currentPath = pathResolver.next();
@@ -224,7 +223,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 									continue;
 								}
 
-								//contexts.add(context);
+								contexts.add(context);
 //								printer.print(context);
 							}
 						} else {

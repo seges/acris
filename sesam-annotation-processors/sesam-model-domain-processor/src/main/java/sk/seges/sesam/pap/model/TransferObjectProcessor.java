@@ -41,9 +41,9 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		pw.println("dtoClass = " + getOutputClass(configurationTypeElement).getSimpleName() + ".class,");
 		pw.println("		domainClassName = \"" + configurationTypeElement.getDomain().getQualifiedName().toString() + "\", ");
 		pw.println("		configurationClassName = \"" + context.getTypeElement().toString() + "\", ");
-		pw.println("		generateConverter = false, generateDto = false");
+		pw.print("		generateConverter = false, generateDto = false");
 		if (configurationTypeElement.getConverter() != null) {
-			pw.print(", ");
+			pw.println(", ");
 			pw.print("		converterClassName = \"");
 			pw.print(configurationTypeElement.getConverter().getCanonicalName());
 			pw.print("\"");
