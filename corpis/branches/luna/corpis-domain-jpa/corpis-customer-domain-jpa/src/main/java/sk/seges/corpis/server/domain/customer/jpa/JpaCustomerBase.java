@@ -34,13 +34,14 @@ import sk.seges.corpis.shared.domain.validation.customer.CompanyCustomerFormChec
  * @author ladislav.gazo
  */
 @Entity
-@SequenceGenerator(name = "seqCustomers", sequenceName = "SEQ_CUSTOMERS", initialValue = 1)
+@SequenceGenerator(name = "seqCustomers", sequenceName = "seq_customers", initialValue = 1)
 @Table(name = "customer")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue(value = "1")
 @AssociationOverride(name = CustomerData.CORRESP_ADDRESS + "." + AddressData.COUNTRY, joinColumns = @JoinColumn(name = DBConstraints.CORRESP_TABLE_PREFIX
 			+ AddressData.COUNTRY + "_id"))
+
 public class JpaCustomerBase extends CustomerBase {
 	private static final long serialVersionUID = -7070969291047080272L;
 
@@ -59,7 +60,7 @@ public class JpaCustomerBase extends CustomerBase {
 		return super.getId();
 	}
 
-	@Column(name = "CONTACT_PERSON")
+	@Column
 	public String getContactPerson() {
 		return super.getContactPerson();
 	}
@@ -69,34 +70,34 @@ public class JpaCustomerBase extends CustomerBase {
 		return super.getShortcut();
 	}
 
-	@Column(name = "DIC")
+	@Column
 	public String getDic() {
 		return super.getDic();
 	}
 
-	@Column(name = "IC_DPH")
+	@Column
 	public String getIcDph() {
 		return super.getIcDph();
 	}
 
-	@Column(name = "ICO")
+	@Column
 	@NotNull(groups = CompanyCustomerFormCheck.class)
 	@Size(min = 1, groups = CompanyCustomerFormCheck.class)
 	public String getIco() {
 		return super.getIco();
 	}
 
-	@Column(name = "INVOICE_PAYMENT_INTERVAL")
+	@Column
 	public Short getInvoicePaymentInterval() {
 		return super.getInvoicePaymentInterval();
 	}
 
-	@Column(name = "ACCOUNT_NUMBER")
+	@Column
 	public String getAccountNumber() {
 		return super.getAccountNumber();
 	}
 
-	@Column(name = "TAX_PAYMENT")
+	@Column
 	public Boolean getTaxPayment() {
 		return super.getTaxPayment();
 	}

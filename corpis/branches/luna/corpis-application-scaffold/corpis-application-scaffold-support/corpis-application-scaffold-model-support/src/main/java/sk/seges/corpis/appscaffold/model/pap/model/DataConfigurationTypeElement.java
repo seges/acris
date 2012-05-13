@@ -5,13 +5,17 @@ import java.util.List;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.ElementFilter;
 
 import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.ConfigurationContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.DomainDeclared;
@@ -43,6 +47,23 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 		return super.getInstantiableDomain();
 	}
 
+	private boolean hasCustomProperties(DomainDeclaredType domainDeclared, MutableDeclaredType dataType) {
+		List<ExecutableElement> methods = ElementFilter.methodsIn(domainDeclared.asElement().getEnclosedElements());
+
+		for (ExecutableElement method: methods) {
+			boolean isGetter = MethodHelper.isGetterMethod(method);
+			boolean isPublic = method.getModifiers().contains(Modifier.PUBLIC);
+
+			if (isGetter && isPublic) {
+				if (!ProcessorUtils.hasMethod(method.getSimpleName().toString(), dataType.asElement())) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public DomainDeclaredType getDomain() {
 		
@@ -55,7 +76,12 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 				domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
 			}
 			
-			this.domainType = domainDeclared;
+			if (!hasCustomProperties(super.getDomain(), domainDeclared)) {
+				this.domainType = domainDeclared;
+			} else {
+				this.domainType = super.getDomain();
+			}
+			
 			this.domainTypeInitialized = true;
 		}
 		
@@ -94,12 +120,6 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 			}
 		}
 		return super.appliesForDomainType(domainType);
-	}
-	
-	@Override
-	public boolean appliesForDtoType(MutableTypeMirror dtoType) {
-		// TODO Auto-generated method stub
-		return super.appliesForDtoType(dtoType);
 	}
 	
 	private DomainDeclaredType replaceTypeParamsByWildcard(DomainDeclaredType domainDeclared) {

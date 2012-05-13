@@ -56,7 +56,7 @@ public class JpaProduct extends ProductBase {
 	}
 
 	@Override
-	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE })
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE }, targetEntity = JpaName.class)
 	public List<NameData> getNames() {
 		return super.getNames();
 	}
@@ -80,7 +80,7 @@ public class JpaProduct extends ProductBase {
 	}
 
 	@Override
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, targetEntity = JpaProductPrice.class)
 	@OrderBy(ProductPriceData.PRIORITY)
 	@JoinTable(name = "product_product_prices")
 	public List<ProductPriceData> getPrices() {
@@ -88,7 +88,7 @@ public class JpaProduct extends ProductBase {
 	}
 
 	@Override
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, targetEntity = JpaProductPrice.class)
 	@OrderBy(value = ProductPriceData.PRIORITY)
 	@JoinTable(name = "product_product_fees")
 	public Set<ProductPriceData> getFees() {
@@ -97,19 +97,19 @@ public class JpaProduct extends ProductBase {
 
 	@Override
 	@NotNull
-	@ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = { CascadeType.MERGE }, fetch = FetchType.EAGER, targetEntity = JpaVat.class)
 	public VatData getVat() {
 		return super.getVat();
 	}
 
 	@Override
-	@ManyToMany(mappedBy = "products")
+	@ManyToMany(mappedBy = "products", targetEntity = JpaProductCategory.class)
 	public List<ProductCategoryData> getCategories() {
 		return super.getCategories();
 	}
 
 	@Override
-	@ManyToMany
+	@ManyToMany(targetEntity = JpaTag.class)
 	@OrderBy(value = TagData.PRIORITY)
 	public Set<TagData> getTags() {
 		return super.getTags();

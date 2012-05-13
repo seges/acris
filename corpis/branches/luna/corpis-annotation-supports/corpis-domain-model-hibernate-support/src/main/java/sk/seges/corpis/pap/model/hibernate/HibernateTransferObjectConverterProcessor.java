@@ -43,7 +43,7 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 		return new TransferObjectElementPrinter[] {
 				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), processingEnv, pw),
 				new HibernateCopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
-				new HibernateCopyFromDtoPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
+				new HibernateCopyFromDtoPrinter(nestedInstances, converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
 		};
 	}
 }

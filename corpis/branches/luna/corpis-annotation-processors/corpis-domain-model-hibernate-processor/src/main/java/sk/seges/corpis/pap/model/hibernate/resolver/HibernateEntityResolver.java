@@ -16,6 +16,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Immutable;
+
 import sk.seges.corpis.pap.model.hibernate.MappingType;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
@@ -169,5 +171,14 @@ public class HibernateEntityResolver implements EntityResolver {
 		}
 
 		return isId(field);
+	}
+
+	@Override
+	public boolean isImmutable(Element element) {
+		if (element == null) {
+			return false;
+		}
+		
+		return element.getAnnotation(Immutable.class) != null;
 	}
 }

@@ -46,7 +46,7 @@ public abstract class JpaAccountableItem extends AccountableItemBase {
 	}
 
 	@OneToOne
-	public JpaVATBase getVat() {
-		return (JpaVATBase) super.getVat();
+	public JpaVat getVat() {
+		return (JpaVat) super.getVat();
 	}
 }

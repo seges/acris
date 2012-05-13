@@ -1,5 +1,7 @@
 package sk.seges.corpis.pap.model.hibernate.printer.method;
 
+import java.util.Set;
+
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
 
@@ -16,16 +18,18 @@ import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoMethodPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
+import sk.seges.sesam.utils.CastUtils;
 
 public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter {
 
 	private HibernateEntityResolver entityResolver;
 	
-	public HibernateCopyFromDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver,
+	public HibernateCopyFromDtoMethodPrinter(Set<String> instances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver,
 			ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
-		super(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv);
+		super(instances, converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv);
 		this.entityResolver = (HibernateEntityResolver)entityResolver;
 	}
+	
 	@Override
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, String dtoField, FormattedPrintWriter pw) {
     	if (entityResolver.isLazyReference(domainMethod)) {
@@ -40,8 +44,12 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
     		pw.print("(", getDelegateCast(converter.getDomain()), ")");
     		pw.print(converterName + ".convertFromDto(");
-    		pw.print("(", getDelegateCast(converter.getDomain()), ")");
-    		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ",");
+    		
+    		pw.print(CastUtils.class, ".cast(");
+    		//pw.print("(", getDelegateCast(converter.getDomain()), ")");
+    		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ", ");
+    		pw.print(getTypeVariableDelegate(getDelegateCast(converter.getDomain())), ".class), ");
+    		
     		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
     		pw.println("));");
         	pw.println("} else {");

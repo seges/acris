@@ -1,5 +1,7 @@
 	package sk.seges.corpis.pap.model.hibernate.printer.method;
 
+import java.util.Set;
+
 import javax.annotation.processing.RoundEnvironment;
 
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -14,15 +16,15 @@ import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class HibernateCopyFromDtoPrinter extends CopyFromDtoPrinter {
 	
-	public HibernateCopyFromDtoPrinter(ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver,
+	public HibernateCopyFromDtoPrinter(Set<String> nestedInstances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver,
 			ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv,
 			FormattedPrintWriter pw) {
-		super(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv, pw);
+		super(nestedInstances, converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv, pw);
 	}
 
 	@Override
 	public void print(TransferObjectContext context) {
-		copy(context, pw, new HibernateCopyFromDtoMethodPrinter(converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv));
+		copy(context, pw, new HibernateCopyFromDtoMethodPrinter(nestedInstances, converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv));
 	}
 	
 	@Override

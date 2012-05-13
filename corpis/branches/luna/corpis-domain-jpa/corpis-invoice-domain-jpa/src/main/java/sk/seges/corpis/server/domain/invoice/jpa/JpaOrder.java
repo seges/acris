@@ -43,7 +43,7 @@ public class JpaOrder extends JpaOrderBase {
 		return orderItems;
 	}
 
-	public void setOrderItems(List<OrderItemData<OrderData>> orderItems) {
+	public void setOrderItems(List orderItems) {
 		this.orderItems = orderItems;
 	}
 }

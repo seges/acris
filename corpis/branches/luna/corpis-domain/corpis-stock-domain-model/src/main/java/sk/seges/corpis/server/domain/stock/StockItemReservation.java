@@ -1,20 +1,21 @@
 package sk.seges.corpis.server.domain.stock;
 
+import java.util.Date;
+
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
-import sk.seges.corpis.server.domain.invoice.Product;
+import sk.seges.corpis.server.domain.invoice.AccountableItem;
 import sk.seges.sesam.domain.IDomainObject;
 
 @DomainInterface
 @BaseObject
-public interface StockItem extends IDomainObject<Long> {
+public interface StockItemReservation extends IDomainObject<Long> {
 
-	Product product();
+	AccountableItem accountableItem();
 	
 	int count();
-
-	boolean inactive();
 	
-	Warehouse warehouse();
-
+	Date reservationDate();
+	
+	StockItem stockItem();
 }

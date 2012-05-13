@@ -34,7 +34,7 @@ public class JpaInvoiceItemBase extends InvoiceItemBase {
 	private static final short DESCRIPTION_LENGTH = 250;
 
 	public JpaInvoiceItemBase() {
-		setVat(new JpaVATBase());
+		setVat(new JpaVat());
 	}
 
 	@ManyToOne
@@ -77,7 +77,7 @@ public class JpaInvoiceItemBase extends InvoiceItemBase {
 	}
 
 	@OneToOne
-	public JpaVATBase getVat() {
-		return (JpaVATBase) super.getVat();
+	public JpaVat getVat() {
+		return (JpaVat) super.getVat();
 	}
 }

@@ -22,15 +22,15 @@ import sk.seges.corpis.server.domain.invoice.server.model.base.VatBase;
  * @since Apr 15, 2007
  */
 @Entity
-@Table(name = "VAT")//$NON-NLS-1$
+@Table(name = "vat")//$NON-NLS-1$
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType=DiscriminatorType.INTEGER)
 @DiscriminatorValue(value="1")
-public class JpaVATBase extends VatBase {
+public class JpaVat extends VatBase {
 
 	private static final long serialVersionUID = 4895994133127568395L;
 	
-	public JpaVATBase() {
+	public JpaVat() {
 		setVat((short) 0);
 		setValidFrom(new Date());
 	}
@@ -40,7 +40,7 @@ public class JpaVATBase extends VatBase {
 		return super.getVat();
 	}
 
-	@Column(name="VALID_FROM")
+	@Column
 	public Date getValidFrom() {
 		return super.getValidFrom();
 	}
