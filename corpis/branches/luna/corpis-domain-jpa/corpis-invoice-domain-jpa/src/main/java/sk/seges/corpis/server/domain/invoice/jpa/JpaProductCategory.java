@@ -91,7 +91,7 @@ public class JpaProductCategory extends ProductCategoryBase {
 	}
 
 	@Override
-    @ManyToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.LAZY)
+    @ManyToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.LAZY, targetEntity = JpaProduct.class)
     @JoinTable(name = "product_category_product")
 	public List<ProductData> getProducts() {
 		return super.getProducts();
