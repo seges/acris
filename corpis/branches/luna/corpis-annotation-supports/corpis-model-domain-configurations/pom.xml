@@ -20,6 +20,7 @@
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-domain-model-converter-hibernate-processor</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
