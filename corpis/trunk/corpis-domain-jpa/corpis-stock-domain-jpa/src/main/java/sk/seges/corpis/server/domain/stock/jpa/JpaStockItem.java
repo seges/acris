@@ -1,5 +1,6 @@
 package sk.seges.corpis.server.domain.stock.jpa;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +43,7 @@ public class JpaStockItem extends StockItemBase {
 	}
 
 	@Override
-	@ManyToOne(fetch=FetchType.EAGER, targetEntity = JpaProduct.class)
+	@ManyToOne(fetch=FetchType.EAGER, targetEntity = JpaProduct.class, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE })
 	public ProductData getProduct() {
 		return super.getProduct();
 	}

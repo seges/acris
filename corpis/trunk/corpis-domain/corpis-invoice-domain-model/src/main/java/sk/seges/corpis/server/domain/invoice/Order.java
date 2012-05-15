@@ -30,7 +30,7 @@ public interface Order extends IDomainObject<Long> {
 
 	Boolean sameDeliveryAddress();
 
-	Address deliveryAddress();
+//	Address deliveryAddress();
 	DeliveryPerson deliveryPerson();
 	BasicContact deliveryContact();
 	

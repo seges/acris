@@ -51,7 +51,7 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 	
 	private AddressData address;
 	
-	private AddressData deliveryAddress;
+//	private AddressData deliveryAddress;
 
 	private BasicContactData contact;
 
@@ -152,14 +152,21 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 		this.address = address;
 	}
 
-	@Embedded
-	public JpaDeliveryAddress getDeliveryAddress() {
-		return (JpaDeliveryAddress) deliveryAddress;
-	}
+//	@Embedded
+//	@Valid
+//	@AttributeOverrides( {
+//		@AttributeOverride(name = AddressData.STREET, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.STREET)),
+//		@AttributeOverride(name = AddressData.CITY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.CITY)),
+//		@AttributeOverride(name = AddressData.COUNTRY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.COUNTRY)),
+//		@AttributeOverride(name = AddressData.STATE, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.STATE)),
+//		@AttributeOverride(name = AddressData.ZIP, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.ZIP)) })
+//	public JpaAddress getDeliveryAddress() {
+//		return (JpaAddress) deliveryAddress;
+//	}
 
-	public void setDeliveryAddress(AddressData deliveryAddress) {
-		this.deliveryAddress = deliveryAddress;
-	}
+//	public void setDeliveryAddress(AddressData deliveryAddress) {
+//		this.deliveryAddress = deliveryAddress;
+//	}
 
 	@Embedded
 	public JpaBasicContact getContact() {
@@ -172,9 +179,11 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 
 	@Embedded
 	@AttributeOverrides( {
-			@AttributeOverride(name = "phone", column = @Column(name = JpaDeliveryAddress.TABLE_PREFIX + "phone")),
-			@AttributeOverride(name = "fax", column = @Column(name = JpaDeliveryAddress.TABLE_PREFIX + "fax")),
-			@AttributeOverride(name = "email", column = @Column(name = JpaDeliveryAddress.TABLE_PREFIX + "email")) })
+			@AttributeOverride(name = BasicContactData.PHONE, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + BasicContactData.PHONE)),
+			@AttributeOverride(name = BasicContactData.FAX, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + BasicContactData.FAX)),
+			@AttributeOverride(name = BasicContactData.EMAIL, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + BasicContactData.EMAIL)),
+			@AttributeOverride(name = BasicContactData.MOBILE, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + BasicContactData.MOBILE)),
+			@AttributeOverride(name = BasicContactData.WEB, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + BasicContactData.WEB)) })
 	public JpaBasicContact getDeliveryContact() {
 		return (JpaBasicContact) deliveryContact;
 	}
@@ -278,7 +287,7 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 	public String toString() {
 		return "Order [accountNumber=" + accountNumber + ", address=" + address + ", company=" + company
 				+ ", contact=" + contact + ", deliveredBy=" + deliveredBy + ", deliveryAddress="
-				+ deliveryAddress + ", deliveryContact=" + deliveryContact + ", deliveryPrice="
+//				+ deliveryAddress + ", deliveryContact=" + deliveryContact + ", deliveryPrice="
 				+ deliveryPrice + ", icDph=" + icDph + ", ico=" + ico + ", id=" + getId() + ", note=" + note
 				+ ", orderId=" + orderId + ", paymentType=" + paymentType
 				+ ", person=" + person + ", projectNumber=" + projectNumber + ", status=" + status

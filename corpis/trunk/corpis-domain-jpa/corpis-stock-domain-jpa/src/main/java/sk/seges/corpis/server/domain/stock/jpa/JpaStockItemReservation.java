@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.invoice.jpa.JpaAccountableItem;
+import sk.seges.corpis.server.domain.invoice.jpa.JpaOrderItem;
 import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
 import sk.seges.corpis.server.domain.stock.server.model.base.StockItemReservationBase;
 import sk.seges.corpis.server.domain.stock.server.model.data.StockItemData;
@@ -32,7 +32,7 @@ public class JpaStockItemReservation extends StockItemReservationBase {
 	}
 
 	@Override
-	@ManyToOne(fetch=FetchType.LAZY, targetEntity = JpaAccountableItem.class)
+	@ManyToOne(fetch=FetchType.LAZY, targetEntity = JpaOrderItem.class)
 	public AccountableItemData getAccountableItem() {
 		return super.getAccountableItem();
 	}
@@ -50,7 +50,6 @@ public class JpaStockItemReservation extends StockItemReservationBase {
 	}
 
 	@Override
-	@Column(name = "stock_item")
 	@ManyToOne( fetch=FetchType.EAGER, targetEntity = JpaStockItem.class)
 	public StockItemData getStockItem() {
 		return super.getStockItem();
