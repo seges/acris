@@ -185,12 +185,57 @@
 			<!-- Corpis dependencies -->
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-core-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-customer-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-invoice-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-customer-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-manufacture-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-stock-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-core-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-invoice-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-lang-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-domain-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-payment-domain-model</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

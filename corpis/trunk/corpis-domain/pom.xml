@@ -31,21 +31,6 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-application-scaffold-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-invoice-domain-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-stock-domain-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-application-scaffold-mapbasedobject-processor</artifactId>
 				<scope>provided</scope>
 				<version>${project.version}</version>
@@ -72,5 +57,6 @@
 		<module>corpis-invoice-domain-model</module>
 		<module>corpis-manufacture-domain-model</module>
 		<module>corpis-stock-domain-model</module>
+		<module>corpis-payment-domain-model</module>
 	</modules>
 </project>

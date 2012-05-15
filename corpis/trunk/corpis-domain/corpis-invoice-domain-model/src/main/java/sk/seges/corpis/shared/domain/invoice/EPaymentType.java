@@ -9,6 +9,7 @@ package sk.seges.corpis.shared.domain.invoice;
  */
 public enum EPaymentType {
 
+	CASH("paymentType.paypal"),
 	WIRE_TRANSFER("paymentType.wireTransfer"), 
 	PAYPAL("paymentType.paypal"), 
 	TATRAPAY("paymentType.tatrapay");

@@ -12,56 +12,12 @@
 		<relativePath>../corpis-os/pom.xml</relativePath>
 	</parent>
 
-	<dependencyManagement>
-		<dependencies> 
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-core-domain-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-customer-domain-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-invoice-domain-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-customer-domain-jpa</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-manufacture-domain-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-stock-domain-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-core-domain-jpa</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>corpis-invoice-domain-jpa</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		</dependencies> 
-	</dependencyManagement>
-		
 	<modules>
 		<module>corpis-core-domain-jpa</module>
 		<module>corpis-customer-domain-jpa</module>
 		<module>corpis-invoice-domain-jpa</module>
 		<module>corpis-manufacture-domain-jpa</module>
 		<module>corpis-stock-domain-jpa</module>
+		<module>corpis-payment-domain-jpa</module>
 	</modules>
 </project>
