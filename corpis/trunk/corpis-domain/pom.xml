@@ -58,5 +58,6 @@
 		<module>corpis-manufacture-domain-model</module>
 		<module>corpis-stock-domain-model</module>
 		<module>corpis-payment-domain-model</module>
+		<module>corpis-transportation-domain-model</module>
 	</modules>
 </project>
