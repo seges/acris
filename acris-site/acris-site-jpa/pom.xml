@@ -33,7 +33,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-domain-jpa</artifactId>
+			<artifactId>corpis-core-domain-jpa</artifactId>
 		</dependency> 
 		
 		<!-- Acris dependencies -->

@@ -119,12 +119,12 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
-				<artifactId>corpis-domain-jpa</artifactId>
+				<artifactId>corpis-core-domain-jpa</artifactId>
 				<version>${corpis-os.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
-				<artifactId>corpis-domain-jpa</artifactId>
+				<artifactId>corpis-core-domain-jpa</artifactId>
 				<version>${corpis-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>

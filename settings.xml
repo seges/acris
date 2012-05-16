@@ -125,7 +125,10 @@
 				</pluginRepository>
 				<pluginRepository>
 					<id>acris-plugins-releases-repo</id>
-					<url>http://acris.googlecode.com/svn/release-repository</url>
+					<url>http://acris.googlecode.com/svn/releases-repository</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
