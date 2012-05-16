@@ -1,9 +1,12 @@
 package sk.seges.sesam.pap.service.printer;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
@@ -49,6 +52,18 @@ public class ServiceDtoConverterProviderPrinter extends AbstractServiceObjectCon
 			pw.println(";");
 			pw.println("}");
 			pw.println();
+		}
+
+		printTypeVariables(context);
+	}
+
+	@Override
+	protected void printType(MutableTypeMirror type, NestedServiceConverterPrinterContext context) {
+		
+		DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
+		if (dtoType.getKind().isDeclared() && dtoType.getConverter() != null) {
+			context = new NestedServiceConverterPrinterContext((DtoDeclaredType)dtoType, context.getLocalMethod());
+			print(context);
 		}
 	}
 }

@@ -5,6 +5,7 @@ import javax.lang.model.element.ExecutableElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 
 public class NestedServiceConverterPrinterContext {
 
@@ -17,7 +18,26 @@ public class NestedServiceConverterPrinterContext {
 	private final ConverterTypeElement converterType;
 	private final ExecutableElement localMethod;
 	
-	public NestedServiceConverterPrinterContext(DomainDeclaredType rawDomain, DomainDeclaredType domain, DtoDeclaredType rawDto, 
+	public NestedServiceConverterPrinterContext(DtoDeclaredType dtoType, ExecutableElement localMethod) {
+		this.rawDomain = (DomainDeclaredType)dtoType.getDomain();
+		this.domain = this.rawDomain;
+		this.rawDto = dtoType.getConverter().getConfiguration().getRawDto();
+		this.converterType = dtoType.getConverter();
+		this.localMethod = localMethod;
+		this.dto = dtoType.getConverter().getConfiguration().getDto();
+	}
+	
+	public NestedServiceConverterPrinterContext(DomainDeclaredType domainType, ExecutableElement localMethod) {
+		DtoType dto = domainType.getDto();
+		this.rawDomain = domainType;
+		this.domain = (DomainDeclaredType) dto.getDomain();
+		this.rawDto = dto.getConverter().getConfiguration().getRawDto();
+		this.dto = (DtoDeclaredType) dto;
+		this.converterType = dto.getConverter();
+		this.localMethod = localMethod;
+	}
+	
+	protected NestedServiceConverterPrinterContext(DomainDeclaredType rawDomain, DomainDeclaredType domain, DtoDeclaredType rawDto, 
 			DtoDeclaredType dto, ConverterTypeElement converterType, ExecutableElement localMethod) {
 		this.rawDomain = rawDomain;
 		this.rawDto = rawDto;
