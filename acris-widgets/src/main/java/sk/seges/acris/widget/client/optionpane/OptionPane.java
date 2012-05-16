@@ -133,6 +133,27 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		throw new IllegalArgumentException("Unsupported message type " + type);
 	}
 
+	public Dialog showInfoDialog(String message, String title) {
+		final Dialog dialog = widgetFactory.modelessDialog();
+		dialog.addStyleName("acris-message-dialog");
+		dialog.setCaption(title);
+
+		OptionPane pane = createOptionPaneFromMessage(message, EMessageType.INFORMATION_MESSAGE);
+		dialog.setContent(pane);
+
+		dialog.addOptions(optionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
+
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			
+			@Override
+			public void execute() {
+				dialog.center();
+			}
+		});
+		
+		return dialog;
+	}
+
 	/**
 	 * Brings up an information-message dialog titled with default message
 	 * dialog title.
@@ -145,7 +166,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	}
 
 	/**
-	 * Brings up an titled information-message dialog.
+	 * Brings up a titled information-message dialog.
 	 * 
 	 * @param message
 	 * @param title
@@ -233,7 +254,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	 * @return
 	 */
 	public EPanelResult showMessageDialog(String message, String title, EMessageType type) {
-		final Dialog dialog = widgetFactory.modalDialog();
+		final Dialog dialog = widgetFactory.modelessDialog();
 		dialog.addStyleName("acris-message-dialog");
 		dialog.setCaption(title);
 
