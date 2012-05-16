@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -17,6 +19,7 @@ import sk.seges.corpis.server.domain.stock.server.model.data.WarehouseData;
 
 @SuppressWarnings("serial")
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "stock_item")
 @SequenceGenerator(name = JpaStockItem.SEQ_STOCK_ITEM, sequenceName = "seq_stock_items", initialValue = 1)
 public class JpaStockItem extends StockItemBase {

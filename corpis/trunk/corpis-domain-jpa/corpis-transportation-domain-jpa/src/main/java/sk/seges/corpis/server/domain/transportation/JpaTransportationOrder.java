@@ -8,15 +8,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.invoice.jpa.JpaAccountable;
-import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableData;
+import sk.seges.corpis.server.domain.invoice.jpa.JpaAccountableItem;
+import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
-import sk.seges.corpis.server.domain.stock.jpa.JpaStockItem;
-import sk.seges.corpis.server.domain.stock.server.model.data.StockItemData;
 import sk.seges.corpis.server.domain.transportation.server.model.base.TransportationOrderBase;
+import sk.seges.corpis.server.domain.transportation.server.model.data.TransportationData;
 
 @Entity
 @Table(name = "transportation_order")
@@ -34,15 +34,9 @@ public class JpaTransportationOrder extends TransportationOrderBase {
 	}	
 
 	@Override
-	@ManyToOne(targetEntity = JpaAccountable.class)
-	public AccountableData getAccountable() {
-		return super.getAccountable();
-	}
-
-	@Override
-	@Column
-	public int getCount() {
-		return super.getCount();
+	@ManyToOne(targetEntity = JpaAccountableItem.class)
+	public AccountableItemData getAccountableItem() {
+		return super.getAccountableItem();
 	}
 
 	@Override
@@ -56,10 +50,10 @@ public class JpaTransportationOrder extends TransportationOrderBase {
 	public PersonNameData getPerson() {
 		return super.getPerson();
 	}
-
+	
 	@Override
-	@ManyToOne(targetEntity = JpaStockItem.class)
-	public StockItemData getStockItem() {
-		return super.getStockItem();
+	@OneToOne(targetEntity = JpaTransportation.class)
+	public TransportationData getTransportation() {
+		return super.getTransportation();
 	}
 }

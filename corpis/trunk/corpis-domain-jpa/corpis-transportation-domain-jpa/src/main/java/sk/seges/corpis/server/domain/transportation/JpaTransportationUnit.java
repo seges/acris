@@ -1,18 +1,17 @@
 package sk.seges.corpis.server.domain.transportation;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import sk.seges.corpis.server.domain.invoice.jpa.JpaAccountableItem;
+import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
 import sk.seges.corpis.server.domain.server.model.data.AddressData;
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
-import sk.seges.corpis.server.domain.stock.jpa.JpaStockItem;
-import sk.seges.corpis.server.domain.stock.server.model.data.StockItemData;
 import sk.seges.corpis.server.domain.transportation.server.model.base.TransportationUnitBase;
 
 @SuppressWarnings("serial")
@@ -31,12 +30,6 @@ public class JpaTransportationUnit extends TransportationUnitBase {
 	}
 	
 	@Override
-	@Column
-	public int getCount() {
-		return super.getCount();
-	}
-
-	@Override
 	@Embedded
 	public AddressData getDeliveryAddress() {
 		return super.getDeliveryAddress();
@@ -47,10 +40,10 @@ public class JpaTransportationUnit extends TransportationUnitBase {
 	public PersonNameData getDeliveryPerson() {
 		return super.getDeliveryPerson();
 	}
-
+	
 	@Override
-	@OneToMany(targetEntity = JpaStockItem.class)
-	public StockItemData getStockItem() {
-		return super.getStockItem();
+	@ManyToOne(targetEntity = JpaAccountableItem.class)
+	public AccountableItemData getAccountableItem() {
+		return super.getAccountableItem();
 	}
 }
