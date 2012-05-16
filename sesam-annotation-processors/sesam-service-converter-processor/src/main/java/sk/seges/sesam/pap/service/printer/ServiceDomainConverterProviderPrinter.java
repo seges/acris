@@ -1,9 +1,12 @@
 package sk.seges.sesam.pap.service.printer;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
@@ -49,6 +52,18 @@ public class ServiceDomainConverterProviderPrinter extends AbstractServiceObject
 			pw.println(";");
 			pw.println("}");
 			pw.println();
+		}
+		
+		printTypeVariables(context);
+	}
+
+	@Override
+	protected void printType(MutableTypeMirror type, NestedServiceConverterPrinterContext context) {
+		
+		DomainType domainType = processingEnv.getTransferObjectUtils().getDomainType(type);
+		if (domainType.getKind().isDeclared() && domainType.getConverter() != null) {
+			context = new NestedServiceConverterPrinterContext((DomainDeclaredType)domainType, context.getLocalMethod());
+			print(context);
 		}
 	}
 }

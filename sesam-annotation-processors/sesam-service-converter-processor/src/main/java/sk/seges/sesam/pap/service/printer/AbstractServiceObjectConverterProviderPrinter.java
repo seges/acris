@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -12,6 +14,7 @@ import sk.seges.sesam.pap.model.printer.converter.AbstractConverterPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
+import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public abstract class AbstractServiceObjectConverterProviderPrinter extends AbstractConverterPrinter implements NestedServiceConverterElementPrinter {
@@ -48,4 +51,24 @@ public abstract class AbstractServiceObjectConverterProviderPrinter extends Abst
 			pw.println();
 		}
 	}
+	
+	protected void printTypeVariables(NestedServiceConverterPrinterContext context) {
+		for (MutableTypeVariable typeVariable: context.getRawDomain().getTypeVariables()) {
+
+			Set<? extends MutableTypeMirror> lowerBounds = typeVariable.getLowerBounds();
+			
+			for (MutableTypeMirror lowerBound: lowerBounds) {
+				printType(lowerBound, context);
+			}
+			
+			Set<? extends MutableTypeMirror> upperBounds = typeVariable.getUpperBounds();
+
+			for (MutableTypeMirror upperBound: upperBounds) {
+				printType(upperBound, context);
+			}
+		}
+	}
+
+	protected abstract void printType(MutableTypeMirror type, NestedServiceConverterPrinterContext context);
+
 }
