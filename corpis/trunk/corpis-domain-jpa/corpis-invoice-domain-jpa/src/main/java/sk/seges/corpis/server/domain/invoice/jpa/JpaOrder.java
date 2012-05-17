@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -17,6 +19,7 @@ import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 
 @Entity
 @SequenceGenerator(name = JpaOrder.SEQ_ORDERS, sequenceName = "seq_orders", initialValue = 1)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "orders", uniqueConstraints = {@UniqueConstraint(columnNames = JpaOrderBase.ORDER_ID)})
 public class JpaOrder extends JpaOrderBase {
 	private static final long serialVersionUID = -3117593133828636987L;
