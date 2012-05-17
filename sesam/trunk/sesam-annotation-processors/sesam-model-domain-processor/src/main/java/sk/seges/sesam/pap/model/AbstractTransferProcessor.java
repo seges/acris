@@ -202,29 +202,33 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 					while (pathResolver.hasNext()) {
 						DomainType domainReference = currentElement.getDomainReference(getEntityResolver(), currentPath);
 						
+						
 						if (domainReference != null && domainReference.getKind().isDeclared()) {
 							currentElement = (DomainDeclaredType)domainReference;
-							
-							ExecutableElement nestedIdMethod = currentElement.getIdMethod(getEntityResolver());
-
-							if (nestedIdMethod == null && getEntityResolver().shouldHaveIdMethod(currentElement)) {
-								//TODO Check @Id annotation is the configuration - nested field names
-								processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + currentElement.getCanonicalName() +
-										". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
-										Id.class.getCanonicalName() + " annotation.", configurationTypeElement.asConfigurationElement());
-							} else {
-								if (nestedIdMethod == null) {
-									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + currentElement.getCanonicalName() + ".", 
-											configurationTypeElement.asConfigurationElement());
-								}
-								//TODO Check if is not already generated
-								context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath, getConfigurationProviders());
-								if (context == null) {
-									continue;
-								}
-
-								contexts.add(context);
-//								printer.print(context);
+								ExecutableElement nestedIdMethod = currentElement.getIdMethod(getEntityResolver());
+	
+								if (nestedIdMethod == null && getEntityResolver().shouldHaveIdMethod(currentElement)) {
+									//TODO Check @Id annotation is the configuration - nested field names
+									processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + currentElement.getCanonicalName() +
+											". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
+											Id.class.getCanonicalName() + " annotation.", configurationTypeElement.asConfigurationElement());
+								} else {
+									if (nestedIdMethod == null) {
+										processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + currentElement.getCanonicalName() + ".", 
+												configurationTypeElement.asConfigurationElement());
+									}
+									
+									String idPath = fullPath + "." + MethodHelper.toField(nestedIdMethod);
+									if (!isProcessed(generated, idPath)) {
+										context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath, getConfigurationProviders());
+										if (context == null) {
+											continue;
+										}
+										contexts.add(context);
+										generated.add(idPath);
+									}
+	
+	//								printer.print(context);
 							}
 						} else {
 							if (pathResolver.hasNext()) {
@@ -233,7 +237,6 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 										"You probably mistyped this field in the configuration.", configurationTypeElement.asConfigurationElement());
 							}
 						}
-
 						currentPath = pathResolver.next();
 						fullPath += "." + currentPath;
 					}
