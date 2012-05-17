@@ -3,6 +3,7 @@ package sk.seges.sesam.pap.model.printer.method;
 import java.util.Iterator;
 
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
@@ -12,6 +13,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
@@ -33,18 +35,28 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 	protected final ConverterConstructorParametersResolver parametersResolver;
 	protected final TypeParametersSupport typeParametersSupport;
 	protected final TransferObjectHelper toHelper;
+	protected final EntityResolver entityResolver;
 	
 	protected ConverterProviderPrinter converterProviderPrinter;
 	
-	protected AbstractMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
+	protected AbstractMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ConverterConstructorParametersResolver parametersResolver, EntityResolver entityResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
 		super(parametersResolver, processingEnv);
 		this.roundEnv = roundEnv;
 		this.converterProviderPrinter = converterProviderPrinter;
 		this.parametersResolver = parametersResolver;
 		this.toHelper = new TransferObjectHelper(processingEnv);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
+		this.entityResolver = entityResolver;
 	}
 
+	protected boolean isIdField(MutableDeclaredType typeElement, String fieldName) {
+		ExecutableElement method = ProcessorUtils.getMethod(fieldName, typeElement.asElement());
+		if (method != null) {
+			return  entityResolver.isIdMethod(method);
+		}
+		return false;
+	}
+	
 	protected MutableTypeMirror getWildcardDelegate(MutableTypeMirror domainDelegate) {
 		if (domainDelegate.getKind().isDeclared() && ((MutableDeclaredType)domainDelegate).getTypeVariables().size() == 1) {
 			return ((MutableDeclaredType)domainDelegate).clone().setTypeVariables(processingEnv.getTypeUtils().getWildcardType((MutableTypeMirror)null, (MutableTypeMirror)null));

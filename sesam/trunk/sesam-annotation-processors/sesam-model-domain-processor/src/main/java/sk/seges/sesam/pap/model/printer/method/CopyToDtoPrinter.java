@@ -31,19 +31,17 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 	protected final FormattedPrintWriter pw;
 
 	protected ElementHolderTypeConverter elementHolderTypeConverter;
-	protected EntityResolver entityResolver;
 	
 	public CopyToDtoPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, 
 			RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
-		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
+		super(converterProviderPrinter, parametersResolver, entityResolver, roundEnv, processingEnv);
 		this.pw = pw;
 		this.elementHolderTypeConverter = elementHolderTypeConverter;
-		this.entityResolver = entityResolver;
 	}
 	
 	@Override
 	public void print(TransferObjectContext context) {
-		copy(context, pw, new CopyToDtoMethodPrinter(converterProviderPrinter, elementHolderTypeConverter, parametersResolver, roundEnv, processingEnv));
+		copy(context, pw, new CopyToDtoMethodPrinter(converterProviderPrinter, elementHolderTypeConverter, parametersResolver, entityResolver, roundEnv, processingEnv));
 	}
 
 	@Override

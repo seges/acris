@@ -22,20 +22,18 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class CopyFromDtoPrinter extends AbstractMethodPrinter implements TransferObjectElementPrinter {
 
 	protected final FormattedPrintWriter pw;
-	protected final EntityResolver entityResolver;
 	protected final Set<String> nestedInstances;
 	
 	public CopyFromDtoPrinter(Set<String> nestedInstances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
-		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
+		super(converterProviderPrinter, parametersResolver, entityResolver, roundEnv, processingEnv);
 		this.nestedInstances = nestedInstances;
 		this.pw = pw;
-		this.entityResolver = entityResolver;
 	}
 	
 	@Override
