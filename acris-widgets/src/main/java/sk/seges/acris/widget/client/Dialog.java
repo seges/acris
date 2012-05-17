@@ -14,15 +14,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Universal popup dialog capable of displaying content widget with/without
- * title. Title can be either string caption or widget also. All styles are
+ * Universal popup dialog capable of displaying content widget with/without title. Title can be either string caption or widget also. All styles are
  * inherited from GWT dialog box and extended by own styles.
  * 
  * @author ladislav.gazo
@@ -47,8 +45,6 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	public Dialog() {
 		super();
 		init();
-		
-		sinkEvents(Event.ONCONTEXTMENU);
 	}
 
 	private ClickHandler getHidingClickHandler() {
@@ -86,18 +82,6 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	}
 
 	private boolean initialized = false;
-	
-	@Override
-	public void onBrowserEvent(Event event) {
-		switch (event.getTypeInt()) {
-		case Event.ONCONTEXTMENU:
-			event.preventDefault();
-			break;
-		default:
-			super.onBrowserEvent(event);
-			break;
-		}
-	}
 
 	@Override
 	protected void onLoad() {
@@ -143,8 +127,7 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	}
 
 	/**
-	 * Add an option to the list of options. Usually it is a button at least
-	 * closing the dialog.
+	 * Add an option to the list of options. Usually it is a button at least closing the dialog.
 	 * 
 	 * @param option
 	 */
@@ -153,13 +136,11 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	}
 
 	/**
-	 * Add an option to the list of options with hiding click listener. Usually
-	 * it is a button at least closing the dialog.
+	 * Add an option to the list of options with hiding click listener. Usually it is a button at least closing the dialog.
 	 * 
 	 * @param option
 	 * @param addHideAction
-	 *            If true dialog hiding click listener will be bundled with
-	 *            option.
+	 *            If true dialog hiding click listener will be bundled with option.
 	 */
 	public void addOption(Widget option, ClickHandler hidingClickHandler) {
 		options.addOption(option, hidingClickHandler);
@@ -174,11 +155,9 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 		options.addOption(option, getHidingClickHandler());
 		return options.getOption();
 	}
-	
-	
+
 	/**
-	 * Add an option to the list of options. The widget will not get a click
-	 * handler closing the dialog. Usually it is a button at least closing the
+	 * Add an option to the list of options. The widget will not get a click handler closing the dialog. Usually it is a button at least closing the
 	 * dialog.
 	 * 
 	 * @param option
@@ -208,8 +187,7 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	}
 
 	/**
-	 * Set widget displayed in the dialog title. Either widget or string caption
-	 * can be set, not both.
+	 * Set widget displayed in the dialog title. Either widget or string caption can be set, not both.
 	 * 
 	 * @param captionWidget
 	 */
@@ -221,8 +199,7 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	}
 
 	/**
-	 * Set string caption displayed in the dialog title. Either widget or string
-	 * caption can be set, not both.
+	 * Set string caption displayed in the dialog title. Either widget or string caption can be set, not both.
 	 * 
 	 * @param caption
 	 */
@@ -279,7 +256,7 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 		super.setPopupPosition(left - WidgetUtils.getPageScrollX(), top - WidgetUtils.getPageScrollY());
 		this.getElement().getStyle().setPosition(Position.FIXED);
 	}
-	
+
 	@Override
 	public void setAbsolutePopupPosition(int left, int top) {
 		super.setPopupPosition(left, top);
