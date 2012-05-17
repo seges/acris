@@ -50,9 +50,11 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 	}
 
 	protected boolean isIdField(MutableDeclaredType typeElement, String fieldName) {
-		ExecutableElement method = ProcessorUtils.getMethod(fieldName, typeElement.asElement());
-		if (method != null) {
-			return  entityResolver.isIdMethod(method);
+		if (typeElement.asElement() != null) {
+			ExecutableElement method = ProcessorUtils.getMethod(fieldName, typeElement.asElement());
+			if (method != null) {
+				return  entityResolver.isIdMethod(method);
+			}
 		}
 		return false;
 	}
