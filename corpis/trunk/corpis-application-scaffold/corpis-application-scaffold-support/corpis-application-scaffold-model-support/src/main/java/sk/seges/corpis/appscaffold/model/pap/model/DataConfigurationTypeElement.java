@@ -22,6 +22,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.ConfigurationContext;
@@ -180,10 +181,10 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 					List<MutableDeclaredType> dataInterfaces = new ArrayList<MutableDeclaredType>();
 					findDomainData(((MutableDeclaredType)next), dataInterfaces);
 					
-					if (dataInterfaces.size() > 1) {
+					if (dataInterfaces.size() > 0) {
 						MutableDeclaredType dtoType = (MutableDeclaredType)envContext.getProcessingEnv().getTransferObjectUtils().getDomainType(next).getDto();
 						DomainDeclaredType domainDeclared = new DomainDeclared(dataInterfaces.get(0), dtoType, envContext, configurationContext);
-						domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
+						domainDeclared.setTypeVariables(new MutableTypeVariable[]{});
 						newBounds.add(domainDeclared);
 					} else {
 						newBounds.add(next);
@@ -257,8 +258,16 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 			findDomainData((MutableDeclaredType)interfaces, domainDataTypes);
 		}
 
-		if (declaredType.getSuperClass() != null) {
-			findDomainData(declaredType.getSuperClass(), domainDataTypes);
+		MutableDeclaredType superClass = null;
+		
+		if (declaredType instanceof DelegateMutableDeclaredType) {
+			superClass = ((DelegateMutableDeclaredType)declaredType).ensureDelegateType().getSuperClass();
+		} else {
+			superClass = declaredType.getSuperClass();
+		}
+
+		if (superClass != null) {
+			findDomainData(superClass, domainDataTypes);
 		}
 	}
 	
