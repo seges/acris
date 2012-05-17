@@ -242,34 +242,41 @@ public class ProcessorUtils {
 		return te.getQualifiedName().getClass().toString().equals(type.getQualifiedName());
 	}
 
-	public static boolean hasMethod(String name, Element element) {
+	public static ExecutableElement getMethod(String name, Element element) {
 		assert name != null;
 		assert element != null;
 		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
 
 		for (ExecutableElement method : methods) {
-			if (method.toString().equals(name)) {
-				return true;
+			if (method.getSimpleName().toString().equals(name)) {
+				return method;
 			}
 		}
 
 		TypeElement typeElement = (TypeElement)element;
 		
 		if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-			if (hasMethod(name, ((DeclaredType)typeElement.getSuperclass()).asElement())) {
-				return true;
+			ExecutableElement method = getMethod(name, ((DeclaredType)typeElement.getSuperclass()).asElement());
+			if (method != null) {
+				return method;
 			}
 		}
 		
 		for (TypeMirror interfaceType: typeElement.getInterfaces()) {
 			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
-				if (hasMethod(name, ((DeclaredType)interfaceType).asElement())) {
-					return true;
+				ExecutableElement method = getMethod(name, ((DeclaredType)interfaceType).asElement());
+				
+				if (method != null) {
+					return method;
 				}
 			}
 		}
 
-		return false;
+		return null;
+	}
+	
+	public static boolean hasMethod(String name, Element element) {
+		return getMethod(name, element) != null;
 	}
 	
 	public static ExecutableElement getOverrider(TypeElement element, ExecutableElement method, ProcessingEnvironment processingEnv) {

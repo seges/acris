@@ -27,19 +27,20 @@ import sk.seges.sesam.utils.CastUtils;
 
 public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements CopyMethodPrinter {
 
-	private EntityResolver entityResolver;
-	
 	private final Set<String> instances;
 	
 	public CopyFromDtoMethodPrinter(Set<String> instances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv) {
-		super(converterProviderPrinter, parametersResolver, roundEnv, processingEnv);
+		super(converterProviderPrinter, parametersResolver, entityResolver, roundEnv, processingEnv);
 		this.instances = instances;
-		this.entityResolver = entityResolver;
 	}
 
 	@Override
 	public void printCopyMethod(TransferObjectContext context, FormattedPrintWriter pw) {
 		
+		if (isIdField(context.getConfigurationTypeElement().getInstantiableDomain(), context.getDomainMethod().getSimpleName().toString())) {
+			return;
+		}
+
 		PathResolver pathResolver = new PathResolver(context.getDomainFieldPath());
 
 		boolean nested = pathResolver.isNested();
@@ -48,7 +49,8 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		String fullPath = currentPath;
 		String previousPath = TransferObjectElementPrinter.RESULT_NAME;
 		
-		DomainDeclaredType domainTypeElement = context.getConfigurationTypeElement().getInstantiableDomain();
+		DomainDeclaredType domainTypeElement = context.getConfigurationTypeElement().getDomain();
+		DomainDeclaredType instantiableDomainTypeElement = context.getConfigurationTypeElement().getInstantiableDomain();
 		
 		if (nested && context.getConfigurationTypeElement().getDomain() != null) {
 			
@@ -96,15 +98,15 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 				dtoName = previousPath;
 			}
 
-			if (context.getConfigurationTypeElement().getDomain() != null && domainTypeElement.getSetterMethod(context.getDomainFieldPath()) != null) {
+			if (domainTypeElement != null && domainTypeElement.getSetterMethod(context.getDomainFieldPath()) != null) {
 				printCopy(pathResolver, context, pw);
-			} else if (!entityResolver.isImmutable(context.getConfigurationTypeElement().getDomain().asElement())) {
-				ExecutableElement domainGetterMethod = context.getConfigurationTypeElement().getDomain().getGetterMethod(currentPath);
+			} else if (!entityResolver.isImmutable(instantiableDomainTypeElement.asElement())) {
+				ExecutableElement domainGetterMethod = instantiableDomainTypeElement.getGetterMethod(currentPath);
 				
-				VariableElement field = MethodHelper.getField(domainTypeElement.asConfigurationElement(), currentPath);
+				VariableElement field = MethodHelper.getField(instantiableDomainTypeElement.asConfigurationElement(), currentPath);
 				
 				if ((domainGetterMethod == null && field != null && !entityResolver.isIdField(field)) || !entityResolver.isIdMethod(domainGetterMethod)) {
-					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + domainTypeElement.toString(), context.getConfigurationTypeElement().asConfigurationElement());
+					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Setter is not available for the field " + currentPath + " in the class " + instantiableDomainTypeElement.toString(), context.getConfigurationTypeElement().asConfigurationElement());
 				}
 			}
 		} else {
@@ -125,14 +127,14 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	
 	protected void printCopyNested(PathResolver domainPathResolver, String fullPath, DomainDeclaredType referenceDomainType, ExecutableElement method, FormattedPrintWriter pw, String fieldName, String dtoName) {
 		if (referenceDomainType.getId(entityResolver) != null) {
-			pw.print(referenceDomainType + " " + domainPathResolver.getCurrent() + " = ");
+			pw.print(referenceDomainType, " " + domainPathResolver.getCurrent() + " = ");
 			if (referenceDomainType.getConverter() == null) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] No converter/configuration for " + referenceDomainType + " was found. Please, define configuration for " + referenceDomainType);
 			}
 			converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), fieldName, method, pw, false);
 			pw.println(".createDomainInstance(" + dtoName + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
 		} else {
-			pw.println(referenceDomainType + " " + domainPathResolver.getCurrent() + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ";");
+			pw.println(referenceDomainType, " " + domainPathResolver.getCurrent() + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ";");
 			pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " == null) {");
 			pw.print(domainPathResolver.getCurrent() + " = ");
 			converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), fieldName, method, pw, false);
