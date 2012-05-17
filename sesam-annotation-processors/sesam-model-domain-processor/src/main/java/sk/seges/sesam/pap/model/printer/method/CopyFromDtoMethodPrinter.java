@@ -60,14 +60,21 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			
 			while (pathResolver.hasNext()) {
 
-				DomainType domainReference = referenceDomainType.getDomainReference(entityResolver, currentPath);
+				DomainType instantiableDomainReference = referenceDomainType.getDomainReference(entityResolver, currentPath);
 				
-				if (domainReference == null) {
+				if (instantiableDomainReference == null) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find getter method for the field " + currentPath + " in the " + domainTypeElement.toString(), context.getConfigurationTypeElement().asConfigurationElement());
 					return;
 				}
 
-				if (!domainReference.getKind().isDeclared()) {
+				DomainType domainReference = instantiableDomainReference;
+				
+				if (instantiableDomainReference.getConfigurations().size() > 0) {
+					domainReference = domainReference.getConfigurations().get(0).getDomain();
+				}
+				
+
+				if (!instantiableDomainReference.getKind().isDeclared()) {
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Invalid mapping specified in the field " + currentPath + ". Current path (" + 
 							fullPath + ") address getter type that is not class/interfaces." +
 							"You probably mistyped this field in the configuration.", context.getConfigurationTypeElement().asConfigurationElement());
