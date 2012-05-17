@@ -213,21 +213,17 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 											". If the class/interface does not have strictly specified ID, please specify the id in the configuration using " + 
 											Id.class.getCanonicalName() + " annotation.", configurationTypeElement.asConfigurationElement());
 								} else {
-									if (nestedIdMethod == null) {
-										processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find id method in the class " + currentElement.getCanonicalName() + ".", 
-												configurationTypeElement.asConfigurationElement());
-									}
-									
-									String idPath = fullPath + "." + MethodHelper.toField(nestedIdMethod);
-									if (!isProcessed(generated, idPath)) {
-										context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath, getConfigurationProviders());
-										if (context == null) {
-											continue;
+									if (nestedIdMethod != null) {
+										String idPath = fullPath + "." + MethodHelper.toField(nestedIdMethod);
+										if (!isProcessed(generated, idPath)) {
+											context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, nestedIdMethod, nestedIdMethod, fullPath, getConfigurationProviders());
+											if (context == null) {
+												continue;
+											}
+											contexts.add(context);
+											generated.add(idPath);
 										}
-										contexts.add(context);
-										generated.add(idPath);
 									}
-	
 	//								printer.print(context);
 							}
 						} else {
