@@ -1,7 +1,11 @@
 package sk.seges.corpis.appscaffold.model.pap.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -10,8 +14,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic.Kind;
 
 import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -50,36 +56,98 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	}
 
 	private boolean hasCustomProperties(DomainDeclaredType domainDeclared, MutableDeclaredType dataType) {
-		Element domainElement = domainDeclared.asElement();
 		
-		if (domainElement == null) {
-			TypeMirror fromMutableType = envContext.getProcessingEnv().getTypeUtils().fromMutableType(domainDeclared);
-			domainElement = ((DeclaredType)fromMutableType).asElement();
-		}
-		
-		if (domainElement == null) {
+		if (!domainDeclared.toString(ClassSerializer.CANONICAL, false).equals(dataType.toString(ClassSerializer.CANONICAL, false))) {
+			
+			Element domainElement = domainDeclared.asElement();
+			
+			if (domainElement == null) {
+				TypeMirror fromMutableType = envContext.getProcessingEnv().getTypeUtils().fromMutableType(domainDeclared);
+				domainElement = ((DeclaredType)fromMutableType).asElement();
+			}
+			
+			if (domainElement == null) {
+				return false;
+			}
+			
+			Element dataElement = dataType.asElement();
+	
+			if (dataElement == null) {
+				TypeMirror fromMutableType = envContext.getProcessingEnv().getTypeUtils().fromMutableType(dataType);
+				dataElement = ((DeclaredType)fromMutableType).asElement();
+			}
+	
+			if (dataElement == null) {
+				return false;
+			}
+			
+			List<ExecutableElement> methods = ElementFilter.methodsIn(domainElement.getEnclosedElements());
+	
+			for (ExecutableElement method: methods) {
+				boolean isGetter = MethodHelper.isGetterMethod(method);
+				boolean isPublic = method.getModifiers().contains(Modifier.PUBLIC);
+	
+				if (isGetter && isPublic) {
+					if (!ProcessorUtils.hasMethod(method.getSimpleName().toString(), dataElement)) {
+						return true;
+					}
+				}
+			}
+			
 			return false;
+			
+		} else if (domainDeclared.hasTypeParameters() && dataType.hasTypeParameters()) {
+			
+			if (domainDeclared.getTypeVariables().size() != dataType.getTypeVariables().size()) {
+				envContext.getProcessingEnv().getMessager().printMessage(Kind.ERROR, "Domain type " + domainDeclared + " has invalid data type found: " + dataType + ". It seems like a bug in the processors!");
+				return true;
+			}
+			
+			for (int i = 0; i < domainDeclared.getTypeVariables().size(); i++) {
+				MutableTypeVariable domainTypeVariable = domainDeclared.getTypeVariables().get(i);
+				MutableTypeVariable dataTypeVariable = dataType.getTypeVariables().get(i);
+				
+				if (domainTypeVariable.getLowerBounds().size() != dataTypeVariable.getLowerBounds().size()) {
+					envContext.getProcessingEnv().getMessager().printMessage(Kind.ERROR, "Domain type " + domainDeclared + " has invalid data type found: " + dataType + ". It seems like a bug in the processors!");
+					return true;
+				}
+
+				if (domainTypeVariable.getUpperBounds().size() != dataTypeVariable.getUpperBounds().size()) {
+					envContext.getProcessingEnv().getMessager().printMessage(Kind.ERROR, "Domain type " + domainDeclared + " has invalid data type found: " + dataType + ". It seems like a bug in the processors!");
+					return true;
+				}
+				
+				if (processBounds(domainTypeVariable.getLowerBounds(), dataTypeVariable.getLowerBounds())) {
+					return true;
+				}
+
+				if (processBounds(domainTypeVariable.getLowerBounds(), dataTypeVariable.getLowerBounds())) {
+					return true;
+				}
+
+			}
 		}
 		
-		Element dataElement = dataType.asElement();
+		return false;
+	}
 
-		if (dataElement == null) {
-			TypeMirror fromMutableType = envContext.getProcessingEnv().getTypeUtils().fromMutableType(dataType);
-			dataElement = ((DeclaredType)fromMutableType).asElement();
-		}
-
-		if (dataElement == null) {
-			return false;
-		}
-		
-		List<ExecutableElement> methods = ElementFilter.methodsIn(domainElement.getEnclosedElements());
-
-		for (ExecutableElement method: methods) {
-			boolean isGetter = MethodHelper.isGetterMethod(method);
-			boolean isPublic = method.getModifiers().contains(Modifier.PUBLIC);
-
-			if (isGetter && isPublic) {
-				if (!ProcessorUtils.hasMethod(method.getSimpleName().toString(), dataElement)) {
+	private boolean processBounds(Set<? extends MutableTypeMirror> domainBounds, Set<? extends MutableTypeMirror> dataBounds) {
+		if (domainBounds.size() > 0) {
+			Iterator<? extends MutableTypeMirror> domainIterator = domainBounds.iterator();
+			Iterator<? extends MutableTypeMirror> dataIterator = dataBounds.iterator();
+			
+			while (domainIterator.hasNext()) {
+				MutableTypeMirror domain = domainIterator.next();
+				
+				DomainDeclaredType domainDeclaredType = null;
+				
+				if (!(domain instanceof DomainDeclaredType)) {
+					domainDeclaredType = (DomainDeclaredType) envContext.getProcessingEnv().getTransferObjectUtils().getDomainType(domain);
+				} else {
+					domainDeclaredType = (DomainDeclaredType) domain;
+				}
+				
+				if (hasCustomProperties(domainDeclaredType, (MutableDeclaredType)dataIterator.next())) {
 					return true;
 				}
 			}
@@ -92,23 +160,88 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	public DomainDeclaredType getDomain() {
 		
 		if (!domainTypeInitialized) {
-			DomainDeclaredType domainDeclared = super.getDomain();
-			List<MutableDeclaredType> result = new ArrayList<MutableDeclaredType>();
-			findDomainData(domainDeclared.asMutable(), result);
-			if (result.size() == 1) {
-				domainDeclared = new DomainDeclared(result.get(0), dtoType, envContext, configurationContext);
-				domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
-			}
-			
-			if (!hasCustomProperties(super.getDomain(), domainDeclared)) {
-				this.domainType = domainDeclared;
-			} else {
-				this.domainType = super.getDomain();
-			}
-			
+			this.domainType = getDomainDataType(super.getDomain());
 			this.domainTypeInitialized = true;
 		}
 		
+		return domainType;
+	}
+	
+	private Set<? extends MutableTypeMirror> processBounds(Set<? extends MutableTypeMirror> bounds) {
+		if (bounds.size() > 0) {
+			Set<MutableTypeMirror> newBounds = new HashSet<MutableTypeMirror>(); 
+			Iterator<? extends MutableTypeMirror> iterator = bounds.iterator();
+			
+			while (iterator.hasNext()) {
+				MutableTypeMirror next = iterator.next();
+				
+				if (next.getKind().isDeclared()) {
+					
+					List<MutableDeclaredType> dataInterfaces = new ArrayList<MutableDeclaredType>();
+					findDomainData(((MutableDeclaredType)next), dataInterfaces);
+					
+					if (dataInterfaces.size() > 1) {
+						MutableDeclaredType dtoType = (MutableDeclaredType)envContext.getProcessingEnv().getTransferObjectUtils().getDomainType(next).getDto();
+						DomainDeclaredType domainDeclared = new DomainDeclared(dataInterfaces.get(0), dtoType, envContext, configurationContext);
+						domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
+						newBounds.add(domainDeclared);
+					} else {
+						newBounds.add(next);
+					}
+				} else {
+					newBounds.add(next);
+				}
+			}
+			
+			return newBounds;
+		}
+
+		return bounds;
+	}
+	
+	private DomainDeclaredType getDomainDataType(DomainDeclaredType domainType) {
+		List<MutableDeclaredType> result = new ArrayList<MutableDeclaredType>();
+		findDomainData(domainType, result);
+		
+		DomainDeclaredType domainDeclared = domainType;
+		
+		if (result.size() > 0) {
+			domainDeclared = new DomainDeclared(result.get(0), dtoType, envContext, configurationContext);
+			domainDeclared = replaceTypeParamsByWildcard(domainDeclared);
+		} else {
+			List<MutableTypeVariable> typeParams = new LinkedList<MutableTypeVariable>();
+			
+			for (MutableTypeVariable typeVariable: domainType.getTypeVariables()) {
+
+				Set<? extends MutableTypeMirror> lbounds = new HashSet<MutableTypeMirror>();
+				
+				if (typeVariable.getLowerBounds().size() > 0) {
+					lbounds = processBounds(typeVariable.getLowerBounds());
+				}
+
+				Set<? extends MutableTypeMirror> ubounds = new HashSet<MutableTypeMirror>();
+
+				if (typeVariable.getUpperBounds().size() > 0) {
+					ubounds = processBounds(typeVariable.getUpperBounds());
+				}
+				typeParams.add(envContext.getProcessingEnv().getTypeUtils().getTypeVariable(typeVariable.getVariable(), ubounds.toArray(new MutableTypeMirror[] {}), lbounds.toArray(new MutableTypeMirror[] {})));
+			}
+			
+			DomainDeclaredType superClass = domainType.getSuperClass();
+			List<? extends MutableTypeMirror> interfaces = domainDeclared.getInterfaces();
+			
+			domainType.setTypeVariables(typeParams.toArray(new MutableTypeVariable[] {}));
+			
+			domainType.setSuperClass(superClass);
+			domainDeclared.setInterfaces(interfaces);
+			
+			domainDeclared = domainType;
+		}
+		
+		if (!hasCustomProperties(domainType, domainDeclared)) {
+			return domainDeclared;
+		}
+
 		return domainType;
 	}
 	
