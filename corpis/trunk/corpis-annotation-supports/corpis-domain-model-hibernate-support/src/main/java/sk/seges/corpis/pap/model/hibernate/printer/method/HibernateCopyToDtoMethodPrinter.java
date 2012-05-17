@@ -28,7 +28,7 @@ public class HibernateCopyToDtoMethodPrinter extends CopyToDtoMethodPrinter {
 	public HibernateCopyToDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter,
 			HibernateEntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv,
 			TransferObjectProcessingEnvironment processingEnv) {
-		super(converterProviderPrinter, elementHolderTypeConverter, parametersResolver, roundEnv, processingEnv);
+		super(converterProviderPrinter, elementHolderTypeConverter, parametersResolver, entityResolver, roundEnv, processingEnv);
 		this.entityResolver = entityResolver;
 	}
 
