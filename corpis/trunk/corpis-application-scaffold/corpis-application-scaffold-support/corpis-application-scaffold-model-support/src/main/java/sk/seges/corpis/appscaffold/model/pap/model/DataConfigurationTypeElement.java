@@ -56,7 +56,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 		return super.getInstantiableDomain();
 	}
 
-	private boolean hasCustomProperties(DomainDeclaredType domainDeclared, MutableDeclaredType dataType) {
+	private boolean hasCustomProperties(MutableDeclaredType domainDeclared, MutableDeclaredType dataType) {
 		
 		if (!domainDeclared.toString(ClassSerializer.CANONICAL, false).equals(dataType.toString(ClassSerializer.CANONICAL, false))) {
 			
@@ -186,7 +186,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 						DomainDeclaredType domainDeclared = new DomainDeclared(dataInterfaces.get(0), dtoType, envContext, configurationContext);
 						domainDeclared.setTypeVariables(new MutableTypeVariable[]{});
 						
-						if (!hasCustomProperties(domainDeclared, (MutableDeclaredType) next)) {
+						if (!hasCustomProperties((MutableDeclaredType) next, dataInterfaces.get(0))) {
 							newBounds.add(domainDeclared);
 						} else {
 							newBounds.add(next);
