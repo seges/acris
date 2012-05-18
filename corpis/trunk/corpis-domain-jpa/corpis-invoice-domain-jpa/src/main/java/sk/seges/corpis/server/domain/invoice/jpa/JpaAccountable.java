@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
 import sk.seges.corpis.server.domain.customer.jpa.JpaCustomerBase;
 import sk.seges.corpis.server.domain.invoice.server.model.base.AccountableBase;
@@ -15,6 +16,7 @@ import sk.seges.corpis.server.domain.invoice.server.model.base.AccountableBase;
 /**
  * @author eldzi
  */
+@MappedSuperclass
 public abstract class JpaAccountable extends AccountableBase {
 
 	private static final long serialVersionUID = 7608869409434126440L;
@@ -29,7 +31,6 @@ public abstract class JpaAccountable extends AccountableBase {
 		return super.getCreationDate();
 	}
 
-	@Column(name = "currency")
 	@ManyToOne
 	public JpaCurrency getCurrency() {
 		return (JpaCurrency) super.getCurrency();
