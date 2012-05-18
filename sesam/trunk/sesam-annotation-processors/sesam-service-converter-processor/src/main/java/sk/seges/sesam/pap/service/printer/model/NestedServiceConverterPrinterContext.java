@@ -31,7 +31,7 @@ public class NestedServiceConverterPrinterContext {
 		DtoType dto = domainType.getDto();
 		this.rawDomain = domainType;
 		this.domain = (DomainDeclaredType) dto.getDomain();
-		this.rawDto = dto.getConverter().getConfiguration().getRawDto();
+		this.rawDto = domainType.getConverter().getConfiguration().getRawDto();
 		this.dto = (DtoDeclaredType) dto;
 		this.converterType = dto.getConverter();
 		this.localMethod = localMethod;
