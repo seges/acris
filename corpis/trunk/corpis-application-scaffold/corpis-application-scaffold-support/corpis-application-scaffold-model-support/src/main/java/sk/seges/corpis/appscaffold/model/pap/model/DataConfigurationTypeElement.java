@@ -207,8 +207,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 	}
 	
 	private DomainDeclaredType getDomainDataType(DomainDeclaredType domainType) {
-		List<MutableDeclaredType> result = new ArrayList<MutableDeclaredType>();
-		findDomainData(domainType, result);
+		List<MutableDeclaredType> result = getDomainData(domainType);
 		
 		DomainDeclaredType domainDeclared = domainType;
 		
@@ -276,13 +275,27 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 			findDomainData(superClass, domainDataTypes);
 		}
 	}
+
+	private List<MutableDeclaredType> getDomainData(MutableDeclaredType declaredType) {
+		
+		List<MutableDeclaredType> result = new ArrayList<MutableDeclaredType>();
+		List<MutableDeclaredType> dataTypes = new ArrayList<MutableDeclaredType>();
+		findDomainData(declaredType, dataTypes);
+
+		for (MutableDeclaredType dataType: dataTypes) {
+			if (!hasCustomProperties((MutableDeclaredType) declaredType, dataType)) {
+				result.add(dataType);
+			}
+		}
+		
+		return result;
+	}
 	
 	@Override
 	public boolean appliesForDomainType(MutableTypeMirror domainType) {
 		TypeElement declaredDomainType = transferObjectConfiguration.getDomain();
 		if (declaredDomainType != null) {
-			List<MutableDeclaredType> mutableDomainData = new ArrayList<MutableDeclaredType>(); 
-			findDomainData(getTypeUtils().toMutableType(declaredDomainType), mutableDomainData);
+			List<MutableDeclaredType> mutableDomainData = getDomainData(getTypeUtils().toMutableType(declaredDomainType));
 			if (mutableDomainData.size() > 0) {
 				for (MutableDeclaredType mutableDomain: mutableDomainData) {
 					if (getTypeUtils().isSameType(mutableDomain, domainType)) {
