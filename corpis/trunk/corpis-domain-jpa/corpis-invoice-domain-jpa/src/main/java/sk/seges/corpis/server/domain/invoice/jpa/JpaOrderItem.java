@@ -25,11 +25,11 @@ public class JpaOrderItem extends JpaOrderItemBase<JpaOrder> implements IDomainO
 	
 	protected static final String SEQ_ORDER_ITEMS = "seqOrderItems";
 	
-	@Id
-	@GeneratedValue(generator = SEQ_ORDER_ITEMS)
 	private Long id;
 	
 	@Override
+	@Id
+	@GeneratedValue(generator = SEQ_ORDER_ITEMS)
 	public Long getId() {
 		return id;
 	}

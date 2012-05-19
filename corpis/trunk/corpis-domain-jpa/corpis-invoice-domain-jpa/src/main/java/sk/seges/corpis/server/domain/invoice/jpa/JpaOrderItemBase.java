@@ -4,6 +4,7 @@
 package sk.seges.corpis.server.domain.invoice.jpa;
 
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
@@ -16,9 +17,10 @@ import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 public abstract class JpaOrderItemBase<O extends JpaOrderBase> extends JpaAccountableItem implements OrderItemData<O> {
 	private static final long serialVersionUID = -7389416843335701988L;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
 	private O order;
-	
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "orders_id")
 	public O getOrder() {
 		return order;
 	}
