@@ -159,7 +159,7 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 	
 	protected void printDtoInstancer(FormattedPrintWriter pw, EntityResolver entityResolver, DtoType type) {
 		pw.println(type," " + RESULT + " = new ", type, "();");
-		if ((type instanceof DtoDeclaredType) && entityResolver.shouldHaveIdMethod((DomainDeclaredType) type.getDomain())) {
+		if ((type instanceof DtoDeclaredType) && entityResolver.shouldHaveIdMethod((DomainDeclaredType) type.getDomainDefinitionConfiguration().getInstantiableDomain())) {
 			MutableExecutableElement idMethod = ((DtoDeclaredType)type).getIdMethod(entityResolver);			
 			pw.println(RESULT + "." + MethodHelper.toSetter(idMethod) + "((", idMethod.asType().getReturnType(), ")id);");
 		}
