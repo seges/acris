@@ -6,14 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.invoice.jpa.JpaProduct;
-import sk.seges.corpis.server.domain.invoice.server.model.data.ProductData;
 import sk.seges.corpis.server.domain.manufacture.server.model.base.ManufactureItemBase;
+import sk.seges.corpis.server.domain.manufacture.server.model.data.ManufactureOrderData;
 
 @SuppressWarnings("serial")
 @Entity
@@ -32,13 +30,8 @@ public class JpaManufactureItem extends ManufactureItemBase {
 
 	@Override
 	@Column
-	public Date getCalucatedEndDate() {
-		return super.getCalucatedEndDate();
-	}
-	
-	@Column
-	public Date getCalucatedStartDate() {
-		return super.getCalucatedStartDate();
+	public Date getCalucatedDate() {
+		return super.getCalucatedDate();
 	}
 	
 	@Override
@@ -49,8 +42,8 @@ public class JpaManufactureItem extends ManufactureItemBase {
 		
 	@Override
 	@Column
-	public Date getEndDate() {
-		return super.getEndDate();
+	public Date getDate() {
+		return super.getDate();
 	}
 	
 	@Override
@@ -60,15 +53,8 @@ public class JpaManufactureItem extends ManufactureItemBase {
 	}
 		
 	@Override
-	@Column
-	public Date getStartDate() {
-		return super.getStartDate();
-	}
-	
-	@Override
-	@ManyToOne(targetEntity=JpaProduct.class)
-	@JoinColumn(name = "product")
-	public ProductData getProduct() {
-		return super.getProduct();
+	@OneToMany(targetEntity = JpaManufactureOrder.class)
+	public ManufactureOrderData getManufactureOrder() {
+		return super.getManufactureOrder();
 	}
 }

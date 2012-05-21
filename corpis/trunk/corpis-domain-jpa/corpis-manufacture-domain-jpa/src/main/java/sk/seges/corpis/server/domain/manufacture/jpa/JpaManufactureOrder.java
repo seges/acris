@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -16,8 +17,9 @@ import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.invoice.jpa.JpaAccountableItem;
 import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
 import sk.seges.corpis.server.domain.manufacture.server.model.base.ManufactureOrderBase;
-import sk.seges.corpis.server.domain.manufacture.server.model.data.ManufactureItemData;
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
+import sk.seges.corpis.server.domain.stock.jpa.JpaStockItem;
+import sk.seges.corpis.server.domain.stock.server.model.data.StockItemData;
 
 @SuppressWarnings("serial")
 @Entity
@@ -33,15 +35,15 @@ public class JpaManufactureOrder extends ManufactureOrderBase {
 	}
 	
 	@Override
-	@ManyToOne(targetEntity = JpaManufactureItem.class)
-	public ManufactureItemData getManufactureItem() {
-		return super.getManufactureItem();
-	}
-
-	@Override
 	@ManyToOne(targetEntity = JpaAccountableItem.class)
 	public AccountableItemData getOrderBase() {
 		return super.getOrderBase();
+	}
+	
+	@Override
+	@OneToMany(targetEntity = JpaStockItem.class)
+	public StockItemData getStockItem() {
+		return super.getStockItem();
 	}
 
 	@Override

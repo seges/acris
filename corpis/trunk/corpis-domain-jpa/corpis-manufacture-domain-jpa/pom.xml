@@ -15,6 +15,14 @@
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-stock-domain-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-stock-domain-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>corpis-manufacture-domain-model</artifactId>
 		</dependency>
 		<dependency>
