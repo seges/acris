@@ -7,14 +7,15 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.corpis.server.domain.PersonName;
 import sk.seges.corpis.server.domain.invoice.AccountableItem;
 import sk.seges.corpis.server.domain.stock.StockItem;
+import sk.seges.sesam.domain.IDomainObject;
 
 @DomainInterface
 @BaseObject
-public interface ManufactureOrder {
+public interface ManufactureOrder extends IDomainObject<Long> {
 
 	Date orderDate();
 	
-	AccountableItem orderBase();
+	AccountableItem orderItem();
 	
 	StockItem stockItem();
 	

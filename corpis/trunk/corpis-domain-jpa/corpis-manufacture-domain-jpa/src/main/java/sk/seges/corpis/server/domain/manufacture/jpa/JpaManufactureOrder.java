@@ -7,14 +7,16 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.Valid;
 
 import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
-import sk.seges.corpis.server.domain.invoice.jpa.JpaAccountableItem;
+import sk.seges.corpis.server.domain.invoice.jpa.JpaOrderItem;
 import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
 import sk.seges.corpis.server.domain.manufacture.server.model.base.ManufactureOrderBase;
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
@@ -35,9 +37,16 @@ public class JpaManufactureOrder extends ManufactureOrderBase {
 	}
 	
 	@Override
-	@ManyToOne(targetEntity = JpaAccountableItem.class)
-	public AccountableItemData getOrderBase() {
-		return super.getOrderBase();
+	@Id
+	@GeneratedValue(generator = SEQ_MANUFACTURE_ORDER)
+	public Long getId() {
+		return super.getId();
+	}
+
+	@Override
+	@OneToOne(targetEntity = JpaOrderItem.class)
+	public AccountableItemData getOrderItem() {
+		return super.getOrderItem();
 	}
 	
 	@Override
