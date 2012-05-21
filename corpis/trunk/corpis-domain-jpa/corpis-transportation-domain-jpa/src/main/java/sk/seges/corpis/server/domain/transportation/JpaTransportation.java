@@ -26,6 +26,10 @@ public class JpaTransportation extends TransportationBase {
 
 	protected static final String SEQ_TRANSPORTATION = "seqTransporation";
 
+	public JpaTransportation() {
+		setPerson(new JpaPersonName());
+	}
+	
 	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_TRANSPORTATION)
