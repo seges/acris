@@ -9,7 +9,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -50,7 +50,7 @@ public class JpaManufactureOrder extends ManufactureOrderBase {
 	}
 	
 	@Override
-	@OneToMany(targetEntity = JpaStockItem.class)
+	@ManyToOne(targetEntity = JpaStockItem.class)
 	public StockItemData getStockItem() {
 		return super.getStockItem();
 	}

@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -54,7 +54,7 @@ public class JpaManufactureItem extends ManufactureItemBase {
 	}
 		
 	@Override
-	@OneToMany(targetEntity = JpaManufactureOrder.class)
+	@ManyToOne(targetEntity = JpaManufactureOrder.class)
 	public ManufactureOrderData getManufactureOrder() {
 		return super.getManufactureOrder();
 	}
