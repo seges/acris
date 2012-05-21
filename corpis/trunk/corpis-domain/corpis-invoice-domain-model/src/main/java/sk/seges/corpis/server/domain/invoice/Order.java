@@ -11,11 +11,10 @@ import sk.seges.corpis.server.domain.PersonName;
 import sk.seges.corpis.shared.domain.invoice.EOrderStatus;
 import sk.seges.corpis.shared.domain.invoice.EPaymentType;
 import sk.seges.corpis.shared.domain.invoice.ETransports;
-import sk.seges.sesam.domain.IDomainObject;
 
 @DomainInterface
 @BaseObject
-public interface Order extends IDomainObject<Long> {
+public interface Order extends Accountable {
 
 	String orderId();
 	String note();

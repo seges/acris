@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
+import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.transportation.server.model.base.TransportationBase;
 import sk.seges.corpis.server.domain.transportation.server.model.data.TransportationUnitData;
 import sk.seges.corpis.server.domain.transportation.server.model.data.VehicleData;
@@ -35,8 +35,8 @@ public class JpaTransportation extends TransportationBase {
 
 	@Override
 	@Embedded
-	public PersonNameData getPerson() {
-		return super.getPerson();
+	public JpaPersonName getPerson() {
+		return (JpaPersonName) super.getPerson();
 	}
 
 	@Override
