@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import sk.seges.corpis.server.domain.manufacture.server.model.base.ManufactureItemBase;
 import sk.seges.corpis.server.domain.manufacture.server.model.data.ManufactureOrderData;
+import sk.seges.corpis.shared.domain.manufacture.EManufactureItemState;
 
 @SuppressWarnings("serial")
 @Entity
@@ -56,5 +57,11 @@ public class JpaManufactureItem extends ManufactureItemBase {
 	@OneToMany(targetEntity = JpaManufactureOrder.class)
 	public ManufactureOrderData getManufactureOrder() {
 		return super.getManufactureOrder();
+	}
+	
+	@Override
+	@Column(name = "state")
+	public EManufactureItemState getState() {
+		return super.getState();
 	}
 }
