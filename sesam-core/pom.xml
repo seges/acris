@@ -3,13 +3,13 @@
 	<groupId>sk.seges.sesam</groupId>
 	<artifactId>sesam-core</artifactId>
 	<packaging>jar</packaging>
-	<version>1.2.1</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<name>sesam-core</name>
 
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os</artifactId>
-		<version>1.2.1</version>
+		<version>1.2.2-SNAPSHOT</version>
 		<relativePath>../sesam-os/pom.xml</relativePath>
 	</parent>
 	
