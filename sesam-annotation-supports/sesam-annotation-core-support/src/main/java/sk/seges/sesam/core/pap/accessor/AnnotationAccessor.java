@@ -83,7 +83,7 @@ public abstract class AnnotationAccessor {
 				fakeClass.writeFile();
 				fakeClass.defrost();
 			} catch (Exception e1) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + className + "! Returning null.");
+				processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + className + "! Returning null." + e1.getMessage());
 				return null;
 			}
 		}

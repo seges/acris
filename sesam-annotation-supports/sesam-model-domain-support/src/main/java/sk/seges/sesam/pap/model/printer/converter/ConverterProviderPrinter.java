@@ -37,6 +37,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKi
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
@@ -552,15 +553,15 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	}
 
 	public void printDtoEnsuredConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
-		printEnsuredConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw, inlineAware);
+		printEnsuredConverterMethodName(ConverterTargetType.DTO, dtoType, null, parameterName, new DtoTypeElementProvider(), method, pw, inlineAware);
 	}
 
 	public void printDtoGetConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
 		printGetConverterMethodName(ConverterTargetType.DTO, dtoType, parameterName, new DtoTypeElementProvider(), method, pw, inlineAware);
 	}
 
-	public void printDomainEnsuredConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
-		printEnsuredConverterMethodName(ConverterTargetType.DOMAIN, domainType, parameterName, new DomainTypeElementProvider(), method, pw, inlineAware);
+	public void printDomainEnsuredConverterMethodName(DomainType domainType, DomainType domainReturnType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printEnsuredConverterMethodName(ConverterTargetType.DOMAIN, domainType, domainReturnType, parameterName, new DomainTypeElementProvider(), method, pw, inlineAware);
 	}
 
 	public void printDomainGetConverterMethodName(DomainType domainType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
@@ -647,15 +648,15 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		}
 	}
 	
-	private <T extends MutableTypeMirror & HasConverter> void printEnsuredConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
-		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getEnsuredConverterMethodName(type.getConverter(), targetType), inlineAware);
+	private <T extends MutableTypeMirror & HasConverter> void printEnsuredConverterMethodName(ConverterTargetType targetType, T type, T sourceType, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
+		printConverterMethodName(targetType, type, sourceType, parameterName, tomBaseElementProvider, method, pw, getEnsuredConverterMethodName(type.getConverter(), targetType), inlineAware);
 	}
 
 	private <T extends MutableTypeMirror & HasConverter> void printGetConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
-		printConverterMethodName(targetType, type, parameterName, tomBaseElementProvider, method, pw, getGetConverterMethodName(type.getConverter(), targetType), inlineAware);
+		printConverterMethodName(targetType, type, null, parameterName, tomBaseElementProvider, method, pw, getGetConverterMethodName(type.getConverter(), targetType), inlineAware);
 	}
 
-	private <T extends MutableTypeMirror & HasConverter> void printConverterMethodName(ConverterTargetType targetType, T type, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, String methodName, boolean inlineAware) {
+	private <T extends MutableTypeMirror & HasConverter> void printConverterMethodName(ConverterTargetType targetType, T type, T sourceType, String parameterName, TomBaseElementProvider tomBaseElementProvider, ExecutableElement method, FormattedPrintWriter pw, String methodName, boolean inlineAware) {
 		
 		if (methodName == null) {
 			return;
@@ -688,6 +689,17 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 			pw.print(", ");
 		}
 
+		if (sourceType != null &&  processingEnv.getTypeUtils().isAssignable(type instanceof DelegateMutableType ? ((DelegateMutableType)type).ensureDelegateType() : type, 
+				sourceType instanceof DelegateMutableType ? ((DelegateMutableType)type).ensureDelegateType() : sourceType)) {
+			if (type.getKind().isDeclared() && ((MutableDeclaredType)type).getTypeVariables().size() > 0) {
+				//TODO use cast utils!
+			} else {
+				pw.print("(", type, ")");
+			}
+		} else {
+			//TODO log error
+		}
+		
         pw.print(parameterName);
         
 		if (convertedResult != null) {
