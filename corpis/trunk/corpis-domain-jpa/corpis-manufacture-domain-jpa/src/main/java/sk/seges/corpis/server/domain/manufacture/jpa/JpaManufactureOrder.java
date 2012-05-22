@@ -67,7 +67,7 @@ public class JpaManufactureOrder extends ManufactureOrderBase {
 			@AttributeOverride(name = PersonNameData.FIRST_NAME, column = @Column(name = TABLE_PREFIX + PersonNameData.FIRST_NAME)),
 			@AttributeOverride(name = PersonNameData.SURNAME, column = @Column(name = TABLE_PREFIX + PersonNameData.SURNAME)) })
 	@Valid
-	public PersonNameData getResponsiblePerson() {
-		return super.getResponsiblePerson();
+	public JpaPersonName getResponsiblePerson() {
+		return (JpaPersonName)super.getResponsiblePerson();
 	}	
 }
