@@ -99,6 +99,8 @@ To deploy to Sonatype (and later to be compliant with Maven central) artifacts n
 
 == Steps ==
 
+  * check the pom whether there are comments to follow - e.g. changing a version
+  * go through all dependency versions and resolve all SNAPSHOT versions
   * {{{mvn release:prepare -DautoVersionSubmodules=true}}}
   * {{{mvn -Darguments=-Dgpg.passphrase=SecretGPG release:perform}}}
   * {{{mvn release:clean}}}
