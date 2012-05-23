@@ -1,4 +1,4 @@
-package sk.seges.corpis.server.domain.customer;
+package sk.seges.corpis.shared.domain.customer;
 
 /**
  * 
