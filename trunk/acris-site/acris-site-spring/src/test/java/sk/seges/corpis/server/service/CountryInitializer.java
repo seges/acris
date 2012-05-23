@@ -6,12 +6,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import sk.seges.corpis.server.dao.ICountryDao;
-import sk.seges.corpis.shared.domain.api.CountryData;
+import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.corpis.shared.service.ICountryService;
 
 public class CountryInitializer {
 
-	private ICountryDao<CountryData<?>> countryDao;
+	private ICountryDao<CountryData> countryDao;
 
 	private ICountryService countryService;
 	

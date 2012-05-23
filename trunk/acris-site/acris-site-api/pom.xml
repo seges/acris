@@ -16,11 +16,11 @@
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-domain-api</artifactId>
+			<artifactId>corpis-core-domain-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-domain-api</artifactId>
+			<artifactId>corpis-core-domain-model</artifactId>
 			<classifier>sources</classifier>
 		</dependency>		
 

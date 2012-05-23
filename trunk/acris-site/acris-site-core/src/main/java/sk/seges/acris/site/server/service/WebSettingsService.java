@@ -11,8 +11,8 @@ import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData.MetaData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
-import sk.seges.corpis.shared.domain.api.CountryData;
-import sk.seges.corpis.shared.domain.api.HasWebId;
+import sk.seges.corpis.server.domain.HasWebId;
+import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.corpis.shared.service.ICountryService;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
@@ -33,11 +33,11 @@ public class WebSettingsService implements IWebSettingsService {
 		WebSettingsData webSettingsData = webSettingsDao.createDefaultEntity();
 		webSettingsData.setWebId(webId);
 		
-		CountryData<?> country = countryService.findDefaultCountry();
+		CountryData country = countryService.findDefaultCountry();
 
 		if (country != null) {
 			webSettingsData.setLanguage(country.getLanguage());
-			Set<CountryData<?>> translations = new HashSet<CountryData<?>>();
+			Set<CountryData> translations = new HashSet<CountryData>();
 			translations.add(country);
 			webSettingsData.setTranslations(translations);
 		}

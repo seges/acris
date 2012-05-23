@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import sk.seges.corpis.server.dao.ICountryDao;
 import sk.seges.corpis.server.dao.hibernate.HibernateCountryDao;
 import sk.seges.corpis.server.dao.hibernate.spring.SpringHibernateCountryDao;
-import sk.seges.corpis.shared.domain.api.CountryData;
+import sk.seges.corpis.server.domain.server.model.data.CountryData;
 
 public class SiteConfiguration {
 
