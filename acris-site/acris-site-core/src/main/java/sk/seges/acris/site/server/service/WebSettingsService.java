@@ -13,7 +13,7 @@ import sk.seges.acris.site.shared.domain.api.WebSettingsData.MetaData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 import sk.seges.corpis.server.domain.HasWebId;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
-import sk.seges.corpis.shared.service.ICountryService;
+import sk.seges.corpis.server.service.ICountryService;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 
