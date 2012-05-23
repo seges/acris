@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-stock-domain-jpa</artifactId>
+	<name>CorpIS Stock Domain JPA</name>
+	
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-domain-jpa</artifactId>
+		<version>1.2.1</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<dependencies>	
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-stock-domain-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-core-domain-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-invoice-domain-jpa</artifactId>
+		</dependency>
+	</dependencies>
+</project>
