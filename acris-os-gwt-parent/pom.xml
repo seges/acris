@@ -3,7 +3,7 @@
 	<packaging>pom</packaging>
 	<groupId>sk.seges.acris</groupId>
 	<artifactId>acris-os-gwt-parent</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2-SNAPSHOT</version>
 
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
@@ -27,9 +27,9 @@
 	<url>http://acris.googlecode.com</url>
 
 	<scm>
-		<url>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.2.1</url>
-		<connection>scm:svn:http://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.2.1</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-gwt-parent/acris-os-gwt-parent-1.2.1</developerConnection>
+		<url>http://code.google.com/p/acris/source</url>
+		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/acris-os-gwt-parent</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-gwt-parent</developerConnection>
 	</scm>
 
 	<properties>
