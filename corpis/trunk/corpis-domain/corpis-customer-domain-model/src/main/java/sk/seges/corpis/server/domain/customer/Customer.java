@@ -1,5 +1,7 @@
 package sk.seges.corpis.server.domain.customer;
 
+import java.util.Map;
+
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.corpis.server.domain.Address;
@@ -33,4 +35,8 @@ public interface Customer extends IMutableDomainObject<Long> {
 	Boolean taxPayment();
 	Short invoicePaymentInterval();
 	String accountNumber();
+	Map<ECustomerDiscountType, Double> discounts();
+
+	Boolean commision();
+	
 }
