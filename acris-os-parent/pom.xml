@@ -108,15 +108,27 @@
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
-				<artifactId>corpis-domain-api</artifactId>
+				<artifactId>corpis-core-domain-api</artifactId>
 				<version>${corpis-os.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
-				<artifactId>corpis-domain-api</artifactId>
+				<artifactId>corpis-core-domain-api</artifactId>
 				<version>${corpis-os.version}</version>
 				<classifier>sources</classifier>
 			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-core-domain-model</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-core-domain-model</artifactId>
+				<classifier>sources</classifier>
+				<version>${corpis-os.version}</version>
+			</dependency>		
+			
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-core-domain-jpa</artifactId>

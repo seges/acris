@@ -15,9 +15,9 @@ import javax.persistence.Table;
 
 import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
-import sk.seges.corpis.shared.domain.api.CountryData;
-import sk.seges.corpis.shared.domain.api.DBConstraints;
-import sk.seges.corpis.shared.domain.jpa.JpaCountry;
+import sk.seges.corpis.server.domain.DBConstraints;
+import sk.seges.corpis.server.domain.jpa.JpaCountry;
+import sk.seges.corpis.server.domain.server.model.data.CountryData;
 
 @Entity
 @Table(name = "web_settings")
@@ -96,7 +96,7 @@ public class JpaWebSettings extends WebSettingsDTO {
 	
 	@Override
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaCountry.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-	public Set<CountryData<?>> getTranslations() {
+	public Set<CountryData> getTranslations() {
 		return super.getTranslations();
 	}
 	

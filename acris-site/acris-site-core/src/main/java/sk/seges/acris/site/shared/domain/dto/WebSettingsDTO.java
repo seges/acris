@@ -4,7 +4,7 @@ import java.util.Set;
 
 import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.shared.domain.api.WebSettingsData;
-import sk.seges.corpis.shared.domain.api.CountryData;
+import sk.seges.corpis.server.domain.server.model.data.CountryData;
 
 public class WebSettingsDTO implements WebSettingsData {
 
@@ -64,7 +64,7 @@ public class WebSettingsDTO implements WebSettingsData {
 
 	private Set<MetaData> metadata;
 
-	private Set<CountryData<?>> translations;
+	private Set<CountryData> translations;
 	
 	private String parameters;
 	
@@ -91,11 +91,11 @@ public class WebSettingsDTO implements WebSettingsData {
 	public WebSettingsDTO() {
 	}
 	
-	public Set<CountryData<?>> getTranslations() {
+	public Set<CountryData> getTranslations() {
 		return translations;
 	}
 
-	public void setTranslations(Set<CountryData<?>> translations) {
+	public void setTranslations(Set<CountryData> translations) {
 		this.translations = translations;
 	}
 

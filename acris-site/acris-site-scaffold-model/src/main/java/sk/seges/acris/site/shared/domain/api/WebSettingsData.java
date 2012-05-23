@@ -6,9 +6,9 @@ import javax.validation.constraints.NotNull;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
-import sk.seges.corpis.shared.domain.api.CountryData;
-import sk.seges.corpis.shared.domain.api.HasLanguage;
-import sk.seges.corpis.shared.domain.api.HasWebId;
+import sk.seges.corpis.server.domain.HasLanguage;
+import sk.seges.corpis.server.domain.HasWebId;
+import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.sesam.domain.IMutableDomainObject;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
@@ -92,9 +92,9 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 	
 	void setParameters(String parameters);
 	
-	Set<CountryData<?>> getTranslations();
+	Set<CountryData> getTranslations();
 	
-	void setTranslations(Set<CountryData<?>> translations);
+	void setTranslations(Set<CountryData> translations);
 	
 	String getTopLevelDomain();
 	
