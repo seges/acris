@@ -33,6 +33,10 @@
 			<artifactId>acris-binding</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+		</dependency>
 
 		<!-- UI libraries -->
 		<!-- SmartGWT dependencies -->
