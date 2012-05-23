@@ -1,6 +1,4 @@
 <module>
-	<inherits name='sk.seges.corpis.DomainShared' />
-	
 	<source path="shared.domain.api" />
 	<source path="shared.domain.dto" />
 	<source path="shared.service" />

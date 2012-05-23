@@ -1,6 +1,8 @@
-package sk.seges.corpis.shared.service;
+package sk.seges.corpis.server.service;
 
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
+
+
 
 public interface ICountryService {
 

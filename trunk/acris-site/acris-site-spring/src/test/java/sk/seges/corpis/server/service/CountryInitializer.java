@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import sk.seges.corpis.server.dao.ICountryDao;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
-import sk.seges.corpis.shared.service.ICountryService;
+import sk.seges.corpis.server.service.ICountryService;
 
 public class CountryInitializer {
 
