@@ -1,0 +1,81 @@
+.float-left {
+	float: left;
+}
+
+.inline {
+	display: inline;
+}
+
+.floatCleaner {
+	clear: both;
+}
+
+.shadow-component-right-border {
+	background: url('../../../acris-images/shadow-right-border.png') repeat-y right;
+}
+
+.shadow-component-right-bottom-corner {
+	background: url('../../../acris-images/shadow-right-bottom-corner.png') no-repeat right bottom;
+}
+
+.shadow-component-left-bottom-corner {
+	background: url('../../../acris-images/shadow-left-bottom-corner.png') no-repeat left bottom;
+}
+
+.shadow-component-bottom-border {
+	background: url('../../../acris-images/shadow-bottom-border.png') repeat-x left bottom;
+	margin: 0px 0px 0px 5px;
+	padding-bottom: 4px;
+}
+	
+.shadow-component-bottom-border > input[type="text"],
+.shadow-component-bottom-border > input[type="password"] {
+	height: 22px;
+}
+
+.shadow-component-bottom-border > div > input[type="image"] {
+	width: 11px;
+	height: 11px;
+}
+
+.shadow-component-bottom-border > div > input[type="image"],
+.shadow-component-bottom-border > textarea,
+.shadow-component-bottom-border > button,
+.shadow-component-bottom-border > input[type="text"],
+.shadow-component-bottom-border > input[type="password"] {
+	border: 1px solid black;
+	margin: 0px 0px 0px -5px;
+	float: left;
+}
+
+.advanced-TextButtonPanel {
+	margin: 0px 0px 0px -5px;
+	float: left;	
+}
+		
+.shadow-component-bottom-border > button {
+	background-color: #CCCCCC;	
+}
+
+.shadow-component-right-top-corner {
+	height: 5px;
+	width: 3px;
+}
+
+.shadow-acris-check-box-checked, .shadow-acris-check-box-checked-disabled, .shadow-acris-check-box-unchecked, .shadow-acris-check-box-unchecked-disabled {
+	margin: 0xp;
+}
+
+.shadow-acris-check-box-checked, .shadow-acris-check-box-unchecked {
+	margin: 0xp;
+	border: 1px solid black;
+}
+
+.shadow-acris-check-box-checked-disabled, .shadow-acris-check-box-unchecked-disabled {
+	margin: 0xp;
+	border: 1px solid grey;
+}
+
+div.inline > label {
+	float:left;	
+}
