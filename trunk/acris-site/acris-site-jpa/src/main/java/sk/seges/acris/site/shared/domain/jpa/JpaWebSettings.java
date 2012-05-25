@@ -14,19 +14,22 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
-import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
+import sk.seges.acris.site.shared.domain.api.WebSettings.MetaDataType;
+import sk.seges.acris.site.shared.domain.api.server.model.base.MetaDataBase;
+import sk.seges.acris.site.shared.domain.api.server.model.base.WebSettingsBase;
+import sk.seges.acris.site.shared.domain.api.server.model.data.MetaDataData;
 import sk.seges.corpis.server.domain.DBConstraints;
 import sk.seges.corpis.server.domain.jpa.JpaCountry;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
 
 @Entity
 @Table(name = "web_settings")
-public class JpaWebSettings extends WebSettingsDTO {
+public class JpaWebSettings extends WebSettingsBase {
 
 	@Entity
 	@Table(name = "web_meta_data")
 	@SequenceGenerator(name = "meta_data_id_seq", sequenceName = "meta_data_id_seq", initialValue = 1)
-	public static class JpaMetaData extends MetaDataDTO {
+	public static class JpaMetaData extends MetaDataBase {
 
 		private static final long serialVersionUID = 3L;
 
@@ -102,7 +105,7 @@ public class JpaWebSettings extends WebSettingsDTO {
 	
 	@Override
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaMetaData.class, cascade={CascadeType.ALL})
-	public Set<MetaData> getMetaData() {
+	public Set<MetaDataData> getMetaData() {
 		return super.getMetaData();
 	}
 	
@@ -133,8 +136,8 @@ public class JpaWebSettings extends WebSettingsDTO {
 	
 	@Override
 	@OneToOne(targetEntity = JpaFTPWebSettings.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-	public FTPWebSettingsData getFTPWebSettingsData() {
-		return super.getFTPWebSettingsData();
+	public FTPWebSettingsData getFtpWebSettings() {
+		return super.getFtpWebSettings();
 	}
 	
 	@Override
