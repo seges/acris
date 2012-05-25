@@ -80,12 +80,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-core</artifactId>
-			<classifier>sources</classifier>
+			<artifactId>acris-site-server</artifactId>
 		</dependency>
 
 		<dependency>
