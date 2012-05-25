@@ -20,6 +20,8 @@
 		<module>../acris-site-gilead</module>
 		<module>../acris-site-hibernate</module>
 		<module>../acris-site-spring</module>
+		<module>../acris-site-rpc</module>
+		<module>../acris-site-server</module>
 	</modules>
 
 </project>
