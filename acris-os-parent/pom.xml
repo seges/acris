@@ -186,6 +186,44 @@
 				<version>${corpis-os.version}</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+	            <groupId>sk.seges.corpis</groupId>
+	            <artifactId>corpis-application-scaffold-local-service-data-interface-processor</artifactId>
+				<version>${corpis-os.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+			<dependency>
+	            <groupId>sk.seges.corpis</groupId>
+	            <artifactId>corpis-application-scaffold-data-domain-model-converter-processor</artifactId>
+				<version>${corpis-os.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-data-dao-api-processor</artifactId>
+				<version>${corpis-os.version}</version>
+				<scope>provided</scope>		
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-data-dao-implementation-processor</artifactId>
+				<version>${corpis-os.version}</version>
+				<scope>provided</scope>		
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-service-converter-api</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-application-scaffold-data-service-converter-processor </artifactId>
+				<version>${corpis-os.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			
+	        
+			
 
 			<!-- Sesam dependencies -->
 			<dependency>
@@ -629,6 +667,30 @@
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-rpc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-rpc</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-server</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-site-server</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			
+			
 
 			<dependency>
 				<groupId>${project.groupId}</groupId>
