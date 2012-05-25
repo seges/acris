@@ -87,7 +87,6 @@ public class ReportingService implements IReportingService {
 			StringWriter out = new StringWriter();
 			exporter.setParameter(JRExporterParameter.OUTPUT_WRITER, out);
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-			// String webId = "HrOd_Ranking_WEB";
 			exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image?image=");
 			exporter.exportReport();
 			return out.getBuffer().toString();
@@ -96,7 +95,7 @@ public class ReportingService implements IReportingService {
 		}
 		return null;
 	}
-
+	
 	@Override
 	@Transactional
 	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters,
