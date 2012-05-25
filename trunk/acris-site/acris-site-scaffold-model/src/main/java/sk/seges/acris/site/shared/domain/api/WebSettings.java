@@ -5,7 +5,9 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
-import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
+import sk.seges.acris.domain.shared.domain.ftp.FTPWebSettings;
+import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
+import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.corpis.server.domain.HasLanguage;
 import sk.seges.corpis.server.domain.HasWebId;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
@@ -14,20 +16,20 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
 @BeanWrapper 
 @MetaModel
-public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId, HasLanguage {
+@DomainInterface
+@BaseObject
+public interface WebSettings extends IMutableDomainObject<String>, HasWebId, HasLanguage {
  
 	@BeanWrapper
+	@DomainInterface
+	@BaseObject
 	public static interface MetaData extends IMutableDomainObject<Long> {
 		
 		@NotNull
-		MetaDataType getType();
-		
-		void setType(MetaDataType type);
+		MetaDataType type();
 		
 		@NotNull
-		String getContent();
-		
-		void setContent(String value);
+		String content();		
 	}
 	
 	public static interface ContentType {
@@ -88,63 +90,33 @@ public interface WebSettingsData extends IMutableDomainObject<String>, HasWebId,
 		}
 	}
 
-	String getParameters();
+	String parameters();
 	
-	void setParameters(String parameters);
+	Set<CountryData> translations();
 	
-	Set<CountryData> getTranslations();
+	String topLevelDomain();
 	
-	void setTranslations(Set<CountryData> translations);
+	String analyticsScriptData();
 	
-	String getTopLevelDomain();
+	Set<MetaData> metaData();
 	
-	void setTopLevelDomain(String tolLevelDomain);
+	Boolean stockCountdown();
 	
-	String getAnalyticsScriptData();
+	Integer stockAmountForWhichTheProductDisplay();
 	
-	void setAnalyticsScriptData(String analyticsScript);
+	String constantSymbol();
 	
-	Set<MetaData> getMetaData();
+	Integer termOfPayment();
 	
-	void setMetaData(Set<MetaData> metaData);
+	FTPWebSettings ftpWebSettings();
 	
-	Boolean getStockCountdown();
+	Integer thumbnailMaxHeight();
 	
-	void setStockCountdown(Boolean stockCountdown);
+	Integer thumbnailMaxWidth();
 	
-	Integer getStockAmountForWhichTheProductDisplay();
+	Integer imageMaxHeight();
 	
-	void setStockAmountForWhichTheProductDisplay(Integer stockAmountForWhichTheProductDisplay);
+	Integer imageMaxWidth();
 	
-	String getConstantSymbol();
-	
-	void setConstantSymbol(String constantSymbol);
-	
-	Integer getTermOfPayment();
-	
-	void setTermOfPayment(Integer termOfPayment);
-	
-	FTPWebSettingsData getFTPWebSettingsData();
-	
-	void setFTPWebSettingsData(FTPWebSettingsData ftpWebSettingsData);
-	
-	Integer getThumbnailMaxHeight();
-	
-	void setThumbnailMaxHeight(Integer maxHeight);
-	
-	Integer getThumbnailMaxWidth();
-	
-	void setThumbnailMaxWidth(Integer maxWidth);
-	
-	Integer getImageMaxHeight();
-	
-	void setImageMaxHeight(Integer maxHeight);
-	
-	Integer getImageMaxWidth();
-	
-	void setImageMaxWidth(Integer maxWidth);
-
-	Integer getMaxProductCount();
-
-	void setMaxProductCount(Integer maxProductCount);
+	Integer maxProductCount();
 }
