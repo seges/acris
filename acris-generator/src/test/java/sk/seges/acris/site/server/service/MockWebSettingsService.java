@@ -1,11 +1,14 @@
 package sk.seges.acris.site.server.service;
 
 import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
-import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
-import sk.seges.acris.site.shared.domain.api.WebSettingsData;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
-public class MockWebSettingsService implements IWebSettingsService {
+import sk.seges.acris.shared.model.dto.FTPWebSettingsDTO;
+import sk.seges.acris.shared.model.dto.WebSettingsDTO;
+import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
+import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
+
+public class MockWebSettingsService implements IWebSettingsServiceLocal {
 
 	protected Boolean localeSensitiveServer;
 

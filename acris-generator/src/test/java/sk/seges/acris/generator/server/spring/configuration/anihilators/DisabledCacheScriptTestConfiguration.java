@@ -12,6 +12,7 @@ import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScrip
 import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
+import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.NocacheScriptWebSettingsBuilder;
@@ -35,7 +36,7 @@ public class DisabledCacheScriptTestConfiguration {
 	}
 
 	@Bean
-	public IWebSettingsService webSettingsService() {
+	public IWebSettingsServiceLocal webSettingsService() {
 		return new MockWebSettingsService(webSettingsBuilder(), MockTestConfiguration.MOCK_ANALYTICS_SCRIPT, false);
 	}
 
