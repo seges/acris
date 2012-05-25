@@ -93,44 +93,48 @@ public class AbstractServicePrinter {
 	}
 
 	protected ExecutableElement getDomainMethodPair(ExecutableElement remoteMethod, ServiceTypeElement serviceTypeElement) {
-		List<ExecutableElement> methods = ElementFilter.methodsIn(serviceTypeElement.asElement().getEnclosedElements());
-
-		for (ExecutableElement method : methods) {
-			boolean pairMethod = false;
-
-			if (method.getSimpleName().toString().equals(remoteMethod.getSimpleName().toString())
-					&& method.getParameters().size() == remoteMethod.getParameters().size()) {
-				pairMethod = true;
-				int index = 0;
-				for (VariableElement dtoParameter : remoteMethod.getParameters()) {
-					
-					DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoParameter.asType());
-					DomainType parameterDomainType = parameterDtoType.getDomain();
-
-					if (!processingEnv.getTypeUtils().isSameType(parameterDomainType, processingEnv.getTypeUtils().toMutableType(method.getParameters().get(index).asType()))) {
-						pairMethod = false;
-						break;
+		
+		for (LocalServiceTypeElement localServiceInterface: serviceTypeElement.getLocalServiceInterfaces()) {
+		
+			List<ExecutableElement> methods = ElementFilter.methodsIn(localServiceInterface.asElement().getEnclosedElements());
+	
+			for (ExecutableElement method : methods) {
+				boolean pairMethod = false;
+	
+				if (method.getSimpleName().toString().equals(remoteMethod.getSimpleName().toString())
+						&& method.getParameters().size() == remoteMethod.getParameters().size()) {
+					pairMethod = true;
+					int index = 0;
+					for (VariableElement dtoParameter : remoteMethod.getParameters()) {
+						
+						DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoParameter.asType());
+						DomainType parameterDomainType = parameterDtoType.getDomain();
+	
+						if (!processingEnv.getTypeUtils().isSameType(parameterDomainType, processingEnv.getTypeUtils().toMutableType(method.getParameters().get(index).asType()))) {
+							pairMethod = false;
+							break;
+						}
+						index++;
 					}
-					index++;
 				}
-			}
-
-			if (pairMethod) {
-				
-				DtoType returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
-				DomainType returnDomainType = returnDtoType.getDomain();
-
-				if (processingEnv.getTypeUtils().isSameType(returnDomainType, returnDtoType)) {
-					return method;
+	
+				if (pairMethod) {
+					
+					DtoType returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
+					DomainType returnDomainType = returnDtoType.getDomain();
+	
+					if (processingEnv.getTypeUtils().isSameType(returnDomainType, returnDtoType)) {
+						return method;
+					}
+					
+					processingEnv.getMessager().printMessage(Kind.ERROR,
+							"[ERROR] Service method return type does not match the remote interface definition " + remoteMethod.toString()
+									+ ". This should have never happened, you are probably a magician or there is a bug in the sesam processor itself.",
+							serviceTypeElement.asElement());
 				}
-				
-				processingEnv.getMessager().printMessage(Kind.ERROR,
-						"[ERROR] Service method return type does not match the remote interface definition " + remoteMethod.toString()
-								+ ". This should have never happened, you are probably a magician or there is a bug in the sesam processor itself.",
-						serviceTypeElement.asElement());
 			}
 		}
-
+		
 		return null;
 	}
 	
