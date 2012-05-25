@@ -12,10 +12,10 @@ import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.factory.PostProcessorActivatorFactory;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 
 public class WebSettingsServiceConfiguration {
@@ -37,7 +37,7 @@ public class WebSettingsServiceConfiguration {
 	}
 	
 	@Bean
-	public IWebSettingsService webSettingsService() {
+	public IWebSettingsServiceLocal webSettingsService() {
 		return new MockWebSettingsService(webSettingsBuilder(), MOCK_ANALYTICS_SCRIPT, false);
 	}
 	

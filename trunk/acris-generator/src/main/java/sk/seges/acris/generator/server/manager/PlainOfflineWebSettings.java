@@ -7,7 +7,8 @@ import sk.seges.acris.generator.server.manager.api.OfflineWebSettings;
 import sk.seges.acris.generator.server.manager.data.OfflineGeneratorParameter;
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.site.server.manager.api.ParametersManager;
-import sk.seges.acris.site.shared.domain.api.WebSettingsData;
+import sk.seges.acris.site.shared.domain.api.WebSettings;
+import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
 
 public class PlainOfflineWebSettings implements OfflineWebSettings {
 

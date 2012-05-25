@@ -10,6 +10,7 @@ import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 public abstract class AbstractProcessorTest {
@@ -24,7 +25,7 @@ public abstract class AbstractProcessorTest {
 	protected ContentDataProvider contentInfoProvider;
 
 	@Autowired
-	protected IWebSettingsService webSettingsService;
+	protected IWebSettingsServiceLocal webSettingsService;
 
 	protected String getInputHtmlFileName() {
 		return inputHtmlFileName;

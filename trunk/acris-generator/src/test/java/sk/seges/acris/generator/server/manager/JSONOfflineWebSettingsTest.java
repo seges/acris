@@ -15,8 +15,9 @@ import sk.seges.acris.generator.server.manager.JSONOfflineWebSettingsTest.JSONOf
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.spring.configuration.JSONTestConfiguration;
-import sk.seges.acris.site.shared.domain.api.WebSettingsData;
-import sk.seges.acris.site.shared.domain.dto.WebSettingsDTO;
+import sk.seges.acris.shared.model.dto.WebSettingsDTO;
+import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.shared.domain.jpa.JpaWebSettings;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +34,7 @@ public class JSONOfflineWebSettingsTest extends AbstractProcessorTest {
 	private ParametersManagerFactory parameterManagerFactory;
 
 	protected WebSettingsData getWebSettings() {
-		WebSettingsData webSettings = new WebSettingsDTO();
+		WebSettingsData webSettings = new JpaWebSettings();
 		String parameters = "{\"offlinePostProcessorInactive\":null,\"offlineIndexProcessorInactive\":[\"NocacheScriptPostProcessor\",\"PropertiesScriptPostProcessor\"],\"offlineAutodetectMode\":false,\"publishOnSaveEnabled\":true}";
 		webSettings.setParameters(parameters);
 		return webSettings;

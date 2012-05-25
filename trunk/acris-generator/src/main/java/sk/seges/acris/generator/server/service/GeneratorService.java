@@ -33,7 +33,10 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
 import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
-import sk.seges.acris.site.shared.domain.api.WebSettingsData;
+import sk.seges.acris.shared.model.dto.WebSettingsDTO;
+import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
+import sk.seges.acris.site.shared.domain.api.WebSettings;
+import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
 import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 /**
@@ -42,7 +45,7 @@ import sk.seges.acris.site.shared.service.IWebSettingsService;
 public class GeneratorService implements IGeneratorService {
 
 	private HtmlProcessorFactory htmlProcessorFactory;
-	private IWebSettingsService webSettingsService;
+	private IWebSettingsServiceLocal webSettingsService;
 
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
@@ -62,7 +65,7 @@ public class GeneratorService implements IGeneratorService {
 	};
 	
 	public GeneratorService(DataPersister dataPersister, String indexFileName, ContentDataProvider contentDataProvider, 
-			IWebSettingsService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
+			IWebSettingsServiceLocal webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
 		this.dataPersister = dataPersister;
 		this.indexFileName = indexFileName;
 		this.parserFactory = parserFactory;

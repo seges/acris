@@ -6,7 +6,8 @@ import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.site.shared.domain.api.WebSettingsData;
+import sk.seges.acris.site.shared.domain.api.WebSettings;
+import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
 
 public class HtmlProcessorFactory {
 
