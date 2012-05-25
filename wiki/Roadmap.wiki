@@ -3,14 +3,16 @@
 
 = Important milestones in our life =
 
-|| 0.9.0 || 01.07.2010 || Release Candidate 1 ||
-|| 1.0.0 || 20.07.2010 || Release ||
-|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.0.1 1.0.1] || 04.10.2010 || Bugfixing + Security generalization ||
-|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.0 1.1.0] || 02.12.2010        ||  Hladný Hadík release ||
-|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.1 1.1.1] || 13.05.2011        ||  Hacked Hladny Hadik ||
-|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.2 1.1.2] || 16.06.2011        ||  Malý Macík Mrnčí release ||
-|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.0 1.2.0] || 08.10.2011        ||  Kuvikajúci Kanec Kľačí release ||
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-NotSpecified TBD] || TBD        || Issues incubator ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.1 1.2.1] || 25.05.2012        ||  Towel Day release ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.0 1.2.0] || 08.10.2011        ||  Kuvikajúci Kanec Kľačí release ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.2 1.1.2] || 16.06.2011        ||  Malý Macík Mrnčí release ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.1 1.1.1] || 13.05.2011        ||  Hacked Hladny Hadik ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.0 1.1.0] || 02.12.2010        ||  Hladný Hadík release ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.0.1 1.0.1] || 04.10.2010 || Bugfixing + Security generalization ||
+|| 1.0.0 || 20.07.2010 || Release ||
+|| 0.9.0 || 01.07.2010 || Release Candidate 1 ||
+
 
 = Organization of the development =
 
@@ -18,28 +20,6 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 
 *Use appropriate template* when submitting an issue.
 
-=Release notes 1.2.0=
-
-== Features ==
-  * introduced [ProjectQuickStart profiles] to allow you to quickly start with Processors, GWT client, AppEngine project development
-  * writing Java Annotation Processors from now on will be a piece of cake with AcrIS
-    * we implemented [AnnotationProcessing_MutableAPI Mutable API] to be able to easily transform types and write annotation processors in clear way
-    * delegated configuration might help you when you don't want to polute existing (or even new) objects with processor-specific annotations
-    * there are several prepared annotation processors:
-      * for generating portable domain interfaces
-      * [CodeGenerationPlatform_Async generating async] version of the remote service
-      * [CodeGenerationPlatform_DTO generating DTOs] and convertion layers between server and client layer
-      * first sketch of appconstructor - scaffolding platform using annotations
-      * GWT service layer processors
-  * [JSONDataMigration JSON data migration] helps you to transform your data between versions
-  * your sites and applications in production environment should be constantly monitored with [AsmantMonitoring Asmant monitoring tool] deployable to AppEngine
-  * two new widgets to support dynamic layouts:
-    * DynamicUiBinder alternate to UiBinder and [MicroTemplate Micro template] panel for complete dynamics of data representation
-  * testing became integral part of AcrIS framework so we developed [SeleniumSupport supporting layer for Selenium]
-
-== Announcements ==
-
-  * current development was performed on the branch 1.1.x and for future versions will be moved back to the trunk. Current trunk will be moved to 1.0.x branch.
-  * beans binding part of AcrIS is discontinued and will be maintained for the purpose of old projects only - we recommend to use GWT's Editor framework.
+=Release 1.2.1=
 
 = [OldReleaseNotes Older release notes] =
