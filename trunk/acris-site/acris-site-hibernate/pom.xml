@@ -35,7 +35,7 @@
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-site-core</artifactId>
+			<artifactId>acris-site-server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
