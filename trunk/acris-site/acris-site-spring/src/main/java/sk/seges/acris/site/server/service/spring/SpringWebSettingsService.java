@@ -7,13 +7,15 @@ import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.server.service.WebSettingsService;
-import sk.seges.acris.site.shared.domain.api.WebSettingsData;
+import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
 import sk.seges.corpis.server.service.ICountryService;
+import sk.seges.sesam.pap.service.annotation.LocalService;
 
 
+@LocalService
 public class SpringWebSettingsService extends WebSettingsService {
 
-	public SpringWebSettingsService(IWebSettingsDao<? extends WebSettingsData> webSettings, ICountryService countryService) {
+	public SpringWebSettingsService(IWebSettingsDao<WebSettingsData> webSettings, ICountryService countryService) {
 		super(webSettings, countryService);
 	}
 
