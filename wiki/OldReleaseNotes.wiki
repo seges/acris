@@ -1,6 +1,31 @@
 #summary Group page for older release notes
 #labels Releasing
 
+=Release notes 1.2.0=
+
+== Features ==
+  * introduced [ProjectQuickStart profiles] to allow you to quickly start with Processors, GWT client, AppEngine project development
+  * writing Java Annotation Processors from now on will be a piece of cake with AcrIS
+    * we implemented [AnnotationProcessing_MutableAPI Mutable API] to be able to easily transform types and write annotation processors in clear way
+    * delegated configuration might help you when you don't want to polute existing (or even new) objects with processor-specific annotations
+    * there are several prepared annotation processors:
+      * for generating portable domain interfaces
+      * [CodeGenerationPlatform_Async generating async] version of the remote service
+      * [CodeGenerationPlatform_DTO generating DTOs] and convertion layers between server and client layer
+      * first sketch of appconstructor - scaffolding platform using annotations
+      * GWT service layer processors
+  * [JSONDataMigration JSON data migration] helps you to transform your data between versions
+  * your sites and applications in production environment should be constantly monitored with [AsmantMonitoring Asmant monitoring tool] deployable to AppEngine
+  * two new widgets to support dynamic layouts:
+    * DynamicUiBinder alternate to UiBinder and [MicroTemplate Micro template] panel for complete dynamics of data representation
+  * testing became integral part of AcrIS framework so we developed [SeleniumSupport supporting layer for Selenium]
+
+== Announcements ==
+
+  * current development was performed on the branch 1.1.x and for future versions will be moved back to the trunk. Current trunk will be moved to 1.0.x branch.
+  * beans binding part of AcrIS is discontinued and will be maintained for the purpose of old projects only - we recommend to use GWT's Editor framework.
+
+
 =Release notes 1.1.2=
 
 ==Features==
