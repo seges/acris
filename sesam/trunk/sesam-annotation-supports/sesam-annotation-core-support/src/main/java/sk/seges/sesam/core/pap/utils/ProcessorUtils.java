@@ -288,6 +288,10 @@ public class ProcessorUtils {
 			}
 		}
 		
+		if (element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
+			return getOverrider((TypeElement)((DeclaredType)element.getSuperclass()).asElement(), method, processingEnv);
+		}
+		
 		return method;
 	}
 }
