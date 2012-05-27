@@ -15,6 +15,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterParameterFilter;
@@ -99,6 +100,9 @@ public class AbstractServicePrinter {
 			List<ExecutableElement> methods = ElementFilter.methodsIn(localServiceInterface.asElement().getEnclosedElements());
 	
 			for (ExecutableElement method : methods) {
+				
+				method = ProcessorUtils.getOverrider(serviceTypeElement.asElement(), method, processingEnv);
+				
 				boolean pairMethod = false;
 	
 				if (method.getSimpleName().toString().equals(remoteMethod.getSimpleName().toString())
