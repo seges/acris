@@ -113,11 +113,11 @@ public abstract class AnnotationAccessor {
 		@Override
 		public boolean isAnnotationIgnored(AnnotationMirror annotation) {
 			for (Class<?> type: types) {
-				if (type.getName().equals(annotation.getAnnotationType().toString()) == ignore) {
-					return true;
+				if (type.getName().equals(annotation.getAnnotationType().toString())) {
+					return ignore;
 				}
 			}
-			return false;
+			return !ignore;
 		}
 	}
 
