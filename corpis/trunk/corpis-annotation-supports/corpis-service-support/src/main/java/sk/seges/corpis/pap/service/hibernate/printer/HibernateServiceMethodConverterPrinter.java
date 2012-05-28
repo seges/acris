@@ -8,8 +8,6 @@ import javax.lang.model.element.Element;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.corpis.pap.service.hibernate.accessor.TransactionPropagationAccessor;
-import sk.seges.corpis.service.annotation.TransactionPropagation;
-import sk.seges.corpis.service.annotation.TransactionPropagations;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
@@ -23,12 +21,12 @@ public class HibernateServiceMethodConverterPrinter extends ServiceMethodConvert
 		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
 	}
 
-	protected Class<?>[] getIgnoredAnnotations(Element method) {
+	protected Class<?>[] getSupportedAnnotations(Element method) {
 		TransactionPropagationAccessor transactionPropagationAccessor = new TransactionPropagationAccessor(method, processingEnv);
 
 		List<Class<?>> result = new ArrayList<Class<?>>();
 		
-		Class<?>[] ignoredAnnotations = super.getIgnoredAnnotations(method);
+		Class<?>[] ignoredAnnotations = super.getSupportedAnnotations(method);
 		
 		if (ignoredAnnotations != null) {
 			for (Class<?> ignoredAnnotation: ignoredAnnotations) {
@@ -36,10 +34,7 @@ public class HibernateServiceMethodConverterPrinter extends ServiceMethodConvert
 			}
 		}
 
-		result.add(TransactionPropagation.class);
-		result.add(TransactionPropagations.class);
-		
-		if (!transactionPropagationAccessor.isTransactionPropagated()) {
+		if (transactionPropagationAccessor.isTransactionPropagated()) {
 			result.add(Transactional.class);
 		}
 

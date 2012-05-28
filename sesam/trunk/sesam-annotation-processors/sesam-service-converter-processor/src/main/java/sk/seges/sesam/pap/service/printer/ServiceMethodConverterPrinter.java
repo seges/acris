@@ -36,7 +36,7 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 			returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(remoteMethod.getReturnType());
 		}
 
-		new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationTypeFilter(true, getIgnoredAnnotations(localMethod)));
+		new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationTypeFilter(false, getSupportedAnnotations(localMethod)));
 
 		new MethodPrinter(pw, processingEnv).printMethodDefinition(remoteMethod);
 		
@@ -115,9 +115,9 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 		pw.println();
 	}
 
-	protected Class<?>[] getIgnoredAnnotations(Element method) {
+	protected Class<?>[] getSupportedAnnotations(Element method) {
 		return new Class<?>[] {
-			SuppressWarnings.class
+			Override.class
 		};
 	}
 }
