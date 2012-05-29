@@ -20,6 +20,8 @@ import sk.seges.corpis.shared.domain.manufacture.EManufactureItemState;
 @Table(name = "manufacture_item")
 public class JpaManufactureItem extends ManufactureItemBase {
 
+	private JpaManufactureOrder manufactureOrder;
+
 	protected static final String SEQ_MANUFACTURE_ITEMS = "seqManufactureItems";
 
 	@Override
@@ -55,8 +57,14 @@ public class JpaManufactureItem extends ManufactureItemBase {
 		
 	@Override
 	@ManyToOne(targetEntity = JpaManufactureOrder.class)
-	public ManufactureOrderData getManufactureOrder() {
-		return super.getManufactureOrder();
+	public JpaManufactureOrder getManufactureOrder() {
+		return (JpaManufactureOrder) manufactureOrder;
+	}
+	
+	@Override
+	public void setManufactureOrder(ManufactureOrderData manufactureOrder) {
+		super.setManufactureOrder(manufactureOrder);
+		this.manufactureOrder = (JpaManufactureOrder) manufactureOrder;
 	}
 	
 	@Override
