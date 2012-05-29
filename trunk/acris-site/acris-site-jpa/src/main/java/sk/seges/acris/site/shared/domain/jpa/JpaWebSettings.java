@@ -64,9 +64,15 @@ public class JpaWebSettings extends WebSettingsBase {
 	@Override
 	@Id
 	public String getId() {
-		return super.getId();
+		return super.getWebId();
 	}
 
+	@Override
+	public void setId(String id) {
+		super.setId(id);
+		super.setWebId(id);
+	}
+	
 	@Override
 	@Column(nullable = true, length = DBConstraints.ANALYTICS_LENGTH)
 	public String getAnalyticsScriptData() {
@@ -95,6 +101,12 @@ public class JpaWebSettings extends WebSettingsBase {
 	@Column
 	public String getWebId() {
 		return super.getWebId();
+	}
+
+	@Override
+	public void setWebId(String webId) {
+		super.setWebId(webId);
+		super.setId(webId);
 	}
 	
 	@Override
