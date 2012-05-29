@@ -3,6 +3,7 @@ package sk.seges.corpis.server.domain.transportation;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -56,10 +57,8 @@ public class JpaTransportation extends TransportationBase {
 	}
 
 	@Override
-	@ManyToOne(targetEntity = JpaVehicle.class)
+	@ManyToOne(targetEntity = JpaVehicle.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	public VehicleData getVehicle() {
 		return super.getVehicle();
-	}
-
-	
+	}	
 }
