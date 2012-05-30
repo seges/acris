@@ -37,8 +37,7 @@ public class ReportExportDialogCreator {
 
 	protected EnumListBoxWithValue<EReportExportType> exportTypeListBox;
 	private List<IParameterTypePanel<?>> paramWidgets;
-	protected ReportingMessages reportingMessages = GWT
-			.create(ReportingMessages.class);
+	protected ReportingMessages reportingMessages = GWT.create(ReportingMessages.class);
 	private IReportingServiceAsync reportingService;// =
 	// AbstractSite.factory.getChocolate("reportingService");
 	protected String exportPath = null;
@@ -49,11 +48,11 @@ public class ReportExportDialogCreator {
 	private Map<ReportParameterData, String> predefinedParams;
 
 	private WidgetFactory widgetFactory;
-	
+
 	protected Dialog getDialog() {
 		return dialog;
 	}
-	
+
 	public ReportExportDialogCreator(WidgetFactory widgetFactory) {
 		this.widgetFactory = widgetFactory;
 	}
@@ -62,42 +61,46 @@ public class ReportExportDialogCreator {
 		this(widgetFactory);
 		this.reportingService = reportingService;
 	}
-
-	public Dialog createReportExportDialog(ReportDescriptionData report,
-			Map<ReportParameterData, String> predefinedParams,
-			ParameterTypeSelector parameterTypeSelector, String webId) {
-		return createReportExportDialog(report, predefinedParams, parameterTypeSelector, webId, null);
-	}
 	
 	public Dialog createReportExportDialog(ReportDescriptionData report,
-			Map<ReportParameterData, String> predefinedParams,
-			ParameterTypeSelector parameterTypeSelector, String webId, String reportName) {
-		
+			Map<ReportParameterData, String> predefinedParams, ParameterTypeSelector parameterTypeSelector, String webId, String reportName,
+			 String locale) {
 		this.webId = webId;
 		this.predefinedParams = predefinedParams;
-		this.init(report, predefinedParams, parameterTypeSelector, reportName);
+		this.init(report, predefinedParams, parameterTypeSelector, reportName, locale);
 		return dialog;
+	}
+	
+
+	public Dialog createReportExportDialog(ReportDescriptionData report,
+			Map<ReportParameterData, String> predefinedParams, ParameterTypeSelector parameterTypeSelector, String webId) {
+		return createReportExportDialog(report, predefinedParams, parameterTypeSelector, webId, null);
+	}
+
+	public Dialog createReportExportDialog(ReportDescriptionData report,
+			Map<ReportParameterData, String> predefinedParams, ParameterTypeSelector parameterTypeSelector,
+			String webId, String reportName) {
+		return createReportExportDialog(report, predefinedParams, parameterTypeSelector, webId, reportName, null);
 	}
 
 	private Panel downloadPanel;
 	protected ScrollPanel scrollPanel;
-	
+
 	protected void setDialogSize() {
 		scrollPanel.setWidth("700px");
-		scrollPanel.setHeight("500px");		
+		scrollPanel.setHeight("500px");
 	}
 
-	void init(ReportDescriptionData report,
-			Map<ReportParameterData, String> predefinedParams,
-			ParameterTypeSelector parameterTypeSelector, String reportName) {
+	void init(ReportDescriptionData report, Map<ReportParameterData, String> predefinedParams,
+			ParameterTypeSelector parameterTypeSelector, String reportName, String locale) {
 		dialog = widgetFactory.dialog();
 		dialog.setModal(false);
 		paramWidgets = new ArrayList<IParameterTypePanel<?>>();
-		dialog.setCaption(reportName != null ? reportName : (report.getDisplayName() == null) ? report.getName() : report.getDisplayName());
+		dialog.setCaption(reportName != null ? reportName : (report.getDisplayName() == null) ? report.getName()
+				: report.getDisplayName());
 		dialog.addStyleName("report-export-dialog");
 
-		FlowPanel contentPanel = createDownloadDialogContent(report,
-				predefinedParams, parameterTypeSelector);
+		FlowPanel contentPanel = createDownloadDialogContent(report, predefinedParams, parameterTypeSelector);
 		scrollPanel = GWT.create(ScrollPanel.class);
 		scrollPanel.add(contentPanel);
 		setDialogSize();
@@ -105,9 +108,7 @@ public class ReportExportDialogCreator {
 		dialog.addOption(new OptionsFactory(widgetFactory).createCloseOption());
 		downloadPanel = createDownloadButtonPanel();
 		downloadPanel.setVisible(false);
-		dialog
-				.addOptionWithoutHiding(createExportButton(report,
-						downloadPanel));
+		dialog.addOptionWithoutHiding(createExportButton(report, downloadPanel, locale));
 		dialog.addOption(WidgetFactory.hackWidget(downloadPanel));
 		imagePanel = new SimplePanel();
 		imagePanel.add(loadingImage);
@@ -115,56 +116,75 @@ public class ReportExportDialogCreator {
 		dialog.addOption(WidgetFactory.hackWidget(imagePanel));
 	}
 
-	private Button createExportButton(final ReportDescriptionData report,
-			final Panel downloadPanel) {
-		return widgetFactory.button(reportingMessages.export(),
-				new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						downloadPanel.setVisible(false);
-						Map<String, Object> paramsMap = new HashMap<String, Object>();
-						List<String> notInsertedValues = new ArrayList<String>();
-						for (IParameterTypePanel<?> w : paramWidgets) {
-							Object value = w.getValue();
-							if (value == null
-									&& !predefinedParams.containsKey(w
-											.getReportParameter())) {
-								notInsertedValues.add(w.getReportParameter()
-										.getDisplayedName());
-							}
-							String s = (value == null) ? "" : value.toString();
-							paramsMap.put(w.getReportParameter().getName(), s);
-						}
-						if (predefinedParams.size() > 0) {
-							for (ReportParameterData predefParam : predefinedParams
-									.keySet()) {
-								paramsMap.put(predefParam.getName(),
-										predefinedParams.get(predefParam));
-								paramsMap.put(predefParam.getName(), predefinedParams.get(predefParam));
-							}
-						}
-						if (notInsertedValues.size() > 0) {
-							imagePanel.setVisible(false);
-							StringBuffer errorMsg = new StringBuffer();
-							for (String string : notInsertedValues) {
-								errorMsg.append("<br />" + string);
-							}
-							Dialog errorDialog = new OptionPane(widgetFactory).createErrorDialog(
-									"<b>Treba zadat tieto parametre:</b>" + errorMsg, "Pozor");
-							errorDialog.setWidth("400px");
-							errorDialog.center();
-							errorDialog.show();
-						} else {
-							doExport(report, downloadPanel, paramsMap);
-						}
-					}
-				});
+	private Button createExportButton(final ReportDescriptionData report, final Panel downloadPanel, String locale) {
+		return widgetFactory.button(reportingMessages.export(), new ExportClickHandler(report, downloadPanel, locale));
 	}
 
-	private FlowPanel createDownloadDialogContent(
-			final ReportDescriptionData report,
-			Map<ReportParameterData, String> predefinedParams,
-			ParameterTypeSelector parameterTypeSelector) {
+	private class ExportClickHandler implements ClickHandler {
+
+		private ReportDescriptionData report;
+		private Panel downloadPanel;
+		private String locale;
+
+		/**
+		 * @param report
+		 * @param downloadPanel
+		 * @param locale 
+		 */
+		public ExportClickHandler(ReportDescriptionData report, Panel downloadPanel, String locale) {
+			this.report = report;
+			this.downloadPanel = downloadPanel;
+			this.locale = locale;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt
+		 * .event.dom.client.ClickEvent)
+		 */
+		@Override
+		public void onClick(ClickEvent event) {
+			downloadPanel.setVisible(false);
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			List<String> notInsertedValues = new ArrayList<String>();
+			for (IParameterTypePanel<?> w : paramWidgets) {
+				Object value = w.getValue();
+				if (value == null && !predefinedParams.containsKey(w.getReportParameter())) {
+					notInsertedValues.add(w.getReportParameter().getDisplayedName());
+				}
+				String s = (value == null) ? "" : value.toString();
+				paramsMap.put(w.getReportParameter().getName(), s);
+			}
+			if (predefinedParams.size() > 0) {
+				for (ReportParameterData predefParam : predefinedParams.keySet()) {
+					paramsMap.put(predefParam.getName(), predefinedParams.get(predefParam));
+					paramsMap.put(predefParam.getName(), predefinedParams.get(predefParam));
+				}
+			}
+			
+			if (notInsertedValues.size() > 0) {
+				imagePanel.setVisible(false);
+				StringBuffer errorMsg = new StringBuffer();
+				for (String string : notInsertedValues) {
+					errorMsg.append("<br />" + string);
+				}
+				Dialog errorDialog = new OptionPane(widgetFactory).createErrorDialog(
+						"<b>Treba zadat tieto parametre:</b>" + errorMsg, "Pozor");
+				errorDialog.setWidth("400px");
+				errorDialog.center();
+				errorDialog.show();
+			} else {
+				doExport(report, downloadPanel, paramsMap);
+			}
+
+		}
+
+	}
+
+	private FlowPanel createDownloadDialogContent(final ReportDescriptionData report,
+			Map<ReportParameterData, String> predefinedParams, ParameterTypeSelector parameterTypeSelector) {
 		FlowPanel contentPanel = GWT.create(FlowPanel.class);
 		Label desc = new Label(report.getDescription());
 		contentPanel.add(desc);
@@ -180,16 +200,14 @@ public class ReportExportDialogCreator {
 
 				widget = parameterTypeSelector.getParamPanelInstance(param);
 				widget.init(param);
-				if (predefinedParams == null
-						|| !predefinedParams.containsKey(param)) {
+				if (predefinedParams == null || !predefinedParams.containsKey(param)) {
 					Label wDesc = new Label(param.getDescription());
 					wDesc.addStyleName("ReportExportPanel-parameterPanel");
 					if (!Boolean.TRUE.equals(param.getHidden())) {
 						i++;
 						label.addStyleName("ReportExportPanel-parameterPanel");
 						flexPanel.setWidget(i, 0, label);
-						flexPanel.getFlexCellFormatter().setVerticalAlignment(
-								i, 0, HasVerticalAlignment.ALIGN_TOP);
+						flexPanel.getFlexCellFormatter().setVerticalAlignment(i, 0, HasVerticalAlignment.ALIGN_TOP);
 						flexPanel.setWidget(i, 1, wDesc);
 						// flexPanel.getFlexCellFormatter().setColSpan(i, 0, 2);
 						i++;
@@ -203,18 +221,17 @@ public class ReportExportDialogCreator {
 			}
 
 			for (AbstractTypePanel<?> widget : predefinedNotVisibleWidgets) {
-				widget.setValue(predefinedParams.get(widget
-						.getReportParameter()));
+				widget.setValue(predefinedParams.get(widget.getReportParameter()));
 			}
 		}
-//		Label label = new Label(reportingMessages.exportFileType());
-//		exportTypeListBox = GWT.create(EnumListBoxWithValue.class);
-//		exportTypeListBox.setClazz(EReportExportType.class);
-//		exportTypeListBox.load(Arrays.asList(EReportExportType.values()));
-//		exportTypeListBox.removeItem(0);
-//		exportTypeListBox.setSelectedIndex(0);
-//		flexPanel.setWidget(++i, 0, label);
-//		flexPanel.setWidget(i, 1, exportTypeListBox);
+		// Label label = new Label(reportingMessages.exportFileType());
+		// exportTypeListBox = GWT.create(EnumListBoxWithValue.class);
+		// exportTypeListBox.setClazz(EReportExportType.class);
+		// exportTypeListBox.load(Arrays.asList(EReportExportType.values()));
+		// exportTypeListBox.removeItem(0);
+		// exportTypeListBox.setSelectedIndex(0);
+		// flexPanel.setWidget(++i, 0, label);
+		// flexPanel.setWidget(i, 1, exportTypeListBox);
 
 		contentPanel.add(flexPanel);
 		return contentPanel;
@@ -229,20 +246,18 @@ public class ReportExportDialogCreator {
 		 */
 		FlowPanel anchorPanel = new FlowPanel();
 		/**/
-		anchorPanel.add(WidgetFactory.hackWidget(widgetFactory.button(
-				reportingMessages.download(), new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent arg0) {
-						// downloadAnchor.setHref(exportPath);
-						JavaScriptUtils.getURL(exportPath);
-					}
-				})));
+		anchorPanel.add(WidgetFactory.hackWidget(widgetFactory.button(reportingMessages.download(), new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent arg0) {
+				// downloadAnchor.setHref(exportPath);
+				JavaScriptUtils.getURL(exportPath);
+			}
+		})));
 		return anchorPanel;
 	}
 
 	/**/
-	protected void doExport(final ReportDescriptionData report,
-			final Panel downloadPanel, Map<String, Object> paramsMap) {
+	protected void doExport(final ReportDescriptionData report, final Panel downloadPanel, Map<String, Object> paramsMap) {
 		imagePanel.setVisible(true);
 		// if (EReportExportType.HTML.equals(exportTypeListBox.getValue())) {
 		// reportingService.exportReportToHtml(report.getId(), paramsMap, new
@@ -261,35 +276,31 @@ public class ReportExportDialogCreator {
 		// });
 		//
 		// } else
-		{
-			reportingService.exportReport(report.getId(), null, paramsMap, webId,
-					new AsyncCallback<String>() {
+		// {
+		reportingService.exportReport(report.getId(), null, paramsMap, webId, new AsyncCallback<String>() {
 
-						@Override
-						public void onFailure(Throwable caught) {
-							imagePanel.setVisible(false);
-							GWT.log("export error", new Exception(
-									"Export sa nevydaril"));
-							new OptionPane(widgetFactory).createErrorDialog(reportingMessages
-									.exportError(), reportingMessages.export());
-						}
+			@Override
+			public void onFailure(Throwable caught) {
+				imagePanel.setVisible(false);
+				GWT.log("export error", new Exception("Export sa nevydaril"));
+				new OptionPane(widgetFactory).createErrorDialog(reportingMessages.exportError(),
+						reportingMessages.export());
+			}
 
-						@Override
-						public void onSuccess(String result) {
-							imagePanel.setVisible(false);
-							if (result != null) {
-								exportPath = result;
-								downloadPanel.setVisible(true);
-								// JavascriptUtils.getURL(exportPath);
-							} else {
-								new OptionPane(widgetFactory)
-										.showErrorDialog(
-												"Vyskytla sa chyba pri generovani reportu.",
-												"export error");
-							}
-						}
-					});
-		}
+			@Override
+			public void onSuccess(String result) {
+				imagePanel.setVisible(false);
+				if (result != null) {
+					exportPath = result;
+					downloadPanel.setVisible(true);
+					// JavascriptUtils.getURL(exportPath);
+				} else {
+					new OptionPane(widgetFactory).showErrorDialog("Vyskytla sa chyba pri generovani reportu.",
+							"export error");
+				}
+			}
+		});
+		// }
 	}
 
 	protected void createHtmlExportDialog(String result) {
