@@ -40,6 +40,14 @@ public abstract class CSVImportExportService {
 	protected abstract String getDestination(RowBasedHandlerContext contextTemplate);
 
 	protected abstract RowBasedHandlerContext instantiateContext();
+	
+	protected char getCsvDelimiter() {
+		return ',';
+	}
+	
+	protected String getCsvEncoding() {
+		return "UTF-8";
+	}
 
 	public CSVImportExportService(Map<String, CSVHandler<?, ?>> handlerMapping, CsvEntryMappingLoader mappingLoader) {
 		super();
@@ -53,6 +61,10 @@ public abstract class CSVImportExportService {
 
 		
 		String format = detectFormat();
+		if (format == null) {
+			violations.add(new ImportExportViolation(ViolationConstants.WRONG_FORMAT));
+			return violations;
+		}
 		
 		CSVHandler handler = handlerMapping.get(format);
 
@@ -109,8 +121,8 @@ public abstract class CSVImportExportService {
 		
 		try {
 //			Reader in = new BufferedReader(new FileReader(file));
-			Reader in = new InputStreamReader(new FileInputStream(file), "UTF-8");
-			entries = csv.parse(strat, in, ',');
+			Reader in = new InputStreamReader(new FileInputStream(file), getCsvEncoding());
+			entries = csv.parse(strat, in, getCsvDelimiter());
 		} catch (FileNotFoundException e) {
 			log.warn("CSV File not found = " + file, e);
 			violations.add(new ImportExportViolation(ViolationConstants.FILE_NOT_FOUND, file));

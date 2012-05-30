@@ -25,6 +25,9 @@ public class ImportExportViolation implements Serializable {
 	public ImportExportViolation() {
 	}
 	
+	/**
+	 * @param type - use {@link ViolationConstants} types
+	 */
 	public ImportExportViolation(String type) {
 		this(Level.ERROR, NO_ROW, type, null);
 	}
