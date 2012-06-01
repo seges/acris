@@ -2,6 +2,7 @@ package sk.seges.corpis.server.domain.manufacture.jpa;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,7 +57,7 @@ public class JpaManufactureItem extends ManufactureItemBase {
 	}
 		
 	@Override
-	@ManyToOne(targetEntity = JpaManufactureOrder.class)
+	@ManyToOne(targetEntity = JpaManufactureOrder.class, cascade = CascadeType.REMOVE)
 	public JpaManufactureOrder getManufactureOrder() {
 		return (JpaManufactureOrder) manufactureOrder;
 	}
