@@ -7,8 +7,8 @@ public interface AssertionEventListener {
 	}
 
 	void onAssertion(Boolean result, Boolean statement1, ComparationType type, String comment);
-	void onAssertion(Boolean result, String statement1, String statement2, ComparationType type, String comment);
+	void onAssertion(Boolean result, Object statement1, Object statement2, ComparationType type, String comment);
 
 	void onVerification(Boolean result, Boolean statement1, ComparationType type, String comment);
-	void onVerification(Boolean result, String statement1, String statement2, ComparationType type, String comment);
+	void onVerification(Boolean result, Object statement1, Object statement2, ComparationType type, String comment);
 }

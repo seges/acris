@@ -460,7 +460,7 @@ public class ReportEventListener implements WebDriverEventListener, AssertionEve
 	}
 
 	@Override
-	public void onAssertion(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+	public void onAssertion(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
 		processing = true;
 		try {
 			testInfo.getCommandResults().add(getBeforeCommandResult(SeleniumOperation.ASSERTION, comment + " ( Expecting: " + statement1 + ", found: " + statement2 + " )"));
@@ -509,7 +509,7 @@ public class ReportEventListener implements WebDriverEventListener, AssertionEve
 	}
 
 	@Override
-	public void onVerification(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+	public void onVerification(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
 		processing = true;
 		try {
 			testInfo.getCommandResults().add(getBeforeCommandResult(SeleniumOperation.VERIFICATION, comment + " ( Expecting: " + statement1 + ", found: " + statement2 + " )"));

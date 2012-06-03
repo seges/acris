@@ -49,10 +49,12 @@ public abstract class AbstractAssertions implements Assertion {
 
 	protected abstract String getTestName();
 
+	@Override
 	public synchronized void assertTrue(Boolean statement1) {
 		assertTrue(statement1, "");
 	}
-
+	
+	@Override
 	public synchronized void assertTrue(Boolean statement1, String comment) {
 		if (statement1 == null || statement1.equals(Boolean.FALSE)) {
 			for (AssertionEventListener assertionListener: listeners) {
@@ -65,10 +67,12 @@ public abstract class AbstractAssertions implements Assertion {
 		}
 	}
 
+	@Override
 	public synchronized void assertFalse(Boolean statement1) {
 		assertFalse(statement1, "");
 	}
 
+	@Override
 	public synchronized void assertFalse(Boolean statement1, String comment) {
 		if (statement1 == null || statement1.equals(Boolean.TRUE)) {
 			for (AssertionEventListener assertionListener: listeners) {
@@ -82,11 +86,13 @@ public abstract class AbstractAssertions implements Assertion {
 		}
 	}
 
-	public synchronized void assertEquals(String statement1, String statement2) {
+	@Override
+	public synchronized void assertEquals(Object statement1, Object statement2) {
 		assertEquals(statement1, statement2, "");
 	}
 
-	public synchronized void assertEquals(String statement1, String statement2, String comment) {
+	@Override
+	public synchronized void assertEquals(Object statement1, Object statement2, String comment) {
 		if (statement1 == null) {
 			if (statement2 != null) {
 				for (AssertionEventListener assertionListener: listeners) {
@@ -108,11 +114,13 @@ public abstract class AbstractAssertions implements Assertion {
 		}
 	}
 
-	public synchronized void assertNotEquals(String statement1, String statement2) {
+	@Override
+	public synchronized void assertNotEquals(Object statement1, Object statement2) {
 		assertNotEquals(statement1, statement2, "");
 	}
 
-	public synchronized void assertNotEquals(String statement1, String statement2, String comment) {
+	@Override
+	public synchronized void assertNotEquals(Object statement1, Object statement2, String comment) {
 		if (statement1 == null && statement2 == null) {
 			for (AssertionEventListener assertionListener: listeners) {
 				assertionListener.onAssertion(false, statement1, statement2, ComparationType.NEGATIVE, comment);
@@ -134,10 +142,12 @@ public abstract class AbstractAssertions implements Assertion {
 		}
 	}
 
+	@Override
 	public synchronized void verifyTrue(Boolean statement1) {
 		verifyTrue(statement1, "");
 	}
 
+	@Override
 	public synchronized void verifyTrue(Boolean statement1, String comment) {
 		if (statement1 == null || statement1.equals(Boolean.FALSE)) {
 			for (AssertionEventListener assertionListener: listeners) {
@@ -151,10 +161,12 @@ public abstract class AbstractAssertions implements Assertion {
 		}
 	}
 
+	@Override
 	public synchronized void verifyFalse(Boolean statement1) {
 		verifyFalse(statement1, "");
 	}
 
+	@Override
 	public synchronized void verifyFalse(Boolean statement1, String comment) {
 		if (statement1 == null || statement1.equals(Boolean.TRUE)) {
 			for (AssertionEventListener assertionListener: listeners) {
@@ -168,11 +180,13 @@ public abstract class AbstractAssertions implements Assertion {
 		}
 	}
 
-	public synchronized void verifyEquals(String statement1, String statement2) {
+	@Override
+	public synchronized void verifyEquals(Object statement1, Object statement2) {
 		verifyEquals(statement1, statement2, "");
 	}
 
-	public synchronized void verifyEquals(String statement1, String statement2, String comment) {
+	@Override
+	public synchronized void verifyEquals(Object statement1, Object statement2, String comment) {
 		if (statement1 == null) {
 			if (statement2 != null) {
 				for (AssertionEventListener assertionListener: listeners) {
@@ -194,11 +208,13 @@ public abstract class AbstractAssertions implements Assertion {
 		}
 	}
 
-	public synchronized void verifyNotEquals(String statement1, String statement2) {
+	@Override
+	public synchronized void verifyNotEquals(Object statement1, Object statement2) {
 		verifyNotEquals(statement1, statement2, "");
 	}
 
-	public synchronized void verifyNotEquals(String statement1, String statement2, String comment) {
+	@Override
+	public synchronized void verifyNotEquals(Object statement1, Object statement2, String comment) {
 		if (statement1 == null) {
 			if (statement2 == null) {
 				for (AssertionEventListener assertionListener: listeners) {
