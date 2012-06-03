@@ -168,7 +168,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	}
 
 	@Override
-	public void onAssertion(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+	public void onAssertion(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
 		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION);
 	}
 
@@ -178,7 +178,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	}
 
 	@Override
-	public void onVerification(Boolean result, String statement1, String statement2, ComparationType type, String comment) {
+	public void onVerification(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
 		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION);
 	}
 
