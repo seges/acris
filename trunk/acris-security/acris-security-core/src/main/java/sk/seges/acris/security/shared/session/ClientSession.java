@@ -88,7 +88,7 @@ public class ClientSession implements ITransferableObject {
 //			this.setUser(value.getUser());
 //		}
 		for(Entry<String, Comparable<? extends Serializable>> entry : value.getSession().entrySet()) {
-			if(session.containsKey(entry.getKey())) {
+			if(getSession().containsKey(entry.getKey())) {
 				continue;
 			}
 			
