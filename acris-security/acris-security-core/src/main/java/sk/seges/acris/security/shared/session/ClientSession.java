@@ -19,18 +19,17 @@ public class ClientSession implements ITransferableObject {
 	private static final long serialVersionUID = 1909822586051716898L;
 
 	private static final String SESSION_ID_ATTRIBUTE = "sessionId";
-	private static final String USER_ATTRIBUTE = "user";
 
-	private Map<String, Serializable> session;
+	private Map<String, Comparable<? extends Serializable>> session;
 
-	public Map<String, Serializable> getSession() {
+	public Map<String, Comparable<? extends Serializable>> getSession() {
 		if (session == null) {
-			session = new HashMap<String, Serializable>();
+			session = new HashMap<String, Comparable<? extends Serializable>>();
 		}
 		return session;
 	}
 
-	public void setSession(Map<String, Serializable> session) {
+	public void setSession(Map<String, Comparable<? extends Serializable>> session) {
 		this.session = session;
 	}
 
@@ -42,16 +41,18 @@ public class ClientSession implements ITransferableObject {
 		getSession().put(SESSION_ID_ATTRIBUTE, sessionId);
 	}
 
+	private UserData<?> user;
+	
 	@SuppressWarnings("unchecked")
 	public <T extends UserData<?>> T getUser() {
-		return (T) getSession().get(USER_ATTRIBUTE);
+		return (T) user;
 	}
 
 	public <T extends UserData<?>> void setUser(T user) {
-		getSession().put(USER_ATTRIBUTE, user);
+		this.user = user;
 	}
 
-	public void put(String key, Serializable value) {
+	public void put(String key, Comparable<? extends Serializable> value) {
 		getSession().put(key, value);
 	}
 
@@ -67,7 +68,7 @@ public class ClientSession implements ITransferableObject {
 //		if (value.getUser() != null) {
 //			this.setUser(value.getUser());
 //		}
-		for(Entry<String, Serializable> entry : value.getSession().entrySet()) {
+		for(Entry<String, Comparable<? extends Serializable>> entry : value.getSession().entrySet()) {
 			if(session.containsKey(entry.getKey())) {
 				continue;
 			}
