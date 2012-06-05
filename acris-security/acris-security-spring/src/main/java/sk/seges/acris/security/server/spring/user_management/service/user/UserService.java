@@ -10,7 +10,6 @@ import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserService;
 import sk.seges.acris.security.shared.util.LoginConstants;
 
@@ -39,7 +38,7 @@ public class UserService implements IUserService {
 		if (clientSession != null) {
 			HttpSession session = sessionProvider.getSession();
 			session.setAttribute(LoginConstants.LOGIN_TOKEN_NAME, token);
-			session.setAttribute(LoginConstants.LOGGED_USER_NAME, clientSession.getUser());
+			session.setAttribute(LoginConstants.CLIENT_SESSION_NAME, clientSession);
 		}
 
 		return clientSession;
@@ -54,7 +53,7 @@ public class UserService implements IUserService {
 			loginServiceProvider.getLoginService(token).logout();
 		}
 		session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
-		session.removeAttribute(LoginConstants.LOGGED_USER_NAME);
+		session.removeAttribute(LoginConstants.CLIENT_SESSION_NAME);
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class UserService implements IUserService {
 	}
 	
 	@Override
-	public UserData<?> getLoggedUser(UserContext userContext) {
-		return userContextProvider.getUserProviderService(userContext).getLoggedUser(userContext);
+	public ClientSession getLoggedSession(UserContext userContext) {
+		return userContextProvider.getUserProviderService(userContext).getLoggedSession(userContext);
 	}
 }
