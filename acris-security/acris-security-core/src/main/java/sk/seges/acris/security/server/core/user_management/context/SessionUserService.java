@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.shared.exception.ServerException;
+import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.context.SessionUserContext;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
@@ -19,18 +20,36 @@ public class SessionUserService implements UserProviderService {
 	public SessionUserService(ServerSessionProvider sessionProvider) {
 		this.sessionProvider = sessionProvider;
 	}
+
+	private ClientSession getClientSession() {
+		HttpSession session = sessionProvider.getSession();
+		return (ClientSession) session.getAttribute(LoginConstants.CLIENT_SESSION_NAME);
+	}
+	
+	private UserData<?> getLoggedUser() {
+		ClientSession clientSession = getClientSession();
+		
+		if (clientSession != null) {
+			return clientSession.getUser();
+		}
+		
+		return null;
+	}
 	
 	@Override
 	public String getLoggedUserName(UserContext userContext)
 			throws ServerException {
-		HttpSession session = sessionProvider.getSession();
-		UserData<?> user = (UserData<?>) session.getAttribute(LoginConstants.LOGGED_USER_NAME);
+		UserData<?> user = getLoggedUser();
 
-		return user.getUsername();
+		if (user != null) {
+			return user.getUsername();
+		}
+		
+		return null;
 	}
 
 	@Override
-	public UserData<?> getLoggedUser(UserContext userContext) {
+	public ClientSession getLoggedSession(UserContext userContext) {
 		HttpSession session = sessionProvider.getSession();
 
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
@@ -40,9 +59,7 @@ public class SessionUserService implements UserProviderService {
 			
 			if (!sessionWebId.equals(tokenWebId)) return null;
 		}
-		
-		UserData<?> user = (UserData<?>) session.getAttribute(LoginConstants.LOGGED_USER_NAME);
 
-		return user;
+		return getClientSession();
 	}
 }

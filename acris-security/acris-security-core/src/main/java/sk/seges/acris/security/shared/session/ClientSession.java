@@ -43,11 +43,11 @@ public class ClientSession implements ITransferableObject {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends UserData> T getUser() {
+	public <T extends UserData<?>> T getUser() {
 		return (T) getSession().get(USER_ATTRIBUTE);
 	}
 
-	public <T extends UserData> void setUser(T user) {
+	public <T extends UserData<?>> void setUser(T user) {
 		getSession().put(USER_ATTRIBUTE, user);
 	}
 
@@ -63,7 +63,10 @@ public class ClientSession implements ITransferableObject {
 		return (T) session.get(key);
 	}
 
-	public void merge(ClientSession value) {
+	public ClientSession merge(ClientSession value) {
+//		if (value.getUser() != null) {
+//			this.setUser(value.getUser());
+//		}
 		for(Entry<String, Serializable> entry : value.getSession().entrySet()) {
 			if(session.containsKey(entry.getKey())) {
 				continue;
@@ -71,5 +74,7 @@ public class ClientSession implements ITransferableObject {
 			
 			session.put(entry.getKey(), entry.getValue());
 		}
+		//TODO sessionId also?
+		return this;
 	}
 }

@@ -11,11 +11,8 @@ public class LoginConstants {
 	public static final String ACRIS_WEB_ID_STRING = "webid";
 	public static final String USER_NAME = "userName";
 
-	// Login token name
 	public static final String LOGIN_TOKEN_NAME = "login.token.name";
-
-	// Logged in user name
-	public static final String LOGGED_USER_NAME = "logged.user.name";
+	public static final String CLIENT_SESSION_NAME = "client.session";
 
 	// Cookies
 	public static final String LANGUAGE_COOKIE_NAME = "acris-languageCookie";

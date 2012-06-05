@@ -4,7 +4,6 @@ import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -61,7 +60,7 @@ public interface IUserServiceAsync {
 	 *            Asynchronous GWT callback with a logged user or null if no
 	 *            user is logged in
 	 */
-	void getLoggedUser(UserContext userContext, AsyncCallback<UserData<?>> callback) throws ServerException;
+	void getLoggedSession(UserContext userContext, AsyncCallback<ClientSession> callback) throws ServerException;
 
 	void getLoggedUserName(UserContext userContext, AsyncCallback<String> callback) throws ServerException;
 }

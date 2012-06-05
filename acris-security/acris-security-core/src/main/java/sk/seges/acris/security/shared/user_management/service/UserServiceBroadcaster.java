@@ -359,7 +359,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	@Override
-	public void getLoggedUser(UserContext userContext, final AsyncCallback<UserData<?>> callback) throws ServerException {
+	public void getLoggedSession(UserContext userContext, final AsyncCallback<ClientSession> callback) throws ServerException {
 		final int count = userServices.size();
 
 		if (count == 0) {
@@ -407,20 +407,20 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 								}
 							}
 							user.setUserAuthorities(authorities);
-							callback.onSuccess(user);
+							callback.onSuccess(primaryResult);
 						} else {
 							UserData<?> user = successes.values().iterator().next().getUser();
 							if (!checkUser(user, callback)) {
 								return;
 							}
 
-							callback.onSuccess(successes.values().iterator().next().getUser());
+							callback.onSuccess(successes.values().iterator().next());
 						}
 					}
 				}
 			}
 
-			private boolean checkUser(UserData<?> user, AsyncCallback<UserData<?>> callback) {
+			private boolean checkUser(UserData<?> user, AsyncCallback<ClientSession> callback) {
 				if (user == null) {
 					callback.onFailure(new BroadcastingException("User is null"));
 					return false;
@@ -467,7 +467,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 			final Map<String, ClientSession> successes, UserContext userContext) {
 		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
 
-			userServiceEntry.getValue().getLoggedUser(userContext, new AsyncCallback<UserData<?>>() {
+			userServiceEntry.getValue().getLoggedSession(userContext, new AsyncCallback<ClientSession>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -476,9 +476,12 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 
 				@Override
-				public void onSuccess(UserData<?> result) {
+				public void onSuccess(ClientSession result) {
 					ClientSession session = new ClientSession();
-					session.setUser(result);
+					if (result != null) {
+						session.setUser(result.getUser());
+						session.merge(result);
+					}
 					successes.put(userServiceEntry.getKey(), session);
 					semaphore.signal(0);
 				}

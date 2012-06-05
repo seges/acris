@@ -15,6 +15,7 @@ import org.codehaus.jettison.json.JSONObject;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.shared.exception.ServerException;
+import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.context.APIKeyUserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
@@ -38,12 +39,15 @@ public class APIKeyUserService implements UserProviderService {
 	}
 	
 	@Override
-	public UserData<?> getLoggedUser(UserContext userContext) {
+	public ClientSession getLoggedSession(UserContext userContext) {
 		if (isValid(userContext)) {
 			HttpSession session = sessionProvider.getSession();
 			session.setAttribute(LoginConstants.ACRIS_API_KEY_STRING, ((APIKeyUserContext) userContext).getApiKey());
 			session.setAttribute(LoginConstants.LOGIN_TOKEN_NAME, createLoginToken(((APIKeyUserContext) userContext).getWebId())); 
-			return createUser();
+			ClientSession clientSession = new ClientSession();
+			clientSession.setUser(createUser());
+			
+			return clientSession;
 		}
 		
 		return null;
