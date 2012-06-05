@@ -21,6 +21,7 @@ public class ClientSession implements ITransferableObject {
 	private static final String SESSION_ID_ATTRIBUTE = "sessionId";
 
 	private Map<String, Comparable<? extends Serializable>> session;
+	private Map<String, Serializable> clientSession;
 
 	public Map<String, Comparable<? extends Serializable>> getSession() {
 		if (session == null) {
@@ -29,6 +30,13 @@ public class ClientSession implements ITransferableObject {
 		return session;
 	}
 
+	private Map<String, Serializable> getClientSession() {
+		if (clientSession == null) {
+			clientSession = new HashMap<String, Serializable>();
+		}
+		return clientSession;
+	}
+	
 	public void setSession(Map<String, Comparable<? extends Serializable>> session) {
 		this.session = session;
 	}
@@ -52,16 +60,27 @@ public class ClientSession implements ITransferableObject {
 		this.user = user;
 	}
 
-	public void put(String key, Comparable<? extends Serializable> value) {
+	public void putSharedProperty(String key, Comparable<? extends Serializable> value) {
 		getSession().put(key, value);
+	}
+
+	public void put(String key, Serializable value) {
+		getClientSession().put(key, value);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends Serializable> T get(String key) {
-		if (session == null) {
+		if (session == null && clientSession == null) {
 			return null;
 		}
-		return (T) session.get(key);
+		if (session != null && session.containsKey(key)) {
+			return (T) session.get(key);
+		}
+		if (clientSession != null && clientSession.containsKey(key)) {
+			return (T) clientSession.get(key);
+		}
+		
+		return null;
 	}
 
 	public ClientSession merge(ClientSession value) {
