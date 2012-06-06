@@ -68,7 +68,16 @@ public class ContentBase implements ContentData, ContentBlobData {
 	public ContentPkBase getId() {
 		return id;
 	}
-
+	
+	@Override
+	public Long getIdForACL() {
+		return Long.valueOf(getId().toString());
+	}
+	
+	public void setIdForACL(Long idForACL) {
+		//TODO: DO something here
+	}
+	
 	@Override
 	public void setId(ContentPkData id) {
 		this.id = (ContentPkBase) id;

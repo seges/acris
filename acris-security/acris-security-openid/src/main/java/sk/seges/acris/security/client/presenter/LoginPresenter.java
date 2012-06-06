@@ -89,6 +89,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	protected boolean rememberMeEnabled;
 
 	protected LoginMessages loginMessages = (LoginMessages) GWT.create(LoginMessages.class);
+	
+	protected boolean authenticate = false;
 
 	/**
 	 * Default validator that simply checks if the username and password are not
@@ -120,19 +122,29 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		this(display, broadcaster, redirectUrl, null, false);
 	}
 
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, boolean authenticate) {
+		this(display, broadcaster, null, null, false, authenticate);
+	}
+	
 	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled) {
+		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, false);
+	}
+
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
+			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate) {
 		super(display);
 
 		this.broadcaster = broadcaster;
 		this.redirectUrl = redirectUrl;
 		this.enabledLanguages = enabledLanguages;
 		this.rememberMeEnabled = rememberMeEnabled;
-
+		this.authenticate = authenticate; 
+		
 		display.setEnabledLanguages(enabledLanguages);
 		display.setRememberMeEnabled(rememberMeEnabled);
 	}
-
+	
 	@Override
 	public HandlerRegistration addLoginHandler(LoginHandler handler) {
 		return addHandler(LoginEvent.getType(), handler);
@@ -148,7 +160,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		AsyncCallback<String> stringCallback = null;
 		AsyncCallback<ClientSession> clientCallback = null;
 
-		if (redirectUrl != null && !redirectUrl.isEmpty()) {
+		if (redirectUrl != null && !redirectUrl.isEmpty() || authenticate) {
 			stringCallback = new SecuredAsyncCallback<String>() {
 
 				@Override
@@ -354,7 +366,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	@SuppressWarnings("unchecked")
 	protected void doLogin(LoginToken token, AsyncCallback<?> callback) {
 		if (broadcaster != null) {
-			if (redirectUrl != null && !redirectUrl.isEmpty()) {
+			if (redirectUrl != null && !redirectUrl.isEmpty() || authenticate) {
 				broadcaster.authenticate(token, (AsyncCallback<String>) callback);
 			} else {
 				broadcaster.login(token, (AsyncCallback<ClientSession>) callback);

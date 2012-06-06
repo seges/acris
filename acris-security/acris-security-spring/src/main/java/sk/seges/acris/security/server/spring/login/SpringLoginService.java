@@ -1,17 +1,19 @@
 package sk.seges.acris.security.server.spring.login;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationManager;
 import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.context.SecurityContextImpl;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
+import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.exception.ServerException;
@@ -20,7 +22,9 @@ import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.shared.util.LoggedUserRole;
 
 /**
  * Standard user service using {@link UserPasswordLoginToken} to log the user in
@@ -106,19 +110,20 @@ public class SpringLoginService implements LoginService {
 		} catch (AuthenticationException e) {
 			throw new SecurityException("Unable to login", e);
 		}
-		SecurityContext sc = new SecurityContextImpl();
-		sc.setAuthentication(auth);
-
-		SecurityContextHolder.setContext(sc);
+		createSecurityContext(auth);
 
 		ClientSession clientSession = createClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
 
+		List<RoleData> roles = new ArrayList<RoleData>();
+		roles.add(new LoggedUserRole());
 		if (auth.getPrincipal() instanceof SpringUserAdapter) {
 			SpringUserAdapter<?> adapter = (SpringUserAdapter<?>) auth.getPrincipal();
+			adapter.setRoles(roles);
 			clientSession.setUser(adapter.getUser());
 		} else if (auth.getPrincipal() instanceof UserData) {
 			UserData<?> userData = (UserData<?>) auth.getPrincipal();
+			userData.setRoles(roles);
 			clientSession.setUser(userData);
 		} else {
 			if (auth.getPrincipal() == null) {
@@ -133,6 +138,13 @@ public class SpringLoginService implements LoginService {
 		return clientSession;
 	}
 
+	private void createSecurityContext(Authentication auth) {
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), auth.getAuthorities());
+		AcrisSecurityContext sc = new AcrisSecurityContext();
+		sc.setAuthentication(newAuth);
+		SecurityContextHolder.setContext(sc);
+	}
+	
 	/**
 	 * @see sk.seges.acris.security.rpc.user_management.service.IUserService#logout()
 	 */

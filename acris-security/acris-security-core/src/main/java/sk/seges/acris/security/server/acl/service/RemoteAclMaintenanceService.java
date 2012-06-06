@@ -1,4 +1,4 @@
-package sk.seges.acris.security.server.acl.service;
+package 	sk.seges.acris.security.server.acl.service;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import org.apache.log4j.Logger;
 
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.shared.acl.service.IRemoteAclMaintenanceService;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.shared.util.LoggedUserRole;
 
 public class RemoteAclMaintenanceService implements IRemoteAclMaintenanceService {
     /**
@@ -44,24 +44,19 @@ public class RemoteAclMaintenanceService implements IRemoteAclMaintenanceService
         }
     }
     
-    public void removeACLEntries(List<? extends ISecuredObject> securedObjects, UserData user) {
-        for(ISecuredObject securedObject : securedObjects) {
-            aclManager.removeAclRecords(securedObject, user);
-        }
+    public void removeACLEntries(List<Long> aclIds, String className, UserData user) {
+    	for (Long id : aclIds) {
+    		aclManager.removeAclRecords(id, className, user);
+    	}
     }
 
-    public void setACLEntries(List<? extends ISecuredObject> securedObjects, UserData user, Permission[] authorities) {
-        for(ISecuredObject securedObject : securedObjects) {
-            aclManager.setAclRecords(securedObject, user, authorities);
-        }
+    public void resetACLEntries(Long aclId, UserData user, Permission[] authorities) {
+   		aclManager.resetAclRecords(aclId, user, authorities);
     }
 
-    public void setACLEntries(List<? extends ISecuredObject> securedObjects, UserData user) {
-        setACLEntries(securedObjects, user, new Permission[] {
-                Permission.VIEW,
-                Permission.CREATE,
-                Permission.EDIT,
-                Permission.DELETE
-        });
+    @Override
+    public void resetACLEntriesLoggedRole(Long aclId, Permission[] authorities) {
+    	LoggedUserRole role = new LoggedUserRole();
+   		aclManager.resetAclRecords(aclId, role, authorities);
     }
 }

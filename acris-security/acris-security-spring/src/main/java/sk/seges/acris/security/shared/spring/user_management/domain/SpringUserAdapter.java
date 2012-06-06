@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
 
+import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 public class SpringUserAdapter<E> implements UserDetails, UserData<E> {
@@ -99,5 +100,25 @@ public class SpringUserAdapter<E> implements UserDetails, UserData<E> {
 	@Override
 	public void setEnabled(boolean enabled) {
 		springSupport.getUser().setEnabled(enabled);
+	}
+
+	@Override
+	public String getWebId() {
+		return springSupport.getUser().getWebId();
+	}
+
+	@Override
+	public void setWebId(String webId) {
+		springSupport.getUser().setWebId(webId);
+	}
+
+	@Override
+	public List<RoleData> getRoles() {
+		return springSupport.getUser().getRoles();
+	}
+
+	@Override
+	public void setRoles(List<RoleData> roles) {
+		springSupport.getUser().setRoles(roles);
 	}
 }

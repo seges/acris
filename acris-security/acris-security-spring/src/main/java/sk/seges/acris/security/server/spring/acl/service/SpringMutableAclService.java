@@ -10,6 +10,7 @@ import org.springframework.security.acls.MutableAclService;
 import org.springframework.security.acls.NotFoundException;
 import org.springframework.security.acls.Permission;
 import org.springframework.security.acls.domain.AccessControlEntryImpl;
+import org.springframework.security.acls.jdbc.AclCache;
 import org.springframework.security.acls.objectidentity.ObjectIdentity;
 import org.springframework.security.acls.objectidentity.ObjectIdentityImpl;
 import org.springframework.security.acls.sid.GrantedAuthoritySid;
@@ -29,6 +30,10 @@ import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 public class SpringMutableAclService extends SpringAclService implements MutableAclService {
 
+	public SpringMutableAclService(AclCache aclCache) {
+		super(aclCache);
+	}
+	
 	@Transactional
 	public MutableAcl createAcl(ObjectIdentity objectIdentity) throws AlreadyExistsException {
 
@@ -135,7 +140,8 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 	public MutableAcl updateAcl(MutableAcl acl) throws NotFoundException {
 		// Delete this ACL's ACEs in the acl_entry table
 		// long oid = ((Long) acl.getId()).longValue();
-		AclSecuredObjectIdentity aclo = getAclSecuredObjectIdentity(acl.getObjectIdentity());
+		AclSecuredObjectIdentity aclo = updateAclObjectIdentity(acl);
+		
 		aclEntryDao.deleteByIdentityId(aclo.getId());
 		aclCache.evictFromCache(acl.getObjectIdentity());
 		// Create this ACL's ACEs in the acl_entry table
@@ -144,6 +150,20 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 		// Retrieve the ACL via superclass (ensures cache registration, proper
 		// retrieval etc)
 		return (MutableAcl) readAclById(acl.getObjectIdentity());
+	}
+		
+	private AclSecuredObjectIdentity updateAclObjectIdentity(MutableAcl acl) {
+		AclSecuredObjectIdentity aclo = getAclSecuredObjectIdentity(acl.getObjectIdentity());
+		
+		if (acl.getParentAcl() != null) {
+			AclSecuredObjectIdentity parentObjectIdentity = getAclSecuredObjectIdentity(acl.getParentAcl().getObjectIdentity());
+			aclo.setParentObject(parentObjectIdentity);
+		} else if (aclo.getParentObject() != null) {
+			aclo.setParentObject(null);
+		}
+		aclObjectIdentityDao.merge(aclo);
+
+		return aclo;
 	}
 
 	@Transactional
@@ -177,7 +197,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 	public void addPermission(ISecuredObject securedObject, Sid recipient, Permission permission, Class<?> clazz) {
 		MutableAcl acl;
 
-		ObjectIdentity oid = new ObjectIdentityImpl(clazz.getCanonicalName(), securedObject.getId());
+		ObjectIdentity oid = new ObjectIdentityImpl(clazz.getCanonicalName(), securedObject.getIdForACL());
 
 		try {
 			acl = (MutableAcl) readAclById(oid);

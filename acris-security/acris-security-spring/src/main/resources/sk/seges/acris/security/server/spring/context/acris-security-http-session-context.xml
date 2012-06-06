@@ -13,7 +13,10 @@
                         http://www.springframework.org/schema/aop 
                         http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 	
-	<beans:bean id="httpSessionContextIntegrationFilter" class="org.springframework.security.context.HttpSessionContextIntegrationFilter"/>
+	<beans:bean id="httpSessionContextIntegrationFilter" class="org.springframework.security.context.HttpSessionContextIntegrationFilter">
+	    	<beans:property name="contextClass" value="sk.seges.acris.security.server.spring.context.AcrisSecurityContext" />
+	</beans:bean> 
+	  
 	   
 	<beans:bean id="springSecurityFilterChain" class="org.springframework.security.util.FilterChainProxy">
         <filter-chain-map path-type="ant">

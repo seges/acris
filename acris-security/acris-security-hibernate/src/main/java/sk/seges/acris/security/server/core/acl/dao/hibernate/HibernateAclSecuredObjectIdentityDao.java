@@ -46,6 +46,24 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 
 		throw new IllegalArgumentException("More than one unique records was found in database");
 	}
+	
+	public JpaAclSecuredObjectIdentity findByObjectId(long objectIdIdentity) {
+		DetachedCriteria criteria = createCriteria();
+
+		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY, objectIdIdentity));
+
+		List<JpaAclSecuredObjectIdentity> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
+
+		if (entries.size() == 0) {
+			return null;
+		}
+
+		if (entries.size() == 1) {
+			return entries.get(0);
+		}
+
+		throw new IllegalArgumentException("More than one unique records was found in database");
+	}
 
 	@Override
 	public AclSecuredObjectIdentity findById(long id) {

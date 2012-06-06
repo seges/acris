@@ -83,15 +83,4 @@
 
         <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
     </bean>
-   
-    <bean id="afterAclCollectionRead" class="org.springframework.security.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider">
-        <constructor-arg ref="aclService"/>
-        <constructor-arg ref="readPermissions"/>
-    </bean>
-    
-    <bean id="afterAclRead" class="org.springframework.security.afterinvocation.AclEntryAfterInvocationProvider">
-        <constructor-arg ref="aclService"/>
-        <constructor-arg ref="readPermissions"/>
-    </bean>
-
 </beans>

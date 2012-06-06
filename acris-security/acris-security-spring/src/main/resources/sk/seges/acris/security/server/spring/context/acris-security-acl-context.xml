@@ -15,23 +15,24 @@
                            http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
                            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
 
-    <import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-voters-context.xml" />
+    <!-- <import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-voters-context.xml" /> -->
     <import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-permissions-context.xml" />
     <import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-user-permissions-context.xml" />
 
+    <bean class="sk.seges.acris.security.server.spring.configuration.acl.AclVotersConfiguration" />
+    
     <bean id="auditLogger"
         class="org.springframework.security.acls.domain.ConsoleAuditLogger" />
 
     <bean id="aclService"
-        class="org.springframework.security.acls.jdbc.JdbcAclService">
-        <constructor-arg ref="dataSource" />
-        <constructor-arg ref="lookupStrategy" />
+        class="sk.seges.acris.security.server.spring.acl.service.SpringAclService">
+        <constructor-arg ref="aclCache" />
     </bean>
 
     <bean id="springMutableAclService"
         class="sk.seges.acris.security.server.spring.acl.service.SpringMutableAclService">
         <!-- All the managers are autowired -->
-        <property name="aclCache" ref="aclCache" />
+        <constructor-arg ref="aclCache" />
     </bean>
 
     <bean id="aclMaintainer" class="sk.seges.acris.security.server.spring.acl.service.SpringAclMaintainer">

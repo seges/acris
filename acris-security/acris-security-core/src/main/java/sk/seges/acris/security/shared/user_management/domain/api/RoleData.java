@@ -22,5 +22,9 @@ public interface RoleData extends Serializable, IDomainObject<Integer> {
 	String getDescription();
 
 	void setDescription(String description);
+	
+	String getWebId();
+	
+	void setWebId(String webId);
 
 }

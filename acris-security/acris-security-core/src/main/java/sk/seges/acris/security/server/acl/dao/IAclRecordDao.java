@@ -15,9 +15,9 @@ public interface IAclRecordDao<T extends AclEntry> extends ICrudDAO<T> {
 
     void deleteByClassnameAndSid(Class<? extends ISecuredObject> securedClass, AclSid sid);
     
-    void deleteByIdentityIdAndSid(ISecuredObject securedObject, AclSid sid);
+    void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid);
     
-    void deleteByIdentityIdAndSid(ISecuredObject securedObject, AclSid sid, String className);
+    void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid, String className);
 
 	void remove(AclEntry aclEntry);
 

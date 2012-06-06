@@ -68,7 +68,16 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-client-core</artifactId>
 			<classifier>sources</classifier>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-binding-processor</artifactId>

@@ -27,4 +27,12 @@ public interface UserData<E> extends IMutableDomainObject<E> {
 	boolean isEnabled();
 
 	void setEnabled(boolean enabled);
+	
+	String getWebId();
+	
+	void setWebId(String webId);
+	
+	List<RoleData> getRoles();
+	
+	void setRoles(List<RoleData> roles);
 }
