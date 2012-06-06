@@ -12,6 +12,7 @@
 	</parent>
 
 	<modules>
+		<module>../acris-security-api</module>
 		<module>../acris-security-appengine</module>
 		<module>../acris-security-core</module>
 		<module>../acris-security-gilead</module>
