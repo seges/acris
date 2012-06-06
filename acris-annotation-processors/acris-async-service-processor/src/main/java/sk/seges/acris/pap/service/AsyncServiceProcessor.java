@@ -20,7 +20,6 @@ import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
@@ -125,9 +124,21 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			
 			MutableTypeMirror mutableReturnType = remoteServiceTypeElement.toReturnType(returnType);
 			
-			pw.println(typeUtils.getDeclaredType(asyncCallbackMutableType, toTypeVariable(mutableReturnType)), " callback);");
+			pw.print(typeUtils.getDeclaredType(asyncCallbackMutableType, toTypeVariable(mutableReturnType)), " callback) ");
+			if (method.getThrownTypes() != null && !method.getThrownTypes().isEmpty()) {
+				pw.print("throws ");
+				i = 0;
+				for (TypeMirror throwsException : method.getThrownTypes()) {
+					if (i > 0) {
+						pw.print(", ");
+					}
+					pw.print(throwsException);
+					i++;
+				}
+			}
+			pw.print(";");
 			pw.println();
-			//TODO add throws
+			pw.println();
 		}
 	}
 }
