@@ -7,16 +7,15 @@ import sk.seges.acris.security.shared.exception.SecurityException;
 public class SecurityExceptionsProcessor {
 
 	public static SecurityException convertToSecurityException(final Throwable exception) {
-		if (exception != null && exception.getMessage() != null) {
-			String exceptionMessage = exception.getMessage();
-			if (exceptionMessage.contains(SecurityException.class.getName())) {
-				return new SecurityException(exception.getMessage().replaceAll(SecurityException.class.getName(), "").trim());
+		if (exception != null) {
+			if (exception instanceof SecurityException) {
+				return (SecurityException)exception;
 			}
-			if (exceptionMessage.contains(AccessDeniedException.class.getName())) {
-				return new AccessDeniedException(exception.getMessage().replaceAll(AccessDeniedException.class.getName(), "").trim());
+			if (exception instanceof AccessDeniedException) {
+				return (AccessDeniedException)exception;
 			}
-			if (exceptionMessage.contains(AuthenticationException.class.getName())) {
-				return new AuthenticationException(exception.getMessage().replaceAll(AuthenticationException.class.getName(), "").trim());
+			if (exception instanceof AuthenticationException) {
+				return (AuthenticationException)exception;
 			}
 		}
 

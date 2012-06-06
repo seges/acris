@@ -56,6 +56,10 @@ public class SpringAclService implements AclService {
 	@Autowired
 	protected IAclObjectIdentityDao aclObjectIdentityDao;
 
+	public SpringAclService(AclCache aclCache) {
+		this.aclCache = aclCache;
+	}
+	
     public ObjectIdentity[] findChildren(ObjectIdentity parentIdentity) {
         // TODO Auto-generated method stub
     	//FIXME
@@ -135,7 +139,7 @@ public class SpringAclService implements AclService {
                 throw new IllegalStateException("Could not obtain AclImpl.ace field: cause[" + ex.getMessage() + "]");
             }
             
-            List<AclEntry> aclEntrys = aclEntryDao.findByIdentityId(aclObjectIdentity.getId());
+            List<AclEntry> aclEntrys = loadAclEntries(aclObjectIdentity);
             
             for(AclEntry aclEntry:aclEntrys){
                 AclSid aclSid = aclEntry.getSid();
@@ -163,6 +167,20 @@ public class SpringAclService implements AclService {
        
         }
         return acls;
+    }
+    
+    private List<AclEntry> loadAclEntries(AclSecuredObjectIdentity aclObjectIdentity) {
+    	List<AclEntry> entries = getEntries(aclObjectIdentity.getId());   
+    	while (aclObjectIdentity.getParentObject() != null) {
+    		aclObjectIdentity = aclObjectIdentity.getParentObject();
+    		entries.addAll(getEntries(aclObjectIdentity.getId()));
+    	}
+    	return entries;
+    }
+    
+    @SuppressWarnings("unchecked")
+	private List<AclEntry> getEntries(Long objectIdentityId) {
+    	return aclEntryDao.findByIdentityId(objectIdentityId);
     }
     
     protected Permission convertMaskIntoPermission(int mask) {

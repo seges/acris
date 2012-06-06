@@ -3,6 +3,7 @@ package sk.seges.acris.security.shared.user_management.domain.dto;
 import java.util.List;
 
 import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
+import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
@@ -25,6 +26,10 @@ public class GenericUserDTO implements UserData<Long> {
 	protected List<String> authorities;
 
 	private UserPreferences userPreferences;
+	
+	private String webId;
+	
+	private List<RoleData> roles;
 
 	public GenericUserDTO() {
 	}
@@ -106,6 +111,22 @@ public class GenericUserDTO implements UserData<Long> {
 		this.authorities = authorities;
 	}
 
+	public String getWebId() {
+		return webId;
+	}
+	
+	public void setWebId(String webId) {
+		this.webId = webId;
+	}
+	
+	public List<RoleData> getRoles() {
+		return roles;
+	}
+	
+	public void setRoles(List<RoleData> roles) {
+		this.roles = roles;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -122,13 +143,13 @@ public class GenericUserDTO implements UserData<Long> {
 		GenericUserDTO other = (GenericUserDTO) obj;
 		if (username == null) {
 			if (other.username != null) return false;
-		} else if (!username.equals(other.username)) return false;
+		} else if (!username.equals(other.username) || (!webId.equals(other.webId)))  return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "GenericUser [authorities=" + authorities + ", description=" + description + ", enabled=" + enabled + ", id=" + id + ", password=" + password
-				+ ", userPreferences=" + userPreferences + ", username=" + username + "]";
+				+ ", userPreferences=" + userPreferences + ", username=" + username + ", webId=" + webId + "]";
 	}
 }

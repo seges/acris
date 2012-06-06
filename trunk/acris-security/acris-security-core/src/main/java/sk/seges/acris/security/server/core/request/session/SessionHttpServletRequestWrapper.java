@@ -4,6 +4,7 @@
 package sk.seges.acris.security.server.core.request.session;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +21,11 @@ public abstract class SessionHttpServletRequestWrapper extends HttpServletReques
 	
 	protected String sessionId;
 	
+	private final HttpServletRequest request;
+	
 	public SessionHttpServletRequestWrapper(HttpServletRequest request) {
 		super(request);
+		this.request = request;
 		try {
 			extractSessionId(request);
 		} catch (Exception e) {
@@ -30,6 +34,21 @@ public abstract class SessionHttpServletRequestWrapper extends HttpServletReques
 	}
 
 	protected abstract void extractSessionId(HttpServletRequest request) throws Exception;
+	
+	@Override
+	public Object getAttribute(String name) {
+		return request.getAttribute(name);
+	}
+	
+	@Override
+	public Enumeration getAttributeNames() {
+		return request.getAttributeNames();
+	}
+	
+	@Override
+	public void setAttribute(String name, Object o) {
+		request.setAttribute(name, o);
+	}
 	
 	@Override
 	public HttpSession getSession() {

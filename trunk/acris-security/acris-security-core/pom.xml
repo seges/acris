@@ -43,7 +43,16 @@
 			<artifactId>acris-common</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
+		<dependency>
+		    <groupId>sk.seges.acris</groupId>
+		    <artifactId>acris-security-api</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>sk.seges.acris</groupId>
+		    <artifactId>acris-security-api</artifactId>
+		    <classifier>sources</classifier>
+		</dependency>
+		
 		<!-- Acris rebind dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
@@ -124,3 +133,4 @@
 
 	</dependencies>
 </project>
+>>>>>>> .r6800

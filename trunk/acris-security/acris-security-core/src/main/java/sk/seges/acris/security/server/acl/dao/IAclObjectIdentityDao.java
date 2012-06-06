@@ -7,6 +7,8 @@ public interface IAclObjectIdentityDao<T extends AclSecuredObjectIdentity> exten
     
 	AclSecuredObjectIdentity findByObjectId(long objectIdClass, long objectIdIdentity);
 	
+	AclSecuredObjectIdentity findByObjectId(long objectIdIdentity);
+	
 	AclSecuredObjectIdentity findById(long id);
 
 	AclSecuredObjectIdentity createDefaultEntity();

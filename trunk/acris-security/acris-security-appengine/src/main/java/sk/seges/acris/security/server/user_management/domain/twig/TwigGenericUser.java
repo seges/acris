@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
+import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
@@ -32,6 +33,10 @@ public class TwigGenericUser implements UserData<Long> {
 	private @Store(false)
 	TwigUserPreferences userPreferences;
 
+	private String webId;
+	
+	private List<RoleData> roles;
+	
 	public TwigGenericUser() {
 	}
 
@@ -133,6 +138,26 @@ public class TwigGenericUser implements UserData<Long> {
 		}
 		this.authorities = result;
 	}
+	
+	@Override
+	public String getWebId() {
+		return webId;
+	}
+
+	@Override
+	public void setWebId(String webId) {
+		this.webId = webId;
+	}
+
+	@Override
+	public List<RoleData> getRoles() {
+		return roles;
+	}
+
+	@Override
+	public void setRoles(List<RoleData> roles) {
+		this.roles = roles;
+	}
 
 	@Override
 	public int hashCode() {
@@ -157,6 +182,6 @@ public class TwigGenericUser implements UserData<Long> {
 	@Override
 	public String toString() {
 		return "TwigGenericUser [authorities=" + authorities + ", description=" + description + ", enabled=" + enabled + ", id=" + id + ", password="
-				+ password + ", userPreferences=" + userPreferences + ", username=" + username + "]";
+				+ password + ", userPreferences=" + userPreferences + ", username=" + username + ", webId=" + webId + "]";
 	}
 }

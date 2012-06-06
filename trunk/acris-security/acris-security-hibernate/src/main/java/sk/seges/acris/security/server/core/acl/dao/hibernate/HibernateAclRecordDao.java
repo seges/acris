@@ -58,15 +58,15 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	}
 
 	@Override
-	public void deleteByIdentityIdAndSid(ISecuredObject securedObject, AclSid sid) {
-		deleteByIdentityIdAndSid(securedObject, sid, securedObject.getClass().getName());
+	public void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid) {
+		deleteByIdentityIdAndSid(aclId, clazz, sid, clazz.getName());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void deleteByIdentityIdAndSid(ISecuredObject securedObject, AclSid sid, String className) {
+	public void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid, String className) {
 		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
-		query.setParameter("objectIdentityId", securedObject.getId());
+		query.setParameter("objectIdentityId", aclId);
 		query.setParameter("classname", className);
 		query.setParameter("sid", sid.getSid());
 		query.setParameter("principal", sid.isPrincipal());

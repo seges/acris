@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.acls.AclService;
+import org.springframework.security.acls.Permission;
 import org.springframework.security.acls.domain.DefaultPermissionFactory;
+import org.springframework.security.acls.sid.SidRetrievalStrategy;
 import org.springframework.security.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider;
 import org.springframework.security.afterinvocation.AclEntryAfterInvocationProvider;
 import org.springframework.security.vote.AccessDecisionVoter;
@@ -14,6 +16,8 @@ import org.springframework.security.vote.AclEntryVoter;
 import org.springframework.security.vote.RoleVoter;
 import org.springframework.security.vote.UnanimousBased;
 
+import sk.seges.acris.security.server.spring.acl.provider.BetterAclEntryAfterInvocationCollectionFilteringProvider;
+import sk.seges.acris.security.server.spring.acl.sid.RolesPublicSidRetrievalStrategy;
 import sk.seges.acris.security.server.spring.acl.vote.VoterPermissions;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 
@@ -40,68 +44,61 @@ public class AclVotersConfiguration {
 
 	@Bean
 	public AclEntryVoter aclObjectReadVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_OBJECT_VIEW", voterPermissions().READ);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_OBJECT_VIEW", voterPermissions().READ);
 	}
 
 	@Bean
 	public AclEntryVoter aclEntryListReadVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_LIST_OBJECTS_VIEW", voterPermissions().READ);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_LIST_OBJECTS_VIEW", voterPermissions().READ);
 	}
 
 	@Bean
 	public AclEntryVoter aclObjectWriteVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_OBJECT_EDIT", voterPermissions().WRITE);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_OBJECT_EDIT", voterPermissions().WRITE);
 	}
 
 	@Bean
 	public AclEntryVoter aclEntryWriteVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_OBJECTS_EDIT", voterPermissions().WRITE);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_OBJECTS_EDIT", voterPermissions().WRITE);
 	}
 
 	@Bean
 	public AclEntryVoter aclEntryListWriteVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_LIST_OBJECTS_EDIT", voterPermissions().WRITE);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_LIST_OBJECTS_EDIT", voterPermissions().WRITE);
 	}
 
 	@Bean
 	public AclEntryVoter aclObjectDeleteVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_OBJECT_DELETE", voterPermissions().DELETE);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_OBJECT_DELETE", voterPermissions().DELETE);
 	}
 
 	@Bean
 	public AclEntryVoter aclEntryDeleteVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_OBJECTS_DELETE", voterPermissions().DELETE);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_OBJECTS_DELETE", voterPermissions().DELETE);
 	}
 
 	@Bean
 	public AclEntryVoter aclEntryListDeleteVoter() {
-		AclEntryVoter voter = new AclEntryVoter(aclService, "ACL_LIST_OBJECTS_DELETE", voterPermissions().DELETE);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
-		return voter;
+		return getVoter(aclService, "ACL_LIST_OBJECTS_DELETE", voterPermissions().DELETE);
 	}
 
 	@Bean
-	public AclEntryAfterInvocationCollectionFilteringProvider afterAclCollectionRead() {
-		return new AclEntryAfterInvocationCollectionFilteringProvider(aclService, voterPermissions().READ);
+	public AclEntryAfterInvocationCollectionFilteringProvider afterAclCollectionRead(SidRetrievalStrategy sidRetrievalStrategy) {
+		BetterAclEntryAfterInvocationCollectionFilteringProvider provider = new BetterAclEntryAfterInvocationCollectionFilteringProvider(aclService, voterPermissions().READ);
+		provider.setSidRetrievalStrategy(sidRetrievalStrategy);
+		return provider;
 	}
 
 	@Bean
-	public AclEntryAfterInvocationProvider afterAclRead() {
-		return new AclEntryAfterInvocationProvider(aclService, voterPermissions().READ);
+	public AclEntryAfterInvocationProvider afterAclRead(SidRetrievalStrategy sidRetrievalStrategy) {
+		AclEntryAfterInvocationProvider provider = new AclEntryAfterInvocationProvider(aclService, voterPermissions().READ);
+		provider.setSidRetrievalStrategy(sidRetrievalStrategy);
+		return provider;
+	}
+	
+	@Bean
+	public SidRetrievalStrategy sidRetrievalStrategy() {
+		return new RolesPublicSidRetrievalStrategy();
 	}
 	
 	@Bean
@@ -119,6 +116,13 @@ public class AclVotersConfiguration {
 		decissionVoters.add(aclEntryListWriteVoter());
 		decissionVoters.add(aclEntryListDeleteVoter());
 
+		return voter;
+	}
+	
+	private AclEntryVoter getVoter(AclService aclService, String processConfigAttribute, Permission[] requirePermission) {
+		AclEntryVoter voter = new AclEntryVoter(aclService, processConfigAttribute, requirePermission);
+		voter.setProcessDomainObjectClass(ISecuredObject.class);
+		voter.setSidRetrievalStrategy(sidRetrievalStrategy());
 		return voter;
 	}
 

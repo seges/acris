@@ -27,6 +27,8 @@ public class SecurityRoleDTO implements RoleData {
 	private String description;
 
 	private List<String> selectedAuthorities;
+	
+	private String webId;
 
 	public Integer getId() {
 		return id;
@@ -61,6 +63,16 @@ public class SecurityRoleDTO implements RoleData {
 	}
 
 	@Override
+	public String getWebId() {
+		return webId;
+	}
+
+	@Override
+	public void setWebId(String webId) {
+		this.webId = webId;
+	}
+	
+	@Override
 	public String toString() {
 		return name;
 	}
@@ -84,4 +96,5 @@ public class SecurityRoleDTO implements RoleData {
 		} else if (!id.equals(other.id)) return false;
 		return true;
 	}
+
 }

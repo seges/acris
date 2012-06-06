@@ -41,4 +41,9 @@ public class ContentPkBase implements ContentPkData {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+	
+	@Override
+	public String toString() {
+		return getId().toString() + getWebId() + getLanguage();
+	}
 }

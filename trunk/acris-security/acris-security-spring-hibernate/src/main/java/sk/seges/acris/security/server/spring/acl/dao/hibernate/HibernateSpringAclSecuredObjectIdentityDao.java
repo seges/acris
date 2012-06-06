@@ -18,6 +18,12 @@ public class HibernateSpringAclSecuredObjectIdentityDao extends HibernateAclSecu
 
 	@Override
 	@Transactional
+    public JpaAclSecuredObjectIdentity findByObjectId(long objectIdIdentity) {
+		return super.findByObjectId(objectIdIdentity);
+    }
+
+	@Override
+	@Transactional
 	public AclSecuredObjectIdentity findById(long id) {
 		return super.findById(id);
 	}
