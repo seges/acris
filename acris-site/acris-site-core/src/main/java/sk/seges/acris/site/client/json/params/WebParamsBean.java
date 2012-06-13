@@ -4,14 +4,15 @@ public class WebParamsBean implements WebParams {
 
 	private static final long serialVersionUID = -728318142595408871L;
 
-	private boolean publishOnSaveEnabled = false;
 	private boolean offlineAutodetectMode = false;
+	private boolean publishOnSaveEnabled = false;
+	private boolean productCategorySingleSelect = false;
 
 	private String[] offlinePostProcessorInactive;
 	private String[] offlineIndexProcessorInactive;
 
 	@Override
-	public boolean isPublishOnSaveEnabled() {
+	public Boolean isPublishOnSaveEnabled() {
 		return publishOnSaveEnabled;
 	}
 
@@ -21,13 +22,23 @@ public class WebParamsBean implements WebParams {
 	}
 
 	@Override
-	public boolean isOfflineAutodetectMode() {
+	public Boolean isOfflineAutodetectMode() {
 		return offlineAutodetectMode;
 	}
 
 	@Override
 	public void setOfflineAutodetectMode(boolean mode) {
 		this.offlineAutodetectMode = mode;
+	}
+
+	@Override
+	public Boolean isProductCategorySingleSelect() {
+		return productCategorySingleSelect;
+	}
+
+	@Override
+	public void setProductCategorySingleSelect(boolean productCategorySingleSelect) {
+		this.productCategorySingleSelect = productCategorySingleSelect;
 	}
 
 	@Override

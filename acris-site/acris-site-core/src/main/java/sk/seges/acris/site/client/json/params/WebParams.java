@@ -8,6 +8,7 @@ public interface WebParams extends ContentParameters {
 	public static final String OFFLINE_INDEX_PROCESSOR_INACTIVE = "offlineIndexProcessorInactive";
 	public static final String OFFLINE_AUTODETECT_MODE = "offlineAutodetectMode";
 	public static final String PUBLISH_ON_SAVE_ENABLED = "publishOnSaveEnabled";
+	public static final String PRODUCT_CATEGORY_SINGLE_SELECT = "productCategorySingleSelect";
 
 	String[] getOfflinePostProcessorInactive();
 
@@ -17,11 +18,15 @@ public interface WebParams extends ContentParameters {
 
 	void setOfflineIndexProcessorInactive(String[] processors);
 
-	boolean isOfflineAutodetectMode();
+	Boolean isOfflineAutodetectMode();
 
 	void setOfflineAutodetectMode(boolean mode);
 
-	boolean isPublishOnSaveEnabled();
+	Boolean isPublishOnSaveEnabled();
 
 	void setPublishOnSaveEnabled(boolean publishOnSaveEnabled);
+
+	Boolean isProductCategorySingleSelect();
+
+	void setProductCategorySingleSelect(boolean productCategorySingleSelect);
 }
