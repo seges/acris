@@ -1,5 +1,7 @@
 package sk.seges.acris.security.server.spring.acl.dao.hibernate;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,5 +28,10 @@ public class HibernateSpringAclSecuredObjectIdentityDao extends HibernateAclSecu
 	@Transactional
 	public AclSecuredObjectIdentity findById(long id) {
 		return super.findById(id);
+	}
+	
+	@Override
+	public List<JpaAclSecuredObjectIdentity> findByParent(JpaAclSecuredObjectIdentity parentObjectIdentityId) {
+		return super.findByParent(parentObjectIdentityId);
 	}
 }

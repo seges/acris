@@ -64,6 +64,15 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 
 		throw new IllegalArgumentException("More than one unique records was found in database");
 	}
+	
+	@Override
+	public List<JpaAclSecuredObjectIdentity> findByParent(JpaAclSecuredObjectIdentity parentObjectIdentityId) {
+		DetachedCriteria criteria = createCriteria();
+
+		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.PARENT_OBJECT, parentObjectIdentityId));
+
+		return findByCriteria(criteria, Page.ALL_RESULTS_PAGE);
+	}
 
 	@Override
 	public AclSecuredObjectIdentity findById(long id) {

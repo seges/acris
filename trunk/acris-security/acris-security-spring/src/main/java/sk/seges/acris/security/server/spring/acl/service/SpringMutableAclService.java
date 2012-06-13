@@ -1,5 +1,7 @@
 package sk.seges.acris.security.server.spring.acl.service;
 
+import java.util.List;
+
 import org.springframework.security.Authentication;
 import org.springframework.security.acls.AccessControlEntry;
 import org.springframework.security.acls.Acl;
@@ -127,9 +129,21 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 		String identifier = objectIdentity.getIdentifier().toString();
 		long id = (Long.valueOf(identifier)).longValue();
 		AclSecuredObjectIdentity aclObjectIdentity = aclObjectIdentityDao.findByObjectId(aclClass.getId(), id);
+		if (aclObjectIdentity != null) {
+			removeAcl(aclObjectIdentity);
+			aclCache.evictFromCache(objectIdentity);
+		}
+	}
+	
+	private void removeAcl(AclSecuredObjectIdentity aclObjectIdentity) {
+		List<AclSecuredObjectIdentity> referencedObjectIdentities = aclObjectIdentityDao.findByParent(aclObjectIdentity);
+		if (referencedObjectIdentities != null || !referencedObjectIdentities.isEmpty()) {
+			for (AclSecuredObjectIdentity objectIdentity : referencedObjectIdentities) {
+				removeAcl(objectIdentity);
+			}
+		}
 		aclEntryDao.deleteByIdentityId(aclObjectIdentity.getId());
 		aclObjectIdentityDao.remove(aclObjectIdentity);
-		aclCache.evictFromCache(objectIdentity);
 	}
 
 	/*
