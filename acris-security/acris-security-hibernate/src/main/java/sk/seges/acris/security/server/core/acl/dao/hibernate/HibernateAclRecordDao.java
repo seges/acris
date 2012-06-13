@@ -37,7 +37,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		super.setEntityManager(entityManager);
 	}
 
-	protected static final String HQL_ACL_DELETE_FROM_TABLE = "delete from " + JpaAclEntry.class.getSimpleName() + " acl where acl.objectIdentity.id=:input";
+	protected static final String HQL_ACL_DELETE_FROM_TABLE = "delete from " + JpaAclEntry.class.getSimpleName() + " acl where acl_object_identity=:input";
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
 			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
 			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
@@ -56,7 +56,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		List<JpaAclEntry> result = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
 		return CastUtils.cast(result, AclEntry.class);
 	}
-
+	
 	@Override
 	public void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid) {
 		deleteByIdentityIdAndSid(aclId, clazz, sid, clazz.getName());
@@ -126,9 +126,12 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 
 	@Override
 	public void deleteByIdentityId(long aclObjectId) {
-		Query query = entityManager.createQuery(HQL_ACL_DELETE_FROM_TABLE);
-		query.setParameter("input", aclObjectId);
-		query.executeUpdate();
+		DetachedCriteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(AclEntryMetaModel.OBJECT_IDENTITY.THIS + ".id", aclObjectId));
+		List<JpaAclEntry> entries = findByCriteria(criteria, Page.ALL_RESULTS_PAGE);
+		for (JpaAclEntry entry : entries) {
+			remove(entry);
+		}
 	}
 
 	@Override

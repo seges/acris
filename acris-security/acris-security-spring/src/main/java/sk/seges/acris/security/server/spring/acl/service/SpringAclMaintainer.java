@@ -148,6 +148,14 @@ public class SpringAclMaintainer implements AclManager {
             superClass = superClass.getSuperclass();
         }
 	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void removeAcl(ISecuredObject<?> securedObject) {
+        ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(securedObject.getClass(), securedObject.getIdForACL());
+        aclCache.evictFromCache(objectIdentity);
+        aclService.deleteAcl(objectIdentity, false);
+	}
 
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {

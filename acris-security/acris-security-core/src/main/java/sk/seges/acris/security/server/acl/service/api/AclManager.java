@@ -13,6 +13,8 @@ public interface AclManager {
 	void removeAclRecords(Long aclId, String className);
 
 	void removeSecuredObjectIdentity(Long aclId, String className);
+	
+	void removeAcl(ISecuredObject<?> securedObject);
 
 	void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
 	
