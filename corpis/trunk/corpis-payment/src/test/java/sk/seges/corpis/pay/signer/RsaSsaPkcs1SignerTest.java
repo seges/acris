@@ -46,7 +46,7 @@ public class RsaSsaPkcs1SignerTest {
 				.length()));
 	}
 	
-	@Test
+//	@Test
 	public void testMojdellSigner() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 
@@ -86,7 +86,7 @@ public class RsaSsaPkcs1SignerTest {
 //				"FFFFFFFFFFFFFFFFFFFFFFFF003031300d060960864801650304020105000420" +
 //				"76E5F894DDD8F0CF120EA38BCD3BB5AE3646D01C225C0AB2E0F9617C56ACC59E";
 				
-				"3031300D060960864801650304020105000420" +
+				"3031300d060960864801650304020105000420" +
 				"76E5F894DDD8F0CF120EA38BCD3BB5AE3646D01C225C0AB2E0F9617C56ACC59E";
 				
 //		"2004bml210.72213497450308http://mojdell.sk";
