@@ -72,7 +72,6 @@ public class RsaSsaPkcs1Signer implements PaymentSigner {
 		return hexString;
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	public static PGPSecretKey readSecretKey(InputStream in, String keyRingName) throws IOException, PGPException {
 		in = PGPUtil.getDecoderStream(in);
 
