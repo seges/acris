@@ -30,23 +30,21 @@ import sk.seges.corpis.pay.SignatureHelper;
  */
 public class RsaSsaPkcs1Signer implements PaymentSigner {
 	private static final Logger log = Logger.getLogger(RsaSsaPkcs1Signer.class);
-	
+
 	private PrivateKey privateKey;
 
-	public RsaSsaPkcs1Signer(String securityKeyRing, String keyRingName,
-			String password) throws FileNotFoundException {
+	public RsaSsaPkcs1Signer(String securityKeyRing, String keyRingName, String password) throws FileNotFoundException {
 		this(new FileInputStream(new File(securityKeyRing)), keyRingName, password);
 	}
-	
-	public RsaSsaPkcs1Signer(InputStream securityKeyRing, String keyRingName,
-			String password) {
+
+	public RsaSsaPkcs1Signer(InputStream securityKeyRing, String keyRingName, String password) {
 		try {
 			PGPSecretKey readSecretKey = readSecretKey(securityKeyRing, keyRingName);
 			PGPPrivateKey extractPrivateKey = readSecretKey.extractPrivateKey(password.toCharArray(), "BC");
 			privateKey = extractPrivateKey.getKey();
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to initialize builder where key ring = " + securityKeyRing
-					+ ", name = " + keyRingName, e);
+			throw new RuntimeException("Unable to initialize builder where key ring = " + securityKeyRing + ", name = "
+					+ keyRingName, e);
 		}
 	}
 
@@ -74,9 +72,8 @@ public class RsaSsaPkcs1Signer implements PaymentSigner {
 		return hexString;
 	}
 
-	@SuppressWarnings( { "unchecked" })
-	private static PGPSecretKey readSecretKey(InputStream in, String keyRingName) throws IOException,
-			PGPException {
+	@SuppressWarnings({ "unchecked" })
+	public static PGPSecretKey readSecretKey(InputStream in, String keyRingName) throws IOException, PGPException {
 		in = PGPUtil.getDecoderStream(in);
 
 		PGPSecretKeyRingCollection pgpSec = new PGPSecretKeyRingCollection(in);
@@ -103,12 +100,12 @@ public class RsaSsaPkcs1Signer implements PaymentSigner {
 				String uid = "NA";
 				if (userIDs.hasNext()) {
 					uid = (String) userIDs.next();
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("Key ring uid = " + uid);
 					}
 				}
 				if (k.isSigningKey()) {
-					if(log.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						log.debug("Key ring signing = " + uid + ", k = " + k);
 					}
 					key = k;
