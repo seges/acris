@@ -24,7 +24,7 @@ public class SignatureHelper {
 	}
 
 	public static String byteArrayToHexString(byte[] bytes) {
-		StringBuilder builder = new StringBuilder(30);
+		StringBuilder builder = new StringBuilder(512);
 		String str;
 		for (int i = 0; i < bytes.length; i++) {
 			str = Integer.toHexString(bytes[i] & 0xFF);
@@ -35,6 +35,20 @@ public class SignatureHelper {
 			}
 		}
 		return builder.toString().toUpperCase();
+	}
+	
+	public static final byte[] toByteArray(String hexString) {
+		int arrLength = hexString.length() >> 1;
+		byte buf[] = new byte[arrLength];
+
+		for (int ii = 0; ii < arrLength; ii++) {
+			int index = ii << 1;
+
+			String l_digit = hexString.substring(index, index + 2);
+			buf[ii] = (byte) Integer.parseInt(l_digit, 16);
+		}
+
+		return buf;
 	}
 
 	public static byte[] des(String key, byte[] hash) {
