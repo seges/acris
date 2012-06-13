@@ -12,7 +12,7 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	}
 
 	@Override
-	public boolean isPublishOnSaveEnabled() {
+	public Boolean isPublishOnSaveEnabled() {
 		return data.getBoolean(PUBLISH_ON_SAVE_ENABLED);
 	}
 
@@ -22,13 +22,23 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	}
 
 	@Override
-	public boolean isOfflineAutodetectMode() {
+	public Boolean isOfflineAutodetectMode() {
 		return data.getBoolean(OFFLINE_AUTODETECT_MODE);
 	}
 
 	@Override
 	public void setOfflineAutodetectMode(boolean mode) {
 		data.set(OFFLINE_AUTODETECT_MODE, mode);
+	}
+
+	@Override
+	public Boolean isProductCategorySingleSelect() {
+		return data.getBoolean(PRODUCT_CATEGORY_SINGLE_SELECT);
+	}
+
+	@Override
+	public void setProductCategorySingleSelect(boolean productCategorySingleSelect) {
+		data.set(PRODUCT_CATEGORY_SINGLE_SELECT, productCategorySingleSelect);
 	}
 
 	@Override
