@@ -61,6 +61,5 @@ public class CustomFixedWidthGrid extends FixedWidthGrid implements HasDoubleCli
 	@Override
 	public void setHTML(int row, int column, String html) {
 		super.setHTML(row, column, SafeHtmlUtils.htmlEscape(html));
-		clearIdealWidths();
 	}
 }
