@@ -1,5 +1,10 @@
 package sk.seges.acris.crypto.util;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
 import sk.seges.acris.crypto.digest.SHA1Digest;
 
 public class Hasher {
@@ -36,5 +41,36 @@ public class Hasher {
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to compute hash", e);
 		}
+	}
+
+	public static String getSHA256HexDigest(String password, String salt) {
+		if (password == null || salt == null) {
+			throw new IllegalArgumentException();
+		}
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.reset();
+			digest.update(salt.getBytes("UTF-8"));
+			return Util.toHexString(digest.digest(password.getBytes("UTF-8")));
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("Failed to compute hash", e);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("Failed to compute hash", e);
+		}
+	}
+
+	public static String generateSalt256() {
+		try {
+			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+
+			// Salt generation 256 bits long
+			byte[] bSalt = new byte[32];
+			random.nextBytes(bSalt);
+
+			return Util.toHexString(bSalt);
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("Failed to generate salt", e);
+		}
+
 	}
 }
