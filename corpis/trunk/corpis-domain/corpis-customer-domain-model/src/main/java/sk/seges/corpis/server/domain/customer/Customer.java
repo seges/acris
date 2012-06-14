@@ -17,7 +17,6 @@ import sk.seges.sesam.domain.IMutableDomainObject;
 public interface Customer extends IMutableDomainObject<Long> {
 
 	String shortcut();
-	String contactPerson();
 
 	Boolean companyType();
 	CompanyName company();

@@ -60,11 +60,6 @@ public class JpaCustomerBase extends CustomerBase {
 		return super.getId();
 	}
 
-	@Column
-	public String getContactPerson() {
-		return super.getContactPerson();
-	}
-
 	@Column(length = DBConstraints.SHORTCUT_LENGTH)
 	public String getShortcut() {
 		return super.getShortcut();
