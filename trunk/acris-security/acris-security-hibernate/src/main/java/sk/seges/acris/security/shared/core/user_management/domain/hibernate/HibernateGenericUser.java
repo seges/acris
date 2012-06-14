@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserPreferences;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
@@ -62,6 +63,35 @@ public class HibernateGenericUser extends GenericUserDTO {
 	@Column
 	public String getPassword() {
 		return super.getPassword();
+	}
+	
+	@Column
+	public String getContact() {
+		return super.getContact();
+	}
+	
+	@Column
+	public String getEmail() {
+		return super.getEmail();
+	}
+	
+	@Column(nullable = false)
+	@NotNull
+	@Size(min = 1, max = 50)
+	public String getName() {
+		return super.getName();
+	}
+
+	@Column(nullable = false)
+	@NotNull
+	@Size(min = 1, max = 50)
+	public String getSurname() {
+		return super.getSurname();
+	}
+	
+	@Column
+	public String getWebId() {
+		return super.getWebId();
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL, targetEntity = JpaUserPreferences.class)

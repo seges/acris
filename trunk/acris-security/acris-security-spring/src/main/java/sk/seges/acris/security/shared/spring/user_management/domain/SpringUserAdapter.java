@@ -121,4 +121,44 @@ public class SpringUserAdapter<E> implements UserDetails, UserData<E> {
 	public void setRoles(List<RoleData> roles) {
 		springSupport.getUser().setRoles(roles);
 	}
+
+	@Override
+	public String getName() {
+		return springSupport.getUser().getName();
+	}
+
+	@Override
+	public void setName(String name) {
+		springSupport.getUser().setName(name);
+	}
+
+	@Override
+	public String getContact() {
+		return springSupport.getUser().getContact();
+	}
+
+	@Override
+	public void setContact(String contact) {
+		springSupport.getUser().setContact(contact);
+	}
+
+	@Override
+	public String getEmail() {
+		return springSupport.getUser().getEmail();
+	}
+
+	@Override
+	public void setEmail(String email) {
+		springSupport.getUser().setEmail(email);
+	}
+
+	@Override
+	public String getSurname() {
+		return springSupport.getUser().getSurname();
+	}
+
+	@Override
+	public void setSurname(String surname) {
+		springSupport.getUser().setSurname(surname);
+	}
 }

@@ -35,4 +35,20 @@ public interface UserData<E> extends IMutableDomainObject<E> {
 	List<RoleData> getRoles();
 	
 	void setRoles(List<RoleData> roles);
+	
+	String getName();
+	
+	void setName(String name);
+
+	String getSurname();
+	
+	void setSurname(String surname);
+
+	String getContact();
+	
+	void setContact(String contact);
+	
+	String getEmail();
+
+	void setEmail(String email);
 }
