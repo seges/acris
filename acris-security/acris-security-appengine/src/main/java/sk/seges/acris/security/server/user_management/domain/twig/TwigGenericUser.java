@@ -184,4 +184,52 @@ public class TwigGenericUser implements UserData<Long> {
 		return "TwigGenericUser [authorities=" + authorities + ", description=" + description + ", enabled=" + enabled + ", id=" + id + ", password="
 				+ password + ", userPreferences=" + userPreferences + ", username=" + username + ", webId=" + webId + "]";
 	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setName(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getContact() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setContact(String contact) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getEmail() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setEmail(String email) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getSurname() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSurname(String surname) {
+		// TODO Auto-generated method stub
+		
+	}
 }
