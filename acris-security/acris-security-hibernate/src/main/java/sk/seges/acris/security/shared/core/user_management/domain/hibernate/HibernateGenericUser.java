@@ -75,16 +75,12 @@ public class HibernateGenericUser extends GenericUserDTO {
 		return super.getEmail();
 	}
 	
-	@Column(nullable = false)
-	@NotNull
-	@Size(min = 1, max = 50)
+	@Column
 	public String getName() {
 		return super.getName();
 	}
 
-	@Column(nullable = false)
-	@NotNull
-	@Size(min = 1, max = 50)
+	@Column
 	public String getSurname() {
 		return super.getSurname();
 	}
