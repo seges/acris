@@ -25,4 +25,5 @@ public interface PanelRef {
 	public static final String SLIDER_FLOW_LAYOUT_PANEL = "sliderFlowLP";
 	public static final String DIALOG_LAYOUT_PANEL = "dialogLP";
 	public static final String SITE_LOGIN_PANEL = "siteLoginP";
+	public static final String DISCOUNT_TYPE_SELECTOR_LAYOUT = "discTypeLP";
 }
