@@ -17,7 +17,7 @@ import sk.seges.acris.security.server.core.acl.domain.dto.AclEntryDTO;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 @Entity
-@Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", AclEntryMetaModel.DB_ACE_ORDER})})
+@Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", AclEntryMetaModel.DB_ACE_ORDER, "sid"})})
 public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Long> {
 
 	private static final long serialVersionUID = -7561144169564944658L;
