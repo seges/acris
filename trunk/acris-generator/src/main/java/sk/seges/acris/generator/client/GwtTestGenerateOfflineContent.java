@@ -28,6 +28,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -312,6 +313,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		}
 	}
 
+	  public final native String getValue(Element element) /*-{
+	    return element.value;
+	  }-*/;
+
 	private void saveAndLoadContent(final GeneratorClientEnvironment generatorEnvironment) {
 
 		if (PERFORMANCE_MONITOR) {
@@ -324,8 +329,20 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			nodeCollectorFactory.create().collect(rootElement, generatorEnvironment);
 		}
 		
+		//Currently used only for replacing &amp; with &
+		//Tried many other generic solutions but didn't work 
+		//	http://stackoverflow.com/questions/3700326/decode-amp-back-to-in-javascript
+		//	http://www.webdeveloper.com/forum/archive/index.php/t-136026.html
+		//Later will see whether other characters should be handled this way
 		String content = DOM.getInnerHTML(rootElement);
 		
+		int contentLength = 0;
+		
+		do {
+			contentLength = content.length();
+			content = content.replace("&amp;", "&");
+		} while (contentLength != content.length());
+
 		Log.info("Content length: " + content.length());
 		
 		if (PERFORMANCE_MONITOR) {
