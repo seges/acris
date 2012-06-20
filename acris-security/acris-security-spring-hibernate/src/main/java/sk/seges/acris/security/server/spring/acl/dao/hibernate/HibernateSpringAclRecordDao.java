@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.acl.dao.hibernate.HibernateAclRecordDao;
@@ -52,7 +53,7 @@ public class HibernateSpringAclRecordDao extends HibernateAclRecordDao {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteByIdentityId(long aclObjectId) {
 		super.deleteByIdentityId(aclObjectId);
     }
