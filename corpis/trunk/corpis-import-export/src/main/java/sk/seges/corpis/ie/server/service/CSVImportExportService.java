@@ -107,6 +107,10 @@ public abstract class CSVImportExportService {
 			violations.addAll(handler.handle(newContext, entry, fieldNames));
 			i++;
 		}
+		
+		RowBasedHandlerContext newContext = instantiateContext();
+		contextTemplate.injectInto(newContext);
+		handler.hideDeletedProducts(newContext);
 
 		return violations;
 	}
