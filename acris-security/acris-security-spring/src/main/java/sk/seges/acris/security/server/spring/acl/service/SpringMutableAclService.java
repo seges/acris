@@ -137,7 +137,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 	
 	private void removeAcl(AclSecuredObjectIdentity aclObjectIdentity) {
 		List<AclSecuredObjectIdentity> referencedObjectIdentities = aclObjectIdentityDao.findByParent(aclObjectIdentity);
-		if (referencedObjectIdentities != null || !referencedObjectIdentities.isEmpty()) {
+		if (referencedObjectIdentities != null && !referencedObjectIdentities.isEmpty()) {
 			for (AclSecuredObjectIdentity objectIdentity : referencedObjectIdentities) {
 				removeAcl(objectIdentity);
 			}

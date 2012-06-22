@@ -209,6 +209,8 @@ public class SpringAclMaintainer implements AclManager {
     		acl.deleteAce(i);
     	}
     	acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
+    	acl.setOwner(sid);
+
         aclService.updateAcl(acl);
 	}
 	
