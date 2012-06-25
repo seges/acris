@@ -7,6 +7,8 @@ public class WebParamsBean implements WebParams {
 	private boolean offlineAutodetectMode = false;
 	private boolean publishOnSaveEnabled = false;
 	private boolean productCategorySingleSelect = false;
+	private boolean filtersEnabled = false;
+	private boolean sortEnabled = false;
 
 	private String[] offlinePostProcessorInactive;
 	private String[] offlineIndexProcessorInactive;
@@ -59,5 +61,25 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setOfflineIndexProcessorInactive(String[] processors) {
 		this.offlineIndexProcessorInactive = processors;
+	}
+
+	@Override
+	public Boolean isFiltersEnabled() {
+		return this.filtersEnabled;
+	}
+
+	@Override
+	public void setFiltersEnabled(boolean filtersEnabled) {
+		this.filtersEnabled = filtersEnabled;
+	}
+
+	@Override
+	public Boolean isSortEnabled() {
+		return sortEnabled;
+	}
+
+	@Override
+	public void setSortEnabled(boolean sortEnabled) {
+		this.sortEnabled = sortEnabled;
 	}
 }

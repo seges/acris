@@ -60,4 +60,24 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setOfflineIndexProcessorInactive(String[] processors) {
 		data.set(OFFLINE_INDEX_PROCESSOR_INACTIVE, processors);
 	}
+
+	@Override
+	public Boolean isFiltersEnabled() {
+		return data.getBoolean(PRODUCT_LIST_FILTERS_ENABLED);
+	}
+
+	@Override
+	public void setFiltersEnabled(boolean filtersEnabled) {
+		data.set(PRODUCT_LIST_FILTERS_ENABLED, filtersEnabled);
+	}
+
+	@Override
+	public Boolean isSortEnabled() {
+		return data.getBoolean(PRODUCT_LIST_SORT_ENABLED);
+	}
+
+	@Override
+	public void setSortEnabled(boolean sortEnabled) {
+		data.set(PRODUCT_LIST_SORT_ENABLED, sortEnabled);
+	}
 }
