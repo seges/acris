@@ -30,6 +30,6 @@ public class UIHelper {
 			DOM.removeChild(bodyElem, toRemove.get(i));
 		}
 		
-		RootPanel.get().clear();
+		//RootPanel.get().clear();
 	}
 }
