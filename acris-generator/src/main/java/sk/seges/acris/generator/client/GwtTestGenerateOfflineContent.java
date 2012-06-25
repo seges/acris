@@ -56,6 +56,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		super();
 	}
 
+	public String getPageName() {
+		return null;
+	}
+	
 	public String getModuleName() {
 		return "sk.seges.acris.generator.Generator";
 	}
@@ -103,8 +107,12 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		generatorService = getGeneratorService();
 
-		offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
-
+		if (getPageName() == null) {
+			offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
+		} else {
+			offlineContentProvider = new HtmlFilesHandler(GWT.getModuleBaseURL(), getPageName(), generatorService);
+		}
+		
 		contentProvider = getContentProvider(generatorEnvironment);
 
 		loadTokensForProcessing();

@@ -22,21 +22,17 @@ public class HtmlFilesHandler {
 	private String bodyContentWrapper;
 	
 	public HtmlFilesHandler(String moduleName, IGeneratorServiceAsync generatorService) {
-		
-		this.generatorService = generatorService;
-		
+		this(GWT.getModuleBaseURL(), getPageNameFromModule(moduleName), generatorService);
+	}
+
+	private static final String getPageNameFromModule(String moduleName) {
 		int lastDotIndex = moduleName.lastIndexOf(".");
-
-		String pageName;
-
-		if (lastDotIndex == -1) {
-			return;
-		}
-
-		pageName = moduleName.substring(lastDotIndex + 1);
-		moduleName = moduleName.substring(0, lastDotIndex);
-
-		initialContentFilename = GWT.getModuleBaseURL() + pageName + ".html";
+		return lastDotIndex == -1 ? null : moduleName.substring(lastDotIndex + 1);
+	}
+	
+	public HtmlFilesHandler(String moduleName, String pageName, IGeneratorServiceAsync generatorService) {
+		this.generatorService = generatorService;
+		initialContentFilename = moduleName + pageName + ".html";
 	}
 
 	public void getEntryPointBodyHtml(final AsyncCallback<String> callback) {
