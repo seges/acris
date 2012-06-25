@@ -3,6 +3,7 @@ package sk.seges.acris.site.server.manager;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import sk.seges.acris.site.server.manager.api.ParametersManager;
 import sk.seges.acris.site.server.manager.data.StringParameterData;
@@ -65,5 +66,21 @@ public class CommaSeparatedParametersManager implements ParametersManager {
 	@Override
 	public void setParameters(String parameters) {
 		parseParameters(parameters);
+	}
+
+	@Override
+	public String store() {
+		String result = "";
+		
+		int i = 0;
+		for (Entry<String, StringParameterData> entry: parameters.entrySet()) {
+			if (i > 0) {
+				result += ";";
+			}
+			result += entry.getKey() + "=" + entry.getValue();
+			i++;
+		}
+		
+		return result;
 	}
 }

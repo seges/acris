@@ -2,8 +2,6 @@
 	<inherits name="com.google.gwt.user.User"/>
 	<inherits name="com.google.gwt.i18n.I18N"/>
 	<inherits name='com.google.gwt.junit.JUnit'/>
-
-	<inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
 	
 	<inherits name='sk.seges.corpis.Domain' />
 	<inherits name="sk.seges.acris.Core"/>

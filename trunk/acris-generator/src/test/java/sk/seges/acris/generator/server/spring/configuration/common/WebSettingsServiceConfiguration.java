@@ -17,7 +17,6 @@ import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 
-
 public class WebSettingsServiceConfiguration {
 
 	private static final String MOCK_ANALYTICS_SCRIPT = "<script>test analytics script</script>";
