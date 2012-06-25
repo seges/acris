@@ -68,6 +68,7 @@ public class JSONParametersManager implements ParametersManager {
 				map.get(WebParams.OFFLINE_INDEX_PROCESSOR_INACTIVE)));
 		this.parameters.put(WebParams.OFFLINE_POST_PROCESSOR_INACTIVE,
 				new ObjectParameterData(WebParams.OFFLINE_POST_PROCESSOR_INACTIVE, map.get(WebParams.OFFLINE_POST_PROCESSOR_INACTIVE)));
+		this.parameters.put(WebParams.PRODUCT_LIST_SORT_ENABLED, new ObjectParameterData(WebParams.PRODUCT_LIST_SORT_ENABLED, map.get(WebParams.PRODUCT_LIST_SORT_ENABLED)));
 	}
 
 	@Override
