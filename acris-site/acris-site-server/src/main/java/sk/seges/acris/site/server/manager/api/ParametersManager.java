@@ -13,4 +13,6 @@ public interface ParametersManager {
 	void setParameterValue(ParameterData parameter, Object value);
 
 	void setParameters(String parameters);
+
+	String store();
 }
