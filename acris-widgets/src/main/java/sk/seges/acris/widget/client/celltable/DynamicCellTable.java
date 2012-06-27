@@ -2,49 +2,56 @@ package sk.seges.acris.widget.client.celltable;
 
 import java.util.Map;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.view.client.ProvidesKey;
 
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
-	
+
 	public static String STRING = "STRING";
 	public static String DATE = "DATE";
 	public static String NUMBER = "NUMBER";
-
-	public DynamicCellTable(Map<String, String> columns) {
-		super(new ProvidesKey<Map<String, Object>>() {
-			@Override
-			public Object getKey(Map<String, Object> arg0) {
-				return arg0.get("id");
-			}}, Object.class);
-		
-		setColumns(columns);
-
+	
+	static class DynamicCellTableKeyProvider implements ProvidesKey<Map<String, Object>> {
+		@Override
+		public Object getKey(Map<String, Object> item) {
+			return item.get("id");
+		}
 	}
 	
-	public void setColumns(Map<String, String> columns) {
-		for (int i = 0; i < getColumnCount(); i++) {
-			removeColumn(i);
+	public void init() {
+		initialize();
+	}
+
+	public DynamicCellTable() {
+		super(new DynamicCellTableKeyProvider(), Map.class);
+	}
+
+	public void setColumns(Map<String, String[]> columns) {
+		int colCount = getColumnCount();
+		for (int i = 0; i < colCount; i++) {
+			removeColumn(0);
 		}
 		for (final String column : columns.keySet()) {
 			if (columns.get(column) == null) {
 				continue;
 			}
-			if (columns.get(column).toUpperCase().equals(STRING)) {
-				Cell<String> c = new TextCell(); 
-				addTextColumn(new Column<Map<String, Object>, String>(c) {
+			if (columns.get(column)[0].toUpperCase().equals(STRING)) {
+				Column<Map<String, Object>, String> col = new Column<Map<String, Object>, String>(new TextCell()) {
 					@Override
 					public String getValue(Map<String, Object> arg0) {
 						return (String) arg0.get(column);
-					}}, 0, column, column);
-			} else if (columns.get(column).toUpperCase().equals(DATE)) {
-				
-			} else if (columns.get(column).toUpperCase().equals(NUMBER)) {
-				
+					}
+				};
+				addTextColumn(col, 90 / (columns.size()), columns.get(column)[1], column);
+			} else if (columns.get(column)[0].toUpperCase().equals(DATE)) {
+
+			} else if (columns.get(column)[0].toUpperCase().equals(NUMBER)) {
+
 			}
-		}		
+		}
+		addCheckboxColumn(10);
+
 	}
 
 }
