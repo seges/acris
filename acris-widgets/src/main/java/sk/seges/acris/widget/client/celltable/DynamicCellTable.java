@@ -50,7 +50,7 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 
 			}
 		}
-		addCheckboxColumn(10);
+		addCheckboxColumn(50);
 
 	}
 
