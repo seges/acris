@@ -80,7 +80,13 @@ public class MapTokenCache implements TokensCache {
 
 			if (!isAlreadyProcessed(token) && !isAlreadyAwaiting(token)) {
 				Log.info("Adding token for a processing " + token);
-				awaitingTokens.add(token);
+				if (token == null || token.length() == 0) {
+					if (defaultToken == null) {
+						awaitingTokens.add("");
+					}
+				} else {
+					awaitingTokens.add(token);
+				}
 			}
 		}
 	}
