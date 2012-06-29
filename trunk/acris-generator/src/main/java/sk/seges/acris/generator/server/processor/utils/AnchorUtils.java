@@ -13,14 +13,14 @@ public class AnchorUtils {
 			niceUrl = niceUrl.replace(File.separatorChar, '/');
 		}
 
+		if (niceUrl.length() == 0 || indexFile) {
+			return ""; //no special processing necessary 
+		}
+
 		//count number of directories in the path. If the niceurl/token is
 		//en/project than there are 2 directories: en and project so we
 		//have to add ../../ prefix into the path
 		int count = niceUrl.split("/").length + 1;
-
-		if (count <= 2 || indexFile) {
-			return ""; //no special processing necessary 
-		}
 
 		String pathPrefix = "";
 
