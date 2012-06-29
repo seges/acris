@@ -18,7 +18,7 @@ public class AnchorUtils {
 		//have to add ../../ prefix into the path
 		int count = niceUrl.split("/").length + 1;
 
-		if (count <= 1 || indexFile) {
+		if (count <= 2 || indexFile) {
 			return ""; //no special processing necessary 
 		}
 
