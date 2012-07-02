@@ -28,6 +28,7 @@ import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAp
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropertyAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.OfflineTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.TitleAppenderPostProcessor;
 
 public class PostProcessorsConfiguration {
@@ -45,6 +46,11 @@ public class PostProcessorsConfiguration {
 		return new LanguageSelectorAlterPostProcessor(contentMetaDataProvider);
 	}
 
+	@Bean
+	public AbstractElementPostProcessor offlineTagAppenderPostProcessor() {
+		return new OfflineTagAppenderPostProcessor();
+	}
+	
 	@Bean
 	public AbstractElementPostProcessor niceURLLinkPostProcessor() {
 		return new NiceURLLinkAlterPostProcessor();

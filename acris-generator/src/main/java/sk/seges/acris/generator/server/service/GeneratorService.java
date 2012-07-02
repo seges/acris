@@ -33,11 +33,8 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
 import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
-import sk.seges.acris.shared.model.dto.WebSettingsDTO;
 import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
-import sk.seges.acris.site.shared.domain.api.WebSettings;
 import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 /**
  * @author Peter Simun (simun@seges.sk)
@@ -172,6 +169,31 @@ public class GeneratorService implements IGeneratorService {
 		return content.toString();
 	}
 
+	private void writeContent(String headerContent, String header, String contentWrapper, 
+			String content, GeneratorToken token, boolean indexFile) {
+		
+		HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
+		String doctype = htmlNodeSplitter.readDoctype(headerContent);
+
+		if (log.isDebugEnabled()) {
+			log.debug("			headerContent: " + headerContent);
+		}
+		
+		String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
+		entryPoint = htmlNodeSplitter.replaceBody(entryPoint, contentWrapper);
+		String result = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
+
+		HtmlPostProcessor htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+		
+		result = htmlPostProcessor.getProcessedContent(result, token, indexFile);
+		
+		if (result == null) {
+			log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
+		} else {
+			writeTextToFile(result, indexFile, token);
+		}
+	}
+	
 	@Override
 	public void writeOfflineContentHtml(final String entryPointFileName, final String header, final String contentWrapper, 
 			final String htmlContent, final GeneratorToken token, final String currentServerURL) {
@@ -205,42 +227,11 @@ public class GeneratorService implements IGeneratorService {
 				} else {
 					headerContent = entriesUrlCache.get(entryPointFileName);
 				}
-				
-				HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
-				String doctype = htmlNodeSplitter.readDoctype(headerContent);
-		
-				if (log.isDebugEnabled()) {
-					log.debug("			headerContent: " + headerContent);
-				}
-				
-				String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
-				entryPoint = htmlNodeSplitter.replaceBody(entryPoint, contentWrapper);
-				content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
-		
-				String result = content;
-		
-				HtmlPostProcessor htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
-				
-				result = htmlPostProcessor.getProcessedContent(content, token, false);
-				
-				if (result == null) {
-					log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
-				} else {
-					
-					writeTextToFile(result, false, token);
 
-					if (token.isDefaultToken()) {
-						entryPoint = new HTMLNodeSplitter(parserFactory).joinHeaders(headerContent, header);
-						entryPoint = new HTMLNodeSplitter(parserFactory).replaceBody(entryPoint, contentWrapper);
-						content = (doctype == null ? "" : ("<" + doctype + ">")) + htmlNodeSplitter.replaceRootContent(entryPoint, content);
-			
-						result = htmlPostProcessor.getProcessedContent(content, token, true);
-						if (result != null) {
-							writeTextToFile(result, true, token);
-						} else {
-							log.error("Unable to process HTML nodes for default nice-url " + token.getNiceUrl());
-						}
-					}
+				writeContent(headerContent, header, contentWrapper, content, token, false);
+				
+				if (token.isDefaultToken()) {
+					writeContent(headerContent, header, contentWrapper, content, token, true);
 				}
 			}
 		});
