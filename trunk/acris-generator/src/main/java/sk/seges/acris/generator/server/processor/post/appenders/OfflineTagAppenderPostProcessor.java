@@ -5,7 +5,9 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.ScriptTag;
 import org.htmlparser.util.NodeList;
 
+import sk.seges.acris.generator.server.processor.factory.NodeFactory;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 
 public class OfflineTagAppenderPostProcessor extends AbstractAppenderPostProcessor {
 
@@ -24,7 +26,12 @@ public class OfflineTagAppenderPostProcessor extends AbstractAppenderPostProcess
 
 		ScriptTag tag = new ScriptTag();
 		tag.setAttribute(TYPE_ATTRIBUTE_NAME, TYPE_ATTRIBUTE_JS_VALUE);
-		tag.setText("var offline = true;");
+		NodesUtils.setText(tag, "var offline = true;");
+		if (headTag.getChildren() == null) {
+			headTag.setChildren(new NodeList());
+		}
+
+		NodeFactory.encloseTag(tag);
 		
 		headChildNodes.add(tag);
 		
