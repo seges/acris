@@ -8,8 +8,6 @@ import sk.seges.sesam.domain.IMutableDomainObject;
 @BaseObject
 public interface ProductPrice extends IMutableDomainObject<Long> {
 
-	ProductPriceCondition priceCondition();
-
 	Price price();
 
 	Short priority();

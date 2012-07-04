@@ -19,8 +19,8 @@ import sk.seges.corpis.server.domain.server.model.data.AddressData;
 import sk.seges.corpis.server.domain.server.model.data.BasicContactData;
 import sk.seges.corpis.server.domain.server.model.data.CompanyNameData;
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
+import sk.seges.corpis.shared.domain.EPaymentType;
 import sk.seges.corpis.shared.domain.invoice.EOrderStatus;
-import sk.seges.corpis.shared.domain.invoice.EPaymentType;
 import sk.seges.corpis.shared.domain.invoice.ETransports;
 
 /**

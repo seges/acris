@@ -1,7 +1,6 @@
 package sk.seges.corpis.server.domain.customer;
 
 import java.util.Date;
-import java.util.Map;
 
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
@@ -9,7 +8,6 @@ import sk.seges.corpis.server.domain.Address;
 import sk.seges.corpis.server.domain.BasicContact;
 import sk.seges.corpis.server.domain.CompanyName;
 import sk.seges.corpis.server.domain.PersonName;
-import sk.seges.corpis.shared.domain.customer.ECustomerDiscountType;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 @DomainInterface
@@ -38,8 +36,5 @@ public interface Customer extends IMutableDomainObject<Long> {
 	String accountNumber();
 	Date registrationDate();
 	
-	Map<ECustomerDiscountType, Double> discounts();
-
 	Boolean commision();
-	
 }

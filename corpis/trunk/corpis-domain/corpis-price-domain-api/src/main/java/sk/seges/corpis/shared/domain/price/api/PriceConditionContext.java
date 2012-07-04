@@ -1,4 +1,4 @@
-package sk.seges.corpis.shared.domain.invoice;
+package sk.seges.corpis.shared.domain.price.api;
 
 import java.util.HashMap;
 import java.util.Map;

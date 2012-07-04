@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>sk.seges.corpis</groupId>
-	<artifactId>corpis-invoice-domain-model</artifactId>
-	<name>CorpIS Invoice Domain Model</name>
+	<artifactId>corpis-price-domain-api</artifactId>
+	<name>CorpIS Price Domain API</name>
 	
 	<parent>
 		<groupId>sk.seges.corpis</groupId>
@@ -10,14 +10,24 @@
 		<version>1.2.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-
-	<description>Incubator of portable invoice related domain objects</description>
 	
-	<dependencies>	
+	<dependencies>
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-core-domain-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>corpis-customer-domain-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-invoice-domain-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-application-scaffold-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -33,10 +43,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>corpis-application-scaffold-model-base-processor</artifactId>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-payment-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>

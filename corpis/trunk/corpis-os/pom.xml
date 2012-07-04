@@ -356,6 +356,16 @@
 				<artifactId>corpis-dao-implementation-support</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-price-domain-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-price-domain-jpa</artifactId>
+				<version>${project.version}</version>
+			</dependency>		
 			
 			<!-- Other dependencies -->
 			<dependency>

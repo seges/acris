@@ -21,5 +21,9 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>corpis-customer-domain-jpa</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-price-domain-api</artifactId>
+		</dependency>
 	</dependencies>
 </project>
