@@ -151,7 +151,11 @@ public class GenericUserDTO implements UserData<Long> {
 		GenericUserDTO other = (GenericUserDTO) obj;
 		if (username == null) {
 			if (other.username != null) return false;
-		} else if (!username.equals(other.username) || (!webId.equals(other.webId)))  return false;
+		} else if (!username.equals(other.username)) {
+			return false;
+		} else if (webId == null) {
+			if (other.webId != null) return false;
+		} else if (!webId.equals(other.webId))  return false;
 		return true;
 	}
 
