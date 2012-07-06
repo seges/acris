@@ -119,11 +119,19 @@ public class SpringLoginService implements LoginService {
 		roles.add(new LoggedUserRole());
 		if (auth.getPrincipal() instanceof SpringUserAdapter) {
 			SpringUserAdapter<?> adapter = (SpringUserAdapter<?>) auth.getPrincipal();
-			adapter.setRoles(roles);
+			if (adapter.getRoles() == null || adapter.getRoles().isEmpty()) {
+				adapter.setRoles(roles);
+			} else {
+				adapter.getRoles().addAll(roles);
+			}
 			clientSession.setUser(adapter.getUser());
 		} else if (auth.getPrincipal() instanceof UserData) {
 			UserData<?> userData = (UserData<?>) auth.getPrincipal();
-			userData.setRoles(roles);
+			if (userData.getRoles() == null || userData.getRoles().isEmpty()) {
+				userData.setRoles(roles);
+			} else {
+				userData.getRoles().addAll(roles);
+			}
 			clientSession.setUser(userData);
 		} else {
 			if (auth.getPrincipal() == null) {
