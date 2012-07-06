@@ -24,11 +24,12 @@ import org.springframework.security.acls.objectidentity.ObjectIdentityRetrievalS
 import org.springframework.security.acls.objectidentity.ObjectIdentityRetrievalStrategyImpl;
 import org.springframework.security.acls.sid.Sid;
 import org.springframework.security.acls.sid.SidRetrievalStrategy;
-import org.springframework.security.acls.sid.SidRetrievalStrategyImpl;
 import org.springframework.security.vote.AbstractAclVoter;
 import org.springframework.security.vote.AccessDecisionVoter;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import sk.seges.acris.security.server.spring.acl.sid.RolesPublicSidRetrievalStrategy;
 
 public class AclEntryVoter extends AbstractAclVoter {
 
@@ -36,7 +37,7 @@ public class AclEntryVoter extends AbstractAclVoter {
 
     private AclService aclService;
     private ObjectIdentityRetrievalStrategy objectIdentityRetrievalStrategy = new ObjectIdentityRetrievalStrategyImpl();
-    private SidRetrievalStrategy sidRetrievalStrategy = new SidRetrievalStrategyImpl();
+    private SidRetrievalStrategy sidRetrievalStrategy = new RolesPublicSidRetrievalStrategy();
     private String internalMethod;
     private String processConfigAttribute;
     private Permission[] requirePermission;

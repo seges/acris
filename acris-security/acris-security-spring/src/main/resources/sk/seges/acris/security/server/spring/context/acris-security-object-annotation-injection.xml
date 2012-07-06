@@ -16,5 +16,5 @@
       	<aop:advisor advice-ref='objectManagerSecurity' pointcut-ref='serviceMethods' />
  	</aop:config>
 
-    <bean id="objectDefinitionSource" class="sk.seges.acris.security.server.spring.annotation.processor.DefaultSecurityAnnotationProcessor" />
+<!--     <bean id="objectDefinitionSource" class="sk.seges.acris.security.server.spring.annotation.processor.DefaultSecurityAnnotationProcessor" /> -->
 </beans>
