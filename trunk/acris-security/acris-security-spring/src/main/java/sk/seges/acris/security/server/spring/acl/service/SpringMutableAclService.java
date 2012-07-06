@@ -124,6 +124,9 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 	@Transactional
 	public void deleteAcl(ObjectIdentity objectIdentity, boolean deleteChildren) throws ChildrenExistException {
 		AclSecuredClassDescription aclClass = aclSecuredClassDao.load(objectIdentity.getJavaType());
+		if (aclClass == null) {
+			return;
+		}
 		// No need to check for nulls, as guaranteed non-null by
 		// ObjectIdentity.getIdentifier() interface contract
 		String identifier = objectIdentity.getIdentifier().toString();
