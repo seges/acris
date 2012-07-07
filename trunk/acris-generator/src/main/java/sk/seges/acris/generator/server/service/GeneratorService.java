@@ -257,6 +257,8 @@ public class GeneratorService implements IGeneratorService {
 		PersistentDataProvider dataProvider = new TokenPersistentDataProvider();
 		dataProvider.setContent(content);
 		dataProvider.setWebId(token.getWebId());
+		dataProvider.setAlias(token.getAlias());
+		
 		if (indexFile) {
 			dataProvider.setId(indexFileName);
 		} else {

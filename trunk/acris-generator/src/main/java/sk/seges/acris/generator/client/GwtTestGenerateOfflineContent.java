@@ -68,7 +68,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		return "testLoadContent";
 	}
 
-	protected abstract EntryPoint getEntryPoint(String webId, String lang);
+	protected abstract EntryPoint getEntryPoint(String webId, String lang, String webAlias);
 
 	protected abstract IGeneratorServiceAsync getGeneratorService();
 
@@ -101,6 +101,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		GeneratorToken defaultToken = new GeneratorToken();
 		defaultToken.setWebId(generatorConfiguration.getWebId());
 		defaultToken.setLanguage(generatorConfiguration.getLanguage());
+		defaultToken.setAlias(generatorConfiguration.getAlias());
+		
 		generatorEnvironment.getTokensCache().setDefaultToken(defaultToken);
 
 		prepareEnvironment(generatorConfiguration);
@@ -267,7 +269,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		}
 		
 		if (site == null) {
-			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage());
+			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage(), generatorToken.getAlias());
 			if (PERFORMANCE_MONITOR) {
 				timer.start(Operation.CONTENT_RENDERING);
 			}

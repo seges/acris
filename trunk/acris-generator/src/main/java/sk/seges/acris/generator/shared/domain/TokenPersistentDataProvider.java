@@ -9,6 +9,7 @@ public class TokenPersistentDataProvider implements PersistentDataProvider {
 	private String id;
 	private String content;
 	private String webId;
+	private String alias;
 
 	@Override
 	public String getId() {
@@ -38,5 +39,13 @@ public class TokenPersistentDataProvider implements PersistentDataProvider {
 	@Override
 	public void setWebId(String webId) {
 		this.webId = webId;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 }

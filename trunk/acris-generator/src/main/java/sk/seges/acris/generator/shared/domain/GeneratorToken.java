@@ -7,11 +7,9 @@ public class GeneratorToken implements Serializable {
 	private static final long serialVersionUID = -1013144843773775841L;
 
 	private String language;
-	
 	private String webId;
-	
+	private String alias;
 	private String niceUrl;
-	
 	private boolean defaultToken;
 
 	public GeneratorToken() {	
@@ -49,10 +47,19 @@ public class GeneratorToken implements Serializable {
 		this.defaultToken = defaultToken;
 	}
 
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((alias == null) ? 0 : alias.hashCode());
 		result = prime * result + (defaultToken ? 1231 : 1237);
 		result = prime * result + ((language == null) ? 0 : language.hashCode());
 		result = prime * result + ((niceUrl == null) ? 0 : niceUrl.hashCode());
@@ -69,6 +76,11 @@ public class GeneratorToken implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		GeneratorToken other = (GeneratorToken) obj;
+		if (alias == null) {
+			if (other.alias != null)
+				return false;
+		} else if (!alias.equals(other.alias))
+			return false;
 		if (defaultToken != other.defaultToken)
 			return false;
 		if (language == null) {
