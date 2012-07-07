@@ -46,7 +46,8 @@ public class MapTokenCache implements TokensCache {
 		generatorToken.setNiceUrl(niceurl);
 		generatorToken.setWebId(defaultToken.getWebId());
 		generatorToken.setLanguage(defaultToken.getLanguage());
-				
+		generatorToken.setAlias(defaultToken.getAlias());
+		
 		if (generatorToken.getNiceUrl().equals(defaultToken.getNiceUrl())) {
 			generatorToken.setDefaultToken(true);
 		}

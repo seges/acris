@@ -18,6 +18,7 @@ public class GeneratorConfigurationGenerator extends Generator {
 	private static final String WEB_ID_NAME = "webId";
 	private static final String PROPERTIES_NAME = "properties";
 	private static final String LANGUAGE_NAME = "language";
+	private static final String ALIAS_NAME = "alias";
 
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext generatorContext, String typeName)
@@ -46,6 +47,7 @@ public class GeneratorConfigurationGenerator extends Generator {
 			sw.println("public String getWebId() { return " + getStringProperty(WEB_ID_NAME) + "; }");
 			sw.println("public String getProperties() { return " + getStringProperty(PROPERTIES_NAME) + "; }");
 			sw.println("public String getLanguage() { return " + getStringProperty(LANGUAGE_NAME) + "; }");
+			sw.println("public String getAlias() { return " + getStringProperty(ALIAS_NAME) + "; }");
 		
 			sw.commit(logger);
 		}
