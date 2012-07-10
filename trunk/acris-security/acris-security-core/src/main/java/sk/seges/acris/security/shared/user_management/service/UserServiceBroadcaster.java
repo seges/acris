@@ -507,4 +507,10 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 			return causes;
 		}
 	}
+
+	@Override
+	public void changeAuthentication(ClientSession clientSession, AsyncCallback<ClientSession> callback) {
+		
+		
+	}
 }

@@ -9,4 +9,6 @@ public interface LoginService {
 	ClientSession login(LoginToken token) throws AuthenticationException;
 
 	void logout();
+
+	void changeAuthentication(ClientSession clientSession);
 }
