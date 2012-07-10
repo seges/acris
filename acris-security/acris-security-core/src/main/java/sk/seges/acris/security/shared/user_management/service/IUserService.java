@@ -49,4 +49,6 @@ public interface IUserService extends RemoteService {
 	String getLoggedUserName(UserContext userContext) throws ServerException;
 	
 	ClientSession getLoggedSession(UserContext userContext);
+
+	void changeAuthentication(ClientSession clientSession);
 }

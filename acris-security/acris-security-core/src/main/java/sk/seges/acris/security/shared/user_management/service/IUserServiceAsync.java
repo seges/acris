@@ -63,4 +63,6 @@ public interface IUserServiceAsync {
 	void getLoggedSession(UserContext userContext, AsyncCallback<ClientSession> callback) throws ServerException;
 
 	void getLoggedUserName(UserContext userContext, AsyncCallback<String> callback) throws ServerException;
+	
+	void changeAuthentication(ClientSession clientSession, AsyncCallback<ClientSession> callback);
 }
