@@ -58,13 +58,13 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	}
 	
 	@Override
-	public void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid) {
+	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid) {
 		deleteByIdentityIdAndSid(aclId, clazz, sid, clazz.getName());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid, String className) {
+	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid, String className) {
 		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
 		query.setParameter("objectIdentityId", aclId);
 		query.setParameter("classname", className);
@@ -88,7 +88,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		}
 	}
 
-	public void deleteByClassnameAndSid(Class<? extends ISecuredObject> securedClass, AclSid sid) {
+	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
 		List<AclEntry> entries = findByClassnameAndSid(securedClass, sid);
 
 		for (AclEntry entry : entries) {
@@ -98,7 +98,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject> securedClass, AclSid sid) {
+	public List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
 
 		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE);
 		query.setParameter("classname", securedClass.getName());

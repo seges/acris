@@ -11,13 +11,13 @@ public interface IAclRecordDao<T extends AclEntry> extends ICrudDAO<T> {
 
     List<AclEntry> findByIdentityId(long aclObjectIdentity);
     
-    List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject> securedClass, AclSid sid);
+    List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid);
 
-    void deleteByClassnameAndSid(Class<? extends ISecuredObject> securedClass, AclSid sid);
+    void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid);
     
-    void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid);
+    void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid);
     
-    void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid, String className);
+    void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid, String className);
 
 	void remove(AclEntry aclEntry);
 

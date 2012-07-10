@@ -36,6 +36,7 @@
 		<gwt.log.version>3.1.2</gwt.log.version>
 
 		<gwt.version>2.3.0</gwt.version>
+		<gwt-plugin.version>2.3.0</gwt-plugin.version>
 <!--		<gwt-incubator.version>2.0.4-20100120-dflorey-1745</gwt-incubator.version>-->
 		<gwtx.version>1.5.3</gwtx.version>
 		<gwt-beansbinding.version>0.4</gwt-beansbinding.version>
@@ -646,7 +647,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>gwt-maven-plugin</artifactId>
-					<version>${gwt.version}</version>
+					<version>${gwt-plugin.version}</version>
 
 					<configuration>
 						<gwtVersion>${gwt.version}</gwtVersion>
