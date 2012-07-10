@@ -1,5 +1,8 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.htmlparser.Node;
 import org.htmlparser.tags.LinkTag;
 
@@ -12,7 +15,8 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof LinkTag) {
-			return (((LinkTag)node).getLink().startsWith("#"));
+			String link = ((LinkTag)node).getLink();
+			return isInternal(link) || !isUrl(link);
 		}
 		return false;
 	}
@@ -25,12 +29,32 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 		return true;
 	}
 
+	private boolean isInternal(String link) {
+		return link.startsWith("#");
+	}
+	
+	private boolean isUrl(String link) {
+		String regex = "^(https?://)?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?"
+	        + "(([0-9]{1,3}\\.){3}[0-9]{1,3}|([0-9a-z_!~*'()-]+\\.)*"
+	        + "([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\\.[a-z]{2,6})"
+	        + "(:[0-9]{1,4})?((/?)|(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$";	
+		
+		//String regex = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+		Pattern patt = Pattern.compile(regex);
+        Matcher matcher = patt.matcher(link);
+        return matcher.matches();
+	}
+	
 	protected String getLink(String link, GeneratorEnvironment generatorEnvironment) {
 		GeneratorToken generatorToken = generatorEnvironment.getGeneratorToken();
 		
-		if (generatorToken.isDefaultToken() && link.toLowerCase().equals("#" + generatorToken.getNiceUrl().toLowerCase())) {
-			return "";
+		if (isInternal(link)) {
+			if (generatorToken.isDefaultToken() && link.toLowerCase().equals("#" + generatorToken.getNiceUrl().toLowerCase())) {
+				return "";
+			}
+			return link.substring(1);
 		}
-		return link.substring(1);
+
+		return link;
 	}
 }
