@@ -5,25 +5,29 @@ package sk.seges.corpis.pay.signer;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.crypto.Cipher;
-
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openpgp.PGPPrivateKey;
+import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
-import org.bouncycastle.openpgp.PGPSecretKey;
+import org.bouncycastle.openpgp.PGPUtil;
 import org.junit.Test;
 
 import sk.seges.corpis.pay.SignatureHelper;
@@ -33,6 +37,110 @@ import sk.seges.corpis.pay.SignatureHelper;
  */
 public class RsaSsaPkcs1SignerTest {
 	@Test
+	public void testMDSigner() throws Exception {
+		Security.addProvider(new BouncyCastleProvider());
+
+		InputStream inStream = new FileInputStream("/tmp/secring.gpg");
+		PaymentSigner signer = new RsaSsaPkcs1Signer(inStream, "XXX <xxx@yyy.sk>", "uzasneheslo");
+		
+		
+		Collection<String> parametersInOrder = new ArrayList<String>();
+		parametersInOrder.add("KKKKKKKK");
+		parametersInOrder.add("1");
+		parametersInOrder.add("123");
+		parametersInOrder.add("0308");
+		parametersInOrder.add("http://abc");
+		
+//		AsymmetricBlockCipher cipher = new RSAEngine();
+//		PKCS1Encoding encoding = new PKCS1Encoding(cipher);
+		
+		String signature = signer.forgeSignature(null, parametersInOrder);
+		System.out.println(signature);
+		assertEquals(Integer.valueOf(512), Integer.valueOf(signature.length()));
+		
+		verify("KKKKKKKK11230308http://abc", signature);
+		
+		
+	}
+
+	public void verify(String signatureBaseString, String signature) throws Exception {
+		FileInputStream securityKeyRing = new FileInputStream(new File("/tmp/pubring.gpg"));
+		PGPPublicKey pgppublicKey = readPublicKey(securityKeyRing, "XXX <xxx@yyy.sk>");
+		PublicKey publicKey = pgppublicKey.getKey("BC");
+
+		byte[] signatureBytes = SignatureHelper.toByteArray(signature);
+
+		Signature verifier = Signature.getInstance("SHA256withRSA");
+		verifier.initVerify(publicKey);
+		verifier.update(signatureBaseString.getBytes("UTF-8"));
+		if (!verifier.verify(signatureBytes)) {
+			throw new RuntimeException("Invalid signature for signature method");
+		}
+	}
+	
+	  public static PrivateKey createPrivateKey(byte[] privateKey) {
+		    if (privateKey == null) {
+		      return null;
+		    }
+
+		    try {
+		      KeyFactory fac = KeyFactory.getInstance("RSA");
+		      EncodedKeySpec spec = new PKCS8EncodedKeySpec(privateKey);
+		      return fac.generatePrivate(spec);
+		    }
+		    catch (NoSuchAlgorithmException e) {
+		      throw new IllegalStateException(e);
+		    }
+		    catch (InvalidKeySpecException e) {
+		      throw new IllegalStateException(e);
+		    }
+		  }
+	
+		@SuppressWarnings("rawtypes")
+		public static PGPPublicKey readPublicKey(InputStream in, String keyRingName) throws IOException, PGPException {
+			in = PGPUtil.getDecoderStream(in);
+
+			PGPPublicKeyRingCollection pgpSec = new PGPPublicKeyRingCollection(in);
+
+			//
+			// we just loop through the collection till we find a key suitable for
+			// encryption, in the real
+			// world you would probably want to be a bit smarter about this.
+			//
+			PGPPublicKey key = null;
+
+			//
+			// iterate through the key rings.
+			//
+			Iterator rIt = pgpSec.getKeyRings(keyRingName, true);
+
+			while (key == null && rIt.hasNext()) {
+				PGPPublicKeyRing kRing = (PGPPublicKeyRing) rIt.next();
+				Iterator kIt = kRing.getPublicKeys();
+
+				while (key == null && kIt.hasNext()) {
+					PGPPublicKey k = (PGPPublicKey) kIt.next();
+					Iterator userIDs = k.getUserIDs();
+					String uid = "NA";
+					if (userIDs.hasNext()) {
+						uid = (String) userIDs.next();
+						System.out.println("Key ring uid = " + uid);
+						if(uid.equals(keyRingName)) {
+							key = k;
+						}
+					}
+					
+				}
+			}
+
+			if (key == null) {
+				throw new IllegalArgumentException("Can't find signing key in key ring.");
+			}
+			return key;
+		}
+	  
+	  
+//	@Test
 	public void testSigner() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 
@@ -46,95 +154,7 @@ public class RsaSsaPkcs1SignerTest {
 				.length()));
 	}
 	
-//	@Test
-	public void testMojdellSigner() throws Exception {
-		Security.addProvider(new BouncyCastleProvider());
 
-		InputStream inStream = new FileInputStream("/home/psenicka/.acris-web/gpg/secring.gpg");
-//		PaymentSigner signer = new RsaSsaPkcs1Signer(inStream, "BML", "Z4pl4t1m3M0jD3ll");
-//
-//		Collection<String> parametersInOrder = new ArrayList<String>();
-//		parametersInOrder.add("2004bml");
-//		parametersInOrder.add("210.72");
-//		parametersInOrder.add("21349745");
-//		parametersInOrder.add(PaymentConstants.CONSTANT_SYMBOL_DEFAULT);
-//		parametersInOrder.add("http://mojdell.sk");
-//		
-//		String forgeSignature = signer.forgeSignature(null, parametersInOrder);
-//		System.out.println(forgeSignature);
-//		assertEquals(Integer.valueOf(512), Integer.valueOf(forgeSignature
-//				.length()));
-		
-		PrivateKey privateKey = null;
-		try {
-			PGPSecretKey readSecretKey = RsaSsaPkcs1Signer.readSecretKey(inStream, "BML <platba@mojdell.sk>");
-			PGPPrivateKey extractPrivateKey = readSecretKey.extractPrivateKey("Z4pl4t1m3M0jD3ll".toCharArray(), "BC");
-			
-			privateKey = extractPrivateKey.getKey();
-		} catch (Exception e) {
-
-		}
-		
-		byte[] signature;
-		String paramStr = 
-//		"0001FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" +
-//				"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" +
-//				"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" +
-//				"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" +
-//				"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" +
-//				"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" +
-//				"FFFFFFFFFFFFFFFFFFFFFFFF003031300d060960864801650304020105000420" +
-//				"76E5F894DDD8F0CF120EA38BCD3BB5AE3646D01C225C0AB2E0F9617C56ACC59E";
-				
-				"3031300d060960864801650304020105000420" +
-				"76E5F894DDD8F0CF120EA38BCD3BB5AE3646D01C225C0AB2E0F9617C56ACC59E";
-				
-//		"2004bml210.72213497450308http://mojdell.sk";
-		System.out.println("3031300D060960864801650304020105000420" +
-				"76E5F894DDD8F0CF120EA38BCD3BB5AE3646D01C225C0AB2E0F9617C56ACC59E");
-//		MessageDigest md = MessageDigest.getInstance("SHA-256");
-//		md.update(paramStr.getBytes());
-//		byte[] mdbytes = md.digest();
-//        
-//        AlgorithmIdentifier algId = new AlgorithmIdentifier(new DERObjectIdentifier("1.3.6.1.4.1.22554.2"), DERNull.INSTANCE);
-//        DigestInfo dInfo = new DigestInfo(algId, mdbytes);
-//        byte[] derder = dInfo.getEncoded("DER");
-//        System.out.println(SignatureHelper.byteArrayToHexString(derder));
-//
-        InputStream publicKeyStream = new FileInputStream("/home/psenicka/.acris-web/gpg/pubring.gpg");
-        PGPPublicKey rsaPublicKey = readPublicKeyFromCol(publicKeyStream, "BML <platba@mojdell.sk>");
-
-        byte[] input = hexStringToByteArray(paramStr);
-        Cipher rsaCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        rsaCipher.init(Cipher.ENCRYPT_MODE, privateKey);
-
-        byte[] encodedKeyBytes = rsaCipher.doFinal(input); 
-        System.out.println("cipher: " + SignatureHelper.byteArrayToHexString(encodedKeyBytes));
-
-        rsaCipher = Cipher.getInstance("RSA/ECB/NoPadding"); 
-        rsaCipher.init(Cipher.DECRYPT_MODE, rsaPublicKey.getKey("BC")); 
-        byte[] decodedResult = rsaCipher.doFinal(encodedKeyBytes);
-        System.out.println("cipher: " + SignatureHelper.byteArrayToHexString(decodedResult));
-      
-        
-        PublicKey publicKey = rsaPublicKey.getKey("BC");
-        
-		try {
-			Signature mySigner = Signature.getInstance("SHA256withRSA");
-			mySigner.initSign(privateKey);
-			mySigner.update("2004bml210.72213497450308http://mojdell.sk".getBytes());
-			signature = mySigner.sign();
-		} catch (GeneralSecurityException e) {
-			throw new RuntimeException("Unable to create signature from params = " + paramStr, e);
-		}
-		String hexString = SignatureHelper.byteArrayToHexString(signature);	
-		System.out.println(hexString);
-		
-		rsaCipher = Cipher.getInstance("RSA/ECB/NoPadding"); 
-        rsaCipher.init(Cipher.DECRYPT_MODE,publicKey); 
-        decodedResult = rsaCipher.doFinal(hexStringToByteArray(hexString));
-        System.out.println("cipher: " + SignatureHelper.byteArrayToHexString(decodedResult));
- 	}	
 	
 	public static byte[] hexStringToByteArray(String s) {
 	    byte[] b = new byte[s.length() / 2];
@@ -146,7 +166,8 @@ public class RsaSsaPkcs1SignerTest {
 	    return b;
 	  }
 	
-    private static PGPPublicKey readPublicKeyFromCol(InputStream in, String keyRing)
+    @SuppressWarnings("unused")
+	private static PGPPublicKey readPublicKeyFromCol(InputStream in, String keyRing)
             throws Exception {
      PGPPublicKeyRing pkRing = null;
      PGPPublicKeyRingCollection pkCol = new PGPPublicKeyRingCollection(in);
