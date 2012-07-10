@@ -1,6 +1,6 @@
 package sk.seges.sesam.server.domain.converter;
 
-import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
+import sk.seges.sesam.server.domain.converter.utils.ClassConverter;
 import sk.seges.sesam.shared.model.converter.BasicConverter;
 
 public class ProjectableResultConverter extends BasicConverter<String, String> {
@@ -22,23 +22,6 @@ public class ProjectableResultConverter extends BasicConverter<String, String> {
 
 	@Override
 	public String fromDto(String dto) {
-		if (dto == null) {
-			return dto;
-		}
-		
-		Class<?> dtoClass = null;
-		try {
-			dtoClass = Class.forName(dto);
-		} catch (ClassNotFoundException e) {
-			return dto;
-		}
-		
-		TransferObjectMapping annotation = dtoClass.getAnnotation(TransferObjectMapping.class);
-		
-		if (annotation == null) {
-			return dto;
-		}
-		
-		return annotation.domainClassName();
+		return ClassConverter.getDomainClassName(dto);
 	}
 }
