@@ -94,13 +94,22 @@ public class SpringLoginService implements LoginService {
 		return new ClientSession();
 	}
 
+	@Override
+	public void changeAuthentication(ClientSession clientSession) {
+		UserData<?> userData = (UserData<?>) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		userData.setRoles(clientSession.getUser().getRoles());
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(userData, SecurityContextHolder.getContext()
+				.getAuthentication().getCredentials(), SecurityContextHolder.getContext().getAuthentication()
+				.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(newAuth);
+	}
+
 	/**
 	 * Extension point to enrich client session with custom properties.
 	 * 
 	 * @param clientSession
 	 */
-	protected void postProcessLogin(ClientSession clientSession, LoginToken token) {
-	}
+	protected void postProcessLogin(ClientSession clientSession, LoginToken token) {}
 
 	@Transactional
 	public ClientSession login(LoginToken token) throws ServerException {
@@ -147,12 +156,13 @@ public class SpringLoginService implements LoginService {
 	}
 
 	private void createSecurityContext(Authentication auth) {
-		Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), auth.getAuthorities());
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(),
+				auth.getAuthorities());
 		AcrisSecurityContext sc = new AcrisSecurityContext();
 		sc.setAuthentication(newAuth);
 		SecurityContextHolder.setContext(sc);
 	}
-	
+
 	/**
 	 * @see sk.seges.acris.security.rpc.user_management.service.IUserService#logout()
 	 */

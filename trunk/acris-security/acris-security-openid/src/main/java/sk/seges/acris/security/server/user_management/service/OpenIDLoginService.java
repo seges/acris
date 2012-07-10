@@ -76,4 +76,9 @@ public class OpenIDLoginService implements LoginService {
 	@Override
 	public void logout() {
 	}
+
+	@Override
+	public void changeAuthentication(ClientSession clientSession) {
+		// TODO Auto-generated method stub
+	}
 }

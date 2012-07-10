@@ -65,4 +65,11 @@ public class UserService implements IUserService {
 	public ClientSession getLoggedSession(UserContext userContext) {
 		return userContextProvider.getUserProviderService(userContext).getLoggedSession(userContext);
 	}
+	
+	@Override
+	public void changeAuthentication(ClientSession clientSession) {
+		HttpSession session = sessionProvider.getSession();
+		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
+		loginServiceProvider.getLoginService(token).changeAuthentication(clientSession);
+	}
 }
