@@ -24,25 +24,25 @@ public class HibernateSpringAclRecordDao extends HibernateAclRecordDao {
 
 	@Override
 	@Transactional
-    public void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid) {
+    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid) {
 		super.deleteByIdentityIdAndSid(aclId, clazz, sid);
 	}
 	
 	@Override
 	@Transactional
-    public void deleteByIdentityIdAndSid(Long aclId, Class clazz, AclSid sid, String className) {
+    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid, String className) {
 		super.deleteByIdentityIdAndSid(aclId, clazz, sid, className);
     }
 
 	@Override
     @Transactional
-	public void deleteByClassnameAndSid(Class<? extends ISecuredObject> securedClass, AclSid sid) {
+	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
 		super.deleteByClassnameAndSid(securedClass, sid);
 	}
 
 	@Override
     @Transactional
-    public List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject> securedClass, AclSid sid) {
+    public List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
 		return super.findByClassnameAndSid(securedClass, sid);
     }
     

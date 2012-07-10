@@ -12,6 +12,7 @@ import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclSecuredObjectIde
 import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
+import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
@@ -27,6 +28,15 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 		super.setEntityManager(entityManager);
 	}
 
+	public JpaAclSecuredObjectIdentity findByObjectId(Class<? extends ISecuredObject<?>> objectClass, long objectIdIdentity) {
+		DetachedCriteria criteria = createCriteria();
+
+		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.CLASS_NAME, objectClass.getCanonicalName()));
+		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY, objectIdIdentity));
+
+		return findUnique(criteria);
+	}
+	
 	public JpaAclSecuredObjectIdentity findByObjectId(long objectIdClass, long objectIdIdentity) {
 
 		DetachedCriteria criteria = createCriteria();
@@ -34,25 +44,11 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + ".id", objectIdClass));
 		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY, objectIdIdentity));
 
-		List<JpaAclSecuredObjectIdentity> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
-
-		if (entries.size() == 0) {
-			return null;
-		}
-
-		if (entries.size() == 1) {
-			return entries.get(0);
-		}
-
-		throw new IllegalArgumentException("More than one unique records was found in database");
+		return findUnique(criteria);
 	}
 	
-	public JpaAclSecuredObjectIdentity findByObjectId(long objectIdIdentity) {
-		DetachedCriteria criteria = createCriteria();
-
-		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY, objectIdIdentity));
-
-		List<JpaAclSecuredObjectIdentity> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
+	private JpaAclSecuredObjectIdentity findUnique(DetachedCriteria detachedCriteria) {
+		List<JpaAclSecuredObjectIdentity> entries = findByCriteria(detachedCriteria, new Page(0, Page.ALL_RESULTS));
 
 		if (entries.size() == 0) {
 			return null;

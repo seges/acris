@@ -25,19 +25,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
 import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
+import sk.seges.acris.security.server.acl.dao.IAclSecuredClassDescriptionDao;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
 import sk.seges.acris.security.server.spring.acl.domain.dto.SpringAclSidDTO;
+import sk.seges.acris.security.server.utils.SecuredClassHelper;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.sesam.domain.IDomainObject;
 
-//@Component
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SpringAclMaintainer implements AclManager {
 
@@ -45,7 +46,8 @@ public class SpringAclMaintainer implements AclManager {
 
 	private static final String HIBERNATE_PROXY_CLASSNAME_SEPARATOR = "$$";
 
-	private static final Set<Class> topParentClasses = new HashSet<Class>();
+	private static final Set<Class<?>> topParentClasses = new HashSet<Class<?>>();
+
 	@Autowired
 	private DefaultPermissionFactory permissionFactory;
 
@@ -61,10 +63,13 @@ public class SpringAclMaintainer implements AclManager {
 
 	@Autowired
 	@Qualifier(value = "aclRecordDao")
-	private IAclRecordDao aclEntryDao;
+	private IAclRecordDao<?> aclEntryDao;
 
 	@Autowired
-	protected IAclObjectIdentityDao aclObjectIdentityDao;
+	protected IAclObjectIdentityDao<?> aclObjectIdentityDao;
+
+	@Autowired
+	protected IAclSecuredClassDescriptionDao<?> aclSecuredClassDescriptionDao;
 
 	protected AclCache aclCache;
 
@@ -76,11 +81,11 @@ public class SpringAclMaintainer implements AclManager {
 		return new SpringAclSidDTO(authentication);
 	}
 
-	public void removeAclRecords(Class<? extends ISecuredObject> securedClass, UserData user) {
+	public void removeAclRecords(Class<? extends ISecuredObject<?>> securedClass, UserData<?> user) {
 		removeAclRecords(securedClass, createPrincipalSid(user.getUsername()));
 	}
 
-	public void removeAclRecords(Long aclId, String className, UserData user) {
+	public void removeAclRecords(Long aclId, String className, UserData<?> user) {
 		removeAclRecords(aclId, className, createPrincipalSid(user.getUsername()));
 	}
 
@@ -97,46 +102,44 @@ public class SpringAclMaintainer implements AclManager {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void removeSecuredObjectIdentity(Long aclId, String className) {
-		// we need to remove also the superclass object identity ACLs
-		Class clazz = getClass(className);
-		while (!isTopParentClass(clazz)) {
-			if (isHibernateProxy(clazz)) {
-				clazz = clazz.getSuperclass();
-				continue;
-			}
-			ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(clazz, aclId);
-			aclCache.evictFromCache(objectIdentity);
-			aclService.deleteAcl(objectIdentity, false);
-
-			clazz = clazz.getSuperclass();
-		}
+		removeAclRecords(aclId, className, (SpringAclSid)null);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	private void removeAclRecords(Long aclId, String className, SpringAclSid sid) {
 		// we need to remove also the superclass object identity ACLs
-		Class clazz = getClass(className);
+		Class<? extends ISecuredObject<?>> clazz = SecuredClassHelper.getSecuredClass(className);
 		while (!isTopParentClass(clazz)) {
 			if (isHibernateProxy(clazz)) {
-				clazz = clazz.getSuperclass();
+				clazz = getSecuredSuperClass(clazz);
 				continue;
 			}
 			ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(clazz, aclId);
-			aclEntryDao.deleteByIdentityIdAndSid(aclId, clazz, sid, clazz.getName());
+			if (sid != null) {
+				aclEntryDao.deleteByIdentityIdAndSid(aclId, clazz, sid, clazz.getName());
+			} else {
+				aclService.deleteAcl(objectIdentity, false);
+			}
+			aclEntryDao.deleteByIdentityIdAndSid(aclId, clazz, sid);
 			aclCache.evictFromCache(objectIdentity);
 			aclService.readAclById(objectIdentity); // update cache
 
-			clazz = clazz.getSuperclass();
+			clazz = getSecuredSuperClass(clazz);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private Class<? extends ISecuredObject<?>> getSecuredSuperClass(Class<? extends ISecuredObject<?>> clazz) {
+		return (Class<? extends ISecuredObject<?>>) clazz.getSuperclass();
+	}
+	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	private void removeAclRecords(Class<? extends ISecuredObject> securedClass, SpringAclSid sid) {
+	private void removeAclRecords(Class<? extends ISecuredObject<?>> securedClass, SpringAclSid sid) {
 		// we need to remove also the superclass object identity ACLs
-		Class superClass = securedClass;
+		Class<? extends ISecuredObject<?>> superClass = securedClass;
 		while (!isTopParentClass(superClass)) {
 			if (isHibernateProxy(superClass)) {
-				superClass = superClass.getSuperclass();
+				superClass = getSecuredSuperClass(superClass);
 				continue;
 			}
 			aclEntryDao.deleteByClassnameAndSid(superClass, sid);
@@ -147,7 +150,7 @@ public class SpringAclMaintainer implements AclManager {
 																					// cache
 			}
 
-			superClass = superClass.getSuperclass();
+			superClass = getSecuredSuperClass(superClass);
 		}
 	}
 
@@ -172,7 +175,7 @@ public class SpringAclMaintainer implements AclManager {
 	}
 	
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject, UserData user,
+	public void setAclRecords(ISecuredObject<?> securedObject, UserData<?> user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(user.getUsername());
 		setAclRecords(securedObject, sid, permissions);
@@ -186,33 +189,33 @@ public class SpringAclMaintainer implements AclManager {
 	}
 
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void resetAclRecords(Long aclId, UserData user,
+	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData<?> user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(user.getUsername());
-		resetAclRecords(aclId, sid, permissions);
+		resetAclRecords(objectClass, aclId, sid, permissions);
 	}
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void resetAclRecords(Long aclId, RoleData role,
+	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, RoleData role,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(role.getName());
-		resetAclRecords(aclId, sid, permissions);
+		resetAclRecords(objectClass, aclId, sid, permissions);
 	}
 
-	private void resetAclRecords(Long aclId, Sid sid,
+	private void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long securedId, Sid sid,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		MutableAcl acl = null;
-		AclSecuredObjectIdentity objectIdentity = getParentObjectIdentity(aclId);
+		AclSecuredObjectIdentity objectIdentity = getParentObjectIdentity(objectClass, securedId);
 		if (objectIdentity == null) {
-			throw new SecurityException("Could not update acl entry for aclId: " + aclId + " sid: " + sid
+			throw new SecurityException("Could not update acl entry for aclId: " + securedId + " sid: " + sid
 					+ " cause acl object identity not found!");
 		}
 
 		try {
-			acl = (MutableAcl) aclService.readAclById(new ObjectIdentityImpl(objectIdentity.getJavaType(), aclId));
+			acl = (MutableAcl) aclService.readAclById(new ObjectIdentityImpl(objectIdentity.getJavaType(), securedId));
 		} catch (NotFoundException e) {
-			throw new SecurityException("Could not update acl entry for aclId: " + aclId + " sid: " + sid
+			throw new SecurityException("Could not update acl entry for aclId: " + securedId + " sid: " + sid
 					+ " cause acl object identity not found!", e);
 		}
 
@@ -230,17 +233,14 @@ public class SpringAclMaintainer implements AclManager {
 		aclService.updateAcl(acl);
 	}
 
-	private AclSecuredObjectIdentity getParentObjectIdentity(Long aclId) {
-		AclSecuredObjectIdentity result = aclObjectIdentityDao.findByObjectId(aclId);
+	private AclSecuredObjectIdentity getParentObjectIdentity(Class<? extends ISecuredObject<?>> objectClass, Long aclId) {
+		
+		AclSecuredObjectIdentity result = aclObjectIdentityDao.findByObjectId(objectClass, aclId);
 
 		if (result != null && result.getParentObject() != null) {
 			return result.getParentObject();
 		}
 		return result;
-		// while (result.getParentObject() != null) {
-		// result = result.getParentObject();
-		// }
-		// return result;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -253,14 +253,7 @@ public class SpringAclMaintainer implements AclManager {
 	private void setAclRecords(ISecuredObject<?> securedObject, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, Boolean updateParent) {
 		MutableAcl acl = null;
 		ISecuredObject<?> securedParent = securedObject.getParent();
-		Class clazz = securedObject.getClass();
-		// we are going to traverse the inheritance tree starting with the
-		// SecuredObject's classT
-		// while(! isTopParentClass(clazz)) {
-		// if(isHibernateProxy(clazz)) {
-		// clazz = clazz.getSuperclass();
-		// continue;
-		// }
+		Class<?> clazz = securedObject.getClass();
 
 		while (isHibernateProxy(clazz)) {
 			clazz = clazz.getSuperclass();
@@ -344,25 +337,14 @@ public class SpringAclMaintainer implements AclManager {
 		this.aclCache = aclCache;
 	}
 
-	private boolean isHibernateProxy(Class clazz) {
+	private boolean isHibernateProxy(Class<?> clazz) {
 		return clazz.getName().contains(HIBERNATE_PROXY_CLASSNAME_SEPARATOR);
 	}
 
-	private boolean isTopParentClass(Class clazz) {
+	private boolean isTopParentClass(Class<?> clazz) {
 		return topParentClasses.contains(clazz);
 	}
 
-	private Class getClass(String className) {
-		Class clazz;
-		try {
-			clazz = Class.forName(className);
-		} catch (ClassNotFoundException e) {
-			String message = "Class " + className + " could not be found.";
-			logger.error(message, e);
-			throw new RuntimeException(message);
-		}
-		return clazz;
-	}
 
 	private Sid getSidFromContext() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
