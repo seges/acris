@@ -66,8 +66,6 @@ public class ResizablePanel extends HTML {
 		super.onAttach();
 		if (enabled) {
 			sinkEvents(Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE);
-		} else {
-			sinkEvents(Event.ONMOUSEDOWN | Event.ONMOUSEUP);
 		}
 	}
 
