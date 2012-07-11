@@ -12,7 +12,6 @@ import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclSecuredObjectIde
 import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
@@ -28,15 +27,6 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 		super.setEntityManager(entityManager);
 	}
 
-	public JpaAclSecuredObjectIdentity findByObjectId(Class<? extends ISecuredObject<?>> objectClass, long objectIdIdentity) {
-		DetachedCriteria criteria = createCriteria();
-
-		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.CLASS_NAME, objectClass.getCanonicalName()));
-		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY, objectIdIdentity));
-
-		return findUnique(criteria);
-	}
-	
 	public JpaAclSecuredObjectIdentity findByObjectId(long objectIdClass, long objectIdIdentity) {
 
 		DetachedCriteria criteria = createCriteria();
