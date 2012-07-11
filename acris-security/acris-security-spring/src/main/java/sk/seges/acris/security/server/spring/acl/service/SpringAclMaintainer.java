@@ -28,6 +28,7 @@ import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
 import sk.seges.acris.security.server.acl.dao.IAclSecuredClassDescriptionDao;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
+import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescription;
 import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
@@ -235,7 +236,12 @@ public class SpringAclMaintainer implements AclManager {
 
 	private AclSecuredObjectIdentity getParentObjectIdentity(Class<? extends ISecuredObject<?>> objectClass, Long aclId) {
 		
-		AclSecuredObjectIdentity result = aclObjectIdentityDao.findByObjectId(objectClass, aclId);
+		AclSecuredClassDescription aclClass = aclSecuredClassDescriptionDao.load(objectClass);
+		
+		if (aclClass == null) {
+			return null;
+		}
+		AclSecuredObjectIdentity result = aclObjectIdentityDao.findByObjectId(aclClass.getId(), aclId);
 
 		if (result != null && result.getParentObject() != null) {
 			return result.getParentObject();
