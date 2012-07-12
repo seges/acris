@@ -238,10 +238,10 @@ public class SpringAclMaintainer implements AclManager {
 		
 		AclSecuredClassDescription aclClass = aclSecuredClassDescriptionDao.load(objectClass);
 		
-		if (aclClass == null) {
-			return null;
-		}
-		AclSecuredObjectIdentity result = aclObjectIdentityDao.findByObjectId(aclClass.getId(), aclId);
+//		if (aclClass == null) {
+//			return null;
+//		}
+		AclSecuredObjectIdentity result = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), aclId);
 
 		if (result != null && result.getParentObject() != null) {
 			return result.getParentObject();
