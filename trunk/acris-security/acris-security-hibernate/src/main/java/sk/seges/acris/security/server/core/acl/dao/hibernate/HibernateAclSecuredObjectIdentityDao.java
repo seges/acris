@@ -31,7 +31,9 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 
 		DetachedCriteria criteria = createCriteria();
 
-		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + ".id", objectIdClass));
+		if (objectIdClass != -1) {
+			criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + ".id", objectIdClass));
+		}
 		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY, objectIdIdentity));
 
 		return findUnique(criteria);
