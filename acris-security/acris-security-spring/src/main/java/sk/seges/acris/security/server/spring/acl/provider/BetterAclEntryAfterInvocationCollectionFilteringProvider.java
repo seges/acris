@@ -23,9 +23,13 @@ public class BetterAclEntryAfterInvocationCollectionFilteringProvider extends Ac
     @Override
     public Object decide(Authentication authentication, Object object, ConfigAttributeDefinition config,
     		Object returnedObject) throws AccessDeniedException {
+    	
+    	//we have to check it before decission!
+    	boolean isEmpty = returnedObject != null && !isEmpty(returnedObject);
+    	
     	Object result = super.decide(authentication, object, config, returnedObject);
     	
-    	if (returnedObject != null && !isEmpty(returnedObject) && (result == null || isEmpty(result))) {
+    	if (isEmpty && (result == null || isEmpty(result))) {
     		throw new SecurityException("User does not have permission for object: " + object + " returned object: " + returnedObject);
     	}
     	
