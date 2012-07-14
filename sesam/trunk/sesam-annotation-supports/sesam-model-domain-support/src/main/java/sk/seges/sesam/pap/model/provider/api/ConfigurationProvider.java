@@ -17,4 +17,6 @@ public interface ConfigurationProvider {
 
 	ConfigurationTypeElement getConfiguration(ExecutableElement configurationElementMethod, DomainDeclaredType returnType, 
 			ConfigurationContext configurationContext);
+	
+	List<ConfigurationTypeElement> getAvailableConfigurations();
 }

@@ -5,7 +5,6 @@ import javax.lang.model.SourceVersion;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.printer.accessors.AccessorsPrinter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
@@ -25,33 +24,6 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		return new ConfigurationProvider[] {
 				new ClasspathConfigurationProvider(getClassPathTypes(), getEnvironmentContext())
 		};
-	}
-
-	@Override
-	protected void printAnnotations(ProcessorContext context) {
-		
-		FormattedPrintWriter pw = context.getPrintWriter();
-		
-		pw.println("@SuppressWarnings(\"serial\")");
-		//TODO context.getOutputClass is DTO - get configuration element from there
-		ConfigurationTypeElement configurationTypeElement = getConfigurationElement(context);
-		
-		pw.print("@", TransferObjectMapping.class, "(");
-
-		pw.println("dtoClass = " + getOutputClass(configurationTypeElement).getSimpleName() + ".class,");
-		pw.println("		domainClassName = \"" + configurationTypeElement.getDomain().getQualifiedName().toString() + "\", ");
-		pw.println("		configurationClassName = \"" + context.getTypeElement().toString() + "\", ");
-		pw.print("		generateConverter = false, generateDto = false");
-		if (configurationTypeElement.getConverter() != null) {
-			pw.println(", ");
-			pw.print("		converterClassName = \"");
-			pw.print(configurationTypeElement.getConverter().getCanonicalName());
-			pw.print("\"");
-		}
-		
-		pw.println(")");
-		
-		super.printAnnotations(context);
 	}
 	
 	@Override
@@ -82,9 +54,5 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 				new EqualsPrinter(getEntityResolver(), processingEnv, pw),
 				new HashCodePrinter(getEntityResolver(), processingEnv, pw)
 		};
-	}
-	
-	public static MutableDeclaredType getOutputClass(ConfigurationTypeElement configurationTypeElement) {	
-		return configurationTypeElement.getDto();
 	}
 }

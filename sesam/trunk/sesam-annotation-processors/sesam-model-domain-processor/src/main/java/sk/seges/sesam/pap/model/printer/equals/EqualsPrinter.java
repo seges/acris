@@ -87,7 +87,7 @@ public class EqualsPrinter extends AbstractElementPrinter {
 	protected MutableDeclaredType[] getTargetClassNames(ConfigurationTypeElement configurationTypeElement) {
 
 		return new MutableDeclaredType[] {
-				TransferObjectProcessor.getOutputClass(configurationTypeElement)
+				configurationTypeElement.getDto()
 		};
 	}
 

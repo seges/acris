@@ -1251,6 +1251,31 @@
 			</build>
 		</profile>
 		<profile>
+			<id>processor</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.processor</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<!-- Sesam dependencies -->
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-annotation-core-support</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-annotation-core-support</artifactId>
+					<type>test-jar</type>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>pap</id>
 			<activation>
 				<file>

@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.service.resolver;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
@@ -19,7 +20,7 @@ public class ServiceConverterConstructorParametersResolver extends DefaultConver
 
 	@Override
 	protected ParameterElement getConverterCacheParameter() {
-		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), CONVERTER_CACHE_NAME, false);
+		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), ConverterProviderPrinter.CONVERTER_CACHE_NAME, false);
 	}
 
 //	@Override

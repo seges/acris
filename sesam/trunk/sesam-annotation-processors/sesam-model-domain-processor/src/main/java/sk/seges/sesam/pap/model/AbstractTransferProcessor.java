@@ -25,6 +25,7 @@ import sk.seges.sesam.pap.model.annotation.Id;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.configurer.TrasferObjectProcessorConfigurer;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationContext;
@@ -94,6 +95,33 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		return configurationTypeElement;
 	}
 	
+	@Override
+	protected void printAnnotations(ProcessorContext context) {
+		
+		FormattedPrintWriter pw = context.getPrintWriter();
+		
+		pw.println("@SuppressWarnings(\"serial\")");
+
+		ConfigurationTypeElement configurationTypeElement = getConfigurationElement(context);
+		
+		pw.print("@", TransferObjectMapping.class, "(");
+
+		pw.println("dtoClass = " + configurationTypeElement.getDto().getSimpleName() + ".class,");
+		pw.println("		domainClassName = \"" + configurationTypeElement.getDomain().getQualifiedName().toString() + "\", ");
+		pw.println("		configurationClassName = \"" + context.getTypeElement().toString() + "\", ");
+		pw.print("		generateConverter = false, generateDto = false");
+		if (configurationTypeElement.getConverter() != null) {
+			pw.println(", ");
+			pw.print("		converterClassName = \"");
+			pw.print(configurationTypeElement.getConverter().getCanonicalName());
+			pw.print("\"");
+		}
+		
+		pw.println(")");
+		
+		super.printAnnotations(context);
+	}
+
 	@Override
 	protected void processElement(ProcessorContext context) {
 		TypeElement element = context.getTypeElement();

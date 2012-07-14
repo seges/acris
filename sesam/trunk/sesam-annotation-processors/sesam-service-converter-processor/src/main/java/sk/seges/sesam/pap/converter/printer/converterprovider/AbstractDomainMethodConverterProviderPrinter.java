@@ -1,28 +1,29 @@
-package sk.seges.sesam.pap.service.printer;
+package sk.seges.sesam.pap.converter.printer.converterprovider;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
-import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
+import sk.seges.sesam.pap.service.printer.AbstractObjectConverterProviderPrinter;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
-public class ServiceDomainConverterProviderPrinter extends AbstractServiceObjectConverterProviderPrinter {
+public abstract class AbstractDomainMethodConverterProviderPrinter extends AbstractObjectConverterProviderPrinter {
 
-	public ServiceDomainConverterProviderPrinter(ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv,
+	protected AbstractDomainMethodConverterProviderPrinter(ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv,
 			FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
 		super(processingEnv, pw, converterProviderPrinter, parametersResolver);
 	}
 
-	private static final String DOMAIN_CLASS_PARAMETER_NAME = "domainClass";
+	protected static final String DOMAIN_CLASS_PARAMETER_NAME = "domainClass";
 
 	@Override
-	public void print(NestedServiceConverterPrinterContext context) {
+	public void print(ConverterProviderPrinterContext context) {
 
 		if (!types.contains(context.getRawDomain().getCanonicalName())) {
 
@@ -42,13 +43,11 @@ public class ServiceDomainConverterProviderPrinter extends AbstractServiceObject
 			types.add(context.getRawDomain().getCanonicalName());
 			
 			String rawDomainClass = context.getRawDomain().toString(ClassSerializer.SIMPLE, false);
-//			pw.println("if (" + DOMAIN_PARAMETER_NAME + " instanceof ", context.getRawDomain().toString(ClassSerializer.SIMPLE, false), ") {");
+
 			pw.println("if (" + rawDomainClass + ".class.isAssignableFrom(" + DOMAIN_CLASS_PARAMETER_NAME + ")) {");
-			//String fieldName = MethodHelper.toField(context.getRawDomain().getSimpleName());
-			//pw.println(context.getRawDomain(), " " + fieldName + " = (", context.getRawDomain(), ")" + DOMAIN_PARAMETER_NAME + ";");
-			pw.print("return (", getTypedDtoConverter(), ") ");
-			converterProviderPrinter.printDomainGetConverterMethodName(context.getRawDomain(), 
-					"(" + Class.class.getSimpleName() + "<" + context.getDomain().toString(ClassSerializer.SIMPLE, true) + ">)" + DOMAIN_CLASS_PARAMETER_NAME, context.getLocalMethod(), pw, false);
+
+			printResulConverter(context);
+			
 			pw.println(";");
 			pw.println("}");
 			pw.println();
@@ -57,12 +56,14 @@ public class ServiceDomainConverterProviderPrinter extends AbstractServiceObject
 		printTypeVariables(context);
 	}
 
+	protected abstract void printResulConverter(ConverterProviderPrinterContext context);
+	
 	@Override
-	protected void printType(MutableTypeMirror type, NestedServiceConverterPrinterContext context) {
+	protected void printType(MutableTypeMirror type, ConverterProviderPrinterContext context) {
 		
 		DomainType domainType = processingEnv.getTransferObjectUtils().getDomainType(type);
 		if (domainType.getKind().isDeclared() && domainType.getConverter() != null) {
-			context = new NestedServiceConverterPrinterContext((DomainDeclaredType)domainType, context.getLocalMethod());
+			context = new ConverterProviderPrinterContext((DomainDeclaredType)domainType);
 			print(context);
 		}
 	}

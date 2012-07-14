@@ -54,7 +54,7 @@ public class ConfigurationTypeElement extends TomBaseType {
 	public ConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
 		super(envContext);
 
-		this.configurationContext = configurationContext;		
+		this.configurationContext = configurationContext;
 		this.configurationElement = configurationElement;
 		this.domainType = domainType;
 		this.dtoType = dtoType;

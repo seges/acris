@@ -157,6 +157,21 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		return result;
 	}
 	
+	public List<ConfigurationTypeElement> getAvailableConfigurations() {
+		
+		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
+
+		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
+		for (Element annotatedElement : elementsAnnotatedWith) {
+			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED) && !contains(annotatedElement, result)) {
+				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement);
+				result.add(configurationTypeElement);
+			}
+		}
+		
+		return result;
+	}
+
 	protected List<ConfigurationTypeElement> getConfigurationElementsForType(TargetType targetType, MutableTypeMirror type, ConfigurationContext context) {
 		
 		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
