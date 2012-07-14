@@ -28,7 +28,7 @@ public class MapConverter<DTO_KEY, DTO_VALUE, DOMAIN_KEY, DOMAIN_VALUE> implemen
 	private final ConvertedInstanceCache cache;
 	
 
-	public MapConverter(ConverterProvider converterProvider, ConvertedInstanceCache cache) {
+	public MapConverter(ConvertedInstanceCache cache, ConverterProvider converterProvider) {
 		this.converterProvider = converterProvider;
 		this.cache = cache;
 	}

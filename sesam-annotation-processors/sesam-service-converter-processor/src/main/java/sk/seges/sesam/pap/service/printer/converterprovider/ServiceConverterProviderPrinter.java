@@ -1,18 +1,19 @@
-package sk.seges.sesam.pap.service.printer;
+package sk.seges.sesam.pap.service.printer.converterprovider;
 
 import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.printer.TypePrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.converter.printer.ConverterVerifier;
+import sk.seges.sesam.pap.converter.printer.api.ConverterProviderElementPrinter;
+import sk.seges.sesam.pap.converter.printer.converterprovider.ConverterProviderPrinterDelegate;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -22,60 +23,42 @@ import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
-import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
-import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
+import sk.seges.sesam.pap.service.printer.AbstractServiceMethodPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
+import sk.seges.sesam.pap.service.printer.model.ServiceConverterProviderPrinterContext;
 
 public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinter {
+	
+	private final ConverterProviderPrinterDelegate converterProviderPrinterDelegate;
 
 	public ServiceConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv,
 			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
 		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
+		this.converterProviderPrinterDelegate = new ConverterProviderPrinterDelegate(parametersResolver, pw);
 	}
 	
 	@Override
 	public void initialize(ServiceTypeElement serviceTypeElement, MutableDeclaredType outputName) {}
 
+	protected void finalize() {
+		converterProviderPrinterDelegate.finalize();
+		pw.println("}");
+	}
+	
 	protected void initialize(ServiceTypeElement serviceTypeElement) {
-		
 		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
-		
+
 		new TypePrinter(processingEnv, pw).printTypeDefinition(serviceConvertProviderType);
 		pw.println(" {");
 		pw.println();
-		
-		ParameterElement[] generatedParameters = serviceConvertProviderType.getConverterParameters(parametersResolver);
-		
-		for (ParameterElement generatedParameter: generatedParameters) {
-			pw.println(Modifier.PROTECTED.toString() + " " + Modifier.FINAL.toString() + " ", generatedParameter.getType(), " " + generatedParameter.getName() + ";");
-			pw.println();
-		}
-		
-		pw.print(Modifier.PROTECTED.toString() + " ", serviceTypeElement.getSimpleName() + ServiceConvertProviderType.CONVERTER_PROVIDER_SUFFIX + "(");
-		
-		int i = 0;
-		for (ParameterElement generatedParameter: generatedParameters) {
-			if (i > 0) {
-				pw.print(", ");
-			}
-			pw.print(generatedParameter.getType(), " " + generatedParameter.getName());
-			i++;
-		}
-		
-		pw.println(") {");
 
-		for (ParameterElement generatedParameter: generatedParameters) {
-			pw.println("this." + generatedParameter.getName() + " = " + generatedParameter.getName() + ";");
-		}
-		
-		pw.println("}");
-		pw.println();
+		converterProviderPrinterDelegate.initialize(serviceConvertProviderType);
 	}
 	
-	protected NestedServiceConverterElementPrinter[] getNestedPrinters() {
-		return new NestedServiceConverterElementPrinter[] {
-			new ServiceDomainConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter),
-			new ServiceDtoConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter)	
+	protected ConverterProviderElementPrinter[] getNestedPrinters() {
+		return new ConverterProviderElementPrinter[] {
+			new ServiceMethodDomainConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter),
+			new ServiceMethodDtoConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter)	
 		};
 	}
 	
@@ -87,19 +70,19 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 		
 		if (converterVerifier.isContainsConverter()) {
 			initialize(context.getService());
-			for (NestedServiceConverterElementPrinter nestedPrinter: getNestedPrinters()) {
+			for (ConverterProviderElementPrinter nestedPrinter: getNestedPrinters()) {
 				nestedPrinter.initialize();
 				context.setNestedPrinter(nestedPrinter);
 				super.print(context);
 				nestedPrinter.finish();
 			}
-			pw.println("}");
+			finalize();
 		}
 	}
 	
 	@Override
 	protected void handleMethod(ServiceConverterPrinterContext context, ExecutableElement localMethod, ExecutableElement remoteMethod) {
-		NestedServiceConverterElementPrinter nestedPrinter = context.getNestedPrinter();
+		ConverterProviderElementPrinter nestedPrinter = context.getNestedPrinter();
 		if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 			DtoType returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(remoteMethod.getReturnType());
 
@@ -108,7 +91,7 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 				//TODO why not raw domain
 				//returnDtoType.getConverter().getConfiguration().getRawDomain();
 				DtoDeclaredType rawDto = returnDtoType.getConverter().getConfiguration().getRawDto();
-				nestedPrinter.print(new NestedServiceConverterPrinterContext(rawDto, localMethod));
+				nestedPrinter.print(new ServiceConverterProviderPrinterContext(rawDto, localMethod));
 
 				if (rawDomain.getTypeVariables().size() > 0) {
 					for (MutableTypeVariable typeVariable: rawDomain.getTypeVariables()) {
@@ -124,7 +107,7 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 			DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
 			if (parameterDtoType.getConverter() != null) {
 				DomainDeclaredType rawDomain = parameterDtoType.getConverter().getConfiguration().getRawDomain();
-				nestedPrinter.print(new NestedServiceConverterPrinterContext(rawDomain, localMethod));
+				nestedPrinter.print(new ServiceConverterProviderPrinterContext(rawDomain, localMethod));
 				
 				if (rawDomain.getTypeVariables().size() > 0) {
 					for (MutableTypeVariable typeVariable: rawDomain.getTypeVariables()) {
@@ -136,21 +119,21 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 		}
 	}
 
-	private void printDtoTypeVariables(Set<? extends MutableTypeMirror> types, ExecutableElement localMethod, NestedServiceConverterElementPrinter nestedPrinter) {
+	private void printDtoTypeVariables(Set<? extends MutableTypeMirror> types, ExecutableElement localMethod, ConverterProviderElementPrinter nestedPrinter) {
 		for (MutableTypeMirror type: types) {
 			DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
 			if (dtoType.getKind().isDeclared() && dtoType.getConverter() != null) {
-				NestedServiceConverterPrinterContext context = new NestedServiceConverterPrinterContext((DtoDeclaredType)dtoType, localMethod);
+				ServiceConverterProviderPrinterContext context = new ServiceConverterProviderPrinterContext((DtoDeclaredType)dtoType, localMethod);
 				nestedPrinter.print(context);
 			}
 		}
 	}
 
-	private void printDomainTypeVariables(Set<? extends MutableTypeMirror> types, ExecutableElement localMethod, NestedServiceConverterElementPrinter nestedPrinter) {
+	private void printDomainTypeVariables(Set<? extends MutableTypeMirror> types, ExecutableElement localMethod, ConverterProviderElementPrinter nestedPrinter) {
 		for (MutableTypeMirror type: types) {
 			DomainType domainType = processingEnv.getTransferObjectUtils().getDomainType(type);
 			if (domainType.getKind().isDeclared() && domainType.getConverter() != null) {
-				NestedServiceConverterPrinterContext context = new NestedServiceConverterPrinterContext((DomainDeclaredType)domainType, localMethod);
+				ServiceConverterProviderPrinterContext context = new ServiceConverterProviderPrinterContext((DomainDeclaredType)domainType, localMethod);
 				nestedPrinter.print(context);
 			}
 		}

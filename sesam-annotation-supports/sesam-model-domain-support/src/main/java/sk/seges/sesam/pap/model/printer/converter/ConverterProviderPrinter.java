@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeParameterElement;
 
+import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
@@ -50,6 +51,8 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
+import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
+import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
 
@@ -57,6 +60,10 @@ import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
  * @author Peter Simun (simun@seges.sk)
  */
 public class ConverterProviderPrinter extends AbstractConverterPrinter {
+
+	public static final String CONVERTER_CACHE_NAME = "cache";
+	//TODO - find better place
+	public static final String THIS = "this";
 
 	protected final FormattedPrintWriter pw;
 	
@@ -160,12 +167,16 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		pw.print(">");
 	}
 
-	public void printConverterMethods(boolean supportExtends, ConverterInstancerType converterInstancerType) {
+	public void printConverterMethods(boolean supportExtends, ConverterFilterType converterFilterType, ConverterInstancerType converterInstancerType) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
-			printEnsuredConverterMethod(converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
-			printEnsuredConverterMethod(converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
-			printGetConverterMethod(converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
-			printGetConverterMethod(converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
+			if (!converterFilterType.equals(ConverterFilterType.ENSURED)) {
+				printEnsuredConverterMethod(converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
+				printEnsuredConverterMethod(converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
+			}
+			if (!converterFilterType.equals(ConverterFilterType.GET)) {
+				printGetConverterMethod(converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
+				printGetConverterMethod(converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
+			}
 		}
 	}
 
@@ -186,9 +197,45 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		}
 	}
 
+	protected MutableReferenceType getConverterProviderReference() {
+		return processingEnv.getTypeUtils().getReference(null, THIS);
+	}
+
+	protected MutableReferenceType getCacheReference() {
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+		MutableDeclaredType cacheInstance = typeUtils.toMutableType(MapConvertedInstanceCache.class);
+		
+		return typeUtils.getReference(typeUtils.getTypeValue(cacheInstance, new MapConvertedInstanceCache()), CONVERTER_CACHE_NAME, true);
+	}
+
 	protected MutableType[] getConverterParametersUsage(ConverterTypeElement converterTypeElement, ExecutableElement method) {
-		return new MutableType[] {
-		};
+		
+		MutableTypes typeUtils = processingEnv.getTypeUtils();
+		
+		ParameterElement[] converterParametersTypes = parametersResolver.getConstructorAditionalParameters();
+		
+		List<MutableType> generatedParams = new ArrayList<MutableType>();
+
+		for (ParameterElement converterParametersType: converterParametersTypes) {
+			if (!converterParametersType.isPropagated()) {
+				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.toMutableType(ConverterProvider.class))) {
+					generatedParams.add(getConverterProviderReference());
+				}
+				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.toMutableType(ConvertedInstanceCache.class))) {
+					generatedParams.add(getCacheReference());
+				}
+			}
+		}
+
+		MutableType[] result = new MutableType[generatedParams.size()];
+
+		int i = 0;
+
+		for (MutableType converterParameter: generatedParams) {
+			result[i++] = converterParameter;
+		}
+
+		return result;
 	}
 	
 	protected int printConverterParametersUsage(List<ConverterParameter> converterParameters) {
@@ -302,7 +349,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 			pw.print(getTypedConverter(converterTypeElement, isTyped(converterTypeElement)));
 		} else {
 			pw.print(converterTypeElement);
-		}		
+		}
 	}
 
 	/**

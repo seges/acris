@@ -8,23 +8,23 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.converter.printer.api.ConverterProviderElementPrinter;
+import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.AbstractConverterPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
-import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
-import sk.seges.sesam.pap.service.printer.model.NestedServiceConverterPrinterContext;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
-public abstract class AbstractServiceObjectConverterProviderPrinter extends AbstractConverterPrinter implements NestedServiceConverterElementPrinter {
+public abstract class AbstractObjectConverterProviderPrinter extends AbstractConverterPrinter implements ConverterProviderElementPrinter {
 
 	protected final FormattedPrintWriter pw;
 	protected final ConverterProviderPrinter converterProviderPrinter;
 	
 	protected Set<String> types = new HashSet<String>();
 
-	public AbstractServiceObjectConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw,
+	public AbstractObjectConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw,
 			ConverterProviderPrinter converterProviderPrinter, ConverterConstructorParametersResolver parametersResover) {
 		super(parametersResover, processingEnv);
 		this.pw = pw;
@@ -52,7 +52,7 @@ public abstract class AbstractServiceObjectConverterProviderPrinter extends Abst
 		}
 	}
 	
-	protected void printTypeVariables(NestedServiceConverterPrinterContext context) {
+	protected void printTypeVariables(ConverterProviderPrinterContext context) {
 		for (MutableTypeVariable typeVariable: context.getRawDomain().getTypeVariables()) {
 
 			Set<? extends MutableTypeMirror> lowerBounds = typeVariable.getLowerBounds();
@@ -69,6 +69,6 @@ public abstract class AbstractServiceObjectConverterProviderPrinter extends Abst
 		}
 	}
 
-	protected abstract void printType(MutableTypeMirror type, NestedServiceConverterPrinterContext context);
+	protected abstract void printType(MutableTypeMirror type, ConverterProviderPrinterContext context);
 
 }

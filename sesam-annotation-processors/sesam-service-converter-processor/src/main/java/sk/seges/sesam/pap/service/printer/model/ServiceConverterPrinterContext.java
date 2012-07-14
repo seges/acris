@@ -1,8 +1,8 @@
 package sk.seges.sesam.pap.service.printer.model;
 
+import sk.seges.sesam.pap.converter.printer.api.ConverterProviderElementPrinter;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
-import sk.seges.sesam.pap.service.printer.api.NestedServiceConverterElementPrinter;
 
 public class ServiceConverterPrinterContext {
 
@@ -10,7 +10,7 @@ public class ServiceConverterPrinterContext {
 	private String localServiceFieldName;
 	private ServiceTypeElement service;
 	
-	private NestedServiceConverterElementPrinter nestedPrinter;
+	private ConverterProviderElementPrinter nestedPrinter;
 	
 	public LocalServiceTypeElement getLocalServiceInterface() {
 		return localService;
@@ -20,11 +20,11 @@ public class ServiceConverterPrinterContext {
 		this.localService = localService;
 	}
 
-	public void setNestedPrinter(NestedServiceConverterElementPrinter nestedPrinter) {
+	public void setNestedPrinter(ConverterProviderElementPrinter nestedPrinter) {
 		this.nestedPrinter = nestedPrinter;
 	}
 	
-	public NestedServiceConverterElementPrinter getNestedPrinter() {
+	public ConverterProviderElementPrinter getNestedPrinter() {
 		return nestedPrinter;
 	}
 	
