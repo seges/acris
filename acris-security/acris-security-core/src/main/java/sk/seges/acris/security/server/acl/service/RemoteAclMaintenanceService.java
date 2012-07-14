@@ -10,10 +10,13 @@ import sk.seges.acris.security.shared.user_management.domain.Permission;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.util.LoggedUserRole;
 import sk.seges.sesam.server.domain.converter.utils.ClassConverter;
+import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 public class RemoteAclMaintenanceService implements IRemoteAclMaintenanceService {
 
     private AclManager aclManager;
+    
+    private final ConverterProvider converterProvider;
     
     public AclManager getAclManager() {
         return aclManager;
@@ -23,8 +26,9 @@ public class RemoteAclMaintenanceService implements IRemoteAclMaintenanceService
         this.aclManager = aclManager;
     }
 
-    public RemoteAclMaintenanceService(AclManager aclManager) {
+    public RemoteAclMaintenanceService(ConverterProvider converterProvider, AclManager aclManager) {
     	this.aclManager = aclManager;
+    	this.converterProvider = converterProvider;
     }
     
     public void removeACLEntries(UserData<?> user, String[] securedClassNames) {
@@ -35,20 +39,20 @@ public class RemoteAclMaintenanceService implements IRemoteAclMaintenanceService
     }
     
     public void removeACLEntries(List<Long> aclIds, String className, UserData<?> user) {
-    	className=  ClassConverter.getDomainClassName(className);
+    	className=  ClassConverter.getDomainClassName(converterProvider, className);
     	for (Long id : aclIds) {
     		aclManager.removeAclRecords(id, className, user);
     	}
     }
 
     public void resetACLEntries(String className, Long aclId, UserData<?> user, Permission[] authorities) {
-    	className=  ClassConverter.getDomainClassName(className);
+    	className=  ClassConverter.getDomainClassName(converterProvider, className);
    		aclManager.resetAclRecords(SecuredClassHelper.getSecuredClass(className), aclId, user, authorities);
     }
 
     @Override
     public void resetACLEntriesLoggedRole(String className, Long aclId, Permission[] authorities) {
-    	className=  ClassConverter.getDomainClassName(className);
+    	className=  ClassConverter.getDomainClassName(converterProvider, className);
    		aclManager.resetAclRecords(SecuredClassHelper.getSecuredClass(className), aclId, new LoggedUserRole(), authorities);
     }
 }
