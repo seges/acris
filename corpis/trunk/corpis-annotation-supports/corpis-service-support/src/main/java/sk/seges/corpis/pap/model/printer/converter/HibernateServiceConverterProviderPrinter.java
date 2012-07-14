@@ -10,7 +10,7 @@ import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResol
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 
-public class HibernateServiceConverterProviderPrinter extends AbstractHibernateConverterProviderPrinter {
+public class HibernateServiceConverterProviderPrinter extends HibernateConverterProviderPrinter {
 
 	private final ServiceTypeElement serviceTypeElement;
 	
@@ -25,6 +25,7 @@ public class HibernateServiceConverterProviderPrinter extends AbstractHibernateC
 	
 	@Override
 	protected MutableReferenceType getConverterProviderReference() {
+		
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		
 		MutableExecutableElement converterProviderMethod = processingEnv.getElementUtils().getExecutableElement(GET_CONVERTER_PROVIDER_METHOD);

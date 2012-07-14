@@ -3,7 +3,7 @@ package sk.seges.corpis.pap.service.hibernate;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 
-import sk.seges.corpis.pap.model.printer.converter.HibernateServiceConverterPrinter;
+import sk.seges.corpis.pap.model.printer.converter.HibernateConverterProviderPrinter;
 import sk.seges.corpis.pap.model.printer.converter.HibernateServiceConverterProviderPrinter;
 import sk.seges.corpis.pap.service.hibernate.printer.HibernateServiceMethodConverterPrinter;
 import sk.seges.corpis.pap.service.hibernate.printer.ServiceConverterProviderMethodPrinter;
@@ -49,6 +49,6 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 
 	@Override
 	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw) {
-		return new HibernateServiceConverterPrinter(pw, processingEnv, getParametersResolver());
+		return new HibernateConverterProviderPrinter(pw, processingEnv, getParametersResolver());
 	}
 }

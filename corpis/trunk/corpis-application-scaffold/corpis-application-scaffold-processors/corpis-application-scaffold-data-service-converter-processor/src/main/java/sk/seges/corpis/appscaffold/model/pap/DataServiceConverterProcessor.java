@@ -5,6 +5,7 @@ import javax.lang.model.SourceVersion;
 
 import sk.seges.corpis.appscaffold.model.pap.provider.DataServiceCollectorConfigurationProvider;
 import sk.seges.corpis.pap.service.hibernate.HibernateServiceConverterProcessor;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
@@ -14,9 +15,9 @@ import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 public class DataServiceConverterProcessor extends HibernateServiceConverterProcessor {
 
 	@Override
-	protected ConfigurationProvider[] getConfigurationProviders(ServiceTypeElement service, EnvironmentContext<TransferObjectProcessingEnvironment> context) {
+	protected ConfigurationProvider[] getConfigurationProviders(MutableDeclaredType service, EnvironmentContext<TransferObjectProcessingEnvironment> context) {
 		return new ConfigurationProvider[] {
-				new DataServiceCollectorConfigurationProvider(service, getClassPathTypes(), context)
+				new DataServiceCollectorConfigurationProvider((ServiceTypeElement)service, getClassPathTypes(), context)
 		};
 	}
 }

@@ -10,7 +10,7 @@ import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
-import sk.seges.sesam.pap.service.printer.ServiceConverterProviderPrinter;
+import sk.seges.sesam.pap.service.printer.converterprovider.ServiceConverterProviderPrinter;
 
 public class ServiceConverterProviderMethodPrinter extends ServiceConverterProviderPrinter {
 

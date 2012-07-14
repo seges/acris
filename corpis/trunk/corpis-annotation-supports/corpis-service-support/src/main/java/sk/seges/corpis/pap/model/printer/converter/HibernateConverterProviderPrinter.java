@@ -24,16 +24,12 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
-import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
-import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
-public abstract class AbstractHibernateConverterProviderPrinter extends ConverterProviderPrinter {
+public class HibernateConverterProviderPrinter extends ConverterProviderPrinter {
 
 	protected TransferObjectProcessingEnvironment processingEnv;
 	
-	public AbstractHibernateConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
+	public HibernateConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
 			ConverterConstructorParametersResolver parametersResolver) {
 		super(pw, processingEnv, parametersResolver);
 		this.processingEnv = processingEnv;
@@ -47,15 +43,6 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 				HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME);
 	}
 	
-	protected abstract MutableReferenceType getConverterProviderReference();
-
-	protected MutableReferenceType getCacheReference() {
-		MutableTypes typeUtils = processingEnv.getTypeUtils();
-		MutableDeclaredType cacheInstance = typeUtils.toMutableType(MapConvertedInstanceCache.class);
-		
-		return typeUtils.getReference(typeUtils.getTypeValue(cacheInstance, new MapConvertedInstanceCache()), ServiceConverterConstructorParametersResolver.CONVERTER_CACHE_NAME, true);
-	}
-
 	private ParameterElement toParameter(ConverterParameter converterParameter) {
 		return new ParameterElement(converterParameter.getType(), converterParameter.getName(), converterParameter.isPropagated());
 	}
@@ -89,18 +76,10 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 		
 		List<MutableType> generatedParams = new ArrayList<MutableType>();
 
-		//TODO - ugly implementation. Is it?
-		//TODO move something to the sesam part
 		for (ParameterElement converterParametersType: converterParametersTypes) {
 			if (!converterParametersType.isPropagated()) {
 				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.getArrayType(transactionPropagationModel))) {
 					generatedParams.add(getTransactionModelReference(transactionPropagationAccessor));
-				}
-				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.toMutableType(ConverterProvider.class))) {
-					generatedParams.add(getConverterProviderReference());
-				}
-				if (processingEnv.getTypeUtils().isSameType(converterParametersType.getType(), typeUtils.toMutableType(ConvertedInstanceCache.class))) {
-					generatedParams.add(getCacheReference());
 				}
 			}
 		}
@@ -114,17 +93,18 @@ public abstract class AbstractHibernateConverterProviderPrinter extends Converte
 		}
 
 		for (MutableType converterParameter: converterParameters) {
-			if (converterParameter instanceof MutableTypeMirror && ((MutableTypeMirror)converterParameter).getKind().isDeclared()) {
-				result[i++] = ((MutableDeclaredType)converterParameter).clone().renameTypeParameter(RenameActionType.REPLACE, MutableWildcardType.WILDCARD_NAME);
-			} else if (converterParameter instanceof MutableTypeMirror && ((MutableTypeMirror)converterParameter).getKind().equals(MutableTypeKind.TYPEVAR)) {
-				if (((MutableTypeVariable)converterParameter).clone().getVariable() != null) {
-					result[i++] = ((MutableTypeVariable)converterParameter).clone().setVariable(MutableWildcardType.WILDCARD_NAME);
-				} else {
-					result[i++] = converterParameter;
-				}
-			} else {
-				result[i++] = converterParameter;
-			}
+//			if (converterParameter instanceof MutableTypeMirror && ((MutableTypeMirror)converterParameter).getKind().isDeclared()) {
+//				result[i++] = ((MutableDeclaredType)converterParameter).clone().renameTypeParameter(RenameActionType.REPLACE, MutableWildcardType.WILDCARD_NAME);
+//			} else if (converterParameter instanceof MutableTypeMirror && ((MutableTypeMirror)converterParameter).getKind().equals(MutableTypeKind.TYPEVAR)) {
+//				if (((MutableTypeVariable)converterParameter).clone().getVariable() != null) {
+//					result[i++] = ((MutableTypeVariable)converterParameter).clone().setVariable(MutableWildcardType.WILDCARD_NAME);
+//				} else {
+//					result[i++] = converterParameter;
+//				}
+//			} else {
+//				result[i++] = converterParameter;
+//			}
+			result[i++] = converterParameter;
 		}
 
 		return result;

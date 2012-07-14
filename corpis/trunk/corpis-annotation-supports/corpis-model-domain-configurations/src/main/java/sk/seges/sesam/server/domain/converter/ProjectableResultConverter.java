@@ -2,9 +2,16 @@ package sk.seges.sesam.server.domain.converter;
 
 import sk.seges.sesam.server.domain.converter.utils.ClassConverter;
 import sk.seges.sesam.shared.model.converter.BasicConverter;
+import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 public class ProjectableResultConverter extends BasicConverter<String, String> {
 
+	private final ConverterProvider converterProvider;
+	
+	public ProjectableResultConverter(ConverterProvider converterProvider) {
+		this.converterProvider = converterProvider;
+	}
+	
 	@Override
 	public String convertToDto(String result, String domain) {
 		return domain;
@@ -22,6 +29,6 @@ public class ProjectableResultConverter extends BasicConverter<String, String> {
 
 	@Override
 	public String fromDto(String dto) {
-		return ClassConverter.getDomainClassName(dto);
+		return ClassConverter.getDomainClassName(converterProvider, dto);
 	}
 }

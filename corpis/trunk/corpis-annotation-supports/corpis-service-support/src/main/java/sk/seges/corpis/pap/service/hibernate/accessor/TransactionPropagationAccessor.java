@@ -22,13 +22,21 @@ public class TransactionPropagationAccessor extends AnnotationAccessor {
 	public TransactionPropagationAccessor(Element element, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		
-		TransactionPropagation transactionPropagation = getAnnotation(element, TransactionPropagation.class);
+		TransactionPropagation transactionPropagation = null;
+		
+		if (element != null) {
+			transactionPropagation = getAnnotation(element, TransactionPropagation.class);
+		}
 		
 		if (transactionPropagation != null) {
 			transactionPropagations.add(transactionPropagation);
 		}
 
-		TransactionPropagations transactionPropagations = getAnnotation(element, TransactionPropagations.class);
+		TransactionPropagations transactionPropagations = null;
+		
+		if (element != null) {
+			transactionPropagations = getAnnotation(element, TransactionPropagations.class);
+		}
 
 		if (transactionPropagations != null) {
 			for (TransactionPropagation propagation: transactionPropagations.value()) {
@@ -36,7 +44,11 @@ public class TransactionPropagationAccessor extends AnnotationAccessor {
 			}
 		}
 		
-		transactional = getAnnotation(element, Transactional.class);
+		transactional = null;
+		
+		if (element != null) {
+			transactional = getAnnotation(element, Transactional.class);
+		}
 	}
 	
 	public TransactionPropagationModel[] getPropagations() {
