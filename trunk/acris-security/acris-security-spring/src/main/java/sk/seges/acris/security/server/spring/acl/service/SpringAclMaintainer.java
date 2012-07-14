@@ -313,10 +313,10 @@ public class SpringAclMaintainer implements AclManager {
 			if (!found) {
 				acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
 			} else {
-				if (!exactMatch) {
+//				if (!exactMatch) {
 					acl.deleteAce(aceIndex);
 					acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
-				}
+//				}
 			}
 		}
 		aclService.updateAcl(acl);
