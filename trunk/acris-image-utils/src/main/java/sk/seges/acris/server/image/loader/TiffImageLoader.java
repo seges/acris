@@ -1,77 +1,63 @@
 package sk.seges.acris.server.image.loader;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 
-import sk.seges.acris.server.image.converter.GhostscriptCMYKtoRGBConverter;
-import sk.seges.acris.server.image.converter.RGBConverter;
+import sk.seges.acris.server.image.model.ColorType;
 
 import com.sun.media.jai.codec.FileSeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageDecoder;
 import com.sun.media.jai.codec.SeekableStream;
-import com.sun.media.jai.codec.TIFFDecodeParam;
 
-public class TiffImageLoader extends ProcessingImageLoader {
+public abstract class TiffImageLoader extends ProcessingImageLoader {
 
-	private final File file;
+	private ImageDecoder dec;
+	private File file;
 
 	public TiffImageLoader(File file) {
 		this.file = file;
 	}
 
+	public TiffImageLoader(ImageDecoder dec) {
+		this.dec = dec;
+	}
+
 	@Override
 	public BufferedImage getBufferedImage() {
+		
+		if (dec != null) {
+			return getBufferedImage(dec);			
+		}
+		
+		return getBufferedImage(getImageDecoder(file));
+	}
+
+	protected abstract BufferedImage getBufferedImage(ImageDecoder dec);
+	
+	static ImageDecoder getImageDecoder(File file) {
 		SeekableStream s;
 		try {
 			s = new FileSeekableStream(file);
 		} catch (IOException e) {
 			return null;
 		}
-
-		TIFFDecodeParam param = null;
-
-		ImageDecoder dec = ImageCodec.createImageDecoder("tiff", s, param);
+		
+		return ImageCodec.createImageDecoder("tiff", s, null);
+	}
+	
+	static ColorType getTiffColorType(ImageDecoder imageDecoder) {
+			
 		try {
-			return convertRenderedImage(dec.decodeAsRenderedImage());
-		} catch (IOException e1) {
+			if (imageDecoder.decodeAsRaster().getPixel(0, 0, (float[])null).length == 3) {
+				return ColorType.RGB;
+			}
+			return ColorType.CMYK;
+
+		} catch (IOException e) {
 			return null;
 		}
 	}
 
-	public BufferedImage convertRenderedImage(RenderedImage img) {
-		if (img instanceof BufferedImage) {
-			return (BufferedImage)img;	
-		}	
-//		ColorModel cm = img.getColorModel();
-//		int width = img.getWidth();
-//		int height = img.getHeight();
-		//WritableRaster raster = cm.createCompatibleWritableRaster(width, height);
-		//boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-//		Hashtable<String, Object> properties = new Hashtable<String, Object>();
-//		String[] keys = img.getPropertyNames();
-//		if (keys != null) {
-//			for (int i = 0; i < keys.length; i++) {
-//				properties.put(keys[i], img.getProperty(keys[i]));
-//			}
-//		}
-		BufferedImage result = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
-//		BufferedImage result = new BufferedImage(cm, raster, isAlphaPremultiplied, properties);
-		processRaster(img.getData(), result.getRaster());
-		return result;
-	}
-
-	@Override
-	protected RawColor processPixel(RawColor pixel) {
-
-		RGBConverter convert = new GhostscriptCMYKtoRGBConverter().convert(
-								255 - pixel.getParts()[0], 
-								255 - pixel.getParts()[1], 
-								255 - pixel.getParts()[2], 
-								255 - pixel.getParts()[3]);
-
-		return new RawColor(convert.getR(), convert.getG(), convert.getB());
-	}
 }

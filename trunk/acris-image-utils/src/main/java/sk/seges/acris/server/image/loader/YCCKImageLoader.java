@@ -6,7 +6,7 @@ import sk.seges.acris.server.image.converter.GhostscriptCMYKtoRGBConverter;
 import sk.seges.acris.server.image.converter.RGBConverter;
 import sk.seges.acris.server.image.converter.YCCKtoCMYKtoRGBConverter;
 
-public class YCCKImageLoader extends CMYKImageLoader {
+public class YCCKImageLoader extends JpegImageLoader {
 
 	YCCKImageLoader(File file) {
 		super(file);
