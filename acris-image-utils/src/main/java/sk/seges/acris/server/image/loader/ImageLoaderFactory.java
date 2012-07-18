@@ -1,8 +1,6 @@
 package sk.seges.acris.server.image.loader;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -10,15 +8,13 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
-import sk.seges.acris.server.image.model.ColorType;
+import com.sun.media.jai.codec.ImageDecoder;
 
-import com.sun.image.codec.jpeg.ImageFormatException;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageDecoder;
+import sk.seges.acris.server.image.model.ColorType;
 
 public class ImageLoaderFactory {
 
-	enum ImageFormat {
+	public static enum ImageFormat {
 		JPEG {
 			@Override
 			boolean appliedTo(String formatName) {
@@ -89,30 +85,8 @@ public class ImageLoaderFactory {
 			return null;
 		}
 	}
-	
-	private static ColorType getColorType(FileInputStream in) {
-		JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(in);
-		try {
-			decoder.decodeAsRaster();
-		} catch (ImageFormatException e) {
-			return ColorType.RGB;
-		} catch (IOException e) {
-			return ColorType.RGB;
-		}
 		
-		int colorType = decoder.getJPEGDecodeParam().getEncodedColorID();	
-		
-		switch (colorType) {
-			case 4:
-				return ColorType.CMYK;
-			case 7:
-				return ColorType.YCCK;
-			default:
-				return ColorType.RGB;
-		}
-	}
-
-	private static ImageFormat getFormatName(File file) {
+	public static ImageFormat getFormatName(File file) {
 	    try {
 	        ImageInputStream iis = ImageIO.createImageInputStream(file);
 
@@ -143,23 +117,36 @@ public class ImageLoaderFactory {
 			case PNG:
 				return new DefaultImageLoader(file);
 			case TIFF:
-				return new TiffImageLoader(file);
-			case JPEG:
-				ColorType colorType;
-				try {
-					colorType = getColorType(new FileInputStream(file));
-				} catch (FileNotFoundException e) {
+				{
+					ImageDecoder imageDecoder = TiffImageLoader.getImageDecoder(file);
+					ColorType colorType = TiffImageLoader.getTiffColorType(imageDecoder);
+					if (colorType == null) {
+						return null;
+					}
+					switch (colorType) {
+					case CMYK:
+						return new CmykTiffImageLoader(imageDecoder);
+					case RGB:
+						return new RGBTiffImageLoader(file);
+					}
+					
 					return null;
 				}
-	
-				switch (colorType) {
-					case CMYK:
-		//				return new RGBImageLoader(file);
-						return new CMYKImageLoader(file);
-					case RGB:
-						return new RGBImageLoader(file);
-					case YCCK:
-						return new YCCKImageLoader(file);
+			case JPEG:
+				{
+					ColorType colorType = JpegImageLoader.getJpegColorType(file);
+					if (colorType == null) {
+						return null;
+					}
+		
+					switch (colorType) {
+						case CMYK:
+							return new CMYKImageLoader(file);
+						case RGB:
+							return new RGBImageLoader(file);
+						case YCCK:
+							return new YCCKImageLoader(file);
+					}
 				}
 		}
 		
