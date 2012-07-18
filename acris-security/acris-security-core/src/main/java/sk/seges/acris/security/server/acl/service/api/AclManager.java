@@ -15,9 +15,11 @@ public interface AclManager {
 	void removeAcl(ISecuredObject<?> securedObject);
 
 	void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
-	void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, Boolean updateParent);
+	void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent);
 	void setAclRecords(ISecuredObject<?> securedObject, UserData<?> user, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
+	void setAclRecords(ISecuredObject<?> securedObject, UserData<?> user, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent);
 	void setAclRecords(ISecuredObject<?> securedObject, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
+	void setAclRecords(ISecuredObject<?> securedObject, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent);
 	
 	void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData<?> user, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
 	void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
