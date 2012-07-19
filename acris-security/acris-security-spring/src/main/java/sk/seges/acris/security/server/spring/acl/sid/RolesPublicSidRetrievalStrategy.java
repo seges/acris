@@ -9,6 +9,7 @@ import org.springframework.security.acls.sid.SidRetrievalStrategyImpl;
 
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.shared.user_management.domain.dto.SecurityRoleDTO;
 
 
 /**
@@ -35,11 +36,11 @@ public class RolesPublicSidRetrievalStrategy extends SidRetrievalStrategyImpl {
 				i++;
 			}
 			i = copySids(sids, result, i);
-			result[i] = new PrincipalSid("*"); 
+			result[i] = new PrincipalSid(SecurityRoleDTO.ALL_USERS); 
 		} else {
 			result = new Sid[sids.length + 1];
 			copySids(sids, result, 0);
-			result[sids.length] = new PrincipalSid("*");
+			result[sids.length] = new PrincipalSid(SecurityRoleDTO.ALL_USERS);
 		}
 		
 		return result;
