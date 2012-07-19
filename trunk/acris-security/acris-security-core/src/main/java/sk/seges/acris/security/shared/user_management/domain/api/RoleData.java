@@ -10,7 +10,7 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
 @MetaModel
 @BeanWrapper
 public interface RoleData extends Serializable, IDomainObject<Integer> {
-
+	
 	List<String> getSelectedAuthorities();
 
 	void setSelectedAuthorities(List<String> securityPermissions);

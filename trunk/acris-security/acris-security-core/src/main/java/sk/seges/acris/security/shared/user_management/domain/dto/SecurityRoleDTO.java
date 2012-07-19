@@ -11,6 +11,8 @@ import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
  */
 public class SecurityRoleDTO implements RoleData {
 
+	public static final String ALL_USERS = "*";
+
 	public static final String GRANT = "USER_ROLE";
 
 	private static final long serialVersionUID = 5356058807001610271L;
