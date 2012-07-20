@@ -1,6 +1,5 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.htmlparser.Node;
@@ -85,8 +84,8 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 		GeneratorToken generatorToken = generatorEnvironment.getGeneratorToken();
 		
 		if (isInternal(link)) {
-			if (generatorToken.isDefaultToken() && link.toLowerCase().equals("#" + generatorToken.getNiceUrl().toLowerCase())) {
-				return "";
+			if (link.toLowerCase().equals("#" + generatorToken.getNiceUrl().toLowerCase())) {
+				return generatorToken.isDefaultToken() ? "" : "#";
 			}
 			return link.substring(1);
 		}
