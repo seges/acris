@@ -31,6 +31,10 @@ public class AnchorUtils {
 	}
 	
 	public static String getAnchorTargetHref(String niceUrl, GeneratorEnvironment generatorEnvironment) {
+		if (niceUrl.startsWith("#")) {
+			return niceUrl;
+		}
+		
 		if (generatorEnvironment.getWebSettings().getTopLevelDomain() == null) {
 			return "/" + niceUrl;
 		} 
