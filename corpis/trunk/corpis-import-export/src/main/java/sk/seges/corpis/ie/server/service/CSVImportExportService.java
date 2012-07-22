@@ -104,7 +104,18 @@ public abstract class CSVImportExportService {
 			RowBasedHandlerContext newContext = instantiateContext();
 			contextTemplate.injectInto(newContext);
 			newContext.setRow(i);
-			violations.addAll(handler.handle(newContext, entry, fieldNames));
+			try {
+				List<ImportExportViolation> handle = handler.handle(newContext, entry, fieldNames);
+				if (handle != null && handle.size() > 0) {
+					for (ImportExportViolation violation: handle) {
+						log.error("Unable to import entry: " + violation.toString());
+					}
+				}
+				violations.addAll(handle);
+			} catch (Exception ex) {
+				log.error("Unable to import entry. ", ex);
+			}
+			
 			i++;
 		}
 		
