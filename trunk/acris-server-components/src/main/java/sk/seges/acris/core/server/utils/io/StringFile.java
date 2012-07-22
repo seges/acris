@@ -36,8 +36,6 @@ public class StringFile extends File {
 		URL url = null;
 		StringFile file;
 		
-//		File pwd = new File(".");
-
 		if (!fileName.startsWith(FILE_SEPARATOR) && !fileName.startsWith(".")) {
 			url = StringFile.class.getResource(FILE_SEPARATOR + fileName);
 
