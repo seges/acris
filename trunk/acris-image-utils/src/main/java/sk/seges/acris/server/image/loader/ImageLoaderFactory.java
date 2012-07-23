@@ -90,6 +90,11 @@ public class ImageLoaderFactory {
 	    try {
 	        ImageInputStream iis = ImageIO.createImageInputStream(file);
 
+	        if (iis == null) {
+	        	//strange unsupported "image"
+	        	return null;
+	        }
+	        
 	        Iterator<ImageReader> iter = ImageIO.getImageReaders(iis);
 	        if (!iter.hasNext()) {
 	            return ImageFormat.fromImageExtension(file.getName());
