@@ -116,6 +116,10 @@ public class ImageLoaderFactory {
 		
 		ImageFormat formatName = getFormatName(file);
 
+		if (formatName == null) {
+			return null;
+		}
+		
 		switch (formatName) {
 			case BMP:
 				return new DefaultImageLoader(file);
