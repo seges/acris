@@ -80,4 +80,24 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setSortEnabled(boolean sortEnabled) {
 		data.set(PRODUCT_LIST_SORT_ENABLED, sortEnabled);
 	}
+
+	@Override
+	public String getSearchMode() {
+		return data.get(SEARCH_MODE);
+	}
+
+	@Override
+	public void setSearchMode(String mode) {
+		data.set(SEARCH_MODE, mode);
+	}
+
+	@Override
+	public Boolean isSearchLocalePrefix() {
+		return data.getBoolean(SEARCH_LOCALE_PREFIX);
+	}
+
+	@Override
+	public void setSearchLocalePrefix(boolean prefix) {
+		data.set(SEARCH_LOCALE_PREFIX, prefix);
+	}
 }

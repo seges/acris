@@ -1,5 +1,7 @@
 package sk.seges.acris.site.client.json.params;
 
+import sk.seges.acris.site.shared.json.ESearchMode;
+
 public class WebParamsBean implements WebParams {
 
 	private static final long serialVersionUID = -728318142595408871L;
@@ -9,6 +11,9 @@ public class WebParamsBean implements WebParams {
 	private boolean productCategorySingleSelect = false;
 	private boolean filtersEnabled = false;
 	private boolean sortEnabled = false;
+
+	private String searchMode = ESearchMode.EQ.name();
+	private boolean searchLocalePrefix = false;
 
 	private String[] offlinePostProcessorInactive;
 	private String[] offlineIndexProcessorInactive;
@@ -81,5 +86,25 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setSortEnabled(boolean sortEnabled) {
 		this.sortEnabled = sortEnabled;
+	}
+
+	@Override
+	public String getSearchMode() {
+		return searchMode;
+	}
+
+	@Override
+	public void setSearchMode(String mode) {
+		this.searchMode = mode;
+	}
+
+	@Override
+	public Boolean isSearchLocalePrefix() {
+		return searchLocalePrefix;
+	}
+
+	@Override
+	public void setSearchLocalePrefix(boolean prefix) {
+		this.searchLocalePrefix = prefix;
 	}
 }
