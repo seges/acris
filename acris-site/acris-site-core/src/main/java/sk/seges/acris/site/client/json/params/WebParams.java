@@ -11,7 +11,9 @@ public interface WebParams extends ContentParameters {
 	public static final String PRODUCT_CATEGORY_SINGLE_SELECT = "productCategorySingleSelect";
 	public static final String PRODUCT_LIST_FILTERS_ENABLED = "productListFilterEnabled";
 	public static final String PRODUCT_LIST_SORT_ENABLED = "productListSortEnabled";
-	
+	public static final String SEARCH_MODE = "searchMode";
+	public static final String SEARCH_LOCALE_PREFIX = "searchLocalePrefix";
+
 	String[] getOfflinePostProcessorInactive();
 
 	void setOfflinePostProcessorInactive(String[] processors);
@@ -31,12 +33,20 @@ public interface WebParams extends ContentParameters {
 	Boolean isProductCategorySingleSelect();
 
 	void setProductCategorySingleSelect(boolean productCategorySingleSelect);
-	
+
 	Boolean isFiltersEnabled();
-	
+
 	void setFiltersEnabled(boolean filtersEnabled);
-	
+
 	Boolean isSortEnabled();
-	
+
 	void setSortEnabled(boolean sortEnabled);
+
+	String getSearchMode();
+
+	void setSearchMode(String mode);
+
+	Boolean isSearchLocalePrefix();
+
+	void setSearchLocalePrefix(boolean prefix);
 }
