@@ -55,6 +55,12 @@ public abstract class CSVImportExportService {
 		this.mappingLoader = mappingLoader;
 	}
 
+	private void logViolations(List<ImportExportViolation> violations) {
+		for (ImportExportViolation violation: violations) {
+			log.error("I/E violation occured: " + toString());
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<ImportExportViolation> importCSV(RowBasedHandlerContext contextTemplate, Set<String> fieldNames) {
 		List<ImportExportViolation> violations = new ArrayList<ImportExportViolation>();
@@ -63,6 +69,7 @@ public abstract class CSVImportExportService {
 		String format = detectFormat();
 		if (format == null) {
 			violations.add(new ImportExportViolation(ViolationConstants.WRONG_FORMAT));
+			logViolations(violations);
 			return violations;
 		}
 		
@@ -89,6 +96,7 @@ public abstract class CSVImportExportService {
 		violations.addAll(handler.checkRestrictions(restrContext, entries));
 		
 		if (!violations.isEmpty()) {
+			logViolations(violations);
 			return violations;
 		}
 		
@@ -122,6 +130,8 @@ public abstract class CSVImportExportService {
 		RowBasedHandlerContext newContext = instantiateContext();
 		contextTemplate.injectInto(newContext);
 		handler.hideDeletedProducts(newContext);
+
+		logViolations(violations);
 
 		return violations;
 	}
