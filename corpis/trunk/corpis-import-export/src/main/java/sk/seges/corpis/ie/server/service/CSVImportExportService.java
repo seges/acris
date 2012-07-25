@@ -82,7 +82,6 @@ public abstract class CSVImportExportService {
 		
 		String file = getDestination(contextTemplate);
 		
-		
 		List<CsvEntry> entries  = null;
 		
 		if (format.toUpperCase().endsWith(CUSTOM_SUFFIX)) {
