@@ -14,4 +14,5 @@ public interface ViolationConstants {
 	public static final String MISSING = "common_missing";
 	public static final String FILE_NOT_FOUND = "fileNotFound";
 	public static final String UNSUPPORTED_ENCODING = "unsupportedEncoding";
+	public static final String INVALID_WEBSETTINGS = "invalidWebsettings";
 }
