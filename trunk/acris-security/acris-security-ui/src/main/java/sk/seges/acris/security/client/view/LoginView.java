@@ -287,6 +287,9 @@ public class LoginView extends Composite implements LoginDisplay {
 	 */
 	@Override
 	public void updateLoginEnabled() {
+		if (ensureLoginButton() == null || ensureLoginButton().getParent() == null) {
+			return;
+		}
 		if (ensureLoginButton().isEnabled()) {
 			ensureLoginButton().getParent().removeStyleName("login-Button-disabled");
 		} else {
