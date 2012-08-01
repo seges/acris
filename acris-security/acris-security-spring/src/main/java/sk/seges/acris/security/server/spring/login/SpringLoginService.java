@@ -169,5 +169,6 @@ public class SpringLoginService implements LoginService {
 	@Override
 	public void logout() {
 		SecurityContextHolder.clearContext();
+		SecurityContextHolder.setContext(new AcrisSecurityContext());
 	}
 }
