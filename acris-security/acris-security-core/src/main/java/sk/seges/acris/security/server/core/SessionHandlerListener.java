@@ -91,7 +91,7 @@ public class SessionHandlerListener implements HttpSessionListener {
 			Date currentDate = new Date();
 			String dateString = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy").format(currentDate);
 			log.debug(dateString + " Accessing session from container with id: " + sessionId + " with timeout "
-					+ activeSession.get(sessionId).getMaxInactiveInterval());
+					+ (activeSession.get(sessionId) == null ? "NULL" : activeSession.get(sessionId).getMaxInactiveInterval()));
 		}
 	}
 

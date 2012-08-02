@@ -14,7 +14,4 @@
 	<beans:import resource="acris-security-http-session-context.xml" />
 	<beans:import resource="acris-security-role-voter-context.xml" />
 	<beans:import resource="acris-security-run-as-context.xml" />
-
-	<beans:bean id="genericAuthenticationDao"
-		class="sk.seges.acris.security.server.spring.user_management.dao.user.impl.UserWithAuthoritiesDao" />
 </beans:beans>
