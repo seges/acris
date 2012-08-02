@@ -301,7 +301,7 @@ public class SpringAclMaintainer implements AclManager {
 			}
 		} else {
 			boolean found = false;
-			boolean exactMatch = false;
+//			boolean exactMatch = false;
 			int aceIndex = 0;
 			for (AccessControlEntry entry : acl.getEntries()) {
 				if (!entry.getSid().equals(sid)) {
@@ -314,7 +314,7 @@ public class SpringAclMaintainer implements AclManager {
 				if ((permission.getMask() & authorityMask) > 0) {
 					found = true;
 					if (permission.getMask() == authorityMask) {
-						exactMatch = true;
+//						exactMatch = true;
 					}
 					break;
 				}
