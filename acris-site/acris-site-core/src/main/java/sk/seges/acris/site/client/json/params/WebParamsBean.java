@@ -17,6 +17,10 @@ public class WebParamsBean implements WebParams {
 
 	private String[] offlinePostProcessorInactive;
 	private String[] offlineIndexProcessorInactive;
+	
+	private String bluewaveUrl;
+	private String bluewaveUsername;
+	private String bluewavePassword;
 
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -106,5 +110,35 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setSearchLocalePrefix(boolean prefix) {
 		this.searchLocalePrefix = prefix;
+	}
+
+	@Override
+	public String getBluewaveUrl() {
+		return bluewaveUrl;
+	}
+
+	@Override
+	public void setBluewaveUrl(String bluewaveUrl) {
+		this.bluewaveUrl = bluewaveUrl;
+	}
+
+	@Override
+	public String getBluewaveUsername() {
+		return bluewaveUsername;
+	}
+
+	@Override
+	public void setBluewaveUsername(String bluewaveUsername) {
+		this.bluewaveUsername = bluewaveUsername;
+	}
+
+	@Override
+	public String getBluewavePassword() {
+		return bluewavePassword;
+	}
+
+	@Override
+	public void setBluewavePassword(String bluewavePassword) {
+		this.bluewavePassword = bluewavePassword;
 	}
 }
