@@ -100,4 +100,34 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setSearchLocalePrefix(boolean prefix) {
 		data.set(SEARCH_LOCALE_PREFIX, prefix);
 	}
+
+	@Override
+	public String getBluewaveUrl() {
+		return data.get(BLUEWAVE_URL);
+	}
+
+	@Override
+	public void setBluewaveUrl(String bluewaveUrl) {
+		data.set(BLUEWAVE_URL, bluewaveUrl);
+	}
+
+	@Override
+	public String getBluewaveUsername() {
+		return data.get(BLUEWAVE_USERNAME);
+	}
+
+	@Override
+	public void setBluewaveUsername(String bluewaveUsername) {
+		data.set(BLUEWAVE_USERNAME, bluewaveUsername);
+	}
+
+	@Override
+	public String getBluewavePassword() {
+		return data.get(BLUEWAVE_PASSWORD);
+	}
+
+	@Override
+	public void setBluewavePassword(String bluewavePassword) {
+		data.set(BLUEWAVE_PASSWORD, bluewavePassword);
+	}
 }

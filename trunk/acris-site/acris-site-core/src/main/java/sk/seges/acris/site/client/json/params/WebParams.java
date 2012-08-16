@@ -13,6 +13,9 @@ public interface WebParams extends ContentParameters {
 	public static final String PRODUCT_LIST_SORT_ENABLED = "productListSortEnabled";
 	public static final String SEARCH_MODE = "searchMode";
 	public static final String SEARCH_LOCALE_PREFIX = "searchLocalePrefix";
+	public static final String BLUEWAVE_URL = "bluewaveUrl";
+	public static final String BLUEWAVE_USERNAME = "bluewaveUsername";
+	public static final String BLUEWAVE_PASSWORD = "bluewavePassword";
 
 	String[] getOfflinePostProcessorInactive();
 
@@ -49,4 +52,16 @@ public interface WebParams extends ContentParameters {
 	Boolean isSearchLocalePrefix();
 
 	void setSearchLocalePrefix(boolean prefix);
+
+	String getBluewaveUrl();
+
+	void setBluewaveUrl(String bluewaveUrl);
+
+	String getBluewaveUsername();
+
+	void setBluewaveUsername(String bluewaveUsername);
+
+	String getBluewavePassword();
+
+	void setBluewavePassword(String bluewavePassword);
 }
