@@ -123,7 +123,7 @@ public class SpringAclMaintainer implements AclManager {
 			}
 			aclEntryDao.deleteByIdentityIdAndSid(aclId, clazz, sid);
 			aclCache.evictFromCache(objectIdentity);
-			aclService.readAclById(objectIdentity); // update cache
+			//aclService.readAclById(objectIdentity); // update cache
 
 			clazz = getSecuredSuperClass(clazz);
 		}

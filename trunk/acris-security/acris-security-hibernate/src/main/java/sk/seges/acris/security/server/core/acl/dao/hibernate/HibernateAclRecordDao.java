@@ -43,6 +43,10 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
 			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.SID
 			+ "=:sid and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
+	protected static final String HQL_ACL_SELECT_WITHOUT_SID_OBJECT_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
+			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
+			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
+			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname";
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
 			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
 			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.SID
@@ -65,13 +69,16 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	@SuppressWarnings("unchecked")
 	@Override
 	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid, String className) {
-		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
-		query.setParameter("objectIdentityId", aclId);
-		query.setParameter("classname", className);
+		Query query;
 		if (sid != null) {
+			query = entityManager.createNamedQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
 			query.setParameter("sid", sid.getSid());
 			query.setParameter("principal", sid.isPrincipal());
+		} else {
+			query = entityManager.createQuery(HQL_ACL_SELECT_WITHOUT_SID_OBJECT_FROM_TABLE);
 		}
+		query.setParameter("objectIdentityId", aclId);
+		query.setParameter("classname", className);
 
 		//		if (sid instanceof PrincipalSid) {
 		//			query.setParameter("sid", ((PrincipalSid)sid).getPrincipal());
