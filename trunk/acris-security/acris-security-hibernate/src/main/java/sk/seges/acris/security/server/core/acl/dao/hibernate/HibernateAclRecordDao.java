@@ -68,8 +68,10 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
 		query.setParameter("objectIdentityId", aclId);
 		query.setParameter("classname", className);
-		query.setParameter("sid", sid.getSid());
-		query.setParameter("principal", sid.isPrincipal());
+		if (sid != null) {
+			query.setParameter("sid", sid.getSid());
+			query.setParameter("principal", sid.isPrincipal());
+		}
 
 		//		if (sid instanceof PrincipalSid) {
 		//			query.setParameter("sid", ((PrincipalSid)sid).getPrincipal());
