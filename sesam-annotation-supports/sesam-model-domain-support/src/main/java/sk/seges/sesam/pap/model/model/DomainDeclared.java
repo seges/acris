@@ -256,6 +256,10 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	public ExecutableElement getGetterMethod(String fieldName) {
 		return getMethod(new PathResolver(fieldName), MethodHelper.GETTER_PREFIX);
 	}
+	
+	public ExecutableElement getIsGetterMethod(String fieldName) {
+		return getMethod(new PathResolver(fieldName), MethodHelper.GETTER_IS_PREFIX);
+	}
 
 	public ExecutableElement getSetterMethod(String fieldName) {
 		return getMethod(new PathResolver(fieldName), MethodHelper.SETTER_PREFIX);

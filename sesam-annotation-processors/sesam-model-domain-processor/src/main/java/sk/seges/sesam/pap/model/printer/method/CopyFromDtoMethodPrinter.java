@@ -11,6 +11,7 @@ import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
@@ -151,10 +152,17 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 	}
 	
 	protected void printCopySimple(PathResolver domainPathResolver, DomainDeclaredType domainTypeElement, ConfigurationTypeElement configurationTypeElement, String dtoField, FormattedPrintWriter pw) {
-		ExecutableElement domainGetterMethod = domainTypeElement.getGetterMethod(domainPathResolver.getCurrent());
+		Boolean isMethod = false;
+		ExecutableElement domainGetterMethod;
+		if (domainTypeElement.asElement() != null && ProcessorUtils.hasMethod(MethodHelper.toMethod(MethodHelper.GETTER_IS_PREFIX, domainPathResolver.getCurrent()), domainTypeElement.asElement())) {
+			isMethod = true;
+			domainGetterMethod = domainTypeElement.getIsGetterMethod(domainPathResolver.getCurrent()); 
+		} else {
+			domainGetterMethod = domainTypeElement.getGetterMethod(domainPathResolver.getCurrent());
+		}
 		
 		if (configurationTypeElement.getInstantiableDomain().getSetterMethod(domainPathResolver.getPath()) != null) {
-			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(" + TransferObjectElementPrinter.DTO_NAME  + "." + ((isMethod) ? MethodHelper.toIsGetter(dtoField) : MethodHelper.toGetter(dtoField)));
 			pw.println(");");
 		} else if (!entityResolver.isImmutable(domainTypeElement.asElement())) {
 			
@@ -180,7 +188,8 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		pw.print("(", getWildcardDelegate(converter.getDomain()), ")");
 		pw.print(converterName + ".fromDto(");
 		//TODO check for the nested
-		//pw.print("(", castToDelegate(domainMethodReturnType), ")");
+		//TODO: only if necessary
+		pw.print("(", converter.getDto(), ")");
 		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
 		pw.println("), ", getTypeVariableDelegate(getDelegateCast(converter.getDomain())), ".class));");
 	}
