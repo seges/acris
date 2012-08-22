@@ -35,7 +35,7 @@ public class AccessorsPrinter extends CopyPrinter {
 			annotationPrinter.print(supportedAnnotation);
 		}
 		
-		pw.println(modifier, context.getDtoFieldType(), " " + MethodHelper.toGetter(context.getDtoFieldName()) + " {");
+		pw.println(modifier, context.getDtoFieldType(), " " + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getDomain(), context.getDtoFieldName()) + " {");
 		pw.println("return " + context.getDtoFieldName() + ";");
 		pw.println("}");
 		pw.println();

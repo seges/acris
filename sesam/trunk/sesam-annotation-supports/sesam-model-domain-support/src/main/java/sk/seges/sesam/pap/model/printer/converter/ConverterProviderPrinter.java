@@ -600,7 +600,8 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	}
 
 	public void printDtoEnsuredConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {
-		printEnsuredConverterMethodName(ConverterTargetType.DTO, dtoType, null, parameterName, new DtoTypeElementProvider(), method, pw, inlineAware);
+		//TODO: only if necessary
+		printEnsuredConverterMethodName(ConverterTargetType.DTO, dtoType, method == null ? null : dtoType, parameterName, new DtoTypeElementProvider(), method, pw, inlineAware);
 	}
 
 	public void printDtoGetConverterMethodName(DtoType dtoType, String parameterName, ExecutableElement method, FormattedPrintWriter pw, boolean inlineAware) {

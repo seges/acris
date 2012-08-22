@@ -90,6 +90,10 @@ public class HashCodePrinter extends AbstractElementPrinter {
 
 		switch (context.getDtoFieldType().getKind()) {
 		case PRIMITIVE:
+			if (context.getDtoFieldType().toString().equals(boolean.class.getSimpleName())) {
+				pw.println("result = prime * result + (((Boolean)" + context.getDtoFieldName() + ").hashCode());");
+				return;
+			}
 			pw.println("result = prime * result + " + context.getDtoFieldName() + ";");
 			return;
 		case ENUM:

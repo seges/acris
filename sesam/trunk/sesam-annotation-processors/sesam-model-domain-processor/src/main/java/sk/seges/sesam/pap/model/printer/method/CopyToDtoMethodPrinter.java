@@ -59,7 +59,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 					if (i > 0) {
 						pw.print(" && ");
 					}
-					methodPath += "." + MethodHelper.toGetter(path);
+					methodPath += "." + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getDomain(), path);
 					
 					pw.print(methodPath + " != null");
 					i++;
@@ -98,7 +98,8 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(" + 
 					converterName + ".toDto(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")");
 		} else {
-			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
+			//TODO: check why context.getConfigurationTypeElement().getDomain().asElement() return null when generating UserDTO
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getInstantiableDomain(), context.getDtoFieldName()));
 		}
 		
 		if (context.getConverter() != null) {

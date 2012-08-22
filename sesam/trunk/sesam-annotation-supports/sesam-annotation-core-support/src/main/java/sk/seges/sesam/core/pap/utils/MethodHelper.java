@@ -13,6 +13,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 
 public class MethodHelper {
@@ -96,6 +97,17 @@ public class MethodHelper {
 
 	public static String toGetter(String fieldName) {
 		return toMethod(GETTER_PREFIX, fieldName) + "()";
+	}
+	
+	public static String toGetterMethod(MutableDeclaredType typeElement, String fieldName) {
+		if (typeElement != null && typeElement.asElement() != null && ProcessorUtils.hasMethod(toMethod(MethodHelper.GETTER_IS_PREFIX, fieldName), (Element)typeElement.asElement())) {
+			return toIsGetter(fieldName);
+		}
+		return toGetter(fieldName);
+	}
+	
+	public static String toIsGetter(String fieldName) {
+		return toMethod(GETTER_IS_PREFIX, fieldName) + "()";
 	}
 
 	public static String toGetter(ExecutableElement method) {
