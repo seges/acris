@@ -8,9 +8,11 @@ public interface LoginMessages extends Messages {
     public String languagePrompt();
     public String rememberMePrompt();
     public String loginButton();
+    public String logoutButton();
     public String loginTitle();
     public String invalidCredentials(String username);
     public String loginFailedTitle();
     public String loginSuccessfulTitle();
     public String loginProgress();
+    public String loggedUserMsg();
 }

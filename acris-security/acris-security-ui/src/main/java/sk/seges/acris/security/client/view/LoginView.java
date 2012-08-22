@@ -3,10 +3,12 @@ package sk.seges.acris.security.client.view;
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
+import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.util.LoginConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -49,6 +51,10 @@ public class LoginView extends Composite implements LoginDisplay {
 	private final SimplePanel waitPanel = new SimplePanel();
 	private final HorizontalPanel loginPanel = new HorizontalPanel();
 	private Button loginButton;
+	
+	private final VerticalPanel logoutPanel = new VerticalPanel();
+	private Label loggedUserName;
+	private Button logoutButton;
 
 	private Pair<String, String>[] enabledLanguages;
 	private String selectedLanguage;
@@ -160,6 +166,7 @@ public class LoginView extends Composite implements LoginDisplay {
 		if (rememberMeAware) {
 			rowCount++;
 		}
+
 		grid = new Grid(rowCount, 2);
 		grid.setWidth("100%");
 
@@ -177,6 +184,7 @@ public class LoginView extends Composite implements LoginDisplay {
 		container.add(message);
 		container.add(errorMessage);
 		container.add(grid);
+		container.add(logoutPanel);
 
 		int rowCounter = 0;
 
@@ -212,7 +220,7 @@ public class LoginView extends Composite implements LoginDisplay {
 		loginPanel.add(grouper);
 
 		grid.setWidget(rowCounter, 1, loginPanel);
-
+		
 		final HTMLTable.CellFormatter cellFormatter = grid.getCellFormatter();
 		cellFormatter.addStyleName(rowCounter, 1, "acris-LoginPanel-formatter-row");
 		cellFormatter.setHorizontalAlignment(rowCounter, 1, HasAlignment.ALIGN_RIGHT);
@@ -221,6 +229,26 @@ public class LoginView extends Composite implements LoginDisplay {
 		ensureLoginButton().setEnabled(false);
 		ensureLoginButton().getParent().addStyleName("login-Button-disabled");
 
+		loggedUserName = new Label();
+		SimplePanel loggedUserPanel = new SimplePanel();
+		loggedUserPanel.addStyleName("logged-username-label");
+		loggedUserPanel.setWidget(loggedUserName);
+		
+		SimplePanel logoutBtnWrapper = new SimplePanel();
+		logoutBtnWrapper.addStyleName("logout-button-wrapper");
+		ensureLogoutButton().setText(loginMessages.logoutButton());
+		ensureLogoutButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent arg0) {
+				doLogout();
+			}
+		});
+		logoutBtnWrapper.setWidget(ensureLogoutButton());
+		logoutPanel.add(loggedUserPanel);
+		logoutPanel.add(logoutBtnWrapper);
+		logoutPanel.setVisible(false);
+		
 		setStyleNames();
 	}
 
@@ -266,6 +294,7 @@ public class LoginView extends Composite implements LoginDisplay {
 			rememberMeCheckbox.addStyleName("login-RememberMeBox");
 		}
 		ensureLoginButton().addStyleName("login-Button");
+		ensureLogoutButton().addStyleName("login-Button");
 		loginPanel.addStyleName("acris-login-LoginPanel");
 	}
 
@@ -379,6 +408,14 @@ public class LoginView extends Composite implements LoginDisplay {
 		}
 		return this.loginButton;
 	}
+	
+	private Button ensureLogoutButton() {
+		if (this.logoutButton == null) {
+			this.logoutButton = GWT.create(Button.class); 
+		}
+		return this.logoutButton;
+	}
+	
 	@Override
 	public void displayMessage(String message) {
 		RootPanel.get().clear();
@@ -393,6 +430,11 @@ public class LoginView extends Composite implements LoginDisplay {
 	@Override
 	public HandlerRegistration addLoginButtonHandler(ClickHandler handler) {
 		return ensureLoginButton().addClickHandler(handler);
+	}
+	
+	@Override
+	public HandlerRegistration addLogoutButtonHandler(ClickHandler handler) {
+		return ensureLogoutButton().addClickHandler(handler);
 	}
 
 	@Override
@@ -450,5 +492,40 @@ public class LoginView extends Composite implements LoginDisplay {
 	@Override
 	public void setLoginEnabled(boolean enabled) {
 		ensureLoginButton().setEnabled(enabled);
+	}
+
+	@Override
+	public void changeState(Boolean loggedIn) {
+		if (loggedIn) {
+			changeLoginState(!loggedIn);
+			logoutPanel.setVisible(true);
+		} else {
+			changeLoginState(!loggedIn);
+			loggedUserName.setText("");
+			logoutPanel.setVisible(false);
+		}
+	}
+	
+	private void changeLoginState(Boolean visible) {
+		username.setVisible(visible);
+		usernameLabel.setVisible(visible);
+		password.setVisible(visible);
+		passwordLabel.setVisible(visible);
+		loginButton.setVisible(visible);
+		loginPanel.setVisible(visible);
+	}
+	
+	@Override
+	public void setLoggedUser(UserData user) {
+		String loggedUserMsg = loginMessages.loggedUserMsg();
+		if (user != null) {
+			loggedUserMsg += user.getName() + " " + user.getSurname();
+		}
+		loggedUserName.setText(loggedUserMsg);
+	}
+	
+	@Override
+	public void doLogout() {
+		changeState(false);
 	}
 }
