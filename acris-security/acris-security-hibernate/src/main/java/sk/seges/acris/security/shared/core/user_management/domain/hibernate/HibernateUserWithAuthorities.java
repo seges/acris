@@ -69,12 +69,6 @@ public class HibernateUserWithAuthorities extends GenericUserDTO {
 	}
 
 	@Override
-	public boolean hasAuthority(String authority) {
-		fillAuthorities();
-		return super.hasAuthority(authority);
-	}
-	
-	@Override
 	@Transient
 	public List<String> getUserAuthorities() {
 		fillAuthorities();

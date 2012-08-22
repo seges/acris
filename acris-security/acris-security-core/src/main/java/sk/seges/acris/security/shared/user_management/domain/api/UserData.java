@@ -8,9 +8,7 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
 @MetaModel
 @BeanWrapper
-public interface UserData<E> extends IMutableDomainObject<E> {
-
-	boolean hasAuthority(String authority);
+public interface UserData extends IMutableDomainObject<Long> {
 
 	List<String> getUserAuthorities();
 

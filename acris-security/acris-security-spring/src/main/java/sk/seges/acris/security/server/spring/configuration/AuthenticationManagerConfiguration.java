@@ -17,7 +17,7 @@ import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 public class AuthenticationManagerConfiguration {
 
 	@Autowired
-	private IGenericUserDao<UserData<?>> genericUserDao;
+	private IGenericUserDao<UserData> genericUserDao;
 	
 	@Autowired
 	private DaoAuthenticationProvider daoAuthenticationProvider;

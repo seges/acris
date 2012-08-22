@@ -8,7 +8,7 @@ public class OpenIDUserDTO implements HasOpenIDIdentifier {
 
 	private static final long serialVersionUID = 1961068463062486129L;
 
-	private UserData<?> user;
+	private UserData user;
 
 	private String identifier;
 
@@ -17,12 +17,12 @@ public class OpenIDUserDTO implements HasOpenIDIdentifier {
 	private OpenIDProvider provider;
 
 	@Override
-	public UserData<?> getUser() {
+	public UserData getUser() {
 		return user;
 	}
 
 	@Override
-	public void setUser(UserData<?> user) {
+	public void setUser(UserData user) {
 		this.user = user;
 	}
 

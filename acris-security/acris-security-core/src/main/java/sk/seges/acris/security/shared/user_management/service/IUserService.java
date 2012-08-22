@@ -4,6 +4,7 @@ import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
+import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * 
  * @author fat
  */
+@RemoteServiceDefinition
 public interface IUserService extends RemoteService {
 
 	/**

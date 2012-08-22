@@ -10,7 +10,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface IOpenIDUserServiceAsync {
 
-	void getUserByOpenIDIdentifier(String identifier, AsyncCallback<UserData<?>> callback);
+	void getUserByOpenIDIdentifier(String identifier, AsyncCallback<UserData> callback);
 
 	void findProvidersByUserName(String userName, AsyncCallback<List<OpenIDProvider>> callback);
 

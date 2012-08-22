@@ -20,13 +20,13 @@ import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaMod
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
-public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData<?>> implements IGenericUserDao<UserData<?>> {
+public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> implements IGenericUserDao<UserData> {
 
 	public HibernateGenericUserDao() {
 		super(HibernateGenericUser.class);
 	}
 	
-	public <T extends UserData<?>> HibernateGenericUserDao(Class<T> clazz) {
+	public <T extends UserData> HibernateGenericUserDao(Class<T> clazz) {
 		super(clazz);
 	}
 	
@@ -36,7 +36,7 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData<?>> 
 	}
 
 	@Override
-	public UserData<?> collectUserAuthorities(UserData<?> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public UserData collectUserAuthorities(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		List<String> authorities = new ArrayList<String>();
 		
 		if (addMode && user.getUserAuthorities() != null) {
@@ -54,13 +54,13 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData<?>> 
 
 	@Override
 	@Transactional
-	public UserData<?> persist(UserData<?> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
+	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, false));
 	}
 	
 	@Override
 	@Transactional
-	public UserData<?> persist(UserData<?> user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
+	public UserData persist(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		return super.persist(collectUserAuthorities(user, authoritiesHolder, addMode));
 	}
 
@@ -83,14 +83,14 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData<?>> 
 	}
 
 	@Override
-	public UserData<?> findByUsername(String username) {
+	public UserData findByUsername(String username) {
 		DetachedCriteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(UserDataMetaModel.USERNAME, username));
 		return findUniqueResultByCriteria(criteria);
 	}
 
 	@Override
-	public UserData<?> getEntityInstance() {
+	public UserData getEntityInstance() {
 		return new HibernateGenericUser();
 	}
 }

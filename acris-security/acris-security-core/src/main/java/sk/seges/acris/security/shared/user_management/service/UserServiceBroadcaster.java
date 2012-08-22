@@ -147,7 +147,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 							} else {
 								// merge authorities from all services to one
 								// set
-								UserData<?> user = primaryResult.getUser();
+								UserData user = primaryResult.getUser();
 
 								if (user == null) {
 									clientCallback.onFailure(new BroadcastingException("User is null"));
@@ -387,7 +387,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 						if (resolvedPrimaryEntryPoint != null) {
 							// merge authorities from all services to one set
 							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
-							UserData<?> user = primaryResult.getUser();
+							UserData user = primaryResult.getUser();
 							if (!checkUser(user, callback)) {
 								return;
 							}
@@ -397,7 +397,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 							for (Entry<String, ClientSession> entry : successes.entrySet()) {
 								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
-									UserData<?> entryUser = entry.getValue().getUser();
+									UserData entryUser = entry.getValue().getUser();
 									if (entryUser != null /*&& entryUser.getUserAuthorities() != null*/) {
 										if (entryUser.getUserAuthorities() != null) add(entryUser.getUserAuthorities(), authorities);
 										primaryResult.merge(entry.getValue());
@@ -409,7 +409,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 							user.setUserAuthorities(authorities);
 							callback.onSuccess(primaryResult);
 						} else {
-							UserData<?> user = successes.values().iterator().next().getUser();
+							UserData user = successes.values().iterator().next().getUser();
 							if (!checkUser(user, callback)) {
 								return;
 							}
@@ -420,7 +420,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 			}
 
-			private boolean checkUser(UserData<?> user, AsyncCallback<ClientSession> callback) {
+			private boolean checkUser(UserData user, AsyncCallback<ClientSession> callback) {
 				if (user == null) {
 					callback.onFailure(new BroadcastingException("User is null"));
 					return false;

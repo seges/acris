@@ -116,8 +116,8 @@ public class APIKeyUserService implements UserProviderService {
 		return allowed;
 	}
 	
-	public UserData<?> createUser() {
-		UserData<?> adminUser = (UserData<?>) new GenericUserDTO();
+	public UserData createUser() {
+		UserData adminUser = (UserData) new GenericUserDTO();
 		adminUser.setEnabled(true);
 		adminUser.setUserAuthorities(new ArrayList<String>());
 		return adminUser;

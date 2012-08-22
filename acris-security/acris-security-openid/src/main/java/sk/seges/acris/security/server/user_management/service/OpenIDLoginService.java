@@ -22,13 +22,13 @@ public class OpenIDLoginService implements LoginService {
 
 	private TokenConverter tokenConverter;
 
-	private IGenericUserDao<UserData<?>> userDao;
+	private IGenericUserDao<UserData> userDao;
 
 	private IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao;
 
 	private SessionIDGenerator sessionIDGenerator;
 
-	public OpenIDLoginService(TokenConverter tokenConverter, IGenericUserDao<UserData<?>> userDao,
+	public OpenIDLoginService(TokenConverter tokenConverter, IGenericUserDao<UserData> userDao,
 			IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao, SessionIDGenerator sessionIDGenerator) {
 		this.tokenConverter = tokenConverter;
 		this.userDao = userDao;
@@ -36,13 +36,13 @@ public class OpenIDLoginService implements LoginService {
 		this.sessionIDGenerator = sessionIDGenerator;
 	}
 
-	protected UserData<?> convertToDTO(UserData<?> source, LoginToken token) {
-		UserData<?> target = userDao.findByUsername(source.getUsername());
+	protected UserData convertToDTO(UserData source, LoginToken token) {
+		UserData target = userDao.findByUsername(source.getUsername());
 
 		return target;
 	}
 
-	protected UserData<?> getUserByOpenIDIdentifier(OpenIDLoginToken token) {
+	protected UserData getUserByOpenIDIdentifier(OpenIDLoginToken token) {
 		Page page = new Page(0, Page.ALL_RESULTS);
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>("id", token.getIdentifier(),
 				Filter.EQ));
@@ -61,7 +61,7 @@ public class OpenIDLoginService implements LoginService {
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
 
 		if (token instanceof OpenIDLoginToken) {
-			UserData<?> user = getUserByOpenIDIdentifier((OpenIDLoginToken) token);
+			UserData user = getUserByOpenIDIdentifier((OpenIDLoginToken) token);
 			if (user == null) {
 				throw new AuthenticationException("User not found!");
 			}

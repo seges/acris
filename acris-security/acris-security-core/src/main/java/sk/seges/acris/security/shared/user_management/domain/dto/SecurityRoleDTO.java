@@ -10,14 +10,7 @@ import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
  * custom user service implementation where you can model user <-> role <-> authority relation.
  */
 public class SecurityRoleDTO implements RoleData {
-
-	public static final String ALL_USERS = "*";
-
-	public static final String GRANT = "USER_ROLE";
-
 	private static final long serialVersionUID = 5356058807001610271L;
-	public static final String A_NAME = "name";
-	public static final String A_SELECTED_AUTHORITIES = "selectedAuthorites";
 
 	public SecurityRoleDTO() {
 	}

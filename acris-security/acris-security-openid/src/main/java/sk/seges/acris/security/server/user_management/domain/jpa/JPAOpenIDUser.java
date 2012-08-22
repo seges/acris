@@ -19,7 +19,7 @@ public class JPAOpenIDUser extends OpenIDUserDTO {
 
 	@Override
 	@ManyToOne(targetEntity = HibernateGenericUser.class)
-	public UserData<?> getUser() {
+	public UserData getUser() {
 		return super.getUser();
 	}
 

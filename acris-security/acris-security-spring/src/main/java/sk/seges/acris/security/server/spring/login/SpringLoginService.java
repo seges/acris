@@ -96,7 +96,7 @@ public class SpringLoginService implements LoginService {
 
 	@Override
 	public void changeAuthentication(ClientSession clientSession) {
-		UserData<?> userData = (UserData<?>) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserData userData = (UserData) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		userData.setRoles(clientSession.getUser().getRoles());
 		Authentication newAuth = new UsernamePasswordAuthenticationToken(userData, SecurityContextHolder.getContext()
 				.getAuthentication().getCredentials(), SecurityContextHolder.getContext().getAuthentication()
@@ -127,7 +127,7 @@ public class SpringLoginService implements LoginService {
 		List<RoleData> roles = new ArrayList<RoleData>();
 		roles.add(new LoggedUserRole());
 		if (auth.getPrincipal() instanceof SpringUserAdapter) {
-			SpringUserAdapter<?> adapter = (SpringUserAdapter<?>) auth.getPrincipal();
+			SpringUserAdapter adapter = (SpringUserAdapter) auth.getPrincipal();
 			if (adapter.getRoles() == null || adapter.getRoles().isEmpty()) {
 				adapter.setRoles(roles);
 			} else {
@@ -135,7 +135,7 @@ public class SpringLoginService implements LoginService {
 			}
 			clientSession.setUser(adapter.getUser());
 		} else if (auth.getPrincipal() instanceof UserData) {
-			UserData<?> userData = (UserData<?>) auth.getPrincipal();
+			UserData userData = (UserData) auth.getPrincipal();
 			if (userData.getRoles() == null || userData.getRoles().isEmpty()) {
 				userData.setRoles(roles);
 			} else {

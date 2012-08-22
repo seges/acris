@@ -51,12 +51,6 @@ public class JpaUserWithAuthorities extends JpaGenericUser {
 	}
 
 	@Override
-	public boolean hasAuthority(String authority) {
-		fillAuthorities();
-		return super.hasAuthority(authority);
-	}
-
-	@Override
 	public List<String> getUserAuthorities() {
 		fillAuthorities();
 		return super.getUserAuthorities();
@@ -67,5 +61,4 @@ public class JpaUserWithAuthorities extends JpaGenericUser {
 		setSelectedAuthorities(authorities);
 		super.setUserAuthorities(authorities);
 	}
-
 }
