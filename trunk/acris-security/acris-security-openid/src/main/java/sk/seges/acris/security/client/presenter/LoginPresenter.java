@@ -12,6 +12,7 @@ import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
 import sk.seges.acris.security.shared.util.LoginConstants;
@@ -38,6 +39,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	public interface LoginDisplay extends BaseDisplay {
 
 		HandlerRegistration addLoginButtonHandler(ClickHandler handler);
+		
+		HandlerRegistration addLogoutButtonHandler(ClickHandler handler);
 
 		HandlerRegistration addUsernameKeyHandler(KeyUpHandler handler);
 
@@ -78,6 +81,12 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		void setPassword(String pass);
 		
 		void focus();
+		
+		void changeState(Boolean loggedIn);
+		
+		void setLoggedUser(UserData user);
+		
+		void doLogout();
 	}
 
 	protected IUserServiceAsync broadcaster;
@@ -91,6 +100,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	protected LoginMessages loginMessages = (LoginMessages) GWT.create(LoginMessages.class);
 	
 	protected boolean authenticate = false;
+	protected boolean switchAfterLogin = false;
 
 	/**
 	 * Default validator that simply checks if the username and password are not
@@ -133,6 +143,11 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 
 	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate) {
+		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, authenticate, false);
+	}
+	
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
+			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate, boolean switchAfterLogin) {
 		super(display);
 
 		this.broadcaster = broadcaster;
@@ -140,6 +155,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		this.enabledLanguages = enabledLanguages;
 		this.rememberMeEnabled = rememberMeEnabled;
 		this.authenticate = authenticate; 
+		this.switchAfterLogin = switchAfterLogin;
 		
 		display.setEnabledLanguages(enabledLanguages);
 		display.setRememberMeEnabled(rememberMeEnabled);
@@ -349,6 +365,14 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 				}
 			}));
 		}
+		
+		registerHandler(display.addLogoutButtonHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				doLogout();
+			}
+		}));
 	}
 
 	protected void registerLoginHandlers(final AsyncCallback<?> callback) {
@@ -391,8 +415,10 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	protected void handleSuccessfulLogin(ClientSession result) {
 		display.setUsername("");
 		display.setPassword("");
-
-		unbind();
+		
+		if (!switchAfterLogin) {
+			unbind();
+		}
 
 		if (redirectUrl != null && !redirectUrl.isEmpty()) {
 			String sessionId = result.getSessionId();
@@ -400,5 +426,14 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 			RootPanel.get().clear();
 			Location.replace(redirectUrl + query);
 		}
+		
+		if (switchAfterLogin) {
+			display.setLoggedUser(result.getUser());
+			display.changeState(true);
+		}
+	}
+	
+	protected void doLogout() {
+		display.doLogout();
 	}
 }
