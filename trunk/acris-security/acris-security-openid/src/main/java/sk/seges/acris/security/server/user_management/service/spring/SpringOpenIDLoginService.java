@@ -15,7 +15,7 @@ import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 
 public class SpringOpenIDLoginService extends OpenIDLoginService {
 
-	public SpringOpenIDLoginService(TokenConverter tokenConverter, IGenericUserDao<UserData<?>> userDao,
+	public SpringOpenIDLoginService(TokenConverter tokenConverter, IGenericUserDao<UserData> userDao,
 			IOpenIDUserDao<HasOpenIDIdentifier> openIDUserDao, SessionIDGenerator sessionIDGenerator) {
 		super(tokenConverter, userDao, openIDUserDao, sessionIDGenerator);
 	}

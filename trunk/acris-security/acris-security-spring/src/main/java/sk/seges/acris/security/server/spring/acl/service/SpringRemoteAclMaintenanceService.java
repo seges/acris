@@ -18,12 +18,12 @@ public class SpringRemoteAclMaintenanceService extends RemoteAclMaintenanceServi
 	}
 
 	@Transactional
-	public void removeACLEntries(UserData<?> user, String[] securedClassNames) {
+	public void removeACLEntries(UserData user, String[] securedClassNames) {
 		super.removeACLEntries(user, securedClassNames);
 	}
 
 	@Transactional
-	public void removeACLEntries(List<Long> aclIds, String className, UserData<?> user) {
+	public void removeACLEntries(List<Long> aclIds, String className, UserData user) {
 		super.removeACLEntries(aclIds, className, user);
 	}
 }

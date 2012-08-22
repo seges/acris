@@ -18,14 +18,14 @@ public class SpringOpenIDUserService extends OpenIDUserService {
 		super(null, null);
 	}
 
-	public SpringOpenIDUserService(IGenericUserDao<UserData<?>> genericUserDao,
+	public SpringOpenIDUserService(IGenericUserDao<UserData> genericUserDao,
 			IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao) {
 		super(genericUserDao, openIDUserDao);
 	}
 
 	@Transactional
 	@Override
-	public UserData<?> getUserByOpenIDIdentifier(String identifier) {
+	public UserData getUserByOpenIDIdentifier(String identifier) {
 		return super.getUserByOpenIDIdentifier(identifier);
 	}
 

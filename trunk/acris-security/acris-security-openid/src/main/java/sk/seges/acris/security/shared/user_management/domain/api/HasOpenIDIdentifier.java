@@ -8,9 +8,9 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
 @BeanWrapper
 public interface HasOpenIDIdentifier extends IMutableDomainObject<String> {
 
-	UserData<?> getUser();
+	UserData getUser();
 
-	void setUser(UserData<?> user);
+	void setUser(UserData user);
 
 	String getEmail();
 

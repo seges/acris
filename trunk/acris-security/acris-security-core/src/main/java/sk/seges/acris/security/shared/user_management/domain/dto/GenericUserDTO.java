@@ -2,14 +2,13 @@ package sk.seges.acris.security.shared.user_management.domain.dto;
 
 import java.util.List;
 
-import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
 @MetaModel
-public class GenericUserDTO implements UserData<Long> {
+public class GenericUserDTO implements UserData {
 
 	private static final long serialVersionUID = 6311173194141382224L;
 
@@ -100,15 +99,6 @@ public class GenericUserDTO implements UserData<Long> {
 
 	public boolean isCredentialsNonExpired() {
 		return enabled;
-	}
-
-	public boolean hasAuthority(String authority) {
-
-		if (authorities != null) {
-			return authorities.contains(authority) || authorities.contains(SecurityConstants.AUTH_PREFIX + authority);
-		}
-
-		return false;
 	}
 
 	public List<String> getUserAuthorities() {

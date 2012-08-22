@@ -9,9 +9,9 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface IRemoteAclMaintenanceService extends RemoteService {
 	
-	public void removeACLEntries(UserData<?> user, String[] securedClassNames);
-	public void removeACLEntries(List<Long> aclIds, String className, UserData<?> user);
+	public void removeACLEntries(UserData user, String[] securedClassNames);
+	public void removeACLEntries(List<Long> aclIds, String className, UserData user);
 	
-	public void resetACLEntries(String className, Long aclId, UserData<?> user, Permission[] authorities);
+	public void resetACLEntries(String className, Long aclId, UserData user, Permission[] authorities);
 	public void resetACLEntriesLoggedRole(String className, Long aclId, Permission[] permissions);
 }

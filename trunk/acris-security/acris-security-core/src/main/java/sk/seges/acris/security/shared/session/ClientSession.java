@@ -49,14 +49,14 @@ public class ClientSession implements ITransferableObject {
 		getSession().put(SESSION_ID_ATTRIBUTE, sessionId);
 	}
 
-	private UserData<?> user;
+	private UserData user;
 	
 	@SuppressWarnings("unchecked")
-	public <T extends UserData<?>> T getUser() {
+	public <T extends UserData> T getUser() {
 		return (T) user;
 	}
 
-	public <T extends UserData<?>> void setUser(T user) {
+	public <T extends UserData> void setUser(T user) {
 		this.user = user;
 	}
 

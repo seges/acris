@@ -11,5 +11,5 @@ public interface TokenConverter {
 	 * @param user
 	 * @return
 	 */
-	LoginToken convert(LoginToken source, UserData<?> user);
+	LoginToken convert(LoginToken source, UserData user);
 }

@@ -23,6 +23,20 @@
 			<artifactId>sesam-model-metadata-processor</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-service-local-interface-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-service-local-interface-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-application-scaffold-local-service-data-interface-processor </artifactId>
+            <scope>provided</scope>
+        </dependency>
 		
 		<!-- Corpis dependencies -->
 		<dependency>

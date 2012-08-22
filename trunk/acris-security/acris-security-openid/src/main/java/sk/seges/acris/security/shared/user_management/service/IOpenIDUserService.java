@@ -10,7 +10,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface IOpenIDUserService extends RemoteService {
 
-	UserData<?> getUserByOpenIDIdentifier(String identifier);
+	UserData getUserByOpenIDIdentifier(String identifier);
 
 	List<OpenIDProvider> findProvidersByUserName(String userName);
 

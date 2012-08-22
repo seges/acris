@@ -8,6 +8,7 @@ import sk.seges.acris.security.client.CheckableSecuredObject;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.shared.util.UserDataUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -114,7 +115,7 @@ public class SecuredObjectCreator {
 	 */
 	protected String[] getImports() {
 		return new String[] { GWT.class.getCanonicalName(), ClientSession.class.getCanonicalName(),
-				UserData.class.getCanonicalName() };
+				UserData.class.getCanonicalName(), UserDataUtils.class.getCanonicalName() };
 	}
 
 	protected String[] getInterfaces() {
@@ -258,11 +259,14 @@ public class SecuredObjectCreator {
 
 		for (String fieldUserAuthority : fieldUserAuthorities) {
 			size--;
-			if (useModifier) {
-				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
-			} else {
-				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
-			}
+			sb.append("(UserDataUtils.hasAuthority(user, \"" + fieldUserAuthority + "\"))");
+			
+//			What is different between if / else ??
+//			if (useModifier) {
+//				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
+//			} else {
+//				sb.append("(user.hasAuthority(\"" + fieldUserAuthority + "\"))");
+//			}
 			if (size > 0) {
 				sb.append(" || \n");
 			}

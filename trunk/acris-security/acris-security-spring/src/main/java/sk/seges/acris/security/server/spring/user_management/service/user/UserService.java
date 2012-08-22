@@ -6,14 +6,14 @@ import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.core.login.api.LoginServiceProvider;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserContextProvider;
+import sk.seges.acris.security.server.user_management.service.IUserServiceLocal;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.shared.user_management.service.IUserService;
 import sk.seges.acris.security.shared.util.LoginConstants;
 
-public class UserService implements IUserService {
+public class UserService implements IUserServiceLocal {
 
 	private LoginServiceProvider loginServiceProvider;
 	private ServerSessionProvider sessionProvider;

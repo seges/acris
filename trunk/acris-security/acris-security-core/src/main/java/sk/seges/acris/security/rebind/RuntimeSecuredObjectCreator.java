@@ -152,7 +152,7 @@ public class RuntimeSecuredObjectCreator extends SecuredObjectCreator {
 		sourceWriter.indent();
 		sourceWriter.println("for (String userGrant : aggregatedUserGrants) {");
 		sourceWriter.indent();
-		sourceWriter.println("if (user != null && user.hasAuthority(userGrant + \"_\" + permission))");
+		sourceWriter.println("if (user != null && UserDataUtils.hasAuthority(user, userGrant + \"_\" + permission))");
 		sourceWriter.indent();
 		sourceWriter.println("return true;");
 		sourceWriter.outdent();

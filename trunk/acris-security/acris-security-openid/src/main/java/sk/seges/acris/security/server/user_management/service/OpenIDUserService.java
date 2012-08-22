@@ -22,18 +22,18 @@ public class OpenIDUserService implements IOpenIDUserService {
 
 	private static final long serialVersionUID = 6393202762149693176L;
 
-	private IGenericUserDao<UserData<?>> genericUserDao;
+	private IGenericUserDao<UserData> genericUserDao;
 
 	private IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao;
 
-	public OpenIDUserService(IGenericUserDao<UserData<?>> genericUserDao,
+	public OpenIDUserService(IGenericUserDao<UserData> genericUserDao,
 			IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao) {
 		this.genericUserDao = genericUserDao;
 		this.openIDUserDao = openIDUserDao;
 	}
 
 	@Override
-	public UserData<?> getUserByOpenIDIdentifier(String identifier) {
+	public UserData getUserByOpenIDIdentifier(String identifier) {
 		Page page = new Page(0, Page.ALL_RESULTS);
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>("id", identifier, Filter.EQ));
 		List<HasOpenIDIdentifier> result = openIDUserDao.findAll(page).getResult();
@@ -50,8 +50,8 @@ public class OpenIDUserService implements IOpenIDUserService {
 	 * @param source
 	 * @return
 	 */
-	private UserData<?> convert(UserData<?> source) {
-		UserData<Long> target = new GenericUserDTO();
+	private UserData convert(UserData source) {
+		UserData target = new GenericUserDTO();
 		target.setEnabled(source.isEnabled());
 		target.setId((Long) source.getId());
 		target.setPassword(source.getPassword());

@@ -31,21 +31,21 @@ public class RemoteAclMaintenanceService implements IRemoteAclMaintenanceService
     	this.converterProvider = converterProvider;
     }
     
-    public void removeACLEntries(UserData<?> user, String[] securedClassNames) {
+    public void removeACLEntries(UserData user, String[] securedClassNames) {
         for(String securedClassName : securedClassNames) {
             Class<? extends ISecuredObject<?>> securedClass = SecuredClassHelper.getSecuredClass(securedClassName);
             aclManager.removeAclRecords(securedClass, user);
         }
     }
     
-    public void removeACLEntries(List<Long> aclIds, String className, UserData<?> user) {
+    public void removeACLEntries(List<Long> aclIds, String className, UserData user) {
     	className=  ClassConverter.getDomainClassName(converterProvider, className);
     	for (Long id : aclIds) {
     		aclManager.removeAclRecords(id, className, user);
     	}
     }
 
-    public void resetACLEntries(String className, Long aclId, UserData<?> user, Permission[] authorities) {
+    public void resetACLEntries(String className, Long aclId, UserData user, Permission[] authorities) {
     	className=  ClassConverter.getDomainClassName(converterProvider, className);
    		aclManager.resetAclRecords(SecuredClassHelper.getSecuredClass(className), aclId, user, authorities);
     }

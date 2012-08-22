@@ -3,7 +3,6 @@ package sk.seges.acris.security.server.user_management.domain.twig;
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
@@ -13,7 +12,7 @@ import com.vercer.engine.persist.annotation.Embed;
 import com.vercer.engine.persist.annotation.Key;
 import com.vercer.engine.persist.annotation.Store;
 
-public class TwigGenericUser implements UserData<Long> {
+public class TwigGenericUser implements UserData {
 
 	private static final long serialVersionUID = 8007659656583555159L;
 
@@ -98,15 +97,6 @@ public class TwigGenericUser implements UserData<Long> {
 
 	public boolean isCredentialsNonExpired() {
 		return enabled;
-	}
-
-	public boolean hasAuthority(String authority) {
-
-		if (authorities != null) {
-			return authorities.contains(authority) || authorities.contains(SecurityConstants.AUTH_PREFIX + authority);
-		}
-
-		return false;
 	}
 
 	public List<String> getUserAuthorities() {

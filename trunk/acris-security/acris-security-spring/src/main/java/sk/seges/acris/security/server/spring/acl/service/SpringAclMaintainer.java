@@ -82,11 +82,11 @@ public class SpringAclMaintainer implements AclManager {
 		return new SpringAclSidDTO(authentication);
 	}
 
-	public void removeAclRecords(Class<? extends ISecuredObject<?>> securedClass, UserData<?> user) {
+	public void removeAclRecords(Class<? extends ISecuredObject<?>> securedClass, UserData user) {
 		removeAclRecords(securedClass, createPrincipalSid(user.getUsername()));
 	}
 
-	public void removeAclRecords(Long aclId, String className, UserData<?> user) {
+	public void removeAclRecords(Long aclId, String className, UserData user) {
 		removeAclRecords(aclId, className, createPrincipalSid(user.getUsername()));
 	}
 
@@ -176,13 +176,13 @@ public class SpringAclMaintainer implements AclManager {
 	}
 	
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject, UserData<?> user,
+	public void setAclRecords(ISecuredObject<?> securedObject, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		setAclRecords(securedObject, user, permissions, true);
 	}
 
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject, UserData<?> user,
+	public void setAclRecords(ISecuredObject<?> securedObject, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
 		PrincipalSid sid = new PrincipalSid(user.getUsername());
 		setAclRecords(securedObject, sid, permissions, updateParent);
@@ -201,7 +201,7 @@ public class SpringAclMaintainer implements AclManager {
 	}
 
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData<?> user,
+	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(user.getUsername());
 		resetAclRecords(objectClass, aclId, sid, permissions);

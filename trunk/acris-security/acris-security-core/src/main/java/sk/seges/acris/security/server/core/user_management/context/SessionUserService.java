@@ -26,7 +26,7 @@ public class SessionUserService implements UserProviderService {
 		return (ClientSession) session.getAttribute(LoginConstants.CLIENT_SESSION_NAME);
 	}
 	
-	private UserData<?> getLoggedUser() {
+	private UserData getLoggedUser() {
 		ClientSession clientSession = getClientSession();
 		
 		if (clientSession != null) {
@@ -39,7 +39,7 @@ public class SessionUserService implements UserProviderService {
 	@Override
 	public String getLoggedUserName(UserContext userContext)
 			throws ServerException {
-		UserData<?> user = getLoggedUser();
+		UserData user = getLoggedUser();
 
 		if (user != null) {
 			return user.getUsername();
