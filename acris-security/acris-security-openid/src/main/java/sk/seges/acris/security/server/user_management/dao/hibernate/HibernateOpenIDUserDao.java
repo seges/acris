@@ -1,8 +1,8 @@
 package sk.seges.acris.security.server.user_management.dao.hibernate;
 
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
+import sk.seges.acris.security.server.user_management.domain.api.HasOpenIDIdentifier;
 import sk.seges.acris.security.server.user_management.domain.jpa.JPAOpenIDUser;
-import sk.seges.acris.security.shared.user_management.domain.api.HasOpenIDIdentifier;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.IEntityInstancer;
 
