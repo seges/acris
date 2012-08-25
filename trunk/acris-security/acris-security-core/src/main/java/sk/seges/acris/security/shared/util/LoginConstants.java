@@ -10,7 +10,14 @@ public class LoginConstants {
 	public static final String ACRIS_API_KEY_STRING = "apikey";
 	public static final String ACRIS_WEB_ID_STRING = "webid";
 	public static final String USER_NAME = "userName";
+	
+	//OpenID login integration parameters
+	public static final String DOMAIN_ATTRIBUTE = "domain";
+	public static final String FROM_URL_ATTRIBUTE = "url";
 
+	public static final String GOOGLE_APPS_ATTRIBUTE_VALUE = "google";
+	
+	public static final String LOGIN_RUN_AS = "login.runas";
 	public static final String LOGIN_TOKEN_NAME = "login.token.name";
 	public static final String CLIENT_SESSION_NAME = "client.session";
 
