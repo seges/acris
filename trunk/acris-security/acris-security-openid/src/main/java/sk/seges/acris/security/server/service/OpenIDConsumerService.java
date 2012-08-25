@@ -87,7 +87,6 @@ public class OpenIDConsumerService extends RemoteServiceServlet implements IOpen
 			// simple POJO for storing the data
 			OpenIDUserDTO userDTO = new OpenIDUserDTO();
 			userDTO.getParams().put(OpenIDUserDTO.SESSION_ID, session.getId());
-
 			userDTO.getParams().put(OpenIDUserDTO.ENDPOINT_URL, authReq.getDestinationUrl(true));
 
 			// fakes the redirect by sending the POJO with the required
