@@ -3,7 +3,6 @@ package sk.seges.acris.site.server.service.builder;
 import java.util.HashSet;
 import java.util.Set;
 
-import sk.seges.acris.site.shared.domain.api.WebSettings.MetaData;
 import sk.seges.acris.site.shared.domain.api.WebSettings.MetaDataType;
 import sk.seges.acris.site.shared.domain.api.server.model.data.MetaDataData;
 import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;

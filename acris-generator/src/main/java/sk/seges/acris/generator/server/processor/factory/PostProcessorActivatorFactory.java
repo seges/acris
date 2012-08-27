@@ -2,7 +2,6 @@ package sk.seges.acris.generator.server.processor.factory;
 
 import sk.seges.acris.generator.server.processor.factory.api.OfflineWebSettingsFactory;
 import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
-import sk.seges.acris.site.shared.domain.api.WebSettings;
 import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
 
 public class PostProcessorActivatorFactory {

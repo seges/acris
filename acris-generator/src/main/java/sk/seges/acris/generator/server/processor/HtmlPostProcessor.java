@@ -14,6 +14,7 @@ import org.htmlparser.util.ParserException;
 
 import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
+import sk.seges.acris.generator.server.processor.htmltags.NoScriptTag;
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
@@ -60,6 +61,7 @@ public class HtmlPostProcessor {
 		
 		PrototypicalNodeFactory prototypicalNodeFactory = (PrototypicalNodeFactory)parser.getNodeFactory();
 		prototypicalNodeFactory.registerTag(new StyleLinkTag());
+		prototypicalNodeFactory.registerTag(new NoScriptTag());
 		
 		try {
 			NodeIterator nodeIterator = parser.elements();

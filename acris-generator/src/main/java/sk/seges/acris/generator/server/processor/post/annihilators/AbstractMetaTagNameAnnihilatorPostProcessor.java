@@ -6,7 +6,7 @@ import org.htmlparser.tags.MetaTag;
 
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
-public abstract class AbstractMetaTagAnnihilatorPostProcessor extends AbstractAnnihilatorPostProcessor {
+public abstract class AbstractMetaTagNameAnnihilatorPostProcessor extends AbstractAnnihilatorPostProcessor {
 
 	protected abstract String getMetaTagName();
 

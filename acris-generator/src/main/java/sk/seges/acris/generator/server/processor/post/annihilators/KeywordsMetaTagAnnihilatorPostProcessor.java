@@ -5,7 +5,7 @@ import org.htmlparser.Node;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
 
-public class KeywordsMetaTagAnnihilatorPostProcessor extends AbstractMetaTagAnnihilatorPostProcessor {
+public class KeywordsMetaTagAnnihilatorPostProcessor extends AbstractMetaTagNameAnnihilatorPostProcessor {
 
 	@Override
 	protected boolean supportsNode(Node node, GeneratorEnvironment generatorEnvironment) {
