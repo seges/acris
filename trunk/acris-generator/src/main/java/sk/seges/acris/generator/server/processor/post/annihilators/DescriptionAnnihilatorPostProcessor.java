@@ -5,7 +5,7 @@ import org.htmlparser.Node;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
 
-public class DescriptionAnnihilatorPostProcessor extends AbstractMetaTagAnnihilatorPostProcessor {
+public class DescriptionAnnihilatorPostProcessor extends AbstractMetaTagNameAnnihilatorPostProcessor {
 
 	protected boolean supportsNode(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (!super.supportsNode(node, generatorEnvironment)) {

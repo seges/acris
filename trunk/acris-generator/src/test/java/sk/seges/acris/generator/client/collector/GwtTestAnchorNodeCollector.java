@@ -10,7 +10,6 @@ import sk.seges.acris.generator.client.context.MapTokenCache;
 import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
-import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class GwtTestAnchorNodeCollector {

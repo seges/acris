@@ -1,12 +1,8 @@
 package sk.seges.acris.site.server.service;
 
 import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
-
-import sk.seges.acris.shared.model.dto.FTPWebSettingsDTO;
-import sk.seges.acris.shared.model.dto.WebSettingsDTO;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
-import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
 
 public class MockWebSettingsService implements IWebSettingsServiceLocal {
 
@@ -57,12 +53,10 @@ public class MockWebSettingsService implements IWebSettingsServiceLocal {
 
 	@Override
 	public void saveFTPWebSettings(String webId, FTPWebSettingsData ftpWebSettings) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public FTPWebSettingsData getFTPWebSettings(String webId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

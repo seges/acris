@@ -17,7 +17,6 @@ import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.NocacheScriptWebSettingsBuilder;
 import sk.seges.acris.site.shared.domain.mock.MockContent;
-import sk.seges.acris.site.shared.service.IWebSettingsService;
 
 @Import({WebSettingsServiceConfiguration.class, OfflineSettingsConfiguration.class})
 public class DisabledCacheScriptTestConfiguration {

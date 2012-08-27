@@ -1,14 +1,16 @@
-package sk.seges.acris.generator.server.spring.configuration;
+package sk.seges.acris.generator.server.spring.configuration.alters;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
+import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.MockContentFactory;
+import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.MetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
@@ -32,20 +34,40 @@ import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropert
 import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.OfflineTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.TitleAppenderPostProcessor;
+import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
+import sk.seges.acris.site.shared.domain.mock.MockContent;
 
-public class PostProcessorsConfiguration {
+@Import({WebSettingsServiceConfiguration.class, OfflineSettingsConfiguration.class})
+public class EmptyMetaTagTestConfiguration {
 
-	@Autowired
-	private ContentDataProvider contentMetaDataProvider;
-	
-	@Bean
-	public AbstractElementPostProcessor imagesSourcePostProcessor() {
-		return new ImagesSourceAlterPostProcessor();
+	public static class MockLightContentFactory implements MockContentFactory {
+
+		@SuppressWarnings("serial")
+		@Override
+		public ContentData constructMockContent() {
+			return new MockContent() {
+				@Override
+				public String getKeywords() {
+					return "";
+				}
+				
+				@Override
+				public String getDescription() {
+					return "";
+				}
+			};
+		}
 	}
 
 	@Bean
-	public AbstractElementPostProcessor languageSelectorPostProcessor() {
-		return new LanguageSelectorAlterPostProcessor(contentMetaDataProvider);
+	public ContentDataProvider contentInfoProvider() {
+		return new MockContentInfoProvider(new MockLightContentFactory());
+	}
+
+	@Bean
+	public AbstractElementPostProcessor imagesSourcePostProcessor() {
+		return new ImagesSourceAlterPostProcessor();
 	}
 
 	@Bean
@@ -171,5 +193,4 @@ public class PostProcessorsConfiguration {
 	@Bean
 	public AbstractElementPostProcessor EmulateIE7AnnihilatorPostProcessor() {
 		return new EmulateIE7AnnihilatorPostProcessor();
-	}
-}
+	}}

@@ -271,6 +271,8 @@ public class MockContent implements ContentData {
 	public ContentPkData getId() {
 		return new ContentPkData() {
 			
+			private static final long serialVersionUID = 6394762952316919938L;
+
 			@Override
 			public void setLanguage(String language) {
 			}

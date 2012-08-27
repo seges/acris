@@ -25,7 +25,6 @@ public class MetaTagPostProcessorTest extends AbstractProcessorTest {
 			super(MetaTagTestConfiguration.class);
 		}
 	}
-
 	
 	private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/metatag/";
 
