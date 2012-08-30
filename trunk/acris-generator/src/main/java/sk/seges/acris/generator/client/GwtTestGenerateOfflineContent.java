@@ -7,16 +7,22 @@ import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
+import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
 import sk.seges.acris.generator.client.configuration.GeneratorConfiguration;
 import sk.seges.acris.generator.client.context.DefaultGeneratorClientEnvironment;
 import sk.seges.acris.generator.client.context.MapTokenCache;
 import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 import sk.seges.acris.generator.client.factory.AnchorNodeCollectorFactory;
 import sk.seges.acris.generator.client.factory.api.NodeCollectorFactory;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
+import sk.seges.acris.generator.client.json.params.OfflineWebParamsJSO;
 import sk.seges.acris.generator.client.performance.OperationTimer;
 import sk.seges.acris.generator.client.performance.OperationTimer.Operation;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
+import sk.seges.acris.shared.model.dto.WebSettingsDTO;
+import sk.seges.acris.site.client.json.JSONModel;
+import sk.seges.acris.site.shared.service.IWebSettingsServiceAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -43,7 +49,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 	private OperationTimer timer;
 	protected IGeneratorServiceAsync generatorService;
-
+	protected IWebSettingsServiceAsync webSettingsService;
+	protected OfflineClientWebParams offlineWebParams;
+	
 	private static final boolean PERFORMANCE_MONITOR = true;
 	
 	/**
@@ -71,6 +79,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	protected abstract EntryPoint getEntryPoint(String webId, String lang, String webAlias);
 
 	protected abstract IGeneratorServiceAsync getGeneratorService();
+	protected abstract IWebSettingsServiceAsync getWebSettingsService();
 
 	/**
 	 * Parse a URL and return a map of query parameters. If a parameter is supplied without =value, it will be defined
@@ -108,6 +117,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		prepareEnvironment(generatorConfiguration);
 
 		generatorService = getGeneratorService();
+		webSettingsService = getWebSettingsService();
 
 		if (getPageName() == null) {
 			offlineContentProvider = new HtmlFilesHandler(getModuleName(), generatorService);
@@ -115,30 +125,60 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			offlineContentProvider = new HtmlFilesHandler(GWT.getModuleBaseURL(), getPageName(), generatorService);
 		}
 		
-		contentProvider = getContentProvider(generatorEnvironment);
+		contentProvider = getContentProvider(generatorEnvironment, generatorConfiguration);
 
-		loadTokensForProcessing();
+		initializeWebSettings(generatorConfiguration.getWebId());
 	}
 
 	protected Set<NodeCollectorFactory> getNodeCollectorFactories() {
 		Set<NodeCollectorFactory> collectors = new HashSet<NodeCollectorFactory>();
-		collectors.add(new AnchorNodeCollectorFactory());
+		
+		if (offlineWebParams.supportsAutodetectMode()) {
+			collectors.add(new AnchorNodeCollectorFactory());
+		}
+		
 		return collectors;
 	}
 	
 	protected void prepareEnvironment(GeneratorConfiguration generatorConfiguration) {
 		if (generatorConfiguration.getProperties() != null && generatorConfiguration.getProperties().length() > 0) {
 			ScriptElement scriptElement = Document.get().createScriptElement();
-			scriptElement.setAttribute("language", "JavaScript");
+			scriptElement.setAttribute("type", "text/javascript");
 			scriptElement.setAttribute("src", generatorConfiguration.getProperties());
 			HtmlFilesHandler.getHeadElement().appendChild(scriptElement);
 		}
 	};
 
-	protected ContentInterceptor getContentProvider(GeneratorClientEnvironment generatorEnvironment) {
-		return new ContentInterceptor(generatorService, generatorEnvironment);
+	protected ContentInterceptor getContentProvider(GeneratorClientEnvironment generatorEnvironment, GeneratorConfiguration generatorConfiguration) {
+		return new ContentInterceptor(generatorService, generatorEnvironment, generatorConfiguration);
 	}
 
+	private void initializeWebSettings(String webId) {
+		webSettingsService.getWebSettings(webId, new TrackingAsyncCallback<WebSettingsDTO>() {
+
+			@Override
+			public void onSuccessCallback(WebSettingsDTO webSettings) {
+				String parameters = webSettings != null ? webSettings.getParameters() : null;
+				if (parameters != null) {
+					try {
+						offlineWebParams = new OfflineWebParamsJSO(JSONModel.fromJson(parameters));
+					} catch (Exception e) {
+						Log.error("Error reading web params", e);
+					}
+				}
+				
+				loadTokensForProcessing();
+			}
+
+			@Override
+			public void onFailureCallback(Throwable cause) {
+				failure("Unable to obtain current content. Please check the log and connectivity on the RPC server side", cause);
+				finalizeTest();
+			}
+		
+		});
+	}
+	
 	private void loadTokensForProcessing() {
 
 		if (PERFORMANCE_MONITOR) {

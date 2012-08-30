@@ -21,4 +21,9 @@ public class OfflineWebParamsJSO extends BaseJSONModel implements OfflineClientW
 	public void setPublishOnSaveEnabled(boolean publishOnSaveEnabled) {
 		data.set(OfflineParameterType.PUBLISH_ON_SAVE_ENABLED.getKey(), publishOnSaveEnabled);
 	}
+
+	@Override
+	public Boolean supportsAutodetectMode() {
+		return data.getBoolean(OfflineParameterType.AUTODETECT_MODE.getKey());
+	}
 }

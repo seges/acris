@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.sesam.dao.Page;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -31,5 +32,5 @@ public interface IGeneratorServiceAsync {
 	/**
 	 * Content provider services
 	 */
-	void getAvailableNiceurls(String language, String webId, AsyncCallback<ArrayList<String>> callback);
+	void getAvailableNiceurls(Page page, AsyncCallback<ArrayList<String>> callback);
 }

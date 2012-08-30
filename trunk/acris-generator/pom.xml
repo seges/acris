@@ -82,6 +82,15 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-site-server</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-rpc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-rpc</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 
 		<dependency>
 			<groupId>sk.seges.acris</groupId>

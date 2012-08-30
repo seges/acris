@@ -5,6 +5,7 @@ import java.util.List;
 
 import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.sesam.dao.Page;
 
 public class MockContentInfoProvider implements ContentDataProvider {
 
@@ -22,15 +23,16 @@ public class MockContentInfoProvider implements ContentDataProvider {
 		return true;
 	}
 	
-	public List<String> getAvailableNiceurls(String lang, String webId) {
+	@Override
+	public ContentData getContent(GeneratorToken token) {
+		return factory.constructMockContent();
+	}
+
+	@Override
+	public List<String> getAvailableNiceurls(Page page) {
 		ContentData mockContent = factory.constructMockContent();
 		List<String> contents = new ArrayList<String>();
 		contents.add(mockContent.getNiceUrl());
 		return contents;
-	}
-
-	@Override
-	public ContentData getContent(GeneratorToken token) {
-		return factory.constructMockContent();
 	}
 }

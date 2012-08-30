@@ -19,6 +19,8 @@ public class GeneratorConfigurationGenerator extends Generator {
 	private static final String PROPERTIES_NAME = "properties";
 	private static final String LANGUAGE_NAME = "language";
 	private static final String ALIAS_NAME = "alias";
+	private static final String CONTENT_START_INDEX_NAME = "contentStartIndex";
+	private static final String CONTENT_PAGE_SIZE_NAME = "contentPageSize";
 
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext generatorContext, String typeName)
@@ -48,6 +50,9 @@ public class GeneratorConfigurationGenerator extends Generator {
 			sw.println("public String getProperties() { return " + getStringProperty(PROPERTIES_NAME) + "; }");
 			sw.println("public String getLanguage() { return " + getStringProperty(LANGUAGE_NAME) + "; }");
 			sw.println("public String getAlias() { return " + getStringProperty(ALIAS_NAME) + "; }");
+
+			sw.println("public int getContentStartIndex() { return " + getIntegerProperty(CONTENT_START_INDEX_NAME, 0) + "; }");
+			sw.println("public int getContentPageSize() { return " + getIntegerProperty(CONTENT_PAGE_SIZE_NAME, -1) + "; }");
 		
 			sw.commit(logger);
 		}
@@ -61,5 +66,13 @@ public class GeneratorConfigurationGenerator extends Generator {
 			return null;
 		}
 		return "\"" + value + "\"";
+	}
+
+	private String getIntegerProperty(String name, int defaultValue) {
+		String value = System.getProperty(name);
+		if (value == null) {
+			return "" + defaultValue;
+		}
+		return value;
 	}
 }

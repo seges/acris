@@ -8,4 +8,6 @@ public interface OfflineClientWebParams extends ContentParameters {
 
 	void setPublishOnSaveEnabled(boolean publishOnSaveEnabled);
 
+	Boolean supportsAutodetectMode();
+
 }

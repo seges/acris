@@ -6,9 +6,13 @@ import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
 import sk.seges.acris.callbacks.client.RequestState;
+import sk.seges.acris.generator.client.configuration.GeneratorConfiguration;
 import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
+import sk.seges.sesam.dao.Conjunction;
+import sk.seges.sesam.dao.Filter;
+import sk.seges.sesam.dao.Page;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -21,13 +25,14 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class ContentInterceptor {
 
-	private IGeneratorServiceAsync generatorService;
+	private final IGeneratorServiceAsync generatorService;
+	private final GeneratorClientEnvironment generatorEnvironment;
+	private final GeneratorConfiguration generatorConfiguration;
 	
-	private GeneratorClientEnvironment generatorEnvironment;
-	
-	public ContentInterceptor(IGeneratorServiceAsync generatorService, GeneratorClientEnvironment generatorEnvironment) {
+	public ContentInterceptor(IGeneratorServiceAsync generatorService, GeneratorClientEnvironment generatorEnvironment, GeneratorConfiguration generatorConfiguration) {
 		this.generatorService = generatorService;
 		this.generatorEnvironment = generatorEnvironment;
+		this.generatorConfiguration = generatorConfiguration;
 	}
 	
 	public void loadTokensForProcessing(final AsyncCallback<Void> callback) {
@@ -49,8 +54,8 @@ public class ContentInterceptor {
 					
 					defaultToken.setNiceUrl(result.getNiceUrl());
 					defaultToken.setDefaultToken(true);
-
-					getAvailableTokens(callback);
+					
+					getAvailableTokens(callback, generatorConfiguration.getContentStartIndex(), generatorConfiguration.getContentPageSize());
 				} else {
 					callback.onSuccess(null);
 				}
@@ -59,11 +64,17 @@ public class ContentInterceptor {
 	}
 
 	
-	private void getAvailableTokens(final AsyncCallback<Void> callback) {
+	private void getAvailableTokens(final AsyncCallback<Void> callback, int startIndex, int pageSize) {
 		
 		GeneratorToken currentToken = generatorEnvironment.getTokensCache().getDefaultToken();
 		
-		generatorService.getAvailableNiceurls(currentToken.getLanguage(), currentToken.getWebId(), new AsyncCallback<ArrayList<String>>() {
+		Page page = new Page(startIndex, pageSize);
+		Conjunction conjunction = Filter.conjunction();
+		conjunction.add(Filter.eq("webId").setValue(currentToken.getWebId()));
+		conjunction.add(Filter.eq("language").setValue(currentToken.getLanguage()));
+		page.setFilterable(conjunction);
+		
+		generatorService.getAvailableNiceurls(page, new AsyncCallback<ArrayList<String>>() {
 
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);

@@ -7,4 +7,6 @@ public interface GeneratorConfiguration {
 	String getLanguage();
 	String getAlias();
 	
+	int getContentStartIndex();
+	int getContentPageSize();
 }
