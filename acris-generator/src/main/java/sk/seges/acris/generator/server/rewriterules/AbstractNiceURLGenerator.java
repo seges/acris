@@ -136,8 +136,8 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
 		Page page = new Page(0, Page.ALL_RESULTS);
 		Conjunction conjunction = Filter.conjunction();
-		conjunction.add(Filter.eq("webId").setValue(webId));
-		conjunction.add(Filter.eq("language").setValue(lang));
+		conjunction.add(Filter.eq("id.webId").setValue(webId));
+		conjunction.add(Filter.eq("id.language").setValue(lang));
 		page.setFilterable(conjunction);
 
 	    List<String> availableNiceurls = contentInfoProvider.getAvailableNiceurls(page);
