@@ -70,8 +70,8 @@ public class ContentInterceptor {
 		
 		Page page = new Page(startIndex, pageSize);
 		Conjunction conjunction = Filter.conjunction();
-		conjunction.add(Filter.eq("webId").setValue(currentToken.getWebId()));
-		conjunction.add(Filter.eq("language").setValue(currentToken.getLanguage()));
+		conjunction.add(Filter.eq("id.webId").setValue(currentToken.getWebId()));
+		conjunction.add(Filter.eq("id.language").setValue(currentToken.getLanguage()));
 		page.setFilterable(conjunction);
 		
 		generatorService.getAvailableNiceurls(page, new AsyncCallback<ArrayList<String>>() {
