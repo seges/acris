@@ -14,6 +14,9 @@ import org.apache.log4j.Logger;
 
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.sesam.dao.Conjunction;
+import sk.seges.sesam.dao.Filter;
+import sk.seges.sesam.dao.Page;
 
 public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
@@ -131,7 +134,13 @@ public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 
 		List<String> niceurls = new ArrayList<String>();
 
-	    List<String> availableNiceurls = contentInfoProvider.getAvailableNiceurls(token.getLanguage(), token.getWebId());
+		Page page = new Page(0, Page.ALL_RESULTS);
+		Conjunction conjunction = Filter.conjunction();
+		conjunction.add(Filter.eq("webId").setValue(webId));
+		conjunction.add(Filter.eq("language").setValue(lang));
+		page.setFilterable(conjunction);
+
+	    List<String> availableNiceurls = contentInfoProvider.getAvailableNiceurls(page);
 
 	    for(String niceurl : availableNiceurls) {
 	    	niceurls.add(niceurl);

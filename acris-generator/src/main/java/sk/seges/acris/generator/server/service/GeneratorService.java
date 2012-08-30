@@ -35,6 +35,11 @@ import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
 import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
 import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
+import sk.seges.sesam.dao.Criterion;
+import sk.seges.sesam.dao.Disjunction;
+import sk.seges.sesam.dao.Junction;
+import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.dao.SimpleExpression;
 
 /**
  * @author Peter Simun (simun@seges.sk)
@@ -101,8 +106,9 @@ public class GeneratorService implements IGeneratorService {
 		return true;
 	}
 
-	public ArrayList<String> getAvailableNiceurls(String lang, String webId) {
-		List<String> availableNiceurls = contentDataProvider.getAvailableNiceurls(lang, webId);
+	@Override
+	public ArrayList<String> getAvailableNiceurls(Page page) {
+		List<String> availableNiceurls = contentDataProvider.getAvailableNiceurls(page);
 
 		ArrayList<String> result = new ArrayList<String>();
 		
@@ -111,7 +117,8 @@ public class GeneratorService implements IGeneratorService {
 		}
 		
 		if (log.isDebugEnabled()) {
-			log.debug("Available tokens for webId: " + webId + " and language " + lang);
+			Criterion filterable = page.getFilterable();
+			log.debug("Available tokens for page: " + page.toString() + ", " + toString(filterable));
 			for (String niceUrl : result) {
 				log.debug(niceUrl);
 			}
@@ -120,6 +127,37 @@ public class GeneratorService implements IGeneratorService {
 		return result;
 	}
 
+	private String toString(Criterion criterion) {
+		
+		if (criterion instanceof Junction) {
+			List<Criterion> junctions = ((Junction)criterion).getJunctions();
+			String result = "";
+			String op = " and ";
+			
+			if (criterion instanceof Disjunction) {
+				op = " or ";
+			}
+
+			int i = 0;
+			for (Criterion cr: junctions) {
+				if (i > 0) {
+					result += op;
+				}
+				result = "( " + toString(cr) + " )";
+				i++;
+			}
+			
+			return result;
+		}
+
+		if (criterion instanceof SimpleExpression) {
+			SimpleExpression<?> expression = ((SimpleExpression<?>)criterion);
+			return expression.getProperty() + " " + expression.getOperation() + " " + expression.getValue().toString();
+		}
+
+		return criterion.toString();
+	}
+	
 	public Tuple<String, String> readHtmlBodyFromFile(String filename) {
 		String content = readTextFromFile(filename);
 		return new Tuple<String, String>(new HTMLNodeSplitter(parserFactory).getHeaderText(content), 

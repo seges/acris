@@ -14,6 +14,7 @@ import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPos
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.StylesAlterPathPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.TitleAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.ClearCacheImageAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.EmulateIE7AnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.HeadStyleScriptAnnihilatorPostProcessor;
@@ -169,7 +170,12 @@ public class PostProcessorsConfiguration {
 	}
 	
 	@Bean
-	public AbstractElementPostProcessor EmulateIE7AnnihilatorPostProcessor() {
+	public AbstractElementPostProcessor emulateIE7AnnihilatorPostProcessor() {
 		return new EmulateIE7AnnihilatorPostProcessor();
+	}
+	
+	@Bean
+	public AbstractElementPostProcessor clearCacheImageAnnihilatorPostProcessor() {
+		return new ClearCacheImageAnnihilatorPostProcessor();
 	}
 }

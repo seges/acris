@@ -3,10 +3,14 @@
 	<inherits name="com.google.gwt.i18n.I18N"/>
 	<inherits name='com.google.gwt.junit.JUnit'/>
 	
+	<!-- Sesam page -->
+	<inherits name='sk.seges.sesam.Core' />
+	
 	<inherits name='sk.seges.corpis.Domain' />
 	<inherits name="sk.seges.acris.Core"/>
 	<inherits name="sk.seges.acris.Callbacks"/>
 	<inherits name="sk.seges.acris.Common"/>
+	<inherits name='sk.seges.acris.site.Shared' />
 
    	<generate-with class="sk.seges.acris.generator.rebind.GeneratorConfigurationGenerator">
     	<when-type-assignable class="sk.seges.acris.generator.client.configuration.GeneratorConfiguration" />
