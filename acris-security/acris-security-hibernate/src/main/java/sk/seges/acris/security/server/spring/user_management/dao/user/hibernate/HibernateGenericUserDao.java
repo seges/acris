@@ -82,6 +82,7 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> imp
 		return userAuthorities;
 	}
 
+	@Transactional
 	@Override
 	public UserData findByUsername(String username) {
 		DetachedCriteria criteria = createCriteria();
