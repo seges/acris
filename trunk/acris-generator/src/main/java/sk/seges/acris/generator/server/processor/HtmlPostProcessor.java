@@ -12,7 +12,6 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
-import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.htmltags.NoScriptTag;
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
@@ -22,7 +21,8 @@ import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcess
 import sk.seges.acris.generator.server.processor.post.PostProcessorKind.Kind;
 import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.domain.api.ContentData;
+import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
 
 public class HtmlPostProcessor {
 

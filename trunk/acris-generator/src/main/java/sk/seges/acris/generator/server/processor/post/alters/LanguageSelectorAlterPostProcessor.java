@@ -9,10 +9,10 @@ import org.htmlparser.tags.OptionTag;
 import org.htmlparser.tags.SelectTag;
 import org.htmlparser.util.NodeList;
 
-import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
-import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.domain.api.ContentData;
+import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
 
 public class LanguageSelectorAlterPostProcessor extends AbstractAlterPostProcessor {
 

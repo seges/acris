@@ -1,8 +1,8 @@
 package sk.seges.acris.site.server.service;
 
-import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
+import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
-import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
 
 public class MockWebSettingsService implements IWebSettingsServiceLocal {
 

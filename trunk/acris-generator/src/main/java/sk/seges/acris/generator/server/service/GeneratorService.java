@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
-import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
@@ -33,8 +32,9 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
 import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
+import sk.seges.acris.site.server.domain.api.ContentData;
+import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
-import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
 import sk.seges.sesam.dao.Criterion;
 import sk.seges.sesam.dao.Disjunction;
 import sk.seges.sesam.dao.Junction;

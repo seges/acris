@@ -3,8 +3,8 @@ package sk.seges.acris.site.shared.domain.mock;
 import java.util.Date;
 import java.util.List;
 
-import sk.seges.acris.domain.shared.domain.api.ContentData;
-import sk.seges.acris.domain.shared.domain.api.ContentPkData;
+import sk.seges.acris.site.server.domain.api.ContentData;
+import sk.seges.acris.site.server.domain.api.ContentPkData;
 
 
 public class MockContent implements ContentData {
