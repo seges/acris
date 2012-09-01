@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import sk.seges.acris.site.server.manager.CommaSeparatedParametersManager;
 import sk.seges.acris.site.shared.domain.api.ParameterData;
 
 public class CommaSeparatedParametersManagerTest extends TestCase {
