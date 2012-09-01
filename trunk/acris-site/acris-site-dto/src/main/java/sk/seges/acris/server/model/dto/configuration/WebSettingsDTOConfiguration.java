@@ -8,7 +8,7 @@
  */
 package sk.seges.acris.server.model.dto.configuration;
 
-import sk.seges.acris.site.shared.domain.jpa.JpaWebSettings;
+import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
 /**

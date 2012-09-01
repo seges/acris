@@ -1,4 +1,4 @@
-package sk.seges.acris.site.shared.domain.jpa;
+package sk.seges.acris.site.server.domain.jpa;
 
 import java.util.Set;
 

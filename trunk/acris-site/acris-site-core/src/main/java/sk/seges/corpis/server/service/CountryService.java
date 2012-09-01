@@ -5,7 +5,6 @@ import java.util.List;
 
 import sk.seges.corpis.server.dao.ICountryDao;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
-import sk.seges.corpis.server.service.ICountryService;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.SimpleExpression;

@@ -1,7 +1,6 @@
 package sk.seges.acris.site.shared.domain.api;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
-import sk.seges.acris.site.server.domain.api.WebSettings;
 
 @BeanWrapper
 public enum MetaDataType {
