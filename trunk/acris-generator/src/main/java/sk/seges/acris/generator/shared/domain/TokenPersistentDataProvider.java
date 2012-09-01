@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.shared.domain;
 
-import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
+import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
 
 public class TokenPersistentDataProvider implements PersistentDataProvider {
 

@@ -2,8 +2,8 @@ package sk.seges.acris.generator.server.service.persist.db;
 
 import sk.seges.acris.generator.server.dao.IFileDao;
 import sk.seges.acris.generator.server.domain.api.FileData;
+import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
-import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
 
 public class DatabasePersister implements DataPersister {
 

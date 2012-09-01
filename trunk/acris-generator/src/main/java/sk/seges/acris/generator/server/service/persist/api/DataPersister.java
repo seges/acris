@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.server.service.persist.api;
 
-import sk.seges.acris.generator.shared.domain.api.PersistentDataProvider;
+import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
 
 public interface DataPersister {
 
