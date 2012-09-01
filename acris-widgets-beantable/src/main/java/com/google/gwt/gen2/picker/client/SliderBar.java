@@ -15,6 +15,9 @@
  */
 package com.google.gwt.gen2.picker.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -33,9 +36,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.widgetideas.client.ResizableWidget;
 import com.google.gwt.widgetideas.client.ResizableWidgetCollection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A widget that allows the user to select a value within a range of possible

@@ -6,9 +6,9 @@ import sk.seges.acris.security.shared.session.ClientSession;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
+import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader;
 import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 import com.google.gwt.user.client.rpc.impl.Serializer;
-import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader;
 
 /**
  * {@link RemoteServiceProxy} extension for send current session id in request

@@ -1,10 +1,10 @@
 package sk.seges.acris.theme.pap.model;
 
-import com.google.gwt.user.client.ui.Widget;
-
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+
+import com.google.gwt.user.client.ui.Widget;
 
 public class ThemeComponentType extends DelegateMutableDeclaredType {
 

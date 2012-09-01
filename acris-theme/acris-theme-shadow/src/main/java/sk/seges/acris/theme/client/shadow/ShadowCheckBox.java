@@ -19,7 +19,6 @@ import sk.seges.acris.theme.client.annotation.Theme;
 import sk.seges.acris.theme.client.annotation.ThemeResources;
 import sk.seges.acris.theme.client.annotation.ThemeResources.ThemeResource;
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.theme.client.shadow.ShadowTheme;
 import sk.seges.acris.theme.client.shadow.resources.ShadowThemeResources;
 import sk.seges.acris.widget.client.form.ImageCheckBox;
 

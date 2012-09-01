@@ -1,6 +1,7 @@
 package sk.seges.acris.rpc;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

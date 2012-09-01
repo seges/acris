@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 
 import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
 
-
-
 import com.google.gwt.user.server.rpc.RPCRequest;
 
 public class SecurityEnabledServiceExporter extends GWTRPCServiceExporter {

@@ -1,5 +1,11 @@
 package sk.seges.acris.theme.client.metal;
 
+import sk.seges.acris.theme.client.annotation.Theme;
+import sk.seges.acris.theme.client.annotation.ThemeElements;
+import sk.seges.acris.theme.client.annotation.ThemeElements.ThemeElement;
+import sk.seges.acris.theme.client.annotation.ThemeSupport;
+import sk.seges.acris.widget.client.Dialog;
+
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -11,12 +17,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.DialogBoxHelper;
 import com.google.gwt.user.client.ui.Widget;
-
-import sk.seges.acris.theme.client.annotation.Theme;
-import sk.seges.acris.theme.client.annotation.ThemeElements;
-import sk.seges.acris.theme.client.annotation.ThemeElements.ThemeElement;
-import sk.seges.acris.theme.client.annotation.ThemeSupport;
-import sk.seges.acris.widget.client.Dialog;
 
 @Theme(MetalTheme.NAME)
 @ThemeSupport(widgetClass = Dialog.class, elementName = "dialogBox", template = @UiTemplate("MetalDialogBox.ui.xml"))

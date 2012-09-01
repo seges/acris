@@ -1,7 +1,5 @@
 package sk.seges.acris.theme.client.metal;
 
-import sk.seges.acris.theme.client.annotation.ThemeSupport;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
