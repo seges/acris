@@ -29,7 +29,7 @@ import sk.seges.acris.security.shared.util.LoggedUserRole;
 /**
  * Standard user service using {@link UserPasswordLoginToken} to log the user in
  * (and out). The service uses Spring's DAO authentication provider. The
- * behaviour of fetching authorities can be altered by:
+ * behavior of fetching authorities can be altered by:
  * <ul>
  * <li>providing specific implementation of generic user DAO (bean name is
  * 'genericUserDao'). By aliasing the bean name to the specific implementation

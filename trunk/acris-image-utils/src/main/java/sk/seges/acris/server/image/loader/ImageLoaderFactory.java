@@ -8,9 +8,9 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
-import com.sun.media.jai.codec.ImageDecoder;
-
 import sk.seges.acris.server.image.model.ColorType;
+
+import com.sun.media.jai.codec.ImageDecoder;
 
 public class ImageLoaderFactory {
 

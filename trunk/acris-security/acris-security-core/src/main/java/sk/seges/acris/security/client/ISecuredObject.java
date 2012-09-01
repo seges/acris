@@ -1,6 +1,7 @@
 package sk.seges.acris.security.client;
 
 import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 
 /**
  * General secured object applied on client side. Mostly is is used on GWT

@@ -1,6 +1,5 @@
 package sk.seges.acris.theme.client.metal;
 
-import sk.seges.acris.theme.client.annotation.ThemeSupport;
 
 //@ThemeSupport(widgetClass = CollapsiblePanel.class, elementName = "collapsiblePanel", themeName = MetalTheme.NAME)
 public interface MetalCollapsiblePanel {}

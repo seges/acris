@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 
 import org.gwtwidgets.server.spring.gilead.GileadRPCServiceExporter;
 
-
 import com.google.gwt.user.server.rpc.RPCRequest;
 
 public class GileadSecurityEnabledServiceExporter extends GileadRPCServiceExporter {

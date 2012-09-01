@@ -29,7 +29,6 @@ import org.activiti.engine.impl.pvm.PvmProcessElement;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;

@@ -12,12 +12,11 @@ import java.util.Map.Entry;
 import sk.seges.acris.core.rebind.GenPredicGroup.EOperator;
 import sk.seges.acris.core.rebind.GeneratorPredicate.EPredicts;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.TreeLogger.Type;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.dev.cfg.CompoundCondition;
 import com.google.gwt.dev.cfg.Condition;
 import com.google.gwt.dev.cfg.ConditionAll;
