@@ -3,7 +3,6 @@ package sk.seges.acris.generator.server.spring.configuration.anihilators;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
-import sk.seges.acris.domain.shared.domain.api.ContentData;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MockContentFactory;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
@@ -13,6 +12,7 @@ import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAn
 import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
+import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.shared.domain.mock.MockContent;
 
 @Import({WebSettingsServiceConfiguration.class, OfflineSettingsConfiguration.class})

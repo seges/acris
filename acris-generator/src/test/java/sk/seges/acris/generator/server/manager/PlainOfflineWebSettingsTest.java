@@ -15,7 +15,7 @@ import sk.seges.acris.generator.server.manager.PlainOfflineWebSettingsTest.Plain
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.spring.configuration.DefaultTestConfiguration;
-import sk.seges.acris.site.shared.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
 import sk.seges.acris.site.shared.domain.jpa.JpaWebSettings;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 

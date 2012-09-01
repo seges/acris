@@ -1,6 +1,6 @@
 package sk.seges.acris.generator.server.processor;
 
-import sk.seges.acris.domain.shared.domain.api.ContentData;
+import sk.seges.acris.site.server.domain.api.ContentData;
 
 public interface MockContentFactory {
 
