@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.spring.user_management.dao.permission.hibernate.HibernateSecurityRoleDao;
 import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
 import sk.seges.sesam.dao.Page;
 

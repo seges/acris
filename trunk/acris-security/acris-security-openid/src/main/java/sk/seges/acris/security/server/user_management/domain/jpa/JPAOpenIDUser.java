@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import sk.seges.acris.security.server.user_management.domain.base.OpenIDUserBase;
+import sk.seges.acris.security.server.user_management.domain.api.server.model.base.OpenIDUserBase;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;

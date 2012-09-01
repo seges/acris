@@ -3,22 +3,21 @@ package sk.seges.acris.security.server.user_management.domain.api;
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
+import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.sesam.domain.IMutableDomainObject;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
 
+@BeanWrapper 
 @MetaModel
-@BeanWrapper
-public interface HasOpenIDIdentifier extends IMutableDomainObject<String> {
+@DomainInterface
+@BaseObject
+public interface OpenIDUser extends IMutableDomainObject<String> {
 
-	UserData getUser();
+	UserData user();
 
-	void setUser(UserData user);
+	String email();
 
-	String getEmail();
+	OpenIDProvider provider();
 
-	void setEmail(String email);
- 
-	OpenIDProvider getProvider();
-
-	void setProvider(OpenIDProvider provider);
 }

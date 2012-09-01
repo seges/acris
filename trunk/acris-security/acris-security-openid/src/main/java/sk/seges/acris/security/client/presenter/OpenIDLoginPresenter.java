@@ -9,8 +9,9 @@ import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.event.OpenIDLoginEvent;
 import sk.seges.acris.security.client.handler.HasOpenIDLoginHandlers;
 import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
-import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
+import sk.seges.acris.security.client.openid.configuration.OpenIdConfiguration;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
+import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.configuration.LoginConfiguration;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
@@ -46,6 +47,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	protected ClientSession clientSession;
 	
 	protected LoginConfiguration loginConfiguration = GWT.create(LoginConfiguration.class);
+	protected OpenIdConfiguration openIdConfiguration;
 
 	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			IOpenIDConsumerServiceAsync consumerService) {
@@ -184,6 +186,19 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		return new OpenIDLoginToken(identifier, email, provider, webId);
 	}
 
+	protected OpenIdConfiguration getOpenIdConfiguration() {
+		if (openIdConfiguration == null) {
+			openIdConfiguration = new OpenIdConfiguration() {
+				
+				@Override
+				public String getRealm() {
+					return Window.Location.getProtocol() + "//*" + Window.Location.getHost();
+				}
+			};
+		}
+		
+		return openIdConfiguration;
+	}
 	/**
 	 * Authenticates an OpenID identifier and opens the discovered provider's
 	 * endpoint url in a popup.
@@ -191,7 +206,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	 * @param identifier
 	 */
 	protected void authenticate(final String identifier) {
-		consumerService.authenticate(identifier, getModuleURL(), loginConfiguration.getLoginModule(),
+		consumerService.authenticate(identifier, getReturnURL(), getOpenIdConfiguration().getRealm()/*loginConfiguration.getLoginModule()*/,
 				new AsyncCallback<OpenIDUserDTO>() {
 
 					@Override
@@ -330,7 +345,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		};
 	}
 
-	private String getModuleURL() {
+	private String getReturnURL() {
 		return Window.Location.getHref();
 	}
 
