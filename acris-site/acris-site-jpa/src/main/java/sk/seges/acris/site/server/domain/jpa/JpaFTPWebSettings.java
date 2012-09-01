@@ -1,4 +1,4 @@
-package sk.seges.acris.site.shared.domain.jpa;
+package sk.seges.acris.site.server.domain.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
