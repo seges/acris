@@ -1,4 +1,4 @@
-package sk.seges.acris.generator.shared.domain.api;
+package sk.seges.acris.generator.server.domain.api;
 
 import sk.seges.corpis.server.domain.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
