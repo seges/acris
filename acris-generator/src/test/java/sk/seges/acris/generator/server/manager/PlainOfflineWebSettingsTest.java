@@ -16,7 +16,7 @@ import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFa
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.spring.configuration.DefaultTestConfiguration;
 import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
-import sk.seges.acris.site.shared.domain.jpa.JpaWebSettings;
+import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
