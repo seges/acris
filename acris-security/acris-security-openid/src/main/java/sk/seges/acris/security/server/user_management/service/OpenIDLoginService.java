@@ -6,7 +6,7 @@ import java.util.List;
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
-import sk.seges.acris.security.server.user_management.domain.api.HasOpenIDIdentifier;
+import sk.seges.acris.security.server.user_management.domain.api.server.model.data.OpenIDUserData;
 import sk.seges.acris.security.server.utils.TokenConverter;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.session.ClientSession;
@@ -24,12 +24,12 @@ public class OpenIDLoginService implements LoginService {
 
 	private IGenericUserDao<UserData> userDao;
 
-	private IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao;
+	private IOpenIDUserDao<? extends OpenIDUserData> openIDUserDao;
 
 	private SessionIDGenerator sessionIDGenerator;
 
 	public OpenIDLoginService(TokenConverter tokenConverter, IGenericUserDao<UserData> userDao,
-			IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao, SessionIDGenerator sessionIDGenerator) {
+			IOpenIDUserDao<? extends OpenIDUserData> openIDUserDao, SessionIDGenerator sessionIDGenerator) {
 		this.tokenConverter = tokenConverter;
 		this.userDao = userDao;
 		this.openIDUserDao = openIDUserDao;
@@ -46,7 +46,7 @@ public class OpenIDLoginService implements LoginService {
 		Page page = new Page(0, Page.ALL_RESULTS);
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>("id", token.getIdentifier(),
 				Filter.EQ));
-		List<HasOpenIDIdentifier> result = openIDUserDao.findAll(page).getResult();
+		List<OpenIDUserData> result = openIDUserDao.findAll(page).getResult();
 
 		if (result != null && result.size() > 0) {
 			return convertToDTO(result.get(0).getUser(),

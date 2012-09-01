@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
-import sk.seges.acris.security.server.user_management.domain.api.HasOpenIDIdentifier;
 import sk.seges.acris.security.server.user_management.service.OpenIDUserService;
+import sk.seges.acris.security.shared.user_management.domain.api.HasOpenIDIdentifier;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 

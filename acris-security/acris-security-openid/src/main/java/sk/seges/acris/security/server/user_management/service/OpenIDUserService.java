@@ -7,11 +7,11 @@ import java.util.Map;
 
 import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
-import sk.seges.acris.security.server.user_management.domain.api.HasOpenIDIdentifier;
-import sk.seges.acris.security.server.user_management.domain.api.HasOpenIDIdentifierMetaModel;
+import sk.seges.acris.security.server.user_management.domain.api.server.model.data.OpenIDUserData;
 import sk.seges.acris.security.server.user_management.domain.jpa.JPAOpenIDUser;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.user_management.service.IOpenIDUserService;
 import sk.seges.sesam.dao.Filter;
@@ -24,10 +24,10 @@ public class OpenIDUserService implements IOpenIDUserService {
 
 	private IGenericUserDao<UserData> genericUserDao;
 
-	private IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao;
+	private IOpenIDUserDao<? extends OpenIDUserData> openIDUserDao;
 
 	public OpenIDUserService(IGenericUserDao<UserData> genericUserDao,
-			IOpenIDUserDao<? extends HasOpenIDIdentifier> openIDUserDao) {
+			IOpenIDUserDao<? extends OpenIDUserData> openIDUserDao) {
 		this.genericUserDao = genericUserDao;
 		this.openIDUserDao = openIDUserDao;
 	}
@@ -36,7 +36,7 @@ public class OpenIDUserService implements IOpenIDUserService {
 	public UserData getUserByOpenIDIdentifier(String identifier) {
 		Page page = new Page(0, Page.ALL_RESULTS);
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>("id", identifier, Filter.EQ));
-		List<HasOpenIDIdentifier> result = openIDUserDao.findAll(page).getResult();
+		List<OpenIDUserData> result = openIDUserDao.findAll(page).getResult();
 
 		if (result.size() > 0) {
 			return convert(result.get(0).getUser());
@@ -66,11 +66,11 @@ public class OpenIDUserService implements IOpenIDUserService {
 		Page page = new Page(0, Page.ALL_RESULTS);
 
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>(
-				HasOpenIDIdentifierMetaModel.USER.USERNAME, userName, Filter.EQ));
+				OpenIDUserData.USER + "." + UserDataMetaModel.USERNAME, userName, Filter.EQ));
 
 		List<OpenIDProvider> result = new ArrayList<OpenIDProvider>();
-		List<HasOpenIDIdentifier> found = openIDUserDao.findAll(page).getResult();
-		for (HasOpenIDIdentifier hasOpenIDIdentifier : found) {
+		List<OpenIDUserData> found = openIDUserDao.findAll(page).getResult();
+		for (OpenIDUserData hasOpenIDIdentifier : found) {
 			result.add(hasOpenIDIdentifier.getProvider());
 		}
 
