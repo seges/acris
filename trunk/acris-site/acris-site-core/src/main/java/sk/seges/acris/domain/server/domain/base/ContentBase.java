@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import sk.seges.acris.domain.server.domain.api.ContentBlobData;
-import sk.seges.acris.domain.shared.domain.api.ContentData;
-import sk.seges.acris.domain.shared.domain.api.ContentPkData;
-import sk.seges.acris.domain.shared.domain.base.ContentPkBase;
+import sk.seges.acris.site.server.domain.api.ContentData;
+import sk.seges.acris.site.server.domain.api.ContentPkData;
+import sk.seges.acris.site.server.domain.base.ContentPkBase;
 
 public class ContentBase implements ContentData, ContentBlobData {
 

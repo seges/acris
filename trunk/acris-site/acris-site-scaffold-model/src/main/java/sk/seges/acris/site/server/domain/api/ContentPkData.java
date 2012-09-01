@@ -1,4 +1,4 @@
-package sk.seges.acris.domain.shared.domain.api;
+package sk.seges.acris.site.server.domain.api;
 
 import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.corpis.server.domain.HasLanguage;
