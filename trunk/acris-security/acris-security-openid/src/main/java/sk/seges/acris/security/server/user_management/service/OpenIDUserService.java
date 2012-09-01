@@ -24,10 +24,10 @@ public class OpenIDUserService implements IOpenIDUserService {
 
 	private IGenericUserDao<UserData> genericUserDao;
 
-	private IOpenIDUserDao<? extends OpenIDUserData> openIDUserDao;
+	private IOpenIDUserDao<OpenIDUserData> openIDUserDao;
 
 	public OpenIDUserService(IGenericUserDao<UserData> genericUserDao,
-			IOpenIDUserDao<? extends OpenIDUserData> openIDUserDao) {
+			IOpenIDUserDao<OpenIDUserData> openIDUserDao) {
 		this.genericUserDao = genericUserDao;
 		this.openIDUserDao = openIDUserDao;
 	}
