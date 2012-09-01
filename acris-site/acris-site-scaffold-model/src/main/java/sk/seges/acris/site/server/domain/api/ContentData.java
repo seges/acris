@@ -1,4 +1,4 @@
-package sk.seges.acris.domain.shared.domain.api;
+package sk.seges.acris.site.server.domain.api;
 
 import java.util.Date;
 import java.util.List;

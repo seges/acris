@@ -13,11 +13,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.acris.domain.shared.domain.ftp.server.model.data.FTPWebSettingsData;
-import sk.seges.acris.site.shared.domain.api.WebSettings.MetaDataType;
-import sk.seges.acris.site.shared.domain.api.server.model.base.MetaDataBase;
-import sk.seges.acris.site.shared.domain.api.server.model.base.WebSettingsBase;
-import sk.seges.acris.site.shared.domain.api.server.model.data.MetaDataData;
+import sk.seges.acris.site.server.domain.api.server.model.base.MetaDataBase;
+import sk.seges.acris.site.server.domain.api.server.model.base.WebSettingsBase;
+import sk.seges.acris.site.server.domain.api.server.model.data.MetaDataData;
+import sk.seges.acris.site.server.domain.ftp.server.model.data.FTPWebSettingsData;
+import sk.seges.acris.site.shared.domain.api.MetaDataType;
 import sk.seges.corpis.server.domain.DBConstraints;
 import sk.seges.corpis.server.domain.jpa.JpaCountry;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;

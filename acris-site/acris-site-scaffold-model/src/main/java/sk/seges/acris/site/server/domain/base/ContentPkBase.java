@@ -1,6 +1,6 @@
-package sk.seges.acris.domain.shared.domain.base;
+package sk.seges.acris.site.server.domain.base;
 
-import sk.seges.acris.domain.shared.domain.api.ContentPkData;
+import sk.seges.acris.site.server.domain.api.ContentPkData;
 
 public class ContentPkBase implements ContentPkData {
 

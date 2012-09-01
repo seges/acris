@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import sk.seges.acris.domain.shared.domain.ftp.server.model.base.FTPWebSettingsBase;
+import sk.seges.acris.site.server.domain.ftp.server.model.base.FTPWebSettingsBase;
 
 @Entity
 @Table(name = "web_settings_ftp")
