@@ -192,7 +192,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 				
 				@Override
 				public String getRealm() {
-					return Window.Location.getProtocol() + "//*" + Window.Location.getHost();
+					return Window.Location.getProtocol() + "//" + Window.Location.getHost();
 				}
 			};
 		}
