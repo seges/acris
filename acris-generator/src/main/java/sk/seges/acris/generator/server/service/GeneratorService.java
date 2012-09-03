@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
+import sk.seges.acris.generator.server.domain.TokenPersistentDataProvider;
 import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
@@ -30,7 +31,6 @@ import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.generator.shared.domain.TokenPersistentDataProvider;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
@@ -208,7 +208,7 @@ public class GeneratorService implements IGeneratorService {
 	}
 
 	private void writeContent(String headerContent, String header, String contentWrapper, 
-			String content, GeneratorToken token, boolean indexFile) {
+			String content, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile) {
 		
 		HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
 		String doctype = htmlNodeSplitter.readDoctype(headerContent);
@@ -223,7 +223,7 @@ public class GeneratorService implements IGeneratorService {
 
 		HtmlPostProcessor htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
 		
-		result = htmlPostProcessor.getProcessedContent(result, token, indexFile);
+		result = htmlPostProcessor.getProcessedContent(result, token, defaultToken, indexFile);
 		
 		if (result == null) {
 			log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
@@ -266,10 +266,12 @@ public class GeneratorService implements IGeneratorService {
 					headerContent = entriesUrlCache.get(entryPointFileName);
 				}
 
-				writeContent(headerContent, header, contentWrapper, content, token, false);
+				GeneratorToken defaultGeneratorToken = getDefaultGeneratorToken(token.getLanguage(), token.getWebId());
+				
+				writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, false);
 				
 				if (token.isDefaultToken()) {
-					writeContent(headerContent, header, contentWrapper, content, token, true);
+					writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, true);
 				}
 			}
 		});

@@ -1,4 +1,4 @@
-package sk.seges.acris.generator.shared.domain;
+package sk.seges.acris.generator.server.domain;
 
 import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
 

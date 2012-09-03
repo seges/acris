@@ -7,6 +7,7 @@ import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
 public interface GeneratorEnvironment {
 
 	GeneratorToken getGeneratorToken();
+	GeneratorToken getDefaultToken();
 	
 	ContentData getContent();
 	
