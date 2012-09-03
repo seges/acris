@@ -9,6 +9,7 @@ import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.event.OpenIDLoginEvent;
 import sk.seges.acris.security.client.handler.HasOpenIDLoginHandlers;
 import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
+import sk.seges.acris.security.client.openid.configuration.DefaultOpenIdConfiguration;
 import sk.seges.acris.security.client.openid.configuration.OpenIdConfiguration;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
@@ -188,17 +189,12 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 	protected OpenIdConfiguration getOpenIdConfiguration() {
 		if (openIdConfiguration == null) {
-			openIdConfiguration = new OpenIdConfiguration() {
-				
-				@Override
-				public String getRealm() {
-					return Window.Location.getProtocol() + "//" + Window.Location.getHost();
-				}
-			};
+			openIdConfiguration = new DefaultOpenIdConfiguration();
 		}
 		
 		return openIdConfiguration;
 	}
+	
 	/**
 	 * Authenticates an OpenID identifier and opens the discovered provider's
 	 * endpoint url in a popup.
