@@ -87,6 +87,11 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 			if (link.toLowerCase().equals("#" + generatorToken.getNiceUrl().toLowerCase())) {
 				return generatorToken.isDefaultToken() ? "" : "#";
 			}
+			
+			if (link.toLowerCase().equals("#" + generatorEnvironment.getDefaultToken().getNiceUrl().toLowerCase())) {
+				return "";
+			}
+			
 			return link.substring(1);
 		}
 

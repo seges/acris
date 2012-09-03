@@ -44,7 +44,7 @@ public abstract class AbstractProcessorTest {
 		
 		HtmlPostProcessor htmlPostProcessing = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
 		
-		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, indexFile);
+		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, getDefaultToken(), indexFile);
 		if (html != null) {
 			Assert.assertTrue("Result HTML is not equals to the expected result. Expected result: " + getResultHtml() + ". Current result: " + html, compare(html));
 		} else {

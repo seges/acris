@@ -9,6 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkPostProcessorTest.NiceURLLinkPostProcessorTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.alters.NiceurlPathTestConfiguration;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.NoTopLevelDomainWebSettingsBuilder;
@@ -57,4 +58,20 @@ public class NiceURLLinkPostProcessorTest extends AbstractProcessorTest {
 		runTest(HTML_FILE_DIRECTORY + "4_test_niceurl_complex_input.html", 
 				HTML_FILE_DIRECTORY + "4_test_niceurl_complex_result.html");
 	}
+	
+	@Test
+	@DirtiesContext
+	public void testNiceUrlDefaultPostProcessor() {
+		runTest(HTML_FILE_DIRECTORY + "5_test_niceurl_default_input.html", 
+				HTML_FILE_DIRECTORY + "5_test_niceurl_default_result.html", getToken());
+	}
+	
+	protected GeneratorToken getToken() {
+		GeneratorToken token = new GeneratorToken();
+		token.setLanguage("en");
+		token.setNiceUrl("home");
+		token.setWebId("www.seges.sk");
+		return token;
+	}
+
 }
