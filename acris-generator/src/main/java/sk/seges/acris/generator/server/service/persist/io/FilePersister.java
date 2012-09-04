@@ -31,10 +31,22 @@ public class FilePersister implements DataPersister {
 			}
 		}
 
-		StringFile file = createFile(dirFile, persistentDataProvider.getId());
+		String fileName = persistentDataProvider.getId();
+		boolean exists = new File(dirFile, fileName).exists();
+
+		StringFile file = createFile(dirFile, fileName);
 
 		if (file == null) {
 			return;
+		}
+
+		if (!exists && isRootIndexFile(fileName)) {
+			//first time we generate offline here, create backup of the index.html for sure
+			try {
+				new StringFile(dirFile, "index_js.html").writeTextToFile(file.readTextFromFile());
+			} catch (IOException ex) {
+				log.warn("Trying to backup root index.html, but something has failed.", ex);
+			}
 		}
 		
 		if (log.isDebugEnabled()) {
@@ -48,6 +60,11 @@ public class FilePersister implements DataPersister {
 		}
 	}
 
+	protected boolean isRootIndexFile(String filename) {
+		return filename.contains(File.separator);
+		
+	}
+	
 	protected String getRootDirectory(String rootDirectory, PersistentDataProvider persistentDataProvider) {
 		return rootDirectory;
 	}
