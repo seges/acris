@@ -21,6 +21,9 @@ public class BaseJSONModel implements Serializable {
 	}
 	
     public BaseJSONModel(JSONModel data) {
+    	if (data == null) {
+    		data = JSONModel.create();
+    	}
         this.data = data;
     }
     
