@@ -268,11 +268,7 @@ public class GeneratorService implements IGeneratorService {
 
 				GeneratorToken defaultGeneratorToken = getDefaultGeneratorToken(token.getLanguage(), token.getWebId());
 				
-				writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, false);
-				
-				if (token.isDefaultToken()) {
-					writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, true);
-				}
+				writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, token.isDefaultToken());
 			}
 		});
 	}
@@ -302,6 +298,7 @@ public class GeneratorService implements IGeneratorService {
 		if (indexFile) {
 			dataProvider.setId(indexFileName);
 		} else {
+			//TODO not indexFileName?
 			dataProvider.setId(token.getNiceUrl() + File.separator + "index.html");
 		}
 		return dataProvider;
