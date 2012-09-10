@@ -24,6 +24,9 @@ public interface ContentDTOConfiguration extends IDataTransferObject {
 
 	@Ignore
 	void webId();
+	
+	@Ignore
+	void serverParams();
 
 	@Size(min = 1, max = 255)
 	@Pattern(regexp = "[a-zA-Z0-9\\-_/]*")

@@ -58,6 +58,8 @@ public class ContentBase implements ContentData, ContentBlobData {
 
 	private String params;
 
+	private String serverParams;
+	
 	private Integer version = 0;
 
 	private Boolean hasChildren = false;
@@ -324,6 +326,16 @@ public class ContentBase implements ContentData, ContentBlobData {
 	@Override
 	public void setParams(String params) {
 		this.params = params;
+	}
+	
+	@Override
+	public String getServerParams() {
+		return serverParams;
+	}
+	
+	@Override
+	public void setServerParams(String serverParams) {
+		this.serverParams = serverParams;
 	}
 
 	@Override
