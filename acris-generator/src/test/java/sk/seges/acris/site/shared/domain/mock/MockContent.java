@@ -332,4 +332,16 @@ public class MockContent implements ContentData {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getServerParams() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setServerParams(String serverParams) {
+		// TODO Auto-generated method stub
+		
+	}
 }
