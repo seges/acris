@@ -104,4 +104,8 @@ public interface ContentData extends IMutableDomainObject<ContentPkData>, HasWeb
 	String getParams();
 
 	void setParams(String params);
+	
+	String getServerParams();
+	
+	void setServerParams(String serverParams);
 }
