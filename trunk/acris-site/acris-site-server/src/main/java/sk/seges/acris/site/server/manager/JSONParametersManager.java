@@ -88,7 +88,7 @@ public class JSONParametersManager implements ParametersManager {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		for (Entry<String, ObjectParameterData> params: parameters.entrySet()) {
-			map.put(params.getKey(), params.getValue());
+			map.put(params.getKey(), params.getValue().getValue());
 		}
 
 		try {
