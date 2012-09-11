@@ -11,6 +11,7 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
 @BeanWrapper
 public interface RoleData extends Serializable, IDomainObject<Integer> {
 
+	public static final String NONE = "none";
 	public static final String ALL_USERS = "*";
 	public static final String GRANT = "USER_ROLE";
 	public static final String A_NAME = "name";
