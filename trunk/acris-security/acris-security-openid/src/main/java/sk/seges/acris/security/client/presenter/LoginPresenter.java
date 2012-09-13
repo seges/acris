@@ -102,6 +102,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	protected boolean authenticate = false;
 	protected boolean switchAfterLogin = false;
 
+	protected String locale;
+	
 	/**
 	 * Default validator that simply checks if the username and password are not
 	 * empty.
@@ -138,16 +140,26 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	
 	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled) {
-		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, false);
+		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, null);
+	}
+
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
+			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, String locale) {
+		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, false, locale);
 	}
 
 	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate) {
-		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, authenticate, false);
+		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, authenticate, null);
 	}
 	
 	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
-			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate, boolean switchAfterLogin) {
+			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate, String locale) {
+		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, authenticate, false, locale);
+	}
+	
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
+			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate, boolean switchAfterLogin, String locale) {
 		super(display);
 
 		this.broadcaster = broadcaster;
@@ -156,6 +168,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		this.rememberMeEnabled = rememberMeEnabled;
 		this.authenticate = authenticate; 
 		this.switchAfterLogin = switchAfterLogin;
+		this.locale = locale;
 		
 		display.setEnabledLanguages(enabledLanguages);
 		display.setRememberMeEnabled(rememberMeEnabled);
@@ -309,7 +322,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 			// language support disabled
 		}
 
-		return new UserPasswordLoginToken(username, password, language, null);
+		return new UserPasswordLoginToken(username, password, language, null, locale);
 	}
 
 	protected void registerHandlers() {
