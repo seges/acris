@@ -50,7 +50,7 @@ public class JpaWebSites extends WebSitesBase {
 	}
 	
 	@Override
-	@Column(length = DBConstraints.LANGUAGE_LENGTH)
+	@Column(nullable = false, length = DBConstraints.LANGUAGE_LENGTH)
 	public String getLanguage() {
 		return super.getLanguage();
 	}
