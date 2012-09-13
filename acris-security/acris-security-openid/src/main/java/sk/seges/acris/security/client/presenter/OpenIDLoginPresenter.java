@@ -52,13 +52,18 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			IOpenIDConsumerServiceAsync consumerService) {
-		this(display, broadcaster, redirectUrl, null, false, consumerService, null);
+		this(display, broadcaster, redirectUrl, null, false, consumerService, null, null);
+	}
+
+	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
+			IOpenIDConsumerServiceAsync consumerService, String locale) {
+		this(display, broadcaster, redirectUrl, null, false, consumerService, null, locale);
 	}
 
 	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled,
-			IOpenIDConsumerServiceAsync consumerService, ClientSession clientSession) {
-		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled);
+			IOpenIDConsumerServiceAsync consumerService, ClientSession clientSession, String locale) {
+		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, locale);
 		this.consumerService = consumerService;
 		this.clientSession = clientSession;
 	}
@@ -184,7 +189,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	protected OpenIDLoginToken constructOpenIDLoginToken(String identifier, String email, OpenIDProvider provider, String webId) {
-		return new OpenIDLoginToken(identifier, email, provider, webId);
+		return new OpenIDLoginToken(identifier, email, provider, webId, locale);
 	}
 
 	protected OpenIdConfiguration getOpenIdConfiguration() {
