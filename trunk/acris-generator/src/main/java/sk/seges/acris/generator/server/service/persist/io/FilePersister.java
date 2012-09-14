@@ -88,7 +88,7 @@ public class FilePersister implements DataPersister {
 					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
 				}
 			} catch (IOException e) {
-				log.error("IO exception occured", e);
+				log.error("IO exception occured while creating file " + file.getAbsolutePath(), e);
 				return null;
 				//throw new RuntimeException(e);
 			}
