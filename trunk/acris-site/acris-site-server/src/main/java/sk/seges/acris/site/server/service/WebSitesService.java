@@ -37,7 +37,6 @@ public class WebSitesService implements IWebSitesServiceLocal {
 			if (oldPrimary != null) {
 				oldPrimary.setType(SiteType.ALIAS);
 				webSitesDao.merge(oldPrimary);
-				return;
 			}
 		} 
 		webSitesDao.persist(webSite);
