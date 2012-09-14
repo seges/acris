@@ -56,7 +56,7 @@ public class FilePersister implements DataPersister {
 		try {
 			file.writeTextToFile(persistentDataProvider.getContent());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Unable to write text to file " + file.getAbsolutePath(), e);
 		}
 	}
 
