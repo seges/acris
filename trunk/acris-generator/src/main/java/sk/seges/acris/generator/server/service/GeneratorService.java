@@ -291,7 +291,6 @@ public class GeneratorService implements IGeneratorService {
 		return path;
 	}
 	
-
 	protected PersistentDataProvider createPersistentDataProvider(GeneratorToken token, boolean indexFile, String content) {
 		PersistentDataProvider dataProvider = new TokenPersistentDataProvider();
 		dataProvider.setContent(content);
