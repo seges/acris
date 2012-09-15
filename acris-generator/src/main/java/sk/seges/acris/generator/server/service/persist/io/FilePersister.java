@@ -31,7 +31,16 @@ public class FilePersister implements DataPersister {
 			}
 		}
 
+		if (log.isDebugEnabled()) {
+			log.debug("Writing to the root directory: " + dirFile.getAbsolutePath());
+		}
+		
 		String fileName = persistentDataProvider.getId();
+
+		if (log.isDebugEnabled()) {
+			log.debug("Output relative filename: " + fileName);
+		}
+		
 		boolean exists = new File(dirFile, fileName).exists();
 
 		StringFile file = createFile(dirFile, fileName);
@@ -88,7 +97,8 @@ public class FilePersister implements DataPersister {
 					log.error("Unable to create empty file " + file.getAbsolutePath() + ".");
 				}
 			} catch (IOException e) {
-				log.error("IO exception occured while creating file " + file.getAbsolutePath(), e);
+				log.error("IO exception occured while creating file " + file.getAbsolutePath() + ", dirname: " + dirFile.getAbsolutePath() 
+						+ ", filename: " + filename, e);
 				return null;
 				//throw new RuntimeException(e);
 			}
