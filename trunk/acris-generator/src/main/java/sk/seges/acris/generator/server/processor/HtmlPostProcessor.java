@@ -87,8 +87,8 @@ public class HtmlPostProcessor {
 				continue;
 			}
 
-			if (log.isDebugEnabled()) {
-				log.debug("Processing node " + node.toString());
+			if (log.isTraceEnabled()) {
+				log.trace("Processing node " + node.toString());
 			}
 
 			rootNodes.add(node);
