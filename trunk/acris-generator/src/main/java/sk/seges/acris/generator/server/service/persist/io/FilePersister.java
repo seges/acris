@@ -84,13 +84,12 @@ public class FilePersister implements DataPersister {
 		if (!file.exists()) {
 			try {
 				if (!file.getParentFile().exists()) {
-					file.getParentFile().mkdirs();
 					if (log.isDebugEnabled()) {
 						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
 					}
-				}
-				if (log.isDebugEnabled()) {
-					log.debug("File " + file.getAbsolutePath() + " does not exists. Creating an empty new file.");
+					if (!file.getParentFile().mkdirs()) {
+						log.warn("Unable to create directory " + file.getParentFile().getAbsolutePath() + "!");
+					}
 				}
 
 				if (!file.createNewFile()) {
