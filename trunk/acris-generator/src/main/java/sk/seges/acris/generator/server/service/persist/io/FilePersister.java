@@ -78,6 +78,43 @@ public class FilePersister implements DataPersister {
 		return rootDirectory;
 	}
 	
+	private boolean mkdirs(File file) {
+		
+		if (file.exists()) {
+			return true;
+		}
+
+		File rootDir = file;
+		
+		while (rootDir.getParentFile() != null) {
+			rootDir = rootDir.getParentFile();
+			
+			if (file.exists()) {
+				break;
+			}
+		}
+		
+		String subDir = file.getAbsolutePath().substring(file.getAbsolutePath().length());
+		
+		if (subDir.startsWith(File.separator)) {
+			subDir.substring(1);
+		}
+		
+		String[] subDirs = subDir.split(File.separator);
+		
+		for (String dir: subDirs) {
+			file = new File(rootDir, dir);
+			if (!file.mkdir()) {
+				log.debug("Unable to create directory " + dir + " in the " + rootDir.getAbsolutePath());
+				return false;
+			}
+			
+			rootDir = file;
+		}
+		
+		return true;
+	}	
+	
 	protected StringFile createFile(File dirFile, String filename) {
 		StringFile file = new StringFile(dirFile, filename);
 
@@ -87,7 +124,7 @@ public class FilePersister implements DataPersister {
 					if (log.isDebugEnabled()) {
 						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
 					}
-					if (!file.getParentFile().mkdirs()) {
+					if (!mkdirs(file.getParentFile())) {
 						log.warn("Unable to create directory " + file.getParentFile().getAbsolutePath() + "!");
 					}
 				}
