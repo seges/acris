@@ -213,8 +213,8 @@ public class GeneratorService implements IGeneratorService {
 		HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
 		String doctype = htmlNodeSplitter.readDoctype(headerContent);
 
-		if (log.isDebugEnabled()) {
-			log.debug("			headerContent: " + headerContent);
+		if (log.isTraceEnabled()) {
+			log.trace("			headerContent: " + headerContent);
 		}
 		
 		String entryPoint = htmlNodeSplitter.joinHeaders(headerContent, header);
@@ -244,16 +244,19 @@ public class GeneratorService implements IGeneratorService {
 				if (content != null) {
 					content = content.replaceAll("<br></br>", "<br/>");
 				}
-		
+
 				if (log.isDebugEnabled()) {
+					log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + token.getLanguage() + " and webId: "
+							+ token.getWebId());
+				}
+				
+				if (log.isTraceEnabled()) {
 					synchronized (this) { 
-						log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + token.getLanguage() + " and webId: "
-								+ token.getWebId());
-						log.debug("			entryPointFileName: " + entryPointFileName);
-						log.debug("			header: " + header);
-						log.debug("			contentWrapper: " + contentWrapper);
-						log.debug("			content: " + content);
-						log.debug("			currentServerURL: " + currentServerURL);
+						log.trace("			entryPointFileName: " + entryPointFileName);
+						log.trace("			header: " + header);
+						log.trace("			contentWrapper: " + contentWrapper);
+						log.trace("			content: " + content);
+						log.trace("			currentServerURL: " + currentServerURL);
 					}
 				}
 		
