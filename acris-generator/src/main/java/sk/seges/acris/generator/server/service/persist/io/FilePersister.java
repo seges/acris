@@ -89,12 +89,12 @@ public class FilePersister implements DataPersister {
 		while (rootDir.getParentFile() != null) {
 			rootDir = rootDir.getParentFile();
 			
-			if (file.exists()) {
+			if (rootDir.exists()) {
 				break;
 			}
 		}
 		
-		String subDir = file.getAbsolutePath().substring(file.getAbsolutePath().length());
+		String subDir = file.getAbsolutePath().substring(rootDir.getAbsolutePath().length());
 		
 		if (subDir.startsWith(File.separator)) {
 			subDir.substring(1);
@@ -105,7 +105,7 @@ public class FilePersister implements DataPersister {
 		for (String dir: subDirs) {
 			file = new File(rootDir, dir);
 			if (!file.mkdir()) {
-				log.debug("Unable to create directory " + dir + " in the " + rootDir.getAbsolutePath());
+				log.warn("Unable to create directory " + dir + " in the " + rootDir.getAbsolutePath());
 				return false;
 			}
 			
