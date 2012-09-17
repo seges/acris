@@ -3,6 +3,8 @@
  */
 package sk.seges.acris.callbacks.client;
 
+import java.util.Date;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -126,6 +128,16 @@ public abstract class TrackingAsyncCallback<T> implements AsyncCallback<T> {
 		}
 	}
 
+	/**
+	 * Emulates that async callback is started and we'll wait until it's finished.
+	 * Used in async cases that are not related to RPC, but it is required to wait
+	 * until it's finished
+	 */
+	public TrackingAsyncCallback<T> start() {
+		setRequestId(new Date().getTime());
+		return this;
+	}
+	
 	/**
 	 * Called when an asynchronous call completes successfully.
 	 */
