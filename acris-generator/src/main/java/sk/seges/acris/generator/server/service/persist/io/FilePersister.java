@@ -115,7 +115,7 @@ public class FilePersister implements DataPersister {
 		}
 		
 		return true;
-	}	
+	}
 	
 	protected StringFile createFile(File dirFile, String filename) {
 		StringFile file = new StringFile(dirFile, filename);
@@ -126,8 +126,10 @@ public class FilePersister implements DataPersister {
 					if (log.isDebugEnabled()) {
 						log.debug("Directory " + file.getParentFile().getAbsolutePath() + " does not exists. Creating a new file.");
 					}
-					if (!mkdirs(file.getParentFile())) {
-						log.warn("Unable to create directory " + file.getParentFile().getAbsolutePath() + "!");
+					if (!file.getParentFile().mkdirs()) {
+						log.warn("Unable to create directory " + file.getParentFile().getAbsolutePath() + " Check the permissions!");
+						//Just for logging purposes
+						mkdirs(file.getParentFile());
 					}
 				}
 

@@ -1,4 +1,5 @@
 <module>
 	<inherits name='com.google.gwt.user.User'/>
 	<inherits name='sk.seges.acris.callbacks.Callbacks'/>		
+	<inherits name='sk.seges.acris.scheduler.Scheduler'/>
 </module>

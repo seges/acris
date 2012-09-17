@@ -59,8 +59,7 @@ public class StringFile extends File {
 		return file;
 	}
 	
-	public void writeTextToFile(final String content)
-			throws IOException {
+	public void writeTextToFile(final String content) throws IOException {
 
 		final FileOutputStream fwOut = new FileOutputStream(this);
 		fwOut.write(content.getBytes("UTF-8"));

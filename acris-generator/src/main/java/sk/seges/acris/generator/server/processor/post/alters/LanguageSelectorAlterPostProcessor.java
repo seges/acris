@@ -16,9 +16,8 @@ import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
 
 public class LanguageSelectorAlterPostProcessor extends AbstractAlterPostProcessor {
 
-	private String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
-	private String CLASS_ATTRIBUTE_NAME = "class";
-	private String STYLE_ATTRIBUTE_NAME = "style";
+	private static final String LANGUAGE_SELECTOR_STYLE_CLASS_NAME = "acris-language-selector-panel";
+	private static final String STYLE_ATTRIBUTE_NAME = "style";
 		
 	private String LANGUAGE_BAR_STYLE = "height: 32px; overflow-y: scroll";
 	

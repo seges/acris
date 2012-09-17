@@ -7,6 +7,8 @@ import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public abstract class AbstractElementPostProcessor implements PostProcessorKind {
 
+	protected static final String CLASS_ATTRIBUTE_NAME = "class";
+
 	public abstract boolean supports(Node node, GeneratorEnvironment generatorEnvironment);
 
 	public abstract boolean process(Node node, GeneratorEnvironment generatorEnvironment);

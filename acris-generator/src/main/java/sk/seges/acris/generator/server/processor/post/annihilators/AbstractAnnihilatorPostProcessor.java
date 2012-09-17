@@ -1,5 +1,8 @@
 package sk.seges.acris.generator.server.processor.post.annihilators;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TagNode;
 import org.htmlparser.util.NodeList;
@@ -33,35 +36,42 @@ public abstract class AbstractAnnihilatorPostProcessor extends AbstractElementPo
 		
 		int size = nodeList.size();
 		
-		int removeIndex = -1;
+		List<Integer> removeIndexes = new ArrayList<Integer>();
 		
+		int count = 0;
 		for (int i = 0; i < size; i++) {
 		
 			Node childNode = nodeList.elementAt(i);
 			
 			if (supportsNode(childNode, generatorEnvironment)) {
 				//amen
-				removeIndex = i;
-				break;
+				removeIndexes.add(i - count);
+				count++;
 			}
 		}
 		
-		if (removeIndex == -1) {
+		if (removeIndexes.size() == 0) {
 			return false;
 		}
 
-		String nodeName = "";
+		int shiftIndex = 0;
 		
-		if (nodeList.elementAt(removeIndex) instanceof TagNode) {
-			nodeName = ((TagNode)nodeList.elementAt(removeIndex)).getTagName().toLowerCase();
-		}
-		
-		nodeList.remove(removeIndex);
-		
-		if (nodeList.size() > removeIndex) {
-			Node nextElement = nodeList.elementAt(removeIndex);
-			if (nextElement.getClass().equals(TagNode.class) && nextElement.toHtml().toLowerCase().equals("</" + nodeName + ">")) {
-				nodeList.remove(removeIndex);
+		for (Integer removeIndex: removeIndexes) {
+			removeIndex -= shiftIndex;
+			String nodeName = "";
+			
+			if (nodeList.elementAt(removeIndex) instanceof TagNode) {
+				nodeName = ((TagNode)nodeList.elementAt(removeIndex)).getTagName().toLowerCase();
+			}
+			
+			nodeList.remove(removeIndex);
+			
+			if (nodeList.size() > removeIndex) {
+				Node nextElement = nodeList.elementAt(removeIndex);
+				if (nextElement.getClass().equals(TagNode.class) && nextElement.toHtml().toLowerCase().equals("</" + nodeName + ">")) {
+					nodeList.remove(removeIndex);
+					shiftIndex++;
+				}
 			}
 		}
 		return true;
