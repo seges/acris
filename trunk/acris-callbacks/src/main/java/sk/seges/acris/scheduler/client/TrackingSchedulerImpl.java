@@ -1,7 +1,5 @@
 package sk.seges.acris.scheduler.client;
 
-import java.util.Date;
-
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
 
 import com.google.gwt.core.client.GWT;
@@ -17,7 +15,7 @@ public class TrackingSchedulerImpl extends SchedulerImpl {
 
 		public EmptyAsyncCallback(TrackingScheduledCommand cmd) {
 			this.cmd = cmd;
-			setRequestId(new Date().getTime());
+			start();
 		}
 		
 		@Override
