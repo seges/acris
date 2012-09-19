@@ -53,6 +53,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 		if (callback instanceof TrackingAsyncCallback<?>) {
 			((TrackingAsyncCallback<T>) callback)
 					.setRequestId(lastUniqueRequestID);
+			((TrackingAsyncCallback<T>) callback).setName(getClass().getName() + "." + methodName);
 		}
 
 		String sessionID = "";

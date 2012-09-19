@@ -13,9 +13,9 @@ public class TrackingSchedulerImpl extends SchedulerImpl {
 
 		private final TrackingScheduledCommand cmd;
 
-		public EmptyAsyncCallback(TrackingScheduledCommand cmd) {
+		public EmptyAsyncCallback(String name, TrackingScheduledCommand cmd) {
 			this.cmd = cmd;
-			start();
+			start(name);
 		}
 		
 		@Override
@@ -28,11 +28,20 @@ public class TrackingSchedulerImpl extends SchedulerImpl {
 		
 	}
 
-	public void scheduleDeferred(TrackingScheduledCommand cmd) {
+	@Override
+	public void scheduleDeferred(ScheduledCommand cmd) {
+		if (cmd instanceof TrackingScheduledCommand) {
+			scheduleDeferred((TrackingScheduledCommand) cmd, null);
+		} else {
+			super.scheduleDeferred(cmd);
+		}
+	}
+	
+	public void scheduleDeferred(TrackingScheduledCommand cmd, String name) {
 
 		//Emulate asynchronous nation of the processing. Otherwise offline generator will
 		//generate offline before scripts are fully loaded
-		cmd.setCallback(new EmptyAsyncCallback(cmd));
+		cmd.setCallback(new EmptyAsyncCallback(name, cmd));
 		super.scheduleDeferred(cmd);
 	}
 }

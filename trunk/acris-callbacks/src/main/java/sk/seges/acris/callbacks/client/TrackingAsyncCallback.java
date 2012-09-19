@@ -5,6 +5,8 @@ package sk.seges.acris.callbacks.client;
 
 import java.util.Date;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -33,6 +35,13 @@ public abstract class TrackingAsyncCallback<T> implements AsyncCallback<T> {
 	public TrackingAsyncCallback() {
 	}
 
+	public void setName(String name) {
+		if (request == null) {
+			return;
+		}
+		request.setName(name);
+	}
+	
 	/**
 	 * When request is created in SecureRemoteServiceProxy class, then unique
 	 * requestId is created and set to the TrackingAsyncCallback. It means that
@@ -133,8 +142,13 @@ public abstract class TrackingAsyncCallback<T> implements AsyncCallback<T> {
 	 * Used in async cases that are not related to RPC, but it is required to wait
 	 * until it's finished
 	 */
-	public TrackingAsyncCallback<T> start() {
+	public TrackingAsyncCallback<T> start(String name) {
 		setRequestId(new Date().getTime());
+		if (name == null) {
+			setName("" + request.getRequestId());
+		} else {
+			setName(name);
+		}
 		return this;
 	}
 	
