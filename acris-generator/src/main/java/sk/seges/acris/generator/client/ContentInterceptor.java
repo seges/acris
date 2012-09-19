@@ -90,6 +90,12 @@ public class ContentInterceptor {
 	
 	private HandlerRegistration handler;
 	
+	private void logAwaitingRequests() {
+		for (RPCRequest request: RPCRequestTracker.getAwaitingRequests()) {
+			Log.info("Waiting for request: " + request.getName() + " to be finished");
+		}
+	}
+	
  	public void loadContent(final AsyncCallback<Void> callback) {
 
  		final GeneratorToken token = generatorEnvironment.getTokensCache().getCurrentToken();
@@ -120,10 +126,12 @@ public class ContentInterceptor {
 					callback.onFailure(request.getCaught());
 				} else {
 					Log.debug("Request finished. Waiting for next " + RPCRequestTracker.getRunningRequestStarted() + " requests for niceurl " + token.getNiceUrl());
-					if (request.getParentRequest() == null) {
+					if (RPCRequestTracker.getRunningRequestStarted() == 0) {
 						timer.cancel();
 						RPCRequestTracker.getTracker().removeAllCallbacks();
 						callback.onSuccess(null);
+					} else {
+						logAwaitingRequests();
 					}
 				}
 			}

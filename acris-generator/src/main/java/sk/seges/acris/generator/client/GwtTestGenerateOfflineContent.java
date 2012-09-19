@@ -252,6 +252,12 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		}
 	}
 
+	private void logAwaitingRequests() {
+		for (RPCRequest request: RPCRequestTracker.getAwaitingRequests()) {
+			Log.info("Waiting for request: " + request.getName() + " to be finished");
+		}
+	}
+	
 	private GeneratorToken loadNextContent() {
 		if (!generatorEnvironment.getTokensCache().hasNext()) {
 			finalizeTest();
@@ -283,13 +289,15 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 					loadNextContent();
 					//finalizeTest();
 				} else {
-					if (request.getParentRequest() == null) {
+					if (RPCRequestTracker.getRunningRequestStarted() == 0) {
 						if (PERFORMANCE_MONITOR) {
 							timer.stop(Operation.CONTENT_RENDERING);
 						}
 						
 						RPCRequestTracker.getTracker().removeAllCallbacks();
 						loadContentForToken();
+					} else {
+						logAwaitingRequests();
 					}
 				}
 			}

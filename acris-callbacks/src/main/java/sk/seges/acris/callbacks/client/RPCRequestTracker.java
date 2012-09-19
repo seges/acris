@@ -29,6 +29,7 @@ public class RPCRequestTracker {
 	 * Singleton instance for the tracker
 	 */
 	final private static RPCRequestTracker instance = new RPCRequestTracker();
+	private static final List<RPCRequest> requests = new ArrayList<RPCRequest>();
 
 	/**
 	 * Number of current running requests (number of requests in state
@@ -40,14 +41,18 @@ public class RPCRequestTracker {
 	 * Current processed request - due to the single threaded JS design is only
 	 * one RPC request processed in time
 	 */
-	private RPCRequest processingRequest = null;
+	private List<RPCRequest> processingRequests = new ArrayList<RPCRequest>();
 
 	RPCRequest getProcessingRequest() {
-		return processingRequest;
+		if (processingRequests.size() > 0) {
+			return processingRequests.get(processingRequests.size() - 1);
+		}
+		
+		return null;
 	}
 
 	void setProcessingRequest(RPCRequest processingRequest) {
-		this.processingRequest = processingRequest;
+		this.processingRequests.add(processingRequest);
 	}
 
 	/**
@@ -61,11 +66,11 @@ public class RPCRequestTracker {
 	 * @param processingRequest
 	 */
 	void resetProcessingRequest(RPCRequest processingRequest) {
-		if (!processingRequest.equals(this.getProcessingRequest())) {
-			throw new IllegalArgumentException(
-					"Processing 2 parallel requests?. That's impossible in JS. Check the bugs, man.");
-		}
-		this.processingRequest = null;
+//		if (!processingRequest.equals(this.getProcessingRequest())) {
+//			throw new IllegalArgumentException(
+//					"Processing 2 parallel requests?. That's impossible in JS. Check the bugs, man.");
+//		}
+		this.processingRequests.remove(processingRequests.size() - 1);
 	}
 
 	/**
@@ -126,7 +131,8 @@ public class RPCRequestTracker {
 	 */
 	void onRequestStarted(RPCRequest request) {
 		runningRequestStarted++;
-
+		requests.add(request);
+		
 		ICallbackTrackingListener[] listeners = callbackListeners.toArray(new ICallbackTrackingListener[0]);
 
 		for (ICallbackTrackingListener callbackListener : listeners) {
@@ -156,6 +162,7 @@ public class RPCRequestTracker {
 	 */
 	void onResponseReceived(RPCRequest request) {
 		runningRequestStarted--;
+		requests.remove(request);
 		
 		ICallbackTrackingListener[] listeners = callbackListeners.toArray(new ICallbackTrackingListener[0]);
 
@@ -231,5 +238,9 @@ public class RPCRequestTracker {
 	 */
 	public static int getRunningRequestStarted() {
 		return runningRequestStarted;
+	}
+	
+	public static List<RPCRequest> getAwaitingRequests() {
+		return requests;
 	}
 }

@@ -9,7 +9,8 @@ import java.util.Map;
 
 public class RPCRequest {
 	private long requestId;
-
+	private String name;
+	
 	private RPCRequest parentRequest;
 	private CallbackState callbackState;
 	private RequestState callbackResult;
@@ -100,5 +101,13 @@ public class RPCRequest {
 
 	public void setCaught(Throwable caught) {
 		this.caught = caught;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }
