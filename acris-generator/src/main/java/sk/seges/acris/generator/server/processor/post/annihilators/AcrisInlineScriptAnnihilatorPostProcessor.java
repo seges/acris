@@ -8,7 +8,7 @@ import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public class AcrisInlineScriptAnnihilatorPostProcessor extends AbstractStyleClassNameAnnihilator {
 
-	protected final static String ACRIS_INLINE_SCRIPTS = "acris-inline-scripts";
+	public final static String ACRIS_INLINE_SCRIPTS = "acris-inline-scripts";
 
 	@Override
 	protected String getStyleClassName() {
