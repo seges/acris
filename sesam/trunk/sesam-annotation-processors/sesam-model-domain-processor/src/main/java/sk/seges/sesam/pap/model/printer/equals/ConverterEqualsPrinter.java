@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.model.printer.equals;
 
 import java.util.Arrays;
 
+import javax.lang.model.element.ExecutableElement;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
@@ -10,6 +11,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.AbstractDtoPrinter;
@@ -42,11 +44,15 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 
 			DomainType domainId = configurationTypeElement.getInstantiableDomain().getId(entityResolver);
 
-			String methodName = DOMAIN_NAME + "." + configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver).getSimpleName().toString() + "()";
+			ExecutableElement domainIdMethod = configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver);
+			
+			String methodName = DOMAIN_NAME + "." + domainIdMethod.getSimpleName().toString() + "()";
 			
 			if (domainId.getConverter() != null) {
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
-				converterProviderPrinter.printDomainEnsuredConverterMethodName(domainId, null, methodName, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw, false);
+				
+				Field field = new Field(methodName, domainId);
+				converterProviderPrinter.printDomainEnsuredConverterMethodName(domainId, null, field, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw, false);
 				pw.print(".toDto(");
 			} else {
 				pw.print(domainId, " " + DTO_ID + " = ");

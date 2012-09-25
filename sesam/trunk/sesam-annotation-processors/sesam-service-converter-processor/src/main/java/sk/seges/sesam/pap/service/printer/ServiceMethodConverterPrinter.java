@@ -9,6 +9,7 @@ import sk.seges.sesam.core.pap.accessor.AnnotationAccessor.AnnotationTypeFilter;
 import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
 import sk.seges.sesam.core.pap.printer.MethodPrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
@@ -88,7 +89,8 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 			
 			if (parameterDtoType.getConverter() != null) {
 				pw.print("(", parameterDomainType, ")");
-				converterProviderPrinter.printDtoEnsuredConverterMethodName(parameterDtoType, parameterName, localMethod, pw, true);
+				Field field = new Field(parameterName, parameterDtoType);
+				converterProviderPrinter.printDtoEnsuredConverterMethodName(parameterDtoType, field, localMethod, pw, true);
 				pw.print(".fromDto(");
 			}
 
@@ -105,7 +107,8 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 		if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID) && returnDtoType.getConverter() != null) {
 			pw.print("return (", processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType()), ")");
 			
-			converterProviderPrinter.printDomainEnsuredConverterMethodName(returnDtoType.getDomain(), null, RESULT_VARIABLE_NAME, localMethod, pw, true);
+			Field field = new Field(RESULT_VARIABLE_NAME, processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType()));
+			converterProviderPrinter.printDomainEnsuredConverterMethodName(returnDtoType.getDomain(), null, field, localMethod, pw, true);
 			pw.println(".toDto(" + RESULT_VARIABLE_NAME + ");");
 		} else if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
 			pw.println("return " + RESULT_VARIABLE_NAME + ";");

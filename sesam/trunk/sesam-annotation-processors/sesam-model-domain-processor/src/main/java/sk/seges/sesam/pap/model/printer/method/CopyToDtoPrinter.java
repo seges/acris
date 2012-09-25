@@ -15,6 +15,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
@@ -105,9 +106,10 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				if (domainIdTypeElement.getConverter() != null) {
-					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, methodName, idMethod, pw, false);
+					Field field = new Field(methodName, processingEnv.getTypeUtils().toMutableType(domainIdTypeElement));
+					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
 					pw.print(".convertToDto(");
-					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, methodName, idMethod, pw, false);
+					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
 					pw.print(".createDtoInstance(null), ");
 					pw.print("(", getDelegateCast(idMethod.getReturnType()), ")");
 					useIdConverter = true;
@@ -148,7 +150,11 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
-			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, null, domainsuperClass.getSimpleName() + ".class", null, pw, false);
+			
+			MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), new MutableDeclaredType[] { domainsuperClass });
+			Field field = new Field(domainsuperClass.getSimpleName() + ".class", fieldType);
+			
+			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, null, field, null, pw, false);
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
 		}
