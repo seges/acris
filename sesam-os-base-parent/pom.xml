@@ -1296,22 +1296,22 @@
 									<name>.settings/org.eclipse.jdt.apt.core.prefs</name>
 									<content><![CDATA[
 eclipse.preferences.version=1
-#org.eclipse.jdt.apt.aptEnabled=true
-#org.eclipse.jdt.apt.genSrcDir=${jsr269.generated.dir}
-#org.eclipse.jdt.apt.processorOptions/rootDirectory=%PROJECT.DIR%
-#org.eclipse.jdt.apt.processorOptions/M2_REPO=%M2_REPO%
-#org.eclipse.jdt.apt.processorOptions/projectName=${project.artifactId}:${project.groupId}
-#org.eclipse.jdt.apt.reconcileEnabled=true]]>
+org.eclipse.jdt.apt.aptEnabled=true
+org.eclipse.jdt.apt.genSrcDir=${jsr269.generated.dir}
+org.eclipse.jdt.apt.processorOptions/rootDirectory=%PROJECT.DIR%
+org.eclipse.jdt.apt.processorOptions/M2_REPO=%M2_REPO%
+org.eclipse.jdt.apt.processorOptions/projectName=${project.artifactId}:${project.groupId}
+org.eclipse.jdt.apt.reconcileEnabled=true]]>
 									</content>
 								</file>
 								<file>
 									<name>.settings/org.eclipse.jdt.core.prefs</name>
 									<content><![CDATA[
-#eclipse.preferences.version=1
-#org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
-#org.eclipse.jdt.core.compiler.compliance=1.6
-#org.eclipse.jdt.core.compiler.processAnnotations=enabled
-#org.eclipse.jdt.core.compiler.source=1.6]]>
+eclipse.preferences.version=1
+org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+org.eclipse.jdt.core.compiler.compliance=1.6
+org.eclipse.jdt.core.compiler.processAnnotations=enabled
+org.eclipse.jdt.core.compiler.source=1.6]]>
 									</content>
 								</file>
 								<file>
@@ -1322,10 +1322,10 @@ eclipse.preferences.version=1
 							</additionalConfig>
 						</configuration>
 					</plugin>
-					<!--plugin>
+					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>apt-maven-plugin</artifactId>
-					</plugin-->
+					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>

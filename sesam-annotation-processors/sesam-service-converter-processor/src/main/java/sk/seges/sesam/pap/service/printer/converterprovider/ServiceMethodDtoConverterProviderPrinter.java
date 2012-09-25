@@ -1,10 +1,12 @@
 package sk.seges.sesam.pap.service.printer.converterprovider;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
@@ -61,8 +63,11 @@ public class ServiceMethodDtoConverterProviderPrinter extends AbstractObjectConv
 
 	protected void printResulConverter(ServiceConverterProviderPrinterContext context) {
 		pw.print("return (", getTypedDtoConverter(), ") ");
-		converterProviderPrinter.printDtoGetConverterMethodName(context.getRawDto(), 
-				"(" + Class.class.getSimpleName() + "<" + context.getDto().toString(ClassSerializer.SIMPLE, true) + ">)" + DTO_CLASS_PARAMETER_NAME, context.getLocalMethod(), pw, false);
+		MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), 
+				processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX));
+		Field field = new Field(DTO_CLASS_PARAMETER_NAME, fieldType);
+		field.setCastType(processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), new MutableDeclaredType[] { context.getDto() }));
+		converterProviderPrinter.printDtoGetConverterMethodName(context.getRawDto(), field, context.getLocalMethod(), pw, false);
 	}
 	
 	@Override

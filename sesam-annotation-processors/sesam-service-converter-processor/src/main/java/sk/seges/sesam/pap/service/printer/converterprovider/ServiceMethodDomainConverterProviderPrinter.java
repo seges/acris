@@ -1,10 +1,12 @@
 package sk.seges.sesam.pap.service.printer.converterprovider;
 
-import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.converter.printer.converterprovider.AbstractDomainMethodConverterProviderPrinter;
 import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -21,8 +23,14 @@ public class ServiceMethodDomainConverterProviderPrinter extends AbstractDomainM
 
 	protected void printResulConverter(ConverterProviderPrinterContext context) {
 		pw.print("return (", getTypedDtoConverter(), ") ");
-		converterProviderPrinter.printDomainGetConverterMethodName(context.getRawDomain(), 
-				"(" + Class.class.getSimpleName() + "<" + context.getDomain().toString(ClassSerializer.SIMPLE, true) + ">)" + DOMAIN_CLASS_PARAMETER_NAME, 
+		
+		MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), 
+				processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX));
+
+		Field field = new Field(DOMAIN_CLASS_PARAMETER_NAME, fieldType);
+		field.setCastType(processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), new MutableDeclaredType[] { context.getDomain() }));
+
+		converterProviderPrinter.printDomainGetConverterMethodName(context.getRawDomain(), field, 
 				((ServiceConverterProviderPrinterContext)context).getLocalMethod(), pw, false);
 	}
 	

@@ -8,6 +8,7 @@ import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -16,9 +17,11 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
+import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
@@ -89,8 +92,13 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 					//TODO check if getId is null
 
 					if (referenceDomainType.getKind().isDeclared()) {
-						String parameterName = "(" + Class.class.getSimpleName() + "<" + referenceDomainType.getDto().getSimpleName() + ">)null";
-						printCopyNested(pathResolver, fullPath, referenceDomainType, context.getDomainMethod(), pw, parameterName, dtoName);
+						MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), new MutableDeclaredType[] { referenceDomainType.getDto() });
+						
+						Field field = new Field(null, fieldType);
+						field.setCastType(fieldType);
+						
+						//String parameterName = "(" + Class.class.getSimpleName() + "<" + referenceDomainType.getDto().getSimpleName() + ">)null";
+						printCopyNested(pathResolver, fullPath, referenceDomainType, context.getDomainMethod(), pw, field, dtoName);
 						instances.add(fullPath);
 					}
 					
@@ -133,19 +141,20 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		}
 	}
 	
-	protected void printCopyNested(PathResolver domainPathResolver, String fullPath, DomainDeclaredType referenceDomainType, ExecutableElement method, FormattedPrintWriter pw, String fieldName, String dtoName) {
+	protected void printCopyNested(PathResolver domainPathResolver, String fullPath, DomainDeclaredType referenceDomainType, ExecutableElement method, FormattedPrintWriter pw, Field field, String dtoName) {
 		if (referenceDomainType.getId(entityResolver) != null) {
 			pw.print(referenceDomainType, " " + domainPathResolver.getCurrent() + " = ");
 			if (referenceDomainType.getConverter() == null) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] No converter/configuration for " + referenceDomainType + " was found. Please, define configuration for " + referenceDomainType);
 			}
-			converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), fieldName, method, pw, false);
+			converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), field, method, pw, false);
 			pw.println(".createDomainInstance(" + dtoName + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
 		} else {
 			pw.println(referenceDomainType, " " + domainPathResolver.getCurrent() + " = " + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ";");
 			pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " == null) {");
 			pw.print(domainPathResolver.getCurrent() + " = ");
-			converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), fieldName, method, pw, false);
+			//TODO do not cast here
+			converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), field, method, pw, false);
 			pw.println(".createDomainInstance(null);");
 			pw.println("}");
 		}
@@ -178,8 +187,9 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
     protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, String dtoField, FormattedPrintWriter pw) {
 		String converterName = "converter" + MethodHelper.toMethod("", dtoField);
 		pw.print(converter.getConverterBase(), " " + converterName + " = ");
-		converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), 
-				TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField), domainMethod, pw, false);
+
+		Field field = new Field(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField), converter.getDto());
+		converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), field, domainMethod, pw, false);
 		pw.println(";");
 		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
 		pw.print(CastUtils.class, ".cast(");

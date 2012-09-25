@@ -16,6 +16,7 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -106,8 +107,8 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 				ConverterTypeElement idConverter = domainIdType.getConverter();
 					//toHelper.getConfigurationElement(domainIdType, roundEnv);
 				if (idConverter != null) {
-					converterProviderPrinter.printDtoEnsuredConverterMethodName(domainIdType.getDto(), 
-							DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), domainIdMethod, pw, false);
+					Field field = new Field(DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), domainIdType.getDto());
+					converterProviderPrinter.printDtoEnsuredConverterMethodName(domainIdType.getDto(), field, domainIdMethod, pw, false);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -147,7 +148,10 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
 		
 		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
-			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), domainsuperClass.getDto().getSimpleName() + ".class", null, pw, false);
+			MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), 
+					new MutableDeclaredType[] { domainsuperClass.getDto() });
+			Field field = new Field(domainsuperClass.getDto().getSimpleName() + ".class", fieldType);
+			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), field, null, pw, false);
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
 		}

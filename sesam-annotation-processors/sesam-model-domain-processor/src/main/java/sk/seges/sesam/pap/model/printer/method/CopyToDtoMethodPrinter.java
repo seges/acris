@@ -13,6 +13,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -70,8 +71,8 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 
 	    boolean lazy = printInitialized(context.getDomainMethod(), pathResolver, pw);
 
-//		tuto treba
-//		pw.println("if (isInitialized(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")) {");
+	    //TODO we need this here
+	    //pw.println("if (isInitialized(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")) {");
 		
 		if (context.getConverter() != null) {
 						
@@ -79,8 +80,9 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			
 			pw.print(context.getConverter().getConverterBase(), " " + converterName + " = ");
 			
+			Field field = new Field(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), context.getConverter().getDomain());
 			converterProviderPrinter.printDomainEnsuredConverterMethodName(context.getConverter().getDomain(), context.getDomainMethodReturnType(), 
-					TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), null, pw, false);
+					field, null, pw, false);
 			pw.println(";");
 
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(");
@@ -99,7 +101,8 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 					converterName + ".toDto(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName() + ")");
 		} else {
 			//TODO: check why context.getConfigurationTypeElement().getDomain().asElement() return null when generating UserDTO
-			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getInstantiableDomain(), context.getDtoFieldName()));
+			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(" + TransferObjectElementPrinter.DOMAIN_NAME  + "." + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getInstantiableDomain(), 
+					context.getDomainFieldPath()));
 		}
 		
 		if (context.getConverter() != null) {
