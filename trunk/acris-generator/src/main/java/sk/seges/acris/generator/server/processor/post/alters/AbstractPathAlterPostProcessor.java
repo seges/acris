@@ -61,8 +61,12 @@ public abstract class AbstractPathAlterPostProcessor extends AbstractAlterPostPr
 			return true;
 		}
 
-		setPath(node, pathPrefix + getPath(node));
-
+		String path = getPath(node);
+		
+		if (path != null) {
+			setPath(node, pathPrefix + path);
+		}
+		
 		return true;
 	}
 
