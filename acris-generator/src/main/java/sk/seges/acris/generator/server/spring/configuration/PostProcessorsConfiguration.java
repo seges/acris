@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.EmptyTagAttributeAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ImageGalleryPathAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
@@ -83,6 +84,11 @@ public class PostProcessorsConfiguration {
 	@Bean
 	public AbstractElementPostProcessor notVisibleTagsPostProcessor() {
 		return new NotVisibleTagsAnnihilatorPostProcessor();
+	}
+
+	@Bean
+	public AbstractElementPostProcessor emptyTagAttributeAnnihilatorPostProcessor() {
+		return new EmptyTagAttributeAnnihilatorPostProcessor();
 	}
 
 	@Bean
