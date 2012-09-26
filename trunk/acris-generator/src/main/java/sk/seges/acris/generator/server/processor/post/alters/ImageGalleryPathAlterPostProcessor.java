@@ -11,9 +11,11 @@ import sk.seges.acris.generator.server.processor.post.annihilators.AcrisInlineSc
 public class ImageGalleryPathAlterPostProcessor extends AbstractPathAlterPostProcessor {
 
 	private static final String SKIN_DIR = "skinDir";
+	private static final String GALLERY_IDENTIFIER = "myGalleries";
 
 	@Override
 	protected void setPath(Node node, String path) {
+				
 		for (Node childNode : node.getChildren().toNodeArray()) {
 			if (childNode instanceof TagNode) {
 				node = childNode;
@@ -64,9 +66,21 @@ public class ImageGalleryPathAlterPostProcessor extends AbstractPathAlterPostPro
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof Div) {
 			String styleClass = ((Div)node).getAttribute(CLASS_ATTRIBUTE_NAME);
-			return (styleClass != null && styleClass.toLowerCase().equals(AcrisInlineScriptAnnihilatorPostProcessor.ACRIS_INLINE_SCRIPTS));
+			if (styleClass == null || !styleClass.toLowerCase().equals(AcrisInlineScriptAnnihilatorPostProcessor.ACRIS_INLINE_SCRIPTS)) {
+				return false;
+			}
+
+			String html = node.toHtml();
+			
+			int index = html.indexOf(SKIN_DIR);
+			
+			if (index == -1) {
+				return false;
+			}
+
+			return (html.indexOf(GALLERY_IDENTIFIER) != -1);
 		}
+		
 		return false;
 	}
-	
 }
