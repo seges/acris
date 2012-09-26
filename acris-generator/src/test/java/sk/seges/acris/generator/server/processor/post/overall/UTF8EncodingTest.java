@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.overall.UTF8EncodingTest.UTF8EncodingTestConfigurationLoader;
-import sk.seges.acris.generator.server.spring.configuration.overall.ScriptProcessingTestConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.overall.EncodingProcessingTestConfiguration;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -18,7 +18,7 @@ public class UTF8EncodingTest extends AbstractProcessorTest {
 	static class UTF8EncodingTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
 
 		public UTF8EncodingTestConfigurationLoader() {
-			super(ScriptProcessingTestConfiguration.class);
+			super(EncodingProcessingTestConfiguration.class);
 		}
 	}
 
@@ -26,9 +26,15 @@ public class UTF8EncodingTest extends AbstractProcessorTest {
 
 	@Test
 	@DirtiesContext
-	public void testHtmlEnconding() {
+	public void testUTFHtmlEnconding() {
 		runTest(HTML_FILE_DIRECTORY + "1_utf-8_encoding_input.html", 
 				HTML_FILE_DIRECTORY + "1_utf-8_encoding_result.html");
 	}
 
+	@Test
+	@DirtiesContext
+	public void testAsciiHtmlEnconding() {
+		runTest(HTML_FILE_DIRECTORY + "1_ascii_encoding_input.html", 
+				HTML_FILE_DIRECTORY + "1_ascii_encoding_result.html");
+	}
 }

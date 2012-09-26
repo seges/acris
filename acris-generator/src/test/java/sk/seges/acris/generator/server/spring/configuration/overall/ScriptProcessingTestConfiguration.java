@@ -37,6 +37,7 @@ import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsSe
 @Import({WebSettingsServiceConfiguration.class, MockTestConfiguration.class, 
 	OfflineSettingsConfiguration.class})
 public class ScriptProcessingTestConfiguration {
+	
 	@Autowired
 	private ContentDataProvider contentMetaDataProvider;
 	
