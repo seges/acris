@@ -1,6 +1,8 @@
 package 	sk.seges.acris.security.server.acl.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
@@ -55,4 +57,22 @@ public class RemoteAclMaintenanceService implements IRemoteAclMaintenanceService
     	className=  ClassConverter.getDomainClassName(converterProvider, className);
    		aclManager.resetAclRecords(SecuredClassHelper.getSecuredClass(className), aclId, new LoggedUserRole(), authorities);
     }
+
+	@Override
+	public void setAclEntries(String className, Long aclId, UserData user,	Permission[] authorities) {
+    	className=  ClassConverter.getDomainClassName(converterProvider, className);
+   		aclManager.setAclRecords(SecuredClassHelper.getSecuredClass(className), aclId, user, authorities);
+	}
+
+	@Override
+	public void setAclEntries(Map<String, List<Long>> acls,
+			UserData user, Permission[] authorities) {
+		for(Entry<String, List<Long>> entry : acls.entrySet()) {
+	    	String className = ClassConverter.getDomainClassName(converterProvider, entry.getKey());
+			Class<? extends ISecuredObject<?>> securedClass = SecuredClassHelper.getSecuredClass(className);
+	    	for (Long aclId : entry.getValue()) {
+				aclManager.setAclRecords(securedClass, aclId, user, authorities);
+	    	}
+		}
+	}
 }
