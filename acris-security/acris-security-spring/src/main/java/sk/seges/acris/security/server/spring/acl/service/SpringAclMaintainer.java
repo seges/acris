@@ -266,17 +266,33 @@ public class SpringAclMaintainer implements AclManager {
 		setAclRecords(securedObject, sid, permissions, true);
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public void setAclRecords(
+			Class<? extends ISecuredObject<?>> objectClass,
+			Long aclId,
+			UserData user,
+			sk.seges.acris.security.shared.user_management.domain.Permission[] authorities) {
+		PrincipalSid sid = new PrincipalSid(user.getUsername());
+		setAclRecords(objectClass, aclId, null, sid, authorities, false);
+	}
+
 	private void setAclRecords(ISecuredObject<?> securedObject, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
-		MutableAcl acl = null;
-		ISecuredObject<?> securedParent = securedObject.getParent();
 		Class<?> clazz = securedObject.getClass();
+		ISecuredObject<?> securedParent = securedObject.getParent();
+		
+		setAclRecords(clazz, securedObject.getIdForACL(), securedParent, sid, permissions, updateParent);
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	private void setAclRecords(Class<?> clazz, Long aclId, ISecuredObject<?> securedParent, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
+		MutableAcl acl = null;
+		
 
 		while (isHibernateProxy(clazz)) {
 			clazz = clazz.getSuperclass();
 		}
 
-		ObjectIdentityImpl identity = new ObjectIdentityImpl(clazz, securedObject.getIdForACL());
+		ObjectIdentityImpl identity = new ObjectIdentityImpl(clazz, aclId);
 
 		try {
 			acl = (MutableAcl) aclService.readAclById(identity);
@@ -372,4 +388,5 @@ public class SpringAclMaintainer implements AclManager {
 		}
 		return new PrincipalSid(authentication);
 	}
+
 }
