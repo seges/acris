@@ -23,8 +23,8 @@ import sk.seges.sesam.dao.PagedResult;
 public class DefaultSecurityAnnotationProcessor extends AbstractFallbackMethodDefinitionSource {
 
 	protected static final String AFTER_ACL_READ_TOKEN = "AFTER_ACL_READ";
-	protected static final String AFTER_ACL_COLLECTION_READ_TOKEN = "AFTER_ACL_COLLECTION_READ";
-	protected static final String AFTER_ACL_INJECT_COLLECTION_READ_TOKEN = "AFTER_ACL_INJECT_COLLECTION_READ";
+	public static final String AFTER_ACL_COLLECTION_READ_TOKEN = "AFTER_ACL_COLLECTION_READ";
+	public static final String AFTER_ACL_INJECT_COLLECTION_READ_TOKEN = "AFTER_ACL_INJECT_COLLECTION_READ";
 	protected static final String ACL_LIST_OBJECTS_PREFIX = "ACL_LIST_OBJECTS_";
 	protected static final String RUN_AS_PREFIX = "RUN_AS_";
 	protected static final String ACL_OBJECT_PREFIX = "ACL_OBJECT_";
