@@ -11,6 +11,7 @@ public interface PanelRef {
 	//@HasChildren(false)
 	public static final String FLOW_LAYOUT_PANEL = "flowLP";
 	public static final String FRAGMENT_FLOW_LAYOUT_PANEL = "fragmentFlowLP";
+	public static final String ROYAL_SLIDER_FLOW_LAYOUT_PANEL = "royalSliderFlowLP";
 	
 	//@HasChildren(false)
 	public static final String DECK_LAYOUT_PANEL = "deckLP";
