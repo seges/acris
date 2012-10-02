@@ -32,9 +32,7 @@ public class BetterAclEntryAfterInvocationCollectionFilteringProvider extends
 		while (iter.hasNext()) {
 			ConfigAttribute attribute = (ConfigAttribute) iter.next();
 
-			if (DefaultSecurityAnnotationProcessor.AFTER_ACL_COLLECTION_READ_TOKEN.equals(attribute.getAttribute())
-					|| DefaultSecurityAnnotationProcessor.AFTER_ACL_INJECT_COLLECTION_READ_TOKEN.equals(attribute
-							.getAttribute())) {
+			if (DefaultSecurityAnnotationProcessor.AFTER_ACL_COLLECTION_READ_TOKEN.equals(attribute.getAttribute())) {
 				// we have to check it before decission!
 				boolean isEmpty = returnedObject != null && !isEmpty(returnedObject);
 

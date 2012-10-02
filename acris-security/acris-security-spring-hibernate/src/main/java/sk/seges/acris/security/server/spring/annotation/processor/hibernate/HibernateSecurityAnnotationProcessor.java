@@ -37,7 +37,7 @@ public class HibernateSecurityAnnotationProcessor extends DefaultSecurityAnnotat
 			if (parameterTypes != null) {
 				for (Class<?> parameterTypeClass : parameterTypes) {
 					if (parameterTypeClass.isAssignableFrom(DetachedCriteria.class)) {
-						atributeTokens.add(AFTER_ACL_READ_TOKEN);
+						atributeTokens.add(AFTER_ACL_INJECT_COLLECTION_READ_TOKEN);
 						return;
 					}
 				}
