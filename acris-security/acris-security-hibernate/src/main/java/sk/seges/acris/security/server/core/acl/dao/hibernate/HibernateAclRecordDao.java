@@ -32,6 +32,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		super(clazz);
 	}
 
+	@Override
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")
 	public void setEntityManager(EntityManager entityManager) {
 		super.setEntityManager(entityManager);
@@ -71,7 +72,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid, String className) {
 		Query query;
 		if (sid != null) {
-			query = entityManager.createNamedQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
+			query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
 			query.setParameter("sid", sid.getSid());
 			query.setParameter("principal", sid.isPrincipal());
 		} else {
@@ -90,13 +91,14 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		//			throw new IllegalArgumentException("Not supported instance of Sid!!");
 		//		}
 
-		List<JpaAclEntry> entries = (List<JpaAclEntry>) query.getResultList();
+		List<JpaAclEntry> entries = query.getResultList();
 
 		for (JpaAclEntry entry : entries) {
 			remove(entry);
 		}
 	}
 
+	@Override
 	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
 		List<AclEntry> entries = findByClassnameAndSid(securedClass, sid);
 
@@ -124,7 +126,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		//            throw new IllegalArgumentException("Not supported instance of Sid!!");
 		//        }
 
-		List<AclEntry> entries = (List<AclEntry>) query.getResultList();
+		List<AclEntry> entries = query.getResultList();
 		return entries;
 	}
 
