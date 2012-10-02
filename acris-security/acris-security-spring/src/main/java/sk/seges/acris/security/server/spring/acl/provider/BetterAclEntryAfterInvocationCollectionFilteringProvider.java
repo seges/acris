@@ -46,7 +46,7 @@ public class BetterAclEntryAfterInvocationCollectionFilteringProvider extends
 				return result;
 			}
 		}
-		return null;
+		return returnedObject;
 
 	}
 
