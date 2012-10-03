@@ -57,7 +57,7 @@ public abstract class CSVImportExportService {
 
 	private void logViolations(List<ImportExportViolation> violations) {
 		for (ImportExportViolation violation: violations) {
-			log.error("I/E violation occured: " + toString());
+			log.error("I/E violation occured: " + violation.toString());
 		}
 	}
 	
