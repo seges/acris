@@ -1,0 +1,16 @@
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='sk.seges.acris.Theme' />
+	<inherits name='sk.seges.acris.Widgets' />
+	
+	<source path="client" />
+	<source path="shared" />
+
+	<inherits name='sk.seges.acris.theme.client.metal.MetalThemeConfiguration' />
+
+	<!-- replace-with class="sk.seges.acris.theme.client.shadow.ShadowCheckBoxPanel">
+    	<when-type-is class="com.google.gwt.user.client.ui.CheckBox"/>
+  	</replace-with-->
+	
+	<stylesheet src="acris-styles/theme/metal/metal-theme.css" />	
+</module>

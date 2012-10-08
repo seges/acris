@@ -1,0 +1,29 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
+	<inherits name='com.google.gwt.user.User'/>
+	
+	<!-- Dependency on binding module -->
+	<inherits name='sk.seges.acris.Binding' />
+	
+	<source path="samples"/>
+	
+	<entry-point class="sk.seges.acris.binding.client.samples.FormSimpleBinding"/>
+
+	<inherits name="com.google.gwt.user.theme.standard.StandardResources"/>
+
+	<generate-with class="sk.seges.acris.binding.rebind.bean.BeanWrapperGenerator">
+		<any>
+	    	<when-type-assignable class="sk.seges.acris.binding.client.samples.mocks.SimpleBeanBeanWrapper" />
+    		<when-type-assignable class="sk.seges.acris.binding.client.samples.mocks.CompanyBeanWrapper" />
+    	</any>
+	</generate-with>
+
+	<generate-with class="sk.seges.acris.binding.rebind.binding.ValidatorDelegateGenerator">
+		<any>
+	    	<when-type-assignable class="sk.seges.acris.binding.client.samples.mocks.SimpleBeanBeanWrapper" />
+    		<when-type-assignable class="sk.seges.acris.binding.client.samples.mocks.CompanyBeanWrapper" />
+    	</any>
+	</generate-with>
+	
+</module>
