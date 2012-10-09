@@ -283,7 +283,6 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 	}
 
 	private String addEmbeddedDelimsToProperty(String property, Class<?> resultClass, PropertyAccessor propertyAccessor) {
-
 		if (embedableClassSet == null) {
 			findEmbeddableClasses();
 		}
@@ -297,7 +296,16 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			fieldName = property.substring(0, fieldIndex);
 			getter = propertyAccessor.getGetter(clazz, fieldName);
 			clazz = getter.getReturnType();
-			if (embedableClassSet.contains(clazz)) {
+
+			boolean assignable = false;
+			for (Class<?> clazzz : embedableClassSet) {
+				if (clazz.isAssignableFrom(clazzz)) {
+					assignable = true;
+					break;
+				}
+			}
+			
+			if (assignable || embedableClassSet.contains(clazz)) {
 				newProperty.append(fieldName + EMBEDDED_FIELD_DELIM);
 			} else {
 				newProperty.append(fieldName + FIELD_DELIM);
