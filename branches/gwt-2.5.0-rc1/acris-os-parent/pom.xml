@@ -74,7 +74,7 @@
 		<module>../acris-image-utils</module>
 		<!--module>../acris-recorder</module-->
 		<module>../acris-server</module>
-		<module>../acris-reporting</module>
+		<!--module>../acris-reporting</module-->
 		<module>../acris-security</module>
 		<module>../acris-site</module>
 		<!--module>../acris-showcase</module-->

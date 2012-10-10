@@ -35,7 +35,7 @@ public class JMethodHelper extends JMethod {
 	}
 	
 	public String getReadableDeclarationForBits(String returnType, int bits) {
-		String[] names = TypeOracle.modifierBitsToNames(bits);
+		String[] names = TypeOracle.modifierBitsToNamesForMethod(bits);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < names.length; i++) {
 			sb.append(names[i]);
@@ -97,7 +97,7 @@ public class JMethodHelper extends JMethod {
 	}
 
 	public String getReadableDeclaration(String paramType, int index) {
-		String[] names = TypeOracle.modifierBitsToNames(getModifierBits());
+		String[] names = TypeOracle.modifierBitsToNamesForMethod(getModifierBits());
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < names.length; i++) {
 			sb.append(names[i]);
