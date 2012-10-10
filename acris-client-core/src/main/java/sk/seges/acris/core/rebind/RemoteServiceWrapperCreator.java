@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.RebindMode;
+import com.google.gwt.core.ext.RebindResult;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -36,7 +38,7 @@ public class RemoteServiceWrapperCreator {
 		this.typeName = typeName;
 	}
 	
-	public String create(TreeLogger logger, GeneratorContext context) throws UnableToCompleteException {
+	public RebindResult create(TreeLogger logger, GeneratorContext context) throws UnableToCompleteException {
 		this.logger = logger;
 		this.context = context;
 
@@ -106,7 +108,7 @@ public class RemoteServiceWrapperCreator {
 		return imports;
 	}
 	
-	protected String generateServiceWrapper(JClassType classType) throws UnableToCompleteException {
+	protected RebindResult generateServiceWrapper(JClassType classType) throws UnableToCompleteException {
 
 		String packageName = classType.getPackage().getName();
 		String simpleClassName = classType.getSimpleSourceName();
@@ -125,7 +127,7 @@ public class RemoteServiceWrapperCreator {
 
 		if (sourceWriter == null) {
 			//File is already generated
-			return packageName + "." + className;
+		    return new RebindResult(RebindMode.USE_EXISTING, packageName + "." + className);
 		}
 				
 		sourceWriter.println("private static " + asyncInterface + " service;");
@@ -159,11 +161,13 @@ public class RemoteServiceWrapperCreator {
 				extendedInterfaceType = extendedInterfaceType.getSuperclass();
 			}
 		}
-		
-		
+				
 		sourceWriter.commit(logger);
 
-		return packageName + "." + className;
+	    RebindResult result =
+	          new RebindResult(RebindMode.USE_ALL_NEW, packageName + "." + className);
+
+		return result;
 	}
 	
 	
