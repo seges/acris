@@ -16,6 +16,7 @@ public interface WebParams extends ContentParameters {
 	public static final String BLUEWAVE_URL = "bluewaveUrl";
 	public static final String BLUEWAVE_USERNAME = "bluewaveUsername";
 	public static final String BLUEWAVE_PASSWORD = "bluewavePassword";
+	public static final String BREADCRUMB_ITEMS_LIST = "breadcrumbItemsList";
 
 	String[] getOfflinePostProcessorInactive();
 
@@ -64,4 +65,8 @@ public interface WebParams extends ContentParameters {
 	String getBluewavePassword();
 
 	void setBluewavePassword(String bluewavePassword);
+	
+	String[] getBreadcrumbItemsList();
+	
+	void setBreadcrumbItemsList(String[] breadcrumbItemsList);
 }

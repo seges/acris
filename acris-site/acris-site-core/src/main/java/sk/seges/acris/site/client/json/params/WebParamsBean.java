@@ -22,6 +22,8 @@ public class WebParamsBean implements WebParams {
 	private String bluewaveUsername;
 	private String bluewavePassword;
 
+	private String[] breadcrumbItemsList;
+	
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
 		return publishOnSaveEnabled;
@@ -140,5 +142,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setBluewavePassword(String bluewavePassword) {
 		this.bluewavePassword = bluewavePassword;
+	}
+
+	@Override
+	public String[] getBreadcrumbItemsList() {
+		return breadcrumbItemsList;
+	}
+
+	@Override
+	public void setBreadcrumbItemsList(String[] breadcrumbItemsList) {
+		this.breadcrumbItemsList = breadcrumbItemsList;
 	}
 }
