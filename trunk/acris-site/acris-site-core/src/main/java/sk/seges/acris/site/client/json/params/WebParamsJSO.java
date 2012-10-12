@@ -130,4 +130,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setBluewavePassword(String bluewavePassword) {
 		data.set(BLUEWAVE_PASSWORD, bluewavePassword);
 	}
+
+	@Override
+	public String[] getBreadcrumbItemsList() {
+		return data.getStringArray(BREADCRUMB_ITEMS_LIST);
+	}
+
+	@Override
+	public void setBreadcrumbItemsList(String[] breadcrumbItemsList) {
+		data.set(BREADCRUMB_ITEMS_LIST, breadcrumbItemsList);
+	}
 }
