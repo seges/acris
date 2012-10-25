@@ -154,9 +154,13 @@ public class BeanTableSpecCreator {
 		}
 		return methods;
 	}
+	
+	protected String getBeanTableSuperclassName() {
+		return BeanTable.class.getSimpleName();
+	}
 
 	private void generateTableSpecification(SourceWriter source, JMethod[] methods) {
-		source.println("public void initialize(BeanTable<" + beanTypeName + "> beanTable) {");
+		source.println("public void initialize("+getBeanTableSuperclassName()+"<" + beanTypeName + "> beanTable) {");
 		putInitializationPart(source, "beanTable", methods);
 
 		source.println("}");
@@ -207,8 +211,9 @@ public class BeanTableSpecCreator {
 				|| messagesClasses.length < 1
 				|| (messagesClasses.length == 1)
 				&& (ConstantsWithLookup.class.getCanonicalName()
-						.equals(messagesClasses[0].getCanonicalName())))
+						.equals(messagesClasses[0].getCanonicalName()))) {
 			return null;
+		}
 		StringBuffer classes = null;
 		for (Class<? extends ConstantsWithLookup> messagesClass : messagesClasses) {
 			String classConstructor = "(" + messagesClass.getName() + ") GWT.create("
@@ -429,6 +434,30 @@ public class BeanTableSpecCreator {
 		String simpleName = getSimpleReturnName();
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, simpleName);
 
+		putImports(composer);
+
+		if (onlySpec) {
+			composer.addImplementedInterface(classType.getName());
+		} else {
+			// TODO: how to add parametrized class?
+			composer.setSuperclass(getBeanTableSuperclassName()+"<" + beanTypeName + ">");
+		}
+
+		PrintWriter printWriter = context.tryCreate(logger, packageName, simpleName);
+		if (logger.isLoggable(Type.DEBUG)) {
+			logger.log(Type.DEBUG, "Creating source writer for " + beanTypeName + ", onlySpec = " + onlySpec
+					+ ", classType = " + classType + ", packageName = " + packageName + ", simpleName = "
+					+ simpleName + ", printWriter = " + printWriter);
+		}
+		if (printWriter == null) {
+			return null;
+		} else {
+			SourceWriter sw = composer.createSourceWriter(context, printWriter);
+			return sw;
+		}
+	}
+
+	protected void putImports(ClassSourceFileComposerFactory composer) {
 		composer.addImport(List.class.getCanonicalName());
 //		if (loaderParams != null) {
 //			//composer.addImport("sk.seges.acris.loader.ServiceAwareLoader");
@@ -445,26 +474,6 @@ public class BeanTableSpecCreator {
 		composer.addImport(PagedResult.class.getCanonicalName());
 		composer.addImport(GWT.class.getCanonicalName());
 		composer.addImport(AbstractColumnDefinition.class.getCanonicalName());
-
-		if (onlySpec) {
-			composer.addImplementedInterface(classType.getName());
-		} else {
-			// TODO: how to add parametrized class?
-			composer.setSuperclass("BeanTable<" + beanTypeName + ">");
-		}
-
-		PrintWriter printWriter = context.tryCreate(logger, packageName, simpleName);
-		if (logger.isLoggable(Type.DEBUG)) {
-			logger.log(Type.DEBUG, "Creating source writer for " + beanTypeName + ", onlySpec = " + onlySpec
-					+ ", classType = " + classType + ", packageName = " + packageName + ", simpleName = "
-					+ simpleName + ", printWriter = " + printWriter);
-		}
-		if (printWriter == null) {
-			return null;
-		} else {
-			SourceWriter sw = composer.createSourceWriter(context, printWriter);
-			return sw;
-		}
 	}
 
 	private void generateMessagesClass(JMethod[] methods) {
