@@ -26,6 +26,10 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 	public DynamicCellTable() {
 		super(new DynamicCellTableKeyProvider(), Map.class);
 	}
+	
+	public DynamicCellTable(boolean sortable) {
+		super(new DynamicCellTableKeyProvider(), Map.class, sortable);
+	}
 
 	public void setColumns(Map<String, String[]> columns) {
 		int colCount = getColumnCount();
