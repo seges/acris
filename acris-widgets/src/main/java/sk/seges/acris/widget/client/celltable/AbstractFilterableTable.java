@@ -476,7 +476,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	private <F extends Comparable<? extends Serializable>> void handleFilterValueChange(InputFilter<F> dataTypeFilter,
 			SimpleExpression<F> value, Column<T, ?> column) {
-		if (value.getValue() == null && value.getOperation() == null) {
+		if (value.getValue() == null && value.getOperation() == null && sortable) { 
 			ColumnSortList columnSortList = getColumnSortList();
 			boolean asc = false;
 			if (columnSortList.size() > 0) {
