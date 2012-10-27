@@ -4,7 +4,7 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.site.server.domain.ftp.FTPWebSettings;
 import sk.seges.acris.site.shared.domain.api.MetaDataType;
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;

@@ -18,7 +18,7 @@
 		AcrIS is a modern framework serving as a base for applications, 
 		web sites and portals. It provides various tools and libraries 
 		to ease daily development. Build on top of Google web toolkit 
-		and provides sophisticated solution for security, beans binding, 
+		and provides sophisticated solution for security, 
 		JSON protocol and usefull project skelets integrated with maven, 
 		hibernate, spring and gilead. You will get a prepared solution 
 		in box ready to use in your own project.
@@ -56,8 +56,6 @@
 	<modules>
 		<module>../acris-annotation-processors</module>
 		<module>../acris-benchmark</module>
-		<module>../acris-binding-api</module>
-		<module>../acris-binding</module>
 		<module>../acris-bpm</module>
 		<module>../acris-callbacks</module>
 		<module>../acris-crypto</module>
@@ -74,7 +72,7 @@
 		<module>../acris-image-utils</module>
 		<!--module>../acris-recorder</module-->
 		<module>../acris-server</module>
-		<!--module>../acris-reporting</module-->
+		<module>../acris-reporting</module>
 		<module>../acris-security</module>
 		<module>../acris-site</module>
 		<!--module>../acris-showcase</module-->
@@ -338,13 +336,7 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-binding</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-binding</artifactId>
-				<classifier>sources</classifier>
+				<artifactId>acris-bean-wrapper-processor</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -718,23 +710,6 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-server-appengine</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-binding-processor</artifactId>
-				<version>${project.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-binding-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-binding-api</artifactId>
-				<version>${project.version}</version>
-				<classifier>sources</classifier>
 			</dependency>
 
 			<dependency>

@@ -2,7 +2,7 @@ package sk.seges.acris.security.server.core.acl.domain.api;
 
 import java.io.Serializable;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.sesam.domain.IDomainObject;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;
 import sk.seges.sesam.model.metadata.strategy.DBPropertyConverter;

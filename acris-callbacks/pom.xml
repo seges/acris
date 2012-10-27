@@ -23,15 +23,5 @@
 			<artifactId>sesam-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-	  	<!-- GWT dependencies -->
-	  	<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-servlet</artifactId>
-			<scope>runtime</scope>
-		</dependency>
 	</dependencies>
 </project>

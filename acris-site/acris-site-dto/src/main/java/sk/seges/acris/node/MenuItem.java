@@ -3,7 +3,7 @@ package sk.seges.acris.node;
 import java.io.Serializable;
 import java.util.List;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 
 import com.google.gwt.user.client.History;
 

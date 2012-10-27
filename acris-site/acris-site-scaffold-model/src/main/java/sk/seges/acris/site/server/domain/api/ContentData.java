@@ -3,7 +3,7 @@ package sk.seges.acris.site.server.domain.api;
 import java.util.Date;
 import java.util.List;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.server.domain.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;

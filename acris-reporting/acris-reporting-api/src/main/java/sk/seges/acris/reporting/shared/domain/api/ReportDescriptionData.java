@@ -6,8 +6,8 @@ package sk.seges.acris.reporting.shared.domain.api;
 import java.util.Date;
 import java.util.List;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.sesam.domain.IMutableDomainObject;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 
 /**
  * @author ladislav.gazo
