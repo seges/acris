@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sesam-model-domain-processor</artifactId>
+	<name>sesam-model-domain-processor</name>
+	<description>SeSAM domain model processor</description>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-annotation-processors</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-domain-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-metadata-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-domain-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+		</dependency>
+	</dependencies>
+</project>
