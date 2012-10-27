@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-core-domain-jpa</artifactId>
+	<name>CorpIS Core Domain JPA</name>
+	
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-domain-jpa</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-core-domain-model</artifactId>
+		</dependency>
+		<!-- JPA dependencies -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+		</dependency>
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+		</dependency>
+	</dependencies>
+</project>
