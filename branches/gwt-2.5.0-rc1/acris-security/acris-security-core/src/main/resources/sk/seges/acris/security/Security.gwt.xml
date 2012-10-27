@@ -6,7 +6,6 @@
 
 	<inherits name='sk.seges.acris.Core' />
 	<inherits name='sk.seges.acris.Common' />
-	<inherits name='sk.seges.acris.Binding' />
 	<inherits name='sk.seges.acris.Callbacks' />
 
 	<inherits name='sk.seges.acris.security.Session' />

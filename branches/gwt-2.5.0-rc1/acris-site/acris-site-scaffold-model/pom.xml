@@ -80,7 +80,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-processor</artifactId>
+			<artifactId>acris-bean-wrapper-processor</artifactId>
 			<scope>provided</scope>
 		</dependency>
 

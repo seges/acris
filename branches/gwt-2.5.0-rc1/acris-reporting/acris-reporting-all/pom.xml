@@ -22,16 +22,6 @@
 			<artifactId>acris-reporting-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>sk.seges.acris</groupId>-->
-<!--			<artifactId>acris-reporting-ui</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>sk.seges.acris</groupId>-->
-<!--			<artifactId>acris-reporting-ui</artifactId>-->
-<!--			<classifier>sources</classifier>-->
-<!--		</dependency>-->
-		
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-dao-impl</artifactId>
@@ -51,23 +41,6 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-security-core</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>sk.seges.acris</groupId>-->
-<!--			<artifactId>acris-widgets-beantable</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>sk.seges.acris</groupId>-->
-<!--			<artifactId>acris-widgets-beantable</artifactId>-->
-<!--			<classifier>sources</classifier>-->
-<!--		</dependency>-->
-
-
-<!--		<dependency>-->
-<!--			<groupId>com.google.gwt</groupId>-->
-<!--			<artifactId>gwt-math</artifactId>-->
-<!--			<version>2.1</version>-->
-<!--		</dependency>-->
-
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
 			<artifactId>gilead4gwt</artifactId>
@@ -78,7 +51,11 @@
 				</exclusion>
 			</exclusions>				
 		</dependency>
-
+		
+		<dependency>
+			<groupId>net.sf.gwt-widget</groupId>
+			<artifactId>gwt-sl</artifactId>
+		</dependency> 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>

@@ -1,6 +1,6 @@
 package sk.seges.acris.security.server.user_management.domain.api;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;

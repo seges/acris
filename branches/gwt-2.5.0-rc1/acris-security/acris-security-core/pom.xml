@@ -73,7 +73,7 @@
 		    <classifier>sources</classifier>
 		</dependency>
 		
-		<!-- Acris rebind dependencies -->
+		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-client-core</artifactId>
@@ -83,21 +83,6 @@
 			<artifactId>acris-client-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 		
 		<!-- GWT dependencies -->
 		<dependency>

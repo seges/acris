@@ -23,11 +23,6 @@
 			<classifier>sources</classifier>
 		</dependency>	
 		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>			
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>

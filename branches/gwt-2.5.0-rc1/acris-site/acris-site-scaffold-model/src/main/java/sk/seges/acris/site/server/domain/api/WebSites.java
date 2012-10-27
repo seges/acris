@@ -1,6 +1,6 @@
 package sk.seges.acris.site.server.domain.api;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.site.shared.domain.api.SiteType;
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
