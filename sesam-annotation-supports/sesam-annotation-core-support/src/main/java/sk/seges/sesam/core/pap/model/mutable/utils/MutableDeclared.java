@@ -161,6 +161,9 @@ class MutableDeclared extends MutableAnnotated implements MutableDeclaredType {
 		if (type != null && type.getKind().equals(TypeKind.DECLARED)) {
 		
 			TypeElement typeElement = (TypeElement)((DeclaredType)type).asElement();	
+			if (this.modifiers == null) {
+				this.modifiers = new ArrayList<Modifier>();
+			}
 			this.modifiers.clear();
 			this.modifiers.addAll(typeElement.getModifiers());
 		} else {

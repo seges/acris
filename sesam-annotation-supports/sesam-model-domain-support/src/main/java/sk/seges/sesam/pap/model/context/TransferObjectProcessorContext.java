@@ -92,7 +92,6 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 	}
 
 	protected EnvironmentContext<TransferObjectProcessingEnvironment> envContext;
-	private TransferObjectHelper toHelper;
 	
 	protected TransferObjectTypes getTransferObjectUtils() {
 		return envContext.getProcessingEnv().getTransferObjectUtils();
@@ -113,7 +112,6 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 	public boolean initialize(EnvironmentContext<TransferObjectProcessingEnvironment> envContext, EntityResolver entityResolver, String path) {
 
 		this.envContext = envContext;
-		this.toHelper = new TransferObjectHelper(envContext.getProcessingEnv());
 		
 		if (getDtoMethod() == null) {
 			getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find DTO method for property " + path, configurationTypeElement.asConfigurationElement());
@@ -142,7 +140,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 					type = getTransferObjectUtils().getDtoType(returnType);
 				}
 			} else {
-				type = handleDomainTypeParameter(toHelper, entityResolver);
+				type = handleDomainTypeParameter(entityResolver);
 				
 				if (type == null) {
 					return false;
@@ -264,7 +262,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		}
 	}
 
-	protected DtoType handleDomainTypeParameter(TransferObjectHelper toHelper, EntityResolver entityResolver) {
+	protected DtoType handleDomainTypeParameter(EntityResolver entityResolver) {
 		envContext.getProcessingEnv().getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to find erasure for the " + 
 				entityResolver.getTargetEntityType(getDomainMethod()).toString() + " in the method: " + getDtoFieldName(), 
 				getConfigurationTypeElement().asConfigurationElement());

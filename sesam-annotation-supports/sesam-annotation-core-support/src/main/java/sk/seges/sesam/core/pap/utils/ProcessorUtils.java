@@ -107,7 +107,7 @@ public class ProcessorUtils {
 		return null;
 	}
 
-	public static TypeMirror erasureSuperclass(TypeElement typeElement, String parameterName, TypeElement owner) {
+	public static TypeMirror erasureSuperclass(Element typeElement, String parameterName, TypeElement owner) {
 
 		Element currentElement = typeElement;
 		

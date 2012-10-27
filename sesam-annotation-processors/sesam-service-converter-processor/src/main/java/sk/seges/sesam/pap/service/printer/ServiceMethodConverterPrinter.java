@@ -39,7 +39,8 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 
 		new AnnotationPrinter(pw, processingEnv).printMethodAnnotations(localMethod, new AnnotationTypeFilter(false, getSupportedAnnotations(localMethod)));
 
-		new MethodPrinter(pw, processingEnv).printMethodDefinition(remoteMethod);
+		//TODO is NULL ok?
+		new MethodPrinter(pw, processingEnv).printMethodDefinition(remoteMethod, null);
 		
 		pw.println("{");
 

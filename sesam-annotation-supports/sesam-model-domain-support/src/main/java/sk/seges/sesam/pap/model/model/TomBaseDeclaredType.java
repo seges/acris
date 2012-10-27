@@ -7,18 +7,15 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 abstract class TomBaseDeclaredType extends DelegateMutableDeclaredType {
 
 	protected final EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext;
 
-	protected final TransferObjectHelper toHelper;
 	protected final TypeParametersSupport typeParametersSupport;
 	
 	protected TomBaseDeclaredType(EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext) {
 		this.environmentContext = environmentContext;
-		this.toHelper = new TransferObjectHelper(environmentContext.getProcessingEnv());
 		this.typeParametersSupport = new TypeParametersSupport(environmentContext.getProcessingEnv());
 	}
 	

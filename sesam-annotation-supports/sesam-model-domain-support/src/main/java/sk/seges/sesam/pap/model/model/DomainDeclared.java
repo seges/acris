@@ -16,6 +16,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.model.PojoElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -195,14 +196,16 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	}
 	
 	private void findIdMethod(TypeElement processingElement, MappingType mappingType, ConfigurationTypeElement domainDefinitionConfiguration, EntityResolver entityResolver) {
-	
-		while (processingElement != null) {
 
+		PojoElement pojoElement = new PojoElement(asConfigurationElement(), environmentContext.getProcessingEnv());
+
+		while (processingElement != null) {
+			
 			List<ExecutableElement> methods = ElementFilter.methodsIn(processingElement.getEnclosedElements());
 	
 			if (mappingType.equals(MappingType.AUTOMATIC)) {
 				for (ExecutableElement method: methods) {
-					if (MethodHelper.isGetterMethod(method) && toHelper.hasSetterMethod(asConfigurationElement(), method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
+					if (MethodHelper.isGetterMethod(method) && pojoElement.hasSetterMethod(method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
 						if (this.idMethod != null) {
 							handleMultipleIdentifiers(method, domainDefinitionConfiguration);
 						}

@@ -6,20 +6,17 @@ import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.utils.TypeParametersSupport;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 abstract class TomBaseVariable extends DelegateMutableVariable {
 
 	protected final EnvironmentContext<TransferObjectProcessingEnvironment> envContext;
 	protected ConfigurationContext configurationContext;
 	
-	protected final TransferObjectHelper toHelper;
 	protected final TypeParametersSupport typeParametersSupport;
 	
 	protected TomBaseVariable(EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
 		this.envContext = envContext;
 		this.configurationContext = configurationContext;
-		this.toHelper = new TransferObjectHelper(envContext.getProcessingEnv());
 		this.typeParametersSupport = new TypeParametersSupport(envContext.getProcessingEnv());
 	}
 	

@@ -27,14 +27,12 @@ import sk.seges.sesam.pap.model.printer.AbstractDtoPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 
 	protected final RoundEnvironment roundEnv;
 	protected final ConverterConstructorParametersResolver parametersResolver;
 	protected final TypeParametersSupport typeParametersSupport;
-	protected final TransferObjectHelper toHelper;
 	protected final EntityResolver entityResolver;
 	
 	protected ConverterProviderPrinter converterProviderPrinter;
@@ -44,7 +42,6 @@ public abstract class AbstractMethodPrinter extends AbstractDtoPrinter {
 		this.roundEnv = roundEnv;
 		this.converterProviderPrinter = converterProviderPrinter;
 		this.parametersResolver = parametersResolver;
-		this.toHelper = new TransferObjectHelper(processingEnv);
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
 		this.entityResolver = entityResolver;
 	}

@@ -14,7 +14,7 @@
 
 	<modules>
 		<module>sesam-configuration-processor</module>
-		<module>sesam-model-metadata</module>
+		<module>sesam-model-metadata-processor</module>
 		<module>sesam-model-domain-processor</module>
 		<module>sesam-service-converter-processor</module>
 		<module>sesam-service-exporter-processor</module>

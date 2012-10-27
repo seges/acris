@@ -16,7 +16,6 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
-import sk.seges.sesam.pap.model.utils.TransferObjectHelper;
 
 public class TransferObjectConverterProcessorContext extends TransferObjectProcessorContext {
 
@@ -30,7 +29,7 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 	}
 	
 	@Override
-	protected DtoType handleDomainTypeParameter(TransferObjectHelper toHelper, EntityResolver entityResolver) {
+	protected DtoType handleDomainTypeParameter(EntityResolver entityResolver) {
 		
 		TypeParametersSupport typeParametersSupport = new TypeParametersSupport(envContext.getProcessingEnv());
 
@@ -81,6 +80,6 @@ public class TransferObjectConverterProcessorContext extends TransferObjectProce
 			}
 		}
 
-		return super.handleDomainTypeParameter(toHelper, entityResolver);
+		return super.handleDomainTypeParameter(entityResolver);
 	}
 }

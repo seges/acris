@@ -110,8 +110,26 @@ public class MethodHelper {
 		return toMethod(GETTER_IS_PREFIX, fieldName) + "()";
 	}
 
+	public static String toIsGetter(ExecutableElement method) {
+
+		String simpleName = method.getSimpleName().toString();
+		
+		if (simpleName.startsWith(SETTER_PREFIX)) {
+			return toIsGetter(simpleName.substring(SETTER_PREFIX.length()));
+		}
+		
+		return toIsGetter(simpleName);
+	}
+
 	public static String toGetter(ExecutableElement method) {
-		return toGetter(method.getSimpleName().toString());
+
+		String simpleName = method.getSimpleName().toString();
+		
+		if (simpleName.startsWith(SETTER_PREFIX)) {
+			return toGetter(simpleName.substring(SETTER_PREFIX.length()));
+		}
+		
+		return toGetter(simpleName);
 	}
 
 	public static String toSetter(String fieldName) {
@@ -135,6 +153,8 @@ public class MethodHelper {
 			result = simpleName.substring(GETTER_PREFIX.length());
 		} else if (simpleName.startsWith(GETTER_IS_PREFIX)) {
 			result = simpleName.substring(GETTER_IS_PREFIX.length());
+		} else if (simpleName.startsWith(SETTER_PREFIX)) {
+			result = simpleName.substring(SETTER_PREFIX.length());
 		} else {
 			result = simpleName;
 		}
