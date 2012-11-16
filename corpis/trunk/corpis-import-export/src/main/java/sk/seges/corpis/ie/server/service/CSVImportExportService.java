@@ -124,11 +124,11 @@ public abstract class CSVImportExportService {
 			}
 			
 			i++;
-		}
+		}		
 		
 		RowBasedHandlerContext newContext = instantiateContext();
-		contextTemplate.injectInto(newContext);
-		handler.hideDeletedProducts(newContext);
+		contextTemplate.injectInto(newContext);		
+		handler.postImportCleanup(newContext);
 
 		logViolations(violations);
 
