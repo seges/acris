@@ -37,7 +37,7 @@ public class JpaWebSites extends WebSitesBase {
 	}
 	
 	@Override
-	@Column(nullable = false, length = 1024)
+	@Column(nullable = false, length = 1024, unique = true)
 	public String getDomain() {
 		return super.getDomain();
 	}
@@ -55,4 +55,9 @@ public class JpaWebSites extends WebSitesBase {
 		return super.getLanguage();
 	}
 
+	@Override
+	@Column(nullable = false, length = 1024)
+	public String getRootDir() {
+		return super.getRootDir();
+	}
 }
