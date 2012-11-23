@@ -137,6 +137,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		final Dialog dialog = widgetFactory.modelessDialog();
 		dialog.addStyleName("acris-message-dialog");
 		dialog.setCaption(title);
+		this.addAditionalStyles(dialog);
 
 		OptionPane pane = createOptionPaneFromMessage(message, EMessageType.INFORMATION_MESSAGE);
 		dialog.setContent(pane);
@@ -256,8 +257,9 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 	public EPanelResult showMessageDialog(String message, String title, EMessageType type) {
 		final Dialog dialog = widgetFactory.modelessDialog();
 		dialog.addStyleName("acris-message-dialog");
+		addAditionalStyles(dialog);
 		dialog.setCaption(title);
-
+		
 		OptionPane pane = createOptionPaneFromMessage(message, type);
 		dialog.setContent(pane);
 
@@ -346,6 +348,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		dialog.setCaption(title);
 		dialog.setContent(pane);
 		dialog.addOptions(options);
+		addAditionalStyles(dialog);
 		return dialog;
 	}
 
@@ -361,5 +364,9 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 
 	public Dialog createErrorDialog(String message, String title) {
 		return createMessageDialog(title, message, EMessageType.ERROR_MESSAGE);
+	}
+	
+	public void addAditionalStyles(Dialog dialog) {
+		//DO NOTHING FOR OPTION PANE
 	}
 }

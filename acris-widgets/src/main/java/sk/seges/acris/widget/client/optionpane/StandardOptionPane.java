@@ -1,5 +1,6 @@
 package sk.seges.acris.widget.client.optionpane;
 
+import sk.seges.acris.widget.client.Dialog;
 import sk.seges.acris.widget.client.factory.StandardWidgetFactory;
 
 public class StandardOptionPane extends OptionPane {
@@ -16,5 +17,10 @@ public class StandardOptionPane extends OptionPane {
 		}
 		
 		return instance;
+	}
+	
+	@Override
+	public void addAditionalStyles(Dialog dialog) {
+		dialog.addStyleName("site-option-pane");
 	}
 }
