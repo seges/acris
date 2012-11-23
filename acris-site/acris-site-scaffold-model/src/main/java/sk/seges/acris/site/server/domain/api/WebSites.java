@@ -24,4 +24,6 @@ public interface WebSites extends IMutableDomainObject<Long>, HasWebId, HasLangu
 	String domain();
 	
 	SiteType type();
+	
+	String rootDir();
 }
