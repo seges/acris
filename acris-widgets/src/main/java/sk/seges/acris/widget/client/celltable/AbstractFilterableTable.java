@@ -58,6 +58,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	private SelectionModel<T> selectionModel;
 	private boolean initialized = false;
+	protected boolean sortable = true;
 
 	private Page filter = new Page(0, DEFAULT_PAGE_SIZE);
 
@@ -81,7 +82,11 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 				filter.setStartIndex(event.getNewRange().getStart());
 			}
 		});
-		selectionModel = new SingleSelectionModel<T>(getKeyProvider());
+		selectionModel = new SingleSelectionModel<T>(getKeyProvider());	}
+	
+	public AbstractFilterableTable(ProvidesKey<T> keyProvider, Class<?> dataClass, boolean sortable) {
+		this(keyProvider, dataClass);
+		this.sortable = sortable;
 	}
 
 	public void setDataProvider(AsyncDataProvider<T> dataProvider) {
@@ -170,7 +175,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		initialize();
 
 		if (property != null) {
-			column.setSortable(true);
+			column.setSortable(sortable);
 			columnProperties.put(column, property);
 		}
 	}
@@ -263,7 +268,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		this.addColumn(column, new FilterableTextHeader<F>(columnUpdater,
 				textFilter.getCriterion(property, defaultVal), validator, text));
 		this.setColumnWidth(column, width, Unit.PCT);
-		column.setSortable(true);
+		column.setSortable(sortable);
 	}
 
 	public <F extends Enum<?>> void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
@@ -298,7 +303,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 				new FilterableSelectionHeader<F>(columnUpdater, textFilter.getCriterion(property, defaultVal),
 						validator, options, text));
 		this.setColumnWidth(column, width, Unit.PCT);
-		column.setSortable(true);
+		column.setSortable(sortable);
 	}
 
 	public interface Validator<F extends Comparable<? extends Serializable>> {
@@ -471,7 +476,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	private <F extends Comparable<? extends Serializable>> void handleFilterValueChange(InputFilter<F> dataTypeFilter,
 			SimpleExpression<F> value, Column<T, ?> column) {
-		if (value.getValue() == null && value.getOperation() == null) {
+		if (value.getValue() == null && value.getOperation() == null && sortable) { 
 			ColumnSortList columnSortList = getColumnSortList();
 			boolean asc = false;
 			if (columnSortList.size() > 0) {

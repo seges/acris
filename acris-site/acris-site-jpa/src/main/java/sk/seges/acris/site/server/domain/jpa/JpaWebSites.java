@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import sk.seges.acris.site.server.model.base.WebSitesBase;
 import sk.seges.acris.site.shared.domain.api.SiteType;
@@ -18,7 +19,7 @@ import sk.seges.corpis.server.domain.DBConstraints;
  *
  */
 @Entity
-@Table(name = "web_sites")
+@Table(name = "web_sites", uniqueConstraints = { @UniqueConstraint(columnNames = { "domain", "language"}) })
 @SequenceGenerator(name = "web_sites_id_seq", sequenceName = "web_sites_id_seq", initialValue = 1)
 public class JpaWebSites extends WebSitesBase {
 	private static final long serialVersionUID = 2586451235625774160L;
@@ -55,4 +56,9 @@ public class JpaWebSites extends WebSitesBase {
 		return super.getLanguage();
 	}
 
+	@Override
+	@Column(nullable = false, length = 1024)
+	public String getRootDir() {
+		return super.getRootDir();
+	}
 }

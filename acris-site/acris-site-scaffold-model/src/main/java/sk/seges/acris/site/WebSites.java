@@ -20,4 +20,6 @@ interface WebSites extends IMutableDomainObject<Long>, HasWebId, HasLanguage{
 	String domain();
 	
 	SiteType type();
+
+	String rootDir();
 }
