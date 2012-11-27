@@ -429,6 +429,12 @@
 			</dependency>			
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-beanwrapper-processor</artifactId>
+				<version>${project.version}</version>
+				<scope>provided</scope>
+			</dependency>			
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-external</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
@@ -493,6 +499,17 @@
 				<artifactId>acris-security-ui</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-dto</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
@@ -698,6 +715,17 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-site-server</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-scaffold-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-scaffold-model</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>

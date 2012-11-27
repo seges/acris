@@ -45,9 +45,7 @@
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 		<gwteventservice.version>1.0.2</gwteventservice.version>
 		
-		<gwt-validation.version>1.1.0-r88</gwt-validation.version>
 		<gwt-query.version>1.0.0</gwt-query.version>
-		<gwt-time.version>1.0.0-20100701</gwt-time.version>
 
 		<htmlparser.version>2.0-20100701</htmlparser.version>
 		<gwt-output-style>OBF</gwt-output-style>
@@ -200,12 +198,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-validation</artifactId>
-				<version>${gwt-validation.version}</version>		
-			</dependency>
-
-			<dependency>
 				<groupId>com.googlecode.gwtquery</groupId>
 				<artifactId>gwtquery</artifactId>
 				<version>${gwt-query.version}</version>
@@ -218,11 +210,6 @@
         	                <version>${htmlparser.version}</version>
 	                </dependency>
 
-			<dependency>
-		        	<groupId>org</groupId>
-				<artifactId>gwt-time</artifactId>
-				<version>${gwt-time.version}</version>
-			</dependency>
 
 
                         <!-- OpenID4Java consumer -->
@@ -290,6 +277,36 @@
 	</dependencyManagement>
 
 	<profiles>
+		<profile>
+			<id>beanwrapper</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.beanwrapper</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>sk.seges.acris</groupId>
+					<artifactId>acris-bean-wrapper-processor</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>async-service</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.async-service</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>sk.seges.acris</groupId>
+					<artifactId>acris-async-service-processor</artifactId>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
 		<profile>
 			<id>gwt-generator</id>
 			<activation>
@@ -651,49 +668,48 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-			<!-- Common customized plugin section -->
+				<!-- Common customized plugin section -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>gwt-maven-plugin</artifactId>
 					<version>${gwt-plugin.version}</version>
 
 					<configuration>
+						<compileReport>true</compileReport>
 						<gwtVersion>${gwt.version}</gwtVersion>
 						<logLevel>INFO</logLevel>
 						<port>8890</port>
-						<!--<modules>-->
-							<module>${gwt.client.module}</module>
-						<!--</modules>-->
+						<module>${gwt.client.module}</module>
 						<runTarget>${gwt.client.module}/${gwt.client.html}</runTarget>
 
 						<!-- style>DETAILED</style--><!-- use OBF for prod -->
-						<style>OBF</style><!-- use OBF for prod -->
+						<style>OBF</style>
 						<noServer>false</noServer>
-						<extraJvmArgs>-Xmx1024M -Xss16M -Dfile.encoding=utf-8
+						<!--extraJvmArgs>-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 -Xmx1024M -Xss16M -Dfile.encoding=utf-8
+						</extraJvmArgs-->
+						<extraJvmArgs>-Xmx1524M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs>
 						<debugPort>8990</debugPort>
-						<shellServletMappingURL>/gwt-shell-servlet
-						</shellServletMappingURL>
-						<hostedWebapp>target/${project.artifactId}-${project.version}</hostedWebapp>
-                        <webappDirectory>target/${project.artifactId}-${project.version}</webappDirectory>
-						<soyc>true</soyc>
+						<shellServletMappingURL>/gwt-shell-servlet</shellServletMappingURL>
+						<mergedWebXml>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/web.xml</mergedWebXml>
+						<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
+						<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</webappDirectory>
 						<disableCastChecking>true</disableCastChecking>
-						<!--disableClassMetadata>true</disableClassMetadata>
-						<draftCompile>true</draftCompile-->
+						<disableClassMetadata>true</disableClassMetadata>
+						<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
+						<enableClosureCompiler>true</enableClosureCompiler>
+						<fragmentCount>10</fragmentCount>
 					</configuration>
 					<executions>
 						<execution>
-							<id>gwt-compile</id>
-							<phase>prepare-package</phase>
 							<goals>
 								<goal>mergewebxml</goal>
-								<!--goal>generateAsync</goal-->
 								<goal>compile</goal>
 							</goals>
 						</execution>
 					</executions>
 				</plugin>
-			<!-- End of Common customized plugin section -->
+				<!-- End of Common customized plugin section -->
 			</plugins>
 		</pluginManagement>
 

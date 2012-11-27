@@ -13,10 +13,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
-import org.gwttime.time.DateTime;
-
 import sk.seges.acris.json.client.deserialization.DateDeserializer;
-import sk.seges.acris.json.client.deserialization.DateTimeDeserializer;
 import sk.seges.acris.json.client.deserialization.DoubleDeserializer;
 import sk.seges.acris.json.client.deserialization.IntegerDeserializer;
 import sk.seges.acris.json.client.deserialization.JsonDeserializer;
@@ -47,7 +44,6 @@ public class JsonizerBuilder {
 
 	protected void registerDefaultDeserializers() {
 		registerDeserializer(Date.class, new DateDeserializer());
-		registerDeserializer(DateTime.class, new DateTimeDeserializer());
 		registerDeserializer(Double.class, new DoubleDeserializer());
 		registerDeserializer(Integer.class, new IntegerDeserializer());
 		registerDeserializer(Long.class, new LongDeserializer());
