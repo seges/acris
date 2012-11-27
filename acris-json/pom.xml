@@ -19,12 +19,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- GWT date & time -->
-		<dependency>
-			<groupId>org</groupId>
-			<artifactId>gwt-time</artifactId>
-		</dependency>
-
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
