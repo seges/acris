@@ -24,14 +24,14 @@ import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
 import org.springframework.security.util.FieldUtils;
 
-import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
-import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
-import sk.seges.acris.security.server.acl.dao.IAclSecuredClassDescriptionDao;
-import sk.seges.acris.security.server.acl.dao.IAclSidDao;
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescription;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
+import sk.seges.acris.security.acl.server.model.data.AclEntryData;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
+import sk.seges.acris.security.acl.server.model.data.AclSidData;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclObjectIdentityDao;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclRecordDao;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclSecuredClassDescriptionDao;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclSidDao;
 
 public class SpringAclService implements AclService {
 
@@ -45,16 +45,16 @@ public class SpringAclService implements AclService {
 
 	@Autowired
 	@Qualifier(value = "aclRecordDao")
-	protected IAclRecordDao aclEntryDao;
+	protected IAclRecordDao<AclEntryData> aclEntryDao;
 
 	@Autowired
-	protected IAclSidDao aclSecurityIDDao;
+	protected IAclSidDao<AclSidData> aclSecurityIDDao;
 
 	@Autowired
-	protected IAclSecuredClassDescriptionDao aclSecuredClassDao;
+	protected IAclSecuredClassDescriptionDao<AclSecuredClassDescriptionData> aclSecuredClassDao;
 
 	@Autowired
-	protected IAclObjectIdentityDao aclObjectIdentityDao;
+	protected IAclObjectIdentityDao<AclSecuredObjectIdentityData> aclObjectIdentityDao;
 
 	public SpringAclService(AclCache aclCache) {
 		this.aclCache = aclCache;
@@ -72,18 +72,18 @@ public class SpringAclService implements AclService {
 
     public Acl readAclById(ObjectIdentity object, Sid[] sids)
             throws NotFoundException {
-        Map map = readAclsById(new ObjectIdentity[] {object}, sids);
+        Map<ObjectIdentity, Acl> map = readAclsById(new ObjectIdentity[] {object}, sids);
         return (Acl) map.get(object);
     }
 
-    public Map readAclsById(ObjectIdentity[] objects) throws NotFoundException {
+    public Map<ObjectIdentity, Acl> readAclsById(ObjectIdentity[] objects) throws NotFoundException {
         return readAclsById(objects, null);
     }
 
     @SuppressWarnings("unchecked")
     public Map<ObjectIdentity, Acl> readAclsById(ObjectIdentity[] objects, Sid[] sids)
             throws NotFoundException {
-        final Map acls = new HashMap<ObjectIdentity, Acl>();
+        final Map<ObjectIdentity, Acl> acls = new HashMap<ObjectIdentity, Acl>();
         
         for (ObjectIdentity object :objects){
 
@@ -94,7 +94,7 @@ public class SpringAclService implements AclService {
         		continue;
         	}
 
-        	AclSecuredClassDescription aclClass = aclSecuredClassDao.load(object.getJavaType());
+        	AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.load(object.getJavaType());
             
             if (aclClass == null) {
             	//There is for sure no ACL entries for this object identity
@@ -103,17 +103,13 @@ public class SpringAclService implements AclService {
             // No need to check for nulls, as guaranteed non-null by ObjectIdentity.getIdentifier() interface contract
             String identifier = object.getIdentifier().toString();
             long id = (Long.valueOf(identifier)).longValue();
-            AclSecuredObjectIdentity aclObjectIdentity = aclObjectIdentityDao.findByObjectId(aclClass.getId(), id);
+            AclSecuredObjectIdentityData aclObjectIdentity = aclObjectIdentityDao.findByObjectId(aclClass.getId(), id);
 
             if(aclObjectIdentity==null){
                 throw new NotFoundException("Could not found specified aclObjectIdentity.");
-//                AclImpl acl = new AclImpl(object, 0, 
-//                        aclAuthorizationStrategy, auditLogger, 
-//                        null, null, false, new GrantedAuthoritySid("ROLE_ADMIN"));
-//                acls.put(object, acl); 
-//                continue;
             }
-            AclSid aclOwnerSid = aclObjectIdentity.getSid();
+
+            AclSidData aclOwnerSid = aclObjectIdentity.getSid();
             Sid owner;
 
             if (aclOwnerSid.isPrincipal()) {
@@ -134,15 +130,15 @@ public class SpringAclService implements AclService {
 
             try {
                 acesField.setAccessible(true);
-                aces = (List) acesField.get(acl);
+                aces = (List<AccessControlEntry>) acesField.get(acl);
             } catch (IllegalAccessException ex) {
                 throw new IllegalStateException("Could not obtain AclImpl.ace field: cause[" + ex.getMessage() + "]");
             }
             
-            List<AclEntry> aclEntrys = loadAclEntries(aclObjectIdentity);
+            List<AclEntryData> aclEntrys = loadAclEntries(aclObjectIdentity);
             
-            for(AclEntry aclEntry:aclEntrys){
-                AclSid aclSid = aclEntry.getSid();
+            for(AclEntryData aclEntry:aclEntrys){
+                AclSidData aclSid = aclEntry.getSid();
                 Sid recipient;
                 if (aclSid.isPrincipal()) {
                     recipient = new PrincipalSid(aclSid.getSid());
@@ -169,8 +165,8 @@ public class SpringAclService implements AclService {
         return acls;
     }
     
-    private List<AclEntry> loadAclEntries(AclSecuredObjectIdentity aclObjectIdentity) {
-    	List<AclEntry> entries = getEntries(aclObjectIdentity.getId());   
+    private List<AclEntryData> loadAclEntries(AclSecuredObjectIdentityData aclObjectIdentity) {
+    	List<AclEntryData> entries = getEntries(aclObjectIdentity.getId());   
     	while (aclObjectIdentity.getParentObject() != null) {
     		aclObjectIdentity = aclObjectIdentity.getParentObject();
     		entries.addAll(getEntries(aclObjectIdentity.getId()));
@@ -178,8 +174,7 @@ public class SpringAclService implements AclService {
     	return entries;
     }
     
-    @SuppressWarnings("unchecked")
-	private List<AclEntry> getEntries(Long objectIdentityId) {
+	private List<AclEntryData> getEntries(Long objectIdentityId) {
     	return aclEntryDao.findByIdentityId(objectIdentityId);
     }
     

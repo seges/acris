@@ -9,9 +9,9 @@ import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.ProviderManager;
 import org.springframework.security.providers.dao.DaoAuthenticationProvider;
 
-import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
+import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.SpringUserService;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 
 public class AuthenticationManagerConfiguration {

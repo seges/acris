@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.acl.service.RemoteAclMaintenanceService;
+import sk.seges.acris.security.server.acl.service.AclMaintenanceService;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
-public class SpringRemoteAclMaintenanceService extends RemoteAclMaintenanceService {
+public class SpringRemoteAclMaintenanceService extends AclMaintenanceService {
 
 	public SpringRemoteAclMaintenanceService(AclManager aclManager) {
 		super(null, aclManager);

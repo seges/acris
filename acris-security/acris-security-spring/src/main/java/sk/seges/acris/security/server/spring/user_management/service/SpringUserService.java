@@ -7,9 +7,9 @@ import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
+import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 public class SpringUserService implements UserDetailsService {
 

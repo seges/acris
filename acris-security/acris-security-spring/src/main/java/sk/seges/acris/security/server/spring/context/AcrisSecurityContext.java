@@ -7,7 +7,7 @@ import org.springframework.security.userdetails.User;
 
 import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
-import sk.seges.acris.security.shared.user_management.domain.dto.SecurityRoleDTO;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
 
 /**
  * Acris Security Context 
@@ -28,7 +28,7 @@ public class AcrisSecurityContext extends SecurityContextImpl {
 				GrantedAuthorityImpl authority = new GrantedAuthorityImpl();
 				authority.setAuthority(Permission.VIEW.name());
 				
-				User u = new User(SecurityRoleDTO.ALL_USERS, "", true, true, true, true, new GrantedAuthorityImpl[]{authority});
+				User u = new User(RoleData.ALL_USERS, "", true, true, true, true, new GrantedAuthorityImpl[]{authority});
 				authentication = new AnonymousAuthenticationToken(u.getUsername(), u, u.getAuthorities());
 			}
 			return authentication;

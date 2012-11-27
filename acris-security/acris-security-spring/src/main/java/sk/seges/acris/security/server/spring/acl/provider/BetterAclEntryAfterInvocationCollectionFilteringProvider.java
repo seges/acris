@@ -28,7 +28,7 @@ public class BetterAclEntryAfterInvocationCollectionFilteringProvider extends
 	@Override
 	public Object decide(Authentication authentication, Object object, ConfigAttributeDefinition config,
 			Object returnedObject) throws AccessDeniedException {
-		Iterator iter = config.getConfigAttributes().iterator();
+		Iterator<?> iter = config.getConfigAttributes().iterator();
 		while (iter.hasNext()) {
 			ConfigAttribute attribute = (ConfigAttribute) iter.next();
 
@@ -50,7 +50,7 @@ public class BetterAclEntryAfterInvocationCollectionFilteringProvider extends
 
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private boolean isEmpty(Object result) {
 		if (result instanceof ArrayList) {
 			return ((ArrayList) result).size() <= 0;
