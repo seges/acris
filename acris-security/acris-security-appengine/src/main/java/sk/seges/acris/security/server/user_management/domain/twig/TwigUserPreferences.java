@@ -1,11 +1,11 @@
 package sk.seges.acris.security.server.user_management.domain.twig;
 
-import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
+import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 import com.vercer.engine.persist.annotation.Key;
 
-public class TwigUserPreferences implements IMutableDomainObject<Long>, UserPreferences {
+public class TwigUserPreferences implements IMutableDomainObject<Long>, UserPreferencesData {
 
 	private static final long serialVersionUID = -2671953566571056404L;
 
