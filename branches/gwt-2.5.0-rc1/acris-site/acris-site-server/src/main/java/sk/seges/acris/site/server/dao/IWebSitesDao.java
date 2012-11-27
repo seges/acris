@@ -1,6 +1,6 @@
 package sk.seges.acris.site.server.dao;
 
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSitesData;
+import sk.seges.acris.site.server.model.data.WebSitesData;
 import sk.seges.sesam.dao.ICrudDAO;
 
 public interface IWebSitesDao <T extends WebSitesData> extends ICrudDAO<T> {

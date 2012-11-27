@@ -78,11 +78,6 @@
 			<artifactId>acris-security-api</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-bean-wrapper-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- GWT dependencies -->
 		<dependency>
