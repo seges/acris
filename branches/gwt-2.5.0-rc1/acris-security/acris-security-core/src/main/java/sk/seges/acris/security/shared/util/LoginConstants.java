@@ -2,6 +2,8 @@ package sk.seges.acris.security.shared.util;
 
 public class LoginConstants {
 
+	public static final String LOGGED_ROLE_NAME = "logged_user_role";
+
 	// Login parameters
 	public static final String ACRIS_THEME_STRING = "acristheme";
 	public static final String ACRIS_LOCALE_STRING = "locale";

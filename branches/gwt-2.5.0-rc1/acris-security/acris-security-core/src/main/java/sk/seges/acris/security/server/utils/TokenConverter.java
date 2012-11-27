@@ -1,7 +1,7 @@
 package sk.seges.acris.security.server.utils;
 
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 public interface TokenConverter {
 	

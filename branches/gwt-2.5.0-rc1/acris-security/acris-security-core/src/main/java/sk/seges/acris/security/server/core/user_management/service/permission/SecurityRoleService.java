@@ -3,18 +3,19 @@ package sk.seges.acris.security.server.core.user_management.service.permission;
 import java.io.Serializable;
 import java.util.List;
 
-import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityRoleDao;
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
-import sk.seges.acris.security.shared.user_management.domain.api.RoleDataMetaModel;
-import sk.seges.acris.security.shared.user_management.service.IRoleService;
+import sk.seges.acris.security.server.core.user_management.dao.permission.api.ISecurityRoleDao;
+import sk.seges.acris.security.server.user_management.service.IRoleRemoteServiceLocal;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.dao.SimpleExpression;
+import sk.seges.sesam.pap.service.annotation.LocalService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class SecurityRoleService extends RemoteServiceServlet implements IRoleService {
+@LocalService
+public class SecurityRoleService extends RemoteServiceServlet implements IRoleRemoteServiceLocal {
 
 	private static final long serialVersionUID = 6855778501707311971L;
 
@@ -31,7 +32,7 @@ public class SecurityRoleService extends RemoteServiceServlet implements IRoleSe
 	@Override
 	public RoleData findRole(String roleName) {
 		Page page = new Page(0, 0);
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(RoleDataMetaModel.NAME);
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(RoleData.NAME);
 		eq.setValue(roleName);
 		page.setFilterable(eq);
 

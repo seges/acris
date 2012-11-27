@@ -10,8 +10,8 @@ import sk.seges.acris.security.shared.user_management.context.SessionUserContext
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
 import sk.seges.acris.security.shared.util.LoginConstants;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 public class SessionUserService implements UserProviderService {
 
@@ -21,13 +21,14 @@ public class SessionUserService implements UserProviderService {
 		this.sessionProvider = sessionProvider;
 	}
 
-	private ClientSession getClientSession() {
+	@SuppressWarnings("unchecked")
+	private ClientSession<UserData> getClientSession() {
 		HttpSession session = sessionProvider.getSession();
-		return (ClientSession) session.getAttribute(LoginConstants.CLIENT_SESSION_NAME);
+		return (ClientSession<UserData>) session.getAttribute(LoginConstants.CLIENT_SESSION_NAME);
 	}
 	
 	private UserData getLoggedUser() {
-		ClientSession clientSession = getClientSession();
+		ClientSession<UserData> clientSession = getClientSession();
 		
 		if (clientSession != null) {
 			return clientSession.getUser();
@@ -49,7 +50,7 @@ public class SessionUserService implements UserProviderService {
 	}
 
 	@Override
-	public ClientSession getLoggedSession(UserContext userContext) {
+	public ClientSession<UserData> getLoggedSession(UserContext userContext) {
 		HttpSession session = sessionProvider.getSession();
 
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);

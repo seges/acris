@@ -1,10 +1,12 @@
 package sk.seges.acris.security.shared.user_management.service;
 
-import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
+import sk.seges.acris.security.server.user_management.service.IHierarchyPermissionServiceLocal;
+import sk.seges.acris.security.user_management.server.model.data.HierarchyPermissionData;
 
-public interface IHierarchyPermissionServiceExt extends IHierarchyPermissionService {
 
-	public void persist(HierarchyPermission rolePermission);
+public interface IHierarchyPermissionServiceExt extends IHierarchyPermissionServiceLocal {
 
-	public void remove(HierarchyPermission rolePermission);
+	void persist(HierarchyPermissionData rolePermission);
+
+	void remove(HierarchyPermissionData rolePermission);
 }

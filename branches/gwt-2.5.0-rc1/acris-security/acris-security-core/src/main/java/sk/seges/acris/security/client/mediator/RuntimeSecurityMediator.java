@@ -1,6 +1,5 @@
 package sk.seges.acris.security.client.mediator;
 
-import sk.seges.acris.security.client.IRuntimeSecuredObject;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 
 /**
@@ -27,7 +26,7 @@ public class RuntimeSecurityMediator {
 	}
 
 	public static void setGrants(String[] grants, Object runtimeSecuredObject) {
-		if (runtimeSecuredObject instanceof IRuntimeSecuredObject) {
+		if (runtimeSecuredObject instanceof IRuntimeAuthorityMediator) {
 			((IRuntimeAuthorityMediator) runtimeSecuredObject).setGrants(grants);
 		}
 	}
@@ -40,7 +39,7 @@ public class RuntimeSecurityMediator {
 	 */
 	@Deprecated
 	public static void setRuntimePermissions(UserPermission[] permissions, Object runtimeSecuredObject) {
-		if (runtimeSecuredObject instanceof IRuntimeSecuredObject) {
+		if (runtimeSecuredObject instanceof IRuntimeAuthorityMediator) {
 			((IRuntimeAuthorityMediator) runtimeSecuredObject).setPermissions(permissions);
 		}
 	}

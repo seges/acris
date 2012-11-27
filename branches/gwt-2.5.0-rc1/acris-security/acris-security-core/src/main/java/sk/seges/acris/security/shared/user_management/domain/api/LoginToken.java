@@ -3,7 +3,7 @@
  */
 package sk.seges.acris.security.shared.user_management.domain.api;
 
-import sk.seges.acris.security.shared.domain.ITransferableObject;
+import sk.seges.acris.core.client.rpc.IDataTransferObject;
 
 /**
  * A token transferring login information to a user service (or user service
@@ -16,7 +16,7 @@ import sk.seges.acris.security.shared.domain.ITransferableObject;
  * 
  * @author ladislav.gazo
  */
-public interface LoginToken extends ITransferableObject {
+public interface LoginToken extends IDataTransferObject {
 	
 	String getWebId();
 }

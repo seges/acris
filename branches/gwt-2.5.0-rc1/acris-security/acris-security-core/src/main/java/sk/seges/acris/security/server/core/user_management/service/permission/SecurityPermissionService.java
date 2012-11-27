@@ -3,32 +3,33 @@ package sk.seges.acris.security.server.core.user_management.service.permission;
 import java.io.Serializable;
 import java.util.List;
 
-import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityPermissionDao;
-import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
-import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermissionMetaModel;
+import sk.seges.acris.security.server.core.user_management.dao.permission.api.ISecurityPermissionDao;
 import sk.seges.acris.security.shared.user_management.service.IHierarchyPermissionServiceExt;
+import sk.seges.acris.security.user_management.server.model.data.HierarchyPermissionData;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.dao.SimpleExpression;
+import sk.seges.sesam.pap.service.annotation.LocalService;
 
+@LocalService
 public class SecurityPermissionService implements IHierarchyPermissionServiceExt {
 
-	private ISecurityPermissionDao<HierarchyPermission> securityPermissionDao;
+	private ISecurityPermissionDao<HierarchyPermissionData> securityPermissionDao;
 
-	public SecurityPermissionService(ISecurityPermissionDao<HierarchyPermission> securityPermissionDao) {
+	public SecurityPermissionService(ISecurityPermissionDao<HierarchyPermissionData> securityPermissionDao) {
 		this.securityPermissionDao = securityPermissionDao;
 	}
 	
-	public ISecurityPermissionDao<HierarchyPermission> getRolePermissionDao() {
+	public ISecurityPermissionDao<HierarchyPermissionData> getRolePermissionDao() {
 		return securityPermissionDao;
 	}
 
 	@Override
-	public PagedResult<List<HierarchyPermission>> findAll(String webId, Page page) {
+	public PagedResult<List<HierarchyPermissionData>> findAll(String webId, Page page) {
 		
-		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionMetaModel.WEB_ID);
+		SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionData.WEB_ID);
 		eq.setValue(webId);
 
 		if (page.getFilterable() != null) {
@@ -44,12 +45,12 @@ public class SecurityPermissionService implements IHierarchyPermissionServiceExt
 	}
 
 	@Override
-	public void persist(HierarchyPermission rolePermission) {
+	public void persist(HierarchyPermissionData rolePermission) {
 		securityPermissionDao.persist(rolePermission);
 	}
 
 	@Override
-	public void remove(HierarchyPermission rolePermission) {
+	public void remove(HierarchyPermissionData rolePermission) {
 		rolePermission = securityPermissionDao.findEntity(rolePermission);
 		if (null != rolePermission) {
 			securityPermissionDao.remove(rolePermission);
@@ -57,23 +58,23 @@ public class SecurityPermissionService implements IHierarchyPermissionServiceExt
 	}
 
 	@Override
-	public List<HierarchyPermission> findSecurityPermissions(Integer parentId, String webId) {
+	public List<HierarchyPermissionData> findSecurityPermissions(Integer parentId, String webId) {
 		Page page = new Page(0, 0);
 		if (null == parentId) {
 			Conjunction filterable = Filter.conjunction(); 
-			filterable.add(Filter.isNull(HierarchyPermissionMetaModel.PARENT.THIS));
-			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionMetaModel.WEB_ID);
+			filterable.add(Filter.isNull(HierarchyPermissionData.PARENT));
+			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionData.WEB_ID);
 			eq.setValue(webId);
 			filterable.add(eq);
 			page.setFilterable(filterable);
 		} else {
 			Conjunction filterable = Filter.conjunction(); 
 			//FIXME, interface inheritance
-			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionMetaModel.PARENT.THIS + ".id");
+			SimpleExpression<Comparable<? extends Serializable>> eq = Filter.eq(HierarchyPermissionData.PARENT + ".id");
 			eq.setValue(parentId);
 			filterable.add(eq);
 			
-			eq = Filter.eq(HierarchyPermissionMetaModel.WEB_ID);
+			eq = Filter.eq(HierarchyPermissionData.WEB_ID);
 			eq.setValue(webId);
 			filterable.add(eq);
 			page.setFilterable(filterable);
