@@ -3,10 +3,10 @@ package sk.seges.acris.security.server.user_management.domain.twig;
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
 
 import com.vercer.engine.persist.annotation.Embed;
 import com.vercer.engine.persist.annotation.Key;
@@ -71,11 +71,11 @@ public class TwigGenericUser implements UserData {
 		this.password = password;
 	}
 
-	public UserPreferences getUserPreferences() {
+	public UserPreferencesData getUserPreferences() {
 		return userPreferences;
 	}
 
-	public void setUserPreferences(UserPreferences userPreferences) {
+	public void setUserPreferences(UserPreferencesData userPreferences) {
 		this.userPreferences = (TwigUserPreferences) userPreferences;
 	}
 
