@@ -66,7 +66,7 @@ public class BeanWrapperProcessor extends MutableAnnotationProcessor {
 
 			for (ExecutableElement method: methods) {
 	
-				if (!MethodHelper.isGetterMethod(method) && !MethodHelper.isSetterMethod(method)) {
+				if (method.getModifiers().contains(Modifier.STATIC) || (!MethodHelper.isGetterMethod(method) && !MethodHelper.isSetterMethod(method))) {
 					continue;
 				}
 	
@@ -190,8 +190,17 @@ public class BeanWrapperProcessor extends MutableAnnotationProcessor {
 		// create the set attribute method
 		pw.println("public void setBeanAttribute(", String.class, " " + ATTRIBUTE_NAME + ", ", Object.class, " value) {");
 
+		PojoElement pojoElement = new PojoElement(owner, processingEnv);
+
 		for (ExecutableElement method: methods) {
 			if (MethodHelper.isSetterMethod(method) && method.getParameters().size() == 1) {
+				
+				ExecutableElement getterMethod = pojoElement.getGetterMethod(method);
+				
+				if (getterMethod == null) {
+					continue;
+				}
+
 				pw.println("if (" + ATTRIBUTE_NAME + ".equals(\"" + MethodHelper.toField(method) + "\")) { ");
 				pw.print("this." + method.getSimpleName() + "(");
 				castFromString(pw, method.getParameters().get(0).asType(), "value", owner);
