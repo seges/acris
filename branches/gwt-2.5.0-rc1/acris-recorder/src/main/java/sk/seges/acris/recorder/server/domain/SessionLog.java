@@ -1,4 +1,4 @@
-package sk.seges.acris.recorder.rpc.domain;
+package sk.seges.acris.recorder.server.domain;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.sesam.domain.IDomainObject;
 
 @Entity

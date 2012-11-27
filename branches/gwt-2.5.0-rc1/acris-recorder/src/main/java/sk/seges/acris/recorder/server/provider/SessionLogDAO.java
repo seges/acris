@@ -3,7 +3,6 @@ package sk.seges.acris.recorder.server.provider;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.hibernate.criterion.DetachedCriteria;
@@ -11,9 +10,9 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.recorder.rpc.domain.SessionLog;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.recorder.server.domain.SessionLog;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
@@ -30,7 +29,6 @@ public class SessionLogDAO extends AbstractHibernateCRUD<SessionLog> implements 
 		return super.persist(log);
 	}
 
-	@PersistenceContext(unitName = "acrisEntityManagerFactory")
 	public void setEntityManager(EntityManager entityManager) {
 		super.setEntityManager(entityManager);
 	}
@@ -43,7 +41,7 @@ public class SessionLogDAO extends AbstractHibernateCRUD<SessionLog> implements 
 	}
 
 	private static final String LOAD_BY_USERNAME = "select distinct sessionLog." + 
-		SessionLog.USER_ATTRIBUTE + "." + UserDataMetaModel.USERNAME + " from " + SessionLog.class.getName() + " sessionLog";
+		SessionLog.USER_ATTRIBUTE + "." + UserData.USERNAME + " from " + SessionLog.class.getName() + " sessionLog";
 
 	@Override
 	public List<GenericUserDTO> loadUsers() {

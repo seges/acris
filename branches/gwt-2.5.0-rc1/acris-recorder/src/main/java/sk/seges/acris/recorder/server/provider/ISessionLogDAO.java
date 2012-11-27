@@ -2,8 +2,8 @@ package sk.seges.acris.recorder.server.provider;
 
 import java.util.List;
 
-import sk.seges.acris.recorder.rpc.domain.SessionLog;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.recorder.server.domain.SessionLog;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 
 public interface ISessionLogDAO {
 	public SessionLog add(SessionLog log);

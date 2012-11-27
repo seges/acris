@@ -21,14 +21,6 @@ public enum EHtmlEventFields implements IEventFields {
 		fieldDefinition.setField(field);
 	}
 
-	private EHtmlEventFields(int position, int length, String field, boolean stringMapper) {
-		fieldDefinition = new FieldDefinition();
-		fieldDefinition.setPosition(position);
-		fieldDefinition.setLength(length);
-		fieldDefinition.setField(field);
-		this.stringMapper = stringMapper;
-	}
-
 	private EHtmlEventFields(int position, int length, int value) {
 		fieldDefinition = new FieldDefinition();
 		fieldDefinition.setPosition(position);

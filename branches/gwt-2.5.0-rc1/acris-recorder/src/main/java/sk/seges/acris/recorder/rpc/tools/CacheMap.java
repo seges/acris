@@ -1,12 +1,9 @@
 package sk.seges.acris.recorder.rpc.tools;
 
-import static com.google.gwt.query.client.GQuery.$;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.Element;
 
 public class CacheMap extends LinkedHashMap<String, Element> {
@@ -31,8 +28,8 @@ public class CacheMap extends LinkedHashMap<String, Element> {
 		}
 
 		if (elementId != null && elementId.length() > 0) {
-			GQuery gquery = $("*[elementID="+elementId+"]");
-			el = gquery.get(0).<com.google.gwt.user.client.Element>cast();
+//			GQuery gquery = $("*[elementID="+elementId+"]");
+//			el = gquery.get(0).<com.google.gwt.user.client.Element>cast();
 		} else {
 			el = Document.get().getDocumentElement().<com.google.gwt.user.client.Element>cast();
 		}

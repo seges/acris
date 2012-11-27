@@ -1,8 +1,5 @@
 package sk.seges.acris.recorder.rpc.service;
 
-import java.util.List;
-
-import sk.seges.acris.recorder.rpc.domain.SessionInfoDTO;
 import sk.seges.acris.recorder.rpc.transfer.StringMapper;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -19,7 +16,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
  */
 public interface IAuditTrailService extends RemoteService {
 	
-	public List<SessionInfoDTO> getActiveSessions();
 	public int[] getAuditLogs(StringMapper mapper);
 	
 	/**
