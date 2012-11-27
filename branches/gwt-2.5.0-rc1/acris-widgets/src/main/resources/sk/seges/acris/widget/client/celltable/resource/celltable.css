@@ -104,13 +104,15 @@
 }
 
 .cellTableSortedHeaderAscending > div,
-.cellTableSortedHeaderDescending > div {
+.cellTableSortedHeaderDescending > div,
+.cellTableHeader > div {
 	padding-left: 0px !important;
 	padding-top: 0px !important;
 }
 
 .cellTableSortedHeaderAscending > div > div,
-.cellTableSortedHeaderDescending > div > div {
+.cellTableSortedHeaderDescending > div > div,
+.cellTableHeader > div > div {
 	position: relative !important;
 	margin-top: 0px !important;
 	line-height: auto !important;
@@ -120,7 +122,8 @@
 }
 
 .cellTableSortedHeaderAscending > div > div > div,
-.cellTableSortedHeaderDescending > div > div > div {
+.cellTableSortedHeaderDescending > div > div > div,
+.cellTableHeader > div > div > div {
 	padding-top: 0px !important;
 }
 
@@ -128,7 +131,9 @@
 }
 
 .cellTableSortableHeader > div > div > div,
-.cellTableSortableHeader > div {
+.cellTableSortableHeader > div,
+.cellTableHeader div > div > div,
+.cellTableHeader > div {
 	font-size: 15px;
 	color: black;
 	height: 24px;
@@ -138,7 +143,9 @@
 }
 
 .cellTableSortableHeader input,
-.cellTableSortableHeader select {
+.cellTableSortableHeader select,
+.cellTableHeader input,
+.cellTableHeader select {
 	width: 100%;
 	border: 1px solid black;
 	border-left: 0px solid transparent;

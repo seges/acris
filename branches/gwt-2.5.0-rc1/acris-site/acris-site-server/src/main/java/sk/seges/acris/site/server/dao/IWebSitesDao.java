@@ -6,4 +6,6 @@ import sk.seges.sesam.dao.ICrudDAO;
 public interface IWebSitesDao <T extends WebSitesData> extends ICrudDAO<T> {
 
 	WebSitesData createDefaultEntity();
+	
+	WebSitesData loadWebSitesByDomain(String domain);
 }
