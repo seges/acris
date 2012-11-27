@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-security-dto</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS Security DTOs</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-security-parent</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+		<relativePath>../acris-security-parent</relativePath>
+	</parent>
+
+	<dependencies>
+
+		<!-- Corpis dependencies -->
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-model-domain-configurations</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-application-scaffold-data-domain-model-converter-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-hibernate</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>
