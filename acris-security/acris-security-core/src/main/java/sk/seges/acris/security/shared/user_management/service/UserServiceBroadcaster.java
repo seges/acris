@@ -16,8 +16,7 @@ import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -70,7 +69,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	public static final String PRIMARY_ENTRY_POINT = "primaryEntryPoint";
 
 	private Map<String, IUserServiceAsync> userServices = new HashMap<String, IUserServiceAsync>();
-	private ClientSession clientSession;
+	private ClientSession<GenericUserDTO> clientSession;
 	private String primaryEntryPoint;
 
 	public void addUserService(IUserServiceAsync userService) {
@@ -85,7 +84,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		userServices.put(entryPoint, userService);
 	}
 
-	public void setClientSession(ClientSession clientSession) {
+	public void setClientSession(ClientSession<GenericUserDTO> clientSession) {
 		this.clientSession = clientSession;
 	}
 
@@ -105,12 +104,12 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	@Override
-	public void login(final LoginToken token, final AsyncCallback<ClientSession> callback) throws ServerException {
+	public void login(final LoginToken token, final AsyncCallback<ClientSession<GenericUserDTO>> callback) throws ServerException {
 		authenticatedLogin(token, null, callback);
 	}
 
 	private void authenticatedLogin(final LoginToken token, final AsyncCallback<String> stringCallback,
-			final AsyncCallback<ClientSession> clientCallback) {
+			final AsyncCallback<ClientSession<GenericUserDTO>> clientCallback) {
 		final int count = userServices.size();
 
 		if (count == 0) {
@@ -119,7 +118,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		}
 
 		final List<Throwable> failures = new ArrayList<Throwable>();
-		final Map<String, ClientSession> successes = new HashMap<String, ClientSession>();
+		final Map<String, ClientSession<GenericUserDTO>> successes = new HashMap<String, ClientSession<GenericUserDTO>>();
 
 		final Semaphore semaphore = new Semaphore(2);
 		semaphore.raise(1);
@@ -141,13 +140,13 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 					} else {
 						String resolvedPrimaryEntryPoint = resolvePrimaryEntryPoint();
 						if (resolvedPrimaryEntryPoint != null) {
-							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
+							ClientSession<GenericUserDTO> primaryResult = successes.get(resolvedPrimaryEntryPoint);
 							if (stringCallback != null) {
 								stringCallback.onSuccess(primaryResult.getSessionId());
 							} else {
 								// merge authorities from all services to one
 								// set
-								UserData user = primaryResult.getUser();
+								GenericUserDTO user = primaryResult.getUser();
 
 								if (user == null) {
 									clientCallback.onFailure(new BroadcastingException("User is null"));
@@ -156,7 +155,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 								List<String> authorities = new ArrayList<String>();
 								add(user.getUserAuthorities(), authorities);
 
-								for (Entry<String, ClientSession> entry : successes.entrySet()) {
+								for (Entry<String, ClientSession<GenericUserDTO>> entry : successes.entrySet()) {
 									if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
 										add(entry.getValue().getUser().getUserAuthorities(), authorities);
 										primaryResult.merge(entry.getValue());
@@ -207,7 +206,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	private void signalLoginServices(final LoginToken token, final Semaphore semaphore, final List<Throwable> failures,
-			final Map<String, ClientSession> successes, final boolean authentication) {
+			final Map<String, ClientSession<GenericUserDTO>> successes, final boolean authentication) {
 		final Pair<String, IUserServiceAsync> primaryServicePair = resolvePrimaryService();
 
 		if (authentication) {
@@ -223,7 +222,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				public void onSuccessCallback(String result) {
 					semaphore.raise(userServices.size() - 1);
 
-					ClientSession resultSession = new ClientSession();
+					ClientSession<GenericUserDTO> resultSession = new ClientSession<GenericUserDTO>();
 					resultSession.setSessionId(result);
 					successes.put(primaryServicePair.getFirst(), resultSession);
 					semaphore.signal(0);
@@ -233,7 +232,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 					for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
 						if (!userServiceEntry.getKey().equals(primaryServicePair.getFirst())) {
 							if (userServiceEntry.getValue() instanceof SessionServiceDefTarget) {
-								ClientSession session = ((SessionServiceDefTarget) userServiceEntry.getValue())
+								ClientSession<GenericUserDTO> session = ((SessionServiceDefTarget) userServiceEntry.getValue())
 										.getSession();
 								if (session != null) {
 									session.setSessionId(sessionId);
@@ -250,7 +249,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 
 								@Override
 								public void onSuccessCallback(String result) {
-									ClientSession resultSession = new ClientSession();
+									ClientSession<GenericUserDTO> resultSession = new ClientSession<GenericUserDTO>();
 									resultSession.setSessionId(result);
 									successes.put(userServiceEntry.getKey(), resultSession);
 									semaphore.signal(0);
@@ -261,7 +260,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 			});
 		} else {
-			primaryServicePair.getSecond().login(token, new TrackingAsyncCallback<ClientSession>() {
+			primaryServicePair.getSecond().login(token, new TrackingAsyncCallback<ClientSession<GenericUserDTO>>() {
 
 				@Override
 				public void onFailureCallback(Throwable cause) {
@@ -270,7 +269,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 
 				@Override
-				public void onSuccessCallback(ClientSession result) {
+				public void onSuccessCallback(ClientSession<GenericUserDTO> result) {
 					successes.put(primaryServicePair.getFirst(), result);
 					semaphore.signal(0);
 
@@ -279,14 +278,14 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 					for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
 						if (!userServiceEntry.getKey().equals(primaryServicePair.getFirst())) {
 							if (userServiceEntry.getValue() instanceof SessionServiceDefTarget) {
-								ClientSession session = ((SessionServiceDefTarget) userServiceEntry.getValue())
+								ClientSession<GenericUserDTO> session = ((SessionServiceDefTarget) userServiceEntry.getValue())
 										.getSession();
 								if (session != null) {
 									session.setSessionId(sessionId);
 								}
 							}
 
-							userServiceEntry.getValue().login(token, new TrackingAsyncCallback<ClientSession>() {
+							userServiceEntry.getValue().login(token, new TrackingAsyncCallback<ClientSession<GenericUserDTO>>() {
 								@Override
 								public void onFailureCallback(Throwable cause) {
 									failures.add(cause);
@@ -294,7 +293,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 								}
 
 								@Override
-								public void onSuccessCallback(ClientSession result) {
+								public void onSuccessCallback(ClientSession<GenericUserDTO> result) {
 									successes.put(userServiceEntry.getKey(), result);
 									semaphore.signal(0);
 								}
@@ -359,7 +358,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	@Override
-	public void getLoggedSession(UserContext userContext, final AsyncCallback<ClientSession> callback) throws ServerException {
+	public void getLoggedSession(UserContext userContext, final AsyncCallback<ClientSession<GenericUserDTO>> callback) throws ServerException {
 		final int count = userServices.size();
 
 		if (count == 0) {
@@ -368,7 +367,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 		}
 
 		final List<Throwable> failures = new ArrayList<Throwable>();
-		final Map<String, ClientSession> successes = new HashMap<String, ClientSession>();
+		final Map<String, ClientSession<GenericUserDTO>> successes = new HashMap<String, ClientSession<GenericUserDTO>>();
 
 		final Semaphore semaphore = new Semaphore(2);
 		semaphore.raise(count);
@@ -386,8 +385,8 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 						String resolvedPrimaryEntryPoint = resolvePrimaryEntryPoint();
 						if (resolvedPrimaryEntryPoint != null) {
 							// merge authorities from all services to one set
-							ClientSession primaryResult = successes.get(resolvedPrimaryEntryPoint);
-							UserData user = primaryResult.getUser();
+							ClientSession<GenericUserDTO> primaryResult = successes.get(resolvedPrimaryEntryPoint);
+							GenericUserDTO user = primaryResult.getUser();
 							if (!checkUser(user, callback)) {
 								return;
 							}
@@ -395,9 +394,9 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 							List<String> authorities = new ArrayList<String>();
 							add(user.getUserAuthorities(), authorities);
 
-							for (Entry<String, ClientSession> entry : successes.entrySet()) {
+							for (Entry<String, ClientSession<GenericUserDTO>> entry : successes.entrySet()) {
 								if (!resolvedPrimaryEntryPoint.equals(entry.getKey())) {
-									UserData entryUser = entry.getValue().getUser();
+									GenericUserDTO entryUser = entry.getValue().getUser();
 									if (entryUser != null /*&& entryUser.getUserAuthorities() != null*/) {
 										if (entryUser.getUserAuthorities() != null) add(entryUser.getUserAuthorities(), authorities);
 										primaryResult.merge(entry.getValue());
@@ -409,7 +408,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 							user.setUserAuthorities(authorities);
 							callback.onSuccess(primaryResult);
 						} else {
-							UserData user = successes.values().iterator().next().getUser();
+							GenericUserDTO user = successes.values().iterator().next().getUser();
 							if (!checkUser(user, callback)) {
 								return;
 							}
@@ -420,7 +419,7 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 			}
 
-			private boolean checkUser(UserData user, AsyncCallback<ClientSession> callback) {
+			private boolean checkUser(GenericUserDTO user, AsyncCallback<ClientSession<GenericUserDTO>> callback) {
 				if (user == null) {
 					callback.onFailure(new BroadcastingException("User is null"));
 					return false;
@@ -464,10 +463,10 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	private void signalUserServices(final Semaphore semaphore, final List<Throwable> failures,
-			final Map<String, ClientSession> successes, UserContext userContext) {
+			final Map<String, ClientSession<GenericUserDTO>> successes, UserContext userContext) {
 		for (final Entry<String, IUserServiceAsync> userServiceEntry : userServices.entrySet()) {
 
-			userServiceEntry.getValue().getLoggedSession(userContext, new AsyncCallback<ClientSession>() {
+			userServiceEntry.getValue().getLoggedSession(userContext, new AsyncCallback<ClientSession<GenericUserDTO>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -476,8 +475,8 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 
 				@Override
-				public void onSuccess(ClientSession result) {
-					ClientSession session = new ClientSession();
+				public void onSuccess(ClientSession<GenericUserDTO> result) {
+					ClientSession<GenericUserDTO> session = new ClientSession<GenericUserDTO>();
 					if (result != null) {
 						session.setUser(result.getUser());
 						session.merge(result);
@@ -509,8 +508,6 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 	}
 
 	@Override
-	public void changeAuthentication(ClientSession clientSession, AsyncCallback<ClientSession> callback) {
-		
-		
+	public void changeAuthentication(ClientSession<GenericUserDTO> clientSession, AsyncCallback<Void> callback) {
 	}
 }

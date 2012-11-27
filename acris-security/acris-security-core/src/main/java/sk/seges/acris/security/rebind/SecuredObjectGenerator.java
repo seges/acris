@@ -1,20 +1,33 @@
 package sk.seges.acris.security.rebind;
 
-import sk.seges.acris.core.rebind.AbstractGenerator;
+import sk.seges.acris.core.rebind.ReplaceByGenerator;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
 
-/**
- * generates secured panel according to annotations in original panel, which is
- * replaced by secured panel
- */
-public class SecuredObjectGenerator extends AbstractGenerator {
+public class SecuredObjectGenerator extends ReplaceByGenerator {
 
+	private static final String CLASS_SUFFIX = "SecurityWrapper";
+	
+	private TypeOracle typeOracle;
+	
+	@Override
 	public String doGenerate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {
-		SecuredObjectCreator securedPanelCreator = new SecuredObjectCreator(new SecuredAnnotationProcessor());
-		return securedPanelCreator.doGenerate(logger, context, typeName, this.superclassName);
+		
+		this.typeOracle = context.getTypeOracle();
+		
+
+		try {
+			typeOracle.getType(typeName + CLASS_SUFFIX);
+		} catch (NotFoundException e) {
+			return typeName;
+		}
+
+		return typeName + CLASS_SUFFIX;
 	}
+
 }

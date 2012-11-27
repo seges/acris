@@ -4,6 +4,7 @@ import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -40,7 +41,7 @@ public interface IUserService extends RemoteService {
 	 *            "en_US")
 	 * @return ClientSession with logged user and session id
 	 */
-	ClientSession login(LoginToken token) throws ServerException;
+	ClientSession<GenericUserDTO> login(LoginToken token) throws ServerException;
 
 	/**
 	 * Logs out current logged user.
@@ -50,7 +51,7 @@ public interface IUserService extends RemoteService {
 
 	String getLoggedUserName(UserContext userContext) throws ServerException;
 	
-	ClientSession getLoggedSession(UserContext userContext);
+	ClientSession<GenericUserDTO> getLoggedSession(UserContext userContext);
 
-	void changeAuthentication(ClientSession clientSession);
+	void changeAuthentication(ClientSession<GenericUserDTO> clientSession);
 }

@@ -1,7 +1,7 @@
 package sk.seges.acris.security.client;
 
 import sk.seges.acris.security.shared.session.ClientSession;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 
 /**
  * General secured object applied on client side. Mostly is is used on GWT
@@ -13,7 +13,8 @@ import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
  * 
  */
 public interface ISecuredObject {
-	void setClientSession(ClientSession clientSession);
+	
+	void setClientSession(ClientSession<GenericUserDTO> clientSession);
 
-	ClientSession getClientSession();
+	ClientSession<GenericUserDTO> getClientSession();
 }
