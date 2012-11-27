@@ -6,7 +6,7 @@
 	
 	<parent>
 		<groupId>sk.seges.corpis</groupId>
-		<artifactId>corpis-os</artifactId>
+		<artifactId>corpis-domain-jpa</artifactId>
 		<version>1.2.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>

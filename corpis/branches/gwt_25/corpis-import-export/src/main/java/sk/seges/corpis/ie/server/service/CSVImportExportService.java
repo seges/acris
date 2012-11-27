@@ -57,7 +57,7 @@ public abstract class CSVImportExportService {
 
 	private void logViolations(List<ImportExportViolation> violations) {
 		for (ImportExportViolation violation: violations) {
-			log.error("I/E violation occured: " + toString());
+			log.error("I/E violation occured: " + violation.toString());
 		}
 	}
 	
@@ -124,11 +124,11 @@ public abstract class CSVImportExportService {
 			}
 			
 			i++;
-		}
+		}		
 		
 		RowBasedHandlerContext newContext = instantiateContext();
-		contextTemplate.injectInto(newContext);
-		handler.hideDeletedProducts(newContext);
+		contextTemplate.injectInto(newContext);		
+		handler.postImportCleanup(newContext);
 
 		logViolations(violations);
 

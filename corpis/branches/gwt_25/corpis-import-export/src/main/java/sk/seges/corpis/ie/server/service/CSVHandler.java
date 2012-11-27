@@ -27,6 +27,6 @@ public interface CSVHandler<T extends CsvEntry, C extends RowBasedHandlerContext
 	Class<T> getHandledCsvEntryClass();
 	
 	List<ImportExportViolation> checkRestrictions(C context, List<T> entries);
-	
-	ImportExportViolation hideDeletedProducts(C context);
+		
+	ImportExportViolation postImportCleanup(C context);
 }
