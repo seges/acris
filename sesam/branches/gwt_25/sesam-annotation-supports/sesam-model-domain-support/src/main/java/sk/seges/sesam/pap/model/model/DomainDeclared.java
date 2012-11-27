@@ -362,7 +362,8 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 					
 					if (configurationElements != null && configurationElements.size() > 0) {
 						superClassDomainType = configurationElements.get(0).getDomain();
-//					} else {
+					} else {
+						environmentContext.getProcessingEnv().getMessager().printMessage(Kind.OTHER, "No configuration for " + domainSuperClass + " was found. Inheritance is not supported for " + element);
 //						superClassDomainType = (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainSuperClass);
 					}
 				}

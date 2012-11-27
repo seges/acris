@@ -8,6 +8,7 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.accessor.AnnotationAccessor.AnnotationFilter;
@@ -83,7 +84,15 @@ public class AnnotationPrinter {
 		if (value instanceof AnnotationMirror) {
 			print((AnnotationMirror)value);
 		} else if (value instanceof AnnotationValue) {
-			printValue(((AnnotationValue)value).getValue());
+			Object annotationValue = ((AnnotationValue)value).getValue();
+			printValue(annotationValue);
+			if (annotationValue instanceof TypeMirror) {
+				TypeMirror annotationType = (TypeMirror)annotationValue;
+				
+				if (annotationType.getKind().equals(TypeKind.DECLARED)) {
+					pw.print(".class");
+				}
+			}
 		} else if (value instanceof VariableElement) {
 			//VariableElement - representing an enum constant
 			pw.print(((VariableElement)value).asType(), "." + ((VariableElement)value).toString());

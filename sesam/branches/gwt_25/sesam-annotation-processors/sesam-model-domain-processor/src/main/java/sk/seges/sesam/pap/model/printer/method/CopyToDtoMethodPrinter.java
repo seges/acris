@@ -89,7 +89,8 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 
 			pw.print(converterName + ".toDto(");
 			pw.print(CastUtils.class, ".cast(");
-			MutableTypeMirror delegateCast = getDelegateCast(context.getConverter().getDomain());
+			MutableTypeMirror delegateCast = getDelegateCast(context.getConverter().getDomain(), false);
+
 			pw.print("(", getWildcardDelegate(delegateCast), ")");
 			pw.print(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName());
 			pw.print(", ", getTypeVariableDelegate(delegateCast), ".class)");

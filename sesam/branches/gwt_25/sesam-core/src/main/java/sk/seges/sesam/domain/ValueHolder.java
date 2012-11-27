@@ -3,8 +3,10 @@
  */
 package sk.seges.sesam.domain;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
+
+import sk.seges.sesam.handler.ValueChangeHandler;
 
 /**
  * Object used to hold a value. Value placed in value holder can change over
@@ -15,11 +17,12 @@ import java.beans.PropertyChangeSupport;
  * @author eldzi
  * @since 15.12.2007
  */
-public class ValueHolder<T> implements IObservableObject {
+public class ValueHolder<T> implements IObservableObject<T> {
+	
 	public static final String PROPERTY_VALUE="value";
 	private T value;
 	
-	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	protected List<ValueChangeHandler<T>> handlers = new ArrayList<ValueChangeHandler<T>>();
 	
 	public ValueHolder() {}
 	
@@ -34,21 +37,23 @@ public class ValueHolder<T> implements IObservableObject {
 	public void setValue(T value) {
 		T oldValue = this.value;
 		this.value = value;
-		pcs.firePropertyChange(PROPERTY_VALUE, oldValue, value);
+		for (ValueChangeHandler<T> handler: handlers) {
+			handler.onValueChanged(oldValue, value);
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see sk.seges.sesam.domain.IObservableObject#addPropertyChangeListener(java.beans.PropertyChangeListener)
 	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener(listener);
+	public void addPropertyChangeListener(ValueChangeHandler<T> listener) {
+		handlers.add(listener);
 	}
 
 	/* (non-Javadoc)
 	 * @see sk.seges.sesam.domain.IObservableObject#removePropertyChangeListener(java.beans.PropertyChangeListener)
 	 */
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener(listener);
-	}
-	
+	@Override
+	public void removePropertyChangeListener(ValueChangeHandler<T> listener) {
+		handlers.remove(listener);
+	}	
 }
