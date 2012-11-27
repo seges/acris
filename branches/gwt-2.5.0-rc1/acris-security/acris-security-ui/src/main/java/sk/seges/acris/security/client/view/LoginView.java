@@ -3,7 +3,7 @@ package sk.seges.acris.security.client.view;
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.util.LoginConstants;
 
 import com.google.gwt.core.client.GWT;
@@ -516,7 +516,7 @@ public class LoginView extends Composite implements LoginDisplay {
 	}
 	
 	@Override
-	public void setLoggedUser(UserData user) {
+	public void setLoggedUser(GenericUserDTO user) {
 		String loggedUserMsg = loginMessages.loggedUserMsg();
 		if (user != null) {
 			loggedUserMsg += user.getName() + " " + user.getSurname();

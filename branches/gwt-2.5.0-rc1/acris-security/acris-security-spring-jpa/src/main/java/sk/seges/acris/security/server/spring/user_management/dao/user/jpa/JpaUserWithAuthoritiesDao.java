@@ -8,11 +8,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
-import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserWithAuthorities;
+import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaUserWithAuthorities;
+import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 
@@ -31,7 +31,7 @@ public class JpaUserWithAuthoritiesDao implements IGenericUserDao<JpaUserWithAut
 	@Override
 	public JpaUserWithAuthorities findByUsername(String username) {
 		return (JpaUserWithAuthorities) entityManager
-				.createQuery("from " + JpaUserWithAuthorities.class.getName() + " where " + UserDataMetaModel.USERNAME + " = :username")
+				.createQuery("from " + JpaUserWithAuthorities.class.getName() + " where " + UserData.USERNAME + " = :username")
 				.setParameter("username", username).getSingleResult();
 	}
 

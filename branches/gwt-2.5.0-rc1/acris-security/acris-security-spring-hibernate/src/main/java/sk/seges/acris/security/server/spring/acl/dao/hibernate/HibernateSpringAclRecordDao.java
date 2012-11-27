@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import sk.seges.acris.security.acl.server.model.data.AclEntryData;
+import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.server.core.acl.dao.hibernate.HibernateAclRecordDao;
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 
 @Repository
@@ -18,37 +18,37 @@ public class HibernateSpringAclRecordDao extends HibernateAclRecordDao {
 
 	@Override
 	@Transactional
-    public List<AclEntry> findByIdentityId(long aclObjectIdentity) {
+    public List<AclEntryData> findByIdentityId(long aclObjectIdentity) {
 		return super.findByIdentityId(aclObjectIdentity);
     }
 
 	@Override
 	@Transactional
-    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid) {
+    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid) {
 		super.deleteByIdentityIdAndSid(aclId, clazz, sid);
 	}
 	
 	@Override
 	@Transactional
-    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid, String className) {
+    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid, String className) {
 		super.deleteByIdentityIdAndSid(aclId, clazz, sid, className);
     }
 
 	@Override
     @Transactional
-	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
+	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
 		super.deleteByClassnameAndSid(securedClass, sid);
 	}
 
 	@Override
     @Transactional
-    public List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
+    public List<AclEntryData> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
 		return super.findByClassnameAndSid(securedClass, sid);
     }
     
 	@Override
 	@Transactional
-	public void remove(AclEntry aclEntry) {
+	public void remove(AclEntryData aclEntry) {
 		super.remove(aclEntry);
 	}
 

@@ -33,11 +33,11 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-openid</artifactId>
+			<artifactId>acris-security-openid-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-openid</artifactId>
+			<artifactId>acris-security-openid-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
 
