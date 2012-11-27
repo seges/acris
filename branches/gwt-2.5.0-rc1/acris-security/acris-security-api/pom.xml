@@ -12,10 +12,21 @@
 	</parent>
 
 	<dependencies>
-			<!-- Sesam dependencies -->
+		<!-- Sesam dependencies -->
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-core</artifactId>
+		</dependency>
+
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-client-core</artifactId>
+			<classifier>sources</classifier>
 		</dependency>
 	</dependencies>
 </project>
