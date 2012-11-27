@@ -11,14 +11,7 @@
 		<relativePath>../acris-security-parent</relativePath>
 	</parent>
 
-
 	<dependencies>
-
-		<!-- GWT dependencies -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-		</dependency>
 
 		<!-- Corpis dependencies -->
 		<dependency>
@@ -35,12 +28,7 @@
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-core</artifactId>
-			<classifier>sources</classifier>
+			<artifactId>acris-security-scaffold-model</artifactId>
 		</dependency>
 
 		<!-- JPA dependencies -->
@@ -48,12 +36,6 @@
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
-<!--		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
-		</dependency>
--->
 		
 		<!-- Spring dependencies -->
 		<dependency>

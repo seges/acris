@@ -14,7 +14,7 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import sk.seges.acris.security.shared.user_management.domain.dto.SecurityRoleDTO;
+import sk.seges.acris.security.user_management.server.model.base.RoleBase;
 
 /**
  * Security role serves as the holder of authorities for specific user (or any other entity). It is the entity grouping
@@ -24,7 +24,7 @@ import sk.seges.acris.security.shared.user_management.domain.dto.SecurityRoleDTO
 @Entity
 @Table(name = "role")
 @SequenceGenerator(name = "role_id_seq", sequenceName = "role_id_seq", initialValue = 1)
-public class HibernateSecurityRole extends SecurityRoleDTO {
+public class HibernateSecurityRole extends RoleBase {
 	
 	private static final long serialVersionUID = 76070776260643849L;
 

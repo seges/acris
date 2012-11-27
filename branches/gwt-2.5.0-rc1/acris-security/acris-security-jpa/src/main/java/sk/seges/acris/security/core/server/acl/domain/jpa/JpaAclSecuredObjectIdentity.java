@@ -1,5 +1,7 @@
 package sk.seges.acris.security.core.server.acl.domain.jpa;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,24 +10,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescription;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
-import sk.seges.acris.security.server.core.acl.domain.dto.AclSecuredObjectIdentityDTO;
-import sk.seges.sesam.domain.IMutableDomainObject;
+import sk.seges.acris.security.acl.server.model.base.AclSecuredObjectIdentityBase;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
+import sk.seges.acris.security.acl.server.model.data.AclSidData;
 
 /**
  * Represents every secured object in the system
  */
 
 @Entity
-@Table(name = "ACL_SECURED_OBJECT_IDENTITY", uniqueConstraints = {@UniqueConstraint(columnNames = {AclSecuredObjectIdentityMetaModel.DB_OBJECT_ID_CLASS.THIS,
-		AclSecuredObjectIdentityMetaModel.DB_OBJECT_ID_IDENTITY})})
-public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO implements IMutableDomainObject<Long> {
-
+@Table(name = "ACL_SECURED_OBJECT_IDENTITY", uniqueConstraints = {@UniqueConstraint(columnNames = {"object_id_class", "object_id_identity"})})
+public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityBase {
+ 
 	//	public static final String A_CLASS_ID = "objectIdClass.id";
 	//	public static final String A_OBJECT_IDENTITY_ID = "objectIdIdentity";
 	//	public static final String A_OBJECT_CLASS = "objectIdClass";
@@ -42,12 +42,12 @@ public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO imp
 	@Override
 	@ManyToOne(targetEntity = JpaAclSecuredClassDescription.class)
 	@JoinColumn(name = "object_id_class", nullable = false)
-	public AclSecuredClassDescription getObjectIdClass() {
+	public AclSecuredClassDescriptionData getObjectIdClass() {
 		return super.getObjectIdClass();
 	}
 
 	@Override
-	@Column(name = AclSecuredObjectIdentityMetaModel.DB_OBJECT_ID_IDENTITY, nullable = false)
+	@Column(name = "object_id_identity", nullable = false)
 	public Long getObjectIdIdentity() {
 		return super.getObjectIdIdentity();
 	}
@@ -58,7 +58,7 @@ public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO imp
 	@Override
 	@ManyToOne(targetEntity = JpaAclSid.class)
 	@JoinColumn(name = "owner_sid", nullable = false)
-	public AclSid getSid() {
+	public AclSidData getSid() {
 		return super.getSid();
 	}
 
@@ -77,7 +77,23 @@ public class JpaAclSecuredObjectIdentity extends AclSecuredObjectIdentityDTO imp
 	@Override
 	@ManyToOne(targetEntity = JpaAclSecuredObjectIdentity.class)
 	@JoinColumn(name = "parent_object")
-	public AclSecuredObjectIdentity getParentObject() {
+	public AclSecuredObjectIdentityData getParentObject() {
 		return super.getParentObject();
+	}
+
+	@Transient
+	@Override
+	public Serializable getIdentifier() {
+		return getId();
+	}
+
+	@Transient
+	@Override
+	public Class<?> getJavaType() {
+		try {
+			return Class.forName(getObjectIdClass().getClassName());
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 }

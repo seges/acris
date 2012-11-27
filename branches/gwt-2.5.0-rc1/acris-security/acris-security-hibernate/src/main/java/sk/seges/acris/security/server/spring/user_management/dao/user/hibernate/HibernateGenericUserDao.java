@@ -12,12 +12,11 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.core.user_management.dao.user.IGenericUserDao;
+import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserDataMetaModel;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
 public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> implements IGenericUserDao<UserData> {
@@ -86,7 +85,7 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> imp
 	@Override
 	public UserData findByUsername(String username) {
 		DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(UserDataMetaModel.USERNAME, username));
+		criteria.add(Restrictions.eq(UserData.USERNAME, username));
 		return findUniqueResultByCriteria(criteria);
 	}
 

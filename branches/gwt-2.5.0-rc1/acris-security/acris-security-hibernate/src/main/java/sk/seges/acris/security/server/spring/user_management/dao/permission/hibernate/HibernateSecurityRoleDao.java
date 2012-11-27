@@ -12,8 +12,7 @@ import org.hibernate.criterion.Restrictions;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.hibernate.IHibernateSecurityRoleDao;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateSecurityRole;
-import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaSecurityRole;
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.utils.CastUtils;
@@ -47,7 +46,7 @@ public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> im
 
 	@Override
 	public RoleData findByName(String name) {
-		DetachedCriteria criteria = createCriteria().add(Restrictions.eq(JpaSecurityRole.A_NAME, name));
+		DetachedCriteria criteria = createCriteria().add(Restrictions.eq(RoleData.NAME, name));
 		return findUniqueResultByCriteria(criteria);
 	}
 

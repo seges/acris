@@ -9,14 +9,12 @@ import javax.persistence.Query;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
+import sk.seges.acris.security.acl.server.model.data.AclEntryData;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
+import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclEntry;
-import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntryMetaModel;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescriptionMetaModel;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSidMetaModel;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclRecordDao;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
@@ -40,36 +38,36 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 
 	protected static final String HQL_ACL_DELETE_FROM_TABLE = "delete from " + JpaAclEntry.class.getSimpleName() + " acl where acl_object_identity=:input";
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
-			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
-			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
-			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.SID
-			+ "=:sid and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
+			+ AclEntryData.OBJECT_IDENTITY + "." + AclSecuredObjectIdentityData.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
+			+ AclEntryData.OBJECT_IDENTITY + "." + AclSecuredObjectIdentityData.OBJECT_ID_CLASS + "."
+			+ AclSecuredClassDescriptionData.CLASS_NAME + "=:classname and " + " acl." + AclEntryData.SID + "." + AclSidData.SID
+			+ "=:sid and " + " acl." + AclEntryData.SID + "." + AclSidData.PRINCIPAL + "=:principal";
 	protected static final String HQL_ACL_SELECT_WITHOUT_SID_OBJECT_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
-			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
-			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
-			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname";
+			+ AclEntryData.OBJECT_IDENTITY + "." + AclSecuredObjectIdentityData.OBJECT_ID_IDENTITY + "=:objectIdentityId and " + " acl."
+			+ AclEntryData.OBJECT_IDENTITY + "." + AclSecuredObjectIdentityData.OBJECT_ID_CLASS + "."
+			+ AclSecuredClassDescriptionData.CLASS_NAME + "=:classname";
 	protected static final String HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE = "from " + JpaAclEntry.class.getSimpleName() + " acl where acl."
-			+ AclEntryMetaModel.OBJECT_IDENTITY.THIS + "." + AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + "."
-			+ AclSecuredClassDescriptionMetaModel.CLASS_NAME + "=:classname and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.SID
-			+ "=:sid and " + " acl." + AclEntryMetaModel.SID.THIS + "." + AclSidMetaModel.PRINCIPAL + "=:principal";
+			+ AclEntryData.OBJECT_IDENTITY + "." + AclSecuredObjectIdentityData.OBJECT_ID_CLASS + "."
+			+ AclSecuredClassDescriptionData.CLASS_NAME + "=:classname and " + " acl." + AclEntryData.SID + "." + AclSidData.SID
+			+ "=:sid and " + " acl." + AclEntryData.SID + "." + AclSidData.PRINCIPAL + "=:principal";
 
 	@Override
-	public List<AclEntry> findByIdentityId(long aclObjectIdentity) {
+	public List<AclEntryData> findByIdentityId(long aclObjectIdentity) {
 		DetachedCriteria criteria = createCriteria();
 		//FIXME .id
-		criteria.add(Restrictions.eq(AclEntryMetaModel.OBJECT_IDENTITY.THIS + ".id", aclObjectIdentity));
+		criteria.add(Restrictions.eq(AclEntryData.OBJECT_IDENTITY + ".id", aclObjectIdentity));
 		List<JpaAclEntry> result = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
-		return CastUtils.cast(result, AclEntry.class);
+		return CastUtils.cast(result, AclEntryData.class);
 	}
 	
 	@Override
-	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid) {
+	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid) {
 		deleteByIdentityIdAndSid(aclId, clazz, sid, clazz.getName());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSid sid, String className) {
+	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid, String className) {
 		Query query;
 		if (sid != null) {
 			query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
@@ -99,17 +97,17 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	}
 
 	@Override
-	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
-		List<AclEntry> entries = findByClassnameAndSid(securedClass, sid);
+	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
+		List<AclEntryData> entries = findByClassnameAndSid(securedClass, sid);
 
-		for (AclEntry entry : entries) {
+		for (AclEntryData entry : entries) {
 			remove(entry);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<AclEntry> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSid sid) {
+	public List<AclEntryData> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
 
 		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE);
 		query.setParameter("classname", securedClass.getName());
@@ -126,19 +124,19 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 		//            throw new IllegalArgumentException("Not supported instance of Sid!!");
 		//        }
 
-		List<AclEntry> entries = query.getResultList();
+		List<AclEntryData> entries = query.getResultList();
 		return entries;
 	}
 
 	@Override
-	public void remove(AclEntry aclEntry) {
+	public void remove(AclEntryData aclEntry) {
 		entityManager.remove(aclEntry);
 	}
 
 	@Override
 	public void deleteByIdentityId(long aclObjectId) {
 		DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(AclEntryMetaModel.OBJECT_IDENTITY.THIS + ".id", aclObjectId));
+		criteria.add(Restrictions.eq(AclEntryData.OBJECT_IDENTITY + ".id", aclObjectId));
 		List<JpaAclEntry> entries = findByCriteria(criteria, Page.ALL_RESULTS_PAGE);
 		for (JpaAclEntry entry : entries) {
 			remove(entry);
@@ -146,7 +144,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	}
 
 	@Override
-	public AclEntry createDefaultEntity() {
+	public AclEntryData createDefaultEntity() {
 		return new JpaAclEntry();
 	}
 }

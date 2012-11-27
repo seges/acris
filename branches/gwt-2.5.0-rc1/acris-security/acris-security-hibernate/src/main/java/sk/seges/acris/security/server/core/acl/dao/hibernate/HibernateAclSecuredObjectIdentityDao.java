@@ -8,10 +8,9 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
+import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclSecuredObjectIdentity;
-import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentityMetaModel;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclObjectIdentityDao;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
@@ -32,9 +31,9 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 		DetachedCriteria criteria = createCriteria();
 
 		if (objectIdClass != -1) {
-			criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_CLASS.THIS + ".id", objectIdClass));
+			criteria.add(Restrictions.eq(AclSecuredObjectIdentityData.OBJECT_ID_CLASS + ".id", objectIdClass));
 		}
-		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.OBJECT_ID_IDENTITY, objectIdIdentity));
+		criteria.add(Restrictions.eq(AclSecuredObjectIdentityData.OBJECT_ID_IDENTITY, objectIdIdentity));
 
 		return findUnique(criteria);
 	}
@@ -57,18 +56,18 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 	public List<JpaAclSecuredObjectIdentity> findByParent(JpaAclSecuredObjectIdentity parentObjectIdentityId) {
 		DetachedCriteria criteria = createCriteria();
 
-		criteria.add(Restrictions.eq(AclSecuredObjectIdentityMetaModel.PARENT_OBJECT, parentObjectIdentityId));
+		criteria.add(Restrictions.eq(AclSecuredObjectIdentityData.PARENT_OBJECT, parentObjectIdentityId));
 
 		return findByCriteria(criteria, Page.ALL_RESULTS_PAGE);
 	}
 
 	@Override
-	public AclSecuredObjectIdentity findById(long id) {
+	public AclSecuredObjectIdentityData findById(long id) {
 		return entityManager.find(clazz, id);
 	}
 
 	@Override
-	public AclSecuredObjectIdentity createDefaultEntity() {
+	public AclSecuredObjectIdentityData createDefaultEntity() {
 		return new JpaAclSecuredObjectIdentity();
 	}
 }
