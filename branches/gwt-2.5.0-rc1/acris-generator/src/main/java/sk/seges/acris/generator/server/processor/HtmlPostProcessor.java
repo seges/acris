@@ -22,7 +22,7 @@ import sk.seges.acris.generator.server.processor.post.PostProcessorKind.Kind;
 import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.server.domain.api.ContentData;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.model.data.WebSettingsData;
 
 public class HtmlPostProcessor {
 

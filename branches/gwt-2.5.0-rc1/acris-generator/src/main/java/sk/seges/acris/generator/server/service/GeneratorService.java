@@ -33,7 +33,7 @@ import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorService;
 import sk.seges.acris.site.server.domain.api.ContentData;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
 import sk.seges.sesam.dao.Criterion;
 import sk.seges.sesam.dao.Disjunction;
