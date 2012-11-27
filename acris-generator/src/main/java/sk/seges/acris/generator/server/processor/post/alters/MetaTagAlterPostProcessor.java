@@ -7,7 +7,7 @@ import org.htmlparser.tags.MetaTag;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils.MetaTagNameAttribute;
-import sk.seges.acris.site.server.domain.api.server.model.data.MetaDataData;
+import sk.seges.acris.site.server.model.data.MetaDataData;
 
 public class MetaTagAlterPostProcessor extends AbstractAlterPostProcessor {
 

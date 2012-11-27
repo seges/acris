@@ -12,7 +12,7 @@ import org.htmlparser.util.NodeList;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.site.server.domain.api.ContentData;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.model.data.WebSettingsData;
 
 public class LanguageSelectorAlterPostProcessor extends AbstractAlterPostProcessor {
 
