@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclSecuredObjectIdentity;
 import sk.seges.acris.security.server.core.acl.dao.hibernate.HibernateAclSecuredObjectIdentityDao;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
 
 @Component
 public class HibernateSpringAclSecuredObjectIdentityDao extends HibernateAclSecuredObjectIdentityDao {
@@ -20,7 +20,7 @@ public class HibernateSpringAclSecuredObjectIdentityDao extends HibernateAclSecu
 
 	@Override
 	@Transactional
-	public AclSecuredObjectIdentity findById(long id) {
+	public AclSecuredObjectIdentityData findById(long id) {
 		return super.findById(id);
 	}
 	
