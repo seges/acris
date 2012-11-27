@@ -7,12 +7,10 @@ import java.util.Date;
 import java.util.List;
 
 import sk.seges.sesam.domain.IMutableDomainObject;
-import sk.seges.acris.core.client.annotation.BeanWrapper;
 
 /**
  * @author ladislav.gazo
  */
-@BeanWrapper
 public interface ReportDescriptionData extends IMutableDomainObject<Long> {
 	public static final String NAME_ATTR = "name";
 	public static final String CREATION_DATE_ATTR = "creationDate";

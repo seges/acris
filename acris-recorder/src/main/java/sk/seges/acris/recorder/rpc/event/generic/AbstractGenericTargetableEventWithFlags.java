@@ -1,12 +1,9 @@
 package sk.seges.acris.recorder.rpc.event.generic;
 
-import sk.seges.acris.recorder.rpc.bean.IAccessibleBean;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 
-public abstract class AbstractGenericTargetableEventWithFlags extends
-		AbstractGenericTargetableEvent implements IAccessibleBean {
+public abstract class AbstractGenericTargetableEventWithFlags extends AbstractGenericTargetableEvent {
 
 	public static final String CTRL_KEY_INT_ATTRIBUTE = "ctrlKeyInt";
 	public static final String ALT_KEY_INT_ATTRIBUTE = "altKeyInt";

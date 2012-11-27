@@ -14,12 +14,11 @@
 
   <replace-with class="com.google.gwt.dom.client.DOMIDImplIE8">
     <when-type-is class="com.google.gwt.dom.client.DOMImpl"/>
-    <when-property-is name="user.agent" value="ie8"/>
-  </replace-with>
-
-  <replace-with class="com.google.gwt.dom.client.DOMIDImplIE6">
-    <when-type-is class="com.google.gwt.dom.client.DOMImpl"/>
-    <when-property-is name="user.agent" value="ie6"/>
+    <any>
+	    <when-property-is name="user.agent" value="ie6"/>
+	    <when-property-is name="user.agent" value="ie8"/>
+	    <when-property-is name="user.agent" value="ie9"/>
+	</any>
   </replace-with>
 
   <replace-with class="com.google.gwt.dom.client.DOMIDImplMozilla">
@@ -27,8 +26,4 @@
     <when-property-is name="user.agent" value="gecko1_8"/>
   </replace-with>
 
-  <replace-with class="com.google.gwt.dom.client.DOMIDImplMozillaOld">
-    <when-type-is class="com.google.gwt.dom.client.DOMImpl"/>
-    <when-property-is name="user.agent" value="gecko"/>
-  </replace-with>
 </module>

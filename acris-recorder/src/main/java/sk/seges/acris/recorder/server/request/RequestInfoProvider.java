@@ -4,7 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.gwtwidgets.server.spring.ServletUtils;
 
-import sk.seges.acris.recorder.rpc.domain.SessionLog;
+import sk.seges.acris.recorder.server.domain.SessionLog;
 
 public class RequestInfoProvider {
 	public static SessionLog getClientInfo(SessionLog sessionLog) {

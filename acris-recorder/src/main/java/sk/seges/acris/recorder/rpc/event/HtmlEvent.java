@@ -1,6 +1,6 @@
 package sk.seges.acris.recorder.rpc.event;
 
-import sk.seges.acris.recorder.rpc.bean.IAccessibleBean;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.recorder.rpc.event.generic.AbstractGenericTargetableEvent;
 
 import com.google.gwt.dom.client.Document;
@@ -16,7 +16,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 
-public class HtmlEvent extends AbstractGenericTargetableEvent implements IAccessibleBean {
+@BeanWrapper
+public class HtmlEvent extends AbstractGenericTargetableEvent {
 
 	public HtmlEvent() {
 	}

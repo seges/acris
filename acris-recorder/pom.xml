@@ -2,13 +2,17 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.2.2-SNAPSHOT</version>
 		<relativePath>../acris-os-parent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>acris-recorder</artifactId>
 	<packaging>jar</packaging>
 	<name>AcrIS Event Recorder</name>
+
+	<properties>
+		<gwt.client.module>sk.seges.acris.recorder.Recorder</gwt.client.module>
+	</properties>
 
 	<dependencies>
 		<!-- Sesam dependencies -->
@@ -73,19 +77,11 @@
 			<artifactId>gwt-sl</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- dependency>
 			<groupId>com.googlecode.gwtquery</groupId>
 			<artifactId>gwtquery</artifactId>
-			<classifier>${gwt.version}</classifier>
-		</dependency>
-		<dependency>
-			<groupId>de.novanic.gwteventservice</groupId>
-			<artifactId>gwteventservice</artifactId>
-
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gwtx</groupId>
-			<artifactId>gwtx</artifactId>
-		</dependency>
+			<version>1.2.0</version>
+		</dependency-->
+            
 	</dependencies>
 </project>

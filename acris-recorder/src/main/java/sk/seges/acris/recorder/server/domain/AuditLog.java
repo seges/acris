@@ -1,4 +1,4 @@
-package sk.seges.acris.recorder.rpc.domain;
+package sk.seges.acris.recorder.server.domain;
 
 import java.util.Date;
 import java.util.LinkedList;

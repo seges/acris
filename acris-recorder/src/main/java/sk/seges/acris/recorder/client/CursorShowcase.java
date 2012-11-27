@@ -1,7 +1,6 @@
 package sk.seges.acris.recorder.client;
 
 import sk.seges.acris.recorder.client.ui.RecorderUI;
-import sk.seges.acris.recorder.rpc.bean.BeanAccessor;
 
 import com.google.gwt.core.client.EntryPoint;
 
@@ -33,12 +32,8 @@ public class CursorShowcase implements EntryPoint {
 //	}
 	
 	public void onModuleLoad() {
-		BeanAccessor.init();
-
 		new RecorderUI().show();
 
-//		prepareConversationUI();
-		
 /*		RootPanel.get().add(cursor);
 		container.add(cursor);
 		cursor.move(10, 700);
