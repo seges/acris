@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.acris.security.server.core.acl.domain.dto.AclSecuredClassDescriptionDTO;
+import sk.seges.acris.security.acl.server.model.base.AclSecuredClassDescriptionBase;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 /**
@@ -17,7 +17,7 @@ import sk.seges.sesam.domain.IMutableDomainObject;
  */
 @Entity
 @Table(name = "ACL_SECURED_CLASS_DESCRIPTION", uniqueConstraints = { @UniqueConstraint(columnNames = { "class" }) })
-public class JpaAclSecuredClassDescription extends AclSecuredClassDescriptionDTO implements IMutableDomainObject<Long> {
+public class JpaAclSecuredClassDescription extends AclSecuredClassDescriptionBase implements IMutableDomainObject<Long> {
 	
 	
 	private static final long serialVersionUID = 1392972668729469987L;

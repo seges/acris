@@ -8,29 +8,31 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSidMetaModel;
-import sk.seges.sesam.domain.IMutableDomainObject;
+import sk.seges.acris.security.acl.server.model.base.AclSidBase;
 
 /**
  * The table ACL_SID essentially lists all the users in our systems
  */
 @Entity
-@Table(name = "ACL_SID", uniqueConstraints = {@UniqueConstraint(columnNames = {AclSidMetaModel.SID, AclSidMetaModel.PRINCIPAL})})
-public class JpaAclSid implements AclSid, IMutableDomainObject<Long> {
+@Table(name = "ACL_SID", uniqueConstraints = {@UniqueConstraint(columnNames = {"sid", "principal"})})
+public class JpaAclSid extends AclSidBase {
 
 	private static final long serialVersionUID = 3753027336787453941L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	public Long getId() {
+		return super.getId();
+	}
 
 	/**
 	 * The distinction between two possibilities (user vs. role) is made by the value store in the principal column: -
 	 * true indicates that the sid is a user - false means that the sid is a granted authority
 	 */
 	@Column
-	private boolean principal;
+	public boolean isPrincipal() {
+		return super.isPrincipal();
+	}
 
 	/**
 	 * In Spring Security, a "security id" (SID) is assigned to each user or role. This SID can be then used in an
@@ -39,29 +41,7 @@ public class JpaAclSid implements AclSid, IMutableDomainObject<Long> {
 	 * it may correspond to a granted authority such as a role.
 	 */
 	@Column
-	private String sid;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public boolean isPrincipal() {
-		return principal;
-	}
-
-	public void setPrincipal(boolean principal) {
-		this.principal = principal;
-	}
-
 	public String getSid() {
-		return sid;
-	}
-
-	public void setSid(String sid) {
-		this.sid = sid;
+		return super.getSid();
 	}
 }

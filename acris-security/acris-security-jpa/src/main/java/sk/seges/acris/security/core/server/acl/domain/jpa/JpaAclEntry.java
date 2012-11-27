@@ -10,15 +10,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntryMetaModel;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSid;
-import sk.seges.acris.security.server.core.acl.domain.dto.AclEntryDTO;
+import sk.seges.acris.security.acl.server.model.base.AclEntryBase;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
+import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 @Entity
-@Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", AclEntryMetaModel.DB_ACE_ORDER, "sid"})})
-public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Long> {
+@Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", "ace_order", "sid"})})
+public class JpaAclEntry extends AclEntryBase implements IMutableDomainObject<Long> {
 
 	private static final long serialVersionUID = -7561144169564944658L;
 
@@ -30,13 +29,13 @@ public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Lon
 
 	@ManyToOne(targetEntity = JpaAclSecuredObjectIdentity.class)
 	@JoinColumn(name = "acl_object_identity", nullable = false)
-	public AclSecuredObjectIdentity getObjectIdentity() {
+	public AclSecuredObjectIdentityData getObjectIdentity() {
 		return super.getObjectIdentity();
 	}
 
 	@ManyToOne(targetEntity = JpaAclSid.class)
 	@JoinColumn(name = "sid", nullable = false)
-	public AclSid getSid() {
+	public AclSidData getSid() {
 		return super.getSid();
 	}
 
@@ -52,7 +51,7 @@ public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Lon
 		return super.getMask();
 	}
 
-	@Column(name = AclEntryMetaModel.DB_ACE_ORDER, nullable = false)
+	@Column(name = "ace_order", nullable = false)
 	public int getAceOrder() {
 		return super.getAceOrder();
 	}
@@ -62,12 +61,12 @@ public class JpaAclEntry extends AclEntryDTO implements IMutableDomainObject<Lon
 		return super.isGranting();
 	}
 
-	@Column(name = AclEntryMetaModel.DB_AUDIT_SUCCESS, nullable = false)
+	@Column(name = "audit_success", nullable = false)
 	public boolean isAuditSuccess() {
 		return super.isAuditSuccess();
 	}
 
-	@Column(name = AclEntryMetaModel.DB_AUDIT_FAILURE, nullable = false)
+	@Column(name = "audit_failure", nullable = false)
 	public boolean isAuditFailure() {
 		return super.isAuditFailure();
 	}

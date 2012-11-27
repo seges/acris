@@ -4,11 +4,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.hibernate.IHibernateSecurityPermissionDao;
-import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaSecurityPermission;
-import sk.seges.acris.security.shared.user_management.domain.api.HierarchyPermission;
+import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaSecurityPermission;
+import sk.seges.acris.security.user_management.server.model.data.HierarchyPermissionData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
-public class HibernateSecurityPermissionDao extends AbstractHibernateCRUD<HierarchyPermission> implements IHibernateSecurityPermissionDao<HierarchyPermission> {
+public class HibernateSecurityPermissionDao extends AbstractHibernateCRUD<HierarchyPermissionData> implements IHibernateSecurityPermissionDao<HierarchyPermissionData> {
 
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")
 	public void setEntityManager(EntityManager em) {
@@ -19,7 +19,7 @@ public class HibernateSecurityPermissionDao extends AbstractHibernateCRUD<Hierar
 		super(JpaSecurityPermission.class);
 	}
 
-	protected HibernateSecurityPermissionDao(Class<? extends HierarchyPermission> clazz) {
+	protected HibernateSecurityPermissionDao(Class<? extends HierarchyPermissionData> clazz) {
 		super(clazz);
 	}
 }
