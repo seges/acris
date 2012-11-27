@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
+import sk.seges.acris.security.server.utils.LoggedUserRole;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.exception.ServerException;
@@ -22,9 +23,8 @@ import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.util.LoggedUserRole;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 /**
  * Standard user service using {@link UserPasswordLoginToken} to log the user in
@@ -90,12 +90,12 @@ public class SpringLoginService implements LoginService {
 	 * 
 	 * @return
 	 */
-	protected ClientSession createClientSession() {
-		return new ClientSession();
+	protected ClientSession<UserData> createClientSession() {
+		return new ClientSession<UserData>();
 	}
 
 	@Override
-	public void changeAuthentication(ClientSession clientSession) {
+	public void changeAuthentication(ClientSession<UserData> clientSession) {
 		UserData userData = (UserData) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		userData.setRoles(clientSession.getUser().getRoles());
 		Authentication newAuth = new UsernamePasswordAuthenticationToken(userData, SecurityContextHolder.getContext()
@@ -109,10 +109,10 @@ public class SpringLoginService implements LoginService {
 	 * 
 	 * @param clientSession
 	 */
-	protected void postProcessLogin(ClientSession clientSession, LoginToken token) {}
+	protected void postProcessLogin(ClientSession<UserData> clientSession, LoginToken token) {}
 
 	@Transactional
-	public ClientSession login(LoginToken token) throws ServerException {
+	public ClientSession<UserData> login(LoginToken token) throws ServerException {
 		Authentication auth;
 		try {
 			auth = authenticationManager.authenticate(createAuthenticationToken(token));
@@ -121,7 +121,7 @@ public class SpringLoginService implements LoginService {
 		}
 		createSecurityContext(auth);
 
-		ClientSession clientSession = createClientSession();
+		ClientSession<UserData> clientSession = createClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
 
 		List<RoleData> roles = new ArrayList<RoleData>();

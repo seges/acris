@@ -38,12 +38,7 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-security-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-core</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-				
+		
 		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>
