@@ -11,6 +11,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.corpis.appscaffold.model.pap.accessor.ReadOnlyAccessor;
 import sk.seges.corpis.appscaffold.model.pap.configurer.ModelBaseProcessorConfigurer;
 import sk.seges.corpis.appscaffold.model.pap.model.AbstractDataType;
 import sk.seges.corpis.appscaffold.model.pap.model.BaseObjectType;
@@ -27,6 +28,7 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 
 	@Override
 	protected void processElement(ProcessorContext context) {
+		super.processElement(context);
 		generateAccessors(context.getMutableType(), context.getPrintWriter(), context.getTypeElement(), context.getTypeElement(), new ArrayList<String>());
 	}
 
@@ -34,6 +36,47 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 		TypeElement typeElement = (TypeElement)((DeclaredType) processingEnv.getTypeUtils().fromMutableType(mutableType)).asElement();
 		
 		generateMethodAccessors(resultType, pw, owner, typeElement, generatedProperties);
+	}
+
+	private void printAccessorForField(FormattedPrintWriter pw, TypeElement owner, MutableTypeMirror mutableReturnType, ExecutableElement method) {
+		
+		String fieldName = MethodHelper.toField(method);
+		
+		boolean readOnlyProperty = new ReadOnlyAccessor(method, processingEnv).isReadonly();
+
+		if (!readOnlyProperty) {
+			pw.println("private ", toPrintableType(owner, mutableReturnType), " " + fieldName + ";");
+			pw.println();
+		}
+		
+		pw.print("public ");
+		
+		if (readOnlyProperty) {
+			pw.print("abstract ");
+		}
+		
+		pw.print(toPrintableType(owner, mutableReturnType), " ");
+		if (isPrimitiveBoolean(mutableReturnType)) {
+			pw.print(MethodHelper.toIsGetter(fieldName));
+		} else {
+			pw.print(MethodHelper.toGetter(fieldName));
+		}
+		
+		if (!readOnlyProperty) {
+			pw.println(" {");
+			pw.println("return " + fieldName + ";");
+			pw.println("}");
+		} else {
+			pw.println(";");
+		}
+		pw.println();
+		
+		if (!readOnlyProperty) {
+			pw.println("public void " + MethodHelper.toSetter(fieldName) +  "(", toPrintableType(owner, mutableReturnType), " " + fieldName + ") {");
+			pw.println("this." + fieldName + " = " + fieldName + ";");
+			pw.println("}");
+			pw.println();
+		}
 	}
 	
 	private void generateMethodAccessors(MutableDeclaredType resultType, FormattedPrintWriter pw, TypeElement owner, TypeElement processingElement, List<String> generatedProperties) {
@@ -65,20 +108,7 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 			
 			MutableTypeMirror mutableReturnType = castToDomainDataInterface(returnType);
 
-			String fieldName = MethodHelper.toField(method);
-			
-			pw.println("private ", toPrintableType(owner, mutableReturnType), " " + fieldName + ";");
-			pw.println();
-			
-			//TODO copied from accessors printer
-			pw.println("public ", toPrintableType(owner, mutableReturnType), " " + MethodHelper.toGetter(fieldName) + " {");
-			pw.println("return " + fieldName + ";");
-			pw.println("}");
-			pw.println();
-			pw.println("public void " + MethodHelper.toSetter(fieldName) +  "(", toPrintableType(owner, mutableReturnType), " " + fieldName + ") {");
-			pw.println("this." + fieldName + " = " + fieldName + ";");
-			pw.println("}");
-			pw.println();
+			printAccessorForField(pw, owner, mutableReturnType, method);
 		}
 
 		for (TypeMirror interfaceType: processingElement.getInterfaces()) {
@@ -88,7 +118,7 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 		}
 
 	}
-	
+		
 	private void generateAccessors(MutableDeclaredType resultType, FormattedPrintWriter pw, TypeElement owner, TypeElement typeElement, List<String> generatedProperties) {
 		
 		TypeElement processingElement = typeElement;
@@ -107,19 +137,7 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 			
 			MutableTypeMirror returnType = castToDomainDataInterface(method.getReturnType());
 
-			pw.println("private ", toPrintableType(owner, returnType), " " + MethodHelper.toField(method) + ";");
-			pw.println();
-			
-			//TODO copied from accessors printer
-			pw.println("public ", toPrintableType(owner, returnType), " " + MethodHelper.toGetter(method) + " {");
-			pw.println("return " + MethodHelper.toField(method) + ";");
-			pw.println("}");
-			pw.println();
-			pw.println("public void " + MethodHelper.toSetter(method) + 
-					"(", toPrintableType(owner, returnType), " " + MethodHelper.toField(method) + ") {");
-			pw.println("this." + MethodHelper.toField(method) + " = " + MethodHelper.toField(method) + ";");
-			pw.println("}");
-			pw.println();
+			printAccessorForField(pw, owner, returnType, method);
 		}
 
 		DomainDataInterfaceType domainDataInterfaceType = new DomainDataInterfaceType((MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(typeElement.asType()), processingEnv);
@@ -144,5 +162,4 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 	protected ProcessorConfigurer getConfigurer() {
 		return new ModelBaseProcessorConfigurer();
 	}
-
 }

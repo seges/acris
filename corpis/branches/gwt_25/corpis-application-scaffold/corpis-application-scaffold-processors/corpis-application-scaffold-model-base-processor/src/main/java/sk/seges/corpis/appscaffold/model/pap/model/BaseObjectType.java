@@ -11,6 +11,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.corpis.appscaffold.model.pap.accessor.ReadOnlyAccessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -27,20 +28,23 @@ public class BaseObjectType extends AbstractDataType {
 	public BaseObjectType(MutableDeclaredType dataDefinition, MutableProcessingEnvironment processingEnv) {
 		super(dataDefinition, processingEnv);
 
+		TypeElement dataElement = dataDefinition.asElement();
+		
+		List<ExecutableElement> methods = ElementFilter.methodsIn(dataElement.getEnclosedElements());
+		
+		boolean isAbstract = false;
+		
+		for (ExecutableElement method: methods) {
+			boolean readOnlyProperty = new ReadOnlyAccessor(method, processingEnv).isReadonly();
+
+			if (readOnlyProperty) {
+				isAbstract = true;
+				break;
+			}
+		}
+				
 		List<MutableTypeMirror> interfaces = new ArrayList<MutableTypeMirror>();
 		
-//		Element element = ((DeclaredType)dataDefinition.asType()).asElement();
-//
-//		for (TypeMirror dataInterface: ((TypeElement) element).getInterfaces()) {
-//			if (dataInterface.getKind().equals(TypeKind.DECLARED) && new PersistentObjectAccessor(((DeclaredType) dataInterface).asElement(), processingEnv).isEntity()) {
-//				MutableDeclaredType mutableInterfaceType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(dataInterface);
-//				
-//				if (getSuperClass() == null) {
-//					setSuperClass(new BaseObjectType(mutableInterfaceType, processingEnv));
-//				}
-//			}
-//		}
-
 		DomainDataInterfaceType domainDataInterfaceType = new DomainDataInterfaceType(dataDefinition, processingEnv);
 		
 		interfaces.add(domainDataInterfaceType);
@@ -60,6 +64,9 @@ public class BaseObjectType extends AbstractDataType {
 		setDataTypeVariables();
 		
 		setModifiers((TypeElement) dataDefinition.asElement());
+		if (isAbstract) {
+			addModifier(Modifier.ABSTRACT);
+		}
 	}
 	
 	@Override

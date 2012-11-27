@@ -16,15 +16,22 @@ import javax.lang.model.type.WildcardType;
 
 import sk.seges.corpis.appscaffold.model.pap.accessor.DomainInterfaceAccessor;
 import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.printer.ConstantsPrinter;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 
 public abstract class AbstractDataProcessor extends MutableAnnotationProcessor {
 
+	@Override
+	protected void processElement(ProcessorContext context) {
+		new ConstantsPrinter(context.getPrintWriter(), processingEnv).copyConstants(context.getTypeElement());
+	}
+	
 	private Set<MutableTypeMirror> toPrintableTypes(TypeElement owner, Set<? extends MutableTypeMirror> bounds) {
 		Set<MutableTypeMirror> result = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: bounds) {
@@ -33,7 +40,10 @@ public abstract class AbstractDataProcessor extends MutableAnnotationProcessor {
 		return result;
 	}
 	
-	
+	protected boolean isPrimitiveBoolean(MutableTypeMirror type) {
+		return type.toString(ClassSerializer.CANONICAL).equals(TypeKind.BOOLEAN.toString().toLowerCase());
+	}
+
 	protected MutableTypeMirror toPrintableType(TypeElement owner, MutableTypeMirror mutableType) {
 		
 		if (mutableType.getKind().equals(MutableTypeKind.TYPEVAR)) {
@@ -121,5 +131,4 @@ public abstract class AbstractDataProcessor extends MutableAnnotationProcessor {
 
 		return returnType;
 	}
-
 }

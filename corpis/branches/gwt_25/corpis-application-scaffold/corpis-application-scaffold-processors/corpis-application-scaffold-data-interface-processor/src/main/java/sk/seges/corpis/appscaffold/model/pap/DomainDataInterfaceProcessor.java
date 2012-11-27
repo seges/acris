@@ -9,6 +9,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.corpis.appscaffold.model.pap.accessor.ReadOnlyAccessor;
 import sk.seges.corpis.appscaffold.model.pap.configurer.DomainDataInterfaceProcessorConfigurer;
 import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
@@ -26,9 +27,11 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 	
-	
 	@Override
 	protected void processElement(ProcessorContext context) {
+		
+		super.processElement(context);
+		
 		List<ExecutableElement> methods = ElementFilter.methodsIn(context.getTypeElement().getEnclosedElements());
 		
 		Collections.sort(methods, new Comparator<ExecutableElement>() {
@@ -42,13 +45,27 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 		for (ExecutableElement method: methods) {
 			
 			MutableTypeMirror returnType = castToDomainDataInterface(method.getReturnType());
+
+			boolean readOnlyProperty = new ReadOnlyAccessor(method, processingEnv).isReadonly();
 			
-			pw.println("public static final String " + getConvertedPropertyName(method.getSimpleName().toString()) + " = \"" + method.getSimpleName() + "\";");
+			if (!readOnlyProperty) {
+				pw.println("public static final String " + getConvertedPropertyName(method.getSimpleName().toString()) + " = \"" + method.getSimpleName() + "\";");
+				pw.println();
+			}
+			
+			pw.print(toPrintableType(context.getTypeElement(), returnType), " ");
+			if (isPrimitiveBoolean(returnType)) {
+				pw.print(MethodHelper.toIsGetter(method));
+			} else {
+				pw.print(MethodHelper.toGetter(method));
+			}
+			pw.println(";");
 			pw.println();
-			pw.println(toPrintableType(context.getTypeElement(), returnType), " " + MethodHelper.toGetter(method) + ";");
-			pw.println();
-			pw.println("void ", MethodHelper.toSetter(method) + "(", toPrintableType(context.getTypeElement(), returnType), " " + method.getSimpleName() + ");");
-			pw.println();
+			
+			if (!readOnlyProperty) {
+				pw.println("void ", MethodHelper.toSetter(method) + "(", toPrintableType(context.getTypeElement(), returnType), " " + method.getSimpleName() + ");");
+				pw.println();
+			}
 		}
 	}
 
