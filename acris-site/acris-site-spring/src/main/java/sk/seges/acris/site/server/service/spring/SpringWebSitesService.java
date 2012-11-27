@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.site.server.dao.IWebSitesDao;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSitesData;
+import sk.seges.acris.site.server.model.data.WebSitesData;
 import sk.seges.acris.site.server.service.WebSitesService;
 import sk.seges.corpis.service.annotation.TransactionPropagation;
 import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;

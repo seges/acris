@@ -1,4 +1,4 @@
-package sk.seges.acris.site.server.domain.ftp;
+package sk.seges.acris.site.ftp;
 
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
