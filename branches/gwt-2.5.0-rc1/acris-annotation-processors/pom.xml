@@ -15,6 +15,7 @@
 	<modules>
 		<module>acris-async-service-processor</module>
 		<module>acris-beanwrapper-processor</module>
+		<module>acris-security-processor</module>
 		<module>acris-json-processor</module>
 		<module>acris-theme-processor</module>
 	</modules>
