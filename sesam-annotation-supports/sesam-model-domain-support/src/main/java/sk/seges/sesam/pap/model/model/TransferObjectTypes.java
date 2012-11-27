@@ -7,6 +7,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.WildcardType;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -87,7 +88,8 @@ public class TransferObjectTypes {
 		
 		switch (type.getKind()) {
 		case ARRAY:
-			return new DtoArray(getDtoType(type), envContext.getProcessingEnv());
+			MutableArrayType arrayType = (MutableArrayType)type;
+			return new DtoArray(getDtoType(arrayType.getComponentType()), envContext.getProcessingEnv());
 		case ANNOTATION_TYPE:
 		case CLASS:
 		case ENUM:

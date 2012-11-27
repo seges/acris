@@ -94,7 +94,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		
 		return configurationTypeElement;
 	}
-	
+		
 	@Override
 	protected void printAnnotations(ProcessorContext context) {
 		
@@ -373,5 +373,4 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 			processType(configurationTypeElement, mappingType, (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainInterface), domainTypeElement, generated, contexts);
 		}
 	}
-	
 }

@@ -255,16 +255,34 @@ public class MutableTypes implements Types {
 		MutableVariable typeVariable = new MutableVariable();
 		typeVariable.setVariable(name);
 		Set<MutableTypeMirror> bounds = new HashSet<MutableTypeMirror>();
-		for (MutableTypeMirror bound: upperBounds) {
+		
+		int boundSize = 0;
+		for (MutableTypeMirror bound: lowerBounds) {
 			if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
+				boundSize++;
+			}
+		}
+
+		boolean acceptObject = boundSize == 0 && (name == null || name.isEmpty());
+
+		for (MutableTypeMirror bound: upperBounds) {
+			if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()) || acceptObject)) {
 				bounds.add(bound);
 			}
 		}
 		typeVariable.setUpperBounds(bounds);
 
+		for (MutableTypeMirror bound: upperBounds) {
+			if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
+				boundSize++;
+			}
+		}
+
+		acceptObject = boundSize == 0 && (name == null || name.isEmpty());
+
 		bounds = new HashSet<MutableTypeMirror>();
 		for (MutableTypeMirror bound: lowerBounds) {
-			if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()))) {
+			if (bound != null && (!bound.getKind().isDeclared() || !bound.toString().equals(Object.class.getCanonicalName()) || acceptObject)) {
 				bounds.add(bound);
 			}
 		}

@@ -129,24 +129,33 @@ public abstract class AnnotationTest {
 	}
 
 	protected File getEclipseResourceFile(Class<?> clazz) {
+		return getEclipseResourceFile(null, clazz);
+	}
+	
+	protected File getEclipseResourceFile(String directorySuffix, Class<?> clazz) {
 		URL resource = getClass().getResource(
-				"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_ECLIPSE_FILE_SUFFIX);
+				"/" + toPath(clazz.getPackage()) + "/" + (directorySuffix != null ? (directorySuffix + "/") : "") + clazz.getSimpleName() + OUTPUT_ECLIPSE_FILE_SUFFIX);
 		
 		if (resource == null) {
 			throw new RuntimeException("Unable to find output file " + 
-					"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_ECLIPSE_FILE_SUFFIX);
+					"/" + toPath(clazz.getPackage()) + "/" + (directorySuffix != null ? (directorySuffix + "/") : "") + clazz.getSimpleName() + OUTPUT_ECLIPSE_FILE_SUFFIX);
 		}
 
 		return new File(resource.getFile());
 	}
 
 	protected File getResourceFile(Class<?> clazz) {
+		return getResourceFile(null, clazz);
+	}
+	
+	protected File getResourceFile(String directorySuffix, Class<?> clazz) {
+
 		URL resource = getClass().getResource(
-				"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX);
+				"/" + toPath(clazz.getPackage()) + "/" + (directorySuffix != null ? (directorySuffix + "/") : "") + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX);
 		
 		if (resource == null) {
 			throw new RuntimeException("Unable to find output file " + 
-					"/" + toPath(clazz.getPackage()) + "/" + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX );
+					"/" + toPath(clazz.getPackage()) + "/" + (directorySuffix != null ? (directorySuffix + "/") : "") + clazz.getSimpleName() + OUTPUT_FILE_SUFFIX );
 		}
 
 		return new File(resource.getFile());

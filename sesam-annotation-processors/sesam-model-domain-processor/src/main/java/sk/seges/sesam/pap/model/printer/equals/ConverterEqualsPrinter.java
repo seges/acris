@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.model.printer.equals;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.lang.model.element.ExecutableElement;
@@ -13,6 +14,7 @@ import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
+import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.AbstractDtoPrinter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
@@ -36,17 +38,56 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 		this.pw = pw;
 	}
 
+	private String getDomainType(DomainDeclaredType instantiableType, boolean isCastRequired) {
+		return isCastRequired ? "((" + instantiableType.getSimpleName() + ")" + DOMAIN_NAME + ")" : DOMAIN_NAME;
+	}
+
+	private void printDomainType(DomainDeclaredType instantiableType, boolean isCastRequired, FormattedPrintWriter pw) {
+		if (isCastRequired) {
+			pw.print("((", instantiableType.getSimpleName(), ")" + DOMAIN_NAME + ")");
+		} else {
+			pw.print(DOMAIN_NAME);
+		}
+	}
+	
 	@Override
 	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
 		pw.println("public boolean equals(", configurationTypeElement.getDomain(), " " + DOMAIN_NAME + ", ",
 											 configurationTypeElement.getDto(), " " + DTO_NAME + ") {");
 		if (entityResolver.shouldHaveIdMethod(configurationTypeElement.getInstantiableDomain())) {
 
-			DomainType domainId = configurationTypeElement.getInstantiableDomain().getId(entityResolver);
-
+			DomainType domainId = configurationTypeElement.getDomain().getId(entityResolver);
+			DomainType instantiableDomainId = configurationTypeElement.getInstantiableDomain().getId(entityResolver);
+			
+			if (domainId == null && instantiableDomainId != null) {
+				
+				MutableDeclaredType mutableSerializableType = processingEnv.getTypeUtils().toMutableType(Serializable.class);
+				
+				//In the data interface there is no ID defined (or defined using type variables), and is specified only id entity - so use object instead (or serializable, we'll see)
+				domainId = processingEnv.getTransferObjectUtils().getDomainType(mutableSerializableType);
+			}
+			
 			ExecutableElement domainIdMethod = configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver);
 			
-			String methodName = DOMAIN_NAME + "." + domainIdMethod.getSimpleName().toString() + "()";
+			if (domainIdMethod == null) {
+				processingEnv.getMessager().printMessage(Kind.ERROR, configurationTypeElement.getInstantiableDomain().getCanonicalName() + " does not have an ID method implemented. Please implement ID method so equals method should be implemented.");
+				return;
+			}
+			
+			ExecutableElement getterMethod = configurationTypeElement.getDomain().getGetterMethod(MethodHelper.toField(domainIdMethod));
+			
+			boolean isCastRequired = getterMethod == null;
+
+			if (!isCastRequired) {
+				if (!processingEnv.getTypeUtils().isAssignable(getterMethod.getReturnType(), 
+						processingEnv.getElementUtils().getTypeElement(Serializable.class.getCanonicalName()).asType())) {
+					processingEnv.getMessager().printMessage(Kind.ERROR, configurationTypeElement.getDomain().getCanonicalName() + 
+							" has ID that does not implement serializable! ID method should implement serializable interface.");
+				}
+			}
+			
+			String methodNameSuffix = "." + domainIdMethod.getSimpleName().toString() + "()";
+			String methodName = getDomainType(configurationTypeElement.getInstantiableDomain(), isCastRequired) + methodNameSuffix;
 			
 			if (domainId.getConverter() != null) {
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
@@ -58,7 +99,8 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 				pw.print(domainId, " " + DTO_ID + " = ");
 			}
 
-			pw.print(methodName);
+			printDomainType(configurationTypeElement.getInstantiableDomain(), isCastRequired, pw);
+			pw.print(methodNameSuffix);
 
 			if (domainId.getConverter() != null) {
 				pw.print(")");

@@ -4,6 +4,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.printer.ConstantsPrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.printer.accessors.AccessorsPrinter;
@@ -41,6 +42,12 @@ public class TransferObjectProcessor extends AbstractTransferProcessor {
 		return new MutableDeclaredType[] {
 				getConfigurationElement(context).getDto()
 		};
+	}
+	
+	@Override
+	protected void processElement(ProcessorContext context) {
+		new ConstantsPrinter(context.getPrintWriter(), processingEnv).copyConstants(context.getTypeElement());
+		super.processElement(context);
 	}
 	
 	@Override

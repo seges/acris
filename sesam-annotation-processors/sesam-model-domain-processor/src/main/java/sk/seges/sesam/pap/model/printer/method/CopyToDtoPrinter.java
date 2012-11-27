@@ -100,31 +100,24 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			
 			String idName = "_id";
 			
-			pw.print(dtoIdType, " " + idName + " = ");
 			
 			String methodName = DOMAIN_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(idMethod));
 
 			if (idMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
 				if (domainIdTypeElement.getConverter() != null) {
+					pw.print(dtoIdType, " " + idName + " = ");
 					Field field = new Field(methodName, processingEnv.getTypeUtils().toMutableType(domainIdTypeElement));
 					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
 					pw.print(".convertToDto(");
 					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
 					pw.print(".createDtoInstance(null), ");
-					pw.print("(", getDelegateCast(idMethod.getReturnType()), ")");
+					pw.println("(", getDelegateCast(idMethod.getReturnType()), ")" + methodName + ");");
+					pw.println();
 					useIdConverter = true;
 				}
 			}
 
-			pw.print(methodName);
-
-			if (useIdConverter) {
-				pw.print(")");
-			}
-			pw.println(";");
-			pw.println();
-
-			pw.println(RESULT_NAME + " = createDtoInstance(" + idName + ");");
+			pw.println(RESULT_NAME + " = createDtoInstance(" + (useIdConverter ? idName : methodName) + ");");
 		}
 
 		pw.println("return convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
