@@ -14,8 +14,9 @@
 	<modules>
 		<module>../acris-security-api</module>
 		<module>../acris-security-appengine</module>
+		<module>../acris-security-scaffold-model</module>
+		<module>../acris-security-dto</module>
 		<module>../acris-security-core</module>
-		<module>../acris-security-gilead</module>
 		<module>../acris-security-jpa</module>
 		<module>../acris-security-hibernate</module>
 		<module>../acris-security-spring</module>
@@ -24,6 +25,23 @@
 		<module>../acris-security-openid</module>
 		<module>../acris-security-ui</module>
 		<module>../acris-security-rest-authentication</module>
+		<module>../acris-security-server</module>
 	</modules>
+
+	<dependencyManagement>
+		<dependencies> 
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-openid-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-openid-core</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+		</dependencies> 
+	</dependencyManagement>
 
 </project>
