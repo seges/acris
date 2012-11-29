@@ -183,7 +183,7 @@ public class DataConfigurationTypeElement extends ConfigurationTypeElement {
 					
 					if (dataInterfaces.size() > 0) {
 						MutableDeclaredType dtoType = (MutableDeclaredType)envContext.getProcessingEnv().getTransferObjectUtils().getDomainType(next).getDto();
-						DomainDeclaredType domainDeclared = new DomainDeclared(dataInterfaces.get(0), dtoType, envContext, configurationContext);
+						DomainDeclaredType domainDeclared = new DomainDeclared(dataInterfaces.get(0), dtoType, envContext, null/*, configurationContext*/);
 						domainDeclared.setTypeVariables(new MutableTypeVariable[]{});
 						
 						if (!hasCustomProperties((MutableDeclaredType) next, dataInterfaces.get(0))) {
