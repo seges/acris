@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -124,10 +125,12 @@ public class AbstractServicePrinter {
 	
 				if (pairMethod) {
 					
-					DtoType returnDtoType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
-					DomainType returnDomainType = returnDtoType.getDomain();
-	
-					if (processingEnv.getTypeUtils().isSameType(returnDomainType, returnDtoType)) {
+					DomainType returnDomainType = processingEnv.getTransferObjectUtils().getDomainType(method.getReturnType());
+					DtoType returnDtoType = returnDomainType.getDto();
+					
+					MutableTypeMirror mutableRemoteReturnType = processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType());
+					
+					if (processingEnv.getTypeUtils().isSameType(returnDtoType, mutableRemoteReturnType)) {
 						return method;
 					}
 					

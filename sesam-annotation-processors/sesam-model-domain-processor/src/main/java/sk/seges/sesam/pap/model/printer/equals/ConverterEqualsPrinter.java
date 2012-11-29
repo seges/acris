@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
@@ -79,8 +83,20 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 			boolean isCastRequired = getterMethod == null;
 
 			if (!isCastRequired) {
-				if (!processingEnv.getTypeUtils().isAssignable(getterMethod.getReturnType(), 
+				TypeMirror returnIdType = getterMethod.getReturnType();
+				
+				if (returnIdType.getKind().equals(TypeKind.TYPEVAR)) {
+					TypeMirror erasedIdType = 
+						ProcessorUtils.erasure(configurationTypeElement.getDomain().asElement(), (TypeVariable)returnIdType);
+					
+					if (erasedIdType != null) {
+						returnIdType = erasedIdType;
+					}
+				}
+				
+				if (!processingEnv.getTypeUtils().isAssignable(returnIdType, 
 						processingEnv.getElementUtils().getTypeElement(Serializable.class.getCanonicalName()).asType())) {
+					
 					processingEnv.getMessager().printMessage(Kind.ERROR, configurationTypeElement.getDomain().getCanonicalName() + 
 							" has ID that does not implement serializable! ID method should implement serializable interface.");
 				}

@@ -28,7 +28,7 @@ public class ServiceMethodDomainConverterProviderPrinter extends AbstractDomainM
 				processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX));
 
 		Field field = new Field(DOMAIN_CLASS_PARAMETER_NAME, fieldType);
-		field.setCastType(processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), new MutableDeclaredType[] { context.getDomain() }));
+		field.setCastType(processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), new MutableDeclaredType[] { context.getRawDomain() }));
 
 		converterProviderPrinter.printDomainGetConverterMethodName(context.getRawDomain(), field, 
 				((ServiceConverterProviderPrinterContext)context).getLocalMethod(), pw, false);
