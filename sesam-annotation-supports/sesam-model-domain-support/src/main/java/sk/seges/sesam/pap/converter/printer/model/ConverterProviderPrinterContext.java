@@ -18,16 +18,34 @@ public class ConverterProviderPrinterContext {
 	public ConverterProviderPrinterContext(DtoDeclaredType dtoType) {
 		this.rawDomain = (DomainDeclaredType)dtoType.getDomain();
 		this.domain = this.rawDomain;
-		this.rawDto = dtoType.getConverter().getConfiguration().getRawDto();
+		if (dtoType.getConverter() == null) {
+			if (dtoType.getConfigurations().size() == 0) {
+				this.rawDto = dtoType;
+				this.dto = dtoType;
+			} else {
+				this.rawDto = dtoType.getConfigurations().get(0).getRawDto();
+				this.dto = dtoType.getConfigurations().get(0).getDto();
+			}
+		} else {
+			this.rawDto = dtoType.getConverter().getConfiguration().getRawDto();
+			this.dto = dtoType.getConverter().getConfiguration().getDto();
+		}
 		this.converterType = dtoType.getConverter();
-		this.dto = dtoType.getConverter().getConfiguration().getDto();
 	}
 	
 	public ConverterProviderPrinterContext(DomainDeclaredType domainType) {
 		DtoType dto = domainType.getDto();
 		this.rawDomain = domainType;
 		this.domain = (DomainDeclaredType) dto.getDomain();
-		this.rawDto = domainType.getConverter().getConfiguration().getRawDto();
+		if (domainType.getConverter() == null) {
+			if (domainType.getConfigurations().size() == 0) {
+				this.rawDto = (DtoDeclaredType) dto;
+			} else {
+				this.rawDto = domainType.getConfigurations().get(0).getRawDto();
+			}
+		} else {
+			this.rawDto = domainType.getConverter().getConfiguration().getRawDto();
+		}
 		this.dto = (DtoDeclaredType) dto;
 		this.converterType = dto.getConverter();
 	}

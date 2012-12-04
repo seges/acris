@@ -7,19 +7,18 @@ import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.model.ConverterParameter;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
-import sk.seges.sesam.pap.model.model.ConverterParameter;
-import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterParameterFilter;
+import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;

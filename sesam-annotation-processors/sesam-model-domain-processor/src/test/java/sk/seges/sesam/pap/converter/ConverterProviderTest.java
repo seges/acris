@@ -6,13 +6,12 @@ import org.junit.Test;
 
 import sk.seges.sesam.core.pap.test.AnnotationTest;
 import sk.seges.sesam.pap.configuration.MockEntityDtoConfiguration;
-import sk.seges.sesam.pap.converterprovider.Default;
 
 public class ConverterProviderTest extends AnnotationTest {
 
 	@Test
 	public void testMockEntity() {
-		assertCompilationSuccessful(compileFiles(MockEntityDtoConfiguration.class, Default.class));
+		assertCompilationSuccessful(compileFiles(MockEntityDtoConfiguration.class));
 //		assertOutput(getResourceFile(MockEntity.class), getOutputFile(MockEntity.class));
 	}
 

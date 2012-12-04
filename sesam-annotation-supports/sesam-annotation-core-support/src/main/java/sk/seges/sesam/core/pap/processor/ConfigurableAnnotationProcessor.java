@@ -34,6 +34,10 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	public static final String CLASSPATH_OPTION = "classpath";
 	public static final String TEST_CLASSPATH_OPTION = "testClasspath";
 
+	public enum ExecutionType {
+		ONCE, PER_TYPE
+	}
+	
 	protected ProcessorConfigurer configurer;
 	protected RoundEnvironment roundEnv;
 
@@ -46,6 +50,10 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 
 	protected abstract ProcessorConfigurer getConfigurer();
 
+	public ExecutionType getExecutionType() {
+		return ExecutionType.PER_TYPE;
+	}
+	
     @Override
 	public Set<String> getSupportedOptions() {
     	SupportedOptions so = this.getClass().getAnnotation(SupportedOptions.class);
@@ -205,10 +213,13 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 			if (!ListUtils.containsElement(processedElements, element)) {
 				Element el = els.get(element.toString());
 				if (configurer == null || configurer.isSupportedKind(el.getKind())) {
-					processedElements.add(element);
-					init(el, roundEnv);
-					processElement(element, roundEnv);
-					configurer.flushMessages(processingEnv.getMessager(), el);
+					
+					if (processedElements.size() == 0 || !getExecutionType().equals(ExecutionType.ONCE)) {
+						processedElements.add(element);
+						init(el, roundEnv);
+						processElement(element, roundEnv);
+						configurer.flushMessages(processingEnv.getMessager(), el);
+					}
 				}
 			}
 		}
