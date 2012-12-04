@@ -3,6 +3,8 @@ package sk.seges.sesam.pap.model.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import sk.seges.sesam.core.pap.model.ConverterParameter;
+
 public enum ConverterParameterFilter {
 
 	NAME {

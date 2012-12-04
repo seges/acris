@@ -16,8 +16,8 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
-import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.model.ConverterParameter;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -253,24 +253,12 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 	}
 
 	private ConverterParameter toConverterParameter(ParameterElement parameter) {
-		ConverterParameter converterParameter = new ConverterParameter();
-		converterParameter.setType(parameter.getType());
-		converterParameter.setName(parameter.getName());
-//		converterParameter.setConverter(this);
-//		converterParameter.setConverter(parameter.isConverter());
-		converterParameter.setPropagated(parameter.isPropagated());
-		return converterParameter;
+		return new ConverterParameter(parameter, environmentContext.getProcessingEnv());
 	}
 	
 	private ConverterParameter toConverterParameter(VariableElement constructorParameter) {
-		ConverterParameter converterParameter = new ConverterParameter();
-//		TypeElement dtoConverterTypeElement = processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName());
-//		converterParameter.setConverter(ProcessorUtils.implementsType(constructorParameter.asType(), dtoConverterTypeElement.asType()));
-		converterParameter.setType(getTypeUtils().toMutableType(constructorParameter.asType()));
-		converterParameter.setName(constructorParameter.getSimpleName().toString());
-//		converterParameter.setConverter(this);
-		converterParameter.setPropagated(true);
-		return converterParameter;
+		return new ConverterParameter(getTypeUtils().toMutableType(constructorParameter.asType()), 
+				constructorParameter.getSimpleName().toString(), null, true, environmentContext.getProcessingEnv());
 	}
 
 	private List<ExecutableElement> getSortedConstructorMethods(TypeElement element) {
@@ -311,13 +299,8 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		
 		int i = 0;
 		for (TypeMirror parameterType: parameterTypes) {
-			ConverterParameter converterParameter = new ConverterParameter();
-//			TypeElement dtoConverterTypeElement = processingEnv.getElementUtils().getTypeElement(DtoConverter.class.getCanonicalName());
-//			converterParameter.setConverter(ProcessorUtils.implementsType(parameterType, dtoConverterTypeElement.asType()));
-			converterParameter.setType(getTypeUtils().toMutableType(parameterType));
-			converterParameter.setName("arg" + i++);
-//			converterParameter.setConverter(this);
-			converterParameter.setPropagated(true);
+			ConverterParameter converterParameter = new ConverterParameter(getTypeUtils().toMutableType(parameterType),
+					"arg" + i++, null, true, environmentContext.getProcessingEnv());
 			result.add(converterParameter);
 		}
 		

@@ -1,7 +1,7 @@
 package sk.seges.sesam.pap.service.printer;
 
+import sk.seges.sesam.core.pap.model.ConverterParameter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;

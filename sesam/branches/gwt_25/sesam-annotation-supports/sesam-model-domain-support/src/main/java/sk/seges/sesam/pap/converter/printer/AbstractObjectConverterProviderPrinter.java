@@ -1,4 +1,4 @@
-package sk.seges.sesam.pap.service.printer;
+package sk.seges.sesam.pap.converter.printer;
 
 import java.util.HashSet;
 import java.util.Set;

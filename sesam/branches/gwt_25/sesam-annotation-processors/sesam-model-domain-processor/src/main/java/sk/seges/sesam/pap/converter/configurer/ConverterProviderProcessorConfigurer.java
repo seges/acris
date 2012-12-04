@@ -3,7 +3,7 @@ package sk.seges.sesam.pap.converter.configurer;
 import java.lang.reflect.Type;
 
 import sk.seges.sesam.core.pap.configuration.DefaultProcessorConfigurer;
-import sk.seges.sesam.pap.model.annotation.ConverterProvider;
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
 public class ConverterProviderProcessorConfigurer extends DefaultProcessorConfigurer {
 
@@ -11,9 +11,8 @@ public class ConverterProviderProcessorConfigurer extends DefaultProcessorConfig
 	protected Type[] getConfigurationElement(DefaultConfigurationElement element) {
 		switch (element) {
 		case PROCESSING_ANNOTATIONS:
-			return new Type[] { ConverterProvider.class };
+			return new Type[] { TransferObjectMapping.class };
 		}
 		return new Type[] {};
-	}
-
+	}	
 }

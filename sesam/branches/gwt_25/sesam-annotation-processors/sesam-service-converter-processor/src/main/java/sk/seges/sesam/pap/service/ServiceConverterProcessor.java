@@ -7,15 +7,15 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
+import sk.seges.sesam.core.pap.model.ConverterParameter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.AbstractTransferProcessingProcessor;
-import sk.seges.sesam.pap.model.model.ConverterParameter;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.printer.converter.ConverterFilterType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
+import sk.seges.sesam.pap.model.printer.converter.ConverterProviderMethodType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
@@ -134,7 +134,7 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 			elementPrinter.finish(serviceTypeElement);
 		}
 	
-		this.converterProviderPrinter.printConverterMethods(true, ConverterFilterType.NONE, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
+		this.converterProviderPrinter.printConverterMethods(true, ConverterProviderMethodType.ALL, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
 	}
 
 	@Override

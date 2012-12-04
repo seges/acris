@@ -1,4 +1,4 @@
-package sk.seges.sesam.pap.service.model;
+package sk.seges.sesam.pap.converter.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,10 @@ import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.processor.ConfigurableAnnotationProcessor;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidator;
+import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
+import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ParametersFilter;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.AbstractConverterProvider;
@@ -51,8 +55,44 @@ public class ConverterProviderType extends DelegateMutableDeclaredType {
 	
 	@Override
 	protected MutableDeclaredType getDelegate() {
-		return mutableType.clone().addClassSufix(CONVERTER_PROVIDER_SUFFIX);
+		
+		DefaultPackageValidator packageValidator = 
+			new DefaultPackageValidatorProvider().get(mutableType.getPackageName());
+//		String artifact = packageValidator.getArtifact();
+		
+		String className = null;
+		
+//		if (artifact == null) {
+			String projectName = processingEnv.getOptions().get(ConfigurableAnnotationProcessor.PROJECT_NAME_OPTION);
+			
+			int colonIndex = projectName.indexOf(":");
+			
+			if (colonIndex != -1) {
+				projectName = projectName.substring(0, colonIndex);
+			}
+			
+			String[] projectNameParts = projectName.split("-");
+			
+			projectName = "";
+			
+			for (String projectNamePart: projectNameParts) {
+				projectName += MethodHelper.toMethod(projectNamePart);
+			}
+			
+			className = projectName;
+//		} else {
+//			className = MethodHelper.toMethod(artifact);
+//		}
+		
+		//TODO add handling for invalid package structure
+		
+		MutableDeclaredType result = mutableType.clone();
+		result.setSimpleName(className + CONVERTER_PROVIDER_SUFFIX);
+		
+		if (packageValidator.isValid()) {
+			result.changePackage(packageValidator.getGroup() + "." + packageValidator.getArtifact() + "." + packageValidator.getLocationType().getName());
+		}
+		
+		return result;
 	}
-
-
 }

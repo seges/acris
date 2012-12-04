@@ -4,7 +4,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.VariableElement;
 
 public interface ConfigurationElement {
-
+	
 	String name();
 	
 	boolean hasAnnotationOnField(VariableElement element);

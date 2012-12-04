@@ -10,6 +10,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
 import sk.seges.sesam.core.pap.structure.api.PackageValidatorProvider;
+import sk.seges.sesam.pap.model.annotation.ConverterProvider;
 import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -41,6 +42,12 @@ public abstract class AbstractTransferProcessingProcessor extends MutableAnnotat
 
 	protected abstract ConfigurationProvider[] getConfigurationProviders(MutableDeclaredType mutableType, EnvironmentContext<TransferObjectProcessingEnvironment> context);
 
+	@Override
+	protected void printAnnotations(ProcessorContext context) {
+		super.printAnnotations(context);
+		context.getPrintWriter().println("@", ConverterProvider.class);
+	}
+	
 	protected MutableDeclaredType getTargetType(TypeElement element) {
 		return null;
 	}

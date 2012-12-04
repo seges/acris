@@ -20,8 +20,8 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
-import sk.seges.sesam.pap.model.printer.converter.ConverterFilterType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
+import sk.seges.sesam.pap.model.printer.converter.ConverterProviderMethodType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoPrinter;
@@ -124,6 +124,6 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 
 		super.processElement(context);
 		
-		converterProviderPrinter.printConverterMethods(false, ConverterFilterType.NONE, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType.ALL, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 	}	
 }
