@@ -1,11 +1,8 @@
 package sk.seges.sesam.pap.model.hibernate.resolver;
 
-import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
-import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
 public class HibernateConverterProviderParameterResolver extends ServiceConverterConstructorParametersResolver {
 
@@ -14,8 +11,10 @@ public class HibernateConverterProviderParameterResolver extends ServiceConverte
 	public HibernateConverterProviderParameterResolver(MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		this.hibernateParameterResolverDelegate = new HibernateParameterResolverDelegate(processingEnv) {
-			protected ParameterElement getTransactionPropagationModel() {
-				return new ParameterElement(processingEnv.getTypeUtils().getArrayType(processingEnv.getTypeUtils().toMutableType(TransactionPropagationModel.class)), TRANSACTION_PROPAGATION_NAME, false);
+
+			@Override
+			protected boolean isTransactionPropagationModelParameterPropagated() {
+				return false;
 			}
 		};
 	}
@@ -26,8 +25,7 @@ public class HibernateConverterProviderParameterResolver extends ServiceConverte
 	}	
 	
 	@Override
-	protected ParameterElement getConverterCacheParameter() {
-		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class), ConverterProviderPrinter.CONVERTER_CACHE_NAME,  true);
+	protected boolean isConverterCacheParameterPropagated() {
+		return false;
 	}
-
 }

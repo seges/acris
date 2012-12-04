@@ -2,7 +2,7 @@ package sk.seges.corpis.pap.service.hibernate.printer;
 
 import javax.lang.model.element.Modifier;
 
-import sk.seges.corpis.pap.model.printer.converter.HibernateServiceConverterProviderPrinter;
+import sk.seges.corpis.pap.model.printer.converter.HibernateServiceConverterProviderParameterResolver;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -26,7 +26,7 @@ public class ServiceConverterProviderMethodPrinter extends ServiceConverterProvi
 		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
 		ParameterElement[] generatedParameters = serviceConvertProviderType.getConverterParameters(parametersResolver);
 				
-		pw.print(Modifier.PROTECTED.name().toLowerCase() + " ", serviceConvertProviderType, " " + HibernateServiceConverterProviderPrinter.GET_CONVERTER_PROVIDER_METHOD + "(");
+		pw.print(Modifier.PROTECTED.name().toLowerCase() + " ", serviceConvertProviderType, " " + HibernateServiceConverterProviderParameterResolver.GET_CONVERTER_PROVIDER_METHOD + "(");
 
 		int i = 0;
 		for (ParameterElement generatedParameter: generatedParameters) {
