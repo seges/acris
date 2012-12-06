@@ -2,13 +2,10 @@ package sk.seges.acris.security.server.spring.user_management.service.user;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.security.context.SecurityContextHolder;
-
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.core.login.api.LoginServiceProvider;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserContextProvider;
-import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
 import sk.seges.acris.security.server.user_management.service.IUserServiceLocal;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
@@ -57,8 +54,6 @@ public class UserService implements IUserServiceLocal {
 		}
 		session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
 		session.removeAttribute(LoginConstants.CLIENT_SESSION_NAME);
-		SecurityContextHolder.clearContext();
-		SecurityContextHolder.setContext(new AcrisSecurityContext());
 	}
 
 	@Override
