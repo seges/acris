@@ -21,6 +21,6 @@ public class ServiceConverterConstructorParametersResolver extends DefaultConver
 	
 	@Override
 	protected MutableReferenceType getConverterProviderReference() {
-		return processingEnv.getTypeUtils().getReference(null, THIS);
+		return null;
 	}
 }

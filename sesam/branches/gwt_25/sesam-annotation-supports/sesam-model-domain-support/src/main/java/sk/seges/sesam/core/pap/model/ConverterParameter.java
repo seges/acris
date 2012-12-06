@@ -12,8 +12,10 @@ public class ConverterParameter {
 	private boolean isPropagated = true;
 	private String name;
 	private final MutableTypeMirror type;
-	private final MutableType usage; //rename to element later;
+	
 	private ConverterParameter sameParameter;
+	
+	private MutableType usage; //rename to element later;
 	private ParameterUsageProvider usageProvider;
 
 	public ConverterParameter(MutableTypeMirror type, String name, MutableType usage, boolean isPropagated, MutableProcessingEnvironment processingEnv) {
@@ -44,6 +46,16 @@ public class ConverterParameter {
 		if (parameter.usage == null) {
 			this.usageProvider = parameter.usageProvider;
 		}
+	}
+
+	public void merge(ParameterElement parameter) {
+		if (parameter.usage != null) {
+			this.usage = parameter.usage;
+		} else {
+			this.usageProvider = parameter.usageProvider;
+		}
+		
+		setName(parameter.name);
 	}
 	
 	public ParameterElement toParameterElement() {

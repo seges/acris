@@ -10,14 +10,14 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
 public abstract class AbstractDomainMethodConverterProviderPrinter extends AbstractObjectConverterProviderPrinter {
 
-	protected AbstractDomainMethodConverterProviderPrinter(ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv,
-			FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, pw, converterProviderPrinter, parametersResolver);
+	protected AbstractDomainMethodConverterProviderPrinter(ConverterConstructorParametersResolverProvider parametersResolverProvider, 
+			TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
+		super(processingEnv, pw, converterProviderPrinter, parametersResolverProvider);
 	}
 
 	protected static final String DOMAIN_CLASS_PARAMETER_NAME = "domainClass";

@@ -20,7 +20,8 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.AbstractServiceMethodPrinter;
@@ -30,11 +31,12 @@ import sk.seges.sesam.pap.service.printer.model.ServiceConverterProviderPrinterC
 public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinter {
 	
 	private final ConverterProviderPrinterDelegate converterProviderPrinterDelegate;
-
+	protected UsageType previousUsageType;
+	
 	public ServiceConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
-		this.converterProviderPrinterDelegate = new ConverterProviderPrinterDelegate(parametersResolver, pw);
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
+		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
+		this.converterProviderPrinterDelegate = new ConverterProviderPrinterDelegate(parametersResolverProvider, pw);
 	}
 	
 	@Override
@@ -43,22 +45,27 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 	protected void finalize() {
 		converterProviderPrinterDelegate.finalize();
 		pw.println("}");
+		
+		converterProviderPrinter.changeUsage(previousUsageType);
 	}
 	
 	protected void initialize(ServiceTypeElement serviceTypeElement) {
+				
 		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
 
 		new TypePrinter(processingEnv, pw).printTypeDefinition(serviceConvertProviderType);
 		pw.println(" {");
 		pw.println();
 
-		converterProviderPrinterDelegate.initialize(serviceConvertProviderType);
+		converterProviderPrinterDelegate.initialize(serviceConvertProviderType, UsageType.USAGE_CONSTRUCTOR_CONVERTER_PROVIDER);
+
+		previousUsageType = converterProviderPrinter.changeUsage(UsageType.USAGE_INSIDE_CONVERTER_PROVIDER);
 	}
 	
 	protected ConverterProviderElementPrinter[] getNestedPrinters() {
 		return new ConverterProviderElementPrinter[] {
-			new ServiceMethodDomainConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter),
-			new ServiceMethodDtoConverterProviderPrinter(parametersResolver, processingEnv, pw, converterProviderPrinter)	
+			new ServiceMethodDomainConverterProviderPrinter(parametersResolverProvider, processingEnv, pw, converterProviderPrinter),
+			new ServiceMethodDtoConverterProviderPrinter(parametersResolverProvider, processingEnv, pw, converterProviderPrinter)	
 		};
 	}
 	

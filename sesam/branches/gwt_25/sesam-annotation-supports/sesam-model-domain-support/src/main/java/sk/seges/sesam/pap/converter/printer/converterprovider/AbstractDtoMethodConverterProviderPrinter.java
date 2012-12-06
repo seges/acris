@@ -7,7 +7,7 @@ import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContex
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
 public abstract class AbstractDtoMethodConverterProviderPrinter extends AbstractObjectConverterProviderPrinter {
@@ -15,8 +15,8 @@ public abstract class AbstractDtoMethodConverterProviderPrinter extends Abstract
 	protected static final String DTO_CLASS_PARAMETER_NAME = "dto";
 
 	public AbstractDtoMethodConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw,
-			ConverterProviderPrinter converterProviderPrinter, ConverterConstructorParametersResolver parametersResover) {
-		super(processingEnv, pw, converterProviderPrinter, parametersResover);
+			ConverterProviderPrinter converterProviderPrinter, ConverterConstructorParametersResolverProvider parametersResoverProvider) {
+		super(processingEnv, pw, converterProviderPrinter, parametersResoverProvider);
 	}
 
 	@Override

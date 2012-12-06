@@ -14,21 +14,21 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 
 public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter {
 
+	public static final String RESULT_VARIABLE_NAME = "result";
+
 	public ServiceMethodConverterPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw,
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw,
 			ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
+		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
 	}
 
 	protected void printCastLocalMethodResult(DtoType returnDtoType, ServiceConverterPrinterContext context) {}
-	
-	public static final String RESULT_VARIABLE_NAME = "result";
-	
+		
 	protected void handleMethod(ServiceConverterPrinterContext context, ExecutableElement localMethod, ExecutableElement remoteMethod) {
 
 		DtoType returnDtoType = null;

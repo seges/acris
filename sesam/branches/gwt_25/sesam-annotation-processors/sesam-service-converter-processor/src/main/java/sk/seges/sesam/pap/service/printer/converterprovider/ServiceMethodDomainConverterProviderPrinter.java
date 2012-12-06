@@ -11,14 +11,14 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterProviderPrinterContext;
 
 public class ServiceMethodDomainConverterProviderPrinter extends AbstractDomainMethodConverterProviderPrinter {
 
-	public ServiceMethodDomainConverterProviderPrinter(ConverterConstructorParametersResolver parametersResolver,
+	public ServiceMethodDomainConverterProviderPrinter(ConverterConstructorParametersResolverProvider parametersResolverProvider,
 			TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
-		super(parametersResolver, processingEnv, pw, converterProviderPrinter);
+		super(parametersResolverProvider, processingEnv, pw, converterProviderPrinter);
 	}
 
 	protected void printResulConverter(ConverterProviderPrinterContext context) {

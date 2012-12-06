@@ -11,17 +11,18 @@ import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 
 public class AbstractConverterPrinter {
 
 	protected final TransferObjectProcessingEnvironment processingEnv;
-	protected final ConverterConstructorParametersResolver parametersResolver;
+	protected final ConverterConstructorParametersResolverProvider parametersResolverProvider;
 	
-	protected AbstractConverterPrinter(ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv) {
+	protected AbstractConverterPrinter(ConverterConstructorParametersResolverProvider parametersResolverProvider, TransferObjectProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
-		this.parametersResolver = parametersResolver;
+		this.parametersResolverProvider = parametersResolverProvider;
 	}
 	
 	private String getParameterName(VariableElement parameter, ParameterElement... additionalParameters) {
@@ -45,7 +46,7 @@ public class AbstractConverterPrinter {
 		if (constructors.size() > 0) {
 			ExecutableElement constructor = constructors.iterator().next();
 			
-			ParameterElement[] constructorAditionalParameters = parametersResolver.getConstructorAditionalParameters();
+			ParameterElement[] constructorAditionalParameters = parametersResolverProvider.getParameterResolver(UsageType.DEFINITION).getConstructorAditionalParameters();
 			
 			for (VariableElement parameter: constructor.getParameters()) {
 				String name = getParameterName(parameter, constructorAditionalParameters);
