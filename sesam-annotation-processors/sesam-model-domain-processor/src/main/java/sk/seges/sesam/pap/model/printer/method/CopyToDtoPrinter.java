@@ -24,7 +24,7 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferObjectElementPrinter {
@@ -33,16 +33,16 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 
 	protected ElementHolderTypeConverter elementHolderTypeConverter;
 	
-	public CopyToDtoPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, 
-			RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
-		super(converterProviderPrinter, parametersResolver, entityResolver, roundEnv, processingEnv);
+	public CopyToDtoPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter, EntityResolver entityResolver, 
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+		super(converterProviderPrinter, parametersResolverProvider, entityResolver, roundEnv, processingEnv);
 		this.pw = pw;
 		this.elementHolderTypeConverter = elementHolderTypeConverter;
 	}
 	
 	@Override
 	public void print(TransferObjectContext context) {
-		copy(context, pw, new CopyToDtoMethodPrinter(converterProviderPrinter, elementHolderTypeConverter, parametersResolver, entityResolver, roundEnv, processingEnv));
+		copy(context, pw, new CopyToDtoMethodPrinter(converterProviderPrinter, elementHolderTypeConverter, parametersResolverProvider, entityResolver, roundEnv, processingEnv));
 	}
 
 	@Override

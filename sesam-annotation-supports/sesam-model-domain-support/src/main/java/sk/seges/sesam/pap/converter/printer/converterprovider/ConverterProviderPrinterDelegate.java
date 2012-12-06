@@ -5,21 +5,22 @@ import javax.lang.model.element.Modifier;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.converter.model.ConverterProviderType;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 
 public class ConverterProviderPrinterDelegate {
 
 	private final FormattedPrintWriter pw;
-	private final ConverterConstructorParametersResolver parametersResolver;
+	private final ConverterConstructorParametersResolverProvider parametersResolverProvider;
 
-	public ConverterProviderPrinterDelegate(ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw) {
+	public ConverterProviderPrinterDelegate(ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw) {
 		this.pw = pw;
-		this.parametersResolver = parametersResolver;
+		this.parametersResolverProvider = parametersResolverProvider;
 	}
 
-	public void initialize(ConverterProviderType converterProviderType) {
+	public void initialize(ConverterProviderType converterProviderType, UsageType usageType) {
 
-		ParameterElement[] generatedParameters = converterProviderType.getConverterParameters(parametersResolver);
+		ParameterElement[] generatedParameters = converterProviderType.getConverterParameters(parametersResolverProvider.getParameterResolver(usageType));
 
 		for (ParameterElement generatedParameter : generatedParameters) {
 			pw.println(Modifier.PROTECTED.toString() + " " + Modifier.FINAL.toString() + " ", generatedParameter.getType(), " " + generatedParameter.getName()

@@ -23,7 +23,8 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
@@ -31,11 +32,11 @@ import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 public class AbstractServicePrinter {
 
 	protected final TransferObjectProcessingEnvironment processingEnv;
-	protected final ConverterConstructorParametersResolver parametersResolver;
+	protected final ConverterConstructorParametersResolverProvider parametersResolverProvider;
 	
-	protected AbstractServicePrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolver parametersResolver) {
+	protected AbstractServicePrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolverProvider parametersResolverProvider) {
 		this.processingEnv = processingEnv;
-		this.parametersResolver = parametersResolver;
+		this.parametersResolverProvider = parametersResolverProvider;
 	}
 	
 	/**
@@ -71,7 +72,7 @@ public class AbstractServicePrinter {
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 			
 				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolver, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
+					parameters.addAll(converter.getConverterParameters(parametersResolverProvider.getParameterResolver(UsageType.DEFINITION), ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
 					converters.add(converter);
 				}
 			}
@@ -84,7 +85,7 @@ public class AbstractServicePrinter {
 				ConverterTypeElement converter = dtoReturnType.getConverter();
 
 				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolver, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
+					parameters.addAll(converter.getConverterParameters(parametersResolverProvider.getParameterResolver(UsageType.DEFINITION), ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
 					converters.add(converter);
 				}
 			}

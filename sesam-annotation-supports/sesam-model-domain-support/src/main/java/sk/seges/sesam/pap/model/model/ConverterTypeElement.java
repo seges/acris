@@ -402,7 +402,7 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 			if (/*asElement() == null && */constructorAditionalParameters != null) {
 				for (ParameterElement additionalParameter: constructorAditionalParameters) {
 					if (getTypeUtils().isSameType(additionalParameter.getType(), converterParameter.getType())) {
-						converterParameter.setName(additionalParameter.getName());
+						converterParameter.merge(additionalParameter);
 					}
 				}
 			}

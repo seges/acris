@@ -6,7 +6,7 @@ import sk.seges.sesam.core.pap.model.ConverterParameter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
@@ -16,8 +16,8 @@ public class ServiceConstructorDefinitionPrinter extends AbstractParameterCollec
 	private int index = 0;
 
 	public ServiceConstructorDefinitionPrinter(TransferObjectProcessingEnvironment processingEnv, ServiceConverterParametersFilter parametersFilter,
-			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw) {
-		super(processingEnv, parametersFilter, parametersResolver, pw);
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw) {
+		super(processingEnv, parametersFilter, parametersResolverProvider, pw);
 	}
 
 	@Override

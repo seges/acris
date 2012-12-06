@@ -20,8 +20,8 @@ import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 public class ConverterProviderType extends DelegateMutableDeclaredType {
 
-	private final MutableDeclaredType mutableType;
-	private final MutableProcessingEnvironment processingEnv;
+	protected final MutableDeclaredType mutableType;
+	protected final MutableProcessingEnvironment processingEnv;
 	
 	public static final String CONVERTER_PROVIDER_SUFFIX = "ConverterProvider";
 
@@ -58,36 +58,25 @@ public class ConverterProviderType extends DelegateMutableDeclaredType {
 		
 		DefaultPackageValidator packageValidator = 
 			new DefaultPackageValidatorProvider().get(mutableType.getPackageName());
-//		String artifact = packageValidator.getArtifact();
 		
-		String className = null;
+		String projectName = processingEnv.getOptions().get(ConfigurableAnnotationProcessor.PROJECT_NAME_OPTION);
 		
-//		if (artifact == null) {
-			String projectName = processingEnv.getOptions().get(ConfigurableAnnotationProcessor.PROJECT_NAME_OPTION);
-			
-			int colonIndex = projectName.indexOf(":");
-			
-			if (colonIndex != -1) {
-				projectName = projectName.substring(0, colonIndex);
-			}
-			
-			String[] projectNameParts = projectName.split("-");
-			
-			projectName = "";
-			
-			for (String projectNamePart: projectNameParts) {
-				projectName += MethodHelper.toMethod(projectNamePart);
-			}
-			
-			className = projectName;
-//		} else {
-//			className = MethodHelper.toMethod(artifact);
-//		}
+		int colonIndex = projectName.indexOf(":");
 		
-		//TODO add handling for invalid package structure
+		if (colonIndex != -1) {
+			projectName = projectName.substring(0, colonIndex);
+		}
+		
+		String[] projectNameParts = projectName.split("-");
+		
+		projectName = "";
+		
+		for (String projectNamePart: projectNameParts) {
+			projectName += MethodHelper.toMethod(projectNamePart);
+		}
 		
 		MutableDeclaredType result = mutableType.clone();
-		result.setSimpleName(className + CONVERTER_PROVIDER_SUFFIX);
+		result.setSimpleName(projectName + CONVERTER_PROVIDER_SUFFIX);
 		
 		if (packageValidator.isValid()) {
 			result.changePackage(packageValidator.getGroup() + "." + packageValidator.getArtifact() + "." + packageValidator.getLocationType().getName());

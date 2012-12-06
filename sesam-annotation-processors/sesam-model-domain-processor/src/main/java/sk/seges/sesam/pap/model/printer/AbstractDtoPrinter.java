@@ -12,15 +12,15 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.AbstractConverterPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class AbstractDtoPrinter extends AbstractConverterPrinter {
 
-	protected AbstractDtoPrinter(ConverterConstructorParametersResolver parametersResolver, TransferObjectProcessingEnvironment processingEnv) {
-		super(parametersResolver, processingEnv);
+	protected AbstractDtoPrinter(ConverterConstructorParametersResolverProvider parametersResolverProvider, TransferObjectProcessingEnvironment processingEnv) {
+		super(parametersResolverProvider, processingEnv);
 	}
 	
 	protected String printLocalConverter(TransferObjectContext context, ConverterTargetType targetType, FormattedPrintWriter pw) {

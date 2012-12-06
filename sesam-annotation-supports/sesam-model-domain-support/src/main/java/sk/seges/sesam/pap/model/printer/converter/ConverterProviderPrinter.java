@@ -45,8 +45,9 @@ import sk.seges.sesam.pap.model.model.api.HasConverter;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
@@ -61,12 +62,15 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	private static final String TARGET_CLASS_PARAMETER_NAME = "objClass";
 
 	protected final FormattedPrintWriter pw;
+	protected UsageType usageType;
 	
 	private Map<String, ConverterTypeElement> converterCache = new HashMap<String, ConverterTypeElement>();
 	
-	public ConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolver parametersResolver) {
-		super(parametersResolver, processingEnv);
+	public ConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv, 
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, UsageType usageType) {
+		super(parametersResolverProvider, processingEnv);
 		this.pw = pw;
+		this.usageType = usageType;
 	}
 
 	/**
@@ -153,6 +157,12 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		pw.print(">");
 	}
 
+	public UsageType changeUsage(UsageType usageType) {
+		UsageType previousUsage = this.usageType;
+		this.usageType = usageType;
+		return previousUsage;
+	}
+	
 	public void printConverterMethods(boolean supportExtends, ConverterProviderMethodType converterProviderMethodType, ConverterInstancerType converterInstancerType) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
 			if (converterProviderMethodType.equals(ConverterProviderMethodType.ENSURED) || converterProviderMethodType.equals(ConverterProviderMethodType.ALL)) {
@@ -167,7 +177,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	}
 
 	public List<ConverterParameter> getConverterParametersDefinition(ConverterTypeElement converterTypeElement, ConverterInstancerType converterInstancerType) {
-		return converterTypeElement.getConverterParameters(parametersResolver, converterInstancerType);
+		return converterTypeElement.getConverterParameters(parametersResolverProvider.getParameterResolver(usageType), converterInstancerType);
 	}
 	
 	protected void printConverterParametersDefinition(List<ConverterParameter> converterParameters, ConverterTypeElement converterTypeElement) {
@@ -184,7 +194,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	}
 
 	protected ParameterElement[] getConverterParameters(ConverterTypeElement converterTypeElement, ExecutableElement method) {
-		return parametersResolver.getConstructorAditionalParameters();
+		return parametersResolverProvider.getParameterResolver(usageType).getConstructorAditionalParameters();
 	}
 	
 	protected int printConverterParametersUsage(List<ConverterParameter> converterParameters) {

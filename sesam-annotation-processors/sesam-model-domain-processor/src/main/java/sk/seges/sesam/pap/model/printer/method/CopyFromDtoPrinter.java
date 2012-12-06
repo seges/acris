@@ -23,7 +23,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
 public class CopyFromDtoPrinter extends AbstractMethodPrinter implements TransferObjectElementPrinter {
@@ -31,15 +31,16 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 	protected final FormattedPrintWriter pw;
 	protected final Set<String> nestedInstances;
 	
-	public CopyFromDtoPrinter(Set<String> nestedInstances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
-		super(converterProviderPrinter, parametersResolver, entityResolver, roundEnv, processingEnv);
+	public CopyFromDtoPrinter(Set<String> nestedInstances, ConverterProviderPrinter converterProviderPrinter, EntityResolver entityResolver, 
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, RoundEnvironment roundEnv, TransferObjectProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
+		super(converterProviderPrinter, parametersResolverProvider, entityResolver, roundEnv, processingEnv);
 		this.nestedInstances = nestedInstances;
 		this.pw = pw;
 	}
 	
 	@Override
 	public void print(TransferObjectContext context) {
-		copy(context, pw, new CopyFromDtoMethodPrinter(nestedInstances, converterProviderPrinter, entityResolver, parametersResolver, roundEnv, processingEnv));
+		copy(context, pw, new CopyFromDtoMethodPrinter(nestedInstances, converterProviderPrinter, entityResolver, parametersResolverProvider, roundEnv, processingEnv));
 	}
 
 	@Override
