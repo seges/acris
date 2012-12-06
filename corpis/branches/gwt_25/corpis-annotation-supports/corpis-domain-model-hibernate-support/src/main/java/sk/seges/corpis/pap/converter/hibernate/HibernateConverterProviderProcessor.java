@@ -18,30 +18,40 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
+import sk.seges.sesam.pap.model.resolver.CacheableConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class HibernateConverterProviderProcessor extends ConverterProviderProcessor {
 
 	@Override
-	protected ConverterConstructorParametersResolver getParametersResolver() {
-		return new HibernateConverterParameterResolver(processingEnv);
-	}
-	
-	@Override
-	protected ConverterConstructorParametersResolver getConverterMethodParametersResolver() {
-		return new HibernateConverterParameterResolver(processingEnv) {
+	protected ConverterConstructorParametersResolverProvider getParametersResolverProvider() {
+		return new CacheableConverterConstructorParametersResolverProvider() {
 
 			@Override
-			protected boolean isConverterCacheParameterPropagated() {
-				return false;
+			public ConverterConstructorParametersResolver constructParameterResolver(UsageType usageType) {
+				switch (usageType) {
+					case USAGE_OUTSIDE_CONVERTER_PROVIDER:
+					case USAGE_INSIDE_CONVERTER_PROVIDER:
+						return new HibernateConverterParameterResolver(processingEnv) {
+							@Override
+							protected boolean isConverterCacheParameterPropagated() {
+								return false;
+							}
+						};
+					default:
+						return new HibernateConverterParameterResolver(processingEnv);
+				}
 			}
 		};
-	}	
+		
+	}
 
 	@Override
 	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv) {
-		return new HibernateConverterProviderPrinter(pw, processingEnv, getConverterMethodParametersResolver()) {
+		return new HibernateConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(), UsageType.USAGE_INSIDE_CONVERTER_PROVIDER) {
 
 			@Override
 			protected List<ConverterParameter> getConverterProviderMethodAdditionalParameters(ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType) {
@@ -52,8 +62,8 @@ public class HibernateConverterProviderProcessor extends ConverterProviderProces
 
 	protected ConverterProviderElementPrinter[] getNestedPrinters(FormattedPrintWriter pw) {
 		return new ConverterProviderElementPrinter[] {
-			new DomainMethodConverterProviderPrinter(getConverterMethodParametersResolver(), processingEnv, pw, ensureConverterProviderPrinter(pw, processingEnv)),
-			new DtoMethodConverterProviderPrinter(getConverterMethodParametersResolver(), processingEnv, pw, ensureConverterProviderPrinter(pw, processingEnv))
+			new DomainMethodConverterProviderPrinter(getParametersResolverProvider(), processingEnv, pw, ensureConverterProviderPrinter(pw, processingEnv)),
+			new DtoMethodConverterProviderPrinter(getParametersResolverProvider(), processingEnv, pw, ensureConverterProviderPrinter(pw, processingEnv))
 		};
 	}
 }

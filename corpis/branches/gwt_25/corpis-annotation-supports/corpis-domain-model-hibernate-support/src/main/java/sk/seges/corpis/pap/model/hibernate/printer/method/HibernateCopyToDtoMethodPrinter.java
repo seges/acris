@@ -19,16 +19,16 @@ import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyToDtoMethodPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 
 public class HibernateCopyToDtoMethodPrinter extends CopyToDtoMethodPrinter {
 
 	private final HibernateEntityResolver entityResolver;
 	
 	public HibernateCopyToDtoMethodPrinter(ConverterProviderPrinter converterProviderPrinter, ElementHolderTypeConverter elementHolderTypeConverter,
-			HibernateEntityResolver entityResolver, ConverterConstructorParametersResolver parametersResolver, RoundEnvironment roundEnv,
+			HibernateEntityResolver entityResolver, ConverterConstructorParametersResolverProvider parametersResolverProvider, RoundEnvironment roundEnv,
 			TransferObjectProcessingEnvironment processingEnv) {
-		super(converterProviderPrinter, elementHolderTypeConverter, parametersResolver, entityResolver, roundEnv, processingEnv);
+		super(converterProviderPrinter, elementHolderTypeConverter, parametersResolverProvider, entityResolver, roundEnv, processingEnv);
 		this.entityResolver = entityResolver;
 	}
 

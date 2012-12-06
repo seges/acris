@@ -13,6 +13,8 @@ import sk.seges.sesam.pap.model.hibernate.resolver.HibernateConverterParameterRe
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
+import sk.seges.sesam.pap.model.resolver.CacheableConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -24,8 +26,14 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	}
 
 	@Override
-	protected ConverterConstructorParametersResolver getParametersResolver() {
-		return new HibernateConverterParameterResolver(processingEnv);
+	protected ConverterConstructorParametersResolverProvider getParametersResolverProvider() {
+		return new CacheableConverterConstructorParametersResolverProvider() {
+			
+			@Override
+			public ConverterConstructorParametersResolver constructParameterResolver(UsageType usageType) {
+				return new HibernateConverterParameterResolver(processingEnv);
+			}
+		};
 	}
 	
 	@Override
@@ -41,9 +49,9 @@ public class HibernateTransferObjectConverterProcessor extends TransferObjectCon
 	@Override
 	protected TransferObjectElementPrinter[] getElementPrinters(FormattedPrintWriter pw) {
 		return new TransferObjectElementPrinter[] {
-				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolver(), processingEnv, pw),
-				new HibernateCopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw),
-				new HibernateCopyFromDtoPrinter(nestedInstances, converterProviderPrinter, getEntityResolver(), getParametersResolver(), roundEnv, processingEnv, pw)
+				new ConverterEqualsPrinter(converterProviderPrinter, getEntityResolver(), getParametersResolverProvider(), processingEnv, pw),
+				new HibernateCopyToDtoPrinter(converterProviderPrinter, getElementTypeConverter(), getEntityResolver(), getParametersResolverProvider(), roundEnv, processingEnv, pw),
+				new HibernateCopyFromDtoPrinter(nestedInstances, converterProviderPrinter, getEntityResolver(), getParametersResolverProvider(), roundEnv, processingEnv, pw)
 		};
 	}
 }

@@ -11,14 +11,14 @@ import sk.seges.corpis.pap.service.hibernate.accessor.TransactionPropagationAcce
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.service.printer.ServiceMethodConverterPrinter;
 
 public class HibernateServiceMethodConverterPrinter extends ServiceMethodConverterPrinter {
 
-	public HibernateServiceMethodConverterPrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolver parametersResolver,
+	public HibernateServiceMethodConverterPrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolverProvider parametersResolverProvider,
 			FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
+		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
 	}
 
 	protected Class<?>[] getSupportedAnnotations(Element method) {

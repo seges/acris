@@ -10,15 +10,16 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 
 public class HibernateConverterProviderPrinter extends ConverterProviderPrinter {
 
 	protected TransferObjectProcessingEnvironment processingEnv;
 	
 	public HibernateConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolver parametersResolver) {
-		super(pw, processingEnv, parametersResolver);
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, UsageType usageType) {
+		super(pw, processingEnv, parametersResolverProvider, usageType);
 		this.processingEnv = processingEnv;
 	}
 	
@@ -39,9 +40,9 @@ public class HibernateConverterProviderPrinter extends ConverterProviderPrinter 
 	protected ParameterElement[] getConverterParameters(ConverterTypeElement converterTypeElement, ExecutableElement method) {
 		
 		if (converterTypeElement == null) {
-			return parametersResolver.getConstructorAditionalParameters();
+			return parametersResolverProvider.getParameterResolver(usageType).getConstructorAditionalParameters();
 		}
 		
-		return toParameters(converterTypeElement.getConverterParameters(parametersResolver));
+		return toParameters(converterTypeElement.getConverterParameters(parametersResolverProvider.getParameterResolver(usageType)));
 	}
 }

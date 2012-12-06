@@ -7,7 +7,8 @@ import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
+import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
 import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.converterprovider.ServiceConverterProviderPrinter;
@@ -15,16 +16,18 @@ import sk.seges.sesam.pap.service.printer.converterprovider.ServiceConverterProv
 public class ServiceConverterProviderMethodPrinter extends ServiceConverterProviderPrinter {
 
 	public ServiceConverterProviderMethodPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolver parametersResolver, FormattedPrintWriter pw,
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw,
 			ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, parametersResolver, pw, converterProviderPrinter);
+		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
 	}
 
 	@Override
 	protected void initialize(ServiceTypeElement serviceTypeElement) {
 
+		UsageType previousUsageType = converterProviderPrinter.changeUsage(UsageType.USAGE_CONSTRUCTOR_CONVERTER_PROVIDER);
+
 		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
-		ParameterElement[] generatedParameters = serviceConvertProviderType.getConverterParameters(parametersResolver);
+		ParameterElement[] generatedParameters = serviceConvertProviderType.getConverterParameters(parametersResolverProvider.getParameterResolver(UsageType.USAGE_CONSTRUCTOR_CONVERTER_PROVIDER));
 				
 		pw.print(Modifier.PROTECTED.name().toLowerCase() + " ", serviceConvertProviderType, " " + HibernateServiceConverterProviderParameterResolver.GET_CONVERTER_PROVIDER_METHOD + "(");
 
@@ -50,6 +53,9 @@ public class ServiceConverterProviderMethodPrinter extends ServiceConverterProvi
 		pw.println(");");
 		pw.println("}");
 		pw.println();
+		
+		converterProviderPrinter.changeUsage(previousUsageType);
+		
 		super.initialize(serviceTypeElement);
-	}	
+	}
 }

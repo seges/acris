@@ -1,6 +1,7 @@
 package sk.seges.sesam.pap.model.hibernate.resolver;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.service.resolver.ServiceConverterConstructorParametersResolver;
 
@@ -17,6 +18,11 @@ public class HibernateConverterProviderParameterResolver extends ServiceConverte
 				return false;
 			}
 		};
+	}
+
+	@Override
+	protected MutableReferenceType getConverterProviderReference() {
+		return processingEnv.getTypeUtils().getReference(null, THIS);
 	}
 
 	@Override
