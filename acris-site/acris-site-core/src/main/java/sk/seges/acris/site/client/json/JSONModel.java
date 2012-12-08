@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -112,6 +113,15 @@ public abstract class JSONModel extends JavaScriptObject {
     	set(key, jsArray);
     }
     
+    public final void set(String key, Integer[] array) {
+    	JsArrayInteger jsArray = createIntegerArray();
+    	jsArray.setLength(array.length);
+    	for (int i = 0; i < array.length; i++) {
+    		jsArray.set(i, array[i]);
+    	}
+    	set(key, jsArray);
+    }
+    
     public final Integer getInteger(String key) {
     	if(!hasKey(key)) {
     		return null;
@@ -165,6 +175,18 @@ public abstract class JSONModel extends JavaScriptObject {
 		}
 		return map;
 	}
+	
+	public final Integer[] getIntegerArray(String key) {
+    	if(!hasKey(key)) {
+    		return null;
+    	}
+    	JsArrayInteger jsonArray = getJsIntegerArray(key);
+    	Integer[] array = new Integer[jsonArray.length()];
+    	for(int i = 0; i < jsonArray.length(); i++) {
+    		array[i] = jsonArray.get(i);
+    	}
+    	return array;
+	}
 
 	public final void setStringIntMap(String key, Map<String, Integer> map) {
 		throw new RuntimeException("Not yet implemented");
@@ -182,7 +204,15 @@ public abstract class JSONModel extends JavaScriptObject {
     	return this[key] ? this[key] : null;
 	}-*/;
     
+    public final native JsArrayInteger getJsIntegerArray(String key) /*-{
+		return this[key] ? this[key] : null;
+	}-*/;
+    
     private final native JsArrayString createStringArray() /*-{
+    	return new Array();
+    }-*/;
+    
+    private final native JsArrayInteger createIntegerArray() /*-{
     	return new Array();
     }-*/;
 }
