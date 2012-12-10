@@ -1,10 +1,12 @@
 package sk.seges.sesam.pap.converter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.ConverterParameter;
@@ -19,6 +21,7 @@ import sk.seges.sesam.pap.converter.printer.converterprovider.ConverterProviderP
 import sk.seges.sesam.pap.converter.printer.converterprovider.DomainMethodConverterProviderPrinter;
 import sk.seges.sesam.pap.converter.printer.converterprovider.DtoMethodConverterProviderPrinter;
 import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
+import sk.seges.sesam.pap.model.annotation.ConverterProvider;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
@@ -57,6 +60,12 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 		return new MutableDeclaredType[] {
 			new ConverterProviderType(context.getMutableType(), processingEnv)
 		};
+	}
+
+	@Override
+	protected void printAnnotations(ProcessorContext context) {
+		super.printAnnotations(context);
+		context.getPrintWriter().println("@", ConverterProvider.class);
 	}
 
 	protected final MutableReferenceType getThisReference() {
@@ -128,7 +137,7 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 
 		ConverterProviderPrinterDelegate converterProviderPrinterDelegate = new ConverterProviderPrinterDelegate(getParametersResolverProvider(), context.getPrintWriter());
 		ConverterProviderType converterProviderType = new ConverterProviderType(context.getMutableType(), processingEnv);
-		converterProviderPrinterDelegate.initialize(converterProviderType, UsageType.DEFINITION);
+		converterProviderPrinterDelegate.initialize(converterProviderType, UsageType.DEFINITION, new HashSet<Element>());
 
 		for (ConverterProviderElementPrinter nestedElementPrinter: getNestedPrinters(context.getPrintWriter())) {
 

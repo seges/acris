@@ -213,9 +213,10 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	}
 
 	private boolean isTyped(ConverterTypeElement converterTypeElement) {
-		DomainType domain = converterTypeElement.getDomain();
+		//DomainType domain = converterTypeElement.getDomain();
+//		return (domain != null && domain.getKind().isDeclared() && ((DomainDeclaredType)domain).hasTypeParameters());
 		
-		return (domain != null && domain.getKind().isDeclared() && ((DomainDeclaredType)domain).hasTypeParameters());
+		return (converterTypeElement != null && converterTypeElement.hasTypeParameters());
 	}
 	
 	private MutableTypeVariable[] toTypeVariables(MutableDeclaredType domainType) {
@@ -266,7 +267,8 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 			pw.print(typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX, converterBase.getTypeVariables().get(0)));
 			pw.print(", ",typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX, converterBase.getTypeVariables().get(1)));
 			pw.print(">");
-			pw.print(" ", getTypedConverter(converterTypeElement, isTyped(converterTypeElement)));
+			pw.print(" ", getTypedConverter(converterTypeElement, /*processingEnv.getTypeUtils().implementsType(converterTypeElement, 
+					processingEnv.getTypeUtils().toMutableType(InstantiableDtoConverter.class)) */isTyped(converterTypeElement)));
 		} else {
 //			pw.print(DtoConverter.class, "<" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + ">");
 //			pw.print(getTypedConverter(converterTypeElement, false));

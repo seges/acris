@@ -56,8 +56,8 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 							return processingEnv.getTypeUtils().getReference(null, THIS);
 						}
 					};
-					default:
-						return new ServiceConverterConstructorParametersResolver(processingEnv);
+				default:
+					return new ServiceConverterConstructorParametersResolver(processingEnv);
 			}
 		}
 		
@@ -127,7 +127,7 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
 				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
 				new ServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter),
-				new ServiceConverterProviderPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter)
+				new ServiceConverterProviderPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter, getClassPathTypes())
 		};
 	}
 
