@@ -2,10 +2,12 @@ package sk.seges.sesam.pap.service.printer.converterprovider;
 
 import java.util.Set;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
+import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -14,6 +16,7 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.converter.printer.ConverterVerifier;
 import sk.seges.sesam.pap.converter.printer.api.ConverterProviderElementPrinter;
 import sk.seges.sesam.pap.converter.printer.converterprovider.ConverterProviderPrinterDelegate;
+import sk.seges.sesam.pap.model.annotation.ConverterProvider;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -32,11 +35,14 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 	
 	private final ConverterProviderPrinterDelegate converterProviderPrinterDelegate;
 	protected UsageType previousUsageType;
+	protected final ClassPathTypes classPathTypes;
 	
 	public ServiceConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter,
+			ClassPathTypes classPathTypes) {
 		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
 		this.converterProviderPrinterDelegate = new ConverterProviderPrinterDelegate(parametersResolverProvider, pw);
+		this.classPathTypes = classPathTypes;
 	}
 	
 	@Override
@@ -49,6 +55,10 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 		converterProviderPrinter.changeUsage(previousUsageType);
 	}
 	
+	protected Set<? extends Element> getConverterProviderDelegates() {
+		return classPathTypes.getElementsAnnotatedWith(ConverterProvider.class);
+	}
+
 	protected void initialize(ServiceTypeElement serviceTypeElement) {
 				
 		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
@@ -57,7 +67,7 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 		pw.println(" {");
 		pw.println();
 
-		converterProviderPrinterDelegate.initialize(serviceConvertProviderType, UsageType.USAGE_CONSTRUCTOR_CONVERTER_PROVIDER);
+		converterProviderPrinterDelegate.initialize(serviceConvertProviderType, UsageType.USAGE_CONSTRUCTOR_CONVERTER_PROVIDER, getConverterProviderDelegates());
 
 		previousUsageType = converterProviderPrinter.changeUsage(UsageType.USAGE_INSIDE_CONVERTER_PROVIDER);
 	}
