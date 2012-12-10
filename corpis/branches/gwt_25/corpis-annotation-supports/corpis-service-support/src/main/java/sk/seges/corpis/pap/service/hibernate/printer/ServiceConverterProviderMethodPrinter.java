@@ -3,6 +3,7 @@ package sk.seges.corpis.pap.service.hibernate.printer;
 import javax.lang.model.element.Modifier;
 
 import sk.seges.corpis.pap.model.printer.converter.HibernateServiceConverterProviderParameterResolver;
+import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -17,8 +18,8 @@ public class ServiceConverterProviderMethodPrinter extends ServiceConverterProvi
 
 	public ServiceConverterProviderMethodPrinter(TransferObjectProcessingEnvironment processingEnv,
 			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw,
-			ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
+			ConverterProviderPrinter converterProviderPrinter, ClassPathTypes classPathTypes) {
+		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter, classPathTypes);
 	}
 
 	@Override

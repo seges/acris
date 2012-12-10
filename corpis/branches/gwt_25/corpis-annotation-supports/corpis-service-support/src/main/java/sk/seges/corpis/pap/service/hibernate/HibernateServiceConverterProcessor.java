@@ -49,6 +49,17 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 								return processingEnv.getTypeUtils().getReference(null, THIS);
 							};
 						};
+					case CONSTRUCTOR_CONVERTER_PROVIDER: 
+						return new HibernateServiceParameterResolver(processingEnv) {
+							public boolean isEntityManagerPropagated() {
+								return false;
+							};
+							
+							@Override
+							protected boolean isConverterCacheParameterPropagated() {
+								return true;
+							}
+						};
 					default:
 						return new HibernateServiceParameterResolver(processingEnv);
 				}
@@ -64,7 +75,7 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
 				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
 				new HibernateServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, getConverterProviderPrinter(pw, serviceTypeElement)),
-				new ServiceConverterProviderMethodPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter)
+				new ServiceConverterProviderMethodPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter, getClassPathTypes())
 		};
 	}
 	
