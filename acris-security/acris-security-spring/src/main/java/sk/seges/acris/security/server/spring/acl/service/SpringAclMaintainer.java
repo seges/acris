@@ -214,6 +214,14 @@ public class SpringAclMaintainer implements AclManager {
 		PrincipalSid sid = new PrincipalSid(role.getName());
 		resetAclRecords(objectClass, aclId, sid, permissions);
 	}
+	
+	@Override
+	@RunAs(ACL_MAINTAINER_ROLE)
+	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, String userName,
+			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
+		PrincipalSid sid = new PrincipalSid(userName);
+		resetAclRecords(objectClass, aclId, sid, permissions);
+	}
 
 	private void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long securedId, Sid sid,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {

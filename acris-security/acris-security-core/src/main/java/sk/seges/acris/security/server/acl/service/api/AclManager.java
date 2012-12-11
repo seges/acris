@@ -26,5 +26,6 @@ public interface AclManager {
 	
 	void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData user, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
 	void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
+	void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, String userName, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
 
 }
