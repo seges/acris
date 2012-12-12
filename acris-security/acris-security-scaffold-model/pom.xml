@@ -6,9 +6,9 @@
 
 	<parent>
 		<groupId>sk.seges.acris</groupId>
-		<artifactId>acris-site-parent</artifactId>
+		<artifactId>acris-security-parent</artifactId>
 		<version>1.2.2-SNAPSHOT</version>
-		<relativePath>../acris-site-parent</relativePath>
+		<relativePath>../acris-security-parent</relativePath>
 	</parent>
 
 	<dependencies>
