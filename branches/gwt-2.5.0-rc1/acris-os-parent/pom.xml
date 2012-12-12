@@ -65,6 +65,7 @@
 		<module>../acris-theme</module>
 		<module>../acris-json-api</module>
 		<module>../acris-json</module>
+		<module>../acris-theme</module>
 		<module>../acris-json-migration</module>
 		<module>../acris-common</module>
 		<module>../acris-external</module>
