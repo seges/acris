@@ -18,7 +18,7 @@
 	<description>Build Project for Acris Theme</description>
 
 	<modules>
-		<!--module>acris-theme-parent</module-->
+		<module>acris-theme-parent</module>
 	</modules>
 
 </project>
