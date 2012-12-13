@@ -82,14 +82,17 @@ public class SpringAclMaintainer implements AclManager {
 		return new SpringAclSidDTO(authentication);
 	}
 
+	@Override
 	public void removeAclRecords(Class<? extends ISecuredObject<?>> securedClass, UserData user) {
 		removeAclRecords(securedClass, createPrincipalSid(user.getUsername()));
 	}
 
+	@Override
 	public void removeAclRecords(Long aclId, String className, UserData user) {
 		removeAclRecords(aclId, className, createPrincipalSid(user.getUsername()));
 	}
 
+	@Override
 	public void removeAclRecords(Long aclId, String className) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -101,6 +104,7 @@ public class SpringAclMaintainer implements AclManager {
 		removeAclRecords(aclId, className, createPrincipalSid(authentication));
 	}
 
+	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void removeSecuredObjectIdentity(Long aclId, String className) {
 		removeAclRecords(aclId, className, (SpringAclSid)null);
@@ -164,23 +168,27 @@ public class SpringAclMaintainer implements AclManager {
 		aclService.deleteAcl(objectIdentity, false);
 	}
 
+	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void setAclRecords(ISecuredObject<?> securedObject,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		setAclRecords(securedObject, getSidFromContext(), permissions);
 	}
 
+	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
 		setAclRecords(securedObject, getSidFromContext(), permissions, updateParent);
 	}
 	
+	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void setAclRecords(ISecuredObject<?> securedObject, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		setAclRecords(securedObject, user, permissions, true);
 	}
 
+	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void setAclRecords(ISecuredObject<?> securedObject, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
@@ -188,6 +196,7 @@ public class SpringAclMaintainer implements AclManager {
 		setAclRecords(securedObject, sid, permissions, updateParent);
 	}
 
+	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void setAclRecords(ISecuredObject<?> securedObject, RoleData role,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
@@ -200,6 +209,7 @@ public class SpringAclMaintainer implements AclManager {
 		setAclRecords(securedObject, sid, permissions, updateParent);
 	}
 
+	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
@@ -212,6 +222,14 @@ public class SpringAclMaintainer implements AclManager {
 	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, RoleData role,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(role.getName());
+		resetAclRecords(objectClass, aclId, sid, permissions);
+	}
+	
+	@Override
+	@RunAs(ACL_MAINTAINER_ROLE)
+	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, String userName,
+			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
+		PrincipalSid sid = new PrincipalSid(userName);
 		resetAclRecords(objectClass, aclId, sid, permissions);
 	}
 
@@ -341,8 +359,8 @@ public class SpringAclMaintainer implements AclManager {
 				acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
 			} else {
 //				if (!exactMatch) {
-					acl.deleteAce(aceIndex);
-					acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
+				acl.deleteAce(aceIndex);
+				acl.insertAce(aceIndex, permissionFactory.buildFromMask(authorityMask), sid, true);
 //				}
 			}
 		}
