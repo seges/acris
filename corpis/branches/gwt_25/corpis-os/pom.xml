@@ -273,6 +273,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>corpis-news-domain-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>corpis-manufacture-domain-model</artifactId>
 				<version>${project.version}</version>
 			</dependency>

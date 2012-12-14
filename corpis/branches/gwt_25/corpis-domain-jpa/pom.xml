@@ -21,5 +21,6 @@
 		<module>corpis-payment-domain-jpa</module>
 		<module>corpis-transportation-domain-jpa</module>
 		<module>corpis-price-domain-jpa</module>
+		<module>corpis-news-domain-jpa</module>
 	</modules>
 </project>

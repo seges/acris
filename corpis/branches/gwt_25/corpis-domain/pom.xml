@@ -60,5 +60,6 @@
 		<module>corpis-payment-domain-model</module>
 		<module>corpis-transportation-domain-model</module>
 		<module>corpis-price-domain-api</module>
+		<module>corpis-news-domain-model</module>
 	</modules>
 </project>

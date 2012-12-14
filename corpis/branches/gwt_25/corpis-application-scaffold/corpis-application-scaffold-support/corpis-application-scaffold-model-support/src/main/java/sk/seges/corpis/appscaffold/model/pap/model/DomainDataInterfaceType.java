@@ -2,7 +2,9 @@ package sk.seges.corpis.appscaffold.model.pap.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -14,6 +16,7 @@ import sk.seges.corpis.appscaffold.model.pap.accessor.DomainInterfaceAccessor;
 import sk.seges.corpis.appscaffold.model.pap.accessor.PersistentObjectAccessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.ImplementationType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LayerType;
@@ -57,7 +60,7 @@ public class DomainDataInterfaceType extends AbstractDataType {
 		super(null, processingEnv);
 		setDelegate(processingEnv.getTypeUtils().toMutableType(dataInterfaceType.asType()));
 	}
-
+	
 	public List<MutableDeclaredType> getBaseObjects() {
 		List<MutableDeclaredType> baseObjects = new ArrayList<MutableDeclaredType>();
 		
@@ -70,19 +73,69 @@ public class DomainDataInterfaceType extends AbstractDataType {
 		
 		return baseObjects;
 	}
+
+	protected Set<? extends MutableTypeMirror> getDataBounds(Set<? extends MutableTypeMirror> bounds) {
+		Set<MutableTypeMirror> result = new HashSet<MutableTypeMirror>();
+		
+		if (bounds == null) {
+			return result;
+		}
+		
+		for (MutableTypeMirror bound: bounds) {
+			result.add(getDataObject(bound));
+		}
+		
+		return result;
+	}
+
+	protected MutableTypeMirror getDataObject(MutableTypeMirror type) {
+		switch (type.getKind()) {
+			case CLASS:
+			case INTERFACE:
+				return getDataObject((MutableDeclaredType)type);
+			case TYPEVAR:
+				return getDataObject((MutableTypeVariable)type);
+		}
+		
+		return type;
+	}
 	
+	protected MutableTypeVariable getDataObject(MutableTypeVariable typeVariable) {
+		Set<? extends MutableTypeMirror> lowerBounds = getDataBounds(typeVariable.getLowerBounds());
+		Set<? extends MutableTypeMirror> upperBounds = getDataBounds(typeVariable.getUpperBounds());
+		return processingEnv.getTypeUtils().getTypeVariable(typeVariable.getVariable(), lowerBounds.toArray(new MutableTypeMirror[] {}),
+				upperBounds.toArray(new MutableTypeMirror[] {}));
+	}
+	
+	protected MutableDeclaredType getDataObject(MutableDeclaredType type) {
+		
+		if (type.asType() != null) {
+			if (new DomainInterfaceAccessor(((DeclaredType)type.asType()).asElement(), processingEnv).isValid()) {
+				return new DomainDataInterfaceType((MutableDeclaredType)type, processingEnv);
+			}
+		}
+		
+		if (type.hasTypeParameters()) {
+			List<? extends MutableTypeVariable> typeVariables = type.getTypeVariables();
+			MutableTypeVariable[] dataTypeVariables = new MutableTypeVariable[typeVariables.size()];
+			
+			int i = 0;
+			for (MutableTypeVariable typeVariable: typeVariables) {
+				dataTypeVariables[i++] = getDataObject(typeVariable);
+			}
+			
+			type.setTypeVariables(dataTypeVariables);
+		}
+		
+		return type;
+	}
+
 	public List<MutableDeclaredType> getDataInterfaces() {
 		List<MutableDeclaredType> interfaces = new ArrayList<MutableDeclaredType>();
 		
 		for (MutableTypeMirror domainInterface : domainDataType.getInterfaces()) {
 			MutableDeclaredType d = (MutableDeclaredType) domainInterface;
-			if (new DomainInterfaceAccessor(((DeclaredType)d.asType()).asElement(), processingEnv).isValid()) {
-				DomainDataInterfaceType domainDataInterfaceType = new DomainDataInterfaceType((MutableDeclaredType)domainInterface, processingEnv);
-				interfaces.add(domainDataInterfaceType);
-			} else {
-				interfaces.add(d);
-			}
-		
+			interfaces.add(getDataObject(d));
 		}
 		
 		return interfaces;
