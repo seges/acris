@@ -35,22 +35,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>net.sf.gilead</groupId>
-			<artifactId>gilead-core</artifactId>
-			<version>${gilead.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring</artifactId>				
-				</exclusion>
-				<exclusion>
-				    <groupId>org.hibernate</groupId>
-				    <artifactId>hibernate</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>

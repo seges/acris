@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
 import sk.seges.corpis.domain.pay.tatra.CardPaySettings;
 
 /**
@@ -19,7 +18,7 @@ import sk.seges.corpis.domain.pay.tatra.CardPaySettings;
 @Entity
 @Table(name = "webid_aware_cardpay_settings")//, uniqueConstraints = @UniqueConstraint(columnNames = {WebIDAwareCardPaySettings.WEB_ID, CardPaySettings.MID}))
 @SequenceGenerator(name = WebIDAwarePaymentMethodSettings.SEQ_PAYMENT_METHOD_SETTINGS, sequenceName = WebIDAwarePaymentMethodSettings.SEQ_DB_NAME_PAYMENT_METHOD_SETTINGS, initialValue = 1)
-public class WebIDAwareCardPaySettings extends LightEntity implements WebIDAwarePaymentMethodSettings {
+public class WebIDAwareCardPaySettings implements WebIDAwarePaymentMethodSettings {
 	private static final long serialVersionUID = 3252908128497837831L;
 	
 	@Id

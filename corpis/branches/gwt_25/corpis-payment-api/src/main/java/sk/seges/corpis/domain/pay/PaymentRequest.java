@@ -5,12 +5,10 @@ package sk.seges.corpis.domain.pay;
 
 import java.util.Map;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
-
 /**
  * @author ladislav.gazo
  */
-public class PaymentRequest extends LightEntity {
+public class PaymentRequest {
 	private static final long serialVersionUID = 7283067971179215106L;
 	
 	private String method;
