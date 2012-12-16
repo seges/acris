@@ -17,7 +17,6 @@
 		<module>../acris-site-dto</module>
 		<module>../acris-site-core</module>
 		<module>../acris-site-jpa</module>
-		<module>../acris-site-gilead</module>
 		<module>../acris-site-hibernate</module>
 		<module>../acris-site-spring</module>
 		<module>../acris-site-rpc</module>

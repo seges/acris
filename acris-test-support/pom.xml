@@ -59,12 +59,6 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 		
-		<!-- Gilead -->
-		<dependency>
-			<groupId>net.sf.gilead</groupId>
-			<artifactId>gilead4gwt</artifactId>
-		</dependency>
-		
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -84,12 +78,6 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<!-- GWT related dependencies -->
-		<dependency>
-			<groupId>com.google.code.gwtx</groupId>
-			<artifactId>gwtx</artifactId>
 		</dependency>
 	</dependencies>
 </project>

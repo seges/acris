@@ -42,21 +42,6 @@
 			<artifactId>acris-security-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.gilead</groupId>
-			<artifactId>gilead4gwt</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring</artifactId>				
-				</exclusion>
-			</exclusions>				
-		</dependency>
-		
-		<dependency>
-			<groupId>net.sf.gwt-widget</groupId>
-			<artifactId>gwt-sl</artifactId>
-		</dependency> 
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>

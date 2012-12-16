@@ -5,8 +5,8 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import sk.seges.acris.reporting.rpc.domain.ReportParameter;
 import sk.seges.acris.reporting.server.dao.api.IReportParameterDao;
+import sk.seges.acris.reporting.server.domain.jpa.JpaReportParameter;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
 /**
@@ -15,15 +15,15 @@ import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
  *
  */
 @Repository("reportParameterDao")
-public class ReportParameterDao extends AbstractHibernateCRUD<ReportParameter> implements IReportParameterDao<ReportParameter> {
+public class ReportParameterDao extends AbstractHibernateCRUD<JpaReportParameter> implements IReportParameterDao<JpaReportParameter> {
 
 	public ReportParameterDao() {
-		super(ReportParameter.class);
+		super(JpaReportParameter.class);
 	}
 
 	@Override
-	public ReportParameter getEntityInstance() {
-		return new ReportParameter();
+	public JpaReportParameter getEntityInstance() {
+		return new JpaReportParameter();
 	}
 	
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")

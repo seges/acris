@@ -1,7 +1,7 @@
 package sk.seges.acris.test.client.cardpay.view;
 
 import sk.seges.acris.test.client.cardpay.display.CardPayDisplay;
-import sk.seges.corpis.domain.pay.tatra.CardPayRequest;
+import sk.seges.corpis.domain.shared.pay.tatra.CardPayRequest;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.FormElement;

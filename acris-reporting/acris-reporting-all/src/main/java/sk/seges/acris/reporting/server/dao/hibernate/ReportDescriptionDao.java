@@ -7,19 +7,19 @@ import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.reporting.rpc.domain.ReportDescription;
 import sk.seges.acris.reporting.server.dao.api.IReportDescriptionDao;
+import sk.seges.acris.reporting.server.domain.jpa.JpaReportDescription;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 
 @Repository("reportDescriptionDao")
-public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescription> implements
-		IReportDescriptionDao<ReportDescription> {
+public class ReportDescriptionDao extends AbstractHibernateCRUD<JpaReportDescription> implements
+		IReportDescriptionDao<JpaReportDescription> {
 
 	public ReportDescriptionDao() {
-		super(ReportDescription.class);
+		super(JpaReportDescription.class);
 	}
 
-	public ReportDescription findUnique(sk.seges.sesam.dao.Page page) {
+	public JpaReportDescription findUnique(sk.seges.sesam.dao.Page page) {
 		return super.findUnique(page);
 	}
 
@@ -49,21 +49,21 @@ public class ReportDescriptionDao extends AbstractHibernateCRUD<ReportDescriptio
 	// }
 
 	@Override
-	public ReportDescription getEntityInstance() {
-		return new ReportDescription();
+	public JpaReportDescription getEntityInstance() {
+		return new JpaReportDescription();
 	}
 
 	@Override
 	@Transactional
-	public ReportDescription persist(ReportDescription entity) {
+	public JpaReportDescription persist(JpaReportDescription entity) {
 		entity.setId(null);
 		return super.persist(entity);
 	}
 
 	@Override
 	@Transactional
-	public ReportDescription findEntity(ReportDescription entity) {
-		ReportDescription rd = super.findEntity(entity);
+	public JpaReportDescription findEntity(JpaReportDescription entity) {
+		JpaReportDescription rd = super.findEntity(entity);
 		if (rd.getParametersList() != null) {
 			Hibernate.initialize(rd.getParametersList());
 		} else {
