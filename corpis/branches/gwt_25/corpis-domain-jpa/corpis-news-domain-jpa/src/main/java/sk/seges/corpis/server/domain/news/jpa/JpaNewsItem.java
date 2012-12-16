@@ -11,7 +11,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import sk.seges.corpis.server.domain.news.server.model.base.NewsItemBase;
-import sk.seges.corpis.server.domain.news.server.model.data.NewsItemPKData;
 
 @Entity
 @Table(name = "news")
@@ -21,8 +20,8 @@ public class JpaNewsItem extends NewsItemBase {
 	private static final long serialVersionUID = -8172425109207825339L;
 
 	@Id
-	public NewsItemPKData getId() {
-		return super.getId();
+	public JpaNewsItemPK getId() {
+		return (JpaNewsItemPK) super.getId();
 	}
 
 	@Column

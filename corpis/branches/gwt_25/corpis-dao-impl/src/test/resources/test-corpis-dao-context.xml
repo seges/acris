@@ -17,5 +17,4 @@
 		<property name="initialValue" value="1" />
 	</bean>
 	
-<!--	<bean id="newsDAO" class="sk.seges.corpis.dao.hibernate.NewsItemDAO" />-->
 </beans>
