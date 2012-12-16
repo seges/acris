@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.corpis.domain.pay;
+package sk.seges.corpis.domain.shared.pay;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,15 +11,15 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.corpis.domain.pay.vub.VUBePlatbaSettings;
+import sk.seges.corpis.domain.shared.pay.tatra.TatraPaySettings;
 
 /**
  * @author ladislav.gazo
  */
 @Entity
-@Table(name = "webid_aware_vubeplatba_settings", uniqueConstraints = @UniqueConstraint(columnNames = {WebIDAwareVUBePlatbaSettings.WEB_ID, VUBePlatbaSettings.MID}))
+@Table(name = "webid_aware_tatrapay_settings", uniqueConstraints = @UniqueConstraint(columnNames = {WebIDAwareTatraPaySettings.WEB_ID, TatraPaySettings.MID}))
 @SequenceGenerator(name = WebIDAwarePaymentMethodSettings.SEQ_PAYMENT_METHOD_SETTINGS, sequenceName = WebIDAwarePaymentMethodSettings.SEQ_DB_NAME_PAYMENT_METHOD_SETTINGS, initialValue = 1)
-public class WebIDAwareVUBePlatbaSettings implements WebIDAwarePaymentMethodSettings {
+public class WebIDAwareTatraPaySettings implements WebIDAwarePaymentMethodSettings {
 	private static final long serialVersionUID = 3252908128497837831L;
 	
 	@Id
@@ -29,7 +29,7 @@ public class WebIDAwareVUBePlatbaSettings implements WebIDAwarePaymentMethodSett
 	private String webId;
 	
 	@Embedded
-	private VUBePlatbaSettings settings;
+	private TatraPaySettings settings;
 
 	public Long getId() {
 		return id;
@@ -47,11 +47,11 @@ public class WebIDAwareVUBePlatbaSettings implements WebIDAwarePaymentMethodSett
 		this.webId = webId;
 	}
 
-	public VUBePlatbaSettings getSettings() {
+	public TatraPaySettings getSettings() {
 		return settings;
 	}
 
-	public void setSettings(VUBePlatbaSettings settings) {
+	public void setSettings(TatraPaySettings settings) {
 		this.settings = settings;
 	}
 
@@ -72,7 +72,7 @@ public class WebIDAwareVUBePlatbaSettings implements WebIDAwarePaymentMethodSett
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		WebIDAwareVUBePlatbaSettings other = (WebIDAwareVUBePlatbaSettings) obj;
+		WebIDAwareTatraPaySettings other = (WebIDAwareTatraPaySettings) obj;
 		if (settings == null) {
 			if (other.settings != null)
 				return false;
@@ -88,6 +88,6 @@ public class WebIDAwareVUBePlatbaSettings implements WebIDAwarePaymentMethodSett
 
 	@Override
 	public String toString() {
-		return "WebIDAwareVUBePlatbaSettings [id=" + id + ", settings=" + settings + ", webId=" + webId + "]";
+		return "WebIDAwareTatraPaySettings [id=" + id + ", settings=" + settings + ", webId=" + webId + "]";
 	}
 }

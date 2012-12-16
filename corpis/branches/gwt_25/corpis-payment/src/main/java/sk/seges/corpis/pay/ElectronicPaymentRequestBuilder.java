@@ -7,8 +7,8 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import sk.seges.corpis.domain.pay.PaymentMethodRequest;
-import sk.seges.corpis.domain.pay.PaymentRequest;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodRequest;
+import sk.seges.corpis.domain.shared.pay.PaymentRequest;
 
 /**
  * @author ladislav.gazo

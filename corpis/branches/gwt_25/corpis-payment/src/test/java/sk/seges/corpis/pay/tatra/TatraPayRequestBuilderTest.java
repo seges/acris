@@ -13,10 +13,10 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Test;
 
-import sk.seges.corpis.domain.pay.PaymentRequest;
-import sk.seges.corpis.domain.pay.tatra.TatraPayParameter;
-import sk.seges.corpis.domain.pay.tatra.TatraPayRequest;
-import sk.seges.corpis.domain.pay.tatra.TatraPaySettings;
+import sk.seges.corpis.domain.shared.pay.PaymentRequest;
+import sk.seges.corpis.domain.shared.pay.tatra.TatraPayParameter;
+import sk.seges.corpis.domain.shared.pay.tatra.TatraPayRequest;
+import sk.seges.corpis.domain.shared.pay.tatra.TatraPaySettings;
 import sk.seges.corpis.pay.signer.DESSigner;
 import sk.seges.corpis.pay.signer.PaymentSigner;
 

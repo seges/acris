@@ -5,7 +5,7 @@ package sk.seges.corpis.pay.signer;
 
 import java.util.Collection;
 
-import sk.seges.corpis.domain.pay.PaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodSettings;
 
 /**
  * @author ladislav.gazo

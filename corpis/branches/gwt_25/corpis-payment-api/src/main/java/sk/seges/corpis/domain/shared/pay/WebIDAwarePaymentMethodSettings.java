@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.corpis.domain.pay;
+package sk.seges.corpis.domain.shared.pay;
 
 import sk.seges.sesam.domain.IDomainObject;
 

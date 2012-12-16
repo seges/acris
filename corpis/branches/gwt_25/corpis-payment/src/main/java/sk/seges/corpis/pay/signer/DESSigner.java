@@ -6,8 +6,8 @@ package sk.seges.corpis.pay.signer;
 import java.util.Arrays;
 import java.util.Collection;
 
-import sk.seges.corpis.domain.pay.HasKeyPaymentMethodSettings;
-import sk.seges.corpis.domain.pay.PaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.HasKeyPaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodSettings;
 import sk.seges.corpis.pay.SignatureHelper;
 
 /**

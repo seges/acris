@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.corpis.domain.pay.tatra;
+package sk.seges.corpis.domain.shared.pay.tatra;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;

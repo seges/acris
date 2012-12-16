@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.corpis.domain.pay;
+package sk.seges.corpis.domain.shared.pay;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.domain.pay.tatra.CardPaySettings;
+import sk.seges.corpis.domain.shared.pay.tatra.CardPaySettings;
 
 /**
  * @author ladislav.gazo

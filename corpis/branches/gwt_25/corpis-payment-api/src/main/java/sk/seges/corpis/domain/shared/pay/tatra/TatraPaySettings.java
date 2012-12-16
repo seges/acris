@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sk.seges.corpis.domain.pay.tatra;
+package sk.seges.corpis.domain.shared.pay.tatra;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -11,8 +11,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import sk.seges.corpis.RegexConstants;
-import sk.seges.corpis.domain.pay.HasKeyPaymentMethodSettings;
-import sk.seges.corpis.domain.pay.PaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.HasKeyPaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodSettings;
 
 /**
  * @author ladislav.gazo

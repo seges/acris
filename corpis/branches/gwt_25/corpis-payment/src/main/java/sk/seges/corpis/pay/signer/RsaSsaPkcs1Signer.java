@@ -22,7 +22,7 @@ import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.bouncycastle.openpgp.PGPUtil;
 
-import sk.seges.corpis.domain.pay.PaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodSettings;
 import sk.seges.corpis.pay.SignatureHelper;
 
 /**

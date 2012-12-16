@@ -8,8 +8,8 @@ import java.util.Collection;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import sk.seges.corpis.domain.pay.HasKeyPaymentMethodSettings;
-import sk.seges.corpis.domain.pay.PaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.HasKeyPaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodSettings;
 import sk.seges.corpis.pay.SignatureHelper;
 
 /**

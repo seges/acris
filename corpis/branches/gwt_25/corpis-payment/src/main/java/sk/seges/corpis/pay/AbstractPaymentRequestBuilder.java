@@ -6,7 +6,7 @@ package sk.seges.corpis.pay;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import sk.seges.corpis.domain.pay.PaymentMethodRequest;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodRequest;
 
 /**
  * @author ladislav.gazo

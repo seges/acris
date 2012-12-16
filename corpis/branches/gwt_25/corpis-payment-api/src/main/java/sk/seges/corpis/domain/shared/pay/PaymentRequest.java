@@ -1,14 +1,15 @@
 /**
  * 
  */
-package sk.seges.corpis.domain.pay;
+package sk.seges.corpis.domain.shared.pay;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * @author ladislav.gazo
  */
-public class PaymentRequest {
+public class PaymentRequest implements Serializable {
 	private static final long serialVersionUID = 7283067971179215106L;
 	
 	private String method;

@@ -11,7 +11,7 @@ import java.util.Collection;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sk.seges.corpis.domain.pay.vub.VUBePlatbaSettings;
+import sk.seges.corpis.domain.shared.pay.vub.VUBePlatbaSettings;
 
 /**
  * @author ladislav.gazo

@@ -15,9 +15,9 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 
-import sk.seges.corpis.domain.pay.PaymentRequest;
-import sk.seges.corpis.domain.pay.vub.VUBePlatbaParameter;
-import sk.seges.corpis.domain.pay.vub.VUBePlatbaRequest;
+import sk.seges.corpis.domain.shared.pay.PaymentRequest;
+import sk.seges.corpis.domain.shared.pay.vub.VUBePlatbaParameter;
+import sk.seges.corpis.domain.shared.pay.vub.VUBePlatbaRequest;
 import sk.seges.corpis.pay.JSRValidatorAwarePaymentRequestBuilder;
 import sk.seges.corpis.pay.PaymentConstants;
 import sk.seges.corpis.pay.signer.PaymentSigner;

@@ -15,9 +15,9 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 
-import sk.seges.corpis.domain.pay.PaymentRequest;
-import sk.seges.corpis.domain.pay.tatra.TatraPayParameter;
-import sk.seges.corpis.domain.pay.tatra.TatraPayRequest;
+import sk.seges.corpis.domain.shared.pay.PaymentRequest;
+import sk.seges.corpis.domain.shared.pay.tatra.TatraPayParameter;
+import sk.seges.corpis.domain.shared.pay.tatra.TatraPayRequest;
 import sk.seges.corpis.pay.JSRValidatorAwarePaymentRequestBuilder;
 import sk.seges.corpis.pay.PaymentConstants;
 import sk.seges.corpis.pay.signer.PaymentSigner;

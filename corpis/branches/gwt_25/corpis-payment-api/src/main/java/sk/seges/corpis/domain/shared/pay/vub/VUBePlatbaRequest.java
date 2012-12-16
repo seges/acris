@@ -1,4 +1,4 @@
-package sk.seges.corpis.domain.pay.vub;
+package sk.seges.corpis.domain.shared.pay.vub;
 
 import java.math.BigDecimal;
 
@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import sk.seges.corpis.domain.pay.PaymentMethodSettings;
-import sk.seges.corpis.domain.pay.SlovakPaymentMethodRequest;
+import sk.seges.corpis.domain.shared.pay.PaymentMethodSettings;
+import sk.seges.corpis.domain.shared.pay.SlovakPaymentMethodRequest;
 
 /**
  * @author ladislav.gazo

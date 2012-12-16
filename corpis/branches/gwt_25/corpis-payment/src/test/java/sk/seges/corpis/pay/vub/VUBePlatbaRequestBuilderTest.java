@@ -13,10 +13,10 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Test;
 
-import sk.seges.corpis.domain.pay.PaymentRequest;
-import sk.seges.corpis.domain.pay.vub.VUBePlatbaParameter;
-import sk.seges.corpis.domain.pay.vub.VUBePlatbaRequest;
-import sk.seges.corpis.domain.pay.vub.VUBePlatbaSettings;
+import sk.seges.corpis.domain.shared.pay.PaymentRequest;
+import sk.seges.corpis.domain.shared.pay.vub.VUBePlatbaParameter;
+import sk.seges.corpis.domain.shared.pay.vub.VUBePlatbaRequest;
+import sk.seges.corpis.domain.shared.pay.vub.VUBePlatbaSettings;
 import sk.seges.corpis.pay.signer.HmacSigner;
 import sk.seges.corpis.pay.signer.PaymentSigner;
 
