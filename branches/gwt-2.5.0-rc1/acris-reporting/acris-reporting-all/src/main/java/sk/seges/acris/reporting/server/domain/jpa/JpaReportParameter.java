@@ -1,4 +1,4 @@
-package sk.seges.acris.reporting.rpc.domain;
+package sk.seges.acris.reporting.server.domain.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
 /**
@@ -19,7 +18,7 @@ import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
  */
 @Entity
 @SequenceGenerator(name = "report_param_id_seq", sequenceName = "report_param_id_seq", initialValue = 1)
-public class ReportParameter extends LightEntity implements ReportParameterData, Comparable<ReportParameter> {
+public class JpaReportParameter implements ReportParameterData, Comparable<JpaReportParameter> {
 
 	private static final long serialVersionUID = 6868805794198135658L;
 	@Id
@@ -39,7 +38,7 @@ public class ReportParameter extends LightEntity implements ReportParameterData,
 
 	private Boolean hidden;
 
-	@ManyToOne(targetEntity = ReportParameter.class)
+	@ManyToOne(targetEntity = JpaReportParameter.class)
 	@JoinColumn(name = "parent_id", nullable = true)
 	private ReportParameterData parent;
 
@@ -142,7 +141,7 @@ public class ReportParameter extends LightEntity implements ReportParameterData,
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		ReportParameter other = (ReportParameter) obj;
+		JpaReportParameter other = (JpaReportParameter) obj;
 		if (id == null) {
 			if (other.id != null) {
 				return false;
@@ -154,7 +153,7 @@ public class ReportParameter extends LightEntity implements ReportParameterData,
 	}
 
 	@Override
-	public int compareTo(ReportParameter o) {
+	public int compareTo(JpaReportParameter o) {
 		Integer other = o.getOrderNumber();
 		if (other == null) {
 			other = 0;

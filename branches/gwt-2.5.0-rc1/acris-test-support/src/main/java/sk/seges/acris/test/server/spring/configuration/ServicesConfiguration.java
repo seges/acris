@@ -16,7 +16,7 @@ import sk.seges.acris.rpc.CustomPolicyRPCServiceExporter;
 import sk.seges.acris.rpc.RemoteContextSerializationPolicy;
 import sk.seges.acris.test.server.service.CardPayService;
 import sk.seges.acris.test.shared.service.CardPayRemoteService;
-import sk.seges.corpis.domain.pay.tatra.CardPaySettings;
+import sk.seges.corpis.domain.shared.pay.tatra.CardPaySettings;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
