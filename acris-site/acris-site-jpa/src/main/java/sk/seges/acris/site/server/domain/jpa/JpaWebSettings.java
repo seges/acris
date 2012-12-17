@@ -19,8 +19,6 @@ import sk.seges.acris.site.server.domain.api.server.model.data.MetaDataData;
 import sk.seges.acris.site.server.domain.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.shared.domain.api.MetaDataType;
 import sk.seges.corpis.server.domain.DBConstraints;
-import sk.seges.corpis.server.domain.jpa.JpaCountry;
-import sk.seges.corpis.server.domain.server.model.data.CountryData;
 
 @Entity
 @Table(name = "web_settings")
@@ -108,13 +106,7 @@ public class JpaWebSettings extends WebSettingsBase {
 		super.setWebId(webId);
 		super.setId(webId);
 	}
-	
-	@Override
-	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaCountry.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-	public Set<CountryData> getTranslations() {
-		return super.getTranslations();
-	}
-	
+			
 	@Override
 	@OneToMany(fetch = FetchType.LAZY, targetEntity = JpaMetaData.class, cascade={CascadeType.ALL})
 	public Set<MetaDataData> getMetaData() {
