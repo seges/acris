@@ -47,7 +47,7 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 						return (String) arg0.get(column);
 					}
 				};
-				addTextColumn(col, 90 / (columns.size()), columns.get(column)[1], column);
+				addTextColumn(col, 100 / (columns.size()-1), columns.get(column)[1], column);
 			} else if (columns.get(column)[0].toUpperCase().equals(DATE)) {
 
 			} else if (columns.get(column)[0].toUpperCase().equals(NUMBER)) {
