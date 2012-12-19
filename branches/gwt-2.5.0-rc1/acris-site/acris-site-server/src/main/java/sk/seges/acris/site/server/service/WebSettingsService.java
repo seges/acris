@@ -2,7 +2,6 @@ package sk.seges.acris.site.server.service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -36,9 +35,6 @@ public class WebSettingsService implements IWebSettingsServiceLocal {
 
 		if (country != null) {
 			webSettingsData.setLanguage(country.getLanguage());
-			Set<CountryData> translations = new HashSet<CountryData>();
-			translations.add(country);
-			webSettingsData.setTranslations(translations);
 		}
 		
 		webSettingsData.setMetaData(new HashSet<MetaDataData>());
