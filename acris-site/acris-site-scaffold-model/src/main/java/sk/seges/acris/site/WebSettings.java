@@ -10,7 +10,6 @@ import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.corpis.server.domain.HasLanguage;
 import sk.seges.corpis.server.domain.HasWebId;
-import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 @DomainInterface
@@ -29,9 +28,7 @@ interface WebSettings extends IMutableDomainObject<String>, HasWebId, HasLanguag
 	}
 	
 	String parameters();
-	
-	Set<CountryData> translations();
-	
+		
 	String topLevelDomain();
 	
 	String analyticsScriptData();
