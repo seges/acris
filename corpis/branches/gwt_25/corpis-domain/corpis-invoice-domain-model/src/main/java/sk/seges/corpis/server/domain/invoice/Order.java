@@ -9,7 +9,6 @@ import sk.seges.corpis.server.domain.BasicContact;
 import sk.seges.corpis.server.domain.CompanyName;
 import sk.seges.corpis.server.domain.PersonName;
 import sk.seges.corpis.shared.domain.EPaymentType;
-import sk.seges.corpis.shared.domain.invoice.EOrderStatus;
 import sk.seges.corpis.shared.domain.invoice.ETransports;
 
 @DomainInterface
@@ -20,7 +19,7 @@ public interface Order extends Accountable {
 	String note();
 	ETransports deliveredBy();
 	String trackingNumber();
-	EOrderStatus status();
+	OrderStatus status();
 	CompanyName company();
 
 	PersonName person();

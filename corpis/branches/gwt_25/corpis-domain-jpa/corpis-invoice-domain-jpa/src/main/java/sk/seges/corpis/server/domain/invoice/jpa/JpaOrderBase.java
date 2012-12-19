@@ -15,12 +15,12 @@ import sk.seges.corpis.server.domain.customer.jpa.JpaCompanyName;
 import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.invoice.server.model.data.DeliveryPersonData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderData;
+import sk.seges.corpis.server.domain.invoice.server.model.data.OrderStatusData;
 import sk.seges.corpis.server.domain.server.model.data.AddressData;
 import sk.seges.corpis.server.domain.server.model.data.BasicContactData;
 import sk.seges.corpis.server.domain.server.model.data.CompanyNameData;
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
 import sk.seges.corpis.shared.domain.EPaymentType;
-import sk.seges.corpis.shared.domain.invoice.EOrderStatus;
 import sk.seges.corpis.shared.domain.invoice.ETransports;
 
 /**
@@ -43,7 +43,7 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 
 	private String trackingNumber;
 
-	private EOrderStatus status;
+	private OrderStatusData status;
 
 	private CompanyNameData company;
 	
@@ -117,11 +117,11 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 	}
 
 	@Column(name = "status")
-	public EOrderStatus getStatus() {
+	public OrderStatusData getStatus() {
 		return status;
 	}
 
-	public void setStatus(EOrderStatus status) {
+	public void setStatus(OrderStatusData status) {
 		this.status = status;
 	}
 
