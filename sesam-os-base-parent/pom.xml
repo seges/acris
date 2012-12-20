@@ -1058,6 +1058,81 @@
 	
 	<profiles>
 		<profile>
+			<id>local-service-converter</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.local-service</exists>
+				</file>
+			</activation>		
+			<dependencies>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-service-local-interface-api</artifactId>
+					<version>${sesam-os.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-service-local-interface-api</artifactId>
+					<version>${sesam-os.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.corpis</groupId>
+					<artifactId>corpis-application-scaffold-local-service-data-interface-processor</artifactId>
+					<version>${corpis-os.version}</version>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>service-converter</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.service-converter</exists>
+				</file>
+			</activation>		
+			<dependencies>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-service-local-interface-api</artifactId>
+					<version>${sesam-os.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.sesam</groupId>
+					<artifactId>sesam-service-local-interface-api</artifactId>
+					<version>${sesam-os.version}</version>
+					<classifier>sources</classifier>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.corpis</groupId>
+					<artifactId>corpis-application-scaffold-data-service-converter-processor </artifactId>
+					<version>${corpis-os.version}</version>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>dto</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.dto</exists>
+				</file>
+			</activation>		
+			<dependencies>
+				<dependency>
+					<groupId>sk.seges.corpis</groupId>
+					<artifactId>corpis-model-domain-configurations</artifactId>
+					<version>${corpis-os.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>sk.seges.corpis</groupId>
+					<artifactId>corpis-application-scaffold-data-domain-model-converter-processor</artifactId>
+					<version>${corpis-os.version}</version>
+					<scope>provided</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>scaffold-model-sources</id>
 			<activation>
 				<file>
