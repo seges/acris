@@ -10,7 +10,7 @@ import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 @RemoteServiceDefinition
-public interface IRemoteAclMaintenanceService extends RemoteService {
+public interface IAclMaintenanceServiceRemote extends RemoteService {
 	
 	public void removeACLEntries(GenericUserDTO user, String[] securedClassNames);
 	public void removeACLEntries(List<Long> aclIds, String className, GenericUserDTO user);

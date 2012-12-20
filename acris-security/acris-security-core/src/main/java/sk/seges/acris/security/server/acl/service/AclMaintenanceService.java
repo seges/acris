@@ -15,7 +15,7 @@ import sk.seges.sesam.server.domain.converter.utils.ClassConverter;
 import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 @LocalService
-public class AclMaintenanceService implements IRemoteAclMaintenanceServiceLocal {
+public class AclMaintenanceService implements IAclMaintenanceServiceLocal {
 
     private AclManager aclManager;
     
