@@ -41,6 +41,9 @@
 		<module>../sesam-annotation-archetype</module>
 		<!--module>../sesam-showcase</module-->
 		<module>../sesam-selenium-support</module>
+		<module>../sesam-remote-openmq</module>
+		<module>../sesam-remote</module>
+		<module>../sesam-fork</module>
 	</modules>
 
 	<build>
