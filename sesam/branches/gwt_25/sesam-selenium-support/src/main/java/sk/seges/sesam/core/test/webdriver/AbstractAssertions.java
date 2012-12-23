@@ -7,9 +7,11 @@ import org.openqa.selenium.WebDriver;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.webdriver.api.Assertion;
+import sk.seges.sesam.core.test.webdriver.api.SesamWebDriver;
 import sk.seges.sesam.core.test.webdriver.factory.LocalWebDriverFactory;
 import sk.seges.sesam.core.test.webdriver.factory.RemoteWebDriverFactory;
 import sk.seges.sesam.core.test.webdriver.factory.WebDriverFactory;
+import sk.seges.sesam.core.test.webdriver.model.SesamWebDriverDelegate;
 import sk.seges.sesam.core.test.webdriver.support.event.AssertionEventListener;
 import sk.seges.sesam.core.test.webdriver.support.event.AssertionEventListener.ComparationType;
 
@@ -17,7 +19,7 @@ public abstract class AbstractAssertions implements Assertion {
 
 	protected SeleniumSettings testEnvironment;
 
-	protected WebDriver webDriver;
+	protected SesamWebDriver webDriver;
 
 	private List<AssertionEventListener> listeners = new ArrayList<AssertionEventListener>();
 	
@@ -30,7 +32,7 @@ public abstract class AbstractAssertions implements Assertion {
 	
 	public void setTestEnvironment(SeleniumSettings testEnvironment) {
 		this.testEnvironment = testEnvironment;
-		webDriver = createWebDriver(getWebDriverFactory(testEnvironment), testEnvironment);
+		webDriver = new SesamWebDriverDelegate(createWebDriver(getWebDriverFactory(testEnvironment), testEnvironment));
 	}
 
 	protected WebDriver createWebDriver(WebDriverFactory webDriverFactory, SeleniumSettings seleniumSettings) {
