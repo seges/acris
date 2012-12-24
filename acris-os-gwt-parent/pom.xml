@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>1.2.2-SNAPSHOT</version>
+		<version>1.2.2</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -638,6 +638,44 @@
 				</dependency>	
 			</dependencies>
 		</profile>
+
+		<profile>
+			<id>rest-server</id>
+			<activation>
+				<file>
+					<exists>${basedir}/.rest-server</exists>
+				</file>
+			</activation>
+
+			<dependencies>
+				<dependency>
+					<groupId>javax.ws.rs</groupId>
+					<artifactId>jsr311-api</artifactId>
+				</dependency>
+	
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-server</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-client</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-json</artifactId>
+				</dependency>	
+				<dependency>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-spring</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-multipart</artifactId>
+				</dependency>	
+			</dependencies>
+		</profile>
+
 	</profiles>
 
 	<build>
