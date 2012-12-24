@@ -5,7 +5,7 @@
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
 	<artifactId>sesam-os</artifactId>
-	<version>1.2.2-SNAPSHOT</version>
+	<version>1.2.2</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -27,9 +27,9 @@
 		</license>
 	</licenses>
         <scm>
-		<url>http://acris.googlecode.com/svn/sesam/trunk</url>
-		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/trunk</developerConnection>
+		<url>http://acris.googlecode.com/svn/sesam/tags/sesam-os-build/sesam-os-build-1.2.2/trunk</url>
+		<connection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-build/sesam-os-build-1.2.2/trunk</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/sesam/tags/sesam-os-build/sesam-os-build-1.2.2/trunk</developerConnection>
 	</scm>
 
 	<modules>
