@@ -1,0 +1,11 @@
+package sk.seges.acris.binding.jsr269;
+
+import javax.annotation.Generated;
+
+import sk.seges.acris.binding.client.wrappers.BeanWrapper;
+import sk.seges.acris.binding.jsr269.EnclosingMockEntity.EnclosedMockEntity;
+
+@Generated(value = "sk.seges.acris.binding.pap.BeanWrapperProcessor")
+public interface EnclosedMockEntityBeanWrapper extends BeanWrapper<EnclosedMockEntity> {
+
+}

@@ -1,0 +1,19 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:s="urn:import:sk.seges.acris.theme.client">
+
+	<div class="inline">
+		<div class="shadow-component-right-border float-left">
+			<div class="shadow-component-right-bottom-corner float-left">
+				<div class="shadow-component-left-bottom-corner float-left">
+					<div class="shadow-component-bottom-border">
+						<div ui:field="simplePanel"/><div class="floatCleaner"></div>
+					</div>
+				</div>
+				<img src="acris-images/shadow-right-top-corner.png" class="shadow-component-right-top-corner float-left"/>
+				<div class="floatCleaner"/>
+			</div>
+			<div class="floatCleaner"/>
+		</div>
+		<div class="floatCleaner inline"></div>
+	</div>	
+</ui:UiBinder>
