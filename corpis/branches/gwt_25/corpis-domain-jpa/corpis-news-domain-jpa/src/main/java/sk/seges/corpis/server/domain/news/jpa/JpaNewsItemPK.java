@@ -14,7 +14,12 @@ public class JpaNewsItemPK extends NewsItemPKBase {
 	public Long getId() {
 		return super.getId();
 	}
-	
+
+	@Column(length = 8, nullable = false)
+	public String getLanguage() {
+		return super.getLanguage();
+	}
+
 	@Column(length = 20, nullable = false)
 	public String getCategory() {
 		return super.getCategory();
