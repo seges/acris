@@ -1,0 +1,32 @@
+package sk.seges.sesam.shared.model.mock;
+
+import javax.annotation.Generated;
+
+@Generated(value = "sk.seges.sesam.pap.metadata.MetaModelProcessor")
+public class MultipleConverterEntityMetaModel {
+
+	public static final String DB_NAME = "name";
+
+	public static interface DB_PARENT {
+
+		public static final String THIS = "parent";
+
+		public static final String DB_NAME = "parent.name";
+
+		public static final String DB_PARENT = "parent.parent";
+
+	}
+
+	public static final String NAME = "name";
+
+	public static interface PARENT {
+
+		public static final String THIS = "parent";
+
+		public static final String NAME = "parent.name";
+
+		public static final String PARENT = "parent.parent";
+
+	}
+
+}
