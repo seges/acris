@@ -5,12 +5,12 @@
 	<name>Sesam selenium support</name>
 	<description>SeSAM Selenium support</description>
 	<packaging>jar</packaging>
-	<version>1.2.2</version>
+	<version>1.2.3-SNAPSHOT</version>
 
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os</artifactId>
-		<version>1.2.2</version>
+		<version>1.2.3-SNAPSHOT</version>
 		<relativePath>../sesam-os/pom.xml</relativePath>
 	</parent>
 
