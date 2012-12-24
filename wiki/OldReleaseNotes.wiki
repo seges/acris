@@ -1,6 +1,19 @@
 #summary Group page for older release notes
 #labels Releasing
 
+=Release 1.2.1=
+
+==Features==
+ * Annotation processors for generating DTOs from domain entities
+  ** Offering automated and explicit DTO configuration
+  ** Used for generating converters for transforming domain entity to DTO and vice versa
+  ** Support for hibernate and transaction propagation
+  ** Added support for scaffold model definitions
+  ** Introduced new way of extending generated classes and override default behavior
+ * Annotation processors for generating DAO and base classes from scaffold model definition
+ * Selenium suport stabilization and more powerful HTML report
+
+
 =Release notes 1.2.0=
 
 == Features ==
