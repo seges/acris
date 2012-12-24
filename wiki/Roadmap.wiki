@@ -4,6 +4,7 @@
 = Important milestones in our life =
 
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-NotSpecified TBD] || TBD        || Issues incubator ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.2 1.2.2] || 24.12.2012        ||  Christmas Day release ||
 || [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.1 1.2.1] || 25.05.2012        ||  Towel Day release ||
 || [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.0 1.2.0] || 08.10.2011        ||  Kuvikajúci Kanec Kľačí release ||
 || [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.1.2 1.1.2] || 16.06.2011        ||  Malý Macík Mrnčí release ||
@@ -20,16 +21,9 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 
 *Use appropriate template* when submitting an issue.
 
-=Release 1.2.1=
+=Release 1.2.2=
 
 ==Features==
- * Annotation processors for generating DTOs from domain entities
-  ** Offering automated and explicit DTO configuration
-  ** Used for generating converters for transforming domain entity to DTO and vice versa
-  ** Support for hibernate and transaction propagation
-  ** Added support for scaffold model definitions
-  ** Introduced new way of extending generated classes and override default behavior
- * Annotation processors for generating DAO and base classes from scaffold model definition
- * Selenium suport stabilization and more powerful HTML report
+Magnificent release again... just wait for the notes..
 
 = [OldReleaseNotes Older release notes] =
