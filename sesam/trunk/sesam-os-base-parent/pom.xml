@@ -5,7 +5,7 @@
 	<!-- The Basics -->
 	<groupId>sk.seges.sesam</groupId>
 	<artifactId>sesam-os-base-parent</artifactId>
-	<version>1.2.3-SNAPSHOT</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- More Project Information -->
@@ -57,7 +57,7 @@
 
 	<properties>
 		<!-- !DO NOT FORGET TO CHANGE THIS VERSION WHEN RELEASING SESAM! -->
-		<sesam-os.version>1.2.1</sesam-os.version>
+		<sesam-os.version>1.2.2</sesam-os.version>
 
 		<!-- from Sonatype -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
