@@ -18,6 +18,7 @@
 
 	<modules>
 		<module>acris-archetype-gwt-client</module>
+		<module>acris-archetype-rest-server</module>
 	</modules>
 
 </project>
