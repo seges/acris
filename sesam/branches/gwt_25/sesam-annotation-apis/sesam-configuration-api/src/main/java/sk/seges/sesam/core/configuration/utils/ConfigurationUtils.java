@@ -64,7 +64,7 @@ public class ConfigurationUtils {
 	
 	public static String[] getConfigurationValues(ConfigurationValue[] configurations, String key) {
 		if (configurations == null) {
-			return new String[0];
+			return null;
 		}
 		for (ConfigurationValue configuration: configurations) {
 			if (configuration.getConfiguration().getKey().equals(key)) {
@@ -72,7 +72,7 @@ public class ConfigurationUtils {
 			}
 		}
 		
-		return new String[0];
+		return null;
 	}
 	
 	public static String getConfigurationValue(ConfigurationValue[] configurations, String key) {

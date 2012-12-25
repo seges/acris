@@ -10,16 +10,18 @@ import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import sk.seges.sesam.core.test.webdriver.api.SesamTargetLocator;
 import sk.seges.sesam.core.test.webdriver.api.SesamWebDriver;
 
-public class SesamWebDriverDelegate implements SesamWebDriver, HasInputDevices, JavascriptExecutor {
+public class SesamWebDriverDelegate extends EventFiringWebDriver implements SesamWebDriver, HasInputDevices, JavascriptExecutor {
 
 	private final WebDriver webDriver;
 	private SesamTargetLocatorDelegate targetLocatorDelegate;
 	
 	public SesamWebDriverDelegate(WebDriver webDriver) {
+		super(webDriver);
 		this.webDriver = webDriver;
 	}
 

@@ -3,6 +3,7 @@ package sk.seges.sesam.core.test.selenium.configuration.api;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -15,7 +16,9 @@ public enum Browsers implements IsParameter {
 	FIREFOX("firefox") {
 		@Override
 		public WebDriver getWebDriver() {
-			return new FirefoxDriver();
+			FirefoxProfile profile = new FirefoxProfile();
+			profile.setEnableNativeEvents(true);
+			return new FirefoxDriver(profile);
 		}
 	},
 	IE("iexplore") {

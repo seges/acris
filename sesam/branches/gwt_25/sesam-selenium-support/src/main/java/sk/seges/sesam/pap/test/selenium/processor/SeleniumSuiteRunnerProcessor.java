@@ -117,8 +117,12 @@ public class SeleniumSuiteRunnerProcessor extends MutableAnnotationProcessor {
 						pw.println(testName, ".setUp(\"" + method.getSimpleName().toString() + "\");");
 						pw.println(testName, "." + method.getSimpleName().toString() + "();");
 						pw.println("} catch (", Exception.class, " ex) {");
+						pw.println("try {");
 						pw.println(testName, ".getReportEventListener().onException(ex, ", testName, ".getWebDriver());");
 						pw.println("ex.printStackTrace(", System.class,".out);");
+						pw.println("} catch (", Exception.class, " ex1) {");
+						pw.println(System.class,".out.println(ex1);");
+						pw.println("}");
 						pw.println("} finally {");
 						//TODO find after annotation
 						pw.println(testName, ".tearDown();");
