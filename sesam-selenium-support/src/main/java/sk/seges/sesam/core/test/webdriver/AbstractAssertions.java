@@ -64,6 +64,7 @@ public abstract class AbstractAssertions implements Assertion {
 			}
 			throw new RuntimeException("Statement assertion failed. [Expected true] " + comment);
 		}
+		
 		for (AssertionEventListener assertionListener: listeners) {
 			assertionListener.onAssertion(true, statement1, ComparationType.POSITIVE, comment);
 		}
