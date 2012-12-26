@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.configuration.printer;
 
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeKind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -30,7 +31,11 @@ public class MergePrinter extends AbstractSettingsElementPrinter {
 
 	@Override
 	public void print(SettingsContext context) {
-		pw.println("if (" + context.getFieldName() + " == null) {");
+		pw.print("if (" + context.getFieldName() + " == null");
+		if (context.getMethod().getReturnType().getKind().equals(TypeKind.ARRAY)) {
+			pw.print(" || " + context.getFieldName() + ".length == 0");
+		}
+		pw.println(") {");
 		pw.println("this." + context.getFieldName() + " = " + instanceName + "." + MethodHelper.toGetter(context.getFieldName()) + ";");
 		pw.print("}");
 		if (context.getNestedElement() != null) {
