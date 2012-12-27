@@ -25,16 +25,16 @@ All bugs, improvements and feature requests are handled by *issue tracker*. You 
 
 ==Features==
 Sesam:
-* DTO processors improvements
+  * DTO processors improvements
 
 Corpis:
-* New generic domain classes introduced - price conditions
-* VUB payment
+  * New generic domain classes introduced - price conditions
+  * VUB payment
 
 Acris:
-* Security and ACL fixes
-* OpenID integration with Google Apps introduced
-* Image reader with support for RGB, BGR, CMYK and many other image formats
-* Tomcat OpenMQ startup listener
+  * Security and ACL fixes
+  * OpenID integration with Google Apps introduced
+  * Image reader with support for RGB, BGR, CMYK and many other image formats
+  * Tomcat OpenMQ startup listener
 
 = [OldReleaseNotes Older release notes] =
