@@ -174,7 +174,7 @@ public class Color {
 		if (h == null) {
 			return null;
 		}
-		return h.intValue();
+		return Math.round(h);
 	}
 
 	public Integer getSaturation() {

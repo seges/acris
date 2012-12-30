@@ -5,12 +5,15 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.google.common.base.Function;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
@@ -112,8 +115,20 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 			environmentInfo.setWindowSize((Long)width);
 		}
 
-		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());
+		final String url = testEnvironment.getTestURL() + testEnvironment.getTestURI();
+		webDriver.get(url);
 
+		wait.until(new Function<WebDriver, Boolean>() {
+			
+			@Override
+			public Boolean apply(WebDriver arg0) {
+				return webDriver.getCurrentUrl().startsWith(url);
+			}
+		});
+
+		//wait to any HTML
+		webDriver.findElement(By.xpath("//*"));
+		
 		//if running as regular junit
 		if (testName != null) {
 			
