@@ -195,6 +195,11 @@ public class Color {
 		return hex;
 	}
 
+	@Override
+	public String toString() {
+		return "rgb(" + getRed() + ", " + getGreen() + ", " + getBlue() + ")";
+	}
+	
 	private void RGBtoHSV(float r, float g, float b) {
 		float min = 0;
 		float max = 0;
