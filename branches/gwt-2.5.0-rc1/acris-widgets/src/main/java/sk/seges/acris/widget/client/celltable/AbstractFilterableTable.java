@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,6 +52,14 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 public class AbstractFilterableTable<T> extends CellTable<T> {
 
+	public interface ProvidesIdentifier<S> extends ProvidesKey<S> {
+
+		public static final String ID = "id";
+
+		String getKeyColumnName();
+	
+	}
+	
 	private final static TableResources resource = GWT.create(TableResources.class);
 	private final static PagerResources pagerResources = GWT.create(PagerResources.class);
 
@@ -70,8 +79,9 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	private final Class<?> dataClass;
 
 	private RowRenderer<T> rowRenderer;
-
-	public AbstractFilterableTable(ProvidesKey<T> keyProvider, Class<?> dataClass) {
+	private ProvidesIdentifier<T> keyProvider;
+	
+	public AbstractFilterableTable(ProvidesIdentifier<T> keyProvider, Class<?> dataClass) {
 		super(DEFAULT_PAGE_SIZE, resource, keyProvider);
 		this.dataClass = dataClass;
 		addRangeChangeHandler(new Handler() {
@@ -84,7 +94,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		});
 		selectionModel = new SingleSelectionModel<T>(getKeyProvider());	}
 	
-	public AbstractFilterableTable(ProvidesKey<T> keyProvider, Class<?> dataClass, boolean sortable) {
+	public AbstractFilterableTable(ProvidesIdentifier<T> keyProvider, Class<?> dataClass, boolean sortable) {
 		this(keyProvider, dataClass);
 		this.sortable = sortable;
 	}
@@ -513,7 +523,26 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		}
 	}
 
+	private void addProjectable(String property) {
+		List<String> projectables = getPage().getProjectables();
+		
+		if (projectables == null) {
+			projectables = new LinkedList<String>();
+//			keyP
+		}
+//		getPage().setProjectables(projectables)
+		if (projectables == null) {
+			// create and add ID because it is usually needed in bean
+			projectables = new LinkedList<String>();
+//			if (getIdProperty() != null) {
+//				projectables.add(getIdProperty());
+//			}
+		}
+		projectables.add(property);
+	}
+
 	public Page getPage() {
+		//TODO optimize! Do not construct page again and again
 		Page page = new Page(getPager().getPageStart(), getPager().getPageSize());
 
 		Criterion defaultCriteria = getDefaultCriteria();
