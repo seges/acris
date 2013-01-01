@@ -4,18 +4,22 @@ import java.util.Map;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.view.client.ProvidesKey;
 
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
 
-	public static String STRING = "STRING";
-	public static String DATE = "DATE";
-	public static String NUMBER = "NUMBER";
+	public static final String STRING = "STRING";
+	public static final String DATE = "DATE";
+	public static final String NUMBER = "NUMBER";
 	
-	static class DynamicCellTableKeyProvider implements ProvidesKey<Map<String, Object>> {
+	static class DynamicCellTableKeyProvider implements ProvidesIdentifier<Map<String, Object>> {
 		@Override
 		public Object getKey(Map<String, Object> item) {
-			return item.get("id");
+			return item.get(ID);
+		}
+
+		@Override
+		public String getKeyColumnName() {
+			return ID;
 		}
 	}
 	
