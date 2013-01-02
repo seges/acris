@@ -45,6 +45,8 @@
     * [AsyncSync Semaphores and asynchronous synchronization]
     * [JSONDataMigration JSON data migration]<sup><font color="red">1.2.0</font></sup>
     * [AsmantMonitoring Asmant - Site monitoring tool]<sup><font color="red">1.2.0</font></sup>
+    * [OpenMQStarter OpenMQ broker starter]<sup><font color="red">1.3.0</font></sup>
+
   * User interaction
     * [UserEventRecording Recording user actions]
   * Web
