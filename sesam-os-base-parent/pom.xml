@@ -131,7 +131,7 @@
 
 		<jsr250-api.version>1.0</jsr250-api.version>
 
-		<aspectj.version>1.6.2</aspectj.version>
+		<aspectj.version>1.7.1</aspectj.version>
 
 		<commons-collections.version>3.2.1</commons-collections.version>
 		<commons-digester.version>2.0</commons-digester.version>
