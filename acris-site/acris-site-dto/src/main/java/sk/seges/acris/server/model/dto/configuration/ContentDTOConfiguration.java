@@ -2,6 +2,7 @@ package sk.seges.acris.server.model.dto.configuration;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -28,6 +29,7 @@ public interface ContentDTOConfiguration extends IDataTransferObject {
 	@Ignore
 	void serverParams();
 
+	@NotNull
 	@Size(min = 1, max = 255)
 	@Pattern(regexp = "[a-zA-Z0-9\\-_/]*")
 	void niceUrl();
