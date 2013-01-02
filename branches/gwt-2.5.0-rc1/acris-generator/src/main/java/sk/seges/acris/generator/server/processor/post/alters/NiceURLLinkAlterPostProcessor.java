@@ -11,10 +11,13 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 
+	private static final String HREF_ATRIBUTE = "href";
+	private static final String EMAIL_REGEX = "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})";
+	
 	@Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof LinkTag) {
-			String link = ((LinkTag)node).getLink();
+			String link = ((LinkTag)node).getAttribute(HREF_ATRIBUTE);
 			return isInternal(link) || !isUrl(link);
 		}
 		return false;
@@ -23,7 +26,7 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		LinkTag linkNode = (LinkTag)node;
-		linkNode.setLink(AnchorUtils.getAnchorTargetHref(getLink(linkNode.getLink(), generatorEnvironment), generatorEnvironment));
+		linkNode.setLink(AnchorUtils.getAnchorTargetHref(getLink((LinkTag)node, generatorEnvironment), generatorEnvironment));
 		
 		return true;
 	}
@@ -32,7 +35,7 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 		return link.startsWith("#");
 	}
 
-	public static final Pattern WEB  = Pattern.compile(
+	private static final Pattern WEB  = Pattern.compile(
 	        new StringBuilder()
 	                .append("((?:(http|https|Http|Https|rtsp|Rtsp):")
 	                .append("\\/\\/(?:(?:[a-zA-Z0-9\\$\\-\\_\\.\\+\\!\\*\\'\\(\\)")
@@ -76,13 +79,17 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 	                        .append("(?:\\b|$)").toString()
 	                );
 
+	private static final Pattern MAIL_TO = Pattern.compile(
+			 new StringBuilder()
+             	.append("mailto:" + EMAIL_REGEX).toString());
+			 
 	private boolean isUrl(String link) {
-		return WEB.matcher(link).matches();
+		return WEB.matcher(link).matches() || MAIL_TO.matcher(link).matches();
 	}
 	
-	protected String getLink(String link, GeneratorEnvironment generatorEnvironment) {
+	protected String getLink(LinkTag linkNode, GeneratorEnvironment generatorEnvironment) {
 		GeneratorToken generatorToken = generatorEnvironment.getGeneratorToken();
-		
+		String link = linkNode.getAttribute(HREF_ATRIBUTE);
 		if (isInternal(link)) {
 			if (link.toLowerCase().equals("#" + generatorToken.getNiceUrl().toLowerCase())) {
 				return generatorToken.isDefaultToken() ? "" : "#";
@@ -94,7 +101,7 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 			
 			return link.substring(1);
 		}
-
+		
 		return link;
 	}
 }
