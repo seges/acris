@@ -53,6 +53,11 @@
 			<version>4.5.2</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+		    <groupId>org.apache.geronimo.specs</groupId>
+		    <artifactId>geronimo-jms_1.1_spec</artifactId>
+		    <scope>provided</scope>
+		</dependency>
 
 	</dependencies>
 </project>
