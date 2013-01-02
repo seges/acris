@@ -3,7 +3,8 @@
 <head>
 	<title>Test result for $result.getTestCase()</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-	<script src="http://acris.googlecode.com/svn/resources/jquery.tools/jquery.tools.min.js"></script>
+	<script type="text/javascript" src="http://acris.googlecode.com/svn/resources/jquery/jquery-1.4.3.min.js"></script>
+	<script type="text/javascript" src="http://acris.googlecode.com/svn/resources/jquery.tools/jquery.tools.min.js"></script>
 	<script>
 		function highlight(x, y, width, height, windowWidth, screenshotName) {
 	
