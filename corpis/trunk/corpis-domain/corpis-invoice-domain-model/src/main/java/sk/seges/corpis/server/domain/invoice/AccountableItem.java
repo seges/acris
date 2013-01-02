@@ -14,6 +14,7 @@ public interface AccountableItem extends HasPrice, HasDescription, Serializable 
 	Float amount();
 	Unit unit();
 	Vat vat();
+	Float weight();
 
 	List<InvoiceItem> invoiceItems();
 }
