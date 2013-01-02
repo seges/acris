@@ -3,8 +3,8 @@
 <head>
 	<title>Test result</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
+	<script type="text/javascript" src="https://acris.googlecode.com/svn/resources/jquery/jquery-1.4.3.min.js"></script>
+	<script type="text/javascript" src="https://acris.googlecode.com/svn/resources/jquery.tools/jquery.tools.min.js"></script>
 
 	<style>
 
