@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
@@ -26,6 +27,7 @@ import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
  *
  */
 @Entity
+@Table(name = "reportdescription")
 @Inheritance(strategy = InheritanceType.JOINED)
 @SequenceGenerator(name = "report_desc_id_seq", sequenceName = "report_desc_id_seq", initialValue = 1)
 public class JpaReportDescription  implements ReportDescriptionData {

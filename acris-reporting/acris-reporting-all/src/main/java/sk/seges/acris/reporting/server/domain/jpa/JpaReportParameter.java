@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
@@ -17,6 +18,7 @@ import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
  * 
  */
 @Entity
+@Table(name = "reportparameter")
 @SequenceGenerator(name = "report_param_id_seq", sequenceName = "report_param_id_seq", initialValue = 1)
 public class JpaReportParameter implements ReportParameterData, Comparable<JpaReportParameter> {
 
