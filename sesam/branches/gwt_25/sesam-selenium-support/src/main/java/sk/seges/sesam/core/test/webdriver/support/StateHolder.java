@@ -32,8 +32,15 @@ public class StateHolder {
 	}
 
 	public WebElement getLastElement() {
+		if (webElements.size() == 0) {
+			return null;
+		}
+		return webElements.get(webElements.size() - 1);
+	}
+	
+	public WebElement getNewElement() {
 		final int size = webElements.size();
-		
+
 		wait.until(new Function<WebDriver, Boolean>() {
 
 			@Override
