@@ -4,6 +4,7 @@
 = Important milestones in our life =
 
 || [http://code.google.com/p/acris/issues/list?q=label%3AMilestone-NotSpecified TBD] || TBD        || Issues incubator ||
+|| [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-2.0.0 2.0.0] || in dev        ||  GWT 2.5 ||
 || [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.2 1.2.2] || 24.12.2012        ||  Christmas Day release ||
 || [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.1 1.2.1] || 25.05.2012        ||  Towel Day release ||
 || [http://code.google.com/p/acris/issues/list?can=1&q=label%3AMilestone-1.2.0 1.2.0] || 08.10.2011        ||  Kuvikajúci Kanec Kľačí release ||
