@@ -9,6 +9,7 @@ The purpose of this feature is to start-up an OpenMQ listener automatically upon
 
   * necessary jars to copy to *tomcat/lib*:
     * acris-tomcat-support
+    * [http://search.maven.org/#artifactdetails%7Cjavax.jms%7Cjms%7C1.1%7Cjar JMS API]
     * [http://search.maven.org/#search%7Cga%7C1%7Cimq imq]
     * [http://search.maven.org/#search%7Cga%7C1%7Cimqutil imqutil]
     * [http://search.maven.org/#search%7Cga%7C1%7Cimqbroker imqbroker]
