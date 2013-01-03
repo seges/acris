@@ -40,6 +40,11 @@ public abstract class JpaAccountableItem extends AccountableItemBase {
 		return (JpaPrice) super.getPrice();
 	}
 
+	@Column
+	public Float getWeight() {
+		return super.getWeight();
+	}
+
 	@OneToOne
 	public JpaUnit getUnit() {
 		return (JpaUnit) super.getUnit();
