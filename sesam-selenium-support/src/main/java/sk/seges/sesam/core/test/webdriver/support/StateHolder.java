@@ -37,6 +37,31 @@ public class StateHolder {
 		}
 		return webElements.get(webElements.size() - 1);
 	}
+
+	private void refind() {
+		webDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		webElements = webDriver.findElements(selector);
+		webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+	}
+	
+	public void waitUntilDeleted() {
+		System.out.println("----");
+		final int size = webElements.size();
+
+		System.out.println(size);
+		
+		wait.until(new Function<WebDriver, Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver arg0) {
+				refind();
+				System.out.println(webElements.size());
+				return webElements.size() < size;
+			}
+		});
+
+		System.out.println("----");
+	}
 	
 	public WebElement getNewElement() {
 		final int size = webElements.size();
@@ -45,10 +70,7 @@ public class StateHolder {
 
 			@Override
 			public Boolean apply(WebDriver arg0) {
-				webDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-				webElements = webDriver.findElements(selector);
-				webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-
+				refind();
 				return webElements.size() > size;
 			}
 		});
