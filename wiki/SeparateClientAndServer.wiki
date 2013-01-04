@@ -5,6 +5,14 @@
 
 Common use case: Having multiple servers deployed on different nodes/computers means for GWT client not able to communicate with them because of cross-domain requests policy.
 
+=== Related artifacts ===
+
+{{{
+<groupId>sk.seges.acris</groupId>
+<artifactId>acris-server-components</artifactId>
+}}}
+
+
 == Routing requests ==
 
 Using _acris-external_ project, specifically the *ProxyServlet*, you will be able to redirect requests from GWT klient to anywhere.
