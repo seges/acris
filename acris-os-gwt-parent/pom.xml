@@ -54,8 +54,7 @@
 
 		<openid4java.version>0.9.6</openid4java.version>
 		<twig.version>1.0.4</twig.version>
-                <guice.version>2.0</guice.version>
-
+        <guice.version>2.0</guice.version>
 		<jasper.version>3.7.3</jasper.version>
 		<jasperserver.version>3.7.0</jasperserver.version>
 
