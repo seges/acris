@@ -7,6 +7,13 @@ When you develop and maintain more then one site / application in production you
 
 In case they are not ... at least your mailbox will be filled with e-mails about it :)
 
+=== Related artifacts ===
+
+{{{
+<groupId>sk.seges.acris</groupId>
+<artifactId>acris-asmant</artifactId>
+}}}
+
 = Configuration =
 
 Asmant is a web application deployable to Google AppEngine. All you need to do is to build / download the WAR file and deploy.
