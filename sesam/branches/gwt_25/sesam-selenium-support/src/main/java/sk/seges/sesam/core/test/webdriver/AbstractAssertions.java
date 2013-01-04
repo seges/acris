@@ -40,7 +40,8 @@ public abstract class AbstractAssertions implements Assertion {
 	}
 	
 	protected WebDriverFactory getWebDriverFactory(SeleniumSettings testEnvironment) {
-		return testEnvironment.getSeleniumRemote() ? new RemoteWebDriverFactory() : new LocalWebDriverFactory();
+		return testEnvironment.getRemoteServerURL() == null ? 
+				new LocalWebDriverFactory() : new RemoteWebDriverFactory();
 	}
 
 	public void tearDown() {
