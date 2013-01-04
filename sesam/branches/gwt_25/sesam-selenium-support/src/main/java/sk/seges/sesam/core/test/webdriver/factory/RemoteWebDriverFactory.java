@@ -12,6 +12,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 
@@ -36,7 +37,7 @@ public class RemoteWebDriverFactory implements WebDriverFactory {
 		capabilities.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
 		capabilities.setBrowserName(testEnvironment.getBrowser().toString());
 		try {
-			return new RemoteWebDriverSupport(new URL(testEnvironment.getRemoteServerURL()), capabilities);
+			return new EventFiringWebDriver(new RemoteWebDriverSupport(new URL(testEnvironment.getRemoteServerURL()), capabilities));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
