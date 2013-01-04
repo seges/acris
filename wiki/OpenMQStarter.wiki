@@ -4,6 +4,12 @@
 
 The purpose of this feature is to start-up an OpenMQ listener automatically upon Tomcat startup. It is useful in scenarios where everything is embedded.
 
+=== Related artifacts ===
+
+{{{
+<groupId>sk.seges.acris</groupId>
+<artifactId>acris-tomcat-support</artifactId>
+}}}
 
 = Details =
 
