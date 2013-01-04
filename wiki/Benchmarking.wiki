@@ -1,6 +1,16 @@
 #summary Various benchmarking tools and guides
 #labels Benchmark
 
+= Introduction =
+
+=== Related artifacts ===
+
+{{{
+<groupId>sk.seges.acris</groupId>
+<artifactId>acris-benchmark</artifactId>
+}}}
+
+
 = Benchmarking GWT.create =
 
 Have you ever been interested how much time GWT.create calls consume time? We were also and therefore we create simple benchmark utility which you can find in *acris-benchmark* project.
