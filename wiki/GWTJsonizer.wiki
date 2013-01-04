@@ -1,6 +1,15 @@
 #summary Json deserialization to plain java POJO object in GWT using annotations
 #labels Acris,GWT,JSON
 
+= Introduction =
+
+=== Related artifacts ===
+
+{{{
+<groupId>sk.seges.acris</groupId>
+<artifactId>acris-json</artifactId>
+}}}
+
 = Project motivation =
 
 Firstly, let's talk in a few sentences about the motivation for creating this project and about core AcrIS ideas behind this project. Those, who is motivated enough, can skip this short intro and continue with reading the next chapter.
