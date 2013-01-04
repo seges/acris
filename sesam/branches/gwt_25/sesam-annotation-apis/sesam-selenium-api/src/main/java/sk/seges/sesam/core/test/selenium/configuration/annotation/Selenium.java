@@ -14,14 +14,8 @@ import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
 // @Retention(RetentionPolicy.SOURCE)
 public @interface Selenium {
 
-	@Parameter(name = "test.seleniumHost", description = "Defines host name where the selenium server is located.")
-	String seleniumServer() default "localhost";
-
-	@Parameter(name = "test.seleniumPort", description = "Defines port name where the selenium server is located.")
-	int seleniumPort() default 4444;
-
-	@Parameter(name = "test.testRemote", description = "Bindings connect to the remote server instance.")
-	boolean seleniumRemote() default false;
+	@Parameter(name = "test.remoteServerURL", description = "Defines host name where the remote server is located.")
+	String remoteServerURL() default Constants.NULL;
 
 	@Parameter(name = "test.testHost", description = "Defines root URL of the testing site.")
 	String testURL() default Constants.NULL;
