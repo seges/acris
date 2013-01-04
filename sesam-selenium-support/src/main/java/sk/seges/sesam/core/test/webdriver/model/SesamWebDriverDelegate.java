@@ -11,6 +11,7 @@ import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import sk.seges.sesam.core.test.webdriver.api.SesamTargetLocator;
 import sk.seges.sesam.core.test.webdriver.api.SesamWebDriver;
@@ -60,6 +61,30 @@ public class SesamWebDriverDelegate extends EventFiringWebDriver implements Sesa
 		return webDriver.getTitle();
 	}
 
+	@Override
+	public EventFiringWebDriver register(WebDriverEventListener eventListener) {
+		if (webDriver instanceof EventFiringWebDriver) {
+			return ((EventFiringWebDriver)webDriver).register(eventListener);
+		}
+		return super.register(eventListener);
+	}
+	
+	@Override
+	public EventFiringWebDriver unregister(WebDriverEventListener eventListener) {
+		if (webDriver instanceof EventFiringWebDriver) {
+			return ((EventFiringWebDriver)webDriver).unregister(eventListener);
+		}
+		return super.unregister(eventListener);
+	}
+	
+	@Override
+	public WebDriver getWrappedDriver() {
+		if (webDriver instanceof EventFiringWebDriver) {
+			return ((EventFiringWebDriver)webDriver).getWrappedDriver();
+		}
+		return super.getWrappedDriver();
+	}
+	
 	@Override
 	public String getWindowHandle() {
 		return webDriver.getWindowHandle();
