@@ -24,8 +24,10 @@ public abstract class JpegImageLoader extends ProcessingImageLoader {
 	static ColorType getJpegColorType(File file) {
 		
 		JPEGImageDecoder decoder;
+		FileInputStream fileInputStream;
 		try {
-			decoder = JPEGCodec.createJPEGDecoder(new FileInputStream(file));
+			fileInputStream = new FileInputStream(file);
+			decoder = JPEGCodec.createJPEGDecoder(fileInputStream);
 		} catch (FileNotFoundException e1) {
 			return null;
 		}
@@ -39,6 +41,12 @@ public abstract class JpegImageLoader extends ProcessingImageLoader {
 		}
 		
 		int colorType = decoder.getJPEGDecodeParam().getEncodedColorID();	
+		
+		try {
+			fileInputStream.close();
+		} catch (IOException e) {
+			return null;
+		}
 		
 		switch (colorType) {
 			case 4:
@@ -55,8 +63,11 @@ public abstract class JpegImageLoader extends ProcessingImageLoader {
 		Raster srcRaster;
 		
 		BufferedImage ret;
+		FileInputStream fileInputStream;
+		
 		try {
-			JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(new FileInputStream(file));
+			fileInputStream = new FileInputStream(file);
+			JPEGImageDecoder decoder = JPEGCodec.createJPEGDecoder(fileInputStream);
 			srcRaster = decoder.decodeAsRaster();
 
 			ret = new BufferedImage(srcRaster.getWidth(), srcRaster.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -65,6 +76,10 @@ public abstract class JpegImageLoader extends ProcessingImageLoader {
 		}
 
 		processRaster(srcRaster, ret.getRaster());
+
+		try {
+			fileInputStream.close();
+		} catch (IOException e) {}
 		
 		return ret;
 	}
