@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -14,6 +15,7 @@ public class RemoteWebDriverFactory implements WebDriverFactory {
 	@Override
 	public WebDriver createSelenium(SeleniumSettings testEnvironment) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
 		capabilities.setBrowserName(testEnvironment.getBrowser().toString());
 		try {
 			return new RemoteWebDriver(new URL(testEnvironment.getRemoteServerURL()), capabilities);
