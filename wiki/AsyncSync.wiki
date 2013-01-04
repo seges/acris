@@ -7,6 +7,13 @@ Executing multiple asynchronous calls is like stampedo - releasing mustangs into
 
 But what to do if your logic depends on finishing multiple not-directly-dependent asynchronous calls? You have to wait for each and every call and process it only when all are back (either with success or failure).
 
+=== Related artifacts ===
+
+{{{
+<groupId>sk.seges.acris</groupId>
+<artifactId>acris-client-core</artifactId>
+}}}
+
 = AcrIS semaphore =
 
 With a semaphore you can simply say that you are waiting for your 3 wild horses and only Manitou will force you to stop waiting.
