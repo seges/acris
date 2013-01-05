@@ -7,8 +7,10 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.acris.pap.security.configurer.ManageableSecurityProcessorConfigurer;
 import sk.seges.acris.pap.security.model.ManageableSecuredType;
 import sk.seges.acris.security.shared.util.SecurityUtils;
+import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -46,32 +48,23 @@ public class ManageableSecuredObjectProcessor extends SecurityProcessor {
 	}
 	
 	@Override
+	protected ProcessorConfigurer getConfigurer() {
+		return new ManageableSecurityProcessorConfigurer();
+	}
+
+	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		return new MutableDeclaredType[] { new ManageableSecuredType(context.getMutableType(), processingEnv) };
 	}
 
 	@Override
     protected void generateMethods(FormattedPrintWriter pw, Element element) {
-        generateInitialize(pw);
 		super.generateMethods(pw, element);
         generateWidgetMethods(pw, element, WidgetStateHandler.VISIBLE);
         generateWidgetMethods(pw, element, WidgetStateHandler.ENABLED);
     }
     
 	private static final String WIDGET_PARAMETER_NAME = "widget";
-
-	private boolean initialized = false;
-	
-	protected void generateInitialize(FormattedPrintWriter pw) {
-		if (initialized) {
-	        pw.println("initializeUser();");
-		} else {
-			initialized = true;
-			pw.println("private void initializeUser() {");
-			super.generateInitialize(pw);
-			pw.println("}");
-		}
-	}
 
     private void generateWidgetMethods(FormattedPrintWriter pw, Element element, WidgetStateHandler handler) {
         

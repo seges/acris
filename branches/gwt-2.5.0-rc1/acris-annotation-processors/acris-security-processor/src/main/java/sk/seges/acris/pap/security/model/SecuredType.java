@@ -37,6 +37,6 @@ public class SecuredType extends DelegateMutableDeclaredType {
 	}
 	
 	protected MutableDeclaredType getDelegate() {
-		return type.clone().addClassPrefix(getClassSuffix());
+		return type.clone().addClassSufix(getClassSuffix());
 	}
 }

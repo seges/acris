@@ -7,13 +7,20 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 
+import sk.seges.acris.pap.security.configurer.RuntimeSecurityProcessorConfigurer;
 import sk.seges.acris.pap.security.model.RuntimeSecuredType;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
+import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class RuntimeSecuredObjectProcessor extends SecurityProcessor {
+
+	@Override
+	protected ProcessorConfigurer getConfigurer() {
+		return new RuntimeSecurityProcessorConfigurer();
+	}
 
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
