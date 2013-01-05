@@ -60,12 +60,12 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 	}
 
 	protected void generateClientSessionProviderMethods(FormattedPrintWriter pw, Element element) {
-		if (!ProcessorUtils.hasMethod("getClientSession", element)) {
+		if (!ProcessorUtils.hasMethod("getClientSession", element, false)) {
 			
 			MutableTypes typeUtils = processingEnv.getTypeUtils();
 			
 			MutableDeclaredType clientSessionType = typeUtils.getDeclaredType(typeUtils.toMutableType(ClientSession.class),
-					new MutableDeclaredType[] {typeUtils.toMutableType(GenericUserDTO.class)});
+					new MutableDeclaredType[] {/*typeUtils.toMutableType(GenericUserDTO.class)*/});
 			
 			pw.println("private ", clientSessionType, " clientSession;");
 			pw.println();
@@ -82,6 +82,7 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 	
     protected void generateMethods(FormattedPrintWriter pw, Element element) {
 		generateClassFields(pw);
+		generateInitializeUser(pw);
     	generateClientSessionProviderMethods(pw, element);
 		generateOnLoadMethod(pw);
 		generateSecurityCheck(pw, element);
@@ -109,13 +110,15 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 		pw.println();
 	}
 
-	protected void generateInitialize(FormattedPrintWriter pw) {
+	protected void generateInitializeUser(FormattedPrintWriter pw) {
+		pw.println("private void initializeUser() {");
 		pw.println(USER_FIELD_NAME + " = null;");
 		pw.println();
 		pw.println("if (getClientSession() != null) {");
 		pw.println(USER_FIELD_NAME + " = (", GenericUserDTO.class, ")getClientSession().getUser();");
 		pw.println("}");
 		pw.println();
+		pw.println("}");
 	}
 
 	protected void printAuthorities(FormattedPrintWriter pw, List<String> authorities) {
@@ -131,8 +134,8 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 	
 	protected void generateSecurityCheckBody(FormattedPrintWriter pw, Element securedElement) {
 
-		generateInitialize(pw);
-		
+        pw.println("initializeUser();");
+
 		// checking visibility of whole panel
 		List<String> classAuthorities = ensureAuthoritiesProvider().getListAuthoritiesForType(securedElement);
 
