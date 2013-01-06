@@ -14,19 +14,26 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 	private final Random random = new Random();
 
 	private static final char[] symbols = new char[36];
+	private static final char[] numbers = new char[10];
 
 	static {
 		for (int idx = 0; idx < 10; ++idx)
-			symbols[idx] = (char) ('0' + idx);
-		for (int idx = 10; idx < 36; ++idx)
-			symbols[idx] = (char) ('a' + idx - 10);
+			numbers[idx] = (char) ('0' + idx);
 	}
 
 	public SeleniumSupport(WebDriver webDriver) {
 		this.webDriver = webDriver;
 	}
 
+	public String getRandomNumericString(int length) {
+		return getRandomString(numbers, length);
+	}
+	
 	public String getRandomString(int length) {
+		return getRandomString(symbols, length);
+	}
+	
+	private String getRandomString(char[] symbols, int length) {
 		if (length < 1) {
 			throw new IllegalArgumentException("length < 1: " + length);
 		}
