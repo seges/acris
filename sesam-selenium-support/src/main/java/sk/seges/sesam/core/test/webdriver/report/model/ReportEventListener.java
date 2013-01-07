@@ -34,7 +34,7 @@ public class ReportEventListener implements WebDriverEventListener, AssertionEve
 	
 	public ReportEventListener(Class<? extends AbstractWebdriverTest> testCase, ReportPrinter<TestCaseResult> reportPrinter, ReportSettings reportSettings, WebDriver webDriver, EnvironmentInfo environmentInfo) {
 		this.reportPrinter = reportPrinter;
-		this.testInfo = new TestCaseResult(testCase);
+		this.testInfo = new TestCaseResult(testCase, reportSettings.getHtml().getIssueTracker());
 		this.reportSettings = reportSettings;
 		this.webDriver = webDriver;
 		this.environmentInfo = environmentInfo;

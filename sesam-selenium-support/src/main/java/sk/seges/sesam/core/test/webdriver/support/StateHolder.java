@@ -66,15 +66,21 @@ public class StateHolder {
 	public WebElement getNewElement() {
 		final int size = webElements.size();
 
+		System.out.println("----");
+		System.out.println(size);
+
 		wait.until(new Function<WebDriver, Boolean>() {
 
 			@Override
 			public Boolean apply(WebDriver arg0) {
 				refind();
+				System.out.println(webElements.size());
 				return webElements.size() > size;
 			}
 		});
 		
+		System.out.println("----");
+
 		return webElements.get(size);
 	}
 }

@@ -30,5 +30,9 @@ public class HtmlReportPrinter extends AbstractHtmlReportPrinter<TestResult> {
 	@Override
 	protected String getReportFileName(TestResult resultData) {
 		return "result_" + getTimeStamp() + ".html";
+	}
+
+	@Override
+	protected void postProcessResultData() {
 	}	
 }

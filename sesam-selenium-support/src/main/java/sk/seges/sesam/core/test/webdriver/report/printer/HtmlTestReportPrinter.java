@@ -3,6 +3,7 @@ package sk.seges.sesam.core.test.webdriver.report.printer;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.Report;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.SupportSettings;
+import sk.seges.sesam.core.test.webdriver.report.model.SeleniumOperationResult;
 import sk.seges.sesam.core.test.webdriver.report.model.TestCaseResult;
 
 public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseResult> {
@@ -40,4 +41,17 @@ public class HtmlTestReportPrinter extends AbstractHtmlReportPrinter<TestCaseRes
 		
 		return support.getDirectory();
 	}
+
+	@Override
+	protected void postProcessResultData() {
+		if (!isHtmlReportEnabled()) {
+			return;
+		}
+
+		if (resultData.getStatus().equals(SeleniumOperationResult.FAILURE)) {
+			resultData.filterCommandResults(reportSettings.getHtml().getOnFailure().getValue());
+		} else if (resultData.getStatus().equals(SeleniumOperationResult.OK)) {
+			resultData.filterCommandResults(reportSettings.getHtml().getOnSucess().getValue());
+		}
+	}	
 }

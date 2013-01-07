@@ -58,7 +58,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 		BeforeSettings before = reportSettings.getScreenshot().getBefore();
 		if (state.equals(SeleniumOperationState.BEFORE)) {
 			for (SeleniumOperation definedOperation: before.getValue()) {
-				if (operation.equals(definedOperation)) {
+				if (operation.equals(definedOperation) || operation.equals(SeleniumOperation.ALL)) {
 					String name = getName(screenshotIndex++, state, operation);
 					commandResult = getCommandResult(name);
 					commandResult.setOperation(operation);
@@ -71,7 +71,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 		AfterSettings after = reportSettings.getScreenshot().getAfter();
 		if (state.equals(SeleniumOperationState.AFTER)) {
 			for (SeleniumOperation definedOperation: after.getValue()) {
-				if (operation.equals(definedOperation)) {
+				if (operation.equals(definedOperation) || operation.equals(SeleniumOperation.ALL)) {
 					String name = getName(screenshotIndex++, state, operation);
 					commandResult = getCommandResult(name);
 					commandResult.setOperation(operation);
