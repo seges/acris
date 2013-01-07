@@ -17,8 +17,15 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 	private static final char[] numbers = new char[10];
 
 	static {
-		for (int idx = 0; idx < 10; ++idx)
-			numbers[idx] = (char) ('0' + idx);
+		for (int idx = 0; idx < 10; ++idx) {
+			char c = (char) ('0' + idx);
+			numbers[idx] = c;
+			symbols[idx] = c;
+		}
+		
+		for (int idx = 10; idx < 36; ++idx) {
+			symbols[idx] = (char) ('a' + idx - 10);
+		}
 	}
 
 	public SeleniumSupport(WebDriver webDriver) {

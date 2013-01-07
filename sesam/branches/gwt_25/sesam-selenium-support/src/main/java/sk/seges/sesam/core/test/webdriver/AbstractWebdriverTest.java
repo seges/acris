@@ -67,7 +67,7 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 		return new EventFiringWebDriver(super.createWebDriver(webDriverFactory, seleniumSettings));
 	}
 	
-	public void setUp(String testName) {
+	public final void setUp(String testName) {
 		this.testName = testName;
 
 		if (testName != null) {
@@ -75,8 +75,7 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 			
 			this.testName = testName;
 			reportEventListener = new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings), reportSettings, webDriver, environmentInfo);
-			actions = new LoggingActions(webDriver, reportEventListener, testEnvironment);
-	
+			actions = new LoggingActions(webDriver, reportEventListener, testEnvironment);	
 		}
 		
 		setUp();

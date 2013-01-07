@@ -1,12 +1,16 @@
 package sk.seges.sesam.core.test.webdriver.report.model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import sk.seges.sesam.core.test.selenium.configuration.annotation.Report.HtmlReport.IssueTracker;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.HtmlReportSettings.IssueTrackerSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest.Issue;
+import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 import sk.seges.sesam.core.test.webdriver.AbstractWebdriverTest;
 import sk.seges.sesam.core.test.webdriver.report.model.api.ReportData;
 
@@ -23,9 +27,11 @@ public class TestCaseResult implements ReportData {
 	private List<CommandResult> commandResults = new LinkedList<CommandResult>();
 		
 	private String fileName;
+	private final IssueTrackerSettings issueTrackerSettings;
 	
-	public TestCaseResult(Class<? extends AbstractWebdriverTest> testCase) {
+	public TestCaseResult(Class<? extends AbstractWebdriverTest> testCase, IssueTrackerSettings issueTrackerSettings) {
 		this.testCase = testCase;
+		this.issueTrackerSettings = issueTrackerSettings;
 	}
 
 	public void setTestMethod(String testMethod) {
@@ -43,14 +49,30 @@ public class TestCaseResult implements ReportData {
 	public boolean hasBugReported() {
 		try {
 			String method = getTestMethod();
-			return !getTestCase().getMethod(method).getAnnotation(SeleniumTest.class).issue().value().equals(SeleniumTest.UNDEFINED);
+			boolean result = !getTestCase().getMethod(method).getAnnotation(SeleniumTest.class).issue().value().equals(SeleniumTest.UNDEFINED);
+			if (result) {
+				return getIssueLink() != null;
+			}
+			return false;
 		} catch (Exception e) {
 		}
 		return false;
 	}
 
 	public String getIssueLink() {
-		return "https://local.seges.sk/mantis/view.php?id=" + getIssue().value();
+		
+		if (issueTrackerSettings == null) {
+			return null;
+		}
+		
+		String issueLinkFormat = issueTrackerSettings.getIssueLink();
+		
+		if (issueLinkFormat == null || issueTrackerSettings.getUrl() == null) {
+			return null;
+		}
+		
+		String result = issueLinkFormat.replaceAll(IssueTracker.URL, issueTrackerSettings.getUrl());
+		return result.replaceAll(IssueTracker.ISSUE_NUMBER, getIssue().value());
 	}
 	
 	public Issue getIssue() {
@@ -75,6 +97,32 @@ public class TestCaseResult implements ReportData {
 	
 	public List<CommandResult> getCommandResults() {
 		return commandResults;
+	}
+	
+	private List<CommandResult> getFilteredCommandResults(List<CommandResult> commandResults, SeleniumOperation[] operations) {
+		List<CommandResult> filteredResult = new ArrayList<CommandResult>();
+		
+		for (CommandResult result: commandResults) {
+			if (result.isFailure() || isOperationLogged(operations, result.getOperation())) {
+				filteredResult.add(result);
+			}
+		}
+		
+		return filteredResult;
+	}
+	
+	private boolean isOperationLogged(SeleniumOperation[] operations, SeleniumOperation operation) {
+		for (SeleniumOperation op: operations) {
+			if (op.equals(operation) || operation.equals(SeleniumOperation.ALL)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	public void filterCommandResults(SeleniumOperation[] operations) {
+		commandResults = getFilteredCommandResults(commandResults, operations);
 	}
 	
 	public String getStartDate() {

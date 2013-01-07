@@ -116,6 +116,8 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 	
 	protected abstract String getReportFileName(T resultData);
 	
+	protected abstract void postProcessResultData();
+	
 	@Override
 	public void print(T resultData) {
 		if (!isHtmlReportEnabled()) {
@@ -161,6 +163,8 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 
         InputStreamReader reader = new InputStreamReader(input);
 
+        postProcessResultData();
+        
         try {
 			if (!ve.evaluate(context, writer, getTemplatePath(), reader)) {
 			    throw new RuntimeException("Failed to convert the template into html.");
