@@ -3,6 +3,12 @@ package sk.seges.sesam.core.test.selenium.report.model;
 
 public enum SeleniumOperation {
 	
+	ALL {
+		@Override
+		public String getDescription() {
+			return "All operations";
+		}		
+	},
 	NAVIGATE_TO {
 		@Override
 		public String getDescription() {
@@ -21,7 +27,7 @@ public enum SeleniumOperation {
 	}, FIND_BY {
 		@Override
 		public String getDescription() {
-			return "Finding by";
+			return "Finding";
 		}
 	}, KEY_DOWN {
 		@Override

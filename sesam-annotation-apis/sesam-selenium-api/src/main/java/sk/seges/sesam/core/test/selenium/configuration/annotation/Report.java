@@ -44,15 +44,15 @@ public @interface Report {
 		@Target(ElementType.ANNOTATION_TYPE)
 		public @interface Before {
 			@Parameter(name = "operations", description = "operations")
-			SeleniumOperation[] value() default { SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
+			SeleniumOperation[] value() default { SeleniumOperation.ASSERTION, SeleniumOperation.VERIFICATION,
+				   SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
 			  	   SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD };
 		}
 
 		@Target(ElementType.ANNOTATION_TYPE)
 		public @interface After {
 			@Parameter(name = "operations", description = "operations")
-			SeleniumOperation[] value() default { SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
-			  	   SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD };
+			SeleniumOperation[] value() default { SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.SEND_KEYS};
 		}
 
 		@Parameter(name = "support", description = "Screenshot reports")
@@ -71,6 +71,26 @@ public @interface Report {
 	@Target(ElementType.ANNOTATION_TYPE)
 	public @interface HtmlReport {
 
+		@Target(ElementType.ANNOTATION_TYPE)
+		public @interface IssueTracker {
+
+			public static final String URL = "%url%";
+			public static final String ISSUE_NUMBER = "%issue_number%";
+
+			@Parameter(name = "url", description = "URL")
+			String url() default Constants.NULL;
+
+			@Parameter(name = "issue.link", description = "issue link format")
+			String issueLink() default URL + ISSUE_NUMBER;
+		}
+		
+		@Target(ElementType.ANNOTATION_TYPE)
+		public @interface CommandReport {
+
+			@Parameter(name = "command", description = "command")
+			SeleniumOperation[] value() default {};
+		}
+
 		@Parameter(name = "report.html", description = "HTML reports")
 		Support support() default @Support(directory = Report.CURRENT_DATE + "_" + Report.CURRENT_TIME + "_" + Report.TEST_CASE_NAME + "_" + Report.TEST_NAME);
 		
@@ -82,8 +102,21 @@ public @interface Report {
 
 		@Parameter(name = "suite.template.locale", description = "Defines locale for the generated report")
 		String locale() default "en";
+		
+		@Parameter(name = "report.command.test.failure.log", description = "Defines what to log when test fails")
+		CommandReport onFailure() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.VERIFICATION,
+				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
+		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
+
+		@Parameter(name = "report.command.test.success.log", description = "Defines what to log when test succeed")
+		CommandReport onSucess() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.VERIFICATION,
+				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
+		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
+		
+		@Parameter(name = "issue.tracker", description = "Settings for issue tracker")
+		IssueTracker issueTracker() default @IssueTracker();
 	}
 	
-	@Parameter(name = "report.html", description = "HTML reports")
+	@Parameter(name = "issue.tracker", description = "Issue tracker")
 	HtmlReport html() default @HtmlReport(support = @Support(enabled = false));
 }
