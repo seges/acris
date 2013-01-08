@@ -4,12 +4,17 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Wait;
+
+import com.google.common.base.Function;
 
 public class SeleniumSupport extends AbstractBrowserSupport {
 
 	// protected DefaultSelenium selenium;
 	protected WebDriver webDriver;
+	protected Wait<WebDriver> wait;
 
 	private final Random random = new Random();
 
@@ -28,8 +33,9 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 		}
 	}
 
-	public SeleniumSupport(WebDriver webDriver) {
+	public SeleniumSupport(WebDriver webDriver, Wait<WebDriver> wait) {
 		this.webDriver = webDriver;
+		this.wait = wait;
 	}
 
 	public String getRandomNumericString(int length) {
@@ -73,5 +79,19 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 	
 	public Boolean getRandomBoolean() {
 		return random.nextBoolean();
+	}
+	
+	public void waitUntilLoaded() {
+
+		wait.until(new Function<WebDriver, Boolean>() {
+
+			@Override
+			public Boolean apply(WebDriver arg0) {
+				Long requestsCount = (Long)((JavascriptExecutor)webDriver).executeScript("return document.ajax_outstanding;", new Object[] {});
+				System.out.println(requestsCount);
+				return 0 == requestsCount;
+			}
+			
+		});
 	}
 }
