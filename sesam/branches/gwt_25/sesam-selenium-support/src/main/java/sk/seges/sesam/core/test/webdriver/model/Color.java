@@ -300,4 +300,51 @@ public class Color {
 	private float MIN(float a, float b, float c) {
 		return Math.min(Math.min(a, b), c);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		
+		if (getBlue() != null) {
+			result = prime * result + getBlue().hashCode();
+			result = prime * result + getGreen().hashCode();
+			result = prime * result + getRed().hashCode();
+		} else if (getHue() != null) {
+			result = prime * result + getHue().hashCode();
+			result = prime * result + getSaturation().hashCode();
+			result = prime * result + getValue().hashCode();
+		} else if (getHex() != null) {
+			result = prime * result + getHex().hashCode();
+		}
+				
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Color other = (Color) obj;
+		
+		if (other.getRed() != null && getRed() != null) {
+			return other.getRed().equals(getRed()) && other.getBlue().equals(getBlue()) && other.getGreen().equals(getGreen());
+		}
+
+		if (other.getHue() != null && getHue() != null) {
+			return other.getHue().equals(getHue()) && other.getSaturation().equals(getSaturation()) && other.getValue().equals(getValue());
+		}
+		
+		if (other.getHex() != null) {
+			return other.getHex().equals(getHex());
+		}
+		
+		return false;
+	}
+
+	
 }

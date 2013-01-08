@@ -101,7 +101,7 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 	}
 	
 	protected SeleniumSupport getSeleniumSupport() {
-		return new SeleniumSupport(webDriver);
+		return new SeleniumSupport(webDriver, wait);
 	}
 
 	@Before
@@ -172,6 +172,44 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 	
 	protected void navigateToTestPage () {
 		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());		
+
+		String ajaxRequestCounterScript = "document.ajax_outstanding = 0;" + 
+		"XMLHttpRequest.prototype.uniqueID = function() {" + 
+		"	if (!this.uniqueIDMemo) {" + 
+		"		this.uniqueIDMemo = Math.floor(Math.random() * 1000);" + 
+		"	}" + 
+		"	return this.uniqueIDMemo;" + 
+		"};" + 
+		"XMLHttpRequest.prototype.oldOpen = XMLHttpRequest.prototype.open;" + 
+		"var newOpen = function(method, url, async, user, password) {" + 
+		"	ajaxRequestStarted = 'open';" + 
+		"	document.ajax_outstanding++;" + 
+		"	console.log('started ' + document.ajax_outstanding);" +
+		"	this.oldOpen(method, url, async, user, password);" + 
+		"};" + 
+		"XMLHttpRequest.prototype.open = newOpen;" + 
+		"XMLHttpRequest.prototype.oldSend = XMLHttpRequest.prototype.send;" + 
+		"var newSend = function(a) {" + 
+		"	var xhr = this;" + 
+		"	var onload = function() {" + 
+		"		ajaxRequestComplete = 'loaded';" + 
+		"		document.ajax_outstanding--;" + 
+		"		console.log('finished ' + document.ajax_outstanding);" +
+		"	};" + 
+		"	var onerror = function() {" + 
+		"		ajaxRequestComplete = 'Err';" + 
+		"		document.ajax_outstanding--;" + 
+		"		console.log('finished ' + document.ajax_outstanding);" +
+		"	};" + 
+		"	xhr.addEventListener('load', onload, false);" + 
+		"	xhr.addEventListener('error', onerror, false);" + 
+		"	xhr.oldSend(a);" + 
+		"};" +
+		"XMLHttpRequest.prototype.send = newSend;";
+		
+		((JavascriptExecutor)webDriver).executeScript(ajaxRequestCounterScript, new Object[] {});
+
+		seleniumSupport.waitUntilLoaded();
 	}
 	
 	public ReportEventListener getReportEventListener() {
