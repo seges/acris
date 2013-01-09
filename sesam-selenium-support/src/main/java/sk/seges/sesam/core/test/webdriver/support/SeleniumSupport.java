@@ -88,10 +88,8 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 			@Override
 			public Boolean apply(WebDriver arg0) {
 				Long requestsCount = (Long)((JavascriptExecutor)webDriver).executeScript("return document.ajax_outstanding;", new Object[] {});
-				System.out.println(requestsCount);
-				return 0 == requestsCount;
+				return requestsCount != null && 0 == requestsCount;
 			}
-			
 		});
 	}
 }
