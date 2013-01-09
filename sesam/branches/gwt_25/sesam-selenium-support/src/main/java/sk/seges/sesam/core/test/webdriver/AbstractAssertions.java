@@ -95,13 +95,54 @@ public abstract class AbstractAssertions implements Assertion {
 		assertEquals(statement1, statement2, "");
 	}
 
+	private int getDifferenceIndex(String s1, String s2) {
+		if (s1 == null || s2 == null) {
+			return 0;
+		}
+		
+		int count = Math.min(s1.length(), s2.length());
+		
+		int i = 0;
+		
+		for (i = 0; i < count; i++) {
+			if (s1.charAt(i) != s2.charAt(i)) {
+				return i;
+			}
+		}
+		
+		return i;
+	}
+	
+	private String formatNotEqualString(String s, int index) {
+		if (s == null) {
+			return s;	
+		}
+
+		if (s.length() <= index) {
+			return s + "[]";
+		}
+		
+		
+		if (s.length() + 1 == index) {
+			return s.substring(0, index) + "[-->" + s.substring(index, 1) + "<--]";
+		}
+		return s.substring(0, index) + "[-->" + s.substring(index, 1) + "<--]" + s.substring(index + 1);
+	}
+	
 	@Override
 	public synchronized void assertEquals(Object statement1, Object statement2, String comment) {
+		
+		if (statement1 != null && statement2 != null && statement1 instanceof String && statement2 instanceof String) {
+			assertEquals((String)statement1, (String)statement2, comment);
+			return;
+		}
+		
 		if (statement1 == null) {
 			if (statement2 != null) {
 				for (AssertionEventListener assertionListener: listeners) {
 					assertionListener.onAssertion(false, statement1, statement2, ComparationType.POSITIVE, comment);
 				}
+				
 				throw new RuntimeException("Statements assertion failed. [" + statement1 + " should equals " + statement2 + "] " + comment);
 			}
 		} else {
@@ -110,6 +151,33 @@ public abstract class AbstractAssertions implements Assertion {
 					assertionListener.onAssertion(false, statement1, statement2, ComparationType.POSITIVE, comment);
 				}
 				throw new RuntimeException("Statements assertion failed. [" + statement1 + " should equals " + statement2 + "] " + comment);
+			}
+		}
+
+		for (AssertionEventListener assertionListener: listeners) {
+			assertionListener.onAssertion(true, statement1, statement2, ComparationType.POSITIVE, comment);
+		}
+	}
+
+	private synchronized void assertEquals(String statement1, String statement2, String comment) {
+		if (statement1 == null) {
+			if (statement2 != null) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onAssertion(false, statement1, statement2, ComparationType.POSITIVE, comment);
+				}
+				int index = getDifferenceIndex(statement1, statement2);
+				
+				throw new RuntimeException("Statements assertion failed. [" + formatNotEqualString(statement1, index) + " should equals " + 
+						formatNotEqualString(statement2, index) + "] " + comment);
+			}
+		} else {
+			if (statement2 == null || !statement1.equals(statement2)) {
+				for (AssertionEventListener assertionListener: listeners) {
+					assertionListener.onAssertion(false, statement1, statement2, ComparationType.POSITIVE, comment);
+				}
+				int index = getDifferenceIndex(statement1, statement2);
+				throw new RuntimeException("Statements assertion failed. [" + formatNotEqualString(statement1, index) + " should equals " + 
+						formatNotEqualString(statement2, index) + "] " + comment);
 			}
 		}
 
