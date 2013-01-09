@@ -126,7 +126,7 @@ public abstract class AbstractAssertions implements Assertion {
 		if (s.length() + 1 == index) {
 			return s.substring(0, index) + "[-->" + s.substring(index, 1) + "<--]";
 		}
-		return s.substring(0, index) + "[-->" + s.substring(index, 1) + "<--]" + s.substring(index + 1);
+		return s.substring(0, index) + "[-->" + s.substring(index, index + 1) + "<--]" + s.substring(index + 1);
 	}
 	
 	@Override
