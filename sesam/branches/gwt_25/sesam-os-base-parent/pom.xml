@@ -1400,6 +1400,7 @@
 						<configuration>
 							<mainClass>sk.seges.sesam.pap.test.selenium.processor.runner.DefaultRunner</mainClass>
 							<classpathScope>test</classpathScope>
+							<commandlineArgs>-Dfile.encoding=UTF-8</commandlineArgs>
 						</configuration>
 					</plugin>
 				</plugins>	
