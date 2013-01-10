@@ -203,8 +203,14 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 			"		document.ajax_outstanding--;" + 
 			"		console.log('finished ' + document.ajax_outstanding);" +
 			"	};" + 
+			"	var onabort = function() {" + 
+			"		ajaxRequestComplete = 'Abort';" + 
+			"		document.ajax_outstanding--;" + 
+			"		console.log('aborted ' + document.ajax_outstanding);" +
+			"	};" + 
 			"	xhr.addEventListener('load', onload, false);" + 
 			"	xhr.addEventListener('error', onerror, false);" + 
+			"	xhr.addEventListener('abbort', onabort, false);" + 
 			"	xhr.oldSend(a);" + 
 			"};" +
 			"XMLHttpRequest.prototype.send = newSend;";

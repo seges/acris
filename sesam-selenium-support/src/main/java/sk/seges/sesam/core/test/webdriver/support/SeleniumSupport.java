@@ -3,6 +3,7 @@ package sk.seges.sesam.core.test.webdriver.support;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -83,6 +84,8 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 	
 	public void waitUntilLoaded() {
 
+		webDriver.manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
+		
 		wait.until(new Function<WebDriver, Boolean>() {
 
 			@Override
@@ -91,5 +94,7 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 				return requestsCount != null && 0 == requestsCount;
 			}
 		});
+
+		webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 }
