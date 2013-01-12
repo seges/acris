@@ -108,7 +108,7 @@
 		clear:both;
 		color:#FFFFFF;
 		font-size:12px;
-		min-height:75px;
+		min-height:40px;
 		list-style-type:none;
 		padding:10px;
 		width:390px;
@@ -152,6 +152,10 @@
 		color: #ef2929;
 	}
 	
+	.success {
+		color: #2DEB53;
+	}
+	
 	.not_updated {
 		background-color: #72AD88; 
 		color: white; 
@@ -179,7 +183,7 @@ Started at $result.getStartDate() and took $result.getTotalTime() ms.<br/>
 		#if ( $commandResult.isFailure() )
 			<span class="failure">Failed: ${commandResult.getThrowableMessage()}</span>
 		#else
-			with result $commandResult.getResult()
+			<span class="success">with result $commandResult.getResult()</span>
 		#end
 	#else
 		#if ( $velocityCount > 1)

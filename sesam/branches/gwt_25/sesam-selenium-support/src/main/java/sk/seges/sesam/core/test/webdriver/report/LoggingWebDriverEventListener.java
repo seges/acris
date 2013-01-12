@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationState;
+import sk.seges.sesam.core.test.webdriver.JunitAssertionDelegate.AssertionResult;
 import sk.seges.sesam.core.test.webdriver.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.webdriver.model.ValueChangeParameter;
 import sk.seges.sesam.core.test.webdriver.report.model.CommandResult;
@@ -229,27 +230,16 @@ public class LoggingWebDriverEventListener implements TestResultCollector {
 	}
 
 	@Override
-	public void onAssertion(Boolean result, Boolean statement1, ComparationType type, String comment) {
-		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION, 
-				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
+	public void onAssertion(SeleniumOperationState state, AssertionResult assertionResult) {
+		commandResult = getCommandResult(state, SeleniumOperation.ASSERTION, 
+				assertionResult.getResult() == null ? SeleniumOperationResult.NONE : 
+						assertionResult.getResult() == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE,
+								assertionResult.getComment() + "." + (assertionResult.getResultMessage() == null ? "" : assertionResult.getResultMessage()));
 	}
 
 	@Override
-	public void onAssertion(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
-		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION, 
-				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
-	}
-
-	@Override
-	public void onVerification(Boolean result, Boolean statement1, ComparationType type, String comment) {
-		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION, 
-				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
-	}
-
-	@Override
-	public void onVerification(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
-		commandResult = getCommandResult(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION, 
-				result == true ? SeleniumOperationResult.OK : SeleniumOperationResult.FAILURE);
+	public void onFail(SeleniumOperationState state, String message) {
+		commandResult = getCommandResult(state, SeleniumOperation.FAIL, SeleniumOperationResult.FAILURE, message);
 	}
 
 	@Override

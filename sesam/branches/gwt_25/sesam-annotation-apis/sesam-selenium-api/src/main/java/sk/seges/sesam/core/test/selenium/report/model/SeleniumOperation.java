@@ -72,12 +72,12 @@ public enum SeleniumOperation {
 	}, ASSERTION {
 		@Override
 		public String getDescription() {
-			return "Asserting ";
+			return "Assert that ";
 		}
-	}, VERIFICATION {
+	}, FAIL {
 		@Override
 		public String getDescription() {
-			return "Verificating ";
+			return "Fail";
 		}
 	}, BUTTON_RELEASE {
 		@Override

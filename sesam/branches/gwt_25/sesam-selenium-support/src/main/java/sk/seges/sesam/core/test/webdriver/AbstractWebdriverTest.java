@@ -13,46 +13,107 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.google.common.base.Function;
-
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
 import sk.seges.sesam.core.test.selenium.configuration.model.CoreSeleniumSettingsProvider;
 import sk.seges.sesam.core.test.selenium.junit.runner.SeleniumTestRunner;
+import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
+import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationState;
+import sk.seges.sesam.core.test.webdriver.api.Assertion;
+import sk.seges.sesam.core.test.webdriver.api.SesamWebDriver;
+import sk.seges.sesam.core.test.webdriver.factory.LocalWebDriverFactory;
+import sk.seges.sesam.core.test.webdriver.factory.RemoteWebDriverFactory;
 import sk.seges.sesam.core.test.webdriver.factory.WebDriverFactory;
 import sk.seges.sesam.core.test.webdriver.model.EnvironmentInfo;
+import sk.seges.sesam.core.test.webdriver.model.SesamWebDriverDelegate;
+import sk.seges.sesam.core.test.webdriver.report.LoggingAssertionDelegate;
 import sk.seges.sesam.core.test.webdriver.report.LoggingWebDriverEventListener;
 import sk.seges.sesam.core.test.webdriver.report.ScreenshotsWebDriverEventListener;
+import sk.seges.sesam.core.test.webdriver.report.model.CommandResult;
 import sk.seges.sesam.core.test.webdriver.report.model.ReportEventListener;
 import sk.seges.sesam.core.test.webdriver.report.model.TestCaseResult;
 import sk.seges.sesam.core.test.webdriver.report.printer.HtmlTestReportPrinter;
+import sk.seges.sesam.core.test.webdriver.report.support.ScreenshotSupport;
 import sk.seges.sesam.core.test.webdriver.support.MailSupport;
 import sk.seges.sesam.core.test.webdriver.support.SeleniumSupport;
 
-@RunWith(SeleniumTestRunner.class)
-public abstract class AbstractWebdriverTest extends AbstractAssertions {
+import com.google.common.base.Function;
 
+@RunWith(SeleniumTestRunner.class)
+public abstract class AbstractWebdriverTest {
+
+	public class ReportContext {
+
+		private CommandResult commandResult;
+		private String screenshotName;
+		
+		public CommandResult setCommandResult(CommandResult commandResult) {
+			this.commandResult = commandResult;
+			return commandResult;
+		}
+		
+		public void setScreenshotName(String screenshotName) {
+			this.screenshotName = screenshotName;
+		}
+		
+		public CommandResult getCommandResult() {
+			return commandResult;
+		}
+		
+		public String getScreenshotName() {
+			return screenshotName;
+		}
+	}
+	
 	protected MailSupport mailSupport;
 	protected SeleniumSupport seleniumSupport;
+	protected Assertion assertionSupport;
+
+	protected SesamWebDriver webDriver;
 
 	private String testName;
 	protected Wait<WebDriver> wait;
 
 	protected ReportSettings reportSettings;
-
+	private ReportEventListener reportEventListener;
+	private boolean reportEventListenerInitialized = false;
+	
 	protected Actions actions;
 	protected CoreSeleniumSettingsProvider settings;
 	
-	private ReportEventListener reportEventListener;
 	private EnvironmentInfo environmentInfo;
+
+	protected SeleniumSettings testEnvironment;
+	private ScreenshotSupport screenshotSupport;
+	private ReportContext reportContext;
 	
 	protected AbstractWebdriverTest() {
 		setTestEnvironment(ensureSettings().getSeleniumSettings());
-		actions = new WebDriverActions(webDriver, testEnvironment);
-		environmentInfo = new EnvironmentInfo();
+		this.actions = new WebDriverActions(webDriver, testEnvironment);
+		this.environmentInfo = new EnvironmentInfo();
 	}
 
 	protected abstract CoreSeleniumSettingsProvider getSettings();
+
+	protected Assertion getAssertion() {
+		if (assertionSupport != null) {
+			return assertionSupport;
+		}
+
+		assertionSupport = new JunitAssertionWrapper();
+		if (reportSettings != null && reportSettings.getHtml() != null && Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
+			assertionSupport = new LoggingAssertionDelegate((JunitAssertionWrapper)assertionSupport);
+		}
+		
+		return assertionSupport;
+	}
+	
+	protected WebDriverFactory getWebDriverFactory(SeleniumSettings testEnvironment) {
+		return testEnvironment.getRemoteServerURL() == null ? 
+				new LocalWebDriverFactory() : new RemoteWebDriverFactory();
+	}
+
+	public void runTests() {};
 
 	public CoreSeleniumSettingsProvider ensureSettings() {
 		if (settings == null) {
@@ -62,9 +123,8 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 		return settings;
 	}
 	
-	@Override
 	protected WebDriver createWebDriver(WebDriverFactory webDriverFactory, SeleniumSettings seleniumSettings) {
-		return new EventFiringWebDriver(super.createWebDriver(webDriverFactory, seleniumSettings));
+		return new EventFiringWebDriver(webDriverFactory.createSelenium(seleniumSettings));
 	}
 	
 	public final void setUp(String testName) {
@@ -74,24 +134,21 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 			reportSettings = ensureSettings().getReportSettings();
 			
 			this.testName = testName;
-			reportEventListener = new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings), reportSettings, webDriver, environmentInfo);
-			actions = new LoggingActions(webDriver, reportEventListener, testEnvironment);	
+			
+			actions = new LoggingActions(webDriver, getReportEventListener(), testEnvironment);	
 		}
-		
+
 		setUp();
 	}
 	
 	public void setTestEnvironment(SeleniumSettings testEnvironment) {
-		super.setTestEnvironment(testEnvironment);
+		this.testEnvironment = testEnvironment;
+		this.webDriver = new SesamWebDriverDelegate(createWebDriver(getWebDriverFactory(testEnvironment), testEnvironment));
 		
-		wait = new WebDriverWait(webDriver, 30);
-		webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MINUTES);
-
-		mailSupport = getMailSupport();
-		seleniumSupport = getSeleniumSupport();
+		this.wait = new WebDriverWait(webDriver, 30);
+		this.webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MINUTES);
 	}
 	
-	@Override
 	protected String getTestName() {
 		return testName;
 	}
@@ -100,13 +157,30 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 		return new MailSupport(ensureSettings().getMailSettings());
 	}
 	
+	public ReportEventListener getReportEventListener() {
+		if (reportEventListenerInitialized) {
+			return reportEventListener;
+		}
+		reportEventListenerInitialized = true;
+
+		if (testName != null) {
+			reportEventListener = 
+				new ReportEventListener(this.getClass(), new HtmlTestReportPrinter(reportSettings), reportSettings, webDriver, environmentInfo);
+		}
+		
+		return reportEventListener;
+	}
+	
 	protected SeleniumSupport getSeleniumSupport() {
-		return new SeleniumSupport(webDriver, wait);
+		return new SeleniumSupport(getReportEventListener(), webDriver, wait);
 	}
 
 	@Before
 	public void setUp() {
 		
+		this.mailSupport = getMailSupport();
+		this.seleniumSupport = getSeleniumSupport();
+
 		//this maximizes the browser window and returns the actual window width
 		Object width = ((JavascriptExecutor)webDriver).executeScript("if (window.screen){window.moveTo(0, 0);window.resizeTo(window.screen.availWidth,window.screen.availHeight);}; if( typeof( window.innerWidth ) == 'number' ) { return window.innerWidth; } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) { return document.documentElement.clientWidth; } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) { return document.body.clientWidth; } return 0;", new Object[] {});
 		
@@ -131,21 +205,24 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 		//if running as regular junit
 		if (testName != null) {
 			
-			this.reportEventListener.setTestMethod(testName);
+			getReportEventListener().setTestMethod(testName);
 			
-			registerAssertionListener(reportEventListener);
-
-			((EventFiringWebDriver)webDriver).register(reportEventListener);
+			((EventFiringWebDriver)webDriver).register(getReportEventListener());
 
 			if (Boolean.TRUE.equals(reportSettings.getHtml().getSupport().getEnabled())) {
-				reportEventListener.addTestResultCollector(new LoggingWebDriverEventListener(reportSettings, webDriver, environmentInfo));
+				getReportEventListener().addTestResultCollector(new LoggingWebDriverEventListener(reportSettings, webDriver, environmentInfo));
+				((LoggingAssertionDelegate)getAssertion()).registerAssertionListener(getReportEventListener());
 			}
 
 			if (Boolean.TRUE.equals(reportSettings.getScreenshot().getSupport().getEnabled())) {
-				reportEventListener.addTestResultCollector(new ScreenshotsWebDriverEventListener(reportSettings, webDriver, environmentInfo));
+
+				reportContext = new ReportContext();
+				screenshotSupport = new ScreenshotSupport(reportContext, webDriver, reportSettings, environmentInfo);
+				
+				getReportEventListener().addTestResultCollector(new ScreenshotsWebDriverEventListener(reportSettings, screenshotSupport, reportContext, webDriver, environmentInfo));
 			}
 				
-			reportEventListener.initialize();
+			getReportEventListener().initialize();
 		}
 		
 		navigateToTestPage();
@@ -155,24 +232,29 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 	public void tearDown() {
 
 		try {
-			if (reportEventListener != null) {
-				reportEventListener.finish();
-				((EventFiringWebDriver)webDriver).unregister(reportEventListener);
+			if (getReportEventListener() != null) {
+				getReportEventListener().finish();
+				((EventFiringWebDriver)webDriver).unregister(getReportEventListener());
 			}
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
 		
-		super.tearDown();	
+		webDriver.quit();
 	}
 	
 	public TestCaseResult getTestInfo() {
-		return reportEventListener.getTestInfo();
+		return getReportEventListener().getTestInfo();
 	}
 	
 	protected void navigateToTestPage () {
+
 		webDriver.get(testEnvironment.getTestURL() + testEnvironment.getTestURI());		
 
+		if (getReportEventListener() != null) {
+			getReportEventListener().collectResults(false);
+		}
+		
 		((JavascriptExecutor)webDriver).executeScript("document.ajax_outstanding = 0;", new Object[] {});
 
 		String ajaxRequestCounterScript =  
@@ -217,13 +299,19 @@ public abstract class AbstractWebdriverTest extends AbstractAssertions {
 		
 		((JavascriptExecutor)webDriver).executeScript(ajaxRequestCounterScript, new Object[] {});
 
+		if (getReportEventListener() != null) {
+			getReportEventListener().collectResults(true);
+		}
+
 		seleniumSupport.waitUntilLoaded();
+		
+		if (reportContext != null && reportContext.getCommandResult() != null && 
+				reportContext.getCommandResult().getOperation().equals(SeleniumOperation.NAVIGATE_TO) &&
+				reportContext.getCommandResult().getState().equals(SeleniumOperationState.AFTER)) {
+			screenshotSupport.makeScreenshot(reportContext.getScreenshotName());
+		}
 	}
 	
-	public ReportEventListener getReportEventListener() {
-		return reportEventListener;
-	}
-
 	public WebDriver getWebDriver() {
 		return webDriver;
 	}

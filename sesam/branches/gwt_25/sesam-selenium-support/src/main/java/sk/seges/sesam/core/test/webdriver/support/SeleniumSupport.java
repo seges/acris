@@ -9,14 +9,18 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Wait;
 
+import sk.seges.sesam.core.test.webdriver.report.model.ReportEventListener;
+
 import com.google.common.base.Function;
 
 public class SeleniumSupport extends AbstractBrowserSupport {
 
 	// protected DefaultSelenium selenium;
-	protected WebDriver webDriver;
-	protected Wait<WebDriver> wait;
+	protected final WebDriver webDriver;
+	protected final Wait<WebDriver> wait;
 
+	private final ReportEventListener reportEventListener;
+	
 	private final Random random = new Random();
 
 	private static final char[] symbols = new char[36];
@@ -34,9 +38,10 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 		}
 	}
 
-	public SeleniumSupport(WebDriver webDriver, Wait<WebDriver> wait) {
+	public SeleniumSupport(ReportEventListener reportEventListener, WebDriver webDriver, Wait<WebDriver> wait) {
 		this.webDriver = webDriver;
 		this.wait = wait;
+		this.reportEventListener = reportEventListener;
 	}
 
 	public String getRandomNumericString(int length) {
@@ -90,8 +95,15 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 
 			@Override
 			public Boolean apply(WebDriver arg0) {
+				boolean collectResults = false;
+				if (reportEventListener != null) {
+					collectResults = reportEventListener.collectResults(false);
+				}
 				Long requestsCount = (Long)((JavascriptExecutor)webDriver).executeScript("return document.ajax_outstanding;", new Object[] {});
-				return requestsCount != null && 0 == requestsCount;
+				if (reportEventListener != null) {
+					reportEventListener.collectResults(collectResults);
+				}
+				return requestsCount == null || 0 == requestsCount;
 			}
 		});
 

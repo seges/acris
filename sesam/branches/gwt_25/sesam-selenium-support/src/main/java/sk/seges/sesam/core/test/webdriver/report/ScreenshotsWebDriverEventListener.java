@@ -10,6 +10,8 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.ScreenshotSettings.BeforeSettings;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationState;
+import sk.seges.sesam.core.test.webdriver.AbstractWebdriverTest.ReportContext;
+import sk.seges.sesam.core.test.webdriver.JunitAssertionDelegate.AssertionResult;
 import sk.seges.sesam.core.test.webdriver.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.webdriver.report.model.CommandResult;
 import sk.seges.sesam.core.test.webdriver.report.model.api.TestResultCollector;
@@ -23,9 +25,12 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	private int screenshotIndex = 1;
 	private final WebDriver webDriver;
 	private final EnvironmentInfo environmentInfo;
-
-	public ScreenshotsWebDriverEventListener(ReportSettings reportSettings, WebDriver webDriver, EnvironmentInfo environmentInfo) {
-		this.screenshotSupport = new ScreenshotSupport(webDriver, reportSettings, environmentInfo);
+	private final ReportContext reportContext;
+	
+	public ScreenshotsWebDriverEventListener(ReportSettings reportSettings, ScreenshotSupport screenshotSupport, 
+			ReportContext reportContext, WebDriver webDriver, EnvironmentInfo environmentInfo) {
+		this.screenshotSupport = screenshotSupport;
+		this.reportContext = reportContext;
 		this.reportSettings = reportSettings;
 		this.webDriver = webDriver;
 		this.environmentInfo = environmentInfo;
@@ -60,7 +65,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 			for (SeleniumOperation definedOperation: before.getValue()) {
 				if (operation.equals(definedOperation) || operation.equals(SeleniumOperation.ALL)) {
 					String name = getName(screenshotIndex++, state, operation);
-					commandResult = getCommandResult(name);
+					commandResult = reportContext.setCommandResult(getCommandResult(name));
 					commandResult.setOperation(operation);
 					commandResult.setState(state);
 					screenshotSupport.makeScreenshot(name);
@@ -73,7 +78,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 			for (SeleniumOperation definedOperation: after.getValue()) {
 				if (operation.equals(definedOperation) || operation.equals(SeleniumOperation.ALL)) {
 					String name = getName(screenshotIndex++, state, operation);
-					commandResult = getCommandResult(name);
+					commandResult = reportContext.setCommandResult(getCommandResult(name));
 					commandResult.setOperation(operation);
 					commandResult.setState(state);
 					screenshotSupport.makeScreenshot(name);
@@ -82,7 +87,7 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 			}
 		}
 		
-		commandResult = getCommandResult(null);
+		commandResult = reportContext.setCommandResult(getCommandResult(null));
 		commandResult.setOperation(operation);
 		commandResult.setState(state);
 	}
@@ -163,23 +168,13 @@ public class ScreenshotsWebDriverEventListener implements TestResultCollector {
 	}
 
 	@Override
-	public void onAssertion(Boolean result, Boolean statement1, ComparationType type, String comment) {
-		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION);
+	public void onAssertion(SeleniumOperationState state, AssertionResult result) {
+		makeScreenshot(state, SeleniumOperation.ASSERTION);
 	}
 
 	@Override
-	public void onAssertion(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
-		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.ASSERTION);
-	}
-
-	@Override
-	public void onVerification(Boolean result, Boolean statement1, ComparationType type, String comment) {
-		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION);
-	}
-
-	@Override
-	public void onVerification(Boolean result, Object statement1, Object statement2, ComparationType type, String comment) {
-		makeScreenshot(SeleniumOperationState.AFTER, SeleniumOperation.VERIFICATION);
+	public void onFail(SeleniumOperationState state, String message) {
+		makeScreenshot(state, SeleniumOperation.FAIL);
 	}
 
 	@Override

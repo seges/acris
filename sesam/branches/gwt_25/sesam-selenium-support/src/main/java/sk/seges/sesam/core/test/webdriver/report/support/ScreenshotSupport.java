@@ -8,6 +8,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
+import sk.seges.sesam.core.test.webdriver.AbstractWebdriverTest.ReportContext;
 import sk.seges.sesam.core.test.webdriver.model.EnvironmentInfo;
 import sk.seges.sesam.core.test.webdriver.report.SupportHelper;
 import sk.seges.sesam.core.test.webdriver.report.model.TestCaseResult;
@@ -16,9 +17,11 @@ public class ScreenshotSupport extends SupportHelper<TestCaseResult> {
 
 	private final ReportSettings reportSettings;
 	private final WebDriver webDriver;
+	private final ReportContext reportContext;
 	
-	public ScreenshotSupport(WebDriver webDriver, ReportSettings reportSettings, EnvironmentInfo environmentInfo) {
+	public ScreenshotSupport(ReportContext reportContext, WebDriver webDriver, ReportSettings reportSettings, EnvironmentInfo environmentInfo) {
 		this.reportSettings = reportSettings;
+		this.reportContext = reportContext;
 		this.webDriver = webDriver;
 	}
 	
@@ -48,6 +51,7 @@ public class ScreenshotSupport extends SupportHelper<TestCaseResult> {
 			}
 			File screnshotFile = ((TakesScreenshot)webDriver).getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(screnshotFile, new File(getScreenshotDirectory() + File.separator + name + DEFAULT_SCREENSHOT_EXTENSION));
+			reportContext.setScreenshotName(name);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.test.webdriver.report.model;
 
+import java.util.ResourceBundle;
+
 import org.openqa.selenium.NoSuchElementException;
 
 public enum ThrowableLocalizer {
@@ -12,14 +14,14 @@ public enum ThrowableLocalizer {
 		}
 
 		@Override
-		public String getKey() {
-			return "exception.nosuchelement";
+		public String getMessage(ResourceBundle bundle, Throwable throwable) {
+			return bundle.getString("exception.nosuchelement");
 		}
 	};
 	
 	public abstract Class<? extends Throwable> getThrowableClass();
 	
-	public abstract String getKey();
+	public abstract String getMessage(ResourceBundle bundle, Throwable throwable);
 	
 	public static ThrowableLocalizer get(Throwable throwable) {
 		for (ThrowableLocalizer tl: ThrowableLocalizer.values()) {
