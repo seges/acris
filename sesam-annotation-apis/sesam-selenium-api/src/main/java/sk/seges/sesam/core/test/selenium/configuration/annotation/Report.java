@@ -44,7 +44,7 @@ public @interface Report {
 		@Target(ElementType.ANNOTATION_TYPE)
 		public @interface Before {
 			@Parameter(name = "operations", description = "operations")
-			SeleniumOperation[] value() default { SeleniumOperation.ASSERTION, SeleniumOperation.VERIFICATION,
+			SeleniumOperation[] value() default { SeleniumOperation.ASSERTION, SeleniumOperation.FAIL,
 				   SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
 			  	   SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD };
 		}
@@ -52,7 +52,8 @@ public @interface Report {
 		@Target(ElementType.ANNOTATION_TYPE)
 		public @interface After {
 			@Parameter(name = "operations", description = "operations")
-			SeleniumOperation[] value() default { SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.SEND_KEYS};
+			SeleniumOperation[] value() default { SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.SEND_KEYS,
+				SeleniumOperation.NAVIGATE_TO};
 		}
 
 		@Parameter(name = "support", description = "Screenshot reports")
@@ -91,7 +92,7 @@ public @interface Report {
 			SeleniumOperation[] value() default {};
 		}
 
-		@Parameter(name = "report.html", description = "HTML reports")
+		@Parameter(name = "report.html", description = "enables/disables HTML report")
 		Support support() default @Support(directory = Report.CURRENT_DATE + "_" + Report.CURRENT_TIME + "_" + Report.TEST_CASE_NAME + "_" + Report.TEST_NAME);
 		
 		@Parameter(name = "test.template.path", description = "Defines path to the used template for tests")
@@ -104,12 +105,12 @@ public @interface Report {
 		String locale() default "en";
 		
 		@Parameter(name = "report.command.test.failure.log", description = "Defines what to log when test fails")
-		CommandReport onFailure() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.VERIFICATION,
+		CommandReport onFailure() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.FAIL,
 				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
 		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
 
 		@Parameter(name = "report.command.test.success.log", description = "Defines what to log when test succeed")
-		CommandReport onSucess() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.VERIFICATION,
+		CommandReport onSucess() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.FAIL,
 				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
 		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
 		
@@ -117,6 +118,6 @@ public @interface Report {
 		IssueTracker issueTracker() default @IssueTracker();
 	}
 	
-	@Parameter(name = "issue.tracker", description = "Issue tracker")
+	@Parameter(name = "report", description = "HTML report settings")
 	HtmlReport html() default @HtmlReport(support = @Support(enabled = false));
 }

@@ -778,8 +778,7 @@ public class CommandResult {
 		if (throwableLocalizer == null) {
 			return getThrowable().getLocalizedMessage();
 		}
-		
-		return bundle.getString(throwableLocalizer.getKey());
+		return throwableLocalizer.getMessage(bundle, getThrowable());
 	}
 	
 	public Throwable getThrowable() {

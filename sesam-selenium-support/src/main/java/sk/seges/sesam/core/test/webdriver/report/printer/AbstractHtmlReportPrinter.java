@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -96,6 +97,7 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 			context.put("result", resultData);
 
 			ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM, this);
+			ve.setProperty(VelocityEngine.ENCODING_DEFAULT, "UTF-8");
 			
 			if (getTemplateLocation().equals(TemplateLocation.CLASSPATH)) {
 				ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath"); 
@@ -161,7 +163,13 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
         	return;
         }
 
-        InputStreamReader reader = new InputStreamReader(input);
+        InputStreamReader reader;
+		try {
+			reader = new InputStreamReader(input, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+        	System.out.println(e);
+			throw new RuntimeException(e);
+		}
 
         postProcessResultData();
         

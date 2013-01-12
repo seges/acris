@@ -11,6 +11,7 @@ import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest;
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumTest.Issue;
 import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperation;
+import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationState;
 import sk.seges.sesam.core.test.webdriver.AbstractWebdriverTest;
 import sk.seges.sesam.core.test.webdriver.report.model.api.ReportData;
 
@@ -102,10 +103,14 @@ public class TestCaseResult implements ReportData {
 	private List<CommandResult> getFilteredCommandResults(List<CommandResult> commandResults, SeleniumOperation[] operations) {
 		List<CommandResult> filteredResult = new ArrayList<CommandResult>();
 		
+		int i = 0;
+		
 		for (CommandResult result: commandResults) {
-			if (result.isFailure() || isOperationLogged(operations, result.getOperation())) {
+			if (result.getState().equals(SeleniumOperationState.AFTER) && (result.isFailure() || isOperationLogged(operations, result.getOperation()))) {
+				filteredResult.add(commandResults.get(i - 1));
 				filteredResult.add(result);
 			}
+			i++;
 		}
 		
 		return filteredResult;

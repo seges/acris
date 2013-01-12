@@ -1,14 +1,11 @@
 package sk.seges.sesam.core.test.webdriver.support.event;
 
+import sk.seges.sesam.core.test.selenium.report.model.SeleniumOperationState;
+import sk.seges.sesam.core.test.webdriver.JunitAssertionDelegate.AssertionResult;
+
 public interface AssertionEventListener {
 
-	public enum ComparationType {
-		POSITIVE, NEGATIVE;
-	}
-
-	void onAssertion(Boolean result, Boolean statement1, ComparationType type, String comment);
-	void onAssertion(Boolean result, Object statement1, Object statement2, ComparationType type, String comment);
-
-	void onVerification(Boolean result, Boolean statement1, ComparationType type, String comment);
-	void onVerification(Boolean result, Object statement1, Object statement2, ComparationType type, String comment);
+	void onAssertion(SeleniumOperationState state, AssertionResult assertionResult);
+	
+	void onFail(SeleniumOperationState state, String mesage);
 }

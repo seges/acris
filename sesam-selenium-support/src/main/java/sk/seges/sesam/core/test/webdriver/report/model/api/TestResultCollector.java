@@ -13,5 +13,4 @@ public interface TestResultCollector extends WebDriverEventListener, AssertionEv
 	CommandResult getCommandResult();
 
 	void finish();
-
 }
