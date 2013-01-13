@@ -220,7 +220,7 @@ public class JunitAssertionDelegate implements Assertion {
 	public void assertFalse(String message, boolean condition) {
 		AssertionResult assertionResult = beforeAssert(new AssertionResult(AssertionType.EQUALS, false, condition, message));
 		try {
-			assertion.assertTrue(message, condition);
+			assertion.assertFalse(message, condition);
 			assertionResult.setResult(true);
 			afterAssert(assertionResult);
 		} catch (AssertionError e) {
