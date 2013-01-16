@@ -130,11 +130,11 @@ public class WebDriverActions extends Actions {
 
 	@Override
 	public Actions doubleClick(WebElement onElement) {
-		try {
-			action.addAction(new DoubleClickAction(webDriver, testEnvironment, onElement));
-		} catch (Exception e) {
+//		try {
+//			action.addAction(new DoubleClickAction(webDriver, testEnvironment, onElement));
+//		} catch (Exception e) {
 			action.addAction(new org.openqa.selenium.interactions.DoubleClickAction(mouse, (Locatable) onElement));
-		}
+//		}
 		
 		return this;
 	}
