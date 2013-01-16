@@ -45,11 +45,8 @@ public class StateHolder {
 	}
 	
 	public void waitUntilDeleted() {
-		System.out.println("----");
 		final int size = webElements.size();
 
-		System.out.println(size);
-		
 		wait.until(new Function<WebDriver, Boolean>() {
 
 			@Override
@@ -59,15 +56,10 @@ public class StateHolder {
 				return webElements.size() < size;
 			}
 		});
-
-		System.out.println("----");
 	}
 	
 	public WebElement getNewElement() {
 		final int size = webElements.size();
-
-		System.out.println("----");
-		System.out.println(size);
 
 		wait.until(new Function<WebDriver, Boolean>() {
 
@@ -78,8 +70,6 @@ public class StateHolder {
 				return webElements.size() > size;
 			}
 		});
-		
-		System.out.println("----");
 
 		return webElements.get(size);
 	}
