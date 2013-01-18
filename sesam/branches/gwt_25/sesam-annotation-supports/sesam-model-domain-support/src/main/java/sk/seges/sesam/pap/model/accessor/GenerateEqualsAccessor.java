@@ -13,7 +13,7 @@ public class GenerateEqualsAccessor extends AnnotationAccessor {
 	public GenerateEqualsAccessor(Element element, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 		
-		GenerateEquals annotation = element.getAnnotation(GenerateEquals.class);
+		GenerateEquals annotation = getAnnotation(element, GenerateEquals.class);
 		
 		if (annotation != null) {
 			generate = annotation.generate();

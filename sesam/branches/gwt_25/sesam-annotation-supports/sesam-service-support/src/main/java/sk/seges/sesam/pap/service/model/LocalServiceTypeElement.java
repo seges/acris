@@ -1,9 +1,12 @@
 package sk.seges.sesam.pap.service.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
@@ -12,6 +15,7 @@ import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
 import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.service.accessor.LocalServicePropagationAccessor;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 
 public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
@@ -32,6 +36,15 @@ public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
 		this.localServiceType = null;
 		setKind(MutableTypeKind.INTERFACE);
 		prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
+		
+		LocalServicePropagationAccessor accessor = new LocalServicePropagationAccessor(remoteService.asElement(), processingEnv);
+		if (accessor.isValid()) {
+			List<MutableTypeMirror> mutableTypes = new ArrayList<MutableTypeMirror>(); 
+			for (Class<?> serviceInterface : accessor.getInterfaces()) {
+				mutableTypes.add(processingEnv.getTypeUtils().toMutableType(serviceInterface));
+			}
+			setInterfaces(mutableTypes);
+		}
 	}
 
 	public LocalServiceTypeElement(TypeElement localServiceType, MutableProcessingEnvironment processingEnv) {
