@@ -8,7 +8,7 @@ import sk.seges.corpis.server.domain.Address;
 import sk.seges.corpis.server.domain.BasicContact;
 import sk.seges.corpis.server.domain.CompanyName;
 import sk.seges.corpis.server.domain.PersonName;
-import sk.seges.corpis.shared.domain.EPaymentType;
+import sk.seges.corpis.shared.domain.api.EPaymentType;
 import sk.seges.corpis.shared.domain.invoice.ETransports;
 
 @DomainInterface

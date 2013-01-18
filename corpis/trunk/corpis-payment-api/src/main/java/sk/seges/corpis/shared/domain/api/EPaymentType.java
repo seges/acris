@@ -1,4 +1,4 @@
-package sk.seges.corpis.shared.domain;
+package sk.seges.corpis.shared.domain.api;
 
 
 /**

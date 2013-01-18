@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import sk.seges.corpis.server.domain.customer.Customer;
 import sk.seges.corpis.server.domain.invoice.Product;
-import sk.seges.corpis.shared.domain.EPaymentType;
+import sk.seges.corpis.shared.domain.api.EPaymentType;
 import sk.seges.corpis.shared.domain.price.PriceCondition;
 import sk.seges.corpis.shared.domain.price.api.PriceConditionContext;
 
