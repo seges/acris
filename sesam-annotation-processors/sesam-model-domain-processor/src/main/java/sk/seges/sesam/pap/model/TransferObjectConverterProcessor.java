@@ -21,7 +21,6 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
-import sk.seges.sesam.pap.model.printer.converter.ConverterProviderMethodType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.equals.ConverterEqualsPrinter;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoPrinter;
@@ -32,8 +31,8 @@ import sk.seges.sesam.pap.model.provider.TransferObjectProcessorContextProvider;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 import sk.seges.sesam.pap.model.resolver.CacheableConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
-import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
+import sk.seges.sesam.pap.model.resolver.DefaultConverterConstructorParametersResolver;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 
@@ -109,7 +108,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	}
 	
 	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw) {
-		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(), UsageType.USAGE_OUTSIDE_CONVERTER_PROVIDER);
+		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(), UsageType.CONVERTER_PROVIDER_OUTSIDE_USAGE);
 	}
 	
 	@Override
@@ -133,6 +132,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 
 		super.processElement(context);
 		
-		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType.ALL, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+//		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType.ALL, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+		converterProviderPrinter.printConverterMethods(false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 	}	
 }

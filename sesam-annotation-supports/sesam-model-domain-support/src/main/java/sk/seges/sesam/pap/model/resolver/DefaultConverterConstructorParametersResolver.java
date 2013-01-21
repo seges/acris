@@ -7,26 +7,26 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
+import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 
 public class DefaultConverterConstructorParametersResolver implements ConverterConstructorParametersResolver {
 
 	protected MutableProcessingEnvironment processingEnv;
 
-	public static final String CONVERTER_PROVIDER_NAME = "converterProvider";
+	public static final String CONVERTER_PROVIDER_CONTEXT_NAME = "converterProviderContext";
 	public static final String CONVERTER_CACHE_NAME = "cache";
 
 	public DefaultConverterConstructorParametersResolver(MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 	}
 	
-	protected ParameterElement getConverterProviderParameter() {
-		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConverterProvider.class), CONVERTER_PROVIDER_NAME, 
-				getConverterProviderReference(), isConverterProviderParameterPropagated(), processingEnv);
+	protected ParameterElement getConverterProviderContextParameter() {
+		return new ParameterElement(processingEnv.getTypeUtils().toMutableType(ConverterProviderContext.class), CONVERTER_PROVIDER_CONTEXT_NAME, 
+				getConverterProviderContextReference(), isConverterProviderContextParameterPropagated(), processingEnv);
 	}
 
-	protected boolean isConverterProviderParameterPropagated() {
+	protected boolean isConverterProviderContextParameterPropagated() {
 		return true;
 	}
 	
@@ -39,8 +39,8 @@ public class DefaultConverterConstructorParametersResolver implements ConverterC
 		return true;
 	}
 
-	protected MutableReferenceType getConverterProviderReference() {
-		return null;
+	protected MutableReferenceType getConverterProviderContextReference() {
+		return processingEnv.getTypeUtils().getReference(null, CONVERTER_PROVIDER_CONTEXT_NAME);
 	}
 
 	protected MutableReferenceType getConverterCacheReference() {
@@ -55,7 +55,7 @@ public class DefaultConverterConstructorParametersResolver implements ConverterC
 
 		ParameterElement[] variableElements = new ParameterElement[2];
 		variableElements[0] = getConverterCacheParameter();
-		variableElements[1] = getConverterProviderParameter();
+		variableElements[1] = getConverterProviderContextParameter();
 
 		return variableElements;
 	}

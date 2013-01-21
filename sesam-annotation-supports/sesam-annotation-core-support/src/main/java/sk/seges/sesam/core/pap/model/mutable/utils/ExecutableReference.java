@@ -8,12 +8,12 @@ import sk.seges.sesam.core.pap.model.mutable.api.reference.ExecutableElementRefe
 
 class ExecutableReference extends MutableValue implements ExecutableElementReference  {
 
-	private final MutableReferenceType reference;
+	private final MutableReferenceType[] references;
 	private final MutableExecutableElement executableReference;
 	
-	public ExecutableReference(MutableExecutableElement executableReference, MutableReferenceType reference) {
-		super(reference);
-		this.reference = reference;
+	public ExecutableReference(MutableExecutableElement executableReference, MutableReferenceType... references) {
+		super(executableReference);
+		this.references = references;
 		this.executableReference = executableReference;
 	}
 	
@@ -33,7 +33,25 @@ class ExecutableReference extends MutableValue implements ExecutableElementRefer
 			return "null";
 		}
 
-		return executableReference.getSimpleName() + "(" + reference.toString(serializer, typed) + ")";
+		String result = executableReference.getSimpleName() + "(";
+		
+		int i = 0;
+		for (MutableReferenceType reference: references) {
+			if (i > 0) {
+				result += ", ";
+			}
+			if (reference.isInline()) {
+				//TODO have to use canonical serializer because i can't add import here - try to pass also fpw here somehow, or import collector 
+				result += reference.getReference().toString(ClassSerializer.CANONICAL, typed);
+			} else {
+				result += reference.toString(serializer, typed);
+			}
+			i++;
+		}
+		
+		result += ")";
+		
+		return result;
 	}
 
 	@Override

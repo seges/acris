@@ -744,8 +744,8 @@ public class MutableTypes implements Types {
 		return mutableType;
 	}
 
-	public ExecutableElementReference getReferenceToMethod(MutableExecutableElement executableElement, MutableReferenceType referenceType) {
-		return new ExecutableReference(executableElement, referenceType);
+	public ExecutableElementReference getReferenceToMethod(MutableExecutableElement executableElement, MutableReferenceType... referenceTypes) {
+		return new ExecutableReference(executableElement, referenceTypes);
 	}
 
 	public MutableReferenceTypeValue getReferenceValue(MutableDeclaredType declaredType, MutableReferenceType referenceType) {

@@ -7,6 +7,7 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
@@ -19,8 +20,10 @@ import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
+import sk.seges.sesam.pap.model.model.ConvertAccessor;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
+import sk.seges.sesam.pap.model.model.TransferObjectMappingAccessor;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.TransferObjectTypes;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
@@ -46,8 +49,8 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 	protected String domainFieldPath;
 
 	protected ConverterTypeElement converterType;
-	protected boolean localConverter;
-
+	protected boolean useConverter;
+	
 	public TransferObjectProcessorContext(ConfigurationTypeElement configurationTypeElement, Modifier modifier, ExecutableElement method) {
 		this(configurationTypeElement, modifier, method, method);
 	}
@@ -158,11 +161,34 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		TypeMirror targetReturnType = entityResolver.getTargetEntityType(getDomainMethod());
 		DomainType domainReturnType = getTransferObjectUtils().getDomainType(targetReturnType);
 		
-		if (entityResolver.getTargetEntityType(getDomainMethod()).getKind().equals(TypeKind.TYPEVAR)) {
-			TypeMirror erasedType = erasure(domainTypeElement.asConfigurationElement(), targetReturnType);
-			if (erasedType != null && !erasedType.toString().equals(Object.class.getCanonicalName())) {
-				domainReturnType = getTransferObjectUtils().getDomainType(erasedType);
-			}/* else {
+		TypeMirror targetEntityType = entityResolver.getTargetEntityType(getDomainMethod());
+		
+		if (targetEntityType.getKind().equals(TypeKind.TYPEVAR)) {
+			//check whether type variable is locally defined only for method or is
+			//global type variable for whole class
+			
+			String variableName = ((TypeVariable)targetEntityType).asElement().getSimpleName().toString();
+			
+			List<? extends TypeParameterElement> typeParameters = domainTypeElement.asConfigurationElement().getTypeParameters();
+			
+			boolean classTypeVariable = false;
+			
+			if (typeParameters != null) {
+				for (TypeParameterElement typeParameter: typeParameters) {
+					if (typeParameter.getSimpleName().toString().equals(variableName)) {
+						classTypeVariable = true;
+						break;
+					}
+				}
+			}
+			
+			if (!classTypeVariable) {
+				TypeMirror erasedType = erasure(domainTypeElement.asConfigurationElement(), targetReturnType);
+				if (erasedType != null && !erasedType.toString().equals(Object.class.getCanonicalName())) {
+					domainReturnType = getTransferObjectUtils().getDomainType(erasedType);
+				}
+			}
+			/* else {
 				TypeMirror targetEntityType = getTargetEntityType(context.getDomainMethod());
 				if (targetEntityType != null && !context.getDomainMethod().getReturnType().equals(targetEntityType)) {
 					domainReturnType = targetEntityType;
@@ -224,18 +250,33 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 //		if (returnType.getDomainDefinitionConfiguration() != null) {
 //			returnType = returnType.getDomainDefinitionConfiguration().getInstantiableDomain();
 //		}
-		
+
+		TransferObjectMappingAccessor transferObjectMappingAccessor = new TransferObjectMappingAccessor(getDtoMethod(), envContext.getProcessingEnv());
+		if (transferObjectMappingAccessor.isValid()) {
+//			if (transferObjectMappingAccessor.getConverter() != null) {
+
+				ConfigurationContext context = new ConfigurationContext(envContext.getConfigurationEnv());
+				ConfigurationTypeElement configurationType = new ConfigurationTypeElement(
+						transferObjectMappingAccessor.getConverter(), envContext, context);
+				List<ConfigurationTypeElement> configurations = new ArrayList<ConfigurationTypeElement>();
+				configurations.add(configurationType);
+				context.setConfigurations(configurations);
+				
+				this.converterType = configurationType.getConverter();
+				
+				if (this.converterType != null) {
+					return;
+				}
+//			} else if (transferObjectMappingAccessor.getConfiguration() != null) {
+//				
+//			}
+		}
+
 		switch (returnType.getKind()) {
 		case TYPEVAR:
-			TypeMirror domainType = configurationTypeElement.getDomain().asType();
-			
-			if (domainType.getKind().equals(TypeKind.DECLARED)) {
-//				Integer parameterIndex = typeParametersSupport.getParameterIndexByName((DeclaredType)domainType, ((MutableTypeVariable)returnType).getVariable());
-//				if (parameterIndex != null) {
-//					this.localConverterName = LOCAL_CONVERTER_NAME + parameterIndex;
-//				}
-				this.localConverter = true;
-			}
+			//we don't know exact type, so try to convert it using converter provider
+			ConvertAccessor convertAccessor = new ConvertAccessor(getDtoMethod(), envContext.getProcessingEnv());
+			useConverter = !convertAccessor.isValid() || convertAccessor.getValue();
 			break;
 		case ARRAY:
 			//TODO
@@ -318,7 +359,8 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		return converterType;
 	}
 
-	public boolean isLocalConverter() {
-		return localConverter;
+	@Override
+	public boolean useConverter() {
+		return useConverter;
 	}
 }

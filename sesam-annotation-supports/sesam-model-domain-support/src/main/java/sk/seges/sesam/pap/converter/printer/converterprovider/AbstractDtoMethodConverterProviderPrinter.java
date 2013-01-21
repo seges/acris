@@ -7,8 +7,8 @@ import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContex
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
-import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
 public abstract class AbstractDtoMethodConverterProviderPrinter extends AbstractObjectConverterProviderPrinter {
 
@@ -19,6 +19,16 @@ public abstract class AbstractDtoMethodConverterProviderPrinter extends Abstract
 		super(processingEnv, pw, converterProviderPrinter, parametersResoverProvider);
 	}
 
+	public void initializeDtoConverterMethod() {
+		pw.println("public <"	+ ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX +
+				"> ", getTypedDtoConverter(), " " + ConverterTargetType.DTO.getConverterMethodName() + "(", Class.class.getSimpleName(), "<" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "> " + DTO_CLASS_PARAMETER_NAME + ") {");
+		pw.println();
+		pw.println("if (" + DTO_CLASS_PARAMETER_NAME + " == null) {");
+		pw.println("return null;");
+		pw.println("}");
+		pw.println();
+	}
+	
 	@Override
 	public void print(ConverterProviderPrinterContext context) {
 		
@@ -29,16 +39,7 @@ public abstract class AbstractDtoMethodConverterProviderPrinter extends Abstract
 		if (!types.contains(context.getRawDto().getCanonicalName())) {
 			
 			if (types.size() == 0) {
-				String cacheParameterName = getConstructorParameterName(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class));
-				
-				pw.println("public <"	+ ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX +
-						"> ", getTypedDtoConverter(), " getConverterForDto(", Class.class.getSimpleName(), "<" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "> " + DTO_CLASS_PARAMETER_NAME +
-						", ", ConvertedInstanceCache.class, " " + cacheParameterName + ") {");
-				pw.println();
-				pw.println("if (" + DTO_CLASS_PARAMETER_NAME + " == null) {");
-				pw.println("return null;");
-				pw.println("}");
-				pw.println();
+				initializeDtoConverterMethod();
 			}
 			
 			String rawDtoName = context.getRawDto().toString(ClassSerializer.SIMPLE, false);

@@ -10,8 +10,8 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
-import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 
 public abstract class AbstractDomainMethodConverterProviderPrinter extends AbstractObjectConverterProviderPrinter {
 
@@ -22,6 +22,17 @@ public abstract class AbstractDomainMethodConverterProviderPrinter extends Abstr
 
 	protected static final String DOMAIN_CLASS_PARAMETER_NAME = "domainClass";
 
+	public void initializeDomainConverterMethod() {
+		pw.println("public <" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX +
+				"> ", getTypedDtoConverter(), " " + ConverterTargetType.DOMAIN.getConverterMethodName() + "(", Class.class.getSimpleName(), "<" + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "> ",
+				DOMAIN_CLASS_PARAMETER_NAME + ") {");
+		pw.println();
+		pw.println("if (" + DOMAIN_CLASS_PARAMETER_NAME + " == null) {");
+		pw.println("return null;");
+		pw.println("}");
+		pw.println();
+	}
+	
 	@Override
 	public void print(ConverterProviderPrinterContext context) {
 
@@ -32,16 +43,7 @@ public abstract class AbstractDomainMethodConverterProviderPrinter extends Abstr
 		if (!types.contains(context.getRawDomain().getCanonicalName())) {
 
 			if (types.size() == 0) {
-				String cacheParameterName = getConstructorParameterName(processingEnv.getTypeUtils().toMutableType(ConvertedInstanceCache.class));
-				
-				pw.println("public <" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX +
-						"> ", getTypedDtoConverter(), " getConverterForDomain(", Class.class.getSimpleName(), "<" + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "> ",
-						DOMAIN_CLASS_PARAMETER_NAME + ", ", ConvertedInstanceCache.class, " " + cacheParameterName + ") {");
-				pw.println();
-				pw.println("if (" + DOMAIN_CLASS_PARAMETER_NAME + " == null) {");
-				pw.println("return null;");
-				pw.println("}");
-				pw.println();
+				initializeDomainConverterMethod();
 			}
 			
 			types.add(context.getRawDomain().getCanonicalName());

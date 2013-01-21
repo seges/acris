@@ -31,7 +31,7 @@ public interface TransferObjectContext {
 	ExecutableElement getDomainMethod();
 
 	/** Converter stuff */
-	boolean isLocalConverter();
 	ConverterTypeElement getConverter();
 
+	boolean useConverter();
 }

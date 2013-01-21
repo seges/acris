@@ -110,7 +110,8 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 				pw.print(domainId.getDto(), " " + DTO_ID + " = ");
 				
 				Field field = new Field(methodName, domainId);
-				converterProviderPrinter.printDomainEnsuredConverterMethodName(domainId, null, field, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw, false);
+				//converterProviderPrinter.printDomainEnsuredConverterMethodName(domainId, null, field, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw, false);
+				converterProviderPrinter.printDomainGetConverterMethodName(domainId, field, configurationTypeElement.getInstantiableDomain().getIdMethod(entityResolver), pw, false);
 				pw.print(".toDto(");
 			} else {
 				pw.print(domainId, " " + DTO_ID + " = ");
@@ -140,9 +141,13 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 			return;
 		}
 		
-		if (context.isLocalConverter()) {
-			String localConverter = printLocalConverter(context, ConverterTargetType.DOMAIN, pw);
-			pw.println("if (!" + localConverter + ".equals(" + DOMAIN_NAME + "." + context.getDomainFieldName() + "," +
+		if (context.useConverter()) {
+			String converterName = "converter" + MethodHelper.toMethod("", context.getDtoFieldName());
+			pw.print(converterProviderPrinter.getDtoConverterType(context.getDomainMethodReturnType()), " " + converterName + " = ");
+			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, context.getDomainMethodReturnType(), 
+					new Field(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), null), context.getDomainMethod(), true);
+			pw.println(";");
+			pw.println("if (" + converterName + " != null && !" + converterName + ".equals(" + DOMAIN_NAME + "." + context.getDomainFieldName() + "," +
 					DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()) + "))");
 			pw.println("	return false;");
 		} else {

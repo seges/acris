@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import sk.seges.sesam.core.pap.model.ConverterParameter;
+import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -17,7 +17,7 @@ import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 
 public abstract class AbstractParameterCollectorPrinter extends AbstractServicePrinter implements ServiceConverterElementPrinter {
 
-	protected List<ConverterParameter> converterParameters = new ArrayList<ConverterParameter>();
+	protected List<ConverterConstructorParameter> converterParameters = new ArrayList<ConverterConstructorParameter>();
 	protected final FormattedPrintWriter pw;
 	protected final ServiceConverterParametersFilter parametersFilter;
 	
@@ -33,13 +33,13 @@ public abstract class AbstractParameterCollectorPrinter extends AbstractServiceP
 
 	@Override
 	public void print(ServiceConverterPrinterContext context) {
-		List<ConverterParameter> newParams = parametersFilter.getPropagatedParameters(getConverterParameters(context.getService(), context.getLocalServiceInterface()));
+		List<ConverterConstructorParameter> newParams = parametersFilter.getPropagatedParameters(getConverterParameters(context.getService(), context.getLocalServiceInterface()));
 		converterParameters = unifyParameterNames(converterParameters, mergeSameParams(newParams));
 		
-		Collections.sort(converterParameters, new Comparator<ConverterParameter>() {
+		Collections.sort(converterParameters, new Comparator<ConverterConstructorParameter>() {
 
 			@Override
-			public int compare(ConverterParameter o1, ConverterParameter o2) {
+			public int compare(ConverterConstructorParameter o1, ConverterConstructorParameter o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});

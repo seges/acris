@@ -15,8 +15,7 @@ import sk.seges.sesam.core.pap.printer.TypePrinter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.converter.printer.ConverterVerifier;
 import sk.seges.sesam.pap.converter.printer.api.ConverterProviderElementPrinter;
-import sk.seges.sesam.pap.converter.printer.converterprovider.ConverterProviderPrinterDelegate;
-import sk.seges.sesam.pap.model.annotation.ConverterProvider;
+import sk.seges.sesam.pap.model.annotation.ConverterProviderDefinition;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -25,23 +24,23 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
-import sk.seges.sesam.pap.service.model.ServiceConvertProviderType;
+import sk.seges.sesam.pap.service.model.ConverterProviderContextType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.AbstractServiceMethodPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterProviderPrinterContext;
 
-public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinter {
+public class ServiceConverterProviderContextPrinter extends AbstractServiceMethodPrinter {
 	
-	private final ConverterProviderPrinterDelegate converterProviderPrinterDelegate;
+	private final ConverterProviderContextPrinterDelegate converterProviderContextPrinterDelegate;
 	protected UsageType previousUsageType;
 	protected final ClassPathTypes classPathTypes;
 	
-	public ServiceConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv,
+	public ServiceConverterProviderContextPrinter(TransferObjectProcessingEnvironment processingEnv,
 			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter,
 			ClassPathTypes classPathTypes) {
 		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
-		this.converterProviderPrinterDelegate = new ConverterProviderPrinterDelegate(parametersResolverProvider, pw);
+		this.converterProviderContextPrinterDelegate = new ConverterProviderContextPrinterDelegate(parametersResolverProvider, pw);
 		this.classPathTypes = classPathTypes;
 	}
 	
@@ -49,34 +48,32 @@ public class ServiceConverterProviderPrinter extends AbstractServiceMethodPrinte
 	public void initialize(ServiceTypeElement serviceTypeElement, MutableDeclaredType outputName) {}
 
 	protected void finalize() {
-		converterProviderPrinterDelegate.finalize();
+		converterProviderContextPrinterDelegate.finalize();
 		pw.println("}");
 		
 		converterProviderPrinter.changeUsage(previousUsageType);
 	}
 	
 	protected Set<? extends Element> getConverterProviderDelegates() {
-		return classPathTypes.getElementsAnnotatedWith(ConverterProvider.class);
+		return classPathTypes.getElementsAnnotatedWith(ConverterProviderDefinition.class);
 	}
 
 	protected void initialize(ServiceTypeElement serviceTypeElement) {
 				
-		ServiceConvertProviderType serviceConvertProviderType = new ServiceConvertProviderType(serviceTypeElement, processingEnv);
+		ConverterProviderContextType convertProviderContextType = new ConverterProviderContextType(serviceTypeElement, processingEnv);
 
-		new TypePrinter(processingEnv, pw).printTypeDefinition(serviceConvertProviderType);
+		new TypePrinter(processingEnv, pw).printTypeDefinition(convertProviderContextType);
 		pw.println(" {");
 		pw.println();
 
-		converterProviderPrinterDelegate.initialize(serviceConvertProviderType, UsageType.USAGE_CONSTRUCTOR_CONVERTER_PROVIDER, getConverterProviderDelegates());
+		previousUsageType = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR);
 
-		previousUsageType = converterProviderPrinter.changeUsage(UsageType.USAGE_INSIDE_CONVERTER_PROVIDER);
+		converterProviderContextPrinterDelegate.initialize(processingEnv.getTypeUtils(), convertProviderContextType, UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR, 
+				getConverterProviderDelegates());
 	}
 	
 	protected ConverterProviderElementPrinter[] getNestedPrinters() {
-		return new ConverterProviderElementPrinter[] {
-			new ServiceMethodDomainConverterProviderPrinter(parametersResolverProvider, processingEnv, pw, converterProviderPrinter),
-			new ServiceMethodDtoConverterProviderPrinter(parametersResolverProvider, processingEnv, pw, converterProviderPrinter)	
-		};
+		return new ConverterProviderElementPrinter[] {};
 	}
 	
 	@Override

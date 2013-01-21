@@ -251,7 +251,6 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 											generated.add(idPath);
 										}
 									}
-	//								printer.print(context);
 							}
 						} else {
 							if (pathResolver.hasNext()) {
@@ -279,7 +278,6 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 			TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PROTECTED, idMethod, idMethod, getConfigurationProviders());
 			if (context != null) {
 				contexts.add(context);
-				//printer.print(context);
 			}
 		}
 

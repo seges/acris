@@ -1,6 +1,7 @@
 package sk.seges.sesam.pap.model.provider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +51,18 @@ public class ConfigurationCache {
 	}
 	
 	public List<ConfigurationTypeElement> getConfigurationForDomain(MutableTypeMirror domain) {
-		return domainCache.get(domain);
+		List<ConfigurationTypeElement> result = domainCache.get(domain);
+		if (result == null) {
+			return result;
+		}
+		return Collections.unmodifiableList(result);
 	}
 
 	public List<ConfigurationTypeElement> getConfigurationForDTO(MutableTypeMirror dto) {
-		return dtoCache.get(dto);
+		List<ConfigurationTypeElement> result = dtoCache.get(dto);
+		if (result == null) {
+			return result;
+		}
+		return Collections.unmodifiableList(result);
 	}
 }
