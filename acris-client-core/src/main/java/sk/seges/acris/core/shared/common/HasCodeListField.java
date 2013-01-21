@@ -3,6 +3,8 @@ package sk.seges.acris.core.shared.common;
 import sk.seges.corpis.server.domain.HasWebId;
 
 public interface HasCodeListField extends HasWebId {
+	
+	public static final String TYPE = "type";
 
 	int getPosition();
 	
@@ -14,4 +16,8 @@ public interface HasCodeListField extends HasWebId {
 	String getNames();
 	
 	void setNames(String names);
+	
+	String getType();
+	
+	void setType(String type);
 }
