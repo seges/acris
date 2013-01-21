@@ -1,30 +1,28 @@
 package sk.seges.sesam.pap.converter.printer.converterprovider;
 
-import java.util.Set;
-
-import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 
+import sk.seges.sesam.core.pap.model.ConstructorParameter;
 import sk.seges.sesam.core.pap.model.ParameterElement;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.pap.converter.model.ConverterProviderType;
+import sk.seges.sesam.pap.converter.model.HasConstructorParameters;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
-import sk.seges.sesam.pap.model.resolver.api.ConverterConstructorParametersResolver;
 
 public class ConverterProviderPrinterDelegate {
 
-	private final FormattedPrintWriter pw;
-	private final ConverterConstructorParametersResolverProvider parametersResolverProvider;
+	protected final FormattedPrintWriter pw;
+	protected final ConverterConstructorParametersResolverProvider parametersResolverProvider;
 
 	public ConverterProviderPrinterDelegate(ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw) {
 		this.pw = pw;
 		this.parametersResolverProvider = parametersResolverProvider;
 	}
 
-	public void initialize(ConverterProviderType converterProviderType, UsageType usageType, Set<? extends Element> converterPrinterDelegates) {
+	public void initialize(MutableTypes typeUtils, HasConstructorParameters type, UsageType usageType) {
 
-		ParameterElement[] generatedParameters = converterProviderType.getConverterParameters(parametersResolverProvider.getParameterResolver(usageType));
+		ParameterElement[] generatedParameters = type.getConverterParameters(parametersResolverProvider.getParameterResolver(usageType));
 
 		for (ParameterElement generatedParameter : generatedParameters) {
 			pw.println(Modifier.PROTECTED.toString() + " " + Modifier.FINAL.toString() + " ", generatedParameter.getType(), " " + generatedParameter.getName()
@@ -32,7 +30,7 @@ public class ConverterProviderPrinterDelegate {
 			pw.println();
 		}
 
-		pw.print(Modifier.PUBLIC.toString() + " ", converterProviderType.getSimpleName() + "(");
+		pw.print(Modifier.PUBLIC.toString() + " ", type.getSimpleName() + "(");
 
 		int i = 0;
 		for (ParameterElement generatedParameter : generatedParameters) {
@@ -49,26 +47,28 @@ public class ConverterProviderPrinterDelegate {
 			pw.println("this." + generatedParameter.getName() + " = " + generatedParameter.getName() + ";");
 		}
 
-		for (Element converterPrinterDelegate: converterPrinterDelegates) {
-			pw.print("registerConverterProvider(new ", converterPrinterDelegate, "(");
-			ConverterConstructorParametersResolver parameterResolver = parametersResolverProvider.getParameterResolver(UsageType.CONSTRUCTOR_CONVERTER_PROVIDER);
-			ParameterElement[] converterParameters = converterProviderType.getConverterParameters(parameterResolver);
-			
-			int j = 0;
-			for (ParameterElement converterParameter: converterParameters) {
-				if (j > 0) {
-					pw.print(", ");
-				}
-				pw.print(converterParameter.getName());
-				j++;
-			}
-			pw.println("));");
-		}
+		printConstructorBody();
 		
 		pw.println("}");
 		pw.println();
 	}
 
+	protected void printConstructorBody() {}
+	
+	protected ParameterElement getParameterElementByType(ConstructorParameter constructorParameter, ParameterElement[] converterParameters) {
+		if (converterParameters == null) {
+			return null;
+		}
+		
+		for (int i = 0; i < converterParameters.length; i++) {
+			if (constructorParameter.getType().toString().equals(converterParameters[i].getType().toString())) {
+				return converterParameters[i];
+			}
+		}
+		
+		return null;
+	}
+	
 	public void finalize() {
 	}
 }

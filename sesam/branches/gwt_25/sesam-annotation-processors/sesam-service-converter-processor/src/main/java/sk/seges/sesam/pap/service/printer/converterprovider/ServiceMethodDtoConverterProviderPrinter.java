@@ -39,4 +39,14 @@ public class ServiceMethodDtoConverterProviderPrinter extends AbstractDtoMethodC
 			print(new ServiceConverterProviderPrinterContext((DtoDeclaredType)dtoType, ((ServiceConverterProviderPrinterContext)context).getLocalMethod()));
 		}
 	}
+	
+	@Override
+	public void print(ConverterProviderPrinterContext context) {
+		
+		if (types.size() == 0) {
+			initializeDtoConverterMethod();
+		}
+			
+		types.add(context.getRawDto().getCanonicalName());
+	}
 }

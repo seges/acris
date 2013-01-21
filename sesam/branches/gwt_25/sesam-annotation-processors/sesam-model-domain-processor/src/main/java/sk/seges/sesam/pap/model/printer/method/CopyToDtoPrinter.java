@@ -24,6 +24,7 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
@@ -107,9 +108,15 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 				if (domainIdTypeElement.getConverter() != null) {
 					pw.print(dtoIdType, " " + idName + " = ");
 					Field field = new Field(methodName, processingEnv.getTypeUtils().toMutableType(domainIdTypeElement));
-					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
+					//converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
+					//TODO add NPE check
+					converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainIdTypeElement, field, idMethod, true);
+
 					pw.print(".convertToDto(");
-					converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
+					//converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
+					//TODO add NPE check
+					converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainIdTypeElement, field, idMethod, true);
+
 					pw.print(".createDtoInstance(null), ");
 					pw.println("(", getDelegateCast(idMethod.getReturnType()), ")" + methodName + ");");
 					pw.println();
@@ -148,7 +155,10 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			//Field field = new Field(domainsuperClass.getSimpleName() + ".class", fieldType);
 			Field field = new Field(DOMAIN_NAME, domainsuperClass);
 			
-			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, null, field, null, pw, false);
+//			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, null, field, null, pw, false);
+			//TODO add NPE check
+			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainsuperClass, field, null, true);
+
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
 		}

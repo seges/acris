@@ -43,4 +43,16 @@ public class ServiceMethodDomainConverterProviderPrinter extends AbstractDomainM
 			print(context);
 		}
 	}
+	
+	@Override
+	public void print(ConverterProviderPrinterContext context) {
+
+		if (types.size() == 0) {
+			initializeDomainConverterMethod();
+		}
+
+		if (!types.contains(context.getRawDomain().getCanonicalName())) {
+			types.add(context.getRawDomain().getCanonicalName());		
+		}
+	}
 }

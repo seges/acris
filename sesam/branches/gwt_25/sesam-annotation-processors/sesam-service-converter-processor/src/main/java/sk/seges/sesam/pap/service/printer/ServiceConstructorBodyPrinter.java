@@ -2,7 +2,7 @@ package sk.seges.sesam.pap.service.printer;
 
 import java.util.List;
 
-import sk.seges.sesam.core.pap.model.ConverterParameter;
+import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
@@ -27,9 +27,9 @@ public class ServiceConstructorBodyPrinter extends AbstractParameterCollectorPri
 	@Override
 	public void finish(ServiceTypeElement serviceTypeElement) {
 		
-		List<ConverterParameter> params = mergeSameParams(converterParameters);
+		List<ConverterConstructorParameter> params = mergeSameParams(converterParameters);
 
-		for (ConverterParameter converterParameter : params) {
+		for (ConverterConstructorParameter converterParameter : params) {
 			pw.println("this." + converterParameter.getName() + " = " + converterParameter.getName() + ";");
 		}
 

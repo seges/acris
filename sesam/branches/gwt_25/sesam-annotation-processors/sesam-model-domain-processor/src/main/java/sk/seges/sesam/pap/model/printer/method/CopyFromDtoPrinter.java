@@ -23,6 +23,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
 
@@ -109,7 +110,9 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 					//toHelper.getConfigurationElement(domainIdType, roundEnv);
 				if (idConverter != null) {
 					Field field = new Field(DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), domainIdType.getDto());
-					converterProviderPrinter.printDtoEnsuredConverterMethodName(domainIdType.getDto(), field, domainIdMethod, pw, false);
+//					converterProviderPrinter.printDtoEnsuredConverterMethodName(domainIdType.getDto(), field, domainIdMethod, pw, false);
+					//TODO add NPE check
+					converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainIdType, field, domainIdMethod, true);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -154,7 +157,9 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 //			Field field = new Field(domainsuperClass.getDto().getSimpleName() + ".class", fieldType);
 			Field field = new Field(DTO_NAME, domainsuperClass.getDto());
 
-			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), field, null, pw, false);
+//			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), field, null, pw, false);
+			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainsuperClass, field, null, true);
+
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
 		}

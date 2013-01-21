@@ -3,19 +3,19 @@ package sk.seges.sesam.pap.model.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import sk.seges.sesam.core.pap.model.ConverterParameter;
+import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 
 public enum ConverterParameterFilter {
 
 	NAME {
 		@Override
-		protected boolean equalsBy(ConverterParameter parameter1, ConverterParameter parameter2) {
+		protected boolean equalsBy(ConverterConstructorParameter parameter1, ConverterConstructorParameter parameter2) {
 			return parameter1.getName().equals(parameter2.getName());
 		}
 	},
 	ALIAS_NAME {
 		@Override
-		protected boolean equalsBy(ConverterParameter parameter1, ConverterParameter parameter2) {
+		protected boolean equalsBy(ConverterConstructorParameter parameter1, ConverterConstructorParameter parameter2) {
 			if (parameter1.getSameParameter() != null) {
 				if (parameter1.getSameParameter().getName().equals(parameter2.getName())) {
 					return true;
@@ -39,7 +39,7 @@ public enum ConverterParameterFilter {
 	},
 	TYPE {
 		@Override
-		protected boolean equalsBy(ConverterParameter parameter1, ConverterParameter parameter2) {
+		protected boolean equalsBy(ConverterConstructorParameter parameter1, ConverterConstructorParameter parameter2) {
 			return parameter1.getType().equals(parameter2.getType());
 		}
 	},
@@ -50,20 +50,20 @@ public enum ConverterParameterFilter {
 //		}	}
 	;
 
-	public List<ConverterParameter> filterBy(List<ConverterParameter> parameters, ConverterParameter parameter) {
+	public List<ConverterConstructorParameter> filterBy(List<ConverterConstructorParameter> parameters, ConverterConstructorParameter parameter) {
 		return by(parameters, parameter, true);
 	}
 	
-	public List<ConverterParameter> excludeBy(List<ConverterParameter> parameters, ConverterParameter... params) {
-		for (ConverterParameter parameter: params) {
+	public List<ConverterConstructorParameter> excludeBy(List<ConverterConstructorParameter> parameters, ConverterConstructorParameter... params) {
+		for (ConverterConstructorParameter parameter: params) {
 			parameters = by(parameters, parameter, false);
 		}
 		return parameters;
 	}
 	
-	private List<ConverterParameter> by(List<ConverterParameter> parameters, ConverterParameter parameter, boolean condition) {
-		List<ConverterParameter> result = new LinkedList<ConverterParameter>();
-		for (ConverterParameter converterParameter : parameters) {
+	private List<ConverterConstructorParameter> by(List<ConverterConstructorParameter> parameters, ConverterConstructorParameter parameter, boolean condition) {
+		List<ConverterConstructorParameter> result = new LinkedList<ConverterConstructorParameter>();
+		for (ConverterConstructorParameter converterParameter : parameters) {
 			if (equalsBy(converterParameter, parameter) == condition) {
 				result.add(converterParameter);
 			}
@@ -72,5 +72,5 @@ public enum ConverterParameterFilter {
 		return result;
 	}
 
-	protected abstract boolean equalsBy(ConverterParameter parameter1, ConverterParameter parameter2);
+	protected abstract boolean equalsBy(ConverterConstructorParameter parameter1, ConverterConstructorParameter parameter2);
 }

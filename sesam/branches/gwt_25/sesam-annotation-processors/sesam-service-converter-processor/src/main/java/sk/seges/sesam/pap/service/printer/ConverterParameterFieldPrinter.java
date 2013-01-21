@@ -1,6 +1,6 @@
 package sk.seges.sesam.pap.service.printer;
 
-import sk.seges.sesam.core.pap.model.ConverterParameter;
+import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
@@ -16,7 +16,7 @@ public class ConverterParameterFieldPrinter extends AbstractParameterCollectorPr
 
 	@Override
 	public void finish(ServiceTypeElement serviceTypeElement) {
-		for (ConverterParameter converterParameter: converterParameters) {
+		for (ConverterConstructorParameter converterParameter: converterParameters) {
 			pw.println("protected ", converterParameter.getType(), " " + converterParameter.getName() + ";");
 			pw.println();
 		}

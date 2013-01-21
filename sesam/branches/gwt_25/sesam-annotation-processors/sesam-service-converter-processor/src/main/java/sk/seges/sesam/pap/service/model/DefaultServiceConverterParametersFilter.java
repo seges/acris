@@ -3,16 +3,16 @@ package sk.seges.sesam.pap.service.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.seges.sesam.core.pap.model.ConverterParameter;
+import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 
 public class DefaultServiceConverterParametersFilter implements ServiceConverterParametersFilter {
 
 	public DefaultServiceConverterParametersFilter() {
 	}
 
-	public List<ConverterParameter> getPropagatedParameters(List<ConverterParameter> parameters) {
-		List<ConverterParameter> result = new ArrayList<ConverterParameter>();
-		for (ConverterParameter parameter : parameters) {
+	public List<ConverterConstructorParameter> getPropagatedParameters(List<ConverterConstructorParameter> parameters) {
+		List<ConverterConstructorParameter> result = new ArrayList<ConverterConstructorParameter>();
+		for (ConverterConstructorParameter parameter : parameters) {
 			if (parameter.isPropagated()) {
 				result.add(parameter);
 			}

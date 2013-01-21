@@ -7,20 +7,17 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
-public class ConverterParameter {
+public class ConverterConstructorParameter extends ConstructorParameter {
 
 	private boolean isPropagated = true;
-	private String name;
-	private final MutableTypeMirror type;
 	
-	private ConverterParameter sameParameter;
+	private ConverterConstructorParameter sameParameter;
 	
 	private MutableType usage; //rename to element later;
 	private ParameterUsageProvider usageProvider;
 
-	public ConverterParameter(MutableTypeMirror type, String name, MutableType usage, boolean isPropagated, MutableProcessingEnvironment processingEnv) {
-		this.type = type;
-		this.name = name;
+	public ConverterConstructorParameter(MutableTypeMirror type, String name, MutableType usage, boolean isPropagated, MutableProcessingEnvironment processingEnv) {
+		super(type, name);
 		this.isPropagated = isPropagated;
 		
 		if (usage != null) {
@@ -32,15 +29,14 @@ public class ConverterParameter {
 		this.usageProvider = null;
 	}
 
-	public ConverterParameter(MutableTypeMirror type, String name, ParameterUsageProvider usageProvider, boolean isPropagated) {
-		this.type = type;
-		this.name = name;
+	public ConverterConstructorParameter(MutableTypeMirror type, String name, ParameterUsageProvider usageProvider, boolean isPropagated) {
+		super(type, name);
 		this.isPropagated = isPropagated;
 		this.usage = null;
 		this.usageProvider = usageProvider;
 	}
 
-	public ConverterParameter(ParameterElement parameter, MutableProcessingEnvironment processingEnvironment) {
+	public ConverterConstructorParameter(ParameterElement parameter, MutableProcessingEnvironment processingEnvironment) {
 		this(parameter.type, parameter.name, parameter.usage, parameter.propagated, processingEnvironment);
 		
 		if (parameter.usage == null) {
@@ -60,19 +56,10 @@ public class ConverterParameter {
 	
 	public ParameterElement toParameterElement() {
 		if (usage != null) {
-			return new ParameterElement(type, name, usage, isPropagated, null);
+			return new ParameterElement(getType(), getName(), usage, isPropagated, null);
 		}
 		
-		return new ParameterElement(type, name, usageProvider, isPropagated);
-	}
-	
-	public String getName() {
-		return name;
-	}
-
-	public ConverterParameter setName(String name) {
-		this.name = name;
-		return this;
+		return new ParameterElement(getType(), getName(), usageProvider, isPropagated);
 	}
 	
 	public MutableType getUsage(ParameterUsageContext context) {
@@ -83,15 +70,11 @@ public class ConverterParameter {
 		return usageProvider.getUsage(context);
 	}
 	
-	public MutableTypeMirror getType() {
-		return type;
-	}
-
-	public ConverterParameter getSameParameter() {
+	public ConverterConstructorParameter getSameParameter() {
 		return sameParameter;
 	}
 
-	public ConverterParameter setSameParameter(ConverterParameter sameParameter) {
+	public ConverterConstructorParameter setSameParameter(ConverterConstructorParameter sameParameter) {
 		this.sameParameter = sameParameter;
 		return this;
 	}
@@ -100,7 +83,7 @@ public class ConverterParameter {
 		return isPropagated;
 	}
 	
-	public ConverterParameter setPropagated(boolean isPropagated) {
+	public ConverterConstructorParameter setPropagated(boolean isPropagated) {
 		this.isPropagated = isPropagated;
 		return this;
 	}

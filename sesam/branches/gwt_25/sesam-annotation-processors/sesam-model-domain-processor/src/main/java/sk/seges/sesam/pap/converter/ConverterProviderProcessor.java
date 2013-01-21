@@ -1,15 +1,13 @@
 package sk.seges.sesam.pap.converter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
-import sk.seges.sesam.core.pap.model.ConverterParameter;
+import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -21,13 +19,12 @@ import sk.seges.sesam.pap.converter.printer.converterprovider.ConverterProviderP
 import sk.seges.sesam.pap.converter.printer.converterprovider.DomainMethodConverterProviderPrinter;
 import sk.seges.sesam.pap.converter.printer.converterprovider.DtoMethodConverterProviderPrinter;
 import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
-import sk.seges.sesam.pap.model.annotation.ConverterProvider;
+import sk.seges.sesam.pap.model.annotation.ConverterProviderDefinition;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterInstancerType;
-import sk.seges.sesam.pap.model.printer.converter.ConverterProviderMethodType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.provider.ClasspathConfigurationProvider;
@@ -65,7 +62,7 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 	@Override
 	protected void printAnnotations(ProcessorContext context) {
 		super.printAnnotations(context);
-		context.getPrintWriter().println("@", ConverterProvider.class);
+		context.getPrintWriter().println("@", ConverterProviderDefinition.class);
 	}
 
 	protected final MutableReferenceType getThisReference() {
@@ -78,7 +75,7 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 			@Override
 			public ConverterConstructorParametersResolver constructParameterResolver(UsageType usageType) {
 				switch (usageType) {
-					case USAGE_INSIDE_CONVERTER_PROVIDER:
+					case CONVERTER_PROVIDER_INSIDE_USAGE:
 						return new DefaultConverterConstructorParametersResolver(processingEnv) {
 	
 							@Override
@@ -86,20 +83,20 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 								return false;
 							}
 							
-							@Override
-							protected MutableReferenceType getConverterProviderReference() {
-								return getThisReference();
-							}
+//							@Override
+//							protected MutableReferenceType getConverterProviderReference() {
+//								return getThisReference();
+//							}
 
 						};
 
-					case USAGE_OUTSIDE_CONVERTER_PROVIDER:
-						return new DefaultConverterConstructorParametersResolver(processingEnv) {
+					case CONVERTER_PROVIDER_OUTSIDE_USAGE:
+						return new DefaultConverterConstructorParametersResolver(processingEnv)/* {
 							@Override
 							protected MutableReferenceType getConverterProviderReference() {
 								return getThisReference();
-							}
-						};
+							};
+						}*/;
 					default:
 						return new DefaultConverterConstructorParametersResolver(processingEnv);
 				}
@@ -109,10 +106,10 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 	}
 	
 	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv) {
-		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(), UsageType.USAGE_INSIDE_CONVERTER_PROVIDER) {
+		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(), UsageType.CONVERTER_PROVIDER_INSIDE_USAGE) {
 			@Override
-			protected List<ConverterParameter> getConverterProviderMethodAdditionalParameters(ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType) {
-				return new ArrayList<ConverterParameter>();
+			protected List<ConverterConstructorParameter> getConverterProviderMethodAdditionalParameters(ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType) {
+				return new ArrayList<ConverterConstructorParameter>();
 			}
 		};
 	}
@@ -137,7 +134,7 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 
 		ConverterProviderPrinterDelegate converterProviderPrinterDelegate = new ConverterProviderPrinterDelegate(getParametersResolverProvider(), context.getPrintWriter());
 		ConverterProviderType converterProviderType = new ConverterProviderType(context.getMutableType(), processingEnv);
-		converterProviderPrinterDelegate.initialize(converterProviderType, UsageType.DEFINITION, new HashSet<Element>());
+		converterProviderPrinterDelegate.initialize(environmentContext.getProcessingEnv().getTypeUtils(), converterProviderType, UsageType.DEFINITION);
 
 		for (ConverterProviderElementPrinter nestedElementPrinter: getNestedPrinters(context.getPrintWriter())) {
 
@@ -150,7 +147,7 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 				for (ConfigurationTypeElement availableConfiguration: availableConfigurations) {
 					if (!processedConfigurations.contains(availableConfiguration.getCanonicalName())) {
 						
-						List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(availableConfiguration.getDomain());
+						List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(availableConfiguration.getInstantiableDomain());
 
 						for (ConfigurationTypeElement configurationForDomain: configurationsForDomain) {
 							if (!processedConfigurations.contains(availableConfiguration.getCanonicalName())) {
@@ -168,8 +165,9 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 		}
 		
 		ConverterProviderPrinter converterProviderPrinter = ensureConverterProviderPrinter(context.getPrintWriter(), processingEnv);
-		UsageType previousUsage = converterProviderPrinter.changeUsage(UsageType.USAGE_OUTSIDE_CONVERTER_PROVIDER);
-		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType .GET, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+		UsageType previousUsage = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_OUTSIDE_USAGE);
+//		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType .GET, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+		converterProviderPrinter.printConverterMethods(false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 		converterProviderPrinter.changeUsage(previousUsage);
 		converterProviderPrinterDelegate.finalize();
 	}

@@ -10,7 +10,8 @@ public class ServiceConverterConstructorParametersResolver extends DefaultConver
 		super(processingEnv);
 	}
 
-	protected boolean isConverterProviderParameterPropagated() {
+	@Override
+	protected boolean isConverterProviderContextParameterPropagated() {
 		return false;
 	}
 
@@ -20,7 +21,7 @@ public class ServiceConverterConstructorParametersResolver extends DefaultConver
 	}
 	
 	@Override
-	protected MutableReferenceType getConverterProviderReference() {
+	protected MutableReferenceType getConverterProviderContextReference() {
 		return null;
 	}
 }

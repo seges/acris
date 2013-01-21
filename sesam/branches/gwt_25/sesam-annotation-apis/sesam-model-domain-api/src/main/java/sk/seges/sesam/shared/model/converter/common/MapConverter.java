@@ -18,19 +18,15 @@ package sk.seges.sesam.shared.model.converter.common;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
+import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class MapConverter<DTO_KEY, DTO_VALUE, DOMAIN_KEY, DOMAIN_VALUE> implements DtoConverter<Map<DTO_KEY, DTO_VALUE>, Map<DOMAIN_KEY, DOMAIN_VALUE>> {
 
-	private final ConverterProvider converterProvider;
-	private final ConvertedInstanceCache cache;
-	
+	private final ConverterProviderContext converterProviderContext;
 
-	public MapConverter(ConvertedInstanceCache cache, ConverterProvider converterProvider) {
-		this.converterProvider = converterProvider;
-		this.cache = cache;
+	public MapConverter(ConverterProviderContext converterProviderContext) {
+		this.converterProviderContext = converterProviderContext;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,8 +83,8 @@ public class MapConverter<DTO_KEY, DTO_VALUE, DOMAIN_KEY, DOMAIN_VALUE> implemen
 			DOMAIN_VALUE value = entry.getValue();
 			DOMAIN_KEY key = entry.getKey();
 			if (key != null) {
-				DtoConverter<DTO_KEY, DOMAIN_KEY> keyConverter = converterProvider.getConverterForDomain(key, cache);
-				DtoConverter<DTO_VALUE, DOMAIN_VALUE> valueConverter = converterProvider.getConverterForDomain(value, cache);
+				DtoConverter<DTO_KEY, DOMAIN_KEY> keyConverter = converterProviderContext.getConverterForDomain(key);
+				DtoConverter<DTO_VALUE, DOMAIN_VALUE> valueConverter = converterProviderContext.getConverterForDomain(value);
 				
 				result.put(keyConverter == null ? (DTO_KEY)key : keyConverter.toDto(key), 
 						   valueConverter == null ? (DTO_VALUE)value : valueConverter.toDto(value));
@@ -105,8 +101,8 @@ public class MapConverter<DTO_KEY, DTO_VALUE, DOMAIN_KEY, DOMAIN_VALUE> implemen
 			DTO_VALUE value = entry.getValue();
 			DTO_KEY key = entry.getKey();
 			if (key != null) {
-				DtoConverter<DTO_KEY, DOMAIN_KEY> keyConverter = converterProvider.getConverterForDto(key, cache);
-				DtoConverter<DTO_VALUE, DOMAIN_VALUE> valueConverter = converterProvider.getConverterForDto(value, cache);
+				DtoConverter<DTO_KEY, DOMAIN_KEY> keyConverter = converterProviderContext.getConverterForDto(key);
+				DtoConverter<DTO_VALUE, DOMAIN_VALUE> valueConverter = converterProviderContext.getConverterForDto(value);
 
 				result.put(keyConverter == null ? (DOMAIN_KEY)key : keyConverter.fromDto(key), 
 						   valueConverter == null ? (DOMAIN_VALUE)value : valueConverter.fromDto(value));
