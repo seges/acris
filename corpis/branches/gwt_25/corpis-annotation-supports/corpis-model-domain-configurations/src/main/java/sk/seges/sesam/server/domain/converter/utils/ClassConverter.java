@@ -1,13 +1,12 @@
 package sk.seges.sesam.server.domain.converter.utils;
 
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
-import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
+import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 
 public class ClassConverter {
 
-	public static String getDomainClassName(ConverterProvider converterProvider, String dtoClassName) {
+	public static String getDomainClassName(ConverterProviderContext converterProviderContext, String dtoClassName) {
 		if (dtoClassName == null) {
 			return dtoClassName;
 		}
@@ -21,8 +20,8 @@ public class ClassConverter {
 
 		DtoConverter<?, Object> converterForDto = null;
 		
-		if (converterProvider != null) {
-			converterForDto = converterProvider.getConverterForDto(dtoClass, new MapConvertedInstanceCache());
+		if (converterProviderContext != null) {
+			converterForDto = converterProviderContext.getConverterForDto(dtoClass);
 		}
 
 		if (converterForDto != null) {

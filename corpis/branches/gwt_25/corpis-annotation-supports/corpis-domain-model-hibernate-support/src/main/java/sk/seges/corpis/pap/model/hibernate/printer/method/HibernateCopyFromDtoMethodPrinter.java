@@ -13,11 +13,13 @@ import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateParameterResolverDelegate;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.Field;
+import sk.seges.sesam.pap.model.model.TransferObjectMappingAccessor;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
+import sk.seges.sesam.pap.model.printer.converter.ConverterTargetType;
 import sk.seges.sesam.pap.model.printer.method.CopyFromDtoMethodPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -34,7 +36,7 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
 	}
 	
 	@Override
-    protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, PathResolver domainPathResolver, String dtoField, FormattedPrintWriter pw) {
+    protected void printCopyByConverter(ConverterTypeElement converter, ExecutableElement domainMethod, ExecutableElement dtoMethod, PathResolver domainPathResolver, String dtoField, FormattedPrintWriter pw) {
     	if (entityResolver.isLazyReference(domainMethod)) {
     		pw.println("if (", ConverterUtils.class,".convertArg(" + HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
     		pw.println("if (" + TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + " != null) {");
@@ -42,7 +44,17 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     		String converterName = "converter" + MethodHelper.toMethod("", dtoField);
     		pw.print(converter.getConverterBase(), " " + converterName + " = ");
     		Field field = new Field(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField), converter.getDto());
-    		converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), field, domainMethod, pw, false);
+    		//converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), field, domainMethod, pw, false);
+    		
+    		TransferObjectMappingAccessor transferObjectMappingAccessor = new TransferObjectMappingAccessor(dtoMethod, processingEnv);
+    		if (transferObjectMappingAccessor.isValid() && transferObjectMappingAccessor.getConverter() != null) {
+//    			converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), field, dtoMethod, pw, false);
+    			converterProviderPrinter.printDtoGetConverterMethodName(converter.getDto(), field, dtoMethod, pw, false);
+    		} else {
+    			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, converter.getDomain(), field, domainMethod, true);
+    		}
+
+    		
     		pw.println(";");
     		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
     		pw.print("(", getDelegateCast(converter.getDomain(), true), ")");
@@ -70,11 +82,11 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
         	pw.println(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(null);");
         	pw.println("}");
         	pw.println("} else {");
-    		super.printCopyByConverter(converter, domainMethod, domainPathResolver, dtoField, pw);
+    		super.printCopyByConverter(converter, domainMethod, dtoMethod, domainPathResolver, dtoField, pw);
         	pw.println("}");
         	pw.println("}");
     	} else {
-    		super.printCopyByConverter(converter, domainMethod, domainPathResolver, dtoField, pw);
+    		super.printCopyByConverter(converter, domainMethod, dtoMethod, domainPathResolver, dtoField, pw);
     	}
     }    
 }

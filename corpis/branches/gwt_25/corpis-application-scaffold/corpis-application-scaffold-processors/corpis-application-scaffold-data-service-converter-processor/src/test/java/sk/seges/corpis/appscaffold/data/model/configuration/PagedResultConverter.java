@@ -8,19 +8,19 @@ import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.shared.model.converter.BasicCachedConverter;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
+import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 
 public class PagedResultConverter<DTO_T, DOMAIN_T> extends BasicCachedConverter<PagedResult<DTO_T>, PagedResult<DOMAIN_T>> {
 
-	public PagedResultConverter(ConvertedInstanceCache arg0, ConverterProvider converterProvider) {
+	public PagedResultConverter(ConvertedInstanceCache arg0, ConverterProviderContext context) {
 		super(arg0);
 	}
 
 	public void setTransactionPropagations(TransactionPropagationModel[] transactionPropagations) {}
 	public void setEntityManager(EntityManager entityManager) {};
 	
-	public PagedResultConverter(ConverterProvider converterProvider) {
-		this(new sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache(), converterProvider);
+	public PagedResultConverter(ConverterProviderContext converterProviderContext) {
+		this(new sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache(), converterProviderContext);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.lang.model.element.ExecutableElement;
 
-import sk.seges.sesam.core.pap.model.ConverterParameter;
+import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -23,14 +23,14 @@ public class HibernateConverterProviderPrinter extends ConverterProviderPrinter 
 		this.processingEnv = processingEnv;
 	}
 	
-	private ParameterElement toParameter(ConverterParameter converterParameter) {
+	private ParameterElement toParameter(ConverterConstructorParameter converterParameter) {
 		return converterParameter.toParameterElement();
 	}
 
-	private ParameterElement[] toParameters(List<ConverterParameter> converterParameters) {
+	private ParameterElement[] toParameters(List<ConverterConstructorParameter> converterParameters) {
 		ParameterElement[] result = new ParameterElement[converterParameters.size()];
 		int i = 0;
-		for (ConverterParameter converterParameter: converterParameters) {
+		for (ConverterConstructorParameter converterParameter: converterParameters) {
 			result[i++] = toParameter(converterParameter);
 		}
 		return result;

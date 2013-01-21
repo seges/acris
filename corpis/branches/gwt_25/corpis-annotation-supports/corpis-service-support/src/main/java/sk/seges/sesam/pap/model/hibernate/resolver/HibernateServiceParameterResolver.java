@@ -16,7 +16,7 @@ public class HibernateServiceParameterResolver extends ServiceConverterConstruct
 
 			@Override
 			protected boolean isTransactionPropagationModelParameterPropagated() {
-				return false;
+				return isTransactionPropagationPropagated();
 			};
 			
 			@Override
@@ -27,6 +27,10 @@ public class HibernateServiceParameterResolver extends ServiceConverterConstruct
 		};
 	}
 
+	protected boolean isTransactionPropagationPropagated() {
+		return false;
+	};
+	
 	public boolean isEntityManagerPropagated() {
 		return true;
 	}

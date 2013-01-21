@@ -20,10 +20,10 @@ public class HibernateConverterProviderParameterResolver extends ServiceConverte
 		};
 	}
 
-	@Override
-	protected MutableReferenceType getConverterProviderReference() {
-		return processingEnv.getTypeUtils().getReference(null, THIS);
-	}
+//	@Override
+//	protected MutableReferenceType getConverterProviderReference() {
+//		return processingEnv.getTypeUtils().getReference(null, THIS);
+//	}
 
 	@Override
 	public ParameterElement[] getConstructorAditionalParameters() {
