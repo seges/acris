@@ -47,7 +47,6 @@
             <artifactId>corpis-application-scaffold-local-service-data-interface-processor </artifactId>
             <scope>provided</scope>
         </dependency>
-		
 
 		<!-- GWT dependencies -->
 		<dependency>

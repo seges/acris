@@ -12,7 +12,6 @@
 	</parent>
 
 	<dependencies>
-
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
@@ -39,8 +38,5 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		
-
-
 	</dependencies>
 </project>

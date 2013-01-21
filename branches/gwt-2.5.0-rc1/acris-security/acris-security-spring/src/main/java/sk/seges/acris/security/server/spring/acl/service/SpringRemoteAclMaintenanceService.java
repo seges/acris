@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.security.server.acl.service.AclMaintenanceService;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
+import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 
 public class SpringRemoteAclMaintenanceService extends AclMaintenanceService {
 
@@ -15,8 +15,8 @@ public class SpringRemoteAclMaintenanceService extends AclMaintenanceService {
 		super(null, aclManager);
 	}
 	
-	public SpringRemoteAclMaintenanceService(ConverterProvider converterProvider, AclManager aclManager) {
-		super(converterProvider, aclManager);
+	public SpringRemoteAclMaintenanceService(ConverterProviderContext converterProviderContext, AclManager aclManager) {
+		super(converterProviderContext, aclManager);
 	}
 
 	@Transactional

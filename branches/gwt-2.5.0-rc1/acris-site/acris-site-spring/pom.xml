@@ -30,11 +30,9 @@
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-application-scaffold-data-service-converter-processor </artifactId>
+			<artifactId>corpis-application-scaffold-data-service-converter-processor</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
-
 
 		<!-- Hibernate -->
 		<dependency>
