@@ -158,7 +158,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			Field field = new Field(DTO_NAME, domainsuperClass.getDto());
 
 //			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), field, null, pw, false);
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainsuperClass, field, null, true);
+			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainsuperClass, field, null, false);
 
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
