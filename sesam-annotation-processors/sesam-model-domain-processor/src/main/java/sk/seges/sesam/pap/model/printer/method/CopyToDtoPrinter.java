@@ -157,7 +157,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			
 //			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, null, field, null, pw, false);
 			//TODO add NPE check
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainsuperClass, field, null, true);
+			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainsuperClass, field, null, false);
 
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();
