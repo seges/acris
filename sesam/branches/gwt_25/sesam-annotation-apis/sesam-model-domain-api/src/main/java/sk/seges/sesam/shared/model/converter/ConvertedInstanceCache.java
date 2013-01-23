@@ -19,9 +19,15 @@ import java.io.Serializable;
 
 public interface ConvertedInstanceCache {
 	
-	<S> S getInstance(Object source);
-	<S> S putInstance(Object source, S result);
+	<S> S getDtoInstance(Object domain);
+	<S> S getDtoInstance(Class<S> domainClass, Serializable domainId);
 
-	<S> S getInstance(Class<S> instanceClass, Serializable id);
-	<S> S putInstance(S instance, Serializable id);
+	<S> S putDtoInstance(Object dto, S domain);
+	<S> S putDtoInstance(Object dto, S domain, Serializable dtoId);
+
+	<S> S getDomainInstance(Object dto);
+	<S> S getDomainInstance(Class<S> dtoClass, Serializable dtoId);
+	
+	<S> S putDomainInstance(Object domain, S dto);
+	<S> S putDomainInstance(Object domain, S dto, Serializable domainId);
 }

@@ -28,81 +28,81 @@ public abstract class BasicCachedConverter<DTO, DOMAIN> implements CachedConvert
 		this.cache = cache;
 	}
 
-	protected DTO putDtoIntoCache(Object domainSource, DTO result, Serializable id) {
-		if (result != null) {
-			if (id != null) {
-				cache.putInstance(result, id);
+	protected DTO putDtoIntoCache(Object domainSource, DTO dtoResult, Serializable dtoId) {
+		if (dtoResult != null) {
+			if (dtoId != null) {
+				cache.putDtoInstance(dtoResult, domainSource, dtoId);
 			}
-			cache.putInstance(domainSource, result);
+			cache.putDtoInstance(dtoResult, domainSource);
 		}
 		
-		return result;
+		return dtoResult;
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected DTO getDtoFromCache(Object domainSource, Serializable id) {
-		DTO result = (DTO)cache.getInstance(domainSource);
+	protected DTO getDtoFromCache(Object domainSource, Serializable domainId) {
+		DTO result = (DTO)cache.getDtoInstance(domainSource);
 
 		if (result != null) {
 			return result;
 		}
 		
-		if (id != null && domainSource != null) {
-			result = (DTO) cache.getInstance(domainSource.getClass(), id);
+		if (domainId != null && domainSource != null) {
+			result = (DTO) cache.getDtoInstance(domainSource.getClass(), domainId);
 		}
 		
 		return result;
 	}
 	
-	protected DOMAIN putDomainIntoCache(Object dtoSource, DOMAIN result, Serializable id) {
-		if (result != null) {
-			if (id != null) {
-				cache.putInstance(result, id);
+	protected DOMAIN putDomainIntoCache(Object dtoSource, DOMAIN domainResult, Serializable domainId) {
+		if (domainResult != null) {
+			if (domainId != null) {
+				cache.putDomainInstance(domainResult, dtoSource, domainId);
 			}
-			cache.putInstance(dtoSource, result);
+			cache.putDomainInstance(domainResult, dtoSource);
 		}
 		
-		return result;
+		return domainResult;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected DOMAIN getDomainFromCache(Object dtoSource, Serializable id) {
-		DOMAIN result = (DOMAIN)cache.getInstance(dtoSource);
+	protected DOMAIN getDomainFromCache(Object dtoSource, Serializable dtoId) {
+		DOMAIN result = (DOMAIN)cache.getDomainInstance(dtoSource);
 
 		if (result != null) {
 			return result;
 		}
 		
-		if (id != null && dtoSource != null) {
-			result = (DOMAIN) cache.getInstance(dtoSource.getClass(), id);
+		if (dtoId != null && dtoSource != null) {
+			result = (DOMAIN) cache.getDomainInstance(dtoSource.getClass(), dtoId);
 		}
 		
 		return result;
 	}
 	
-	@Override
-	public DTO createDtoInstance(Object domainSource, Serializable id) {
-		return putDtoIntoCache(domainSource, createDtoInstance(id), id);
-	}
-
-	@Override
-	public DOMAIN createDomainInstance(Object dtoSource, Serializable id) {
-		return putDomainIntoCache(dtoSource, createDomainInstance(id), id);
-	}
-
+////	@Override
+////	public DTO createDtoInstance(Object domainSource, Serializable id) {
+////		return putDtoIntoCache(domainSource, createDtoInstance(id), id);
+////	}
+////
+////	@Override
+////	public DOMAIN createDomainInstance(Object dtoSource, Serializable id) {
+////		return putDomainIntoCache(dtoSource, createDomainInstance(id), id);
+////	}
+//
 	/**
 	 * Loads DTO instance from the cache
 	 */
 	@Override
-	public DTO getDtoInstance(Object domainSource, Serializable id) {
-		return getDtoFromCache(domainSource, id);
+	public DTO getDtoInstance(Object domainSource, Serializable domainId) {
+		return getDtoFromCache(domainSource, domainId);
 	}
 	
 	/**
 	 * Loads DOMAIN instance from the cache
 	 */
 	@Override
-	public DOMAIN getDomainInstance(Object dtoSource, Serializable id) {
-		return getDomainFromCache(dtoSource, id);
+	public DOMAIN getDomainInstance(Object dtoSource, Serializable dtoId) {
+		return getDomainFromCache(dtoSource, dtoId);
 	}	
 }
