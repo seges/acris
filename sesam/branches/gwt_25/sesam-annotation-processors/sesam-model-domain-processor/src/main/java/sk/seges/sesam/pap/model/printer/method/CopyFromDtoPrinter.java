@@ -10,6 +10,7 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -149,16 +150,17 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 			pw.println();
 		}
 		
-		DomainDeclaredType domainsuperClass = configurationElement.getDomain().getSuperClass();
+		DomainDeclaredType domainSuperClass = configurationElement.getDomain().getSuperClass();
 		
-		if (domainsuperClass != null && domainsuperClass.getConverter() != null) {
-//			MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), 
-//					new MutableDeclaredType[] { domainsuperClass.getDto() });
-//			Field field = new Field(domainsuperClass.getDto().getSimpleName() + ".class", fieldType);
-			Field field = new Field(DTO_NAME, domainsuperClass.getDto());
+		if (domainSuperClass != null && domainSuperClass.getConverter() != null && domainSuperClass.getKind().equals(MutableTypeKind.CLASS)) {
+			MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), 
+					new MutableDeclaredType[] { domainSuperClass.getDto() });
+			//TODO: change canonical name to simple name and add import
+			Field field = new Field(domainSuperClass.getDto().getCanonicalName() + ".class", fieldType);
+//			Field field = new Field(DTO_NAME, domainsuperClass.getDto());
 
 //			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), field, null, pw, false);
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainsuperClass, field, null, false);
+			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainSuperClass, field, null, false);
 
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();
