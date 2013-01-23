@@ -21,54 +21,112 @@ import java.util.Map;
 
 public class MapConvertedInstanceCache implements ConvertedInstanceCache {
 
-	private Map<Class<?>, Map<Serializable, Object>> instanceIdCache = new HashMap<Class<?>, Map<Serializable, Object>>();
-	private Map<Class<?>, Map<Object, Object>> instancesCache = new HashMap<Class<?>, Map<Object, Object>>();
+	private Map<Class<?>, Map<Serializable, Object>> instanceDtoIdCache = new HashMap<Class<?>, Map<Serializable, Object>>();
+	//DomainClass, Map<DomainId, DTO>
+	private Map<Class<?>, Map<Object, Object>> instancesDtoCache = new HashMap<Class<?>, Map<Object, Object>>();
+	//DomainClass, Map<Domain, DTO>
 
+	private Map<Class<?>, Map<Serializable, Object>> instanceDomainIdCache = new HashMap<Class<?>, Map<Serializable, Object>>();
+	private Map<Class<?>, Map<Object, Object>> instancesDomainCache = new HashMap<Class<?>, Map<Object, Object>>();
+
+	@Override
 	@SuppressWarnings("unchecked")
-	public <S> S getInstance(Object source) {
-		Map<Object, Object> map = instancesCache.get(source.getClass());
+	public <S> S getDtoInstance(Object domain) {
+		Map<Object, Object> map = instancesDtoCache.get(domain.getClass());
 
 		if (map == null) {
 			return null;
 		}
-		return (S) map.get(source);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <S> S getInstance(Class<S> instanceClass, Serializable id) {
-		Map<Serializable, Object> map = instanceIdCache.get(instanceClass);
-		if (map == null) {
-			return null;
-		}
-		return (S) map.get(id);
+		return (S) map.get(domain);
 	}
 
 	@Override
-	public <S> S putInstance(Object source, S result) {
-		Map<Object, Object> instances = (Map<Object, Object>) instancesCache.get(source.getClass());
+	@SuppressWarnings("unchecked")
+	public <S> S getDtoInstance(Class<S> domainClass, Serializable domainId) {
+		Map<Serializable, Object> map = instanceDtoIdCache.get(domainClass);
+		if (map == null) {
+			return null;
+		}
+		return (S) map.get(domainId);
+	}
+
+	@Override
+	public <S> S putDtoInstance(Object dto, S domain) {
+		Map<Object, Object> instances = (Map<Object, Object>) instancesDtoCache.get(domain.getClass());
 
 		if (instances == null) {
 			instances = new HashMap<Object, Object>();
-			instancesCache.put(source.getClass(), instances);
+			instancesDtoCache.put(domain.getClass(), instances);
 		}
 
-		instances.put(source, result);
+		//result -> dto
+		instances.put(domain, dto);
 		
-		return result;
+		return domain;
 	}
-	
+
 	@Override
-	public <S> S putInstance(S result, Serializable id) {
-		Map<Serializable, Object> instances = (Map<Serializable, Object>) instanceIdCache.get(result.getClass());
+	public <S> S putDtoInstance(Object dto, S domain, Serializable dtoId) {
+		Map<Serializable, Object> instances = (Map<Serializable, Object>) instanceDtoIdCache.get(domain.getClass());
 		
 		if (instances == null) {
 			instances = new HashMap<Serializable, Object>();
-			instanceIdCache.put(result.getClass(), instances);
+			instanceDtoIdCache.put(domain.getClass(), instances);
 		}
 		
-		instances.put(id, result);
+		instances.put(dtoId, dto);
 		
-		return result;
+		return domain;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <S> S getDomainInstance(Object dto) {
+		Map<Object, Object> map = instancesDomainCache.get(dto.getClass());
+
+		if (map == null) {
+			return null;
+		}
+		return (S) map.get(dto);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <S> S getDomainInstance(Class<S> dtoClass, Serializable dtoId) {
+		Map<Serializable, Object> map = instanceDtoIdCache.get(dtoClass);
+		if (map == null) {
+			return null;
+		}
+		return (S) map.get(dtoId);
+	}
+
+	@Override
+	public <S> S putDomainInstance(Object domain, S dto) {
+		Map<Object, Object> instances = (Map<Object, Object>) instancesDomainCache.get(dto.getClass());
+
+		if (instances == null) {
+			instances = new HashMap<Object, Object>();
+			instancesDomainCache.put(dto.getClass(), instances);
+		}
+
+		
+		//result -> dto
+		instances.put(dto, domain);
+		
+		return dto;
+	}
+
+	@Override
+	public <S> S putDomainInstance(Object domain, S dto, Serializable domainId) {
+		Map<Serializable, Object> instances = (Map<Serializable, Object>) instanceDomainIdCache.get(dto.getClass());
+		
+		if (instances == null) {
+			instances = new HashMap<Serializable, Object>();
+			instanceDomainIdCache.put(dto.getClass(), instances);
+		}
+		
+		instances.put(domainId, domain);
+		
+		return dto;
 	}
 }

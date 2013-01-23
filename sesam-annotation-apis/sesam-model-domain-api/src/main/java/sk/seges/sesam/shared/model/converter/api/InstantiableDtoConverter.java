@@ -19,9 +19,8 @@ import java.io.Serializable;
 
 public interface InstantiableDtoConverter<DTO, DOMAIN> extends DtoConverter<DTO, DOMAIN> {
 	
-	DTO createDtoInstance(Serializable id);
+	DOMAIN getDomainInstance(Object dtoSource, Serializable dtoId);
+	
+	DTO getDtoInstance(Object domainSource, Serializable domainId);
 
-	DOMAIN createDomainInstance(Serializable id);
-
-	DOMAIN getDomainInstance(Object dtoSource, Serializable id);
 }
