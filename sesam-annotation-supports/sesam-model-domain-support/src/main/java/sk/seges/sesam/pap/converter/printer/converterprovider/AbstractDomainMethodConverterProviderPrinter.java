@@ -48,7 +48,7 @@ public abstract class AbstractDomainMethodConverterProviderPrinter extends Abstr
 			
 			types.add(context.getRawDomain().getCanonicalName());
 			
-			pw.println("if (", context.getRawDomain().clone().setTypeVariables(new MutableTypeVariable[] {}), ".class.isAssignableFrom(" + DOMAIN_CLASS_PARAMETER_NAME + ")) {");
+			pw.println("if (", context.getConverterType().getConfiguration().getInstantiableDomain().clone().setTypeVariables(new MutableTypeVariable[] {}), ".class.equals(" + DOMAIN_CLASS_PARAMETER_NAME + ")) {");
 
 			printResulConverter(context);
 			
