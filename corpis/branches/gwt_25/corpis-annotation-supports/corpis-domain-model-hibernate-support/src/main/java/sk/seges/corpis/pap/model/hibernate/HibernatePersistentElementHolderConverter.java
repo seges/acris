@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -19,7 +20,7 @@ import sk.seges.sesam.pap.model.model.api.ElementHolderTypeConverter;
 public class HibernatePersistentElementHolderConverter implements ElementHolderTypeConverter {
 
 	private MutableProcessingEnvironment processingEnv;
-	private Map<Class<?>, Class<?>> collectionMappings = new HashMap<Class<?>, Class<?>>();
+	private Map<Class<?>, Class<?>> collectionMappings = new TreeMap<Class<?>, Class<?>>();
 
 	public HibernatePersistentElementHolderConverter(MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
