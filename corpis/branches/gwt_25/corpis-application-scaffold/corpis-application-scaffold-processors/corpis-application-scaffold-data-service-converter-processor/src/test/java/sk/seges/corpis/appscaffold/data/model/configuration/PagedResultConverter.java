@@ -1,7 +1,5 @@
 package sk.seges.corpis.appscaffold.data.model.configuration;
 
-import java.io.Serializable;
-
 import javax.persistence.EntityManager;
 
 import sk.seges.corpis.service.annotation.TransactionPropagationModel;
@@ -51,18 +49,5 @@ public class PagedResultConverter<DTO_T, DOMAIN_T> extends BasicCachedConverter<
 	public boolean equals(PagedResult<DOMAIN_T> domain, PagedResult<DTO_T> dto) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-
-	@Override
-	public PagedResult<DTO_T> createDtoInstance(Serializable id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PagedResult<DOMAIN_T> createDomainInstance(Serializable id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
