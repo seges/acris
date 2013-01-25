@@ -152,6 +152,10 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 		
 		DomainDeclaredType domainSuperClass = configurationElement.getDomain().getSuperClass();
 		
+		if (domainSuperClass != null && domainSuperClass.getConverter() != null) {
+			   domainSuperClass = domainSuperClass.getDomainDefinitionConfiguration().getInstantiableDomain();
+		}
+		
 		if (domainSuperClass != null && domainSuperClass.getConverter() != null && domainSuperClass.getKind().equals(MutableTypeKind.CLASS)) {
 			MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), 
 					new MutableDeclaredType[] { domainSuperClass.getDto() });

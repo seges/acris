@@ -150,6 +150,10 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 		
 		DomainDeclaredType domainSuperClass = configurationElement.getDomain().getSuperClass();
 		
+		if (domainSuperClass != null && domainSuperClass.getConverter() != null) {
+			domainSuperClass = domainSuperClass.getDomainDefinitionConfiguration().getInstantiableDomain();
+		}
+		
 		if (domainSuperClass != null && domainSuperClass.getConverter() != null && domainSuperClass.getKind().equals(MutableTypeKind.CLASS)) {
 			MutableDeclaredType fieldType = processingEnv.getTypeUtils().getDeclaredType(processingEnv.getTypeUtils().toMutableType(Class.class), new MutableDeclaredType[] { domainSuperClass });
 			//TODO: change canonical name to simple name and add import
