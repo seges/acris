@@ -1,6 +1,5 @@
-package sk.seges.acris.security.server.utils;
+package sk.seges.acris.security.shared.util;
 
-import sk.seges.acris.security.shared.util.LoginConstants;
 import sk.seges.acris.security.user_management.server.model.base.RoleBase;
 
 public class LoggedUserRole extends RoleBase {
