@@ -174,12 +174,6 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 					}
 				}
 			}
-
-			private <T> void add(List<T> userAuthorities, List<T> allAuthorities) {
-				for (T authority : userAuthorities) {
-					allAuthorities.add(authority);
-				}
-			}
 		});
 
 		signalLoginServices(token, semaphore, failures, successes, stringCallback != null ? true : false);
@@ -426,15 +420,17 @@ public class UserServiceBroadcaster implements IUserServiceAsync {
 				}
 				return true;
 			}
-
-			private <T> void add(List<T> userAuthorities, List<T> allAuthorities) {
-				for (T authority : userAuthorities) {
-					allAuthorities.add(authority);
-				}
-			}
 		});
 
 		signalUserServices(semaphore, failures, successes, userContext);
+	}
+	
+	private <T> void add(List<T> userAuthorities, List<T> allAuthorities) {
+		if (userAuthorities != null && !userAuthorities.isEmpty()) {
+			for (T authority : userAuthorities) {
+				allAuthorities.add(authority);
+			}
+		}
 	}
 
 	@Override
