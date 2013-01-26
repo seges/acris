@@ -8,11 +8,13 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -253,11 +255,45 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 
 		TransferObjectMappingAccessor transferObjectMappingAccessor = new TransferObjectMappingAccessor(getDtoMethod(), envContext.getProcessingEnv());
 		if (transferObjectMappingAccessor.isValid()) {
-//			if (transferObjectMappingAccessor.getConverter() != null) {
 
 				ConfigurationContext context = new ConfigurationContext(envContext.getConfigurationEnv());
-				ConfigurationTypeElement configurationType = new ConfigurationTypeElement(
-						transferObjectMappingAccessor.getConverter(), envContext, context);
+				ConfigurationTypeElement configurationType = null;
+
+				switch (returnType.getKind()) {
+				case TYPEVAR:
+					//configurationType = new ConfigurationTypeElement(transferObjectMappingAccessor.getConverter(), envContext, context);
+					TypeElement converter = transferObjectMappingAccessor.getConverter();
+					TypeMirror superclass = converter.getSuperclass();
+					
+					if (superclass != null && superclass.getKind().equals(TypeKind.DECLARED) && ((DeclaredType)superclass).getTypeArguments().size() == 2) {
+						TypeMirror dto = ((DeclaredType)superclass).getTypeArguments().get(0);
+						TypeMirror domain = ((DeclaredType)superclass).getTypeArguments().get(1);
+						
+						if (dto.getKind().equals(TypeKind.TYPEVAR)) {
+							//TODO
+							throw new RuntimeException("TODO - Implement me!");
+						}
+
+						if (domain.getKind().equals(TypeKind.TYPEVAR)) {
+							//TODO
+							throw new RuntimeException("TODO - Implement me!");
+						}
+						
+						configurationType = new ConfigurationTypeElement((MutableDeclaredType)envContext.getProcessingEnv().getTypeUtils().toMutableType(domain), 
+								(MutableDeclaredType)envContext.getProcessingEnv().getTypeUtils().toMutableType(dto), getDtoMethod(), envContext, context);
+					} else {
+						//TODO add support for 
+						throw new RuntimeException("TODO - Implement me!");
+					}
+					break;
+				case INTERFACE:
+				case CLASS:
+					configurationType = new ConfigurationTypeElement(getDtoMethod(), (DomainDeclaredType) returnType, envContext, context);
+					break;
+				default:
+					break;
+				}
+
 				List<ConfigurationTypeElement> configurations = new ArrayList<ConfigurationTypeElement>();
 				configurations.add(configurationType);
 				context.setConfigurations(configurations);
@@ -267,9 +303,6 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 				if (this.converterType != null) {
 					return;
 				}
-//			} else if (transferObjectMappingAccessor.getConfiguration() != null) {
-//				
-//			}
 		}
 
 		switch (returnType.getKind()) {
@@ -299,6 +332,8 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 				this.converterType = returnType.getConverter();
 			}
 			
+			break;
+		default:
 			break;
 		}
 	}

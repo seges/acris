@@ -51,7 +51,7 @@ public class ConfigurationTypeElement extends TomBaseType {
 
 	protected final ConfigurationContext configurationContext;
 	
-	public ConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, TypeElement configurationElement, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
+	public ConfigurationTypeElement(MutableDeclaredType domainType, MutableDeclaredType dtoType, Element configurationElement, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
 		super(envContext);
 
 		this.configurationContext = configurationContext;
@@ -59,7 +59,11 @@ public class ConfigurationTypeElement extends TomBaseType {
 		this.domainType = domainType;
 		this.dtoType = dtoType;
 		
-		this.canonicalName = configurationElement.getQualifiedName().toString();
+		if (configurationElement.getKind().equals(ElementKind.METHOD)) {
+			this.canonicalName = configurationElement.getSimpleName().toString();
+		} else {
+			this.canonicalName = ((TypeElement)configurationElement).getQualifiedName().toString();
+		}
 		
 		this.transferObjectConfiguration = new TransferObjectMappingAccessor(configurationElement, envContext.getProcessingEnv());
 		if (this.transferObjectConfiguration.getReferenceMapping() == null) {

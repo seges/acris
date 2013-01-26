@@ -143,7 +143,7 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 		
 		if (context.useConverter()) {
 			String converterName = "converter" + MethodHelper.toMethod("", context.getDtoFieldName());
-			pw.print(converterProviderPrinter.getDtoConverterType(context.getDomainMethodReturnType()), " " + converterName + " = ");
+			pw.print(converterProviderPrinter.getDtoConverterType(context.getDomainMethodReturnType(), true), " " + converterName + " = ");
 			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, context.getDomainMethodReturnType(), 
 					new Field(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), null), context.getDomainMethod(), true);
 			pw.println(";");

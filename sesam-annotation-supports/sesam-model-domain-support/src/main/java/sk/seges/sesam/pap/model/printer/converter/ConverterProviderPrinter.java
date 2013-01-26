@@ -519,14 +519,19 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return null;
 	}
 
-	public MutableDeclaredType getDtoConverterType(DomainType domainType) {
+	public MutableDeclaredType getDtoConverterType(DomainType domainType, boolean usage) {
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		MutableDeclaredType dtoConverter = typeUtils.toMutableType(DtoConverter.class);
 
-		MutableTypeVariable dtoTypeVariable = (MutableTypeVariable)domainType.getDto();
+		MutableTypeVariable dtoTypeVariable = usage ? 
+				processingEnv.getTypeUtils().getTypeVariable(((MutableTypeVariable)domainType.getDto()).getVariable()) : (MutableTypeVariable)domainType.getDto();
 		MutableTypeVariable domainTypeVariable = (MutableTypeVariable)domainType;
 		
-		domainTypeVariable = domainTypeVariable.clone().setVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + domainTypeVariable.getVariable());
+		if (usage) {
+			domainTypeVariable = processingEnv.getTypeUtils().getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + domainTypeVariable.getVariable());
+		} else {
+			domainTypeVariable = domainTypeVariable.clone().setVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + domainTypeVariable.getVariable());
+		}
 		
 		dtoConverter = dtoConverter.setTypeVariables(dtoTypeVariable, domainTypeVariable);
 		
@@ -539,7 +544,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		MutableDeclaredType dtoConverter = null;
 
 		if (domainType instanceof MutableTypeVariable) {
-			dtoConverter = getDtoConverterType(domainType);
+			dtoConverter = getDtoConverterType(domainType, true);
 		} else {
 			dtoConverter = domainType.getConverter();
 		}
