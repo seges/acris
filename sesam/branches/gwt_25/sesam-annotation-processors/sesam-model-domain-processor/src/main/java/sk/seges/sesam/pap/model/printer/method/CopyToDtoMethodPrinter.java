@@ -80,8 +80,13 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			String converterName = "converter" + MethodHelper.toMethod("", context.getDtoFieldName());
 			
 			pw.print(context.getConverter().getConverterBase(), " " + converterName + " = ");
-			
-			Field field = new Field(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), context.getConverter().getDomain());
+
+//			(context.getDomainMethodReturnType().getKind().equals(MutableTypeKind.TYPEVAR) ? ("(" + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" +
+//					((MutableTypeVariable)context.getDomainMethodReturnType()).getVariable().toString() + ")") : "") +
+
+			Field field = new Field(
+					(context.getDomainMethodReturnType().getKind().equals(MutableTypeKind.TYPEVAR) ? "(" + context.getConverter().getDomain() + ")" : "") + 
+					TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), context.getConverter().getDomain());
 //			converterProviderPrinter.printDomainEnsuredConverterMethodName(context.getConverter().getDomain(), context.getDomainMethodReturnType(), 
 //					field, null, pw, false);
 			TransferObjectMappingAccessor transferObjectMappingAccessor = new TransferObjectMappingAccessor(context.getDtoMethod(), processingEnv);
@@ -95,8 +100,13 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 
 			pw.println("if (" + converterName + " != null) {");
 			pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(context.getDtoFieldName()) + "(");
+
+			if (context.getDomainMethodReturnType().getKind().equals(MutableTypeKind.TYPEVAR)) {
+				pw.print("(" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + "_" + ((MutableTypeVariable)context.getDomainMethodReturnType()).getVariable().toString() + ")");
+			}
 			
 			pw.print(converterName + ".toDto(");
+
 			pw.print(CastUtils.class, ".cast(");
 			MutableTypeMirror delegateCast = getDelegateCast(context.getConverter().getDomain(), false);
 
@@ -105,7 +115,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			pw.print(", ", getTypeVariableDelegate(delegateCast), ".class)");
 		} else if (context.useConverter()) {
 			String converterName = "converter" + MethodHelper.toMethod("", context.getDtoFieldName());
-			pw.print(converterProviderPrinter.getDtoConverterType(context.getDomainMethodReturnType()), " " + converterName + " = ");
+			pw.print(converterProviderPrinter.getDtoConverterType(context.getDomainMethodReturnType(), true), " " + converterName + " = ");
 			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, context.getDomainMethodReturnType(), 
 					new Field(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), null), context.getDomainMethod(), true);
 			pw.println(";");
