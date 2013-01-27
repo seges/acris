@@ -52,7 +52,6 @@ public class StateHolder {
 			@Override
 			public Boolean apply(WebDriver arg0) {
 				refind();
-				System.out.println(webElements.size());
 				return webElements.size() < size;
 			}
 		});
@@ -66,7 +65,6 @@ public class StateHolder {
 			@Override
 			public Boolean apply(WebDriver arg0) {
 				refind();
-				System.out.println(webElements.size());
 				return webElements.size() > size;
 			}
 		});
