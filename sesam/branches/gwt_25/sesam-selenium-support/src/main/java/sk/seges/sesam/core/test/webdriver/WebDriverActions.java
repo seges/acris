@@ -21,7 +21,6 @@ import org.openqa.selenium.interactions.SendKeysAction;
 import org.openqa.selenium.internal.Locatable;
 
 import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
-import sk.seges.sesam.core.test.webdriver.action.DoubleClickAction;
 
 public class WebDriverActions extends Actions {
 

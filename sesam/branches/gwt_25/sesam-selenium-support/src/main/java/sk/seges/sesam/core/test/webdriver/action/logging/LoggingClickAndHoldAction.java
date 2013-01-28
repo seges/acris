@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.test.webdriver.action.logging;
 
+import java.util.List;
+
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,21 +12,27 @@ import sk.seges.sesam.core.test.webdriver.report.ActionsListener;
 
 public class LoggingClickAndHoldAction extends ClickAndHoldAction {
 
-	private final ActionsListener listener;
+	private final List<? extends ActionsListener> listeners;
 	private final WebDriver webDriver;
 	private final WebElement webElement;
 
-	public LoggingClickAndHoldAction(Mouse mouse, WebElement onElement, ActionsListener listener, WebDriver webDriver) {
+	public LoggingClickAndHoldAction(Mouse mouse, WebElement onElement, List<? extends ActionsListener> listeners, WebDriver webDriver) {
 		super(mouse, (Locatable)onElement);
-		this.listener = listener;
+		this.listeners = listeners;
 		this.webDriver = webDriver;
 		this.webElement = onElement;
 	}
 
 	@Override
 	public void perform() {
-		listener.beforeClickAndHold(webElement, webDriver);
+		for (ActionsListener listener: listeners) {
+			listener.beforeClickAndHold(webElement, webDriver);
+		}
+		
 		super.perform();
-		listener.afterClickAndHold(webElement, webDriver);
+		
+		for (ActionsListener listener: listeners) {
+			listener.afterClickAndHold(webElement, webDriver);
+		}
 	}
 }

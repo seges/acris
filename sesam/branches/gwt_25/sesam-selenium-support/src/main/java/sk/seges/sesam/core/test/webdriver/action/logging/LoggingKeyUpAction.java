@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.test.webdriver.action.logging;
 
+import java.util.List;
+
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Mouse;
@@ -12,19 +14,25 @@ import sk.seges.sesam.core.test.webdriver.report.ActionsListener;
 
 public class LoggingKeyUpAction extends KeyUpAction {
 
-	private final ActionsListener listener;
+	private final List<? extends ActionsListener> listeners;
 	private final WebDriver webDriver;
 	
-	public LoggingKeyUpAction(Keyboard keyboard, Mouse mouse, WebElement element, Keys key, ActionsListener listener, WebDriver webDriver) {
+	public LoggingKeyUpAction(Keyboard keyboard, Mouse mouse, WebElement element, Keys key, List<? extends ActionsListener> listeners, WebDriver webDriver) {
 		super(keyboard, mouse, (Locatable)element, key);
-		this.listener = listener;
+		this.listeners = listeners;
 		this.webDriver = webDriver;
 	}
 
 	@Override
 	public void perform() {
-		listener.beforeKeyUp(key, webDriver);
+		for (ActionsListener listener: listeners) {
+			listener.beforeKeyUp(key, webDriver);
+		}
+		
 		super.perform();
-		listener.afterKeyUp(key, webDriver);
+		
+		for (ActionsListener listener: listeners) {
+			listener.afterKeyUp(key, webDriver);
+		}
 	}
 }

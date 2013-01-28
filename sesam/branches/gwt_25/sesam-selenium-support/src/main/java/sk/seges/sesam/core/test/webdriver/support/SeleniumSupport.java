@@ -1,7 +1,9 @@
 package sk.seges.sesam.core.test.webdriver.support;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +21,7 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 	protected final WebDriver webDriver;
 	protected final Wait<WebDriver> wait;
 
-	private final ReportEventListener reportEventListener;
+	private final List<ReportEventListener> reportEventListeners;
 	
 	private final Random random = new Random();
 
@@ -38,10 +40,10 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 		}
 	}
 
-	public SeleniumSupport(ReportEventListener reportEventListener, WebDriver webDriver, Wait<WebDriver> wait) {
+	public SeleniumSupport(List<ReportEventListener> reportEventListeners, WebDriver webDriver, Wait<WebDriver> wait) {
 		this.webDriver = webDriver;
 		this.wait = wait;
-		this.reportEventListener = reportEventListener;
+		this.reportEventListeners = reportEventListeners;
 	}
 
 	public String getRandomNumericString(int length) {
@@ -95,18 +97,31 @@ public class SeleniumSupport extends AbstractBrowserSupport {
 
 			@Override
 			public Boolean apply(WebDriver arg0) {
-				boolean collectResults = false;
-				if (reportEventListener != null) {
-					collectResults = reportEventListener.collectResults(false);
+				
+				List<Boolean> resultStates = new ArrayList<Boolean>();
+
+				for (ReportEventListener reportEventListener: reportEventListeners) {
+					resultStates.add(reportEventListener.collectResults(false));
 				}
+				
 				Long requestsCount = (Long)((JavascriptExecutor)webDriver).executeScript("return document.ajax_outstanding;", new Object[] {});
-				if (reportEventListener != null) {
-					reportEventListener.collectResults(collectResults);
+				
+				int i = 0;
+				for (ReportEventListener reportEventListener: reportEventListeners) {
+					reportEventListener.collectResults(resultStates.get(i++));
 				}
+
 				return requestsCount == null || 0 == requestsCount;
 			}
 		});
 
+		try { Thread.sleep(500); } catch (InterruptedException e) {}
+
+		if ((Long)((JavascriptExecutor)webDriver).executeScript("return document.ajax_outstanding;", new Object[] {}) > 0) {
+			//if another XHR request was started
+			waitUntilLoaded();
+		}
+		
 		webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 }
