@@ -22,7 +22,7 @@ public class ConsolePrinter implements ReportPrinter<TestCaseResult> {
 				System.out.println("Success with result " + commandResult.getResult());
 			}
 		} else {
-			System.out.println(commandResult.getOperationDescription());
+			System.out.print(commandResult.getOperationDescription());
 			if (commandResult.getParameters() != null && commandResult.getParameters().length > 0) {
 				String params = " ";
 				int i = 0;
@@ -37,8 +37,9 @@ public class ConsolePrinter implements ReportPrinter<TestCaseResult> {
 					}
 				}
 				
-				System.out.println(params);
+				System.out.print(params);
 			}
+			System.out.println();
 		}
 	}
 
