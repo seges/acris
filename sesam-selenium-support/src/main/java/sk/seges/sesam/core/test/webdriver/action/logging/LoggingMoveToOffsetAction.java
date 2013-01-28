@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.test.webdriver.action.logging;
 
+import java.util.List;
+
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,16 +12,16 @@ import sk.seges.sesam.core.test.webdriver.report.ActionsListener;
 
 public class LoggingMoveToOffsetAction extends MoveToOffsetAction {
 
-	private final ActionsListener listener;
+	private final List<? extends ActionsListener> listeners;
 	private final WebDriver webDriver;
 	private final WebElement webElement;
 	
 	private final int xOffset;
 	private final int yOffset;
 
-	public LoggingMoveToOffsetAction(Mouse mouse, WebElement onElement, int x, int y, ActionsListener listener, WebDriver webDriver) {
+	public LoggingMoveToOffsetAction(Mouse mouse, WebElement onElement, int x, int y, List<? extends ActionsListener> listeners, WebDriver webDriver) {
 		super(mouse, (Locatable)onElement, x, y);
-		this.listener = listener;
+		this.listeners = listeners;
 		this.xOffset = x;
 		this.yOffset = y;
 		this.webDriver = webDriver;
@@ -28,8 +30,14 @@ public class LoggingMoveToOffsetAction extends MoveToOffsetAction {
 	
 	@Override
 	public void perform() {
-		listener.beforeMoveToOffset(webElement, xOffset, yOffset,  webDriver);
+		for (ActionsListener listener: listeners) {
+			listener.beforeMoveToOffset(webElement, xOffset, yOffset,  webDriver);
+		}
+		
 		super.perform();
-		listener.afterMoveToOffset(webElement, xOffset, yOffset,  webDriver);
+		
+		for (ActionsListener listener: listeners) {
+			listener.afterMoveToOffset(webElement, xOffset, yOffset,  webDriver);
+		}
 	}
 }

@@ -91,6 +91,8 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 			
 			setResultData(resultData);
 
+	//		Velocity.setProperty("runtime.log.logsystem.log4j.logger",  "root");
+						
 			ve = new VelocityEngine();
 	
 			context = new VelocityContext();
@@ -106,6 +108,8 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 				ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "file");
 			}
 			
+			ve.setProperty(VelocityEngine.VM_LIBRARY, "");
+
 			ve.init();
 			
 		} catch (Exception e) {
@@ -202,7 +206,7 @@ public abstract class AbstractHtmlReportPrinter<T extends ReportData> extends Su
 
 	@Override
 	public void log(int arg0, String arg1) {
-		System.out.println(arg1);
+//		System.out.println(arg1);
 	}
 
 	@Override

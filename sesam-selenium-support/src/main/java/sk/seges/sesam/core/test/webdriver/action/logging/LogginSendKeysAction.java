@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.test.webdriver.action.logging;
 
+import java.util.List;
+
 import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
@@ -11,22 +13,27 @@ import sk.seges.sesam.core.test.webdriver.report.ActionsListener;
 
 public class LogginSendKeysAction extends SendKeysAction {
 
-	private final ActionsListener listener;
+	private final List<? extends ActionsListener> listeners;
 	private final WebDriver webDriver;
 	private final CharSequence[] keysToSend;
 	
-	public LogginSendKeysAction(Keyboard keyboard, Mouse mouse, WebElement element, CharSequence[] keysToSend, ActionsListener listener, WebDriver webDriver) {
+	public LogginSendKeysAction(Keyboard keyboard, Mouse mouse, WebElement element, CharSequence[] keysToSend, List<? extends ActionsListener> listeners, WebDriver webDriver) {
 		super(keyboard, mouse, (Locatable)element, keysToSend);
-		this.listener = listener;
+		this.listeners = listeners;
 		this.keysToSend = keysToSend;
 		this.webDriver = webDriver;
 	}
 
 	@Override
 	public void perform() {
-		listener.beforeSendKeys(keysToSend, webDriver);
+		for (ActionsListener listener: listeners) {
+			listener.beforeSendKeys(keysToSend, webDriver);
+		}
+		
 		super.perform();
-		listener.afterSendKeys(keysToSend, webDriver);
-	}
 
+		for (ActionsListener listener: listeners) {
+			listener.afterSendKeys(keysToSend, webDriver);
+		}
+	}
 }

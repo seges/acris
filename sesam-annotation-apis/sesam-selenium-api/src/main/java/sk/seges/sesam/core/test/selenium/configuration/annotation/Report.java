@@ -68,7 +68,14 @@ public @interface Report {
 		@Parameter(name = "after", description = "after specified")
 		After after() default @After;
 	}
-	
+
+	@Target(ElementType.ANNOTATION_TYPE)
+	public @interface CommandReport {
+
+		@Parameter(name = "command", description = "command")
+		SeleniumOperation[] value() default {};
+	}
+
 	@Target(ElementType.ANNOTATION_TYPE)
 	public @interface HtmlReport {
 
@@ -85,14 +92,7 @@ public @interface Report {
 			String issueLink() default URL + ISSUE_NUMBER;
 		}
 		
-		@Target(ElementType.ANNOTATION_TYPE)
-		public @interface CommandReport {
-
-			@Parameter(name = "command", description = "command")
-			SeleniumOperation[] value() default {};
-		}
-
-		@Parameter(name = "report.html", description = "enables/disables HTML report")
+		@Parameter(name = "enabled", description = "enables/disables HTML report")
 		Support support() default @Support(directory = Report.CURRENT_DATE + "_" + Report.CURRENT_TIME + "_" + Report.TEST_CASE_NAME + "_" + Report.TEST_NAME);
 		
 		@Parameter(name = "test.template.path", description = "Defines path to the used template for tests")
@@ -101,15 +101,15 @@ public @interface Report {
 		@Parameter(name = "suite.template.path", description = "Defines path to the used template for suite")
 		String suiteTemplatePath() default Report.CLASSPATH_TEMPLATE_PREFIX + "sk/seges/sesam/webdriver/report/metal/report_default.vm";
 
-		@Parameter(name = "suite.template.locale", description = "Defines locale for the generated report")
+		@Parameter(name = "locale", description = "Defines locale for the generated report")
 		String locale() default "en";
 		
-		@Parameter(name = "report.command.test.failure.log", description = "Defines what to log when test fails")
+		@Parameter(name = "command.failure.log", description = "Defines what to log when test fails")
 		CommandReport onFailure() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.FAIL,
 				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
 		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
 
-		@Parameter(name = "report.command.test.success.log", description = "Defines what to log when test succeed")
+		@Parameter(name = "command.success.log", description = "Defines what to log when test succeed")
 		CommandReport onSucess() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.FAIL,
 				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
 		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
@@ -117,7 +117,27 @@ public @interface Report {
 		@Parameter(name = "issue.tracker", description = "Settings for issue tracker")
 		IssueTracker issueTracker() default @IssueTracker();
 	}
-	
-	@Parameter(name = "report", description = "HTML report settings")
+
+	@Target(ElementType.ANNOTATION_TYPE)
+	public @interface ConsoleReport {
+
+		@Parameter(name = "enabled", description = "enables/disables HTML report")
+		Support support() default @Support;
+		
+		@Parameter(name = "command.failure.log", description = "Defines what to log when test fails")
+		CommandReport onFailure() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.FAIL,
+				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
+		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
+
+		@Parameter(name = "command.success.log", description = "Defines what to log when test succeed")
+		CommandReport onSucess() default @CommandReport({SeleniumOperation.ASSERTION, SeleniumOperation.FAIL,
+				SeleniumOperation.CLICK_ON, SeleniumOperation.CHANGE_VALUE, SeleniumOperation.NAVIGATE_TO, 
+		  	   	SeleniumOperation.NAVIGATE_BACK, SeleniumOperation.NAVIGATE_FORWARD});
+	}
+
+	@Parameter(name = "report.html", description = "HTML report settings")
 	HtmlReport html() default @HtmlReport(support = @Support(enabled = false));
+
+	@Parameter(name = "report.console", description = "Console report settings")
+	ConsoleReport console() default @ConsoleReport(support = @Support(enabled = true));
 }
