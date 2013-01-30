@@ -7,6 +7,7 @@ import sk.seges.acris.security.client.handler.HasLoginHandlers;
 import sk.seges.acris.security.client.handler.LoginHandler;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
+import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.session.ClientSession;
@@ -15,7 +16,6 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.user_management.service.IUserServiceAsync;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
-import sk.seges.acris.security.shared.util.LoginConstants;
 import sk.seges.acris.security.shared.util.LoginUtils;
 
 import com.google.gwt.core.client.GWT;

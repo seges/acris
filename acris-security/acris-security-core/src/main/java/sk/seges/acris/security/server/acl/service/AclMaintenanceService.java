@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import sk.seges.acris.security.server.acl.service.api.AclManager;
+import sk.seges.acris.security.server.util.LoggedUserRole;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
-import sk.seges.acris.security.shared.util.LoggedUserRole;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
 import sk.seges.sesam.pap.service.annotation.LocalService;
 import sk.seges.sesam.server.domain.converter.utils.ClassConverter;

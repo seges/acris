@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
+import sk.seges.acris.security.server.util.LoggedUserRole;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.exception.ServerException;
@@ -22,7 +23,6 @@ import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
-import sk.seges.acris.security.shared.util.LoggedUserRole;
 import sk.seges.acris.security.user_management.server.model.data.RoleData;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
 
