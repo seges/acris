@@ -3,8 +3,8 @@ package sk.seges.acris.security.client.view;
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.i18n.LoginMessages;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
+import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
-import sk.seges.acris.security.shared.util.LoginConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeHandler;

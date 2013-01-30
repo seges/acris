@@ -1,5 +1,7 @@
 package sk.seges.acris.security.shared.util;
 
+import sk.seges.acris.security.server.util.LoginConstants;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window.Location;
 

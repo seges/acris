@@ -13,6 +13,7 @@ import sk.seges.acris.security.client.openid.configuration.DefaultOpenIdConfigur
 import sk.seges.acris.security.client.openid.configuration.OpenIdConfiguration;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
+import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.configuration.LoginConfiguration;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
@@ -23,7 +24,6 @@ import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
-import sk.seges.acris.security.shared.util.LoginConstants;
 import sk.seges.acris.security.shared.util.LoginUtils;
 
 import com.google.gwt.core.client.GWT;

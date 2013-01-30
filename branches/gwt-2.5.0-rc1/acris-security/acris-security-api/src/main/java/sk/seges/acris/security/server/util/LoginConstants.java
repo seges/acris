@@ -1,4 +1,4 @@
-package sk.seges.acris.security.shared.util;
+package sk.seges.acris.security.server.util;
 
 public class LoginConstants {
 
