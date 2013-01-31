@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class SecurityUtils {
 
 	private static boolean hasAuthority(String permissionPrefix, GenericUserDTO user, String... authorities) {
-		boolean result = false;
+		boolean result = authorities == null || authorities.length == 0;
 		for (String authority: authorities) {
 			result = result || SecurityUtils.hasAuthority(permissionPrefix, user, authority);
 			if (result) {
@@ -52,8 +52,7 @@ public class SecurityUtils {
 	
 	public static void handlePermission(GenericUserDTO user, Widget widget, String ...authorities) {
 
-		boolean hasViewPermission = false;
-
+		boolean hasViewPermission = authorities == null || authorities.length == 0;
 		
 		if (user != null) {
 			hasViewPermission = hasAuthority(Permission.VIEW_SUFFIX, user, authorities);

@@ -16,6 +16,9 @@
 
 	<!-- Security generators -->
 	<generate-with class="sk.seges.acris.security.rebind.SecuredObjectGenerator">
-		<when-type-assignable class="sk.seges.acris.security.client.ISecuredObject" />
+		<any>
+			<when-type-assignable class="sk.seges.acris.security.client.ISecuredObject" />
+			<!-- when-type-assignable class="sk.seges.acris.security.client.mediator.IRuntimeAuthorityMediator" /-->
+		</any>
 	</generate-with>
 </module>

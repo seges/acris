@@ -3,6 +3,7 @@
  */
 package sk.seges.acris.security.client;
 
+
 /**
  * Secured object where it is possible to call security check in runtime.
  *  

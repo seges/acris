@@ -10,6 +10,7 @@ import javax.lang.model.element.Element;
 import sk.seges.acris.pap.security.configurer.RuntimeSecurityProcessorConfigurer;
 import sk.seges.acris.pap.security.model.RuntimeSecuredType;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
+import sk.seges.acris.security.shared.util.SecurityUtils;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -47,6 +48,12 @@ public class RuntimeSecuredObjectProcessor extends SecurityProcessor {
 	protected void generateClassFields(FormattedPrintWriter pw) {
 		super.generateClassFields(pw);
 		pw.println("private ", toMutableType(List.class, String.class), " userGrants = new ", toMutableType(ArrayList.class, String.class), "();");
+	}
+
+	@Override
+	protected void generateSecurityCheckBody(FormattedPrintWriter pw, Element securedElement) {
+		super.generateSecurityCheckBody(pw, securedElement);
+		pw.println(SecurityUtils.class, ".handlePermission(" + USER_FIELD_NAME + ", this, userGrants.toArray(new ", String.class, "[] {}));");
 	}
 
 	private void generateGrantsMethods(FormattedPrintWriter pw){
