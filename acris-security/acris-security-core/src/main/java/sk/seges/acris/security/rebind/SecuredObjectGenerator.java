@@ -30,7 +30,7 @@ public class SecuredObjectGenerator extends ReplaceByGenerator {
 
 		if (isSecured(type)) {
 			try {
-				return typeOracle.getType(typeName + SECURITY_CLASS_SUFFIX).getQualifiedSourceName();
+				return typeOracle.getType(type.getPackage().getName() + "." + type.getSimpleSourceName() + SECURITY_CLASS_SUFFIX).getQualifiedSourceName();
 			} catch (NotFoundException e) {
 				return typeName;
 			}
@@ -38,7 +38,8 @@ public class SecuredObjectGenerator extends ReplaceByGenerator {
 
 		if (isRuntimeSecured(type)) {
 			try {
-				return typeOracle.getType(typeName + RUNTIME_CLASS_SUFFIX).getQualifiedSourceName();
+				
+				return typeOracle.getType(type.getPackage().getName() + "." + type.getSimpleSourceName() + RUNTIME_CLASS_SUFFIX).getQualifiedSourceName();
 			} catch (NotFoundException e) {
 				return typeName;
 			}
@@ -46,7 +47,7 @@ public class SecuredObjectGenerator extends ReplaceByGenerator {
 
 		if (isManageableSecured(type)) {
 			try {
-				return typeOracle.getType(typeName + MANAGEABLE_CLASS_SUFFIX).getQualifiedSourceName();
+				return typeOracle.getType(type.getPackage().getName() + "." + type.getSimpleSourceName() + MANAGEABLE_CLASS_SUFFIX).getQualifiedSourceName();
 			} catch (NotFoundException e) {
 				return typeName;
 			}
