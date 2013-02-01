@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-site-dto</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS Site DTOs</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-site-parent</artifactId>
+		<version>1.2.3-SNAPSHOT</version>
+		<relativePath>../acris-site-parent</relativePath>
+	</parent>
+
+	<dependencies>
+
+		<!-- Corpis dependencies -->
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-domain-model-hibernate-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-application-scaffold-data-domain-model-converter-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-site-jpa</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>		
+	</dependencies>
+</project>

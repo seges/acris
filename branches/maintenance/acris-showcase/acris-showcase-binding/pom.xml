@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-showcase-parent</artifactId>
+		<version>1.2.1-SNAPSHOT</version>
+		<relativePath>../acris-showcase-parent</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-showcase-binding</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS Binding Showcase</name>
+
+	<properties>
+		<gwt.client.module>sk.seges.acris.binding.Showcase</gwt.client.module>
+		<gwt.client.html>Showcase.html</gwt.client.html>
+		<gwt-output-style>INFO</gwt-output-style>
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/webapp</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.1</version>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-metadata-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-metadata-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-binding</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-binding</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-binding-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>		
+
+		<!-- GWT dependencies -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-showcase-parent</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+		<relativePath>../acris-showcase-parent</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-showcase-json</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS JSON showcase</name>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/webapp</directory>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<configuration>
+					<compileTargets>
+						<value>sk.seges.acris.json.ShowcaseList</value>
+						<value>sk.seges.acris.json.ShowcaseSimple</value>
+						<value>sk.seges.acris.json.Facebook</value>
+					</compileTargets>
+					<hostedWebapp>target/${artifactId}-${project.version}</hostedWebapp>
+					<webappDirectory>target/${artifactId}-${project.version}</webappDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-json</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-dev</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-json</artifactId>
+			<classifier>sources</classifier>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.gwt</groupId>
+					<artifactId>gwt-dev</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+</project>

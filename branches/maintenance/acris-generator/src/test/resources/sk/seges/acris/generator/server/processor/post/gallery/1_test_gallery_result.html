@@ -1,0 +1,51 @@
+<html>
+<body>
+	<div class="acris-inline-scripts">
+			<script type="text/javascript">
+			$(function() {
+				if ($('#imageGalleryzateplenie_bytovy_dom0').attr('loaded') != 'true') {
+					$('#imageGalleryzateplenie_bytovy_dom0').attr('loaded',
+							'true');
+					myGalleries['imageGalleryzateplenie_bytovy_dom0'] = $(
+							'#imageGalleryzateplenie_bytovy_dom0').tn3({
+						skinDir : '../acris-images/skins',
+						skin : 'tn3',
+						autoplay : true,
+						width : 434,
+						height : 300,
+						delay : 4000,
+						imageClick : '',
+						image : {
+							crop : true,
+							clickEvent : 'dblclick',
+							maxZoom : 10,
+							transitions : [ {
+								type : 'blinds',
+								duration : 300
+							}, {
+								type : 'slide',
+								duration : 430,
+								easing : 'easeInOutExpo'
+							}, {
+								type : 'grid',
+								duration : 160,
+								gridX : 9,
+								gridY : 7,
+								easing : 'easeInCubic',
+								sort : 'circle'
+							} ]
+						}
+					}).data('tn3');
+				} else {
+					if (myGalleries['imageGalleryzateplenie_bytovy_dom0']) {
+						myGalleries['imageGalleryzateplenie_bytovy_dom0']
+								.show(0);
+					}
+					;
+				}
+				;
+			});
+		</script>
+</div>
+</body>
+</html>
