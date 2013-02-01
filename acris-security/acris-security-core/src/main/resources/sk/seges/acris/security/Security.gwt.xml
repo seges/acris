@@ -6,20 +6,19 @@
 
 	<inherits name='sk.seges.acris.Core' />
 	<inherits name='sk.seges.acris.Common' />
-	<inherits name='sk.seges.acris.Binding' />
 	<inherits name='sk.seges.acris.Callbacks' />
 
 	<inherits name='sk.seges.acris.security.Session' />
+	<inherits name='sk.seges.acris.security.SecurityApi' />
 
 	<source path="client" />
 	<source path="shared" />
 
 	<!-- Security generators -->
-	<generate-with class="sk.seges.acris.security.rebind.ManageableSecuredObjectGenerator">
-		<when-type-assignable class="sk.seges.acris.security.client.ISecuredObject" />
-	</generate-with>
-
-	<generate-with class="sk.seges.acris.security.rebind.RuntimeSecuredObjectGenerator">
-		<when-type-assignable class="sk.seges.acris.security.client.IRuntimeSecuredObject" />
+	<generate-with class="sk.seges.acris.security.rebind.SecuredObjectGenerator">
+		<any>
+			<when-type-assignable class="sk.seges.acris.security.client.ISecuredObject" />
+			<!-- when-type-assignable class="sk.seges.acris.security.client.mediator.IRuntimeAuthorityMediator" /-->
+		</any>
 	</generate-with>
 </module>

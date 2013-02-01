@@ -7,37 +7,11 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-security-parent</artifactId>
-		<version>1.2.3-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 		<relativePath>../acris-security-parent</relativePath>
 	</parent>
 
 	<dependencies>
-
-		<!-- Sesam dependencies -->
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-model-metadata-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-model-metadata-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-service-local-interface-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-service-local-interface-api</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-            <groupId>sk.seges.corpis</groupId>
-            <artifactId>corpis-application-scaffold-local-service-data-interface-processor </artifactId>
-            <scope>provided</scope>
-        </dependency>
-		
 		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
@@ -72,8 +46,25 @@
 		    <artifactId>acris-security-api</artifactId>
 		    <classifier>sources</classifier>
 		</dependency>
+		<dependency>
+		    <groupId>sk.seges.acris</groupId>
+		    <artifactId>acris-security-dto</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>sk.seges.acris</groupId>
+		    <artifactId>acris-security-dto</artifactId>
+		    <classifier>sources</classifier>
+		</dependency>
+		<dependency>
+		    <groupId>sk.seges.acris</groupId>
+		    <artifactId>acris-security-scaffold-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-hibernate</artifactId>
+		</dependency>
 		
-		<!-- Acris rebind dependencies -->
+		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-client-core</artifactId>
@@ -82,38 +73,14 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-client-core</artifactId>
 			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding</artifactId>
-			<classifier>sources</classifier>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-processor</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
-		
 		<!-- GWT dependencies -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-servlet</artifactId>
-			<scope>runtime</scope>
-		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 		</dependency>
-
+		
 		<!-- Other dependencies -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

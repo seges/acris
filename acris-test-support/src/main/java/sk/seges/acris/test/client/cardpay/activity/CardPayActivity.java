@@ -7,9 +7,9 @@ import java.util.Map;
 import sk.seges.acris.test.client.cardpay.display.CardPayDisplay;
 import sk.seges.acris.test.client.mvp.factory.ClientFactory;
 import sk.seges.acris.test.shared.service.CardPayRemoteServiceAsync;
-import sk.seges.corpis.domain.pay.tatra.CardPayRequest;
-import sk.seges.corpis.domain.pay.tatra.CardPaySettings;
-import sk.seges.corpis.domain.pay.tatra.TatraPayParameter;
+import sk.seges.corpis.domain.shared.pay.tatra.CardPayRequest;
+import sk.seges.corpis.domain.shared.pay.tatra.CardPaySettings;
+import sk.seges.corpis.domain.shared.pay.tatra.TatraPayParameter;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;

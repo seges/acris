@@ -1,8 +1,8 @@
 package sk.seges.acris.site.server.dao.hibernate;
 
 import sk.seges.acris.site.server.dao.IWebSitesDao;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSitesData;
 import sk.seges.acris.site.server.domain.jpa.JpaWebSites;
+import sk.seges.acris.site.server.model.data.WebSitesData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Filter;

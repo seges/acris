@@ -3,10 +3,10 @@ package sk.seges.acris.site.server.service.builder;
 import java.util.HashSet;
 import java.util.Set;
 
-import sk.seges.acris.site.server.domain.api.server.model.data.MetaDataData;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
 import sk.seges.acris.site.server.domain.jpa.JpaWebSettings.JpaMetaData;
+import sk.seges.acris.site.server.model.data.MetaDataData;
+import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.shared.domain.api.MetaDataType;
 
 public class MetaTagWebSettingsBuilder implements IWebSettingsBuilder {

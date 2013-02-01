@@ -20,16 +20,17 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserPreferences;
-import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaGenericUser;
+import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaUserPreferences;
+import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
 
 /**
  * @author ladislav.gazo
  */
 @Entity
 @Table(name = "user_with_authorities")
-public class HibernateUserWithAuthorities extends GenericUserDTO {
+public class HibernateUserWithAuthorities extends JpaGenericUser {
+	
 	private static final long serialVersionUID = 6755045948801685615L;
 
 	private List<String> selectedAuthorities;
@@ -64,7 +65,7 @@ public class HibernateUserWithAuthorities extends GenericUserDTO {
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL, targetEntity = JpaUserPreferences.class)
-	public UserPreferences getUserPreferences() {
+	public UserPreferencesData getUserPreferences() {
 		return super.getUserPreferences();
 	}
 
@@ -92,8 +93,8 @@ public class HibernateUserWithAuthorities extends GenericUserDTO {
 	}
 	
 	protected void fillAuthorities() {
-		if(authorities == null) {
-			authorities = selectedAuthorities;
+		if (getUserAuthorities() == null) {
+			setUserAuthorities(selectedAuthorities);
 		}
 	}
 }

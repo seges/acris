@@ -6,13 +6,11 @@ package sk.seges.acris.reporting.shared.domain.api;
 import java.util.Date;
 import java.util.List;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 /**
  * @author ladislav.gazo
  */
-@BeanWrapper
 public interface ReportDescriptionData extends IMutableDomainObject<Long> {
 	public static final String NAME_ATTR = "name";
 	public static final String CREATION_DATE_ATTR = "creationDate";

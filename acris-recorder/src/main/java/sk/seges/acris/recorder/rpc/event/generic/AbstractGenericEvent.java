@@ -1,6 +1,5 @@
 package sk.seges.acris.recorder.rpc.event.generic;
 
-import sk.seges.acris.recorder.rpc.bean.IAccessibleBean;
 import sk.seges.acris.recorder.rpc.event.IRecordableEvent;
 import sk.seges.acris.recorder.rpc.tools.CacheMap;
 
@@ -13,7 +12,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ListBox;
 
-public abstract class AbstractGenericEvent implements IRecordableEvent, IAccessibleBean{
+public abstract class AbstractGenericEvent implements IRecordableEvent {
 
 	public static final String TYPE_INT_ATTRIBUTE = "typeInt";
 

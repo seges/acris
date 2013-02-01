@@ -401,6 +401,7 @@ public class RebindUtils {
 															 */, position);
 	}
 
+	@Deprecated
 	public static String getComparableMethodDeclaration(JMethod method) {
 		StringBuilder sb = new StringBuilder();
 

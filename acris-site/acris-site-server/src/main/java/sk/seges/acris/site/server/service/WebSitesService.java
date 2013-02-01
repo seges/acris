@@ -3,7 +3,7 @@ package sk.seges.acris.site.server.service;
 import java.util.List;
 
 import sk.seges.acris.site.server.dao.IWebSitesDao;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSitesData;
+import sk.seges.acris.site.server.model.data.WebSitesData;
 import sk.seges.acris.site.shared.domain.api.SiteType;
 import sk.seges.corpis.server.domain.HasLanguage;
 import sk.seges.corpis.server.domain.HasWebId;

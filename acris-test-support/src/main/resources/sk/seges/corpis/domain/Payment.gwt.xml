@@ -2,8 +2,5 @@
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name='sk.seges.sesam.Core'/>
 
-	<inherits name='net.sf.gilead.Gilead4Gwt'/>
-	<inherits name='net.sf.gilead.emul.java5.ejb3.Ejb3'/>
-
-	<source path="pay" />
+	<source path="shared/pay" />
 </module>

@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
 
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
 
 public class SpringUserAdapter implements UserDetails, UserData {
 
@@ -154,5 +155,25 @@ public class SpringUserAdapter implements UserDetails, UserData {
 	@Override
 	public void setSurname(String surname) {
 		springSupport.getUser().setSurname(surname);
+	}
+
+	@Override
+	public String getDescription() {
+		return springSupport.getUser().getDescription();
+	}
+
+	@Override
+	public void setDescription(String description) {
+		springSupport.getUser().setDescription(description);
+	}
+
+	@Override
+	public UserPreferencesData getUserPreferences() {
+		return springSupport.getUser().getUserPreferences();
+	}
+
+	@Override
+	public void setUserPreferences(UserPreferencesData userPreferences) {
+		springSupport.getUser().setUserPreferences(userPreferences);
 	}
 }

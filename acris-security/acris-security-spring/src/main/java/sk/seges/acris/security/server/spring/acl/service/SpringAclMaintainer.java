@@ -23,21 +23,21 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.acl.dao.IAclObjectIdentityDao;
-import sk.seges.acris.security.server.acl.dao.IAclRecordDao;
-import sk.seges.acris.security.server.acl.dao.IAclSecuredClassDescriptionDao;
+import sk.seges.acris.security.acl.server.model.data.AclEntryData;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
+import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
-import sk.seges.acris.security.server.core.acl.domain.api.AclEntry;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredClassDescription;
-import sk.seges.acris.security.server.core.acl.domain.api.AclSecuredObjectIdentity;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclObjectIdentityDao;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclRecordDao;
+import sk.seges.acris.security.server.core.acl.dao.api.IAclSecuredClassDescriptionDao;
 import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
 import sk.seges.acris.security.server.spring.acl.domain.dto.SpringAclSidDTO;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.exception.SecurityException;
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 import sk.seges.sesam.domain.IDomainObject;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -148,8 +148,8 @@ public class SpringAclMaintainer implements AclManager {
 				continue;
 			}
 			aclEntryDao.deleteByClassnameAndSid(superClass, sid);
-			List<AclEntry> entries = aclEntryDao.findByClassnameAndSid(superClass, sid);
-			for (AclEntry entry : entries) {
+			List<AclEntryData> entries = aclEntryDao.findByClassnameAndSid(superClass, sid);
+			for (AclEntryData entry : entries) {
 				aclCache.evictFromCache(entry.getObjectIdentity());
 				aclService.readAclById((ObjectIdentity) entry.getObjectIdentity()); // update
 																					// cache
@@ -236,7 +236,7 @@ public class SpringAclMaintainer implements AclManager {
 	private void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long securedId, Sid sid,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		MutableAcl acl = null;
-		AclSecuredObjectIdentity objectIdentity = getParentObjectIdentity(objectClass, securedId);
+		AclSecuredObjectIdentityData objectIdentity = getParentObjectIdentity(objectClass, securedId);
 		if (objectIdentity == null) {
 			throw new SecurityException("Could not update acl entry for aclId: " + securedId + " sid: " + sid
 					+ " cause acl object identity not found!");
@@ -263,14 +263,14 @@ public class SpringAclMaintainer implements AclManager {
 		aclService.updateAcl(acl);
 	}
 
-	private AclSecuredObjectIdentity getParentObjectIdentity(Class<? extends ISecuredObject<?>> objectClass, Long aclId) {
+	private AclSecuredObjectIdentityData getParentObjectIdentity(Class<? extends ISecuredObject<?>> objectClass, Long aclId) {
 		
-		AclSecuredClassDescription aclClass = aclSecuredClassDescriptionDao.load(objectClass);
+		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(objectClass);
 		
 //		if (aclClass == null) {
 //			return null;
 //		}
-		AclSecuredObjectIdentity result = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), aclId);
+		AclSecuredObjectIdentityData result = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), aclId);
 
 		if (result != null && result.getParentObject() != null) {
 			return result.getParentObject();

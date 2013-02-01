@@ -1,17 +1,12 @@
 package sk.seges.acris.recorder.rpc.event.generic;
 
-import static com.google.gwt.query.client.GQuery.$;
-import sk.seges.acris.recorder.rpc.bean.IAccessibleBean;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 
-public abstract class AbstractGenericTargetableEvent extends
-		AbstractGenericEvent implements HasTargetEvent, IAccessibleBean {
+public abstract class AbstractGenericTargetableEvent extends AbstractGenericEvent implements HasTargetEvent {
 
 	public static final String TARGET_ATTRIBUTE = "relatedTargetId";
 	
@@ -94,15 +89,19 @@ public abstract class AbstractGenericTargetableEvent extends
 		this.relatedTargetId = relatedTargetId;
 	}
 
+//	public void asd() { 
+//		Document.get().getElementsByTagName(tagName)
+//	}
+	
 	public void prepareEvent() {
 		if (el == null) {
 			if (cacheMap != null) {
 				el = cacheMap.resolveElement(relatedTargetId);
 			} else {
 				if (relatedTargetId != null && relatedTargetId.length() > 0) {
-					GQuery gquery = $("*[elementID=" + relatedTargetId + "]");
-					el = gquery.get(0)
-							.<com.google.gwt.user.client.Element> cast();
+//					GQuery gquery = $("*[elementID=" + relatedTargetId + "]");
+//					el = gquery.get(0)
+//							.<com.google.gwt.user.client.Element> cast();
 				} else {
 					el = Document.get().getDocumentElement()
 							.<com.google.gwt.user.client.Element> cast();

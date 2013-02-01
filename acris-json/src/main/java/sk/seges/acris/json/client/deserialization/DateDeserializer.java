@@ -2,12 +2,10 @@ package sk.seges.acris.json.client.deserialization;
 
 import java.util.Date;
 
-import org.gwttime.time.DateTime;
-import org.gwttime.time.format.DateTimeFormat;
-
 import sk.seges.acris.json.client.annotation.DateTimePattern;
 import sk.seges.acris.json.client.context.DeserializationContext;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONValue;
 
 public class DateDeserializer extends BaseJsonDeserializer<Date> {
@@ -23,10 +21,6 @@ public class DateDeserializer extends BaseJsonDeserializer<Date> {
 
 		String pattern = context.getAttribute(PATTERN);
 
-		DateTime dt = DateTimeFormat.forPattern(pattern).parseDateTime(dateTimeString);
-		Date result = new Date();
-		result.setTime(dt.getMillis());
-		return result;
+		return DateTimeFormat.getFormat(pattern).parse(dateTimeString);
 	}
-
 }

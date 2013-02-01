@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.server.core.user_management.dao.permission.ISecurityRoleDao;
+import sk.seges.acris.security.server.core.user_management.dao.permission.api.ISecurityRoleDao;
 import sk.seges.acris.security.server.core.user_management.service.permission.SecurityRoleService;
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 
@@ -19,7 +19,7 @@ public class SpringSecurityRoleService extends SecurityRoleService {
 	private static final long serialVersionUID = 7406180807542840166L;
 
 	@Autowired
-	public SpringSecurityRoleService(ISecurityRoleDao securityRoleDao) {
+	public SpringSecurityRoleService(ISecurityRoleDao<RoleData> securityRoleDao) {
 		super(securityRoleDao);
 	}
 

@@ -5,8 +5,6 @@ package sk.seges.acris.callbacks.client;
 
 import java.util.Date;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**

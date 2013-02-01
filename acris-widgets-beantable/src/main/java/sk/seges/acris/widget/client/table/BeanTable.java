@@ -1,7 +1,5 @@
 package sk.seges.acris.widget.client.table;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -97,7 +95,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	private List<String> projectables;
 	private ValueHolder<Criterion> filterableModel;
 	private Set<ColumnDefinition<T, ?>> filterableColumnDefinitions = new HashSet<ColumnDefinition<T, ?>>();
-	private PropertyChangeListener filterableListener;
+	private sk.seges.sesam.handler.ValueChangeHandler<Criterion> filterableListener;
 	private Set<Criterion> staticFilterables = new HashSet<Criterion>();
 	private Set<SortInfo> staticSortables = new HashSet<SortInfo>();
 	private List<Callback> additionalLoadCallbacks;
@@ -480,11 +478,12 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		filterableModel.addPropertyChangeListener(getFilterableListener());
 	}
 
-	private PropertyChangeListener getFilterableListener() {
+	private sk.seges.sesam.handler.ValueChangeHandler<Criterion> getFilterableListener() {
 		if (filterableListener == null) {
-			filterableListener = new PropertyChangeListener() {
+			filterableListener = new sk.seges.sesam.handler.ValueChangeHandler<Criterion>() {
+				
 				@Override
-				public void propertyChange(PropertyChangeEvent arg0) {
+				public void onValueChanged(Criterion oldValue, Criterion newValue) {
 					// reload everytime filterable object changes
 					reload();
 				}

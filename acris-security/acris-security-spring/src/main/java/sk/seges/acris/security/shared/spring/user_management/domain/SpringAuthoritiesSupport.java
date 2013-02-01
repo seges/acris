@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.security.GrantedAuthority;
 
 import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 public class SpringAuthoritiesSupport implements Serializable {
 

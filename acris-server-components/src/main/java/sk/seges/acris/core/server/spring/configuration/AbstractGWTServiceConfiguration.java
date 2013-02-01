@@ -20,6 +20,11 @@ public abstract class AbstractGWTServiceConfiguration {
 	@SuppressWarnings("unchecked")
 	protected CustomPolicyRPCServiceExporter registerGWTService(Object service,
 			Class<? extends RemoteService> serviceInterface) {
+		
+		if (!serviceInterface.isAssignableFrom(service.getClass())) {
+			throw new RuntimeException("Service " + service.getClass() + " should implement " + serviceInterface.getName());
+		}
+		
 		CustomPolicyRPCServiceExporter exporter = new CustomPolicyRPCServiceExporter();
 		exporter.setSerializationPolicy(getSerializationPolicy());
 		exporter.setService(service);

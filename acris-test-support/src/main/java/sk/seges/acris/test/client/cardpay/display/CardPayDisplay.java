@@ -1,6 +1,6 @@
 package sk.seges.acris.test.client.cardpay.display;
 
-import sk.seges.corpis.domain.pay.tatra.CardPayRequest;
+import sk.seges.corpis.domain.shared.pay.tatra.CardPayRequest;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;

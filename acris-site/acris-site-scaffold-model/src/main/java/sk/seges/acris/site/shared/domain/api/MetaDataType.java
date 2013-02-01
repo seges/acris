@@ -1,8 +1,6 @@
 package sk.seges.acris.site.shared.domain.api;
 
-import sk.seges.acris.binding.client.annotations.BeanWrapper;
 
-@BeanWrapper
 public enum MetaDataType {
 	AUTHOR("Author", MetaContentValueType.SINGLE_TEXT_VALUE),
 	COPYRIGHT("Copyright", MetaContentValueType.SINGLE_TEXT_VALUE),

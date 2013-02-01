@@ -3,6 +3,7 @@ package sk.seges.acris.core.rebind;
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
 
 import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.RebindResult;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -25,15 +26,24 @@ public class ServiceProxyGenerator extends ServiceInterfaceProxyGenerator {
 	}
 
 	@Override
-	public String generate(TreeLogger logger, GeneratorContext ctx, String requestedClass)
-			throws UnableToCompleteException {
-
+	public RebindResult generateIncrementally(TreeLogger logger, GeneratorContext ctx, String requestedClass) throws UnableToCompleteException {
+		
 		final TypeOracle typeOracle = ctx.getTypeOracle();
-		assert typeOracle != null;
+	    assert (typeOracle != null);
 
 		final JClassType remoteService = typeOracle.findType(requestedClass);
 
-		String result = super.generate(logger, ctx, requestedClass);
+	    if (remoteService == null) {
+	      logger.log(TreeLogger.ERROR, "Unable to find metadata for type '" + requestedClass + "'", null);
+	      throw new UnableToCompleteException();
+	    }
+
+	    if (remoteService.isInterface() == null) {
+	    	logger.log(TreeLogger.ERROR, remoteService.getQualifiedSourceName() + " is not an interface", null);
+		    throw new UnableToCompleteException();
+		}
+
+		RebindResult result = super.generateIncrementally(logger, ctx, requestedClass);
 
 		final TreeLogger proxyLogger = logger.branch(TreeLogger.DEBUG,
 				"Generating client proxy for remote service interface '" + remoteService.getQualifiedSourceName() + "'", null);

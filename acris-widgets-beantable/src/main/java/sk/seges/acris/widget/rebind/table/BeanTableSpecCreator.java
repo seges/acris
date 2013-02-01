@@ -228,7 +228,7 @@ public class BeanTableSpecCreator {
 			return null;
 		}
 
-		return "final " + DynamicTranslator.class.getName() + " "+this.determineFieldName(field)+"DynamicTranslator = new "
+		return "final " + DynamicTranslator.class.getName() + " "+field+"DynamicTranslator = new "
 				+ DynamicTranslator.class.getName() + "(" + classes + ");";
 	}
 
@@ -303,14 +303,12 @@ public class BeanTableSpecCreator {
 		final String DOT_STRING = ".";
 		String propertyField = null;
 		JType fieldType = null;
-		String fullField = field.toString();
 		boolean hasAssociation = field.contains(DOT_STRING);
 		try {
 			if (hasAssociation) {
 				String directField = field.substring(0, field.indexOf(DOT_STRING));
 				propertyField = field.substring(field.indexOf(DOT_STRING) + 1);
 				field = directField;
-				fullField = field + (propertyField == null ? "" : DOT_STRING + propertyField);
 
 				fieldType = RebindUtils.getDeclaredFieldType(beanType, specColumn.field());
 			} else {
@@ -341,7 +339,7 @@ public class BeanTableSpecCreator {
 		source.println("	@Override");
 		source.println("	public " + propertyValueType + " getCellValue(" + beanTypeName + " rowValue) {");
 		if (!hasAssociation) {
-			source.println("		" + putCellValue("rowValue." + getter.getName() + "()", isTranslatable, fullField));
+			source.println("		" + putCellValue("rowValue." + getter.getName() + "()", isTranslatable, field));
 		} else {
 			String propertyFieldGetter = null;
 			try {
@@ -350,7 +348,7 @@ public class BeanTableSpecCreator {
 			} catch (NotFoundException e) {
 				throw new RuntimeException("Unable to retrieve getter for field = " + field, e);
 			}
-			source.println("		" + putCellValue("rowValue." + propertyFieldGetter + "()", isTranslatable, fullField));
+			source.println("		" + putCellValue("rowValue." + propertyFieldGetter + "()", isTranslatable, field));
 		}
 		source.println("	}");
 		source.println();
@@ -368,7 +366,7 @@ public class BeanTableSpecCreator {
 
 		source
 				.println("columnDefinition.setColumnProperty(DomainObjectProperty.TYPE, new DomainObjectProperty(\""
-						+ fullField + "\"));");
+						+ field + (propertyField == null ? "" : "." + propertyField) + "\"));");
 
 		if (specColumn != null) {
 			if (specColumn.filterWidgetType() != null && !specColumn.filterWidgetType().equals(Widget.class)) {
@@ -376,26 +374,26 @@ public class BeanTableSpecCreator {
 				if (filterOperation == null) {
 					throw new RuntimeException("Provide filter operation on field " + field);
 				}
-				source.println("filterable = Filter." + filterOperation + "(\"" + fullField + "\");");
+				source.println("filterable = Filter." + filterOperation + "(\"" + field
+						+ (propertyField == null ? "" : "." + propertyField) + "\");");
 				if (specColumn.filterWidgetType().equals(EnumListBoxWithValue.class)) {
-					String enumMap = this.determineFieldName(fullField)+"EnumMap";
 					String enumValues = Arrays.class.getName() + ".asList("
 							+ fieldType.getQualifiedSourceName() + ".values())";
 					if (isTranslatable) {
 						source.println(Map.class.getName() + "<" + fieldType.getQualifiedSourceName()
-								+ ", String> "+enumMap+" = new " + HashMap.class.getName() + "<"
+								+ ", String> "+field+"EnumMap = new " + HashMap.class.getName() + "<"
 								+ fieldType.getQualifiedSourceName() + ", String>();");
 						source.println("for(" + fieldType.getQualifiedSourceName() + " enum1 : " + enumValues
 								+ ") {");
-
-						source.indentln(enumMap+".put(enum1, "+this.determineFieldName(fullField)+"DynamicTranslator.translate(enum1.name()));");
+						source.indentln(field+"EnumMap.put(enum1, "+field+"DynamicTranslator.translate(enum1.name()));");
 						source.println("}");
+						enumValues = field+"EnumMap";
 					}
 					source
 							.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterEnumProperty("
 									+ specColumn.filterWidgetType().getName()
 									+ ".class, filterable, "
-									+ fieldType.getQualifiedSourceName() + ".class, " + enumMap + "));");
+									+ fieldType.getQualifiedSourceName() + ".class, " + enumValues + "));");
 
 				} else {
 					source
@@ -417,20 +415,10 @@ public class BeanTableSpecCreator {
 		source.println(affectedBean + "addColumn(msgs." + method.getName() + "(), columnDefinition);");
 		source.println();
 	}
-	
-	private String determineFieldName(String field){
-		String determinedField = null;
-		int lastPointIndex = field.lastIndexOf(".");
-		if(lastPointIndex != -1) {
-			determinedField = field.substring(lastPointIndex+1);
-			return determinedField;
-		}
-		return field;
-	}
 
 	private String putCellValue(String line, Boolean isTranslatable, String field) {
 		if (isTranslatable) {
-			return "return " + this.determineFieldName(field) + "DynamicTranslator.translate(" + line + ");";
+			return "return " + field + "DynamicTranslator.translate(" + line + ");";
 		} else {
 			return "return " + line + ";";
 		}

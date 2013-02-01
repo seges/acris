@@ -8,4 +8,7 @@
 	<source path='utils' />
 	<source path='idgenerator' />
 	<source path='stacktrace' />
+
+	<set-property name="compiler.stackMode" value="strip"/>
+
 </module>

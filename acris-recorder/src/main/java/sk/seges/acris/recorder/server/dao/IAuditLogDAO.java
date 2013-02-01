@@ -2,7 +2,7 @@ package sk.seges.acris.recorder.server.dao;
 
 import java.util.List;
 
-import sk.seges.acris.recorder.rpc.domain.AuditLog;
+import sk.seges.acris.recorder.server.domain.AuditLog;
 
 public interface IAuditLogDAO {
 	public AuditLog add(AuditLog log);

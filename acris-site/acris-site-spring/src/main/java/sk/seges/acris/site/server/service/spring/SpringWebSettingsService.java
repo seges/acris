@@ -4,9 +4,9 @@ import javax.validation.Valid;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
-import sk.seges.acris.site.server.domain.api.server.model.data.WebSettingsData;
-import sk.seges.acris.site.server.domain.ftp.server.model.data.FTPWebSettingsData;
+import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.WebSettingsService;
 import sk.seges.corpis.server.service.ICountryService;
 import sk.seges.corpis.service.annotation.TransactionPropagation;

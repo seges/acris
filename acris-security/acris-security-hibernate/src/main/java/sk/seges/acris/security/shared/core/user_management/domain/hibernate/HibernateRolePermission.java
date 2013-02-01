@@ -16,13 +16,13 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import sk.seges.acris.security.shared.user_management.domain.dto.RolePermissionDTO;
+import sk.seges.acris.security.user_management.server.model.base.UserRolePermissionBase;
 
 @Entity
 @Table(name="rolepermission")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="DISC", discriminatorType=DiscriminatorType.INTEGER)
-public class HibernateRolePermission extends RolePermissionDTO {
+public class HibernateRolePermission extends UserRolePermissionBase {
 
     private static final long serialVersionUID = -8726176377885701281L;
 

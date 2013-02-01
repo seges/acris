@@ -1,6 +1,6 @@
 package sk.seges.acris.recorder.rpc.event;
 
-import sk.seges.acris.recorder.rpc.bean.IAccessibleBean;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.recorder.rpc.event.generic.AbstractGenericTargetableEventWithFlags;
 
 import com.google.gwt.dom.client.Document;
@@ -17,7 +17,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 
-public class MouseEvent extends AbstractGenericTargetableEventWithFlags implements IAccessibleBean {
+@BeanWrapper
+public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 
 	protected int detail = 0;
 	protected int screenX;

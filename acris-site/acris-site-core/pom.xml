@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-site-parent</artifactId>
-		<version>1.2.3-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 		<relativePath>../acris-site-parent</relativePath>
 	</parent>
 
@@ -22,11 +22,6 @@
 			<artifactId>acris-site-api</artifactId>
 			<classifier>sources</classifier>
 		</dependency>	
-		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-binding-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>			
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>

@@ -7,9 +7,8 @@ import org.springframework.security.acls.sid.PrincipalSid;
 import org.springframework.security.acls.sid.Sid;
 import org.springframework.security.acls.sid.SidRetrievalStrategyImpl;
 
-import sk.seges.acris.security.shared.user_management.domain.api.RoleData;
-import sk.seges.acris.security.shared.user_management.domain.api.UserData;
-import sk.seges.acris.security.shared.user_management.domain.dto.SecurityRoleDTO;
+import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 
 /**
@@ -23,7 +22,6 @@ import sk.seges.acris.security.shared.user_management.domain.dto.SecurityRoleDTO
 public class RolesPublicSidRetrievalStrategy extends SidRetrievalStrategyImpl {
 
 	@Override
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	public Sid[] getSids(Authentication authentication) {
 		Sid[] sids = super.getSids(authentication);
 		Sid[] result;
@@ -36,11 +34,11 @@ public class RolesPublicSidRetrievalStrategy extends SidRetrievalStrategyImpl {
 				i++;
 			}
 			i = copySids(sids, result, i);
-			result[i] = new PrincipalSid(SecurityRoleDTO.ALL_USERS); 
+			result[i] = new PrincipalSid(RoleData.ALL_USERS); 
 		} else {
 			result = new Sid[sids.length + 1];
 			copySids(sids, result, 0);
-			result[sids.length] = new PrincipalSid(SecurityRoleDTO.ALL_USERS);
+			result[sids.length] = new PrincipalSid(RoleData.ALL_USERS);
 		}
 		
 		return result;

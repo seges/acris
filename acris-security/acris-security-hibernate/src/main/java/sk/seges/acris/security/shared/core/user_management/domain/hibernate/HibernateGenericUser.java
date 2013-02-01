@@ -15,14 +15,14 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import sk.seges.acris.security.shared.core.user_management.domain.jpa.JpaUserPreferences;
-import sk.seges.acris.security.shared.user_management.domain.api.UserPreferences;
-import sk.seges.acris.security.shared.user_management.domain.dto.GenericUserDTO;
+import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaUserPreferences;
+import sk.seges.acris.security.user_management.server.model.base.UserBase;
+import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "generic_users")
-public class HibernateGenericUser extends GenericUserDTO {
+public class HibernateGenericUser extends UserBase {
 
 	private static final long serialVersionUID = -4335463902019393342L;
 
@@ -45,7 +45,7 @@ public class HibernateGenericUser extends GenericUserDTO {
 	@JoinTable(name = "generic_users_userauthorities", joinColumns = @JoinColumn(name = "generic_users_id"))*/
 	@Transient
 	public List<String> getUserAuthorities() {
-		return authorities;
+		return super.getUserAuthorities();
 	}
 
 	@Column
@@ -90,7 +90,7 @@ public class HibernateGenericUser extends GenericUserDTO {
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL, targetEntity = JpaUserPreferences.class)
-	public UserPreferences getUserPreferences() {
+	public UserPreferencesData getUserPreferences() {
 		return super.getUserPreferences();
 	}
 }
