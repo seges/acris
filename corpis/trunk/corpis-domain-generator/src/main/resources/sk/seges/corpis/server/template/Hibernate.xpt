@@ -1,0 +1,18 @@
+«IMPORT sculptormetamodel»
+
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+«EXTENSION sk::seges::corpis::server::extension::helper»
+
+«DEFINE dataEntity FOR Entity»
+	«FILE javaFileName(getServerDomainHibernatePackage() + ".Hibernate" + name)»
+package «getServerDomainHibernatePackage()»;
+		
+import «getDomainPackage()».dto.«name»Dto;
+
+public class Hibernate«name» extends «name»Dto {
+	«REM»«EXPAND attribute FOREACH attributes»
+	«EXPAND reference FOREACH references»«ENDREM»
+}
+	«ENDFILE»
+«ENDDEFINE»
