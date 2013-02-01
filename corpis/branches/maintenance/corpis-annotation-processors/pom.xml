@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>corpis-annotation-processors</artifactId>
+	<name>corpis-annotation-processors</name>
+	<description>Corpis Annotation processors</description>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+		<version>1.2.3-SNAPSHOT</version>
+		<relativePath>../corpis-os/pom.xml</relativePath>
+	</parent>
+
+	<modules>
+		<module>corpis-dao-api-processor</module>
+		<module>corpis-data-dao-api-processor</module>
+		<module>corpis-dao-implementation-processor</module>
+		<module>corpis-data-dao-implementation-processor</module>		
+		<module>corpis-domain-model-hibernate-processor</module>
+		<module>corpis-domain-model-converter-hibernate-processor</module>
+		<module>corpis-service-converter-hibernate-processor</module>
+		<module>corpis-service-local-interface-hibernate-processor</module>
+		<!--module>corpis-service-processor</module-->
+	</modules>
+</project>
