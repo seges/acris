@@ -1,0 +1,29 @@
+<module>
+  <inherits name="com.google.gwt.core.Core"/>
+  <inherits name="com.google.gwt.user.UserAgent"/>
+
+  <replace-with class="com.google.gwt.dom.client.DOMIDImplOpera">
+    <when-type-is class="com.google.gwt.dom.client.DOMImpl"/>
+    <when-property-is name="user.agent" value="opera"/>
+  </replace-with>
+
+  <replace-with class="com.google.gwt.dom.client.DOMIDImplSafari">
+    <when-type-is class="com.google.gwt.dom.client.DOMImpl"/>
+    <when-property-is name="user.agent" value="safari"/>
+  </replace-with>
+
+  <replace-with class="com.google.gwt.dom.client.DOMIDImplIE8">
+    <when-type-is class="com.google.gwt.dom.client.DOMImpl"/>
+    <any>
+	    <when-property-is name="user.agent" value="ie6"/>
+	    <when-property-is name="user.agent" value="ie8"/>
+	    <when-property-is name="user.agent" value="ie9"/>
+	</any>
+  </replace-with>
+
+  <replace-with class="com.google.gwt.dom.client.DOMIDImplMozilla">
+    <when-type-is class="com.google.gwt.dom.client.DOMImpl"/>
+    <when-property-is name="user.agent" value="gecko1_8"/>
+  </replace-with>
+
+</module>
