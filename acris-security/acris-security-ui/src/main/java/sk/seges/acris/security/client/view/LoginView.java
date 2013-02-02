@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Button;
@@ -524,8 +525,15 @@ public class LoginView extends Composite implements LoginDisplay {
 		loggedUserName.setText(loggedUserMsg);
 	}
 	
+	protected void clearLoginCookies() {
+		Cookies.removeCookie(LoginConstants.LOGINNAME_COOKIE_NAME);
+		Cookies.removeCookie(LoginConstants.LOGINPASSWORD_COOKIE_NAME);
+	}
+
 	@Override
 	public void doLogout() {
+		//TODO server side logout is not called
+		clearLoginCookies();
 		changeState(false);
 	}
 }
