@@ -55,7 +55,7 @@ public class UserService implements IUserServiceLocal {
 		}
 		//session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
 		//session.removeAttribute(LoginConstants.CLIENT_SESSION_NAME);
-		session.invalidate()
+		session.invalidate();
 	}
 
 	@Override
