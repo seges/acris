@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
+import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdUsernamePasswordAuthenticationToken;
 import sk.seges.acris.security.server.util.LoggedUserRole;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.exception.SecurityException;
@@ -78,7 +79,7 @@ public class SpringLoginService implements LoginService {
 	protected Authentication createAuthenticationToken(LoginToken token) throws ServerException {
 		assert (token instanceof UserPasswordLoginToken);
 		UserPasswordLoginToken loginToken = (UserPasswordLoginToken) token;
-		return new UsernamePasswordAuthenticationToken(loginToken.getUsername(), loginToken.getPassword());
+		return new WebIdUsernamePasswordAuthenticationToken(loginToken.getUsername(), loginToken.getPassword(), loginToken.getWebId());
 	}
 
 	/**
@@ -98,9 +99,9 @@ public class SpringLoginService implements LoginService {
 	public void changeAuthentication(ClientSession<UserData> clientSession) {
 		UserData userData = (UserData) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		userData.setRoles(clientSession.getUser().getRoles());
-		Authentication newAuth = new UsernamePasswordAuthenticationToken(userData, SecurityContextHolder.getContext()
-				.getAuthentication().getCredentials(), SecurityContextHolder.getContext().getAuthentication()
-				.getAuthorities());
+		Authentication oldAuth = SecurityContextHolder.getContext().getAuthentication();
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(userData, oldAuth
+				.getCredentials(), oldAuth.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(newAuth);
 	}
 

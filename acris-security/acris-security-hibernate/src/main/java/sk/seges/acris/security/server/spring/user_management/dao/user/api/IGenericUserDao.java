@@ -8,6 +8,8 @@ import sk.seges.sesam.dao.IEntityInstancer;
 
 public interface IGenericUserDao<T extends UserData> extends ICrudDAO<T>, IEntityInstancer<T> {
 
+	T findUser(String username, String webId);
+	
 	T findByUsername(String username);
 
 	T persist(T user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder);

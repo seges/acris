@@ -2,7 +2,6 @@ package sk.seges.acris.security.server.spring.user_management.service;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,9 +10,7 @@ import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGener
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
 
-public class SpringUserService implements UserDetailsService {
-
-	private static final long serialVersionUID = 8634166450216274971L;
+public class SpringUserService implements WebIdUserDetailsService {
 
 	protected IGenericUserDao<UserData> genericUserDao;
 
@@ -22,8 +19,17 @@ public class SpringUserService implements UserDetailsService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException, DataAccessException {
-		UserData userData = genericUserDao.findByUsername(userName);
+	public UserDetails loadUserByUsernameAndWebId(String userName, String webId) throws UsernameNotFoundException, DataAccessException {
+		UserData userData = genericUserDao.findUser(userName, webId);
+		if (userData instanceof UserDetails) {
+			return (UserDetails) userData;
+		}
+		return new SpringUserAdapter(userData);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
+		UserData userData = genericUserDao.findByUsername(username);
 		if (userData instanceof UserDetails) {
 			return (UserDetails) userData;
 		}
