@@ -36,6 +36,14 @@ public class JpaUserWithAuthoritiesDao implements IGenericUserDao<JpaUserWithAut
 	}
 
 	@Override
+	public JpaUserWithAuthorities findUser(String username, String webId) {
+		return (JpaUserWithAuthorities) entityManager
+				.createQuery("from " + JpaUserWithAuthorities.class.getName() + " where " + UserData.USERNAME + " = :username and (" +
+						UserData.WEB_ID + " = :webId or " + UserData.WEB_ID + " is null)")
+				.setParameter("username", username).setParameter("webId", webId).getSingleResult();
+	}
+	
+	@Override
 	public JpaUserWithAuthorities persist(JpaUserWithAuthorities entity) {
 		// TODO Auto-generated method stub
 		return null;

@@ -83,6 +83,16 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> imp
 
 	@Transactional
 	@Override
+	public UserData findUser(String username, String webId) {
+		DetachedCriteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(UserData.USERNAME, username));
+		criteria.add(Restrictions.disjunction().add(Restrictions.eq(UserData.WEB_ID, webId)).
+				add(Restrictions.isNull(UserData.WEB_ID)));
+		return findUniqueResultByCriteria(criteria);
+	}
+	
+	@Transactional
+	@Override
 	public UserData findByUsername(String username) {
 		DetachedCriteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(UserData.USERNAME, username));
