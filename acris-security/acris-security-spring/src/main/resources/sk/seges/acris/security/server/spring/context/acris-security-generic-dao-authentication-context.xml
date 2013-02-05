@@ -12,7 +12,7 @@
                         http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
                         
 	<beans:bean id="daoAuthenticationProvider"
-		class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+		class="sk.seges.acris.security.server.spring.user_management.service.provider.WebIdDaoAuthenticationProvider">
 		<custom-authentication-provider />
 		<beans:property name="userDetailsService" ref="userDetailsService"/>
 	</beans:bean>
