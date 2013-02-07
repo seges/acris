@@ -1,7 +1,10 @@
 package sk.seges.acris.widget.client.celltable;
 
+import java.util.Date;
 import java.util.Map;
 
+import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 
@@ -53,9 +56,21 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 				};
 				addTextColumn(col, 100 / (columns.size()-1), columns.get(column)[1], column);
 			} else if (columns.get(column)[0].toUpperCase().equals(DATE)) {
-
+				Column<Map<String, Object>, Date> col = new Column<Map<String, Object>, Date>(new DateCell()) {
+					@Override
+					public Date getValue(Map<String, Object> arg0) {
+						return (Date) arg0.get(column);
+					}
+				};
+				addDateColumn(col, 100 / (columns.size()-1), columns.get(column)[1], column);	
 			} else if (columns.get(column)[0].toUpperCase().equals(NUMBER)) {
-
+				Column<Map<String, Object>, Number> col = new Column<Map<String, Object>, Number>(new NumberCell()) {
+					@Override
+					public Number getValue(Map<String, Object> arg0) {
+						return (Number) arg0.get(column);
+					}
+				};
+				addTextColumn(col, 100 / (columns.size()-1), columns.get(column)[1], column);
 			}
 		}
 		addCheckboxColumn(50);
