@@ -53,8 +53,9 @@ public class UserService implements IUserServiceLocal {
 		if (token != null && loginServiceProvider.getLoginService(token) != null) {
 			loginServiceProvider.getLoginService(token).logout();
 		}
-		session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
-		session.removeAttribute(LoginConstants.CLIENT_SESSION_NAME);
+		//session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
+		//session.removeAttribute(LoginConstants.CLIENT_SESSION_NAME);
+		session.invalidate();
 	}
 
 	@Override
@@ -63,12 +64,12 @@ public class UserService implements IUserServiceLocal {
 	}
 	
 	@Override
-	public ClientSession getLoggedSession(UserContext userContext) {
+	public ClientSession<UserData> getLoggedSession(UserContext userContext) {
 		return userContextProvider.getUserProviderService(userContext).getLoggedSession(userContext);
 	}
 	
 	@Override
-	public void changeAuthentication(ClientSession clientSession) {
+	public void changeAuthentication(ClientSession<UserData> clientSession) {
 		HttpSession session = sessionProvider.getSession();
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
 		loginServiceProvider.getLoginService(token).changeAuthentication(clientSession);
