@@ -24,6 +24,9 @@ public class WebParamsBean implements WebParams {
 
 	private String[] breadcrumbItemsList;
 	
+	private boolean productsWithMicrositeEnabled = false;
+	private boolean productsWithContentEnabled = true;
+	
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
 		return publishOnSaveEnabled;
@@ -153,4 +156,21 @@ public class WebParamsBean implements WebParams {
 	public void setBreadcrumbItemsList(String[] breadcrumbItemsList) {
 		this.breadcrumbItemsList = breadcrumbItemsList;
 	}
+
+	public Boolean isProductsWithMicrositeEnabled() {
+		return productsWithMicrositeEnabled;
+	}
+
+	public void setProductsWithMicrositeEnabled(boolean productsWithMicrositeEnabled) {
+		this.productsWithMicrositeEnabled = productsWithMicrositeEnabled;
+	}
+
+	public Boolean isProductsWithContentEnabled() {
+		return productsWithContentEnabled;
+	}
+
+	public void setProductsWithContentEnabled(boolean productsWithContentEnabled) {
+		this.productsWithContentEnabled = productsWithContentEnabled;
+	}
+		
 }
