@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 import com.google.common.base.Function;
 
 public class Functions {
-
+	
 	public static Function<WebDriver, Alert> alertPresent(String text) {
 		return new AlertPresent(text);
 	}
@@ -47,5 +47,12 @@ public class Functions {
 	
 	public static Function<WebDriver, WebElement> elementContainsText(By locator, String text) {
 		return new ElementContainsText(locator, false, text);
+	}
+	
+	/**
+	 * @return {@link ActiveRequestCondition}
+	 */
+	public static Function<WebDriver, Boolean> noActiveRequest() {
+		return new ActiveRequestCondition();
 	}
 }
