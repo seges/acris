@@ -236,11 +236,6 @@
             	<artifactId>corpis-price-domain-jpa</artifactId>
 				<version>${corpis-os.version}</version>
         	</dependency>
-			<dependency>
-				<groupId>sk.seges.corpis</groupId>
-				<artifactId>corpis-service-api</artifactId>
-				<version>${corpis-os.version}</version>
-			</dependency>
 
 			<!-- Sesam dependencies -->
 			<dependency>

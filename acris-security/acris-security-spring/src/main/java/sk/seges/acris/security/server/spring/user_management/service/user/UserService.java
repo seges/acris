@@ -53,9 +53,8 @@ public class UserService implements IUserServiceLocal {
 		if (token != null && loginServiceProvider.getLoginService(token) != null) {
 			loginServiceProvider.getLoginService(token).logout();
 		}
-		//session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
-		//session.removeAttribute(LoginConstants.CLIENT_SESSION_NAME);
-		session.invalidate();
+		session.removeAttribute(LoginConstants.LOGIN_TOKEN_NAME);
+		session.removeAttribute(LoginConstants.CLIENT_SESSION_NAME);
 	}
 
 	@Override

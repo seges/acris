@@ -17,6 +17,8 @@ public interface WebParams extends ContentParameters {
 	public static final String BLUEWAVE_USERNAME = "bluewaveUsername";
 	public static final String BLUEWAVE_PASSWORD = "bluewavePassword";
 	public static final String BREADCRUMB_ITEMS_LIST = "breadcrumbItemsList";
+	public static final String PRODUCTS_WITH_MICROSITE_ENABLED = "productsWithMicrositeEnabled";
+	public static final String PRODUCTS_WITH_CONTENT_ENABLED = "productsWithContentsEnabled";
 
 	String[] getOfflinePostProcessorInactive();
 
@@ -69,4 +71,12 @@ public interface WebParams extends ContentParameters {
 	String[] getBreadcrumbItemsList();
 	
 	void setBreadcrumbItemsList(String[] breadcrumbItemsList);
+	
+	Boolean isProductsWithMicrositeEnabled();
+	
+	void setProductsWithMicrositeEnabled(boolean productsWithMicrositeEnabled);
+	
+	Boolean isProductsWithContentEnabled();
+	
+	void setProductsWithContentEnabled(boolean productsWithContentEnabled);
 }

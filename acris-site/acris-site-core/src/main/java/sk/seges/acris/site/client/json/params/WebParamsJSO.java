@@ -140,4 +140,26 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setBreadcrumbItemsList(String[] breadcrumbItemsList) {
 		data.set(BREADCRUMB_ITEMS_LIST, breadcrumbItemsList);
 	}
+
+	@Override
+	public Boolean isProductsWithMicrositeEnabled() {
+		return data.getBoolean(PRODUCTS_WITH_MICROSITE_ENABLED);
+	}
+
+	@Override
+	public void setProductsWithMicrositeEnabled(boolean productsWithMicrositeEnabled) {
+		data.set(PRODUCTS_WITH_MICROSITE_ENABLED, productsWithMicrositeEnabled);
+		
+	}
+
+	@Override
+	public Boolean isProductsWithContentEnabled() {
+		return data.getBoolean(PRODUCTS_WITH_CONTENT_ENABLED);
+	}
+
+	@Override
+	public void setProductsWithContentEnabled(boolean productsWithContentEnabled) {
+		data.set(PRODUCTS_WITH_CONTENT_ENABLED, productsWithContentEnabled);
+		
+	}
 }
