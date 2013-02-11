@@ -4,9 +4,9 @@ import java.util.List;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
-public interface MutableTypeParameterElement extends MutableElement {
+public interface MutableTypeParameterElement extends MutableElementType {
 
-	MutableElement getGenericElement();
+	MutableElementType getGenericElement();
 
 	List<MutableTypeMirror> getBounds();
 

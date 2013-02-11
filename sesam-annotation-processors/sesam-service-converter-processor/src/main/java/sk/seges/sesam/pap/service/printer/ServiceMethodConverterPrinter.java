@@ -8,7 +8,7 @@ import javax.lang.model.type.TypeMirror;
 import sk.seges.sesam.core.pap.accessor.AnnotationAccessor.AnnotationTypeFilter;
 import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
 import sk.seges.sesam.core.pap.printer.MethodPrinter;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -23,7 +23,7 @@ public class ServiceMethodConverterPrinter extends AbstractServiceMethodPrinter 
 	public static final String RESULT_VARIABLE_NAME = "result";
 
 	public ServiceMethodConverterPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw,
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, HierarchyPrintWriter pw,
 			ConverterProviderPrinter converterProviderPrinter) {
 		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
 	}

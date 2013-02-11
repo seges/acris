@@ -13,7 +13,10 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElementKind;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 
 public class MutableElements implements Elements {
 
@@ -39,6 +42,14 @@ public class MutableElements implements Elements {
 		return new MutableExecutable(name, processingEnv);
 	}
 	
+	public MutableVariableElement getParameterElement(MutableTypeMirror type, String name) {
+		return new MutableParameter(MutableElementKind.PARAMETER, type, name, processingEnv);
+	}
+
+	public MutableVariableElement getParameterElement(Class<?> clazz, String name) {
+		return new MutableParameter(MutableElementKind.PARAMETER, processingEnv.getTypeUtils().toMutableType(clazz), name, processingEnv);
+	}
+
 	@Override
 	public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(AnnotationMirror a) {
 		return this.elements.getElementValuesWithDefaults(a);

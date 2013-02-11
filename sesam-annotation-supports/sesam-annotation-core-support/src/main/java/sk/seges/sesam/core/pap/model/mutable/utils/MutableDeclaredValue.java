@@ -13,7 +13,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
-import sk.seges.sesam.core.pareflection.comparator.MethodComparator;
+import sk.seges.sesam.core.reflection.comparator.MethodComparator;
 
 class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeValue {
 
@@ -88,9 +88,7 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 			try {
 				result += processingEnv.getTypeUtils().getTypeValue(method.invoke(value)).toString(serializer, typed);
 				i++;
-			} catch (Exception e) {
-			}
-			
+			} catch (Exception e) {}
 		}
 		
 		result += ")";
@@ -99,6 +97,7 @@ class MutableDeclaredValue extends MutableValue implements MutableDeclaredTypeVa
 	}
 
 	private List<Method> getGetterMethods(List<Method> methods) {
+		
 		List<Method> result = new ArrayList<Method>();
 		
 		for (Method method: methods) {

@@ -12,7 +12,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.printer.TypePrinter;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.converter.printer.ConverterVerifier;
 import sk.seges.sesam.pap.converter.printer.api.ConverterProviderElementPrinter;
 import sk.seges.sesam.pap.model.annotation.ConverterProviderDefinition;
@@ -36,8 +36,8 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 	protected UsageType previousUsageType;
 	protected final ClassPathTypes classPathTypes;
 	
-	public ServiceConverterProviderContextPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter,
+	public ServiceConverterProviderContextPrinter(TransferObjectProcessingEnvironment processingEnv, HierarchyPrintWriter pw,
+			ConverterConstructorParametersResolverProvider parametersResolverProvider, ConverterProviderPrinter converterProviderPrinter,
 			ClassPathTypes classPathTypes) {
 		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
 		this.converterProviderContextPrinterDelegate = new ConverterProviderContextPrinterDelegate(parametersResolverProvider, pw);
@@ -62,9 +62,8 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 				
 		ConverterProviderContextType convertProviderContextType = new ConverterProviderContextType(serviceTypeElement, processingEnv);
 
-		new TypePrinter(processingEnv, pw).printTypeDefinition(convertProviderContextType);
+		new TypePrinter(pw, processingEnv).printTypeDefinition(pw, convertProviderContextType);
 		pw.println(" {");
-		pw.println();
 
 		previousUsageType = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR);
 

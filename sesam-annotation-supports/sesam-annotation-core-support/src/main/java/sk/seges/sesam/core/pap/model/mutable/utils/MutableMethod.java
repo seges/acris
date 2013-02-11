@@ -2,8 +2,10 @@ package sk.seges.sesam.core.pap.model.mutable.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
@@ -15,6 +17,9 @@ import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
+import sk.seges.sesam.core.pap.writer.MethodPrintWriter;
 
 class MutableMethod extends MutableType implements MutableExecutableType {
 
@@ -24,8 +29,12 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	private InitializableValue<MutableTypeMirror> returnType = new InitializableValue<MutableTypeMirror>();
 	private InitializableValue<List<MutableTypeMirror>> thrownTypes = new InitializableValue<List<MutableTypeMirror>>();
 	private InitializableValue<List<MutableTypeVariable>> typeVariables = new InitializableValue<List<MutableTypeVariable>>();
-	private InitializableValue<List<MutableTypeMirror>> parameterTypes = new InitializableValue<List<MutableTypeMirror>>();
+	private InitializableValue<List<MutableVariableElement>> parameters = new InitializableValue<List<MutableVariableElement>>();
 	private InitializableValue<String> simpleName = new InitializableValue<String>();
+	
+	private List<Modifier> modifiers = new LinkedList<Modifier>();
+
+	private boolean isDefault = true;
 	
 	MutableMethod(MutableProcessingEnvironment processingEnv, ExecutableType methodType) {
 		this.methodType = methodType;
@@ -36,6 +45,10 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 		this.methodType = null;
 		this.simpleName.setValue(simpleName);
 		this.processingEnv = processingEnvironment;
+	}
+	
+	private void dirty() {
+		isDefault = false;
 	}
 	
 	@Override
@@ -57,6 +70,7 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 
 	@Override
 	public MutableExecutableType setReturnType(MutableTypeMirror type) {
+		dirty();
 		this.returnType.setValue(type);
 		return this;
 	}
@@ -78,12 +92,14 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 
 	@Override
 	public MutableExecutableType setThrownTypes(List<MutableTypeMirror> thrownTypes) {
+		dirty();
 		this.thrownTypes.setValue(thrownTypes);
 		return this;
 	}
 
 	@Override
 	public MutableExecutableType addThrownType(MutableTypeMirror thrownType) {
+		dirty();
 		thrownTypes.getValue().add(thrownType);
 		return this;
 	}
@@ -105,28 +121,36 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 
 	@Override
 	public MutableExecutableType setTypeVariables(List<MutableTypeVariable> variables) {
+		dirty();
 		this.typeVariables.setValue(variables);
 		return this;
 	}
 
-	@Override
-	public List<MutableTypeMirror> getParameterTypes() {
-		if (!this.parameterTypes.isInitialized()) {
-			parameterTypes.setValue(new ArrayList<MutableTypeMirror>());
+	private List<MutableVariableElement> ensureParameters() {
+		if (!this.parameters.isInitialized()) {
+			parameters.setValue(new ArrayList<MutableVariableElement>());
 			if (methodType != null) {
 				List<? extends TypeMirror> params = methodType.getParameterTypes();
 				for (TypeMirror param: params) {
-					parameterTypes.getValue().add(processingEnv.getTypeUtils().toMutableType(param));
+					parameters.getValue().add(processingEnv.getElementUtils().getParameterElement(processingEnv.getTypeUtils().toMutableType(param), null));
 				}
+			} else {
+				parameters.setValue(new ArrayList<MutableVariableElement>());
 			}
 		}
 		
-		return Collections.unmodifiableList(this.parameterTypes.getValue());
+		return parameters.getValue();
+	}
+	
+	@Override
+	public List<MutableVariableElement> getParameters() {
+		return Collections.unmodifiableList(ensureParameters());
 	}
 
 	@Override
-	public MutableExecutableType setParameterTypes(List<MutableTypeMirror> params) {
-		this.parameterTypes.setValue(params);
+	public MutableExecutableType setParameters(List<MutableVariableElement> params) {
+		dirty();
+		this.parameters.setValue(params);
 		return this;
 	}
 
@@ -147,6 +171,7 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	
 	@Override
 	public MutableExecutableType setSimpleName(String simpleName) {
+		dirty();
 		this.simpleName.setValue(simpleName);
 		return this;
 	}
@@ -195,12 +220,17 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 		result += getSimpleName() + "(";
 		
 		int i = 0;
-		for (MutableTypeMirror parameter: getParameterTypes()) {
+		for (MutableVariableElement parameter: getParameters()) {
 			if (i > 0) {
 				result += ", ";
 			}
-			result += parameter.toString(serializer, typed) + " arg" + i;
-			i++;
+			result += parameter.asType().toString(serializer, typed) + " " + parameter.getSimpleName();
+			
+			if (parameter.getSimpleName() != null) {
+				result += parameter.getSimpleName();
+			} else {
+				result += "arg" + i++;
+			}
 		}
 		
 		return result + ")";
@@ -228,8 +258,8 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 			result.typeVariables.setValue(typeVariables.getValue());
 		}
 		
-		if (parameterTypes.isInitialized()) {
-			result.parameterTypes.setValue(parameterTypes.getValue());
+		if (parameters.isInitialized()) {
+			result.parameters.setValue(parameters.getValue());
 		}
 		
 		if (simpleName.isInitialized()) {
@@ -237,5 +267,61 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 		}
 		
 		return result;
+	}
+
+	private HierarchyPrintWriter printWriter;
+
+	@Override
+	public HierarchyPrintWriter getPrintWriter(HierarchyPrintWriter hierarchyPrintWriter) {
+		if (printWriter == null) {
+			dirty();
+			printWriter = new MethodPrintWriter(this, processingEnv, hierarchyPrintWriter);
+		}
+		
+		return printWriter;
+	}
+
+	@Override
+	public List<Modifier> getModifiers() {
+		return Collections.unmodifiableList(modifiers);
+	}
+
+	@Override
+	public MutableExecutableType setModifier(Modifier... modifiers) {
+		dirty();
+		this.modifiers.clear();
+		return addModifier(modifiers);
+	}
+	
+	@Override
+	public MutableExecutableType addModifier(Modifier... modifiers) {
+		dirty();
+		List<Modifier> result = new ArrayList<Modifier>();
+
+		ModifierConverter modifierConverter = new ModifierConverter();
+		
+		for (Modifier modifier: modifiers) {
+			for (Modifier mod: this.modifiers) {
+				if (modifierConverter.getModifierType(mod) != modifierConverter.getModifierType(modifier)) {
+					result.add(mod);
+				}
+			}
+			result.add(modifier);
+		}
+		
+		this.modifiers = result;
+		return this;
+	}
+
+	@Override
+	public MutableExecutableType addParameter(MutableVariableElement parameter) {
+		dirty();
+		ensureParameters().add(parameter);
+		return this;
+	}
+
+	@Override
+	public boolean isDefault() {
+		return isDefault;
 	}
 }

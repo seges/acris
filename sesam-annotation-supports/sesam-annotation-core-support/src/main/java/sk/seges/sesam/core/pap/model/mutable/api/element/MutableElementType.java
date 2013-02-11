@@ -8,7 +8,7 @@ import javax.lang.model.element.Modifier;
 import sk.seges.sesam.core.pap.model.api.HasAnnotations;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
-public interface MutableElement extends HasAnnotations {
+public interface MutableElementType extends HasAnnotations {
 
 	MutableTypeMirror asType();
 
@@ -18,7 +18,7 @@ public interface MutableElement extends HasAnnotations {
 
 	String getSimpleName();
 
-	MutableElement getEnclosingElement();
+	MutableElementType getEnclosingElement();
 
-	List<MutableElement> getEnclosedElements();
+	List<MutableElementType> getEnclosedElements();
 }

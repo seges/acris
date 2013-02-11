@@ -16,8 +16,8 @@ public class TransferObjectProcessingEnvironment extends MutableProcessingEnviro
 	
 	private EnvironmentContext<TransferObjectProcessingEnvironment> envContext = null;
 	
-	public TransferObjectProcessingEnvironment(MutableProcessingEnvironment processingEnvironment, RoundEnvironment roundEnv, ConfigurationCache configurationCache) {
-		super(processingEnvironment);
+	public TransferObjectProcessingEnvironment(MutableProcessingEnvironment processingEnvironment, RoundEnvironment roundEnv, ConfigurationCache configurationCache, Class<?> clazz) {
+		super(processingEnvironment, clazz);
 		this.roundEnv = roundEnv;
 		this.configurationCache = configurationCache;
 	}

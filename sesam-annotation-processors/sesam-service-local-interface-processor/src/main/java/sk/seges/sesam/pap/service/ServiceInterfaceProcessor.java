@@ -81,7 +81,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
 		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement((TypeElement)element, super.processingEnv);
-		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationCache());
+		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationCache(), getClass());
 		EnvironmentContext<TransferObjectProcessingEnvironment> context = getEnvironmentContext(remoteServiceTypeElement);
 		this.processingEnv.setConfigurationProviders(getConfigurationProviders(remoteServiceTypeElement, context));
 	}

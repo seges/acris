@@ -7,7 +7,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
@@ -19,11 +19,11 @@ import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
 
 public abstract class AbstractServiceMethodPrinter extends AbstractServicePrinter implements ServiceConverterElementPrinter {
 
-	protected final FormattedPrintWriter pw;
+	protected final HierarchyPrintWriter pw;
 	protected final ConverterProviderPrinter converterProviderPrinter;
 	
 	public AbstractServiceMethodPrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolverProvider parametersResolverProvider, 
-			FormattedPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
+			HierarchyPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
 		super(processingEnv, parametersResolverProvider);
 		this.pw = pw;
 		this.converterProviderPrinter = converterProviderPrinter;

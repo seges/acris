@@ -159,7 +159,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 	@Override
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
-		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationCache());
+		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationCache(), getClass());
 		this.processingEnv.setConfigurationProviders(getConfigurationProviders());
 		this.transferObjectContextProvider = getProcessorContextProvider(processingEnv, roundEnv);
 	}

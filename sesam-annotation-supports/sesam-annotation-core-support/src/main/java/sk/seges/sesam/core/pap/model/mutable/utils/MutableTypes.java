@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -28,10 +29,12 @@ import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredTypeValue;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
@@ -187,8 +190,15 @@ public class MutableTypes implements Types {
 //		return this.types.directSupertypes(t);
 	}
 
-	public MutableReferenceType getReference(MutableTypeValue type, String name, boolean inline) {
-		return new MutableReference(type, name, inline);
+	public MutableReferenceType getReference(MutableTypeValue type, String name, boolean inline, Modifier... modifiers) {
+		List<Modifier> modifiersList = new ArrayList<Modifier>();
+
+		if (modifiers != null) {
+			for (Modifier modifier: modifiers) {
+				modifiersList.add(modifier);
+			}
+		}
+		return new MutableReference(type, name, inline, modifiersList);
 	}
 	
 	public MutableReferenceType getReference(MutableTypeValue type, String name) {
@@ -744,6 +754,24 @@ public class MutableTypes implements Types {
 		return mutableType;
 	}
 
+	public MutableAnnotationMirror toMutableAnnotation(Class<?> clazz) {
+		return new MutableAnnotation(toMutableType(clazz), processingEnv);
+	}
+
+	public MutableAnnotationMirror toMutableAnnotation(Class<?> clazz, String name, Object value) {
+		MutableAnnotation mutableAnnotation = new MutableAnnotation(toMutableType(clazz), processingEnv);
+		mutableAnnotation.setAnnotationValue(name, processingEnv.getTypeUtils().getTypeValue(value));
+		return mutableAnnotation;
+	}
+
+	public MutableAnnotationMirror toMutableAnnotation(Class<?> clazz, Object value) {
+		return toMutableAnnotation(clazz, "value", value);
+	}
+
+	public MutableExecutableType getExecutable(MutableTypeMirror returnType, String name) {
+		return new MutableMethod(processingEnv, name).setReturnType(returnType);
+	}
+	
 	public ExecutableElementReference getReferenceToMethod(MutableExecutableElement executableElement, MutableReferenceType... referenceTypes) {
 		return new ExecutableReference(executableElement, referenceTypes);
 	}

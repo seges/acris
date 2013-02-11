@@ -12,9 +12,11 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.type.ExecutableType;
 
 import sk.seges.sesam.core.pap.model.InitializableValue;
+import sk.seges.sesam.core.pap.model.api.HasAnnotations;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
-import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElement;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElementKind;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElementType;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableTypeParameterElement;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
@@ -81,10 +83,11 @@ class MutableExecutable implements MutableExecutableElement {
     	return annotationHolderDelegate.getAnnotation(annotationType);
     }
 
-	public void annotateWith(AnnotationMirror annotation) {
+	public HasAnnotations annotateWith(AnnotationMirror annotation) {
 		//TODO TODO!!!!!!!
 		//dirty();
 		annotationHolderDelegate.annotateWith(annotation);
+		return this;
 	}
 
 	public Set<AnnotationMirror> getAnnotations() {
@@ -117,15 +120,15 @@ class MutableExecutable implements MutableExecutableElement {
 	}
 
 	@Override
-	public MutableElement getEnclosingElement() {
+	public MutableElementType getEnclosingElement() {
 		//TODO
 		throw new RuntimeException("Not supported yet");
 	}
 
 	@Override
-	public List<MutableElement> getEnclosedElements() {
+	public List<MutableElementType> getEnclosedElements() {
 		//TODO
-		return new ArrayList<MutableElement>();
+		return new ArrayList<MutableElementType>();
 	}
 
 	public boolean isVarArgs() {
@@ -143,5 +146,16 @@ class MutableExecutable implements MutableExecutableElement {
 	public List<MutableVariableElement> getParameters() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public HasAnnotations annotateWith(MutableAnnotationMirror mutableAnnotationMirror) {
+    	annotationHolderDelegate.annotateWith(mutableAnnotationMirror);
+    	return this;
+	}
+
+	@Override
+	public Set<MutableAnnotationMirror> getMutableAnnotations() {
+    	return annotationHolderDelegate.getMutableAnnotations();
 	}
 }

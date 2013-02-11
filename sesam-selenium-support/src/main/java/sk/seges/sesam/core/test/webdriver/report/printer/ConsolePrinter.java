@@ -40,6 +40,7 @@ public class ConsolePrinter implements ReportPrinter<TestCaseResult> {
 				System.out.print(params);
 			}
 			System.out.println();
+			System.out.println();
 		}
 	}
 
