@@ -59,14 +59,14 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     		pw.print("(", getDelegateCast(context.getConverter().getDomain(), true), ")");
     		pw.print(converterName + ".convertFromDto(");
     		
-    		if (context.getConverter().getDomain().getKind().isDeclared() && ((DomainDeclaredType)context.getConverter().getDomain()).hasTypeParameters()) {
+//    		if (context.getConverter().getDomain().getKind().isDeclared() && ((DomainDeclaredType)context.getConverter().getDomain()).hasTypeParameters()) {
 	    		pw.print(CastUtils.class, ".cast(");
 	    		//pw.print("(", getDelegateCast(converter.getDomain()), ")");
 	    		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ", ");
 	    		pw.print(getTypeVariableDelegate(getDelegateCast(context.getConverter().getDomain(), true)), ".class), ");
-    		} else {
-	    		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ", ");
-    		}
+ //   		} else {
+//	    		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ", ");
+ //   		}
 
     		if (context.getConverter().getDto().getKind().isDeclared() && ((DtoDeclaredType)context.getConverter().getDto()).hasTypeParameters()) {
 	    		pw.print(CastUtils.class, ".cast(");

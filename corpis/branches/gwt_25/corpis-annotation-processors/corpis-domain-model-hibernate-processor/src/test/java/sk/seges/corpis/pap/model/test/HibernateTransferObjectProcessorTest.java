@@ -30,7 +30,7 @@ public class HibernateTransferObjectProcessorTest extends AnnotationTest {
 
 	public File getOutputFile(Class<?> clazz) {
 		TypeElement configurationElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
-		TransferObjectProcessingEnvironment transferObjectProcessingEnvironment = new TransferObjectProcessingEnvironment(processingEnv, roundEnv, new ConfigurationCache());
+		TransferObjectProcessingEnvironment transferObjectProcessingEnvironment = new TransferObjectProcessingEnvironment(processingEnv, roundEnv, new ConfigurationCache(), getProcessors()[0].getClass());
 		ConfigurationTypeElement configurationTypeElement = new ConfigurationTypeElement(configurationElement, transferObjectProcessingEnvironment.getEnvironmentContext(), null);
 		return toFile(configurationTypeElement.getDto());
 	}

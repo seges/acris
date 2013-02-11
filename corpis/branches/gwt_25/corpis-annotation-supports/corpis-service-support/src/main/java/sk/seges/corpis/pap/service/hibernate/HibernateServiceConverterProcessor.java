@@ -9,6 +9,7 @@ import sk.seges.corpis.pap.service.hibernate.printer.HibernateServiceMethodConve
 import sk.seges.corpis.pap.service.hibernate.printer.ServiceConverterProviderContextMethodPrinter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateServiceParameterResolver;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.CacheableConverterConstructorParametersResolverProvider;
@@ -120,14 +121,15 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 	}
 	
 	@Override
-	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw, final ServiceTypeElement serviceTypeElement) {
+	protected ServiceConverterElementPrinter[] getElementPrinters(HierarchyPrintWriter pw, final ServiceTypeElement serviceTypeElement) {
 		return new ServiceConverterElementPrinter[] {
-				new LocalServiceFieldPrinter(pw),
-				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
-				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
-				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
-				new HibernateServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, getConverterProviderPrinter(pw, serviceTypeElement)),
-				new ServiceConverterProviderContextMethodPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter, getClassPathTypes())
+				new LocalServiceFieldPrinter(serviceTypeElement.getPrintWriter(pw)),
+				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
+				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
+				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
+				new HibernateServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw), getConverterProviderPrinter(
+						serviceTypeElement.getPrintWriter(pw), serviceTypeElement)),
+				new ServiceConverterProviderContextMethodPrinter(processingEnv, serviceTypeElement.getPrintWriter(pw), getParametersResolverProvider(serviceTypeElement), converterProviderPrinter, getClassPathTypes())
 		};
 	}
 	

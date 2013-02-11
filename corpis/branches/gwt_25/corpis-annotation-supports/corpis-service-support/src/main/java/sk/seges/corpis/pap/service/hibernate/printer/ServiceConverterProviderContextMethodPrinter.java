@@ -5,7 +5,7 @@ import javax.lang.model.element.Modifier;
 import sk.seges.corpis.pap.model.printer.converter.HibernateServiceConverterProviderParameterResolver;
 import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
@@ -16,10 +16,10 @@ import sk.seges.sesam.pap.service.printer.converterprovider.ServiceConverterProv
 
 public class ServiceConverterProviderContextMethodPrinter extends ServiceConverterProviderContextPrinter {
 
-	public ServiceConverterProviderContextMethodPrinter(TransferObjectProcessingEnvironment processingEnv,
-			ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw,
+	public ServiceConverterProviderContextMethodPrinter(TransferObjectProcessingEnvironment processingEnv, HierarchyPrintWriter pw,
+			ConverterConstructorParametersResolverProvider parametersResolverProvider,
 			ConverterProviderPrinter converterProviderPrinter, ClassPathTypes classPathTypes) {
-		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter, classPathTypes);
+		super(processingEnv, pw, parametersResolverProvider, converterProviderPrinter, classPathTypes);
 	}
 	
 	@Override
