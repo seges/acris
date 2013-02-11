@@ -187,11 +187,7 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 				}
 			}
 
-			int size = printersMap.size();
-
-			processElements(result);
-
-			if (size == printersMap.size()) {
+			if (processElements(result) == 0) {
 				processElements(waitingElements);
 				waitingElements.clear();
 			}
@@ -202,12 +198,14 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 		return !supportProcessorChain();
 	}
 
-	private void processElements(Collection<MutableDeclaredType> elements) {
+	private int processElements(Collection<MutableDeclaredType> elements) {
 		Map<String, Element> els = new HashMap<String, Element>();
 
 		for (MutableDeclaredType element: elements) {
 			els.put(element.toString(), element.asElement());
 		}
+		
+		int processedElementCount = 0;
 		
 		for (MutableDeclaredType element: elements) {
 			if (!ListUtils.containsElement(processedElements, element)) {
@@ -217,15 +215,17 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 					if (processedElements.size() == 0 || !getExecutionType().equals(ExecutionType.ONCE)) {
 						processedElements.add(element);
 						init(el, roundEnv);
-						processElement(element, roundEnv);
+						processedElementCount += processElement(element, roundEnv);
 						configurer.flushMessages(processingEnv.getMessager(), el);
 					}
 				}
 			}
 		}
+		
+		return processedElementCount;
 	}
 	
 	protected void init(Element element, RoundEnvironment roundEnv) {};
 	
-	protected abstract boolean processElement(MutableDeclaredType element, RoundEnvironment roundEnv);
+	protected abstract int processElement(MutableDeclaredType element, RoundEnvironment roundEnv);
 }

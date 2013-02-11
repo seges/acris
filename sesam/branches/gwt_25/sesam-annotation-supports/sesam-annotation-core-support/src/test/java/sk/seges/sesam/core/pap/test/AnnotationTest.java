@@ -100,9 +100,9 @@ public abstract class AnnotationTest {
 		return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(processingEnv.getElementUtils().getTypeElement(clazz.getName()).asType());
 	}
 	
-	protected MutableProcessingEnvironment processingEnv = new MutableProcessingEnvironment(new TestProcessingEnvironment());
+	protected MutableProcessingEnvironment processingEnv = new MutableProcessingEnvironment(new TestProcessingEnvironment(), getProcessors()[0].getClass());
 	protected TestRoundEnvironment roundEnv = new TestRoundEnvironment(processingEnv);
-	
+
 	/**
 	 * @return the processor instances that should be tested
 	 */

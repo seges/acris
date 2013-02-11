@@ -1,4 +1,4 @@
-package sk.seges.sesam.core.pareflection.comparator;
+package sk.seges.sesam.core.reflection.comparator;
 
 import java.lang.reflect.Method;
 import java.util.Comparator;

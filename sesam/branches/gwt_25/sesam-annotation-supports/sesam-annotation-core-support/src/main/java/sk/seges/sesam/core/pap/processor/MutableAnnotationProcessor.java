@@ -1,7 +1,5 @@
 package sk.seges.sesam.core.pap.processor;
 
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.Date;
 
@@ -16,8 +14,9 @@ import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport.TypePrinterSu
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.printer.ImportPrinter;
 import sk.seges.sesam.core.pap.printer.TypePrinter;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 
 @PrintSupport(autoIdent = true, printer = @TypePrinterSupport(printSerializer = ClassSerializer.SIMPLE))
 public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationProcessor {
@@ -45,7 +44,9 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 		
 		TypeElement typeElement;
 		MutableDeclaredType outputClass;
-		FormattedPrintWriter printWriter;
+		HierarchyPrintWriter currentPrintWriter;
+		HierarchyPrintWriter rootPrintWriter;
+		
 		MutableDeclaredType mutableType;
 		MutableProcessingEnvironment processingEnv;
 		
@@ -53,12 +54,16 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 			return outputClass;
 		}
 		
-		public FormattedPrintWriter getPrintWriter() {
-			return printWriter;
+		public HierarchyPrintWriter getPrintWriter() {
+			return currentPrintWriter;
 		}		
 		
 		public TypeElement getTypeElement() {
 			return typeElement;
+		}
+		
+		public HierarchyPrintWriter getRootPrintWriter() {
+			return rootPrintWriter;
 		}
 		
 		public MutableProcessingEnvironment getProcessingEnv() {
@@ -87,8 +92,8 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 
 		private String packageName;
 		
-		MutableImportPrinter(PrintWriter outputPrintWriter, String packageName) {
-			super(outputPrintWriter);
+		MutableImportPrinter(HierarchyPrintWriter hierarchyPrintWriter, MutableProcessingEnvironment processingEnv, String packageName) {
+			super(hierarchyPrintWriter, processingEnv);
 			this.packageName = packageName;
 		}
 		
@@ -96,20 +101,19 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 			return importType.getCanonicalName().replace("." + importType.getSimpleName(), "");	
 		}
 		
-		protected void printImport(MutableDeclaredType importType) {
-			if (packageName == null || !packageName.equals(getImportPackage(importType))) {
-				super.printImport(importType);
-			}
+		@Override
+		protected boolean isImportValid(MutableDeclaredType importType) {
+			return packageName == null || !packageName.equals(getImportPackage(importType));
 		}
 	}
 
 	@Override
-	protected ImportPrinter getImportPrinter(PrintWriter printWriter, String packageName) {
-		return new MutableImportPrinter(printWriter, packageName);
+	protected ImportPrinter initializeImportPrinter(HierarchyPrintWriter hierarchyPrintWriter, String packageName) {
+		return new MutableImportPrinter(hierarchyPrintWriter, processingEnv, packageName);
 	}
 	
 	@Override
-	final protected boolean processElement(MutableDeclaredType el, RoundEnvironment roundEnv) {
+	final protected int processElement(MutableDeclaredType el, RoundEnvironment roundEnv) {
 
 		TypeElement typeElement = (TypeElement) el.asElement();
 
@@ -123,10 +127,12 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 		processingEnv.getMessager().printMessage(Kind.NOTE, "Processing " + typeElement.getSimpleName().toString() + " with " + getClass().getSimpleName(), typeElement);
 		
 		long startTime = new Date().getTime();
+
+		int processedCount = 0;
 		
 		for (MutableDeclaredType outputClass: outputClasses) {
 			
-			FormattedPrintWriter pw = null;
+			HierarchyPrintWriter rootPrintWriter = null;
 			
 			try {
 				
@@ -137,7 +143,6 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				context.outputClass = outputClass;
 				context.mutableType = el;
 				context.processingEnv = processingEnv;
-
 				if (!checkPreconditions(context, alreadyExists)) {
 					if (alreadyExists) {
 						processingEnv.getMessager().printMessage(Kind.NOTE, "[INFO] File " + outputClass.getCanonicalName() + " already exists.", typeElement);
@@ -148,31 +153,34 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 
 				//TODO Use outputClass.getPackageName() + "." + outputClass.getSimpleName() otherwise you'll have problems with nested classes
 				JavaFileObject createSourceFile = processingEnv.getFiler().createSourceFile(outputClass.getPackageName() + "." + outputClass.getSimpleName(), typeElement);
-				OutputStream os = createSourceFile.openOutputStream();
-				pw = initializePrintWriter(os);
+				rootPrintWriter = initializePrintWriter(createSourceFile.openOutputStream());
+				context.rootPrintWriter = rootPrintWriter;
 
-				context.printWriter = pw;
+				processedCount++;
+				
+				rootPrintWriter.println("package " + outputClass.getPackageName() + ";");
+				rootPrintWriter.println();
 
-				pw.println("package " + outputClass.getPackageName() + ";");
-				pw.println();
+				initializeImportPrinter(rootPrintWriter, outputClass.getPackageName());
+				
+				context.currentPrintWriter = rootPrintWriter;
 
-				printImports(pw, outputClass.getPackageName());
 				printAnnotations(context);
 				
-				pw.println("@", Generated.class, "(value = \"" + this.getClass().getCanonicalName() + "\")");
+				rootPrintWriter.println("@", Generated.class, "(value = \"" + this.getClass().getCanonicalName() + "\")");
+				
+				new TypePrinter(rootPrintWriter, processingEnv).print(outputClass);
 
-				new TypePrinter(processingEnv, pw).printTypeDefinition(outputClass);
+				context.currentPrintWriter = outputClass.getPrintWriter(rootPrintWriter);
 
-				pw.println(" {");
-				pw.println();
 				processElement(context);
-				pw.println("}");
-				pw.flush();
+				//context.currentPrintWriter.println("}");
+				rootPrintWriter.flush();
 			} catch (Exception e) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process element " + e.getMessage(), typeElement);
 			} finally {
-				if (pw != null) {
-					pw.close();
+				if (rootPrintWriter != null) {
+					rootPrintWriter.close();
 				}
 			}
 		}
@@ -180,7 +188,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 		long totalTime = new Date().getTime() - startTime;
 		processingEnv.getMessager().printMessage(Kind.NOTE, "Took " + (totalTime / 1000) + "s, " + (totalTime % 1000) + " ms", typeElement);
 
-		return !supportProcessorChain();
+		return processedCount;
 	}
 
 	protected abstract MutableDeclaredType[] getOutputClasses(RoundContext context);

@@ -1,10 +1,10 @@
 package sk.seges.sesam.core.pap.test.cases.model;
+
 import sk.seges.sesam.core.pap.test.cases.model.AnotherModel;
 import sk.seges.sesam.core.pap.test.cases.model.ReferenceModel;
 
-public class sk.seges.sesam.core.pap.test.cases.model.BasicModelFormatted {
+public class BasicModelFormatted {
 
-	private String numberField;
 	private int numberField;
 
 	public int getnumberField() {
@@ -16,7 +16,6 @@ public class sk.seges.sesam.core.pap.test.cases.model.BasicModelFormatted {
 	}
 
 	private String textField;
-	private String textField;
 
 	public String gettextField() {
 		return textField;
@@ -26,7 +25,6 @@ public class sk.seges.sesam.core.pap.test.cases.model.BasicModelFormatted {
 		this.textField= _value;
 	}
 
-	private String reference;
 	private ReferenceModel reference;
 
 	public ReferenceModel getreference() {
@@ -37,7 +35,6 @@ public class sk.seges.sesam.core.pap.test.cases.model.BasicModelFormatted {
 		this.reference= _value;
 	}
 
-	private String another;
 	private AnotherModel another;
 
 	public AnotherModel getanother() {

@@ -10,27 +10,40 @@ import javax.lang.model.element.Element;
 
 import sk.seges.sesam.core.pap.accessor.AnnotationAccessor;
 import sk.seges.sesam.core.pap.model.api.HasAnnotations;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
 
 class AnnotationHolderDelegate implements HasAnnotations {
 
 	private Set<AnnotationMirror> annotations;
+	private Set<MutableAnnotationMirror> mutableAnnotations;
+	
 	private final Element element;
+	private final HasAnnotations hasAnnotations;
 	private final MutableProcessingEnvironment processingEnv;
 	
 	AnnotationHolderDelegate(MutableProcessingEnvironment processingEnv) {
 		this.element = null;
+		this.hasAnnotations = null;
 		this.processingEnv = processingEnv;
 		this.annotations = new HashSet<AnnotationMirror>();
 	}
 	
 	AnnotationHolderDelegate(MutableProcessingEnvironment processingEnv, Element element) {
 		this.element = element;
+		this.hasAnnotations = null;
 		this.processingEnv = processingEnv;
 	}
-	
-	public void annotateWith(AnnotationMirror annotation) {
+
+	AnnotationHolderDelegate(MutableProcessingEnvironment processingEnv, HasAnnotations hasAnnotations) {
+		this.element = null;
+		this.hasAnnotations = hasAnnotations;
+		this.processingEnv = processingEnv;
+	}
+
+	public HasAnnotations annotateWith(AnnotationMirror annotation) {
 		initializeAnnotations();
 		annotations.add(annotation);
+		return this;
 	}
 
 	private void copyAnnotations() {
@@ -39,12 +52,33 @@ class AnnotationHolderDelegate implements HasAnnotations {
 				annotations.add(annotation);
 			}
 		}
+		if (hasAnnotations != null && hasAnnotations.getAnnotations() != null) {
+			for (AnnotationMirror annotation: hasAnnotations.getAnnotations()) {
+				//TODO convert to mutable annotation
+				annotations.add(annotation);
+			}
+		}
+	}
+
+	private void copyMutableAnnotations() {
+		if (hasAnnotations != null && hasAnnotations.getMutableAnnotations() != null) {
+			for (MutableAnnotationMirror annotation: hasAnnotations.getMutableAnnotations()) {
+				mutableAnnotations.add(annotation);
+			}
+		}
 	}
 
 	void initializeAnnotations() {
 		if (annotations == null) {
 			annotations = new HashSet<AnnotationMirror>();
 			copyAnnotations();
+		}
+	}
+
+	void initializeMutableAnnotations() {
+		if (mutableAnnotations == null) {
+			mutableAnnotations = new HashSet<MutableAnnotationMirror>();
+			copyMutableAnnotations();
 		}
 	}
 	
@@ -76,4 +110,17 @@ class AnnotationHolderDelegate implements HasAnnotations {
 			}
     	}.getAnnotation();
     }
+
+	@Override
+	public HasAnnotations annotateWith(MutableAnnotationMirror mutableAnnotationMirror) {
+		initializeMutableAnnotations();
+		mutableAnnotations.add(mutableAnnotationMirror);
+		return this;
+	}
+
+	@Override
+	public Set<MutableAnnotationMirror> getMutableAnnotations() {
+		initializeMutableAnnotations();
+		return Collections.unmodifiableSet(mutableAnnotations);
+	}
 }

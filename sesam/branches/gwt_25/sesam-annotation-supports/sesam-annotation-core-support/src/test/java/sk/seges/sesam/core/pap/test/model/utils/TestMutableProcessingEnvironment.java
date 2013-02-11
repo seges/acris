@@ -4,7 +4,7 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
 public class TestMutableProcessingEnvironment extends MutableProcessingEnvironment {
 
-	public TestMutableProcessingEnvironment() {
-		super(new TestProcessingEnvironment());
+	public TestMutableProcessingEnvironment(Class<?> clazz) {
+		super(new TestProcessingEnvironment(), clazz);
 	}
 }

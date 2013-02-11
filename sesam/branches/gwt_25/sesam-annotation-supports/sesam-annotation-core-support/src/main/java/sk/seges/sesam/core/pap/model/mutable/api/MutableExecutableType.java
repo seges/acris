@@ -2,21 +2,32 @@ package sk.seges.sesam.core.pap.model.mutable.api;
 
 import java.util.List;
 
-public interface MutableExecutableType extends MutableTypeMirror {
+import javax.lang.model.element.Modifier;
 
-	  List<MutableTypeVariable> getTypeVariables();
-	  MutableExecutableType setTypeVariables(List<MutableTypeVariable> variables);
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 
-	  List<MutableTypeMirror> getParameterTypes();
-	  MutableExecutableType setParameterTypes(List<MutableTypeMirror> variables);
+public interface MutableExecutableType extends MutableTypeMirror, PrintableType {
 
-	  MutableTypeMirror getReturnType();
-	  MutableExecutableType setReturnType(MutableTypeMirror type);
-	  
-	  MutableExecutableType setSimpleName(String simpleName);
-	  String getSimpleName();
-	  
-	  List<MutableTypeMirror> getThrownTypes();
-	  MutableExecutableType setThrownTypes(List<MutableTypeMirror> thrownTypes);
-	  MutableExecutableType addThrownType(MutableTypeMirror thrownType);	  
+	List<Modifier> getModifiers();
+	MutableExecutableType setModifier(Modifier... modifiers);
+	MutableExecutableType addModifier(Modifier... modifiers);
+
+	List<MutableTypeVariable> getTypeVariables();
+	MutableExecutableType setTypeVariables(List<MutableTypeVariable> variables);
+	
+	List<MutableVariableElement> getParameters();
+	MutableExecutableType addParameter(MutableVariableElement parameter);
+	MutableExecutableType setParameters(List<MutableVariableElement> parameters);
+	
+	MutableTypeMirror getReturnType();
+	MutableExecutableType setReturnType(MutableTypeMirror type);
+
+	MutableExecutableType setSimpleName(String simpleName);
+	String getSimpleName();
+
+	List<MutableTypeMirror> getThrownTypes();
+	MutableExecutableType setThrownTypes(List<MutableTypeMirror> thrownTypes);
+	MutableExecutableType addThrownType(MutableTypeMirror thrownType);	  
+
+	boolean isDefault();
 }

@@ -8,9 +8,10 @@ import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.HasAnnotations;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
 
-public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
+public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations, PrintableType {
 
 	public enum RenameActionType {
 		PREFIX {
@@ -73,6 +74,10 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
 
 	MutableDeclaredType setKind(MutableTypeKind kind);
 
+	MutableDeclaredType addMethod(MutableExecutableType method);
+	List<MutableExecutableType> getMethods();
+	MutableExecutableType getConstructor();
+	
 	List<? extends MutableTypeMirror> getInterfaces();
 	MutableDeclaredType setInterfaces(List<? extends MutableTypeMirror> interfaces);
 
@@ -96,4 +101,11 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations {
 	List<Modifier> getModifiers();
 	MutableDeclaredType setModifier(Modifier... modifiers);
 	MutableDeclaredType addModifier(Modifier... modifiers);
+	
+	MutableDeclaredType addField(MutableVariableElement field);
+	List<MutableVariableElement> getFields();
+	MutableDeclaredType clearFields();
+	
+	MutableDeclaredType addNestedType(MutableDeclaredType nestedType);
+	List<MutableDeclaredType> getNestedTypes();
 }

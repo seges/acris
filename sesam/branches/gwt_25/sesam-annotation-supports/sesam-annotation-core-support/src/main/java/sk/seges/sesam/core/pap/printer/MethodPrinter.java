@@ -7,67 +7,92 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
 public class MethodPrinter {
 
-	private final FormattedPrintWriter pw;
+	private final FormattedPrintWriter printWriter;
 	private final MutableProcessingEnvironment processingEnv;
 	
 	public MethodPrinter(FormattedPrintWriter pw, MutableProcessingEnvironment processingEnv) {
-		this.pw = pw;
+		this.printWriter = pw;
 		this.processingEnv = processingEnv;
 	}
-
+	
 	public void printMethodDefinition(ExecutableElement method, TypeElement owner) {
 		for (Modifier modifier: method.getModifiers()) {
 			if (!modifier.equals(Modifier.ABSTRACT)) {
-				pw.print(modifier.toString() + " ");
+				printWriter.print(modifier.toString() + " ");
 			}
 		}
-		
+
 		printType(method.getReturnType(), owner);
-		pw.print(" " + method.getSimpleName().toString() + "(");
+		printWriter.print(" " + method.getSimpleName().toString() + "(");
 		
 		int i = 0;
 		for (VariableElement parameter: method.getParameters()) {
 			if (i > 0) {
-				pw.print(", ");
+				printWriter.print(", ");
 			}
 			printType(parameter.asType(), owner);
-			pw.print(" " + parameter.getSimpleName().toString());
+			printWriter.print(" " + parameter.getSimpleName().toString());
 			i++;
 		}
 		
-		pw.print(")");
+		printWriter.print(")");
 	}
-	
+
+	public void printMethodDefinition(MutableExecutableType method) {
+		for (Modifier modifier: method.getModifiers()) {
+			printWriter.print(modifier.toString() + " ");
+		}
+
+		if (method.getReturnType() != null) {
+			printWriter.print(method.getReturnType(), " ");
+		}
+		
+		printWriter.print(method.getSimpleName().toString() + "(");
+		
+		int i = 0;
+		for (MutableVariableElement parameter: method.getParameters()) {
+			if (i > 0) {
+				printWriter.print(", ");
+			}
+			printWriter.print(parameter.asType(), " " + parameter.getSimpleName().toString());
+			i++;
+		}
+		
+		printWriter.print(")");
+	}
+
 	private void printType(TypeMirror typeMirror, TypeElement owner) {
 		switch (typeMirror.getKind()) {
 		case TYPEVAR:
 			TypeVariable variable = (TypeVariable) typeMirror;
 			if (owner == null) {
 				if (variable.getUpperBound() != null) {
-					pw.print(variable.getUpperBound());
+					printWriter.print(variable.getUpperBound());
 				} else if (variable.getLowerBound() != null) {
-					pw.print(variable.getLowerBound());
+					printWriter.print(variable.getLowerBound());
 				} else {
-					pw.print(variable.asElement().getSimpleName());
+					printWriter.print(variable.asElement().getSimpleName());
 				}
 			} else {
 				TypeMirror erasure = ProcessorUtils.erasure(owner, variable);
 				
 				if (erasure == null) {
-					pw.print(processingEnv.getTypeUtils().getTypeVariable(((TypeVariable) variable).asElement().getSimpleName().toString()));
+					printWriter.print(processingEnv.getTypeUtils().getTypeVariable(((TypeVariable) variable).asElement().getSimpleName().toString()));
 				} else {
-					pw.print(erasure);
+					printWriter.print(erasure);
 				}
 			}
 			break;
 		default:
-			pw.print(typeMirror);
+			printWriter.print(typeMirror);
 		}
 	}	
 }

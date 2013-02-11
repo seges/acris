@@ -9,10 +9,15 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import sk.seges.sesam.core.pap.model.api.HasAnnotations;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.structure.api.PackageValidator;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 
 public abstract class DelegateMutableDeclaredType extends DelegateMutableType implements MutableDeclaredType {
 
@@ -27,8 +32,13 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	abstract protected MutableDeclaredType getDelegate();
 
 	@Override
-	public void annotateWith(AnnotationMirror annotationMirror) {
-		ensureDelegateType().annotateWith(annotationMirror);
+	public HasAnnotations annotateWith(AnnotationMirror annotationMirror) {
+		return ensureDelegateType().annotateWith(annotationMirror);
+	}	
+
+	@Override
+	public HasAnnotations annotateWith(MutableAnnotationMirror mutableAnnotationMirror) {
+		return ensureDelegateType().annotateWith(mutableAnnotationMirror);
 	}
 
 	@Override
@@ -42,10 +52,40 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	}
 
 	@Override
+    public Set<MutableAnnotationMirror> getMutableAnnotations() {
+		return ensureDelegateType().getMutableAnnotations();
+	}
+
+	@Override
 	public List<Modifier> getModifiers() {
 		return ensureDelegateType().getModifiers();
 	}
 	
+	@Override
+	public MutableDeclaredType addNestedType(MutableDeclaredType nestedType) {
+		return ensureDelegateType().addNestedType(nestedType);
+	}
+	
+	@Override
+	public List<MutableDeclaredType> getNestedTypes() {
+		return ensureDelegateType().getNestedTypes();
+	}
+	
+	@Override
+	public MutableDeclaredType addMethod(MutableExecutableType method) {
+		return ensureDelegateType().addMethod(method);
+	}
+
+	@Override
+	public MutableExecutableType getConstructor() {
+		return ensureDelegateType().getConstructor();
+	}
+	
+	@Override
+	public List<MutableExecutableType> getMethods() {
+		return ensureDelegateType().getMethods();
+	}
+
 	@Override
 	public MutableDeclaredType addModifier(Modifier... modifiers) {
 		return ensureDelegateType().addModifier(modifiers);
@@ -56,6 +96,11 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 		return ensureDelegateType().setModifier(modifiers);
 	}
 
+	@Override
+	public HierarchyPrintWriter getPrintWriter(HierarchyPrintWriter hierarchyPrintWriter) {
+		return ensureDelegateType().getPrintWriter(hierarchyPrintWriter);
+	}
+	
 	@Override
 	public MutableDeclaredType getEnclosedClass() {
 		return ensureDelegateType().getEnclosedClass();
@@ -240,4 +285,19 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	public MutableDeclaredType stripVariableTypeVariables() {
 		return ensureDelegateType().stripVariableTypeVariables();
 	}
+
+	public MutableDeclaredType addField(MutableVariableElement field) {
+		return ensureDelegateType().addField(field);
+	};
+	
+	@Override
+	public List<MutableVariableElement> getFields() {
+		return ensureDelegateType().getFields();
+	}
+	
+	@Override
+	public MutableDeclaredType clearFields() {
+		return ensureDelegateType().clearFields();
+	}
+
 }

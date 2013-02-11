@@ -1,29 +1,41 @@
 package sk.seges.sesam.core.pap.model.mutable.utils;
 
+import java.util.Collections;
+import java.util.List;
+
+import javax.lang.model.element.Modifier;
+
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 
 class MutableReference implements MutableReferenceType {
 
-	private final MutableTypeValue reference;
 	private String name;
 	private boolean inline; 
+	private List<Modifier> modifiers;
+	private final MutableTypeValue reference;
 	
-	MutableReference(MutableTypeValue reference, String name, boolean inline) {
-		this.reference = reference;
+	MutableReference(MutableTypeValue reference, String name, boolean inline, List<Modifier> modifiers) {
 		this.name = name;
+		this.reference = reference;
 		this.inline = inline;
+		this.modifiers = modifiers;
 	}
 	
 	@Override
 	public String toString() {
 		return name;
 	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
 	
 	@Override
 	public String toString(ClassSerializer serializer) {
-		return name;
+		return toString(serializer, true);
 	}
 
 	@Override
@@ -43,5 +55,10 @@ class MutableReference implements MutableReferenceType {
 	@Override
 	public boolean isInline() {
 		return inline;
+	}
+	
+	@Override
+	public List<Modifier> getModifiers() {
+		return Collections.unmodifiableList(modifiers);
 	}
 }

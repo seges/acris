@@ -12,6 +12,9 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.accessor.AnnotationAccessor.AnnotationFilter;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeValue;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
@@ -45,6 +48,29 @@ public class AnnotationPrinter {
 		}
 	}
 
+	public void print(MutableAnnotationMirror annotation) {
+		pw.print("@", annotation.getAnnotationType());
+
+		if (annotation.getElementValues().size() > 0) {
+			pw.print("(");
+			int i = 0;
+			for (Entry<? extends MutableExecutableType, ? extends MutableTypeValue> annotationValue: annotation.getElementValues().entrySet()) {
+				if (i > 0) {
+					pw.print(", ");
+					
+					if (pw.getCurrentPosition() > FormattedPrintWriter.LINE_LENGTH) {
+						pw.println();
+						pw.print("		");
+					}
+				}
+				pw.print(annotationValue.getKey().getSimpleName() + " = ", annotationValue.getValue());
+				i++;
+			}
+			pw.print(")");
+		}
+		pw.println();
+	}
+	
 	public void print(AnnotationMirror annotation) {
 		pw.print("@", processingEnv.getTypeUtils().toMutableType(annotation.getAnnotationType()));
 		

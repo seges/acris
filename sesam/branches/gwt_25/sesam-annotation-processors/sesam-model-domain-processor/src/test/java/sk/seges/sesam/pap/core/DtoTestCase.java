@@ -14,7 +14,7 @@ public abstract class DtoTestCase extends AnnotationTest {
 	protected File getOutputFile(Class<?> clazz) {
 		MutableDeclaredType inputClass = toMutable(clazz);
 		
-		TransferObjectProcessingEnvironment tope = new TransferObjectProcessingEnvironment(processingEnv, roundEnv, new ConfigurationCache());
+		TransferObjectProcessingEnvironment tope = new TransferObjectProcessingEnvironment(processingEnv, roundEnv, new ConfigurationCache(), getProcessors()[0].getClass());
 		DtoDeclaredType dto = new ConfigurationTypeElement(processingEnv.getElementUtils().getTypeElement(inputClass.getCanonicalName()), tope.getEnvironmentContext(), null).getDto();
 
 		return new File(OUTPUT_DIRECTORY, toPath(dto.getPackageName()) + "/" + dto.getSimpleName() + SOURCE_FILE_SUFFIX);

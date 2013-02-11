@@ -2,28 +2,149 @@ package sk.seges.sesam.core.pap.printer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.Modifier;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 
 public class TypePrinter {
 
-	private final FormattedPrintWriter pw;
 	private final MutableProcessingEnvironment processingEnv;
+	private final HierarchyPrintWriter hierarchyPrintWriter;
 	
-	public TypePrinter(MutableProcessingEnvironment processingEnv, FormattedPrintWriter pw) {
-		this.pw = pw;
+	public TypePrinter(HierarchyPrintWriter hierarchyPrintWriter, MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
+		this.hierarchyPrintWriter = hierarchyPrintWriter;
 	}
 
-	public void printTypeDefinition(MutableDeclaredType type) {
+	public TypePrinter print(final MutableDeclaredType type) {
+		
+		if (hierarchyPrintWriter.getOudentLevel() != 0) {
+			//Type is nested so print an empty line
+			hierarchyPrintWriter.println();
+		}
+		
+		HierarchyPrintWriter typePrintWriter = type.getPrintWriter(hierarchyPrintWriter);
+
+		typePrintWriter.addNestedPrinter(new FormattedPrintWriter(hierarchyPrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+			@Override
+			public void flush() {
+				printAnnotations(this, type);
+				super.flush();
+			}
+		});
+		typePrintWriter.addNestedPrinter(new FormattedPrintWriter(hierarchyPrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+			@Override
+			public void flush() {
+				printTypeDefinition(this, type);
+				super.flush();
+			}
+		});
+		typePrintWriter.println(" {");
+		
+		HierarchyPrintWriter bodyPrinter = new HierarchyPrintWriter(hierarchyPrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes());
+		typePrintWriter.addNestedPrinter(bodyPrinter);
+
+		bodyPrinter.addNestedPrinter(new HierarchyPrintWriter(typePrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+			@Override
+			public void flush() {
+				printNestedTypes(this, type);
+				super.flush();
+			}
+		});
+
+		bodyPrinter.addNestedPrinter(new FormattedPrintWriter(typePrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+			@Override
+			public void flush() {
+				printFields(this, type);
+				super.flush();
+			}
+		});
+		bodyPrinter.addNestedPrinter(new HierarchyPrintWriter(typePrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+			@Override
+			public void flush() {
+				printMethods(this, type);
+				super.flush();
+			}
+		});
+
+		typePrintWriter.println("}");
+
+		typePrintWriter.setCurrentPrinter(bodyPrinter);
+		
+		return this;
+	}
+
+	private void printMethods(HierarchyPrintWriter printWriter, MutableDeclaredType type) {
+
+		if (!type.getConstructor().isDefault()) {
+			type.getConstructor().setReturnType(null);
+			printWriter.addNestedPrinter(type.getConstructor().getPrintWriter(printWriter));
+		}
+		
+		for (MutableExecutableType method: type.getMethods()) {
+			printWriter.addNestedPrinter(method.getPrintWriter(printWriter));
+		}
+	}
+	
+	private void printAnnotations(FormattedPrintWriter pw, MutableDeclaredType type) {
+		Set<MutableAnnotationMirror> annotations = type.getMutableAnnotations();
+		
+		for (MutableAnnotationMirror annotation: annotations) {
+			AnnotationPrinter annotationPrinter = new AnnotationPrinter(pw, processingEnv);
+			annotationPrinter.print(annotation);
+		}
+	}
+
+	private void printNestedTypes(HierarchyPrintWriter pw, MutableDeclaredType type) {
+		List<MutableDeclaredType> nestedTypes = type.getNestedTypes();
+		
+		for (MutableDeclaredType nestedType: nestedTypes) {
+			new TypePrinter(pw, processingEnv).print(nestedType);
+		}
+	}
+	
+	private void printFields(FormattedPrintWriter pw, MutableDeclaredType type) {
+		
+		List<MutableVariableElement> fields = type.getFields();
+
+		if (fields != null) {
+
+			for (MutableVariableElement field: fields) {
+				pw.println();
+				
+				Set<MutableAnnotationMirror> mutableAnnotations = field.getMutableAnnotations();
+				
+				for (MutableAnnotationMirror mutableAnnotation: mutableAnnotations) {
+					new AnnotationPrinter(pw, processingEnv).print(mutableAnnotation);
+				}
+				
+				Set<Modifier> modifiers = field.getModifiers();
+				
+				if (modifiers != null) {
+					for (Modifier modifier: modifiers) {
+						pw.print(modifier.toString() + " ");
+					}
+				}
+				
+				pw.println(field.asType(), " " + field.getSimpleName() + ";");
+			}
+		}
+	}
+
+	//TODO make it private later
+	public void printTypeDefinition(FormattedPrintWriter pw, MutableDeclaredType type) {
 		
 		for (Modifier modifier: type.getModifiers()) {
 			pw.print(modifier.name().toLowerCase() + " ");
@@ -106,5 +227,4 @@ public class TypePrinter {
 		
 		return mutableType;
 	}
-
 }

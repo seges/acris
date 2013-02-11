@@ -12,6 +12,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.AbstractTransferProcessingProcessor;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -121,14 +122,14 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 		return new DefaultServiceConverterParametersFilter();
 	}
 	
-	protected ServiceConverterElementPrinter[] getElementPrinters(FormattedPrintWriter pw, ServiceTypeElement serviceTypeElement) {
+	protected ServiceConverterElementPrinter[] getElementPrinters(HierarchyPrintWriter pw, ServiceTypeElement serviceTypeElement) {
 		return new ServiceConverterElementPrinter[] {
-				new LocalServiceFieldPrinter(pw),
-				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
-				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
-				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), pw),
-				new ServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter),
-				new ServiceConverterProviderContextPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), pw, converterProviderPrinter, getClassPathTypes())
+				new LocalServiceFieldPrinter(serviceTypeElement.getPrintWriter(pw)),
+				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
+				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
+				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
+				new ServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw), converterProviderPrinter),
+				new ServiceConverterProviderContextPrinter(processingEnv, serviceTypeElement.getPrintWriter(pw), getParametersResolverProvider(serviceTypeElement), converterProviderPrinter, getClassPathTypes())
 		};
 	}
 
@@ -139,7 +140,7 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 	@Override
 	protected void processElement(ProcessorContext context) {
 
-		FormattedPrintWriter pw = context.getPrintWriter();
+		HierarchyPrintWriter pw = context.getPrintWriter();
 		TypeElement element = context.getTypeElement();		
 		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(element, processingEnv);
 		
