@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>corpis-domain-model-hibernate-support</artifactId>
+	<name>corpis-domain-model-hibernate-support</name>
+	<description>Corpis domain model hibernate support</description>
+	<packaging>jar</packaging>
+	
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-annotation-supports</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-model-domain-processor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotation-core-support</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core</artifactId>
+		</dependency>
+		
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-domain-model-hibernate-processor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-service-support</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
