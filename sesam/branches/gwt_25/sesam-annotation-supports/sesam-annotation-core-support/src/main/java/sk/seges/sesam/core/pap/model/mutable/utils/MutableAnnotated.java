@@ -28,10 +28,10 @@ abstract class MutableAnnotated extends MutableType implements HasAnnotations {
     	return annotationHolderDelegate.getAnnotation(annotationType);
     }
 
-	public void annotateWith(AnnotationMirror annotation) {
+	public HasAnnotations annotateWith(AnnotationMirror annotation) {
 		//TODO TODO!!!!!!!
 		//dirty();
-		annotationHolderDelegate.annotateWith(annotation);
+		return annotationHolderDelegate.annotateWith(annotation);
 	}
 
 	public Set<AnnotationMirror> getAnnotations() {
