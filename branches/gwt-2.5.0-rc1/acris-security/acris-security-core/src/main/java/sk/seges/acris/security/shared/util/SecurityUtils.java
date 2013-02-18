@@ -111,11 +111,11 @@ public class SecurityUtils {
 	}
 	
 	public static boolean hasAuthority(String permissionPrefix, GenericUserDTO user, String authority) {
-		//TODO what to do with permission???
 		if (user != null) {
 			List<String> authorities = user.getUserAuthorities();
 			if (authorities != null) {
-				return authorities.contains(authority) || authorities.contains(SecurityConstants.AUTH_PREFIX + authority);
+				return authorities.contains(authority) || authorities.contains(SecurityConstants.AUTH_PREFIX + authority) || 
+						authorities.contains(SecurityConstants.AUTH_PREFIX + authority + permissionPrefix);
 			}
 		}
 		return false;
