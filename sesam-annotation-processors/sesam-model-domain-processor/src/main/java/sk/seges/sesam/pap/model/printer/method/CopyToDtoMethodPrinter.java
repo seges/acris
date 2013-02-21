@@ -81,17 +81,11 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			
 			pw.print(context.getConverter().getConverterBase(), " " + converterName + " = ");
 
-//			(context.getDomainMethodReturnType().getKind().equals(MutableTypeKind.TYPEVAR) ? ("(" + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" +
-//					((MutableTypeVariable)context.getDomainMethodReturnType()).getVariable().toString() + ")") : "") +
-
 			Field field = new Field(
 					(context.getDomainMethodReturnType().getKind().equals(MutableTypeKind.TYPEVAR) ? "(" + context.getConverter().getDomain() + ")" : "") + 
 					TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), context.getConverter().getDomain());
-//			converterProviderPrinter.printDomainEnsuredConverterMethodName(context.getConverter().getDomain(), context.getDomainMethodReturnType(), 
-//					field, null, pw, false);
 			TransferObjectMappingAccessor transferObjectMappingAccessor = new TransferObjectMappingAccessor(context.getDtoMethod(), processingEnv);
 			if (transferObjectMappingAccessor.isValid() && transferObjectMappingAccessor.getConverter() != null) {
-//				converterProviderPrinter.printDomainEnsuredConverterMethodName(context.getConverter().getDomain(), context.getDomainMethodReturnType(), field, null, pw, false);
 				converterProviderPrinter.printDomainGetConverterMethodName(context.getConverter().getDomain(), field, null, pw, false);
 			} else {
 				converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, context.getConverter().getDomain(), field, null, true);

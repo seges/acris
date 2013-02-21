@@ -6,29 +6,25 @@ import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 
 public class ConstructorPrinter {
 
-	private final FormattedPrintWriter pw;
-	private final MutableDeclaredType outputName;
+	private final MutableDeclaredType ownerType;
+	private final MutableProcessingEnvironment processingEnv;
 	
-	private MutableProcessingEnvironment processingEnv;
-	
-	public ConstructorPrinter(FormattedPrintWriter pw, MutableDeclaredType outputName, MutableProcessingEnvironment processingEnv) {
-		this.pw = pw;
-		this.outputName = outputName;
+	public ConstructorPrinter(MutableDeclaredType ownerType, MutableProcessingEnvironment processingEnv) {
+		this.ownerType = ownerType;
 		this.processingEnv = processingEnv;
 	}
 
@@ -70,15 +66,6 @@ public class ConstructorPrinter {
 			for (VariableElement parameter: superConstructor.getParameters()) {
 				String parameterName = getParameterName(parameter, additionalParameters);
 				
-				if (!initializedFields.contains(parameterName)) {
-					pw.print("this." + parameterName + " = ");
-					construct(parameter.asType(), pw);
-					pw.println(";");
-				}
-			}
-
-			for (VariableElement parameter: superConstructor.getParameters()) {
-				String parameterName = getParameterName(parameter, additionalParameters);
 				if (!initializedFields.contains(parameterName)) {
 					pw.print("this." + parameterName + " = ");
 					construct(parameter.asType(), pw);
@@ -148,105 +135,57 @@ public class ConstructorPrinter {
 
 		List<String> initializedFields = new ArrayList<String>();
 		
-		pw.print("public " + outputName.getSimpleName() + "(");
-		int i = 0;
+		HierarchyPrintWriter printWriter = ownerType.getConstructor().getPrintWriter();
 		
-		for (VariableElement parameter: constructor.getParameters()) {
-			
-			String parameterName = getParameterName(parameter, additionalParameters);
-			
-			if (parameterName == null) {
-				parameterName = parameter.getSimpleName().toString();
-				
-				if (i > 0) {
-					pw.print(", ");
-				}
-							
-				if (parameter.asType().getKind().equals(TypeKind.DECLARED)) {
-					pw.print(((DeclaredType)parameter.asType()).asElement(), " " + parameterName);
-				} else {
-					pw.print(parameter.asType(), " " + parameterName);
-				}
-				
-				i++;
-			}
-		}
-		
-		for (ParameterElement additionalParameter: additionalParameters) {
-			if (additionalParameter.isPropagated()) {
-				if (i > 0) {
-					pw.print(", ");
-				}
-				
-				String parameterName = additionalParameter.getName().toString();
-				
-//				if (additionalParameter.asType().getKind().equals(TypeKind.DECLARED)) {
-//					String simpleTypeName =  .asElement().getSimpleName().toString();
-//					pw.print(simpleTypeName + " " + parameterName);
-//				} else {
-				
-					pw.print(additionalParameter.getType().toString(ClassSerializer.SIMPLE, true) + " " + parameterName);
-//				}
-
-				i++;
-			}
-		}
-		
-		pw.println(") {");
 		if (callSuperConstructor) {
-			pw.print("super(");
+			printWriter.print("super(");
 		} else {
-			pw.print("this(");
+			printWriter.print("this(");
 		}
 		
-		i = 0;
+		int i = 0;
 		for (VariableElement parameter: superConstructor.getParameters()) {
 			if (i > 0) {
-				pw.print(", ");
+				printWriter.print(", ");
 			}
 			
 			String parameterName = ensureParameterName(parameter, additionalParameters);
 			
 			if (constructorPrinter.existsParameter(parameterName, constructor, additionalParameters)) {
-				pw.print(parameterName);
+				printWriter.print(parameterName);
 			} else {
-				constructorPrinter.construct(parameter.asType(), pw);
+				constructorPrinter.construct(parameter.asType(), printWriter);
 			}
 			initializedFields.add(parameterName);
 			i++;
 		}
 		
 		if (callSuperConstructor) {
-			pw.println(");");
-//			for (VariableElement parameter: superConstructor.getParameters()) {
-//				String name = parameter.getSimpleName().toString();
-//				if (!constructorPrinter.existsField(name, superConstructor)) {
-//					pw.println("this." + name + " = " + name + ";");
-//					initializedFields.add(name);
-//				}
-//			}
-			
-			for (ParameterElement additionalParameter: additionalParameters) {
-				String name = additionalParameter.getName();
-				if (!constructorPrinter.existsField(name, superConstructor)) {
-					pw.println("this." + name + " = " + name + ";");
-					initializedFields.add(name);
-				}
-			}
-
-			constructorPrinter.finish(initializedFields, superConstructor, pw, additionalParameters);
+			printWriter.println(");");
+//			constructorPrinter.finish(initializedFields, superConstructor, printWriter, additionalParameters);
 		} else {
 			for (ParameterElement additionalParameter: additionalParameters) {
 				if (i > 0) {
-					pw.print(", ");
+					printWriter.print(", ");
 				}
-				pw.print(additionalParameter.getName().toString());
+				printWriter.print(additionalParameter.getName().toString());
 				i++;
 			}
-			pw.println(");");
+			printWriter.println(");");
+		}
+
+		for (VariableElement parameter: constructor.getParameters()) {
+			String parameterName = getParameterName(parameter, additionalParameters);
+			if (parameterName == null) {
+				ProcessorUtils.addField(processingEnv, ownerType, processingEnv.getTypeUtils().toMutableType(parameter.asType()), parameter.getSimpleName().toString());
+			}
 		}
 		
-		pw.println("}");
-		pw.println();
+		for (ParameterElement additionalParameter: additionalParameters) {
+			if (additionalParameter.isPropagated()) {
+				ProcessorUtils.addField(processingEnv, ownerType, additionalParameter.getType(), additionalParameter.getName().toString());
+			}
+		}
+
 	}
 }

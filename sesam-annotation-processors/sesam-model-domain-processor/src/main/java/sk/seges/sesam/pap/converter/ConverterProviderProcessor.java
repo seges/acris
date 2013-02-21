@@ -155,8 +155,7 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 		
 		ConverterProviderPrinter converterProviderPrinter = ensureConverterProviderPrinter(processingEnv);
 		UsageType previousUsage = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_OUTSIDE_USAGE);
-//		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType .GET, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
-		converterProviderPrinter.printConverterMethods(context.getOutputType().getPrintWriter(), false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+		converterProviderPrinter.printConverterMethods(context.getOutputType(), false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 		converterProviderPrinter.changeUsage(previousUsage);
 		converterProviderPrinterDelegate.finalize();
 	}

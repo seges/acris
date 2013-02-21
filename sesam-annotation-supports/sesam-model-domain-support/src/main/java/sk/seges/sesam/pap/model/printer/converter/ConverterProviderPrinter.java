@@ -22,7 +22,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.ParameterElement;
@@ -37,7 +40,9 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.Field;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -157,10 +162,10 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return previousUsage;
 	}
 	
-	public void printConverterMethods(FormattedPrintWriter pw, boolean supportExtends, ConverterInstancerType converterInstancerType) {
+	public void printConverterMethods(MutableDeclaredType ownerType, boolean supportExtends, ConverterInstancerType converterInstancerType) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
-			printGetConverterMethod(pw, converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
-			printGetConverterMethod(pw, converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
+			printGetConverterMethod(ownerType, converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
+			printGetConverterMethod(ownerType, converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
 		}
 	}
 
@@ -201,9 +206,6 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	}
 
 	private boolean isTyped(ConverterTypeElement converterTypeElement) {
-		//DomainType domain = converterTypeElement.getDomain();
-//		return (domain != null && domain.getKind().isDeclared() && ((DomainDeclaredType)domain).hasTypeParameters());
-		
 		return (converterTypeElement != null && converterTypeElement.hasTypeParameters());
 	}
 	
@@ -248,18 +250,13 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 
 		MutableDeclaredType converterBase = converterTypeElement.getConverterBase();
 		
-		//DomainType domain = converterTypeElement.getDomain();
-		
 		if (converterBase.hasTypeParameters()) {
 			pw.print("<");
 			pw.print(typeUtils.getTypeVariable(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX, converterBase.getTypeVariables().get(0)));
 			pw.print(", ",typeUtils.getTypeVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX, converterBase.getTypeVariables().get(1)));
 			pw.print(">");
-			pw.print(" ", getTypedConverter(converterTypeElement, /*processingEnv.getTypeUtils().implementsType(converterTypeElement, 
-					processingEnv.getTypeUtils().toMutableType(InstantiableDtoConverter.class)) */isTyped(converterTypeElement)));
+			pw.print(" ", getTypedConverter(converterTypeElement, isTyped(converterTypeElement)));
 		} else {
-//			pw.print(DtoConverter.class, "<" + ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX + ", " + ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + ">");
-//			pw.print(getTypedConverter(converterTypeElement, false));
 			pw.print(converterTypeElement);
 		}
 	}
@@ -280,11 +277,8 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	}
 		
 	protected List<ConverterConstructorParameter> getConverterProviderMethodAdditionalParameters(ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType) {
-		//MutableTypes typeUtils = processingEnv.getTypeUtils();
-		//MutableDeclaredType objectClassType = typeUtils.toMutableType(Class.class).setTypeVariables(typeUtils.getWildcardType(converterTargetType.getObject(converterTypeElement, processingEnv), null));
 		ConverterConstructorParameter converterParameter = new ConverterConstructorParameter(
-				converterTargetType.getObject(converterTypeElement, processingEnv)
-				/*objectClassType*/, TARGET_PARAMETER_NAME, null, false, processingEnv);
+				converterTargetType.getObject(converterTypeElement, processingEnv), TARGET_PARAMETER_NAME, null, false, processingEnv);
 		ArrayList<ConverterConstructorParameter> params = new ArrayList<ConverterConstructorParameter>();
 		params.add(converterParameter);
 		return params;
@@ -304,7 +298,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 				null, false, processingEnv);
 	}
 	
-	protected void printGetConverterMethod(FormattedPrintWriter pw, ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType, boolean supportExtends, ConverterInstancerType converterInstancerType) {
+	protected void printGetConverterMethod(MutableDeclaredType ownerType, ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType, boolean supportExtends, ConverterInstancerType converterInstancerType) {
 
 		List<ConverterConstructorParameter> converterParameters = getConverterParametersDefinition(converterTypeElement, converterInstancerType);
 		List<ConverterConstructorParameter> originalParameters = new ArrayList<ConverterConstructorParameter>();
@@ -314,9 +308,11 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 
 		String converterMethod = getConverterMethodName(converterTypeElement, converterTargetType);
 
+		HierarchyPrintWriter pw = ownerType.getPrintWriter();
+		
 		MutableDeclaredType converterReplacedTypeParameters = printConverterMethodDefinition(pw, converterParameters, converterTypeElement, converterMethod);
 		pw.println("{");
-
+		
 		//TODO print converter parameter usage definition - ala printConverterParams
 		pw.print("return ");
 
@@ -333,7 +329,10 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		pw.print("(");
 
 		int i = 0;
-		
+
+		TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(converterTypeElement.getCanonicalName());
+
+			
 		ParameterUsageContext context = new ParameterUsageContext() {
 			
 			@Override
@@ -341,16 +340,71 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 				return null;
 			}
 		};
+
+		ExecutableElement constructor = null;
+		
+		if (typeElement != null) {
+			List<ExecutableElement> constructors = ElementFilter.constructorsIn(typeElement.getEnclosedElements());
+			
+			if (constructors.size() > 0) {
+				constructor = constructors.get(0);
+			}
+		} else {
+			int a = 0;
+			int b = a;
+		}
+		
+		List<VariableElement> commonParameters = new ArrayList<VariableElement>();
 		
 		for (ConverterConstructorParameter parameter : originalParameters) {
 			if (i > 0) {
 				pw.print(", ");
+			}
+
+			if (!ProcessorUtils.hasFieldByType(ownerType, parameter.getType())) {
+				ProcessorUtils.addField(processingEnv, ownerType, parameter.getType(), parameter.getName());
+			}
+
+			if (constructor != null) {
+				for (VariableElement constructorParameter: constructor.getParameters()) {
+					if (parameter.getType().toString(ClassSerializer.CANONICAL).equals(processingEnv.getTypeUtils().toMutableType(constructorParameter.asType()).toString(ClassSerializer.CANONICAL))) {
+						commonParameters.add(constructorParameter);
+						break;
+					}
+				}
 			}
 			
 			pw.print(parameter.getUsage(context));
 			i++;
 		}
 
+		if (constructor != null) {
+			for (VariableElement constructorParameter: constructor.getParameters()) {
+				boolean found = false;
+				for (VariableElement commonParameter: commonParameters) {
+					if (commonParameter.equals(constructorParameter)) {
+						found = true;
+						break;
+					}
+				}
+				
+				if (!found) {
+					if (i > 0) {
+						pw.print(", ");
+					}
+					
+					MutableTypeMirror mutableFieldType = processingEnv.getTypeUtils().toMutableType(constructorParameter.asType());
+					
+					if (!ProcessorUtils.hasFieldByType(ownerType, mutableFieldType)) {
+						ProcessorUtils.addField(processingEnv, ownerType, mutableFieldType, constructorParameter.getSimpleName().toString());
+					}
+					
+					pw.print(constructorParameter.getSimpleName().toString());
+					i++;
+				}
+			}
+		}
+		
 		pw.println(");");
 		pw.println("}");
 		pw.println();
