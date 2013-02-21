@@ -6,7 +6,6 @@ import javax.lang.model.element.ExecutableElement;
 
 import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
@@ -17,9 +16,9 @@ public class HibernateConverterProviderPrinter extends ConverterProviderPrinter 
 
 	protected TransferObjectProcessingEnvironment processingEnv;
 	
-	public HibernateConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv,
+	public HibernateConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv,
 			ConverterConstructorParametersResolverProvider parametersResolverProvider, UsageType usageType) {
-		super(pw, processingEnv, parametersResolverProvider, usageType);
+		super(processingEnv, parametersResolverProvider, usageType);
 		this.processingEnv = processingEnv;
 	}
 	

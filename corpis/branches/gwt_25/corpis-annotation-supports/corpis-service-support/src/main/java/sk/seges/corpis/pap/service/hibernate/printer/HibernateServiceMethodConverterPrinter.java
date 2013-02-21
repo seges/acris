@@ -8,7 +8,6 @@ import javax.lang.model.element.Element;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.corpis.pap.service.hibernate.accessor.TransactionPropagationAccessor;
-import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
@@ -17,8 +16,8 @@ import sk.seges.sesam.pap.service.printer.ServiceMethodConverterPrinter;
 public class HibernateServiceMethodConverterPrinter extends ServiceMethodConverterPrinter {
 
 	public HibernateServiceMethodConverterPrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolverProvider parametersResolverProvider,
-			HierarchyPrintWriter pw, ConverterProviderPrinter converterProviderPrinter) {
-		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
+			ConverterProviderPrinter converterProviderPrinter) {
+		super(processingEnv, parametersResolverProvider, converterProviderPrinter);
 	}
 
 	protected Class<?>[] getSupportedAnnotations(Element method) {

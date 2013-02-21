@@ -39,8 +39,8 @@ public class HibernateConverterProviderProcessor extends ConverterProviderProces
 	}
 
 	@Override
-	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv) {
-		return new HibernateConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(), UsageType.CONVERTER_PROVIDER_INSIDE_USAGE) {
+	protected ConverterProviderPrinter getConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv) {
+		return new HibernateConverterProviderPrinter(processingEnv, getParametersResolverProvider(), UsageType.CONVERTER_PROVIDER_INSIDE_USAGE) {
 
 			@Override
 			protected List<ConverterConstructorParameter> getConverterProviderMethodAdditionalParameters(ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType) {
@@ -51,8 +51,8 @@ public class HibernateConverterProviderProcessor extends ConverterProviderProces
 
 	protected ConverterProviderElementPrinter[] getNestedPrinters(FormattedPrintWriter pw) {
 		return new ConverterProviderElementPrinter[] {
-			new DomainMethodConverterProviderPrinter(getParametersResolverProvider(), processingEnv, pw, ensureConverterProviderPrinter(pw, processingEnv)),
-			new DtoMethodConverterProviderPrinter(getParametersResolverProvider(), processingEnv, pw, ensureConverterProviderPrinter(pw, processingEnv))
+			new DomainMethodConverterProviderPrinter(getParametersResolverProvider(), processingEnv, pw, ensureConverterProviderPrinter(processingEnv)),
+			new DtoMethodConverterProviderPrinter(getParametersResolverProvider(), processingEnv, pw, ensureConverterProviderPrinter(processingEnv))
 		};
 	}
 }
