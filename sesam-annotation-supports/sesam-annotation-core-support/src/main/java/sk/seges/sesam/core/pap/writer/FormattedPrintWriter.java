@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
-import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayTypeValue;
@@ -35,6 +34,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 	public static final int LINE_LENGTH = 120;
 
 	protected int oudentLevel = 0;
+	protected int defaultOudentLevel = 0;
 	private boolean startLine = true;
 
 	protected boolean autoIndent = false;
@@ -42,22 +42,22 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 
 	private final OutputStream outputStream;
 
-	protected final List<MutableDeclaredType> usedTypes;
+	protected final String lineSeparator;
 
-	public FormattedPrintWriter(PrintSupport printerSupport, MutableProcessingEnvironment processingEnv, List<MutableDeclaredType> usedTypes) {
-		this(new ByteArrayOutputStream(), printerSupport, processingEnv, usedTypes);
+	public FormattedPrintWriter(MutableProcessingEnvironment processingEnv) {
+		this(new ByteArrayOutputStream(), processingEnv);
 	}
 
-	protected FormattedPrintWriter(OutputStream outputStream, PrintSupport printerSupport, MutableProcessingEnvironment processingEnv, List<MutableDeclaredType> usedTypes) {
+	protected FormattedPrintWriter(OutputStream outputStream, MutableProcessingEnvironment processingEnv) {
 		super(outputStream);
-		this.usedTypes = usedTypes;
 		this.outputStream = outputStream;
 		this.processingEnv = processingEnv;
+		this.lineSeparator = java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
 
-		if (printerSupport != null) {
-			setAutoIndent(printerSupport.autoIdent());
-			setSerializer(printerSupport.printer().printSerializer());
-			serializeTypeParameters(printerSupport.printer().printTypeParameters());
+		if (processingEnv.getPrintSupport() != null) {
+			setAutoIndent(processingEnv.getPrintSupport().autoIdent());
+			setSerializer(processingEnv.getPrintSupport().printer().printSerializer());
+			serializeTypeParameters(processingEnv.getPrintSupport().printer().printTypeParameters());
 		} else {
 			setAutoIndent(false);
 			setSerializer(ClassSerializer.CANONICAL);
@@ -65,19 +65,60 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		}
 	}
 
+	public String toString() {
+		return toString(getDefaultOudentLevel());
+	}
+	
+	protected String toString(int oudentLevel) {
+		String result = "";
+
+		String output = getOutputStream().toString();
+		
+		String[] lines = output.split(lineSeparator);
+		
+		boolean endWithNewLine = output.endsWith(lineSeparator);
+		
+		if (!endWithNewLine && lines.length == 1 && lines[0].trim().length() == 0) {
+			return "";
+		}
+		
+		if (lines.length == 0 && endWithNewLine) {
+			return null;
+		}
+		
+		int i =0;
+		for (String s : lines) {
+			result += getOudentation(oudentLevel) + s;
+			if (i < lines.length - 1 || endWithNewLine) {
+				result += lineSeparator;
+			}
+			i++;
+		}
+		
+		return result;
+	}
+
 	OutputStream getOutputStream() {
 		return outputStream;
 	}
 
-	public void setDefaultIdentLevel(int level) {
-		this.oudentLevel = level;
+	public void setDefaultOudentLevel(int defaultOudentLevel) {
+		this.defaultOudentLevel = defaultOudentLevel;
 	}
-
+	
+	public int getDefaultOudentLevel() {
+		return defaultOudentLevel;
+	}
+	
 	public void setAutoIndent(boolean autoIndent) {
 		this.autoIndent = autoIndent;
 	}
 
 	protected void setOudentLevel(int oudentLevel) {
+		if (oudentLevel < 0) {
+			defaultOudentLevel = defaultOudentLevel + oudentLevel;
+			oudentLevel = 0;
+		}
 		this.oudentLevel = oudentLevel;
 	}
 
@@ -85,7 +126,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		if (autoIndent) {
 			throw new RuntimeException("Unable to indent manually in auto mode. Please set autoIndent to false.");
 		}
-		setOudentLevel((getOudentLevel() <= 0) ? 0 : getOudentLevel() - 1);
+		setOudentLevel(getOudentLevel() - 1);
 	}
 
 	int getOudentLevel() {
@@ -107,26 +148,31 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 
 	private void setAutoIndent(char c) {
 		if (c == '}') {
-			setOudentLevel((getOudentLevel() <= 0) ? 0 : getOudentLevel() - 1);
+			setOudentLevel(getOudentLevel() - 1);
 		}
 	}
 
 	private boolean processing = false;
 
-	private void addIdentation() {
+	protected String getOudentation(int oudentation) {
+		String result = "";
+
+		for (int i = 0; i < oudentation; i++) {
+			result += DEFAULT_OUDENT;
+		}
+		
+		return result;
+	}
+	
+	protected void addIdentation() {
 		if (processing) {
 			return;
 		}
 		processing = true;
 		if (startLine) {
-			String indentation = "";
-
-			for (int i = 0; i < getOudentLevel(); i++) {
-				indentation += DEFAULT_OUDENT;
-			}
-
-			currentPosition += indentation.length();
-			super.print(indentation);
+			String oudentation = getOudentation(getOudentLevel());
+			currentPosition += oudentation.length();
+			super.print(oudentation);
 			startLine = false;
 		}
 		processing = false;
@@ -285,7 +331,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 	}
 
 	private boolean isConflictType(MutableDeclaredType mutableType) {
-		for (MutableDeclaredType importType : usedTypes) {
+		for (MutableDeclaredType importType : processingEnv.getUsedTypes()) {
 			if (getImportPackage(importType) != null && importType.getSimpleName().equals(mutableType.getSimpleName())
 					&& !getImportPackage(importType).equals(getImportPackage(mutableType))) {
 				return true;
@@ -349,7 +395,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 					if (isConflictType((MutableTypeValue) o)) {
 						evalSerializer = ClassSerializer.CANONICAL;
 					} else {
-						usedTypes.addAll(extractValueTypes((MutableTypeValue) o));
+						processingEnv.getUsedTypes().addAll(extractValueTypes((MutableTypeValue) o));
 					}
 				}
 
@@ -372,7 +418,7 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 						if (isConflictType(mutableType)) {
 							evalSerializer = ClassSerializer.CANONICAL;
 						} else {
-							usedTypes.addAll(extractDeclaredType(mutableType));
+							processingEnv.getUsedTypes().addAll(extractDeclaredType(mutableType));
 						}
 					}
 					String res = mutableType.toString(evalSerializer, typed);
@@ -462,9 +508,5 @@ public class FormattedPrintWriter extends PrintWriter implements DelayedPrintWri
 		}
 
 		return result;
-	}
-
-	public List<MutableDeclaredType> getUsedTypes() {
-		return usedTypes;
 	}
 }

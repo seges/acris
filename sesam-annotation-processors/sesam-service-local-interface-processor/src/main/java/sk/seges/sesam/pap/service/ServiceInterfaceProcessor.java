@@ -16,8 +16,8 @@ import javax.lang.model.util.ElementFilter;
 import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActionType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
@@ -81,7 +81,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 	protected void init(Element element, RoundEnvironment roundEnv) {
 		super.init(element, roundEnv);
 		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement((TypeElement)element, super.processingEnv);
-		this.processingEnv = new TransferObjectProcessingEnvironment(super.processingEnv, roundEnv, getConfigurationCache(), getClass());
+		this.processingEnv = new TransferObjectProcessingEnvironment(getProcessingEnv(), roundEnv, getConfigurationCache(), getClass(), getProcessingEnv().getUsedTypes());
 		EnvironmentContext<TransferObjectProcessingEnvironment> context = getEnvironmentContext(remoteServiceTypeElement);
 		this.processingEnv.setConfigurationProviders(getConfigurationProviders(remoteServiceTypeElement, context));
 	}

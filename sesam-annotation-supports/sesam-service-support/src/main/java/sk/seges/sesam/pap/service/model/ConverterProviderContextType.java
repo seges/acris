@@ -23,7 +23,7 @@ public class ConverterProviderContextType extends DelegateMutableDeclaredType im
 		this.serviceType = serviceType;
 		this.processingEnv = processingEnv;
 
-		addModifier(Modifier.PROTECTED);
+		addModifier(Modifier.PUBLIC);
 		setKind(MutableTypeKind.CLASS);
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(ConverterProviderContext.class));
 	}

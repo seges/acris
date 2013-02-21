@@ -113,7 +113,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 					Field field = new Field(DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), domainIdType.getDto());
 //					converterProviderPrinter.printDtoEnsuredConverterMethodName(domainIdType.getDto(), field, domainIdMethod, pw, false);
 					//TODO add NPE check
-					converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainIdType, field, domainIdMethod, true);
+					converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, domainIdType, field, domainIdMethod, true);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}
@@ -164,7 +164,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 //			Field field = new Field(DTO_NAME, domainsuperClass.getDto());
 
 //			converterProviderPrinter.printDtoEnsuredConverterMethodName(domainsuperClass.getDto(), field, null, pw, false);
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, domainSuperClass, field, null, false);
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, domainSuperClass, field, null, false);
 
 			pw.println(".convertFromDto(" + RESULT_NAME + ", " + DTO_NAME + ");");
 			pw.println();

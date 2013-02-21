@@ -59,7 +59,7 @@ public class FormattedOutputAnnotationProcessor extends PlugableAnnotationProces
 					rootPrintWriter.println("package " + packageName + ";");
 					rootPrintWriter.println();
 
-					initializeImportPrinter(rootPrintWriter, packageName);
+					rootPrintWriter.addNestedPrinter(initializeImportPrinter(packageName));
 
 					FormattedPrintWriter classPrintWriter = rootPrintWriter.initializeNestedPrinter();
 

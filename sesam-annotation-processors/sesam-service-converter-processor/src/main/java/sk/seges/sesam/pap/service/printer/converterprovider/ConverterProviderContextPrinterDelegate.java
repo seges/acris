@@ -13,8 +13,8 @@ import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.ParameterElement.ParameterUsageContext;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableType;
-import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.converter.printer.converterprovider.ConverterProviderPrinterDelegate;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
@@ -27,20 +27,18 @@ public class ConverterProviderContextPrinterDelegate {
 	private ConverterProviderPrinterDelegate printerDelegate;
 	
 	private final ConverterConstructorParametersResolverProvider parametersResolverProvider;
-	private final FormattedPrintWriter pw;
 	
-	public ConverterProviderContextPrinterDelegate(ConverterConstructorParametersResolverProvider parametersResolverProvider, FormattedPrintWriter pw) {
-		this.pw = pw;
+	public ConverterProviderContextPrinterDelegate(ConverterConstructorParametersResolverProvider parametersResolverProvider) {
 		this.parametersResolverProvider = parametersResolverProvider;
 	}
 	
 	public void finalize() {}
 	
-	public void initialize(final MutableTypes typeUtils, final ConverterProviderContextType converterProviderType, UsageType usageType, final Set<? extends Element> converterPrinterDelegates) {
+	public void initialize(final MutableProcessingEnvironment processingEnv, final ConverterProviderContextType converterProviderType, UsageType usageType, final Set<? extends Element> converterPrinterDelegates) {
 
-		printerDelegate = new ConverterProviderPrinterDelegate(parametersResolverProvider, pw) {
+		printerDelegate = new ConverterProviderPrinterDelegate(parametersResolverProvider) {
 			@Override
-			public void printConstructorBody() {
+			public void printConstructorBody(HierarchyPrintWriter pw) {
 				for (Element converterPrinterDelegate: converterPrinterDelegates) {
 					pw.print("registerConverterProvider(new ", converterPrinterDelegate, "(");
 					ConverterConstructorParametersResolver parameterResolver = parametersResolverProvider.getParameterResolver(UsageType.CONVERTER_PROVIDER_CONSTRUCTOR);
@@ -51,7 +49,7 @@ public class ConverterProviderContextPrinterDelegate {
 					List<ConstructorParameter> constructorParameters = new ArrayList<ConstructorParameter>();
 					
 					if (constructors.size() > 0) {
-						 constructorParameters = ConstructorHelper.getConstructorParameters(typeUtils, constructors.get(0));
+						 constructorParameters = ConstructorHelper.getConstructorParameters(processingEnv.getTypeUtils(), constructors.get(0));
 					}
 					
 					int j = 0;
@@ -86,6 +84,6 @@ public class ConverterProviderContextPrinterDelegate {
 			}
 		};
 
-		printerDelegate.initialize(typeUtils, converterProviderType, usageType);
+		printerDelegate.initialize(processingEnv, converterProviderType, usageType);
 	}
 }

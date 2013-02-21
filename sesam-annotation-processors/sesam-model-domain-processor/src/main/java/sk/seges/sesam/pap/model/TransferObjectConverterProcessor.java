@@ -108,7 +108,7 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 	}
 	
 	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw) {
-		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(), UsageType.CONVERTER_PROVIDER_OUTSIDE_USAGE);
+		return new ConverterProviderPrinter(processingEnv, getParametersResolverProvider(), UsageType.CONVERTER_PROVIDER_OUTSIDE_USAGE);
 	}
 	
 	@Override
@@ -133,6 +133,6 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		super.processElement(context);
 		
 //		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType.ALL, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
-		converterProviderPrinter.printConverterMethods(false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+		converterProviderPrinter.printConverterMethods(pw, false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 	}	
 }

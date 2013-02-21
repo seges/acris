@@ -12,7 +12,6 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.AbstractTransferProcessingProcessor;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
@@ -28,6 +27,7 @@ import sk.seges.sesam.pap.service.configurer.ServiceConverterProcessorConfigurer
 import sk.seges.sesam.pap.service.model.DefaultServiceConverterParametersFilter;
 import sk.seges.sesam.pap.service.model.LocalServiceTypeElement;
 import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;
+import sk.seges.sesam.pap.service.model.ServiceConverterTypeElement;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.ConverterParameterFieldPrinter;
 import sk.seges.sesam.pap.service.printer.LocalServiceFieldPrinter;
@@ -122,34 +122,33 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 		return new DefaultServiceConverterParametersFilter();
 	}
 	
-	protected ServiceConverterElementPrinter[] getElementPrinters(HierarchyPrintWriter pw, ServiceTypeElement serviceTypeElement) {
+	protected ServiceConverterElementPrinter[] getElementPrinters(ServiceTypeElement serviceTypeElement) {
 		return new ServiceConverterElementPrinter[] {
-				new LocalServiceFieldPrinter(serviceTypeElement.getPrintWriter(pw)),
-				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
-				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
-				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw)),
-				new ServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), serviceTypeElement.getPrintWriter(pw), converterProviderPrinter),
-				new ServiceConverterProviderContextPrinter(processingEnv, serviceTypeElement.getPrintWriter(pw), getParametersResolverProvider(serviceTypeElement), converterProviderPrinter, getClassPathTypes())
+				new LocalServiceFieldPrinter(),
+				new ConverterParameterFieldPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement)),
+				new ServiceConstructorDefinitionPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement)),
+				new ServiceConstructorBodyPrinter(processingEnv, getParametersFilter(), getParametersResolverProvider(serviceTypeElement)),
+				new ServiceMethodConverterPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), converterProviderPrinter),
+				new ServiceConverterProviderContextPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), converterProviderPrinter, getClassPathTypes())
 		};
 	}
 
-	protected ConverterProviderPrinter getConverterProviderPrinter(FormattedPrintWriter pw, ServiceTypeElement serviceTypeElement) {
-		return new ConverterProviderPrinter(pw, processingEnv, getParametersResolverProvider(serviceTypeElement), UsageType.CONVERTER_PROVIDER_OUTSIDE_USAGE);
+	protected ConverterProviderPrinter getConverterProviderPrinter(ServiceTypeElement serviceTypeElement) {
+		return new ConverterProviderPrinter(processingEnv, getParametersResolverProvider(serviceTypeElement), UsageType.CONVERTER_PROVIDER_OUTSIDE_USAGE);
 	}
 	
 	@Override
 	protected void processElement(ProcessorContext context) {
 
-		HierarchyPrintWriter pw = context.getPrintWriter();
-		TypeElement element = context.getTypeElement();		
-		ServiceTypeElement serviceTypeElement = new ServiceTypeElement(element, processingEnv);
+		ServiceConverterTypeElement  converterType = (ServiceConverterTypeElement) context.getOutputType();
+		ServiceTypeElement serviceTypeElement = converterType.getServiceTypeElement();
 		
-		this.converterProviderPrinter = getConverterProviderPrinter(pw, serviceTypeElement);
+		this.converterProviderPrinter = getConverterProviderPrinter(serviceTypeElement);
 
-		for (ServiceConverterElementPrinter elementPrinter: getElementPrinters(pw, serviceTypeElement)) {
+		for (ServiceConverterElementPrinter elementPrinter: getElementPrinters(serviceTypeElement)) {
 			elementPrinter.initialize(serviceTypeElement, context.getOutputType());
 			for (LocalServiceTypeElement localServiceInterface: serviceTypeElement.getLocalServiceInterfaces()) {
-				ServiceConverterPrinterContext printerContext = new ServiceConverterPrinterContext();
+				ServiceConverterPrinterContext printerContext = new ServiceConverterPrinterContext(processingEnv);
 				printerContext.setLocalServiceFieldName(MethodHelper.toField(localServiceInterface.getSimpleName() + SERVICE_DELEGATE_NAME));
 				printerContext.setLocalServiceInterface(localServiceInterface);
 				printerContext.setService(serviceTypeElement);
@@ -159,7 +158,7 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 		}
 	
 //		this.converterProviderPrinter.printConverterMethods(true, ConverterProviderMethodType.ALL, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
-		this.converterProviderPrinter.printConverterMethods(true, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
+		this.converterProviderPrinter.printConverterMethods(context.getPrintWriter(), true, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
 	}
 
 	@Override

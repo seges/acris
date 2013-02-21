@@ -11,15 +11,11 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.ListUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
-import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 
 public class ImportPrinter extends FormattedPrintWriter {
 
-	private final FormattedPrintWriter outputPrintWriter;
-	
-	public ImportPrinter(HierarchyPrintWriter hierarchyPrintWriter, MutableProcessingEnvironment processingEnv) {
-		super(null, processingEnv, hierarchyPrintWriter.getUsedTypes());
-		this.outputPrintWriter = hierarchyPrintWriter.addNestedPrinter(this);
+	public ImportPrinter(MutableProcessingEnvironment processingEnv) {
+		super(processingEnv);
 	}
 	
 	private String getVeryTopPackage(MutableDeclaredType importType) {
@@ -68,7 +64,7 @@ public class ImportPrinter extends FormattedPrintWriter {
 	private void printImports() {
 		
 		List<MutableDeclaredType> mergedImports = new ArrayList<MutableDeclaredType>();
-		ListUtils.addUnique(mergedImports, getUsedTypes());
+		ListUtils.addUnique(mergedImports, processingEnv.getUsedTypes());
 		
 		mergedImports = removeNoPackageImports(mergedImports);
 
@@ -88,7 +84,7 @@ public class ImportPrinter extends FormattedPrintWriter {
 			}
 			
 			if (previousPackage != null && !getVeryTopPackage(importType).equals(previousPackage)) {
-				outputPrintWriter.println();
+				println();
 			}
 			//TODO do not print types that are nested in the output class
 			
@@ -97,7 +93,7 @@ public class ImportPrinter extends FormattedPrintWriter {
 		}
 
 		if (collectedImports.size() > 0) {
-			outputPrintWriter.println();
+			println();
 		}
 	}
 
@@ -106,6 +102,6 @@ public class ImportPrinter extends FormattedPrintWriter {
 	}
 	
 	protected void printImport(MutableDeclaredType importType) {
-		outputPrintWriter.println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
+		println("import " + importType.toString(ClassSerializer.CANONICAL, false) + ";");
 	}
 }

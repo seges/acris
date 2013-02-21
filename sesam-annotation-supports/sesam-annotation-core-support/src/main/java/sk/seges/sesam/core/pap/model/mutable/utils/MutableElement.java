@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.lang.model.element.Modifier;
 
+import sk.seges.sesam.core.pap.model.InitializableValue;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElementKind;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElementType;
@@ -15,21 +16,29 @@ abstract class MutableElement implements MutableElementType {
 
 	protected final MutableProcessingEnvironment processingEnv;
 	protected final MutableElementKind kind;
-	protected final MutableTypeMirror type;
-	protected final String name;
 	protected Set<Modifier> modifiers;
 
-	public MutableElement(MutableElementKind kind, MutableTypeMirror type, String name, MutableProcessingEnvironment processingEnv) {
+	protected final InitializableValue<MutableTypeMirror> type = new InitializableValue<MutableTypeMirror>();
+	protected final InitializableValue<String> simpleName = new InitializableValue<String>();
 
+	public MutableElement(MutableElementKind kind, MutableTypeMirror type, String name, MutableProcessingEnvironment processingEnv) {
 		this.processingEnv = processingEnv;
 		this.kind = kind;
-		this.type = type;
-		this.name = name;
+		this.type.setValue(type);
+		this.simpleName.setValue(name);
 	}
-	
+
+	protected MutableElement(MutableElementKind kind, MutableProcessingEnvironment processingEnv) {
+		this.processingEnv = processingEnv;
+		this.kind = kind;
+	}
+
 	@Override
 	public MutableTypeMirror asType() {
-		return type;
+		if (!type.isInitialized()) {
+			initializeType();
+		}
+		return type.getValue();
 	}
 
 	@Override
@@ -54,6 +63,7 @@ abstract class MutableElement implements MutableElementType {
 		return addModifier(modifiers);
 	}
 	
+	@Override
 	public MutableElementType addModifier(Modifier... modifiers) {
 		Set<Modifier> result = new HashSet<Modifier>();
 		
@@ -73,9 +83,15 @@ abstract class MutableElement implements MutableElementType {
 		return this;
 	}
 
+	protected void initializeSimpleName() {};
+	protected void initializeType() {};
+	
 	@Override
 	public String getSimpleName() {
-		return name;
+		if (!simpleName.isInitialized()) {
+			initializeSimpleName();
+		}
+		return simpleName.getValue();
 	}
 
 	@Override

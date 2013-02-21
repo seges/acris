@@ -35,16 +35,17 @@ public class TypePrinter {
 			hierarchyPrintWriter.println();
 		}
 		
-		HierarchyPrintWriter typePrintWriter = type.getPrintWriter(hierarchyPrintWriter);
+		HierarchyPrintWriter typePrintWriter = type.getPrintWriter();
+		hierarchyPrintWriter.addNestedPrinter(typePrintWriter);
 
-		typePrintWriter.addNestedPrinter(new FormattedPrintWriter(hierarchyPrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+		typePrintWriter.addNestedPrinter(new FormattedPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
 				printAnnotations(this, type);
 				super.flush();
 			}
 		});
-		typePrintWriter.addNestedPrinter(new FormattedPrintWriter(hierarchyPrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+		typePrintWriter.addNestedPrinter(new FormattedPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
 				printTypeDefinition(this, type);
@@ -53,25 +54,25 @@ public class TypePrinter {
 		});
 		typePrintWriter.println(" {");
 		
-		HierarchyPrintWriter bodyPrinter = new HierarchyPrintWriter(hierarchyPrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes());
+		HierarchyPrintWriter bodyPrinter = new HierarchyPrintWriter(processingEnv);
 		typePrintWriter.addNestedPrinter(bodyPrinter);
-
-		bodyPrinter.addNestedPrinter(new HierarchyPrintWriter(typePrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+		
+		bodyPrinter.addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
 				printNestedTypes(this, type);
 				super.flush();
 			}
 		});
-
-		bodyPrinter.addNestedPrinter(new FormattedPrintWriter(typePrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+		
+		bodyPrinter.addNestedPrinter(new FormattedPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
 				printFields(this, type);
 				super.flush();
 			}
 		});
-		bodyPrinter.addNestedPrinter(new HierarchyPrintWriter(typePrintWriter.getPrinterSupport(), processingEnv, hierarchyPrintWriter.getUsedTypes()) {
+		bodyPrinter.addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
 				printMethods(this, type);
@@ -90,11 +91,13 @@ public class TypePrinter {
 
 		if (!type.getConstructor().isDefault()) {
 			type.getConstructor().setReturnType(null);
-			printWriter.addNestedPrinter(type.getConstructor().getPrintWriter(printWriter));
+			printWriter.addNestedPrinter(type.getConstructor().getPrintWriter());
+			printWriter.println();
 		}
 		
 		for (MutableExecutableType method: type.getMethods()) {
-			printWriter.addNestedPrinter(method.getPrintWriter(printWriter));
+			printWriter.addNestedPrinter(method.getPrintWriter());
+			printWriter.println();
 		}
 	}
 	
@@ -140,11 +143,14 @@ public class TypePrinter {
 				
 				pw.println(field.asType(), " " + field.getSimpleName() + ";");
 			}
+			
+			if (fields.size() > 0) {
+				pw.println();
+			}
 		}
 	}
 
-	//TODO make it private later
-	public void printTypeDefinition(FormattedPrintWriter pw, MutableDeclaredType type) {
+	private void printTypeDefinition(FormattedPrintWriter pw, MutableDeclaredType type) {
 		
 		for (Modifier modifier: type.getModifiers()) {
 			pw.print(modifier.name().toLowerCase() + " ");

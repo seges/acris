@@ -97,8 +97,8 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	}
 
 	@Override
-	public HierarchyPrintWriter getPrintWriter(HierarchyPrintWriter hierarchyPrintWriter) {
-		return ensureDelegateType().getPrintWriter(hierarchyPrintWriter);
+	public HierarchyPrintWriter getPrintWriter() {
+		return ensureDelegateType().getPrintWriter();
 	}
 	
 	@Override
