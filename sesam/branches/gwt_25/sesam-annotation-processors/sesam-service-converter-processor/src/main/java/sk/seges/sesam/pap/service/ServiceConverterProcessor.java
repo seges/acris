@@ -93,7 +93,8 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 		List<LocalServiceTypeElement> localServiceInterfaces = new ServiceTypeElement(context.getTypeElement(), processingEnv).getLocalServiceInterfaces();
 
 		FormattedPrintWriter pw = context.getPrintWriter();
-		
+
+		//TODO use annotation printer, create MutableAnnotationMirror
 		pw.print("@", LocalServiceConverter.class, "(remoteServices = ");
 
 		if (localServiceInterfaces.size() > 0) {
@@ -157,8 +158,7 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 			elementPrinter.finish(serviceTypeElement);
 		}
 	
-//		this.converterProviderPrinter.printConverterMethods(true, ConverterProviderMethodType.ALL, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
-		this.converterProviderPrinter.printConverterMethods(context.getPrintWriter(), true, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
+		this.converterProviderPrinter.printConverterMethods(context.getOutputType(), true, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
 	}
 
 	@Override

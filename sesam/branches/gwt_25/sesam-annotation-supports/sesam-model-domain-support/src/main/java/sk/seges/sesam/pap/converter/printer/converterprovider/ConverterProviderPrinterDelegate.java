@@ -4,8 +4,8 @@ import javax.lang.model.element.Modifier;
 
 import sk.seges.sesam.core.pap.model.ConstructorParameter;
 import sk.seges.sesam.core.pap.model.ParameterElement;
-import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.converter.model.HasConstructorParameters;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
@@ -26,11 +26,7 @@ public class ConverterProviderPrinterDelegate {
 		HierarchyPrintWriter printWriter = type.getConstructor().addModifier(Modifier.PUBLIC).getPrintWriter();
 		
 		for (ParameterElement generatedParameter : generatedParameters) {
-			MutableVariableElement field = processingEnv.getElementUtils().getParameterElement(generatedParameter.getType(), generatedParameter.getName());
-			type.addField((MutableVariableElement) field.addModifier(Modifier.PROTECTED).addModifier(Modifier.FINAL));
-			field = processingEnv.getElementUtils().getParameterElement(generatedParameter.getType(), generatedParameter.getName());
-			type.getConstructor().addParameter(field);
-			printWriter.println("this." + generatedParameter.getName() + " = " + generatedParameter.getName() + ";");
+			ProcessorUtils.addField(processingEnv, type, generatedParameter.getType(), generatedParameter.getName());
 		}
 
 		printConstructorBody(printWriter);

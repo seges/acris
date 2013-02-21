@@ -16,6 +16,8 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
@@ -45,7 +47,9 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 
 	private List<Modifier> modifiers;
 	private List<MutableExecutableType> mutableMethods = new LinkedList<MutableExecutableType>();
-	
+
+	private MutableExecutableType constructor;
+
 	//TypeMirror for the primitive types, otherwise DeclaredType
 	private TypeMirror type;
 	private boolean dirty = false;
@@ -808,12 +812,10 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 		return Collections.unmodifiableList(mutableMethods);
 	}
 
-	private MutableExecutableType constructor;
-
 	@Override
 	public MutableExecutableType getConstructor() {
 		if (constructor == null) {
-			constructor = new MutableMethod(processingEnv, getSimpleName());
+			constructor = new MutableMethod(processingEnv, getSimpleName()).addModifier(Modifier.PUBLIC);
 		}
 		
 		return constructor;

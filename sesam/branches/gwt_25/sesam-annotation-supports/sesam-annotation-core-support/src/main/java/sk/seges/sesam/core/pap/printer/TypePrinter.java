@@ -91,6 +91,7 @@ public class TypePrinter {
 
 		if (!type.getConstructor().isDefault()) {
 			type.getConstructor().setReturnType(null);
+			printWriter.println();
 			printWriter.addNestedPrinter(type.getConstructor().getPrintWriter());
 			printWriter.println();
 		}
@@ -114,6 +115,7 @@ public class TypePrinter {
 		List<MutableDeclaredType> nestedTypes = type.getNestedTypes();
 		
 		for (MutableDeclaredType nestedType: nestedTypes) {
+			pw.println();
 			new TypePrinter(pw, processingEnv).print(nestedType);
 		}
 	}

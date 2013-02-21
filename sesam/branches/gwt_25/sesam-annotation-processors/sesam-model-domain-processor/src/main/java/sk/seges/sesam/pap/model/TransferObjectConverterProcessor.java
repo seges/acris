@@ -122,17 +122,11 @@ public class TransferObjectConverterProcessor extends AbstractTransferProcessor 
 		
 		ParameterElement[] constructorAditionalParameters = getParametersResolverProvider().getParameterResolver(UsageType.DEFINITION).getConstructorAditionalParameters();
 		
-		for (ParameterElement parameter: constructorAditionalParameters) {
-			pw.println("private ", parameter.getType(), " " + parameter.getName().toString() + ";");
-			pw.println();
-		}
-
-		ConstructorPrinter constructorPrinter = new ConstructorPrinter(pw, context.getOutputType(),processingEnv);
+		ConstructorPrinter constructorPrinter = new ConstructorPrinter(context.getOutputType(),processingEnv);
 		constructorPrinter.printConstructors(cachedConverterType, constructorAditionalParameters);
 
 		super.processElement(context);
 		
-//		converterProviderPrinter.printConverterMethods(false, ConverterProviderMethodType.ALL, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
-		converterProviderPrinter.printConverterMethods(pw, false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
+		converterProviderPrinter.printConverterMethods(context.getOutputType(), false, ConverterInstancerType.REFERENCED_CONVERTER_INSTANCER);
 	}	
 }

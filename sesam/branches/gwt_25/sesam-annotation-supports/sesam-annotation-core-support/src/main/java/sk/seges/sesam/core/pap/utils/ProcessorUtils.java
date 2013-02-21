@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -15,20 +16,36 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Types;
 
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
+import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
 
 public class ProcessorUtils {
 
-	public static boolean isUnboxedType(TypeMirror typeMirror, ProcessingEnvironment processingEnv) {
-		try {
-			return (processingEnv.getTypeUtils().unboxedType(typeMirror) != null);
-		} catch (IllegalArgumentException e) {
+	public static void addField(MutableProcessingEnvironment processingEnv, MutableDeclaredType ownerType, MutableTypeMirror fieldType, String fieldName) {
+		MutableVariableElement field = processingEnv.getElementUtils().getParameterElement(fieldType, fieldName);
+		ownerType.addField((MutableVariableElement) field.addModifier(Modifier.PROTECTED).addModifier(Modifier.FINAL));
+		field = processingEnv.getElementUtils().getParameterElement(fieldType, fieldName);
+		ownerType.getConstructor().addParameter(field);
+		ownerType.getConstructor().getPrintWriter().println("this." + fieldName + " = " + fieldName + ";");
+	}
+	
+	public static boolean hasFieldByType(MutableDeclaredType ownerType, MutableTypeMirror fieldType) {
+		if (ownerType.getFields() == null) {
+			return false;
 		}
-
+		for (MutableVariableElement field: ownerType.getFields()) {
+			if (field.asType().toString(ClassSerializer.QUALIFIED).equals(fieldType.toString(ClassSerializer.QUALIFIED))) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
-
+	
 	public static boolean implementsType(TypeMirror t1, TypeMirror t2) {
 		if (t1 == null || !t1.getKind().equals(TypeKind.DECLARED) || !t2.getKind().equals(TypeKind.DECLARED)) {
 			return false;
@@ -136,28 +153,6 @@ public class ProcessorUtils {
 				currentElement = ((DeclaredType)currentTypeElement.getSuperclass()).asElement();
 			} else {
 				currentElement = null;
-			}
-		}
-		
-		return null;
-	}
-	
-	public static ExecutableElement getMethodByReturnType(TypeElement typeElement, TypeElement returnType, Types types) {
-		List<ExecutableElement> methods = ElementFilter.methodsIn(typeElement.getEnclosedElements());
-		
-		for (ExecutableElement method : methods) {
-			if (method.getReturnType() != null) {
-				//
-				if (method.getReturnType().getKind().equals(TypeKind.TYPEVAR)) {
-					TypeVariable typeVariable = (TypeVariable)method.getReturnType();
-					if (types.isAssignable(returnType.asType(), typeVariable.getUpperBound())) {
-						return method;
-					}
-				} else {
-					if (types.isAssignable(returnType.asType(), method.getReturnType())) {
-						return method;
-					}
-				}
 			}
 		}
 		
