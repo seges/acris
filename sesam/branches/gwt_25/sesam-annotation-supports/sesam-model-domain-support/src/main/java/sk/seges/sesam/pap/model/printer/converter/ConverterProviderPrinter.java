@@ -57,15 +57,13 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 
 	protected static final String TARGET_PARAMETER_NAME = "obj";
 
-	protected final FormattedPrintWriter pw;
 	protected UsageType usageType;
 	
 	private Map<String, ConverterTypeElement> converterCache = new HashMap<String, ConverterTypeElement>();
 	
-	public ConverterProviderPrinter(FormattedPrintWriter pw, TransferObjectProcessingEnvironment processingEnv, 
+	public ConverterProviderPrinter(TransferObjectProcessingEnvironment processingEnv, 
 			ConverterConstructorParametersResolverProvider parametersResolverProvider, UsageType usageType) {
 		super(parametersResolverProvider, processingEnv);
-		this.pw = pw;
 		this.usageType = usageType;
 	}
 
@@ -129,7 +127,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 	 * </pre>
 	 * for more type variables
 	 */
-	protected void printConverterTypeParameters(ConverterTypeElement converterTypeElement, ParameterPrinter parameterPrinter) {
+	protected void printConverterTypeParameters(FormattedPrintWriter pw, ConverterTypeElement converterTypeElement, ParameterPrinter parameterPrinter) {
 		pw.print("<");
 		int i = 0;
 
@@ -159,10 +157,10 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return previousUsage;
 	}
 	
-	public void printConverterMethods(boolean supportExtends, ConverterInstancerType converterInstancerType) {
+	public void printConverterMethods(FormattedPrintWriter pw, boolean supportExtends, ConverterInstancerType converterInstancerType) {
 		for (Entry<String, ConverterTypeElement> converterEntry: converterCache.entrySet()) {
-			printGetConverterMethod(converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
-			printGetConverterMethod(converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
+			printGetConverterMethod(pw, converterEntry.getValue(), ConverterTargetType.DOMAIN, supportExtends, converterInstancerType);
+			printGetConverterMethod(pw, converterEntry.getValue(), ConverterTargetType.DTO, supportExtends, converterInstancerType);
 		}
 	}
 
@@ -170,7 +168,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return converterTypeElement.getConverterParameters(parametersResolverProvider.getParameterResolver(usageType), converterInstancerType);
 	}
 	
-	protected void printConverterParametersDefinition(List<ConverterConstructorParameter> converterParameters, ConverterTypeElement converterTypeElement) {
+	protected void printConverterParametersDefinition(FormattedPrintWriter pw, List<ConverterConstructorParameter> converterParameters, ConverterTypeElement converterTypeElement) {
 		int i = 0;
 		for (ConverterConstructorParameter converterParameter: converterParameters) {
 			if (!converterParameter.isPropagated()) {
@@ -187,7 +185,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return parametersResolverProvider.getParameterResolver(usageType).getConstructorAditionalParameters();
 	}
 	
-	protected int printConverterParametersUsage(List<ConverterConstructorParameter> converterParameters) {
+	protected int printConverterParametersUsage(FormattedPrintWriter pw, List<ConverterConstructorParameter> converterParameters) {
 		int i = 0;
 		for (ConverterConstructorParameter converterParameter: converterParameters) {
 			if (!converterParameter.isPropagated()) {
@@ -241,11 +239,11 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return converterType;
 	}
 	
-	private void printConverterCast(ConverterTypeElement converterTypeElement) {
+	private void printConverterCast(FormattedPrintWriter pw, ConverterTypeElement converterTypeElement) {
 		pw.print("(", getTypedConverter(converterTypeElement, isTyped(converterTypeElement)), ")");
 	}
 	
-	private void printGenericConverterDefinition(ConverterTypeElement converterTypeElement) {
+	private void printGenericConverterDefinition(FormattedPrintWriter pw, ConverterTypeElement converterTypeElement) {
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 
 		MutableDeclaredType converterBase = converterTypeElement.getConverterBase();
@@ -266,17 +264,17 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		}
 	}
 		
-	protected MutableDeclaredType printConverterMethodDefinition(List<ConverterConstructorParameter> converterParameters, ConverterTypeElement converterTypeElement, 
-			String methodName) {
+	protected MutableDeclaredType printConverterMethodDefinition(FormattedPrintWriter pw, List<ConverterConstructorParameter> converterParameters,
+			ConverterTypeElement converterTypeElement, String methodName) {
 		pw.print("protected ");
 
 		MutableDeclaredType converterReplacedTypeParameters = converterTypeElement;
 		
-		printGenericConverterDefinition(converterTypeElement);
+		printGenericConverterDefinition(pw, converterTypeElement);
 
 		pw.print(" " + methodName + "(");
 
-		printConverterParametersDefinition(converterParameters, converterTypeElement);
+		printConverterParametersDefinition(pw, converterParameters, converterTypeElement);
 		pw.print(")");
 		return converterReplacedTypeParameters;
 	}
@@ -292,7 +290,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return params;
 	}
 
-	protected void printConverterResultCast(ConverterTypeElement converterTypeElement) {
+	protected void printConverterResultCast(FormattedPrintWriter pw, ConverterTypeElement converterTypeElement) {
 		if (converterTypeElement.getConverterBase().hasTypeParameters()) {
 			pw.print(getTypedConverter(converterTypeElement, isTyped(converterTypeElement)));
 		} else {
@@ -306,7 +304,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 				null, false, processingEnv);
 	}
 	
-	protected void printGetConverterMethod(ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType, boolean supportExtends, ConverterInstancerType converterInstancerType) {
+	protected void printGetConverterMethod(FormattedPrintWriter pw, ConverterTypeElement converterTypeElement, ConverterTargetType converterTargetType, boolean supportExtends, ConverterInstancerType converterInstancerType) {
 
 		List<ConverterConstructorParameter> converterParameters = getConverterParametersDefinition(converterTypeElement, converterInstancerType);
 		List<ConverterConstructorParameter> originalParameters = new ArrayList<ConverterConstructorParameter>();
@@ -316,7 +314,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 
 		String converterMethod = getConverterMethodName(converterTypeElement, converterTargetType);
 
-		MutableDeclaredType converterReplacedTypeParameters = printConverterMethodDefinition(converterParameters, converterTypeElement, converterMethod);
+		MutableDeclaredType converterReplacedTypeParameters = printConverterMethodDefinition(pw, converterParameters, converterTypeElement, converterMethod);
 		pw.println("{");
 
 		//TODO print converter parameter usage definition - ala printConverterParams
@@ -327,7 +325,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		if (converterTypeElement.hasTypeParameters()) {
 			converterReplacedTypeParameters = getTypedConverter(converterTypeElement, true);
 		} else if (converterInstantiable) {
-			printConverterCast(converterTypeElement);
+			printConverterCast(pw, converterTypeElement);
 		}
 		
 		pw.print("new ", converterReplacedTypeParameters);
@@ -538,7 +536,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		return dtoConverter;
 	}
 	
-	public void printObtainConverterFromCache(ConverterTargetType targetType, DomainType domainType, Field field, final ExecutableElement domainMethod,
+	public void printObtainConverterFromCache(FormattedPrintWriter pw, ConverterTargetType targetType, DomainType domainType, Field field, final ExecutableElement domainMethod,
 			boolean castConverter) {
 
 		MutableDeclaredType dtoConverter = null;
@@ -557,23 +555,12 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		ParameterElement converterProviderParameter = getParameterOfType(converterParametersUsage, ConverterProviderContext.class);
 
 		pw.print(converterProviderParameter.getName() + "." + targetType.getConverterMethodName() + "(");
-		printField(field);
+		printField(pw, field);
 
-//		ParameterUsageContext usageContext = new ParameterUsageContext() {
-//			
-//			@Override
-//			public ExecutableElement getMethod() {
-//				return domainMethod;
-//			}
-//		};
-
-//        printParameterElement(getParameterOfType(converterParametersUsage, ConvertedInstanceCache.class), 
-//        		usageContext, true, 1, false);
-        
 		pw.print((castConverter ? ")" : "") + ")");
 	}
 
-	private void printField(Field field) {
+	private void printField(FormattedPrintWriter pw, Field field) {
 		//Cast to the correct type
 		if (field.getCastType() != null) {
 			pw.print("(", field.getCastType(), ")");
@@ -582,7 +569,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
         pw.print(field.getName());
 	}
 	
-	private int printParameterElement(ParameterElement parameter, ParameterUsageContext usageContext, boolean inlineAware, int i, boolean usageOnly) {
+	private int printParameterElement(FormattedPrintWriter pw, ParameterElement parameter, ParameterUsageContext usageContext, boolean inlineAware, int i, boolean usageOnly) {
 		if (!parameter.isPropagated()) {
 			if (i > 0) {
 				pw.print(", ");
@@ -634,7 +621,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		
 		int i = 0;
 		for (ParameterElement parameter: converterParametersUsage) {
-			i = printParameterElement(parameter, usageContext, inlineAware, i, true);
+			i = printParameterElement(pw, parameter, usageContext, inlineAware, i, true);
 		}
 		
 		if (i > 0 && field != null) {
@@ -662,7 +649,7 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 
 		if (field != null) {
 			//Cast to the correct type
-			printField(field);
+			printField(pw, field);
 		}
 
 		if (convertedResult != null) {

@@ -2,35 +2,39 @@ package sk.seges.sesam.core.pap.writer;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
 import sk.seges.sesam.core.pap.printer.MethodPrinter;
 
 public class MethodPrintWriter extends HierarchyPrintWriter {
 
 	private final MutableExecutableType method;
-	private final HierarchyPrintWriter parentPrintWriter;
 	
-	public MethodPrintWriter(MutableExecutableType method, MutableProcessingEnvironment processingEnv, HierarchyPrintWriter parentPrintWriter) {
-		super(parentPrintWriter.getPrinterSupport(), processingEnv, parentPrintWriter.getUsedTypes());
-		
+	public MethodPrintWriter(MutableExecutableType method, MutableProcessingEnvironment processingEnv) {
+		super(processingEnv);
 		this.method = method;
-		this.parentPrintWriter = parentPrintWriter;
 	}
 
 	protected void initializePrinter() {
 		super.initializePrinter();
 
-		setDefaultIdentLevel(parentPrintWriter.getOudentLevel());
-		
 		//TODO method annotations
-		HierarchyPrintWriter methodPrintWriter = method.getPrintWriter(parentPrintWriter);
+		HierarchyPrintWriter methodPrintWriter = method.getPrintWriter();
 
-		HierarchyPrintWriter methodPrinter = new HierarchyPrintWriter(parentPrintWriter.getPrinterSupport(), processingEnv, parentPrintWriter.getUsedTypes());
+		HierarchyPrintWriter methodPrinter = new HierarchyPrintWriter(processingEnv);
 
 		methodPrintWriter.addNestedPrinter(methodPrinter);
-		methodPrinter.addNestedPrinter(new HierarchyPrintWriter(parentPrintWriter.getPrinterSupport(), processingEnv, parentPrintWriter.getUsedTypes()) {
+		
+		methodPrinter.addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
-				println();
+				new AnnotationPrinter(this, processingEnv).printMethodAnnotations(method);
+				super.flush();
+			}
+		});
+
+		methodPrinter.addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
+			@Override
+			public void flush() {
 				new MethodPrinter(this, processingEnv).printMethodDefinition(method);
 				super.flush();
 			}
@@ -38,7 +42,7 @@ public class MethodPrintWriter extends HierarchyPrintWriter {
 
 		methodPrinter.println(" {");
 		
-		HierarchyPrintWriter bodyPrinter = new HierarchyPrintWriter(parentPrintWriter.getPrinterSupport(), processingEnv, parentPrintWriter.getUsedTypes());
+		HierarchyPrintWriter bodyPrinter = new HierarchyPrintWriter(processingEnv);
 		methodPrinter.addNestedPrinter(bodyPrinter);
 
 		methodPrinter.println("}");

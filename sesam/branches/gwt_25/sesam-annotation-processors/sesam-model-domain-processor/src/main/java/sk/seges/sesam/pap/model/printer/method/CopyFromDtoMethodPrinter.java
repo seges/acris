@@ -137,7 +137,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		} else if (context.useConverter()) {
 			String converterName = "converter" + MethodHelper.toMethod("", context.getDtoFieldName());
 			pw.print(converterProviderPrinter.getDtoConverterType(context.getDomainMethodReturnType(), true), " " + converterName + " = ");
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, context.getDomainMethodReturnType(), 
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, context.getDomainMethodReturnType(), 
 					new Field(TransferObjectElementPrinter.DTO_NAME + "." + MethodHelper.toGetter(context.getDtoFieldName()), null), context.getDomainMethod(), true);
 			pw.println(";");
 			printCopyByLocalConverter(converterName, pathResolver, context.getDomainMethodReturnType(), context.getDtoFieldName(), pw);
@@ -154,7 +154,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			}
 			//TODO add NPE check
 			//converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), field, method, pw, false);
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, referenceDomainType, field, method, true);
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, referenceDomainType, field, method, true);
 
 			pw.println(".createDomainInstance(" + dtoName + "." + MethodHelper.toGetter(fullPath + MethodHelper.toMethod(MethodHelper.toField(referenceDomainType.getIdMethod(entityResolver)))) + ");");
 		} else {
@@ -164,7 +164,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			//TODO do not cast here
 			//converterProviderPrinter.printDtoEnsuredConverterMethodName(referenceDomainType.getDto(), field, method, pw, false);
 			//TODO add NPE check
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, referenceDomainType, field, method, true);
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, referenceDomainType, field, method, true);
 			pw.println(".createDomainInstance(null);");
 			pw.println("}");
 		}
@@ -230,7 +230,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			//converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), field, dtoMethod, pw, false);
 			converterProviderPrinter.printDtoGetConverterMethodName(context.getConverter().getDto(), field, context.getDtoMethod(), pw, false);
 		} else {
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DTO, context.getConverter().getDomain(), field, context.getDomainMethod(), true);
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, context.getConverter().getDomain(), field, context.getDomainMethod(), true);
 		}
 		pw.println(";");
 		

@@ -29,6 +29,10 @@ public class ServiceConverterTypeElement extends DelegateMutableDeclaredType {
 		}
 	}
 	
+	public ServiceTypeElement getServiceTypeElement() {
+		return serviceTypeElement;
+	}
+	
 	@Override
 	protected MutableDeclaredType getDelegate() {
 		return serviceTypeElement.clone().addClassSufix(SERVICE_CONVERTER_SUFFIX);

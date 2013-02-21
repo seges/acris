@@ -94,7 +94,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 //				converterProviderPrinter.printDomainEnsuredConverterMethodName(context.getConverter().getDomain(), context.getDomainMethodReturnType(), field, null, pw, false);
 				converterProviderPrinter.printDomainGetConverterMethodName(context.getConverter().getDomain(), field, null, pw, false);
 			} else {
-				converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, context.getConverter().getDomain(), field, null, true);
+				converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, context.getConverter().getDomain(), field, null, true);
 			}
 			pw.println(";");
 
@@ -116,7 +116,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 		} else if (context.useConverter()) {
 			String converterName = "converter" + MethodHelper.toMethod("", context.getDtoFieldName());
 			pw.print(converterProviderPrinter.getDtoConverterType(context.getDomainMethodReturnType(), true), " " + converterName + " = ");
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, context.getDomainMethodReturnType(), 
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, context.getDomainMethodReturnType(), 
 					new Field(TransferObjectElementPrinter.DOMAIN_NAME  + "." + context.getDomainFieldName(), null), context.getDomainMethod(), true);
 			pw.println(";");
 			pw.println("if (" + converterName + " != null) {");

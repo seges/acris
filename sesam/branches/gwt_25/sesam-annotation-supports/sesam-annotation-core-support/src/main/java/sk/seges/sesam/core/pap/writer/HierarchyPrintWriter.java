@@ -7,40 +7,28 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.printer.ImportPrinter;
 
 public class HierarchyPrintWriter extends FormattedPrintWriter {
 
-	private final String lineSeparator;
-
 	private List<FormattedPrintWriter> nestedPrinters = new ArrayList<FormattedPrintWriter>();
 	private HierarchyPrintWriter currentPrinter;
-	private final PrintSupport printerSupport;
 
-	public HierarchyPrintWriter(PrintSupport printerSupport, MutableProcessingEnvironment processingEnv, List<MutableDeclaredType> usedTypes) {
-		this(printerSupport, processingEnv, new ByteArrayOutputStream(), usedTypes);
+	public HierarchyPrintWriter(MutableProcessingEnvironment processingEnv) {
+		this(processingEnv, new ByteArrayOutputStream());
 	}
 	
-	public HierarchyPrintWriter(PrintSupport printerSupport, MutableProcessingEnvironment processingEnv, OutputStream os, List<MutableDeclaredType> usedTypes) {
-		super(os, printerSupport, processingEnv, usedTypes);
-
-		this.printerSupport = printerSupport;
-		this.lineSeparator = java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
+	public HierarchyPrintWriter(MutableProcessingEnvironment processingEnv, OutputStream os) {
+		super(os, processingEnv);
 	}
 
 	protected void initializePrinter() {
-		this.nestedPrinters.add(new FormattedPrintWriter(printerSupport, processingEnv, getUsedTypes()));
+		this.nestedPrinters.add(new FormattedPrintWriter(processingEnv));
 		setAutoIndent(autoIndent);
-		setDefaultIdentLevel(oudentLevel);
+		setOudentLevel(oudentLevel);
 	}
 	
-	public PrintSupport getPrinterSupport() {
-		return printerSupport;
-	}
-
 	public void setCurrentPrinter(HierarchyPrintWriter bodyPrinter) {
 		this.currentPrinter = bodyPrinter;
 	}
@@ -55,18 +43,12 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 		for (FormattedPrintWriter printWriter: nestedPrinters) {
 			if (printWriter instanceof ImportPrinter) {
 				nestedOutputs.add("");
+			} else if (printWriter instanceof HierarchyPrintWriter) {
+				printWriter.flush();
+				nestedOutputs.add(toString((HierarchyPrintWriter) printWriter));
 			} else {
 				printWriter.flush();
-				String string = null;
-				
-	//			if (i == nestedPrinters.size()) {
-	//				string = toString(printWriter.getOutputStream());
-	//			} else {
-				
-					string = printWriter.getOutputStream().toString();
-	//			}
-	
-					nestedOutputs.add(string);
+				nestedOutputs.add(printWriter.toString());
 			}
 		}
 		
@@ -81,7 +63,12 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 				string = output;
 			}
 			try {
-				getOutputStream().write(string.getBytes());
+				if (string == null) {
+					//Strange workaround for writing a new line ... without empty it does not work
+					getOutputStream().write((" " + lineSeparator).getBytes());
+				} else {
+					getOutputStream().write(string.getBytes());
+				}
 			} catch (IOException e) {
 				throw new RuntimeException(e.getMessage());
 			}
@@ -92,16 +79,8 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 		super.flush();
 	}
 
-	private String toString(OutputStream outputStream) {
-		String s = outputStream.toString();
-		if (s.endsWith(lineSeparator)) {
-			s = s.substring(0, s.length() - lineSeparator.length());
-		}
-		int i = 0;
-		while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
-			i++;
-		}
-		return s.substring(i);
+	public String toString(HierarchyPrintWriter printWriter) {
+		return printWriter.toString(printWriter.getDefaultOudentLevel());
 	}
 
 	public <T extends FormattedPrintWriter> T addNestedPrinter(T pw) {
@@ -111,9 +90,9 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 		
 		int oudentLevel = getOudentLevel();
 		nestedPrinters.add(pw);
-		pw.setDefaultIdentLevel(oudentLevel);
-		nestedPrinters.add(new FormattedPrintWriter(printerSupport, processingEnv, getUsedTypes()));
-		getCurrentPrinter().setDefaultIdentLevel(oudentLevel);
+		pw.setDefaultOudentLevel(oudentLevel);
+		nestedPrinters.add(new FormattedPrintWriter(processingEnv));
+		getCurrentPrinter().setDefaultOudentLevel(oudentLevel);
 		return pw;
 	}
 	
@@ -122,22 +101,12 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 			return currentPrinter.initializeNestedPrinter();
 		}
 		
-		return addNestedPrinter(new HierarchyPrintWriter(processingEnv.getPrintSupport(), processingEnv, getUsedTypes()));
+		return addNestedPrinter(new HierarchyPrintWriter(processingEnv));
 	}
 
 	@Override
-	protected void setOudentLevel(int oudentLevel) {
-		getCurrentPrinter().setOudentLevel(oudentLevel);
-	}
-	
-	@Override
 	public int getOudentLevel() {
 		return getCurrentPrinter().getOudentLevel();
-	}
-	
-	@Override
-	public List<MutableDeclaredType> getUsedTypes() {
-		return usedTypes;
 	}
 	
 	@Override
@@ -178,14 +147,6 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 		}
 		
 		return nestedPrinters.get(nestedPrinters.size() - 1);
-	}
-
-	@Override
-	public void setDefaultIdentLevel(int level) {
-		for (FormattedPrintWriter pw: nestedPrinters) {
-			pw.setDefaultIdentLevel(level);
-		}
-		super.setDefaultIdentLevel(level);
 	}
 
 	@Override

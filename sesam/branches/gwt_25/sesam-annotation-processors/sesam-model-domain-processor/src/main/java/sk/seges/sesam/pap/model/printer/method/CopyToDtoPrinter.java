@@ -111,12 +111,12 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 					Field field = new Field(methodName, processingEnv.getTypeUtils().toMutableType(domainIdTypeElement));
 					//converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
 					//TODO add NPE check
-					converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainIdTypeElement, field, idMethod, true);
+					converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, domainIdTypeElement, field, idMethod, true);
 
 					pw.print(".convertToDto(");
 					//converterProviderPrinter.printDomainEnsuredConverterMethodName(domainIdTypeElement, null, field, idMethod, pw, false);
 					//TODO add NPE check
-					converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainIdTypeElement, field, idMethod, true);
+					converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, domainIdTypeElement, field, idMethod, true);
 
 					pw.print(".createDtoInstance(null), ");
 					pw.println("(", getDelegateCast(idMethod.getReturnType()), ")" + methodName + ");");
@@ -163,7 +163,7 @@ public class CopyToDtoPrinter extends AbstractMethodPrinter implements TransferO
 			
 //			converterProviderPrinter.printDomainEnsuredConverterMethodName(domainsuperClass, null, field, null, pw, false);
 			//TODO add NPE check
-			converterProviderPrinter.printObtainConverterFromCache(ConverterTargetType.DOMAIN, domainSuperClass, field, null, false);
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, domainSuperClass, field, null, false);
 
 			pw.println(".convertToDto(" + RESULT_NAME + ", " + DOMAIN_NAME + ");");
 			pw.println();

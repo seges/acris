@@ -1,7 +1,10 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.List;
+
 import javax.annotation.processing.RoundEnvironment;
 
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.pap.model.provider.ConfigurationCache;
 import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
@@ -16,8 +19,9 @@ public class TransferObjectProcessingEnvironment extends MutableProcessingEnviro
 	
 	private EnvironmentContext<TransferObjectProcessingEnvironment> envContext = null;
 	
-	public TransferObjectProcessingEnvironment(MutableProcessingEnvironment processingEnvironment, RoundEnvironment roundEnv, ConfigurationCache configurationCache, Class<?> clazz) {
-		super(processingEnvironment, clazz);
+	public TransferObjectProcessingEnvironment(MutableProcessingEnvironment processingEnvironment, RoundEnvironment roundEnv, 
+			ConfigurationCache configurationCache, Class<?> clazz, List<MutableDeclaredType> usedTypes) {
+		super(processingEnvironment, clazz, usedTypes);
 		this.roundEnv = roundEnv;
 		this.configurationCache = configurationCache;
 	}

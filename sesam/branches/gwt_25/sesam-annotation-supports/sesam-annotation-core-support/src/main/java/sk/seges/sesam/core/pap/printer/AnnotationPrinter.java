@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.pap.printer;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -28,8 +29,8 @@ public class AnnotationPrinter {
 		this.processingEnv = processingEnv;
 	}
 
-	public void printMethodAnnotations(Element method, AnnotationFilter...annotationFilters) {
-		for (AnnotationMirror annotation: method.getAnnotationMirrors()) {
+	private void printMutableAnnotations(Collection<? extends MutableAnnotationMirror> annotations, AnnotationFilter...annotationFilters) {
+		for (MutableAnnotationMirror annotation: annotations) {
 			
 			boolean isAnnotationIgnored = false;
 			
@@ -46,6 +47,35 @@ public class AnnotationPrinter {
 				print(annotation);
 			}
 		}
+	}
+	
+	private void printAnnotations(Collection<? extends AnnotationMirror> annotations, AnnotationFilter...annotationFilters) {
+		for (AnnotationMirror annotation: annotations) {
+			
+			boolean isAnnotationIgnored = false;
+			
+			if (annotationFilters != null) {
+				for (AnnotationFilter filter: annotationFilters) {
+					if (filter.isAnnotationIgnored(annotation)) {
+						isAnnotationIgnored = true;
+						break;
+					}
+				}
+			}
+			
+			if (!isAnnotationIgnored) {
+				print(annotation);
+			}
+		}
+	}
+	
+	public void printMethodAnnotations(Element method, AnnotationFilter...annotationFilters) {
+		printAnnotations(method.getAnnotationMirrors(), annotationFilters);
+	}
+
+	public void printMethodAnnotations(MutableExecutableType method, AnnotationFilter...annotationFilters) {
+		printAnnotations(method.getAnnotations(), annotationFilters);
+		printMutableAnnotations(method.getMutableAnnotations(), annotationFilters);
 	}
 
 	public void print(MutableAnnotationMirror annotation) {

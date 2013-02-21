@@ -789,9 +789,9 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 	private HierarchyPrintWriter printWriter;
 	
 	@Override
-	public HierarchyPrintWriter getPrintWriter(HierarchyPrintWriter hierarchyPrintWriter) {
+	public HierarchyPrintWriter getPrintWriter() {
 		if (printWriter == null) {
-			printWriter = hierarchyPrintWriter.initializeNestedPrinter();
+			printWriter = new HierarchyPrintWriter(processingEnv);
 		}
 		
 		return printWriter;

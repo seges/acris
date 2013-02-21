@@ -4,9 +4,10 @@ import java.util.List;
 
 import javax.lang.model.element.Modifier;
 
+import sk.seges.sesam.core.pap.model.api.HasAnnotations;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 
-public interface MutableExecutableType extends MutableTypeMirror, PrintableType {
+public interface MutableExecutableType extends MutableTypeMirror, PrintableType, HasAnnotations {
 
 	List<Modifier> getModifiers();
 	MutableExecutableType setModifier(Modifier... modifiers);

@@ -31,6 +31,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.api.HasAnnotations;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
@@ -43,6 +44,7 @@ public abstract class AnnotationAccessor {
 	
 	public interface AnnotationFilter {
 		boolean isAnnotationIgnored(AnnotationMirror annotation);
+		boolean isAnnotationIgnored(MutableAnnotationMirror annotation);
 	}
 
 	public AnnotationAccessor(MutableProcessingEnvironment processingEnv) {
@@ -109,15 +111,24 @@ public abstract class AnnotationAccessor {
 			this.types = types;
 			this.ignore = ignore;
 		}
-		
-		@Override
-		public boolean isAnnotationIgnored(AnnotationMirror annotation) {
+
+		private boolean isAnnotationIgnored(String annotation) {
 			for (Class<?> type: types) {
-				if (type.getName().equals(annotation.getAnnotationType().toString())) {
+				if (type.getName().equals(annotation)) {
 					return ignore;
 				}
 			}
 			return !ignore;
+		}
+		
+		@Override
+		public boolean isAnnotationIgnored(AnnotationMirror annotation) {
+			return isAnnotationIgnored(annotation.getAnnotationType().toString());
+		}
+
+		@Override
+		public boolean isAnnotationIgnored(MutableAnnotationMirror annotation) {
+			return isAnnotationIgnored(annotation.getAnnotationType().toString());
 		}
 	}
 

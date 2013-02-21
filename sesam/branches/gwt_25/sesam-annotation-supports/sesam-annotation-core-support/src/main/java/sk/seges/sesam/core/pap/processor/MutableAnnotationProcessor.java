@@ -92,8 +92,8 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 
 		private String packageName;
 		
-		MutableImportPrinter(HierarchyPrintWriter hierarchyPrintWriter, MutableProcessingEnvironment processingEnv, String packageName) {
-			super(hierarchyPrintWriter, processingEnv);
+		MutableImportPrinter(MutableProcessingEnvironment processingEnv, String packageName) {
+			super(processingEnv);
 			this.packageName = packageName;
 		}
 		
@@ -108,8 +108,8 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 	}
 
 	@Override
-	protected ImportPrinter initializeImportPrinter(HierarchyPrintWriter hierarchyPrintWriter, String packageName) {
-		return new MutableImportPrinter(hierarchyPrintWriter, processingEnv, packageName);
+	protected ImportPrinter initializeImportPrinter(String packageName) {
+		return new MutableImportPrinter(processingEnv, packageName);
 	}
 	
 	@Override
@@ -121,6 +121,8 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 		roundContext.typeElement = typeElement;
 		roundContext.mutableType = el;
 		roundContext.processingEnv = processingEnv;
+
+		processingEnv.getUsedTypes().clear();
 		
 		MutableDeclaredType[] outputClasses = getOutputClasses(roundContext);
 		
@@ -161,7 +163,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				rootPrintWriter.println("package " + outputClass.getPackageName() + ";");
 				rootPrintWriter.println();
 
-				initializeImportPrinter(rootPrintWriter, outputClass.getPackageName());
+				rootPrintWriter.addNestedPrinter(initializeImportPrinter(outputClass.getPackageName()));
 				
 				context.currentPrintWriter = rootPrintWriter;
 
@@ -171,7 +173,7 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				
 				new TypePrinter(rootPrintWriter, processingEnv).print(outputClass);
 
-				context.currentPrintWriter = outputClass.getPrintWriter(rootPrintWriter);
+				context.currentPrintWriter = outputClass.getPrintWriter();
 
 				processElement(context);
 				//context.currentPrintWriter.println("}");

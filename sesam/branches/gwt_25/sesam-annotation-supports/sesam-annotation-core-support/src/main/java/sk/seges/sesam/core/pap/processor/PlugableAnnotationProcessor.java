@@ -21,18 +21,22 @@ public abstract class PlugableAnnotationProcessor extends AbstractProcessor {
 
 	protected PlugableAnnotationProcessor() {}
 			
+	protected MutableProcessingEnvironment getProcessingEnv() {
+		return processingEnv;
+	}
+	
 	@Override
 	public synchronized void init(ProcessingEnvironment pe) {
 		super.init(pe);
-		this.processingEnv = new MutableProcessingEnvironment(pe, this.getClass());
+		this.processingEnv = new MutableProcessingEnvironment(pe, this.getClass(), new ArrayList<MutableDeclaredType>());
 		this.typeParametersSupport = new TypeParametersSupport(processingEnv);
 	}
 		
 	protected HierarchyPrintWriter initializePrintWriter(OutputStream os) {
-		return new HierarchyPrintWriter(processingEnv.getPrintSupport(), processingEnv, os, new ArrayList<MutableDeclaredType>());
+		return new HierarchyPrintWriter(processingEnv, os);
 	}
 
-	protected ImportPrinter initializeImportPrinter(HierarchyPrintWriter hierarchyPrintWriter, String packageName) {
-		return new ImportPrinter(hierarchyPrintWriter, processingEnv);
+	protected ImportPrinter initializeImportPrinter(String packageName) {
+		return new ImportPrinter(processingEnv);
 	}
 }

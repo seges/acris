@@ -11,8 +11,6 @@ import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
-import sk.seges.sesam.core.pap.printer.TypePrinter;
-import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 import sk.seges.sesam.pap.converter.printer.ConverterVerifier;
 import sk.seges.sesam.pap.converter.printer.api.ConverterProviderElementPrinter;
 import sk.seges.sesam.pap.model.annotation.ConverterProviderDefinition;
@@ -24,7 +22,6 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
-import sk.seges.sesam.pap.service.model.ConverterProviderContextType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.AbstractServiceMethodPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
@@ -36,11 +33,10 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 	protected UsageType previousUsageType;
 	protected final ClassPathTypes classPathTypes;
 	
-	public ServiceConverterProviderContextPrinter(TransferObjectProcessingEnvironment processingEnv, HierarchyPrintWriter pw,
-			ConverterConstructorParametersResolverProvider parametersResolverProvider, ConverterProviderPrinter converterProviderPrinter,
-			ClassPathTypes classPathTypes) {
-		super(processingEnv, parametersResolverProvider, pw, converterProviderPrinter);
-		this.converterProviderContextPrinterDelegate = new ConverterProviderContextPrinterDelegate(parametersResolverProvider, pw);
+	public ServiceConverterProviderContextPrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolverProvider parametersResolverProvider, 
+			ConverterProviderPrinter converterProviderPrinter, ClassPathTypes classPathTypes) {
+		super(processingEnv, parametersResolverProvider, converterProviderPrinter);
+		this.converterProviderContextPrinterDelegate = new ConverterProviderContextPrinterDelegate(parametersResolverProvider);
 		this.classPathTypes = classPathTypes;
 	}
 	
@@ -49,8 +45,6 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 
 	protected void finalize() {
 		converterProviderContextPrinterDelegate.finalize();
-		pw.println("}");
-		
 		converterProviderPrinter.changeUsage(previousUsageType);
 	}
 	
@@ -58,16 +52,11 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 		return classPathTypes.getElementsAnnotatedWith(ConverterProviderDefinition.class);
 	}
 
-	protected void initialize(ServiceTypeElement serviceTypeElement) {
+	protected void initialize(ServiceConverterPrinterContext context) {
 				
-		ConverterProviderContextType convertProviderContextType = new ConverterProviderContextType(serviceTypeElement, processingEnv);
-
-		new TypePrinter(pw, processingEnv).printTypeDefinition(pw, convertProviderContextType);
-		pw.println(" {");
-
 		previousUsageType = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR);
 
-		converterProviderContextPrinterDelegate.initialize(processingEnv.getTypeUtils(), convertProviderContextType, UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR, 
+		converterProviderContextPrinterDelegate.initialize(processingEnv, context.getConvertProviderContextType(), UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR, 
 				getConverterProviderDelegates());
 	}
 	
@@ -82,7 +71,7 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 		super.print(context);
 		
 		if (converterVerifier.isContainsConverter()) {
-			initialize(context.getService());
+			initialize(context);
 			for (ConverterProviderElementPrinter nestedPrinter: getNestedPrinters()) {
 				nestedPrinter.initialize();
 				context.setNestedPrinter(nestedPrinter);

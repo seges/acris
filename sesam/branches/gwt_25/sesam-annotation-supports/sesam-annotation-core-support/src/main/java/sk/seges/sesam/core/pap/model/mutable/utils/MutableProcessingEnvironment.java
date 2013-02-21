@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.pap.model.mutable.utils;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.SourceVersion;
 
 import sk.seges.sesam.core.pap.api.annotation.support.PrintSupport;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 
 public class MutableProcessingEnvironment implements ProcessingEnvironment {
 
@@ -17,13 +19,20 @@ public class MutableProcessingEnvironment implements ProcessingEnvironment {
 	private MutableTypes types;
 	private PrintSupport printSupport;
 	
-	public MutableProcessingEnvironment(ProcessingEnvironment processingEnvironment, Class<?> clazz) {
+	private List<MutableDeclaredType> usedTypes;
+	
+	public MutableProcessingEnvironment(ProcessingEnvironment processingEnvironment, Class<?> clazz, List<MutableDeclaredType> usedTypes) {
 		this.processingEnvironment = processingEnvironment;
 		this.printSupport = getPrintSupport(clazz);
+		this.usedTypes = usedTypes;
 		this.elements = new MutableElements(this, processingEnvironment.getElementUtils());
 		this.types = new MutableTypes(this, elements, processingEnvironment.getTypeUtils());
 	}
 
+	public List<MutableDeclaredType> getUsedTypes() {
+		return usedTypes;
+	}
+	
 	private PrintSupport getPrintSupport(Class<?> clazz) {
 		if (clazz == null) {
 			return null;

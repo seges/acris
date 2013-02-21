@@ -1,19 +1,24 @@
 package sk.seges.sesam.core.pap.model.mutable.utils;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.type.DeclaredType;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.model.InitializableValue;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.api.HasAnnotations;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableAnnotationMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
@@ -24,7 +29,7 @@ import sk.seges.sesam.core.pap.writer.MethodPrintWriter;
 class MutableMethod extends MutableType implements MutableExecutableType {
 
 	private final MutableProcessingEnvironment processingEnv;
-	private final ExecutableType methodType;
+	private final ExecutableElement methodElement;
 	
 	private InitializableValue<MutableTypeMirror> returnType = new InitializableValue<MutableTypeMirror>();
 	private InitializableValue<List<MutableTypeMirror>> thrownTypes = new InitializableValue<List<MutableTypeMirror>>();
@@ -36,15 +41,21 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 
 	private boolean isDefault = true;
 	
-	MutableMethod(MutableProcessingEnvironment processingEnv, ExecutableType methodType) {
-		this.methodType = methodType;
+	protected final AnnotationHolderDelegate annotationHolderDelegate;
+
+	MutableMethod(MutableProcessingEnvironment processingEnv, ExecutableElement methodElement) {
+		this.methodElement = methodElement;
 		this.processingEnv = processingEnv;
+
+		this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv, methodElement);
 	}
 
 	MutableMethod(MutableProcessingEnvironment processingEnvironment, String simpleName) {
-		this.methodType = null;
+		this.methodElement = null;
 		this.simpleName.setValue(simpleName);
 		this.processingEnv = processingEnvironment;
+
+		this.annotationHolderDelegate = new AnnotationHolderDelegate(processingEnv);
 	}
 	
 	private void dirty() {
@@ -59,8 +70,8 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	@Override
 	public MutableTypeMirror getReturnType() {
 		if (!this.returnType.isInitialized()) {
-			if (methodType != null) {
-				this.returnType.setValue(processingEnv.getTypeUtils().toMutableType(methodType.getReturnType()));
+			if (methodElement != null) {
+				this.returnType.setValue(processingEnv.getTypeUtils().toMutableType(methodElement.getReturnType()));
 			} else {
 				this.returnType.setValue(processingEnv.getTypeUtils().toMutableType(Void.class));
 			}
@@ -79,8 +90,8 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	public List<MutableTypeMirror> getThrownTypes() {
 		if (!this.thrownTypes.isInitialized()) {
 			thrownTypes.setValue(new ArrayList<MutableTypeMirror>());
-			if (methodType != null) {
-				List<? extends TypeMirror> throwns = methodType.getThrownTypes();
+			if (methodElement != null) {
+				List<? extends TypeMirror> throwns = methodElement.getThrownTypes();
 				for (TypeMirror thrown: throwns) {
 					addThrownType(processingEnv.getTypeUtils().toMutableType(thrown));
 				}
@@ -108,8 +119,8 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	public List<MutableTypeVariable> getTypeVariables() {
 		if (!this.typeVariables.isInitialized()) {
 			typeVariables.setValue(new ArrayList<MutableTypeVariable>());
-			if (methodType != null) {
-				List<? extends TypeVariable> variables = methodType.getTypeVariables();
+			if (methodElement != null) {
+				List<? extends TypeVariable> variables = ((ExecutableType)methodElement.asType()).getTypeVariables();
 				for (TypeVariable variable: variables) {
 					typeVariables.getValue().add((MutableTypeVariable) processingEnv.getTypeUtils().toMutableType(variable));
 				}
@@ -129,10 +140,11 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	private List<MutableVariableElement> ensureParameters() {
 		if (!this.parameters.isInitialized()) {
 			parameters.setValue(new ArrayList<MutableVariableElement>());
-			if (methodType != null) {
-				List<? extends TypeMirror> params = methodType.getParameterTypes();
-				for (TypeMirror param: params) {
-					parameters.getValue().add(processingEnv.getElementUtils().getParameterElement(processingEnv.getTypeUtils().toMutableType(param), null));
+			if (methodElement != null) {
+				List<? extends VariableElement> params = methodElement.getParameters();
+				for (VariableElement param: params) {
+					parameters.getValue().add(processingEnv.getElementUtils().getParameterElement(
+							processingEnv.getTypeUtils().toMutableType(param.asType()), param.getSimpleName().toString()));
 				}
 			} else {
 				parameters.setValue(new ArrayList<MutableVariableElement>());
@@ -156,14 +168,10 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 
 	public String getSimpleName() {
 		if (!this.simpleName.isInitialized()) {
-			if (this.methodType == null) {
+			if (this.methodElement == null) {
 				throw new RuntimeException("Method simple name nor " + ExecutableType.class.getSimpleName() + " was defined");
 			}
-			if (this.methodType.getKind().equals(TypeKind.DECLARED)) {
-				this.simpleName.setValue(((DeclaredType)methodType).asElement().getSimpleName().toString());
-			} else {
-				this.simpleName.setValue(methodType.toString());
-			}
+			this.simpleName.setValue(methodElement.getSimpleName().toString());
 		}
 		
 		return this.simpleName.getValue();
@@ -240,8 +248,8 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	public MutableExecutableType clone() {
 		MutableMethod result = null;
 		
-		if (methodType != null) {
-			result = new MutableMethod(processingEnv, methodType);
+		if (methodElement != null) {
+			result = new MutableMethod(processingEnv, methodElement);
 		} else {
 			result = new MutableMethod(processingEnv, this.simpleName.getValue());
 		}
@@ -272,10 +280,10 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	private HierarchyPrintWriter printWriter;
 
 	@Override
-	public HierarchyPrintWriter getPrintWriter(HierarchyPrintWriter hierarchyPrintWriter) {
+	public HierarchyPrintWriter getPrintWriter() {
 		if (printWriter == null) {
 			dirty();
-			printWriter = new MethodPrintWriter(this, processingEnv, hierarchyPrintWriter);
+			printWriter = new MethodPrintWriter(this, processingEnv);
 		}
 		
 		return printWriter;
@@ -323,5 +331,30 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	@Override
 	public boolean isDefault() {
 		return isDefault;
+	}
+
+	@Override
+	public HasAnnotations annotateWith(AnnotationMirror annotationMirror) {
+		return annotationHolderDelegate.annotateWith(annotationMirror);
+	}
+
+	@Override
+	public HasAnnotations annotateWith(MutableAnnotationMirror mutableAnnotationMirror) {
+		return annotationHolderDelegate.annotateWith(mutableAnnotationMirror);
+	}
+
+	@Override
+	public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+		return annotationHolderDelegate.getAnnotation(annotationType);
+	}
+
+	@Override
+	public Set<AnnotationMirror> getAnnotations() {
+		return annotationHolderDelegate.getAnnotations();
+	}
+
+	@Override
+	public Set<MutableAnnotationMirror> getMutableAnnotations() {
+		return annotationHolderDelegate.getMutableAnnotations();
 	}
 }
