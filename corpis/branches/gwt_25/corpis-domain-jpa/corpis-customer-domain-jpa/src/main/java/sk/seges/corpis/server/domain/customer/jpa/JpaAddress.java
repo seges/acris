@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import sk.seges.corpis.server.domain.DBConstraints;
+import sk.seges.corpis.server.domain.jpa.JpaCountry;
 import sk.seges.corpis.server.domain.server.model.base.AddressBase;
 import sk.seges.corpis.shared.domain.validation.customer.CustomerFormCheck;
 import sk.seges.corpis.shared.domain.validation.customer.OrderDeliveryCheck;

@@ -41,7 +41,7 @@ public class JpaCountry extends CountryBase {
 	}
 
 	@Override
-	@Column(length = DBConstraints.COUNTRY_LENGTH)
+	@Column(unique = true, length = DBConstraints.COUNTRY_LENGTH)
 	public String getCountry() {
 		return super.getCountry();
 	}
