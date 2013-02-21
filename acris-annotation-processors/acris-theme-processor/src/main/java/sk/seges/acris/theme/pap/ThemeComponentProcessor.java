@@ -46,7 +46,6 @@ public class ThemeComponentProcessor extends MutableAnnotationProcessor {
 	protected void processElement(ProcessorContext context) {
 
 		TypeElement element = context.getTypeElement();
-		HierarchyPrintWriter pw = context.getPrintWriter();
 		MutableDeclaredType outputType = context.getOutputType();
 
 		ThemeSupportAccessor themeSupportAccessor = new ThemeSupportAccessor(element, processingEnv);
@@ -83,7 +82,7 @@ public class ThemeComponentProcessor extends MutableAnnotationProcessor {
 			}
 		}
 
-		HierarchyPrintWriter constructorPrintWriter = outputType.getConstructor().addModifier(Modifier.PUBLIC).getPrintWriter(pw);
+		HierarchyPrintWriter constructorPrintWriter = outputType.getConstructor().addModifier(Modifier.PUBLIC).getPrintWriter();
 		
 		constructorPrintWriter.println(themeUiBinderType.toString(ClassSerializer.SIMPLE, true), " uiBinder = ", GWT.class, ".create(", themeUiBinderType.toString(ClassSerializer.SIMPLE), ".class);");
 		constructorPrintWriter.println("setElement(uiBinder.createAndBindUi(this));");
@@ -95,7 +94,7 @@ public class ThemeComponentProcessor extends MutableAnnotationProcessor {
 
 		outputType.addMethod(getElementMethod);
 		
-		HierarchyPrintWriter getElementMethodPrinter = getElementMethod.getPrintWriter(pw);
+		HierarchyPrintWriter getElementMethodPrinter = getElementMethod.getPrintWriter();
 		
 		if (themeElementsAccessor.isValid()) {
 			for (ThemeElementAccessor themeElementAccessor: themeElementsAccessor.getValue()) {

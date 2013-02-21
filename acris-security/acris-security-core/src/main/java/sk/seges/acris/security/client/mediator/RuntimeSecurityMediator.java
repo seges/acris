@@ -1,5 +1,6 @@
 package sk.seges.acris.security.client.mediator;
 
+import sk.seges.acris.security.shared.user_management.domain.SecurityConstants;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 
 /**
@@ -10,8 +11,15 @@ import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
  */
 public class RuntimeSecurityMediator {
 
+	private static String toGrant(String permission) {
+		if (permission.startsWith(SecurityConstants.AUTH_PREFIX)) {
+			return permission;
+		}
+		return SecurityConstants.AUTH_PREFIX + permission.trim();
+	}
+	
 	public static void setGrant(String grant, Object runtimeSecuredObject) {
-		setGrants(new String[] { grant }, runtimeSecuredObject);
+		setGrants(new String[] { toGrant(grant) }, runtimeSecuredObject);
 	}
 
 	/**
@@ -27,7 +35,13 @@ public class RuntimeSecurityMediator {
 
 	public static void setGrants(String[] grants, Object runtimeSecuredObject) {
 		if (runtimeSecuredObject instanceof IRuntimeAuthorityMediator) {
-			((IRuntimeAuthorityMediator) runtimeSecuredObject).setGrants(grants);
+			String[] roleGrants = new String[grants.length];
+			
+			for (int i = 0; i < grants.length; i++) {
+				roleGrants[i] = toGrant(grants[i]);
+			}
+			
+			((IRuntimeAuthorityMediator) runtimeSecuredObject).setGrants(roleGrants);
 		}
 	}
 
