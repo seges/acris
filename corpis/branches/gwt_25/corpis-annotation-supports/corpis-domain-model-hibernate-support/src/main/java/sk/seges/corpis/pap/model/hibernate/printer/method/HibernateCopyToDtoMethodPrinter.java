@@ -39,15 +39,8 @@ public class HibernateCopyToDtoMethodPrinter extends CopyToDtoMethodPrinter {
     		TypeElement blobElement = processingEnv.getElementUtils().getTypeElement(Blob.class.getCanonicalName());
     		if (processingEnv.getTypeUtils().implementsType(processingEnv.getTypeUtils().toMutableType(domainMethod.getReturnType()),
     														processingEnv.getTypeUtils().toMutableType(blobElement.asType()))) {
-    			//it is blob
-//	    		pw.println("if (", Hibernate.class,".isInitialized(" + TransferObjectElementPrinter.DOMAIN_NAME + "." + MethodHelper.toGetter(domainPathResolver.getPath()) + ")) {");
-//        		pw.println("if (", ConverterUtils.class,".hasTransaction(" + HibernateParameterResolver.TRANSACTION_PROPAGATION_NAME + ")) {");
         		pw.println("if (", ConverterUtils.class,".convertResult(" + HibernateParameterResolverDelegate.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
-
-//        		pw.print("if (", ConverterUtils.class,".hasTransaction(" + HibernateParameterResolver.TRANSACTION_PROPAGATION_NAME + ") && ");
-//        		pw.println(ConverterUtils.class,".convertResult(" + HibernateParameterResolver.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
     		} else {
-//	    		pw.println("if (", ConverterUtils.class,".convertResult(" + HibernateParameterResolver.TRANSACTION_PROPAGATION_NAME + ", \"" + domainPathResolver.getPath() + "\")) {");
 	    		pw.println("if (", Hibernate.class,".isInitialized(" + TransferObjectElementPrinter.DOMAIN_NAME + "." + MethodHelper.toGetter(domainPathResolver.getPath()) + ")) {");
    		}
     		return true;

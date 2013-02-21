@@ -1,2 +1,2 @@
-sk.seges.corpis.pap.converter.hibernate.DataConverterProviderProcessor
 sk.seges.corpis.pap.model.hibernate.HibernateTransferObjectDataConverterProcessor
+sk.seges.corpis.pap.converter.hibernate.DataConverterProviderProcessor
