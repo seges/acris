@@ -2,29 +2,29 @@ package sk.seges.acris.theme.pap;
 
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 
-import sk.seges.acris.theme.client.annotation.ThemeElements;
-import sk.seges.acris.theme.client.annotation.ThemeElements.ThemeElement;
-import sk.seges.acris.theme.client.annotation.ThemeResources;
-import sk.seges.acris.theme.client.annotation.ThemeResources.ThemeResource;
-import sk.seges.acris.theme.client.annotation.ThemeSupport;
+import sk.seges.acris.theme.pap.accessor.MutableAnnotationAccessor;
+import sk.seges.acris.theme.pap.accessor.ThemeElementsAccessor;
+import sk.seges.acris.theme.pap.accessor.ThemeElementsAccessor.ThemeElementAccessor;
+import sk.seges.acris.theme.pap.accessor.ThemeResourcesAccessor;
+import sk.seges.acris.theme.pap.accessor.ThemeResourcesAccessor.ThemeResourceAccessor;
+import sk.seges.acris.theme.pap.accessor.ThemeSupportAccessor;
+import sk.seges.acris.theme.pap.accessor.UiFieldMutableAccessor;
 import sk.seges.acris.theme.pap.configurer.ThemeProcessorConfigurer;
 import sk.seges.acris.theme.pap.model.ThemeConfigurationType;
 import sk.seges.acris.theme.pap.model.ThemeUiBinderType;
-import sk.seges.sesam.core.pap.Constants;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
-import sk.seges.sesam.core.pap.printer.TypePrinter;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester;
-import sk.seges.sesam.core.pap.utils.AnnotationClassPropertyHarvester.AnnotationClassProperty;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.core.pap.writer.HierarchyPrintWriter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -46,83 +46,67 @@ public class ThemeComponentProcessor extends MutableAnnotationProcessor {
 	protected void processElement(ProcessorContext context) {
 
 		TypeElement element = context.getTypeElement();
-		FormattedPrintWriter pw = context.getPrintWriter();
-		
-		String name = element.getSimpleName().toString();
+		MutableDeclaredType outputType = context.getOutputType();
 
-		ThemeSupport themeSupportAnnotation = element.getAnnotation(ThemeSupport.class);
+		ThemeSupportAccessor themeSupportAccessor = new ThemeSupportAccessor(element, processingEnv);
+		
+		ThemeUiBinderType themeUiBinderType = new ThemeUiBinderType(element.getSimpleName().toString(), context.getOutputType(), processingEnv);
+		themeUiBinderType.annotateWith(new MutableAnnotationAccessor(UiTemplate.class, processingEnv).setValue(themeSupportAccessor.getUiTemplateName()));
 
-		UiTemplate uiTemplate = themeSupportAnnotation.template();
-		String uiTemplateName = uiTemplate.value();
+		outputType.addNestedType(themeUiBinderType);
 		
-		if (uiTemplateName != null && !uiTemplateName.equals(Constants.NULL)) {
-			pw.println("@", UiTemplate.class, "(\"" + uiTemplateName + "\")");
-		} else {
-			pw.println("@", UiTemplate.class, "(\"" + name + ".ui.xml\")");
-		}
-		
-		ThemeUiBinderType themeUiBinderType = new ThemeUiBinderType(name, context.getOutputType(), processingEnv);
-		
-		new TypePrinter(processingEnv, pw).printTypeDefinition(themeUiBinderType);
- 		pw.println(" {}");
-		pw.println();
-				
 		//UiField annotation
 		boolean provided = false;/*themeSupportAnnotation.field().provided()*/;
-		pw.println("@", UiField.class, "(provided = " + provided + ")");
 		
-		pw.println(Element.class, " " + themeSupportAnnotation.elementName() + ";");
-		pw.println();
-		pw.println(Element.class, " parentElement;");
-		pw.println();
+		outputType.addField((MutableVariableElement) processingEnv.getElementUtils().getParameterElement(Element.class, themeSupportAccessor.getElementName()).
+						annotateWith(new UiFieldMutableAccessor(processingEnv).setProvided(provided)))
+				  .addField(processingEnv.getElementUtils().getParameterElement(Element.class, "parentElement"));
 
-		ThemeElements themeElementsAnnotation = element.getAnnotation(ThemeElements.class);
+		ThemeElementsAccessor themeElementsAccessor = new ThemeElementsAccessor(element, processingEnv);
 		
-		if (themeElementsAnnotation != null && themeElementsAnnotation.value() != null && themeElementsAnnotation.value().length > 0) {
-			for (ThemeElement themeElement: themeElementsAnnotation.value()) {
-				pw.println("@", UiField.class.getSimpleName(), "(provided = " + provided + ")");
-				pw.println(Element.class, " " + themeElement.value() + ";");
-				pw.println();
+		if (themeElementsAccessor.isValid()) {
+			for (ThemeElementAccessor themeElementAccessor: themeElementsAccessor.getValue()) {
+				outputType.addField((MutableVariableElement) processingEnv.getElementUtils().getParameterElement(Element.class, themeElementAccessor.getValue()).
+						annotateWith(new UiFieldMutableAccessor(processingEnv).setProvided(provided)));
 			}
 		}
 		
-		ThemeResources themeResourcesAnnotation = element.getAnnotation(ThemeResources.class);
+		ThemeResourcesAccessor themeResourcesAccessor = new ThemeResourcesAccessor(element, processingEnv);
 
-		if (themeResourcesAnnotation != null && themeResourcesAnnotation.value() != null && themeResourcesAnnotation.value().length > 0) {
-			for (ThemeResource resource: themeResourcesAnnotation.value()) {
-				pw.println("@", UiField.class, "(provided = " + resource.field().provided() + ")");
-				pw.println(AnnotationClassPropertyHarvester.getTypeOfClassProperty(resource, new AnnotationClassProperty<ThemeResource>() {
-
-					@Override
-					public Class<?> getClassProperty(ThemeResource annotation) {
-						return annotation.resourceClass();
-					}
-				} ), " " + resource.name() + ";");
-				pw.println("");
+		if (themeResourcesAccessor.isValid()) {
+			for (ThemeResourceAccessor resource: themeResourcesAccessor.getValue()) {
+				
+				outputType.addField((MutableVariableElement) processingEnv.getElementUtils().getParameterElement(
+							processingEnv.getTypeUtils().toMutableType(resource.getResourceClass()), resource.getName()).
+						annotateWith(new UiFieldMutableAccessor(processingEnv).setProvided(resource.getUiField().isProvided())));
 			}
 		}
+
+		HierarchyPrintWriter constructorPrintWriter = outputType.getConstructor().addModifier(Modifier.PUBLIC).getPrintWriter();
 		
-		pw.println("public " + context.getOutputType().getSimpleName() + "() {");
-		pw.println(themeUiBinderType.toString(ClassSerializer.SIMPLE, true), " uiBinder = ", GWT.class, ".create(", themeUiBinderType.toString(ClassSerializer.SIMPLE), ".class);");
-		pw.println("setElement(uiBinder.createAndBindUi(this));");
-		pw.println("parentElement = " +  themeSupportAnnotation.elementName() + ".getParentElement();");
-		pw.println("}");
-		pw.println("");
-		pw.println("public ", com.google.gwt.user.client.Element.class, " getElement(String name) {");
+		constructorPrintWriter.println(themeUiBinderType.toString(ClassSerializer.SIMPLE, true), " uiBinder = ", GWT.class, ".create(", themeUiBinderType.toString(ClassSerializer.SIMPLE), ".class);");
+		constructorPrintWriter.println("setElement(uiBinder.createAndBindUi(this));");
+		constructorPrintWriter.println("parentElement = " +  themeSupportAccessor.getElementName() + ".getParentElement();");		
 
-		if (themeElementsAnnotation != null && themeElementsAnnotation.value() != null && themeElementsAnnotation.value().length > 0) {
-			for (ThemeElement themeElement: themeElementsAnnotation.value()) {
-				pw.println("if (name.equals(\"" + themeElement.value() + "\")) {");
-				pw.println("return " + themeElement.value() + ".cast();");
-				pw.println("}");
+		MutableExecutableType getElementMethod = 
+				processingEnv.getTypeUtils().getExecutable(processingEnv.getTypeUtils().toMutableType(com.google.gwt.user.client.Element.class), "getElement").
+					addParameter(processingEnv.getElementUtils().getParameterElement(String.class, "name")).addModifier(Modifier.PUBLIC);
+
+		outputType.addMethod(getElementMethod);
+		
+		HierarchyPrintWriter getElementMethodPrinter = getElementMethod.getPrintWriter();
+		
+		if (themeElementsAccessor.isValid()) {
+			for (ThemeElementAccessor themeElementAccessor: themeElementsAccessor.getValue()) {
+				getElementMethodPrinter.println("if (name.equals(\"" + themeElementAccessor.getValue() + "\")) {");
+				getElementMethodPrinter.println("return " + themeElementAccessor.getValue() + ".cast();");
+				getElementMethodPrinter.println("}");
 			}
 		}
 
-		pw.println("if (name.equals(\"" + themeSupportAnnotation.elementName() + "\")) {");
-		pw.println("return " + themeSupportAnnotation.elementName() + ".cast();");
-		pw.println("}");
- 
-		pw.println("return null;");
-		pw.println("}");
+		getElementMethodPrinter.println("if (name.equals(\"" + themeSupportAccessor.getElementName() + "\")) {");
+		getElementMethodPrinter.println("return " + themeSupportAccessor.getElementName() + ".cast();");
+		getElementMethodPrinter.println("}");
+		getElementMethodPrinter.println("return null;");
 	}
 }
