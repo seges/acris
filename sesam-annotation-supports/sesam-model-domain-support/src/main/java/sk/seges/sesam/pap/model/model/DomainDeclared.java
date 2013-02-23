@@ -366,7 +366,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 							//usable for - when DTO is created from base class and converter from instance class
 							superClassDomainType = configurationElements.get(0).getInstantiableDomain().getSuperClass();
 						} else {
-							superClassDomainType = configurationElements.get(0).getDomain().getSuperClass();
+							superClassDomainType = configurationElements.get(0).getRawDomain().getSuperClass();
 						}
 					} else {
 						environmentContext.getProcessingEnv().getMessager().printMessage(Kind.OTHER, "No configuration for " + domainSuperClass + " was found. Inheritance is not supported for " + element);
