@@ -43,10 +43,8 @@ public abstract class AbstractDtoMethodConverterProviderPrinter extends Abstract
 				initializeDtoConverterMethod();
 			}
 			
-			String rawDtoName = context.getRawDto().toString(ClassSerializer.SIMPLE, false);
-			
 			types.add(context.getRawDto().getCanonicalName());
-			pw.println("if (" + rawDtoName + ".class.equals(" + DTO_CLASS_PARAMETER_NAME + ")) {");
+			pw.println("if (", context.getRawDto(), ".class.equals(" + DTO_CLASS_PARAMETER_NAME + ")) {");
 
 			printResultConverter(context);
 			
