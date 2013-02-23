@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sesam-showcase-parent</artifactId>
+	<name>sesam-showcase-parent</name>
+	<description>SeSAM Showcase parent</description>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../../sesam-os/pom.xml</relativePath>
+	</parent>
+
+	<modules>
+		<module>../sesam-showcase-annotations-support</module>
+		<module>../sesam-showcase-playground</module>
+		<module>../sesam-showcase-annotation-processor</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-annotation-core-support</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-showcase-playground</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-showcase-annotation-processor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
