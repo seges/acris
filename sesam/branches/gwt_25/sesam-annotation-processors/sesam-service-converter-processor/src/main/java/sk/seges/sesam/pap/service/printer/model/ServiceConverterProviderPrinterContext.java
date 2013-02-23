@@ -3,6 +3,7 @@ package sk.seges.sesam.pap.service.printer.model;
 import javax.lang.model.element.ExecutableElement;
 
 import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
+import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
@@ -11,8 +12,8 @@ public class ServiceConverterProviderPrinterContext extends ConverterProviderPri
 
 	private final ExecutableElement localMethod;
 	
-	public ServiceConverterProviderPrinterContext(DtoDeclaredType dtoType, ExecutableElement localMethod) {
-		super(dtoType);
+	public ServiceConverterProviderPrinterContext(DtoDeclaredType dtoType, ExecutableElement localMethod, ConfigurationTypeElement configurationType) {
+		super(dtoType, configurationType);
 		this.localMethod = localMethod;
 	}
 	

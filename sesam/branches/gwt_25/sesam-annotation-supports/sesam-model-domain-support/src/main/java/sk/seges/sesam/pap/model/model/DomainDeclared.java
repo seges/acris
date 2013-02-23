@@ -361,7 +361,11 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 					List<ConfigurationTypeElement> configurationElements = getConfigurations(getTypeUtils().toMutableType(domainSuperClass));
 					
 					if (configurationElements != null && configurationElements.size() > 0) {
-						superClassDomainType = configurationElements.get(0).getDomain();
+						if (!configurationElements.get(0).getInstantiableDomain().equals(this)) {
+							//it can be the same if base class is the case as instance class
+							//usable for - when DTO is created from base class and converter from instance class
+							superClassDomainType = configurationElements.get(0).getInstantiableDomain().getSuperClass();
+						}
 					} else {
 						environmentContext.getProcessingEnv().getMessager().printMessage(Kind.OTHER, "No configuration for " + domainSuperClass + " was found. Inheritance is not supported for " + element);
 //						superClassDomainType = (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainSuperClass);

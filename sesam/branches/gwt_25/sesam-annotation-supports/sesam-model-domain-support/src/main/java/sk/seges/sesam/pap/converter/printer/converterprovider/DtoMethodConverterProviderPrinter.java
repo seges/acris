@@ -31,7 +31,7 @@ public class DtoMethodConverterProviderPrinter extends AbstractDtoMethodConverte
 
 		DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
 		if (dtoType.getKind().isDeclared() && dtoType.getConverter() != null) {
-			print(new ConverterProviderPrinterContext((DtoDeclaredType)dtoType));
+			print(new ConverterProviderPrinterContext((DtoDeclaredType)dtoType, context.getConfigurationType()));
 		}
 	}
 }

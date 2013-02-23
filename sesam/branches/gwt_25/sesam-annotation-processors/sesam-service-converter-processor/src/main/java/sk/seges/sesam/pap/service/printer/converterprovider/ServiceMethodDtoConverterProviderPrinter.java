@@ -36,7 +36,8 @@ public class ServiceMethodDtoConverterProviderPrinter extends AbstractDtoMethodC
 		
 		DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
 		if (dtoType.getKind().isDeclared() && dtoType.getConverter() != null) {
-			print(new ServiceConverterProviderPrinterContext((DtoDeclaredType)dtoType, ((ServiceConverterProviderPrinterContext)context).getLocalMethod()));
+			print(new ServiceConverterProviderPrinterContext((DtoDeclaredType)dtoType, ((ServiceConverterProviderPrinterContext)context).getLocalMethod(), 
+					context.getConfigurationType()));
 		}
 	}
 	

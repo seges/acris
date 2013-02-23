@@ -76,10 +76,11 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		
 		setKind(MutableTypeKind.CLASS);
 		
-		DomainDeclaredType superClassDomainType = getDomain().getSuperClass();
+		DomainDeclaredType superClassDomainType = getInstantiableDomain().getSuperClass();
 
 		if (superClassDomainType != null) {
 			DtoDeclaredType superclassDto = superClassDomainType.getDto();
+			
 			MutableDeclaredType mutableSuperclassType = getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asConfigurationElement().asType());
 			
 			if (superclassDto instanceof MutableDeclaredType) {
