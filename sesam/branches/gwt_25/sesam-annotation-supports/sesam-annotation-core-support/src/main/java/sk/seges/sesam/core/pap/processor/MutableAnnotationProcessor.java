@@ -176,7 +176,6 @@ public abstract class MutableAnnotationProcessor extends ConfigurableAnnotationP
 				context.currentPrintWriter = outputClass.getPrintWriter();
 
 				processElement(context);
-				//context.currentPrintWriter.println("}");
 				rootPrintWriter.flush();
 			} catch (Exception e) {
 				processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Unable to process element " + e.getMessage(), typeElement);

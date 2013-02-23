@@ -315,6 +315,12 @@ public class TransferObjectMappingAccessor extends AnnotationAccessor {
 			return processingEnv.getElementUtils().getTypeElement(domainClassName);
 		}
 		
+		TypeElement delegatedConfiguration = getConfiguration();
+		
+		if (delegatedConfiguration != null) {
+			return new TransferObjectMappingAccessor(delegatedConfiguration, processingEnv).getDomain();
+		}
+		
 		return null;
 	}
 
@@ -337,7 +343,13 @@ public class TransferObjectMappingAccessor extends AnnotationAccessor {
 		if (domainInterfaceName != null) {
 			return processingEnv.getElementUtils().getTypeElement(domainInterfaceName);
 		}
+
+		TypeElement delegatedConfiguration = getConfiguration();
 		
+		if (delegatedConfiguration != null) {
+			return new TransferObjectMappingAccessor(delegatedConfiguration, processingEnv).getDomainInterface(mapping);
+		}
+
 		return null;
 	}
 

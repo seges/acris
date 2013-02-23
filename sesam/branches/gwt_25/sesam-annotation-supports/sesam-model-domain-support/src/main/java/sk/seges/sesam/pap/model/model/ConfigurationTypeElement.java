@@ -267,9 +267,6 @@ public class ConfigurationTypeElement extends TomBaseType {
 	}
 	
 	public DtoDeclaredType getRawDto() {
-		if (getDelegateConfigurationTypeElement() != null) {
-			return getDelegateConfigurationTypeElement().getRawDto();
-		}
 
 		if (transferObjectConfiguration.isValid()) {
 			TypeElement dtoInterface = transferObjectConfiguration.getDtoInterface();
@@ -280,7 +277,17 @@ public class ConfigurationTypeElement extends TomBaseType {
 			}
 		}
 		
-		return getDto();
+		DtoDeclaredType dto = getDto();
+		
+		if (dto != null) {
+			return dto;
+		}
+		
+		if (getDelegateConfigurationTypeElement() != null) {
+			return getDelegateConfigurationTypeElement().getRawDto();
+		}
+
+		return null;
 	}
 	
 	private Set<MutableTypeMirror> getDtoBounds(Set<? extends MutableTypeMirror> bounds) {
@@ -342,10 +349,6 @@ public class ConfigurationTypeElement extends TomBaseType {
 
 	public DtoDeclaredType getDto() {
 		
-		if (getDelegateConfigurationTypeElement() != null) {
-			return getDelegateConfigurationTypeElement().getDto();
-		}
-
 		if (!dtoTypeElementInitialized) {
 			
 			MutableDeclaredType dtoType = null;
@@ -377,14 +380,19 @@ public class ConfigurationTypeElement extends TomBaseType {
 				}
 
 				if (this.dtoDeclaredType == null) {
-					Element configurationElement = asConfigurationElement();
 					
-					if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
-						return null;
+					if (getDelegateConfigurationTypeElement() != null) {
+						this.dtoDeclaredType = (DtoDeclared) getDelegateConfigurationTypeElement().getDto();
+					} else {
+						Element configurationElement = asConfigurationElement();
+						
+						if (!configurationElement.asType().getKind().equals(TypeKind.DECLARED)) {
+							return null;
+						}
+	
+						this.dtoDeclaredType = new DtoDeclared(envContext, configurationContext);
+						this.dtoDeclaredType.setup();
 					}
-
-					this.dtoDeclaredType = new DtoDeclared(envContext, configurationContext);
-					this.dtoDeclaredType.setup();
 				}
 			}
 
