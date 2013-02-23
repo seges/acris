@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.converter.printer.model;
 
+import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
@@ -14,17 +15,19 @@ public class ConverterProviderPrinterContext {
 	private final DtoDeclaredType dto;
 	
 	private final ConverterTypeElement converterType;
+	private final ConfigurationTypeElement configurationType;
 	
-	public ConverterProviderPrinterContext(DtoDeclaredType dtoType) {
+	public ConverterProviderPrinterContext(DtoDeclaredType dtoType, ConfigurationTypeElement configurationType) {
 		this.rawDomain = (DomainDeclaredType)dtoType.getDomain();
+		this.configurationType = configurationType;
 		this.domain = this.rawDomain;
 		if (dtoType.getConverter() == null) {
 			if (dtoType.getConfigurations().size() == 0) {
 				this.rawDto = dtoType;
 				this.dto = dtoType;
 			} else {
-				this.rawDto = dtoType.getConfigurations().get(0).getRawDto();
-				this.dto = dtoType.getConfigurations().get(0).getDto();
+				this.rawDto = configurationType.getRawDto();
+				this.dto = configurationType.getDto();
 			}
 		} else {
 			this.rawDto = dtoType.getConverter().getConfiguration().getRawDto();
@@ -35,6 +38,7 @@ public class ConverterProviderPrinterContext {
 	
 	public ConverterProviderPrinterContext(DomainDeclaredType domainType) {
 		DtoType dto = domainType.getDto();
+		this.configurationType = null;
 		this.rawDomain = domainType;
 		this.domain = (DomainDeclaredType) dto.getDomain();
 		if (domainType.getConverter() == null) {
@@ -52,6 +56,7 @@ public class ConverterProviderPrinterContext {
 	
 	protected ConverterProviderPrinterContext(DomainDeclaredType rawDomain, DomainDeclaredType domain, DtoDeclaredType rawDto, 
 			DtoDeclaredType dto, ConverterTypeElement converterType) {
+		this.configurationType = null;
 		this.rawDomain = rawDomain;
 		this.rawDto = rawDto;
 		this.converterType = converterType;
@@ -77,5 +82,9 @@ public class ConverterProviderPrinterContext {
 	
 	public DtoDeclaredType getDto() {
 		return dto;
+	}
+
+	public ConfigurationTypeElement getConfigurationType() {
+		return configurationType;
 	}
 }

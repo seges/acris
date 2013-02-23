@@ -24,9 +24,9 @@ import java.util.Map.Entry;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 
+import sk.seges.sesam.core.pap.model.ConstructorParameter;
 import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.ParameterElement.ParameterUsageContext;
@@ -51,6 +51,7 @@ import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
+import sk.seges.sesam.pap.model.utils.ConstructorHelper;
 import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
 import sk.seges.sesam.shared.model.converter.api.InstantiableDtoConverter;
@@ -349,12 +350,9 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 			if (constructors.size() > 0) {
 				constructor = constructors.get(0);
 			}
-		} else {
-			int a = 0;
-			int b = a;
 		}
 		
-		List<VariableElement> commonParameters = new ArrayList<VariableElement>();
+		List<ConstructorParameter> commonParameters = new ArrayList<ConstructorParameter>();
 		
 		for (ConverterConstructorParameter parameter : originalParameters) {
 			if (i > 0) {
@@ -366,8 +364,9 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 			}
 
 			if (constructor != null) {
-				for (VariableElement constructorParameter: constructor.getParameters()) {
-					if (parameter.getType().toString(ClassSerializer.CANONICAL).equals(processingEnv.getTypeUtils().toMutableType(constructorParameter.asType()).toString(ClassSerializer.CANONICAL))) {
+				for (ConstructorParameter constructorParameter: ConstructorHelper.getConstructorParameters(processingEnv.getTypeUtils(), constructor)) {
+//				for (VariableElement constructorParameter: constructor.getParameters()) {
+					if (parameter.equalsByType(constructorParameter)) {
 						commonParameters.add(constructorParameter);
 						break;
 					}
@@ -379,10 +378,11 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 		}
 
 		if (constructor != null) {
-			for (VariableElement constructorParameter: constructor.getParameters()) {
+			for (ConstructorParameter constructorParameter: ConstructorHelper.getConstructorParameters(processingEnv.getTypeUtils(), constructor)) {
+			//for (VariableElement constructorParameter: constructor.getParameters()) {
 				boolean found = false;
-				for (VariableElement commonParameter: commonParameters) {
-					if (commonParameter.equals(constructorParameter)) {
+				for (ConstructorParameter commonParameter: commonParameters) {
+					if (commonParameter.equalsByType(constructorParameter)) {
 						found = true;
 						break;
 					}
@@ -393,13 +393,13 @@ public class ConverterProviderPrinter extends AbstractConverterPrinter {
 						pw.print(", ");
 					}
 					
-					MutableTypeMirror mutableFieldType = processingEnv.getTypeUtils().toMutableType(constructorParameter.asType());
+					MutableTypeMirror mutableFieldType = constructorParameter.getType();
 					
 					if (!ProcessorUtils.hasFieldByType(ownerType, mutableFieldType)) {
-						ProcessorUtils.addField(processingEnv, ownerType, mutableFieldType, constructorParameter.getSimpleName().toString());
+						ProcessorUtils.addField(processingEnv, ownerType, mutableFieldType, constructorParameter.getName().toString());
 					}
 					
-					pw.print(constructorParameter.getSimpleName().toString());
+					pw.print(constructorParameter.getName().toString());
 					i++;
 				}
 			}

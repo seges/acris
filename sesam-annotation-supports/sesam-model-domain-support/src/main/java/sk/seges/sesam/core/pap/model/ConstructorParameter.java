@@ -1,5 +1,6 @@
 package sk.seges.sesam.core.pap.model;
 
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
 public class ConstructorParameter {
@@ -23,5 +24,9 @@ public class ConstructorParameter {
 
 	public MutableTypeMirror getType() {
 		return type;
+	}
+	
+	public boolean equalsByType(ConstructorParameter obj) {
+		return getType().toString(ClassSerializer.CANONICAL).equals(obj.getType().toString(ClassSerializer.CANONICAL));
 	}
 }

@@ -93,7 +93,7 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 				//TODO why not raw domain
 				//returnDtoType.getConverter().getConfiguration().getRawDomain();
 				DtoDeclaredType rawDto = returnDtoType.getConverter().getConfiguration().getRawDto();
-				nestedPrinter.print(new ServiceConverterProviderPrinterContext(rawDto, localMethod));
+				nestedPrinter.print(new ServiceConverterProviderPrinterContext(rawDto, localMethod, returnDtoType.getConverter().getConfiguration()));
 
 				if (rawDomain.getTypeVariables().size() > 0) {
 					for (MutableTypeVariable typeVariable: rawDomain.getTypeVariables()) {
@@ -125,7 +125,7 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 		for (MutableTypeMirror type: types) {
 			DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
 			if (dtoType.getKind().isDeclared() && dtoType.getConverter() != null) {
-				ServiceConverterProviderPrinterContext context = new ServiceConverterProviderPrinterContext((DtoDeclaredType)dtoType, localMethod);
+				ServiceConverterProviderPrinterContext context = new ServiceConverterProviderPrinterContext((DtoDeclaredType)dtoType, localMethod, dtoType.getConverter().getConfiguration());
 				nestedPrinter.print(context);
 			}
 		}

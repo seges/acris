@@ -139,9 +139,9 @@ public class ConverterProviderProcessor extends AbstractTransferProcessingProces
 						List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(availableConfiguration.getInstantiableDomain());
 
 						for (ConfigurationTypeElement configurationForDomain: configurationsForDomain) {
-							if (!processedConfigurations.contains(availableConfiguration.getCanonicalName())) {
-								processedConfigurations.add(availableConfiguration.getCanonicalName());
-								ConverterProviderPrinterContext printerContext = new ConverterProviderPrinterContext(configurationForDomain.getDto());
+							if (!processedConfigurations.contains(configurationForDomain.getCanonicalName())) {
+								processedConfigurations.add(configurationForDomain.getCanonicalName());
+								ConverterProviderPrinterContext printerContext = new ConverterProviderPrinterContext(configurationForDomain.getDto(), configurationForDomain);
 								nestedElementPrinter.print(printerContext);
 							}
 						}
