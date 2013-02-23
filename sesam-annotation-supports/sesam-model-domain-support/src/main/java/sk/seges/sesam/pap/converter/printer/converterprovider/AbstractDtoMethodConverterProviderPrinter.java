@@ -1,6 +1,6 @@
 package sk.seges.sesam.pap.converter.printer.converterprovider;
 
-import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.converter.printer.AbstractObjectConverterProviderPrinter;
 import sk.seges.sesam.pap.converter.printer.model.ConverterProviderPrinterContext;
@@ -44,7 +44,7 @@ public abstract class AbstractDtoMethodConverterProviderPrinter extends Abstract
 			}
 			
 			types.add(context.getRawDto().getCanonicalName());
-			pw.println("if (", context.getRawDto(), ".class.equals(" + DTO_CLASS_PARAMETER_NAME + ")) {");
+			pw.println("if (", context.getRawDto().clone().setTypeVariables(new MutableTypeVariable[] {}), ".class.equals(" + DTO_CLASS_PARAMETER_NAME + ")) {");
 
 			printResultConverter(context);
 			
