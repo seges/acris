@@ -32,7 +32,8 @@ public abstract class AbstractDtoMethodConverterProviderPrinter extends Abstract
 	@Override
 	public void print(ConverterProviderPrinterContext context) {
 		
-		if (context.getConverterType() == null) {
+		//There is no direct converter between DTO <-> DOMAIN, but DOMAIN <-> DTO neither
+		if (context.getConverterType() == null && context.getDomain().getConverter() == null) {
 			return;
 		}
 		

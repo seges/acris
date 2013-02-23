@@ -19,7 +19,11 @@ public class DtoMethodConverterProviderPrinter extends AbstractDtoMethodConverte
 	@Override
 	protected void printResultConverter(ConverterProviderPrinterContext context) {
 		pw.print("return (", getTypedDtoConverter(), ") ");
-		converterProviderPrinter.printDtoGetConverterMethodName(context.getRawDto(), null, null, pw, false);
+		if (context.getRawDto().getConverter() != null) {
+			converterProviderPrinter.printDtoGetConverterMethodName(context.getRawDto(), null, null, pw, false);
+		} else {
+			converterProviderPrinter.printDtoGetConverterMethodName(context.getDomain().getDto(), null, null, pw, false);
+		}
 	}
 
 	@Override
