@@ -11,7 +11,8 @@ public class WebParamsBean implements WebParams {
 	private boolean productCategorySingleSelect = false;
 	private boolean filtersEnabled = false;
 	private boolean sortEnabled = false;
-
+	private boolean backgroundManagementEnabled = false;
+	
 	private String searchMode = ESearchMode.EQ.name();
 	private boolean searchLocalePrefix = false;
 
@@ -172,5 +173,14 @@ public class WebParamsBean implements WebParams {
 	public void setProductsWithContentEnabled(boolean productsWithContentEnabled) {
 		this.productsWithContentEnabled = productsWithContentEnabled;
 	}
-		
+	
+	@Override
+	public Boolean isBackgroundManagementEnabled() {
+		return backgroundManagementEnabled;
+	}
+
+	@Override
+	public void setBackgroundManagementEnabled(boolean backgroundManagementEnabled) {
+		this.backgroundManagementEnabled = backgroundManagementEnabled;
+	}
 }

@@ -19,6 +19,7 @@ public interface WebParams extends ContentParameters {
 	public static final String BREADCRUMB_ITEMS_LIST = "breadcrumbItemsList";
 	public static final String PRODUCTS_WITH_MICROSITE_ENABLED = "productsWithMicrositeEnabled";
 	public static final String PRODUCTS_WITH_CONTENT_ENABLED = "productsWithContentsEnabled";
+	public static final String BACKGROUND_MANAGEMENT_ENABLED = "backgroundManagementEnabled";
 
 	String[] getOfflinePostProcessorInactive();
 
@@ -79,4 +80,8 @@ public interface WebParams extends ContentParameters {
 	Boolean isProductsWithContentEnabled();
 	
 	void setProductsWithContentEnabled(boolean productsWithContentEnabled);
+	
+	Boolean isBackgroundManagementEnabled();
+	
+	void setBackgroundManagementEnabled(boolean backgroundManagementEnabled);
 }
