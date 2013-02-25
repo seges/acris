@@ -161,7 +161,11 @@ public abstract class JSONModel extends JavaScriptObject {
 	}
 	
 	public final void setStringStringMap(String key, Map<String, String> map) {
-		throw new RuntimeException("Not yet implemented");
+		JSONObject object = new JSONObject();
+		for (String mapKey : map.keySet()) {
+			object.put(mapKey, new JSONString(map.get(mapKey)));
+		}
+		set(key, object.getJavaScriptObject());
 	}
     
 	public final Map<String, Integer> getStringIntMap(String key) {
@@ -189,7 +193,11 @@ public abstract class JSONModel extends JavaScriptObject {
 	}
 
 	public final void setStringIntMap(String key, Map<String, Integer> map) {
-		throw new RuntimeException("Not yet implemented");
+		JSONObject object = new JSONObject();
+		for (String mapKey : map.keySet()) {
+			object.put(mapKey, new JSONNumber(map.get(mapKey)));
+		}
+		set(key, object.getJavaScriptObject());
 	}
 	
     public final native JSONModel getObject(String key) /*-{
