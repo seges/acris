@@ -40,15 +40,16 @@ public abstract class AbstractDomainMethodConverterProviderPrinter extends Abstr
 			return;
 		}
 		
-		if (!types.contains(context.getRawDomain().getCanonicalName())) {
+		DomainDeclaredType instantiableDomain = context.getConverterType().getConfiguration().getInstantiableDomain();
+		if (!types.contains(instantiableDomain.getCanonicalName())) {
 
 			if (types.size() == 0) {
 				initializeDomainConverterMethod();
 			}
 			
-			types.add(context.getRawDomain().getCanonicalName());
+			types.add(instantiableDomain.getCanonicalName());
 			
-			pw.println("if (", context.getConverterType().getConfiguration().getInstantiableDomain().clone().setTypeVariables(new MutableTypeVariable[] {}), ".class.equals(" + DOMAIN_CLASS_PARAMETER_NAME + ")) {");
+			pw.println("if (",instantiableDomain.clone().setTypeVariables(new MutableTypeVariable[] {}), ".class.equals(" + DOMAIN_CLASS_PARAMETER_NAME + ")) {");
 
 			printResulConverter(context);
 			
