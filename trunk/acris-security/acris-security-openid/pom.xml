@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-security-openid</artifactId>
+	<packaging>pom</packaging>
+	<name>AcrIS Security with openid support</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-security-parent</artifactId>
+  		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../acris-security-parent</relativePath>
+	</parent>
+
+	<modules>
+		<module>acris-security-openid-scaffold-model</module>
+		<module>acris-security-openid-dto</module>
+		<module>acris-security-openid-core</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies> 
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-openid-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-openid-dto</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-openid-scaffold-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-security-openid-scaffold-model</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+		</dependencies> 
+	</dependencyManagement>
+</project>

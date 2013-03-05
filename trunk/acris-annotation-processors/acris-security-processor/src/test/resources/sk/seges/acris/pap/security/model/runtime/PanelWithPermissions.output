@@ -1,0 +1,84 @@
+package sk.seges.acris.pap.security.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import sk.seges.acris.security.client.CheckableSecuredObject;
+import sk.seges.acris.security.client.mediator.IRuntimeAuthorityMediator;
+import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.util.SecurityUtils;
+
+@Generated(value = "sk.seges.acris.pap.security.RuntimeSecuredObjectProcessor")
+public class RuntimeSecuredPanelWithPermissions extends PanelWithPermissions implements IRuntimeAuthorityMediator, CheckableSecuredObject {
+
+	private GenericUserDTO user;
+
+	private List<String> userGrants = new ArrayList<String>();
+	private ClientSession<GenericUserDTO> clientSession;
+
+	public ClientSession<GenericUserDTO> getClientSession() {
+		return clientSession;
+	}
+
+	public void setClientSession(ClientSession<GenericUserDTO> clientSession) {
+		this.clientSession = clientSession;
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		check();
+	}
+
+	@Override
+	public void check() {
+		user = null;
+
+		if (getClientSession() != null) {
+			user = (GenericUserDTO)getClientSession().getUser();
+		}
+
+		SecurityUtils.handlePermission(user, label1, getGrants(), "TEXT");
+		SecurityUtils.handlePermission(user, label2, getGrants(), "HEADING");
+		SecurityUtils.handlePermission(user, textBox, getGrants(), "YOUTUBE");
+		SecurityUtils.handlePermission(user, checkBox, getGrants(), "SUPPORT");
+		SecurityUtils.handlePermission(user, radioButton, getGrants(), "GENDER");
+	}
+
+	@Override
+	public void setPermission(UserPermission userPermission) {
+		userGrants.clear();
+		userGrants.add(userPermission.name());
+	}
+	
+	@Override
+	public void setGrant(String grant) {
+		userGrants.clear();
+		userGrants.add(grant);
+	}
+
+	@Override
+	public void setPermissions(UserPermission[] permissions) {
+		userGrants.clear();
+		for(UserPermission userPermission : permissions) {
+			userGrants.add(userPermission.name());
+		}
+	}
+	@Override
+	public void setGrants(String[] grants) {
+		userGrants.clear();
+		for(String grant : grants) {
+			userGrants.add(grant);
+		}
+	}
+
+	@Override
+	public String[] getGrants() {
+		return userGrants.toArray(new String[0]);
+	}
+
+}
