@@ -162,4 +162,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 		data.set(PRODUCTS_WITH_CONTENT_ENABLED, productsWithContentEnabled);
 		
 	}
+	
+	@Override
+	public Boolean isBackgroundManagementEnabled() {
+		return data.getBoolean(BACKGROUND_MANAGEMENT_ENABLED);
+	}
+
+	@Override
+	public void setBackgroundManagementEnabled(boolean backgroundManagementEnabled) {
+		data.set(BACKGROUND_MANAGEMENT_ENABLED, backgroundManagementEnabled);
+	}
 }
