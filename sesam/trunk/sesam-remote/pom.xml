@@ -1,0 +1,125 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>sesam-remote</artifactId>
+	<name>sesam-remote</name>
+	<description>Generic Remote Invocation layer - universal replacement for RMI currently using JMS as underlying transport. Suitable for load balancing and clustering.</description>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../sesam-os/pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sesam-remote-openmq</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!-- replacement for javax.jms >> jms -->
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-jms_1.1_spec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/stress/**/*Test.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<profiles>
+		<profile>
+			<id>ri-production</id>
+			<activation>
+            			<activeByDefault>true</activeByDefault>
+		            	<property>
+		            		<name>ri-type</name>
+		            		<value>production</value>
+		            	</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.sun.messaging.mq</groupId>
+					<artifactId>imq</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>ri-sandbox</id>
+			<activation>
+		            	<property>
+		            		<name>ri-type</name>
+		            		<value>sandbox</value>
+		            	</property>
+		        </activation>
+			<dependencies>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>sesam-remote-openmq</artifactId>
+					<version>${project.version}</version>
+					<scope>test</scope>
+					<classifier>test</classifier>
+				</dependency>
+            
+		            	<dependency>
+					<groupId>com.sun.messaging.mq</groupId>
+					<artifactId>imq</artifactId>
+					<version>${openmq.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.messaging.mq</groupId>
+					<artifactId>imqjmx</artifactId>
+					<version>${openmq.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.messaging.mq</groupId>
+					<artifactId>imqbroker</artifactId>
+					<version>${openmq.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.sun.messaging.mq</groupId>
+					<artifactId>imqutil</artifactId>
+					<version>${openmq.version}</version>
+  				</dependency>
+			</dependencies>
+			<build>
+				<resources>
+		            		<resource>
+		            			<directory>src/main/resources</directory>
+		            		</resource>
+					<resource>
+		            			<directory>src/test/resources</directory>
+		            		</resource>            	
+		            		<resource>
+		            			<directory>src/test/java-sandbox</directory>
+		            		</resource>
+		            	</resources>
+			</build>
+		</profile>		
+	</profiles>
+</project>
