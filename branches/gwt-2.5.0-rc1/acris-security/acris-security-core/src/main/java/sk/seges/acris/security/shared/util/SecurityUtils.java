@@ -115,7 +115,8 @@ public class SecurityUtils {
 			List<String> authorities = user.getUserAuthorities();
 			if (authorities != null) {
 				return authorities.contains(authority) || authorities.contains(SecurityConstants.AUTH_PREFIX + authority) || 
-						authorities.contains(SecurityConstants.AUTH_PREFIX + authority + permissionPrefix);
+						authorities.contains(SecurityConstants.AUTH_PREFIX + authority + permissionPrefix) ||
+						authorities.contains(authority + permissionPrefix);
 			}
 		}
 		return false;
