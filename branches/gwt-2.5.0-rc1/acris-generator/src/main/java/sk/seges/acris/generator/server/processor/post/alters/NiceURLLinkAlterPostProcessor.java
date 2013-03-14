@@ -18,7 +18,7 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof LinkTag) {
 			String link = ((LinkTag)node).getAttribute(HREF_ATRIBUTE);
-			return isInternal(link) || !isUrl(link);
+			return link != null && (isInternal(link) || !isUrl(link));
 		}
 		return false;
 	}
