@@ -12,7 +12,7 @@ public class OptionsFactory extends Composite {
     
 	protected static ButtonLabels labels = GWT.create(ButtonLabels.class);
 
-	private WidgetFactory widgetFactory;
+	protected WidgetFactory widgetFactory;
 	
 	public OptionsFactory(WidgetFactory widgetFactory) {
 		this.widgetFactory = widgetFactory;

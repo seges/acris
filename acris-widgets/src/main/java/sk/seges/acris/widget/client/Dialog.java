@@ -31,16 +31,16 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	private static final String STYLE_DIALOG_CONTENT_WRAPPER = "acris-cmp-dialogContentWrapper";
 	private static final String STYLE_CONTENT = "acris-cmp-content";
 
-	private Widget captionWidget;
-	private String caption;
+	protected Widget captionWidget;
+	protected String caption;
 	public Widget content;
 
-	private FlowPanel dialogContentWrapper;
-	private OptionsPanel options;
+	protected FlowPanel dialogContentWrapper;
+	protected OptionsPanel options;
 
-	private ClickHandler hidingClickHandler;
+	protected ClickHandler hidingClickHandler;
 
-	private List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
+	protected List<HandlerRegistration> handlerRegistrations = new ArrayList<HandlerRegistration>();
 
 	public Dialog() {
 		super();
@@ -75,7 +75,7 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 		dialogContentWrapper.setStyleName(STYLE_DIALOG_CONTENT_WRAPPER);
 	}
 
-	private void init() {
+	protected void init() {
 		dialogContentWrapper = new FlowPanel();
 		setStyles();
 		options = new OptionsPanel();
@@ -83,6 +83,10 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 
 	private boolean initialized = false;
 
+	protected void superOnLoad(){
+		super.onLoad();
+	}
+	
 	@Override
 	protected void onLoad() {
 		super.onLoad();
@@ -171,12 +175,12 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	 * 
 	 * @param options
 	 */
-	public void addOptions(Widget options[]) {
-		this.options.addOptions(options, getHidingClickHandler());
+	public void addOptions(Widget optionsWidgets[]) {
+		options.addOptions(optionsWidgets, getHidingClickHandler());
 	}
 
-	public void addOptions(Widget options[], ClickHandler hidingClickHandler) {
-		this.options.addOptions(options, hidingClickHandler);
+	public void addOptions(Widget optionsWidgets[], ClickHandler hidingClickHandler) {
+		options.addOptions(optionsWidgets, hidingClickHandler);
 	}
 
 	/**
@@ -192,7 +196,7 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 	 * @param captionWidget
 	 */
 	public void setCaptionWidget(Widget captionWidget) {
-		if (captionWidget != null) {
+		if (caption != null) {
 			throw new IllegalArgumentException("Cannot set widget caption when string caption is already set");
 		}
 		this.captionWidget = captionWidget;
@@ -226,6 +230,10 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 		int left = (Window.getClientWidth() - getOffsetWidth()) >> 1;
 		int top = (Window.getClientHeight() - getOffsetHeight()) >> 1;
 		setPopupPosition(Math.max(Window.getScrollLeft() + left, 0), Math.max(Window.getScrollTop() + top, 0));
+		super.show();
+	}
+	
+	public void superShow(){
 		super.show();
 	}
 

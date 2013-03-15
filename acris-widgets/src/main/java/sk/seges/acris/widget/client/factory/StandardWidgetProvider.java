@@ -64,4 +64,10 @@ public class StandardWidgetProvider implements WidgetProvider {
 	public TextBox createTextBox() {
 		return GWT.create(TextBox.class);
 	}
+
+	@Override
+	public Label createMessageButton() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

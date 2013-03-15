@@ -65,6 +65,12 @@ public class WidgetFactory {
 		widget.addClickHandler(handler);
 		return widget;
 	}
+	//TODO this creates normal label. remove this after replacing metal theme with new better theme
+	public Label messageButton(String label, ClickHandler handler){
+		Label widget = label(label);
+		widget.addClickHandler(handler);
+		return widget;
+	}
 
 	public PushButton pushButton(String label) {
 		PushButton widget = widgetProvider.createPushButton();
