@@ -172,4 +172,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setBackgroundManagementEnabled(boolean backgroundManagementEnabled) {
 		data.set(BACKGROUND_MANAGEMENT_ENABLED, backgroundManagementEnabled);
 	}
+
+	@Override
+	public boolean isIncludeProductCategoryInSearch() {
+		return data.getBoolean(INCLUDE_PRODUCT_CATEGORY_IN_SEARCH);
+	}
+
+	@Override
+	public void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch) {
+		data.set(INCLUDE_PRODUCT_CATEGORY_IN_SEARCH, includeProductCategoryInSearch);		
+	}
 }

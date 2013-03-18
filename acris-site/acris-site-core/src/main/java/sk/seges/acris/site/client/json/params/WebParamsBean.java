@@ -28,6 +28,8 @@ public class WebParamsBean implements WebParams {
 	private boolean productsWithMicrositeEnabled = false;
 	private boolean productsWithContentEnabled = true;
 	
+	private boolean includeProductCategoryInSearch = false;
+	
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
 		return publishOnSaveEnabled;
@@ -158,18 +160,22 @@ public class WebParamsBean implements WebParams {
 		this.breadcrumbItemsList = breadcrumbItemsList;
 	}
 
+	@Override
 	public Boolean isProductsWithMicrositeEnabled() {
 		return productsWithMicrositeEnabled;
 	}
 
+	@Override
 	public void setProductsWithMicrositeEnabled(boolean productsWithMicrositeEnabled) {
 		this.productsWithMicrositeEnabled = productsWithMicrositeEnabled;
 	}
 
+	@Override
 	public Boolean isProductsWithContentEnabled() {
 		return productsWithContentEnabled;
 	}
 
+	@Override
 	public void setProductsWithContentEnabled(boolean productsWithContentEnabled) {
 		this.productsWithContentEnabled = productsWithContentEnabled;
 	}
@@ -182,5 +188,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setBackgroundManagementEnabled(boolean backgroundManagementEnabled) {
 		this.backgroundManagementEnabled = backgroundManagementEnabled;
+	}
+
+	@Override
+	public boolean isIncludeProductCategoryInSearch() {
+		return includeProductCategoryInSearch;
+	}
+
+	@Override
+	public void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch) {
+		this.includeProductCategoryInSearch = includeProductCategoryInSearch;
 	}
 }
