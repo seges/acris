@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -148,6 +149,14 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		List<Long> resultList;
 
 		Criteria executable = criteria.getExecutableCriteria((Session) entityManager.getDelegate());
+		if(executable instanceof CriteriaImpl){
+			CriteriaImpl criteriaImpl = (CriteriaImpl)executable;
+			Iterator orderIterator = criteriaImpl.iterateOrderings();
+			while (orderIterator.hasNext()){
+				orderIterator.next();
+				orderIterator.remove();
+			}			
+		}
 		if (requestedPage != null && existingAliases != null) {
 			enrichCriteriaWithFilterables(requestedPage, executable, existingAliases);
 			if (null != addedFilterables) {
@@ -194,6 +203,8 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		Set<String> existingAliases = new HashSet<String>();
 		MutableBoolean addedFilterables = new MutableBoolean();
 
+		List<T> list = doFindByCriteria(criteria, requestedPage, existingAliases, !addedFilterables.value, cacheable);
+		
 		if (!retrieveAllResults(requestedPage)) {
 			// select count only when paging
 			totalCount = doGetCountByCriteria(criteria, requestedPage, existingAliases, addedFilterables);
@@ -202,8 +213,6 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 			criteria.setProjection(null);
 			criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 		}
-
-		List<T> list = doFindByCriteria(criteria, requestedPage, existingAliases, !addedFilterables.value, cacheable);
 
 		if (retrieveAllResults(requestedPage)) {
 			// we are not paging results, get total count from fetched list
