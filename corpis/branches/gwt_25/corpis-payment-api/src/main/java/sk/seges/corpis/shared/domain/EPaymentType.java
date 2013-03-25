@@ -15,7 +15,9 @@ public enum EPaymentType {
 	VBPAY("paymentType.vbpay", true),
 	UCBPAY("paymentType.ucbpay", true), 
 	COD("paymentType.cod", false),
-	CASH("paymentType.cash", false);
+	CASH("paymentType.cash", false),
+	INVOICE("paymentType.invoice", false);
+	
 
 	private EPaymentType(String i18nKey, boolean electronic) {
 		this.i18nKey = i18nKey;

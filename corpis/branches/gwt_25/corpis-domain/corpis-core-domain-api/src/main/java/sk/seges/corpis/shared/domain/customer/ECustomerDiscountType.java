@@ -7,8 +7,8 @@ package sk.seges.corpis.shared.domain.customer;
  */
 public enum ECustomerDiscountType {
 
-	DIRECT_SALES("discount.directSales", EDiscountType.PRODUCT),
-	COMMISSION_SALES("discount.commissionSales", EDiscountType.PRODUCT),
+	DIRECT_SALES("discount_directSales", EDiscountType.PRODUCT),
+	COMMISSION_SALES("discount_commissionSales", EDiscountType.PRODUCT),
 	CASH("discount.cash", EDiscountType.ORDER),
 	COD("discount.cod", EDiscountType.ORDER);
 
