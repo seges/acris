@@ -72,13 +72,13 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	}
 
 	@Override
-	public Boolean isSortEnabled() {
+	public Boolean isProductListSortEnabled() {
 		return data.getBoolean(PRODUCT_LIST_SORT_ENABLED);
 	}
 
 	@Override
-	public void setSortEnabled(boolean sortEnabled) {
-		data.set(PRODUCT_LIST_SORT_ENABLED, sortEnabled);
+	public void setProductListSortEnabled(boolean productListSortEnabled) {
+		data.set(PRODUCT_LIST_SORT_ENABLED, productListSortEnabled);
 	}
 
 	@Override

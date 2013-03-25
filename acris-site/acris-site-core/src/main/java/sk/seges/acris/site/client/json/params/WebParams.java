@@ -46,9 +46,9 @@ public interface WebParams extends ContentParameters {
 
 	void setFiltersEnabled(boolean filtersEnabled);
 
-	Boolean isSortEnabled();
+	Boolean isProductListSortEnabled();
 
-	void setSortEnabled(boolean sortEnabled);
+	void setProductListSortEnabled(boolean sortEnabled);
 
 	String getSearchMode();
 
