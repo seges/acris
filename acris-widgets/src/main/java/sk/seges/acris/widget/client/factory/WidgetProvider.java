@@ -32,5 +32,7 @@ public interface WidgetProvider {
 	
 	TextArea createTextArea();
 
-	TextBox createTextBox();	
+	TextBox createTextBox();
+	
+	Label createMessageButton();
 }

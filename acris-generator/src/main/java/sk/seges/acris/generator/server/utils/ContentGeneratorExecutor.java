@@ -21,7 +21,7 @@ public abstract class ContentGeneratorExecutor {
 	}
 
 	private void setHtmlProcessingDefaults() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-/*		for (Field field: HTMLScanner.class.getDeclaredFields()) {
+		for (Field field: HTMLScanner.class.getDeclaredFields()) {
 			if (field.getName().equals("RECOGNIZED_FEATURES_DEFAULTS")) {
 				field.setAccessible(true);
 
@@ -48,7 +48,7 @@ public abstract class ContentGeneratorExecutor {
 				        Boolean.TRUE,
 				});
 			}
-		}	*/
+		}	
 	}
 	
 	public void startOfflineProcessing() {

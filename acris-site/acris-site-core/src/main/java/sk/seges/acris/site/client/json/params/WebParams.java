@@ -20,6 +20,7 @@ public interface WebParams extends ContentParameters {
 	public static final String PRODUCTS_WITH_MICROSITE_ENABLED = "productsWithMicrositeEnabled";
 	public static final String PRODUCTS_WITH_CONTENT_ENABLED = "productsWithContentsEnabled";
 	public static final String BACKGROUND_MANAGEMENT_ENABLED = "backgroundManagementEnabled";
+	public static final String INCLUDE_PRODUCT_CATEGORY_IN_SEARCH = "includeProductCategoryInSearch";
 
 	String[] getOfflinePostProcessorInactive();
 
@@ -45,9 +46,9 @@ public interface WebParams extends ContentParameters {
 
 	void setFiltersEnabled(boolean filtersEnabled);
 
-	Boolean isSortEnabled();
+	Boolean isProductListSortEnabled();
 
-	void setSortEnabled(boolean sortEnabled);
+	void setProductListSortEnabled(boolean sortEnabled);
 
 	String getSearchMode();
 
@@ -84,4 +85,8 @@ public interface WebParams extends ContentParameters {
 	Boolean isBackgroundManagementEnabled();
 	
 	void setBackgroundManagementEnabled(boolean backgroundManagementEnabled);
+	
+	boolean isIncludeProductCategoryInSearch();
+
+	void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch);
 }
