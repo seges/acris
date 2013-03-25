@@ -18,4 +18,5 @@ public interface Tag extends IDomainObject<Long> {
 	
 	Long priority();
 
+	Integer index();
 }

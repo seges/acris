@@ -10,7 +10,7 @@ public class WebParamsBean implements WebParams {
 	private boolean publishOnSaveEnabled = false;
 	private boolean productCategorySingleSelect = false;
 	private boolean filtersEnabled = false;
-	private boolean sortEnabled = false;
+	private boolean productListSortEnabled = false;
 	private boolean backgroundManagementEnabled = false;
 	
 	private String searchMode = ESearchMode.EQ.name();
@@ -91,13 +91,13 @@ public class WebParamsBean implements WebParams {
 	}
 
 	@Override
-	public Boolean isSortEnabled() {
-		return sortEnabled;
+	public Boolean isProductListSortEnabled() {
+		return productListSortEnabled;
 	}
 
 	@Override
-	public void setSortEnabled(boolean sortEnabled) {
-		this.sortEnabled = sortEnabled;
+	public void setProductListSortEnabled(boolean productListSortEnabled) {
+		this.productListSortEnabled = productListSortEnabled;
 	}
 
 	@Override

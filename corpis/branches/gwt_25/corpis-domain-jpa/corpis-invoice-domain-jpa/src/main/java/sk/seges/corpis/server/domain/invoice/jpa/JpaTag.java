@@ -55,4 +55,10 @@ public class JpaTag extends TagBase {
 	public String getWebId() {
 		return super.getWebId();
 	}
+	
+	@Override
+	@Column
+	public Integer getIndex() {
+		return super.getIndex();
+	}
 }
