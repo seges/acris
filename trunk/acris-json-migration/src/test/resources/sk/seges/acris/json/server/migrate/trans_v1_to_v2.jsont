@@ -1,0 +1,4 @@
+{ 
+	"self": "{\"title\":\"{name}\",\"lenght\":{lenght},\"tags\":[{tags}]}",
+	"tags[*]": "\"{$}\","
+}
