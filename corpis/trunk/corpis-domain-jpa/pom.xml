@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>corpis-domain-jpa</artifactId>
+	<name>corpis-domain-jpa</name>
+	<description>Corpis domain JPA</description>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+  		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../corpis-os/pom.xml</relativePath>
+	</parent>
+
+	<modules>
+		<module>corpis-core-domain-jpa</module>
+		<module>corpis-customer-domain-jpa</module>
+		<module>corpis-invoice-domain-jpa</module>
+		<module>corpis-manufacture-domain-jpa</module>
+		<module>corpis-stock-domain-jpa</module>
+		<module>corpis-payment-domain-jpa</module>
+		<module>corpis-transportation-domain-jpa</module>
+		<module>corpis-price-domain-jpa</module>
+		<module>corpis-news-domain-jpa</module>
+	</modules>
+</project>
