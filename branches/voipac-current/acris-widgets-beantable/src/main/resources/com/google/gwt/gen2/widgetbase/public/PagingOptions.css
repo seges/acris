@@ -1,0 +1,12 @@
+@sprite .gwt-PagingOptions {
+  gwt-image: "pagingBackground";
+  background-color: #e3e8f3;
+}
+
+.currentPageBox {
+	height: 32px;
+}
+
+.errorMessage {
+	color: red;
+}
