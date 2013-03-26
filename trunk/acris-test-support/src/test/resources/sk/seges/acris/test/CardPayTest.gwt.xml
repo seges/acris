@@ -1,7 +1,0 @@
-<module>
-	<inherits name="com.google.gwt.user.User" />
-	<!-- inherits name="sk.seges.acris.Crypto" /-->
-	<inherits name='com.googlecode.gwt.crypto.Crypto'/>
-
-	<source path="client"/>
-</module>
