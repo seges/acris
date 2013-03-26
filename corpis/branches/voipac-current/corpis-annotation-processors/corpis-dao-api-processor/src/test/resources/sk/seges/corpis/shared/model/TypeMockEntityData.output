@@ -1,0 +1,11 @@
+package sk.seges.corpis.server.dao.api;
+
+import javax.annotation.Generated;
+
+import sk.seges.corpis.shared.model.TypedMockEntityData;
+import sk.seges.sesam.dao.ICrudDAO;
+
+@Generated(value = "sk.seges.corpis.core.pap.dao.DaoApiProcessor")
+public interface TypedMockEntityDataDaoBase<T extends TypedMockEntityData> extends ICrudDAO<TypedMockEntityData> {
+
+}
