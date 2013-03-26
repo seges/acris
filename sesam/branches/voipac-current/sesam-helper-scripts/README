@@ -1,7 +1,0 @@
-= Export dependencies from repository =
-
-To be able to create a bundle, we need to export dependencies from Maven repository. The script will take all dependencies out for the group (specified by the path to the group's directory) with a specific version.
-
-Example:
-
-./Export.py /home/user/.m2/repository/sk/seges/corpis 1.1.3 /home/user/tmp/repo/corpis
