@@ -149,6 +149,9 @@ public abstract class JSONModel extends JavaScriptObject {
     }
 
 	public final Map<String, String> getStringStringMap(String key) {
+		if (!hasKey(key)) {
+			return null;
+		}
 		Map<String, String> map = new HashMap<String, String>();
 		JSONObject object = new JSONObject(this);
 		JSONObject value = (JSONObject) object.get(key);
@@ -169,6 +172,9 @@ public abstract class JSONModel extends JavaScriptObject {
 	}
     
 	public final Map<String, Integer> getStringIntMap(String key) {
+		if (!hasKey(key)) {
+			return null;
+		}
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		JSONObject object = new JSONObject(this);
 		JSONObject value = (JSONObject) object.get(key);
