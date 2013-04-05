@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="filecomment_context" deleted="false" description="Comment for created Java files" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.filecomment" name="filecomment">/**
+ * Copyright (c) ${year} Seges s.r.o.
+ * All Rights Reserved.
+ *
+ * Any usage, duplication or redistribution of this software is allowed only
+ * according to separate agreement prepared in written between Seges
+ * and authorized party.
+ */</template></templates>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<alias name="${BrokerType}BrokerManipulation" alias="brokerManipulation"/>
+	<alias name="vm${BrokerType}ConnectionFactory1" alias="vmConnectionFactory1"/>
+	<alias name="tcp${BrokerType}ConnectionFactory1" alias="tcpConnectionFactory1"/>
+	<alias name="tcp${BrokerType}ConnectionFactory2" alias="tcpConnectionFactory2"/>
+	
+	<bean id="testSpecificConfiguration" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>test-config.properties</value>
+				<ref local="testFileConfig" />
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+	</bean>
+	
+	<bean id="testFileConfig" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg><value>conf/test-config.properties</value></constructor-arg>
+	</bean>
+	
+	<!-- AMQ configuration -->
+	<bean id="AMQBrokerManipulation" class="sk.seges.sesam.remote.AMQBrokerManipulation"/>
+	
+	<bean id="vmAMQConnectionFactory1" class="org.apache.activemq.ActiveMQConnectionFactory" scope="prototype">
+		<constructor-arg ref="vmConnectionFactory1AMQConnector" />
+	</bean>
+	<bean id="vmConnectionFactory1AMQConnector" class="java.lang.String">
+		<constructor-arg value="vm://localhost:64616" />
+	</bean>
+
+	<bean id="tcpAMQConnectionFactory1" class="org.apache.activemq.ActiveMQConnectionFactory" scope="prototype">
+		<constructor-arg ref="tcpConnectionFactory1AMQConnector" />
+	</bean>
+	<bean id="tcpConnectionFactory1AMQConnector" class="java.lang.String">
+		<constructor-arg value="tcp://localhost:64616" />
+	</bean>
+
+	<bean id="tcpAMQConnectionFactory2" class="org.apache.activemq.ActiveMQConnectionFactory" scope="prototype">
+		<constructor-arg ref="tcpConnectionFactory2AMQConnector" />
+	</bean>
+	<bean id="tcpConnectionFactory2AMQConnector" class="java.lang.String">
+		<constructor-arg value="tcp://localhost:64617" />
+	</bean>
+	
+	<!-- OpenMQ configuration -->
+	<bean id="OpenMQBrokerManipulation" class="sk.seges.sesam.remote.OpenMQBrokerManipulation"/>
+	
+	<alias name="OpenMQConnectionFactory1" alias="vmOpenMQConnectionFactory1"/>
+	<alias name="OpenMQConnectionFactory1" alias="tcpOpenMQConnectionFactory1"/>
+	<alias name="OpenMQConnectionFactory2" alias="tcpOpenMQConnectionFactory2"/>
+
+	<bean id="omqConnectionFactoryTemplate1" class="sk.seges.sesam.remote.util.OpenMQAdministeredObjectFactoryFactory">
+		<property name="additionalProperties">
+				<map>
+					<entry key="imqAddressList" value="mq://localhost:7676" />
+					<entry key="imqReconnectAttempts" value="0" />
+				</map>
+		</property>
+	</bean>
+
+	<bean id="OpenMQConnectionFactory1" factory-bean="connectionFactoryFactory1" factory-method="createInstance" scope="prototype" />
+
+	<bean id="connectionFactoryFactory1" parent="omqConnectionFactoryTemplate1">
+		<property name="objectType" value="com.sun.messaging.QueueConnectionFactory" />
+	</bean>
+	
+	<bean id="omqConnectionFactoryTemplate2" class="sk.seges.sesam.remote.util.OpenMQAdministeredObjectFactoryFactory">
+		<property name="additionalProperties">
+				<map>
+					<entry key="imqAddressList" value="mq://localhost:7677" />
+					<entry key="imqReconnectAttempts" value="0" />
+				</map>
+		</property>
+	</bean>
+
+	<bean id="OpenMQConnectionFactory2" factory-bean="connectionFactoryFactory2" factory-method="createInstance" scope="prototype" />
+
+	<bean id="connectionFactoryFactory2" parent="omqConnectionFactoryTemplate2">
+		<property name="objectType" value="com.sun.messaging.QueueConnectionFactory" />
+	</bean>
+</beans>

@@ -1,0 +1,44 @@
+package sk.seges.sesam.core.pap.test.cases.model;
+
+public class sk.seges.sesam.core.pap.test.cases.model.BasicModelTest {
+
+	private int numberField;
+
+	public int getnumberField() {
+		return numberField;
+	}
+
+	public void setnumberField(int _value) {
+		this.numberField= _value;
+	}
+
+	private java.lang.String textField;
+
+	public java.lang.String gettextField() {
+		return textField;
+	}
+
+	public void settextField(java.lang.String _value) {
+		this.textField= _value;
+	}
+
+	private sk.seges.sesam.core.pap.test.cases.model.ReferenceModel reference;
+
+	public sk.seges.sesam.core.pap.test.cases.model.ReferenceModel getreference() {
+		return reference;
+	}
+
+	public void setreference(sk.seges.sesam.core.pap.test.cases.model.ReferenceModel _value) {
+		this.reference= _value;
+	}
+
+	private sk.seges.sesam.core.pap.test.cases.model.AnotherModel another;
+
+	public sk.seges.sesam.core.pap.test.cases.model.AnotherModel getanother() {
+		return another;
+	}
+
+	public void setanother(sk.seges.sesam.core.pap.test.cases.model.AnotherModel _value) {
+		this.another= _value;
+	}
+}
