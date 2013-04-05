@@ -26,6 +26,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.CriteriaImpl;
 import org.hibernate.impl.CriteriaImpl.OrderEntry;
+import org.hibernate.impl.CriteriaImpl.Subcriteria;
 import org.hibernate.property.Getter;
 import org.hibernate.property.PropertyAccessor;
 import org.hibernate.property.PropertyAccessorFactory;
@@ -201,6 +202,54 @@ public abstract class AbstractHibernateCRUD<T extends IDomainObject<?>> extends 
 		for(Order order : orderings){
 			criteria.addOrder(order);
 		}
+	}
+	
+	protected void copyOrdersAndTheirSubcriteriaFromCriteriaToAnother(Criteria executable, DetachedCriteria criteria){
+		Map<Subcriteria, Order> aliasToOrderMap = getSortSubcriteriaFromCriteria(executable);
+		for(Subcriteria subcriteria : aliasToOrderMap.keySet()){
+			criteria.createAlias(subcriteria.getPath(), subcriteria.getAlias(), subcriteria.getJoinType());
+		}
+		for(Order order : aliasToOrderMap.values()){
+			criteria.addOrder(order);
+		}
+	}
+	
+	protected Map<Subcriteria, Order> getSortSubcriteriaFromCriteria(Criteria executable){
+		List<Subcriteria> subcriteriaList = getCriteriaSubcriteria(executable);
+		List<Order> orderings = getOrderingFromCriteria(executable);
+		Map<Subcriteria, Order> aliasToOrderMap = new HashMap<Subcriteria, Order>();
+		for(Order order : orderings){
+			for(Subcriteria subcriteria : subcriteriaList){
+				if(order.toString().startsWith(subcriteria.getAlias()+ ".")){
+					aliasToOrderMap.put(subcriteria, order);
+				}
+			}
+		}
+		return aliasToOrderMap;
+	}
+	protected List<Subcriteria> getCriteriaSubcriteria(Criteria executable){
+		List<Subcriteria> subcriteriaList = new ArrayList<CriteriaImpl.Subcriteria>();
+		if(executable instanceof CriteriaImpl){
+			CriteriaImpl criteriaImpl = (CriteriaImpl)executable;			
+			Iterator subcriteriaIterator = criteriaImpl.iterateSubcriteria();
+			while (subcriteriaIterator.hasNext()){
+				Subcriteria subcriteria = (Subcriteria) subcriteriaIterator.next();
+				subcriteriaList.add(subcriteria);
+				}
+		}
+		return subcriteriaList;
+	}
+	protected List<Order> getOrderingFromCriteria(Criteria executable){
+		List<Order> orderings = new ArrayList<Order>();
+		if(executable instanceof CriteriaImpl){
+			CriteriaImpl criteriaImpl = (CriteriaImpl)executable;			
+			Iterator orderIterator = criteriaImpl.iterateOrderings();
+			while (orderIterator.hasNext()){
+				OrderEntry orderEntry = (OrderEntry) orderIterator.next();
+				orderings.add(orderEntry.getOrder());
+			}			
+		}
+		return orderings;
 	}
 
 	@SuppressWarnings("unchecked")
