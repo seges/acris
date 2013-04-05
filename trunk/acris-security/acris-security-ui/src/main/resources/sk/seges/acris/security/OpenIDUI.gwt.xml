@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<module>
-	<inherits name='sk.seges.acris.security.OpenID' />
-	
-	<source path="client" />
-</module>
