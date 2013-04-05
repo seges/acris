@@ -1,0 +1,493 @@
+/************* SIMPLE PANEL *************/
+.acris-metal-theme-simple-panel {
+	background: url('../../../acris-images/metal/metal-bg.png') repeat;
+}
+
+/************* FOCUS PANEL *************/
+.acris-metal-focus-panel{
+	margin: 0px;
+	padding: 0px;
+}
+
+.acris-metal-focus-panel-bottom{
+	background-image: url('../../../acris-images/metal/metal-bottom1x5.png'); 
+	background-color: #686868; 
+	margin-left: 24px; 
+	margin-right: 24px; 
+	background-position: bottom; 
+	background-repeat: repeat-x; 
+	height: 24px;	
+	/*width: 1017px;*/
+	position: fixed;
+	display: none;
+}
+
+.acris-metal-focus-panel-left-corner{
+	background-image: url('../../../acris-images/metal/metal-left-bottom24x24.png'); 
+	position: relative; 
+	margin-left: -24px;
+	background-repeat: no-repeat; 
+	width: 24px; 
+	height: 24px; 
+	float: left;	
+}
+
+.acris-metal-focus-panel-right-corner{
+	background-image: url('../../../acris-images/metal/metal-right-bottom24x24.png'); 
+	position: relative; 
+	margin-right: -24px;
+	background-repeat: no-repeat; 
+	width: 24px; 
+	height: 24px; 
+	float: right;	
+}
+
+.acris-metal-focus-panel-center{
+	background-color: #686868; 
+	margin: 0;
+	padding: 0;
+}
+
+.acris-metal-focus-panel-left-border{
+	background-image: url('../../../acris-images/metal/metal-left5x1.png');
+	background-repeat: repeat-y;  
+	background-position: left;
+}
+
+.acris-metal-focus-panel-right-border{
+	background-image: url('../../../acris-images/metal/metal-right5x1.png');
+	background-repeat: repeat-y;
+	background-position: right;  
+}
+
+.acris-metal-focus-panel-content{
+	padding-left: 24px;
+	padding-right: 24px;
+}
+
+/************* BUTTON *************/
+.acris-metal-button .gwt-ToggleButton .html-face,
+.acris-metal-button .gwt-PushButton .html-face {
+	cursor: pointer;
+	border: 0px solid transparent;
+	background-color: transparent;
+	
+	height: auto;	
+	line-height: normal;
+	
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 9pt;
+	color: white;
+
+	margin-bottom: 0px;
+	margin-top: 0px;
+	padding: 0px;
+
+	display: block;
+	white-space: nowrap;
+}
+
+
+/*button inside*/
+.acris-metal-button-content{
+	padding: 0;
+
+	margin-left:2px;
+	margin-right:1px;	
+}
+
+.acris-metal-button:hover .acris-metal-button-content{
+	background-image: url('../../../acris-images/metal/button-bg.png'); 
+	background-repeat: repeat; 
+}
+
+.acris-metal-button-content button{
+	cursor: pointer;
+	border: 0px solid transparent;
+	background-color: transparent;
+}
+
+.acris-metal-button-inner{
+	margin-left: -10px; 
+	margin-right: -10px;
+}
+
+/*button border*/
+.acris-metal-button, .acris-metal-button-top, .acris-metal-button-bottom{
+	padding: 0px;
+	margin-top: 0px;
+	margin-left: 10px; 
+	margin-right: 10px;
+	margin-bottom: 0px;
+}
+
+.acris-metal-button:hover{
+	background-image: url(../../../acris-images/metal/button-bg.png);
+	background-position: 2px 0px;
+}
+
+.acris-metal-button-top, .acris-metal-button-bottom{
+	background-color: transparent; 
+	background-repeat:repeat-x; 
+	height: 10px;	
+}
+.acris-metal-button:hover .acris-metal-button-top{
+	background-image:url(../../../acris-images/metal/button-top-border1x2.png);
+	background-position: 0 0; 
+}
+
+.acris-metal-button:hover .acris-metal-button-bottom{
+	background-image: url('../../../acris-images/metal/button-bottom-border1x2.png');
+	background-position: 0 100%;
+}
+
+.acris-metal-button-top-left-corner, .acris-metal-button-bottom-left-corner{
+	position: relative; 
+	margin-left: -10px;
+	background-repeat: no-repeat; 
+	width: 10px; 
+	height: 10px; 
+	float: left;	
+}
+.acris-metal-button:hover .acris-metal-button-top-left-corner{
+	background-image: url('../../../acris-images/metal/button-left-top-corner10x10.png'); 
+}
+.acris-metal-button:hover .acris-metal-button-bottom-left-corner{
+	background-image: url('../../../acris-images/metal/button-left-bottom-corner10x10.png'); 
+} 
+
+
+.acris-metal-button-top-right-corner, .acris-metal-button-bottom-right-corner{
+	position: relative; 
+	margin-right: -10px;
+	background-repeat: no-repeat; 
+	width: 10px; 
+	height: 10px; 
+	float: right;	
+}
+.acris-metal-button:hover .acris-metal-button-top-right-corner{
+	background-image: url('../../../acris-images/metal/button-right-top-corner10x10.png'); 
+}
+.acris-metal-button:hover .acris-metal-button-bottom-right-corner{
+	background-image: url('../../../acris-images/metal/button-right-bottom-corner10x10.png'); 
+}
+
+.acris-metal-button-left-border{
+	background-repeat: repeat-y;  
+	background-position: 0 0;
+}
+.acris-metal-button:hover .acris-metal-button-left-border{
+	background-image: url('../../../acris-images/metal/button-left-border2x1.png');
+}
+ 
+.acris-metal-button-right-border{
+	background-repeat: repeat-y;
+	background-position: 100% 0;  
+}
+.acris-metal-button:hover .acris-metal-button-right-border{
+	background-image: url('../../../acris-images/metal/button-right-border2x1.png');
+}
+
+/************* DIALOG *************/
+/*border corners*/
+.acris-metal-dialog-top-left-corner, .acris-metal-dialog-top-right-corner,
+.acris-metal-dialog-bottom-left-corner, .acris-metal-dialog-bottom-right-corner{
+	position: relative; 
+	width: 16px; 
+	height: 16px; 
+	background-repeat: no-repeat;
+}
+.acris-metal-dialog-top-left-corner, .acris-metal-dialog-bottom-left-corner{
+	margin-left: -16px;
+	float: left; 
+}
+.acris-metal-dialog-top-right-corner, .acris-metal-dialog-bottom-right-corner{
+	margin-right: -16px;
+	float: right; 
+}
+.acris-metal-dialog-top-left-corner{
+	background-image: url('../../../acris-images/metal/dialog/top-left16x16.png'); 
+}
+.acris-metal-dialog-bottom-left-corner{
+	background-image: url('../../../acris-images/metal/dialog/bottom-left16x16.png'); 
+}
+.acris-metal-dialog-top-right-corner{
+	background-image: url('../../../acris-images/metal/dialog/top-right16x16.png'); 
+}
+.acris-metal-dialog-bottom-right-corner{
+	background-image: url('../../../acris-images/metal/dialog/bottom-right16x16.png'); 
+}
+/*border corners - end*/
+
+/*dialog header - start*/
+.acris-metal-dialog-close-button{
+	float: right;
+	display: block;
+}
+
+.acris-metal-dialog-header, .acris-metal-dialog-header-top{
+	padding: 0px;
+	margin-top: 0px;
+	margin-left: 16px; 
+	margin-right: 16px;
+	margin-bottom: 0px;
+}
+.acris-metal-dialog-header-top{
+	background-image: url('../../../acris-images/metal/dialog/border1x1.png'); 
+	background-repeat: repeat-x;	
+}
+.acris-metal-dialog-top-inner{
+	margin-left: -16px; 
+	margin-right: -16px;
+}
+.acris-metal-dialog-header{
+	color:#FFFFFF;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:8pt;
+	font-weight: bold;
+	background-image: url('../../../acris-images/metal/dialog/title-bg8x8.png');
+	background-position:4px 0;
+	cursor: move;
+}
+.acris-metal-dialog-header-content{
+	background-image: url('../../../acris-images/metal/dialog/title-bg8x8.png');
+	background-position:3px 0;
+	border-left: solid 1px #42a3c7; 
+	border-right: solid 1px #42a3c7;
+	border-bottom: solid 1px #aad6df;	
+}
+.acris-metal-dialog-header-content-text{
+	padding: 0; 
+	padding-bottom: 5px;
+	margin-left: 16px;
+	margin-right: 8px; 
+	margin-top: -8px;
+	float: left;
+	display: block;
+}
+/*dialog header - end*/
+
+/*dialog content - start*/
+.acris-metal-dialog-main{
+	background-image: url('../../../acris-images/metal/dialog/content-bg8x8.png'); 
+	border-left: solid 1px #42a3c7; 
+	border-right: solid 1px #42a3c7;
+	border-top: solid 1px #4f828d;
+	border-bottom: solid 0px #dcebef;	
+}
+
+.acris-metal-dialog-main-text{
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	color: black;
+}
+
+.acris-metal-dialog-content-line{
+	line-height: 1px;
+	height: 0px;
+	border-top: solid 1px #dcebef;
+	border-bottom: solid 1px #899a9f;	
+	margin-left: -16px;
+	margin-right: -16px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+/*dialog content - end*/
+
+/*dialog footer - start*/
+.acris-metal-dialog-footer, .acris-metal-dialog-footer-bottom{
+	padding: 0px;
+	margin-top: 0px;
+	margin-left: 16px; 
+	margin-right: 16px;
+	margin-bottom: 0px;
+} 
+.acris-metal-dialog-footer{
+	background-image: url('../../../acris-images/metal/dialog/content-bg8x8.png');
+}
+.acris-metal-dialog-footer-bottom{
+	background-image: url('../../../acris-images/metal/dialog/border1x1.png'); 
+	background-position: 0 100%; 
+	background-repeat: repeat-x;
+}
+
+.acris-metal-dialog-footer-inner{
+	margin-left: -16px; 
+	margin-right: -16px;
+}
+/*dialog footer - end*/
+
+/*dialog buttons*/
+.acris-metal-dialog .acris-metal-button{
+	cursor: pointer;
+	border: 0px solid transparent;
+	background-repeat: no-repeat; 
+	background-color: transparent; 
+	height: 19px;
+}
+
+.acris-metal-dialog .acris-metal-button img{
+	margin-top: -2px;
+	margin-right: 2px;
+	vertical-align:middle;
+}
+
+.acris-metal-dialog .acris-metal-button-content,
+.acris-metal-dialog .acris-metal-button-inner,
+.acris-metal-dialog .acris-metal-button,
+.acris-metal-dialog .acris-metal-button-top, 
+.acris-metal-dialog .acris-metal-button-bottom,
+.acris-metal-dialog .acris-metal-button-top-left-corner, 
+.acris-metal-dialog .acris-metal-button-bottom-left-corner,
+.acris-metal-dialog .acris-metal-button-top-right-corner, 
+.acris-metal-dialog .acris-metal-button-bottom-right-corner,
+.acris-metal-dialog .acris-metal-button:hover .acris-metal-button,
+.acris-metal-dialog .acris-metal-button:hover .acris-metal-button-top, 
+.acris-metal-dialog .acris-metal-button:hover .acris-metal-button-bottom,
+.acris-metal-dialog .acris-metal-button:hover .acris-metal-button-top-left-corner, 
+.acris-metal-dialog .acris-metal-button:hover .acris-metal-button-bottom-left-corner,
+.acris-metal-dialog .acris-metal-button:hover .acris-metal-button-top-right-corner, 
+.acris-metal-dialog .acris-metal-button:hover .acris-metal-button-bottom-right-corner{
+	/*padding: auto;
+	margin-bottom: auto; */
+	margin-left: 0px;
+	margin-right: 0px;
+	background-image: none;
+}
+.acris-metal-dialog .acris-metal-button-top, 
+.acris-metal-dialog .acris-metal-button-bottom,
+.acris-metal-dialog .acris-metal-button-top-right-corner, 
+.acris-metal-dialog .acris-metal-button-bottom-right-corner,
+.acris-metal-dialog .acris-metal-button-top-left-corner, 
+.acris-metal-dialog .acris-metal-button-bottom-left-corner{
+	height: 0;
+	line-height: 0;
+	float: none;
+}
+.acris-metal-dialog .acris-metal-button-top-right-corner, 
+.acris-metal-dialog .acris-metal-button-bottom-right-corner,
+.acris-metal-dialog .acris-metal-button-top-left-corner, 
+.acris-metal-dialog .acris-metal-button-bottom-left-corner{
+	width: 0px;
+}
+
+.acris-metal-dialog .acris-metal-button .acris-metal-button-left-border{
+	height: 19px; 
+	position: relative; 
+	float: left;
+	background-repeat: no-repeat;	
+}
+.acris-metal-dialog .metal-dialog-button-disabled .acris-metal-button .acris-metal-button-left-border{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-enabled-left.png');
+}
+.acris-metal-dialog .metal-dialog-button-enabled .acris-metal-button .acris-metal-button-left-border{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-disabled-left.png');
+}
+.acris-metal-dialog .metal-dialog-button-enabled:hover .acris-metal-button .acris-metal-button-left-border{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-disabled-left-bright.png');
+}
+
+.acris-metal-dialog .acris-metal-button .acris-metal-button-right-border{
+	height: 19px; 
+	position: relative; 
+	float: left;
+	background-repeat: no-repeat;
+}
+.acris-metal-dialog .metal-dialog-button-disabled .acris-metal-button .acris-metal-button-right-border{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-enabled-right.png');
+}
+.acris-metal-dialog .metal-dialog-button-enabled .acris-metal-button .acris-metal-button-right-border{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-disabled-right.png');
+}
+.acris-metal-dialog .metal-dialog-button-enabled:hover .acris-metal-button .acris-metal-button-right-border{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-disabled-right-bright.png');
+}
+
+.acris-metal-dialog .acris-metal-button .acris-metal-button-content{
+	height: 19px;
+	background-repeat: repeat-x;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+.acris-metal-dialog .metal-dialog-button-disabled .acris-metal-button .acris-metal-button-content{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-enabled-center.png');
+}
+.acris-metal-dialog .metal-dialog-button-enabled .acris-metal-button .acris-metal-button-content{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-disabled-center.png');
+}
+.acris-metal-dialog .metal-dialog-button-enabled:hover .acris-metal-button .acris-metal-button-content{
+	background-image: url('../../../acris-images/metal/dialog/buttons/button-disabled-center-bright.png');
+}
+
+.acris-metal-dialog .acris-metal-dialog-button{
+	height: 19px;
+}
+.acris-metal-dialog .acris-metal-dialog-button .acris-metal-dialog-button-text,
+.acris-metal-dialog .acris-metal-button button{
+	color: #FFFFFF;
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 8pt;
+	cursor: pointer;
+	line-height: 160%;
+	height: 18px;
+}
+
+.acris-metal-dialog .acris-metal-dialog-button .acris-metal-dialog-button-left{
+	height: 19px; 
+	width: 10px; 
+	position: relative; 
+	float: left;
+	background-repeat: no-repeat;	
+}
+
+/************* BEAN TABLE *************/
+.acris-metal-dialog .Gi2lsq7C,
+.acris-metal-dialog .G118syduHB .G118syduLB{
+	background: none;
+}
+
+.acris-metal-dialog .Gi2lsq7B{
+	height: auto;
+}
+
+.acris-metal-dialog .G118syduHB .G118syduFB tr.selected{
+	background: #2992ad none repeat;
+}
+
+.acris-metal-dialog .G118syduHB{
+	margin-top: 11px;
+}
+
+.acris-metal-dialog .G118syduKB{
+	background-color: #2992ad; 
+}
+
+.acris-metal-dialog .G118syduFB{
+	background-color: white;
+}
+
+.acris-metal-dialog .G118syduHB .G118syduKB td{
+	color: white;
+}
+/************* LOGIN DIALOG *************/
+.acris-theme-metal-vertical-login-panel .acris-theme-input{
+	width: 170px;
+}
+
+.acris-theme-metal-vertical-login-panel .acris-metal-dialog-header{
+	cursor: auto;
+}
+
+/*********** show case styles ************/
+.acris-metal-dialog-field{
+	padding-bottom: 5px;
+}
+.acris-metal-dialog-field .label{
+	position: relative;
+	float: left;
+}
+
+.acris-metal-dialog-field .component{
+	position: relative;
+	float: right;
+}

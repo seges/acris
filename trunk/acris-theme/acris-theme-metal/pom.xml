@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-theme-metal</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS Metal Theme</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-theme-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../acris-theme-parent</relativePath>
+	</parent>
+
+	<dependencies>
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-theme-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Other dependencies -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+		</dependency>
+		<!-- Other dependencies -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
