@@ -20,6 +20,7 @@
 		<module>../corpis-application-scaffold-data-domain-model-coverter-processor</module>
 		<module>../corpis-application-scaffold-local-service-data-interface-processor</module>
 		<module>../corpis-application-scaffold-data-service-converter-processor</module>
+		<module>../corpis-application-scaffold-data-domain-model-processor</module>
 	</modules>
 	
 	<dependencyManagement>

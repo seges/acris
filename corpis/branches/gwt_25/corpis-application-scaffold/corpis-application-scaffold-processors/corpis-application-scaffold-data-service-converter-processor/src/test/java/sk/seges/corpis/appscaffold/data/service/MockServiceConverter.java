@@ -14,16 +14,12 @@ import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationTarg
 import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
 import sk.seges.corpis.service.annotation.TransactionPropagationModel;
 import sk.seges.sesam.dao.PagedResult;
-import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.printer.converter.AbstractConverterPrinter;
-import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
+import sk.seges.sesam.server.model.converter.common.CollectionConverter;
 import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 import sk.seges.sesam.shared.model.converter.MapConvertedInstanceCache;
-import sk.seges.sesam.shared.model.converter.api.ConverterProvider;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
-import sk.seges.sesam.shared.model.converter.common.CollectionConverter;
 import sk.seges.sesam.shared.model.converter.provider.AbstractConverterProvider;
 
 @LocalServiceConverter(remoteServices = {MockRemoteService.class})

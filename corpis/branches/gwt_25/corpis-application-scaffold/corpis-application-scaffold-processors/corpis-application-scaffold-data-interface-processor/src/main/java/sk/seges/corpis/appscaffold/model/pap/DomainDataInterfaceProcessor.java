@@ -9,15 +9,16 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.corpis.appscaffold.model.pap.accessor.ReadOnlyAccessor;
 import sk.seges.corpis.appscaffold.model.pap.configurer.DomainDataInterfaceProcessorConfigurer;
 import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.printer.MethodPrinter;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.accessor.ReadOnlyAccessor;
 
 /**
  * 
@@ -52,19 +53,27 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 				pw.println("public static final String " + getConvertedPropertyName(method.getSimpleName().toString()) + " = \"" + method.getSimpleName() + "\";");
 				pw.println();
 			}
-			
-			pw.print(toPrintableType(context.getTypeElement(), returnType), " ");
-			if (isPrimitiveBoolean(returnType)) {
-				pw.print(MethodHelper.toIsGetter(method));
-			} else {
-				pw.print(MethodHelper.toGetter(method));
-			}
-			pw.println(";");
-			pw.println();
-			
-			if (!readOnlyProperty) {
-				pw.println("void ", MethodHelper.toSetter(method) + "(", toPrintableType(context.getTypeElement(), returnType), " " + method.getSimpleName() + ");");
+
+			if (readOnlyProperty && !MethodHelper.toField(method).equals(method.getSimpleName().toString())) {
+				//its getter or setter method, so just copy it
+				new MethodPrinter(pw, processingEnv).printMethodDefinition(method, context.getTypeElement());
+				pw.println(";");
 				pw.println();
+			} else {
+	
+				pw.print(toPrintableType(context.getTypeElement(), returnType), " ");
+				if (isPrimitiveBoolean(returnType)) {
+					pw.print(MethodHelper.toIsGetter(method));
+				} else {
+					pw.print(MethodHelper.toGetter(method));
+				}
+				pw.println(";");
+				pw.println();
+				
+				if (!readOnlyProperty) {
+					pw.println("void ", MethodHelper.toSetter(method) + "(", toPrintableType(context.getTypeElement(), returnType), " " + method.getSimpleName() + ");");
+					pw.println();
+				}
 			}
 		}
 	}

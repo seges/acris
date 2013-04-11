@@ -11,7 +11,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
-import sk.seges.corpis.appscaffold.model.pap.accessor.ReadOnlyAccessor;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
@@ -20,6 +19,8 @@ import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LayerType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
 import sk.seges.sesam.core.pap.utils.ElementSorter;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
+import sk.seges.sesam.pap.model.accessor.ReadOnlyAccessor;
 
 public class BaseObjectType extends AbstractDataType {
 
@@ -63,10 +64,20 @@ public class BaseObjectType extends AbstractDataType {
 		
 		setDataTypeVariables();
 		
-		setModifiers((TypeElement) dataDefinition.asElement());
 		if (isAbstract) {
 			addModifier(Modifier.ABSTRACT);
+		} else {
+			setModifiers();
 		}
+	}
+	
+	@Override
+	public MutableDeclaredType setSuperClass(MutableDeclaredType superClass) {
+		if (superClass != null && superClass.getModifiers() != null && superClass.getModifiers().contains(Modifier.ABSTRACT)) {
+			//if superclass is abstract output class should also be abstract
+			addModifier(Modifier.ABSTRACT);
+		}
+		return super.setSuperClass(superClass);
 	}
 	
 	@Override
@@ -74,8 +85,8 @@ public class BaseObjectType extends AbstractDataType {
 		return domainDataType.clone().addClassSufix(SUFFIX);
 	}
 
-	private void setModifiers(TypeElement dataElement) {
-		if (isAbstract(dataElement)) {
+	private void setModifiers() {
+		if (isAbstract(this.domainDataType.asElement())) {
 			addModifier(Modifier.ABSTRACT);
 		}
 	}
@@ -138,6 +149,11 @@ public class BaseObjectType extends AbstractDataType {
 			if (!MethodHelper.isGetterMethod(method) && !MethodHelper.isSetterMethod(method) && !isObjectMethod(method)) {
 				return true;
 			}
+			
+			if (MethodHelper.isGetterMethod(method) && !ProcessorUtils.hasMethod(MethodHelper.toSetter(method), domainDataType.asElement(), true)) {
+				return true;
+			}
+
 		}
 
 		for (TypeMirror interfaceType: processingElement.getInterfaces()) {
