@@ -12,7 +12,7 @@ public abstract class AsyncTest extends AnnotationTest {
 	protected File getOutputFile(Class<?> clazz) {
 		MutableDeclaredType inputClass = toMutable(clazz);
 		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement(processingEnv.getElementUtils().getTypeElement(inputClass.getCanonicalName()), processingEnv);
-		AsyncRemoteServiceType asyncRemoteServiceType = new AsyncRemoteServiceType(remoteServiceTypeElement);
+		AsyncRemoteServiceType asyncRemoteServiceType = new AsyncRemoteServiceType(remoteServiceTypeElement, processingEnv);
 		return new File(OUTPUT_DIRECTORY, toPath(asyncRemoteServiceType.getPackageName()) + "/" + asyncRemoteServiceType.getSimpleName() + SOURCE_FILE_SUFFIX);
 	}
 }
