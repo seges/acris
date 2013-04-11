@@ -17,6 +17,15 @@
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-model-domain-configurations</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-security-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-security-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 
 		<!-- Acris dependencies -->
 		<dependency>
