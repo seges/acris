@@ -35,6 +35,10 @@ public class JpaVat extends VatBase {
 		setValidFrom(new Date());
 	}
 
+	public Short getId() {
+		return getVat();
+	}
+	
 	@Id
 	public Short getVat() {
 		return super.getVat();

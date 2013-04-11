@@ -21,12 +21,13 @@ import sk.seges.corpis.server.domain.transportation.server.model.base.Transporta
 public class JpaTransportationUnit extends TransportationUnitBase {
 
 	protected static final String SEQ_TRANSPORTATION_UNIT = "seqTransporationUnit";
-
+	private Long id;
+	
 	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_TRANSPORTATION_UNIT)
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 	
 	@Override

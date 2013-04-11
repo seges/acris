@@ -21,13 +21,14 @@ import sk.seges.corpis.server.domain.stock.server.model.data.StockItemData;
 public class JpaWarehouse extends WarehouseBase {
 
 	protected static final String SEQ_WAREHOUSE = "seqWarehouses";
-
+	private Integer id;
+	
 	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_WAREHOUSE)
 	@Column
 	public Integer getId() {
-		return super.getId();
+		return id;
 	}
 
 	@Override

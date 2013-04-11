@@ -32,12 +32,13 @@ public class JpaProductCategory extends ProductCategoryBase {
 	private static final long serialVersionUID = 5291165456785090234L;
 
     protected static final String SEQ_PRODUCT_CATEGORY = "seqProductCategories";
-
+	private Long id;
+	
 	@Override
     @Id
     @GeneratedValue(generator = SEQ_PRODUCT_CATEGORY)
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 
 	@Override

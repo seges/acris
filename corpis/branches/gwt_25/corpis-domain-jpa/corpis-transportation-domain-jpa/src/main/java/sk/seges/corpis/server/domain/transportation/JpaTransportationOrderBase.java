@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
+import javax.persistence.GeneratedValue;
 
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
 import sk.seges.corpis.server.domain.transportation.server.model.base.TransportationOrderBase;

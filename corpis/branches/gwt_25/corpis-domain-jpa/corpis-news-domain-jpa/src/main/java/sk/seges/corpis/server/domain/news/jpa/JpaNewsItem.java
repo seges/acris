@@ -19,9 +19,11 @@ public class JpaNewsItem extends NewsItemBase {
 
 	private static final long serialVersionUID = -8172425109207825339L;
 
+	private JpaNewsItemPK id;
+	
 	@Id
 	public JpaNewsItemPK getId() {
-		return (JpaNewsItemPK) super.getId();
+		return id;
 	}
 
 	@Column

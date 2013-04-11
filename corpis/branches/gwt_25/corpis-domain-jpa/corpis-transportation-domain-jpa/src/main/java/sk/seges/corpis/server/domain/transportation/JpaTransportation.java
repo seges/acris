@@ -26,7 +26,8 @@ import sk.seges.corpis.server.domain.transportation.server.model.data.VehicleDat
 public class JpaTransportation extends TransportationBase {
 
 	protected static final String SEQ_TRANSPORTATION = "seqTransporation";
-
+	private Long id;
+	
 	public JpaTransportation() {
 		setPerson(new JpaPersonName());
 	}
@@ -35,7 +36,7 @@ public class JpaTransportation extends TransportationBase {
 	@Id
 	@GeneratedValue(generator = SEQ_TRANSPORTATION)
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 
 	@Override

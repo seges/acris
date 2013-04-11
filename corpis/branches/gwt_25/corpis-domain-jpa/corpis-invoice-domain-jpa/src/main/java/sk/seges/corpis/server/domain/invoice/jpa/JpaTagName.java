@@ -18,12 +18,12 @@ public class JpaTagName extends TagNameBase implements IDomainObject<Long> {
 	private static final long serialVersionUID = 5807542710037902196L;
 
 	protected static final String SEQ_OLEA_TAG_NAMES = "seqTagNames";
-
+	private Long id;
+	
 	@Id
 	@GeneratedValue(generator = SEQ_OLEA_TAG_NAMES)
-	@Override
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 	
 	@Override

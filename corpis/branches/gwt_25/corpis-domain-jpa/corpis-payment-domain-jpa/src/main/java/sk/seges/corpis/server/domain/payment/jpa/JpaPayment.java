@@ -31,12 +31,14 @@ public class JpaPayment extends PaymentBase {
 
 	protected static final String SEQ_PAYMENT = "seqPayment";
 
+	private Long id;
+	
 	@Override
 	@Id
 	@GeneratedValue(generator = "seqPayment")
 	@Column
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 
 	@Override

@@ -25,12 +25,13 @@ import sk.seges.corpis.server.domain.stock.server.model.data.WarehouseData;
 public class JpaStockItem extends StockItemBase {
 
 	protected static final String SEQ_STOCK_ITEM = "seqStockItems";
-
+	private Long id;
+	
 	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_STOCK_ITEM)
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 
 	@Override

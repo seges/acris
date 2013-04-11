@@ -24,12 +24,12 @@ public class JpaTag extends TagBase {
 	private static final long serialVersionUID = -8053971923634270766L;
 
 	protected static final String SEQ_TAG = "seqTags";
+	private Long id;
 	
-	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_TAG)
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 
 	@Override

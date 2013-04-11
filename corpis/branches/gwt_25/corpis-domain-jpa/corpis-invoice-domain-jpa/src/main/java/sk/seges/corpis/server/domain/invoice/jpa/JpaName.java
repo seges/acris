@@ -17,7 +17,8 @@ public class JpaName extends NameBase {
 	private static final long serialVersionUID = -5163495413909118691L;
 
 	protected static final String SEQ_OLEA_NAMES = "seqOleaNames";
-
+	private Long id;
+	
 	@Column
 	@Override
 	public String getLanguage() {
@@ -30,10 +31,9 @@ public class JpaName extends NameBase {
 		return super.getValue();
 	}
 
-	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_OLEA_NAMES)
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 }

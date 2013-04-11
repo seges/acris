@@ -8,7 +8,7 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @DomainInterface
 @BaseObject
-public interface Vat extends IDomainObject<Long> {
+public interface Vat extends IDomainObject<Short> {
 
 	Short vat();
 	Date validFrom();

@@ -31,7 +31,8 @@ public class JpaManufactureOrder extends ManufactureOrderBase {
 
 	protected static final String SEQ_MANUFACTURE_ORDER = "seqManufactureOrder";
 	public static final String TABLE_PREFIX = "manufacture_";
-
+	private Long id;
+	
 	public JpaManufactureOrder() {
 		setResponsiblePerson(new JpaPersonName());
 	}
@@ -40,7 +41,7 @@ public class JpaManufactureOrder extends ManufactureOrderBase {
 	@Id
 	@GeneratedValue(generator = SEQ_MANUFACTURE_ORDER)
 	public Long getId() {
-		return super.getId();
+		return id;
 	}
 
 	@Override
