@@ -95,4 +95,9 @@ public class ClientSession<T> implements IDataTransferObject {
 		//TODO sessionId also?
 		return this;
 	}
+	
+	public void clear() {
+		getClientSession().clear();
+		getSession().clear();
+	}
 }
