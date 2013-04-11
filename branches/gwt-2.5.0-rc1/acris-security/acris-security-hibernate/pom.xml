@@ -19,6 +19,12 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 		</dependency>
+
+		<!-- Sesam dependencies -->
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-security-api</artifactId>
+		</dependency>
 		
 		<!-- Corpis dependencies -->
 		<dependency>

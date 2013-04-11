@@ -23,6 +23,11 @@
             <artifactId>corpis-application-scaffold-data-domain-model-converter-processor</artifactId>
             <scope>provided</scope>
         </dependency>
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-application-scaffold-data-domain-model-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 		<!-- Acris dependencies -->
 		<dependency>
