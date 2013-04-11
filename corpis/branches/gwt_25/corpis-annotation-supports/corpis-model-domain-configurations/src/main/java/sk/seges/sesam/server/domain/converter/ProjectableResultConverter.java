@@ -1,6 +1,6 @@
 package sk.seges.sesam.server.domain.converter;
 
-import sk.seges.sesam.server.domain.converter.utils.ClassConverter;
+import sk.seges.sesam.server.model.converter.ClassConverter;
 import sk.seges.sesam.shared.model.converter.BasicConverter;
 import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 
