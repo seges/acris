@@ -9,6 +9,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
@@ -36,10 +37,10 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 	@Override
 	protected MutableDeclaredType[] getOutputClasses(RoundContext context) {
 		return new MutableDeclaredType[] {
-			new AsyncRemoteServiceType(new RemoteServiceTypeElement(context.getTypeElement(), processingEnv))
+			new AsyncRemoteServiceType(new RemoteServiceTypeElement(context.getTypeElement(), processingEnv), processingEnv)
 		};
 	}
-	
+
 	@Override
 	protected ProcessorConfigurer getConfigurer() {
 		return new AsyncServiceProcessorConfigurer();
@@ -92,7 +93,8 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		MutableDeclaredType asyncCallbackMutableType = typeUtils.toMutableType(AsyncCallback.class);
-		
+
+		//TODO iterate over interfaces that are not GWT remote services
 		for (ExecutableElement method: methods) {
 
 			List<MutableTypeMirror> types = new LinkedList<MutableTypeMirror>();
@@ -103,11 +105,16 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			
 			types.add(processingEnv.getTypeUtils().toMutableType(method.getReturnType()));
 
+			for (TypeParameterElement typeParameter: method.getTypeParameters()) {
+				types.add(processingEnv.getTypeUtils().toMutableType(typeParameter.asType()));
+			}
+			
 			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);
 			
 			pw.print("void " + method.getSimpleName().toString() + "(");
-			
+
 			int i = 0;
+ 			
 			for (VariableElement parameter: method.getParameters()) {
 				if (i > 0) {
 					pw.print(", ");

@@ -2,12 +2,12 @@ package sk.seges.acris.theme.pap.accessor;
 
 import javax.lang.model.element.Element;
 
-import com.google.gwt.user.client.ui.Widget;
-
 import sk.seges.acris.theme.client.annotation.ThemeSupport;
 import sk.seges.sesam.core.pap.Constants;
 import sk.seges.sesam.core.pap.accessor.AnnotationAccessor;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
+
+import com.google.gwt.user.client.ui.Widget;
 
 public class ThemeSupportAccessor extends AnnotationAccessor {
 
