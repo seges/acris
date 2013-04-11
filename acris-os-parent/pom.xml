@@ -20,7 +20,7 @@
 		to ease daily development. Build on top of Google web toolkit 
 		and provides sophisticated solution for security, 
 		JSON protocol and usefull project skelets integrated with maven, 
-		hibernate, spring and gilead. You will get a prepared solution 
+		hibernate and spring. You will get a prepared solution 
 		in box ready to use in your own project.
 	</description>
 
@@ -62,7 +62,7 @@
 		<module>../acris-client-core</module>
 		<module>../acris-widgets</module>
 		<module>../acris-widgets-beantable</module>
-		<module>../acris-theme</module>
+		<!--module>../acris-theme</module-->
 		<module>../acris-json-api</module>
 		<module>../acris-json</module>
 		<module>../acris-json-migration</module>
@@ -125,6 +125,11 @@
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-core-domain-model</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-user-domain-model</artifactId>
 				<version>${corpis-os.version}</version>
 			</dependency>
 			<dependency>
@@ -210,6 +215,12 @@
 	        </dependency>
 			<dependency>
 				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-application-scaffold-data-domain-model-processor</artifactId>
+				<version>${corpis-os.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
 				<artifactId>corpis-data-dao-api-processor</artifactId>
 				<version>${corpis-os.version}</version>
 				<scope>provided</scope>		
@@ -242,6 +253,17 @@
 				<groupId>sk.seges.sesam</groupId>
 				<artifactId>sesam-core</artifactId>
 				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-security-api</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-security-api</artifactId>
+				<version>${sesam-os.version}</version>
+				<classifier>sources</classifier>
 			</dependency>
 			<dependency>
 				<groupId>sk.seges.sesam</groupId>
@@ -579,17 +601,6 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-jpa</artifactId>
-				<classifier>sources</classifier>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-security-gilead</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-security-gilead</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
