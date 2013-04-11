@@ -22,6 +22,7 @@ import sk.seges.sesam.core.pap.model.PojoElement;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.accessor.CopyAccessor;
 import sk.seges.sesam.pap.model.annotation.Id;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.annotation.Mapping;
@@ -107,7 +108,7 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 		pw.print("@", TransferObjectMapping.class, "(");
 
 		pw.println("dtoClass = " + configurationTypeElement.getDto().getSimpleName() + ".class,");
-		pw.println("		domainClassName = \"" + configurationTypeElement.getDomain().getQualifiedName().toString() + "\", ");
+		pw.println("		domainClassName = \"" + configurationTypeElement.getInstantiableDomainSpecified().getQualifiedName().toString() + "\", ");
 		pw.println("		configurationClassName = \"" + context.getTypeElement().toString() + "\", ");
 		pw.print("		generateConverter = false, generateDto = false");
 		if (configurationTypeElement.getConverter() != null) {
@@ -144,8 +145,12 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 			elementPrinter.initialize(configurationElement, context.getOutputType());
 			processMethods(configurationElement, mappingType, elementPrinter);
 		}
+		
+		printAdditionalMethods(context);
 	}
 
+	protected void printAdditionalMethods(ProcessorContext context) {};
+	
 	protected abstract TransferObjectElementPrinter[] getElementPrinters(FormattedPrintWriter pw);
 	
 	protected boolean checkPreconditions(ProcessorContext context, boolean alreadyExists) {
@@ -193,7 +198,13 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 					processingEnv.getMessager().printMessage(Kind.ERROR, "[ERROR] Id method can't be ignored. There should be an id method available for merging purposes.", configurationTypeElement.asConfigurationElement());
 					return;
 				}
-				generated.add(TransferObjectHelper.getFieldPath(overridenMethod));
+				generated.add(fieldName);
+			} else {
+				CopyAccessor copyAccessor = new CopyAccessor(overridenMethod, processingEnv);
+				
+				if (copyAccessor.isMethodBodyCopied()) {
+					generated.add(TransferObjectHelper.getFieldPath(overridenMethod));
+				}				
 			}
 		}
 
@@ -288,7 +299,11 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 				return o1.getDtoFieldName().compareTo(o2.getDtoFieldName());
 			}
 		});
-
+		
+		printContexts(configurationTypeElement, contexts, generated, printer);
+	}
+	
+	protected void printContexts(ConfigurationTypeElement configurationTypeElement, List<TransferObjectContext> contexts, List<String> generated, TransferObjectElementPrinter printer) {
 		for (TransferObjectContext context: contexts) {
 			printer.print(context);
 		}

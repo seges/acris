@@ -15,12 +15,15 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
 
+import sk.seges.sesam.core.pap.model.InitializableValue;
 import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.PojoElement;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.MethodHelper.MethodType;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
@@ -35,7 +38,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	protected MutableDeclaredType domainType;
 	protected MutableDeclaredType dtoType;
 
-	private DomainDeclaredType superClassDomainType;
+	private InitializableValue<DomainDeclaredType> superClassDomainTypeValue = new InitializableValue<DomainDeclaredType>();
 
 	private boolean idMethodInitialized = false;
 	private ExecutableElement idMethod;
@@ -92,7 +95,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		return getConfigurations(domainType);
 	}
 	
-	private List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror domainType) {
+	protected List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror domainType) {
 		for (ConfigurationProvider configurationProvider: getConfigurationProviders()) {
 			List<ConfigurationTypeElement> configurationsForDomain = configurationProvider.getConfigurationsForDomain(domainType);
 			if (configurationsForDomain != null && configurationsForDomain.size() > 0) {
@@ -103,25 +106,32 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		return new ArrayList<ConfigurationTypeElement>();
 	}
 
-	private ConverterTypeElement getDeclaredConverter() {
-		ConfigurationTypeElement converterDefinitionConfiguration = getConverterDefinitionConfiguration();
-		
-		if (converterDefinitionConfiguration == null) {
-			return null;
-		}
-		
-		return converterDefinitionConfiguration.getConverter();
-	}
+//	private ConverterTypeElement getDeclaredConverter() {
+//		ConfigurationTypeElement converterDefinitionConfiguration = getConverterDefinitionConfiguration();
+//		
+//		if (converterDefinitionConfiguration == null) {
+//			return null;
+//		}
+//		
+//		return converterDefinitionConfiguration.getConverter();
+//	}
 
 	@Override
 	public ConverterTypeElement getConverter() {
-		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
 		
-		if (domainDefinitionConfiguration == null) {
-			return null;
-		}
+		return getDto().getConverter();
 		
-		return ((DomainDeclared)domainDefinitionConfiguration.getInstantiableDomain()).getDeclaredConverter();
+//		ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
+//		
+//		if (domainDefinitionConfiguration == null) {
+//			return null;
+//		}
+//
+//		if (domainDefinitionConfiguration.getDelegateConfigurationTypeElement() != null) {
+//			return domainDefinitionConfiguration.getDelegateConfigurationTypeElement().getConverter();
+//		}
+//
+//		return ((DomainDeclared)domainDefinitionConfiguration.getInstantiableDomain()).getDeclaredConverter();
 	}
 
 	@Override
@@ -162,13 +172,16 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 				ExecutableElement domainMethod = getGetterMethod(fieldName);
 	
 				if (domainMethod != null && !new PathResolver(fieldName).isNested() && entityResolver.isIdMethod(domainMethod)) {
-					if (this.idMethod != null) {
+					if (this.idMethod != null && (this.idMethod.getParameters().size() != domainMethod.getParameters().size() || 
+												 !this.idMethod.getReturnType().equals(domainMethod.getReturnType()))) {
 						getMessager().printMessage(Kind.ERROR, "[ERROR] Multiple identifier methods were specified." + 
 								this.idMethod.getSimpleName().toString() + " in the " + this.idMethod.getEnclosingElement().toString() + " class and " +
 								domainMethod.getSimpleName().toString() + " in the configuration " + domainMethod.getEnclosingElement().toString(), 
 								domainDefinitionConfiguration.asConfigurationElement());
 					}
-					this.idMethod = domainMethod;
+					if (this.idMethod == null) {
+						this.idMethod = domainMethod;
+					}
 				}
 			}
 	
@@ -178,10 +191,14 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			
 			for (ExecutableElement overridenMethod: overridenMethods) {
 				if (entityResolver.isIdMethod(overridenMethod)) {
-					if (this.idMethod != null) {
+					if (this.idMethod != null && (this.idMethod.getParameters().size() != overridenMethod.getParameters().size() || 
+							  					 !this.idMethod.getReturnType().equals(overridenMethod.getReturnType()))) {
 						handleMultipleIdentifiers(overridenMethod, domainDefinitionConfiguration);
 					}
-					idMethod = overridenMethod;
+					
+					if (this.idMethod == null) {
+						idMethod = overridenMethod;
+					}
 				}
 			}
 			
@@ -197,7 +214,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	
 	private void findIdMethod(TypeElement processingElement, MappingType mappingType, ConfigurationTypeElement domainDefinitionConfiguration, EntityResolver entityResolver) {
 
-		PojoElement pojoElement = new PojoElement(asConfigurationElement(), environmentContext.getProcessingEnv());
+		//PojoElement pojoElement = new PojoElement(asConfigurationElement(), environmentContext.getProcessingEnv());
 
 		while (processingElement != null) {
 			
@@ -205,11 +222,15 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	
 			if (mappingType.equals(MappingType.AUTOMATIC)) {
 				for (ExecutableElement method: methods) {
-					if (MethodHelper.isGetterMethod(method) && pojoElement.hasSetterMethod(method) && method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
-						if (this.idMethod != null) {
+					//TODO Setter for ID is also required?!
+					if (MethodHelper.isGetterMethod(method) && /*pojoElement.hasSetterMethod(method) && */ method.getModifiers().contains(Modifier.PUBLIC) && entityResolver.isIdMethod(method)) {
+						if (this.idMethod != null && (this.idMethod.getParameters().size() != idMethod.getParameters().size() || 
+				 					 				 !this.idMethod.getReturnType().equals(idMethod.getReturnType()))) {
 							handleMultipleIdentifiers(method, domainDefinitionConfiguration);
 						}
-						this.idMethod = method;
+						if (this.idMethod == null) {
+							this.idMethod = method;
+						}
 					}
 				}
 
@@ -217,10 +238,13 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 					if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
 						ExecutableElement idMethod = ((DomainDeclared)getDomainForType(interfaceType)).getIdMethod(entityResolver);
 						if (idMethod != null) {
-							if (this.idMethod != null) {
+							if (this.idMethod != null && (this.idMethod.getParameters().size() != idMethod.getParameters().size() || 
+				  					 					 !this.idMethod.getReturnType().equals(idMethod.getReturnType()))) {
 								handleMultipleIdentifiers(idMethod, domainDefinitionConfiguration);
 							}
-							this.idMethod = idMethod;
+							if (this.idMethod == null) {
+								this.idMethod = idMethod;
+							}
 						}
 					}
 				}
@@ -257,47 +281,54 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 	}
 	
 	public ExecutableElement getGetterMethod(String fieldName) {
-		return getMethod(new PathResolver(fieldName), MethodHelper.GETTER_PREFIX);
+		return getMethod(new PathResolver(fieldName), MethodType.GETTER, true);
 	}
 	
-	public ExecutableElement getIsGetterMethod(String fieldName) {
-		return getMethod(new PathResolver(fieldName), MethodHelper.GETTER_IS_PREFIX);
-	}
+//	public ExecutableElement getIsGetterMethod(String fieldName) {
+//		return getMethod(new PathResolver(fieldName), MethodHelper.GETTER_IS_PREFIX, true);
+//	}
 
 	public ExecutableElement getSetterMethod(String fieldName) {
-		return getMethod(new PathResolver(fieldName), MethodHelper.SETTER_PREFIX);
+		return getMethod(new PathResolver(fieldName), MethodType.SETTER, true);
 	}
 
-	private ExecutableElement getMethod(String fieldName, String prefix) {
-		return getMethod(new PathResolver(fieldName), prefix);
+	public ExecutableElement getMethod(String fieldName, MethodHelper.MethodType type) {
+		return getMethod(new PathResolver(fieldName), type, true);
 	}
-
-	private ExecutableElement getMethod(PathResolver pathResolver, String prefix) {
+	
+	private ExecutableElement getMethod(PathResolver pathResolver, MethodHelper.MethodType type, boolean searchInstantiableType) {
 
 		if (!pathResolver.hasNext()) {
 			return null;
 		}
 
-		List<ExecutableElement> methods = ElementFilter.methodsIn(asConfigurationElement().getEnclosedElements());
+		List<ExecutableElement> methods;
+		
+		if (getDomainDefinitionConfiguration() != null && searchInstantiableType) {
+			methods = ElementFilter.methodsIn(getDomainDefinitionConfiguration().getInstantiableDomain().asConfigurationElement().getEnclosedElements());
+		} else {
+			methods = ElementFilter.methodsIn(asConfigurationElement().getEnclosedElements());
+		}
 
 		String fieldName = pathResolver.next();
 
+		MethodType currentType = MethodType.GETTER;
+
+		if (!pathResolver.hasNext()) {
+			currentType = type;
+		}
+
 		for (ExecutableElement elementMethod : methods) {
 
-			String currentPrefix = MethodHelper.GETTER_PREFIX;
+			if (elementMethod.getModifiers().contains(Modifier.PUBLIC) && currentType.isMethodOfType(elementMethod) && 
+					MethodHelper.toField(elementMethod).equals(fieldName)) {
 
-			if (!pathResolver.hasNext()) {
-				currentPrefix = prefix;
-			}
-
-			if (elementMethod.getModifiers().contains(Modifier.PUBLIC)
-					&& elementMethod.getSimpleName().toString().equals(currentPrefix + MethodHelper.toMethod(fieldName))) {
 				if (!pathResolver.hasNext()) {
 					return elementMethod;
 				}
 
 				if (elementMethod.getReturnType().getKind().equals(TypeKind.DECLARED)) {
-					return ((DomainDeclared)getDomainForType(elementMethod.getReturnType())).getMethod(pathResolver.next(), prefix);
+					return ((DomainDeclared)getDomainForType(elementMethod.getReturnType())).getMethod(pathResolver.next(), type);
 				}
 
 				// incompatible types - nested path is expected, but declared
@@ -314,7 +345,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
 				pathResolver.reset();
 				DomainType domainType = getDomainForType(typeElement.getSuperclass());
-				ExecutableElement method = ((DomainDeclared)domainType).getMethod(pathResolver, prefix);
+				ExecutableElement method = ((DomainDeclared)domainType).getMethod(pathResolver, type, false);
 				if (method != null) {
 					return method;
 				}
@@ -324,7 +355,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			for (TypeMirror interfaceType: interfaces) {
 				pathResolver.reset();
 				DomainType domainType = getDomainForType(interfaceType);
-				ExecutableElement method = ((DomainDeclared)domainType).getMethod(pathResolver, prefix);
+				ExecutableElement method = ((DomainDeclared)domainType).getMethod(pathResolver, type, false);
 				if (method != null) {
 					return method;
 				}
@@ -346,34 +377,50 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 
 	@Override
 	public DomainDeclaredType getSuperClass() {
-		if (!asType().getKind().equals(TypeKind.DECLARED)) {
+		TypeMirror type = asType();
+		
+		if (type == null) {
+			TypeElement typeElement = environmentContext.getProcessingEnv().getElementUtils().getTypeElement(getCanonicalName());
+			if (typeElement == null) {
+				return null;
+			}
+			type = typeElement.asType();
+		}
+		
+		if (!type.getKind().equals(TypeKind.DECLARED)) {
 			return null;
 		}
 		
-		Element element = ((DeclaredType)asType()).asElement();
+		Element element = ((DeclaredType)type).asElement();
 		
 		if (element.getKind().equals(ElementKind.CLASS) || element.getKind().equals(ElementKind.INTERFACE)) {
 			TypeElement typeElement = (TypeElement)element;
 			if (typeElement.getSuperclass() != null && typeElement.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
-				if (superClassDomainType == null) {
+				if (!superClassDomainTypeValue.isInitialized()) {
 					TypeMirror domainSuperClass = typeElement.getSuperclass();
 					
 					List<ConfigurationTypeElement> configurationElements = getConfigurations(getTypeUtils().toMutableType(domainSuperClass));
-					
+
 					if (configurationElements != null && configurationElements.size() > 0) {
-						if (!configurationElements.get(0).getInstantiableDomain().equals(this)) {
-							//it can be the same if base class is the case as instance class
-							//usable for - when DTO is created from base class and converter from instance class
-							superClassDomainType = configurationElements.get(0).getInstantiableDomain();
-//						} else {
-//							superClassDomainType = configurationElements.get(0).getDomain();
+						for (ConfigurationTypeElement configurationElement: configurationElements) {
+							if (configurationElement.hasInstantiableDomainSpecified() &&
+									!configurationElement.getInstantiableDomain().toString(ClassSerializer.CANONICAL, false).equals(
+											this.toString(ClassSerializer.CANONICAL, false))) {
+								//it can be the same if base class is the case as instance class
+								//usable for - when DTO is created from base class and converter from instance class
+								superClassDomainTypeValue.setValue(configurationElement.getInstantiableDomain());
+								break;
+							}
 						}
 					} else {
 						environmentContext.getProcessingEnv().getMessager().printMessage(Kind.OTHER, "No configuration for " + domainSuperClass + " was found. Inheritance is not supported for " + element);
-//						superClassDomainType = (DomainDeclaredType) processingEnv.getTransferObjectUtils().getDomainType(domainSuperClass);
+					}
+					
+					if (!superClassDomainTypeValue.isInitialized()) {
+						superClassDomainTypeValue.setInitialized();
 					}
 				}
-				return superClassDomainType;
+				return superClassDomainTypeValue.getValue();
 			}
 		}
 		
@@ -389,9 +436,9 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		return dtoType.clone();
 	}
 
-	private DomainType getDomainForType(TypeMirror type) {
+	protected DomainType getDomainForType(TypeMirror type) {
 		DomainType domainType = getTransferObjectUtils().getDomainType(type);
-		
+
 		if (domainType != null) {
 			return domainType;
 		}
@@ -420,6 +467,8 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 			MutableDeclaredType result = setTypeVariables(typeVariables);
 			stripTypeParametersTypes();
 			this.domainType = result;
+		} else if (dtoType != null && domainType == null) {
+			this.domainType = dtoType.clone();
 		}
 	}
 
@@ -445,37 +494,7 @@ public class DomainDeclared extends TomDeclaredConfigurationHolder implements Do
 		return getBaseType(this);
 	}
 	
-//	private Set<MutableTypeMirror> getBaseBounds(Set<? extends MutableTypeMirror> bounds) {
-//		
-//		Set<MutableTypeMirror> baseBounds = new HashSet<MutableTypeMirror>();
-//		
-//		for (MutableTypeMirror lowerBound : bounds) {
-//			DomainType domainType = environmentContext.getProcessingEnv().getTransferObjectUtils().getDomainType(lowerBound);
-//			if (domainType.getKind().isDeclared()) {
-//				baseBounds.add(((DomainDeclaredType)domainType).getBaseType());
-//			} else {
-//				baseBounds.add(domainType);
-//			}
-//		}
-//		
-//		return baseBounds;
-//	}
-	
 	private DomainDeclaredType getBaseType(DomainDeclared domain) {
-//		for (ConfigurationTypeElement configuration: domain.getDto().getConfigurations()) {
-//			DomainDeclaredType instantiableDomain = configuration.getDomain();
-//			if (instantiableDomain != null) {
-//				if (instantiableDomain.getTypeVariables().size() > 0) {
-//					
-//					for (MutableTypeVariable typeVariable: instantiableDomain.getTypeVariables()) {
-//						typeVariable.setLowerBounds(getBaseBounds(typeVariable.getLowerBounds()));
-//						typeVariable.setUpperBounds(getBaseBounds(typeVariable.getUpperBounds()));
-//					}
-//				}
-//				return instantiableDomain;
-//			}
-//		}
-//		
 		return this;
 	}
 }

@@ -99,6 +99,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>sesam-security-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>sesam-service-exporter-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>

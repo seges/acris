@@ -9,21 +9,24 @@ import sk.seges.sesam.pap.model.printer.api.TransferObjectElementPrinter;
 
 public class EmptyConstructorPrinter extends AbstractElementPrinter implements TransferObjectElementPrinter {
 
+	private boolean initialized = false;
+	
 	public EmptyConstructorPrinter(FormattedPrintWriter pw) {
 		super(pw);
 	}
 
 	@Override
-	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {
-		pw.println("public " + outputName.getSimpleName() + "() {");
-	}
+	public void initialize(ConfigurationTypeElement configurationTypeElement, MutableDeclaredType outputName) {}
 
 	@Override
-	public void finish(ConfigurationTypeElement configurationTypeElement) {
-		pw.println("}");
-	}
+	public void finish(ConfigurationTypeElement configurationTypeElement) {}
 
 	@Override
 	public void print(TransferObjectContext context) {
+		if (!initialized) {
+			pw.println("public " + context.getConfigurationTypeElement().getDto().getSimpleName() + "() {}");
+			pw.println();
+			initialized = true;
+		}
 	}
 }

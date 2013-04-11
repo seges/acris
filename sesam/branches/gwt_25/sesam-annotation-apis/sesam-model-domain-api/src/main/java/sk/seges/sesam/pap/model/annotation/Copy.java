@@ -22,4 +22,6 @@ import java.lang.annotation.Target;
 public @interface Copy {
 
 	Annotations[] annotations() default {};
+	
+	boolean methodBody() default false;
 }

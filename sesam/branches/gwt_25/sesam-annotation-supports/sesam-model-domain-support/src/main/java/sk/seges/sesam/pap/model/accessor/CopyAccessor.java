@@ -18,11 +18,12 @@ import sk.seges.sesam.pap.model.annotation.Copy;
 public class CopyAccessor extends AnnotationAccessor {
 
 	private final Set<Annotations> annotations = new HashSet<Annotations>();
-
+	private final Copy copyAnnotation;
+	
 	public CopyAccessor(Element element, MutableProcessingEnvironment processingEnv) {
 		super(processingEnv);
 
-		Copy copyAnnotation = getAnnotation(element, Copy.class);
+		copyAnnotation = getAnnotation(element, Copy.class);
 		
 		if (copyAnnotation != null) {
 			Annotations[] annotations = copyAnnotation.annotations();
@@ -112,5 +113,9 @@ public class CopyAccessor extends AnnotationAccessor {
 	@Override
 	public boolean isValid() {
 		return annotations.size() > 0;
+	}
+	
+	public boolean isMethodBodyCopied() {
+		return copyAnnotation != null && copyAnnotation.methodBody();
 	}
 }

@@ -14,6 +14,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.model.accessor.ReadOnlyAccessor;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
 import sk.seges.sesam.pap.model.model.ConfigurationTypeElement;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -46,6 +47,10 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 			return;
 		}
 
+		if (new ReadOnlyAccessor(context.getDtoMethod(), processingEnv).isReadonly()) {
+			return;
+		}
+		
 		PathResolver pathResolver = new PathResolver(context.getDomainFieldPath());
 
 		boolean nested = pathResolver.isNested();
@@ -178,7 +183,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		ExecutableElement domainGetterMethod;
 		if (domainTypeElement.asElement() != null && ProcessorUtils.hasMethod(MethodHelper.toMethod(MethodHelper.GETTER_IS_PREFIX, domainPathResolver.getCurrent()), domainTypeElement.asElement())) {
 			isMethod = true;
-			domainGetterMethod = domainTypeElement.getIsGetterMethod(domainPathResolver.getCurrent()); 
+			domainGetterMethod = domainTypeElement.getGetterMethod(domainPathResolver.getCurrent()); 
 		} else {
 			domainGetterMethod = domainTypeElement.getGetterMethod(domainPathResolver.getCurrent());
 		}
@@ -219,18 +224,16 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 
     protected void printCopyByConverter(TransferObjectContext context, PathResolver domainPathResolver, FormattedPrintWriter pw) {
 		String converterName = "converter" + MethodHelper.toMethod("", context.getDtoFieldName());
-		pw.print(context.getConverter().getConverterBase(), " " + converterName + " = ");
+		pw.print(context.getConverter(), " " + converterName + " = ");
 
 		Field field = new Field(
 				(context.getDomainMethodReturnType().getKind().equals(MutableTypeKind.TYPEVAR) ? "(" + context.getConverter().getDto() + ")" : "") + 
 				TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getDtoFieldName()), context.getConverter().getDto());
-		//converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), field, domainMethod, pw, false);
 		TransferObjectMappingAccessor transferObjectMappingAccessor = new TransferObjectMappingAccessor(context.getDtoMethod(), processingEnv);
 		if (transferObjectMappingAccessor.isValid() && transferObjectMappingAccessor.getConverter() != null) {
-			//converterProviderPrinter.printDtoEnsuredConverterMethodName(converter.getDto(), field, dtoMethod, pw, false);
 			converterProviderPrinter.printDtoGetConverterMethodName(context.getConverter().getDto(), field, context.getDtoMethod(), pw, false);
 		} else {
-			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, context.getConverter().getDomain(), field, context.getDomainMethod(), true);
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, context.getConverter().getConfiguration().getInstantiableDomain(), field, context.getDomainMethod(), true);
 		}
 		pw.println(";");
 		
@@ -249,8 +252,6 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		pw.print(CastUtils.class, ".cast(");
 		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getDtoFieldName()) + ", ");
 		pw.print(getTypeVariableDelegate(getDelegateCast(context.getConverter().getDto(), true)), ".class)");
-//		pw.print("(", converter.getDto(), ")");
-//		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(dtoField));
 		pw.println("), ", getTypeVariableDelegate(getDelegateCast(context.getConverter().getDomain(), true)), ".class));");
 		pw.println("}");
     }

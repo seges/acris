@@ -14,6 +14,9 @@ public interface HasAnnotations {
 	
     <A extends Annotation> A getAnnotation(Class<A> annotationType);
 
+    HasAnnotations setAnnotations(AnnotationMirror ...annotations);
+    HasAnnotations setAnnotations(MutableAnnotationMirror ...annotations);
+    
     Set<AnnotationMirror> getAnnotations();
     Set<MutableAnnotationMirror> getMutableAnnotations();
 }

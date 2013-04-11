@@ -15,11 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.sesam</groupId>
-			<artifactId>sesam-core-api</artifactId>
+			<artifactId>sesam-security-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>

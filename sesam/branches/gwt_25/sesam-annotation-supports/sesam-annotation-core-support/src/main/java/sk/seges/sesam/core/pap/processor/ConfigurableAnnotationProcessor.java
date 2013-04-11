@@ -20,7 +20,9 @@ import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.annotation.configuration.ProcessorConfiguration;
+import sk.seges.sesam.core.pap.builder.ClassPathSourceUtils;
 import sk.seges.sesam.core.pap.builder.ClassPathTypeUtils;
+import sk.seges.sesam.core.pap.builder.api.ClassPathSources;
 import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
@@ -44,6 +46,9 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
 	private Set<MutableDeclaredType> processedElements = new HashSet<MutableDeclaredType>();
 	private Set<MutableDeclaredType> waitingElements = new HashSet<MutableDeclaredType>();
 
+	private ClassPathTypes classPathTypes;
+	private ClassPathSources classPathSources;
+	
 	protected ConfigurableAnnotationProcessor() {
 		configurer = getConfigurer();
 	}
@@ -82,14 +87,26 @@ public abstract class ConfigurableAnnotationProcessor extends PlugableAnnotation
     	return SUPPORTED_PACKAGE;
     }
     
+    protected ClassPathSources getClassPathSources() {
+    	if (classPathSources != null) {
+    		return classPathSources;
+    	}
+
+    	return classPathSources = new ClassPathSourceUtils(processingEnv, getSupportedPackage());
+    }
+    
     protected ClassPathTypes getClassPathTypes() {
+    	if (classPathTypes != null) {
+    		return classPathTypes;
+    	}
+
 	    String projectName = processingEnv.getOptions().get(PROJECT_NAME_OPTION);
 	    
 	    if (projectName == null) {
 	    	projectName = getClass().getCanonicalName();
 	    }
 
-		return new ClassPathTypeUtils(processingEnv, projectName, getSupportedPackage());
+	    return classPathTypes = new ClassPathTypeUtils(processingEnv, projectName, getSupportedPackage());
     }
 
 	@Override

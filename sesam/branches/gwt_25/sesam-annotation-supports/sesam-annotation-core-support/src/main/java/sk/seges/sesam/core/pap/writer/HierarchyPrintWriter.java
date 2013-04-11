@@ -33,6 +33,10 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 		this.currentPrinter = bodyPrinter;
 	}
 	
+	protected List<FormattedPrintWriter> getNestedPrinters() {
+		return nestedPrinters;
+	}
+	
 	@Override
 	public void flush() {
 
@@ -83,7 +87,15 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 		return printWriter.toString(printWriter.getDefaultOudentLevel());
 	}
 
+	public LazyPrintWriter addLazyPrinter(LazyPrintWriter pw) {
+		if (nestedPrinters.size() == 0) {
+			initializePrinter();
+		}
+		return addNestedPrinter(pw);
+	}
+	
 	public <T extends FormattedPrintWriter> T addNestedPrinter(T pw) {
+
 		if (currentPrinter != null) {
 			return currentPrinter.addNestedPrinter(pw);
 		}
@@ -100,7 +112,7 @@ public class HierarchyPrintWriter extends FormattedPrintWriter {
 		if (currentPrinter != null) {
 			return currentPrinter.initializeNestedPrinter();
 		}
-		
+
 		return addNestedPrinter(new HierarchyPrintWriter(processingEnv));
 	}
 

@@ -1,5 +1,8 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
@@ -12,6 +15,7 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableElementType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 
@@ -21,6 +25,24 @@ public class TransferObjectTypes {
 	
 	public TransferObjectTypes(EnvironmentContext<TransferObjectProcessingEnvironment> envContext) {
 		this.envContext = envContext;
+	}
+
+	public List<DtoType> convertToDtoTypes(List<? extends MutableTypeMirror> types) {
+		List<DtoType> result = new ArrayList<DtoType>();
+		for (MutableTypeMirror type: types) {
+			result.add(getDomainType(type).getDto());
+		}
+		
+		return result;
+	}
+
+	public List<DtoType> convertToDtoTypesFromElements(List<? extends MutableElementType> elements) {
+		List<DtoType> result = new ArrayList<DtoType>();
+		for (MutableElementType element: elements) {
+			result.add(getDomainType(element.asType()).getDto());
+		}
+		
+		return result;
 	}
 
 	public DomainType getDomainType(MutableTypeMirror type) {

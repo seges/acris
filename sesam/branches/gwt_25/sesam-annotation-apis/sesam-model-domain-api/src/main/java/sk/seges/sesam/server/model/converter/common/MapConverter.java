@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package sk.seges.sesam.shared.model.converter.common;
+package sk.seges.sesam.server.model.converter.common;
 
 import java.util.Map;
 import java.util.Map.Entry;

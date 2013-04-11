@@ -2,8 +2,10 @@ package sk.seges.sesam.pap.model.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -50,8 +52,8 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 
 		this.dtoType = dtoType;
 		this.generated = false;
-				
-		initialize();
+		
+		//initialize();
 	}
 
 	DtoDeclared(DeclaredType dtoType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
@@ -60,7 +62,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		this.dtoType = getTypeUtils().toMutableType(dtoType);
 		this.generated = false;
 				
-		initialize();
+		//initialize();
 	}
 
 	
@@ -72,7 +74,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 	}
 		
 	void setup() {
-		initialize();
+		//initialize();
 		
 		setKind(MutableTypeKind.CLASS);
 		
@@ -80,15 +82,18 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 
 		if (superClassDomainType != null) {
 			DtoDeclaredType superclassDto = superClassDomainType.getDto();
-			
-			MutableDeclaredType mutableSuperclassType = getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asConfigurationElement().asType());
-			
-			if (superclassDto instanceof MutableDeclaredType) {
-				//TODO convert type variables also
-				((MutableDeclaredType)superclassDto).setTypeVariables(mutableSuperclassType.getTypeVariables().toArray(new MutableTypeVariable[] {}));
-				setSuperClass((MutableDeclaredType)superclassDto);
-			} else {
-				//TODO log something here
+
+			if (!superclassDto.getKind().equals(MutableTypeKind.INTERFACE)) {
+				//TODO Possibly add interface here!
+				MutableDeclaredType mutableSuperclassType = getTypeUtils().toMutableType((DeclaredType)superClassDomainType.asConfigurationElement().asType());
+				
+				if (superclassDto instanceof MutableDeclaredType) {
+					//TODO convert type variables also
+					((MutableDeclaredType)superclassDto).setTypeVariables(mutableSuperclassType.getTypeVariables().toArray(new MutableTypeVariable[] {}));
+					setSuperClass((MutableDeclaredType)superclassDto);
+				} else {
+					//TODO log something here
+				}
 			}
 		}
 
@@ -103,6 +108,11 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 				for (TypeMirror interfaceType: interfaces) {
 					MutableDeclaredType mutableType = (MutableDeclaredType) getTypeUtils().toMutableType(interfaceType);
 					mutableType.prefixTypeParameter(ConverterTypeElement.DTO_TYPE_ARGUMENT_PREFIX);
+					List<? extends MutableTypeVariable> typeVariables = mutableType.getTypeVariables();
+					for (MutableTypeVariable typeVariable: typeVariables) {
+						typeVariable.setLowerBounds(converterTypesToDto(typeVariable.getLowerBounds()));
+						typeVariable.setUpperBounds(converterTypesToDto(typeVariable.getUpperBounds()));
+					}
 					interfaceTypes.add(mutableType);
 				}
 			}
@@ -120,6 +130,18 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 			setInterfaces(interfaceTypes);
 		}
 	}
+
+	private Set<? extends MutableTypeMirror> converterTypesToDto(Set<? extends MutableTypeMirror> types) {
+		if (types == null) {
+			return null;
+		}
+		Set<MutableTypeMirror> result = new HashSet<MutableTypeMirror>();
+		
+		for (MutableTypeMirror type: types) {
+			result.add(environmentContext.getProcessingEnv().getTransferObjectUtils().getDomainType(type).getDto());
+		}
+		return result;
+	}
 	
 	DtoDeclared(PrimitiveType dtoType, EnvironmentContext<TransferObjectProcessingEnvironment> envContext, ConfigurationContext configurationContext) {
 		super(envContext, configurationContext);
@@ -127,7 +149,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		this.dtoType = (MutableDeclaredType) getTypeUtils().toMutableType(dtoType);
 		this.generated = false;
 				
-		initialize();
+		//initialize();
 	}
 
 	protected List<ConfigurationTypeElement> getConfigurationsForType() {
@@ -135,7 +157,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 	};
 
 	private List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror dtoType) {
-		return environmentContext.getConfigurationEnv().getConfigurations(dtoType);
+		return environmentContext.getConfigurationEnv().getConfigurationsForDto(dtoType);
 	}
 		
 	protected MutableDeclaredType getDelegate() {
@@ -149,8 +171,33 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 	public ConfigurationTypeElement getDomainDefinitionConfiguration() {
 		return ensureConfigurationContext().getDelegateDomainDefinitionConfiguration();
 	}
+
+	private MutableTypeMirror[] getDomainBounds(Set<? extends MutableTypeMirror> bounds) {
+		Set<MutableTypeMirror> domainBounds = new HashSet<MutableTypeMirror>();
+		for (MutableTypeMirror bound: bounds) {
+			domainBounds.add(getTransferObjectUtils().getDtoType(bound).getDomain());
+		}
+		
+		return domainBounds.toArray(new MutableTypeMirror[] {});
+	}
 	
-	private void initialize() {
+	private void initializeDomain(DomainDeclaredType domain) {
+		if (getConfigurations().size() == 0 || dtoType == null || dtoType.getTypeVariables() == null) {
+			return;
+		}
+
+		List<MutableTypeVariable> typeVariables = new ArrayList<MutableTypeVariable>();
+		
+		for (MutableTypeVariable typeVariable: dtoType.getTypeVariables()) {
+			typeVariables.add(environmentContext.getProcessingEnv().getTypeUtils().getTypeVariable(typeVariable.getVariable(), 
+					getDomainBounds(typeVariable.getLowerBounds()), getDomainBounds(typeVariable.getUpperBounds())));
+		}
+		
+		domain.setTypeVariables(typeVariables.toArray(new MutableTypeVariable[] {}));
+	}
+	
+	public void initializeDto() {
+		
 		if (getConfigurations().size() == 0) {
 			return;
 		}
@@ -201,7 +248,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 			ConfigurationTypeElement domainDefinitionConfiguration = getDomainDefinitionConfiguration();
 			
 			if (domainDefinitionConfiguration != null) {
-				this.domainType.setValue(domainDefinitionConfiguration.getDomain());
+				initializeDomain(this.domainType.setValue(domainDefinitionConfiguration.getDomain()));
 			}
 			
 			if (this.domainType.getValue() == null && dtoType != null) {

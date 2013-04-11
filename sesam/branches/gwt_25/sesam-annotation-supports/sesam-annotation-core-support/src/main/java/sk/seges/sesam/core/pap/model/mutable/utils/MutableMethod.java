@@ -357,4 +357,14 @@ class MutableMethod extends MutableType implements MutableExecutableType {
 	public Set<MutableAnnotationMirror> getMutableAnnotations() {
 		return annotationHolderDelegate.getMutableAnnotations();
 	}
+
+	@Override
+	public HasAnnotations setAnnotations(AnnotationMirror... annotations) {
+		return annotationHolderDelegate.setAnnotations(annotations);
+	}
+
+	@Override
+	public HasAnnotations setAnnotations(MutableAnnotationMirror... annotations) {
+		return annotationHolderDelegate.setAnnotations(annotations);
+	}
 }

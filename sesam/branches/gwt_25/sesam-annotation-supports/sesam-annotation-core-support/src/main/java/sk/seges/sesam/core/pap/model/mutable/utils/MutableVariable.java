@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 
@@ -109,16 +110,24 @@ class MutableVariable extends MutableType implements MutableTypeVariable {
 
 		return result;
 	}
+
+	private MutableTypeMirror cloneBound(MutableTypeMirror bound) {
+		if (bound.getKind().equals(MutableTypeKind.CLASS) || bound.getKind().equals(MutableTypeKind.INTERFACE)) {
+			return ((MutableDeclaredType)bound).clone();
+		}
+		
+		return bound;
+	}
 	
 	@Override
 	public MutableVariable clone() {
 		MutableVariable result = new MutableVariable();
 		result.variable = variable;
 		for (MutableTypeMirror lowerBound: lowerBounds) {
-			result.lowerBounds.add(lowerBound);
+			result.lowerBounds.add(cloneBound(lowerBound));
 		}
 		for (MutableTypeMirror upperBound: upperBounds) {
-			result.upperBounds.add(upperBound);
+			result.upperBounds.add(cloneBound(upperBound));
 		}
 		return result;
 	}

@@ -10,6 +10,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
@@ -274,6 +275,28 @@ public class ProcessorUtils {
 		}
 		
 		return null;
+	}
+	
+	public static boolean hasMethod(ProcessingEnvironment processingEnv, Class<?> clazz, ExecutableElement method) {
+		TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+		
+		if (typeElement == null) {
+			//unknown class, probably generated and still not compiled
+			return false;
+		}
+		
+		return hasMethod(processingEnv, typeElement, method);
+	}
+	
+	private static boolean hasMethod(ProcessingEnvironment processingEnv, TypeElement typeElement, ExecutableElement method) {
+
+		for (ExecutableElement elementMethod: ElementFilter.methodsIn(typeElement.getEnclosedElements())) {
+			if (processingEnv.getTypeUtils().isSubsignature((ExecutableType)elementMethod.asType(), (ExecutableType)method.asType())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public static boolean hasMethod(String name, Element element) {

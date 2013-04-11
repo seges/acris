@@ -26,6 +26,18 @@ abstract class MutableHasAnnotationsElement extends MutableElement implements Ha
 	}
 
 	@Override
+	public HasAnnotations setAnnotations(AnnotationMirror... annotations) {
+		annotationHolderDelegate.setAnnotations(annotations);
+		return this;
+	}
+	
+	@Override
+	public HasAnnotations setAnnotations(MutableAnnotationMirror... annotations) {
+		annotationHolderDelegate.setAnnotations(annotations);
+		return this;
+	}
+	
+	@Override
 	public HasAnnotations annotateWith(MutableAnnotationMirror mutableAnnotationMirror) {
 		annotationHolderDelegate.annotateWith(mutableAnnotationMirror);
 		return this;

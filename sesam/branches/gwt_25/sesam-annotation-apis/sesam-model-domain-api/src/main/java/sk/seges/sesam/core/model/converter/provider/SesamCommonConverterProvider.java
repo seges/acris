@@ -4,19 +4,28 @@ import java.util.Collection;
 import java.util.Map;
 
 import sk.seges.sesam.pap.model.annotation.ConverterProviderDefinition;
+import sk.seges.sesam.security.server.model.acl.AclDataRegistry;
+import sk.seges.sesam.security.server.model.acl.AclSecuredEntity;
+import sk.seges.sesam.security.shared.model.api.ClientSecuredEntity;
+import sk.seges.sesam.server.model.converter.common.CollectionConverter;
+import sk.seges.sesam.server.model.converter.common.MapConverter;
+import sk.seges.sesam.server.model.converter.security.SecuredEntityConverter;
+import sk.seges.sesam.shared.model.converter.ConvertedInstanceCache;
 import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 import sk.seges.sesam.shared.model.converter.api.DtoConverter;
-import sk.seges.sesam.shared.model.converter.common.CollectionConverter;
-import sk.seges.sesam.shared.model.converter.common.MapConverter;
 import sk.seges.sesam.shared.model.converter.provider.AbstractConverterProvider;
 
 @ConverterProviderDefinition
 public class SesamCommonConverterProvider extends AbstractConverterProvider {
 
 	private final ConverterProviderContext converterProviderContext;
+	private final ConvertedInstanceCache cache;
+	private final AclDataRegistry aclDataRegistry;
 	
-	public SesamCommonConverterProvider(ConverterProviderContext converterProviderContext) {
+	public SesamCommonConverterProvider(ConverterProviderContext converterProviderContext, ConvertedInstanceCache cache, AclDataRegistry aclDataRegistry) {
 		this.converterProviderContext = converterProviderContext;
+		this.cache = cache;
+		this.aclDataRegistry = aclDataRegistry;
 	}
 	
 	public <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getConverterForDomain(Class<DOMAIN> domainClass) {
@@ -33,6 +42,10 @@ public class SesamCommonConverterProvider extends AbstractConverterProvider {
 			return getMapConverter();
 		}
 
+		if (AclSecuredEntity.class.equals(domainClass)) {
+			return getSecuredEntityConverter();
+		}
+		
 		return null;
 	}
 
@@ -50,7 +63,16 @@ public class SesamCommonConverterProvider extends AbstractConverterProvider {
 			return getMapConverter();
 		}
 
+		if (ClientSecuredEntity.class.equals(dtoClass)) {
+			return getSecuredEntityConverter();
+		}
+
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <DTO, DOMAIN> DtoConverter<DTO, DOMAIN> getSecuredEntityConverter() {
+		return (DtoConverter<DTO, DOMAIN>) new SecuredEntityConverter(cache, converterProviderContext, aclDataRegistry);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

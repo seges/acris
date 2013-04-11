@@ -82,7 +82,7 @@ public abstract class AbstractServiceCollectorConfigurationProvider extends Clas
 			result.addAll(getConfigurationsFromType((DeclaredType)element.getSuperclass(), processedElements, configurationContext));
 		}
 		
-		Collections.sort(result, new ConfigurationComparator());
+		Collections.sort(result, new ConfigurationComparator(null, null));
 
 		return result;
 	}

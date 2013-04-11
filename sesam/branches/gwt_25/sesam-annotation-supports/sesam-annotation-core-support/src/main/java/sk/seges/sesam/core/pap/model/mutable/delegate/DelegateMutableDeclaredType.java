@@ -37,6 +37,16 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	}	
 
 	@Override
+	public HasAnnotations setAnnotations(AnnotationMirror... annotations) {
+		return ensureDelegateType().setAnnotations(annotations);
+	}
+	
+	@Override
+	public HasAnnotations setAnnotations(MutableAnnotationMirror... annotations) {
+		return ensureDelegateType().setAnnotations(annotations);
+	}
+	
+	@Override
 	public HasAnnotations annotateWith(MutableAnnotationMirror mutableAnnotationMirror) {
 		return ensureDelegateType().annotateWith(mutableAnnotationMirror);
 	}

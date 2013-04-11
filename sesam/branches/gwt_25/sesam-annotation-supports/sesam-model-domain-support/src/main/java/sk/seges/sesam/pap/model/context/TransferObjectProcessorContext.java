@@ -160,16 +160,22 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 			}
 		}
 
-		TypeMirror targetReturnType = entityResolver.getTargetEntityType(getDomainMethod());
+		TypeMirror targetReturnType = null;
+		
+		if (getDomainMethod() != null) {
+			targetReturnType = entityResolver.getTargetEntityType(getDomainMethod());
+		} else {
+			//in this case there is no domain method and field is inherited from interface
+			targetReturnType = getDtoMethod().getReturnType();
+		}
+		
 		DomainType domainReturnType = getTransferObjectUtils().getDomainType(targetReturnType);
-		
-		TypeMirror targetEntityType = entityResolver.getTargetEntityType(getDomainMethod());
-		
-		if (targetEntityType.getKind().equals(TypeKind.TYPEVAR)) {
+				
+		if (targetReturnType.getKind().equals(TypeKind.TYPEVAR)) {
 			//check whether type variable is locally defined only for method or is
-			//global type variable for whole class
+			//type variable for whole class
 			
-			String variableName = ((TypeVariable)targetEntityType).asElement().getSimpleName().toString();
+			String variableName = ((TypeVariable)targetReturnType).asElement().getSimpleName().toString();
 			
 			List<? extends TypeParameterElement> typeParameters = domainTypeElement.asConfigurationElement().getTypeParameters();
 			
@@ -291,6 +297,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 					configurationType = new ConfigurationTypeElement(getDtoMethod(), (DomainDeclaredType) returnType, envContext, context);
 					break;
 				default:
+					configurationType = new ConfigurationTypeElement(getDtoMethod(), envContext, context);
 					break;
 				}
 

@@ -6,7 +6,7 @@ import sk.seges.sesam.pap.model.provider.api.ConfigurationProvider;
 
 public abstract class TomDeclaredConfigurationHolder extends TomBaseDeclaredType {
 
-	private ConfigurationContext configurationContext;
+	protected ConfigurationContext configurationContext;
 	
 	protected TomDeclaredConfigurationHolder(EnvironmentContext<TransferObjectProcessingEnvironment> environmentContext, ConfigurationContext configurationContext) {
 		super(environmentContext);

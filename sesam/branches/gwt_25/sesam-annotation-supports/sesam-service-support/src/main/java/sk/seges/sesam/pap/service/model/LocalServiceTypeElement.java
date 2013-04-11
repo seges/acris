@@ -7,7 +7,7 @@ import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
-import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidator.LocationType;
 import sk.seges.sesam.core.pap.structure.DefaultPackageValidatorProvider;
@@ -18,7 +18,7 @@ import sk.seges.sesam.pap.model.model.ConverterTypeElement;
 import sk.seges.sesam.pap.service.accessor.LocalServicePropagationAccessor;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 
-public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
+public class LocalServiceTypeElement extends AbstractServiceTypeElement {
 
 	public static final String REMOTE_SUFFIX = "Remote";
 	public static final String LOCAL_SUFFIX = "Local";
@@ -112,5 +112,13 @@ public class LocalServiceTypeElement extends DelegateMutableDeclaredType {
 	
 	public TypeElement asElement() {
 		return localServiceType;
+	}
+	
+	@Override
+	protected MutableTypeVariable getTypeVariable(MutableTypeVariable variable) {
+		if (variable.getVariable() != null && variable.getVariable().length() > 0) {
+			return variable.clone().setVariable(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_" + variable.getVariable());
+		}
+		return variable;
 	}
 }

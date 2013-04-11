@@ -16,8 +16,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
@@ -460,6 +458,14 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 		return renameTypeParameter(actionType, parameter, null, false);
 	}
 	
+	private void renameBounds(Set<? extends MutableTypeMirror> bounds, RenameActionType actionType, String parameter, String oldName, boolean recursive) {
+		for (MutableTypeMirror bound: bounds) {
+			if (bound instanceof MutableDeclaredType && ((MutableDeclaredType)bound).getTypeVariables().size() > 0) {
+				((MutableDeclaredType)bound).renameTypeParameter(actionType, parameter, oldName, recursive);
+			}
+		}
+	}
+	
 	public MutableDeclaredType renameTypeParameter(RenameActionType actionType, String parameter, String oldName, boolean recursive) {	
 			
 		if (getTypeVariables() == null || getTypeVariables().size() == 0) {
@@ -477,12 +483,8 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 				}
 				typeParameter.setVariable(variable);
 			} else if (recursive) {
-				Set<? extends MutableTypeMirror> bounds = typeParameter.getUpperBounds();
-				for (MutableTypeMirror upperBound: bounds) {
-					if (upperBound instanceof MutableDeclaredType && ((MutableDeclaredType)upperBound).getTypeVariables().size() > 0) {
-						((MutableDeclaredType)upperBound).renameTypeParameter(actionType, parameter, oldName, recursive);
-					}
-				}
+				renameBounds(typeParameter.getUpperBounds(), actionType, parameter, oldName, recursive);
+				renameBounds(typeParameter.getLowerBounds(), actionType, parameter, oldName, recursive);
 			}
 		}
 	

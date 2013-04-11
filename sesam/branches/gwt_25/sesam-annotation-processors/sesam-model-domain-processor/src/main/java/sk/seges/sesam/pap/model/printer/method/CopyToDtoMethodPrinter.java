@@ -2,6 +2,7 @@ package sk.seges.sesam.pap.model.printer.method;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
@@ -61,7 +62,8 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 					if (i > 0) {
 						pw.print(" && ");
 					}
-					methodPath += "." + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getDomain(), path);
+					TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(context.getConfigurationTypeElement().getDomain().getCanonicalName());
+					methodPath += "." + MethodHelper.toGetterMethod(typeElement, path);
 					
 					pw.print(methodPath + " != null");
 					i++;
@@ -122,8 +124,9 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 				pw.print("(" + ((MutableTypeVariable)context.getDtoFieldType()).getVariable() + ")");
 			}
 			//TODO: check why context.getConfigurationTypeElement().getDomain().asElement() return null when generating UserDTO
-			pw.print(TransferObjectElementPrinter.DOMAIN_NAME  + "." + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getInstantiableDomain(), 
-					context.getDomainFieldPath()));
+			TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(context.getConfigurationTypeElement().getInstantiableDomain().getCanonicalName());
+
+			pw.print(TransferObjectElementPrinter.DOMAIN_NAME  + "." + MethodHelper.toGetterMethod(typeElement, context.getDomainFieldPath()));
 		}
 		
 		if (context.getConverter() != null) {
