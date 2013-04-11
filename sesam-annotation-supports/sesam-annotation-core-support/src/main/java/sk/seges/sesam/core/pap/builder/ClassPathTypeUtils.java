@@ -2,20 +2,13 @@ package sk.seges.sesam.core.pap.builder;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.annotation.Annotation;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,10 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -48,7 +37,7 @@ import javax.xml.transform.stream.StreamSource;
 import sk.seges.sesam.core.pap.builder.api.ClassPathTypes;
 import sk.seges.sesam.core.pap.processor.ConfigurableAnnotationProcessor;
 
-public class ClassPathTypeUtils implements ClassPathTypes {
+public class ClassPathTypeUtils extends ClassPathFinder implements ClassPathTypes {
 
 	static class Project {
 		
@@ -232,14 +221,11 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		}
 	}
 	
-	private ProcessingEnvironment processingEnv;
 	private Project project;
-	private String packageName;
 	
 	public ClassPathTypeUtils(ProcessingEnvironment processingEnv, String projectName, String packageName) {
-		this.processingEnv = processingEnv;
+		super(processingEnv, packageName);
 		this.project = Project.get(projectName);
-		this.packageName = packageName;
 
 		if (!project.isInitialized()) {
 			initializeSystemProperties();
@@ -264,15 +250,20 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 			return "";
 		}
         
+        try {
+			fileInput.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
         return result;
 	}
 
 	protected static final String ROOT_DIRECTORY_OPTION = "rootDirectory";
 	protected static final String M2_REPO_OPTION = "M2_REPO";
 	private static final String M2_REPO = "M2_REPO"; //variable in the factory path
-	private static final String PROCESSOR_CLASS_PATH = "processor.class.path";
-	private static final String PATH_SEPARATOR = "path.separator";
 	private static final String FACTORY_PATH_FILE_NAME = ".factorypath";
+
 	
 	private String getClasspathFromList(String classPath) {
 		if (classPath != null) {
@@ -342,227 +333,34 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 		}
 	}
 
-	private Map<URL, String> getClasspathLocations(String classpath) {
-		Map<URL, String> map = new TreeMap<URL, String>(URL_COMPARATOR);
-		File file = null;
-
-		String pathSep = System.getProperty(PATH_SEPARATOR);
+	class ClassFileTypeHandler implements FileTypeHandler {
 		
-		List<String> classPathElements = new ArrayList<String>();
-		
-		if (classpath != null && pathSep != null) {
-			StringTokenizer st = new StringTokenizer(classpath, pathSep);
-			while (st.hasMoreTokens()) {
-				String path = st.nextToken().trim();
-				if (!classPathElements.contains(path)) {
-					classPathElements.add(path);
-					file = new File(path);
-					include(null, file, map);
-				}
-			}
-		}
-						
-		return map;
-	}
-
-	private static FileFilter DIRECTORIES_ONLY = new FileFilter() {
 		@Override
-		public boolean accept(File f) {
-			return (f.exists() && f.isDirectory());
+		public String getExtension() {
+			return ".class";
 		}
-	};
 
-	private static Comparator<URL> URL_COMPARATOR = new Comparator<URL>() {
 		@Override
-		public int compare(URL u1, URL u2) {
-			return String.valueOf(u1).compareTo(String.valueOf(u2));
-		}
-	};
-
-	private void include(String name, File file, Map<URL, String> map) {
-		if (!file.exists()) {
-			return;
-		}
-		
-		if (!file.isDirectory()) {
-			// could be a JAR file
-			includeJar(file, map);
-			return;
+		public void handleFile(InputStreamProvider inputStreamProvider, String canonicalName, ProcessingEnvironment processingEnv, Map<String, Set<String>> annotatedClasses) {
+			addyTypeElement(canonicalName, processingEnv.getElementUtils().getTypeElement(canonicalName), annotatedClasses);
 		}
 
-		if (name == null) {
-			name = "";
-		} else {
-			name += ".";
-		}
-		
-		// add subpackages
-		File[] dirs = file.listFiles(DIRECTORIES_ONLY);
-		for (int i = 0; i < dirs.length; i++) {
-			try {
-				// add the present package
-				map.put(new URL("file://" + dirs[i].getCanonicalPath()), name + dirs[i].getName());
-			} catch (IOException ioe) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + name + dirs[i].getName() + "." + ioe.getMessage());
-				return;
-			}
-
-			include(name + dirs[i].getName(), dirs[i], map);
-		}
-	}
-
-	private static String getOsName() {
-		return System.getProperty("os.name");
-	}
-
-	private boolean isWindows() {
-		return getOsName().startsWith("Windows");
-	}
-
-	private void includeJar(File file, Map<URL, String> map) {
-		if (file.isDirectory()) {
-			return;
+		@Override
+		public boolean continueProcessing() {
+			return true;
 		}
 
-		URL jarURL = null;
-		JarFile jar = null;
-		try {
-			if (isWindows()) {
-				jarURL = new URL("file:/" + file.getCanonicalPath());
-			} else {
-				jarURL = new URL("file://" + file.getCanonicalPath());
-			}
-			jarURL = new URL("jar:" + jarURL.toExternalForm() + "!/");
-			JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
-			jar = conn.getJarFile();
-		} catch (Exception e) {
-			try {
-				processingEnv.getMessager().printMessage(Kind.WARNING, "Unable to find " + file.getCanonicalPath() + "." + e.getMessage());
-			} catch (IOException e1) {
-				processingEnv.getMessager().printMessage(Kind.WARNING, e.getMessage() + " -- " + file); 
-			}
-			// not a JAR or disk I/O error
-			// either way, just skip
-			return;
+		@Override
+		public boolean isFileOfType(String canonicalName) {
+			return true;
 		}
-
-		if (jar == null || jarURL == null) {
-			return;
-		}
-
-		// include the jar's "default" package (i.e. jar's root)
-		map.put(jarURL, "");
-
-		Enumeration<JarEntry> e = jar.entries();
-		while (e.hasMoreElements()) {
-			JarEntry entry = e.nextElement();
-
-			if (entry.isDirectory()) {
-				if (entry.getName().toUpperCase().equals("META-INF/")) {
-					continue;
-				}
-
-				try {
-					map.put(new URL(jarURL.toExternalForm() + entry.getName()), packageNameFor(entry));
-				} catch (MalformedURLException murl) {
-					// whacky entry?
-					continue;
-				}
-			}
-		}
-	}
-
-	private String packageNameFor(JarEntry entry) {
-		if (entry == null) {
-			return "";
-		}
-		String s = entry.getName();
-		if (s == null) {
-			return "";
-		}
-		if (s.length() == 0) {
-			return s;
-		}
-		if (s.startsWith("/")) {
-			s = s.substring(1, s.length());
-		}
-		if (s.endsWith("/")) {
-			s = s.substring(0, s.length() - 1);
-		}
-		return s.replace('/', '.');
-	}
-
-	protected Map<String, Set<String>> getSubclasses() {
-		return getSubclasses(System.getProperty(PROCESSOR_CLASS_PATH));		
 	}
 	
-	protected Map<String, Set<String>> getSubclasses(String classpath) {
-
-		Map<URL, String> classpathLocations = getClasspathLocations(classpath);
-		
-		Iterator<URL> it = classpathLocations.keySet().iterator();
-		
-		Map<String, Set<String>> annotatedClasses = new HashMap<String, Set<String>>();
-		
-		while (it.hasNext()) {
-			URL url = it.next();
-			findSubclasses(url, classpathLocations.get(url), annotatedClasses);
-		}
-		
-		return annotatedClasses;
+	protected Map<String, Set<String>> getSubclasses() {
+		return getSubclasses(System.getProperty(PROCESSOR_CLASS_PATH), new ClassFileTypeHandler());
 	}
 
-	private void findSubclasses(URL location, String packageName, Map<String, Set<String>> annotatedClasses) {
-
-		if (!packageName.startsWith(this.packageName)) {
-			return;
-		}
-		
-		// TODO: add getResourceLocations() to this list
-
-
-		// Get a File object for the package
-		File directory = new File(location.getFile());
-
-		if (directory.exists()) {
-			// Get the list of the files contained in the package
-			String[] files = directory.list();
-			for (int i = 0; i < files.length; i++) {
-				// we are only interested in .class files
-				if (files[i].endsWith(".class")) {
-					// removes the .class extension
-					String classname = files[i].substring(0, files[i].length() - 6);
-					addyTypeElement(packageName + "." + classname, processingEnv.getElementUtils().getTypeElement(packageName + "." + classname), annotatedClasses);
-				}
-			}
-		} else {
-			try {
-				// It does not work with the filesystem: we must
-				// be in the case of a package contained in a jar file.
-				JarURLConnection conn = (JarURLConnection) location.openConnection();
-				// String starts = conn.getEntryName();
-				JarFile jarFile = conn.getJarFile();
-
-				Enumeration<JarEntry> e = jarFile.entries();
-				while (e.hasMoreElements()) {
-					JarEntry entry = e.nextElement();
-					String entryname = entry.getName();
-
-					if (!entry.isDirectory() && entryname.endsWith(".class")) {
-						String classname = entryname.substring(0, entryname.length() - 6);
-						if (classname.startsWith("/")) {
-							classname = classname.substring(1);
-						}
-						classname = classname.replace('/', '.');
-						addyTypeElement(classname, processingEnv.getElementUtils().getTypeElement(classname), annotatedClasses);
-					}
-				}
-			} catch (Throwable ex) {
-			}
-		}
-	}
-
-	private void addyTypeElement(String canonicalName, TypeElement type, Map<String, Set<String>> annotatedClasses) {
+	private static void addyTypeElement(String canonicalName, TypeElement type, Map<String, Set<String>> annotatedClasses) {
 		if (type == null) {
 			return;
 		}
@@ -601,7 +399,7 @@ public class ClassPathTypeUtils implements ClassPathTypes {
 					classPath = classPath.replace("\\", "/");
 				}
 	
-				project.addAnnotatedElementNames(getSubclasses(classPath));
+				project.addAnnotatedElementNames(getSubclasses(classPath, new ClassFileTypeHandler()));
 				long totalTime = new Date().getTime() - start;
 				processingEnv.getMessager().printMessage(Kind.NOTE, "[1]Processing classpath classes tooks " + totalTime / 1000 + "s, " + totalTime % 1000 + " ms.");
 			}

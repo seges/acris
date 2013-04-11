@@ -50,6 +50,11 @@
 		    <groupId>org.eclipse.jdt.core.compiler</groupId>
 		    <artifactId>ecj</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>com.google.code.javaparser</groupId>
+		    <artifactId>javaparser</artifactId>
+		    <version>1.0.8</version>
+		</dependency>
 	</dependencies>
 
 </project>

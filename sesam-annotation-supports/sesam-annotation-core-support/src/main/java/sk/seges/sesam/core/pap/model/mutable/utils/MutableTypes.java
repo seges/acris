@@ -465,9 +465,9 @@ public class MutableTypes implements Types {
 		case NULL:
 		case NONE:
 			return null;
-		}
-		
-		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
+		default:
+			throw new RuntimeException("Unsupported type " + typeMirror.getKind());
+		}		
 	}
 	
 	private MutableDeclaredType convertToMutableType(TypeMirror typeMirror) {
@@ -499,9 +499,9 @@ public class MutableTypes implements Types {
 		case SHORT:
 		case VOID:
 			return addToCache(new MutableDeclared(typeMirror, (String)null, typeMirror.getKind().name().toLowerCase(), processingEnv), typeMirror);
-		}
-		
-		throw new RuntimeException("Unsupported type " + typeMirror.getKind());
+		default:
+			throw new RuntimeException("Unsupported type " + typeMirror.getKind());
+		}		
 	}
 
 	public TypeMirror fromMutableType(MutableTypeMirror type) {

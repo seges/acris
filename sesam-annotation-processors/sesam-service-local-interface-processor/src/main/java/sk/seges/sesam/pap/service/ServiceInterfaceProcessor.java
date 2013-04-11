@@ -10,7 +10,9 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
@@ -18,13 +20,14 @@ import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType.RenameActionType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.model.ConfigurationEnvironment;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
+import sk.seges.sesam.pap.model.model.DomainDeclared;
 import sk.seges.sesam.pap.model.model.EnvironmentContext;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
-import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
 import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.provider.ConfigurationCache;
@@ -111,15 +114,25 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 
 			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
 			DomainType domainReturnType = dtoReturnType.getDomain();
-			if (domainReturnType.getKind().isDeclared()) {
-				((DomainDeclaredType) domainReturnType).renameTypeParameter(RenameActionType.PREFIX, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_", null, true);
-			}
+//			if (domainReturnType.getKind().isDeclared()) {
+//				((DomainDeclaredType) domainReturnType).renameTypeParameter(RenameActionType.PREFIX, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_", null, true);
+//			}
 			
 			types.add(domainReturnType);
 
-			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);
+			for (TypeParameterElement typeParameter: method.getTypeParameters()) {
+				types.add(processingEnv.getTransferObjectUtils().getDtoType(typeParameter.asType()).getDomain());
+			}
+
+			remoteServiceTypeElement.getLocalServiceElement().printMethodTypeVariablesDefinition(types, pw);
 			
-			pw.print(remoteServiceTypeElement.toReturnType(domainReturnType), " " + method.getSimpleName().toString() + "(");
+			if (domainReturnType.getKind().equals(MutableTypeKind.CLASS) || domainReturnType.getKind().equals(MutableTypeKind.INTERFACE)) {
+				pw.print(prefixDomainParameter(((MutableDeclaredType) remoteServiceTypeElement.toReturnType((DomainDeclared)domainReturnType))).clone());
+			} else {
+				pw.print(remoteServiceTypeElement.toReturnType(domainReturnType));
+			}
+			
+			pw.print(" " + method.getSimpleName().toString() + "(");
 			
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
@@ -127,12 +140,37 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 					pw.print(", ");
 				}
 				
-				pw.print(remoteServiceTypeElement.toParamType(params.get(i)), " " + parameter.getSimpleName().toString());
+				DomainType domain = processingEnv.getTransferObjectUtils().getDtoType(remoteServiceTypeElement.toParamType(params.get(i))).getDomain();
+				
+				if (domain.getKind().equals(MutableTypeKind.CLASS) || domain.getKind().equals(MutableTypeKind.INTERFACE)) {
+					pw.print(prefixDomainParameter(((MutableDeclaredType)domain).clone()).stripTypeParametersTypes());
+				}  else {
+					pw.print(domain);
+				}
+				pw.print(" " + parameter.getSimpleName().toString());
 				i++;
 			}
 			
-			pw.println(");");
+			pw.print(")");
+			
+			if (method.getThrownTypes().size() > 0) {
+				pw.print(" throws ");
+				int j = 0;
+				for (TypeMirror thrownType: method.getThrownTypes()) {
+					if (j > 0) {
+						pw.print(", ");
+					}
+					pw.print(thrownType);
+					j++;
+				}
+			}
+			pw.println(";");
 			pw.println();
 		}
+	}
+
+	private MutableDeclaredType prefixDomainParameter(MutableDeclaredType type) {
+		type.renameTypeParameter(RenameActionType.PREFIX, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_", null, true);
+		return type;
 	}
 }

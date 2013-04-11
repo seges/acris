@@ -33,12 +33,16 @@ public abstract class CopyPrinter extends AbstractElementPrinter {
 		
 		List<AnnotationMirror> supportedAnnotations = new ArrayList<AnnotationMirror>();
 
-		add(supportedAnnotations, methodCopyAccessor.getSupportedAnnotations(context.getDomainMethod()));
-		add(supportedAnnotations, methodCopyAccessor.getSupportedAnnotations(MethodHelper.getField(context.getDomainMethod())));
+		if (context.getDomainMethod() != null) {
+			add(supportedAnnotations, methodCopyAccessor.getSupportedAnnotations(context.getDomainMethod()));
+			add(supportedAnnotations, methodCopyAccessor.getSupportedAnnotations(MethodHelper.getField(context.getDomainMethod())));
+		}
 		add(supportedAnnotations, methodCopyAccessor.getSupportedAnnotations(context.getDtoMethod()));
 		
-		add(supportedAnnotations, typeCopyAccessor.getSupportedAnnotations(context.getDomainMethod()));
-		add(supportedAnnotations, typeCopyAccessor.getSupportedAnnotations(MethodHelper.getField(context.getDomainMethod())));
+		if (context.getDomainMethod() != null) {
+			add(supportedAnnotations, typeCopyAccessor.getSupportedAnnotations(context.getDomainMethod()));
+			add(supportedAnnotations, typeCopyAccessor.getSupportedAnnotations(MethodHelper.getField(context.getDomainMethod())));
+		}
 		add(supportedAnnotations, typeCopyAccessor.getSupportedAnnotations(context.getDtoMethod()));
 
 		return supportedAnnotations;

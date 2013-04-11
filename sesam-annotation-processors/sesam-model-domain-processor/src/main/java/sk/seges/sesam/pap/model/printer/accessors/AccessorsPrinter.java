@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
@@ -35,7 +36,16 @@ public class AccessorsPrinter extends CopyPrinter {
 			annotationPrinter.print(supportedAnnotation);
 		}
 		
-		pw.println(modifier, context.getDtoFieldType(), " " + MethodHelper.toGetterMethod(context.getConfigurationTypeElement().getDomain(), context.getDtoFieldName()) + " {");
+		pw.print(modifier, context.getDtoFieldType(), " ");
+		
+		if (context.getDomainMethod() == null) {
+			pw.print(context.getDtoMethod().getSimpleName().toString() + "()");
+		} else {
+			TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(context.getConfigurationTypeElement().getDomain().getCanonicalName());
+			pw.print(MethodHelper.toGetterMethod(typeElement, context.getDtoFieldName()));
+		}
+		
+		pw.println(" {");
 		pw.println("return " + context.getDtoFieldName() + ";");
 		pw.println("}");
 		pw.println();

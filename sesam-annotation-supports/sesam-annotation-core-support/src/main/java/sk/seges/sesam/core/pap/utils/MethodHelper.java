@@ -13,11 +13,27 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
 import sk.seges.sesam.core.pap.model.PathResolver;
-import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
 
 public class MethodHelper {
 
+	public enum MethodType {
+		GETTER {
+			@Override
+			public boolean isMethodOfType(ExecutableElement method) {
+				return MethodHelper.isGetterMethod(method);
+			}
+		}, 
+		SETTER {
+			@Override
+			public boolean isMethodOfType(ExecutableElement method) {
+				return MethodHelper.isSetterMethod(method);
+			}
+		};
+		
+		public abstract boolean isMethodOfType(ExecutableElement method);
+	}
+	
 	public static final String SETTER_PREFIX = "set";
 	public static final String GETTER_PREFIX = "get";
 	public static final String GETTER_IS_PREFIX = "is";
@@ -99,8 +115,8 @@ public class MethodHelper {
 		return toMethod(GETTER_PREFIX, fieldName) + "()";
 	}
 	
-	public static String toGetterMethod(MutableDeclaredType typeElement, String fieldName) {
-		if (typeElement != null && typeElement.asElement() != null && ProcessorUtils.hasMethod(toMethod(MethodHelper.GETTER_IS_PREFIX, fieldName), (Element)typeElement.asElement())) {
+	public static String toGetterMethod(TypeElement typeElement, String fieldName) {
+		if (typeElement != null && ProcessorUtils.hasMethod(toMethod(MethodHelper.GETTER_IS_PREFIX, fieldName), typeElement)) {
 			return toIsGetter(fieldName);
 		}
 		return toGetter(fieldName);

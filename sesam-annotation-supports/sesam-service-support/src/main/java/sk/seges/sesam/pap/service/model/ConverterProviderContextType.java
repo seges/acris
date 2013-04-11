@@ -16,7 +16,7 @@ public class ConverterProviderContextType extends DelegateMutableDeclaredType im
 
 	protected final ServiceTypeElement serviceType;
 	protected final MutableProcessingEnvironment processingEnv;
-	
+
 	public static final String CONVERTER_PROVIDER_CONTEXT_SUFFIX = "ConverterProviderContext";
 
 	public ConverterProviderContextType(ServiceTypeElement serviceType, MutableProcessingEnvironment processingEnv) {
@@ -43,5 +43,5 @@ public class ConverterProviderContextType extends DelegateMutableDeclaredType im
 	@Override
 	public ParameterElement[] getConverterParameters(ConverterConstructorParametersResolver parametersResolver) {
 		return new HasConstructorParametersDelegate().getConverterParameters(processingEnv, parametersResolver);
-	}
+	}	
 }

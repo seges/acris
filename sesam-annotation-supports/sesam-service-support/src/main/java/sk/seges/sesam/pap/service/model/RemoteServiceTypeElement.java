@@ -1,7 +1,5 @@
 package sk.seges.sesam.pap.service.model;
 
-import java.util.List;
-
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.PrimitiveType;
@@ -13,11 +11,9 @@ import sk.seges.sesam.core.pap.model.mutable.api.MutableArrayType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
-import sk.seges.sesam.core.pap.model.mutable.delegate.DelegateMutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
-import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 
-public class RemoteServiceTypeElement extends DelegateMutableDeclaredType {
+public class RemoteServiceTypeElement extends AbstractServiceTypeElement {
 
 	private final MutableProcessingEnvironment processingEnv;
 	private final TypeElement remoteServiceElement;
@@ -71,9 +67,9 @@ public class RemoteServiceTypeElement extends DelegateMutableDeclaredType {
 		case EXECUTABLE:
 			processingEnv.getMessager().printMessage(Kind.ERROR, " [ERROR] Cannot unbox type " + type.getKind() + " - unsupported type!");
 			return null;
+		default:
+			return stripVariableTypeVariables((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type));
 		}
-
-		return stripVariableTypeVariables((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type));
 	}
 
 	public MutableTypeMirror toReturnType(MutableTypeMirror type) {
@@ -85,9 +81,9 @@ public class RemoteServiceTypeElement extends DelegateMutableDeclaredType {
 		case ARRAY:
 		case TYPEVAR:
 			return toParamType(type);
+		default:
+			return stripVariableTypeVariables((MutableDeclaredType)type);
 		}
-
-		return stripVariableTypeVariables((MutableDeclaredType)type);
 	}
 
 	private MutableDeclaredType stripVariableTypeVariables(MutableDeclaredType type) {
@@ -103,9 +99,12 @@ public class RemoteServiceTypeElement extends DelegateMutableDeclaredType {
 			return processingEnv.getTypeUtils().getTypeVariable(((TypeVariable)type).asElement().getSimpleName().toString());
 		case ARRAY:
 			return processingEnv.getTypeUtils().getArrayType(toParamType(((ArrayType)type).getComponentType()));
+		case DECLARED:
+			MutableDeclaredType mutableType = (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(type);
+			return mutableType.stripTypeParametersTypes();
+		default:
+			return processingEnv.getTypeUtils().toMutableType(type);
 		}
-		
-		return processingEnv.getTypeUtils().toMutableType(type);
 	}
 
 	public MutableTypeMirror toParamType(MutableTypeMirror type) {
@@ -114,44 +113,8 @@ public class RemoteServiceTypeElement extends DelegateMutableDeclaredType {
 			return processingEnv.getTypeUtils().getTypeVariable(((MutableTypeVariable)type).getVariable().toString());
 		case ARRAY:
 			return processingEnv.getTypeUtils().getArrayType(toParamType(((MutableArrayType)type).getComponentType()));
-		}
-		
-		return processingEnv.getTypeUtils().toMutableType(type);
+		default:
+			return processingEnv.getTypeUtils().toMutableType(type);
+		}		
 	}
-
-	public void printMethodTypeVariablesDefinition(List<MutableTypeMirror> types, FormattedPrintWriter pw) {
-		
-		boolean first = true;
-		boolean generated = false;
-				
-		for (MutableTypeMirror type: types) {
-			if (type.getKind().equals(MutableTypeKind.TYPEVAR)) {
-				MutableTypeVariable typeVariable = (MutableTypeVariable)type;
-				
-				boolean found = false;
-				for (MutableTypeVariable parameterElement: localServiceElement.getTypeVariables()) {
-					if (parameterElement.getVariable().toString().equals(typeVariable.getVariable())) {
-						found = true;
-						break;
-					}
-				}
-				
-				if (!found) {
-					generated = true;
-					if (first) {
-						pw.print("<");
-						first = false;
-					} else {
-						pw.print(", ");
-					}
-					
-					pw.print(typeVariable);
-				}
-			}
-		}
-		
-		if (generated) {
-			pw.print("> ");
-		}
-	}	
 }

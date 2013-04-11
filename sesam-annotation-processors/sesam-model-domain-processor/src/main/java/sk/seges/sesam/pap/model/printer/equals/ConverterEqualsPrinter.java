@@ -87,8 +87,10 @@ public class ConverterEqualsPrinter extends AbstractDtoPrinter implements Transf
 				TypeMirror returnIdType = getterMethod.getReturnType();
 				
 				if (returnIdType.getKind().equals(TypeKind.TYPEVAR)) {
+					
 					TypeMirror erasedIdType = 
-						ProcessorUtils.erasure(configurationTypeElement.getDomain().asElement(), (TypeVariable)returnIdType);
+						ProcessorUtils.erasure(processingEnv.getElementUtils().getTypeElement(configurationTypeElement.getDomain().getCanonicalName()), 
+								(TypeVariable)returnIdType);
 					
 					if (erasedIdType != null) {
 						returnIdType = erasedIdType;

@@ -73,6 +73,8 @@ class MutableExecutable extends MutableElement implements MutableExecutableEleme
 		return annotationHolderDelegate.getAnnotations();
 	}
 	
+	
+	
 	@Override
 	public MutableExecutableElement clone() {
 		MutableExecutable result = null;
@@ -136,5 +138,15 @@ class MutableExecutable extends MutableElement implements MutableExecutableEleme
 	@Override
 	public Set<MutableAnnotationMirror> getMutableAnnotations() {
     	return annotationHolderDelegate.getMutableAnnotations();
+	}
+
+	@Override
+	public HasAnnotations setAnnotations(AnnotationMirror... annotations) {
+		return annotationHolderDelegate.setAnnotations(annotations);
+	}
+
+	@Override
+	public HasAnnotations setAnnotations(MutableAnnotationMirror... annotations) {
+		return annotationHolderDelegate.setAnnotations(annotations);
 	}
 }

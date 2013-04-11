@@ -43,7 +43,7 @@ public class ConfigurationEnvironment {
 		return environmentContext;
 	}
 	
-	public List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror dtoType) {
+	public List<ConfigurationTypeElement> getConfigurationsForDto(MutableTypeMirror dtoType) {
 		for (ConfigurationProvider configurationProvider: configurationProviders) {
 			List<ConfigurationTypeElement> configurationsForDto = configurationProvider.getConfigurationsForDto(dtoType);
 			if (configurationsForDto != null && configurationsForDto.size() > 0) {

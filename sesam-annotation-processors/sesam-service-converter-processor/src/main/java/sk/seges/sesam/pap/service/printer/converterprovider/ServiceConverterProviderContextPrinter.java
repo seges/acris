@@ -56,8 +56,8 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 				
 		previousUsageType = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR);
 
-		converterProviderContextPrinterDelegate.initialize(processingEnv, context.getConvertProviderContextType(), UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR, 
-				getConverterProviderDelegates());
+		converterProviderContextPrinterDelegate.initialize(processingEnv, context.getConvertProviderContextType(), 
+				context.getService().getServiceConverter(), UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR, getConverterProviderDelegates());
 	}
 	
 	protected ConverterProviderElementPrinter[] getNestedPrinters() {

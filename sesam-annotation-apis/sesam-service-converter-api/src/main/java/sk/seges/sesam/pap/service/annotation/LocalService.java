@@ -6,6 +6,15 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface LocalService {
 	
+	public @interface SecurityProvider {
+		
+		Class<?> entityClass();
+		
+		Class<?> securityProvider();
+		
+	}
+	
 	Class<?> localInterace() default Void.class;
 
+	SecurityProvider[] securityProviders() default {};
 }

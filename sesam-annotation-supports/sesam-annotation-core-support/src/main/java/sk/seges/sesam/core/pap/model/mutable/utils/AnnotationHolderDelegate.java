@@ -82,6 +82,34 @@ class AnnotationHolderDelegate implements HasAnnotations {
 		}
 	}
 	
+	public HasAnnotations setAnnotations(AnnotationMirror ...annotations) {
+		initializeAnnotations();
+		this.annotations.clear();
+		
+		if (annotations != null) {
+			for (AnnotationMirror annotation: annotations) {
+				if (annotation != null) {
+					annotateWith(annotation);
+				}
+			}
+		}
+		
+		return this;
+	}
+
+	public HasAnnotations setAnnotations(MutableAnnotationMirror ...annotations) {
+		initializeMutableAnnotations();
+		this.mutableAnnotations.clear();
+		if (annotations != null) {
+			for (MutableAnnotationMirror annotation: annotations) {
+				if (annotation != null) {
+					annotateWith(annotation);
+				}
+			}
+		}		
+		return this;
+	}
+
 	public Set<AnnotationMirror> getAnnotations() {
 		initializeAnnotations();
 		return Collections.unmodifiableSet(annotations);

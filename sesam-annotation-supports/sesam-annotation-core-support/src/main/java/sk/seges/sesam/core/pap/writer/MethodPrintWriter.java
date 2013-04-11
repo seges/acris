@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.pap.writer;
 
+import java.util.List;
+
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.printer.AnnotationPrinter;
@@ -18,13 +20,13 @@ public class MethodPrintWriter extends HierarchyPrintWriter {
 		super.initializePrinter();
 
 		//TODO method annotations
-		HierarchyPrintWriter methodPrintWriter = method.getPrintWriter();
+		//HierarchyPrintWriter methodPrintWriter = method.getPrintWriter();
 
-		HierarchyPrintWriter methodPrinter = new HierarchyPrintWriter(processingEnv);
+//		HierarchyPrintWriter methodPrinter = new HierarchyPrintWriter(processingEnv);
 
-		methodPrintWriter.addNestedPrinter(methodPrinter);
+//		methodPrintWriter.addNestedPrinter(methodPrinter);
 		
-		methodPrinter.addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
+		addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
 				new AnnotationPrinter(this, processingEnv).printMethodAnnotations(method);
@@ -32,7 +34,7 @@ public class MethodPrintWriter extends HierarchyPrintWriter {
 			}
 		});
 
-		methodPrinter.addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
+		addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
 			@Override
 			public void flush() {
 				new MethodPrinter(this, processingEnv).printMethodDefinition(method);
@@ -40,13 +42,31 @@ public class MethodPrintWriter extends HierarchyPrintWriter {
 			}
 		});
 
-		methodPrinter.println(" {");
+		println(" {");
 		
 		HierarchyPrintWriter bodyPrinter = new HierarchyPrintWriter(processingEnv);
-		methodPrinter.addNestedPrinter(bodyPrinter);
+		addNestedPrinter(bodyPrinter);
 
-		methodPrinter.println("}");
+		println("}");
 		
-		methodPrintWriter.setCurrentPrinter(bodyPrinter);
+		setCurrentPrinter(bodyPrinter);
 	};
+	
+	private void handleNestedPrinters(List<FormattedPrintWriter> nestedPrinters) {
+		for (FormattedPrintWriter nestedPrinter: nestedPrinters) {
+			if (nestedPrinter instanceof LazyPrintWriter) {
+				((LazyPrintWriter)nestedPrinter).printManually();
+			} else if (nestedPrinter instanceof HierarchyPrintWriter) {
+				handleNestedPrinters(((HierarchyPrintWriter)nestedPrinter).getNestedPrinters());
+			}
+		}
+	}
+	
+	@Override
+	public void flush() {
+		
+		handleNestedPrinters(method.getPrintWriter().getNestedPrinters());
+		
+		super.flush();
+	}
 }
