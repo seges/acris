@@ -47,7 +47,6 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-security-hibernate</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-commons-annotations</artifactId>
