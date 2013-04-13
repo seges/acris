@@ -8,8 +8,8 @@ import javax.persistence.Embedded;
 import javax.validation.Valid;
 
 import sk.seges.corpis.server.domain.customer.jpa.JpaCompanyName;
-import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.invoice.server.model.base.DeliveryPersonBase;
+import sk.seges.corpis.server.domain.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.server.model.data.CompanyNameData;
 import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
 

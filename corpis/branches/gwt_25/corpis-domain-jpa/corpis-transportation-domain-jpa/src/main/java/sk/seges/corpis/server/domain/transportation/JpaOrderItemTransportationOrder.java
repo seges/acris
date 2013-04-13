@@ -2,6 +2,7 @@ package sk.seges.corpis.server.domain.transportation;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -19,6 +20,7 @@ public class JpaOrderItemTransportationOrder extends JpaTransportationOrderBase 
 	protected static final String SEQ_ORDER_ITEM_TRANSPORTATION_ORDER = "seqOrderItemTransporationOrder";
 	
 	private AccountableItemData accountableItem;
+	
 	private Long id;
 	
 	@Override
@@ -35,5 +37,5 @@ public class JpaOrderItemTransportationOrder extends JpaTransportationOrderBase 
 	
 	public void setAccountableItem(AccountableItemData accountableItem) {
 		this.accountableItem = accountableItem;
-	}
+	}	
 }

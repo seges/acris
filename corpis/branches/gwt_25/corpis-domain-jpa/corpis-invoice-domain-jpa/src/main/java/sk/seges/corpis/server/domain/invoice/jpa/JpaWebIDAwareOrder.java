@@ -3,30 +3,37 @@
  */
 package sk.seges.corpis.server.domain.invoice.jpa;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import sk.seges.corpis.server.domain.HasWebId;
+import sk.seges.corpis.server.domain.invoice.server.model.data.LoyaltyCardData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
+import sk.seges.corpis.shared.domain.customer.ECustomerDiscountType;
 
 /**
  * @author eldzi
  */
 @Entity
-@Table(name = "webid_aware_orders", uniqueConstraints = @UniqueConstraint(columnNames = { JpaWebIDAwareOrder.WEB_ID,JpaOrderBase.ORDER_ID }) )
+@Table(name = "webid_aware_order", uniqueConstraints = @UniqueConstraint(columnNames = { JpaWebIDAwareOrder.WEB_ID,JpaOrderBase.ORDER_ID }) )
 @SequenceGenerator(name = JpaWebIDAwareOrder.SEQ_ORDERS, sequenceName = "seq_orders", initialValue = 1) 
-public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId {
+public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId, OrderData {
 	private static final long serialVersionUID = 5948016788551732181L;
 	
 	protected static final String SEQ_ORDERS = "seqOrders";
@@ -37,8 +44,14 @@ public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId {
 	
 	private String webId;
 
-	private List<OrderItemData<OrderData>> orderItems;
+	private List<OrderItemData> orderItems;
+
+	private LoyaltyCardData loyaltyCard;
 	
+	private ECustomerDiscountType orderType;
+	
+	private BigDecimal discountValue;
+
 	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_ORDERS)
@@ -60,15 +73,44 @@ public class JpaWebIDAwareOrder extends JpaOrderBase implements HasWebId {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order", targetEntity = JpaWebIDAwareOrderItem.class)
-	public List<OrderItemData<OrderData>> getOrderItems() {
+	public List<OrderItemData> getOrderItems() {
 		return orderItems;
 	}
 
 	@Override
-	public void setOrderItems(List<OrderItemData<OrderData>> orderItems) {
+	public void setOrderItems(List<OrderItemData> orderItems) {
 		this.orderItems = orderItems;
 	}
 
+	@ManyToOne(targetEntity = JpaLoyaltyCard.class)
+	@JoinColumn(name = "loyalty_card_fk")
+	public LoyaltyCardData getLoyaltyCard() {
+		return loyaltyCard;
+	}
+	
+	public void setLoyaltyCard(LoyaltyCardData loyaltyCard) {
+		this.loyaltyCard = loyaltyCard;
+	}
+	
+	@Column
+	@Enumerated(EnumType.STRING)
+	public ECustomerDiscountType getOrderType() {
+		return orderType;
+	}
+	
+	public void setOrderType(ECustomerDiscountType orderType) {
+		this.orderType = orderType;
+	}
+	
+	@Column
+	public BigDecimal getDiscountValue() {
+		return discountValue;
+	}
+	
+	public void setDiscountValue(BigDecimal discountValue) {
+		this.discountValue = discountValue;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

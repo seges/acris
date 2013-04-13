@@ -13,12 +13,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.corpis.server.domain.invoice.jpa.JpaPrice;
-import sk.seges.corpis.server.domain.invoice.server.model.data.PriceData;
-import sk.seges.corpis.server.domain.invoice.server.model.data.VatData;
+import sk.seges.corpis.server.domain.jpa.JpaPrice;
 import sk.seges.corpis.server.domain.payment.server.model.base.PaymentMethodBase;
 import sk.seges.corpis.server.domain.payment.server.model.data.PaymentMethodData;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
+import sk.seges.corpis.server.domain.server.model.data.PriceData;
+import sk.seges.corpis.server.domain.server.model.data.VatData;
 import sk.seges.corpis.shared.domain.EPaymentType;
 
 @Entity

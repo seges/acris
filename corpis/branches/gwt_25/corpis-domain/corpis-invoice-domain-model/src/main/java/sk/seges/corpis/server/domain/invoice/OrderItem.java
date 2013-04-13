@@ -4,12 +4,13 @@ import java.util.List;
 
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 @DomainInterface
 @BaseObject
-public interface OrderItem<O extends Order> extends AccountableItem {
+public interface OrderItem extends AccountableItem, IMutableDomainObject<Long> {
 
-	O order();
+	Order order();
 	
 	List<InvoiceItem> invoiceItems();
 }

@@ -17,32 +17,5 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>corpis-core-domain-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-customer-domain-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-invoice-domain-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-application-scaffold-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-application-scaffold-mapbasedobject-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-application-scaffold-data-interface-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-application-scaffold-model-base-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>

@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -13,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 
 import sk.seges.corpis.server.domain.invoice.server.model.base.OrderStatusBase;
 import sk.seges.corpis.server.domain.server.model.data.NameData;
+import sk.seges.corpis.shared.domain.invoice.EOrderStatus;
 
 @Entity
 @SequenceGenerator(name = JpaOrderStatus.SEQ_ORDER_STATUSES, sequenceName = "seq_order_statuses", initialValue = 1)
@@ -27,9 +31,15 @@ public class JpaOrderStatus extends OrderStatusBase {
 	public Integer getIndex() {
 		return super.getIndex();
 	}
-		
+
 	@Override
-	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE }, targetEntity = JpaName.class)
+	@Enumerated(EnumType.STRING)
+	public EOrderStatus getType() {
+		return super.getType();
+	}
+	
+	@Override
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE }, targetEntity = JpaName.class, fetch = FetchType.EAGER)
 	public List<NameData> getNames() {
 		return super.getNames();
 	}

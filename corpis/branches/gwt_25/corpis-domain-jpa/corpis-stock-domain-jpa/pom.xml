@@ -23,7 +23,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>corpis-invoice-domain-jpa</artifactId>
+			<artifactId>corpis-product-domain-jpa</artifactId>
 		</dependency>
 	</dependencies>
 </project>

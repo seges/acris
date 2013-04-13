@@ -21,6 +21,10 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>corpis-user-domain-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>corpis-application-scaffold-mapbasedobject-processor</artifactId>
 			<scope>provided</scope>
 		</dependency>

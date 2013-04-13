@@ -22,14 +22,15 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import sk.seges.corpis.server.domain.invoice.server.model.base.RemittanceBase;
-import sk.seges.corpis.server.domain.invoice.server.model.data.PriceData;
+import sk.seges.corpis.server.domain.jpa.JpaPrice;
+import sk.seges.corpis.server.domain.server.model.data.PriceData;
 
 /**
  * @author eldzi
  * @since Jul 1, 2007
  */
 @Entity
-@Table(name = "REMITTANCE")//$NON-NLS-1$
+@Table(name = "remittance")//$NON-NLS-1$
 @SequenceGenerator(name = "seqRemittances", sequenceName = "SEQ_REMITTANCES", initialValue = 1)//$NON-NLS-1$ //$NON-NLS-2$
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType=DiscriminatorType.INTEGER)
@@ -44,7 +45,7 @@ public class JpaRemittanceBase extends RemittanceBase {
 		setPrepaid(Boolean.FALSE);
 	}
 
-	@Column(name="DATE_RECEIVED")
+	@Column(name="date_received")
 	public Date getDateReceived() {
 		return super.getDateReceived();
 	}
@@ -55,15 +56,15 @@ public class JpaRemittanceBase extends RemittanceBase {
 		return super.getId();
 	}
 
-	@Column(name="NAME", length = NAME_LENGTH)
+	@Column(name="name", length = NAME_LENGTH)
 	public String getName() {
 		return super.getName();
 	}
 
 	@Embedded
 	@AttributeOverrides({
-		@AttributeOverride(name = PriceData.VALUE, column = @Column(name = "PRICE")),
-		@AttributeOverride(name = PriceData.CURRENCY, column = @Column(name = "CURRENCY", nullable = false)) })
+		@AttributeOverride(name = PriceData.VALUE, column = @Column(name = "price")),
+		@AttributeOverride(name = PriceData.CURRENCY, column = @Column(name = "currency", nullable = false)) })
 	public JpaPrice getPrice() {
 		return (JpaPrice) super.getPrice();
 	}
@@ -73,7 +74,7 @@ public class JpaRemittanceBase extends RemittanceBase {
 		return (JpaInvoiceBase) super.getInvoice();
 	}
 
-	@Column(name="PREPAID")
+	@Column(name="prepaid")
 	public Boolean getPrepaid() {
 		return super.getPrepaid();
 	}

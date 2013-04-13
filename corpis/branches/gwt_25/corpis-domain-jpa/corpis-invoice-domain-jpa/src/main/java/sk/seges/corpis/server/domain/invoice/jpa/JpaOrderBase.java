@@ -3,23 +3,29 @@
  */
 package sk.seges.corpis.server.domain.invoice.jpa;
 
+import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.validation.Valid;
 
 import sk.seges.corpis.server.domain.customer.jpa.JpaAddress;
 import sk.seges.corpis.server.domain.customer.jpa.JpaBasicContact;
 import sk.seges.corpis.server.domain.customer.jpa.JpaCompanyName;
-import sk.seges.corpis.server.domain.customer.jpa.JpaPersonName;
+import sk.seges.corpis.server.domain.customer.jpa.JpaCustomerCore;
+import sk.seges.corpis.server.domain.invoice.server.model.base.OrderCoreBase;
 import sk.seges.corpis.server.domain.invoice.server.model.data.DeliveryPersonData;
-import sk.seges.corpis.server.domain.invoice.server.model.data.OrderData;
+import sk.seges.corpis.server.domain.invoice.server.model.data.OrderCoreData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderStatusData;
+import sk.seges.corpis.server.domain.jpa.JpaCurrency;
+import sk.seges.corpis.server.domain.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.server.model.data.AddressData;
 import sk.seges.corpis.server.domain.server.model.data.BasicContactData;
-import sk.seges.corpis.server.domain.server.model.data.CompanyNameData;
-import sk.seges.corpis.server.domain.server.model.data.PersonNameData;
 import sk.seges.corpis.shared.domain.EPaymentType;
 import sk.seges.corpis.shared.domain.invoice.ETransports;
 
@@ -27,154 +33,94 @@ import sk.seges.corpis.shared.domain.invoice.ETransports;
  * @author eldzi
  */
 @MappedSuperclass
-public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
+public abstract class JpaOrderBase extends OrderCoreBase implements OrderCoreData {
 
 	private static final long serialVersionUID = -6186188601422302822L;
 
 	public static final String ORDER_ID = "orderId";
 
-	private String orderId;
+	public JpaOrderBase() {
+		setDeliveryContact(new JpaBasicContact());
+		setDeliveryPerson(new JpaDeliveryPerson());
+		setDeliveryAddress(new JpaAddress());
+	}
 
-	private String note;
+	@ManyToOne(fetch = FetchType.LAZY)
+	public JpaCustomerCore getCustomer() {
+		return (JpaCustomerCore) super.getCustomer();
+	}
 
-	private ETransports deliveredBy;
+	@Column(name = "creation_date")
+	public Date getCreationDate() {
+		return super.getCreationDate();
+	}
 
-	private Double deliveryPrice;
-
-	private String trackingNumber;
-
-	private OrderStatusData status;
-
-	private CompanyNameData company;
-	
-	private PersonNameData person;
-	
-	private AddressData address;
-	
-//	private AddressData deliveryAddress;
-
-	private BasicContactData contact;
-
-	private BasicContactData deliveryContact;
-
-	private String ico;
-
-	private String icDph;
-	
-	private EPaymentType paymentType;
-
-	private String accountNumber;
-
-	private String projectNumber;
-		
-	private DeliveryPersonData deliveryPerson;
-
-	private Boolean sameDeliveryAddress;
+	@ManyToOne
+	public JpaCurrency getCurrency() {
+		return (JpaCurrency) super.getCurrency();
+	}
 
 	@Column
 	public String getOrderId() {
-		return orderId;
+		return super.getOrderId();
 	}
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
-
-	@Column(name = "Note")
+	@Column(name = "note")
 	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
+		return super.getNote();
 	}
 
 	@Column(name = "delivered_by")
 	public ETransports getDeliveredBy() {
-		return deliveredBy;
+		return super.getDeliveredBy();
 	}
 
-	public void setDeliveredBy(ETransports deliveredBy) {
-		this.deliveredBy = deliveredBy;
-	}
-
+	@Deprecated
 	@Column(name = "delivery_price")
 	public Double getDeliveryPrice() {
-		return deliveryPrice;
-	}
-
-	public void setDeliveryPrice(Double deliveryPrice) {
-		this.deliveryPrice = deliveryPrice;
+		return super.getDeliveryPrice();
 	}
 
 	@Column(name = "tracking_number")
 	public String getTrackingNumber() {
-		return trackingNumber;
+		return super.getTrackingNumber();
 	}
 
-	public void setTrackingNumber(String trackingNumber) {
-		this.trackingNumber = trackingNumber;
-	}
-
-	@Column(name = "status")
+	@ManyToOne(targetEntity = JpaOrderStatus.class)
 	public OrderStatusData getStatus() {
-		return status;
-	}
-
-	public void setStatus(OrderStatusData status) {
-		this.status = status;
+		return super.getStatus();
 	}
 
 	@Embedded
 	public JpaCompanyName getCompany() {
-		return (JpaCompanyName) company;
-	}
-
-	public void setCompany(CompanyNameData company) {
-		this.company = company;
+		return (JpaCompanyName) super.getCompany();
 	}
 
 	@Embedded
 	public JpaPersonName getPerson() {
-		return (JpaPersonName) person;
-	}
-
-	public void setPerson(PersonNameData person) {
-		this.person = person;
+		return (JpaPersonName) super.getPerson();
 	}
 
 	@Embedded
 	public JpaAddress getAddress() {
-		return (JpaAddress) address;
+		return (JpaAddress) super.getAddress();
 	}
 
-	public void setAddress(AddressData address) {
-		this.address = address;
+	@Embedded
+	@Valid
+	@AttributeOverrides( {
+		@AttributeOverride(name = AddressData.STREET, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.STREET)),
+		@AttributeOverride(name = AddressData.CITY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.CITY)),
+		@AttributeOverride(name = AddressData.COUNTRY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.COUNTRY)),
+		@AttributeOverride(name = AddressData.STATE, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.STATE)),
+		@AttributeOverride(name = AddressData.ZIP, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.ZIP)) })
+	public JpaAddress getDeliveryAddress() {
+		return (JpaAddress) super.getDeliveryAddress();
 	}
-
-//	@Embedded
-//	@Valid
-//	@AttributeOverrides( {
-//		@AttributeOverride(name = AddressData.STREET, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.STREET)),
-//		@AttributeOverride(name = AddressData.CITY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.CITY)),
-//		@AttributeOverride(name = AddressData.COUNTRY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.COUNTRY)),
-//		@AttributeOverride(name = AddressData.STATE, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.STATE)),
-//		@AttributeOverride(name = AddressData.ZIP, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.ZIP)) })
-//	public JpaAddress getDeliveryAddress() {
-//		return (JpaAddress) deliveryAddress;
-//	}
-
-//	public void setDeliveryAddress(AddressData deliveryAddress) {
-//		this.deliveryAddress = deliveryAddress;
-//	}
 
 	@Embedded
 	public JpaBasicContact getContact() {
-		return (JpaBasicContact) contact;
-	}
-
-	public void setContact(BasicContactData contact) {
-		this.contact = contact;
+		return (JpaBasicContact) super.getContact();
 	}
 
 	@Embedded
@@ -185,55 +131,32 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 			@AttributeOverride(name = BasicContactData.MOBILE, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + BasicContactData.MOBILE)),
 			@AttributeOverride(name = BasicContactData.WEB, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + BasicContactData.WEB)) })
 	public JpaBasicContact getDeliveryContact() {
-		return (JpaBasicContact) deliveryContact;
+		return (JpaBasicContact) super.getDeliveryContact();
 	}
 
-	public void setDeliveryContact(BasicContactData deliveryContact) {
-		this.deliveryContact = deliveryContact;
-	}
-
-	@Column(name = "ICO")
+	@Column(name = "ico")
 	public String getIco() {
-		return ico;
+		return super.getIco();
 	}
 
-	public void setIco(String ico) {
-		this.ico = ico;
-	}
-
-	@Column(name = "ICDPH")
+	@Column(name = "icdph")
 	public String getIcDph() {
-		return icDph;
+		return super.getIcDph();
 	}
 
-	public void setIcDph(String icDph) {
-		this.icDph = icDph;
-	}
-
+	@Column
 	public EPaymentType getPaymentType() {
-		return paymentType;
+		return super.getPaymentType();
 	}
 
-	public void setPaymentType(EPaymentType paymentType) {
-		this.paymentType = paymentType;
-	}
-
-	@Column(name = "ACCOUNT_NUMBER")
+	@Column(name = "account_number")
 	public String getAccountNumber() {
-		return accountNumber;
+		return super.getAccountNumber();
 	}
 
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-
-	@Column(name = "PROJECT_NUMBER")
+	@Column(name = "project_number")
 	public String getProjectNumber() {
-		return projectNumber;
-	}
-
-	public void setProjectNumber(String projectNumber) {
-		this.projectNumber = projectNumber;
+		return super.getProjectNumber();
 	}
 
 	@Embedded
@@ -241,56 +164,11 @@ public abstract class JpaOrderBase extends JpaAccountable implements OrderData {
 		@AttributeOverride(name = DeliveryPersonData.COMPANY, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + DeliveryPersonData.COMPANY)),
 		@AttributeOverride(name = DeliveryPersonData.PERSON, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + DeliveryPersonData.PERSON)) })
 	public DeliveryPersonData getDeliveryPerson() {
-		return deliveryPerson;
+		return super.getDeliveryPerson();
 	}
 
-	public void setDeliveryPerson(DeliveryPersonData deliveryPerson) {
-		this.deliveryPerson = deliveryPerson;
-	}
-
-	@Column(name = "SAME_DELIVERY_ADDRESS")
+	@Column(name = "same_delivery_address")
 	public Boolean getSameDeliveryAddress() {
-		return sameDeliveryAddress;
-	}
-
-	@Override
-	public void setSameDeliveryAddress(Boolean sameDeliveryAddress) {
-		this.sameDeliveryAddress = sameDeliveryAddress;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		JpaOrderBase other = (JpaOrderBase) obj;
-		if (orderId == null) {
-			if (other.orderId != null)
-				return false;
-		} else if (!orderId.equals(other.orderId))
-			return false;
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Order [accountNumber=" + accountNumber + ", address=" + address + ", company=" + company
-				+ ", contact=" + contact + ", deliveredBy=" + deliveredBy + ", deliveryAddress="
-//				+ deliveryAddress + ", deliveryContact=" + deliveryContact + ", deliveryPrice="
-				+ deliveryPrice + ", icDph=" + icDph + ", ico=" + ico + ", id=" + getId() + ", note=" + note
-				+ ", orderId=" + orderId + ", paymentType=" + paymentType
-				+ ", person=" + person + ", projectNumber=" + projectNumber + ", status=" + status
-				+ ", trackingNumber=" + trackingNumber + "]";
+		return super.getSameDeliveryAddress();
 	}
 }

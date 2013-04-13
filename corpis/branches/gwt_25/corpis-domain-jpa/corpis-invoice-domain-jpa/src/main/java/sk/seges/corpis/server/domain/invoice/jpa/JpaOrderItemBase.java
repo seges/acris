@@ -8,24 +8,26 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import sk.seges.corpis.server.domain.invoice.server.model.data.OrderData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 
 /**
  * @author eldzi
  */
 @MappedSuperclass
-public abstract class JpaOrderItemBase<O extends JpaOrderBase> extends JpaAccountableItem implements OrderItemData<O> {
+public abstract class JpaOrderItemBase extends JpaAccountableItem implements OrderItemData {
+
 	private static final long serialVersionUID = -7389416843335701988L;
 	
-	private O order;
+	private OrderData order;
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY, targetEntity = JpaOrder.class)
 	@JoinColumn(name = "orders_id")
-	public O getOrder() {
+	public OrderData getOrder() {
 		return order;
 	}
 
-	public void setOrder(O order) {
+	public void setOrder(OrderData order) {
 		this.order = order;
 	}
 
@@ -45,7 +47,7 @@ public abstract class JpaOrderItemBase<O extends JpaOrderBase> extends JpaAccoun
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		JpaOrderItemBase<?> other = (JpaOrderItemBase<?>) obj;
+		JpaOrderItemBase other = (JpaOrderItemBase) obj;
 		if (order == null) {
 			if (other.order != null)
 				return false;

@@ -48,7 +48,7 @@ public class JpaPayment extends PaymentBase {
 	}
 
 	@Override
-	@Column
+	@Column(name = "pay_date")
 	public Date getPaymentDate() {
 		return super.getPaymentDate();
 	}	

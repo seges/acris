@@ -26,61 +26,60 @@ public class JpaWarehouse extends WarehouseBase {
 	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_WAREHOUSE)
-	@Column
 	public Integer getId() {
 		return id;
 	}
 
 	@Override
-	@Column
+	@Column(name = "name")
 	public String getName() {
 		return super.getName();
 	}
 
 	@Override
-	@Column
+	@Column(name = "address")
 	public String getAddress() {
 		return super.getAddress();
 	}
 
 	@Override
-	@Column
+	@Column(name = "email")
 	public String getEmail() {
 		return super.getEmail();
 	}
 
 	@Override
-	@Column
+	@Column(name = "phone")
 	public String getPhone() {
 		return super.getPhone();
 	}
 
 	@Override
-	@Column
+	@Column(name = "fax")
 	public String getFax() {
 		return super.getFax();
 	}
 
 	@Override
-	@Column
+	@Column(name = "active")
 	public Boolean getActive() {
 		return super.getActive();
 	}
 
 	@Override
-	@Column
+	@Column(name = "town")
 	public String getTown() {
 		return super.getTown();
 	}
 
 	@Override
-	@Column
+	@Column(name = "contact_person")
 	public String getContactPerson() {
 		return super.getContactPerson();
 	}
 
 	@Override
-	@Column
+	@Column(name = "psc")
 	public String getPsc() {
 		return super.getPsc();
 	}

@@ -24,6 +24,7 @@ public class JpaManufactureItem extends ManufactureItemBase {
 	private JpaManufactureOrder manufactureOrder;
 
 	protected static final String SEQ_MANUFACTURE_ITEMS = "seqManufactureItems";
+
 	private Long id;
 	
 	@Override

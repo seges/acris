@@ -22,14 +22,15 @@ import sk.seges.corpis.server.domain.invoice.server.model.data.OrderItemData;
 @SequenceGenerator(name = JpaOrder.SEQ_ORDERS, sequenceName = "seq_orders", initialValue = 1)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "orders", uniqueConstraints = {@UniqueConstraint(columnNames = JpaOrderBase.ORDER_ID)})
-public class JpaOrder extends JpaOrderBase {
+public class JpaOrder extends JpaOrderBase implements OrderData {
+	
 	private static final long serialVersionUID = -3117593133828636987L;
 
 	protected static final String SEQ_ORDERS = "seqOrders";
 	
 	private Long id;
 
-	private List<OrderItemData<OrderData>> orderItems;
+	private List<OrderItemData> orderItems;
 
 	@Override
 	@Id
@@ -44,11 +45,12 @@ public class JpaOrder extends JpaOrderBase {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = JpaOrderItem.class)
 	@JoinColumn(name = "orders_id")
-	public List<OrderItemData<OrderData>> getOrderItems() {
+	public List<OrderItemData> getOrderItems() {
 		return orderItems;
 	}
 
-	public void setOrderItems(List orderItems) {
+	@SuppressWarnings({ "rawtypes" })
+	public void setOrderItems(List<OrderItemData> orderItems) {
 		this.orderItems = orderItems;
 	}
 }

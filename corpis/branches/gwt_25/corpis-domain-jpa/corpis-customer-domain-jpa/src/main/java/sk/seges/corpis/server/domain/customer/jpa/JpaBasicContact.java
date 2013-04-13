@@ -23,19 +23,23 @@ public class JpaBasicContact extends BasicContactBase implements Serializable {
 	public String getPhone() {
 		return super.getPhone();
 	}
+	
 	@Column
 	public String getFax() {
 		return super.getFax();
 	}
+	
 	@Column
     @NotNull(groups = CustomerFormCheck.class)
 	public String getEmail() {
 		return super.getEmail();
 	}
+	
 	@Column
 	public String getMobile() {
 		return super.getMobile();
 	}
+	
 	@Column
 	public String getWeb() {
 		return super.getWeb();

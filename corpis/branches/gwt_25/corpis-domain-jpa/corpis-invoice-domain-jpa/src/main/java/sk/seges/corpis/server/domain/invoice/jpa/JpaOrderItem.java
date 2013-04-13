@@ -11,35 +11,22 @@ import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.sesam.domain.IDomainObject;
-
 /**
  * @author eldzi
  */
 @Entity
-@Table(name = "order_items")
+@Table(name = "order_item")
 @SequenceGenerator(name = JpaOrderItem.SEQ_ORDER_ITEMS, sequenceName = "seq_orders", initialValue = 1)
 @Inheritance(strategy = InheritanceType.JOINED)
-public class JpaOrderItem extends JpaOrderItemBase<JpaOrder> implements IDomainObject<Long> {
+public class JpaOrderItem extends JpaOrderItemBase {
 	private static final long serialVersionUID = 3399448840385713282L;
 	
 	protected static final String SEQ_ORDER_ITEMS = "seqOrderItems";
-	
-	private Long id;
 	
 	@Override
 	@Id
 	@GeneratedValue(generator = SEQ_ORDER_ITEMS)
 	public Long getId() {
-		return id;
-	}
-	
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Override
-	public String toString() {
-		return "OrderItem [id=" + id + ", toString()=" + super.toString() + "]";
+		return super.getId();
 	}
 }

@@ -4,11 +4,11 @@ import java.util.List;
 
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
-import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 @DomainInterface
 @BaseObject
-public interface Warehouse extends IDomainObject<Integer> {
+public interface Warehouse extends IMutableDomainObject<Integer> {
 
 	String name();
 

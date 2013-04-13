@@ -5,134 +5,53 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.corpis.server.domain.server.model.base.TransportPriceBase;
 
 
 @Entity
-@Table(name = "TRANSPORTPRICE")
+@Table(name = "transportprice")
 //Ids taken from voipac csv import files, id is set manualy
 //@SequenceGenerator(name = "seqTransportList", sequenceName = "SEQ_TRANSPORT", initialValue = 1)
-public class JpaTransportPrice implements IDomainObject<Integer> {
+public class JpaTransportPrice extends TransportPriceBase {
 	private static final long serialVersionUID = 3960395362304929231L;
 
-	private Integer id;
-	private String country;
-	private Double dhlPrice;
-	private Double upsPrice;
-	private Double fedExPrice;
-	private Double dpdPrice;
-	private Double tntPrice;
-	private Double emsPrice;
-	
-	@Column(name = "DHL_PRICE")
+	@Column(name = "dhl_price")
 	public Double getDhlPrice() {
-		return dhlPrice;
+		return super.getDhlPrice();
 	}
 
-	public void setDhlPrice(Double dhlPrice) {
-		this.dhlPrice = dhlPrice;
-	}
-
-	@Column(name = "FEDEX_PRICE")
+	@Column(name = "fedex_price")
 	public Double getFedExPrice() {
-		return fedExPrice;
+		return super.getFedExPrice();
 	}
 
-	public void setFedExPrice(Double fedExPrice) {
-		this.fedExPrice = fedExPrice;
-	}
-
-	@Column(name = "TNT_PRICE")
+	@Column(name = "tnt_price")
 	public Double getTntPrice() {
-		return tntPrice;
+		return super.getTntPrice();
 	}
 
-	public void setTntPrice(Double tntPrice) {
-		this.tntPrice = tntPrice;
-	}
-
-	@Column(name = "EMS_PRICE")
+	@Column(name = "ems_price")
 	public Double getEmsPrice() {
-		return emsPrice;
-	}
-
-	public void setEmsPrice(Double emsPrice) {
-		this.emsPrice = emsPrice;
+		return super.getEmsPrice();
 	}
 
 	@Id
-	//@GeneratedValue(generator = "seqTransportList")
-	public Integer getId() {
-		return id;
+	public Long getId() {
+		return super.getId();
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	@Column(name = "COUNTRY")
+	@Column(name = "country")
 	public String getCountry() {
-		return country;
+		return super.getCountry();
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	@Column(name = "DPD_PRICE")
+	@Column(name = "dpd_price")
 	public Double getDpdPrice() {
-		return dpdPrice;
+		return super.getDpdPrice();
 	}
 
-	public void setDpdPrice(Double dpdPrice) {
-		this.dpdPrice = dpdPrice;
-	}
-
-	@Column(name = "UPS_PRICE")
+	@Column(name = "ups_price")
 	public Double getUpsPrice() {
-		return upsPrice;
-	}
-
-	public void setUpsPrice(Double upsPrice) {
-		this.upsPrice = upsPrice;
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((country == null) ? 0 : country.hashCode());
-		result = prime * result
-				+ ((dpdPrice == null) ? 0 : dpdPrice.hashCode());
-		result = prime * result
-				+ ((upsPrice == null) ? 0 : upsPrice.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		JpaTransportPrice other = (JpaTransportPrice) obj;
-		if (country == null) {
-			if (other.country != null)
-				return false;
-		} else if (!country.equals(other.country))
-			return false;
-		if (dpdPrice == null) {
-			if (other.dpdPrice != null)
-				return false;
-		} else if (!dpdPrice.equals(other.dpdPrice))
-			return false;
-		if (upsPrice == null) {
-			if (other.upsPrice != null)
-				return false;
-		} else if (!upsPrice.equals(other.upsPrice))
-			return false;
-		return true;
+		return super.getUpsPrice();
 	}
 }

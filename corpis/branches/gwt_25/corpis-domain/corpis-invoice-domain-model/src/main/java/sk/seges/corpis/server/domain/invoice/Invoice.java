@@ -7,7 +7,7 @@ import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.corpis.server.domain.HasVersion;
 import sk.seges.corpis.server.domain.PersonName;
-import sk.seges.corpis.server.domain.customer.Customer;
+import sk.seges.corpis.server.domain.customer.CustomerCore;
 import sk.seges.corpis.shared.domain.invoice.RemittanceType;
 import sk.seges.corpis.shared.domain.invoice.TransportType;
 import sk.seges.sesam.domain.IMutableDomainObject;
@@ -20,7 +20,7 @@ public interface Invoice extends IMutableDomainObject<Long>, HasVersion {
 	Date paybackDate();
 	Date creationDate();
 	Integer invoiceId();
-	Customer customer();
+	CustomerCore customer();
 	String csymbol();
 	String ssymbol();
 	String vsymbol();

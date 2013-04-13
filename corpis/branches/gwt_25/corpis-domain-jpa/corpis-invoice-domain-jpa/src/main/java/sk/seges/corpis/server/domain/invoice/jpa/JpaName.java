@@ -19,6 +19,13 @@ public class JpaName extends NameBase {
 	protected static final String SEQ_OLEA_NAMES = "seqOleaNames";
 	private Long id;
 	
+	public JpaName() {}
+	
+	public JpaName(String language, String value) {
+		setLanguage(language);
+		setValue(value);
+	}
+	
 	@Column
 	@Override
 	public String getLanguage() {

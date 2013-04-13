@@ -1,31 +1,25 @@
 package sk.seges.corpis.server.domain.stock.jpa;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
 
-import sk.seges.corpis.server.domain.invoice.jpa.JpaProduct;
-import sk.seges.corpis.server.domain.invoice.server.model.data.ProductData;
-import sk.seges.corpis.server.domain.stock.server.model.base.StockItemBase;
+import sk.seges.corpis.server.domain.product.jpa.JpaProductItem;
+import sk.seges.corpis.server.domain.stock.server.model.data.StockItemData;
 import sk.seges.corpis.server.domain.stock.server.model.data.WarehouseData;
 
 @SuppressWarnings("serial")
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "stock_item")
-@SequenceGenerator(name = JpaStockItem.SEQ_STOCK_ITEM, sequenceName = "seq_stock_items", initialValue = 1)
-public class JpaStockItem extends StockItemBase {
+@Table(name ="stock_item")
+public class JpaStockItem extends JpaProductItem implements StockItemData {
 
 	protected static final String SEQ_STOCK_ITEM = "seqStockItems";
+	
 	private Long id;
+	
+	private WarehouseData warehouse;
 	
 	@Override
 	@Id
@@ -36,19 +30,17 @@ public class JpaStockItem extends StockItemBase {
 
 	@Override
 	@Column
-	public int getCount() {
+	public Integer getCount() {
 		return super.getCount();
 	}
 
 	@Override
 	@ManyToOne(fetch=FetchType.LAZY, targetEntity = JpaWarehouse.class)
 	public WarehouseData getWarehouse() {
-		return super.getWarehouse();
+		return warehouse;
 	}
 
-	@Override
-	@ManyToOne(fetch=FetchType.EAGER, targetEntity = JpaProduct.class, cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE })
-	public ProductData getProduct() {
-		return super.getProduct();
+	public void setWarehouse(WarehouseData warehouse) {
+		this.warehouse = warehouse;
 	}
 }

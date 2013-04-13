@@ -15,25 +15,19 @@ import sk.seges.corpis.server.domain.HasWebId;
  * @author eldzi
  */
 @Entity
-@Table(name = "webid_aware_units", uniqueConstraints = {@UniqueConstraint(columnNames = {JpaWebIDAwareUnit.WEB_ID, JpaUnitBase.LABEL_KEY})})
+@Table(name = "webid_aware_unit", uniqueConstraints = {@UniqueConstraint(columnNames = {JpaWebIDAwareUnit.WEB_ID, JpaUnitBase.LABEL_KEY})})
 public class JpaWebIDAwareUnit extends JpaUnitBase implements HasWebId {
 	private static final long serialVersionUID = 5570124910177903411L;
 
 	public static final String WEB_ID = "webId";
 
-	private Long id;
-		
 	private String webId;
 	
 	@Id
 	public Long getId() {
-		return id;
+		return super.getId();
 	}
 	
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	@Column
 	public String getWebId() {
 		return webId;

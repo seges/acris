@@ -18,15 +18,16 @@
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-price-domain-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-payment-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
-					    
-		
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-invoice-domain-jpa</artifactId>
+		</dependency>
+					    		
 	    <!-- JPA dependencies -->
 		<dependency>
 			<groupId>javax.validation</groupId>

@@ -21,6 +21,7 @@ import sk.seges.corpis.server.domain.transportation.server.model.base.Transporta
 public class JpaTransportationUnit extends TransportationUnitBase {
 
 	protected static final String SEQ_TRANSPORTATION_UNIT = "seqTransporationUnit";
+	
 	private Long id;
 	
 	@Override
