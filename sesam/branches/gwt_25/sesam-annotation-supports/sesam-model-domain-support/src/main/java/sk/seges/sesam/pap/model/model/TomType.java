@@ -2,6 +2,13 @@ package sk.seges.sesam.pap.model.model;
 
 enum TomType {
 
+	DELEGATE {
+
+		@Override
+		boolean appliesFor(ConfigurationTypeElement configuration) {
+			return configuration.getDelegateConfigurationTypeElement() != null;
+		}		
+	},
 	DTO_DEFINED {
 		@Override
 		boolean appliesFor(ConfigurationTypeElement configuration) {

@@ -81,6 +81,17 @@ public class ConfigurationContext {
 		if (configuration != null) {
 			return configuration;
 		}
-		return getConfiguration(TomType.CONVERTER_GENERATED);
+		configuration = getConfiguration(TomType.CONVERTER_GENERATED);
+		if (configuration != null) {
+			return configuration;
+		}
+
+		ConfigurationTypeElement delegateConfiguration = getConfiguration(TomType.DELEGATE);
+		
+		if (delegateConfiguration != null) {
+			return delegateConfiguration.getDelegateConfigurationTypeElement().configurationContext.getConverterDefinitionConfiguration();
+		}
+
+		return null;
 	}
 }

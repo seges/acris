@@ -31,6 +31,7 @@ import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.pap.model.annotation.Ignore;
 import sk.seges.sesam.pap.model.model.api.GeneratedClass;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
@@ -297,7 +298,8 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 				return this.converterType.setValue(converterDefinitionConfiguration.getConverter());
 			}
 
-			DtoDeclared dtoType = (DtoDeclared) environmentContext.getProcessingEnv().getTransferObjectUtils().getDtoType(this);
+			DtoDeclared dtoType = (DtoDeclared) environmentContext.getProcessingEnv().getTransferObjectUtils().getDtoType(
+					environmentContext.getProcessingEnv().getTypeUtils().getDeclaredType(this, new MutableDeclaredType[] {}));
 			if (dtoType.getConverterDefinitionConfiguration() != null) {
 				return this.converterType.setValue(dtoType.getConverter());
 			}

@@ -21,6 +21,7 @@ import sk.seges.sesam.core.pap.model.PathResolver;
 import sk.seges.sesam.core.pap.model.PojoElement;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.accessor.CopyAccessor;
 import sk.seges.sesam.pap.model.annotation.Id;
@@ -329,7 +330,15 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 				if (!isProcessed && isGetter && hasSetter && isPublic) {
 
 					generated.add(fieldName);
+
+					TypeElement domainElement = environmentContext.getProcessingEnv().getElementUtils().getTypeElement(domainTypeElement.getCanonicalName());
 					
+					ExecutableElement overrider = ProcessorUtils.getOverrider(domainElement, method, processingEnv);
+					
+					if (overrider != null) {
+						method = overrider;
+					}
+
 					if (processingElement.getDomainDefinitionConfiguration() == null) {
 						TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method, getConfigurationProviders());
 						if (context == null) {
@@ -363,6 +372,14 @@ public abstract class AbstractTransferProcessor extends MutableAnnotationProcess
 
 					generated.add(fieldName);
 
+					TypeElement domainElement = environmentContext.getProcessingEnv().getElementUtils().getTypeElement(domainTypeElement.getCanonicalName());
+					
+					ExecutableElement overrider = ProcessorUtils.getOverrider(domainElement, method, processingEnv);
+					
+					if (overrider != null) {
+						method = overrider;
+					}
+					
 					TransferObjectContext context = transferObjectContextProvider.get(configurationTypeElement, Modifier.PUBLIC, method, method, getConfigurationProviders());
 					if (context == null) {
 						continue;
