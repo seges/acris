@@ -105,7 +105,7 @@ public class CopyFromDtoPrinter extends AbstractMethodPrinter implements Transfe
 
 				if (idConverter != null) {
 					Field field = new Field(DTO_NAME + "." + MethodHelper.toGetter(MethodHelper.toField(dtoIdMethod)), dtoIdType);
-					converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, dtoIdType.getDomain(), field, domainIdMethod, true);
+					converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, dtoIdType.getDomainDefinitionConfiguration().getInstantiableDomain(), field, domainIdMethod, true);
 					pw.print(".fromDto(");
 					useIdConverter = true;
 				}

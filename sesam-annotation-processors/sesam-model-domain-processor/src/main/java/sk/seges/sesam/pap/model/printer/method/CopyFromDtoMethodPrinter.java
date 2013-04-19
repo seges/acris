@@ -233,7 +233,7 @@ public class CopyFromDtoMethodPrinter extends AbstractMethodPrinter implements C
 		if (transferObjectMappingAccessor.isValid() && transferObjectMappingAccessor.getConverter() != null) {
 			converterProviderPrinter.printDtoGetConverterMethodName(context.getConverter().getDto(), field, context.getDtoMethod(), pw, false);
 		} else {
-			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, context.getConverter().getConfiguration().getInstantiableDomain(), field, context.getDomainMethod(), true);
+			converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DTO, context.getConverter().getDomain(), field, context.getDomainMethod(), true);
 		}
 		pw.println(";");
 		

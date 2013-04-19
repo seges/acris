@@ -90,7 +90,7 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			if (transferObjectMappingAccessor.isValid() && transferObjectMappingAccessor.getConverter() != null) {
 				converterProviderPrinter.printDomainGetConverterMethodName(context.getConverter().getDomain(), field, null, pw, false);
 			} else {
-				converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, context.getConverter().getDomain(), field, null, true);
+				converterProviderPrinter.printObtainConverterFromCache(pw, ConverterTargetType.DOMAIN, context.getConverter().getConfiguration().getInstantiableDomain(), field, null, true);
 			}
 			pw.println(";");
 

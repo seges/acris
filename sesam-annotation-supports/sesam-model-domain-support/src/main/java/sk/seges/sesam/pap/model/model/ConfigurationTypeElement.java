@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.model.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 import sk.seges.sesam.pap.model.model.api.domain.DomainDeclaredType;
+import sk.seges.sesam.pap.model.model.api.domain.DomainType;
 import sk.seges.sesam.pap.model.model.api.dto.DtoDeclaredType;
 
 public class ConfigurationTypeElement extends TomBaseType {
@@ -190,6 +192,27 @@ public class ConfigurationTypeElement extends TomBaseType {
 		INSTANCE, DEFINITION;
 	}
 	
+	private Set<? extends MutableTypeMirror> getInstantiableDomainBounds(Set<? extends MutableTypeMirror> bounds) {
+		
+		if (bounds == null) {
+			return null;
+		}
+		
+		Set<MutableTypeMirror> result = new HashSet<MutableTypeMirror>();
+		
+		for (MutableTypeMirror bound: bounds) {
+			DomainType domainType = envContext.getProcessingEnv().getTransferObjectUtils().getDomainType(bound);
+			
+			if (domainType.getDomainDefinitionConfiguration() != null) {
+				result.add(domainType.getDomainDefinitionConfiguration().getInstantiableDomain());
+			} else {
+				result.add(bound);
+			}
+		}
+		
+		return result;
+	}
+	
 	public DomainDeclaredType getInstantiableDomain() {
 		if (!instantiableDomainTypeInitialized) {
 			MutableDeclaredType dtoType = getDtoType();
@@ -203,6 +226,14 @@ public class ConfigurationTypeElement extends TomBaseType {
 			} else {
 				this.instantiableDomainType = getDomain(this, DomainInstanceType.INSTANCE);
 			}
+			
+			if (this.instantiableDomainType.getTypeVariables() != null) {
+				for (MutableTypeVariable typeVariable: this.instantiableDomainType.getTypeVariables()) {
+					typeVariable.setLowerBounds(getInstantiableDomainBounds(typeVariable.getLowerBounds()));
+					typeVariable.setUpperBounds(getInstantiableDomainBounds(typeVariable.getUpperBounds()));
+				}
+			}
+			
 //			this.instantiableDomainType = getDomain(this);
 			this.instantiableDomainTypeInitialized = true;	
 		}
@@ -479,6 +510,10 @@ public class ConfigurationTypeElement extends TomBaseType {
 		if (!delegateConfigurationTypeElementInitialized) {
 			if (transferObjectConfiguration.getConfiguration() != null) {
 				this.delegateConfigurationTypeElement = getConfigurationTypeElement(transferObjectConfiguration.getConfiguration(), envContext, configurationContext);
+				List<ConfigurationTypeElement> configurations = new ArrayList<ConfigurationTypeElement>();
+				configurations.add(this.delegateConfigurationTypeElement);
+				configurationContext.setConfigurations(configurations);
+			
 			} else {
 				this.delegateConfigurationTypeElement = null;
 			}

@@ -170,7 +170,7 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 		}
 		
 		DomainType domainReturnType = getTransferObjectUtils().getDomainType(targetReturnType);
-				
+		
 		if (targetReturnType.getKind().equals(TypeKind.TYPEVAR)) {
 			//check whether type variable is locally defined only for method or is
 			//type variable for whole class
@@ -336,7 +336,13 @@ public class TransferObjectProcessorContext implements TransferObjectContext {
 			if (converterTypeElement != null) {
 				this.converterType = converterTypeElement;
 			} else {
-				this.converterType = returnType.getConverter();
+				//
+				if (returnType.getDomainDefinitionConfiguration() != null) {
+					this.converterType = returnType.getDomainDefinitionConfiguration().getDomain().getConverter();
+				} else {
+					this.converterType = null;
+				}
+//				this.converterType = returnType.getConverter();
 			}
 			
 			break;

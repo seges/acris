@@ -68,7 +68,9 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 
 		setKind(MutableTypeKind.CLASS);
 		setSuperClass(getTypeUtils().getDeclaredType(
-				(MutableDeclaredType) getTypeUtils().toMutableType(BasicCachedConverter.class), configurationTypeElement.getDto(), configurationTypeElement.getDomain()));
+				(MutableDeclaredType) getTypeUtils().toMutableType(BasicCachedConverter.class), 
+					configurationTypeElement.getDto().stripTypeParametersTypes(), 
+					configurationTypeElement.getDomain().stripTypeParametersTypes()));
 	}
 
 	public boolean isConverterInstantiable() {
@@ -396,6 +398,10 @@ public class ConverterTypeElement extends TomBaseDeclaredType implements Generat
 		}
 		
 		return domain.getDto();
+	}
+	
+	public DomainType getInstantiableDomain() {
+		return getDomain().getDomainDefinitionConfiguration().getInstantiableDomain();
 	}
 	
 	public DomainType getDomain() {
