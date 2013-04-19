@@ -30,8 +30,8 @@ public class JpaDeliveryPerson extends DeliveryPersonBase {
 			@AttributeOverride(name = CompanyNameData.COMPANY_NAME, column = @Column(name = TABLE_PREFIX + CompanyNameData.COMPANY_NAME)),
 			@AttributeOverride(name = CompanyNameData.DEPARTMENT, column = @Column(name = TABLE_PREFIX+ CompanyNameData.DEPARTMENT)) })
 	@Valid
-	public CompanyNameData getCompany() {
-		return super.getCompany();
+	public JpaCompanyName getCompany() {
+		return (JpaCompanyName) super.getCompany();
 	}
 
 	@Embedded
@@ -39,8 +39,8 @@ public class JpaDeliveryPerson extends DeliveryPersonBase {
 			@AttributeOverride(name = PersonNameData.FIRST_NAME, column = @Column(name = TABLE_PREFIX + PersonNameData.FIRST_NAME)),
 			@AttributeOverride(name = PersonNameData.SURNAME, column = @Column(name = TABLE_PREFIX + PersonNameData.SURNAME)) })
 	@Valid
-	public PersonNameData getPerson() {
-		return super.getPerson();
+	public JpaPersonName getPerson() {
+		return (JpaPersonName) super.getPerson();
 	}
 
 }

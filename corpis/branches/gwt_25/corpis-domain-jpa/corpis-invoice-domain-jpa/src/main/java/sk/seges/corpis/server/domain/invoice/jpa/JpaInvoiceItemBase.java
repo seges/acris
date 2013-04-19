@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import sk.seges.corpis.server.domain.invoice.server.model.base.InvoiceItemBase;
+import sk.seges.corpis.server.domain.invoice.server.model.data.AccountableItemData;
 import sk.seges.corpis.server.domain.jpa.JpaPrice;
 import sk.seges.corpis.server.domain.server.model.data.PriceData;
 
@@ -64,6 +65,12 @@ public class JpaInvoiceItemBase extends InvoiceItemBase {
 		return super.getDescription();
 	}
 
+	@Override
+	@ManyToOne(targetEntity = JpaAccountableItem.class)
+	public AccountableItemData getOrderItem() {
+		return super.getOrderItem();
+	}
+	
 	@Embedded
 	@AttributeOverrides({
 		@AttributeOverride(name = PriceData.VALUE, column = @Column(name = "PRICE")),

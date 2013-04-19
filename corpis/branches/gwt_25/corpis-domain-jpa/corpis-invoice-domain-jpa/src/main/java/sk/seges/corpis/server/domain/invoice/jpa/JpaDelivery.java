@@ -18,6 +18,7 @@ import javax.persistence.UniqueConstraint;
 
 import sk.seges.corpis.server.domain.invoice.server.model.base.DeliveryBase;
 import sk.seges.corpis.server.domain.invoice.server.model.data.DeliveryData;
+import sk.seges.corpis.server.domain.jpa.JpaCountry;
 import sk.seges.corpis.server.domain.jpa.JpaPrice;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.corpis.server.domain.server.model.data.PriceData;
@@ -60,7 +61,7 @@ public class JpaDelivery extends DeliveryBase {
 		return super.getTransportType();
 	}
 	
-	@ManyToOne
+	@ManyToOne(targetEntity = JpaCountry.class)
 	@JoinColumn(name = COUNTRY_JOIN)
 	@Override
 	public CountryData getCountry() {
@@ -70,11 +71,11 @@ public class JpaDelivery extends DeliveryBase {
 	@Embedded
 	@AttributeOverride(name = PriceData.VALUE, column = @Column(nullable = true))
 	@Override
-	public PriceData getPrice() {
-		return super.getPrice();
+	public JpaPrice getPrice() {
+		return (JpaPrice) super.getPrice();
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE }, targetEntity = JpaVat.class)
 	@Override
 	public VatData getVat() {
 		return super.getVat();

@@ -49,7 +49,6 @@ public class JpaOrder extends JpaOrderBase implements OrderData {
 		return orderItems;
 	}
 
-	@SuppressWarnings({ "rawtypes" })
 	public void setOrderItems(List<OrderItemData> orderItems) {
 		this.orderItems = orderItems;
 	}
