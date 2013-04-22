@@ -13,5 +13,7 @@ public interface IReportingService extends RemoteService {
 
 	String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters, String webId);
 	
+	String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters, String webId, String reportName);
+	
 	String exportReportToHtml(Long reportDescriptionId, Map<String, Object> parameters);
 }

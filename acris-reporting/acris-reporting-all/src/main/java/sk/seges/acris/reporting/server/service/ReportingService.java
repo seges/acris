@@ -100,6 +100,12 @@ public class ReportingService implements IReportingService {
 	@Transactional
 	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters,
 			String web_id) {
+		return exportReport(reportDescriptionId, exportType, parameters, web_id, "report" + "_" + new Date().getTime());
+	}
+	
+	@Override
+	public String exportReport(Long reportDescriptionId, String exportType, 	Map<String, Object> parameters, 
+			String webId, String reportName) {
 
 		ReportDescriptionData report = reportDescriptionService.findById(reportDescriptionId);
 		String params = "";
@@ -144,9 +150,9 @@ public class ReportingService implements IReportingService {
 			}
 
 			if (proxyIn != null) {
-				String fileName = "report" + "_" + new Date().getTime() + "." + exportType.toLowerCase();
+				String fileName = reportName + "." + exportType.toLowerCase();
 				String reportDir = REPORTS_DIR;
-				String directory = configuration.resolveRootDirectoryPath(web_id) + "/" + reportDir;
+				String directory = configuration.resolveRootDirectoryPath(webId) + "/" + reportDir;
 				File d = new File(directory);
 				if (!d.exists() || !d.isDirectory()) {
 					d.mkdir();
