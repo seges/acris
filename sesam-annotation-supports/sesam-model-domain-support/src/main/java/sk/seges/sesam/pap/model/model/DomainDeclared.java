@@ -17,7 +17,6 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.InitializableValue;
 import sk.seges.sesam.core.pap.model.PathResolver;
-import sk.seges.sesam.core.pap.model.PojoElement;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;

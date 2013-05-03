@@ -21,6 +21,11 @@ public abstract class DelegateMutableType implements MutableTypeMirror {
 	abstract protected MutableTypeMirror getDelegate();
 
 	@Override
+	public boolean isSameType(MutableTypeMirror type) {
+		return ensureDelegateType().isSameType(type);
+	}
+	
+	@Override
 	public MutableTypeKind getKind() {
 		return ensureDelegateType().getKind();
 	}
