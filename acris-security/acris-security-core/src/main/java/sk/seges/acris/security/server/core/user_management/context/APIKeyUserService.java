@@ -15,12 +15,12 @@ import org.codehaus.jettison.json.JSONObject;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.server.util.LoginConstants;
+import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
 import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.context.APIKeyUserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 public class APIKeyUserService implements UserProviderService {
@@ -117,7 +117,7 @@ public class APIKeyUserService implements UserProviderService {
 	}
 	
 	public UserData createUser() {
-		UserData adminUser = (UserData) new GenericUserDTO();
+		UserData adminUser = (UserData) new HibernateGenericUser();
 		adminUser.setEnabled(true);
 		adminUser.setUserAuthorities(new ArrayList<String>());
 		return adminUser;
