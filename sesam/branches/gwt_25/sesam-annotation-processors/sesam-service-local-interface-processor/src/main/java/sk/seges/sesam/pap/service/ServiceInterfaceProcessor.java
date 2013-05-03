@@ -36,6 +36,7 @@ import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
 import sk.seges.sesam.pap.service.configurer.ServiceInterfaceProcessorConfigurer;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
 import sk.seges.sesam.pap.service.provider.RemoteServiceCollectorConfigurationProvider;
+import sk.seges.sesam.pap.service.utils.TypeUtils;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
@@ -109,7 +110,9 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 				DtoType dtoParamType = processingEnv.getTransferObjectUtils().getDtoType(parameter.asType());
 				DomainType domain = dtoParamType.getDomain();
 				params.add(domain);
-				types.add(domain);
+				if (!TypeUtils.containsSameType(types, domain)) {
+					types.add(domain);
+				}
 			}
 
 			DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(method.getReturnType());
@@ -118,10 +121,17 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 //				((DomainDeclaredType) domainReturnType).renameTypeParameter(RenameActionType.PREFIX, ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX + "_", null, true);
 //			}
 			
-			types.add(domainReturnType);
+			if (!TypeUtils.containsSameType(types, domainReturnType)) {
+				types.add(domainReturnType);
+			}
 
 			for (TypeParameterElement typeParameter: method.getTypeParameters()) {
-				types.add(processingEnv.getTransferObjectUtils().getDtoType(typeParameter.asType()).getDomain());
+				
+				DomainType domainParameter = processingEnv.getTransferObjectUtils().getDtoType(typeParameter.asType()).getDomain();
+				
+				if (!TypeUtils.containsSameType(types, domainParameter)) {
+					types.add(domainParameter);
+				}
 			}
 
 			remoteServiceTypeElement.getLocalServiceElement().printMethodTypeVariablesDefinition(types, pw);
@@ -140,7 +150,7 @@ public class ServiceInterfaceProcessor extends MutableAnnotationProcessor {
 					pw.print(", ");
 				}
 				
-				DomainType domain = processingEnv.getTransferObjectUtils().getDtoType(remoteServiceTypeElement.toParamType(params.get(i))).getDomain();
+				DomainType domain = processingEnv.getTransferObjectUtils().getDtoType(remoteServiceTypeElement.toParamType(parameter.asType())).getDomain();
 				
 				if (domain.getKind().equals(MutableTypeKind.CLASS) || domain.getKind().equals(MutableTypeKind.INTERFACE)) {
 					pw.print(prefixDomainParameter(((MutableDeclaredType)domain).clone()).stripTypeParametersTypes());

@@ -11,7 +11,6 @@ public abstract class AbstractServiceTypeElement extends DelegateMutableDeclared
 
 	public void printMethodTypeVariablesDefinition(List<MutableTypeMirror> types, FormattedPrintWriter pw) {
 		
-		boolean first = true;
 		boolean generated = false;
 				
 		for (MutableTypeMirror type: types) {
@@ -27,15 +26,14 @@ public abstract class AbstractServiceTypeElement extends DelegateMutableDeclared
 				}
 				
 				if (!found) {
-					generated = true;
-					if (first) {
+					if (!generated) {
+						generated = true;
 						pw.print("<");
-						first = false;
 					} else {
 						pw.print(", ");
 					}
 					
-					pw.print(getTypeVariable(typeVariable));
+					pw.print(/*getTypeVariable(*/typeVariable/*)*/);
 				}
 			}
 		}

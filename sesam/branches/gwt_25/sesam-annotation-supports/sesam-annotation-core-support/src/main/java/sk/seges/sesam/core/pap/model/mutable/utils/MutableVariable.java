@@ -120,6 +120,36 @@ class MutableVariable extends MutableType implements MutableTypeVariable {
 	}
 	
 	@Override
+	public boolean isSameType(MutableTypeMirror type) {
+		if (type == null) {
+			return false;
+		}
+		
+		if (!type.getKind().equals(MutableTypeKind.TYPEVAR)) {
+			return false;
+		}
+		
+		MutableTypeVariable typeVariable = (MutableTypeVariable)type;
+		
+		if (getVariable() != null && typeVariable.getVariable() != null) {
+			if (!typeVariable.getVariable().equals(getVariable())) {
+				return false;
+			}
+		} else if (getVariable() == null) {
+			if (typeVariable.getVariable() != null) {
+				return false;
+			}
+		} else {
+			if (typeVariable.getVariable() == null) {
+				return false;
+			}
+		}
+	
+		return true;
+		//TODO validate also bounds 
+	}
+	
+	@Override
 	public MutableVariable clone() {
 		MutableVariable result = new MutableVariable();
 		result.variable = variable;

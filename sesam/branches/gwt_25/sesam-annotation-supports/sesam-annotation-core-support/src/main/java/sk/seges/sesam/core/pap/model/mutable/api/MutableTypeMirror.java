@@ -52,5 +52,6 @@ public interface MutableTypeMirror extends Type, MutableType {
 	}
 	
 	MutableTypeKind getKind();
-		
+	
+	boolean isSameType(MutableTypeMirror type);
 }

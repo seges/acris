@@ -276,7 +276,7 @@ public class ConfigurationTypeElement extends TomBaseType {
 
 		if (domainType != null) {
 			domainDeclaredType = getDomain(domainType, configuration.dtoType, configuration.envContext, configuration.configurationContext, domainInstanceType);
-			domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
+			//domainDeclaredType.prefixTypeParameter(ConverterTypeElement.DOMAIN_TYPE_ARGUMENT_PREFIX);
 		} else {
 			if (configuration.domainType == null) {
 				TypeElement domainInterface = configuration.transferObjectConfiguration.getDomainInterface();

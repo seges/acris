@@ -126,7 +126,19 @@ public class CopyToDtoMethodPrinter extends AbstractMethodPrinter implements Cop
 			//TODO: check why context.getConfigurationTypeElement().getDomain().asElement() return null when generating UserDTO
 			TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(context.getConfigurationTypeElement().getInstantiableDomain().getCanonicalName());
 
-			pw.print(TransferObjectElementPrinter.DOMAIN_NAME  + "." + MethodHelper.toGetterMethod(typeElement, context.getDomainFieldPath()));
+			boolean castToInstance = false;
+			if (context.getConfigurationTypeElement().getInstantiableDomain().getGetterMethod(pathResolver.getPath()) != null) {
+				castToInstance = context.getConfigurationTypeElement().getDomain().getGetterMethod(pathResolver.getPath()) == null;
+			}
+			
+			if (castToInstance) {
+				pw.print("((", context.getConfigurationTypeElement().getInstantiableDomain(), ")");
+			}
+			pw.print(TransferObjectElementPrinter.DOMAIN_NAME);
+			if (castToInstance) {
+				pw.print(")");
+			}
+			pw.print("." + MethodHelper.toGetterMethod(typeElement, context.getDomainFieldPath()));
 		}
 		
 		if (context.getConverter() != null) {
