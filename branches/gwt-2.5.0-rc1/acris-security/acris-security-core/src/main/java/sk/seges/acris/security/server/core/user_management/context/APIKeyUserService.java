@@ -31,7 +31,7 @@ public class APIKeyUserService implements UserProviderService {
 	private static final Logger log = Logger.getLogger(APIKeyUserService.class);
 	
 	private String apiKeyURL;
-	private ServerSessionProvider sessionProvider;
+	protected ServerSessionProvider sessionProvider;
 	
 	public APIKeyUserService(String apiKeyURL, ServerSessionProvider sessionProvider) { 
 		this.apiKeyURL = apiKeyURL;
