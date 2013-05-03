@@ -23,4 +23,6 @@ public interface Tag extends IMutableDomainObject<Long> {
 	ESystemTagsType type();
 	
 	EAssignmentTagsType assignmentType();
+	
+	Integer index();
 }

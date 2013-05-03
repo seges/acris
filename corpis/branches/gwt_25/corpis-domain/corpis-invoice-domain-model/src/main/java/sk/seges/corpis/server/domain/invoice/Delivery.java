@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
-import sk.seges.corpis.server.domain.Country;
-import sk.seges.corpis.server.domain.Price;
-import sk.seges.corpis.server.domain.Vat;
 import sk.seges.corpis.shared.domain.invoice.ETransports;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
@@ -17,12 +14,6 @@ public interface Delivery extends IMutableDomainObject<Long> {
 	String webId();
 
 	ETransports transportType();
-
-	Country country();
-
-	Price price();
-
-	Vat vat();
 
 	BigDecimal priceCondition();
 

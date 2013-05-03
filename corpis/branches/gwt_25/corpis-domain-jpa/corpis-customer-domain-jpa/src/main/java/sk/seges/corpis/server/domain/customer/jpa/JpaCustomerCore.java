@@ -85,6 +85,13 @@ public class JpaCustomerCore extends CustomerCoreBase {
 		return super.getIco();
 	}
 
+	@Transient
+	public String getName() {
+		return (!isCompanyCustomerType()) ? (((getPerson().getFirstName() == null) ? "" : getPerson()
+				.getFirstName() + " ") + ((getPerson().getSurname() == null) ? "" : getPerson().getSurname()))
+				: getCompany().getCompanyName();
+	}
+
 	@Column(name = "invoice_payment_interval")
 	public Short getInvoicePaymentInterval() {
 		return super.getInvoicePaymentInterval();

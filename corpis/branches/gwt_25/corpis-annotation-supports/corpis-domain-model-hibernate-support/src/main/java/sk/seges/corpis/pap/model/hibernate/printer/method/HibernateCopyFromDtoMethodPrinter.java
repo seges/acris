@@ -7,6 +7,7 @@ import javax.annotation.processing.RoundEnvironment;
 import sk.seges.corpis.pap.model.hibernate.resolver.HibernateEntityResolver;
 import sk.seges.corpis.shared.converter.utils.ConverterUtils;
 import sk.seges.sesam.core.pap.model.PathResolver;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.context.api.TransferObjectContext;
@@ -33,6 +34,7 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
 		this.entityResolver = (HibernateEntityResolver)entityResolver;
 	}
 	
+	
 	@Override
     protected void printCopyByConverter(TransferObjectContext context, PathResolver domainPathResolver, FormattedPrintWriter pw) {
     	if (entityResolver.isLazyReference(context.getDomainMethod())) {
@@ -55,14 +57,24 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
     		
     		pw.println(";");
     		pw.print(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(");
-    		pw.print("(", getDelegateCast(context.getConverter().getDomain(), true), ")");
+    		
+    		MutableTypeMirror parameterType = getParameterType(context, domainPathResolver);
+    		
+    		pw.print("(", parameterType, ")");
+    		
+    		if (isCastReuqired(parameterType)) {
+    			pw.print(CastUtils.class, ".cast(");
+    		}
     		pw.print(converterName + ".convertFromDto(");
     		
 //    		if (context.getConverter().getDomain().getKind().isDeclared() && ((DomainDeclaredType)context.getConverter().getDomain()).hasTypeParameters()) {
 	    		pw.print(CastUtils.class, ".cast(");
 	    		//pw.print("(", getDelegateCast(converter.getDomain()), ")");
 	    		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ", ");
-	    		pw.print(getTypeVariableDelegate(getDelegateCast(context.getConverter().getDomain(), true)), ".class), ");
+	    		
+//	    		pw.print(getTypeVariableDelegate(getDelegateCast(context.getConverter().getDomain(), true)), ".class), ");
+	    		printCastDomainType(context, domainPathResolver, context.getConverter().getDomain(), pw);
+	    		pw.print(".class), ");
  //   		} else {
 //	    		pw.print(TransferObjectElementPrinter.RESULT_NAME  + "." + MethodHelper.toGetter(domainPathResolver.getCurrent()) + ", ");
  //   		}
@@ -75,7 +87,14 @@ public class HibernateCopyFromDtoMethodPrinter extends CopyFromDtoMethodPrinter 
 	    		pw.print(TransferObjectElementPrinter.DTO_NAME  + "." + MethodHelper.toGetter(context.getDtoFieldName()));
     		}
     		
-    		pw.println("));");
+    		pw.print(")");
+    		
+    		if (isCastReuqired(parameterType)) {
+        		pw.print(", ");
+	    		printCastDomainType(context, domainPathResolver, processingEnv.getTransferObjectUtils().getDomainType(parameterType), pw);
+	    		pw.print(".class)");
+    		}
+    		pw.println(");");
         	pw.println("} else {");
         	pw.println(TransferObjectElementPrinter.RESULT_NAME + "." + MethodHelper.toSetter(domainPathResolver.getPath()) + "(null);");
         	pw.println("}");

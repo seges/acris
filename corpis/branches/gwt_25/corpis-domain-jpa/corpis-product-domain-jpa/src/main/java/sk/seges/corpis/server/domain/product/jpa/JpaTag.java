@@ -53,7 +53,13 @@ public class JpaTag extends TagBase {
 	public Long getPriority() {
 		return super.getPriority();
 	}
-	
+
+	@Override
+	@Column
+	public Integer getIndex() {
+		return super.getIndex();
+	}
+
 	@Column
 	@Enumerated(EnumType.STRING)
 	public ESystemTagsType getType() {

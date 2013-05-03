@@ -18,6 +18,13 @@ public class JpaTagName extends JpaName implements TagNameData {
 
 	protected static final String SEQ_OLEA_TAG_NAMES = "seqTagNames";
 
+	public JpaTagName() {}
+	
+	public JpaTagName(String language, String tagName) {
+		setLanguage(language);
+		setValue(tagName);
+	}
+	
 	@Id
 	@GeneratedValue(generator = SEQ_OLEA_TAG_NAMES)
 	@Override

@@ -37,8 +37,6 @@ public abstract class JpaOrderBase extends OrderCoreBase implements OrderCoreDat
 
 	private static final long serialVersionUID = -6186188601422302822L;
 
-	public static final String ORDER_ID = "orderId";
-
 	public JpaOrderBase() {
 		setDeliveryContact(new JpaBasicContact());
 		setDeliveryPerson(new JpaDeliveryPerson());

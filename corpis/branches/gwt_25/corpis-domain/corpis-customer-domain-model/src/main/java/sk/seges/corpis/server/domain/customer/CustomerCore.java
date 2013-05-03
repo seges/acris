@@ -41,4 +41,7 @@ public interface CustomerCore extends IMutableDomainObject<Long> {
 	
 	@ReadOnly
 	boolean isCompanyCustomerType();
+	
+	@ReadOnly
+	String getName();
 }
