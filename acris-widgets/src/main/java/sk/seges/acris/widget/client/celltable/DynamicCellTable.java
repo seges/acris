@@ -1,18 +1,18 @@
 package sk.seges.acris.widget.client.celltable;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.cell.client.NumberCell;
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.user.cellview.client.Column;
+import sk.seges.acris.widget.client.celltable.column.ColumnValuesRemoteLoaderAsync;
+import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
+import sk.seges.acris.widget.client.celltable.resource.TableResources;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.cellview.client.Header;
 
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
 
-	public static final String STRING = "STRING";
-	public static final String DATE = "DATE";
-	public static final String NUMBER = "NUMBER";
+	private final ColumnValuesRemoteLoaderAsync valuesLoader;
 	
 	static class DynamicCellTableKeyProvider implements ProvidesIdentifier<Map<String, Object>> {
 		@Override
@@ -30,51 +30,55 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 		initialize();
 	}
 
-	public DynamicCellTable() {
-		super(new DynamicCellTableKeyProvider(), Map.class);
+	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader) {
+		super(new DynamicCellTableKeyProvider(), Map.class, false);
+		this.valuesLoader = valuesLoader;
 	}
 	
-	public DynamicCellTable(boolean sortable) {
-		super(new DynamicCellTableKeyProvider(), Map.class, sortable);
+	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean sortable) {
+		super(new DynamicCellTableKeyProvider(), Map.class, false, sortable);
+		this.valuesLoader = valuesLoader;
+	}
+	
+	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable) {
+		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, sortable);
+		this.valuesLoader = valuesLoader;
+	}
+	
+	protected DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, TableResources resources){
+		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, resources, sortable);
+		this.valuesLoader = valuesLoader;
 	}
 
-	public void setColumns(Map<String, String[]> columns) {
+	@Override
+	protected void doSetHeaderVisible(boolean isFooter, boolean isVisible) {
+		super.doSetHeaderVisible(isFooter, isVisible);
+		
+		int count = getColumnCount();
+		for (int i = 0; i < count; i++) {
+			Header<?> header = getHeader(i);
+			if (header instanceof AttachableHeader) {
+				((AttachableHeader)header).onAttachHeader(Element.as(getTableHeadElement().getChild(0).getChild(i)));
+			}
+		}
+	}
+	
+	public void setColumns(List<DynamicColumDefinition> columns) {
 		int colCount = getColumnCount();
 		for (int i = 0; i < colCount; i++) {
 			removeColumn(0);
 		}
-		for (final String column : columns.keySet()) {
-			if (columns.get(column) == null) {
-				continue;
-			}
-			if (columns.get(column)[0].toUpperCase().equals(STRING)) {
-				Column<Map<String, Object>, String> col = new Column<Map<String, Object>, String>(new TextCell()) {
-					@Override
-					public String getValue(Map<String, Object> arg0) {
-						return (String) arg0.get(column);
-					}
-				};
-				addTextColumn(col, 100 / (columns.size()-1), columns.get(column)[1], column);
-			} else if (columns.get(column)[0].toUpperCase().equals(DATE)) {
-				Column<Map<String, Object>, Date> col = new Column<Map<String, Object>, Date>(new DateCell()) {
-					@Override
-					public Date getValue(Map<String, Object> arg0) {
-						return (Date) arg0.get(column);
-					}
-				};
-				addDateColumn(col, 100 / (columns.size()-1), columns.get(column)[1], column);	
-			} else if (columns.get(column)[0].toUpperCase().equals(NUMBER)) {
-				Column<Map<String, Object>, Number> col = new Column<Map<String, Object>, Number>(new NumberCell()) {
-					@Override
-					public Number getValue(Map<String, Object> arg0) {
-						return (Number) arg0.get(column);
-					}
-				};
-				addTextColumn(col, 100 / (columns.size()-1), columns.get(column)[1], column);
-			}
-		}
+		addColumns(columns);
 		addCheckboxColumn(50);
 
 	}
 
+	protected void addColumns(List<DynamicColumDefinition> columns) {
+		for (final DynamicColumDefinition column : columns) {
+			if (column.getField() == null) {
+				continue;
+			}
+			ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader);
+		}
+	}
 }

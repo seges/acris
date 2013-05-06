@@ -25,7 +25,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 
 public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<Date>> {
 
-	interface Template extends SafeHtmlTemplates {
+	protected interface Template extends SafeHtmlTemplates {
 		@Template("<div>{0}</div>")
 		SafeHtml header(String columnName);
 
@@ -64,11 +64,12 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 		this.text = text;
 		this.validator = validator;
 
-		if (template == null) {
-			template = GWT.create(Template.class);
-		}
-
+		initTemplate();
 		this.datePicker = new DatePicker();
+		initDatePanel();
+	}
+	
+	protected void initDatePanel(){		
 		this.panel = new PopupPanel(true, true) {
 			@Override
 			protected void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -127,6 +128,12 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 				}
 			}
 		});
+	}
+	
+	protected void initTemplate() {
+		if (template == null) {
+			template = GWT.create(Template.class);
+		}
 	}
 
 	@Override
