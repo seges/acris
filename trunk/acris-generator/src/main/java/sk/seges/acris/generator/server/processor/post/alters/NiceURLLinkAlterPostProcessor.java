@@ -79,12 +79,11 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 	                        .append("(?:\\b|$)").toString()
 	                );
 
-	private static final Pattern MAIL_TO = Pattern.compile(
-			 new StringBuilder()
-             	.append("mailto:" + EMAIL_REGEX).toString());
-			 
+	private static final Pattern MAIL_TO = Pattern.compile(new StringBuilder().append("mailto:" + EMAIL_REGEX).toString());
+	private static final Pattern JAVASCRIPT_LINK_PATTERN = Pattern.compile(new StringBuilder().append("javascript:(.*)" ).toString());
+
 	private boolean isUrl(String link) {
-		return WEB.matcher(link).matches() || MAIL_TO.matcher(link).matches();
+		return WEB.matcher(link).matches() || MAIL_TO.matcher(link).matches() || JAVASCRIPT_LINK_PATTERN.matcher(link).matches();
 	}
 	
 	protected String getLink(LinkTag linkNode, GeneratorEnvironment generatorEnvironment) {

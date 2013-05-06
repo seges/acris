@@ -79,7 +79,14 @@ public class NiceURLLinkPostProcessorTest extends AbstractProcessorTest {
 		runTest(HTML_FILE_DIRECTORY + "7_test_niceurl_invalid_mailto_input.html", 
 				HTML_FILE_DIRECTORY + "7_test_niceurl_invalid_mailto_result.html", getToken());
 	}
-	
+
+	@Test
+	@DirtiesContext
+	public void testNiceUrlJavascriptLinkPostProcessor() {
+		runTest(HTML_FILE_DIRECTORY + "8_test_niceurl_javascript_input.html", 
+				HTML_FILE_DIRECTORY + "8_test_niceurl_javascript_result.html", getToken());
+	}
+
 	protected GeneratorToken getToken() {
 		GeneratorToken token = new GeneratorToken();
 		token.setLanguage("en");
