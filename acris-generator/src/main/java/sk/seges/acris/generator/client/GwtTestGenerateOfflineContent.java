@@ -360,13 +360,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 					
 					@Override
 					public void execute() {
-						//Only for test, wait 2 seconds before save content
-						new Timer() {
-							@Override
-							public void run() {
-								saveAndLoadContent(generatorEnvironment);
-							}
-						}.schedule(2000);
+						saveAndLoadContent(generatorEnvironment);
 					}
 				});
 			}
