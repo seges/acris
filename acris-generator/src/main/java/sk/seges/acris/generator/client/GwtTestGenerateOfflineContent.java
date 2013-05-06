@@ -357,10 +357,16 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 					timer.stop(Operation.CONTENT_RENDERING);
 				}
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-					
+
 					@Override
 					public void execute() {
-						saveAndLoadContent(generatorEnvironment);
+						//Only for test, wait 2 seconds before save content
+						new Timer() {
+							@Override
+							public void run() {
+								saveAndLoadContent(generatorEnvironment);
+							}
+						}.schedule(2000);
 					}
 				});
 			}
