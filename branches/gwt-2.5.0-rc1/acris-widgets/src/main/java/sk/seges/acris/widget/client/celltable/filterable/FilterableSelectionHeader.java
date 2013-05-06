@@ -18,7 +18,7 @@ public class FilterableSelectionHeader<T extends Comparable<? extends Serializab
 		setUpdater(valueUpdate);
 		this.criteria = criteria;
 	}
-
+	
 	@Override
 	public SimpleExpression<T> getValue() {
 		return criteria;

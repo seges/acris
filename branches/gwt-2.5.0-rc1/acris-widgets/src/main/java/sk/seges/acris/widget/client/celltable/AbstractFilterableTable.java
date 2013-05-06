@@ -43,6 +43,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
+import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
@@ -60,12 +61,12 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	}
 	
-	private final static TableResources resource = GWT.create(TableResources.class);
+	protected final static TableResources resource = GWT.create(TableResources.class);
 	private final static PagerResources pagerResources = GWT.create(PagerResources.class);
 
 	private SimplePager pager;
 
-	private SelectionModel<T> selectionModel;
+	protected SelectionModel<T> selectionModel;
 	private boolean initialized = false;
 	protected boolean sortable = true;
 
@@ -75,13 +76,20 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	private Map<String, SimpleExpression<?>> filterValues = new HashMap<String, SimpleExpression<?>>();
 	private Map<Column<?, ?>, String> columnProperties = new HashMap<Column<?, ?>, String>();
+	
+	protected boolean selectedAllChecked = false;
+	protected boolean enableMultiselection = false;
 
 	private final Class<?> dataClass;
 
 	private RowRenderer<T> rowRenderer;
 	private ProvidesIdentifier<T> keyProvider;
 	
-	public AbstractFilterableTable(ProvidesIdentifier<T> keyProvider, Class<?> dataClass) {
+	public AbstractFilterableTable(ProvidesIdentifier<T> keyProvider, Class<?> dataClass, boolean enableMultiselection) {
+		this(keyProvider, dataClass, enableMultiselection, resource, false);		
+	}
+	
+	protected AbstractFilterableTable(ProvidesIdentifier<T> keyProvider, Class<?> dataClass, boolean enableMultiselection, TableResources resource, boolean sortable){
 		super(DEFAULT_PAGE_SIZE, resource, keyProvider);
 		this.dataClass = dataClass;
 		addRangeChangeHandler(new Handler() {
@@ -92,11 +100,23 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 				filter.setStartIndex(event.getNewRange().getStart());
 			}
 		});
-		selectionModel = new SingleSelectionModel<T>(getKeyProvider());	}
-	
-	public AbstractFilterableTable(ProvidesIdentifier<T> keyProvider, Class<?> dataClass, boolean sortable) {
-		this(keyProvider, dataClass);
+		this.enableMultiselection = enableMultiselection;
+		if(enableMultiselection){
+			selectionModel = new MultiSelectionModel<T>(getKeyProvider());
+		}else{
+			selectionModel = new SingleSelectionModel<T>(getKeyProvider());
+		}
 		this.sortable = sortable;
+	}
+	
+	
+	public Class<?> getDataClass() {
+		return dataClass;
+	}
+		
+	public AbstractFilterableTable(ProvidesIdentifier<T> keyProvider, Class<?> dataClass, boolean enableMultiselection, boolean sortable) {
+		this(keyProvider, dataClass, enableMultiselection, resource, sortable);
+		
 	}
 
 	public void setDataProvider(AsyncDataProvider<T> dataProvider) {
@@ -127,6 +147,17 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		}
 
 		return null;
+	}
+	
+	public List<T> getSelectedItems() {
+		List<T> selectedItems = new ArrayList<T>();
+		for (T item : getVisibleItems()) {
+			if (selectionModel.isSelected(item)) {
+				selectedItems.add(item);
+			}
+		}
+
+		return selectedItems;
 	}
 
 	protected void initialize() {
@@ -224,10 +255,15 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			defaultHiVal = simpleExpression.getHiValue();
 		}
 
+		addColumnWithDateHeader(column, text, property, dateValidator, defaultLoVal, defaultHiVal, dateFilter, dateUpdater);
+		setColumnWidth(column, width, Unit.PCT);
+	}
+	
+	protected void addColumnWithDateHeader(Column<T, ?> column, String text, String property,
+			Validator<Date> dateValidator, Date defaultLoVal, Date defaultHiVal, DateFilter dateFilter, ValueUpdater<BetweenExpression<Date>> dateUpdater){
 		FilterableDateHeader filterableDateHeader = new FilterableDateHeader(dateUpdater, dateFilter.getCriterion(
 				property, defaultLoVal, defaultHiVal), dateValidator, text);
 		addColumn(column, filterableDateHeader);
-		setColumnWidth(column, width, Unit.PCT);
 	}
 
 	public void addCheckboxColumn(int width) {
@@ -239,8 +275,12 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			}
 		};
 
-		addColumn(checkColumn, SafeHtmlUtils.fromSafeConstant("<br/>"));
+		addColumnWithCheckboxHeader(checkColumn);
 		setColumnWidth(checkColumn, width, Unit.PX);
+	}
+	
+	protected void addColumnWithCheckboxHeader(Column<T, Boolean> checkColumn){
+		addColumn(checkColumn, SafeHtmlUtils.fromSafeConstant("<br/>"));
 	}
 
 	public void addTextColumn(final Column<T, ?> column, int width, String text, String property) {
@@ -275,10 +315,16 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			defaultVal = simpleExpression.getValue();
 		}
 
-		this.addColumn(column, new FilterableTextHeader<F>(columnUpdater,
-				textFilter.getCriterion(property, defaultVal), validator, text));
+		addColumnWithTextHeader(column, text, property, validator, textFilter, defaultVal, columnUpdater);
 		this.setColumnWidth(column, width, Unit.PCT);
 		column.setSortable(sortable);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <F extends Comparable<? extends Serializable>> void addColumnWithTextHeader(Column<T, ?> column, String text, String property, 
+			Validator<F> validator, InputFilter<F> textFilter, F defaultVal, ValueUpdater<SimpleExpression<F>> columnUpdater){
+		this.addColumn(column, new FilterableTextHeader<F>(columnUpdater,
+				textFilter.getCriterion(property, defaultVal), validator, text));
 	}
 
 	public <F extends Enum<?>> void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
@@ -308,12 +354,59 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		if (simpleExpression != null) {
 			defaultVal = simpleExpression.getValue();
 		}
-
+		addColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, validator, text, defaultVal);
+		
+		this.setColumnWidth(column, width, Unit.PCT);
+		column.setSortable(sortable);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <F extends Enum<?>> void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpression<F>> columnUpdater, 
+			InputFilter<F> textFilter, String property, List<String> options, Validator<F> validator, String text, F defaultVal){
 		this.addColumn(column,
 				new FilterableSelectionHeader<F>(columnUpdater, textFilter.getCriterion(property, defaultVal),
 						validator, options, text));
+	}
+	
+	public void addSelectionColumn(final Column<T, ?> column, int width, String text,
+			String property, List<String> options) {
+		addSelectionColumn(column, width, text, property, options, Filter.EQ);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addSelectionColumn(final Column<T, ?> column, int width, String text,
+			String property, List<String> options, String operation) {
+
+		initializeColumn(column, property);
+
+		final SelectionFilter textFilter = new SelectionFilter(operation/*Filter.EQ*/);
+
+		ValueUpdater<SimpleExpression<String>> columnUpdater = new ValueUpdater<SimpleExpression<String>>() {
+			@Override
+			public void update(SimpleExpression<String> value) {
+				handleFilterValueChange(null, value, column);
+			}
+		};
+
+		SimpleExpression<String> simpleExpression = (SimpleExpression<String>) filterValues.get(property);
+
+		String defaultVal = null;
+
+		if (simpleExpression != null) {
+			defaultVal = simpleExpression.getValue();
+		}
+		addColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal);
+		
 		this.setColumnWidth(column, width, Unit.PCT);
 		column.setSortable(sortable);
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpression<String>> columnUpdater, 
+			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal){
+		this.addColumn(column,
+				new FilterableSelectionHeader<String>(columnUpdater, textFilter.getCriterion(property, defaultVal),
+						new StringValidator(), options, text));
 	}
 
 	public interface Validator<F extends Comparable<? extends Serializable>> {
@@ -327,7 +420,32 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		String toString(F f);
 	}
 
-	class InputFilter<F extends Comparable<? extends Serializable>> {
+	protected class SelectionFilter{
+	
+		protected final String operation;
+
+		public SelectionFilter(String operation) {
+			this.operation = operation;
+		}
+
+		public SimpleExpression<String> getCriterion(String property, String... vals) {
+			if (vals == null || vals.length == 0) {
+				return new SimpleExpression<String>(property, null, operation);
+			}
+			return new SimpleExpression<String>(property, vals[0], operation);
+		}
+
+		public SimpleExpression<String> setValue(SimpleExpression<String> expression, String[] values) {
+			String value = null;
+
+			if (values.length > 0) {
+				value = values[0];
+			}
+			return expression.setValue(value.toString());
+		}
+	}
+	
+	protected class InputFilter<F extends Comparable<? extends Serializable>>{
 
 		protected final Validator<F> validator;
 		protected final String operation;
@@ -363,7 +481,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	}
 
-	public abstract class AbstractValidator<F extends Comparable<? extends Serializable>> implements Validator<F> {
+	public static abstract class AbstractValidator<F extends Comparable<? extends Serializable>> implements Validator<F> {
 		@Override
 		public boolean isEmpty(String value) {
 			return value == null || value.isEmpty();
@@ -452,7 +570,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	}
 
-	class DateFilter extends InputFilter<Date> {
+	protected class DateFilter extends InputFilter<Date> {
 
 		public DateFilter(Validator<Date> validator) {
 			super(validator, null);
@@ -491,7 +609,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			boolean asc = false;
 			if (columnSortList.size() > 0) {
 				ColumnSortInfo columnSortInfo = columnSortList.get(0);
-				asc = columnSortInfo.isAscending();
+				asc = !columnSortInfo.isAscending();
 			}
 
 			columnSortList.clear();
@@ -509,7 +627,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 				ColumnSortInfo columnSortInfo = columnSortList.get(columnSortList.size() - 1);
 				columnSortList.clear();
 				if (columnSortInfo.getColumn().equals(column)) {
-					columnSortInfo = new ColumnSortInfo(column, !columnSortInfo.isAscending());
+					columnSortInfo = new ColumnSortInfo(column, columnSortInfo.isAscending());
 				}
 				columnSortList.push(columnSortInfo);
 			}

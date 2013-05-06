@@ -17,7 +17,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class InputFilterColumn<T extends Comparable<? extends Serializable>> extends AbstractFilterableCell<SimpleExpression<T>> {
 
-	interface Template extends SafeHtmlTemplates {
+	protected interface Template extends SafeHtmlTemplates {
 		@Template("<div style=\"\">{0}</div>")
 		SafeHtml header(String columnName);
 
@@ -30,16 +30,19 @@ public class InputFilterColumn<T extends Comparable<? extends Serializable>> ext
 	
 	private static final int ENTER = 13;
 
-	private static final String FILTER_INPUT_PREFIX = "filterInput";
+	protected static final String FILTER_INPUT_PREFIX = "filterInput";
 
 	private boolean isChanged = false;
 	private final Validator<T> validator;
 
 	public InputFilterColumn(Validator<T> validator, String text) {
-		super("keydown", "keyup", "change", "blur", "click");
+		super("keydown", "keyup", "change", "blur", "click", "focus");
 		this.validator = validator;
 		this.text = text;
-		
+		initTemplate();		
+	}
+	
+	protected void initTemplate(){
 		if (template == null) {
 			template = GWT.create(Template.class);
 		}

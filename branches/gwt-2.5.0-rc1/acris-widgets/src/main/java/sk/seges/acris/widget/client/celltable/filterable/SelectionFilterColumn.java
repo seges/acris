@@ -21,7 +21,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class SelectionFilterColumn<T extends Comparable<? extends Serializable>> extends AbstractFilterableCell<SimpleExpression<T>> {
 
-	interface Template extends SafeHtmlTemplates {
+	protected interface Template extends SafeHtmlTemplates {
 		@Template("<div style=\"\">{0}</div>")
 		SafeHtml header(String columnName);
 
@@ -32,31 +32,36 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 		SafeHtml selected(String option);
 	}
 
-	private static Template template;
+	protected static Template template;
 
 	private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
 
-	private final List<String> options;
-	private String text;
+	protected final List<String> options;
+	protected String text;
 	
 	private final Map<Object, String> viewDataMap = new HashMap<Object, String>();
 
-	private static final String FILTER_INPUT_PREFIX = "filterInput";
+	protected static final String FILTER_INPUT_PREFIX = "filterInput";
 
-	private final Validator<T> validator;
+	protected final Validator<T> validator;
 	
 	public SelectionFilterColumn(Validator<T> validator, List<String> options, String text) {
-		super("click", "change", "focus", "blur");
+		super("click", "change", "focus", "blur", "mousewheel", "mousedown", "mouseup", "mousemove", "DOMMouseScroll");
 
 		this.validator = validator;
 		this.text = text;
-		if (template == null) {
-			template = GWT.create(Template.class);
-		}
+		initTemplate();
+		
 		this.options = new ArrayList<String>(options);
 		int index = 0;
 		for (String option : options) {
 			indexForOption.put(option, index++);
+		}
+	}
+	
+	protected void initTemplate(){
+		if (template == null) {
+			template = GWT.create(Template.class);
 		}
 	}
 
@@ -101,8 +106,8 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 				newExpression.setProperty(value.getProperty());
 				newExpression.setOperation(value.getOperation());
 				if (newValue != null && !newValue.isEmpty()) {
-					newExpression.setValue(validator.getValue(newValue));
-					valueUpdater.update(newExpression);
+					
+					valueUpdater.update(setValueToExpresion(newExpression, newValue));
 				} else {
 					newExpression.setValue(null);
 					valueUpdater.update(newExpression);
@@ -121,6 +126,11 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 		
 		GWT.log(event.getType());
 	}
+	
+	protected SimpleExpression<T> setValueToExpresion(SimpleExpression<T> newExpression, String newValue){
+		return newExpression.setValue(validator.getValue(newValue));
+	}
+	
 	
 	protected void changeSorting(SimpleExpression<T> value, ValueUpdater<SimpleExpression<T>> valueUpdater) {
 		if (!hasFocus(FILTER_INPUT_PREFIX + value.getProperty())) {
@@ -150,7 +160,7 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 			viewData = null;
 		}
 
-		int selectedIndex = getSelectedIndex(viewData == null ? validator.toString(value.getValue()) : viewData);
+		int selectedIndex = getSelectedIndex(viewData == null ? valueToString(value) : viewData);
 		sb.appendHtmlConstant("<select tabindex=\"-1\">");
 		int index = 0;
 		for (String option : options) {
@@ -173,6 +183,10 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 
 	@Override
 	protected String valueToString(SimpleExpression<T> value, int index) {
+		return validator.toString(value.getValue());
+	}
+	
+	protected String valueToString(SimpleExpression<T> value) {
 		return validator.toString(value.getValue());
 	}
 }
