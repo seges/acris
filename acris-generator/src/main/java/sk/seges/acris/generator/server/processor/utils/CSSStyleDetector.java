@@ -1,6 +1,9 @@
 package sk.seges.acris.generator.server.processor.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -12,13 +15,15 @@ public class CSSStyleDetector {
 
 	private static Log log = LogFactory.getLog(CSSStyleDetector.class);
 
-	private static final String STYLE_TAG_NAME = "style";
+	private static final String STYLE_ATTRIBUTE_NAME = "style";
+	private static final String CLASS_ATTRIBUTE_NAME = "class";
 
 	private Map<String, String> tagStyles = new HashMap<String, String>();
+	private List<String> tagClasses = new ArrayList<String>();
 	
 	//merge with edit style support
 	public CSSStyleDetector(Tag tag) {
-		String styleValue = tag.getAttribute(STYLE_TAG_NAME);
+		String styleValue = tag.getAttribute(STYLE_ATTRIBUTE_NAME);
 		if (styleValue != null) {
 			
 			String[] styles = styleValue.split(";");
@@ -32,6 +37,12 @@ public class CSSStyleDetector {
 					log.warn("Invalid style value '" + style + "' in the tag " + tag.getTagName());
 				}
 			}
+		}
+		
+		String styleClassValue = tag.getAttribute(CLASS_ATTRIBUTE_NAME);
+		
+		if (styleClassValue != null) {
+			tagClasses.addAll(Arrays.asList(styleClassValue.trim().split(" ")));
 		}
 	}
 
@@ -50,7 +61,17 @@ public class CSSStyleDetector {
 	private static final String VISIBILITY = "visibility";
 	private static final String DISPLAY = "display";
 	
+	private static String[] skipElementsClasses = new String[] {
+		"chzn-select"
+	};
+	
 	public boolean isVisible() {
+		
+		for (String skipElementClass: skipElementsClasses) {
+			if (tagClasses.contains(skipElementClass)) {
+				return true;
+			}
+		}
 		if (!hasStyle(VISIBILITY) &&
 			!hasStyle(DISPLAY)) {
 			return true;
