@@ -7,14 +7,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
-import org.htmlparser.PrototypicalNodeFactory;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+import sk.seges.acris.generator.server.processor.factory.CustomPrototypicalNodeFactory;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
-import sk.seges.acris.generator.server.processor.htmltags.NoScriptTag;
-import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
@@ -58,10 +56,12 @@ public class HtmlPostProcessor {
 		List<Node> rootNodes = new ArrayList<Node>();
 
 		Parser parser = parserFactory.createParser(content);
+		parser.setNodeFactory(new CustomPrototypicalNodeFactory());
 		
-		PrototypicalNodeFactory prototypicalNodeFactory = (PrototypicalNodeFactory)parser.getNodeFactory();
-		prototypicalNodeFactory.registerTag(new StyleLinkTag());
-		prototypicalNodeFactory.registerTag(new NoScriptTag());
+//		PrototypicalNodeFactory prototypicalNodeFactory = (PrototypicalNodeFactory)parser.getNodeFactory();
+//		prototypicalNodeFactory.registerTag(new StyleLinkTag());
+//		prototypicalNodeFactory.registerTag(new NoScriptTag());
+//		prototypicalNodeFactory.registerTag(new LenientLinkTag());
 		
 		try {
 			NodeIterator nodeIterator = parser.elements();
