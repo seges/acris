@@ -3,7 +3,6 @@ package sk.seges.acris.reporting.shared.service;
 import java.util.List;
 
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
-import sk.seges.acris.reporting.shared.domain.dto.ReportDescriptionDTO;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 
@@ -16,7 +15,7 @@ public interface IReportDescriptionServiceAsync {
 
 	void remove(Long id, AsyncCallback<Void> callback);
 
-	void findAllReports(Page requestedPage, AsyncCallback<PagedResult<List<ReportDescriptionDTO>>> callback);
+	void findAllReports(Page requestedPage, AsyncCallback<PagedResult<List<ReportDescriptionData>>> callback);
 	
 	void findById(Long reportId, AsyncCallback<ReportDescriptionData> callback);
 	
