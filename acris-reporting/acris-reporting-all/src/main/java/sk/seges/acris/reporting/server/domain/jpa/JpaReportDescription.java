@@ -1,4 +1,4 @@
-package sk.seges.acris.reporting.rpc.domain;
+package sk.seges.acris.reporting.server.domain.jpa;
 
 import java.util.Date;
 import java.util.List;
@@ -15,8 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
@@ -27,9 +27,10 @@ import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
  *
  */
 @Entity
+@Table(name = "reportdescription")
 @Inheritance(strategy = InheritanceType.JOINED)
 @SequenceGenerator(name = "report_desc_id_seq", sequenceName = "report_desc_id_seq", initialValue = 1)
-public class ReportDescription extends LightEntity implements ReportDescriptionData {
+public class JpaReportDescription  implements ReportDescriptionData {
 
 	private static final long serialVersionUID = 3793554325796093693L;
 	public static final String DESCRIPTION_ATTR = "description";
@@ -46,7 +47,7 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
 	private String reportUrl;
 	private String displayName;
 	
-	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY, targetEntity = ReportParameter.class)
+	@OneToMany(cascade = { CascadeType.ALL }, fetch=FetchType.LAZY, targetEntity = JpaReportParameter.class)
 	@OrderBy(ReportParameterData.ORDER_NUMBER)
 	@JoinColumn(name="owning_report")
 	private List<ReportParameterData> parametersList = null;
@@ -127,7 +128,7 @@ public class ReportDescription extends LightEntity implements ReportDescriptionD
         if (getClass() != obj.getClass()) {
 			return false;
 		}
-        ReportDescription other = (ReportDescription) obj;
+        JpaReportDescription other = (JpaReportDescription) obj;
         if (id == null) {
             if (other.id != null) {
 				return false;
