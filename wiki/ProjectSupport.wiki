@@ -36,7 +36,7 @@ But you have to count with some implications:
 
 Using multi-module setup is like running long distance. If you do it properly and invest time at the beginning you won't spend that much time in the future. In our humble opinion it also structures the project in cleaner manner having dependencies where they belong and allowing you to manipulate with client and server separately.
 
-[http://acris.googlecode.com/wiki/images/project-structure.png]
+[http://acris.googlecode.com/svn/wiki/images/project-structure.png]
 
 Usually the project consist either of 3 or 5 (or of course more) projects from structural point of view:
   * 3 - {{{client-war}}}, {{{rpc}}}, {{{server-war}}}
