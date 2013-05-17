@@ -665,6 +665,19 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		Criterion defaultCriteria = getDefaultCriteria();
 
+		if(filter.getSortables() != null && !filter.getSortables().isEmpty()){
+			SortInfo sortInfo = filter.getSortables().get(0);			
+			for(Column column : columnProperties.keySet()){
+				if(columnProperties.get(column).equals(sortInfo.getColumn())){
+					getColumnSortList().clear();
+					getColumnSortList().push(new ColumnSortInfo(column, sortInfo.isAscending()));
+					break;
+				}
+			}			
+		}else{
+			getColumnSortList().clear();
+		}
+		
 		if (getColumnSortList().size() > 0) {
 			ColumnSortInfo columnSortInfo = getColumnSortList().get(0);
 			String property = columnProperties.get(columnSortInfo.getColumn());
