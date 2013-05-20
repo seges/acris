@@ -15,6 +15,7 @@ public class APIKeyUserContext implements UserContext {
 		this.apiKey = apiKey;
 	}
 
+	@Override
 	public String getWebId() {
 		return webId;
 	}
