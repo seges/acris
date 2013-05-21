@@ -4,4 +4,5 @@ import sk.seges.acris.core.client.rpc.IDataTransferObject;
 
 public interface UserContext extends IDataTransferObject {
 
+	String getWebId();
 }
