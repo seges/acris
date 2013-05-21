@@ -59,4 +59,8 @@ public class MockWebSettingsService implements IWebSettingsServiceLocal {
 	public FTPWebSettingsData getFTPWebSettings(String webId) {
 		return null;
 	}
+
+	@Override
+	public void deleteWebSettings(String webId) {
+	}
 }
