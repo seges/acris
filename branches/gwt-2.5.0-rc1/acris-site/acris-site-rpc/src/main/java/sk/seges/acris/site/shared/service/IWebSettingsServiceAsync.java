@@ -14,4 +14,6 @@ public interface IWebSettingsServiceAsync {
 	void saveFTPWebSettings(String webId, FTPWebSettingsDTO ftpWebSettings, AsyncCallback<Void> callback);
 	
 	void getFTPWebSettings(String webId, AsyncCallback<FTPWebSettingsDTO> callback);
+	
+	void deleteWebSettings(String webId, AsyncCallback<Void> callback);
 }

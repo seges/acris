@@ -10,6 +10,7 @@ import sk.seges.corpis.server.domain.HasWebId;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.dao.PagedResult;
 
 /**
  * @author psloboda
@@ -52,5 +53,16 @@ public class WebSitesService implements IWebSitesServiceLocal {
 		page.setFilterable(c);
 		
 		return webSitesDao.findUnique(page);
+	}
+
+	@Override
+	public void deleteWebSites(String webId) {
+		Page page = new Page();
+		page.setFilterable(Filter.eq(HasWebId.WEB_ID, webId));
+		
+		PagedResult<List<WebSitesData>> all = webSitesDao.findAll(page);
+		for(WebSitesData webSite : all.getResult()) {
+			webSitesDao.remove(webSite);
+		}
 	}
 }

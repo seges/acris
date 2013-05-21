@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.server.model.data.MetaDataData;
@@ -17,7 +20,8 @@ import sk.seges.sesam.dao.Page;
 
 
 public class WebSettingsService implements IWebSettingsServiceLocal {
-
+	private static final Logger log = LoggerFactory.getLogger(WebSettingsService.class);
+	
 	private IWebSettingsDao<WebSettingsData> webSettingsDao;
 
 	private ICountryService countryService;
@@ -76,5 +80,17 @@ public class WebSettingsService implements IWebSettingsServiceLocal {
 			return webSettings.getFtpWebSettings();
 		}
 		return null;
+	}
+
+	@Override
+	public void deleteWebSettings(String webId) {
+		WebSettingsData entity = webSettingsDao.createDefaultEntity();
+		entity.setWebId(webId);
+		entity = webSettingsDao.findEntity(entity);
+		if(entity == null) {
+			log.debug("No such web settings exist for webId = " + webId);
+			return;
+		}
+		webSettingsDao.remove(entity);
 	}	
 }
