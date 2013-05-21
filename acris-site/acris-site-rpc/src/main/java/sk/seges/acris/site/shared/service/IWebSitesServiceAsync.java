@@ -13,4 +13,6 @@ public interface IWebSitesServiceAsync {
 	void addWebSite(WebSitesDTO webSite, AsyncCallback<Void> callback);
 	
 	void getPrimaryWebSite(String webId, String locale, AsyncCallback<WebSitesDTO> webSite);
+	
+	void deleteWebSites(String webId, AsyncCallback<Void> callback);
 }

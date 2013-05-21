@@ -10,7 +10,7 @@ import sk.seges.sesam.domain.IDomainObject;
 
 @DomainInterface
 @BaseObject
-interface HierarchyPermission extends Serializable, IDomainObject<Integer>, HasWebId {
+public interface HierarchyPermission extends Serializable, IDomainObject<Integer>, HasWebId {
  
 	String permission();
 

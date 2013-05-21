@@ -38,4 +38,11 @@ public class SpringWebSettingsService extends WebSettingsService {
 	public void saveFTPWebSettings(String webId, FTPWebSettingsData ftpWebSettings) {
 		super.saveFTPWebSettings(webId, ftpWebSettings);
 	}
+
+	@Transactional
+	@TransactionPropagation(value = PropagationType.PROPAGATE)
+	@Override
+	public void deleteWebSettings(String webId) {
+		super.deleteWebSettings(webId);
+	}
 }
