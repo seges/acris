@@ -16,4 +16,6 @@ public interface IWebSettingsService extends RemoteService {
 	void saveFTPWebSettings(String webId, FTPWebSettingsDTO ftpWebSettings);
 	
 	FTPWebSettingsDTO getFTPWebSettings(String webId);
+	
+	void deleteWebSettings(String webId);
 }
