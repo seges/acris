@@ -35,4 +35,5 @@ public interface PanelRef {
 	public static final String DISCOUNT_TYPE_SELECTOR_LAYOUT = "discTypeLP";
 	
 	public static final String FORM_VALUES_LAYOUT = "formValuesLP";
+	public static final String GMAP_LAYOUT = "gMapLP";
 }
