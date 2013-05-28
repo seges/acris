@@ -68,4 +68,9 @@ public class MicroTemplatePanel extends Composite implements HasMicroTemplate {
 	public static native JavaScriptObject fromJson(String jsonString) /*-{
 																		return eval('(' + jsonString + ')');
 																		}-*/;
+	
+	@Override
+	public void clear() {
+		container.setHTML("");
+	}
 }
