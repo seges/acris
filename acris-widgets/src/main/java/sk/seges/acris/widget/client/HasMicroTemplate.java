@@ -8,4 +8,5 @@ import sk.seges.acris.widget.client.uibinder.HasViewTemplate;
 public interface HasMicroTemplate extends HasViewTemplate {
 	void render(String data);
 	void setStyleName(String styleName);
+	void clear();
 }
