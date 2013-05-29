@@ -39,8 +39,8 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 
 	private EPanelResult result;
 
-	private OptionsFactory optionsFactory;
-	private final WidgetFactory widgetFactory;
+	protected OptionsFactory optionsFactory;
+	protected final WidgetFactory widgetFactory;
 	
 	protected static Icons icons = (Icons) GWT.create(Icons.class);
 	protected static Labels labels = (Labels) GWT.create(Labels.class);
@@ -87,7 +87,7 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		this.result = result;
 	}
 
-	private void init() {
+	protected void init() {
 		setStyleName(STYLE_OPTION_PANE);
 	}
 
