@@ -18,7 +18,7 @@ public class OptionsFactory extends Composite {
 		this.widgetFactory = widgetFactory;
 	}
 
-	private Button createButton(OptionResultHandler optionsHandler, String label, EPanelResult result, OptionPaneResultListener resultListener) {
+	protected Button createButton(OptionResultHandler optionsHandler, String label, EPanelResult result, OptionPaneResultListener resultListener) {
         Button button = GWT.create(Button.class);
         button.setText(label);
         button.addClickHandler(new OptionResultClickHandler(optionsHandler, result, resultListener));
@@ -41,11 +41,11 @@ public class OptionsFactory extends Composite {
         return createButton(optionsHandler, labels.cancel(), EPanelResult.CANCEL_OPTION, resultListener);
     }
 
-    private Button createYesButton(OptionResultHandler optionsHandler, OptionPaneResultListener resultListener) {
+    protected Widget createYesButton(OptionResultHandler optionsHandler, OptionPaneResultListener resultListener) {
         return createButton(optionsHandler, labels.yes(), EPanelResult.YES_OPTION, resultListener);
     }
 
-    private Button createNoButton(OptionResultHandler optionsHandler, OptionPaneResultListener resultListener) {
+    protected Button createNoButton(OptionResultHandler optionsHandler, OptionPaneResultListener resultListener) {
         return createButton(optionsHandler, labels.no(), EPanelResult.NO_OPTION, resultListener);
     }
 

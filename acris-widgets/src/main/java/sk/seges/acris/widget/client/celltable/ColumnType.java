@@ -27,7 +27,7 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, ColumnValuesRemoteLoaderAsync valuesLoader) {
-			table.addTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount - 1), column.getLabel(), column.getField());
+			table.addTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField());
 		}
 
 	}, DATE {
@@ -43,7 +43,7 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, ColumnValuesRemoteLoaderAsync valuesLoader) {
-			table.addDateColumn((Column<T, ?>) createColumn(column), 100 / (columnCount - 1), column.getLabel(), column.getField());	
+			table.addDateColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField());	
 		}
 	}, NUMBER {
 		public Column<Map<String, Object>, ? extends Object> createColumn(final DynamicColumDefinition column) {
@@ -58,7 +58,7 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, ColumnValuesRemoteLoaderAsync valuesLoader) {
-			table.addTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount - 1), column.getLabel(), column.getField());
+			table.addTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField());
 		}
 		
 	}, ENUM {
@@ -79,7 +79,7 @@ public enum ColumnType {
 				@SuppressWarnings("unchecked")
 				@Override
 				public void onSuccess(List<String> result) {
-					table.addSelectionColumn((Column<T, ?>) createColumn(column), 100 / (columnCount - 1), column.getLabel(), column.getField(), result);
+					table.addSelectionColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), result);
 				}
 				
 				@Override
