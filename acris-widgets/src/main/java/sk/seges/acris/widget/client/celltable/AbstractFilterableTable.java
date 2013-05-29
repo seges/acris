@@ -622,15 +622,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
 		} else if (value.getValue() != null) {
-			ColumnSortList columnSortList = getColumnSortList();
-			if (columnSortList.size() > 0) {
-				ColumnSortInfo columnSortInfo = columnSortList.get(columnSortList.size() - 1);
-				columnSortList.clear();
-				if (columnSortInfo.getColumn().equals(column)) {
-					columnSortInfo = new ColumnSortInfo(column, columnSortInfo.isAscending());
-				}
-				columnSortList.push(columnSortInfo);
-			}
+
 
 			filterValues.put(value.getProperty(), value);
 
