@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
-import net.sf.gilead.pojo.gwt.LightEntity;
 import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 
 /**
@@ -19,11 +18,11 @@ import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
  */
 @Entity
 @SequenceGenerator(name = "report_param_id_seq", sequenceName = "report_param_id_seq", initialValue = 1)
-public class ReportParameter extends LightEntity implements ReportParameterData, Comparable<ReportParameter> {
+public class ReportParameter implements ReportParameterData, Comparable<ReportParameter> {
 
 	private static final long serialVersionUID = 6868805794198135658L;
 	@Id
-	@GeneratedValue(generator="report_param_id_seq")
+	@GeneratedValue(generator = "report_param_id_seq")
 	@Column(name = "parameter_id")
 	private Long id;
 
@@ -129,8 +128,8 @@ public class ReportParameter extends LightEntity implements ReportParameterData,
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
-	}	
-	
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -162,9 +161,9 @@ public class ReportParameter extends LightEntity implements ReportParameterData,
 		if (orderNumber == null) {
 			orderNumber = 0;
 		}
-		if (orderNumber-other == 0) {
+		if (orderNumber - other == 0) {
 			return -1;
 		}
-		return orderNumber-other;
+		return orderNumber - other;
 	}
 }
