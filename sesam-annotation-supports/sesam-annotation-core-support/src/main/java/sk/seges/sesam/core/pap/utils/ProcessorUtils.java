@@ -20,11 +20,60 @@ import javax.lang.model.util.Types;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableWildcardType;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 
 
 public class ProcessorUtils {
+	
+	public static MutableDeclaredType replaceTypeVariablesByWildcards(MutableDeclaredType type) {
+		if (type.getTypeVariables() == null || type.getTypeVariables().size() == 0) {
+			return type;
+		}
+		
+		for (MutableTypeVariable typeVariable: type.getTypeVariables()) {
+			if (typeVariable.getVariable() != null) {
+				typeVariable.setLowerBounds(null);
+				typeVariable.setUpperBounds(null);
+				typeVariable.setVariable(MutableWildcardType.WILDCARD_NAME);
+			} else {
+				//TODO process bounds
+			}
+		}
+		
+		return type;
+	}
+
+	public static MutableTypeMirror stripTypeParametersVariables(MutableTypeMirror parameterType) {
+		switch (parameterType.getKind()) {
+			case CLASS:
+			case INTERFACE:
+				return ((MutableDeclaredType)parameterType).clone().stripTypeParametersVariables();
+			case TYPEVAR:
+				if (((MutableTypeVariable)parameterType).getVariable() != null && ((MutableTypeVariable)parameterType).getVariable() != MutableWildcardType.WILDCARD_NAME) {
+					return ((MutableTypeVariable)parameterType).clone().setVariable(null);
+				}
+			default:
+				return parameterType;
+		}
+	}
+	
+	public static MutableTypeMirror stripTypeParametersTypes(MutableTypeMirror parameterType) {
+		
+		switch (parameterType.getKind()) {
+			case CLASS:
+			case INTERFACE:
+				return ((MutableDeclaredType)parameterType).clone().stripTypeParametersTypes();
+			case TYPEVAR:
+				if (((MutableTypeVariable)parameterType).getVariable() != null && ((MutableTypeVariable)parameterType).getVariable() != MutableWildcardType.WILDCARD_NAME) {
+					return ((MutableTypeVariable)parameterType).clone().setLowerBounds(null).setUpperBounds(null);
+				}
+			default:
+				return parameterType;
+		}
+	}
 
 	public static void addField(MutableProcessingEnvironment processingEnv, MutableDeclaredType ownerType, MutableTypeMirror fieldType, String fieldName) {
 		MutableVariableElement field = processingEnv.getElementUtils().getParameterElement(fieldType, fieldName);

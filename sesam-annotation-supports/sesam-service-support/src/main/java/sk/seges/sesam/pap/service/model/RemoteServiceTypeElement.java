@@ -68,7 +68,7 @@ public class RemoteServiceTypeElement extends AbstractServiceTypeElement {
 			processingEnv.getMessager().printMessage(Kind.ERROR, " [ERROR] Cannot unbox type " + type.getKind() + " - unsupported type!");
 			return null;
 		default:
-			return stripVariableTypeVariables((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type));
+			return stripTypeParametersTypes((MutableDeclaredType)processingEnv.getTypeUtils().toMutableType(type));
 		}
 	}
 
@@ -82,13 +82,13 @@ public class RemoteServiceTypeElement extends AbstractServiceTypeElement {
 		case TYPEVAR:
 			return toParamType(type);
 		default:
-			return stripVariableTypeVariables((MutableDeclaredType)type);
+			return stripTypeParametersTypes((MutableDeclaredType)type);
 		}
 	}
 
-	private MutableDeclaredType stripVariableTypeVariables(MutableDeclaredType type) {
+	private MutableDeclaredType stripTypeParametersTypes(MutableDeclaredType type) {
 		if (type != null) {
-			return type.stripVariableTypeVariables();
+			type.stripTypeParametersTypes();
 		}
 		return type;
 	}

@@ -509,10 +509,26 @@ public class ConfigurationTypeElement extends TomBaseType {
 	public ConfigurationTypeElement getDelegateConfigurationTypeElement() {
 		if (!delegateConfigurationTypeElementInitialized) {
 			if (transferObjectConfiguration.getConfiguration() != null) {
-				this.delegateConfigurationTypeElement = getConfigurationTypeElement(transferObjectConfiguration.getConfiguration(), envContext, configurationContext);
+				
+				ConfigurationContext configurationContext = new ConfigurationContext(envContext.getConfigurationEnv());
+				
 				List<ConfigurationTypeElement> configurations = new ArrayList<ConfigurationTypeElement>();
-				configurations.add(this.delegateConfigurationTypeElement);
+				
+				for (ConfigurationTypeElement configuration: this.configurationContext.getConfigurations()) {
+					if (!configuration.isSameType(this)) {
+						configurations.add(configuration);
+					}
+				}
+
 				configurationContext.setConfigurations(configurations);
+				
+				this.delegateConfigurationTypeElement = getConfigurationTypeElement(transferObjectConfiguration.getConfiguration(), envContext, configurationContext);
+
+				configurations.add(this.delegateConfigurationTypeElement);
+
+//				List<ConfigurationTypeElement> configurations = new ArrayList<ConfigurationTypeElement>();
+//				configurations.add(this.delegateConfigurationTypeElement);
+//				configurationContext.setConfigurations(configurations);
 			
 			} else {
 				this.delegateConfigurationTypeElement = null;

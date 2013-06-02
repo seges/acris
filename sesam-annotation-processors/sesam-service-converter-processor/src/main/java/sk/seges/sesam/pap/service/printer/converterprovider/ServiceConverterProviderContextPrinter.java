@@ -1,5 +1,6 @@
 package sk.seges.sesam.pap.service.printer.converterprovider;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.Element;
@@ -22,6 +23,7 @@ import sk.seges.sesam.pap.model.model.api.dto.DtoType;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
+import sk.seges.sesam.pap.service.model.ConverterProviderContextType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.AbstractServiceMethodPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
@@ -32,6 +34,7 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 	private final ConverterProviderContextPrinterDelegate converterProviderContextPrinterDelegate;
 	protected UsageType previousUsageType;
 	protected final ClassPathTypes classPathTypes;
+	protected Boolean skipProcessing;
 	
 	public ServiceConverterProviderContextPrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolverProvider parametersResolverProvider, 
 			ConverterProviderPrinter converterProviderPrinter, ClassPathTypes classPathTypes) {
@@ -44,16 +47,51 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 	public void initialize(ServiceTypeElement serviceTypeElement, MutableDeclaredType outputName) {}
 
 	protected void finalize() {
+		if (skipProcessing == null || skipProcessing) {
+			return;
+		}
 		converterProviderContextPrinterDelegate.finalize();
 		converterProviderPrinter.changeUsage(previousUsageType);
+		skipProcessing = null;
 	}
 	
 	protected Set<? extends Element> getConverterProviderDelegates() {
 		return classPathTypes.getElementsAnnotatedWith(ConverterProviderDefinition.class);
 	}
+	
+	
+	protected boolean hasConverterProviderContext(ServiceConverterPrinterContext context) {
+		List<MutableDeclaredType> nestedTypes = context.getService().getServiceConverter().getNestedTypes();
+		
+		if (nestedTypes == null || nestedTypes.size() == 0) {
+			return false;
+		}
+		
+		for (MutableDeclaredType nestedType: nestedTypes) {
+			if (nestedType.isSameType(context.getConvertProviderContextType())) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	protected void initializeContext(ServiceConverterPrinterContext context) {
+		
+		if (skipProcessing != null) {
+			return;
+		}
+		
+		ServiceTypeElement serviceTypeElement = context.getService();
+		final ConverterProviderContextType convertProviderContextType = serviceTypeElement.getServiceConverter().getConvertProviderContextType();
+		//new ConverterProviderContextType(serviceTypeElement, processingEnv);
+		context.setConvertProviderContextType(convertProviderContextType);
 
+		skipProcessing = hasConverterProviderContext(context);
+	}
+	
 	protected void initialize(ServiceConverterPrinterContext context) {
-				
+		
 		previousUsageType = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR);
 
 		converterProviderContextPrinterDelegate.initialize(processingEnv, context.getConvertProviderContextType(), 
@@ -66,6 +104,15 @@ public class ServiceConverterProviderContextPrinter extends AbstractServiceMetho
 	
 	@Override
 	public void print(ServiceConverterPrinterContext context) {
+
+		if (skipProcessing == null) {
+			initializeContext(context);
+		}
+
+		if (skipProcessing) {
+			return;
+		}
+		
 		ConverterVerifier converterVerifier = new ConverterVerifier();
 		context.setNestedPrinter(converterVerifier);
 		super.print(context);

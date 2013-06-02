@@ -1,6 +1,7 @@
 package sk.seges.sesam.core.pap.model.mutable.delegate;
 
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 
 public abstract class DelegateMutableType implements MutableTypeMirror {

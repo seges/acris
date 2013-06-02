@@ -28,6 +28,10 @@ public class ConverterProviderContextType extends DelegateMutableDeclaredType im
 		setSuperClass(processingEnv.getTypeUtils().toMutableType(ConverterProviderContext.class));
 	}
 
+	public ServiceTypeElement getServiceType() {
+		return serviceType;
+	}
+	
 	@Override
 	protected MutableDeclaredType getDelegate() {
 		

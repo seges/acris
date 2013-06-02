@@ -26,7 +26,7 @@ public class ServiceTypeElement extends DelegateMutableDeclaredType {
 
 	@Override
 	protected MutableDeclaredType getDelegate() {
-		return (MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(service.asType());
+		return ((MutableDeclaredType) processingEnv.getTypeUtils().toMutableType(service.asType()));
 	}
 
 	public List<LocalServiceTypeElement> getLocalServiceInterfaces() {
@@ -52,7 +52,16 @@ public class ServiceTypeElement extends DelegateMutableDeclaredType {
 
 		if (element.getSuperclass().getKind().equals(TypeKind.DECLARED)) {
 			TypeElement superclassElement = (TypeElement)((DeclaredType)element.getSuperclass()).asElement();
-			result.addAll(getLocalServiceInterfaces(superclassElement));
+			
+			List<LocalServiceTypeElement> localServiceInterfaces = getLocalServiceInterfaces(superclassElement);
+			
+			if (localServiceInterfaces != null && localServiceInterfaces.size() > 0) {
+				for (LocalServiceTypeElement localServiceTypeElement: localServiceInterfaces) {
+					if (!result.contains(localServiceTypeElement)) {
+						result.add(localServiceTypeElement);
+					}
+				}
+			}
 		}
 		
 		return result;

@@ -39,6 +39,10 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		return envContext.getRoundEnv().getElementsAnnotatedWith(TransferObjectMapping.class);
 	}
 
+	protected boolean isConfigurationElement(Element element) {
+		return element.getAnnotation(TransferObjectMapping.class) != null;
+	}
+	
 	public class ConfigurationComparator implements Comparator<ConfigurationTypeElement> {
 
 		private final String typeName;
@@ -53,50 +57,35 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 			}
 		}
 		
-		@Override
-		public int compare(ConfigurationTypeElement o1, ConfigurationTypeElement o2) {
-			ConfigurationTypeElement delegateConfigurationTypeElement1 = o1.getDelegateConfigurationTypeElement();
-			ConfigurationTypeElement delegateConfigurationTypeElement2 = o2.getDelegateConfigurationTypeElement();
+		private int getScore(ConfigurationTypeElement configurationElement) {
+			ConfigurationTypeElement delegateConfigurationTypeElement = configurationElement.getDelegateConfigurationTypeElement();
 
 			if (targetType != null) {
-				TypeElement o1Type = targetType.getType(o1);
+				TypeElement configurationElementType = targetType.getType(configurationElement);
 				
-				if (o1Type != null && o1Type.getQualifiedName().toString().equals(typeName)) {
-					return 5;
-				}
-	
-				TypeElement o2Type = targetType.getType(o2);
-	
-				if (o2Type != null && o2Type.getQualifiedName().toString().equals(typeName)) {
-					return -5;
-				}
-			}
-			
-			if (delegateConfigurationTypeElement1 == null) {
-				if (!o1.hasInstantiableDomainSpecified()) {
+				if (configurationElementType != null && configurationElementType.getQualifiedName().toString().equals(typeName)) {
 					return 3;
 				}
-				return 2;
-			}
-			
-			if (!o1.hasInstantiableDomainSpecified()) {
-				return 1;
-			}
-			
-			if (delegateConfigurationTypeElement2 == null) {
-				if (!o2.hasInstantiableDomainSpecified()) {
-					return -3;
-				}
-				return -2;
 			}
 
-			if (!o2.hasInstantiableDomainSpecified()) {
-				return -1;
+			if (delegateConfigurationTypeElement == null) {
+				if (configurationElement.hasInstantiableDomainSpecified()) {
+					return 2;
+				}
+				
+				return 1;
 			}
 
 			return 0;
 		}
 		
+		@Override
+		public int compare(ConfigurationTypeElement o1, ConfigurationTypeElement o2) {
+			int score1 = getScore(o1);
+			int score2 = getScore(o2);
+			
+			return score1 > score2 ? -1 : score1 < score2 ? 1 : 0;
+		}
 	}
 	
 	protected enum TargetType {
@@ -194,12 +183,30 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		configurationContext.setConfigurations(result);
 		
 		Collections.sort(result, new ConfigurationComparator(targetType, type));
-
+		reindexDelegated(result);
+		
 		if (!type.getKind().isDeclared() || !((MutableDeclaredType)type).hasTypeParameters()) {
 			targetType.storeConfigurations(type, result, envContext.getConfigurationEnv().getCache());
 		}
 		
 		return result;
+	}
+
+	private void reindexDelegated(List<ConfigurationTypeElement> configurations) {
+		List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
+		
+		for (ConfigurationTypeElement configuration: configurations) {
+			if (!result.contains(configuration)) {
+				result.add(configuration);
+				
+				if (configuration.getDelegateConfigurationTypeElement() != null) {
+					result.add(configuration.getDelegateConfigurationTypeElement());
+				}
+			}
+		}
+		
+		configurations.clear();
+		configurations.addAll(result);
 	}
 	
 	public List<ConfigurationTypeElement> getAvailableConfigurations() {
@@ -227,10 +234,13 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		
 		Set<? extends Element> elementsAnnotatedWith = getConfigurationElements();
 		for (Element annotatedElement : elementsAnnotatedWith) {
-			if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED) && !contains(annotatedElement, result)) {
-				ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement);
-				if (targetType.appliesForType(type, configurationTypeElement)) {
-					result.add(targetType.getConfiguration(type, annotatedElement, this, context));
+			handleConfiguration(targetType, type, annotatedElement, context, result);
+
+			List<? extends Element> nestedElements = annotatedElement.getEnclosedElements();
+			
+			for (Element nestedElement: nestedElements) {
+				if (isConfigurationElement(nestedElement)) {
+					handleConfiguration(targetType, type, nestedElement, context, result);
 				}
 			}
 		}
@@ -238,6 +248,16 @@ public class RoundEnvConfigurationProvider implements ConfigurationProvider {
 		return result;
 	}
 
+	protected void handleConfiguration(TargetType targetType, MutableTypeMirror type, Element annotatedElement, ConfigurationContext context, List<ConfigurationTypeElement> result) {
+		if (annotatedElement.asType().getKind().equals(TypeKind.DECLARED) && !contains(annotatedElement, result)) {
+			ConfigurationTypeElement configurationTypeElement = getConfigurationElement((TypeElement)annotatedElement);
+			if (targetType.appliesForType(type, configurationTypeElement)) {
+				result.add(targetType.getConfiguration(type, annotatedElement, this, context));
+			}
+		}
+	}
+	
+	
 	@Override
 	public ConfigurationTypeElement getConfiguration(ExecutableElement configurationElementMethod, DomainDeclaredType returnType, ConfigurationContext configurationContext) {
 		return new ConfigurationTypeElement(configurationElementMethod, returnType, envContext, configurationContext);
