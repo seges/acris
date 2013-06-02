@@ -66,7 +66,7 @@ public class JpaInvoiceItemBase extends InvoiceItemBase {
 	}
 
 	@Override
-	@ManyToOne(targetEntity = JpaAccountableItem.class)
+	@ManyToOne(targetEntity = JpaOrderItem.class)
 	public AccountableItemData getOrderItem() {
 		return super.getOrderItem();
 	}

@@ -55,11 +55,6 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 								}
 								
 								@Override
-								public boolean isEntityManagerPropagated() {
-									return true;
-								}
-
-								@Override
 								protected boolean isTransactionPropagationPropagated() {
 									return true;
 								}
@@ -70,17 +65,9 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 								}
 							};
 						case CONVERTER_PROVIDER_INSIDE_USAGE:
-							return new HibernateServiceParameterResolver(processingEnv) {
-	//							@Override
-	//							protected MutableReferenceType getConverterProviderReference() {
-	//								return processingEnv.getTypeUtils().getReference(null, THIS);
-	//							};
-							};
+							return new HibernateServiceParameterResolver(processingEnv);
 						case CONVERTER_PROVIDER_CONSTRUCTOR: 
 							return new HibernateServiceParameterResolver(processingEnv) {
-								public boolean isEntityManagerPropagated() {
-									return true;
-								};
 
 								@Override
 								protected boolean isTransactionPropagationPropagated() {
@@ -91,7 +78,7 @@ public class HibernateServiceConverterProcessor extends ServiceConverterProcesso
 								protected boolean isConverterProviderContextParameterPropagated() {
 									return true;
 								}
-								
+
 								@Override
 								protected boolean isConverterCacheParameterPropagated() {
 									return true;

@@ -2,7 +2,6 @@ package sk.seges.corpis.server.domain.payment.jpa;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -12,11 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.corpis.server.domain.invoice.server.model.data.InvoiceData;
 import sk.seges.corpis.server.domain.payment.server.model.base.PaymentBase;
 
 @Entity
@@ -31,21 +28,19 @@ public class JpaPayment extends PaymentBase {
 
 	protected static final String SEQ_PAYMENT = "seqPayment";
 
-	private Long id;
-	
 	@Override
 	@Id
 	@GeneratedValue(generator = "seqPayment")
 	@Column
 	public Long getId() {
-		return id;
+		return super.getId();
 	}
 
-	@Override
-	@OneToOne(cascade = { CascadeType.REFRESH }, mappedBy = "invoice")
-	public InvoiceData getInvoice() {
-		return super.getInvoice();
-	}
+//	@Override
+//	@OneToOne(cascade = { CascadeType.REFRESH }, mappedBy = "invoice", targetEntity = JpaInvoiceBase.class)
+//	public InvoiceData getInvoice() {
+//		return super.getInvoice();
+//	}
 
 	@Override
 	@Column(name = "pay_date")

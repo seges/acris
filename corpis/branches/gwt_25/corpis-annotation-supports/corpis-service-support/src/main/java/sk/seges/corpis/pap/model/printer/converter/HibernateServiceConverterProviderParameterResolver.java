@@ -1,13 +1,18 @@
 package sk.seges.corpis.pap.model.printer.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.lang.model.element.ExecutableElement;
 
 import sk.seges.sesam.core.pap.model.ParameterElement;
 import sk.seges.sesam.core.pap.model.ParameterElement.ParameterUsageContext;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableReferenceType;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableExecutableElement;
+import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.converter.util.HasConstructorParametersDelegate;
 import sk.seges.sesam.pap.model.hibernate.resolver.HibernateConverterProviderParameterResolver;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
@@ -35,28 +40,48 @@ public class HibernateServiceConverterProviderParameterResolver extends Hibernat
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		
 		MutableExecutableElement converterProviderContextMethod = processingEnv.getElementUtils().getExecutableElement(GET_CONVERTER_PROVIDER_CONTEXT_METHOD);
-		converterProviderContextMethod.asType().setReturnType(new ConverterProviderContextType(serviceTypeElement, processingEnv));
+		ConverterProviderContextType convertProviderContextType = serviceTypeElement.getServiceConverter().getConvertProviderContextType();
+		
+		converterProviderContextMethod.asType().setReturnType(convertProviderContextType);
 	
 		ParameterElement[] generatedParameters = new HasConstructorParametersDelegate().getRequiredParameters(processingEnv,
 				parametersResolverProvider.getParameterResolver(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR),
 				parametersResolverProvider.getParameterResolver(UsageType.DEFINITION));
 
-		MutableReferenceType[] referenceParams = new MutableReferenceType[generatedParameters.length];
-		
-		for (int i = 0; i < generatedParameters.length; i++) {
-			//TODO handle cast
-			MutableReferenceType usage = (MutableReferenceType) generatedParameters[i].getUsage(new ParameterUsageContext() {
+		List<MutableVariableElement> requiredParameters = convertProviderContextType.getConstructor().getParameters();
 
-				@Override
-				public ExecutableElement getMethod() {
-					return null;
-				}
-				
-			});
+		List<MutableReferenceType> referenceParams = new ArrayList<MutableReferenceType>();
+
+		for (MutableVariableElement requiredParameter: requiredParameters) {
 			
-			referenceParams[i] = usage;
+			boolean found = false;
+			
+			for (int i = 0; i < generatedParameters.length; i++) {
+				if (generatedParameters[i].getType().isSameType(requiredParameter.asType())) {
+					found = true;
+					//TODO handle cast
+					MutableReferenceType usage = (MutableReferenceType) generatedParameters[i].getUsage(new ParameterUsageContext() {
+		
+						@Override
+						public ExecutableElement getMethod() {
+							return null;
+						}
+					});
+					
+					referenceParams.add(usage);
+				}
+			}
+			
+			if (!found) {
+				if (!ProcessorUtils.hasFieldByType(serviceTypeElement.getServiceConverter(), requiredParameter.asType())) {
+					ProcessorUtils.addField(processingEnv, serviceTypeElement.getServiceConverter(), requiredParameter.asType(), requiredParameter.getSimpleName()) ;
+				}
+//				referenceParams.add(processingEnv.getTypeUtils().getReference(null, requiredParameter.getSimpleName()));
+			}
+			
+			found = false;
 		}
 		
-		return typeUtils.getReference(typeUtils.getReferenceToMethod(converterProviderContextMethod, referenceParams), CONVERTER_PROVIDER_CONTEXT_REFERENCE);
+		return typeUtils.getReference(typeUtils.getReferenceToMethod(converterProviderContextMethod, referenceParams.toArray(new MutableReferenceType[] {})), CONVERTER_PROVIDER_CONTEXT_REFERENCE);
 	}
 }

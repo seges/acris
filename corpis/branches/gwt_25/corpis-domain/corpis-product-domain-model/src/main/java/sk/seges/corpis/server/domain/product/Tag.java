@@ -12,7 +12,7 @@ import sk.seges.sesam.domain.IMutableDomainObject;
 @BaseObject
 public interface Tag extends IMutableDomainObject<Long> {
 
-	List<TagName> tagNames();
+	List<? extends TagName> tagNames();
 	
 	Tag parent();
 	

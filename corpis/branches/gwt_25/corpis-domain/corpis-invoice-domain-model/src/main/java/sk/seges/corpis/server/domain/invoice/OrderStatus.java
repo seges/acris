@@ -14,7 +14,7 @@ import sk.seges.sesam.domain.IMutableDomainObject;
 public interface OrderStatus extends IMutableDomainObject<Long>, HasWebId{
 
 	String webId();
-	List<Name> names();
+	List<? extends Name> names();
 	Integer index();
 	EOrderStatus type();
 }

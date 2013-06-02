@@ -50,6 +50,5 @@ public class JpaAddress extends AddressBase implements Serializable {
 	@Size(min = 1, max = DBConstraints.ZIP_LENGTH, groups = {CustomerFormCheck.class, OrderDeliveryCheck.class})
 	public String getZip() {
 		return super.getZip();
-	}
-	
+	}	
 }

@@ -18,15 +18,16 @@ import javax.validation.constraints.NotNull;
 
 import sk.seges.corpis.server.domain.customer.jpa.JpaCustomerCore;
 import sk.seges.corpis.server.domain.customer.server.model.data.CustomerCoreData;
+import sk.seges.corpis.server.domain.customer.server.model.data.CustomerData;
 import sk.seges.corpis.server.domain.product.server.model.base.PriceConditionBase;
 import sk.seges.corpis.server.domain.product.server.model.data.PriceConditionData;
 import sk.seges.corpis.server.domain.product.server.model.data.ProductData;
-import sk.seges.corpis.shared.domain.price.api.IPriceCondition;
 import sk.seges.corpis.shared.domain.price.api.PriceConditionContext;
 import sk.seges.sesam.domain.IDomainObject;
 
 @Entity
-@Table(name = "price_conditions", uniqueConstraints = { @UniqueConstraint(columnNames={PriceConditionData.CUSTOMER, PriceConditionData.PRODUCT, PriceConditionData.WEB_ID})})
+@Table(name = "price_conditions", uniqueConstraints = { @UniqueConstraint(columnNames={PriceConditionData.CUSTOMER + "_" + CustomerData.ID, 
+		PriceConditionData.PRODUCT + "_" + ProductData.ID, PriceConditionData.WEB_ID})})
 @SequenceGenerator(name = JpaPriceCondition.SEQ_PRICE_CONDITIONS, sequenceName = "SEQ_PRICE_CONDITIONS", initialValue = 1)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "CONDITION_TYPE", discriminatorType = DiscriminatorType.INTEGER)

@@ -18,14 +18,17 @@ import sk.seges.corpis.appscaffold.model.pap.model.BaseObjectType;
 import sk.seges.corpis.appscaffold.model.pap.model.DomainDataInterfaceType;
 import sk.seges.corpis.pap.model.hibernate.resolver.HibernateEntityResolver;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.utils.ElementSorter;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.model.accessor.ReadOnlyAccessor;
 import sk.seges.sesam.pap.model.resolver.api.EntityResolver;
+import sk.seges.sesam.utils.CastUtils;
 
 public class ModelBaseProcessor extends AbstractDataProcessor {
 
@@ -47,8 +50,14 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 		
 		boolean readOnlyProperty = new ReadOnlyAccessor(method, processingEnv).isReadonly();
 
+		MutableTypeMirror printableType = toPrintableType(owner, mutableReturnType);
+		//TODO, same as in DomainDataInterfaceProcessor
+		if (printableType.getKind().equals(MutableTypeKind.CLASS) || printableType.getKind().equals(MutableTypeKind.INTERFACE)) {
+			printableType = ((MutableDeclaredType)printableType).clone().stripTypeParametersTypes().stripWildcards();
+		}
+
 		if (!readOnlyProperty) {
-			pw.println("private ", toPrintableType(owner, mutableReturnType), " " + fieldName + ";");
+			pw.println("private ", printableType, " " + fieldName + ";");
 			pw.println();
 		}
 		
@@ -58,7 +67,7 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 			pw.print("abstract ");
 		}
 		
-		pw.print(toPrintableType(owner, mutableReturnType), " ");
+		pw.print(printableType, " ");
 		if (isPrimitiveBoolean(mutableReturnType)) {
 			pw.print(MethodHelper.toIsGetter(fieldName));
 		} else {
@@ -75,8 +84,26 @@ public class ModelBaseProcessor extends AbstractDataProcessor {
 		pw.println();
 		
 		if (!readOnlyProperty) {
-			pw.println("public void " + MethodHelper.toSetter(fieldName) +  "(", toPrintableType(owner, mutableReturnType), " " + fieldName + ") {");
-			pw.println("this." + fieldName + " = " + fieldName + ";");
+			
+			MutableTypeMirror setterType = toPrintableType(owner, mutableReturnType);
+			
+			boolean castRequired = (printableType.getKind().equals(MutableTypeKind.INTERFACE) ||
+					printableType.getKind().equals(MutableTypeKind.CLASS)) &&
+					((MutableDeclaredType)printableType).hasTypeParameters() &&
+					((MutableDeclaredType)printableType).getTypeVariables().size() == 1 &&
+					!printableType.toString(ClassSerializer.CANONICAL, true).equals(setterType.toString(ClassSerializer.CANONICAL, true));
+			
+			pw.println("public void " + MethodHelper.toSetter(fieldName) +  "(", setterType, " " + fieldName + ") {");
+			pw.print("this." + fieldName + " = ");
+			
+			if (castRequired) {
+				pw.print(CastUtils.class, ".cast(");
+			}
+			pw.print(fieldName);
+			if (castRequired) {
+				pw.print(", ",((MutableDeclaredType)printableType).getTypeVariables().get(0), ".class)");
+			}
+			pw.println(";");
 			pw.println("}");
 			pw.println();
 		}

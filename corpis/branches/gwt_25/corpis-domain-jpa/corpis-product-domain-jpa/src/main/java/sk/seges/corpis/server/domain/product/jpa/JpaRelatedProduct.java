@@ -29,14 +29,14 @@ public class JpaRelatedProduct extends RelatedProductBase {
 	}
 	
 	@Override
-	@ManyToOne(cascade = { CascadeType.ALL })
+	@ManyToOne(cascade = { CascadeType.ALL }, targetEntity = JpaProduct.class)
 	@JoinColumn(name = "product")
 	public ProductData getProduct() {
 		return super.getProduct();
 	}
 
 	@Override
-	@ManyToOne(cascade = { CascadeType.ALL })
+	@ManyToOne(cascade = { CascadeType.ALL }, targetEntity = JpaProduct.class)
 	@JoinColumn(name = "related_product")
 	public ProductData getRelatedProduct() {
 		return super.getRelatedProduct();

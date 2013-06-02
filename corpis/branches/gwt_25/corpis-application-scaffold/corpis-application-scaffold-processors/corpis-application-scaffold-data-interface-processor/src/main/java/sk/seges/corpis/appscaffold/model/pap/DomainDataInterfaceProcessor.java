@@ -15,6 +15,7 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainData;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.printer.MethodPrinter;
 import sk.seges.sesam.core.pap.utils.MethodHelper;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
@@ -60,8 +61,12 @@ public class DomainDataInterfaceProcessor extends AbstractDataProcessor {
 				pw.println(";");
 				pw.println();
 			} else {
-	
-				pw.print(toPrintableType(context.getTypeElement(), returnType), " ");
+				//to strip wildcards
+				MutableTypeMirror printableType = toPrintableType(context.getTypeElement(), returnType);
+				if (printableType.getKind().equals(MutableTypeKind.CLASS) || printableType.getKind().equals(MutableTypeKind.INTERFACE)) {
+					printableType = ((MutableDeclaredType)printableType).clone().stripTypeParametersTypes().stripWildcards();
+				}
+				pw.print(printableType, " ");
 				if (isPrimitiveBoolean(returnType)) {
 					pw.print(MethodHelper.toIsGetter(method));
 				} else {

@@ -16,14 +16,12 @@ import javax.validation.Valid;
 
 import sk.seges.corpis.server.domain.customer.jpa.JpaAddress;
 import sk.seges.corpis.server.domain.customer.jpa.JpaBasicContact;
-import sk.seges.corpis.server.domain.customer.jpa.JpaCompanyName;
 import sk.seges.corpis.server.domain.customer.jpa.JpaCustomerCore;
 import sk.seges.corpis.server.domain.invoice.server.model.base.OrderCoreBase;
 import sk.seges.corpis.server.domain.invoice.server.model.data.DeliveryPersonData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderCoreData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.OrderStatusData;
 import sk.seges.corpis.server.domain.jpa.JpaCurrency;
-import sk.seges.corpis.server.domain.jpa.JpaPersonName;
 import sk.seges.corpis.server.domain.server.model.data.AddressData;
 import sk.seges.corpis.server.domain.server.model.data.BasicContactData;
 import sk.seges.corpis.shared.domain.EPaymentType;
@@ -90,21 +88,6 @@ public abstract class JpaOrderBase extends OrderCoreBase implements OrderCoreDat
 	}
 
 	@Embedded
-	public JpaCompanyName getCompany() {
-		return (JpaCompanyName) super.getCompany();
-	}
-
-	@Embedded
-	public JpaPersonName getPerson() {
-		return (JpaPersonName) super.getPerson();
-	}
-
-	@Embedded
-	public JpaAddress getAddress() {
-		return (JpaAddress) super.getAddress();
-	}
-
-	@Embedded
 	@Valid
 	@AttributeOverrides( {
 		@AttributeOverride(name = AddressData.STREET, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.STREET)),
@@ -114,11 +97,6 @@ public abstract class JpaOrderBase extends OrderCoreBase implements OrderCoreDat
 		@AttributeOverride(name = AddressData.ZIP, column = @Column(name = JpaDeliveryPerson.TABLE_PREFIX + AddressData.ZIP)) })
 	public JpaAddress getDeliveryAddress() {
 		return (JpaAddress) super.getDeliveryAddress();
-	}
-
-	@Embedded
-	public JpaBasicContact getContact() {
-		return (JpaBasicContact) super.getContact();
 	}
 
 	@Embedded

@@ -25,7 +25,7 @@ import sk.seges.corpis.server.domain.customer.jpa.JpaCustomerCore;
 import sk.seges.corpis.server.domain.invoice.server.model.base.InvoiceBase;
 import sk.seges.corpis.server.domain.invoice.server.model.data.InvoiceItemData;
 import sk.seges.corpis.server.domain.invoice.server.model.data.RemittanceData;
-import sk.seges.corpis.server.domain.jpa.JpaPersonName;
+import sk.seges.corpis.server.domain.jpa.JpaPersonCore;
 import sk.seges.corpis.shared.domain.invoice.RemittanceType;
 import sk.seges.corpis.shared.domain.invoice.TransportType;
 
@@ -112,7 +112,7 @@ public class JpaInvoiceBase extends InvoiceBase {
 		return super.getIncomingInvoiceType();
 	}
 
-	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.PERSIST })//$NON-NLS-1$
+	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.PERSIST }, targetEntity = JpaInvoiceItemBase.class)//$NON-NLS-1$
 	public Set<InvoiceItemData> getInvoiceItems() {
 		return super.getInvoiceItems();
 	}
@@ -133,8 +133,8 @@ public class JpaInvoiceBase extends InvoiceBase {
 	}
 
 	@ManyToOne
-	public JpaPersonName getCreator() {
-		return (JpaPersonName) super.getCreator();
+	public JpaPersonCore getCreator() {
+		return (JpaPersonCore) super.getCreator();
 	}
 
 	@Column(name="text")

@@ -75,7 +75,7 @@ public class JpaProductCategory extends ProductCategoryBase {
 		return super.getNames();
 	}
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, targetEntity = JpaTag.class)
 	@OrderBy(value = TagData.PRIORITY)
 	public List<TagData> getTags() {
 		return super.getTags();

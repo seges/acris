@@ -18,13 +18,13 @@ public interface ProductCategory extends IMutableDomainObject<Long>, HasWebId {
 
     Integer level();
 
-    Set<ProductCategory> children();
+    Set<? extends ProductCategory> children();
 
-    List<Product> products();
+    List<? extends Product> products();
 
     ProductCategory parent();
 
-    List<Name> names();
+    List<? extends Name> names();
 
     String description();
 
@@ -32,7 +32,7 @@ public interface ProductCategory extends IMutableDomainObject<Long>, HasWebId {
     
     EProductCategoryType productCategoryType();
     
-	List<Tag> tags();
+	List<? extends Tag> tags();
 
 	Boolean visuallyDecorated();
 

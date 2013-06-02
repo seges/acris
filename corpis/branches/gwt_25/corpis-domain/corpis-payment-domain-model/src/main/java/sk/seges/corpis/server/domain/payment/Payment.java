@@ -4,14 +4,13 @@ import java.util.Date;
 
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
-import sk.seges.corpis.server.domain.invoice.Invoice;
-import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 @DomainInterface
 @BaseObject
-public interface Payment extends IDomainObject<Long> {
+public interface Payment extends IMutableDomainObject<Long> {
 
 	Date paymentDate();
 
-	Invoice invoice();
+//	Invoice invoice();
 }

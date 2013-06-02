@@ -54,14 +54,24 @@ public class DataDomainDeclared extends DomainDeclared {
 	}
 
 	protected List<ConfigurationTypeElement> getConfigurations(MutableTypeMirror domainType) {
+		List<ConfigurationTypeElement> domainConfigurations = super.getConfigurations(domainType);
+		
 		if (domainType.getKind().equals(MutableTypeKind.CLASS) || domainType.getKind().equals(MutableTypeKind.INTERFACE)) {
 			List<MutableDeclaredType> domainData = dataTypeResolver.getDomainData((MutableDeclaredType)domainType);
+
 			if (domainData.size() > 0) {
-				return super.getConfigurations(domainData.get(0));
+				List<ConfigurationTypeElement> dataConfigurations = super.getConfigurations(domainData.get(0));
+				if (domainConfigurations != null && domainConfigurations.size() > 0) {
+					List<ConfigurationTypeElement> result = new ArrayList<ConfigurationTypeElement>();
+					result.addAll(domainConfigurations);
+					result.addAll(dataConfigurations);
+					return result;
+				}
+				return dataConfigurations;
 			}
 		}
 		
-		return super.getConfigurations(domainType);
+		return domainConfigurations;
 	}
 
 }

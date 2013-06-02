@@ -15,7 +15,6 @@ import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.printer.converter.ConverterProviderPrinter;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider.UsageType;
-import sk.seges.sesam.pap.service.model.ConverterProviderContextType;
 import sk.seges.sesam.pap.service.model.ServiceTypeElement;
 import sk.seges.sesam.pap.service.printer.converterprovider.ServiceConverterProviderContextPrinter;
 import sk.seges.sesam.pap.service.printer.model.ServiceConverterPrinterContext;
@@ -33,20 +32,11 @@ public class ServiceConverterProviderContextMethodPrinter extends ServiceConvert
 
 		UsageType previousUsageType = converterProviderPrinter.changeUsage(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR);
 
-		ServiceTypeElement serviceTypeElement = context.getService();
+		final ServiceTypeElement serviceTypeElement = context.getService();
 		
-		final ConverterProviderContextType convertProviderContextType = new ConverterProviderContextType(serviceTypeElement, processingEnv);
-		context.setConvertProviderContextType(convertProviderContextType);
-//		ParameterElement[] generatedParameters = convertProviderContextType.getRequiredParameters(
-//				parametersResolverProvider.getParameterResolver(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR),
-//				parametersResolverProvider.getParameterResolver(UsageType.DEFINITION));
-
-		serviceTypeElement.getServiceConverter().addNestedType(convertProviderContextType);
+		serviceTypeElement.getServiceConverter().addNestedType(context.getConvertProviderContextType());
 				
-//		ParameterElement[] requiredParameters = 
-//				convertProviderContextType.getConverterParameters(parametersResolverProvider.getParameterResolver(UsageType.CONVERTER_PROVIDER_CONTEXT_CONSTRUCTOR));
-
-		final MutableExecutableType converterProviderContextMethod = processingEnv.getTypeUtils().getExecutable(convertProviderContextType, HibernateServiceConverterProviderParameterResolver.GET_CONVERTER_PROVIDER_CONTEXT_METHOD);
+		final MutableExecutableType converterProviderContextMethod = processingEnv.getTypeUtils().getExecutable(context.getConvertProviderContextType(), HibernateServiceConverterProviderParameterResolver.GET_CONVERTER_PROVIDER_CONTEXT_METHOD);
 		converterProviderContextMethod.addModifier(Modifier.PROTECTED);
 		serviceTypeElement.getServiceConverter().addMethod(converterProviderContextMethod);
 
@@ -68,7 +58,7 @@ public class ServiceConverterProviderContextMethodPrinter extends ServiceConvert
 					}
 				}
 
-				print("return new " + convertProviderContextType.getSimpleName() + "(");
+				print("return new " + context.getConvertProviderContextType().getSimpleName() + "(");
 				int i = 0;
 				for (MutableVariableElement parameter: requiredParameters) {
 					if (i > 0) {
@@ -78,6 +68,12 @@ public class ServiceConverterProviderContextMethodPrinter extends ServiceConvert
 					MutableVariableElement localField = getLocalField(localFields, parameter);
 					
 					if (localField == null) {
+						MutableVariableElement methodParameter = getLocalField(converterProviderContextMethod.getParameters(), parameter);
+							
+						if (methodParameter == null) {
+							serviceTypeElement.getServiceConverter().getField(methodParameter);
+						}
+						
 						print(parameter.getSimpleName());
 					} else {
 						print(localField.getSimpleName());
@@ -93,10 +89,14 @@ public class ServiceConverterProviderContextMethodPrinter extends ServiceConvert
 		super.initialize(context);
 	}
 	
+	private boolean isSameParameter(MutableVariableElement field, MutableVariableElement parameter) {
+		return (field.getSimpleName().equals(parameter.getSimpleName()) && 
+				field.asType().toString(ClassSerializer.CANONICAL, false).equals(parameter.asType().toString(ClassSerializer.CANONICAL, false)));
+	}
+	
 	private MutableVariableElement getLocalField(List<MutableVariableElement> localFields, MutableVariableElement parameter) {
 		for (MutableVariableElement localField: localFields) {
-			if (localField.getSimpleName().equals(parameter.getSimpleName()) && 
-					localField.asType().toString(ClassSerializer.CANONICAL, false).equals(parameter.asType().toString(ClassSerializer.CANONICAL, false))) {
+			if (isSameParameter(localField, parameter)) {
 				return localField;
 			}
 		}

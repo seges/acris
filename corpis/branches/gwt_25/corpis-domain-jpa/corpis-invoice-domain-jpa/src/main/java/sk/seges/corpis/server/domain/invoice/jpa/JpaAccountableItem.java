@@ -22,7 +22,7 @@ public abstract class JpaAccountableItem extends AccountableItemBase {
 	private static final short DESCRIPTION_LENGTH = 250;
 	
 	public JpaAccountableItem() {
-		setPrice(new JpaPrice());
+		setBasePrice(new JpaPrice());
 	}
 
 	@Embedded
@@ -39,12 +39,6 @@ public abstract class JpaAccountableItem extends AccountableItemBase {
 	@Column(nullable = false)
 	public Float getAmount() {
 		return super.getAmount();
-	}
-
-	@Embedded
-	@Column(nullable = false)
-	public JpaPrice getPrice() {
-		return (JpaPrice) super.getPrice();
 	}
 
 	@Column

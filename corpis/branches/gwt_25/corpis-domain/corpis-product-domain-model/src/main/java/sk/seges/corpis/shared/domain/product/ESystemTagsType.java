@@ -8,7 +8,8 @@ package sk.seges.corpis.shared.domain.product;
  */
 public enum ESystemTagsType {
 
-	PS(false), DISCOUNT(false), NEW(false), BESTSELLER(false), ID(false), ADDITIONAL_PRODUCT(false), MASTER(true), TOP(false), NOT_CLASSIFIED(false);
+	PS(false), DISCOUNT(false), NEW(false), BESTSELLER(false), ID(false), ADDITIONAL_PRODUCT(false), MASTER(true), TOP(false), NOT_CLASSIFIED(false),
+	IN_STOCK(false);
 	
 	boolean mutable;
 
