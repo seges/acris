@@ -72,9 +72,7 @@ class MutableExecutable extends MutableElement implements MutableExecutableEleme
 	public Set<AnnotationMirror> getAnnotations() {
 		return annotationHolderDelegate.getAnnotations();
 	}
-	
-	
-	
+		
 	@Override
 	public MutableExecutableElement clone() {
 		MutableExecutable result = null;

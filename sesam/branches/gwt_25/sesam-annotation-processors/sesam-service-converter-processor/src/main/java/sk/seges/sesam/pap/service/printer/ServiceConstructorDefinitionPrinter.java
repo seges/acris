@@ -6,6 +6,7 @@ import javax.lang.model.element.Modifier;
 
 import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.TransferObjectProcessingEnvironment;
 import sk.seges.sesam.pap.model.resolver.ConverterConstructorParametersResolverProvider;
 import sk.seges.sesam.pap.service.model.ServiceConverterParametersFilter;
@@ -23,8 +24,8 @@ public class ServiceConstructorDefinitionPrinter extends AbstractParameterCollec
 	public void print(ServiceConverterPrinterContext context) {
 		super.print(context);
 		context.getService().getServiceConverter().getConstructor().
-			addParameter(processingEnv.getElementUtils().getParameterElement(context.getLocalServiceInterface(), context.getLocalServiceFieldName())).
-			addModifier(Modifier.PUBLIC);
+			addParameter(processingEnv.getElementUtils().getParameterElement(ProcessorUtils.replaceTypeVariablesByWildcards(context.getLocalServiceInterface().clone()), 
+					context.getLocalServiceFieldName())).addModifier(Modifier.PUBLIC);
 	}
 	
 	@Override

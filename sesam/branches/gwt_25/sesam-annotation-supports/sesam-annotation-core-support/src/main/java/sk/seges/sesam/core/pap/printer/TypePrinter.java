@@ -1,6 +1,5 @@
 package sk.seges.sesam.core.pap.printer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -64,22 +63,51 @@ public class TypePrinter {
 				super.flush();
 			}
 		});
-		
-		bodyPrinter.addNestedPrinter(new FormattedPrintWriter(processingEnv) {
+
+		final HierarchyPrintWriter constructorsPrinter = new HierarchyPrintWriter(processingEnv) {
+			
+			boolean flushed = false;
+			
 			@Override
 			public void flush() {
+				if (flushed) {
+					return;
+				}
+				flushed = true;
+				printConstructors(this, type);
+				super.flush();
+			}
+		};
+
+		final HierarchyPrintWriter methodPrinter = new HierarchyPrintWriter(processingEnv) {
+			
+			boolean flushed = false;
+			
+			@Override
+			public void flush() {
+				if (flushed) {
+					return;
+				}
+				flushed = true;
+				printMethods(this, type);
+				super.flush();
+			}
+		};
+
+		bodyPrinter.addNestedPrinter(new FormattedPrintWriter(processingEnv) {
+			
+			@Override
+			public void flush() {
+				methodPrinter.flush();
+				constructorsPrinter.flush();
 				printFields(this, type);
 				super.flush();
 			}
 		});
-		bodyPrinter.addNestedPrinter(new HierarchyPrintWriter(processingEnv) {
-			@Override
-			public void flush() {
-				printMethods(this, type);
-				super.flush();
-			}
-		});
-
+		
+		bodyPrinter.addNestedPrinter(constructorsPrinter);
+		bodyPrinter.addNestedPrinter(methodPrinter);
+		
 		typePrintWriter.println("}");
 
 		typePrintWriter.setCurrentPrinter(bodyPrinter);
@@ -87,15 +115,17 @@ public class TypePrinter {
 		return this;
 	}
 
-	private void printMethods(HierarchyPrintWriter printWriter, MutableDeclaredType type) {
-
+	private void printConstructors(HierarchyPrintWriter printWriter, MutableDeclaredType type) {
 		if (!type.getConstructor().isDefault()) {
 			type.getConstructor().setReturnType(null);
 			printWriter.println();
 			printWriter.addNestedPrinter(type.getConstructor().getPrintWriter());
 			printWriter.println();
 		}
-		
+	}
+	
+	private void printMethods(HierarchyPrintWriter printWriter, MutableDeclaredType type) {
+
 		for (MutableExecutableType method: type.getMethods()) {
 			printWriter.addNestedPrinter(method.getPrintWriter());
 			printWriter.println();
@@ -123,7 +153,7 @@ public class TypePrinter {
 	private void printFields(FormattedPrintWriter pw, MutableDeclaredType type) {
 		
 		List<MutableVariableElement> fields = type.getFields();
-
+		
 		if (fields != null) {
 
 			for (MutableVariableElement field: fields) {
@@ -221,16 +251,17 @@ public class TypePrinter {
 	protected MutableTypeMirror toPrintableType(MutableTypeMirror mutableType) {
 		if (mutableType.getKind().isDeclared()) {
 			MutableDeclaredType declaredType = (MutableDeclaredType)mutableType;
-			List<? extends MutableTypeVariable> typeVariables = declaredType.getTypeVariables();
-			List<MutableTypeVariable> strippedTypeVariables = new ArrayList<MutableTypeVariable>();
-			for (MutableTypeVariable typeVariable: typeVariables) {
-				if (typeVariable.getVariable() != null) {
-					strippedTypeVariables.add(processingEnv.getTypeUtils().getTypeVariable(typeVariable.getVariable()));
-				} else {
-					strippedTypeVariables.add(typeVariable);
-				}
-			}
-			return declaredType.clone().setTypeVariables(strippedTypeVariables.toArray(new MutableTypeVariable[] {}));
+			return declaredType.clone().stripTypeParametersTypes();
+//			List<? extends MutableTypeVariable> typeVariables = declaredType.getTypeVariables();
+//			List<MutableTypeVariable> strippedTypeVariables = new ArrayList<MutableTypeVariable>();
+//			for (MutableTypeVariable typeVariable: typeVariables) {
+//				if (typeVariable.getVariable() != null) {
+//					strippedTypeVariables.add(processingEnv.getTypeUtils().getTypeVariable(typeVariable.getVariable()));
+//				} else {
+//					strippedTypeVariables.add(typeVariable);
+//				}
+//			}
+//			return declaredType.clone().setTypeVariables(strippedTypeVariables.toArray(new MutableTypeVariable[] {}));
 		}
 		
 		return mutableType;

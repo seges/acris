@@ -48,7 +48,7 @@ public class ConverterProviderContextPrinterDelegate {
 					pw.print("registerConverterProvider(new ", converterPrinterDelegate, "(");
 					ConverterConstructorParametersResolver parameterResolver = parametersResolverProvider.getParameterResolver(UsageType.CONVERTER_PROVIDER_CONSTRUCTOR);
 					ParameterElement[] converterParameters = converterProviderType.getConverterParameters(parameterResolver);
-					
+
 					List<ExecutableElement> constructors = ElementFilter.constructorsIn(converterPrinterDelegate.getEnclosedElements());
 					
 					List<ConstructorParameter> constructorParameters = new ArrayList<ConstructorParameter>();

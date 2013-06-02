@@ -1,5 +1,7 @@
 package sk.seges.sesam.core.pap.printer;
 
+import java.util.List;
+
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -8,6 +10,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
 import sk.seges.sesam.core.pap.model.mutable.api.MutableExecutableType;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.api.element.MutableVariableElement;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableProcessingEnvironment;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
@@ -47,28 +50,46 @@ public class MethodPrinter {
 	}
 
 	public void printMethodDefinition(MutableExecutableType method) {
+		List<MutableTypeVariable> typeVariables = method.getTypeVariables();
+		
 		for (Modifier modifier: method.getModifiers()) {
 			printWriter.print(modifier.toString() + " ");
 		}
 
+		int i = 0;
+		
+		for (MutableTypeVariable typeVariable: typeVariables) {
+			if (i == 0) {
+				printWriter.print("<");
+			} else {
+				printWriter.print(", ");
+			}
+			printWriter.print(typeVariable);
+			i++;
+		}
+
+		if (i > 0) {
+			printWriter.print("> ");
+		}
+
 		if (method.getReturnType() != null) {
-			printWriter.print(method.getReturnType(), " ");
+			printWriter.print(ProcessorUtils.stripTypeParametersTypes(method.getReturnType()), " ");
 		}
 		
 		printWriter.print(method.getSimpleName().toString() + "(");
 		
-		int i = 0;
+		i = 0;
 		for (MutableVariableElement parameter: method.getParameters()) {
 			if (i > 0) {
 				printWriter.print(", ");
 			}
-			printWriter.print(parameter.asType(), " " + parameter.getSimpleName().toString());
+			printWriter.print(ProcessorUtils.stripTypeParametersTypes(parameter.asType()), " " + parameter.getSimpleName().toString());
 			i++;
 		}
 		
 		printWriter.print(")");
 	}
-
+	
 	private void printType(TypeMirror typeMirror, TypeElement owner) {
 		switch (typeMirror.getKind()) {
 		case TYPEVAR:

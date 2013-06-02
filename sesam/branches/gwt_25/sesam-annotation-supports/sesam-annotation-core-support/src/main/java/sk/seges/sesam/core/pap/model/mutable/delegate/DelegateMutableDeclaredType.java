@@ -227,6 +227,11 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	}
 
 	@Override
+	public MutableDeclaredType stripWildcards() {
+		return ensureDelegateType().stripWildcards();
+	}
+	
+	@Override
 	public MutableDeclaredType stripTypeParameters() {
 		return ensureDelegateType().stripTypeParameters();
 	}
@@ -292,8 +297,8 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	}
 	
 	@Override
-	public MutableDeclaredType stripVariableTypeVariables() {
-		return ensureDelegateType().stripVariableTypeVariables();
+	public MutableDeclaredType stripTypeParametersVariables() {
+		return ensureDelegateType().stripTypeParametersVariables();
 	}
 
 	public MutableDeclaredType addField(MutableVariableElement field) {
@@ -303,6 +308,11 @@ public abstract class DelegateMutableDeclaredType extends DelegateMutableType im
 	@Override
 	public List<MutableVariableElement> getFields() {
 		return ensureDelegateType().getFields();
+	}
+
+	@Override
+	public MutableVariableElement getField(MutableVariableElement field) {
+		return ensureDelegateType().getField(field);
 	}
 	
 	@Override

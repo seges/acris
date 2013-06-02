@@ -134,9 +134,9 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 			return MutableTypeKind.ANNOTATION_TYPE;
 		case ENUM:
 			return MutableTypeKind.ENUM;
+		default:
+			throw new RuntimeException("Unsupported kind " + kind + ". Unable to create declared type with this kind.");
 		}
-		
-		throw new RuntimeException("Unsupported kind " + kind + ". Unable to create declared type with this kind.");
 	}
 	
 	private void copyModifiers() {
@@ -624,6 +624,8 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 					if (variableName != null && variableName.length() > 0 && !variableName.equals(MutableWildcard.WILDCARD_NAME)) {
 						return true;
 					}
+				default:
+					break;
 				}
 			}
 		}
@@ -643,36 +645,101 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 		return result.toArray(new MutableTypeVariable[] {});
 	}
 
-	public MutableDeclaredType stripVariableTypeVariables() {
-		if (hasVariableParameterTypes()) {
-			stripTypeParametersTypes();
-		} else {
-			for (MutableTypeVariable typeVariable: getTypeVariables()) {
-				Set<? extends MutableTypeMirror> lowerBounds = typeVariable.getLowerBounds();
+	public MutableDeclaredType stripTypeParametersVariables() {
+
+		boolean invalidate = false;
+		
+		MutableTypeVariable[] variables = new MutableTypeVariable[getTypeVariables().size()];
+
+		int i = 0;
+		for (MutableTypeVariable typeParameter: getTypeVariables()) {
+			
+			MutableVariable typeVariable = new MutableVariable();
+
+			variables[i] = typeVariable;
+			
+			if (typeParameter.getLowerBounds() != null) {
 				
-				if (lowerBounds != null) {
-					for (MutableTypeMirror lowerBound: lowerBounds) {
-						if (lowerBound instanceof MutableDeclaredType) {
-							((MutableDeclaredType)lowerBound).stripVariableTypeVariables();
-						}
+				Set<MutableTypeMirror> strippedLowerBounds = new HashSet<MutableTypeMirror>();
+				
+				for (MutableTypeMirror lowerBound: typeParameter.getLowerBounds()) {
+					if (lowerBound instanceof MutableDeclaredType) {
+						strippedLowerBounds.add(((MutableDeclaredType)lowerBound).clone().stripTypeParametersVariables());
+					} else {
+						strippedLowerBounds.add(lowerBound);
 					}
 				}
 				
-				Set<? extends MutableTypeMirror> upperBounds = typeVariable.getUpperBounds();
+				typeVariable.setLowerBounds(strippedLowerBounds);
+			}
+			
+			if (typeParameter.getUpperBounds() != null) {
 				
-				if (upperBounds != null) {
-					for (MutableTypeMirror upperBound: upperBounds) {
-						if (upperBound instanceof MutableDeclaredType) {
-							((MutableDeclaredType)upperBound).stripVariableTypeVariables();
-						}
+				Set<MutableTypeMirror> strippedUpperBounds = new HashSet<MutableTypeMirror>();
+
+				for (MutableTypeMirror upperBound: typeParameter.getUpperBounds()) {
+					if (upperBound instanceof MutableDeclaredType) {
+						strippedUpperBounds.add(((MutableDeclaredType)upperBound).clone().stripTypeParametersVariables());
+					} else {
+						strippedUpperBounds.add(upperBound);
 					}
 				}
+				
+				typeVariable.setUpperBounds(strippedUpperBounds);
+				
+				if (typeVariable.getLowerBounds() == null && typeVariable.getUpperBounds() == null || (typeVariable.getLowerBounds().size() == 0 && typeVariable.getUpperBounds().size() == 0)) {
+					typeVariable.setVariable(typeParameter.getVariable());
+				}
+			}
+			
+			i++;
+		}
+		
+		if (invalidate) {
+			dirty();
+		}
+
+		return setTypeVariables(variables);
+	}
+
+	private Set<? extends MutableTypeMirror> stripTypeParametersTypes(Set<? extends MutableTypeMirror> bounds) {
+		for (MutableTypeMirror bound: bounds) {
+			if (bound.getKind().equals(MutableTypeKind.CLASS) ||
+				bound.getKind().equals(MutableTypeKind.INTERFACE)) {
+				((MutableDeclaredType)bound).stripTypeParametersTypes();
 			}
 		}
 		
-		return this;
+		return bounds;
 	}
 
+	public MutableDeclaredType stripWildcards() {
+		boolean invalidate = false;
+		
+		MutableTypeVariable[] variables = new MutableTypeVariable[getTypeVariables().size()];
+		int i = 0;
+		for (MutableTypeVariable typeParameter: getTypeVariables()) {
+			if (typeParameter.getVariable() != null && typeParameter.getVariable().equals(MutableWildcardType.WILDCARD_NAME) &&
+				(typeParameter.getLowerBounds().size() + typeParameter.getUpperBounds().size()) > 0) {
+				MutableVariable typeVariable = new MutableVariable();
+				typeVariable.setLowerBounds(stripTypeParametersTypes(typeParameter.getLowerBounds()));
+				typeVariable.setUpperBounds(stripTypeParametersTypes(typeParameter.getUpperBounds()));
+				typeVariable.setVariable(null);
+				variables[i] = typeVariable;
+				invalidate = true;
+			} else {
+				variables[i] = typeParameter;
+			}
+			i++;
+		}
+
+		if (invalidate) {
+			dirty();
+		}
+
+		return setTypeVariables(variables);
+	}
+	
 	public MutableDeclaredType stripTypeParametersTypes() {
 
 		boolean invalidate = false;
@@ -685,16 +752,18 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 				typeVariable.setVariable(typeParameter.getVariable().toString());
 				variables[i] = typeVariable;
 				invalidate = true;
-			} else if (typeParameter.getVariable() != null && typeParameter.getVariable().equals(MutableWildcardType.WILDCARD_NAME) &&
-				(typeParameter.getLowerBounds().size() + typeParameter.getUpperBounds().size()) > 0) {
-				MutableVariable typeVariable = new MutableVariable();
-				typeVariable.setLowerBounds(typeParameter.getLowerBounds());
-				typeVariable.setUpperBounds(typeParameter.getUpperBounds());
-				typeVariable.setVariable(null);
-				variables[i] = typeVariable;
-				invalidate = true;
+//			} else if (typeParameter.getVariable() != null && typeParameter.getVariable().equals(MutableWildcardType.WILDCARD_NAME) &&
+//				(typeParameter.getLowerBounds().size() + typeParameter.getUpperBounds().size()) > 0) {
+//				MutableVariable typeVariable = new MutableVariable();
+//				typeVariable.setLowerBounds(stripTypeParametersTypes(typeParameter.getLowerBounds()));
+//				typeVariable.setUpperBounds(stripTypeParametersTypes(typeParameter.getUpperBounds()));
+//				typeVariable.setVariable(null);
+//				variables[i] = typeVariable;
+//				invalidate = true;
 			} else {
 				variables[i] = typeParameter;
+				stripTypeParametersTypes(typeParameter.getLowerBounds());
+				stripTypeParametersTypes(typeParameter.getUpperBounds());
 			}
 			i++;
 		}
@@ -774,6 +843,20 @@ class MutableDeclared extends MutableHasAnnotationsType implements MutableDeclar
 		}
 		fields.add(field);
 		return this;
+	}
+	
+	@Override
+	public MutableVariableElement getField(MutableVariableElement field) {
+		if (fields == null) {
+			return null;
+		}
+		for (MutableVariableElement localfield: fields) {
+			if (localfield.getSimpleName().equals(field.getSimpleName()) && localfield.asType().isSameType(field.asType())) {
+				return localfield;
+			}
+		}
+		
+		return null;
 	}
 	
 	public List<MutableVariableElement> getFields() {

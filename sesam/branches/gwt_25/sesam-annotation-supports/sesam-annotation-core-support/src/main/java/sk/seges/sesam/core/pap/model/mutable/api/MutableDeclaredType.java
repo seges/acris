@@ -86,7 +86,8 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations, 
 
 	MutableDeclaredType stripTypeParameters();
 	MutableDeclaredType stripTypeParametersTypes();
-	MutableDeclaredType stripVariableTypeVariables();
+	MutableDeclaredType stripTypeParametersVariables();
+	MutableDeclaredType stripWildcards();
 
 	MutableDeclaredType prefixTypeParameter(String prefix);
 	MutableDeclaredType renameTypeParameter(RenameActionType actionType, String parameter);
@@ -104,6 +105,7 @@ public interface MutableDeclaredType extends MutableTypeMirror, HasAnnotations, 
 	
 	MutableDeclaredType addField(MutableVariableElement field);
 	List<MutableVariableElement> getFields();
+	MutableVariableElement getField(MutableVariableElement field);
 	MutableDeclaredType clearFields();
 	
 	MutableDeclaredType addNestedType(MutableDeclaredType nestedType);

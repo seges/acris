@@ -15,7 +15,10 @@ import javax.tools.Diagnostic.Kind;
 
 import sk.seges.sesam.core.pap.model.ConverterConstructorParameter;
 import sk.seges.sesam.core.pap.model.api.ClassSerializer;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
+import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.pap.model.model.ConverterParameterFilter;
 import sk.seges.sesam.pap.model.model.ConverterTypeElement;
@@ -37,6 +40,33 @@ public class AbstractServicePrinter {
 	protected AbstractServicePrinter(TransferObjectProcessingEnvironment processingEnv, ConverterConstructorParametersResolverProvider parametersResolverProvider) {
 		this.processingEnv = processingEnv;
 		this.parametersResolverProvider = parametersResolverProvider;
+	}
+	
+	private void collectTypeConverters(TypeMirror type, Set<ConverterTypeElement> converters, List<ConverterConstructorParameter> parameters) {
+		collectTypeConverters(processingEnv.getTypeUtils().toMutableType(type), converters, parameters);
+	}
+	
+	private void collectTypeConverters(MutableTypeMirror type, Set<ConverterTypeElement> converters, List<ConverterConstructorParameter> parameters) {
+
+		DtoType dtoType = processingEnv.getTransferObjectUtils().getDtoType(type);
+
+		ConverterTypeElement converter = dtoType.getConverter();
+	
+		if (converter != null && !converters.contains(converter)) {
+			parameters.addAll(converter.getConverterParameters(parametersResolverProvider.getParameterResolver(UsageType.DEFINITION), ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
+			converters.add(converter);
+			
+			if (dtoType.getKind().equals(MutableTypeKind.CLASS) || dtoType.getKind().equals(MutableTypeKind.INTERFACE)) {
+				for (MutableTypeVariable typeVariable: ((MutableDeclaredType)dtoType).getTypeVariables()) {
+					for (MutableTypeMirror lowerBound: typeVariable.getLowerBounds()) {
+						collectTypeConverters(lowerBound, converters, parameters);
+					}
+					for (MutableTypeMirror upperBound: typeVariable.getUpperBounds()) {
+						collectTypeConverters(upperBound, converters, parameters);
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -66,28 +96,12 @@ public class AbstractServicePrinter {
 			}
 
 			if (!remoteMethod.getReturnType().getKind().equals(TypeKind.VOID)) {
-				
-				DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(remoteMethod.getReturnType());
-
-				ConverterTypeElement converter = dtoReturnType.getConverter();
-			
-				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolverProvider.getParameterResolver(UsageType.DEFINITION), ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
-					converters.add(converter);
-				}
+				collectTypeConverters(remoteMethod.getReturnType(), converters, parameters);
 			}
 
 			for (int index = 0; index < localMethod.getParameters().size(); index++) {
 				TypeMirror dtoType = remoteMethod.getParameters().get(index).asType();
-
-				DtoType dtoReturnType = processingEnv.getTransferObjectUtils().getDtoType(dtoType);
-
-				ConverterTypeElement converter = dtoReturnType.getConverter();
-
-				if (converter != null && !converters.contains(converter)) {
-					parameters.addAll(converter.getConverterParameters(parametersResolverProvider.getParameterResolver(UsageType.DEFINITION), ConverterInstancerType.SERVICE_CONVERETR_INSTANCER));
-					converters.add(converter);
-				}
+				collectTypeConverters(dtoType, converters, parameters);
 			}
 		}
 
@@ -102,12 +116,12 @@ public class AbstractServicePrinter {
 	
 			for (ExecutableElement method : methods) {
 				
-				method = ProcessorUtils.getOverrider(serviceTypeElement.asElement(), method, processingEnv);
+				ExecutableElement overriderMethod = ProcessorUtils.getOverrider(serviceTypeElement.asElement(), method, processingEnv);
 				
 				boolean pairMethod = false;
 	
-				if (method.getSimpleName().toString().equals(remoteMethod.getSimpleName().toString())
-						&& method.getParameters().size() == remoteMethod.getParameters().size()) {
+				if (overriderMethod.getSimpleName().toString().equals(remoteMethod.getSimpleName().toString())
+						&& overriderMethod.getParameters().size() == remoteMethod.getParameters().size()) {
 					pairMethod = true;
 					int index = 0;
 					for (VariableElement dtoParameter : remoteMethod.getParameters()) {
@@ -115,7 +129,7 @@ public class AbstractServicePrinter {
 						DtoType parameterDtoType = processingEnv.getTransferObjectUtils().getDtoType(dtoParameter.asType());
 						DomainType parameterDomainType = parameterDtoType.getDomain();
 	
-						if (!processingEnv.getTypeUtils().isSameType(parameterDomainType, processingEnv.getTypeUtils().toMutableType(method.getParameters().get(index).asType()))) {
+						if (!processingEnv.getTypeUtils().isSameType(parameterDomainType, processingEnv.getTypeUtils().toMutableType(overriderMethod.getParameters().get(index).asType()))) {
 							pairMethod = false;
 							break;
 						}
@@ -125,7 +139,7 @@ public class AbstractServicePrinter {
 	
 				if (pairMethod) {
 					
-					DomainType returnDomainType = processingEnv.getTransferObjectUtils().getDomainType(method.getReturnType());
+					DomainType returnDomainType = processingEnv.getTransferObjectUtils().getDomainType(overriderMethod.getReturnType());
 					DtoType returnDtoType = returnDomainType.getDto();
 					
 					MutableTypeMirror mutableRemoteReturnType = processingEnv.getTypeUtils().toMutableType(remoteMethod.getReturnType());

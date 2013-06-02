@@ -107,7 +107,7 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 				pw.println();
 				pw.print("			, ");
 			}
-			pw.print(localService.getRemoteServiceInterface(), ".class");
+			pw.print(localService.getRemoteServiceInterface().clone().stripTypeParameters(), ".class");
 			i++;
 		}
 		
@@ -157,7 +157,7 @@ public class ServiceConverterProcessor extends AbstractTransferProcessingProcess
 			}
 			elementPrinter.finish(serviceTypeElement);
 		}
-	
+
 		this.converterProviderPrinter.printConverterMethods(context.getOutputType(), true, ConverterInstancerType.SERVICE_CONVERETR_INSTANCER);
 	}
 
