@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.novanic.gwteventservice</groupId>
-  <artifactId>gwteventservice</artifactId>
-  <version>1.0.2</version>
-  <description>Artifactory auto generated POM</description>
-</project>

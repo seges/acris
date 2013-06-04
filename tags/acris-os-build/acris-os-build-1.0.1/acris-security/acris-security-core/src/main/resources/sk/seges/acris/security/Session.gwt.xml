@@ -1,3 +1,0 @@
-<module>
-    <inherits name='sk.seges.acris.security.client.Session' />
-</module>

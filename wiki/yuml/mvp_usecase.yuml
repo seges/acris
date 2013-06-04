@@ -1,4 +1,0 @@
-[User]-(Login)
-[User]-(Logout) 
-(Login)<(Add new user) 
-(Login)<(Fetch users)
