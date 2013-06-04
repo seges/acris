@@ -1,0 +1,15 @@
+.dateBoxPopup {
+	z-index: 22000;
+}
+.acris-reporting-showcase-static {
+	margin-left: 10px;
+}
+.acris-reporting-showcase-content {
+	margin-left: 10px;
+}
+
+.acris-reporting-remove-report .acris-cmp-dialogContentWrapper .acris-cmp-options {
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
