@@ -66,5 +66,20 @@ public class JpaSecurityPermission extends SecurityPermissionDTO {
     @Override
     public Integer getLevel() {
     	return super.getLevel();
-    }   
+    } 
+
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see sk.seges.acris.security.shared.user_management.domain.dto.
+     * SecurityPermissionDTO#getPermission()
+     */
+     @Column
+     @Override
+     public String getPermission() {
+         return super.getPermission();
+     }
+
+  
 }
