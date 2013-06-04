@@ -133,6 +133,8 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 					userDTO.getParams().put(OpenIDUserDTO.EMAIL_FROM_SREG, sregResp.getAttributeValue("email"));
 				}
 				return userDTO; // success
+			} else {
+				log.error("Unable to verify using openId, status: " + verification.getStatusMsg());
 			}
 		} catch (Exception e) {
 			log.error("Error while verifying openID authentication response", e);
