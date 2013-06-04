@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<inherits name='sk.seges.acris.Core' />
+	<inherits name='sk.seges.acris.Common' />
+	<inherits name='sk.seges.acris.Callbacks' />
+
+	<inherits name='sk.seges.acris.security.Session' />
+	<inherits name='sk.seges.acris.security.SecurityApi' />
+
+	<source path="client" />
+	<source path="shared" />
+
+	<!-- Security generators -->
+	<generate-with class="sk.seges.acris.security.rebind.SecuredObjectGenerator">
+		<any>
+			<when-type-assignable class="sk.seges.acris.security.client.ISecuredObject" />
+			<!-- when-type-assignable class="sk.seges.acris.security.client.mediator.IRuntimeAuthorityMediator" /-->
+		</any>
+	</generate-with>
+</module>

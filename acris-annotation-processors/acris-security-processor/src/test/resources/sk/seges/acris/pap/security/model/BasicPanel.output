@@ -1,0 +1,47 @@
+package sk.seges.acris.pap.security.model;
+
+import javax.annotation.Generated;
+
+import sk.seges.acris.security.client.CheckableSecuredObject;
+import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
+import sk.seges.acris.security.shared.util.SecurityUtils;
+
+@Generated(value = "sk.seges.acris.pap.security.SecurityProcessor")
+public class SecurityWrapperBasicPanel extends BasicPanel implements CheckableSecuredObject {
+
+	private GenericUserDTO user;
+
+	private ClientSession<GenericUserDTO> clientSession;
+
+	public ClientSession<GenericUserDTO> getClientSession() {
+		return clientSession;
+	}
+
+	public void setClientSession(ClientSession<GenericUserDTO> clientSession) {
+		this.clientSession = clientSession;
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		check();
+	}
+
+	@Override
+	public void check() {
+		user = null;
+
+		if (getClientSession() != null) {
+			user = (GenericUserDTO)getClientSession().getUser();
+		}
+
+		SecurityUtils.handlePermission(user, this, "TEXT");
+		SecurityUtils.handlePermission(user, label1, "TEXT");
+		SecurityUtils.handlePermission(user, label2, "TEXT");
+		SecurityUtils.handlePermission(user, textBox, "TEXT");
+		SecurityUtils.handlePermission(user, checkBox, "TEXT");
+		SecurityUtils.handlePermission(user, radioButton, "TEXT");
+	}
+
+}

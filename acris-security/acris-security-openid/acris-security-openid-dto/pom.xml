@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-security-openid-dto</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS Security OpenID DTOs</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-security-openid</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<dependencies>
+		<!-- Corpis dependencies -->
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-model-domain-configurations</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>sk.seges.corpis</groupId>
+            <artifactId>corpis-application-scaffold-data-domain-model-converter-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-openid-scaffold-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-openid-scaffold-model</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+	</dependencies>
+</project>
