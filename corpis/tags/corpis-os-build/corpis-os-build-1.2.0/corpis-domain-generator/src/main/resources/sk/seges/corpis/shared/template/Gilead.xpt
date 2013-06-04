@@ -1,0 +1,122 @@
+«IMPORT sculptormetamodel»
+
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+
+«DEFINE dataEntity FOR Entity»
+	«FILE javaFileName(getDomainPackage() + ".hibernate.gilead.Gilead" + name)»
+package «getDomainPackage()».hibernate.gilead;
+
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.sf.gilead.pojo.base.ILightEntity;
+import net.sf.gilead.pojo.gwt.IGwtSerializableParameter;
+
+public class Gilead«name» extends Hibernate«name» implements ILightEntity {
+
+	protected Map<String, IGwtSerializableParameter> _proxyInformations;
+	protected Map<String, Boolean> _initializationMap;
+	
+	/**
+	 * Add proxy information
+	 */
+	public void addProxyInformation(String property,
+									Object proxyInfo)
+	{
+		if (_proxyInformations == null)
+		{
+			_proxyInformations = new HashMap<String, IGwtSerializableParameter>();
+		}
+		_proxyInformations.put(property, (IGwtSerializableParameter) proxyInfo);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.gilead.pojo.base.ILightEntity#removeProxyInformation(java.lang.String)
+	 */
+	public void removeProxyInformation(String property)
+	{
+		if (_proxyInformations != null)
+		{
+			_proxyInformations.remove(property);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.gilead.pojo.base.ILightEntity#getProxyInformation(java.lang.String)
+	 */
+	public Object getProxyInformation(String property)
+	{
+		if (_proxyInformations != null)
+		{
+			return _proxyInformations.get(property);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.dotnetguru.lazykiller.pojo.ILazyPojo#getLazyString()
+	 */
+	public String getDebugString()
+	{
+		if (_proxyInformations != null)
+		{
+			return _proxyInformations.toString();
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.gilead.pojo.base.ILightEntity#isInitialized(java.lang.String)
+	 */
+	public boolean isInitialized(String property)
+	{
+		if (_initializationMap == null)
+		{
+			return true;
+		}
+		
+		Boolean initialized = _initializationMap.get(property);
+		if (initialized == null)
+		{
+			return true;
+		}
+		return initialized.booleanValue();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.gilead.pojo.base.ILightEntity#setInitialized(java.lang.String, boolean)
+	 */
+	public void setInitialized(String property, boolean initialized)
+	{
+		if (_initializationMap == null)
+		{
+			_initializationMap = new HashMap<String, Boolean>();
+		}
+		_initializationMap.put(property, initialized);	
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.sf.gilead.pojo.gwt.IRequestParameter#getValue()
+	 */
+	public Object getUnderlyingValue()
+	{
+		return this;
+	}	
+		
+}
+	«ENDFILE»
+«ENDDEFINE»

@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-os</artifactId>
+	<version>1.0.4-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.sesam</groupId>
+		<artifactId>sesam-os-base-parent</artifactId>
+		<version>1.0.6-SNAPSHOT</version>
+	</parent>
+
+	<!-- More Project Information -->
+	<name>CorpIS Parent</name>
+	<description>Parent project for CorpIS</description>
+	
+	<modules>
+		<module>../corpis-test</module>
+		<module>../corpis-dao-api</module>
+		<module>../corpis-dao-impl</module>
+	</modules>
+
+	<properties>
+		<repository.type>java</repository.type>
+		<repository.project>corpis</repository.project>
+	
+		<sesam.version>1.0.5-SNAPSHOT</sesam.version>
+		<sesam-os.version>1.0.6-SNAPSHOT</sesam-os.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>1.0.6-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>1.0.6-SNAPSHOT</version>
+				<classifier>sources</classifier>
+			</dependency>
+			
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-dao-api</artifactId>
+				<version>1.0.4-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-dao-impl</artifactId>
+				<version>1.0.4-SNAPSHOT</version>
+			</dependency>		
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>corpis-test</artifactId>
+				<version>1.0.4-SNAPSHOT</version>  
+				<scope>test</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>dumbster</groupId>
+				<artifactId>dumbster</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

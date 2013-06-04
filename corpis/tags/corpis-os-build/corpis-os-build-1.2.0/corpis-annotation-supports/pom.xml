@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>corpis-annotation-supports</artifactId>
+	<name>corpis-annotation-supports</name>
+	<description>Corpis Annotation Supports</description>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+		<version>1.2.0</version>
+		<relativePath>../corpis-os/pom.xml</relativePath>
+	</parent>
+
+	<modules>
+		<module>corpis-service-support</module>
+	</modules>
+</project>

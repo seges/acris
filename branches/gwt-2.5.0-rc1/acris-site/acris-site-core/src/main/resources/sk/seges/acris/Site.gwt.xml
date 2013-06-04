@@ -1,0 +1,11 @@
+<module>
+	<!-- GWT basic inherit -->	
+	<inherits name='com.google.gwt.user.User' />
+	
+	<!-- Acris site inherit -->
+	<inherits name='sk.seges.acris.site.Site' />	
+
+    <source path="domain">
+    	<exclude name='server/**' />
+    </source>
+</module>

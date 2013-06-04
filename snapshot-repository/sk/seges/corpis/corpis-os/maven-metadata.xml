@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>sk.seges.corpis</groupId>
+  <artifactId>corpis-os</artifactId>
+  <version>1.0.6-SNAPSHOT</version>
+  <versioning>
+    <versions>
+      <version>1.0.6-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20100921211356</lastUpdated>
+  </versioning>
+</metadata>

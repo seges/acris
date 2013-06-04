@@ -1,0 +1,9 @@
+<module>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='sk.seges.acris.theme.Shadow' />
+	<inherits name='sk.seges.acris.widget.Showcase' />
+
+	<set-property name='acristheme' value='SHADOW'/>
+	
+	<source path="showcase" />	
+</module>

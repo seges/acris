@@ -1,0 +1,195 @@
+package sk.seges.acris.theme.component;
+
+import sk.seges.acris.theme.component.TestWidget;
+import java.lang.Object;
+
+public class StyledTestWidgetPanel<T extends Object> extends TestWidget<T> {
+
+	private boolean componentOperation = false;
+	private StyledTestWidgetComponent component;
+
+	public StyledTestWidgetPanel() {
+		this(new StyledTestWidgetComponent());
+	}
+
+	private StyledTestWidgetPanel(StyledTestWidgetComponent component) {
+		super((com.google.gwt.user.client.Element)component.testWidget);
+		this.component = component;
+	}
+
+	@Override
+	public com.google.gwt.user.client.Element getElement() {
+		if (component == null) {
+			return super.getElement();
+		}
+		if (componentOperation) {
+			return (com.google.gwt.user.client.Element)component.testWidget;
+		}
+		return component.getElement();
+	}
+	public void addStyleDependentName(java.lang.String styleSuffix) {
+		componentOperation = true;
+		super.addStyleDependentName(styleSuffix);
+		componentOperation = false;
+	}
+	
+	public void addStyleName(java.lang.String style) {
+		componentOperation = true;
+		super.addStyleName(style);
+		componentOperation = false;
+	}
+	
+	public int getAbsoluteLeft() {
+		componentOperation = true;
+		int result = super.getAbsoluteLeft();
+		componentOperation = false;
+		return result;
+	}
+	
+	public int getAbsoluteTop() {
+		componentOperation = true;
+		int result = super.getAbsoluteTop();
+		componentOperation = false;
+		return result;
+	}
+	
+	public int getOffsetHeight() {
+		componentOperation = true;
+		int result = super.getOffsetHeight();
+		componentOperation = false;
+		return result;
+	}
+	
+	public int getOffsetWidth() {
+		componentOperation = true;
+		int result = super.getOffsetWidth();
+		componentOperation = false;
+		return result;
+	}
+	
+	public java.lang.String getStyleName() {
+		componentOperation = true;
+		java.lang.String result = super.getStyleName();
+		componentOperation = false;
+		return result;
+	}
+	
+	public java.lang.String getStylePrimaryName() {
+		componentOperation = true;
+		java.lang.String result = super.getStylePrimaryName();
+		componentOperation = false;
+		return result;
+	}
+	
+	public java.lang.String getTitle() {
+		componentOperation = true;
+		java.lang.String result = super.getTitle();
+		componentOperation = false;
+		return result;
+	}
+	
+	public boolean isVisible() {
+		componentOperation = true;
+		boolean result = super.isVisible();
+		componentOperation = false;
+		return result;
+	}
+	
+	public void removeStyleDependentName(java.lang.String styleSuffix) {
+		componentOperation = true;
+		super.removeStyleDependentName(styleSuffix);
+		componentOperation = false;
+	}
+	
+	public void removeStyleName(java.lang.String style) {
+		componentOperation = true;
+		super.removeStyleName(style);
+		componentOperation = false;
+	}
+	
+	public void setHeight(java.lang.String height) {
+		componentOperation = true;
+		super.setHeight(height);
+		componentOperation = false;
+	}
+	
+	public void setPixelSize(int width, int height) {
+		componentOperation = true;
+		super.setPixelSize(width, height);
+		componentOperation = false;
+	}
+	
+	public void setSize(java.lang.String width, java.lang.String height) {
+		componentOperation = true;
+		super.setSize(width, height);
+		componentOperation = false;
+	}
+	
+	public void setStyleDependentName(java.lang.String styleSuffix, boolean add) {
+		componentOperation = true;
+		super.setStyleDependentName(styleSuffix, add);
+		componentOperation = false;
+	}
+	
+	public void setStyleName(java.lang.String style, boolean add) {
+		componentOperation = true;
+		super.setStyleName(style, add);
+		componentOperation = false;
+	}
+	
+	public void setStyleName(java.lang.String style) {
+		componentOperation = true;
+		super.setStyleName(style);
+		componentOperation = false;
+	}
+	
+	public void setStylePrimaryName(java.lang.String style) {
+		componentOperation = true;
+		super.setStylePrimaryName(style);
+		componentOperation = false;
+	}
+	
+	public void setTitle(java.lang.String title) {
+		componentOperation = true;
+		super.setTitle(title);
+		componentOperation = false;
+	}
+	
+	public void setVisible(boolean visible) {
+		componentOperation = true;
+		super.setVisible(visible);
+		componentOperation = false;
+	}
+	
+	public void setWidth(java.lang.String width) {
+		componentOperation = true;
+		super.setWidth(width);
+		componentOperation = false;
+	}
+	
+	public void sinkBitlessEvent(java.lang.String eventTypeName) {
+		componentOperation = true;
+		super.sinkBitlessEvent(eventTypeName);
+		componentOperation = false;
+	}
+	
+	public void sinkEvents(int eventBitsToAdd) {
+		componentOperation = true;
+		super.sinkEvents(eventBitsToAdd);
+		componentOperation = false;
+	}
+	
+	public java.lang.String toString() {
+		componentOperation = true;
+		java.lang.String result = super.toString();
+		componentOperation = false;
+		return result;
+	}
+	
+	public void unsinkEvents(int eventBitsToRemove) {
+		componentOperation = true;
+		super.unsinkEvents(eventBitsToRemove);
+		componentOperation = false;
+	}
+	
+}

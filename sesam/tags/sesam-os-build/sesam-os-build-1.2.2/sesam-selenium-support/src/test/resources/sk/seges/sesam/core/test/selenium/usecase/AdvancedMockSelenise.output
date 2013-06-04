@@ -1,0 +1,53 @@
+package sk.seges.sesam.core.test.selenium.usecase;
+
+import javax.annotation.Generated;
+
+import sk.seges.sesam.core.test.selenium.configuration.DefaultTestSettings;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.CredentialsSettings;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.MailSettings;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.Mail.Provider;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.ReportSettings.ScreenshotConfigurationSettings;
+import sk.seges.sesam.core.test.selenium.configuration.annotation.SeleniumSettings;
+import sk.seges.sesam.core.test.selenium.configuration.api.Browsers;
+
+@org.junit.Ignore
+@Generated(value = "sk.seges.sesam.pap.test.selenium.processor.SeleniumTestConfigurationProcessor")
+public class AdvancedMockSeleniseConfiguration extends DefaultTestSettings {
+
+	public AdvancedMockSeleniseConfiguration(java.lang.String param) {
+		super(param);
+	}
+	
+	protected AdvancedMockSeleniseConfiguration(int port) {
+		super(port);
+	}
+	
+	AdvancedMockSeleniseConfiguration(boolean flags) {
+		super(flags);
+	}
+	
+	public CredentialsSettings getCredentialsSettings() {
+		CredentialsSettings result = new CredentialsSettings(collectSystemProperties());
+		return result;
+	}
+	
+	public MailSettings getMailSettings() {
+		MailSettings result = new MailSettings(collectSystemProperties());
+		result.merge(new MailSettings("mail", "host", "pass", Provider.IMAPS));
+		return result;
+	}
+	
+	public ReportSettings getReportSettings() {
+		ReportSettings result = new ReportSettings(collectSystemProperties());
+		result.merge(new ReportSettings(new ScreenshotConfigurationSettings(true, "result", "screenshots")));
+		return result;
+	}
+	
+	public SeleniumSettings getSeleniumSettings() {
+		SeleniumSettings result = new SeleniumSettings(collectSystemProperties());
+		result.merge(new SeleniumSettings("localhost", 4444, false, "localhost", 8080, false, "testURL", null, Browsers.FIREFOX));
+		return result;
+	}
+	
+}

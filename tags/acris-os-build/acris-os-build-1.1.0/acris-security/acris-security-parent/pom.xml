@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+	<artifactId>acris-security-parent</artifactId>
+	<name>AcrIS Security Parent</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-os-parent</artifactId>
+		<version>1.1.0</version>
+		<relativePath>../../acris-os-parent</relativePath>
+	</parent>
+
+	<modules>
+		<module>../acris-security-appengine</module>
+		<module>../acris-security-core</module>
+		<module>../acris-security-gilead</module>
+		<module>../acris-security-jpa</module>
+		<module>../acris-security-hibernate</module>
+		<module>../acris-security-spring</module>
+		<module>../acris-security-spring-jpa</module>
+		<module>../acris-security-spring-hibernate</module>
+	</modules>
+
+</project>

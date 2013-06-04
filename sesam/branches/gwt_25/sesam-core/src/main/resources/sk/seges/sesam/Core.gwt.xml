@@ -1,0 +1,6 @@
+<module>
+	<source path='collection'/>
+	<source path='dao'/>
+	<source path='domain'/>
+	<source path='handler'/>
+</module>

@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>corpis-application-scaffold-mapbasedobject-processor</artifactId>
+	<name>Application Scaffold MapBasedObject Processor</name>
+	<description>Application Scaffold MapBasedObject processor</description>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-application-scaffold-processors-parent</artifactId>
+		<version>1.1.2</version>
+		<relativePath>../corpis-application-scaffold-processors-parent/pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-annotations-support</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-application-scaffold-model</artifactId>
+		</dependency>
+	</dependencies>
+</project>

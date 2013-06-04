@@ -1,0 +1,86 @@
+#summary table of contents
+  * [Introduction]
+  * Project
+    * [ProjectQuickStart Quick-start AcrIS project]<sup><font color="red">Start here</font></sup>
+      * [ProfilesWebToolkit Google Web Toolkit profiles]<sup><font color="red">1.2.0</font></sup>
+      * [ProfilesAppEngine Google AppEngine profiles]<sup><font color="red">1.2.0</font></sup>
+      * [ProfilesAnnotationProcessing SeSAM Annotation Processing profiles]<sup><font color="red">1.2.0</font></sup>
+      * [ProfilesTesting Testing profiles]<sup><font color="red">1.2.1</font></sup>
+      * [QuickStartCustomized Customized quick-start]
+    * [ProjectSupport Project structures description]
+    * [HowTo Build AcrIS from sources]
+    * [CodeStyle Code style conventions]
+    * [Releasing Release process]
+    * [SVNPostCommitHook How SVN postcommit hook works]
+    * [Roadmap Roadmap]
+    * [Migration Migration guide]
+      * [Migration1_0_1 From version 1.0.0 to 1.0.1]
+      * [Migration1_1_0 From version 1.0.1 to 1.1.0]
+      * [Migration1_1_1 From version 1.1.0 to 1.1.1]
+      * [Migration1_1_2 From version 1.1.1 to 1.1.2]
+      * [Migration1_2_0 From version 1.1.2 to 1.2.0]<sup><font color="red">New</font></sup>
+      * [Migration1_2_1 From version 1.2.0 to 1.2.1]
+      * [Migration1_2_2 From version 1.2.1 to 1.2.2]
+      * [CommonIssues 3rd party libraries]
+    * [GoogleSummerOfCode2011 Google Summer of Code 2011]
+  * [BeansBinding Beans binding]<sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingQuickStart Quick-start] <sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingInExamplesPart1 Example no.1] <sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingInExamplesPart2 Form with validation] <sup><font color="red">Deprecated</font></sup>
+    * [BeanWrappers Bean wrappers] <sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingCollections Collections] <sup><font color="red">Deprecated</font></sup>
+    * [BeansBindingConditional Conditions] <sup><font color="red">Deprecated</font></sup>
+  * [Security Security]
+    * [SecurityQuickStart Quick-start]
+    * [SecurityConcept Concept]
+    * [SecurityClient Client]
+    * [SecurityServer Server]
+  * Tools
+    * [Benchmarking Benchmarking]
+    * [GileadSupport Gilead support]
+    * [SeparateClientAndServer Separating client and server]
+    * [TrackingAsyncCallback Tracking asynchronous calls]
+    * [GWTEmulation Emulation of non-acceptable classes for GWT]
+    * [GWTJsonizer JSON deserialization using annotations]
+    * [AsyncSync Semaphores and asynchronous synchronization]
+    * [JSONDataMigration JSON data migration]<sup><font color="red">1.2.0</font></sup>
+    * [AsmantMonitoring Asmant - Site monitoring tool]<sup><font color="red">1.2.0</font></sup>
+    * [OpenMQStarter OpenMQ broker starter]<sup><font color="red">2.0.0-SNAPSHOT</font></sup>
+  * User interaction
+    * [UserEventRecording Recording user actions]
+  * Web
+    * [AcrisWeb Navigation and layout]
+    * [AcrisSEO SEO]
+  * Testing <sup><font color="red">1.2.0</font></sup>
+    * [SeleniumSupport Selenium support] <sup><font color="red">1.2.0</font></sup>
+      * [WebDriverBasics Web driver] <sup><font color="red">1.2.1</font></sup>
+      * [SeleniumConfiguration Configuration] <sup><font color="red">1.2.1</font></sup>
+      * [SeleniumReporting Reporting] <sup><font color="red">1.2.1</font></sup>
+      * [SeleniumCI Continuous integration] <sup><font color="red">1.2.1</font></sup>
+  * Plugable Annotation Processors <sup><font color="red">1.2.1</font></sup>
+    * [AnnotationProcessing_OwnProcessor Quick-start Own Annotation Processor]
+    * [AnnotationProcessing_Maven Annotation processing maven integration]
+    * [AnnotationProcessing_Eclipse Annotation processing eclipse integration]
+    * [AnnotationProcessing_DebuggingMaven Debugging annotation processorts using maven]
+    * [AnnotationProcessing_DebuggingEclipse Debugging annotation processors using eclipse]
+    * [AnnotationProcessing_Testing Testing annotation processors] <sup><font color="red">1.2.1</font></sup>
+    * [AnnotationProcessing_MutableAPI Annotation processor Mutable API] <sup><font color="red">1.2.0</font></sup>
+    * [AnnotationProcessing_Configurer Annotation processor delegate configuration] <sup><font color="red">1.2.0</font></sup>
+    * [AnnotationProcessing_Advanced Advanced features of the annotation processors] <sup><font color="red">1.2.0</font></sup>
+    * [CodeGenerationPlatform_Accessors Annotation accessor] <sup><font color="red">1.2.1</font></sup>
+  * Platform<sup><font color="red">New</font></sup>
+    * [CodeGenerationPlatform Generate application skelet]<sup><font color="red">New</font></sup>
+      * [CodeGenerationPlatform_IDAO Data Access Object interface annotation processor]
+      * [CodeGenerationPlatform_Async Async remote service] <sup><font color="red">1.2.0</font></sup>
+      * [CodeGeneratorsEvaluation Evalution brainstorming]
+    * [PortableApplication Writing portable application]
+      * [PortableObjects Portable objects]
+    * [AppConstructor Creating business applications from a model]
+  * App engine integration
+    * [AppEngineDatanucleus Datanucleus integration - JDO/JPA with maven]
+    * [AppEngineSpring Spring with appengine]
+    * [AppEngineMaven GAE/GEP with maven]
+    * [AppEngineSecurity Acris security on appengine]
+  * Widgets
+    * [DynamicUiBinder Dynamic UI Binder]<sup><font color="red">1.2.0</font></sup>
+    * [MicroTemplate Micro-template UI]<sup><font color="red">1.2.0</font></sup>

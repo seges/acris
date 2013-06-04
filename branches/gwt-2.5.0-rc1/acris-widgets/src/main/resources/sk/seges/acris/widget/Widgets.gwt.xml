@@ -1,0 +1,9 @@
+<module>
+	<inherits name='com.google.gwt.user.User'/>
+	
+	<generate-with
+		class="sk.seges.acris.widget.rebind.DynamicUiBinderGenerator">
+		<when-type-assignable
+			class="sk.seges.acris.widget.client.uibinder.DynamicUiBinder"/>
+	</generate-with>
+</module>

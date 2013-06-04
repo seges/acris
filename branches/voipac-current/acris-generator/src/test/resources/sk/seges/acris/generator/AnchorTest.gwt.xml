@@ -1,0 +1,10 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.google.gwt.junit.JUnit'/>
+	
+	<inherits name='sk.seges.acris.Generator'/>
+
+	<source path="client"/>
+	
+</module>

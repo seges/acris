@@ -1,0 +1,17 @@
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.place.Place" />
+	<inherits name="com.google.gwt.activity.Activity" />
+
+	<inherits name='sk.seges.corpis.domain.Payment'/>
+	<inherits name='sk.seges.acris.Core'/>
+
+	<source path="client"/>
+	<source path="shared"/>
+
+   	<replace-with class="sk.seges.acris.test.client.mvp.factory.core.DefaultClientFactory">
+    	<when-type-is class="sk.seges.acris.test.client.mvp.factory.ClientFactory"/>
+    </replace-with>
+    
+	<entry-point class="sk.seges.acris.test.client.cardpay.CardPay" />
+</module>

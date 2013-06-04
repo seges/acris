@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module>
+	<inherits name='sk.seges.acris.security.OpenID' />
+	
+	<stylesheet src="styles/styles.css" />
+	
+	<extend-property name="locale" values="en, sk" />
+	<set-property-fallback name="locale" value="en" />
+	
+    <entry-point class="sk.seges.acris.openid.client.OpenIDShowcase" />
+</module>

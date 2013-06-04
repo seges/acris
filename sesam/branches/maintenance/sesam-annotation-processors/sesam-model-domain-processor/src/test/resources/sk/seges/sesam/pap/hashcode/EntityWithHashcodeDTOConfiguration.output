@@ -1,0 +1,95 @@
+package sk.seges.sesam.pap.hashcode;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.annotation.Generated;
+
+import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
+
+@SuppressWarnings("serial")
+@TransferObjectMapping(dtoClass = EntityWithHashcodeDTO.class,
+		domainClassName = "sk.seges.sesam.pap.model.Entity", 
+		configurationClassName = "sk.seges.sesam.pap.hashcode.EntityWithHashcodeDTOConfiguration", 
+		converterClassName = "sk.seges.sesam.pap.hashcode.EntityWithHashcodeDTOConverter")
+@Generated(value = "sk.seges.sesam.pap.model.TransferObjectProcessor")
+public class EntityWithHashcodeDTO implements Serializable {
+
+	private Date date;
+
+	private String niceurl;
+
+	private Long value;
+
+	private String webId;
+
+	public EntityWithHashcodeDTO() {
+	}
+	public EntityWithHashcodeDTO(Date date, String niceurl, Long value, String webId) {
+		this.date = date;
+		this.niceurl = niceurl;
+		this.value = value;
+		this.webId = webId;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getNiceurl() {
+		return niceurl;
+	}
+
+	public void setNiceurl(String niceurl) {
+		this.niceurl = niceurl;
+	}
+
+	public Long getValue() {
+		return value;
+	}
+
+	public void setValue(Long value) {
+		this.value = value;
+	}
+
+	public String getWebId() {
+		return webId;
+	}
+
+	public void setWebId(String webId) {
+		this.webId = webId;
+	}
+
+	private boolean processingHashCode = false;
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (!processingHashCode) {
+			processingHashCode = true;
+			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			processingHashCode = false;
+		}
+		if (!processingHashCode) {
+			processingHashCode = true;
+			result = prime * result + ((niceurl == null) ? 0 : niceurl.hashCode());
+			processingHashCode = false;
+		}
+		if (!processingHashCode) {
+			processingHashCode = true;
+			result = prime * result + ((value == null) ? 0 : value.hashCode());
+			processingHashCode = false;
+		}
+		if (!processingHashCode) {
+			processingHashCode = true;
+			result = prime * result + ((webId == null) ? 0 : webId.hashCode());
+			processingHashCode = false;
+		}
+		return result;
+	}
+}

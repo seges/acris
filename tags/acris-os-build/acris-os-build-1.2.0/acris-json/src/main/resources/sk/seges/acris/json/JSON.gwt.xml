@@ -1,0 +1,18 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name='com.google.gwt.user.User'/>
+
+	<!-- Using JSON in GWT -->
+	<inherits name="com.google.gwt.json.JSON" />
+	
+	<!-- Excellent date&time library -->
+	<inherits name="org.gwttime.Time" />
+
+	<source path="client"/>
+	
+	<!-- JSON initialization -->
+	<generate-with class="sk.seges.acris.json.rebind.JsonGenerator">
+    	<when-type-assignable class="sk.seges.acris.json.client.JsonizerProvider" />
+	</generate-with>
+	
+</module>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- Embedded OpenMQ configuration -->
+	<bean id="EmbeddedOpenMQBrokerManipulation" class="sk.seges.sesam.remote.EmbeddedOpenMQBrokerManipulation"/>
+	
+	<alias name="OpenMQConnectionFactory1" alias="vmEmbeddedOpenMQConnectionFactory1"/>
+	<alias name="OpenMQConnectionFactory1" alias="tcpEmbeddedOpenMQConnectionFactory1"/>
+	<alias name="OpenMQConnectionFactory2" alias="tcpEmbeddedOpenMQConnectionFactory2"/>
+</beans>

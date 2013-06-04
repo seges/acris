@@ -1,0 +1,9 @@
+#summary About writing a portable application
+#labels portable
+
+= Introduction =
+
+For the moment it is just a brainstorming place. Nevertheless there are always some topics to discuss like:
+
+  * [PortableObjects Portable objects]
+  * Filesystem - TBD. http://code.google.com/p/gaevfs/wiki/ApplicationPortability

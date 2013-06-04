@@ -1,0 +1,335 @@
+.acris-cmp-toggle-button {
+	/* tmp. until themed ToggleButton looks like it must. */
+	padding: 4px 4px 4px 4px;
+}
+
+.acris-icon-button-style {
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.acris-cmp-cleaner {
+	display: block;
+	clear: both;
+}
+
+.acris-clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/********** Dialog  ************/
+.acris-cmp-dialog {
+	z-index: 20000;
+}
+
+.acris-cmp-dialog .acris-cmp-dialogContentWrapper {
+	padding: 16px 16px 0;
+}
+
+.acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-options {
+	padding: 0;
+	margin-top: 20px;
+}
+
+.acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-content {
+	
+}
+
+.acris-cmp-dialog .acris-cmp-dialogContentWrapper .acris-cmp-options .acris-cmp-option,.acris-cmp-container .acris-cmp-options .acris-cmp-option
+	{
+	float: right;
+	margin-left: 1px;
+	margin-bottom: 0;
+}
+
+.acris-cmp-container .acris-cmp-options .acris-cmp-option {
+	padding-left: 10px;
+	padding-bottom: 10px;
+	padding-top: 5px;
+}
+
+.acris-cmp-options .acris-cmp-option-separator {
+	width: 25px;
+	height: 1px;
+}
+
+/************* OPTION PANE *************/
+.acris-cmp-optionPane {
+	padding: 10px;
+}
+
+.acris-cmp-optionPane .acris-cmp-message {
+	float: left;
+}
+
+.acris-cmp-optionPane .acris-cmp-input {
+	float: left;
+	margin-top: 10px;
+}
+
+.acris-cmp-optionPane .acris-cmp-icon {
+	float: left;
+	margin-right: 10px;
+}
+
+/************* ERROR OPTION PANE *************/
+.acris-cmp-errorPane {
+	
+}
+
+.acris-cmp-errorPane .acris-cmp-errorStack {
+	
+}
+
+.acris-cmp-errorPane .acris-cmp-errorStack .acris-cmp-error {
+	
+}
+
+/************* COMBOBOX *********************/
+/** button styles */
+.advanced-TextButtonPanel .choice-button-up {
+	border: none;
+	padding: 0;
+}
+
+/** button styles */
+.advanced-TextButtonPanel .choice-button-up-hovering {
+	border: none;
+	padding: 0;
+}
+
+/** button styles */
+.advanced-TextButtonPanel .choice-button-down {
+	border: none;
+	padding: 0;
+}
+
+/** button styles */
+.advanced-TextButtonPanel .choice-button-down-hovering {
+	border: none;
+	padding: 0;
+}
+
+.advanced-LockingPanel {
+	background-color: white;
+	filter: alpha(opacity = 65);
+	-moz-opacity: 0.65;
+	opacity: 0.65;
+}
+
+.advanced-TextButtonPanel {
+	border: 1px;
+	padding: 0;
+}
+
+.advanced-TextButtonPanel table {
+	border: 0;
+	padding: 0;
+	border-collapse: collapse;
+}
+
+.advanced-TextButtonPanel td {
+	border: 1px solid black;
+	padding: 0;
+	vertical-align: middle;
+}
+
+.advanced-TextButtonPanel .selected-value {
+	border: none;
+	color: black;
+}
+
+.advanced-TextButtonPanel .selected-row > div {
+	background-color: lightgoldenrodyellow;
+}
+
+.advanced-TextButtonPanel img {
+	display: inline;
+	border: 0;
+}
+
+.advanced-ListPopupPanel .list .icon-item img {
+	padding: 1px;
+	border: 0;
+}
+
+/** icon item label style **/
+.advanced-ListPopupPanel .list .icon-item div {
+	padding: 1px;
+}
+
+.advanced-ListPopupPanel {
+	border: 1px solid darkgray;
+	background-color: white;
+	padding: 0;
+}
+
+.advanced-ListPopupPanel .list {
+	border-collapse: collapse;
+	padding: 0;
+	cursor: pointer;
+}
+
+/** items list selected row style */
+.advanced-ListPopupPanel .list .selected-row > div {
+	background-color: lightgoldenrodyellow;
+}
+
+/** item style **/
+.advanced-ListPopupPanel .list .item {
+}
+
+/** icon item image style **/
+.advanced-ListPopupPanel .list .icon-item img {
+	border: 0;
+}
+
+/** icon item label style **/
+.advanced-ListPopupPanel .list .icon-item div {
+	padding: 1px;
+}
+
+/** Resizables **/
+
+.x-panel-body, .x-panel-body-noheader, .x-panel-mc .x-panel-body {
+	border: 0;
+	border-top: 0;
+}
+
+.x-resizable-handle {
+	filter: alpha(opacity = 40);
+	opacity: 0.4;
+	position: absolute;
+}
+
+.x-resizable-handle-south {
+	background: transparent url("../acris-images/sizer/s-handle.gif") repeat
+		scroll center top;
+	height: 6px;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+	cursor: s-resize;
+}
+
+.x-resizable-handle-southeast {
+	background: transparent url("../acris-images/sizer/se-handle.gif") repeat
+		scroll center top;
+	height: 6px;
+	width: 6px;
+	right: 0;
+	bottom: 0;
+	cursor: se-resize;
+}
+
+.x-resizable-handle-northwest {
+	background: transparent url("../acris-images/sizer/nw-handle.gif") repeat
+		scroll center top;
+	height: 6px;
+	width: 6px;
+	left: 0;
+	top: 0;
+	cursor: nw-resize;
+}
+
+.x-resizable-handle-north {
+	background: transparent url("../acris-images/sizer/s-handle.gif") repeat
+		scroll center top;
+	height: 6px;
+	width: 100%;
+	left: 0;
+	top: 0;
+	cursor: n-resize;
+}
+
+.x-resizable-handle-northeast {
+	background: transparent url("../acris-images/sizer/ne-handle.gif") repeat
+		scroll center top;
+	height: 6px;
+	width: 6px;
+	right: 0;
+	top: 0;
+	cursor: ne-resize;
+}
+
+.x-resizable-handle-east {
+	background: transparent url("../acris-images/sizer/e-handle.gif") repeat
+		scroll center top;
+	width: 6px;
+	height: 100%;
+	right: 0;
+	top: 0;
+	cursor: e-resize;
+}
+
+.x-resizable-handle-west {
+	background: transparent url("../acris-images/sizer/e-handle.gif") repeat
+		scroll center top;
+	width: 6px;
+	height: 100%;
+	left: 0;
+	top: 0;
+	cursor: w-resize;
+}
+
+.x-resizable-handle-southwest {
+	background: transparent url("../acris-images/sizer/sw-handle.gif") repeat
+		scroll center top;
+	height: 6px;
+	width: 6px;
+	left: 0;
+	bottom: 0;
+	cursor: sw-resize;
+}
+
+.x-resizable-handle-south:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.x-resizable-handle-southeast:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.x-resizable-handle-northwest:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.x-resizable-handle-north:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.x-resizable-handle-northeast:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.x-resizable-handle-east:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.x-resizable-handle-west:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.x-resizable-handle-southwest:hover {
+	filter: alpha(opacity = 100);
+	opacity: 1;
+}
+
+.resizable-panel .x-resizable-handle {
+	display: none;
+}
+
+.resizable-panel:hover .x-resizable-handle {
+	display: block;
+}

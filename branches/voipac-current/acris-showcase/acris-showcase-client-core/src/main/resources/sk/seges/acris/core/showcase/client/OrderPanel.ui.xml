@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:CaptionPanel>
+		<g:VerticalPanel>
+			<g:Label>What would you like to order?</g:Label>
+			<g:HorizontalPanel>
+				<g:Button ui:field="milk">Milk</g:Button>
+				<g:Button ui:field="butter">Butter</g:Button>
+				<g:Button ui:field="sugar">Sugar</g:Button>
+			</g:HorizontalPanel>
+		</g:VerticalPanel>
+	</g:CaptionPanel>
+
+</ui:UiBinder>

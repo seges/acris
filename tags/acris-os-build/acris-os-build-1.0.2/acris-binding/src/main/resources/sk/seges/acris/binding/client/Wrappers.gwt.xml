@@ -1,0 +1,14 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name='com.google.gwt.user.User'/>
+	
+	<!-- Sesam dependency -->
+	<!-- Necessary for using IDomainObject and AsyncDataLoader -->
+	<inherits name='sk.seges.sesam.Core'/>
+
+	<source path="wrappers"/>
+		
+	<replace-with class="sk.seges.acris.binding.client.wrappers.EnumWrapper">
+    	<when-type-assignable class="java.lang.Enum" />
+	</replace-with>		
+</module>

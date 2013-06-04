@@ -1,0 +1,129 @@
+html, body, table, #header {
+  height: auto !important;
+}
+
+.onlyPDA, #contentRight {
+  display: block;
+}
+
+#titlePage #main, #titlePage #main tr, #titlePage #main td, #content {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#header1 {
+  padding: 0 0.5em !important;
+}
+
+#header2, #header3 {
+  float: none !important;
+  text-align: left !important;
+  padding: 0 0.5em !important;
+}
+
+#header2 {
+  margin: 0 !important;
+}
+
+#header3 {
+  margin: 0 0 0.5em 0 !important;
+}
+
+.onlyScreen, #modInteress, #cntRight, #left, #footer, .vertLine, #header3 img, #contentRight, .list thead, .noPDA {
+  display: none !important;
+}
+
+.rightScr, .list .right {
+  text-align: left;
+}
+/*
+.fl, .fr {
+  float: none;
+}
+*/
+h2 div {
+	width: 20px;
+	text-align: right;
+}
+
+div.ctlBar {
+	display: block;
+	padding: 0.75em 0.4em 0 0.4em;
+}
+
+table.ctltable tr {
+	display: block;
+}
+
+table.ctltable th {
+	display: block;
+	width: auto;
+}
+
+table.ctltable td {
+	display: block;
+	padding-left: 0.7em !important;
+	padding-right: 0;
+	width: auto;
+}
+
+table.ctltable tbody.radioGroup td.lbl {
+	padding-left: 0;
+}
+
+table.ctltable tbody.radioGroup td.lbl input {
+	padding-left: 0;
+	margin-left: 0;
+}
+
+table.ctltable tbody.radioGroup th {
+	padding-left: 0.6em;
+}
+
+.list, .list tr, .list th, .list td, .list tbody, .list tbody th, .listTH, .list tfoot tr, .list tfoot {
+  display: block;
+}
+
+.list tbody td {
+  padding-left: 0.7em;
+}
+
+.list tbody tr {
+  border-top: 1px solid #FFFCD3;
+}
+
+table.asctltable tbody tr {
+  border-top: none;
+}
+
+.list tfoot td .fl {
+	width: 25%;
+	text-align: left;
+}
+
+.list tfoot td .fr {
+	width: 25%;
+	text-align: right;
+}
+
+.listTH {
+  font-weight: bold;
+  padding-left: 0.4em !important;
+}
+
+.news div, .newsExpert {
+  width: 100%;
+}
+
+.bookmark {
+  width: 20px;
+  text-align: right;
+}
+
+.mbaccounts {
+  margin-left: 2em;
+  font-size: 0.9em;
+  color: gray;
+}

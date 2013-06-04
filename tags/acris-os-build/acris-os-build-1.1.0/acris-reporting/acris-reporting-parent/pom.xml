@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+	<artifactId>acris-reporting-parent</artifactId>
+	<name>AcrIS Reporting Parent</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-os-parent</artifactId>
+		<version>1.1.0</version>
+		<relativePath>../../acris-os-parent</relativePath>
+	</parent>
+
+	<modules>
+		<module>../acris-reporting-all</module>
+	</modules>
+
+	<properties>
+		<jasper.version>3.7.3</jasper.version>
+		<jasperserver.version>3.7.0</jasperserver.version>
+	</properties>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-widgets-beantable</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-widgets-beantable</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+
+			<dependency>
+				<groupId>net.sf.jasperreports</groupId>
+				<artifactId>jasperreports</artifactId>
+				<version>${jasper.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
+				<artifactId>jasperserver-api-metadata</artifactId>
+				<version>${jasperserver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.jaspersoft.jasperserver</groupId>
+				<artifactId>jasperserver-ireport-plugin</artifactId>
+				<version>${jasperserver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.jaspersoft.jasperserver</groupId>
+				<artifactId>jasperserver-common-ws</artifactId>
+				<version>${jasperserver.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

@@ -1,0 +1,462 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
+	<groupId>sk.seges.acris</groupId>
+	<artifactId>acris-os-parent</artifactId>
+	<version>1.1.0</version>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-os-gwt-parent</artifactId>
+		<version>1.1.0</version>
+
+	</parent>
+
+	<name>AcrIS Parent</name>
+	<url>http://acris.googlecode.com</url>
+	<description>
+		AcrIS is a modern framework serving as a base for applications, 
+		web sites and portals. It provides various tools and libraries 
+		to ease daily development. Build on top of Google web toolkit 
+		and provides sophisticated solution for security, beans binding, 
+		JSON protocol and usefull project skelets integrated with maven, 
+		hibernate, spring and gilead. You will get a prepared solution 
+		in box ready to use in your own project.
+	</description>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.1.0/source</url>
+		<connection>scm:svn:http://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.1.0/1.1.0</connection>
+		<developerConnection>scm:svn:https://acris.googlecode.com/svn/tags/acris-os-build/acris-os-build-1.1.0/1.1.0</developerConnection>
+	</scm>
+
+	<profiles>
+		<profile>
+			<id>showcase</id>
+			<activation>
+				<property>
+					<name>showcase</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<modules>
+				<module>../acris-showcase</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<modules>
+		<module>../acris-benchmark</module>
+		<module>../acris-binding</module>
+		<module>../acris-callbacks</module>
+		<module>../acris-crypto</module>
+		<module>../acris-client-core</module>
+		<module>../acris-widgets</module>
+		<module>../acris-widgets-beantable</module>
+		<module>../acris-json</module>
+		<module>../acris-common</module>
+		<module>../acris-external</module>
+		<module>../acris-generator</module>
+		<module>../acris-recorder</module>
+		<module>../acris-reporting</module>
+		<module>../acris-security</module>
+		<module>../acris-site</module>
+		<module>../acris-server</module>
+		<!--module>../acris-showcase</module-->
+		<module>../acris-server-components</module>
+	</modules>
+
+	<properties>
+		<repository.type>java</repository.type>
+		<repository.project>acris</repository.project>
+		<corpis-os.version>1.1.0</corpis-os.version>
+		
+		<sesam-os.version>1.1.0</sesam-os.version>
+
+		<jpa-2.0-api.version>1.0.0-CR-1</jpa-2.0-api.version>
+		<jasper.version>3.7.3</jasper.version>
+		
+		<jasperserver.version>3.7.0</jasperserver.version>
+		<openid4java.version>0.9.5</openid4java.version>
+
+
+		<twig.version>1.0.3</twig.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Corpis dependencies -->
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-dao-impl</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-dao-api</artifactId>
+				<version>${corpis-os.version}</version>
+			</dependency>
+
+			<!-- Sesam dependencies -->
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-core</artifactId>
+				<version>${sesam-os.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.sesam</groupId>
+				<artifactId>sesam-spring</artifactId>
+				<version>${sesam-os.version}</version>
+			</dependency>
+
+			<!-- Acris dependencies -->
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-binding</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-binding</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-widgets</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-widgets</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-external</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-callbacks</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-callbacks</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-common</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-common</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-client-core</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-client-core</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-external</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-generator</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-generator</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-json</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-json</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-crypto</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sk.seges.acris</groupId>
+				<artifactId>acris-crypto</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-recorder</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-recorder</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-core</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-core</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-appengine</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-appengine</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-hibernate</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-hibernate</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-jpa</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-jpa</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-gilead</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-gilead</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-spring</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-spring</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-spring-hibernate</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-spring-jpa</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-openid</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-security-openid</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-server-components</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-server-components</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-site-core</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-site-core</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-site-jpa</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-site-jpa</artifactId>
+				<classifier>sources</classifier>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-site-hibernate</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-site-spring</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${pom.groupId}</groupId>
+				<artifactId>acris-server-appengine</artifactId>
+				<version>${pom.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.0-api</artifactId>
+				<version>${jpa-2.0-api.version}</version>
+			</dependency>
+			
+			<dependency>
+				
+				<groupId>net.sf.jasperreports</groupId>
+				
+				<artifactId>jasperreports</artifactId>
+				
+				<version>${jasper.version}</version>
+			
+			</dependency>
+
+
+			<dependency>
+
+				<groupId>com.jaspersoft.jasperserver.api.metadata</groupId>
+
+				<artifactId>jasperserver-api-metadata</artifactId>
+
+				<version>${jasperserver.version}</version>
+
+			</dependency>
+
+
+			<dependency>
+
+				<groupId>com.jaspersoft.jasperserver</groupId>
+
+				<artifactId>jasperserver-ireport-plugin</artifactId>
+
+				<version>${jasperserver.version}</version>
+
+			</dependency>
+
+
+			<dependency>
+				<groupId>com.jaspersoft.jasperserver</groupId>
+
+				<artifactId>jasperserver-common-ws</artifactId>
+
+				<version>${jasperserver.version}</version>
+
+			</dependency>
+
+
+
+			<!-- OpenID4Java consumer -->
+
+			<dependency>
+
+		        	<groupId>org.openid4java</groupId>
+
+		        	<artifactId>openid4java-consumer</artifactId>
+
+		        	<version>${openid4java.version}</version>
+ 
+		       	</dependency>
+
+			<!-- Twig -->
+			<dependency>
+				<groupId>com.vercer.engine.persist</groupId>
+				<artifactId>twig-persist</artifactId>
+				<version>${twig.version}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<sourceExcludes>
+						<sourceExclude>**/emul/**/*.java</sourceExclude>
+					</sourceExcludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

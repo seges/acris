@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-import-export-api</artifactId>
+	<name>CorpIS Import-Export API</name>
+	
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+		<version>1.2.2</version>
+		<relativePath>../corpis-os/pom.xml</relativePath>
+	</parent>
+
+	<description>API for Import-Export library</description>
+	
+	<dependencies>
+	</dependencies>
+</project>

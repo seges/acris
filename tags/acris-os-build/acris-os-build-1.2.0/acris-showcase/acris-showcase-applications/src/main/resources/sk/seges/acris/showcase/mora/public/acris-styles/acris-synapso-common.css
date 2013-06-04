@@ -1,0 +1,198 @@
+body p {
+	margin: 0;
+	padding: 0;
+}
+
+.cleaner {
+	clear: both;
+	border: none;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+	height: 1px;
+	font-size: 1px;
+}
+
+.acris-cleaner {
+	display: block;
+	clear: both;
+}
+
+.floatLeft {
+	float: left;
+	/*background-color: red;*/
+}
+
+.floatRight {
+	float: right;
+	/*background-color: blue;*/
+}
+
+.floatNone {
+	float: none;
+	clear: both;
+}
+
+.floatClear {
+    clear: both;
+}
+
+.acris-inline {
+	display: inline;
+}
+
+/********** Menu **********/
+
+.gwt-TabBar-outer {
+	/*background: rgb(240, 240, 240);*/
+	width: 201px;
+	z-index: 1000;
+}
+
+.gwt-TabBar-holder {
+	overflow: visible !important;
+	width: 100%;
+	height: 100%;
+}
+
+.gwt-TabBar-container {
+	display: table-cell;
+	width: 100%;
+	height: 100%;
+}
+
+.gwt-TabBar-controls {
+	clear: both;
+	z-index: 10000;
+}
+
+.subTabBar0 .dragdrop-draggable {
+	display: table;
+}
+
+.gwt-TabBar-inner {
+}
+
+.gwt-TabBar-bottom {
+}
+
+.gwt-TabBar-bottom2 {
+}
+
+.gwt-TabBar-bottom3 {
+}
+
+.gwt-TabBar-Item-holder {
+	float: left;
+}
+
+.gwt-TabBar-Item {
+	/*background: transparent url(../acris-images/main/menu-arrow.png) no-repeat scroll 15px 11px;*/
+	background: transparent none;
+	overflow: hidden;
+	border: 0 none;
+	float: left;
+	margin: 0;
+	/*padding: 7px 28px;
+	height: 17px;
+	width: 126px;*/
+	line-height: 17px;
+}
+
+.gwt-TabBar-Item:hover {
+	/*font-weight: bold;
+	text-decoration: none;*/
+	color: #CF230B;
+}
+
+.gwt-TabBarItemWrapper {
+	position: relative;
+	width: 201px;
+}
+
+.gwt-TabBarItemLabelWrapper {
+	/*background: rgb(240,240,240);
+	border-bottom: 1px solid #CCCCCC;
+	min-height: 31px;*/
+	width: 201px;
+}
+	
+.gwt-TabBarItemLabelWrapper:hover {
+	/*background: transparent url(../acris-images/main/side-li-bg.png) repeat-x scroll 0 0;*/
+}
+
+.gwt-TabBarItemLabel {
+	/*border-bottom: 1px solid #CCCCCC;*/
+}
+
+.subTabBar0 {
+	width: 100%;
+}
+
+.subTabBar1 {
+	left: 0;
+}
+
+.subTabBar2 {
+	left: 0;
+}
+
+.subTabBar3 {
+	left: 0;
+}
+
+.subTabBar4 {
+	left: 0;
+}
+
+.subTabBar5 {
+	left: 0;
+}
+
+.subTabBar0 .gwt-TabBarItemWrapper .gwt-TabBar-outer {
+	/*display: none;
+	position: absolute;*/
+}
+
+.subTabBar0 .gwt-TabBarItemWrapper:hover .subTabBar1 {
+	/*display: block;*/
+}
+
+.deck-panel-controls {
+	position: absolute;
+}
+
+.template-deck {
+	min-height: 400px;
+}
+
+.gwt-TabBar-control-button {
+	/*
+	position: absolute;
+	margin-top: 6px;
+	right: 7px;
+	width: 16px;
+	height: 16px;
+	*/
+}
+
+.gwt-TabBar-control-button-expanded {
+	/*background: url(../acris-images/main/menu-expand.png);*/
+}
+
+.gwt-TabBar-control-button-collapsed {
+	/*background: url(../acris-images/main/menu-collapse.png);*/
+}
+
+.textBlock, .headingBlock {
+    overflow: hidden;
+}
+
+.visibilityHidden {
+	visibility: hidden;
+}
+
+/******* Form validation ********/
+.acris-form-error {
+	border: 1px solid red;
+}

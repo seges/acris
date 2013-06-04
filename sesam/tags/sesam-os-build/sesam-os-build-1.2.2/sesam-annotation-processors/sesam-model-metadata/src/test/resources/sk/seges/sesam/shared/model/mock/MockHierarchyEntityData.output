@@ -1,0 +1,20 @@
+package sk.seges.sesam.shared.model.mock;
+
+import javax.annotation.Generated;
+
+@Generated(value = "sk.seges.sesam.pap.metadata.MetaModelProcessor")
+public interface MockHierarchyEntityDataMetaModel {
+
+	public static final String NAME = "name";
+
+	public static interface PARENT {
+
+		public static final String THIS = "parent";
+
+		public static final String NAME = "parent.name";
+
+		public static final String PARENT = "parent.parent";
+
+	}
+
+}

@@ -1,0 +1,16 @@
+«IMPORT sculptormetamodel»
+
+«EXTENSION extensions::helper»
+«EXTENSION extensions::properties»
+
+«DEFINE main FOR Application»
+		«EXPAND DataAccessObject::dataEntity FOREACH getAllDomainObjects(false)»
+		«EXPAND HibernateWithJpaDataAccessObject::dataEntity FOREACH getAllDomainObjects(false)»
+		«REM»
+		«EXPAND HibernateDataAccessObject::dataEntity FOREACH getAllDomainObjects(false)»
+		«EXPAND Hibernate::dataEntity FOREACH getAllDomainObjects(false)»
+		«EXPAND dataEntity FOREACH getAllDomainObjects(false)» 
+		«EXPAND dto FOREACH getAllDomainObjects(false)» 
+		«EXPAND templates::domain::DomainObject::domainObject FOREACH getAllDomainObjects(false)»
+		«EXPAND Gilead::dataEntity FOREACH getAllDomainObjects(false)»«ENDREM»
+«ENDDEFINE»

@@ -1,0 +1,11 @@
+<module>
+	<inherits name='sk.seges.acris.Callbacks' />
+	
+	<!-- Session handling generators -->
+	<generate-with
+		class="sk.seges.acris.security.rebind.SessionRemoteServiceProxyGenerator">
+		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
+	</generate-with>
+	
+    <source path='session'/>
+</module>

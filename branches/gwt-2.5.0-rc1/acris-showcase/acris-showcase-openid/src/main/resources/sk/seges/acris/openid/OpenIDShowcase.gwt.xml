@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module>
+	<inherits name='sk.seges.acris.security.OpenID' />
+	
+	<stylesheet src="styles/styles.css" />
+
+	<replace-with class="sk.seges.acris.openid.client.configuration.ShowcaseLoginConfiguration">
+		<when-type-is class="sk.seges.acris.security.shared.configuration.LoginConfiguration" />
+	</replace-with>
+	
+	<extend-property name="locale" values="en, sk" />
+	<set-property-fallback name="locale" value="en" />
+	
+    <entry-point class="sk.seges.acris.openid.client.OpenIDShowcase" />
+</module>

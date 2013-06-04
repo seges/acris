@@ -1,0 +1,15 @@
+.wrapped-place {
+	background-color: lightgrey;
+}
+
+#root {
+	border: 1px solid red;
+}
+
+.draggable-proxy {
+}
+
+.dragdrop-dropTarget-engage, .draggable-proxy {
+  background-color: #E0E8FF;
+}
+

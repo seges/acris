@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>sk.seges.acris</groupId>
+	<artifactId>acris-jee</artifactId>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-os-parent</artifactId>
+		<version>1.2.1-SNAPSHOT</version>
+		<relativePath>../acris-os-parent</relativePath>
+	</parent>
+
+	<!-- More Project Information -->
+	<name>Acris JEE Support</name>
+	<description>Acris JEE Support classes for various JEE containers</description>
+
+	<modules>
+		<module>acris-tomcat-support</module>
+	</modules>
+
+</project>

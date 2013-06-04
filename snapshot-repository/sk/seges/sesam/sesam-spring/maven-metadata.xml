@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>sk.seges.sesam</groupId>
+  <artifactId>sesam-spring</artifactId>
+  <version>1.0.7-SNAPSHOT</version>
+  <versioning>
+    <versions>
+      <version>1.0.7-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20100905095840</lastUpdated>
+  </versioning>
+</metadata>

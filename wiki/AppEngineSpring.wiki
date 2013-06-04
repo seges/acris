@@ -1,0 +1,2 @@
+#summary Using spring on the appengine
+#labels Appengine,Spring

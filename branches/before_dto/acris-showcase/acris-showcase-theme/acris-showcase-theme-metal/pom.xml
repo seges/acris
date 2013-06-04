@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-showcase-parent</artifactId>
+		<version>1.1.3-SNAPSHOT</version>
+		<relativePath>../../acris-showcase-parent</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-showcase-theme-metal</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS Showcase For Metal Theme</name>
+
+  
+	<dependencies>
+
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-theme-metal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-theme-metal</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-widgets</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${groupId}</groupId>
+			<artifactId>acris-showcase-widgets</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+
+	</dependencies>
+</project>

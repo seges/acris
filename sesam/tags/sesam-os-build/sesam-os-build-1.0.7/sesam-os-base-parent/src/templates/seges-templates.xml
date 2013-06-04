@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="true" context="java" deleted="false" description="insert class logger" enabled="true" name="logger">private static final Logger log = Logger.getLogger(${enclosing_type}.class);</template><template autoinsert="false" context="java" deleted="false" description="test method (JUnit 4)" enabled="true" id="org.eclipse.jdt.ui.templates.test_junit4" name="Test">@Test
+public void ${testname}() throws Exception {
+	${cursor} 
+}</template></templates>

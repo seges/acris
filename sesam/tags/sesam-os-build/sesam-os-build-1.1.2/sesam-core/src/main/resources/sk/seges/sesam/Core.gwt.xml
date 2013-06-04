@@ -1,0 +1,7 @@
+<module>
+	<inherits name='com.googlecode.gwtx.java.Beans'/>
+
+	<source path='collection'/>
+	<source path='dao'/>
+	<source path='domain'/>
+</module>

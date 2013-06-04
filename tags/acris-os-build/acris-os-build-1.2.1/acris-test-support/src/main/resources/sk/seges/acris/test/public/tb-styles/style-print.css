@@ -1,0 +1,366 @@
+body, h1, h2, h3 {
+	font-family: Verdana, 'Arial CE', 'Helvetica CE', Arial, helvetica, sans-serif;
+	font-size: 10px;
+	background-color: white;
+	color: black;
+}
+
+body, html, td, th, form, #main {
+	margin: 0;
+	padding: 0;
+}
+
+noscript, #service, #header, #footer, #menu, #left, img, h2 img, #password, .actions, .actionsContinue {
+  display: none;
+}
+
+a {
+	text-decoration: none;
+	color: black;
+}
+
+h2, table caption {
+	font-weight: bold;
+	font-size: 1.2em;
+	padding: 0 0.4em;
+	margin: 0;
+	text-align: left;
+	text-transform: uppercase;
+}
+
+h3 {
+	font-size: 1.2em;
+	padding: 0;
+	margin: 0.75em 0;
+}
+
+.right {
+	text-align: right !important;
+}
+
+.red {
+  color: #C50000;
+}
+
+.printRed td, .printRed a{
+  color: #C50000;
+}
+
+.center {
+	text-align: center !important;
+}
+
+.clear {
+  clear: both;
+  font-size: 1px;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.onlyPrint {
+  display: block;
+}
+
+.onlyScreen {
+  display: none;
+}
+
+.noPrint {
+  display: none;
+}
+
+.onlyPDA {
+  display: none;
+}
+
+#printFooter {
+	margin-top: 2em;
+	border-top: 1px dashed black;
+	display: none;
+}
+
+#movementsPrintFooter {
+	margin-top: 2em;
+	border-top: 1px dashed black;
+	display: block;
+}
+
+div.info {
+	margin: 0.75em 0 0 0;
+	padding: 0.1em;
+}
+
+div.notes {
+	margin: 0.75em 0 -0.5em 0;
+	padding: 0.25em 0 0.1em 0;
+	border-top: 1px solid black;
+}
+
+div.errors {
+	margin: 0.75em 0 0 0;
+	padding: 0.1em;
+	font-weight: bold;
+}
+
+div.info p, div.errors p, div.notes p {
+	margin: 0.2em 0.3em;
+}
+
+div.actions, .btn {
+	display: none;
+}
+
+table {
+	font-size: 1em;
+	border-collapse: collapse;
+}
+
+.euro {
+	font-size: 80%;
+}
+div.euro {
+	color: black;
+}
+p.euro {
+	margin: 0.4em;
+	padding: 0;
+}
+
+table.ctltable {
+	clear: both;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+table.nogroups {
+	margin-top: 0.75em;
+}
+
+table.nospan {
+	margin-top: 0.75em;
+	width: auto;
+}
+
+table.ctltable th {
+	width: 16em;
+	padding: 0.1em 0.8em 0.1em 0.4em;
+	text-align: left;
+	font-weight: normal;
+	vertical-align: baseline;
+}
+
+table.multicolumn th {
+	width: auto;
+}
+
+table.ctltable td {
+	padding: 0.1em;
+}
+
+table.ctltable td.header div {
+	font-size: 1.1em;
+	font-weight: bold;
+	font-style: italic;
+	padding: 0.1em 0.4em;
+	margin: 0.75em 0 0.25em 0;
+}
+
+table.ctltable tbody.radioGroup th {
+	width: 14em;
+	padding-left: 2.4em;
+}
+
+table.ctltable tbody.radioGroup td.lbl {
+	font-weight: bold;
+}
+
+table.list {
+	clear: both;
+	width: 100%;
+	padding: 0;
+	margin: 0.75em 0 0 0;
+}
+
+.list tbody th {
+	display:none;
+}
+
+.dark {
+	background-color: #DDDDDD !important;
+}
+
+.light {
+	background-color: white !important;
+}
+
+.movementsDark {
+}
+
+.movementsLight {
+}
+
+table.list th, table.list td {
+	text-align: left;
+	padding: 0.1em 0.4em;
+}
+
+table.list thead th {
+	border-bottom: 1px solid black;
+	padding-bottom: 0.3em;
+}
+
+table.nofoot {
+	border-bottom: 1px solid black;
+}
+
+table.list tfoot td {
+	border-top: 1px solid black;
+	padding-top: 0.5em;
+	text-align: center;
+}
+
+.borderBottom td {
+	border-bottom: 1px solid black;
+}
+
+.borderTop td {
+	border-top: 1px solid black;
+}
+
+/* --------------------- */
+
+#progressDiv {
+	display: none;
+}
+
+/* --------------------- */
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.top {
+  vertical-align: top;
+}
+
+#main {
+  width: 100%;
+  font-size: 1em;
+}
+
+#content, #contentLeft, #contentRight {
+  vertical-align: top;
+  padding: 0 1em;
+}
+
+#contentLeft {
+  width: 42%;
+}
+
+.indent {
+	padding: 0 0.4em;
+}
+
+.indent p {
+	margin: 0.75em 0;
+}
+
+#left {
+  width: 179px;
+  vertical-align: top;
+}
+
+
+/* user styles */
+.user-border {
+  border: 1px solid black;
+}
+
+.user-table-border, .user-table-border td {
+  border: 1px solid black !important;
+}
+
+.user-margin {
+  margin: 1em !important;
+}
+
+.user-padding {
+  padding: 1em !important;
+}
+
+.small {
+  font-size: 0.9em;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+/* title page design */
+.moduleTitle {
+  font-weight: bold;
+  margin: 0 0 0.5em 0;
+  height: 16px;
+  line-height: 16px;
+  padding: 0;
+}
+
+.moduleTitle img {
+  vertical-align: middle;
+}
+
+.moduleTitle span {
+  vertical-align: top;
+  _vertical-align: middle;
+}
+
+.moduleCnt {
+  margin: 0 0 3em;
+}
+
+.moduleCnt p {
+  margin: 0;
+  padding: 0.2em 0;
+}
+
+.form1 {
+  margin-top: 0.5em;
+}
+
+.formDIV {
+  margin: 0 0 2px;
+  padding: 0;
+  line-height: 22px;
+  height: 22px;
+}
+
+.recIMG {
+  padding: 0 0.5em 0.5em 0;
+}
+
+.mbaccounts {
+  margin-left: 2em;
+  font-size: 0.9em;
+  color: gray;
+}
+
+table.movementsPrintHeader {
+	clear: both;
+	width: 100%;
+	padding: 0;
+	margin: 0.75em 0 0 0;
+}
+
+table.movementsPrintHeader td {
+	border-bottom: 2px solid black; 
+	font-weight: bold;
+	font-size: 1.2em;
+	padding: 0 0.4em;
+	margin: 0;
+	text-align: left;
+}

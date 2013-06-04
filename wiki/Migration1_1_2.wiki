@@ -1,0 +1,8 @@
+#summary Migration guide from version 1.1.1 into 1.1.2
+
+= External repositories =
+  * update *settings.xml*
+    * removed deprecated JBoss repo and added OSS Sonatype
+
+= Widgets refactoring =
+  * !IconButton moved from ~~sk.seges.acris.widget.client.IconButton~~ -> [http://acris.googlecode.com/svn/branches/1.1.0/acris-widgets/src/main/java/sk/seges/acris/widget/client/form/IconButton.java sk.seges.acris.widget.client.form.IconButton] 

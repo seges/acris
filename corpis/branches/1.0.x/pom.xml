@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>sk.seges.corpis</groupId>
+	<artifactId>corpis-os-build</artifactId>
+	<version>1.0.8-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>sk.seges.corpis</groupId>
+		<artifactId>corpis-os</artifactId>
+		<version>1.0.8-SNAPSHOT</version>
+		<relativePath>corpis-os</relativePath>
+	</parent>
+
+	<name>CorpIS OS Build</name>
+	<description>Build Project for CorpIS</description>
+
+	<modules>
+		<module>corpis-os</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>install</preparationGoals>
+					<tagBase>
+						https://acris.googlecode.com/svn/corpis/tags/${pom.artifactId}
+					</tagBase>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

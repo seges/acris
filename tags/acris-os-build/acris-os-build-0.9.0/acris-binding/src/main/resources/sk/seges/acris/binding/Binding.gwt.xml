@@ -1,0 +1,28 @@
+<module>
+	<!-- Google basic inherit -->
+	<inherits name='com.google.gwt.user.User'/>
+	
+	<!-- Sesam dependency -->
+	<!-- Necessary for using IDomainObject and AsyncDataLoader -->
+	<inherits name='sk.seges.sesam.Core'/>
+	
+	<!-- Dependency on gwt beans binding -->
+	<!-- BeansBinding should inherit from GWTx so it is not necessary to inherit also from GWTx -->
+	<inherits name='org.gwt.beansbinding.BeansBinding' />
+
+	<source path="client"/>
+	
+	<!-- Beans binding initialization -->
+	<generate-with class="sk.seges.acris.binding.rebind.BeansBindingInitGenerator">
+    	<when-type-assignable class="sk.seges.acris.binding.client.init.BeansBindingInit" />
+	</generate-with>
+
+	<!-- Binding generator for binding widget holders (e.g. panels, forms, ...) -->
+	<generate-with class="sk.seges.acris.binding.rebind.binding.BeanBindingGenerator">
+    	<when-type-assignable class="sk.seges.acris.binding.client.holder.IBeanBindingHolder" />
+	</generate-with>
+	
+	<replace-with class="sk.seges.acris.binding.client.wrappers.EnumWrapper">
+    	<when-type-assignable class="java.lang.Enum" />
+	</replace-with>		
+</module>

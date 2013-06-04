@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module>
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.i18n.I18N" />
+
+	<inherits name="sk.seges.acris.Common" />
+	<inherits name="sk.seges.acris.security.Security" />
+	<inherits name='sk.seges.acris.security.Session' />
+	
+    <entry-point class="sk.seges.acris.security.client.OpenID" />
+    
+	<source path="client" />
+	<source path="shared" />
+</module>

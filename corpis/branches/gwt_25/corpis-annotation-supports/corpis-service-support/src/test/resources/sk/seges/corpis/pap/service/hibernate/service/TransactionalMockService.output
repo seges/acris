@@ -1,0 +1,63 @@
+package sk.seges.corpis.pap.service.hibernate.service;
+
+import javax.annotation.Generated;
+import javax.persistence.EntityManager;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import sk.seges.corpis.pap.model.converter.MockEntityDTOConverter;
+import sk.seges.corpis.pap.model.dto.MockEntityDTO;
+import sk.seges.corpis.pap.model.entity.MockEntity;
+import sk.seges.corpis.pap.service.hibernate.service.TransactionalMockLocalService;
+import sk.seges.corpis.pap.service.hibernate.service.TransactionalMockRemoteService;
+import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationTarget;
+import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
+import sk.seges.corpis.service.annotation.TransactionPropagationModel;
+import sk.seges.sesam.pap.service.annotation.LocalServiceConverter;
+
+@LocalServiceConverter(remoteServices = {TransactionalMockRemoteService.class})
+@Generated(value = "sk.seges.corpis.pap.service.hibernate.HibernateServiceConverterProcessor")
+public class TransactionalMockServiceConverter implements TransactionalMockRemoteService {
+
+	private TransactionalMockLocalService transactionalMockLocalServiceService;
+	private EntityManager entityManager;
+
+
+	public TransactionalMockServiceConverter(TransactionalMockLocalService transactionalMockLocalServiceService, EntityManager entityManager) {
+
+		this.transactionalMockLocalServiceService = transactionalMockLocalServiceService;
+		this.entityManager = entityManager;
+	}
+
+	@Transactional
+	@Override
+	public MockEntityDTO findInTransaction(){
+		return (MockEntityDTO)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE, PropagationTarget.ARGUMENTS}, PropagationType.PROPAGATE)}).toDto(transactionalMockLocalServiceService.findInTransaction());
+	}
+
+	@Override
+	public MockEntityDTO findWithoutTransaction(){
+		return (MockEntityDTO)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE, PropagationTarget.ARGUMENTS}, PropagationType.PROPAGATE)}).toDto(transactionalMockLocalServiceService.findWithoutTransaction());
+	}
+
+	@Override
+	public MockEntityDTO findWithoutBlob(){
+		return (MockEntityDTO)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {"blob"}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE}, PropagationType.ISOLATE)}).toDto(transactionalMockLocalServiceService.findWithoutBlob());
+	}
+
+	@Override
+	public MockEntityDTO findWithoutBlobBothWays(MockEntityDTO arg0){
+		return (MockEntityDTO)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {"blob"}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE, PropagationTarget.ARGUMENTS}, PropagationType.ISOLATE)}).toDto(transactionalMockLocalServiceService.findWithoutBlobBothWays((MockEntity)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {"blob"}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE, PropagationTarget.ARGUMENTS}, PropagationType.ISOLATE)}).fromDto(arg0)));
+	}
+
+	@Transactional
+	@Override
+	public MockEntityDTO findWithReturnBlob(MockEntityDTO arg0){
+		return (MockEntityDTO)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {"blob"}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE}, PropagationType.PROPAGATE), new TransactionPropagationModel(new String[] {"blob"}, new PropagationTarget[] {PropagationTarget.ARGUMENTS}, PropagationType.ISOLATE)}).toDto(transactionalMockLocalServiceService.findWithReturnBlob((MockEntity)getMockEntityDTOConverter(new TransactionPropagationModel[] {new TransactionPropagationModel(new String[] {"blob"}, new PropagationTarget[] {PropagationTarget.RETURN_VALUE}, PropagationType.PROPAGATE), new TransactionPropagationModel(new String[] {"blob"}, new PropagationTarget[] {PropagationTarget.ARGUMENTS}, PropagationType.ISOLATE)}).fromDto(arg0)));
+	}
+
+	private MockEntityDTOConverter getMockEntityDTOConverter(TransactionPropagationModel[] transactionPropagations) {
+		return new MockEntityDTOConverter(entityManager, transactionPropagations);
+	}
+
+}

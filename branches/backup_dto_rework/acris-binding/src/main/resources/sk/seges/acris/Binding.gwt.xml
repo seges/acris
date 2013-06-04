@@ -1,0 +1,6 @@
+<module>
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='sk.seges.acris.binding.Binding'/>	
+
+	<source path="binding.client"/>	
+</module>

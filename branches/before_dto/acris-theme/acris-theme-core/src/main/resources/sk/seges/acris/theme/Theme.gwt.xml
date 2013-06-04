@@ -1,0 +1,48 @@
+<module>
+	<inherits name='com.google.gwt.user.User' />
+
+	<define-property name="acristheme" values="NONE, SHADOW, METAL" />
+
+	<property-provider name="acristheme">
+    	<![CDATA[
+      	try {
+		var acrisTheme;
+		var defaultAcrisTheme = 'NONE';
+		
+		  var args = location.search;
+		  var startTheme = args.indexOf("acristheme=");
+		  if (startTheme >= 0) {
+		  	var theme = args.substring(startTheme);
+		    var begin = theme.indexOf("=") + 1;
+		    var end = theme.indexOf("&");
+		    if (end == -1) {
+		    	end = theme.length;
+		   	}
+		    acrisTheme = theme.substring(begin, end);
+		  }
+
+		if (acrisTheme == null) {
+	    	acrisTheme = __gwt_getMetaProperty("acristheme")
+	    }
+
+		if (acrisTheme == null) {
+	    	acrisTheme = $wnd['__gwt_AcrisTheme'];
+	    } else {
+	    	$wnd['__gwt_AcrisTheme'] = acrisTheme;
+	    }
+
+	    if (acrisTheme == null) {
+	    	return defaultAcrisTheme;
+	    }
+		
+		return acrisTheme;
+	 } catch(e){
+	 	alert("Unexpected exception in acris theme detection, using default: " + e);
+	    return "NONE";
+	 }
+  	]]>
+	</property-provider>
+
+	<source path="client" />
+	<source path="shared" />
+</module>
