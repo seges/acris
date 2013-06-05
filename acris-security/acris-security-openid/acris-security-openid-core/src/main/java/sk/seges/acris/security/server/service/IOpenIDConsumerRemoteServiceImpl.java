@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.openid4java.OpenIDException;
+import org.openid4java.association.AssociationSessionType;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.InMemoryConsumerAssociationStore;
 import org.openid4java.consumer.InMemoryNonceVerifier;
@@ -43,7 +44,8 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 		this.manager = manager;
 		this.manager.setAssociations(new InMemoryConsumerAssociationStore());
 		this.manager.setNonceVerifier(new InMemoryNonceVerifier(5000));
-		this.manager.getRealmVerifier().setEnforceRpId(false);
+        this.manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
+		//this.manager.getRealmVerifier().setEnforceRpId(false);
 		this.sessionProvider = sessionProvider;
 	}
 
@@ -57,7 +59,7 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 	
 	@Override
 	public OpenIDUserDTO authenticate(String userSuppliedString, String returnToUrl, String realm, boolean appendSessionId) {
-		log.info("OpenID authenticate with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
+		log.error("OpenID authenticate with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
 		try {
 			// perform discovery on the user-supplied identifier
 			List<?> discoveries = getManager().discover(userSuppliedString);
@@ -111,7 +113,7 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 
 	@Override
 	public OpenIDUserDTO verify(final String queryString, final Map<String, String[]> parameterMap) {
-		log.info("OpenID verification with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
+		log.error("OpenID verification with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
 		try {
 			// extract the parameters from the authentication response (which
 			// comes in as a HTTP request from the OpenID provider)
