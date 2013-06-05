@@ -15,5 +15,7 @@ public interface IOpenIDConsumerRemoteService extends RemoteService {
 
 	OpenIDUserDTO authenticate(String userSuppliedString, String returnToUrl, String realm);
 
+	OpenIDUserDTO authenticate(String userSuppliedString, String returnToUrl, String realm, boolean appendSessionId);
+	
 	OpenIDUserDTO verify(String queryString, Map<String, String[]> parameterMap);
 }

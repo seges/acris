@@ -24,6 +24,7 @@ import org.openid4java.message.sreg.SRegRequest;
 import org.openid4java.message.sreg.SRegResponse;
 
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
+import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerRemoteService;
 
@@ -53,9 +54,9 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 	private HttpSession getSession() {
 		return sessionProvider.getSession();
 	}
-
+	
 	@Override
-	public OpenIDUserDTO authenticate(final String userSuppliedString, final String returnToUrl, final String realm) {
+	public OpenIDUserDTO authenticate(String userSuppliedString, String returnToUrl, String realm, boolean appendSessionId) {
 		try {
 			// perform discovery on the user-supplied identifier
 			List<?> discoveries = getManager().discover(userSuppliedString);
@@ -68,6 +69,9 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 			HttpSession session = getSession();
 			session.setAttribute("openid-disc", discovered);
 
+			if (appendSessionId) {
+				returnToUrl +=  "&" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + session.getId();
+			}
 			// obtain an AuthRequest message to be sent to the OpenID provider
 			AuthRequest authReq = getManager().authenticate(discovered, returnToUrl, realm);
 
@@ -97,6 +101,11 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 		}
 
 		return null;
+	}
+
+	@Override
+	public OpenIDUserDTO authenticate(final String userSuppliedString, final String returnToUrl, final String realm) {
+		return authenticate(userSuppliedString, returnToUrl, realm, false);
 	}
 
 	@Override
