@@ -13,7 +13,6 @@ import sk.seges.acris.security.client.openid.configuration.DefaultOpenIdConfigur
 import sk.seges.acris.security.client.openid.configuration.OpenIdConfiguration;
 import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
-import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.configuration.LoginConfiguration;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
@@ -157,18 +156,18 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	protected void registerHandlers() {
 		super.registerHandlers();
 
-		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.GOOGLE_IDENTIFIER),
+		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(OpenIDProvider.GOOGLE.getIdentifier()),
 				"acris-login-google-button"));
 
-		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.YAHOO_IDENTIFIER),
+		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(OpenIDProvider.YAHOO.getIdentifier()),
 				"acris-login-yahoo-button"));
 
-		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.AOL_IDENTIFIER),
+		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(OpenIDProvider.AOL.getIdentifier()),
 				"acris-login-aol-button"));
 
-		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.SEZNAM_IDENTIFIER),
+		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(OpenIDProvider.SEZNAM.getIdentifier()),
 				"acris-login-seznam-button"));
-
+		
 //		registerHandler(display.addOpenIDButtonHandler(createButtonHandler(LoginConstants.MYOPENID_IDENTIFIER),
 //				"acris-login-myopenid-button"));
 	}

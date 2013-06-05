@@ -16,6 +16,7 @@ public class LoginConstants {
 	//OpenID login integration parameters
 	public static final String DOMAIN_ATTRIBUTE = "domain";
 	public static final String FROM_URL_ATTRIBUTE = "url";
+	public static final String OPENID_PROVIDER_ATTRIBUTE = "provider";
 
 	public static final String GOOGLE_APPS_ATTRIBUTE_VALUE = "google";
 	
@@ -31,10 +32,11 @@ public class LoginConstants {
 	public static final String OPENID_COOKIE_NAME = "acris-openIdCookie";
 
 	// OpenID Identifiers
-	public static final String GOOGLE_IDENTIFIER = "https://www.google.com/accounts/o8/id";
-	public static final String YAHOO_IDENTIFIER = "http://me.yahoo.com";
-	public static final String AOL_IDENTIFIER = "https://www.aol.com";
-	public static final String SEZNAM_IDENTIFIER = "http://www.seznam.cz";
+//  MOVED TO enum OpenIDProvider
+//	public static final String GOOGLE_IDENTIFIER = "https://www.google.com/accounts/o8/id";
+//	public static final String YAHOO_IDENTIFIER = "http://me.yahoo.com";
+//	public static final String AOL_IDENTIFIER = "https://www.aol.com";
+//	public static final String SEZNAM_IDENTIFIER = "http://www.seznam.cz";
 //	public static final String BLOGGER_IDENTIFIER = "http://username.wordpress.com";
 //	public static final String MYOPENID_IDENTIFIER = "https://www.myopenid.com";
 }
