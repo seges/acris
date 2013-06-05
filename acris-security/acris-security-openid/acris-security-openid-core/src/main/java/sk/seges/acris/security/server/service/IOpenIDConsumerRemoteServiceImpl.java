@@ -57,6 +57,7 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 	
 	@Override
 	public OpenIDUserDTO authenticate(String userSuppliedString, String returnToUrl, String realm, boolean appendSessionId) {
+		log.info("OpenID authenticate with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
 		try {
 			// perform discovery on the user-supplied identifier
 			List<?> discoveries = getManager().discover(userSuppliedString);
@@ -110,6 +111,7 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 
 	@Override
 	public OpenIDUserDTO verify(final String queryString, final Map<String, String[]> parameterMap) {
+		log.info("OpenID verification with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
 		try {
 			// extract the parameters from the authentication response (which
 			// comes in as a HTTP request from the OpenID provider)
