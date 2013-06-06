@@ -77,7 +77,8 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 			}
 			// obtain an AuthRequest message to be sent to the OpenID provider
 			AuthRequest authReq = getManager().authenticate(discovered, returnToUrl, realm);
-
+			authReq.setHandle("");
+			
 			// attribute exchange: fetching the 'email' attribute
 			FetchRequest fetch = FetchRequest.createFetchRequest();
 			fetch.addAttribute("email", // attribute alias
