@@ -44,8 +44,8 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 		this.manager = manager;
 		this.manager.setAssociations(new InMemoryConsumerAssociationStore());
 		this.manager.setNonceVerifier(new InMemoryNonceVerifier(5000));
-        this.manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
-		//this.manager.getRealmVerifier().setEnforceRpId(false);
+        //this.manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
+		this.manager.getRealmVerifier().setEnforceRpId(false);
 		this.sessionProvider = sessionProvider;
 	}
 
