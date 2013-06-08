@@ -232,7 +232,7 @@ class DtoDeclared extends TomDeclaredConfigurationHolder implements GeneratedCla
 		
 		PackageValidator packageValidator = getPackageValidationProvider().get(outputType)
 				.moveTo(LocationType.SHARED).moveTo(LayerType.MODEL).clearType().moveTo(ImplementationType.DTO);
-		outputType = outputType.changePackage(packageValidator);
+		outputType = outputType.changePackage(packageValidator).setKind(MutableTypeKind.CLASS);
 		return outputType.getSimpleName().endsWith(TransferObjectHelper.DEFAULT_SUFFIX) ? outputType.setSimpleName(outputType
 				.getSimpleName().substring(0, outputType.getSimpleName().length() - TransferObjectHelper.DEFAULT_SUFFIX.length()))
 				: outputType.addClassSufix(TransferObjectHelper.DTO_SUFFIX);
