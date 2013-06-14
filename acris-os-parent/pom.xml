@@ -63,6 +63,7 @@
 		<module>../acris-widgets</module>
 		<module>../acris-widgets-beantable</module>
 		<!--module>../acris-theme</module-->
+		<module>../acris-jee</module>
 		<module>../acris-json-api</module>
 		<module>../acris-json</module>
 		<module>../acris-json-migration</module>

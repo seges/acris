@@ -13,6 +13,7 @@ public class SessionUserContext implements UserContext{
 		this.webId = webId;
 	}
 
+	@Override
 	public String getWebId() {
 		return webId;
 	}

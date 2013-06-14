@@ -24,6 +24,7 @@ import org.openid4java.message.sreg.SRegRequest;
 import org.openid4java.message.sreg.SRegResponse;
 
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
+import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerRemoteService;
 
@@ -53,9 +54,10 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 	private HttpSession getSession() {
 		return sessionProvider.getSession();
 	}
-
+	
 	@Override
-	public OpenIDUserDTO authenticate(final String userSuppliedString, final String returnToUrl, final String realm) {
+	public OpenIDUserDTO authenticate(String userSuppliedString, String returnToUrl, String realm, boolean appendSessionId) {
+		log.info("OpenID authenticate with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
 		try {
 			// perform discovery on the user-supplied identifier
 			List<?> discoveries = getManager().discover(userSuppliedString);
@@ -68,9 +70,13 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 			HttpSession session = getSession();
 			session.setAttribute("openid-disc", discovered);
 
+			if (appendSessionId) {
+				returnToUrl +=  "&" + LoginConstants.ACRIS_SESSION_ID_STRING + "=" + session.getId();
+			}
 			// obtain an AuthRequest message to be sent to the OpenID provider
 			AuthRequest authReq = getManager().authenticate(discovered, returnToUrl, realm);
-
+			authReq.setHandle("");
+			
 			// attribute exchange: fetching the 'email' attribute
 			FetchRequest fetch = FetchRequest.createFetchRequest();
 			fetch.addAttribute("email", // attribute alias
@@ -100,7 +106,13 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 	}
 
 	@Override
+	public OpenIDUserDTO authenticate(final String userSuppliedString, final String returnToUrl, final String realm) {
+		return authenticate(userSuppliedString, returnToUrl, realm, false);
+	}
+
+	@Override
 	public OpenIDUserDTO verify(final String queryString, final Map<String, String[]> parameterMap) {
+		log.info("OpenID verification with manager: " + manager.toString() + ", instance: " + System.identityHashCode(manager));
 		try {
 			// extract the parameters from the authentication response (which
 			// comes in as a HTTP request from the OpenID provider)
@@ -133,6 +145,8 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 					userDTO.getParams().put(OpenIDUserDTO.EMAIL_FROM_SREG, sregResp.getAttributeValue("email"));
 				}
 				return userDTO; // success
+			} else {
+				log.error("Unable to verify using openId, status: " + verification.getStatusMsg());
 			}
 		} catch (Exception e) {
 			log.error("Error while verifying openID authentication response", e);
