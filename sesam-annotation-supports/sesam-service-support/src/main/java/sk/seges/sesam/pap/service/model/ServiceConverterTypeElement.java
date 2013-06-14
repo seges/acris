@@ -14,12 +14,11 @@ public class ServiceConverterTypeElement extends DelegateMutableDeclaredType {
 
 	private final MutableProcessingEnvironment processingEnv;
 	private final ServiceTypeElement serviceTypeElement;
-	private ConverterProviderContextType convertProviderContextType;
-	
+
 	ServiceConverterTypeElement(ServiceTypeElement serviceTypeElement, MutableProcessingEnvironment processingEnv) {
 		this.serviceTypeElement = serviceTypeElement;
 		this.processingEnv = processingEnv;
-		
+
 		List<LocalServiceTypeElement> localServiceInterfaces = serviceTypeElement.getLocalServiceInterfaces();
 
 		if (localServiceInterfaces != null && localServiceInterfaces.size() > 0) {
@@ -31,13 +30,6 @@ public class ServiceConverterTypeElement extends DelegateMutableDeclaredType {
 
 			setInterfaces(interfaces);
 		}
-	}
-	
-	public ConverterProviderContextType getConvertProviderContextType() {
-		if (convertProviderContextType == null) {
-			convertProviderContextType = new ConverterProviderContextType(serviceTypeElement, processingEnv);
-		}
-		return convertProviderContextType;
 	}
 
 	public ServiceTypeElement getServiceTypeElement() {

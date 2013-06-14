@@ -38,7 +38,7 @@ public class ConverterProviderContextPrinterDelegate {
 	public void finalize() {}
 	
 	public void initialize(final MutableProcessingEnvironment processingEnv, final ConverterProviderContextType converterProviderType, 
-			final ServiceConverterTypeElement serviceConverterTypeElement, UsageType usageType, final Set<? extends Element> converterPrinterDelegates) {
+			UsageType usageType, final Set<? extends Element> converterPrinterDelegates) {
 
 		printerDelegate = new ConverterProviderPrinterDelegate(parametersResolverProvider) {
 			@Override
@@ -76,7 +76,7 @@ public class ConverterProviderContextPrinterDelegate {
 							converterProviderType.getConstructor().addParameter(processingEnv.getElementUtils().getParameterElement(
 									constructorParameter.getType(), constructorParameter.getName()));
 							
-							ProcessorUtils.addField(processingEnv, serviceConverterTypeElement, constructorParameter.getType(), constructorParameter.getName());
+							//ProcessorUtils.addField(processingEnv, serviceConverterTypeElement, constructorParameter.getType(), constructorParameter.getName());
 							//throw new RuntimeException("There is no parameter of type " + constructorParameter.getType() + " available for constructor of element " + converterPrinterDelegate);
 						}
 						

@@ -14,36 +14,29 @@ import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 
 public class ConverterProviderContextType extends DelegateMutableDeclaredType implements HasConstructorParameters {
 
-	protected final ServiceTypeElement serviceType;
+	protected final MutableDeclaredType type;
 	protected final MutableProcessingEnvironment processingEnv;
 
 	public static final String CONVERTER_PROVIDER_CONTEXT_SUFFIX = "ConverterProviderContext";
 
-	public ConverterProviderContextType(ServiceTypeElement serviceType, MutableProcessingEnvironment processingEnv) {
-		this.serviceType = serviceType;
+	public ConverterProviderContextType(MutableDeclaredType type, MutableProcessingEnvironment processingEnv) {
+		this.type = type;
 		this.processingEnv = processingEnv;
 
 		addModifier(Modifier.PUBLIC);
 		setKind(MutableTypeKind.CLASS);
-		setSuperClass(processingEnv.getTypeUtils().toMutableType(ConverterProviderContext.class));
+		setSuperClass(processingEnv.getTypeUtils().toMutableType(getContextSuperClass()));
 	}
 
-	public ServiceTypeElement getServiceType() {
-		return serviceType;
-	}
-	
-	@Override
+    protected Class<?> getContextSuperClass() {
+        return ConverterProviderContext.class;
+    }
+
+    @Override
 	protected MutableDeclaredType getDelegate() {
-		
-		MutableDeclaredType result = serviceType.clone().setSimpleName(serviceType.getSimpleName() + CONVERTER_PROVIDER_CONTEXT_SUFFIX);
-		result.changePackage(serviceType.getServiceConverter().toString(ClassSerializer.CANONICAL, false));
-		return result;
+		return type.clone().setSimpleName(type.getSimpleName() + CONVERTER_PROVIDER_CONTEXT_SUFFIX);
 	}
 
-	public ParameterElement[] getRequiredParameters(ConverterConstructorParametersResolver parametersResolver, ConverterConstructorParametersResolver classParametersResolver) {
-		return new HasConstructorParametersDelegate().getRequiredParameters(processingEnv, parametersResolver, classParametersResolver);
-	}
-	
 	@Override
 	public ParameterElement[] getConverterParameters(ConverterConstructorParametersResolver parametersResolver) {
 		return new HasConstructorParametersDelegate().getConverterParameters(processingEnv, parametersResolver);
