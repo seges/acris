@@ -15,9 +15,9 @@ import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityDat
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclEntry;
 import sk.seges.acris.security.server.core.acl.dao.api.IAclRecordDao;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.domain.IDomainObject;
 import sk.seges.sesam.utils.CastUtils;
 
 public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> implements IAclRecordDao<JpaAclEntry> {
@@ -61,13 +61,13 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	}
 	
 	@Override
-	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid) {
+	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends IDomainObject<?>> clazz, AclSidData sid) {
 		deleteByIdentityIdAndSid(aclId, clazz, sid, clazz.getName());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid, String className) {
+	public void deleteByIdentityIdAndSid(Long aclId, Class<? extends IDomainObject<?>> clazz, AclSidData sid, String className) {
 		Query query;
 		if (sid != null) {
 			query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_FROM_TABLE);
@@ -97,7 +97,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	}
 
 	@Override
-	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
+	public void deleteByClassnameAndSid(Class<? extends IDomainObject<?>> securedClass, AclSidData sid) {
 		List<AclEntryData> entries = findByClassnameAndSid(securedClass, sid);
 
 		for (AclEntryData entry : entries) {
@@ -107,7 +107,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<AclEntryData> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
+	public List<AclEntryData> findByClassnameAndSid(Class<? extends IDomainObject<?>> securedClass, AclSidData sid) {
 
 		Query query = entityManager.createQuery(HQL_ACL_SELECT_SID_OBJECT_BY_CLASSNAME_FROM_TABLE);
 		query.setParameter("classname", securedClass.getName());

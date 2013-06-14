@@ -15,7 +15,6 @@
  */
 package com.google.gwt.gen2.table.client;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.gen2.table.client.property.ColumnProperty;
 
 /**

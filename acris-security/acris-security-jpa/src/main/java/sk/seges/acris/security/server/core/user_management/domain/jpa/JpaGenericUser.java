@@ -16,8 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import sk.seges.acris.security.user_management.server.model.base.UserBase;
-import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
+import sk.seges.corpis.server.domain.user.server.model.base.UserBase;
+import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

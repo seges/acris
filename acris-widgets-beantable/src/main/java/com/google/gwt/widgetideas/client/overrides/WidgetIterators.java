@@ -16,11 +16,11 @@
 
 package com.google.gwt.widgetideas.client.overrides;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Copied from 1.5. Will be depreciated once WidgetIterators is made public.

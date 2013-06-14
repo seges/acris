@@ -22,6 +22,8 @@ public class JpaSecurityPermission extends HierarchyPermissionBase {
 
 	private static final long serialVersionUID = -6620157088484049838L;
 
+	private Integer id;
+	
 	public JpaSecurityPermission() {	
 	}
 	
@@ -29,7 +31,7 @@ public class JpaSecurityPermission extends HierarchyPermissionBase {
     @GeneratedValue(generator="permission_id_seq")
     @Override
     public Integer getId() {
-    	return super.getId();
+    	return id;
     }
     
     @Column

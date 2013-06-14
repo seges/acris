@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.server.core.acl.dao.hibernate.HibernateAclRecordDao;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.domain.IDomainObject;
 
 @Repository
 @Qualifier(value = "aclRecordDao")
@@ -24,25 +24,25 @@ public class HibernateSpringAclRecordDao extends HibernateAclRecordDao {
 
 	@Override
 	@Transactional
-    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid) {
+    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends IDomainObject<?>> clazz, AclSidData sid) {
 		super.deleteByIdentityIdAndSid(aclId, clazz, sid);
 	}
 	
 	@Override
 	@Transactional
-    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends ISecuredObject<?>> clazz, AclSidData sid, String className) {
+    public void deleteByIdentityIdAndSid(Long aclId, Class<? extends IDomainObject<?>> clazz, AclSidData sid, String className) {
 		super.deleteByIdentityIdAndSid(aclId, clazz, sid, className);
     }
 
 	@Override
     @Transactional
-	public void deleteByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
+	public void deleteByClassnameAndSid(Class<? extends IDomainObject<?>> securedClass, AclSidData sid) {
 		super.deleteByClassnameAndSid(securedClass, sid);
 	}
 
 	@Override
     @Transactional
-    public List<AclEntryData> findByClassnameAndSid(Class<? extends ISecuredObject<?>> securedClass, AclSidData sid) {
+    public List<AclEntryData> findByClassnameAndSid(Class<? extends IDomainObject<?>> securedClass, AclSidData sid) {
 		return super.findByClassnameAndSid(securedClass, sid);
     }
     

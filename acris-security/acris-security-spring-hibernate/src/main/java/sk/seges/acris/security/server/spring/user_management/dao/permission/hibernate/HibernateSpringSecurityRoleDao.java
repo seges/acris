@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.sesam.dao.Page;
 
 @Component

@@ -15,11 +15,11 @@
  */
 package com.google.gwt.libideas.validation.client.validator;
 
+import java.util.Date;
+
 import com.google.gwt.libideas.validation.client.ErrorHandler;
 import com.google.gwt.libideas.validation.client.Subject;
 import com.google.gwt.libideas.validation.client.ValidationException;
-
-import java.util.Date;
 
 /**
  * Validator to check the range of a date.

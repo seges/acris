@@ -15,11 +15,11 @@
  */
 package com.google.gwt.libideas.resources.ext;
 
+import java.net.URL;
+
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-
-import java.net.URL;
 
 /**
  * Context object for ResourceGenerators. An instance of this type will be

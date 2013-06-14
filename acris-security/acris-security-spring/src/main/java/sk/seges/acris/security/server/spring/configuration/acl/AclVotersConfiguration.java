@@ -19,7 +19,7 @@ import org.springframework.security.vote.UnanimousBased;
 import sk.seges.acris.security.server.spring.acl.provider.BetterAclEntryAfterInvocationCollectionFilteringProvider;
 import sk.seges.acris.security.server.spring.acl.sid.RolesPublicSidRetrievalStrategy;
 import sk.seges.acris.security.server.spring.acl.vote.VoterPermissions;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.domain.IDomainObject;
 
 public class AclVotersConfiguration {
 
@@ -121,7 +121,7 @@ public class AclVotersConfiguration {
 	
 	private AclEntryVoter getVoter(AclService aclService, String processConfigAttribute, Permission[] requirePermission) {
 		AclEntryVoter voter = new AclEntryVoter(aclService, processConfigAttribute, requirePermission);
-		voter.setProcessDomainObjectClass(ISecuredObject.class);
+		voter.setProcessDomainObjectClass(IDomainObject.class);
 		voter.setSidRetrievalStrategy(sidRetrievalStrategy());
 		return voter;
 	}

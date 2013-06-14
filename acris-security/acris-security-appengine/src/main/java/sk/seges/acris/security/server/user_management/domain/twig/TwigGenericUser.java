@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
-import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
 
 import com.vercer.engine.persist.annotation.Embed;
 import com.vercer.engine.persist.annotation.Key;

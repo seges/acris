@@ -22,7 +22,7 @@ import org.hibernate.annotations.FetchMode;
 
 import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaGenericUser;
 import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaUserPreferences;
-import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
 
 /**
  * @author ladislav.gazo

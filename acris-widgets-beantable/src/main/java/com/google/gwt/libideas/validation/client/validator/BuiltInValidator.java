@@ -16,11 +16,11 @@
 
 package com.google.gwt.libideas.validation.client.validator;
 
+import java.util.Date;
+
 import com.google.gwt.libideas.validation.client.Subject;
 import com.google.gwt.libideas.validation.client.ValidationException;
 import com.google.gwt.libideas.validation.client.Validator;
-
-import java.util.Date;
 
 /**
  * Validator with some built in error messages.

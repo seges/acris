@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import sk.seges.acris.security.user_management.server.model.base.UserPreferencesBase;
+import sk.seges.corpis.server.domain.user.server.model.base.UserPreferencesBase;
 
 @Entity
 @Table(name = "userpreferences")

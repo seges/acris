@@ -6,9 +6,9 @@ import java.util.List;
 
 import sk.seges.acris.widget.client.Cleaner;
 import sk.seges.acris.widget.client.filterpanel.AbstractConjunctiveFilterPanel;
-import sk.seges.acris.widget.client.table.SpecColumn;
 import sk.seges.acris.widget.client.table.BeanTable.DomainObjectProperty;
 import sk.seges.acris.widget.client.table.BeanTable.FilterProperty;
+import sk.seges.acris.widget.client.table.SpecColumn;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Criterion;
 import sk.seges.sesam.dao.Filter;

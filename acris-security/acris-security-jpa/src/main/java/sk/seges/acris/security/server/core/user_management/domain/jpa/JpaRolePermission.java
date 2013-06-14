@@ -52,4 +52,9 @@ public class JpaRolePermission extends UserRolePermissionBase {
 		}
 		super.setUserPermissions(result);
 	}
+
+	@Override
+	public String getId() {
+		return getPermission();
+	}
 }

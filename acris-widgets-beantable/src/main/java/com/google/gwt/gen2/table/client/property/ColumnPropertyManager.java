@@ -15,10 +15,10 @@
  */
 package com.google.gwt.gen2.table.client.property;
 
-import com.google.gwt.gen2.table.client.property.ColumnProperty.Type;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gwt.gen2.table.client.property.ColumnProperty.Type;
 
 /**
  * Manager responsible for adding, retrieving, and removing

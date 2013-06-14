@@ -16,6 +16,8 @@
 
 package com.google.gwt.widgetideas.client;
 
+import java.util.Iterator;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -34,8 +36,6 @@ import com.google.gwt.user.client.ui.SourcesChangeEvents;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.widgetideas.client.overrides.WidgetIterators;
-
-import java.util.Iterator;
 
 /**
  * {@link CollapsiblePanel} makes its contained contents able to collapse. By

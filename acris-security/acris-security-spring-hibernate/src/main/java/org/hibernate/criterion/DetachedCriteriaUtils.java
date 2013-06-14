@@ -1,6 +1,6 @@
 package org.hibernate.criterion;
 
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.acris.security.client.ISecuredObject;
 import sk.seges.sesam.domain.IDomainObject;
 
 /**

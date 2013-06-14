@@ -14,7 +14,7 @@ import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import sk.seges.acris.security.user_management.server.model.base.RoleBase;
+import sk.seges.corpis.server.domain.user.server.model.base.RoleBase;
 
 /**
  * Security role serves as the holder of authorities for specific user (or any other entity). It is the entity grouping

@@ -15,11 +15,11 @@
  */
 package com.google.gwt.libideas.resources.rebind;
 
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.user.rebind.SourceWriter;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * A SourceWriter that accumulates source and returns it in the

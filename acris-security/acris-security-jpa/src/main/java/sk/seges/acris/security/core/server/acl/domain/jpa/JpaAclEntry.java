@@ -13,11 +13,10 @@ import javax.persistence.UniqueConstraint;
 import sk.seges.acris.security.acl.server.model.base.AclEntryBase;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
-import sk.seges.sesam.domain.IMutableDomainObject;
 
 @Entity
 @Table(name = "ACL_ENTRY", uniqueConstraints = {@UniqueConstraint(columnNames = {"acl_object_identity", "ace_order", "sid"})})
-public class JpaAclEntry extends AclEntryBase implements IMutableDomainObject<Long> {
+public class JpaAclEntry extends AclEntryBase {
 
 	private static final long serialVersionUID = -7561144169564944658L;
 

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
@@ -40,5 +41,11 @@ public class HibernateRolePermission extends UserRolePermissionBase {
 //	@JoinTable(name="rolepermission_userpermissions", joinColumns=@JoinColumn(name="rolepermission_permission"))
 	public List<String> getUserPermissions() {
 		return super.getUserPermissions();
+	}
+
+	@Transient
+	@Override
+	public String getId() {
+		return getPermission();
 	}
 }

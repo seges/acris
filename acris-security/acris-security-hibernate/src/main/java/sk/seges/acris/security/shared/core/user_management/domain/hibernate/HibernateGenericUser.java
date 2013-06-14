@@ -16,8 +16,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaUserPreferences;
-import sk.seges.acris.security.user_management.server.model.base.UserBase;
-import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
+import sk.seges.corpis.server.domain.user.server.model.base.UserBase;
+import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -88,6 +88,11 @@ public class HibernateGenericUser extends UserBase {
 	public String getWebId() {
 		return super.getWebId();
 	}
+	
+//	@ManyToMany(targetEntity = HibernateSecurityRole.class)
+//	public List<RoleData> getRoles() {
+//		return super.getRoles();
+//	}
 	
 	@OneToOne(cascade = CascadeType.ALL, targetEntity = JpaUserPreferences.class)
 	public UserPreferencesData getUserPreferences() {

@@ -2,7 +2,7 @@ package sk.seges.acris.security.server.spring.user_management.dao.user.api;
 
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.dao.ICrudDAO;
 import sk.seges.sesam.dao.IEntityInstancer;
 

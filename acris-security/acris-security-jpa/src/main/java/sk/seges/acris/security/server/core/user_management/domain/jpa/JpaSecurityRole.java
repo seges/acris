@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import sk.seges.acris.security.user_management.server.model.base.RoleBase;
+import sk.seges.corpis.server.domain.user.server.model.base.RoleBase;
 
 /**
  * Security role serves as the holder of authorities for specific user (or any other entity). It is the entity grouping

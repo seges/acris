@@ -3,9 +3,9 @@
  */
 package com.google.gwt.gen2.table.shared;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-
 import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class DateColumnFilterInfo extends ColumnFilterInfo<Date> {
   public enum Operator {

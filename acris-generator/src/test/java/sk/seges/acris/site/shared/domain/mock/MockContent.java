@@ -305,11 +305,6 @@ public class MockContent implements ContentData {
 	}
 	
 	@Override
-	public Long getIdForACL() {
-		return Long.valueOf(getId().toString().hashCode());
-	}
-
-	@Override
 	public List<? extends ContentData> getSubContents() {
 		// TODO Auto-generated method stub
 		return null;

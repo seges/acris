@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.Authentication;
 import org.springframework.security.acls.AccessControlEntry;
+import org.springframework.security.acls.Acl;
 import org.springframework.security.acls.MutableAcl;
 import org.springframework.security.acls.MutableAclService;
 import org.springframework.security.acls.NotFoundException;
@@ -33,12 +34,14 @@ import sk.seges.acris.security.server.core.acl.dao.api.IAclSecuredClassDescripti
 import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
 import sk.seges.acris.security.server.spring.acl.domain.dto.SpringAclSidDTO;
+import sk.seges.acris.security.server.spring.acl.sid.SidNameResolver;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.exception.SecurityException;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.security.server.model.acl.AclSecurityData;
+import sk.seges.sesam.security.shared.model.api.PermissionData;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SpringAclMaintainer implements AclManager {
@@ -83,7 +86,7 @@ public class SpringAclMaintainer implements AclManager {
 	}
 
 	@Override
-	public void removeAclRecords(Class<? extends ISecuredObject<?>> securedClass, UserData user) {
+	public void removeAclRecords(Class<? extends IDomainObject<?>> securedClass, UserData user) {
 		removeAclRecords(securedClass, createPrincipalSid(user.getUsername()));
 	}
 
@@ -113,7 +116,7 @@ public class SpringAclMaintainer implements AclManager {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	private void removeAclRecords(Long aclId, String className, SpringAclSid sid) {
 		// we need to remove also the superclass object identity ACLs
-		Class<? extends ISecuredObject<?>> clazz = SecuredClassHelper.getSecuredClass(className);
+		Class<? extends IDomainObject<?>> clazz = SecuredClassHelper.getSecuredClass(className);
 		while (!isTopParentClass(clazz)) {
 			if (isHibernateProxy(clazz)) {
 				clazz = getSecuredSuperClass(clazz);
@@ -134,14 +137,14 @@ public class SpringAclMaintainer implements AclManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends ISecuredObject<?>> getSecuredSuperClass(Class<? extends ISecuredObject<?>> clazz) {
-		return (Class<? extends ISecuredObject<?>>) clazz.getSuperclass();
+	private Class<? extends IDomainObject<?>> getSecuredSuperClass(Class<? extends IDomainObject<?>> clazz) {
+		return (Class<? extends IDomainObject<?>>) clazz.getSuperclass();
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	private void removeAclRecords(Class<? extends ISecuredObject<?>> securedClass, SpringAclSid sid) {
+	private void removeAclRecords(Class<? extends IDomainObject<?>> securedClass, SpringAclSid sid) {
 		// we need to remove also the superclass object identity ACLs
-		Class<? extends ISecuredObject<?>> superClass = securedClass;
+		Class<? extends IDomainObject<?>> superClass = securedClass;
 		while (!isTopParentClass(superClass)) {
 			if (isHibernateProxy(superClass)) {
 				superClass = getSecuredSuperClass(superClass);
@@ -161,36 +164,35 @@ public class SpringAclMaintainer implements AclManager {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void removeAcl(ISecuredObject<?> securedObject) {
-		ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(securedObject.getClass(),
-				securedObject.getIdForACL());
+	public void removeAcl(AclSecurityData securedObject) {
+		ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(securedObject.getAclClass(),
+				securedObject.getAclId());
 		aclCache.evictFromCache(objectIdentity);
 		aclService.deleteAcl(objectIdentity, false);
 	}
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject,
-			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
+	public void setAclRecords(AclSecurityData securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		setAclRecords(securedObject, getSidFromContext(), permissions);
 	}
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
+	public void setAclRecords(AclSecurityData securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
 		setAclRecords(securedObject, getSidFromContext(), permissions, updateParent);
 	}
 	
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject, UserData user,
+	public void setAclRecords(AclSecurityData securedObject, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		setAclRecords(securedObject, user, permissions, true);
 	}
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject, UserData user,
+	public void setAclRecords(AclSecurityData securedObject, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
 		PrincipalSid sid = new PrincipalSid(user.getUsername());
 		setAclRecords(securedObject, sid, permissions, updateParent);
@@ -198,20 +200,20 @@ public class SpringAclMaintainer implements AclManager {
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void setAclRecords(ISecuredObject<?> securedObject, RoleData role,
+	public void setAclRecords(AclSecurityData securedObject, RoleData role,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		setAclRecords(securedObject, role, permissions, true);
 	}
 
 	@Override
-	public void setAclRecords(ISecuredObject<?> securedObject, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
+	public void setAclRecords(AclSecurityData securedObject, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
 		PrincipalSid sid = new PrincipalSid(role.getName());
 		setAclRecords(securedObject, sid, permissions, updateParent);
 	}
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData user,
+	public void resetAclRecords(Class<? extends IDomainObject<?>> objectClass, Long aclId, UserData user,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(user.getUsername());
 		resetAclRecords(objectClass, aclId, sid, permissions);
@@ -219,7 +221,7 @@ public class SpringAclMaintainer implements AclManager {
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, RoleData role,
+	public void resetAclRecords(Class<? extends IDomainObject<?>> objectClass, Long aclId, RoleData role,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(role.getName());
 		resetAclRecords(objectClass, aclId, sid, permissions);
@@ -227,13 +229,13 @@ public class SpringAclMaintainer implements AclManager {
 	
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, String userName,
+	public void resetAclRecords(Class<? extends IDomainObject<?>> objectClass, Long aclId, String userName,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		PrincipalSid sid = new PrincipalSid(userName);
 		resetAclRecords(objectClass, aclId, sid, permissions);
 	}
 
-	private void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long securedId, Sid sid,
+	private void resetAclRecords(Class<? extends IDomainObject<?>> objectClass, Long securedId, Sid sid,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		MutableAcl acl = null;
 		AclSecuredObjectIdentityData objectIdentity = getParentObjectIdentity(objectClass, securedId);
@@ -263,13 +265,10 @@ public class SpringAclMaintainer implements AclManager {
 		aclService.updateAcl(acl);
 	}
 
-	private AclSecuredObjectIdentityData getParentObjectIdentity(Class<? extends ISecuredObject<?>> objectClass, Long aclId) {
+	private AclSecuredObjectIdentityData getParentObjectIdentity(Class<? extends IDomainObject<?>> objectClass, Long aclId) {
 		
 		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(objectClass);
 		
-//		if (aclClass == null) {
-//			return null;
-//		}
 		AclSecuredObjectIdentityData result = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), aclId);
 
 		if (result != null && result.getParentObject() != null) {
@@ -279,30 +278,27 @@ public class SpringAclMaintainer implements AclManager {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	private void setAclRecords(ISecuredObject<?> securedObject, Sid sid,
+	private void setAclRecords(AclSecurityData securedObject, Sid sid,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
 		setAclRecords(securedObject, sid, permissions, true);
 	}
 	
 	@Override
-	public void setAclRecords(
-			Class<? extends ISecuredObject<?>> objectClass,
-			Long aclId,
-			UserData user,
-			sk.seges.acris.security.shared.user_management.domain.Permission[] authorities) {
+	public void setAclRecords(Class<? extends IDomainObject<?>> objectClass, Long aclId,
+			UserData user, sk.seges.acris.security.shared.user_management.domain.Permission[] authorities) {
 		PrincipalSid sid = new PrincipalSid(user.getUsername());
 		setAclRecords(objectClass, aclId, null, sid, authorities, false);
 	}
 
-	private void setAclRecords(ISecuredObject<?> securedObject, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
-		Class<?> clazz = securedObject.getClass();
-		ISecuredObject<?> securedParent = securedObject.getParent();
+	private void setAclRecords(AclSecurityData securedObject, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
+		Class<?> clazz = securedObject.getAclClass();
+		AclSecurityData securedParent = securedObject.getParentAcl();
 		
-		setAclRecords(clazz, securedObject.getIdForACL(), securedParent, sid, permissions, updateParent);
+		setAclRecords(clazz, securedObject.getAclId(), securedParent, sid, permissions, updateParent);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	private void setAclRecords(Class<?> clazz, Long aclId, ISecuredObject<?> securedParent, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
+	private void setAclRecords(Class<?> clazz, Long aclId, AclSecurityData securedParent, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
 		MutableAcl acl = null;
 		
 
@@ -325,7 +321,7 @@ public class SpringAclMaintainer implements AclManager {
 
 		MutableAcl parentAcl = null;
         if (securedParent != null && updateParent) {
-			identity = new ObjectIdentityImpl(securedParent.getClass(), securedParent.getIdForACL());
+			identity = new ObjectIdentityImpl(securedParent.getAclClass(), securedParent.getAclId());
 			
 			parentAcl = getOrCreateParentAcl(securedParent, sid, permissions, identity);
 			acl.setParent(parentAcl);
@@ -371,7 +367,7 @@ public class SpringAclMaintainer implements AclManager {
 		// clazz = clazz.getSuperclass();
 	}
 
-	private MutableAcl getOrCreateParentAcl(ISecuredObject<?> securedParent, Sid sid,
+	private MutableAcl getOrCreateParentAcl(AclSecurityData securedParent, Sid sid,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, ObjectIdentity identity) {
 		try {
 			MutableAcl parentAcl = (MutableAcl) aclService.readAclById(identity);
@@ -407,4 +403,26 @@ public class SpringAclMaintainer implements AclManager {
 		return new PrincipalSid(authentication);
 	}
 
+	@Override
+	public PermissionData getPermissionData(AclSecurityData aclSecurityData) {
+		ObjectIdentity objectIdentity = new ObjectIdentityImpl(aclSecurityData.getClassName(), aclSecurityData.getAclId());
+		Acl acl = aclService.readAclById(objectIdentity);
+		
+		PermissionData permission = new PermissionData();
+		if (acl == null || acl.getEntries() == null || acl.getEntries().length == 0) {
+			permission.setVisible(false);
+			return permission;
+		}
+		
+		permission.setVisible(true);
+		
+		for (AccessControlEntry aclEntry: acl.getEntries()) {
+			//using just last role name
+			//TODO list of role name should be better
+			//TODO or much better distinguish between roles and principals
+			permission.setRoleName(SidNameResolver.getSidName(aclEntry.getSid()));
+		}
+		
+		return permission;
+	}
 }

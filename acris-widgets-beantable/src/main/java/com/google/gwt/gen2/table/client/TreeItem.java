@@ -1,10 +1,10 @@
 package com.google.gwt.gen2.table.client;
 
-import com.google.gwt.gen2.table.shared.AbstractTreeTableItem;
-import com.google.gwt.gen2.table.shared.TreeTableItem;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.gen2.table.shared.AbstractTreeTableItem;
+import com.google.gwt.gen2.table.shared.TreeTableItem;
 
 public class TreeItem<T extends TreeTableItem> {
 	private List<TreeItem<T>> children = null;

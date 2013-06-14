@@ -26,9 +26,11 @@ import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.acris.security.server.spring.acl.sid.SidNameResolver;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.security.server.model.acl.AclSecuredEntity;
 
 public class SpringMutableAclService extends SpringAclService implements MutableAclService {
 
@@ -52,7 +54,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		PrincipalSid sid = new PrincipalSid(auth);
 
-		String sidName = getSidName(sid);
+		String sidName = SidNameResolver.getSidName(sid);
 		boolean principal = isPrincipal(sid);
 
 		AclSidData aclSid = aclSecurityIDDao.loadOrCreate(sidName, principal);
@@ -69,16 +71,6 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 		// retrieval etc)
 		Acl acl = readAclById(objectIdentity);
 		return (MutableAcl) acl;
-	}
-
-	private String getSidName(Sid sid) {
-		if (sid instanceof PrincipalSid) {
-			return ((PrincipalSid) sid).getPrincipal();
-		} else if (sid instanceof GrantedAuthoritySid) {
-			return ((GrantedAuthoritySid) sid).getGrantedAuthority();
-		} else {
-			throw new IllegalArgumentException("Unsupported implementation of Sid");
-		}
 	}
 
 	private boolean isPrincipal(Sid sid) {
@@ -101,7 +93,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 			aclEntry.setAceOrder(i);
 			Sid sid = entry.getSid();
 
-			String sidName = getSidName(sid);
+			String sidName = SidNameResolver.getSidName(sid);
 			boolean principal = isPrincipal(sid);
 
 			AclSidData aclSid = aclSecurityIDDao.loadOrCreate(sidName, principal);
@@ -196,7 +188,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 
 	}
 
-	public void addPermission(ISecuredObject<?> secureObject, Permission permission, Class<?> clazz) {
+	public void addPermission(AclSecuredEntity<IDomainObject<?>> secureObject, Permission permission) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		Sid recipient;
@@ -208,13 +200,13 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 			recipient = new PrincipalSid(auth.getPrincipal().toString());
 		}
 
-		addPermission(secureObject, recipient, permission, clazz);
+		addPermission(secureObject, recipient, permission);
 	}
 
-	public void addPermission(ISecuredObject<?> securedObject, Sid recipient, Permission permission, Class<?> clazz) {
+	public void addPermission(AclSecuredEntity<IDomainObject<?>> securedObject, Sid recipient, Permission permission) {
 		MutableAcl acl;
 
-		ObjectIdentity oid = new ObjectIdentityImpl(clazz.getCanonicalName(), securedObject.getIdForACL());
+		ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getAclData().getAclClass(), securedObject.getAclData().getAclId());
 
 		try {
 			acl = (MutableAcl) readAclById(oid);

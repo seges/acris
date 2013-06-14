@@ -52,10 +52,6 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.gilead</groupId>
-			<artifactId>gilead-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.sf.gwt-widget</groupId>
 			<artifactId>gwt-sl</artifactId>
 		</dependency>

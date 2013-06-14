@@ -5,7 +5,7 @@ import java.util.List;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.api.ISecurityRoleDao;
 import sk.seges.acris.security.server.user_management.service.IRoleRemoteServiceLocal;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
