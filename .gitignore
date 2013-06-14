@@ -1,0 +1,623 @@
+
+# /
+/target
+/sk
+
+# /acris-annotation-processors/acris-async-service-processor/
+/acris-annotation-processors/acris-async-service-processor/.classpath
+/acris-annotation-processors/acris-async-service-processor/.project
+/acris-annotation-processors/acris-async-service-processor/.settings
+/acris-annotation-processors/acris-async-service-processor/target
+/acris-annotation-processors/acris-async-service-processor/bin
+
+# /acris-annotation-processors/acris-beanwrapper-processor/
+/acris-annotation-processors/acris-beanwrapper-processor/.classpath
+/acris-annotation-processors/acris-beanwrapper-processor/*.project
+/acris-annotation-processors/acris-beanwrapper-processor/.settings
+/acris-annotation-processors/acris-beanwrapper-processor/target
+
+# /acris-annotation-processors/acris-json-processor/
+/acris-annotation-processors/acris-json-processor/.classpath
+/acris-annotation-processors/acris-json-processor/.project
+/acris-annotation-processors/acris-json-processor/.settings
+/acris-annotation-processors/acris-json-processor/target
+
+# /acris-annotation-processors/acris-security-processor/
+/acris-annotation-processors/acris-security-processor/.classpath
+/acris-annotation-processors/acris-security-processor/.project
+/acris-annotation-processors/acris-security-processor/.settings
+/acris-annotation-processors/acris-security-processor/target
+
+# /acris-annotation-processors/acris-theme-processor/
+/acris-annotation-processors/acris-theme-processor/.classpath
+/acris-annotation-processors/acris-theme-processor/.project
+/acris-annotation-processors/acris-theme-processor/.settings
+/acris-annotation-processors/acris-theme-processor/target
+
+# /acris-asmant/
+/acris-asmant/.settings
+/acris-asmant/target
+/acris-asmant/.classpath
+/acris-asmant/.project
+
+# /acris-benchmark/
+/acris-benchmark/.classpath
+/acris-benchmark/.project
+/acris-benchmark/.settings
+/acris-benchmark/target
+
+# /acris-bpm/acris-bpm-activiti-engine/
+/acris-bpm/acris-bpm-activiti-engine/.classpath
+/acris-bpm/acris-bpm-activiti-engine/.project
+/acris-bpm/acris-bpm-activiti-engine/target
+/acris-bpm/acris-bpm-activiti-engine/.settings
+
+# /acris-bpm/acris-bpm-web/
+/acris-bpm/acris-bpm-web/.classpath
+/acris-bpm/acris-bpm-web/.project
+/acris-bpm/acris-bpm-web/target
+/acris-bpm/acris-bpm-web/.settings
+
+# /acris-callbacks/
+/acris-callbacks/.classpath
+/acris-callbacks/.project
+/acris-callbacks/.settings
+/acris-callbacks/target
+
+# /acris-client-core/
+/acris-client-core/.classpath
+/acris-client-core/.project
+/acris-client-core/.settings
+/acris-client-core/target
+
+# /acris-common/
+/acris-common/.classpath
+/acris-common/.project
+/acris-common/.settings
+/acris-common/target
+
+# /acris-crypto/
+/acris-crypto/.classpath
+/acris-crypto/.project
+/acris-crypto/.settings
+/acris-crypto/target
+
+# /acris-external/
+/acris-external/target
+/acris-external/.classpath
+/acris-external/.project
+/acris-external/.settings
+
+# /acris-generator/
+/acris-generator/.project
+/acris-generator/.classpath
+/acris-generator/.settings
+/acris-generator/cp.txt
+/acris-generator/target
+/acris-generator/a
+/acris-generator/.gwt
+/acris-generator/war
+
+# /acris-image-utils/
+/acris-image-utils/target
+/acris-image-utils/.settings
+/acris-image-utils/.classpath
+/acris-image-utils/.project
+
+# /acris-jee/acris-tomcat-support/
+/acris-jee/acris-tomcat-support/.settings
+/acris-jee/acris-tomcat-support/target
+/acris-jee/acris-tomcat-support/.classpath
+/acris-jee/acris-tomcat-support/.project
+
+# /acris-json/
+/acris-json/war
+/acris-json/tomcat
+/acris-json/target
+/acris-json/sk.seges.acris.json.Showcase.launch
+/acris-json/bin
+/acris-json/.settings
+/acris-json/.factorypath
+/acris-json/.project
+/acris-json/.classpath
+
+# /acris-json-api/
+/acris-json-api/.classpath
+/acris-json-api/.project
+/acris-json-api/.settings
+/acris-json-api/target
+
+# /acris-json-migration/
+/acris-json-migration/target
+/acris-json-migration/.classpath
+/acris-json-migration/.project
+/acris-json-migration/.settings
+
+# /acris-os-gwt-parent/
+/acris-os-gwt-parent/target
+/acris-os-gwt-parent/.project
+/acris-os-gwt-parent/bin
+
+# /acris-os-parent/
+/acris-os-parent/target
+/acris-os-parent/.project
+/acris-os-parent/bin
+
+# /acris-pivo/
+/acris-pivo/.settings
+/acris-pivo/target
+/acris-pivo/.classpath
+/acris-pivo/.project
+
+# /acris-recorder/
+/acris-recorder/.classpath
+/acris-recorder/.project
+/acris-recorder/.settings
+/acris-recorder/target
+/acris-recorder/bin
+
+# /acris-reporting/acris-reporting-all/
+/acris-reporting/acris-reporting-all/.settings
+/acris-reporting/acris-reporting-all/target
+/acris-reporting/acris-reporting-all/.project
+/acris-reporting/acris-reporting-all/.classpath
+
+# /acris-reporting/acris-reporting-api/
+/acris-reporting/acris-reporting-api/.settings
+/acris-reporting/acris-reporting-api/target
+/acris-reporting/acris-reporting-api/.classpath
+/acris-reporting/acris-reporting-api/.project
+
+# /acris-reporting/acris-reporting-appengine/
+/acris-reporting/acris-reporting-appengine/.settings
+/acris-reporting/acris-reporting-appengine/target
+/acris-reporting/acris-reporting-appengine/.classpath
+/acris-reporting/acris-reporting-appengine/.project
+
+# /acris-reporting/acris-reporting-core/
+/acris-reporting/acris-reporting-core/.settings
+/acris-reporting/acris-reporting-core/target
+/acris-reporting/acris-reporting-core/.classpath
+/acris-reporting/acris-reporting-core/.project
+
+# /acris-reporting/acris-reporting-parent/
+/acris-reporting/acris-reporting-parent/.project
+/acris-reporting/acris-reporting-parent/.settings
+/acris-reporting/acris-reporting-parent/.classpath
+/acris-reporting/acris-reporting-parent/bin
+
+# /acris-reporting/acris-reporting-ui/
+/acris-reporting/acris-reporting-ui/.settings
+/acris-reporting/acris-reporting-ui/target
+/acris-reporting/acris-reporting-ui/.classpath
+/acris-reporting/acris-reporting-ui/.project
+
+# /acris-security/acris-security-api/
+/acris-security/acris-security-api/.classpath
+/acris-security/acris-security-api/.project
+/acris-security/acris-security-api/.settings
+/acris-security/acris-security-api/target
+
+# /acris-security/acris-security-appengine/
+/acris-security/acris-security-appengine/.classpath
+/acris-security/acris-security-appengine/.project
+/acris-security/acris-security-appengine/.settings
+/acris-security/acris-security-appengine/bin
+/acris-security/acris-security-appengine/target
+
+# /acris-security/acris-security-core/
+/acris-security/acris-security-core/.classpath
+/acris-security/acris-security-core/.factorypath
+/acris-security/acris-security-core/.project
+/acris-security/acris-security-core/.settings
+/acris-security/acris-security-core/a
+/acris-security/acris-security-core/target
+/acris-security/acris-security-core/bin
+/acris-security/acris-security-core/home
+/acris-security/acris-security-core/.apt_generated
+
+# /acris-security/acris-security-core/src/main/java/sk/seges/acris/security/server/core/user_management/context/
+
+# /acris-security/acris-security-core/src/main/java/sk/seges/acris/security/server/core/user_management/context/api/
+
+# /acris-security/acris-security-core/src/main/java/sk/seges/acris/security/shared/user_management/context/
+
+# /acris-security/acris-security-dto/
+/acris-security/acris-security-dto/.apt_generated
+/acris-security/acris-security-dto/.factorypath
+/acris-security/acris-security-dto/.project
+/acris-security/acris-security-dto/.classpath
+/acris-security/acris-security-dto/.settings
+/acris-security/acris-security-dto/target
+
+# /acris-security/acris-security-hibernate/
+/acris-security/acris-security-hibernate/.classpath
+/acris-security/acris-security-hibernate/.project
+/acris-security/acris-security-hibernate/.settings
+/acris-security/acris-security-hibernate/target
+
+# /acris-security/acris-security-jpa/
+/acris-security/acris-security-jpa/.classpath
+/acris-security/acris-security-jpa/.project
+/acris-security/acris-security-jpa/target
+/acris-security/acris-security-jpa/.apt_generated
+/acris-security/acris-security-jpa/.settings
+
+# /acris-security/acris-security-openid/
+/acris-security/acris-security-openid/target
+/acris-security/acris-security-openid/*.classpath
+/acris-security/acris-security-openid/*.factorypath
+/acris-security/acris-security-openid/*.project
+/acris-security/acris-security-openid/*.settings
+/acris-security/acris-security-openid/*.gwt-tmp
+/acris-security/acris-security-openid/tomcat
+/acris-security/acris-security-openid/war
+/acris-security/acris-security-openid/.apt_generated
+/acris-security/acris-security-openid/home
+
+# /acris-security/acris-security-openid/acris-security-openid-core/
+/acris-security/acris-security-openid/acris-security-openid-core/.apt_generated
+/acris-security/acris-security-openid/acris-security-openid-core/.classpath
+/acris-security/acris-security-openid/acris-security-openid-core/.factorypath
+/acris-security/acris-security-openid/acris-security-openid-core/.project
+/acris-security/acris-security-openid/acris-security-openid-core/.settings
+/acris-security/acris-security-openid/acris-security-openid-core/target
+
+# /acris-security/acris-security-openid/acris-security-openid-dto/
+/acris-security/acris-security-openid/acris-security-openid-dto/.apt_generated
+/acris-security/acris-security-openid/acris-security-openid-dto/.classpath
+/acris-security/acris-security-openid/acris-security-openid-dto/.factorypath
+/acris-security/acris-security-openid/acris-security-openid-dto/.settings
+/acris-security/acris-security-openid/acris-security-openid-dto/.project
+/acris-security/acris-security-openid/acris-security-openid-dto/target
+
+# /acris-security/acris-security-openid/acris-security-openid-scaffold-model/
+/acris-security/acris-security-openid/acris-security-openid-scaffold-model/.apt_generated
+/acris-security/acris-security-openid/acris-security-openid-scaffold-model/.classpath
+/acris-security/acris-security-openid/acris-security-openid-scaffold-model/.factorypath
+/acris-security/acris-security-openid/acris-security-openid-scaffold-model/.project
+/acris-security/acris-security-openid/acris-security-openid-scaffold-model/.settings
+/acris-security/acris-security-openid/acris-security-openid-scaffold-model/target
+
+# /acris-security/acris-security-parent/
+/acris-security/acris-security-parent/target
+/acris-security/acris-security-parent/.project
+
+# /acris-security/acris-security-rest-authentication/
+/acris-security/acris-security-rest-authentication/*.settings
+/acris-security/acris-security-rest-authentication/target
+/acris-security/acris-security-rest-authentication/*.classpath
+/acris-security/acris-security-rest-authentication/*.factorypath
+/acris-security/acris-security-rest-authentication/*.project
+/acris-security/acris-security-rest-authentication/home
+/acris-security/acris-security-rest-authentication/.apt_generated
+
+# /acris-security/acris-security-scaffold-model/
+/acris-security/acris-security-scaffold-model/.apt_generated
+/acris-security/acris-security-scaffold-model/.factorypath
+/acris-security/acris-security-scaffold-model/.classpath
+/acris-security/acris-security-scaffold-model/.project
+/acris-security/acris-security-scaffold-model/.settings
+/acris-security/acris-security-scaffold-model/target
+
+# /acris-security/acris-security-server/
+/acris-security/acris-security-server/.classpath
+/acris-security/acris-security-server/.project
+/acris-security/acris-security-server/.settings
+/acris-security/acris-security-server/target
+
+# /acris-security/acris-security-spring/
+/acris-security/acris-security-spring/.classpath
+/acris-security/acris-security-spring/.factorypath
+/acris-security/acris-security-spring/.project
+/acris-security/acris-security-spring/.settings
+/acris-security/acris-security-spring/target
+/acris-security/acris-security-spring/.apt_generated
+
+# /acris-security/acris-security-spring-hibernate/
+/acris-security/acris-security-spring-hibernate/.classpath
+/acris-security/acris-security-spring-hibernate/.project
+/acris-security/acris-security-spring-hibernate/.settings
+/acris-security/acris-security-spring-hibernate/target
+/acris-security/acris-security-spring-hibernate/a
+
+# /acris-security/acris-security-spring-jpa/
+/acris-security/acris-security-spring-jpa/.classpath
+/acris-security/acris-security-spring-jpa/.project
+/acris-security/acris-security-spring-jpa/.settings
+/acris-security/acris-security-spring-jpa/target
+
+# /acris-security/acris-security-ui/
+/acris-security/acris-security-ui/target
+/acris-security/acris-security-ui/*.settings
+/acris-security/acris-security-ui/*.classpath
+/acris-security/acris-security-ui/*.project
+/acris-security/acris-security-ui/war
+
+# /acris-server/acris-server-appengine/
+/acris-server/acris-server-appengine/.classpath
+/acris-server/acris-server-appengine/.project
+/acris-server/acris-server-appengine/.settings
+/acris-server/acris-server-appengine/target
+
+# /acris-server-components/
+/acris-server-components/target
+/acris-server-components/.classpath
+/acris-server-components/.project
+/acris-server-components/.settings
+/acris-server-components/a
+
+# /acris-showcase/
+/acris-showcase/.metadata
+/acris-showcase/Backup
+/acris-showcase/acris-showcase-deployer-datanucleus
+/acris-showcase/acris-showcase-mvp-datanucleus
+
+# /acris-showcase/acris-showcase-appconstructor/
+/acris-showcase/acris-showcase-appconstructor/.settings
+/acris-showcase/acris-showcase-appconstructor/target
+/acris-showcase/acris-showcase-appconstructor/.classpath
+/acris-showcase/acris-showcase-appconstructor/.project
+
+# /acris-showcase/acris-showcase-applications/
+/acris-showcase/acris-showcase-applications/.apt_generated
+/acris-showcase/acris-showcase-applications/.classpath
+/acris-showcase/acris-showcase-applications/.factorypath
+/acris-showcase/acris-showcase-applications/.project
+/acris-showcase/acris-showcase-applications/.settings
+/acris-showcase/acris-showcase-applications/target
+
+# /acris-showcase/acris-showcase-callbacks/
+/acris-showcase/acris-showcase-callbacks/.classpath
+/acris-showcase/acris-showcase-callbacks/.project
+/acris-showcase/acris-showcase-callbacks/.settings
+/acris-showcase/acris-showcase-callbacks/target
+
+# /acris-showcase/acris-showcase-client-core/
+/acris-showcase/acris-showcase-client-core/.classpath
+/acris-showcase/acris-showcase-client-core/.project
+/acris-showcase/acris-showcase-client-core/.settings
+/acris-showcase/acris-showcase-client-core/target
+/acris-showcase/acris-showcase-client-core/war
+
+# /acris-showcase/acris-showcase-deployer/
+/acris-showcase/acris-showcase-deployer/.classpath
+/acris-showcase/acris-showcase-deployer/.project
+/acris-showcase/acris-showcase-deployer/.settings
+/acris-showcase/acris-showcase-deployer/a
+/acris-showcase/acris-showcase-deployer/target
+/acris-showcase/acris-showcase-deployer/war
+/acris-showcase/acris-showcase-deployer/.factorypath
+
+# /acris-showcase/acris-showcase-deployer/src/main/webapp/WEB-INF/
+/acris-showcase/acris-showcase-deployer/src/main/webapp/WEB-INF/settings.properties
+
+# /acris-showcase/acris-showcase-generator/
+/acris-showcase/acris-showcase-generator/.classpath
+/acris-showcase/acris-showcase-generator/.project
+/acris-showcase/acris-showcase-generator/.settings
+/acris-showcase/acris-showcase-generator/target
+/acris-showcase/acris-showcase-generator/.factorypath
+/acris-showcase/acris-showcase-generator/bin
+/acris-showcase/acris-showcase-generator/.gwt-tmp
+/acris-showcase/acris-showcase-generator/tomcat
+/acris-showcase/acris-showcase-generator/war
+/acris-showcase/acris-showcase-generator/.apt_generated
+
+# /acris-showcase/acris-showcase-generator/src/main/webapp/WEB-INF/
+/acris-showcase/acris-showcase-generator/src/main/webapp/WEB-INF/settings.properties
+
+# /acris-showcase/acris-showcase-json/
+/acris-showcase/acris-showcase-json/.classpath
+/acris-showcase/acris-showcase-json/.project
+/acris-showcase/acris-showcase-json/.settings
+/acris-showcase/acris-showcase-json/target
+/acris-showcase/acris-showcase-json/war
+/acris-showcase/acris-showcase-json/.apt_generated
+/acris-showcase/acris-showcase-json/.factorypath
+
+# /acris-showcase/acris-showcase-mvp/
+/acris-showcase/acris-showcase-mvp/.classpath
+/acris-showcase/acris-showcase-mvp/.project
+/acris-showcase/acris-showcase-mvp/.settings
+/acris-showcase/acris-showcase-mvp/target
+/acris-showcase/acris-showcase-mvp/war
+/acris-showcase/acris-showcase-mvp/.factorypath
+/acris-showcase/acris-showcase-mvp/a
+
+# /acris-showcase/acris-showcase-openid/
+/acris-showcase/acris-showcase-openid/target
+/acris-showcase/acris-showcase-openid/*.settings
+/acris-showcase/acris-showcase-openid/war
+/acris-showcase/acris-showcase-openid/*.classpath
+/acris-showcase/acris-showcase-openid/*.project
+/acris-showcase/acris-showcase-openid/bin
+
+# /acris-showcase/acris-showcase-recorder/
+/acris-showcase/acris-showcase-recorder/.classpath
+/acris-showcase/acris-showcase-recorder/.project
+/acris-showcase/acris-showcase-recorder/.settings
+/acris-showcase/acris-showcase-recorder/target
+
+# /acris-showcase/acris-showcase-reporting/
+/acris-showcase/acris-showcase-reporting/.settings
+/acris-showcase/acris-showcase-reporting/target
+/acris-showcase/acris-showcase-reporting/tomcat
+/acris-showcase/acris-showcase-reporting/war
+/acris-showcase/acris-showcase-reporting/.classpath
+/acris-showcase/acris-showcase-reporting/.project
+/acris-showcase/acris-showcase-reporting/.gwt
+
+# /acris-showcase/acris-showcase-security/
+/acris-showcase/acris-showcase-security/.classpath
+/acris-showcase/acris-showcase-security/.project
+/acris-showcase/acris-showcase-security/.settings
+/acris-showcase/acris-showcase-security/target
+/acris-showcase/acris-showcase-security/war
+
+# /acris-showcase/acris-showcase-svn-post-commit/
+/acris-showcase/acris-showcase-svn-post-commit/.classpath
+/acris-showcase/acris-showcase-svn-post-commit/.project
+/acris-showcase/acris-showcase-svn-post-commit/.settings
+/acris-showcase/acris-showcase-svn-post-commit/target
+/acris-showcase/acris-showcase-svn-post-commit/war
+
+# /acris-showcase/acris-showcase-theme/acris-showcase-theme-metal/
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-metal/target
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-metal/.project
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-metal/.classpath
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-metal/.settings
+
+# /acris-showcase/acris-showcase-theme/acris-showcase-theme-shadow/
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-shadow/.classpath
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-shadow/.project
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-shadow/.settings
+/acris-showcase/acris-showcase-theme/acris-showcase-theme-shadow/target
+
+# /acris-showcase/acris-showcase-ui-support/
+/acris-showcase/acris-showcase-ui-support/.classpath
+/acris-showcase/acris-showcase-ui-support/.project
+/acris-showcase/acris-showcase-ui-support/.settings
+/acris-showcase/acris-showcase-ui-support/target
+
+# /acris-showcase/acris-showcase-widgets/
+/acris-showcase/acris-showcase-widgets/.classpath
+/acris-showcase/acris-showcase-widgets/.project
+/acris-showcase/acris-showcase-widgets/.settings
+/acris-showcase/acris-showcase-widgets/target
+
+# /acris-site/acris-site-api/
+/acris-site/acris-site-api/home
+/acris-site/acris-site-api/.classpath
+/acris-site/acris-site-api/.factorypath
+/acris-site/acris-site-api/.project
+/acris-site/acris-site-api/.settings
+/acris-site/acris-site-api/target
+/acris-site/acris-site-api/.apt_generated
+
+# /acris-site/acris-site-core/
+/acris-site/acris-site-core/home
+/acris-site/acris-site-core/.classpath
+/acris-site/acris-site-core/.factorypath
+/acris-site/acris-site-core/.project
+/acris-site/acris-site-core/.settings
+/acris-site/acris-site-core/target
+/acris-site/acris-site-core/.apt_generated
+
+# /acris-site/acris-site-dto/
+/acris-site/acris-site-dto/home
+/acris-site/acris-site-dto/.classpath
+/acris-site/acris-site-dto/.factorypath
+/acris-site/acris-site-dto/.project
+/acris-site/acris-site-dto/.settings
+/acris-site/acris-site-dto/target
+/acris-site/acris-site-dto/.apt_generated
+
+# /acris-site/acris-site-hibernate/
+/acris-site/acris-site-hibernate/.classpath
+/acris-site/acris-site-hibernate/.project
+/acris-site/acris-site-hibernate/.settings
+/acris-site/acris-site-hibernate/target
+
+# /acris-site/acris-site-jpa/
+/acris-site/acris-site-jpa/.classpath
+/acris-site/acris-site-jpa/.project
+/acris-site/acris-site-jpa/.settings
+/acris-site/acris-site-jpa/target
+
+# /acris-site/acris-site-parent/
+/acris-site/acris-site-parent/.project
+
+# /acris-site/acris-site-rpc/
+/acris-site/acris-site-rpc/home
+/acris-site/acris-site-rpc/.settings
+/acris-site/acris-site-rpc/.classpath
+/acris-site/acris-site-rpc/target
+/acris-site/acris-site-rpc/.factorypath
+/acris-site/acris-site-rpc/.project
+/acris-site/acris-site-rpc/.apt_generated
+
+# /acris-site/acris-site-scaffold-model/
+/acris-site/acris-site-scaffold-model/target
+/acris-site/acris-site-scaffold-model/.classpath
+/acris-site/acris-site-scaffold-model/.factorypath
+/acris-site/acris-site-scaffold-model/.project
+/acris-site/acris-site-scaffold-model/.settings
+/acris-site/acris-site-scaffold-model/.apt_generated
+
+# /acris-site/acris-site-server/
+/acris-site/acris-site-server/.classpath
+/acris-site/acris-site-server/.factorypath
+/acris-site/acris-site-server/.project
+/acris-site/acris-site-server/target
+/acris-site/acris-site-server/.settings
+/acris-site/acris-site-server/home
+/acris-site/acris-site-server/asdf
+/acris-site/acris-site-server/.apt_generated
+
+# /acris-site/acris-site-spring/
+/acris-site/acris-site-spring/home
+/acris-site/acris-site-spring/.classpath
+/acris-site/acris-site-spring/.factorypath
+/acris-site/acris-site-spring/.project
+/acris-site/acris-site-spring/.settings
+/acris-site/acris-site-spring/target
+/acris-site/acris-site-spring/.apt_generated
+
+# /acris-test-support/
+/acris-test-support/.classpath
+/acris-test-support/.project
+/acris-test-support/.settings
+/acris-test-support/target
+/acris-test-support/.gwt
+
+# /acris-theme/acris-theme-blue/
+/acris-theme/acris-theme-blue/.classpath
+/acris-theme/acris-theme-blue/.factorypath
+/acris-theme/acris-theme-blue/.project
+/acris-theme/acris-theme-blue/.settings
+/acris-theme/acris-theme-blue/bin
+/acris-theme/acris-theme-blue/target
+
+# /acris-theme/acris-theme-core/
+/acris-theme/acris-theme-core/.classpath
+/acris-theme/acris-theme-core/.factorypath
+/acris-theme/acris-theme-core/.project
+/acris-theme/acris-theme-core/.settings
+/acris-theme/acris-theme-core/bin
+/acris-theme/acris-theme-core/target
+/acris-theme/acris-theme-core/.externalToolBuilders
+/acris-theme/acris-theme-core/maven-eclipse.xml
+
+# /acris-theme/acris-theme-metal/
+/acris-theme/acris-theme-metal/.settings
+/acris-theme/acris-theme-metal/target
+/acris-theme/acris-theme-metal/.project
+/acris-theme/acris-theme-metal/.classpath
+/acris-theme/acris-theme-metal/.factorypath
+/acris-theme/acris-theme-metal/.apt_generated
+
+# /acris-theme/acris-theme-shadow/
+/acris-theme/acris-theme-shadow/.classpath
+/acris-theme/acris-theme-shadow/.project
+/acris-theme/acris-theme-shadow/.settings
+/acris-theme/acris-theme-shadow/target
+/acris-theme/acris-theme-shadow/tomcat
+/acris-theme/acris-theme-shadow/a
+/acris-theme/acris-theme-shadow/.factorypath
+/acris-theme/acris-theme-shadow/bin
+/acris-theme/acris-theme-shadow/.apt_generated
+/acris-theme/acris-theme-shadow/sk
+
+# /acris-widgets/
+/acris-widgets/target
+/acris-widgets/.project
+/acris-widgets/.settings
+/acris-widgets/.classpath
+
+# /acris-widgets-beantable/
+/acris-widgets-beantable/target
+/acris-widgets-beantable/.project
+/acris-widgets-beantable/.settings
+/acris-widgets-beantable/.classpath
+/acris-widgets-beantable/.gwt
