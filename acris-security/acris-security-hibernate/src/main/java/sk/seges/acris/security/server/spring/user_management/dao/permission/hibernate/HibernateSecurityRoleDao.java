@@ -12,8 +12,8 @@ import org.hibernate.criterion.Restrictions;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.hibernate.IHibernateSecurityRoleDao;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateSecurityRole;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.utils.CastUtils;
 

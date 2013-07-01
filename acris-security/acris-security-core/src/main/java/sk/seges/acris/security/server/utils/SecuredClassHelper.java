@@ -1,14 +1,14 @@
 package sk.seges.acris.security.server.utils;
 
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.domain.IDomainObject;
 
 public class SecuredClassHelper {
 
 	@SuppressWarnings("unchecked")
-	public static Class<? extends ISecuredObject<?>> getSecuredClass(String className) {
-		Class<? extends ISecuredObject<?>> clazz;
+	public static Class<? extends IDomainObject<?>> getSecuredClass(String className) {
+		Class<? extends IDomainObject<?>> clazz;
 		try {
-			clazz = (Class<? extends ISecuredObject<?>>) Class.forName(className);
+			clazz = (Class<? extends IDomainObject<?>>) Class.forName(className);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Class " + className + " could not be found.");
 		}

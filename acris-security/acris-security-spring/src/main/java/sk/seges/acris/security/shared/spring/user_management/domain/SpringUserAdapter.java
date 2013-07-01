@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
 
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
-import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
 
 public class SpringUserAdapter implements UserDetails, UserData {
 

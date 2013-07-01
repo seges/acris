@@ -1,4 +1,6 @@
 <module>
+	<inherits name='sk.seges.sesam.shared.SesamModel' />
+
 	<source path="client" />
 	<source path="shared" />	
 </module>

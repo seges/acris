@@ -40,7 +40,6 @@
 <!--		<gwt-incubator.version>2.0.4-20100120-dflorey-1745</gwt-incubator.version>-->
 		<gwtx.version>1.5.3</gwtx.version>
 
-		<gilead.version>1.3.3s2</gilead.version>
 		<gwt-widgets-server.version>1.2</gwt-widgets-server.version>
 		<gwt-widgets-library.version>0.2.0</gwt-widgets-library.version>
 		<gwteventservice.version>1.0.2</gwteventservice.version>
@@ -116,79 +115,6 @@
 				<version>${gwt-widgets-library.version}</version>
 			</dependency>
 
-			<!-- Gilead -->
-			<dependency>
-				<groupId>net.sf.gilead</groupId>
-				<artifactId>gilead-core</artifactId>
-				<version>${gilead.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.hibernate</groupId>
-						<artifactId>hibernate</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.hibernate</groupId>
-						<artifactId>hibernate-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.hibernate</groupId>
-						<artifactId>ejb3-persistence</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>net.sf.beanlib</groupId>
-				<artifactId>beanlib-hibernate</artifactId>
-				<version>${beanlib-hibernate.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>net.sf.gilead</groupId>
-				<artifactId>gilead4gwt</artifactId>
-				<version>${gilead.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>net.sf.gilead</groupId>
-				<artifactId>comet4gwt</artifactId>
-				<version>${gilead.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>net.sf.gilead</groupId>
-				<artifactId>gilead-hibernate</artifactId>
-				<version>${gilead.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.hibernate</groupId>
-						<artifactId>hibernate</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.hibernate</groupId>
-						<artifactId>hibernate-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.hibernate</groupId>
-						<artifactId>ejb3-persistence</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.jboss.ejb3</groupId>
-						<artifactId>jboss-ejb3-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring</artifactId>
-					</exclusion>					
-				</exclusions>
-			</dependency>
 			<!-- GWT event service -->
 			<dependency>
 				<groupId>de.novanic.gwteventservice</groupId>

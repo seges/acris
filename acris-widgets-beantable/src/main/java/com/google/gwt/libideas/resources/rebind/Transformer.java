@@ -15,9 +15,9 @@
  */
 package com.google.gwt.libideas.resources.rebind;
 
-import com.google.gwt.core.ext.typeinfo.JMethod;
-
 import java.lang.reflect.Method;
+
+import com.google.gwt.core.ext.typeinfo.JMethod;
 
 /**
  * Applies user-defined transformations to the contents of a Resource at

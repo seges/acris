@@ -1,9 +1,9 @@
 package com.google.gwt.gen2.table.shared;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.util.Collection;
 import java.util.Iterator;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A response from the {@link TableModelHelper} that is serializable, and can by

@@ -15,13 +15,13 @@
  */
 package com.google.gwt.gen2.table.client;
 
-import com.google.gwt.gen2.table.shared.ColumnSortList;
-import com.google.gwt.gen2.table.shared.Request;
-import com.google.gwt.gen2.table.shared.Response;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.google.gwt.gen2.table.shared.ColumnSortList;
+import com.google.gwt.gen2.table.shared.Request;
+import com.google.gwt.gen2.table.shared.Response;
 
 /**
  * <p>

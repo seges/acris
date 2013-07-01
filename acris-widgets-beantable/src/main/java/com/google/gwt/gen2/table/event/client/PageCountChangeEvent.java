@@ -17,7 +17,6 @@
 package com.google.gwt.gen2.table.event.client;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 
 /**
  * Logical event fired when the number of pages changes.

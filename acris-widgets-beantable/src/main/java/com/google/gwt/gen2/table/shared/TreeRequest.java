@@ -1,8 +1,8 @@
 package com.google.gwt.gen2.table.shared;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.util.Set;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Request object taking care of the tree nodes state

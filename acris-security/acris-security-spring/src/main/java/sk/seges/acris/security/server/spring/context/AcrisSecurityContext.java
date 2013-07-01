@@ -7,7 +7,7 @@ import org.springframework.security.userdetails.User;
 
 import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 
 /**
  * Acris Security Context 

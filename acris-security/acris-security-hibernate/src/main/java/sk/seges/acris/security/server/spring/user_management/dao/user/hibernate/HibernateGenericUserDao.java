@@ -16,8 +16,8 @@ import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGener
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> implements IGenericUserDao<UserData> {
 

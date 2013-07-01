@@ -18,6 +18,7 @@ package com.google.gwt.libideas.resources.ext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.resources.ext.ResourceGeneratorUtil;
 
 /**
  * Encapsulates per-type resource generation logic. This type is used only by

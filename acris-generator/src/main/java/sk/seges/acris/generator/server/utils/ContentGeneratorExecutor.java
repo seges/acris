@@ -1,13 +1,7 @@
 package sk.seges.acris.generator.server.utils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-
-import org.cyberneko.html.HTMLScanner;
-
 import sk.seges.acris.generator.client.GwtTestGenerateOfflineContent;
 
 import com.google.gwt.junit.TestResultsCleaner;
@@ -21,7 +15,7 @@ public abstract class ContentGeneratorExecutor {
 	}
 
 	private void setHtmlProcessingDefaults() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		for (Field field: HTMLScanner.class.getDeclaredFields()) {
+/*		for (Field field: HTMLScanner.class.getDeclaredFields()) {
 			if (field.getName().equals("RECOGNIZED_FEATURES_DEFAULTS")) {
 				field.setAccessible(true);
 
@@ -48,7 +42,7 @@ public abstract class ContentGeneratorExecutor {
 				        Boolean.TRUE,
 				});
 			}
-		}	
+		}	*/
 	}
 	
 	public void startOfflineProcessing() {

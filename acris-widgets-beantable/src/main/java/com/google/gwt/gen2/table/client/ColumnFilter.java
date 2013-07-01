@@ -15,11 +15,11 @@
  */
 package com.google.gwt.gen2.table.client;
 
-import com.google.gwt.gen2.table.shared.ColumnFilterInfo;
-import com.google.gwt.user.client.ui.Widget;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.gen2.table.shared.ColumnFilterInfo;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A column filter responsible for filtering specific columns

@@ -3,7 +3,6 @@ package sk.seges.acris.widget.client.table;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.gen2.table.client.TreeTable;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.CssResource.ClassName;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.client.ui.ClickListener;

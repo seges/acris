@@ -1,10 +1,10 @@
 package com.google.gwt.gen2.table.shared;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * An ordered list of sorting info where each entry tells us how to sort a

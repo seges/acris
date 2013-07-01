@@ -9,6 +9,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRParameter;
 
+import com.jaspersoft.jasperserver.api.metadata.jasperreports.service.ReportDataSourceService;
+
 
 /**
  * 

@@ -18,10 +18,6 @@ package com.google.gwt.libideas.client;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.StyleElement;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.DataResource;
-import com.google.gwt.resources.client.ResourcePrototype;
 
 /**
  * Used to add stylesheets to the document.

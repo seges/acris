@@ -15,12 +15,12 @@
  */
 package com.google.gwt.gen2.table.client;
 
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
-import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
-
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A collection of {@link ColumnDefinition ColumnDefinitions} that define a

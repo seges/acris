@@ -15,11 +15,11 @@
  */
 package com.google.gwt.gen2.table.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.ListBox;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * An {@link InlineCellEditor} that allows the user to select a {@link String}

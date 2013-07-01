@@ -15,10 +15,10 @@
  */
 package com.google.gwt.gen2.table.client;
 
+import java.util.Iterator;
+
 import com.google.gwt.gen2.table.shared.Request;
 import com.google.gwt.gen2.table.shared.Response;
-
-import java.util.Iterator;
 /**
  * A class to retrieve row data to be used in a table.
  * 

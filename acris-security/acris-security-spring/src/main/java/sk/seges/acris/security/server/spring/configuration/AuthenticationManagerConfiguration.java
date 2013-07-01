@@ -11,7 +11,7 @@ import org.springframework.security.providers.ProviderManager;
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.SpringUserService;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdDaoAuthenticationProvider;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 
 public class AuthenticationManagerConfiguration {

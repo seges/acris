@@ -27,6 +27,7 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
+import sk.seges.sesam.pap.service.utils.TypeUtils;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -100,13 +101,19 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			List<MutableTypeMirror> types = new LinkedList<MutableTypeMirror>();
 			
 			for (VariableElement parameter: method.getParameters()) {
-				types.add(processingEnv.getTypeUtils().toMutableType(parameter.asType()));
+				MutableTypeMirror methodParameter = processingEnv.getTypeUtils().toMutableType(parameter.asType());
+				if (!TypeUtils.containsSameType(types, methodParameter)) {
+					types.add(methodParameter);
+				}
 			}
-			
+
 			types.add(processingEnv.getTypeUtils().toMutableType(method.getReturnType()));
 
 			for (TypeParameterElement typeParameter: method.getTypeParameters()) {
-				types.add(processingEnv.getTypeUtils().toMutableType(typeParameter.asType()));
+				MutableTypeMirror methodParameter = processingEnv.getTypeUtils().toMutableType(typeParameter.asType());
+				if (!TypeUtils.containsSameType(types, methodParameter)) {
+					types.add(methodParameter);
+				}
 			}
 			
 			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);

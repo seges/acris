@@ -28,7 +28,7 @@ public class ChocolateFactory {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public final <T extends Object> T getChocolate(String token) {
+	public final <T> T getChocolate(String token) {
 		AbstractObjectFactory factory = registry.get(token);
 		if(factory == null) {
 			throw new PivoException("Cannot get chocolate factory for token " + token);
@@ -38,7 +38,7 @@ public class ChocolateFactory {
 		return (T) factory.create();
 	}
 	
-	public final <T extends Object> void getChocolate(String token, final TrackingAsyncCallback<T> callback) {
+	public final <T> void getChocolate(String token, final TrackingAsyncCallback<T> callback) {
 		final AbstractObjectFactory factory = registry.get(token);
 		if(factory == null)
 			throw new PivoException("Cannot get chocolate factory for token " + token);

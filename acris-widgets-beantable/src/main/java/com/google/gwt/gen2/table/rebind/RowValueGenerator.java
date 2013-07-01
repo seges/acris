@@ -15,6 +15,13 @@
  */
 package com.google.gwt.gen2.table.rebind;
 
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -27,21 +34,14 @@ import com.google.gwt.gen2.table.client.DateColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
 import com.google.gwt.gen2.table.client.NumberColumnDefinition;
 import com.google.gwt.gen2.table.client.RowValue;
-import com.google.gwt.gen2.table.client.TextColumnDefinition;
 import com.google.gwt.gen2.table.client.RowValue.ColumnDefinition;
 import com.google.gwt.gen2.table.client.RowValue.DateColumnFormat;
 import com.google.gwt.gen2.table.client.RowValue.NumberColumnFormat;
+import com.google.gwt.gen2.table.client.TextColumnDefinition;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Generator used to bind classes extending the <code>RowValue</code> interface.

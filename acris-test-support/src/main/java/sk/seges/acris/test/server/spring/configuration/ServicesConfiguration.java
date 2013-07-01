@@ -13,7 +13,6 @@ import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 
 import sk.seges.acris.core.server.spring.configuration.AbstractGWTServiceConfiguration;
 import sk.seges.acris.rpc.CustomPolicyRPCServiceExporter;
-import sk.seges.acris.rpc.RemoteContextSerializationPolicy;
 import sk.seges.acris.test.server.service.CardPayService;
 import sk.seges.acris.test.shared.service.CardPayRemoteService;
 import sk.seges.corpis.domain.shared.pay.tatra.CardPaySettings;
@@ -26,11 +25,6 @@ public class ServicesConfiguration extends AbstractGWTServiceConfiguration {
 	private ServletContext servletContext;
 
 	private @Value("${cardpay.key}") String cardPayKey;
-
-	@Bean
-	public RemoteContextSerializationPolicy remoteContextPolicy() {
-		return new RemoteContextSerializationPolicy();
-	}
 
 	@Bean
 	public CardPaySettings cardPaySettings() {
@@ -59,10 +53,5 @@ public class ServicesConfiguration extends AbstractGWTServiceConfiguration {
 		mappings.put("/cardpay", cardPayServiceExporter());
 		simpleUrlHandlerMapping.setUrlMap(mappings);
 		return simpleUrlHandlerMapping;
-	}
-
-	@Override
-	protected RemoteContextSerializationPolicy getSerializationPolicy() {
-		return remoteContextPolicy();
 	}
 }

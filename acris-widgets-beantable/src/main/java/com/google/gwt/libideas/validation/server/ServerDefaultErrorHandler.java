@@ -16,10 +16,10 @@
 
 package com.google.gwt.libideas.validation.server;
 
-import com.google.gwt.libideas.validation.client.ErrorHandler;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import com.google.gwt.libideas.validation.client.ErrorHandler;
 
 /**
  * Default Server side error handler. As we do not impose a logging system upon

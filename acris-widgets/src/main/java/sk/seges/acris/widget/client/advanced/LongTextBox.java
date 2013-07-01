@@ -3,7 +3,6 @@ package sk.seges.acris.widget.client.advanced;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.LongBox;
 
 /**

@@ -17,15 +17,14 @@ package com.google.gwt.gen2.table.client;
 
 import com.google.gwt.gen2.table.client.property.ColumnProperty;
 import com.google.gwt.gen2.table.client.property.ColumnPropertyManager;
+import com.google.gwt.gen2.table.client.property.FilterableProperty;
 import com.google.gwt.gen2.table.client.property.FooterProperty;
 import com.google.gwt.gen2.table.client.property.HeaderProperty;
-import com.google.gwt.gen2.table.client.property.FilterableProperty;
 import com.google.gwt.gen2.table.client.property.MaximumWidthProperty;
 import com.google.gwt.gen2.table.client.property.MinimumWidthProperty;
 import com.google.gwt.gen2.table.client.property.PreferredWidthProperty;
 import com.google.gwt.gen2.table.client.property.SortableProperty;
 import com.google.gwt.gen2.table.client.property.TruncationProperty;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A definition of a column in a table.

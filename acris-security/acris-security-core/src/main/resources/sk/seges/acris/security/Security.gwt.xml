@@ -11,6 +11,8 @@
 	<inherits name='sk.seges.acris.security.Session' />
 	<inherits name='sk.seges.acris.security.SecurityApi' />
 
+	<inherits name='sk.seges.sesam.security.SesamSecurity' />
+
 	<source path="client" />
 	<source path="shared" />
 

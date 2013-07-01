@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.api.ISecurityRoleDao;
 import sk.seges.acris.security.server.core.user_management.service.permission.SecurityRoleService;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 
