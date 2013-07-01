@@ -13,6 +13,7 @@ import org.springframework.security.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
+import sk.seges.acris.security.server.core.login.api.PostProcessLogin;
 import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdUsernamePasswordAuthenticationToken;
 import sk.seges.acris.security.server.util.LoggedUserRole;
@@ -41,7 +42,7 @@ import sk.seges.corpis.server.domain.user.server.model.data.UserData;
  * @author fat
  * @author ladislav.gazo
  */
-public class SpringLoginService implements LoginService {
+public class SpringLoginService implements LoginService, PostProcessLogin {
 
 	private AuthenticationManager authenticationManager;
 
@@ -110,7 +111,7 @@ public class SpringLoginService implements LoginService {
 	 * 
 	 * @param clientSession
 	 */
-	protected void postProcessLogin(ClientSession<UserData> clientSession, LoginToken token) {}
+	public void postProcessLogin(ClientSession<UserData> clientSession, LoginToken token) {}
 
 	@Transactional
 	public ClientSession<UserData> login(LoginToken token) throws ServerException {

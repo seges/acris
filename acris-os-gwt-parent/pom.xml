@@ -615,7 +615,7 @@
 						<noServer>false</noServer>
 						<!--extraJvmArgs>-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 -Xmx1024M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs-->
-						<extraJvmArgs>-Xmx1524M -Xss16M -Dfile.encoding=utf-8
+						<extraJvmArgs>-Xmx2048M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs>
 						<debugPort>8990</debugPort>
 						<shellServletMappingURL>/gwt-shell-servlet</shellServletMappingURL>

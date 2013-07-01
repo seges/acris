@@ -622,6 +622,8 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
 		} else if (value.getValue() != null) {
+
+
 			filterValues.put(value.getProperty(), value);
 
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
