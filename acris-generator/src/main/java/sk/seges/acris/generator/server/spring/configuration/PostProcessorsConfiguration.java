@@ -16,18 +16,7 @@ import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPos
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.StylesAlterPathPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.TitleAlterPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.ClearCacheImageAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.EmulateIE7AnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.HeadStyleScriptAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsMetaTagAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.NoscriptAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.NotVisibleTagsAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.OnLoadErrorFnAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.OnPropertyErrorFnAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.PropertiesScriptAnnihilatorPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.TitleAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.*;
 import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
@@ -60,7 +49,17 @@ public class PostProcessorsConfiguration {
 	public AbstractElementPostProcessor offlineTagAppenderPostProcessor() {
 		return new OfflineTagAppenderPostProcessor();
 	}
-	
+
+    @Bean
+    public AbstractElementPostProcessor inlineScriptAnnihilatorPostProcessor() {
+        return new AcrisInlineScriptAnnihilatorPostProcessor();
+    }
+
+    @Bean
+    public AbstractElementPostProcessor  javascriptAnnihilatorPostProcessor() {
+        return new JavascriptAnnihilatorPostProcessor();
+    }
+
 	@Bean
 	public AbstractElementPostProcessor niceURLLinkPostProcessor() {
 		return new NiceURLLinkAlterPostProcessor();

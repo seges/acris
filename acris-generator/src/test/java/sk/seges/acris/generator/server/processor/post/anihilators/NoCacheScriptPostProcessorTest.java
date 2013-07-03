@@ -27,7 +27,7 @@ public class NoCacheScriptPostProcessorTest extends AbstractProcessorTest {
 	@Test
 	@DirtiesContext
 	public void testNoCacheScriptPostProcessor() {
-		runTest(HTML_FILE_DIRECTORY + "1_no_cache_script_input.html", 
+		runTest(HTML_FILE_DIRECTORY + "1_no_cache_script_input.html",
 				HTML_FILE_DIRECTORY + "1_no_cache_script_result.html");
 	}
 }
