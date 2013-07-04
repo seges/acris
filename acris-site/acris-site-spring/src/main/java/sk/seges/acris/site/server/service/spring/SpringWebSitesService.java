@@ -42,4 +42,25 @@ public class SpringWebSitesService extends WebSitesService {
 	public WebSitesData getPrimaryWebSite(String webId, String locale) {
 		return super.getPrimaryWebSite(webId, locale);
 	}
+	
+	@Override
+	@Transactional
+	@TransactionPropagation(value = PropagationType.PROPAGATE)
+	public List<WebSitesData> findWebSitesByDomain(String domain){
+		return super.findWebSitesByDomain(domain);
+	}
+	
+	@Override
+	@Transactional
+	@TransactionPropagation(value = PropagationType.PROPAGATE)
+	public void deleteWebSites(String webId){
+		super.deleteWebSites(webId);
+	}
+	
+	@Override
+	@Transactional
+	@TransactionPropagation(value = PropagationType.PROPAGATE)
+	public void deleteWebSites(WebSitesData webSite){
+		super.deleteWebSites(webSite);
+	}
 }

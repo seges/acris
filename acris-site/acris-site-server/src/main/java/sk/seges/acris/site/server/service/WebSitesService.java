@@ -2,6 +2,7 @@ package sk.seges.acris.site.server.service;
 
 import java.util.List;
 
+import sk.seges.acris.shared.model.dto.WebSitesDTO;
 import sk.seges.acris.site.server.dao.IWebSitesDao;
 import sk.seges.acris.site.server.model.data.WebSitesData;
 import sk.seges.acris.site.shared.domain.api.SiteType;
@@ -64,5 +65,17 @@ public class WebSitesService implements IWebSitesServiceLocal {
 		for(WebSitesData webSite : all.getResult()) {
 			webSitesDao.remove(webSite);
 		}
+	}
+
+	@Override
+	public List<WebSitesData> findWebSitesByDomain(String domain) {
+		Page page = new Page(0, Page.ALL_RESULTS);
+		page.setFilterable(Filter.eq(WebSitesData.DOMAIN, domain));
+		return webSitesDao.findAll(page).getResult();		
+	}
+	@Override
+	public void deleteWebSites(WebSitesData webSite){
+		WebSitesData webS = webSitesDao.findEntity(webSite);
+		webSitesDao.remove(webS);
 	}
 }
