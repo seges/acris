@@ -16,7 +16,7 @@ public class JavascriptAnnihilatorPostProcessor extends AbstractAnnihilatorPostP
 	protected boolean supportsNode(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof ScriptTag) {
 			String jsSource = ((ScriptTag)node).getAttribute("src");
-			return (jsSource == null || !jsSource.toLowerCase().contains(".nocache.js"));
+			return (jsSource == null || (!jsSource.toLowerCase().contains(".nocache.js") && !jsSource.toLowerCase().contains("properties.js")));
 		}
 		
 		return false;
