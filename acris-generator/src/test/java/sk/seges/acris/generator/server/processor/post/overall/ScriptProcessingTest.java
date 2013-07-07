@@ -30,5 +30,4 @@ public class ScriptProcessingTest extends AbstractProcessorTest {
 		runTest(HTML_FILE_DIRECTORY + "1_test_script_input.html", 
 				HTML_FILE_DIRECTORY + "1_test_script_result.html");
 	}
-
 }
