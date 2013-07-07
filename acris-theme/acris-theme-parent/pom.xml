@@ -12,9 +12,9 @@
 	</parent>
 
 	<modules>
-		<module>../acris-theme-core</module>
+		<!--module>../acris-theme-core</module>
 		<module>../acris-theme-shadow</module>
-		<module>../acris-theme-metal</module>
+		<module>../acris-theme-metal</module-->
 	</modules>
 
 </project>

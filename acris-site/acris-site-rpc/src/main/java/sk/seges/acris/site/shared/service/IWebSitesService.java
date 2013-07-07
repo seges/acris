@@ -17,8 +17,4 @@ public interface IWebSitesService extends RemoteService {
 	WebSitesDTO getPrimaryWebSite(String webId, String locale);
 	
 	void deleteWebSites(String webId);
-	
-	List<WebSitesDTO> findWebSitesByDomain(String domain);
-	
-	void deleteWebSites(WebSitesDTO webSite);
 }

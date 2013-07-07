@@ -25,16 +25,6 @@ public class MockTestConfiguration {
 	}
 
 	@Bean
-	public IWebSettingsBuilder webSettingsBuilder() {
-		return new DefaultWebSettingsBuilder();
-	}
-
-	@Bean
-	public IWebSettingsServiceLocal webSettingsService() {
-		return new MockWebSettingsService(webSettingsBuilder(), MOCK_ANALYTICS_SCRIPT, false);
-	}
-
-	@Bean
 	public ContentDataProvider contentInfoProvider() {
 		return new MockContentInfoProvider(new MockLightContentFactory());
 	}

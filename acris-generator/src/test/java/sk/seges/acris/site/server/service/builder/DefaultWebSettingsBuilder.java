@@ -5,6 +5,9 @@ import sk.seges.acris.site.server.model.data.WebSettingsData;
 
 public class DefaultWebSettingsBuilder implements IWebSettingsBuilder {
 
+	public DefaultWebSettingsBuilder() {
+		int a = 0;
+	}
 	@Override
 	public WebSettingsData getWebSettings(String webId, Boolean localeSensitiveServer, String googleAnalyticsScript) {
 		WebSettingsData webSettings = new JpaWebSettings();
