@@ -17,7 +17,7 @@ import sk.seges.sesam.dao.PagedResult;
  * @author psloboda
  *
  */
-public class WebSitesService implements IWebSitesServiceLocal {
+public class WebSitesService implements IWebSitesServiceDefinition {
 
 	private IWebSitesDao<WebSitesData> webSitesDao;
 	
@@ -73,6 +73,7 @@ public class WebSitesService implements IWebSitesServiceLocal {
 		page.setFilterable(Filter.eq(WebSitesData.DOMAIN, domain));
 		return webSitesDao.findAll(page).getResult();		
 	}
+
 	@Override
 	public void deleteWebSites(WebSitesData webSite){
 		WebSitesData webS = webSitesDao.findEntity(webSite);
