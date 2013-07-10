@@ -9,8 +9,9 @@ import sk.seges.acris.domain.server.domain.api.ContentBlobData;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.domain.api.ContentPkData;
 import sk.seges.acris.site.server.domain.base.ContentPkBase;
+import sk.seges.acris.site.shared.domain.api.ContentForUtils;
 
-public class ContentBase implements ContentData, ContentBlobData {
+public class ContentBase implements ContentData, ContentBlobData, ContentForUtils {
 
 	private static final long serialVersionUID = 1744660288284574333L;
 
