@@ -169,7 +169,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	}
 
 	/**
-	 * Hack method until it will be possible to set height of the table in reasonable way
+	 * Hack method until it will be possible to set height of the table in
+	 * reasonable way
 	 * 
 	 * @param height
 	 */
@@ -179,15 +180,18 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	}
 
 	/**
-	 * Should provide ID column name of a bean. Needed to preserve while defining constraint for projectables.
+	 * Should provide ID column name of a bean. Needed to preserve while
+	 * defining constraint for projectables.
 	 * 
-	 * @return If it is not database POJO or ID need not to be preserved return null. Else return name of a field marked with @Id annotation.
+	 * @return If it is not database POJO or ID need not to be preserved return
+	 *         null. Else return name of a field marked with @Id annotation.
 	 */
 	protected abstract String getIdProperty();
 
 	/**
-	 * Class is determined by bean table class generics parameter but for further processing (loader, DAO and paging mechanism,...) it is needed to be
-	 * explicitly specified.
+	 * Class is determined by bean table class generics parameter but for
+	 * further processing (loader, DAO and paging mechanism,...) it is needed to
+	 * be explicitly specified.
 	 * 
 	 * @return Class of the bean contained within the bean table.
 	 */
@@ -313,7 +317,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			Criterion filterable = filterProperty.getFilterable();
 			if (filterable instanceof SimpleExpression<?>) {
 				SimpleExpression<Comparable<? extends Serializable>> expr = (SimpleExpression<Comparable<? extends Serializable>>) filterable;
-				Comparable<? extends Serializable> value = (Comparable<? extends Serializable>) filterProperty.getWidget().getValue();
+				Comparable<? extends Serializable> value = (Comparable<? extends Serializable>) filterProperty
+						.getWidget().getValue();
 				if (value == null || (value instanceof String && "".equals(value))) {
 					// filter value not set
 					skip = true;
@@ -354,7 +359,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			Widget filter = null;
 
 			if (filterProperty instanceof FilterEnumProperty<?>) {
-				if (filterProperty.getWidgetType() != null && filterProperty.getWidgetType().equals(EnumListBoxWithValue.class)) {
+				if (filterProperty.getWidgetType() != null
+						&& filterProperty.getWidgetType().equals(EnumListBoxWithValue.class)) {
 					filter = new EnumListBoxWithValue(((FilterEnumProperty) filterProperty).getClazz());
 					((EnumListBoxWithValue) filter).load(((FilterEnumProperty) filterProperty).getEnumMap());
 				}
@@ -444,7 +450,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 					}
 				});
 
-				dateBoxFilter.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT)));
+				dateBoxFilter
+						.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT)));
 			}
 
 			if (filter instanceof EnumListBoxWithValue<?>) {
@@ -522,6 +529,10 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		return dataTable.addRowSelectionHandler(handler);
 	}
 
+	protected void additionalActionOnFailure(Throwable caught) {
+
+	}
+
 	private class BeanTableModel<E> extends MutableTableModel<E> {
 		private IAsyncDataLoader<List<E>> loader;
 
@@ -563,6 +574,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 							callback.onFailure(caught);
 						}
 					}
+					additionalActionOnFailure(caught);
 				}
 
 				@Override
@@ -644,8 +656,10 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	 */
 
 	/**
-	 * A column property bound to a bean as underlying source of the information. Especially relation between column ID and field name/expression is
-	 * provided. It should ease manipulation with table representation of the bean.
+	 * A column property bound to a bean as underlying source of the
+	 * information. Especially relation between column ID and field
+	 * name/expression is provided. It should ease manipulation with table
+	 * representation of the bean.
 	 * 
 	 * @see BeanTable
 	 * 
@@ -678,7 +692,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 	/**
 	 * used if column filter is listbox, which should be filled by enum items<br />
-	 * On UI {@link EnumListBoxWithValue} is used, for it's initialization we need to specified enum class and list of enum items (usually
+	 * On UI {@link EnumListBoxWithValue} is used, for it's initialization we
+	 * need to specified enum class and list of enum items (usually
 	 * MyEnum.values()) or map of enum items and their translated values
 	 * 
 	 * @author marta
@@ -688,7 +703,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		private Class<T> clazz = null;
 		private Map<T, String> enumMap = null;
 
-		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz, List<T> enumList) {
+		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz,
+				List<T> enumList) {
 			super(widgetType, filterable);
 			this.clazz = enumClazz;
 			enumMap = new HashMap<T, String>();
@@ -697,7 +713,8 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			}
 		}
 
-		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz, Map<T, String> enumMap) {
+		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz,
+				Map<T, String> enumMap) {
 			super(widgetType, filterable);
 			this.clazz = enumClazz;
 			this.enumMap = enumMap;
