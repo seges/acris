@@ -20,6 +20,7 @@ import sk.seges.acris.widget.client.action.ActionListener;
 import sk.seges.acris.widget.client.advanced.DoubleTextBox;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
 import sk.seges.acris.widget.client.filterpanel.FilterPanelSpec;
+import sk.seges.acris.widget.client.support.AbstractDateBoxValueChangeSingleFireHandler;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Criterion;
 import sk.seges.sesam.dao.Filter;
@@ -33,8 +34,6 @@ import sk.seges.sesam.dao.SortInfo;
 import sk.seges.sesam.domain.ValueHolder;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,11 +42,9 @@ import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasDoubleClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyPressHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gen2.table.client.ColumnDefinition;
 import com.google.gwt.gen2.table.client.DefaultTableDefinition;
@@ -103,6 +100,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	private List<Callback> additionalLoadCallbacks;
 	private boolean reloadOnEveryOnLoadCall = true;
 	private boolean firstOnLoadCall = true;
+	private PredefinedFormat dateFormat = PredefinedFormat.DATE_SHORT;
 
 	private Dialog glassDialog;
 
@@ -387,17 +385,14 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			filterableColumnDefinitions.add(columnDefinition);
 			filterProperty.setWidget((HasValue<?>) filter);
 
-			if (filter instanceof HasChangeHandlers) {
-				((HasChangeHandlers) filter).addChangeHandler(new ChangeHandler() {
-
+			if (filter instanceof EnumListBoxWithValue<?>) {
+				((EnumListBoxWithValue<?>) filter).addChangeHandler(new ChangeHandler() {
 					@Override
 					public void onChange(ChangeEvent event) {
 						reconstructFilterable();
 					}
 				});
-			}
-
-			if (filter instanceof HasKeyPressHandlers) {
+			} else if (filter instanceof HasKeyPressHandlers) {
 				HasKeyPressHandlers keypressable = (HasKeyPressHandlers) filter;
 				keypressable.addKeyPressHandler(new KeyPressHandler() {
 
@@ -411,51 +406,53 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 
 					@Override
 					public void onKeyPress(KeyPressEvent event) {
-						int keyCode = event.getNativeEvent().getKeyCode();
-						if (KeyCodes.KEY_ENTER == keyCode) {
-							reconstructFilterable();
-						} else {
-							timer.cancel();
-							timer.schedule(FILTER_DELAY_MILLIS);
-						}
+						// int keyCode = event.getNativeEvent().getKeyCode();
+						// if (KeyCodes.KEY_ENTER == keyCode) {
+						// reconstructFilterable();
+						// } else {
+						timer.cancel();
+						timer.schedule(FILTER_DELAY_MILLIS);
+						// }
 					}
 				});
-			}
-
-			if (filter instanceof DateBox) {
+			} else if (filter instanceof DateBox) {
 				DateBox dateBoxFilter = (DateBox) filter;
-				dateBoxFilter.addValueChangeHandler(new ValueChangeHandler<Date>() {
-
-					@Override
-					public void onValueChange(ValueChangeEvent<Date> arg0) {
-						reconstructFilterable();
-					}
-				});
+				dateBoxFilter.addValueChangeHandler(new DateBoxValueChangeHandler(dateBoxFilter));
 
 				TextBox dateTextBox = dateBoxFilter.getTextBox();
-				dateTextBox.addBlurHandler(new BlurHandler() {
-
-					@Override
-					public void onBlur(BlurEvent arg0) {
-						reconstructFilterable();
-					}
-				});
+				// dateTextBox.addBlurHandler(new BlurHandler() {
+				//
+				// @Override
+				// public void onBlur(BlurEvent arg0) {
+				// reconstructFilterable();
+				// }
+				// });
 				dateTextBox.addKeyPressHandler(new KeyPressHandler() {
+
+					private Timer timer = new Timer() {
+
+						@Override
+						public void run() {
+							reconstructFilterable();
+						}
+					};
 
 					@Override
 					public void onKeyPress(KeyPressEvent event) {
-						if (KeyCodes.KEY_ENTER == event.getCharCode()) {
-							reconstructFilterable();
-						}
+						// int keyCode = event.getNativeEvent().getKeyCode();
+						// if (KeyCodes.KEY_ENTER == keyCode) {
+						// reconstructFilterable();
+						// } else {
+						timer.cancel();
+						timer.schedule(FILTER_DELAY_MILLIS);
+						// }
 					}
 				});
 
-				dateBoxFilter
-						.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT)));
-			}
+				dateBoxFilter.setFormat(new DateBox.DefaultFormat(DateTimeFormat.getFormat(dateFormat)));
+			} else if (filter instanceof HasChangeHandlers) {
+				((HasChangeHandlers) filter).addChangeHandler(new ChangeHandler() {
 
-			if (filter instanceof EnumListBoxWithValue<?>) {
-				((EnumListBoxWithValue<?>) filter).addChangeHandler(new ChangeHandler() {
 					@Override
 					public void onChange(ChangeEvent event) {
 						reconstructFilterable();
@@ -466,6 +463,27 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			headerTable.setWidget(1, count - 1, filter);
 		}
 		addProjectable(checkAndGetDomainObjectProperty(columnDefinition).getField());
+	}
+
+	private class DateBoxValueChangeHandler extends AbstractDateBoxValueChangeSingleFireHandler {
+
+		public DateBoxValueChangeHandler(DateBox dateBox) {
+			super(dateBox);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see sk.seges.hroddelenie.client.support.
+		 * AbstractDateBoxValueChangeSingleFireHandler
+		 * #onSingleValueChange(com.google
+		 * .gwt.event.logical.shared.ValueChangeEvent)
+		 */
+		@Override
+		public void onSingleValueChange(ValueChangeEvent<Date> event) {
+			reconstructFilterable();
+		}
+
 	}
 
 	private void addProjectable(String property) {
@@ -806,5 +824,13 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		} else {
 			glassDialog.hide();
 		}
+	}
+
+	public PredefinedFormat getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(PredefinedFormat dateFormat) {
+		this.dateFormat = dateFormat;
 	}
 }
