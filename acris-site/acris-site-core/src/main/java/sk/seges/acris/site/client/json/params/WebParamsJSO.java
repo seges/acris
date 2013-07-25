@@ -182,4 +182,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch) {
 		data.set(INCLUDE_PRODUCT_CATEGORY_IN_SEARCH, includeProductCategoryInSearch);		
 	}
+	
+	@Override
+	public String getScrollMode() {		
+		return data.get(SCROLL_MODE);
+	}
+
+	@Override
+	public void setScrollMode(String scrollMode) {
+		data.set(SCROLL_MODE, scrollMode);		
+	}
 }

@@ -11,7 +11,7 @@ public class WebParamsBean implements WebParams {
 	private boolean productCategorySingleSelect = false;
 	private boolean filtersEnabled = false;
 	private boolean productListSortEnabled = false;
-	private boolean backgroundManagementEnabled = false;
+	private boolean backgroundManagementEnabled = false;	
 	
 	private String searchMode = ESearchMode.EQ.name();
 	private boolean searchLocalePrefix = false;
@@ -29,6 +29,8 @@ public class WebParamsBean implements WebParams {
 	private boolean productsWithContentEnabled = true;
 	
 	private boolean includeProductCategoryInSearch = false;
+	
+	private String scrollMode;
 	
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -199,4 +201,16 @@ public class WebParamsBean implements WebParams {
 	public void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch) {
 		this.includeProductCategoryInSearch = includeProductCategoryInSearch;
 	}
+
+	@Override
+	public String getScrollMode() {		
+		return scrollMode;
+	}
+
+	@Override
+	public void setScrollMode(String scrollMode) {
+		this.scrollMode = scrollMode;
+	}
+
+	
 }
