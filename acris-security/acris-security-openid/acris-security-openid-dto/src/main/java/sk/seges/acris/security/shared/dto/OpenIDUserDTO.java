@@ -15,7 +15,8 @@ public class OpenIDUserDTO implements Serializable {
 	private static final long serialVersionUID = 1435482511152337161L;
 
 	private Map<String, String> params = new HashMap<String, String>();
-
+	private String locale;
+	
 	public OpenIDUserDTO() {
 	}
 
@@ -44,5 +45,13 @@ public class OpenIDUserDTO implements Serializable {
 
 	public String getEndpointUrl() {
 		return params.get(ENDPOINT_URL);
+	}
+	
+	public String getLocale() {
+		return locale;
+	}
+	
+	public void setLocale(String locale)  {
+		this.locale = locale;
 	}
 }

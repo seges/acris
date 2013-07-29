@@ -40,4 +40,10 @@ public class JPAOpenIDUser extends OpenIDUserBase {
 	public OpenIDProvider getProvider() {
 		return super.getProvider();
 	}
+	
+	@Override
+	@Column
+	public String getLocale() {
+		return super.getLocale();
+	}
 }
