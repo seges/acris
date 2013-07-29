@@ -26,6 +26,7 @@ public class WebParamsBean implements WebParams {
 	private String[] breadcrumbItemsList;
 	
 	private boolean productsWithMicrositeEnabled = false;
+	private boolean masterCategoryRequired = true;
 	private boolean productsWithContentEnabled = true;
 	
 	private boolean includeProductCategoryInSearch = false;
@@ -212,5 +213,13 @@ public class WebParamsBean implements WebParams {
 		this.scrollMode = scrollMode;
 	}
 
-	
+	@Override
+	public Boolean isMasterCategoryRequired() {
+		return masterCategoryRequired;
+	}
+
+	@Override
+	public void setMasterCategoryRequired(boolean masterCategoryRequired) {
+		this.masterCategoryRequired = masterCategoryRequired;
+	}
 }

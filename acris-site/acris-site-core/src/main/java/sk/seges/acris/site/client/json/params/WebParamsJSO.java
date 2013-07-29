@@ -192,4 +192,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setScrollMode(String scrollMode) {
 		data.set(SCROLL_MODE, scrollMode);		
 	}
+
+	@Override
+	public Boolean isMasterCategoryRequired() {
+		return data.getBoolean(MASTER_CATEGORY_REQUIRED);
+	}
+
+	@Override
+	public void setMasterCategoryRequired(boolean masterCategoryRequired) {
+		data.set(MASTER_CATEGORY_REQUIRED, masterCategoryRequired);
+	}
 }
