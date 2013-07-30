@@ -70,6 +70,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DoubleBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.IntegerBox;
+import com.google.gwt.user.client.ui.LongBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
@@ -367,6 +369,10 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			if (filter == null) {
 				if (filterProperty.getWidgetType() != null && filterProperty.getWidgetType().equals(DateBox.class)) {
 					filter = GWT.create(DateBox.class);
+				} else if (IntegerBox.class.equals(filterProperty.getWidgetType())) {
+					filter = new IntegerBox();
+				} else if (LongBox.class.equals(filterProperty.getWidgetType())) {
+					filter = new LongBox();
 				} else if (DoubleBox.class.equals(filterProperty.getWidgetType())) {
 					filter = new DoubleBox();
 				} else if (DoubleTextBox.class.equals(filterProperty.getWidgetType())) {
