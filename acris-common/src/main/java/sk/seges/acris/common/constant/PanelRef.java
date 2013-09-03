@@ -1,5 +1,6 @@
 package sk.seges.acris.common.constant;
 
+
 public interface PanelRef {
 	
 	public static final String MENU_CHOCOLATE_PANEL = "menuChocolatePanel";
@@ -38,4 +39,9 @@ public interface PanelRef {
 	
 	public static final String FORM_VALUES_LAYOUT = "formValuesLP";
 	public static final String GMAP_LAYOUT = "gMapLP";
+	
+	//Newsletter overview panel refs
+	public static final String NEWSLETTER_OVERVIEW_REF = "newsletterOverviewLP";
+	public static final String NEWSLETTER_ARCHIVE_ITEM_REF = "newsletterArchiveItemLP";
+	public static final String NEWS_ITEM_REF = "newsItemLP";
 }
