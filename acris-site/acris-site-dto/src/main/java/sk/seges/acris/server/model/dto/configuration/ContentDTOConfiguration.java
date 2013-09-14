@@ -9,6 +9,8 @@ import javax.validation.constraints.Size;
 import sk.seges.acris.core.client.rpc.IDataTransferObject;
 import sk.seges.acris.domain.server.domain.base.ContentBase;
 import sk.seges.acris.node.MenuItem;
+import sk.seges.acris.shared.model.dto.ContentPkDTO;
+import sk.seges.acris.site.server.domain.api.ContentPkData;
 import sk.seges.acris.site.shared.domain.api.ContentForUtils;
 import sk.seges.sesam.pap.model.annotation.Annotations;
 import sk.seges.sesam.pap.model.annotation.Copy;
@@ -23,7 +25,7 @@ import sk.seges.sesam.shared.domain.api.HasId;
 @TransferObjectMapping(domainClass = ContentBase.class, generateConverter = false)
 @Mapping(MappingType.AUTOMATIC)
 @Copy(annotations = @Annotations(accessor = PropertyAccessor.PROPERTY, packageOf = Size.class))
-public interface ContentDTOConfiguration extends IDataTransferObject, ContentForUtils {
+public interface ContentDTOConfiguration extends IDataTransferObject, ContentForUtils, HasId<ContentPkData> {
 
 	@Ignore
 	void webId();
