@@ -6,17 +6,19 @@ package sk.seges.acris.security.shared.core.user_management.domain.hibernate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -81,8 +83,10 @@ public class HibernateUserWithAuthorities extends GenericUserDTO {
 		super.setUserAuthorities(authorities);
 	}
 
-	@CollectionOfElements(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
+	@Column(name = "element")
+	@CollectionTable(name = "user_with_authorities_selectedauthorities", joinColumns = @JoinColumn(name = "user_with_authorities_id"))
 	public List<String> getSelectedAuthorities() {
 		return selectedAuthorities;
 	}

@@ -5,14 +5,16 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -35,9 +37,10 @@ public class HibernateRolePermission extends RolePermissionDTO {
     	return super.getPermission();
     }
 
-	@CollectionOfElements(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
-//	@JoinTable(name="rolepermission_userpermissions", joinColumns=@JoinColumn(name="rolepermission_permission"))
+	@JoinTable(name="rolepermission_userpermissions", joinColumns=@JoinColumn(name="rolepermission_permission"))
+	@Column(name = "element")
 	public List<String> getUserPermissions() {
 		return super.getUserPermissions();
 	}

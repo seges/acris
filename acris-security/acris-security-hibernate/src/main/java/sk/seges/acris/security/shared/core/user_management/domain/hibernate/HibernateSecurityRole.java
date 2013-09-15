@@ -2,15 +2,17 @@ package sk.seges.acris.security.shared.core.user_management.domain.hibernate;
 
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -49,8 +51,10 @@ public class HibernateSecurityRole extends SecurityRoleDTO {
 		return super.getDescription();
 	}
 
-	@CollectionOfElements(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
+	@Column(name = "element")
+	@CollectionTable(name = "role_selectedauthorities", joinColumns = @JoinColumn(name = "role_id"))
 	public List<String> getSelectedAuthorities() {
 		return super.getSelectedAuthorities();
 	}
