@@ -44,4 +44,6 @@ public interface PanelRef {
 	public static final String NEWSLETTER_OVERVIEW_REF = "newsletterOverviewLP";
 	public static final String NEWSLETTER_ARCHIVE_ITEM_REF = "newsletterArchiveItemLP";
 	public static final String NEWS_ITEM_REF = "newsItemLP";
+	public static final String TIMELINE_FRAGMENT_LAYOUT = "timeLineFragmentLP";
+	public static final String TIMELINE_LAYOUT = "timelineLP";
 }
