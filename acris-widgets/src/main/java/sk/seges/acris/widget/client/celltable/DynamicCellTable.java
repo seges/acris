@@ -3,12 +3,20 @@ package sk.seges.acris.widget.client.celltable;
 import java.util.List;
 import java.util.Map;
 
+import mx4j.log.Log;
+
+import sk.seges.acris.common.util.Pair;
+import sk.seges.acris.common.util.Triple;
 import sk.seges.acris.widget.client.celltable.column.ColumnValuesRemoteLoaderAsync;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
+import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterButton;
 import sk.seges.acris.widget.client.celltable.resource.TableResources;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Header;
+import com.google.gwt.user.client.ui.Button;
 
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
 
@@ -45,9 +53,9 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 		this.valuesLoader = valuesLoader;
 	}
 	
-	protected DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, TableResources resources){
-		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, resources, sortable);
-		this.valuesLoader = valuesLoader;
+	protected DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, TableResources resources, boolean filterable){
+		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, resources, sortable, filterable);
+		this.valuesLoader = valuesLoader;		
 	}
 
 	@Override
@@ -56,10 +64,18 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 		
 		int count = getColumnCount();
 		for (int i = 0; i < count; i++) {
-			Header<?> header = getHeader(i);
-			if (header instanceof AttachableHeader) {
-				((AttachableHeader)header).onAttachHeader(Element.as(getTableHeadElement().getChild(0).getChild(i)));
-			}
+			if(isFooter){
+				Header<?> footer = getFooter(i);
+				if (footer instanceof AttachableHeader) {
+					((AttachableHeader)footer).onAttachHeader(Element.as(getTableFootElement().getChild(0).getChild(i)));
+				}
+			}else{
+				Header<?> header = getHeader(i);
+				if (header instanceof AttachableHeader) {
+					((AttachableHeader)header).onAttachHeader(Element.as(getTableHeadElement().getChild(0).getChild(i)));
+				}
+			}			
+					
 		}
 	}
 	
@@ -69,16 +85,21 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 			removeColumn(0);
 		}
 		addColumns(columns);
-		addCheckboxColumn(50);
+		addCheckboxColumn(50, null);
 
 	}
 
-	protected void addColumns(List<DynamicColumDefinition> columns) {
-		for (final DynamicColumDefinition column : columns) {
+	protected void addColumns(List<DynamicColumDefinition> columns) {		
+		for (int i = 0; i < columns.size(); i++) {
+			final DynamicColumDefinition column = columns.get(i);
+			Triple<Button, Integer, ClickHandler> footerButton = null;
+			if(column instanceof DynamicColumnDefinitionWithFooterButton){
+				footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
+			}	
 			if (column.getField() == null) {
 				continue;
 			}
-			ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader);
+			ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader, footerButton);
 		}
 	}
 }
