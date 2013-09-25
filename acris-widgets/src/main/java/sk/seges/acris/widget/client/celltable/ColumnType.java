@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.common.util.Triple;
 import sk.seges.acris.widget.client.celltable.column.ColumnValuesRemoteLoaderAsync;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
@@ -13,10 +12,7 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.cellview.client.Column;

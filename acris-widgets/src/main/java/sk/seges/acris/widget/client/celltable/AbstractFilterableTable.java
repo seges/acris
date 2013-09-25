@@ -71,7 +71,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	private SimplePager pager;
 
 	protected SelectionModel<T> selectionModel;
-	private boolean initialized = false;
+	protected boolean initialized = false;
 	protected boolean sortable = true;
 	protected boolean filterable = true;
 
