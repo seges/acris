@@ -3,20 +3,18 @@ package sk.seges.acris.widget.client.celltable;
 import java.util.List;
 import java.util.Map;
 
-import mx4j.log.Log;
-
-import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.common.util.Triple;
 import sk.seges.acris.widget.client.celltable.column.ColumnValuesRemoteLoaderAsync;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterButton;
+import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterWidget;
 import sk.seges.acris.widget.client.celltable.resource.TableResources;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
 
@@ -92,14 +90,19 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 	protected void addColumns(List<DynamicColumDefinition> columns) {		
 		for (int i = 0; i < columns.size(); i++) {
 			final DynamicColumDefinition column = columns.get(i);
-			Triple<Button, Integer, ClickHandler> footerButton = null;
-			if(column instanceof DynamicColumnDefinitionWithFooterButton){
-				footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
-			}	
 			if (column.getField() == null) {
 				continue;
 			}
-			ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader, footerButton);
+			
+			if (column instanceof DynamicColumnDefinitionWithFooterButton) {
+				Triple<Button, Integer, ClickHandler> footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader, footerButton);
+			} else if (column instanceof DynamicColumnDefinitionWithFooterWidget) {
+				Widget footerWidget = ((DynamicColumnDefinitionWithFooterWidget)column).getFooterWidget();
+				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), valuesLoader, footerWidget);	
+			} else {
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader, null);
+			}
 		}
 	}
 }
