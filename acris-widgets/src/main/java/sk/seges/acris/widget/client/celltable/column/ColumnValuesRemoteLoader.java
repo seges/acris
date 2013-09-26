@@ -6,6 +6,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
 public interface ColumnValuesRemoteLoader extends RemoteService {
 
-	List<String> loadColumnValues(Class<?> dataClass, String column);
+	List<String> loadColumnValues(String dataClassName, String column);
 	
 }

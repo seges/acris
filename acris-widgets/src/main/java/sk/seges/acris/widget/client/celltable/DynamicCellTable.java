@@ -9,9 +9,13 @@ import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterButton;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterWidget;
 import sk.seges.acris.widget.client.celltable.resource.TableResources;
+import sk.seges.sesam.dao.Filter;
 
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
@@ -19,6 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
 
 	private final ColumnValuesRemoteLoaderAsync valuesLoader;
+	protected boolean checkboxColumnAdded = false;
 	
 	static class DynamicCellTableKeyProvider implements ProvidesIdentifier<Map<String, Object>> {
 		@Override
@@ -93,16 +98,25 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 			if (column.getField() == null) {
 				continue;
 			}
-			
+			int columnIndex = i;
+			if(checkboxColumnAdded){
+				columnIndex = i + 1;
+			}
 			if (column instanceof DynamicColumnDefinitionWithFooterButton) {
 				Triple<Button, Integer, ClickHandler> footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
-				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader, footerButton);
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, footerButton);
 			} else if (column instanceof DynamicColumnDefinitionWithFooterWidget) {
 				Widget footerWidget = ((DynamicColumnDefinitionWithFooterWidget)column).getFooterWidget();
-				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), valuesLoader, footerWidget);	
+				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columnIndex, columns.size(), valuesLoader, footerWidget);	
 			} else {
-				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader, null);
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, null);
 			}
 		}
 	}
+	
+	public void addCheckboxColumn(int width, Triple<Button, Integer, ClickHandler> footerButton) {
+		super.addCheckboxColumn(width, footerButton);
+		checkboxColumnAdded = true;
+	}	
+	
 }
