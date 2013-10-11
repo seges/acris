@@ -32,6 +32,7 @@ public class WebParamsBean implements WebParams {
 	private boolean includeProductCategoryInSearch = false;
 	
 	private String scrollMode;
+	private String importURL;
 	private String importImageUrl;
 	
 	@Override
@@ -222,6 +223,16 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setMasterCategoryRequired(boolean masterCategoryRequired) {
 		this.masterCategoryRequired = masterCategoryRequired;
+	}
+	
+	@Override
+	public String getImportURL() {
+		return importURL;
+	}
+	
+	@Override
+	public void setImportURL(String importURL) {
+		this.importURL = importURL;
 	}
 	
 	@Override

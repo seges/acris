@@ -23,6 +23,7 @@ public interface WebParams extends ContentParameters {
 	public static final String BACKGROUND_MANAGEMENT_ENABLED = "backgroundManagementEnabled";
 	public static final String INCLUDE_PRODUCT_CATEGORY_IN_SEARCH = "includeProductCategoryInSearch";
 	public static final String SCROLL_MODE = "scrollMode";
+	public static final String IMPORT_URL = "importURL";
 	public static final String IMPORT_IMAGE_URL = "importImageUrl";
 
 	String[] getOfflinePostProcessorInactive();
@@ -100,6 +101,10 @@ public interface WebParams extends ContentParameters {
 	String getScrollMode();
 	
 	void setScrollMode(String scrollMode);
+
+	String getImportURL();
+	
+	void setImportURL(String importURL);
 	
 	String getImportImageURL();
 	

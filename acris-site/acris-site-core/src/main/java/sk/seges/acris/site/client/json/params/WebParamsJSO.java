@@ -202,6 +202,16 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setMasterCategoryRequired(boolean masterCategoryRequired) {
 		data.set(MASTER_CATEGORY_REQUIRED, masterCategoryRequired);
 	}
+
+	@Override
+	public String getImportURL() {
+		return data.get(IMPORT_URL);
+	}
+	
+	@Override
+	public void setImportURL(String importURL) {
+		data.set(IMPORT_URL, importURL);
+	}
 	
 	@Override
 	public String getImportImageURL() {
