@@ -84,7 +84,7 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 		generateClassFields(pw);
 		generateInitializeUser(pw);
     	generateClientSessionProviderMethods(pw, element);
-		generateOnLoadMethod(pw);
+		generateOnLoadMethod(pw, element);
 		generateSecurityCheck(pw, element);
 	}
 	
@@ -93,7 +93,14 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 		pw.println();
 	}
 
-	protected void generateOnLoadMethod(FormattedPrintWriter pw) {
+	
+	protected void generateOnLoadMethod(FormattedPrintWriter pw, Element element) {
+	
+		if (!ProcessorUtils.hasMethod("onLoad", element)) {
+			//TODO check return type
+			return;
+		}
+		
 		pw.println("@Override");
 		pw.println("public void onLoad() {");
 		pw.println("super.onLoad();");

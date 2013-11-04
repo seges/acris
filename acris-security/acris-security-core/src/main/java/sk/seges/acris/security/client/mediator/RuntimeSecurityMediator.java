@@ -21,6 +21,10 @@ public class RuntimeSecurityMediator {
 	public static void setGrant(String grant, Object runtimeSecuredObject) {
 		setGrants(new String[] { toGrant(grant) }, runtimeSecuredObject);
 	}
+	
+	public static void setAuthority(String authority, Object runtimeSecuredObject) {
+		setAuthorities(new String[] { authority }, runtimeSecuredObject);
+	}
 
 	/**
 	 * @deprecated Use strings as grants or another (custom) mediator.
@@ -41,6 +45,17 @@ public class RuntimeSecurityMediator {
 				roleGrants[i] = toGrant(grants[i]);
 			}
 			
+			((IRuntimeAuthorityMediator) runtimeSecuredObject).setGrants(roleGrants);
+		}
+	}
+	
+	public static void setAuthorities(String[] authorities, Object runtimeSecuredObject) {
+		if (runtimeSecuredObject instanceof IRuntimeAuthorityMediator) {
+			String[] roleGrants = new String[authorities.length];
+			
+			for (int i = 0; i < authorities.length; i++) {
+				roleGrants[i] = authorities[i];
+			}
 			((IRuntimeAuthorityMediator) runtimeSecuredObject).setGrants(roleGrants);
 		}
 	}
