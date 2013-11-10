@@ -10,7 +10,7 @@ import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.WebSettingsService;
 import sk.seges.corpis.server.service.ICountryService;
 import sk.seges.corpis.service.annotation.TransactionPropagation;
-import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
+import sk.seges.corpis.service.annotation.PropagationType;
 import sk.seges.sesam.pap.service.annotation.LocalService;
 
 
