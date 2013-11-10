@@ -8,6 +8,7 @@ import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -50,7 +51,7 @@ public class SecurityUtils {
 		handlePermission(user, widget, mergedAuthorities);
 	}
 	
-	public static void handlePermission(GenericUserDTO user, Widget widget, String ...authorities) {
+	public static <T extends HasVisibility> void handlePermission(GenericUserDTO user, T widget, String ...authorities) {
 
 		boolean hasViewPermission = authorities == null || authorities.length == 0;
 		
@@ -106,7 +107,7 @@ public class SecurityUtils {
 		}
 	}
 	
-	private static boolean isWidgetEditable(Widget widget) {
+	private static <T extends HasVisibility> boolean isWidgetEditable(T widget) {
 		return widget instanceof HasEnabled;
 	}
 	

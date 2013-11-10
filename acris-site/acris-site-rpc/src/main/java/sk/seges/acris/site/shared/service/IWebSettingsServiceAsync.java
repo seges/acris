@@ -1,5 +1,7 @@
 package sk.seges.acris.site.shared.service;
 
+import java.util.List;
+
 import sk.seges.acris.shared.model.dto.FTPWebSettingsDTO;
 import sk.seges.acris.shared.model.dto.WebSettingsDTO;
 
@@ -16,4 +18,6 @@ public interface IWebSettingsServiceAsync {
 	void getFTPWebSettings(String webId, AsyncCallback<FTPWebSettingsDTO> callback);
 	
 	void deleteWebSettings(String webId, AsyncCallback<Void> callback);
+	
+	void loadWebSettingsContainsParams(List<String> params, AsyncCallback<List<WebSettingsDTO>> callback);
 }

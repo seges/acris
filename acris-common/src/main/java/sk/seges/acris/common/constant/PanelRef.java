@@ -1,5 +1,6 @@
 package sk.seges.acris.common.constant;
 
+
 public interface PanelRef {
 	
 	public static final String MENU_CHOCOLATE_PANEL = "menuChocolatePanel";
@@ -7,11 +8,13 @@ public interface PanelRef {
 
 	public static final String HTML_LAYOUT_PANEL = "htmlLP";
 	public static final String DYNAMIC_HTML_LAYOUT_PANEL = "dynHtmlLP";
-
+	public static final String PAGEABLE_HTML_LAYOUT_PANEL = "pageHtmlLP";
+	
 	//@HasChildren(false)
 	public static final String FLOW_LAYOUT_PANEL = "flowLP";
 	public static final String FRAGMENT_FLOW_LAYOUT_PANEL = "fragmentFlowLP";
 	public static final String ROYAL_SLIDER_FLOW_LAYOUT_PANEL = "royalSliderFlowLP";
+	public static final String PAGEABLE_FLOW_LAYOUT_PANEL = "pageFlowLP";
 	
 	//@HasChildren(false)
 	public static final String DECK_LAYOUT_PANEL = "deckLP";
@@ -36,4 +39,11 @@ public interface PanelRef {
 	
 	public static final String FORM_VALUES_LAYOUT = "formValuesLP";
 	public static final String GMAP_LAYOUT = "gMapLP";
+	
+	//Newsletter overview panel refs
+	public static final String NEWSLETTER_OVERVIEW_REF = "newsletterOverviewLP";
+	public static final String NEWSLETTER_ARCHIVE_ITEM_REF = "newsletterArchiveItemLP";
+	public static final String NEWS_ITEM_REF = "newsItemLP";
+	public static final String TIMELINE_FRAGMENT_LAYOUT = "timeLineFragmentLP";
+	public static final String TIMELINE_LAYOUT = "timelineLP";
 }

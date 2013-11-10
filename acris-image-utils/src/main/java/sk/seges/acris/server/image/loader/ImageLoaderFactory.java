@@ -63,7 +63,7 @@ public class ImageLoaderFactory {
 		abstract boolean appliedTo(String formatName);
 		abstract boolean hasExtension(String fileExtension);
 
-		static ImageFormat fromImageExtension(String fileName) {
+		public static ImageFormat fromImageExtension(String fileName) {
 			String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
 			
 			for (ImageFormat imageFormat: ImageFormat.values()) {

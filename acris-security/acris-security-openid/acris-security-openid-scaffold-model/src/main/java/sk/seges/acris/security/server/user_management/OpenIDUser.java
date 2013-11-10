@@ -16,4 +16,5 @@ public interface OpenIDUser extends IMutableDomainObject<String> {
 
 	OpenIDProvider provider();
 
+	String locale();
 }

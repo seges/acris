@@ -44,6 +44,16 @@
 			<groupId>sk.seges.sesam</groupId>
 			<artifactId>sesam-core</artifactId>
 			<classifier>sources</classifier>
-		</dependency>		
+		</dependency>
+		<!-- acris dependencies-->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-common</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 	</dependencies>
 </project>

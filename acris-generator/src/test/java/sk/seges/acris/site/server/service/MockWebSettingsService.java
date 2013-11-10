@@ -1,5 +1,7 @@
 package sk.seges.acris.site.server.service;
 
+import java.util.List;
+
 import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
@@ -62,5 +64,12 @@ public class MockWebSettingsService implements IWebSettingsServiceLocal {
 
 	@Override
 	public void deleteWebSettings(String webId) {
+	}
+
+	@Override
+	public List<WebSettingsData> loadWebSettingsContainsParams(
+			List<String> params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

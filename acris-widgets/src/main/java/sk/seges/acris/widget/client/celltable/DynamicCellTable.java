@@ -3,16 +3,27 @@ package sk.seges.acris.widget.client.celltable;
 import java.util.List;
 import java.util.Map;
 
+import sk.seges.acris.common.util.Triple;
 import sk.seges.acris.widget.client.celltable.column.ColumnValuesRemoteLoaderAsync;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
+import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterButton;
+import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterWidget;
 import sk.seges.acris.widget.client.celltable.resource.TableResources;
+import sk.seges.sesam.dao.Filter;
 
+import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
 
 	private final ColumnValuesRemoteLoaderAsync valuesLoader;
+	protected boolean checkboxColumnAdded = false;
 	
 	static class DynamicCellTableKeyProvider implements ProvidesIdentifier<Map<String, Object>> {
 		@Override
@@ -45,9 +56,9 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 		this.valuesLoader = valuesLoader;
 	}
 	
-	protected DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, TableResources resources){
-		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, resources, sortable);
-		this.valuesLoader = valuesLoader;
+	protected DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, TableResources resources, boolean filterable){
+		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, resources, sortable, filterable);
+		this.valuesLoader = valuesLoader;		
 	}
 
 	@Override
@@ -56,10 +67,18 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 		
 		int count = getColumnCount();
 		for (int i = 0; i < count; i++) {
-			Header<?> header = getHeader(i);
-			if (header instanceof AttachableHeader) {
-				((AttachableHeader)header).onAttachHeader(Element.as(getTableHeadElement().getChild(0).getChild(i)));
-			}
+			if(isFooter){
+				Header<?> footer = getFooter(i);
+				if (footer instanceof AttachableHeader) {
+					((AttachableHeader)footer).onAttachHeader(Element.as(getTableFootElement().getChild(0).getChild(i)));
+				}
+			}else{
+				Header<?> header = getHeader(i);
+				if (header instanceof AttachableHeader) {
+					((AttachableHeader)header).onAttachHeader(Element.as(getTableHeadElement().getChild(0).getChild(i)));
+				}
+			}			
+					
 		}
 	}
 	
@@ -69,16 +88,35 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 			removeColumn(0);
 		}
 		addColumns(columns);
-		addCheckboxColumn(50);
+		addCheckboxColumn(50, null);
 
 	}
 
-	protected void addColumns(List<DynamicColumDefinition> columns) {
-		for (final DynamicColumDefinition column : columns) {
+	protected void addColumns(List<DynamicColumDefinition> columns) {		
+		for (int i = 0; i < columns.size(); i++) {
+			final DynamicColumDefinition column = columns.get(i);
 			if (column.getField() == null) {
 				continue;
 			}
-			ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), valuesLoader);
+			int columnIndex = i;
+			if(checkboxColumnAdded){
+				columnIndex = i + 1;
+			}
+			if (column instanceof DynamicColumnDefinitionWithFooterButton) {
+				Triple<Button, Integer, ClickHandler> footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, footerButton);
+			} else if (column instanceof DynamicColumnDefinitionWithFooterWidget) {
+				Widget footerWidget = ((DynamicColumnDefinitionWithFooterWidget)column).getFooterWidget();
+				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columnIndex, columns.size(), valuesLoader, footerWidget);	
+			} else {
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, null);
+			}
 		}
 	}
+	
+	public void addCheckboxColumn(int width, Triple<Button, Integer, ClickHandler> footerButton) {
+		super.addCheckboxColumn(width, footerButton);
+		checkboxColumnAdded = true;
+	}	
+	
 }

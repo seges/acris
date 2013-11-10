@@ -15,6 +15,7 @@ import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.corpis.server.domain.HasWebId;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.corpis.server.service.ICountryService;
+import sk.seges.sesam.dao.Disjunction;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 
@@ -92,5 +93,16 @@ public class WebSettingsService implements IWebSettingsServiceLocal {
 			return;
 		}
 		webSettingsDao.remove(entity);
+	}
+
+	@Override
+	public List<WebSettingsData> loadWebSettingsContainsParams(List<String> params) {
+		Page page = new Page(0, Page.ALL_RESULTS);
+		Disjunction disjunction = Filter.disjunction();
+		for (String param : params) {
+			disjunction.add(Filter.like(WebSettingsData.PARAMETERS).setValue(param));
+		}
+		page.setFilterable(disjunction);
+		return webSettingsDao.findAll(page).getResult();
 	}	
 }

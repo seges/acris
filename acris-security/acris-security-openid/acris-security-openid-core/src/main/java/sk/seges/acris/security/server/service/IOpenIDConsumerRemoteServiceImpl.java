@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.openid4java.OpenIDException;
-import org.openid4java.association.AssociationSessionType;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.InMemoryConsumerAssociationStore;
 import org.openid4java.consumer.InMemoryNonceVerifier;
@@ -25,9 +24,13 @@ import org.openid4java.message.sreg.SRegRequest;
 import org.openid4java.message.sreg.SRegResponse;
 
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
+import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
+import sk.seges.acris.security.server.user_management.server.model.data.OpenIDUserData;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerRemoteService;
+import sk.seges.sesam.dao.Filter;
+import sk.seges.sesam.dao.Page;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
@@ -38,15 +41,17 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 	private Logger log = Logger.getLogger(IOpenIDConsumerRemoteServiceImpl.class);
 	private ConsumerManager manager;
 	private ServerSessionProvider sessionProvider;
-
+	private IOpenIDUserDao<? extends OpenIDUserData> openIdUserDao;
+	
 	@Inject
-	public IOpenIDConsumerRemoteServiceImpl(ConsumerManager manager, ServerSessionProvider sessionProvider) {
+	public IOpenIDConsumerRemoteServiceImpl(ConsumerManager manager, ServerSessionProvider sessionProvider, IOpenIDUserDao<? extends OpenIDUserData> openIdUserDao) {
 		this.manager = manager;
 		this.manager.setAssociations(new InMemoryConsumerAssociationStore());
 		this.manager.setNonceVerifier(new InMemoryNonceVerifier(5000));
         //this.manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
 		this.manager.getRealmVerifier().setEnforceRpId(false);
 		this.sessionProvider = sessionProvider;
+		this.openIdUserDao = openIdUserDao;
 	}
 
 	private ConsumerManager getManager() {
@@ -90,8 +95,9 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 			// use simple registration to fetch the 'email' attribute
 			SRegRequest sregReq = SRegRequest.createFetchRequest();
 			sregReq.addAttribute("email", true);
+			
 			authReq.addExtension(sregReq);
-
+			
 			// simple POJO for storing the data
 			OpenIDUserDTO userDTO = new OpenIDUserDTO();
 			userDTO.getParams().put(OpenIDUserDTO.SESSION_ID, session.getId());
@@ -146,6 +152,11 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 					SRegResponse sregResp = (SRegResponse) authSuccess.getExtension(SRegMessage.OPENID_NS_SREG);
 					userDTO.getParams().put(OpenIDUserDTO.EMAIL_FROM_SREG, sregResp.getAttributeValue("email"));
 				}
+				OpenIDUserData dbUser = findOpenIdUser(authSuccess.getIdentity());
+				if (dbUser != null) {
+					userDTO.setLocale(dbUser.getLocale());
+				}
+				
 				return userDTO; // success
 			} else {
 				log.error("Unable to verify using openId, status: " + verification.getStatusMsg());
@@ -155,5 +166,11 @@ public class IOpenIDConsumerRemoteServiceImpl extends RemoteServiceServlet imple
 		}
 
 		return null;
+	}
+	
+	private OpenIDUserData findOpenIdUser(String openId) {
+		Page page = new Page(0, Page.ALL_RESULTS);
+		page.setFilterable(Filter.eq("id").setValue(openId));
+		return openIdUserDao.findUnique(page);
 	}
 }

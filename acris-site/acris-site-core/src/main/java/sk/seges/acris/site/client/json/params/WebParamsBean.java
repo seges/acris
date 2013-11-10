@@ -11,7 +11,7 @@ public class WebParamsBean implements WebParams {
 	private boolean productCategorySingleSelect = false;
 	private boolean filtersEnabled = false;
 	private boolean productListSortEnabled = false;
-	private boolean backgroundManagementEnabled = false;
+	private boolean backgroundManagementEnabled = false;	
 	
 	private String searchMode = ESearchMode.EQ.name();
 	private boolean searchLocalePrefix = false;
@@ -26,9 +26,14 @@ public class WebParamsBean implements WebParams {
 	private String[] breadcrumbItemsList;
 	
 	private boolean productsWithMicrositeEnabled = false;
+	private boolean masterCategoryRequired = true;
 	private boolean productsWithContentEnabled = true;
 	
 	private boolean includeProductCategoryInSearch = false;
+	
+	private String scrollMode;
+	private String importURL;
+	private String importImageUrl;
 	
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -198,5 +203,45 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch) {
 		this.includeProductCategoryInSearch = includeProductCategoryInSearch;
+	}
+
+	@Override
+	public String getScrollMode() {		
+		return scrollMode;
+	}
+
+	@Override
+	public void setScrollMode(String scrollMode) {
+		this.scrollMode = scrollMode;
+	}
+
+	@Override
+	public Boolean isMasterCategoryRequired() {
+		return masterCategoryRequired;
+	}
+
+	@Override
+	public void setMasterCategoryRequired(boolean masterCategoryRequired) {
+		this.masterCategoryRequired = masterCategoryRequired;
+	}
+	
+	@Override
+	public String getImportURL() {
+		return importURL;
+	}
+	
+	@Override
+	public void setImportURL(String importURL) {
+		this.importURL = importURL;
+	}
+	
+	@Override
+	public String getImportImageURL() {
+		return importImageUrl;
+	}
+	
+	@Override
+	public void setImportImageURL(String importImageURL) {
+		this.importImageUrl = importImageURL;
 	}
 }

@@ -17,6 +17,7 @@ public interface IAclMaintenanceServiceRemote extends RemoteService {
 	
 	public void resetACLEntries(String className, Long aclId, GenericUserDTO user, Permission[] authorities);
 	public void resetACLEntriesLoggedRole(String className, Long aclId, Permission[] authorities);
+	public void resetACLEntries(String className, GenericUserDTO user, Permission[] authorities, List<Long> aclIds);
 	
 	void setAclEntries(String className, Long aclId, GenericUserDTO user,Permission[] authorities);
 	void setAclEntries(Map<String, List<Long>> acls, GenericUserDTO user,Permission[] authorities);

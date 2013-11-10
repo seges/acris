@@ -1,5 +1,7 @@
 package sk.seges.acris.site.server.service.spring;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -44,5 +46,12 @@ public class SpringWebSettingsService extends WebSettingsService {
 	@Override
 	public void deleteWebSettings(String webId) {
 		super.deleteWebSettings(webId);
+	}
+	
+	@Override
+	@Transactional
+	@TransactionPropagation(value = PropagationType.PROPAGATE)
+	public List<WebSettingsData> loadWebSettingsContainsParams(List<String> params) {
+		return super.loadWebSettingsContainsParams(params);
 	}
 }

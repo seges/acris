@@ -52,6 +52,13 @@ public class AclMaintenanceService implements IAclMaintenanceServiceLocal {
     	className=  ClassConverter.getDomainClassName(converterProviderContext, className);
    		aclManager.resetAclRecords(SecuredClassHelper.getSecuredClass(className), aclId, user, authorities);
     }
+    
+	@Override
+	public void resetACLEntries(String className, UserData user, Permission[] authorities, List<Long> aclIds) {
+		for (Long aclId : aclIds) {
+			resetACLEntries(className, aclId, user, authorities);
+		}
+	}
 
     @Override
     public void resetACLEntriesLoggedRole(String className, Long aclId, Permission[] authorities) {

@@ -63,4 +63,12 @@ public class SpringWebSitesService extends WebSitesService {
 	public void deleteWebSites(WebSitesData webSite){
 		super.deleteWebSites(webSite);
 	}
+	
+	@Override
+	@Transactional
+	@TransactionPropagation(value = PropagationType.PROPAGATE)
+	public void deleteWebSites(String webId, String domain) {
+		super.deleteWebSites(webId, domain);
+	}
 }
+

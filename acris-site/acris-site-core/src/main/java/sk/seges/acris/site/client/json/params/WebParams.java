@@ -18,9 +18,13 @@ public interface WebParams extends ContentParameters {
 	public static final String BLUEWAVE_PASSWORD = "bluewavePassword";
 	public static final String BREADCRUMB_ITEMS_LIST = "breadcrumbItemsList";
 	public static final String PRODUCTS_WITH_MICROSITE_ENABLED = "productsWithMicrositeEnabled";
+	public static final String MASTER_CATEGORY_REQUIRED = "masterCategoryRequired";
 	public static final String PRODUCTS_WITH_CONTENT_ENABLED = "productsWithContentsEnabled";
 	public static final String BACKGROUND_MANAGEMENT_ENABLED = "backgroundManagementEnabled";
 	public static final String INCLUDE_PRODUCT_CATEGORY_IN_SEARCH = "includeProductCategoryInSearch";
+	public static final String SCROLL_MODE = "scrollMode";
+	public static final String IMPORT_URL = "importURL";
+	public static final String IMPORT_IMAGE_URL = "importImageUrl";
 
 	String[] getOfflinePostProcessorInactive();
 
@@ -82,6 +86,10 @@ public interface WebParams extends ContentParameters {
 	
 	void setProductsWithContentEnabled(boolean productsWithContentEnabled);
 	
+	Boolean isMasterCategoryRequired();
+	
+	void setMasterCategoryRequired(boolean masterCategoryRequired);
+	
 	Boolean isBackgroundManagementEnabled();
 	
 	void setBackgroundManagementEnabled(boolean backgroundManagementEnabled);
@@ -89,4 +97,16 @@ public interface WebParams extends ContentParameters {
 	boolean isIncludeProductCategoryInSearch();
 
 	void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch);
+	
+	String getScrollMode();
+	
+	void setScrollMode(String scrollMode);
+
+	String getImportURL();
+	
+	void setImportURL(String importURL);
+	
+	String getImportImageURL();
+	
+	void setImportImageURL(String importImageURL);
 }

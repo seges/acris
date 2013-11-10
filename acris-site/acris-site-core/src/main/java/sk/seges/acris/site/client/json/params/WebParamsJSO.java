@@ -182,4 +182,44 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setIncludeProductCategoryInSearch(boolean includeProductCategoryInSearch) {
 		data.set(INCLUDE_PRODUCT_CATEGORY_IN_SEARCH, includeProductCategoryInSearch);		
 	}
+	
+	@Override
+	public String getScrollMode() {		
+		return data.get(SCROLL_MODE);
+	}
+
+	@Override
+	public void setScrollMode(String scrollMode) {
+		data.set(SCROLL_MODE, scrollMode);		
+	}
+
+	@Override
+	public Boolean isMasterCategoryRequired() {
+		return data.getBoolean(MASTER_CATEGORY_REQUIRED);
+	}
+
+	@Override
+	public void setMasterCategoryRequired(boolean masterCategoryRequired) {
+		data.set(MASTER_CATEGORY_REQUIRED, masterCategoryRequired);
+	}
+
+	@Override
+	public String getImportURL() {
+		return data.get(IMPORT_URL);
+	}
+	
+	@Override
+	public void setImportURL(String importURL) {
+		data.set(IMPORT_URL, importURL);
+	}
+	
+	@Override
+	public String getImportImageURL() {
+		return data.get(IMPORT_IMAGE_URL);
+	}
+	
+	@Override
+	public void setImportImageURL(String importImageURL) {
+		data.set(IMPORT_IMAGE_URL, importImageURL);
+	}
 }
