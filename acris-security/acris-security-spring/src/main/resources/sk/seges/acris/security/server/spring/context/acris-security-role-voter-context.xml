@@ -6,15 +6,15 @@
     xmlns:context="http://www.springframework.org/schema/context" 
 	xmlns:aop="http://www.springframework.org/schema/aop"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
                         http://www.springframework.org/schema/security
-                        http://www.springframework.org/schema/security/spring-security-2.0.2.xsd
+                        http://www.springframework.org/schema/security/spring-security-3.1.xsd
                         http://www.springframework.org/schema/aop 
-                        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+                        http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
-    <beans:bean id="roleVoter" class="org.springframework.security.vote.RoleVoter"/>
+    <beans:bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter"/>
     
-	<beans:bean id="accessDecisionManager" class="org.springframework.security.vote.AffirmativeBased">
+	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
 		<beans:property name="allowIfAllAbstainDecisions" value="false"/>
 		<beans:property name="decisionVoters">
 			<beans:list>

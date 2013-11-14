@@ -1,11 +1,12 @@
 package sk.seges.acris.security.server.spring.acl.sid;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.Authentication;
-import org.springframework.security.acls.sid.PrincipalSid;
-import org.springframework.security.acls.sid.Sid;
-import org.springframework.security.acls.sid.SidRetrievalStrategyImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
+import org.springframework.security.acls.model.Sid;
+import org.springframework.security.core.Authentication;
 
 import sk.seges.acris.security.user_management.server.model.data.RoleData;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
@@ -22,34 +23,29 @@ import sk.seges.acris.security.user_management.server.model.data.UserData;
 public class RolesPublicSidRetrievalStrategy extends SidRetrievalStrategyImpl {
 
 	@Override
-	public Sid[] getSids(Authentication authentication) {
-		Sid[] sids = super.getSids(authentication);
-		Sid[] result;
+	public List<Sid> getSids(Authentication authentication) {
+		List<Sid> sids = super.getSids(authentication);
+		List<Sid> result = new ArrayList<Sid>();;
 		if (authentication.getPrincipal() instanceof UserData && ((UserData)authentication.getPrincipal()).getRoles() != null) {
 			List<RoleData> roles = ((UserData)authentication.getPrincipal()).getRoles();
-			result = new Sid[(sids.length + roles.size() + 1)];
 			int i = 0;
 			while (i < roles.size()) {
-				result[i] = new PrincipalSid(roles.get(i).getName());
+				result.add(new PrincipalSid(roles.get(i).getName()));
 				i++;
 			}
-			i = copySids(sids, result, i);
-			result[i] = new PrincipalSid(RoleData.ALL_USERS); 
+			copySids(sids, result, i);
+			result.add(new PrincipalSid(RoleData.ALL_USERS)); 
 		} else {
-			result = new Sid[sids.length + 1];
 			copySids(sids, result, 0);
-			result[sids.length] = new PrincipalSid(RoleData.ALL_USERS);
+			result.add(new PrincipalSid(RoleData.ALL_USERS));
 		}
 		
 		return result;
 	}
 	
-	private int copySids(Sid[] from, Sid[] to, int startIndex) {
-		int i = startIndex;
-		for (int j = 0; j < from.length; j++) {
-			to[i] = from[j];
-			i++;
+	private void copySids(List<Sid> from, List<Sid> to, int startIndex) {
+		for (Sid sid : from) {
+			to.add(sid);
 		}
-		return i;
 	}
 }

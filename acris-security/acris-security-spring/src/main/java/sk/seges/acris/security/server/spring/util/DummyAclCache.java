@@ -2,9 +2,9 @@ package sk.seges.acris.security.server.spring.util;
 
 import java.io.Serializable;
 
-import org.springframework.security.acls.MutableAcl;
-import org.springframework.security.acls.jdbc.AclCache;
-import org.springframework.security.acls.objectidentity.ObjectIdentity;
+import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.ObjectIdentity;
 
 public class DummyAclCache implements AclCache {
 
@@ -25,4 +25,7 @@ public class DummyAclCache implements AclCache {
 	public void putInCache(MutableAcl acl) {
 	}
 
+	@Override
+	public void clearCache() {
+	}
 }

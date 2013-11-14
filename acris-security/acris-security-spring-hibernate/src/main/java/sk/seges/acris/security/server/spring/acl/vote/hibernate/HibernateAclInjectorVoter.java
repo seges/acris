@@ -6,9 +6,9 @@ import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.springframework.security.acls.Permission;
-import org.springframework.security.acls.sid.PrincipalSid;
-import org.springframework.security.acls.sid.Sid;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;

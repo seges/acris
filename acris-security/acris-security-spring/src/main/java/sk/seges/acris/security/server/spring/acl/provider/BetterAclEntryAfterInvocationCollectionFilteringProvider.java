@@ -2,16 +2,14 @@ package sk.seges.acris.security.server.spring.acl.provider;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.security.AccessDeniedException;
-import org.springframework.security.Authentication;
-import org.springframework.security.ConfigAttribute;
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.acls.AclService;
-import org.springframework.security.acls.Permission;
-import org.springframework.security.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.acls.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.core.Authentication;
 
 import sk.seges.acris.security.server.spring.annotation.processor.DefaultSecurityAnnotationProcessor;
 import sk.seges.acris.security.shared.exception.SecurityException;
@@ -21,22 +19,19 @@ public class BetterAclEntryAfterInvocationCollectionFilteringProvider extends
 		AclEntryAfterInvocationCollectionFilteringProvider {
 
 	public BetterAclEntryAfterInvocationCollectionFilteringProvider(AclService aclService,
-			Permission[] requirePermission) {
+			List<Permission> requirePermission) {
 		super(aclService, requirePermission);
 	}
 
 	@Override
-	public Object decide(Authentication authentication, Object object, ConfigAttributeDefinition config,
-			Object returnedObject) throws AccessDeniedException {
-		Iterator<?> iter = config.getConfigAttributes().iterator();
-		while (iter.hasNext()) {
-			ConfigAttribute attribute = (ConfigAttribute) iter.next();
-
+	public Object decide(Authentication authentication, Object object, Collection<ConfigAttribute> attributes, Object returnedObject)
+			throws AccessDeniedException {
+		for (ConfigAttribute attribute : attributes) {
 			if (DefaultSecurityAnnotationProcessor.AFTER_ACL_COLLECTION_READ_TOKEN.equals(attribute.getAttribute())) {
 				// we have to check it before decission!
 				boolean isEmpty = returnedObject != null && !isEmpty(returnedObject);
 
-				Object result = super.decide(authentication, object, config, returnedObject);
+				Object result = super.decide(authentication, object, attributes, returnedObject);
 
 				if (isEmpty && (result == null || isEmpty(result))) {
 					throw new SecurityException("User does not have permission for object: " + object

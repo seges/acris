@@ -1,6 +1,6 @@
 package sk.seges.acris.security.shared.spring.authority;
 
-import org.springframework.security.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 public class GrantedAuthorityImpl implements GrantedAuthority {
 

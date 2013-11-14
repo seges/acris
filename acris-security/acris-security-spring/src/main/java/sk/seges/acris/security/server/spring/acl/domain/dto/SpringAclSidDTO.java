@@ -1,7 +1,7 @@
 package sk.seges.acris.security.server.spring.acl.domain.dto;
 
-import org.springframework.security.Authentication;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;

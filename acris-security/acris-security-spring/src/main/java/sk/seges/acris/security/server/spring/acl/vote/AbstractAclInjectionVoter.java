@@ -1,22 +1,22 @@
 package sk.seges.acris.security.server.spring.acl.vote;
 
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.List;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.CodeSignature;
-import org.springframework.security.Authentication;
-import org.springframework.security.ConfigAttribute;
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.acls.Permission;
-import org.springframework.security.acls.sid.Sid;
-import org.springframework.security.acls.sid.SidRetrievalStrategy;
-import org.springframework.security.vote.AccessDecisionVoter;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
+import org.springframework.security.acls.model.SidRetrievalStrategy;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
 import sk.seges.acris.security.server.spring.acl.sid.RolesPublicSidRetrievalStrategy;
 
-public abstract class AbstractAclInjectionVoter implements AccessDecisionVoter {
+public class AbstractAclInjectionVoter implements AccessDecisionVoter {
 
 	private final String configAttribute;
 
@@ -43,15 +43,10 @@ public abstract class AbstractAclInjectionVoter implements AccessDecisionVoter {
 		this.sidRetrievalStrategy = sidRetrievalStrategy;
 	}
 
-	public int vote(Authentication authentication, Object object, ConfigAttributeDefinition config) {
-
+	public int vote(Authentication authentication, Object object, Collection attributes) {
 		int result = ACCESS_ABSTAIN;
 
-		Iterator<?> iter = config.getConfigAttributes().iterator();
-
-		while (iter.hasNext()) {
-			ConfigAttribute attribute = (ConfigAttribute) iter.next();
-
+		for (ConfigAttribute attribute : (Collection<ConfigAttribute>)attributes) {
 			if (this.supports(attribute)) {
 
 				Object[] args;
@@ -63,11 +58,12 @@ public abstract class AbstractAclInjectionVoter implements AccessDecisionVoter {
 					args = invocation.getArguments();
 				} else {
 					JoinPoint jp = (JoinPoint) object;
-					params = ((CodeSignature) jp.getStaticPart().getSignature()).getParameterTypes();
+					params = ((CodeSignature) jp.getStaticPart().getSignature())
+							.getParameterTypes();
 					args = jp.getArgs();
 				}
 
-				Sid[] sids = sidRetrievalStrategy.getSids(authentication);
+				List<Sid> sids = sidRetrievalStrategy.getSids(authentication);
 
 				injectIntoCriteria(sids, params, args);
 
@@ -78,6 +74,7 @@ public abstract class AbstractAclInjectionVoter implements AccessDecisionVoter {
 		return result;
 	}
 
-	protected void injectIntoCriteria(Sid[] sids, Class<?>[] params, Object[] args) {
+	protected void injectIntoCriteria(List<Sid> sids, Class<?>[] params, Object[] args) {
 	}
+
 }

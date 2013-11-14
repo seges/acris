@@ -1,23 +1,26 @@
 package sk.seges.acris.security.server.spring.configuration.acl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.acls.AclService;
-import org.springframework.security.acls.Permission;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
+import org.springframework.security.acls.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider;
+import org.springframework.security.acls.afterinvocation.AclEntryAfterInvocationProvider;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.DefaultPermissionFactory;
-import org.springframework.security.acls.sid.SidRetrievalStrategy;
-import org.springframework.security.afterinvocation.AclEntryAfterInvocationCollectionFilteringProvider;
-import org.springframework.security.afterinvocation.AclEntryAfterInvocationProvider;
-import org.springframework.security.vote.AccessDecisionVoter;
-import org.springframework.security.vote.AclEntryVoter;
-import org.springframework.security.vote.RoleVoter;
-import org.springframework.security.vote.UnanimousBased;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.SidRetrievalStrategy;
 
 import sk.seges.acris.security.server.spring.acl.provider.BetterAclEntryAfterInvocationCollectionFilteringProvider;
 import sk.seges.acris.security.server.spring.acl.sid.RolesPublicSidRetrievalStrategy;
+import sk.seges.acris.security.server.spring.acl.vote.AclEntryVoter;
 import sk.seges.acris.security.server.spring.acl.vote.VoterPermissions;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 
@@ -31,7 +34,13 @@ public class AclVotersConfiguration {
 	
 	@Bean
 	public DefaultPermissionFactory permissionFactory() {
-		return new DefaultPermissionFactory();
+		Map<String, Permission> permissions = new HashMap<String, Permission>();
+		permissions.put(BasePermission.READ.getPattern(), BasePermission.READ);
+		permissions.put(BasePermission.WRITE.getPattern(), BasePermission.WRITE);
+		permissions.put(BasePermission.CREATE.getPattern(), BasePermission.CREATE);
+		permissions.put(BasePermission.DELETE.getPattern(), BasePermission.DELETE);
+		
+		return new DefaultPermissionFactory(permissions);
 	}
 
 	@Bean
@@ -119,7 +128,7 @@ public class AclVotersConfiguration {
 		return voter;
 	}
 	
-	private AclEntryVoter getVoter(AclService aclService, String processConfigAttribute, Permission[] requirePermission) {
+	private AclEntryVoter getVoter(AclService aclService, String processConfigAttribute, List<Permission> requirePermission) {
 		AclEntryVoter voter = new AclEntryVoter(aclService, processConfigAttribute, requirePermission);
 		voter.setProcessDomainObjectClass(ISecuredObject.class);
 		voter.setSidRetrievalStrategy(sidRetrievalStrategy());

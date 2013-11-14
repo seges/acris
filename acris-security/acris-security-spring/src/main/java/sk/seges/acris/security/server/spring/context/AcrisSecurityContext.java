@@ -1,9 +1,13 @@
 package sk.seges.acris.security.server.spring.context;
 
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextImpl;
-import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
-import org.springframework.security.userdetails.User;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.User;
 
 import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
@@ -27,8 +31,9 @@ public class AcrisSecurityContext extends SecurityContextImpl {
 			if (authentication == null) {
 				GrantedAuthorityImpl authority = new GrantedAuthorityImpl();
 				authority.setAuthority(Permission.VIEW.name());
-				
-				User u = new User(RoleData.ALL_USERS, "", true, true, true, true, new GrantedAuthorityImpl[]{authority});
+				List<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
+				authorityList.add(authority);
+				User u = new User(RoleData.ALL_USERS, "", true, true, true, true, authorityList);
 				authentication = new AnonymousAuthenticationToken(u.getUsername(), u, u.getAuthorities());
 			}
 			return authentication;

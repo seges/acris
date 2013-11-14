@@ -1,28 +1,31 @@
 package sk.seges.acris.security.server.spring.acl.service;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.acls.AccessControlEntry;
-import org.springframework.security.acls.Acl;
-import org.springframework.security.acls.AclService;
-import org.springframework.security.acls.NotFoundException;
-import org.springframework.security.acls.Permission;
 import org.springframework.security.acls.domain.AccessControlEntryImpl;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclImpl;
 import org.springframework.security.acls.domain.AuditLogger;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.jdbc.AclCache;
-import org.springframework.security.acls.objectidentity.ObjectIdentity;
-import org.springframework.security.acls.sid.GrantedAuthoritySid;
-import org.springframework.security.acls.sid.PrincipalSid;
-import org.springframework.security.acls.sid.Sid;
+import org.springframework.security.acls.domain.DefaultPermissionFactory;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.Acl;
+import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.util.FieldUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
@@ -55,12 +58,15 @@ public class SpringAclService implements AclService {
 
 	@Autowired
 	protected IAclObjectIdentityDao<AclSecuredObjectIdentityData> aclObjectIdentityDao;
+	
+    @Autowired
+    private DefaultPermissionFactory permissionFactory;
 
 	public SpringAclService(AclCache aclCache) {
 		this.aclCache = aclCache;
 	}
 	
-    public ObjectIdentity[] findChildren(ObjectIdentity parentIdentity) {
+    public List<ObjectIdentity> findChildren(ObjectIdentity parentIdentity) {
         // TODO Auto-generated method stub
     	//FIXME
         return null;
@@ -70,18 +76,20 @@ public class SpringAclService implements AclService {
         return readAclById(object, null);
     }
 
-    public Acl readAclById(ObjectIdentity object, Sid[] sids)
-            throws NotFoundException {
-        Map<ObjectIdentity, Acl> map = readAclsById(new ObjectIdentity[] {object}, sids);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Acl readAclById(ObjectIdentity object, List<Sid> sids) throws NotFoundException {
+    	List<ObjectIdentity> identities = new ArrayList<ObjectIdentity>();
+    	identities.add(object);
+        Map<ObjectIdentity, Acl> map = readAclsById(identities, sids);
         return (Acl) map.get(object);
     }
 
-    public Map<ObjectIdentity, Acl> readAclsById(ObjectIdentity[] objects) throws NotFoundException {
+    public Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects) throws NotFoundException {
         return readAclsById(objects, null);
     }
 
     @SuppressWarnings("unchecked")
-    public Map<ObjectIdentity, Acl> readAclsById(ObjectIdentity[] objects, Sid[] sids)
+    public Map<ObjectIdentity, Acl> readAclsById(List<ObjectIdentity> objects, List<Sid> sids)
             throws NotFoundException {
         final Map<ObjectIdentity, Acl> acls = new HashMap<ObjectIdentity, Acl>();
         
@@ -94,7 +102,7 @@ public class SpringAclService implements AclService {
         		continue;
         	}
 
-        	AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.load(object.getJavaType());
+        	AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.load(object.getType());
             
             if (aclClass == null) {
             	//There is for sure no ACL entries for this object identity
@@ -179,8 +187,7 @@ public class SpringAclService implements AclService {
     }
     
     protected Permission convertMaskIntoPermission(int mask) {
-    	//TODO, Add extended permission
-        return BasePermission.buildFromMask(mask);
+        return permissionFactory.buildFromMask(mask);
     }
 
 	public void setAclCache(AclCache aclCache) {

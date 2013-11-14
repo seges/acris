@@ -1,18 +1,17 @@
 package sk.seges.acris.security.server.spring.runas;
 
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.Authentication;
-import org.springframework.security.ConfigAttribute;
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.RunAsManager;
-import org.springframework.security.runas.RunAsUserToken;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.intercept.RunAsManager;
+import org.springframework.security.access.intercept.RunAsUserToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
 
@@ -33,15 +32,11 @@ public class RoleRunAsManagerImpl implements RunAsManager, InitializingBean, IMu
     }
 
     @SuppressWarnings("unchecked")
-    public Authentication buildRunAs(Authentication authentication, Object object, ConfigAttributeDefinition config) {
+    public Authentication buildRunAs(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
         RunAsUserToken result = null;
         if (runAsUser == null) {
             List<GrantedAuthority> newAuthorities = new Vector<GrantedAuthority>();
-            Iterator<ConfigAttribute> iter = config.getConfigAttributes().iterator();
-
-            while (iter.hasNext()) {
-                ConfigAttribute attribute = (ConfigAttribute) iter.next();
-
+            for (ConfigAttribute attribute : attributes) {
                 if (this.supports(attribute)) {
                     String role = attribute.getAttribute().substring(attribute.getAttribute().lastIndexOf("RUN_AS_") + "RUN_AS_".length());
                     GrantedAuthorityImpl extraAuthority = new GrantedAuthorityImpl(getRolePrefix() + role);
@@ -53,14 +48,11 @@ public class RoleRunAsManagerImpl implements RunAsManager, InitializingBean, IMu
                 return null;
             }
 
-            for (int i = 0; i < authentication.getAuthorities().length; i++) {
-                newAuthorities.add(authentication.getAuthorities()[i]);
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                newAuthorities.add(authority);
             }
 
-            GrantedAuthority[] resultType = { new GrantedAuthorityImpl("holder") };
-            GrantedAuthority[] newAuthoritiesAsArray = (GrantedAuthority[]) newAuthorities.toArray(resultType);
-
-            result = new RunAsUserToken(this.key, authentication.getPrincipal(), authentication.getCredentials(), newAuthoritiesAsArray, authentication
+            result = new RunAsUserToken(this.key, authentication.getPrincipal(), authentication.getCredentials(), newAuthorities, authentication
                     .getClass());
         } else {
             result = new RunAsUserToken(key, runAsUser.getUsername(), runAsUser.getPassword(), runAsUser.getAuthorities(), authentication.getClass());
