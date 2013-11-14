@@ -388,19 +388,27 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer.start(Operation.GENERATOR_DOM_MANIPULATION);
 		}
 
+		Log.info("Preparing for saving the content");
+
 		com.google.gwt.user.client.Element rootElement = contentProvider.getRootElement();
+
+		Log.info("Collecting anchors for further processing");
 
 		for (NodeCollectorFactory nodeCollectorFactory: getNodeCollectorFactories()) {
 			nodeCollectorFactory.create().collect(rootElement, generatorEnvironment);
 		}
-		
+
+		Log.debug("Collected");
+
 		//Currently used only for replacing &amp; with &
 		//Tried many other generic solutions but didn't work 
 		//	http://stackoverflow.com/questions/3700326/decode-amp-back-to-in-javascript
 		//	http://www.webdeveloper.com/forum/archive/index.php/t-136026.html
 		//Later will see whether other characters should be handled this way
 		String content = DOM.getInnerHTML(rootElement);
-		
+
+		Log.trace("Content of the HTML: " + content);
+
 		int contentLength = 0;
 		
 		do {
