@@ -24,9 +24,14 @@ public class HibernateAclSecuredClassDescriptionDao extends AbstractHibernateCRU
 		super.setEntityManager(entityManager);
 	}
 
-    public AclSecuredClassDescriptionData load(Class<?> clazz) {
+	@Override
+	public AclSecuredClassDescriptionData load(Class<?> clazz) {
+		return load(clazz.getName());
+	}
+	
+    public AclSecuredClassDescriptionData load(String className) {
         DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(AclSecuredClassDescriptionData.CLASS_NAME, clazz.getName()));
+		criteria.add(Restrictions.eq(AclSecuredClassDescriptionData.CLASS_NAME, className));
 
 		List<JpaAclSecuredClassDescription> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
 
@@ -41,15 +46,20 @@ public class HibernateAclSecuredClassDescriptionDao extends AbstractHibernateCRU
         throw new IllegalArgumentException("More than one unique secured classes found in database");
     } 
 
+    @Override
     public AclSecuredClassDescriptionData loadOrCreate(Class<?> clazz) {
+    	return loadOrCreate(clazz.getName());
+    }
+    
+    public AclSecuredClassDescriptionData loadOrCreate(String className) {
         DetachedCriteria criteria = createCriteria();
-		criteria.add(Restrictions.eq(AclSecuredClassDescriptionData.CLASS_NAME, clazz.getName()));
+		criteria.add(Restrictions.eq(AclSecuredClassDescriptionData.CLASS_NAME, className));
 
 		List<JpaAclSecuredClassDescription> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
 
         if (entries.size() == 0) {
             JpaAclSecuredClassDescription aclSecuredClass = new JpaAclSecuredClassDescription();
-        	aclSecuredClass.setClassName(clazz.getName());
+        	aclSecuredClass.setClassName(className);
         	return persist(aclSecuredClass);
         } 
         

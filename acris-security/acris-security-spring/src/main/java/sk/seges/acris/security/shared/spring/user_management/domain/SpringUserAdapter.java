@@ -1,9 +1,10 @@
 package sk.seges.acris.security.shared.spring.user_management.domain;
 
+import java.util.Collection;
 import java.util.List;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import sk.seges.acris.security.user_management.server.model.data.RoleData;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
@@ -24,11 +25,11 @@ public class SpringUserAdapter implements UserDetails, UserData {
 		return springSupport.getUser();
 	}
 	
-	public GrantedAuthority[] getAuthorities() {
+	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return springSupport.getAuthorities();
 	}
 
-	public void setAuthorities(GrantedAuthority[] authorities) {
+	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
 		springSupport.setAuthorities(authorities);
 	}
 

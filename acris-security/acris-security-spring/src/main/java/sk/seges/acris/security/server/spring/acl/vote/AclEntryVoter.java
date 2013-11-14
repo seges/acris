@@ -3,7 +3,7 @@ package sk.seges.acris.security.server.spring.acl.vote;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 
 import org.aopalliance.intercept.MethodInvocation;
@@ -11,21 +11,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.CodeSignature;
-import org.springframework.security.Authentication;
-import org.springframework.security.AuthorizationServiceException;
-import org.springframework.security.ConfigAttribute;
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.acls.Acl;
-import org.springframework.security.acls.AclService;
-import org.springframework.security.acls.NotFoundException;
-import org.springframework.security.acls.Permission;
-import org.springframework.security.acls.objectidentity.ObjectIdentity;
-import org.springframework.security.acls.objectidentity.ObjectIdentityRetrievalStrategy;
-import org.springframework.security.acls.objectidentity.ObjectIdentityRetrievalStrategyImpl;
-import org.springframework.security.acls.sid.Sid;
-import org.springframework.security.acls.sid.SidRetrievalStrategy;
-import org.springframework.security.vote.AbstractAclVoter;
-import org.springframework.security.vote.AccessDecisionVoter;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.vote.AbstractAclVoter;
+import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
+import org.springframework.security.acls.model.Acl;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
+import org.springframework.security.acls.model.SidRetrievalStrategy;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -40,13 +39,13 @@ public class AclEntryVoter extends AbstractAclVoter {
     private SidRetrievalStrategy sidRetrievalStrategy = new RolesPublicSidRetrievalStrategy();
     private String internalMethod;
     private String processConfigAttribute;
-    private Permission[] requirePermission;
+    private List<Permission> requirePermission;
 
-    public AclEntryVoter(AclService aclService, String processConfigAttribute, Permission[] requirePermission) {
+    public AclEntryVoter(AclService aclService, String processConfigAttribute, List<Permission> requirePermission) {
         Assert.notNull(processConfigAttribute, "A processConfigAttribute is mandatory");
         Assert.notNull(aclService, "An AclService is mandatory");
 
-        if ((requirePermission == null) || (requirePermission.length == 0)) {
+        if ((requirePermission == null) || (requirePermission.size() == 0)) {
             throw new IllegalArgumentException("One or more requirePermission entries is mandatory");
         }
 
@@ -125,12 +124,8 @@ public class AclEntryVoter extends AbstractAclVoter {
         return result.toArray(new Object[0]);
     }
 
-    public int vote(Authentication authentication, Object object, ConfigAttributeDefinition config) {
-        Iterator<?> iter = config.getConfigAttributes().iterator();
-
-        while (iter.hasNext()) {
-            ConfigAttribute attr = (ConfigAttribute) iter.next();
-
+    public int vote(Authentication authentication, MethodInvocation object, Collection<ConfigAttribute> attributes) {
+        for(ConfigAttribute attr : attributes) {
             if (!this.supports(attr)) {
                 continue;
             }
@@ -139,7 +134,7 @@ public class AclEntryVoter extends AbstractAclVoter {
             Object[] domainObjects = getDomainObjectInstances(object);
 
             // Obtain the SIDs applicable to the principal
-            Sid[] sids = sidRetrievalStrategy.getSids(authentication);
+            List<Sid> sids = sidRetrievalStrategy.getSids(authentication);
 
             boolean found = false;
             
@@ -218,5 +213,7 @@ public class AclEntryVoter extends AbstractAclVoter {
         // No configuration attribute matched, so abstain
         return AccessDecisionVoter.ACCESS_ABSTAIN;
     }
+
+
 
 }

@@ -22,7 +22,7 @@ import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 @TransferObjectMapping(domainClass = ContentBase.class, generateConverter = false)
 @Mapping(MappingType.AUTOMATIC)
 @Copy(annotations = @Annotations(accessor = PropertyAccessor.PROPERTY, packageOf = Size.class))
-public interface ContentDTOConfiguration extends IDataTransferObject, ContentForUtils{
+public interface ContentDTOConfiguration extends IDataTransferObject, ContentForUtils {
 
 	@Ignore
 	void webId();

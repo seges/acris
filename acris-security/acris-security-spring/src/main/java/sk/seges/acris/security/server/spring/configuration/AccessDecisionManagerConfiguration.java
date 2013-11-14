@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.vote.AccessDecisionVoter;
-import org.springframework.security.vote.AffirmativeBased;
-import org.springframework.security.vote.RoleVoter;
-import org.springframework.security.vote.UnanimousBased;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 
 public class AccessDecisionManagerConfiguration {
 

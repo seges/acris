@@ -2,9 +2,10 @@ package sk.seges.acris.security.shared.spring.user_management.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.springframework.security.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
@@ -29,24 +30,23 @@ public class SpringAuthoritiesSupport implements Serializable {
 		this.user = user;
 	}
 
-	public GrantedAuthority[] getAuthorities() {
+	public Collection<? extends GrantedAuthority> getAuthorities() {
 		if (user.getUserAuthorities() == null) {
-			return new GrantedAuthority[0];
+			return new ArrayList<GrantedAuthority>();
 		}
 
-		GrantedAuthority[] grantedAuthorities = new GrantedAuthority[user.getUserAuthorities().size()];
+		Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
 
-		int i = 0;
 		for (String authority : user.getUserAuthorities()) {
 			GrantedAuthorityImpl lazyGrantedAuthority = new GrantedAuthorityImpl();
 			lazyGrantedAuthority.setAuthority(authority);
-			grantedAuthorities[i++] = lazyGrantedAuthority;
+			grantedAuthorities.add(lazyGrantedAuthority);
 		}
 
 		return grantedAuthorities;
 	}
 
-	public void setAuthorities(GrantedAuthority[] authorities) {
+	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
 		List<String> result = new ArrayList<String>();
 
 		if (authorities != null) {

@@ -3,19 +3,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-                           http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+                           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                           http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd">
 
     <bean id="objectManagerSecurity"
-        class="org.springframework.security.intercept.method.aopalliance.MethodSecurityInterceptor"
+        class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor"
         autowire="byType">
         <property name="accessDecisionManager" ref="businessAccessDecisionManager" />
-        <property name="objectDefinitionSource" ref="objectDefinitionSource" />
+        <property name="securityMetadataSource" ref="objectDefinitionSource" />
         <property name="authenticationManager" ref="authenticationManager" />
         <property name="runAsManager" ref="runAsManager" />
     </bean>
     
-    <bean id="businessAccessDecisionManager" class="org.springframework.security.vote.UnanimousBased">
+    <bean id="businessAccessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased">
         <property name="allowIfAllAbstainDecisions" value="true" />
         <property name="decisionVoters">
             <list>

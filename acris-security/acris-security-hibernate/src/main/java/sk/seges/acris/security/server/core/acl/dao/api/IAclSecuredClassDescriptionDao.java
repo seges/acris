@@ -8,4 +8,8 @@ public interface IAclSecuredClassDescriptionDao<T extends AclSecuredClassDescrip
     AclSecuredClassDescriptionData load(Class<?> clazz);
 
     AclSecuredClassDescriptionData loadOrCreate(Class<?> clazz);
+    
+    AclSecuredClassDescriptionData load(String className);
+
+    AclSecuredClassDescriptionData loadOrCreate(String className);
 }

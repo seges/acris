@@ -1,15 +1,16 @@
 package sk.seges.acris.security.server.spring.login;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.security.Authentication;
-import org.springframework.security.AuthenticationManager;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
@@ -56,8 +57,8 @@ public class SpringLoginService implements LoginService, PostProcessLogin {
 	}
 
 	protected String[] getUserAuthorities(UserDetails user) {
-		GrantedAuthority[] granthedAuthorities = user.getAuthorities();
-		String[] authorities = new String[granthedAuthorities.length];
+		Collection<? extends GrantedAuthority> granthedAuthorities = user.getAuthorities();
+		String[] authorities = new String[granthedAuthorities.size()];
 
 		int i = 0;
 		for (GrantedAuthority grantedAuthority : granthedAuthorities) {

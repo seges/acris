@@ -3,8 +3,6 @@ package sk.seges.acris.server.rpc;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.springframework.security.SpringSecurityException;
-
 import sk.seges.acris.security.server.spring.exception.SecurityExceptionFactory;
 import sk.seges.acris.security.shared.exception.ServerException;
 
@@ -20,8 +18,8 @@ public class SecurityEnabledExporterLogic {
 			RPCRequest rpcRequest) throws Exception {
 		Throwable cause = e.getCause();
 		
-		if (cause instanceof SpringSecurityException) {
-			ServerException exception = SecurityExceptionFactory.get((SpringSecurityException)cause);
+		if (cause instanceof RuntimeException) {
+			ServerException exception = SecurityExceptionFactory.get((RuntimeException)cause);
 			return encodeResponseForFailure(rpcRequest, exception);
 		}
 		

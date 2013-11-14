@@ -10,8 +10,10 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.security.ConfigAttributeDefinition;
-import org.springframework.security.intercept.method.AbstractFallbackMethodDefinitionSource;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.access.method.AbstractMethodSecurityMetadataSource;
+import org.springframework.util.ReflectionUtils;
 
 import sk.seges.acris.security.server.core.annotation.EPreExecutionAclEvaluationMode;
 import sk.seges.acris.security.server.core.annotation.PostExecutionAclEvaluation;
@@ -20,7 +22,7 @@ import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.server.spring.runas.RoleRunAsManagerImpl;
 import sk.seges.sesam.dao.PagedResult;
 
-public class DefaultSecurityAnnotationProcessor extends AbstractFallbackMethodDefinitionSource {
+public class DefaultSecurityAnnotationProcessor extends AbstractMethodSecurityMetadataSource {
 
 	protected static final String AFTER_ACL_READ_TOKEN = "AFTER_ACL_READ";
 	public static final String AFTER_ACL_COLLECTION_READ_TOKEN = "AFTER_ACL_COLLECTION_READ";
@@ -35,7 +37,7 @@ public class DefaultSecurityAnnotationProcessor extends AbstractFallbackMethodDe
 		return new Class<?>[] {RolesAllowed.class, RunAs.class, PostExecutionAclEvaluation.class, PreExecutionAclEvaluation.class};
 	}
 
-	protected ConfigAttributeDefinition findAttributes(Class clazz) {
+	protected Collection<ConfigAttribute> findAttributes(Class clazz) {
 		List<Annotation> annotations = new ArrayList<Annotation>();
 		for (Class<?> annotationClass : annotationClasses) {
 			Annotation annotation = clazz.getAnnotation(annotationClass);
@@ -45,19 +47,16 @@ public class DefaultSecurityAnnotationProcessor extends AbstractFallbackMethodDe
 		return handleAnnotation(annotations, null, null);
 	}
 
-	protected ConfigAttributeDefinition findAttributes(Method method, Class targetClass) {
+	public Collection<ConfigAttribute> getAttributes(Method method, Class<?> targetClass) {
 		List<Annotation> annotations = new ArrayList<Annotation>();
 
 		for (Class annotationClass : annotationClasses) {
-			Annotation annotation = AnnotationUtils.findAnnotation(method, annotationClass);
+			Annotation annotation = AnnotationUtils.findAnnotation(ReflectionUtils.findMethod(targetClass, method.getName(), method.getParameterTypes()), 
+					annotationClass);
 			if (annotation != null) annotations.add(annotation);
 		}
 
 		return handleAnnotation(annotations, method.getReturnType(), method.getParameterTypes());
-	}
-
-	public Collection getConfigAttributeDefinitions() {
-		return new ArrayList();
 	}
 
 	protected void handleRolesAllowedAnnotation(List<String> atributeTokens, RolesAllowed rolesAllowed) {
@@ -96,7 +95,7 @@ public class DefaultSecurityAnnotationProcessor extends AbstractFallbackMethodDe
 		}
 	}
 
-	protected ConfigAttributeDefinition handleAnnotation(List<Annotation> annotations, Class returnType, Class<?>[] parameterTypes) {
+	protected Collection<ConfigAttribute> handleAnnotation(List<Annotation> annotations, Class returnType, Class<?>[] parameterTypes) {
 		List<String> tokenList = new ArrayList<String>();
 
 		for (Annotation annotation : annotations) {
@@ -112,9 +111,18 @@ public class DefaultSecurityAnnotationProcessor extends AbstractFallbackMethodDe
 		}
 
 		if (tokenList.size() == 0) {
-			return new ConfigAttributeDefinition(Collections.EMPTY_LIST);
+			return Collections.emptyList();
 		}
 
-		return new ConfigAttributeDefinition(tokenList.toArray(new String[tokenList.size()]));
+		List<ConfigAttribute> result = new ArrayList<ConfigAttribute>();
+		for (String token : tokenList) {
+			result.add(new SecurityConfig(token));
+		}
+		return result;
+	}
+
+	@Override
+	public Collection<ConfigAttribute> getAllConfigAttributes() {
+		return null;
 	}
 }

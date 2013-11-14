@@ -7,19 +7,19 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.Authentication;
-import org.springframework.security.acls.AccessControlEntry;
-import org.springframework.security.acls.MutableAcl;
-import org.springframework.security.acls.MutableAclService;
-import org.springframework.security.acls.NotFoundException;
-import org.springframework.security.acls.Permission;
 import org.springframework.security.acls.domain.DefaultPermissionFactory;
-import org.springframework.security.acls.jdbc.AclCache;
-import org.springframework.security.acls.objectidentity.ObjectIdentity;
-import org.springframework.security.acls.objectidentity.ObjectIdentityImpl;
-import org.springframework.security.acls.sid.PrincipalSid;
-import org.springframework.security.acls.sid.Sid;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -254,7 +254,7 @@ public class SpringAclMaintainer implements AclManager {
 			authorityMask |= authority.getMask();
 		}
 
-		for (int i = 0; i < acl.getEntries().length; i++) {
+		for (int i = 0; i < acl.getEntries().size(); i++) {
 			acl.deleteAce(i);
 		}
 		acl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
@@ -265,7 +265,7 @@ public class SpringAclMaintainer implements AclManager {
 
 	private AclSecuredObjectIdentityData getParentObjectIdentity(Class<? extends ISecuredObject<?>> objectClass, Long aclId) {
 		
-		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(objectClass);
+		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(objectClass.getName());
 		
 //		if (aclClass == null) {
 //			return null;
@@ -329,7 +329,7 @@ public class SpringAclMaintainer implements AclManager {
 			
 			parentAcl = getOrCreateParentAcl(securedParent, sid, permissions, identity);
 			acl.setParent(parentAcl);
-			if (parentAcl.getEntries() == null || parentAcl.getEntries().length <= 0) {
+			if (parentAcl.getEntries() == null || parentAcl.getEntries().size() <= 0) {
 				parentAcl.insertAce(0, permissionFactory.buildFromMask(authorityMask), sid, true);
 				aclService.updateAcl(parentAcl);
 			}
@@ -378,7 +378,7 @@ public class SpringAclMaintainer implements AclManager {
 			return parentAcl;
 		} catch (NotFoundException e) {
 			logger.info("No parent with aclId: " + identity.getIdentifier().toString() + " and class: "
-					+ identity.getJavaType().getName() + " not exist, it will be created! ");
+					+ identity.getClass().getName() + " not exist, it will be created! ");
 			setAclRecords(securedParent, sid, permissions);
 			return getOrCreateParentAcl(securedParent, sid, permissions, identity);
 		}

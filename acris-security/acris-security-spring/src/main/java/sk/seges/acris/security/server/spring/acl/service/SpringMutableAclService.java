@@ -2,24 +2,24 @@ package sk.seges.acris.security.server.spring.acl.service;
 
 import java.util.List;
 
-import org.springframework.security.Authentication;
-import org.springframework.security.acls.AccessControlEntry;
-import org.springframework.security.acls.Acl;
-import org.springframework.security.acls.AlreadyExistsException;
-import org.springframework.security.acls.ChildrenExistException;
-import org.springframework.security.acls.MutableAcl;
-import org.springframework.security.acls.MutableAclService;
-import org.springframework.security.acls.NotFoundException;
-import org.springframework.security.acls.Permission;
 import org.springframework.security.acls.domain.AccessControlEntryImpl;
-import org.springframework.security.acls.jdbc.AclCache;
-import org.springframework.security.acls.objectidentity.ObjectIdentity;
-import org.springframework.security.acls.objectidentity.ObjectIdentityImpl;
-import org.springframework.security.acls.sid.GrantedAuthoritySid;
-import org.springframework.security.acls.sid.PrincipalSid;
-import org.springframework.security.acls.sid.Sid;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.Acl;
+import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.AlreadyExistsException;
+import org.springframework.security.acls.model.ChildrenExistException;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
@@ -45,7 +45,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 			throw new AlreadyExistsException("Object identity '" + aclObjectIdentity + "' already exists");
 		}
 
-		AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.loadOrCreate(objectIdentity.getJavaType());
+		AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.loadOrCreate(objectIdentity.getType());
 
 		// Need to retrieve the current principal, in order to know who "owns"
 		// this ACL (can be changed later on)
@@ -123,7 +123,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 	 */
 	@Transactional
 	public void deleteAcl(ObjectIdentity objectIdentity, boolean deleteChildren) throws ChildrenExistException {
-		AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.load(objectIdentity.getJavaType());
+		AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.load(objectIdentity.getType());
 		if (aclClass == null) {
 			return;
 		}
@@ -185,7 +185,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 
 	@Transactional
 	public AclSecuredObjectIdentityData getAclSecuredObjectIdentity(ObjectIdentity objectIdentity) {
-		AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.loadOrCreate(objectIdentity.getJavaType());
+		AclSecuredClassDescriptionData aclClass = aclSecuredClassDao.loadOrCreate(objectIdentity.getType());
 
 		// No need to check for nulls, as guaranteed non-null by
 		// ObjectIdentity.getIdentifier() interface contract
@@ -222,7 +222,7 @@ public class SpringMutableAclService extends SpringAclService implements Mutable
 			acl = createAcl(oid);
 		}
 
-		acl.insertAce(acl.getEntries().length, permission, recipient, true);
+		acl.insertAce(acl.getEntries().size(), permission, recipient, true);
 		updateAcl(acl);
 	}
 }

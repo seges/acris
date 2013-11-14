@@ -2,17 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"> 
+                           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"> 
 
-    <bean id="takeOwnershipAuthority" class="org.springframework.security.GrantedAuthorityImpl">
+    <bean id="takeOwnershipAuthority" class="org.springframework.security.core.authority.GrantedAuthorityImpl">
     	<constructor-arg value="ROLE_ALC_MAINTENANCE_TAKE_OWNERSHIP"/>
     </bean>
 
-    <bean id="modifyAuditingAuthority" class="org.springframework.security.GrantedAuthorityImpl">
+    <bean id="modifyAuditingAuthority" class="org.springframework.security.core.authority.GrantedAuthorityImpl">
     	<constructor-arg value="ROLE_ACL_MAINTENANCE_MODIFY_AUDITING"/>
     </bean>
 
-    <bean id="generalChangesAuthority" class="org.springframework.security.GrantedAuthorityImpl">
+    <bean id="generalChangesAuthority" class="org.springframework.security.core.authority.GrantedAuthorityImpl">
     	<constructor-arg value="ROLE_ACL_MAINTENANCE_GENERAL_CHANGES"/>
     </bean>
 </beans>

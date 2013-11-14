@@ -8,14 +8,14 @@ import java.util.List;
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.CodeSignature;
-import org.springframework.security.AuthorizationServiceException;
-import org.springframework.security.acls.AclService;
-import org.springframework.security.acls.Permission;
+import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.Permission;
 
 public class AclEntryListVoter extends AclEntryVoter {
 
 	public AclEntryListVoter(AclService aclService,
-			String processConfigAttribute, Permission[] requirePermission) {
+			String processConfigAttribute, List<Permission> requirePermission) {
 		super(aclService, processConfigAttribute, requirePermission);
 	}
 
