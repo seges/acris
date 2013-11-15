@@ -322,6 +322,11 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 				if (value == null || (value instanceof String && "".equals(value))) {
 					// filter value not set
 					skip = true;
+				} else if (filterProperty.getWidget() instanceof DateBox) {
+					Date value1 = (Date) value;
+					Date value2 = new Date(value1.getTime() + 24 * 60 * 60 * 1000);
+					filterable = Filter.conjunction().add(Filter.ge(expr.getProperty(), value1))
+							.add(Filter.lt(expr.getProperty(), value2));
 				} else {
 					expr.setValue(value);
 				}
