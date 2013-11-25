@@ -67,9 +67,12 @@ public class MockWebSettingsService implements IWebSettingsServiceLocal {
 	}
 
 	@Override
-	public List<WebSettingsData> loadWebSettingsContainsParams(
-			List<String> params) {
-		// TODO Auto-generated method stub
+	public List<WebSettingsData> loadWebSettingsContainsParams(List<String> params) {
+		return null;
+	}
+
+	@Override
+	public WebSettingsData findWebSettings(String webId) {
 		return null;
 	}
 }

@@ -35,6 +35,7 @@ public class HibernateGenericUserDao extends AbstractHibernateCRUD<UserData> imp
 	}
 
 	@Override
+	@Transactional
 	public UserData collectUserAuthorities(UserData user, GroupAuthoritiesHolder<? extends UserPermission> authoritiesHolder, boolean addMode) {
 		List<String> authorities = new ArrayList<String>();
 		

@@ -158,7 +158,7 @@ public class SpringLoginService implements LoginService, PostProcessLogin {
 		return clientSession;
 	}
 
-	private void createSecurityContext(Authentication auth) {
+	protected void createSecurityContext(Authentication auth) {
 		Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(),
 				auth.getAuthorities());
 		AcrisSecurityContext sc = new AcrisSecurityContext();
