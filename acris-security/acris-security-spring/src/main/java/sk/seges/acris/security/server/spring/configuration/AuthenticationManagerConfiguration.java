@@ -10,6 +10,7 @@ import org.springframework.security.authentication.ProviderManager;
 
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.SpringUserService;
+import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdAnonymousAuthenticationProvider;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdDaoAuthenticationProvider;
 import sk.seges.acris.security.user_management.server.model.data.UserData;
 
@@ -26,13 +27,13 @@ public class AuthenticationManagerConfiguration {
 	public SpringUserService userDetailsService() {
 		return new SpringUserService(genericUserDao);
 	}
-
+	
 	@Bean
-	public ProviderManager authenticationManager() {
-		ProviderManager providerManager = new ProviderManager();
+	public ProviderManager authenticationManager(WebIdAnonymousAuthenticationProvider anonymousAuthenticationProvider) {
 		List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
 		providers.add(daoAuthenticationProvider);
-		providerManager.setProviders(providers);
+		providers.add(anonymousAuthenticationProvider);
+		ProviderManager providerManager = new ProviderManager(providers);
 		return providerManager;
 	}
 }

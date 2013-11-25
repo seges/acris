@@ -29,6 +29,7 @@
 			<beans:list>
 				<beans:ref local="daoAuthenticationProvider"/>
 				<beans:ref local="runAsAuthenticationProvider"/>
+				<beans:ref local="anonymousAuthenticationProvider"/>
 			</beans:list>
 		</beans:property>
 	</beans:bean>

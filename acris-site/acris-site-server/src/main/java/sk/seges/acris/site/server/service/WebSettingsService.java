@@ -61,6 +61,18 @@ public class WebSettingsService implements IWebSettingsServiceLocal {
 		webSettings.getMetaData().size();
 		return webSettings;
 	}
+	
+	@Override
+	public WebSettingsData findWebSettings(String webId) {
+		Page page = new Page(0, 1);
+		// TODO: switch to @BeanWrapper
+		page.setFilterable(Filter.eq(HasWebId.WEB_ID).setValue(webId));
+		List<? extends WebSettingsData> result = webSettingsDao.findAll(page).getResult();
+		if (result.size() == 0) {
+			return null;
+		}
+		return result.get(0);
+	}
 
 	@Override
 	public void saveWebSettings(@Valid WebSettingsData webSettingsData) {

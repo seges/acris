@@ -9,11 +9,7 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 
 public class DefaultLoginServiceProvider implements LoginServiceProvider {
 
-	public DefaultLoginServiceProvider(Class<? extends LoginToken> springLoginToken, LoginService springLoginService,
-			Class<? extends LoginToken> openidLoginToken, LoginService openidLoginService) {
-		serviceMap.put(springLoginToken, springLoginService);
-		serviceMap.put(openidLoginToken, openidLoginService);
-	}
+	public DefaultLoginServiceProvider() {}
 
 	private Map<Class<? extends LoginToken>, LoginService> serviceMap = new HashMap<Class<? extends LoginToken>, LoginService>();
 

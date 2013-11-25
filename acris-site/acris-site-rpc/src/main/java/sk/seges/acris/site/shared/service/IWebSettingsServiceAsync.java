@@ -10,6 +10,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface IWebSettingsServiceAsync {
 
 	void getWebSettings(String webId, AsyncCallback<WebSettingsDTO> callback);
+	
+	void findWebSettings(String webId, AsyncCallback<WebSettingsDTO> callback);
 
 	void saveWebSettings(WebSettingsDTO webSettingsData, AsyncCallback<Void> callback);
 	

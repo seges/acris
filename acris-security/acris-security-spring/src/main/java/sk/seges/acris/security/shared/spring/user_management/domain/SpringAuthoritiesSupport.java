@@ -31,13 +31,17 @@ public class SpringAuthoritiesSupport implements Serializable {
 	}
 
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		if (user.getUserAuthorities() == null) {
+		return convertAuthorities(user.getUserAuthorities());
+	}
+	
+	public Collection<? extends GrantedAuthority> convertAuthorities(List<String> authorities) {
+		if (authorities == null) {
 			return new ArrayList<GrantedAuthority>();
 		}
 
 		Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
 
-		for (String authority : user.getUserAuthorities()) {
+		for (String authority : authorities) {
 			GrantedAuthorityImpl lazyGrantedAuthority = new GrantedAuthorityImpl();
 			lazyGrantedAuthority.setAuthority(authority);
 			grantedAuthorities.add(lazyGrantedAuthority);
