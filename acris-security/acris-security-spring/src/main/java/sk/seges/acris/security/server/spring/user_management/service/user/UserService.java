@@ -34,8 +34,8 @@ public class UserService implements IUserServiceLocal {
 	@Override
 	public ClientSession<UserData> login(LoginToken token) throws ServerException {
 		LoginService loginService = loginServiceProvider.getLoginService(token);
-
 		ClientSession<UserData> clientSession = loginService.login(token);
+		
 		if (clientSession != null) {
 			HttpSession session = sessionProvider.getSession();
 			session.setAttribute(LoginConstants.LOGIN_TOKEN_NAME, token);

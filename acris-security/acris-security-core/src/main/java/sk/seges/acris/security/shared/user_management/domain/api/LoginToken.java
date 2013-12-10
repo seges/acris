@@ -19,4 +19,6 @@ import sk.seges.acris.core.client.rpc.IDataTransferObject;
 public interface LoginToken extends IDataTransferObject {
 	
 	String getWebId();
+	
+	boolean isAdmin();
 }

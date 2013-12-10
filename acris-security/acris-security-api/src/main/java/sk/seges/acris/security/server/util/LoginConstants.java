@@ -23,7 +23,7 @@ public class LoginConstants {
 	public static final String LOGIN_RUN_AS = "login.runas";
 	public static final String LOGIN_TOKEN_NAME = "login.token.name";
 	public static final String CLIENT_SESSION_NAME = "client.session";
-
+	
 	// Cookies
 	public static final String JSESSIONID_COOKIE_NAME = "JSESSIONID";
 	public static final String LANGUAGE_COOKIE_NAME = "acris-languageCookie";
