@@ -32,6 +32,7 @@ public class CacheFilter implements Filter {
 	 			long today = new Date().getTime();
 	 			HttpServletResponse httpResponse = (HttpServletResponse)response;
 	 			httpResponse.setDateHeader("Expires", today + (MINUTES_CACHE*60*1000));
+	 			httpResponse.setHeader("Cache-Control", "public");
 	 		}
  		}
  		filterChain.doFilter(request, response);
