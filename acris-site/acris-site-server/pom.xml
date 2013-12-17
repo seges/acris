@@ -12,7 +12,6 @@
 	</parent>
 
 	<dependencies>
-		<!-- Corpis dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-site-rpc</artifactId>
@@ -22,6 +21,16 @@
 			<artifactId>acris-site-rpc</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-security-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+		<!-- Corpis dependencies -->		
 		<dependency>
 			<groupId>sk.seges.corpis</groupId>
 			<artifactId>corpis-data-dao-api-processor</artifactId>

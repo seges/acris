@@ -11,7 +11,6 @@ import sk.seges.acris.security.client.handler.HasOpenIDLoginHandlers;
 import sk.seges.acris.security.client.handler.OpenIDLoginHandler;
 import sk.seges.acris.security.client.openid.configuration.DefaultOpenIdConfiguration;
 import sk.seges.acris.security.client.openid.configuration.OpenIdConfiguration;
-import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.client.presenter.OpenIDLoginPresenter.OpenIDLoginDisplay;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.configuration.LoginConfiguration;
@@ -37,7 +36,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> implements HasOpenIDLoginHandlers {
 
-	public interface OpenIDLoginDisplay extends LoginDisplay {
+	public interface OpenIDLoginDisplay extends sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay {
 
 		HandlerRegistration addOpenIDButtonHandler(ClickHandler handler, String style);
 	}
@@ -188,7 +187,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	protected OpenIDLoginToken constructOpenIDLoginToken(String identifier, String email, OpenIDProvider provider, String webId) {
-		return new OpenIDLoginToken(identifier, email, provider, webId, locale);
+		return new OpenIDLoginToken(identifier, email, provider, webId, locale, true);
 	}
 
 	protected OpenIdConfiguration getOpenIdConfiguration() {

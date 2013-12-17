@@ -21,23 +21,26 @@ public class UserPasswordLoginToken implements LocaleLoginToken {
 	private String language;
 	private String webId;
 	private String locale;
+	private boolean admin;
 
 	public UserPasswordLoginToken() {}
 
-	public UserPasswordLoginToken(String username, String password, String webId) {
+	public UserPasswordLoginToken(String username, String password, String webId, boolean admin) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.webId = webId;
+		this.admin = admin;
 	}
 	
-	public UserPasswordLoginToken(String username, String password, String language, String webId, String locale) {
+	public UserPasswordLoginToken(String username, String password, String language, String webId, String locale, boolean admin) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.language = language;
 		this.webId = webId;
 		this.locale = locale;
+		this.admin = admin;
 	}
 
 	public String getUsername() {
@@ -80,5 +83,14 @@ public class UserPasswordLoginToken implements LocaleLoginToken {
 
 	public void setLocale(String locale) {
 		this.locale = locale;
+	}
+	
+	@Override
+	public boolean isAdmin() {
+		return admin;
+	}
+	
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 }

@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.security.server.core.login.api.LoginService;
-import sk.seges.acris.security.server.core.login.api.PostProcessLogin;
 import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdUsernamePasswordAuthenticationToken;
 import sk.seges.acris.security.server.util.LoggedUserRole;
@@ -42,7 +41,7 @@ import java.util.List;
  * @author fat
  * @author ladislav.gazo
  */
-public class SpringLoginService implements LoginService, PostProcessLogin {
+public class SpringLoginService implements LoginService {
 
 	private AuthenticationManager authenticationManager;
 

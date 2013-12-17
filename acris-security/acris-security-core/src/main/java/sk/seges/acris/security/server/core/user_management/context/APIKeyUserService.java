@@ -58,6 +58,11 @@ public class APIKeyUserService implements UserProviderService {
 			public String getWebId() {
 				return webId;
 			}
+			
+			@Override
+			public boolean isAdmin() {
+				return true;
+			}
 		};
 	}
 	

@@ -10,12 +10,14 @@ public class AnonymousLoginToken implements LoginToken {
 	
 	private String webId;
 	private Object principal;
+	private boolean admin;
 	
 	public AnonymousLoginToken() {}
 	
-	public AnonymousLoginToken(Object principal, String webId) {
+	public AnonymousLoginToken(Object principal, String webId, boolean admin) {
 		this.principal = principal;
 		this.webId = webId;
+		this.admin = admin;
 	}
 	
 	@Override
@@ -33,5 +35,14 @@ public class AnonymousLoginToken implements LoginToken {
 	
 	public void setPrincipal(Object principal) {
 		this.principal = principal;
+	}
+	
+	@Override
+	public boolean isAdmin() {
+		return admin;
+	}
+	
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 }
