@@ -1,18 +1,10 @@
 package sk.seges.acris.security.server.core.user_management.domain.jpa;
 
+import sk.seges.corpis.server.domain.user.server.model.base.RoleBase;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
-import sk.seges.acris.security.user_management.server.model.base.RoleBase;
 
 /**
  * Security role serves as the holder of authorities for specific user (or any other entity). It is the entity grouping

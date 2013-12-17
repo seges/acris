@@ -4,7 +4,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdAnonymousAuthenticationToken;
@@ -13,7 +12,7 @@ import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringAuthoritiesSupport;
 import sk.seges.acris.security.shared.user_management.domain.AnonymousLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 public class AnonymousLoginService extends SpringLoginService {
 

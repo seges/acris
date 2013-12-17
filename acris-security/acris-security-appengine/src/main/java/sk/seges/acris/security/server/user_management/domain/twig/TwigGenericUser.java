@@ -1,16 +1,15 @@
 package sk.seges.acris.security.server.user_management.domain.twig;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
-import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
-
 import com.vercer.engine.persist.annotation.Embed;
 import com.vercer.engine.persist.annotation.Key;
 import com.vercer.engine.persist.annotation.Store;
+import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TwigGenericUser implements UserData {
 

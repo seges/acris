@@ -2,7 +2,7 @@ package sk.seges.acris.security.server.user_management.model.dto.configuration;
 
 import sk.seges.acris.core.client.rpc.IDataTransferObject;
 import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.pap.model.annotation.GenerateEquals;
 import sk.seges.sesam.pap.model.annotation.GenerateHashcode;
 import sk.seges.sesam.pap.model.annotation.Mapping;

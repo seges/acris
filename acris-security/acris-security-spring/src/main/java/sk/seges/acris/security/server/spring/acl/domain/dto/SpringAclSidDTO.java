@@ -3,11 +3,10 @@ package sk.seges.acris.security.server.spring.acl.domain.dto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
-
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
 import sk.seges.acris.security.shared.acl.model.dto.AclSidDTO;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 /**
  * The table ACL_SID essentially lists all the users in our systems

@@ -1,18 +1,17 @@
 package sk.seges.acris.security.server.spring.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.SpringUserService;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdAnonymousAuthenticationProvider;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdDaoAuthenticationProvider;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AuthenticationManagerConfiguration {

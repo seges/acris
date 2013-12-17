@@ -16,6 +16,6 @@ import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 public interface HierarchyPermissionDTOConfiguration extends IDataTransferObject {
 	
 	@TransferObjectMapping(domainClass = HierarchyPermissionData.class, configuration = HierarchyPermissionDTOConfiguration.class)
-	public interface UserDataConfiguration {}
+	public interface HierarchicPermissionDataConfiguration {}
 
 }

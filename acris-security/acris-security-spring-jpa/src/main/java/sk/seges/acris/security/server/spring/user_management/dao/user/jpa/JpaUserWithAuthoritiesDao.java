@@ -3,18 +3,17 @@
  */
 package sk.seges.acris.security.server.spring.user_management.dao.user.jpa;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaUserWithAuthorities;
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 /**
  * @author ladislav.gazo

@@ -28,7 +28,7 @@ import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityDat
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 public class SpringMutableAclService extends SpringAclService implements MutableAclService {
 

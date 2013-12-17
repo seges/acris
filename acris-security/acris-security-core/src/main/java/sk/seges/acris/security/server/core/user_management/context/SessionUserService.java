@@ -1,7 +1,5 @@
 package sk.seges.acris.security.server.core.user_management.context;
 
-import javax.servlet.http.HttpSession;
-
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.server.util.LoginConstants;
@@ -11,7 +9,9 @@ import sk.seges.acris.security.shared.user_management.context.SessionUserContext
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+
+import javax.servlet.http.HttpSession;
 
 public class SessionUserService implements UserProviderService {
 

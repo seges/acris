@@ -45,5 +45,9 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-user-domain-model</artifactId>
+		</dependency>
 	</dependencies>
 </project>

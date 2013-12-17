@@ -1,7 +1,5 @@
 package sk.seges.acris.security.server.spring.user_management.service.user;
 
-import javax.servlet.http.HttpSession;
-
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.core.login.api.LoginServiceProvider;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
@@ -12,7 +10,9 @@ import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+
+import javax.servlet.http.HttpSession;
 
 public class UserService implements IUserServiceLocal {
 

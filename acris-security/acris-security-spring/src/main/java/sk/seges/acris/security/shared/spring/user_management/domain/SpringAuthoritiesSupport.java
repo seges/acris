@@ -1,14 +1,13 @@
 package sk.seges.acris.security.shared.spring.user_management.domain;
 
+import org.springframework.security.core.GrantedAuthority;
+import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-
-import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
 
 public class SpringAuthoritiesSupport implements Serializable {
 

@@ -1,8 +1,5 @@
 package sk.seges.acris.security.server.user_management.service;
 
-import java.io.Serializable;
-import java.util.List;
-
 import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
@@ -13,10 +10,13 @@ import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.SimpleExpression;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class OpenIDLoginService implements LoginService {
 

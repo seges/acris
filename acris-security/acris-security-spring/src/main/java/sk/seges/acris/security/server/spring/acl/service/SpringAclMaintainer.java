@@ -1,28 +1,16 @@
 package sk.seges.acris.security.server.spring.acl.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.acls.domain.DefaultPermissionFactory;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.model.AccessControlEntry;
-import org.springframework.security.acls.model.AclCache;
-import org.springframework.security.acls.model.MutableAcl;
-import org.springframework.security.acls.model.MutableAclService;
-import org.springframework.security.acls.model.NotFoundException;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
+import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
@@ -36,9 +24,13 @@ import sk.seges.acris.security.server.spring.acl.domain.dto.SpringAclSidDTO;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
 import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.exception.SecurityException;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.domain.IDomainObject;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SpringAclMaintainer implements AclManager {

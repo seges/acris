@@ -1,13 +1,12 @@
 package sk.seges.acris.security.server.spring.acl.service;
 
-import java.util.List;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import sk.seges.acris.security.server.acl.service.AclMaintenanceService;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
+
+import java.util.List;
 
 public class SpringRemoteAclMaintenanceService extends AclMaintenanceService {
 

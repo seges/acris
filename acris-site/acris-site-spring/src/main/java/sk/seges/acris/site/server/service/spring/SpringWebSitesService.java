@@ -1,15 +1,14 @@
 package sk.seges.acris.site.server.service.spring;
 
-import java.util.List;
-
 import org.springframework.transaction.annotation.Transactional;
-
 import sk.seges.acris.site.server.dao.IWebSitesDao;
 import sk.seges.acris.site.server.model.data.WebSitesData;
 import sk.seges.acris.site.server.service.WebSitesService;
+import sk.seges.corpis.service.annotation.PropagationType;
 import sk.seges.corpis.service.annotation.TransactionPropagation;
-import sk.seges.corpis.service.annotation.TransactionPropagation.PropagationType;
 import sk.seges.sesam.pap.service.annotation.LocalService;
+
+import java.util.List;
 
 /**
  * @author psloboda

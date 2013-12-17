@@ -1,11 +1,12 @@
 package sk.seges.acris.security.acl;
 
-import java.io.Serializable;
-
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
-import sk.seges.corpis.appscaffold.shared.annotation.ReadOnly;
+
 import sk.seges.sesam.domain.IMutableDomainObject;
+		import sk.seges.sesam.pap.model.annotation.ReadOnly;
+
+		import java.io.Serializable;
 
 @DomainInterface
 @BaseObject
@@ -16,9 +17,9 @@ interface AclSecuredObjectIdentity extends IMutableDomainObject<Long> {
 	AclSecuredObjectIdentity parentObject();
 
 	Long objectIdIdentity();
-	
+
 	AclSid sid();
-	
+
 	boolean entriesInheriting();
 
 	@ReadOnly

@@ -42,6 +42,10 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-user-domain-model</artifactId>
+		</dependency>
 
 	</dependencies>
 </project>

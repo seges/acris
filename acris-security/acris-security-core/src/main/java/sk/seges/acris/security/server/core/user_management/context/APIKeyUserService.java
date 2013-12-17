@@ -1,17 +1,7 @@
 package sk.seges.acris.security.server.core.user_management.context;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-
-import javax.servlet.http.HttpSession;
-
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
-
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.server.util.LoginConstants;
@@ -21,7 +11,15 @@ import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.context.APIKeyUserContext;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+
+import javax.servlet.http.HttpSession;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 
 public class APIKeyUserService implements UserProviderService {
 

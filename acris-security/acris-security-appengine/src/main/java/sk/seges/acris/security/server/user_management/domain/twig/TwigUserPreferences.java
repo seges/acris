@@ -1,9 +1,8 @@
 package sk.seges.acris.security.server.user_management.domain.twig;
 
-import sk.seges.acris.security.user_management.server.model.data.UserPreferencesData;
-import sk.seges.sesam.domain.IMutableDomainObject;
-
 import com.vercer.engine.persist.annotation.Key;
+import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 public class TwigUserPreferences implements IMutableDomainObject<Long>, UserPreferencesData {
 

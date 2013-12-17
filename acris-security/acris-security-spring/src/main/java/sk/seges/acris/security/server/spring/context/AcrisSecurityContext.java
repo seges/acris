@@ -1,17 +1,16 @@
 package sk.seges.acris.security.server.spring.context;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
-
 import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Acris Security Context 

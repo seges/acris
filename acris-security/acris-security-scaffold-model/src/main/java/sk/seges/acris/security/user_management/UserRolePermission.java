@@ -6,10 +6,11 @@ import java.util.List;
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.domain.IMutableDomainObject;
 
 @DomainInterface
 @BaseObject
-interface UserRolePermission extends IDomainObject<String>, Serializable {
+interface UserRolePermission extends IMutableDomainObject<String>, Serializable {
 
 	String permission();
 

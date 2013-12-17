@@ -1,13 +1,8 @@
 package sk.seges.acris.security.server.core.user_management.domain.jpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import sk.seges.corpis.server.domain.user.server.model.base.UserPreferencesBase;
 
-import sk.seges.acris.security.user_management.server.model.base.UserPreferencesBase;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "userpreferences")

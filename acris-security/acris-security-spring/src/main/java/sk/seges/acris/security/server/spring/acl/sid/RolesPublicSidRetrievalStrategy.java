@@ -1,15 +1,14 @@
 package sk.seges.acris.security.server.spring.acl.sid;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
+import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
-import sk.seges.acris.security.user_management.server.model.data.RoleData;
-import sk.seges.acris.security.user_management.server.model.data.UserData;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

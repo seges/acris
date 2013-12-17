@@ -1,14 +1,15 @@
 package sk.seges.acris.security.client.session;
 
-import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
-import sk.seges.acris.security.shared.session.ClientSession;
-
 import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.RpcRequestBuilder;
 import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
 import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader;
 import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 import com.google.gwt.user.client.rpc.impl.Serializer;
+import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
+import sk.seges.acris.security.shared.session.ClientSession;
 
 /**
  * {@link RemoteServiceProxy} extension for send current session id in request
@@ -28,12 +29,24 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 
 	private static long uniqueRequestId = 0;
 
+	protected final RpcRequestBuilder postBuilder;
+	protected final RpcRequestBuilder getBuilder;
+
 	protected SessionEnabledRemoteServiceProxy(String moduleBaseURL,
 			String remoteServiceRelativePath, String serializationPolicyName,
 			Serializer serializer) {
 		super(moduleBaseURL, remoteServiceRelativePath,
 				serializationPolicyName, serializer);
+
+		getBuilder = new RpcRequestBuilder() {
+			protected RequestBuilder doCreate(String serviceEntryPoint) {
+				return new RequestBuilder(RequestBuilder.GET, getServiceEntryPoint());
+			}
+		};
+
+		postBuilder = new RpcRequestBuilder();
 	}
+
 
 	public ClientSession getSession() {
 		return clientSession;
@@ -43,9 +56,10 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 		this.clientSession = clientSession;
 	}
 
-	  protected <T> Request doInvoke(ResponseReader responseReader,
+	protected <T> Request doInvoke(ResponseReader responseReader,
 		      String methodName, RpcStatsContext statsContext, String requestData,
 		      AsyncCallback<T> callback) {
+
 
 		long lastUniqueRequestID = uniqueRequestId;
 		uniqueRequestId++;
