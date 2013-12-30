@@ -383,7 +383,7 @@ public abstract class AbstractGenerator extends Generator {
 			fillUpGeneratorChainMap(logger, context);
 			GeneratorChain.context = context;
 			
-//			new RemoteServiceGinInjectorGenerator().generate(logger, context, RemoteServiceDefinition.class.getCanonicalName());
+//			new RemoteServiceGinInjectorGenerator().generate(logger, context, RemoteServicePath.class.getCanonicalName());
 		}
 
 //		if (!BeansBindingInit.isInitialized()) {

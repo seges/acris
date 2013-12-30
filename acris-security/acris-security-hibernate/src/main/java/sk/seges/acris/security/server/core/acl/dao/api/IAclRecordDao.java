@@ -1,11 +1,11 @@
 package sk.seges.acris.security.server.core.acl.dao.api;
 
-import java.util.List;
-
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
 import sk.seges.sesam.dao.ICrudDAO;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
+
+import java.util.List;
 
 public interface IAclRecordDao<T extends AclEntryData> extends ICrudDAO<T> {
 

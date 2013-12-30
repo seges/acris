@@ -18,21 +18,21 @@
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECT_VIEW"/>
         <constructor-arg ref="readPermissions"/>
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclEntryReadVoter" class="sk.seges.acris.security.server.spring.acl.vote.AclEntryVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_OBJECTS_VIEW"/>
         <constructor-arg ref="readPermissions"/>
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclEntryListReadVoter" class="sk.seges.acris.security.server.spring.acl.vote.AclEntryListVoter">
         <constructor-arg ref="aclService"/>
         <constructor-arg value="ACL_LIST_OBJECTS_VIEW"/>
         <constructor-arg ref="readPermissions"/>
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclObjectWriteVoter" class="org.springframework.security.acls.AclEntryVoter">
@@ -41,7 +41,7 @@
         <constructor-arg>
             <ref bean="writePermissions"/>
         </constructor-arg>
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclEntryWriteVoter" class="sk.seges.acris.security.server.spring.acl.vote.AclEntryVoter">
@@ -49,7 +49,7 @@
         <constructor-arg value="ACL_OBJECTS_EDIT"/>
         <constructor-arg ref="writePermissions"/>
 
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclEntryListWriteVoter" class="sk.seges.acris.security.server.spring.acl.vote.AclEntryListVoter">
@@ -57,7 +57,7 @@
         <constructor-arg value="ACL_LIST_OBJECTS_EDIT"/>
         <constructor-arg ref="writePermissions"/>
 
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclObjectDeleteVoter" class="org.springframework.security.acls.AclEntryVoter">
@@ -65,7 +65,7 @@
         <constructor-arg value="ACL_OBJECT_DELETE"/>
         <constructor-arg ref="deletePermissions"/>
 
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 
     <bean id="aclEntryDeleteVoter" class="sk.seges.acris.security.server.spring.acl.vote.AclEntryVoter">
@@ -73,7 +73,7 @@
         <constructor-arg value="ACL_OBJECTS_DELETE"/>
         <constructor-arg ref="deletePermissions"/>
 
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
    
     <bean id="aclEntryListDeleteVoter" class="sk.seges.acris.security.server.spring.acl.vote.AclEntryListVoter">
@@ -81,6 +81,6 @@
         <constructor-arg value="ACL_LIST_OBJECTS_DELETE"/>
         <constructor-arg ref="deletePermissions"/>
 
-        <property name="processDomainObjectClass" value="sk.seges.acris.security.shared.domain.ISecuredObject"/>
+        <property name="processDomainObjectClass" value="sk.seges.sesam.security.shared.domain.ISecuredObject"/>
     </bean>
 </beans>

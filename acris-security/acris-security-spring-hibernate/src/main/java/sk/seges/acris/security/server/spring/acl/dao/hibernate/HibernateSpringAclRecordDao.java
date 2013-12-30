@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.server.core.acl.dao.hibernate.HibernateAclRecordDao;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 
 @Repository
 @Qualifier(value = "aclRecordDao")

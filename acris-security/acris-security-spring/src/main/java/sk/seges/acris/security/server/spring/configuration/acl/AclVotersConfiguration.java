@@ -22,7 +22,7 @@ import sk.seges.acris.security.server.spring.acl.provider.BetterAclEntryAfterInv
 import sk.seges.acris.security.server.spring.acl.sid.RolesPublicSidRetrievalStrategy;
 import sk.seges.acris.security.server.spring.acl.vote.AclEntryVoter;
 import sk.seges.acris.security.server.spring.acl.vote.VoterPermissions;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 
 public class AclVotersConfiguration {
 

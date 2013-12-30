@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import sk.seges.acris.security.server.acl.service.api.AclManager;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 

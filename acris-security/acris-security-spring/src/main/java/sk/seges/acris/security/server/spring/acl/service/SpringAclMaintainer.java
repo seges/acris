@@ -22,7 +22,7 @@ import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
 import sk.seges.acris.security.server.spring.acl.domain.dto.SpringAclSidDTO;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;

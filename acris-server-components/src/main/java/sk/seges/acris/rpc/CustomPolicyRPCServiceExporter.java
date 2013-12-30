@@ -1,10 +1,14 @@
 package sk.seges.acris.rpc;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gwt.user.server.rpc.RPCServletUtils;
 import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
+
+import java.io.IOException;
 
 /**
  * Enhanced GWTRPCServiceExporter except it doesn't use default serialization
@@ -27,4 +31,15 @@ public class CustomPolicyRPCServiceExporter extends GWTRPCServiceExporter implem
 	public void setSerializationPolicy(ICustomSerializationPolicy policy) {
 		this.policy = policy;
 	}
+
+	@Override
+	protected String readContent(HttpServletRequest request)
+			throws ServletException, IOException {
+
+		if (request.getMethod() != null && request.getMethod().toLowerCase().equals("get")) {
+			return request.getQueryString();
+		}
+		return RPCServletUtils.readContentAsGwtRpc(request);
+	}
+
 }

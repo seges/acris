@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import sk.seges.acris.core.client.annotation.BeanWrapper;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 import sk.seges.corpis.server.domain.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
 import sk.seges.sesam.model.metadata.annotation.MetaModel;

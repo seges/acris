@@ -2,6 +2,7 @@ package sk.seges.acris.security.client.session;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RpcRequestBuilder;
 import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
@@ -39,8 +40,47 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 				serializationPolicyName, serializer);
 
 		getBuilder = new RpcRequestBuilder() {
+
+			private RequestCallback callback;
+			private String contentType;
+			private String data;
+			private int id;
+
 			protected RequestBuilder doCreate(String serviceEntryPoint) {
-				return new RequestBuilder(RequestBuilder.GET, getServiceEntryPoint());
+				return new RequestBuilder(RequestBuilder.GET, serviceEntryPoint);
+			}
+
+			@Override
+			protected void doSetCallback(RequestBuilder rb, RequestCallback callback) {
+				this.callback = callback;
+				super.doSetCallback(rb, callback);
+			}
+
+			@Override
+			protected void doSetContentType(RequestBuilder rb, String contentType) {
+				this.contentType = contentType;
+				super.doSetContentType(rb, contentType);
+			}
+
+			@Override
+			protected void doSetRequestData(RequestBuilder rb, String data) {
+				this.data = data;
+				super.doSetRequestData(rb, data);
+			}
+
+			@Override
+			protected void doSetRequestId(RequestBuilder rb, int id) {
+				this.id = id;
+				super.doSetRequestId(rb, id);
+			}
+
+			@Override
+			protected void doFinish(RequestBuilder rb) {
+				create(getServiceEntryPoint() + "?" + data);
+				super.setCallback(callback);
+				super.setContentType(contentType);
+				super.setRequestId(id);
+				super.doFinish(rb);
 			}
 		};
 

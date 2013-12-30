@@ -4,7 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.server.core.acl.dao.hibernate.AbstractHibernateACLEnabledBaseDao;
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 
 public abstract class AbstractHibernateSpringACLEnabledBaseDao<T extends ISecuredObject<T>> extends AbstractHibernateACLEnabledBaseDao<T> {
 

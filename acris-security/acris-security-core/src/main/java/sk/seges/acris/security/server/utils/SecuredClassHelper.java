@@ -1,6 +1,6 @@
 package sk.seges.acris.security.server.utils;
 
-import sk.seges.acris.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 
 public class SecuredClassHelper {
 
