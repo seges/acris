@@ -7,24 +7,28 @@ import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 
+import com.google.gwt.user.client.rpc.RemoteService;
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
 import sk.seges.acris.pap.service.configurer.AsyncServiceProcessorConfigurer;
 import sk.seges.acris.pap.service.model.AsyncRemoteServiceType;
 import sk.seges.sesam.core.pap.comparator.ExecutableComparator;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
+import sk.seges.sesam.core.pap.model.api.ClassSerializer;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror.MutableTypeKind;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeVariable;
 import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
+import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 import sk.seges.sesam.pap.service.model.RemoteServiceTypeElement;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -44,7 +48,32 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 	protected ProcessorConfigurer getConfigurer() {
 		return new AsyncServiceProcessorConfigurer();
 	}	
-	
+
+	protected boolean isRemoteService(Element element) {
+
+		if (!element.getKind().equals(ElementKind.INTERFACE)) {
+			//it is not an interface, remote service should be an interface
+			return false;
+		}
+
+		if (!ProcessorUtils.implementsType(element.asType(), processingEnv.getElementUtils().getTypeElement(RemoteService.class.getCanonicalName()).asType())) {
+		     //it does not implements RemoteService interface
+			 return false;
+		}
+
+		TypeElement typeElement = (TypeElement)element;
+
+		AsyncRemoteServiceType asyncServiceType = new AsyncRemoteServiceType(new RemoteServiceTypeElement(typeElement, processingEnv));
+		TypeElement asyncInterfaceElement = processingEnv.getElementUtils().getTypeElement(asyncServiceType.toString(ClassSerializer.CANONICAL));
+
+		if (asyncInterfaceElement == null) {
+			//Async interface does not exists, but maybe it will be generated
+			return element.getAnnotation(RemoteServiceDefinition.class) != null || element.getAnnotation(RemoteServicePath.class) != null;
+		}
+
+		return true;
+	}
+
 	@Override
 	protected void printAnnotations(ProcessorContext context) {
 		FormattedPrintWriter pw = context.getPrintWriter();
@@ -81,32 +110,45 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 	@Override
 	protected void processElement(ProcessorContext context) {
 		
-		FormattedPrintWriter pw = context.getPrintWriter();
 		TypeElement element = context.getTypeElement();
 
+		for (TypeMirror interfaceType: element.getInterfaces()) {
+			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+				Element interfaceElement = ((DeclaredType) interfaceType).asElement();
+				if (isRemoteService(interfaceElement)) {
+					context.getOutputType().addInterface(new AsyncRemoteServiceType(new RemoteServiceTypeElement((TypeElement)interfaceElement, processingEnv)));
+				}
+			}
+		}
+
+		processMethods(element, context.getPrintWriter(), false);
+	}
+
+	protected void processMethods(TypeElement element, FormattedPrintWriter pw, boolean nested) {
+
 		RemoteServiceTypeElement remoteServiceTypeElement = new RemoteServiceTypeElement(element, processingEnv);
-		
-		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
-		
-		Collections.sort(methods, new ExecutableComparator());
 
 		MutableTypes typeUtils = processingEnv.getTypeUtils();
 		MutableDeclaredType asyncCallbackMutableType = typeUtils.toMutableType(AsyncCallback.class);
-		
+
+		List<ExecutableElement> methods = ElementFilter.methodsIn(element.getEnclosedElements());
+
+		Collections.sort(methods, new ExecutableComparator());
+
 		for (ExecutableElement method: methods) {
 
 			List<MutableTypeMirror> types = new LinkedList<MutableTypeMirror>();
-			
+
 			for (VariableElement parameter: method.getParameters()) {
 				types.add(processingEnv.getTypeUtils().toMutableType(parameter.asType()));
 			}
-			
+
 			types.add(processingEnv.getTypeUtils().toMutableType(method.getReturnType()));
 
 			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);
-			
+
 			pw.print("void " + method.getSimpleName().toString() + "(");
-			
+
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
 				if (i > 0) {
@@ -115,15 +157,15 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 				pw.print(remoteServiceTypeElement.toParamType(parameter.asType()), " " + parameter.getSimpleName().toString());
 				i++;
 			}
-			
+
 			TypeMirror returnType = method.getReturnType();
 
 			if (i > 0) {
 				pw.print(", ");
 			}
-			
+
 			MutableTypeMirror mutableReturnType = remoteServiceTypeElement.toReturnType(returnType);
-			
+
 			pw.print(typeUtils.getDeclaredType(asyncCallbackMutableType, toTypeVariable(mutableReturnType)), " callback) ");
 			if (method.getThrownTypes() != null && !method.getThrownTypes().isEmpty()) {
 				pw.print("throws ");
@@ -140,5 +182,15 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			pw.println();
 			pw.println();
 		}
+
+		for (TypeMirror interfaceType: element.getInterfaces()) {
+			if (interfaceType.getKind().equals(TypeKind.DECLARED)) {
+				Element interfaceElement = ((DeclaredType) interfaceType).asElement();
+				if (nested || !isRemoteService(interfaceElement)) {
+					processMethods((TypeElement)interfaceElement, pw, true);
+				}
+			}
+		}
+
 	}
 }
