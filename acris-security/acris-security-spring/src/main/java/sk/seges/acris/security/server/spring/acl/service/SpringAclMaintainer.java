@@ -20,13 +20,13 @@ import sk.seges.acris.security.server.core.acl.dao.api.IAclRecordDao;
 import sk.seges.acris.security.server.core.acl.dao.api.IAclSecuredClassDescriptionDao;
 import sk.seges.acris.security.server.core.annotation.RunAs;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
-import sk.seges.acris.security.server.spring.acl.domain.dto.SpringAclSidDTO;
+import sk.seges.acris.security.server.spring.acl.domain.jpa.JpaSpringAclSid;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
-import sk.seges.sesam.security.shared.domain.ISecuredObject;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.domain.IDomainObject;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 
 import java.util.HashSet;
 import java.util.List;
@@ -67,11 +67,11 @@ public class SpringAclMaintainer implements AclManager {
 	protected AclCache aclCache;
 
 	protected SpringAclSid createPrincipalSid(String username) {
-		return new SpringAclSidDTO(username);
+		return new JpaSpringAclSid(username);
 	}
 
 	private SpringAclSid createPrincipalSid(Authentication authentication) {
-		return new SpringAclSidDTO(authentication);
+		return new JpaSpringAclSid(authentication);
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
 @TransferObjectMapping(domainClass = HibernateSecurityRole.class)
-@Mapping(MappingType.AUTOMATIC)
+@Mapping(MappingType.EXPLICIT)
 @GenerateEquals(generate = false)
 @GenerateHashcode(generate = false)
 public interface SecurityRoleDTOConfiguration extends IDataTransferObject {
@@ -23,5 +23,10 @@ public interface SecurityRoleDTOConfiguration extends IDataTransferObject {
 
 	@TransferObjectMapping(domainClass = RoleData.class, configuration = SecurityRoleDTOConfiguration.class)
 	public interface RoleDataConfiguration {}
-	
+
+	void id();
+	void name();
+	void description();
+	void selectedAuthorities();
+
 }

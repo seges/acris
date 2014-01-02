@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>acris-security-spring-jpa</artifactId>
+    <artifactId>acris-security-spring-api</artifactId>
     <packaging>jar</packaging>
-    <name>AcrIS Security for spring with jpa support</name>
+    <name>AcrIS Security for spring API</name>
 
     <parent>
         <groupId>sk.seges.acris</groupId>
@@ -14,25 +14,21 @@
 
     <dependencies>
 
-        <!-- GWT dependencies -->
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-        </dependency>
-
         <!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-core</artifactId>
+			<artifactId>acris-security-scaffold-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-core</artifactId>
+			<artifactId>acris-security-scaffold-model</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+
+		<!-- Spring -->
 		<dependency>
-			<groupId>sk.seges.acris</groupId>
-			<artifactId>acris-security-spring-api</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -10,7 +10,7 @@ import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
 @TransferObjectMapping(domainClass = JpaSecurityPermission.class)
-@Mapping(MappingType.AUTOMATIC)
+@Mapping(Mapping.MappingType.EXPLICIT)
 @GenerateEquals(generate = false)
 @GenerateHashcode(generate = false)
 public interface HierarchyPermissionDTOConfiguration extends IDataTransferObject {
@@ -18,4 +18,8 @@ public interface HierarchyPermissionDTOConfiguration extends IDataTransferObject
 	@TransferObjectMapping(domainClass = HierarchyPermissionData.class, configuration = HierarchyPermissionDTOConfiguration.class)
 	public interface HierarchicPermissionDataConfiguration {}
 
+	void id();
+	void permission();
+	void level();
+	void hasChildren();
 }
