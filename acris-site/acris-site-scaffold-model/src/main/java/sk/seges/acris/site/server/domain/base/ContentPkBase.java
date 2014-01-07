@@ -12,6 +12,14 @@ public class ContentPkBase implements ContentPkData {
 
 	private String language;
 
+	public ContentPkBase() {}
+
+	public ContentPkBase(Long id, String language, String webId) {
+		this.id = id;
+		this.language = language;
+		this.webId = webId;
+	}
+
 	@Override
 	public Long getId() {
 		return id;

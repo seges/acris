@@ -12,34 +12,5 @@
 	<import resource="common-server-context.xml" />
 	<import resource="dispatch-context.xml" />
 	
- 	<bean id="proxyStore"
- 		class="net.sf.gilead.core.store.stateless.StatelessProxyStore">
- 		<property name="proxySerializer">  
- 			<bean class="net.sf.gilead.core.serialization.GwtProxySerialization"/>
- 		</property>
- 	</bean> 
-
-	<bean id="persistenceUtil" class="net.sf.gilead.core.hibernate.jpa.HibernateJpaUtil">
-		<property name="entityManagerFactory" ref="entityManagerFactory" />
-	</bean>
-
-	<bean id="dtaHibernateBeanManager" class="sk.seges.acris.rpc.PersistentBeanManager">
-		<property name="persistenceUtil" ref="persistenceUtil" />
-		<property name="classMapper" ref="explicitClassMapper" />
-		<property name="proxyStore" ref="proxyStore" />
-	</bean>
-
-	<bean id="proxyClassMapper" class="net.sf.gilead.core.beanlib.mapper.ProxyClassMapper">
-		<property name="persistenceUtil" ref="persistenceUtil" />
-	</bean>
-
-	<bean id="explicitClassMapper" class="net.sf.gilead.core.beanlib.mapper.ExplicitClassMapper">
-		<property name="associations">
-			<map>
-				<entry key="sk.seges.acris.security.rpc.user_management.domain.GenericUser" 
-					   value="sk.seges.acris.security.rpc.user_management.domain.GenericUser" />
-			</map>
-		</property>
-	</bean>
 
 </beans>

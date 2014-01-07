@@ -9,7 +9,19 @@
 package sk.seges.acris.server.model.dto.configuration;
 
 import sk.seges.corpis.server.domain.jpa.JpaCountry;
+import sk.seges.sesam.pap.model.annotation.GenerateEquals;
+import sk.seges.sesam.pap.model.annotation.GenerateHashcode;
+import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
 @TransferObjectMapping(domainClass = JpaCountry.class)
-public interface CountryDTOConfiguration {}
+@Mapping(Mapping.MappingType.EXPLICIT)
+@GenerateHashcode(generate = false)
+@GenerateEquals(generate = false)
+public interface CountryDTOConfiguration {
+
+	void id();
+	void country();
+	void label();
+
+}

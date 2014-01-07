@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@LocalService
-public class OpenIDUserService implements IOpenIDUserRemoteService {
+public class OpenIDUserService implements IOpenIDUserRemoteServiceLocal {
 
 	private static final long serialVersionUID = 6393202762149693176L;
 
@@ -34,30 +33,16 @@ public class OpenIDUserService implements IOpenIDUserRemoteService {
 	}
 
 	@Override
-	public GenericUserDTO getUserByOpenIDIdentifier(String identifier) {
+	public UserData getUserByOpenIDIdentifier(String identifier) {
 		Page page = new Page(0, Page.ALL_RESULTS);
 		page.setFilterable(new SimpleExpression<Comparable<? extends Serializable>>("id", identifier, Filter.EQ));
 		List<OpenIDUserData> result = openIDUserDao.findAll(page).getResult();
 
 		if (result.size() > 0) {
-			return convert(result.get(0).getUser());
+			return result.get(0).getUser();
 		}
+
 		return null;
-	}
-
-	/**
-	 * Converts source domain object to DTO.
-	 * 
-	 * @param source
-	 * @return
-	 */
-	private GenericUserDTO convert(UserData source) {
-		GenericUserDTO target = new GenericUserDTO();
-		target.setId((Long) source.getId());
-		target.setUserAuthorities(source.getUserAuthorities());
-		target.setUsername(source.getUsername());
-
-		return target;
 	}
 
 	@Override

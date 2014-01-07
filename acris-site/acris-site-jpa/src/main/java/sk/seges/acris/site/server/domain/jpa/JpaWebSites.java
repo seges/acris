@@ -24,6 +24,17 @@ import sk.seges.corpis.server.domain.DBConstraints;
 public class JpaWebSites extends WebSitesBase {
 	private static final long serialVersionUID = 2586451235625774160L;
 
+	public JpaWebSites() {}
+
+	public JpaWebSites(String domain, Long id, String language, String rootDir, SiteType type, String webId) {
+		setDomain(domain);
+		setId(id);
+		setLanguage(language);
+		setRootDir(rootDir);
+		setType(type);
+		setWebId(webId);
+	}
+
 	@Override
 	@Id
 	@GeneratedValue(generator = "web_sites_id_seq")

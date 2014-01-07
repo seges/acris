@@ -8,7 +8,9 @@ import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 
+@RemoteServiceDefinition
 @RemoteServicePath(value = "openID")
 public interface IOpenIDUserRemoteService extends RemoteService {
 

@@ -9,6 +9,9 @@
 package sk.seges.acris.server.model.dto.configuration;
 
 import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
+import sk.seges.sesam.pap.model.annotation.GenerateEquals;
+import sk.seges.sesam.pap.model.annotation.GenerateHashcode;
+import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
 /**
@@ -16,6 +19,20 @@ import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
  *
  */
 @TransferObjectMapping(domainClass = JpaWebSettings.class)
+@Mapping(Mapping.MappingType.EXPLICIT)
+@GenerateHashcode(generate = false)
+@GenerateEquals(generate = false)
 public interface WebSettingsDTOConfiguration {
 
+	void id();
+	void parameters();
+	void stockCountdown();
+	void thumbnailMaxHeight();
+	void thumbnailMaxWidth();
+	void metaData();
+	void imageMaxHeight();
+	void imageMaxWidth();
+	void stockAmountForWhichTheProductDisplay();
+	void termOfPayment();
+	void constantSymbol();
 }

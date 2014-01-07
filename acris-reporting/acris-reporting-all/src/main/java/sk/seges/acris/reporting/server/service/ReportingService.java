@@ -41,7 +41,6 @@ import sk.seges.acris.reporting.shared.service.IReportingService;
  * @author marta
  * 
  */
-@Service
 public class ReportingService implements IReportingService {
 
 	private static final String OUTPUT = "output";
@@ -52,15 +51,10 @@ public class ReportingService implements IReportingService {
 
 	private static final Logger LOG = Logger.getLogger(ReportingService.class);
 
-	@Autowired
-	private ConfigurationProvider configuration;
+	private final ConfigurationProvider configuration;
 
-	@Autowired
-	@Qualifier("reportDescriptionService")
-	private IReportDescriptionService reportDescriptionService;
+	private final IReportDescriptionService reportDescriptionService;
 
-	public ReportingService() {}
-	
 	public ReportingService(ConfigurationProvider configuration, IReportDescriptionService reportDescriptionService) {
 		this.configuration = configuration;
 		this.reportDescriptionService = reportDescriptionService;

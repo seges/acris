@@ -6,7 +6,6 @@ package sk.seges.acris.security.shared.core.user_management.domain.hibernate;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaGenericUser;
 import sk.seges.acris.security.server.core.user_management.domain.jpa.JpaUserPreferences;
 import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
 
@@ -18,7 +17,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "user_with_authorities")
-public class HibernateUserWithAuthorities extends JpaGenericUser {
+public class HibernateUserWithAuthorities extends HibernateGenericUser {
 	
 	private static final long serialVersionUID = 6755045948801685615L;
 
