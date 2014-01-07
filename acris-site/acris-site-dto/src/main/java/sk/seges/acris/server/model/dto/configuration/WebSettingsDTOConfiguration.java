@@ -35,4 +35,5 @@ public interface WebSettingsDTOConfiguration {
 	void stockAmountForWhichTheProductDisplay();
 	void termOfPayment();
 	void constantSymbol();
+	void analyticsScriptData();
 }
