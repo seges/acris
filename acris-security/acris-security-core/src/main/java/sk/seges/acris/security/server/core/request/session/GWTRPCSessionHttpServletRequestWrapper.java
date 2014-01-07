@@ -28,19 +28,35 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 		if (contentType != null && contentType.indexOf("text/x-gwt-rpc") >= 0) {
 			//get and remove sessionId from http request
 			final String encoding = request.getCharacterEncoding();
-			@SuppressWarnings("deprecation")
-			String payload = RPCServletUtils.readContentAsUtf8(
-					(HttpServletRequest) this.getRequest(), true);
+
+			String payload = null;
+			boolean isGetMethod = request.getMethod() != null && request.getMethod().toLowerCase().equals("get");
+
+			if (isGetMethod) {
+				payload = request.getQueryString();
+			} else {
+				payload = RPCServletUtils.readContentAsUtf8((HttpServletRequest) this.getRequest(), true);
+			}
+
 			int index = payload.indexOf('\uffff');
 			if (index == 0) {
 				index = payload.indexOf('\uffff', index + 1);
 				sessionId = payload.substring(1, index);
 				SessionHandlerListener.accessManually(sessionId);
 				payload = payload.substring(index + 1);
-				bytes = payload.getBytes(encoding);
+
+				if (isGetMethod) {
+					queryString = payload;
+				} else {
+					bytes = payload.getBytes(encoding);
+				}
 			} else {
 				sessionId = "";
-				bytes = payload.getBytes(encoding);
+				if (isGetMethod) {
+					queryString = payload;
+				} else {
+					bytes = payload.getBytes(encoding);
+				}
 			}
 		}
 	}

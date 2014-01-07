@@ -17,7 +17,8 @@ import sk.seges.acris.security.server.core.SessionHandlerListener;
  * @author ladislav.gazo
  */
 public abstract class SessionHttpServletRequestWrapper extends HttpServletRequestWrapper {
-	protected  byte[] bytes;
+	protected byte[] bytes;
+	protected String queryString;
 	
 	protected String sessionId;
 	
@@ -99,7 +100,12 @@ public abstract class SessionHttpServletRequestWrapper extends HttpServletReques
 		
 		return session;
 	}
-	
+
+	@Override
+	public String getQueryString() {
+		return super.getQueryString();
+	}
+
 	@Override
 	public int getContentLength() {
 		if (bytes == null) {
