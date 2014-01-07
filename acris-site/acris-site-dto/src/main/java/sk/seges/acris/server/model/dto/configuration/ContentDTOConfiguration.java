@@ -25,6 +25,7 @@ public interface ContentDTOConfiguration extends IDataTransferObject, ContentFor
 
 	void id();
 
+
 //	@Ignore
 //	void webId();
 //
@@ -67,6 +68,7 @@ public interface ContentDTOConfiguration extends IDataTransferObject, ContentFor
 	void parent();
 	void pageName();
 	void index();
+	void defaultStyleClass();
 	@ReadOnly
 	void idForACL();
 }
