@@ -4,7 +4,6 @@
 	<artifactId>acris-os-build</artifactId>
 	<packaging>pom</packaging>
 
-
 	<parent>
 		<groupId>sk.seges.acris</groupId>
 		<artifactId>acris-os-parent</artifactId>
