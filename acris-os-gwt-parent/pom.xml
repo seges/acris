@@ -625,7 +625,7 @@
 						<disableCastChecking>true</disableCastChecking>
 						<disableClassMetadata>false</disableClassMetadata>
 						<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
-						<enableClosureCompiler>false</enableClosureCompiler>
+						<enableClosureCompiler>true</enableClosureCompiler>
 						<fragmentCount>10</fragmentCount>
 					</configuration>
 					<executions>
