@@ -103,7 +103,10 @@ public abstract class SessionHttpServletRequestWrapper extends HttpServletReques
 
 	@Override
 	public String getQueryString() {
-		return queryString;
+		if (queryString != null && !queryString.isEmpty()) {
+			return queryString;
+		}
+		return super.getQueryString();
 	}
 
 	@Override
