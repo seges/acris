@@ -4,6 +4,8 @@
 package sk.seges.acris.security.server.core.request.session;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +48,11 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 
 			@Override
 			public String getPayload(HttpServletRequest request) {
-				return request.getQueryString();
+				try {
+					return URLDecoder.decode(request.getQueryString(), "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		},
 		POST {
