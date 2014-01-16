@@ -99,6 +99,10 @@ public class ClientSession<T> implements IDataTransferObject {
 			public abstract Class<?> appliesFor();
 
 			public static ValueType valueFor(Object obj) {
+				if (obj == null) {
+					return ValueType.STRING;
+				}
+
 				for (ValueType valueType: ValueType.values()) {
 					if (valueType.appliesFor().equals(obj.getClass())) {
 						return valueType;
@@ -124,6 +128,11 @@ public class ClientSession<T> implements IDataTransferObject {
 
 		public PropertyHolder(Object value) {
 			setValue(value);
+		}
+
+		public PropertyHolder(Object value, ValueType valueType) {
+			this.valueType = valueType;
+			valueType.setValue(this, value);
 		}
 
 		public void setValue(Object value) {
@@ -153,8 +162,16 @@ public class ClientSession<T> implements IDataTransferObject {
 		this.session = session;
 	}
 
+	protected <T> T getValue(String key) {
+		PropertyHolder propertyHolder = getSession().get(key);
+		if (propertyHolder == null) {
+			return null;
+		}
+		return (T) propertyHolder.getValue();
+	}
+
 	public String getSessionId() {
-		return (String) getSession().get(SESSION_ID_ATTRIBUTE).getValue();
+		return getValue(SESSION_ID_ATTRIBUTE);
 	}
 
 	public void setSessionId(String sessionId) {
@@ -172,19 +189,19 @@ public class ClientSession<T> implements IDataTransferObject {
 	}
 
 	public void putSharedProperty(String key, String value) {
-		getSession().put(key, new PropertyHolder(value));
+		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.STRING));
 	}
 
 	public void putSharedProperty(String key, Boolean value) {
-		getSession().put(key, new PropertyHolder(value));
+		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.BOOLEAN));
 	}
 
 	public void putSharedProperty(String key, SessionArrayHolder value) {
-		getSession().put(key, new PropertyHolder(value));
+		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.ARRAY));
 	}
 
 	public void putSharedProperty(String key, Enum<?> value) {
-		getSession().put(key, new PropertyHolder(value));
+		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.ENUM));
 	}
 
 	public void put(String key, Serializable value) {
@@ -197,7 +214,7 @@ public class ClientSession<T> implements IDataTransferObject {
 			return null;
 		}
 		if (session != null && session.containsKey(key)) {
-			return (S) session.get(key);
+			return getValue(key);
 		}
 		if (clientSession != null && clientSession.containsKey(key)) {
 			return (S) clientSession.get(key);
