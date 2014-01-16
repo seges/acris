@@ -153,8 +153,16 @@ public class ClientSession<T> implements IDataTransferObject {
 		this.session = session;
 	}
 
+	protected <T> T getValue(String key) {
+		PropertyHolder propertyHolder = getSession().get(key);
+		if (propertyHolder == null) {
+			return null;
+		}
+		return (T) propertyHolder.getValue();
+	}
+
 	public String getSessionId() {
-		return (String) getSession().get(SESSION_ID_ATTRIBUTE).getValue();
+		return getValue(SESSION_ID_ATTRIBUTE);
 	}
 
 	public void setSessionId(String sessionId) {
@@ -197,7 +205,7 @@ public class ClientSession<T> implements IDataTransferObject {
 			return null;
 		}
 		if (session != null && session.containsKey(key)) {
-			return (S) session.get(key);
+			return getValue(key);
 		}
 		if (clientSession != null && clientSession.containsKey(key)) {
 			return (S) clientSession.get(key);
