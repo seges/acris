@@ -22,128 +22,6 @@ public class ClientSession<T> implements IDataTransferObject {
 	private Map<String, PropertyHolder> session;
 	private Map<String, Serializable> clientSession;
 
-	public static class PropertyHolder {
-
-		enum ValueType {
-			BOOLEAN {
-				@Override
-				public Object getValue(PropertyHolder propertyHolder) {
-					return propertyHolder.booleanValue;
-				}
-
-				@Override
-				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
-					propertyHolder.booleanValue = (Boolean) value;
-					return ValueType.BOOLEAN;
-				}
-
-				@Override
-				public Class<?> appliesFor() {
-					return Boolean.class;
-				}
-			},
-			STRING {
-				@Override
-				public Object getValue(PropertyHolder propertyHolder) {
-					return propertyHolder.stringValue;
-				}
-
-				@Override
-				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
-					propertyHolder.stringValue = (String) value;
-					return ValueType.STRING;
-				}
-
-				@Override
-				public Class<?> appliesFor() {
-					return String.class;
-				}
-			},
-			ARRAY {
-				@Override
-				public Object getValue(PropertyHolder propertyHolder) {
-					return propertyHolder.arrayValue;
-				}
-
-				@Override
-				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
-					propertyHolder.arrayValue = (SessionArrayHolder) value;
-					return ValueType.ARRAY;
-				}
-
-				@Override
-				public Class<?> appliesFor() {
-					return SessionArrayHolder.class;
-				}
-			},
-			ENUM {
-				@Override
-				public Object getValue(PropertyHolder propertyHolder) {
-					return propertyHolder.enumValue;
-				}
-
-				@Override
-				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
-					propertyHolder.enumValue = (Enum<?>) value;
-					return ValueType.ENUM;
-				}
-
-				@Override
-				public Class<?> appliesFor() {
-					return Enum.class;
-				}
-			};
-
-			public abstract Object getValue(PropertyHolder propertyHolder);
-			public abstract ValueType setValue(PropertyHolder propertyHolder, Object value);
-			public abstract Class<?> appliesFor();
-
-			public static ValueType valueFor(Object obj) {
-				if (obj == null) {
-					return ValueType.STRING;
-				}
-
-				for (ValueType valueType: ValueType.values()) {
-					if (valueType.appliesFor().equals(obj.getClass())) {
-						return valueType;
-					}
-				}
-
-				if (obj.getClass().isEnum()) {
-					return ValueType.ENUM;
-				}
-
-				throw new RuntimeException("Not supported class " + obj.getClass().getName());
-			}
-		}
-
-		ValueType valueType;
-
-		Boolean booleanValue;
-		String stringValue;
-		SessionArrayHolder arrayValue;
-		Enum<?> enumValue;
-
-		protected  PropertyHolder() {};
-
-		public PropertyHolder(Object value) {
-			setValue(value);
-		}
-
-		public PropertyHolder(Object value, ValueType valueType) {
-			this.valueType = valueType;
-			valueType.setValue(this, value);
-		}
-
-		public void setValue(Object value) {
-			this.valueType = ValueType.valueFor(value).setValue(this, value);
-		}
-
-		public Object getValue() {
-			return valueType.getValue(this);
-		}
-	}
-
 	public Map<String, PropertyHolder> getSession() {
 		if (session == null) {
 			session = new HashMap<String, PropertyHolder>();
@@ -189,19 +67,19 @@ public class ClientSession<T> implements IDataTransferObject {
 	}
 
 	public void putSharedProperty(String key, String value) {
-		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.STRING));
+		getSession().put(key, new PropertyHolder(value, ValueType.STRING));
 	}
 
 	public void putSharedProperty(String key, Boolean value) {
-		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.BOOLEAN));
+		getSession().put(key, new PropertyHolder(value, ValueType.BOOLEAN));
 	}
 
 	public void putSharedProperty(String key, SessionArrayHolder value) {
-		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.ARRAY));
+		getSession().put(key, new PropertyHolder(value, ValueType.ARRAY));
 	}
 
 	public void putSharedProperty(String key, Enum<?> value) {
-		getSession().put(key, new PropertyHolder(value, PropertyHolder.ValueType.ENUM));
+		getSession().put(key, new PropertyHolder(value, ValueType.ENUM));
 	}
 
 	public void put(String key, Serializable value) {
