@@ -33,14 +33,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 	protected final RpcRequestBuilder postBuilder;
 	protected final RpcRequestBuilder getBuilder;
 
-	interface DelimiterProvider {
-		String getSessionDelimiter();
-	}
-
-	private static final String POST_SESSION_DELIMITER = String.valueOf('\uffff');
-	private static final String GET_SESSION_DELIMITER = "%EF%BF%BD";
-
-	abstract class CustomRpcRequestBuilder extends RpcRequestBuilder implements DelimiterProvider {}
+	private static final String SESSION_DELIMITER = String.valueOf('\uffff');
 
 	protected SessionEnabledRemoteServiceProxy(String moduleBaseURL,
 			String remoteServiceRelativePath, String serializationPolicyName,
@@ -48,7 +41,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 		super(moduleBaseURL, remoteServiceRelativePath,
 				serializationPolicyName, serializer);
 
-		getBuilder = new CustomRpcRequestBuilder() {
+		getBuilder = new RpcRequestBuilder() {
 
 			private RequestCallback callback;
 			private String contentType;
@@ -85,26 +78,15 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 
 			@Override
 			protected void doFinish(RequestBuilder rb) {
-				create(getServiceEntryPoint() + "?" + data.replaceAll(POST_SESSION_DELIMITER, GET_SESSION_DELIMITER));
+				create(getServiceEntryPoint() + "?" + data);
 				super.setCallback(callback);
 				super.setContentType(contentType);
 				super.setRequestId(id);
 				super.doFinish(rb);
 			}
-
-			@Override
-			public String getSessionDelimiter() {
-				return GET_SESSION_DELIMITER;
-			}
 		};
 
-		postBuilder = new CustomRpcRequestBuilder() {
-
-			@Override
-			public String getSessionDelimiter() {
-				return POST_SESSION_DELIMITER;
-			}
-		};
+		postBuilder = new RpcRequestBuilder();
 	}
 
 
@@ -143,7 +125,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 		if (sessionID.length() > 0) {
 
 			return super.doInvoke(responseReader, methodName, statsContext,
-					POST_SESSION_DELIMITER + sessionID + POST_SESSION_DELIMITER + requestData, callback);
+					SESSION_DELIMITER + sessionID + SESSION_DELIMITER + requestData, callback);
 		}
 
 		return super.doInvoke(responseReader, methodName, statsContext,
