@@ -19,12 +19,125 @@ public class ClientSession<T> implements IDataTransferObject {
 
 	private static final String SESSION_ID_ATTRIBUTE = "sessionId";
 
-	private Map<String, Comparable<? extends Serializable>> session;
+	private Map<String, PropertyHolder> session;
 	private Map<String, Serializable> clientSession;
 
-	public Map<String, Comparable<? extends Serializable>> getSession() {
+	public static class PropertyHolder {
+
+		enum ValueType {
+			BOOLEAN {
+				@Override
+				public Object getValue(PropertyHolder propertyHolder) {
+					return propertyHolder.booleanValue;
+				}
+
+				@Override
+				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
+					propertyHolder.booleanValue = (Boolean) value;
+					return ValueType.BOOLEAN;
+				}
+
+				@Override
+				public Class<?> appliesFor() {
+					return Boolean.class;
+				}
+			},
+			STRING {
+				@Override
+				public Object getValue(PropertyHolder propertyHolder) {
+					return propertyHolder.booleanValue;
+				}
+
+				@Override
+				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
+					propertyHolder.stringValue = (String) value;
+					return ValueType.STRING;
+				}
+
+				@Override
+				public Class<?> appliesFor() {
+					return String.class;
+				}
+			},
+			ARRAY {
+				@Override
+				public Object getValue(PropertyHolder propertyHolder) {
+					return propertyHolder.arrayValue;
+				}
+
+				@Override
+				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
+					propertyHolder.arrayValue = (SessionArrayHolder) value;
+					return ValueType.ARRAY;
+				}
+
+				@Override
+				public Class<?> appliesFor() {
+					return SessionArrayHolder.class;
+				}
+			},
+			ENUM {
+				@Override
+				public Object getValue(PropertyHolder propertyHolder) {
+					return propertyHolder.enumValue;
+				}
+
+				@Override
+				public ValueType setValue(PropertyHolder propertyHolder, Object value) {
+					propertyHolder.enumValue = (Enum<?>) value;
+					return ValueType.ENUM;
+				}
+
+				@Override
+				public Class<?> appliesFor() {
+					return Enum.class;
+				}
+			};
+
+			public abstract Object getValue(PropertyHolder propertyHolder);
+			public abstract ValueType setValue(PropertyHolder propertyHolder, Object value);
+			public abstract Class<?> appliesFor();
+
+			public static ValueType valueFor(Object obj) {
+				for (ValueType valueType: ValueType.values()) {
+					if (valueType.appliesFor().equals(obj.getClass())) {
+						return valueType;
+					}
+				}
+
+				if (obj.getClass().isEnum()) {
+					return ValueType.ENUM;
+				}
+
+				throw new RuntimeException("Not supported class " + obj.getClass().getName());
+			}
+		}
+
+		ValueType valueType;
+
+		Boolean booleanValue;
+		String stringValue;
+		SessionArrayHolder arrayValue;
+		Enum<?> enumValue;
+
+		protected  PropertyHolder() {};
+
+		public PropertyHolder(Object value) {
+			setValue(value);
+		}
+
+		public void setValue(Object value) {
+			this.valueType = ValueType.valueFor(value).setValue(this, value);
+		}
+
+		public Object getValue() {
+			return valueType.getValue(this);
+		}
+	}
+
+	public Map<String, PropertyHolder> getSession() {
 		if (session == null) {
-			session = new HashMap<String, Comparable<? extends Serializable>>();
+			session = new HashMap<String, PropertyHolder>();
 		}
 		return session;
 	}
@@ -36,16 +149,16 @@ public class ClientSession<T> implements IDataTransferObject {
 		return clientSession;
 	}
 	
-	public void setSession(Map<String, Comparable<? extends Serializable>> session) {
+	public void setSession(Map<String, PropertyHolder> session) {
 		this.session = session;
 	}
 
 	public String getSessionId() {
-		return (String) getSession().get(SESSION_ID_ATTRIBUTE);
+		return (String) getSession().get(SESSION_ID_ATTRIBUTE).getValue();
 	}
 
 	public void setSessionId(String sessionId) {
-		getSession().put(SESSION_ID_ATTRIBUTE, sessionId);
+		getSession().put(SESSION_ID_ATTRIBUTE, new PropertyHolder(sessionId));
 	}
 
 	private T user;
@@ -58,8 +171,20 @@ public class ClientSession<T> implements IDataTransferObject {
 		this.user = user;
 	}
 
-	public void putSharedProperty(String key, Comparable<? extends Serializable> value) {
-		getSession().put(key, value);
+	public void putSharedProperty(String key, String value) {
+		getSession().put(key, new PropertyHolder(value));
+	}
+
+	public void putSharedProperty(String key, Boolean value) {
+		getSession().put(key, new PropertyHolder(value));
+	}
+
+	public void putSharedProperty(String key, SessionArrayHolder value) {
+		getSession().put(key, new PropertyHolder(value));
+	}
+
+	public void putSharedProperty(String key, Enum<?> value) {
+		getSession().put(key, new PropertyHolder(value));
 	}
 
 	public void put(String key, Serializable value) {
@@ -82,17 +207,13 @@ public class ClientSession<T> implements IDataTransferObject {
 	}
 
 	public ClientSession<T> merge(ClientSession<T> value) {
-//		if (value.getUser() != null) {
-//			this.setUser(value.getUser());
-//		}
-		for(Entry<String, Comparable<? extends Serializable>> entry : value.getSession().entrySet()) {
+		for(Entry<String, PropertyHolder> entry : value.getSession().entrySet()) {
 			if(getSession().containsKey(entry.getKey())) {
 				continue;
 			}
 			
 			session.put(entry.getKey(), entry.getValue());
 		}
-		//TODO sessionId also?
 		return this;
 	}
 	
