@@ -45,7 +45,7 @@ public class ClientSession<T> implements IDataTransferObject {
 			STRING {
 				@Override
 				public Object getValue(PropertyHolder propertyHolder) {
-					return propertyHolder.booleanValue;
+					return propertyHolder.stringValue;
 				}
 
 				@Override
