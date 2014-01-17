@@ -24,6 +24,8 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 		super(request);
 	}
 
+	private static final char SESSION_DELIMITER = '\uffff';
+
 	public enum RequestMethodHandler {
 		GET {
 			@Override
@@ -33,10 +35,8 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 
 			@Override
 			public int getSessionDelimiterLength() {
-				return SESSION_DELIMITER.length();
+				return 1;
 			}
-
-			private static final String SESSION_DELIMITER = "%EF%BF%BD";
 
 			public int getSessionDelimiterIndex(String payload) {
 				return payload.indexOf(SESSION_DELIMITER);
@@ -65,8 +65,6 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 			public int getSessionDelimiterLength() {
 				return 1;
 			}
-
-			private static final char SESSION_DELIMITER = '\uffff';
 
 			public int getSessionDelimiterIndex(String payload) {
 				return payload.indexOf(SESSION_DELIMITER);

@@ -19,12 +19,12 @@ public class ClientSession<T> implements IDataTransferObject {
 
 	private static final String SESSION_ID_ATTRIBUTE = "sessionId";
 
-	private Map<String, Comparable<? extends Serializable>> session;
+	private Map<String, PropertyHolder> session;
 	private Map<String, Serializable> clientSession;
 
-	public Map<String, Comparable<? extends Serializable>> getSession() {
+	public Map<String, PropertyHolder> getSession() {
 		if (session == null) {
-			session = new HashMap<String, Comparable<? extends Serializable>>();
+			session = new HashMap<String, PropertyHolder>();
 		}
 		return session;
 	}
@@ -36,16 +36,24 @@ public class ClientSession<T> implements IDataTransferObject {
 		return clientSession;
 	}
 	
-	public void setSession(Map<String, Comparable<? extends Serializable>> session) {
+	public void setSession(Map<String, PropertyHolder> session) {
 		this.session = session;
 	}
 
+	protected <T> T getValue(String key) {
+		PropertyHolder propertyHolder = getSession().get(key);
+		if (propertyHolder == null) {
+			return null;
+		}
+		return (T) propertyHolder.getValue();
+	}
+
 	public String getSessionId() {
-		return (String) getSession().get(SESSION_ID_ATTRIBUTE);
+		return getValue(SESSION_ID_ATTRIBUTE);
 	}
 
 	public void setSessionId(String sessionId) {
-		getSession().put(SESSION_ID_ATTRIBUTE, sessionId);
+		getSession().put(SESSION_ID_ATTRIBUTE, new PropertyHolder(sessionId));
 	}
 
 	private T user;
@@ -58,8 +66,20 @@ public class ClientSession<T> implements IDataTransferObject {
 		this.user = user;
 	}
 
-	public void putSharedProperty(String key, Comparable<? extends Serializable> value) {
-		getSession().put(key, value);
+	public void putSharedProperty(String key, String value) {
+		getSession().put(key, new PropertyHolder(value, ValueType.STRING));
+	}
+
+	public void putSharedProperty(String key, Boolean value) {
+		getSession().put(key, new PropertyHolder(value, ValueType.BOOLEAN));
+	}
+
+	public void putSharedProperty(String key, SessionArrayHolder value) {
+		getSession().put(key, new PropertyHolder(value, ValueType.ARRAY));
+	}
+
+	public void putSharedProperty(String key, Enum<?> value) {
+		getSession().put(key, new PropertyHolder(value, ValueType.ENUM));
 	}
 
 	public void put(String key, Serializable value) {
@@ -72,7 +92,7 @@ public class ClientSession<T> implements IDataTransferObject {
 			return null;
 		}
 		if (session != null && session.containsKey(key)) {
-			return (S) session.get(key);
+			return getValue(key);
 		}
 		if (clientSession != null && clientSession.containsKey(key)) {
 			return (S) clientSession.get(key);
@@ -82,17 +102,13 @@ public class ClientSession<T> implements IDataTransferObject {
 	}
 
 	public ClientSession<T> merge(ClientSession<T> value) {
-//		if (value.getUser() != null) {
-//			this.setUser(value.getUser());
-//		}
-		for(Entry<String, Comparable<? extends Serializable>> entry : value.getSession().entrySet()) {
+		for(Entry<String, PropertyHolder> entry : value.getSession().entrySet()) {
 			if(getSession().containsKey(entry.getKey())) {
 				continue;
 			}
 			
 			session.put(entry.getKey(), entry.getValue());
 		}
-		//TODO sessionId also?
 		return this;
 	}
 	
