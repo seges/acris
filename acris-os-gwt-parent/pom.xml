@@ -310,13 +310,6 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<configuration>
-							<extraJvmArgs>-XX:MaxPermSize=512m -Xmx1024m</extraJvmArgs>
-						</configuration>
-					</plugin>
-					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-eclipse-plugin</artifactId>
 						<version>2.8</version>
@@ -603,8 +596,9 @@
 					<version>${gwt-plugin.version}</version>
 
 					<configuration>
-						<compileReport>true</compileReport>
+						<compileReport>false</compileReport>
 						<gwtVersion>${gwt.version}</gwtVersion>
+						<localWorkers>1</localWorkers>
 						<logLevel>INFO</logLevel>
 						<port>8890</port>
 						<module>${gwt.client.module}</module>
@@ -615,17 +609,16 @@
 						<noServer>false</noServer>
 						<!--extraJvmArgs>-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 -Xmx1024M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs-->
-						<extraJvmArgs>-Xmx2048M -Xss16M -Dfile.encoding=utf-8
-						</extraJvmArgs>
+						<extraJvmArgs>-Xmx1500M -XX:MaxPermSize=512m -Xss16M -Dfile.encoding=utf-8</extraJvmArgs>
 						<debugPort>8990</debugPort>
 						<shellServletMappingURL>/gwt-shell-servlet</shellServletMappingURL>
 						<mergedWebXml>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/web.xml</mergedWebXml>
 						<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
 						<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</webappDirectory>
 						<disableCastChecking>true</disableCastChecking>
-						<disableClassMetadata>false</disableClassMetadata>
+						<disableClassMetadata>true</disableClassMetadata>
 						<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
-						<enableClosureCompiler>false</enableClosureCompiler>
+						<enableClosureCompiler>true</enableClosureCompiler>
 						<fragmentCount>10</fragmentCount>
 					</configuration>
 					<executions>
