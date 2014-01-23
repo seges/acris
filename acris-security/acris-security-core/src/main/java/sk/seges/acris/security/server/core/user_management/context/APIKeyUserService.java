@@ -44,7 +44,7 @@ public class APIKeyUserService implements UserProviderService {
 		if (isValid(userContext)) {
 			HttpSession session = sessionProvider.getSession();
 			session.setAttribute(LoginConstants.ACRIS_API_KEY_STRING, ((APIKeyUserContext) userContext).getApiKey());
-			session.setAttribute(LoginConstants.LOGIN_TOKEN_NAME, createLoginToken((userContext).getWebId()));
+			session.setAttribute(LoginConstants.LOGIN_TOKEN_NAME, createLoginToken(userContext.getWebId()));
 			ClientSession clientSession = new ClientSession();
 			clientSession.setUser(apiKeyUserProvider.createUser(((APIKeyUserContext) userContext).getApiKey()));
 			
@@ -122,13 +122,14 @@ public class APIKeyUserService implements UserProviderService {
 		return allowed;
 	}
 	
-	@Override	public String getLoggedUserName(UserContext userContext) throws ServerException {
+	@Override	
+	public String getLoggedUserName(UserContext userContext) throws ServerException {
 		return userContext.getWebId();
 	}
 	
 	private String getUrl(UserContext userContext) {
 		String url = apiKeyURL;
-		url += apiKeyURL.contains("?") ? "&" : "?" + WEBID_PARAMETER + "=" + ((APIKeyUserContext) userContext).getWebId();
+		url += apiKeyURL.contains("?") ? "&" : "?" + WEBID_PARAMETER + "=" + userContext.getWebId();
 		url += "&" + APIKEY_PARAMETER + "=" + ((APIKeyUserContext) userContext).getApiKey();
 		return url;
 	}

@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
@@ -63,6 +64,7 @@ public class WebSettingsService implements IWebSettingsServiceLocal {
 	}
 	
 	@Override
+	@Transactional
 	public WebSettingsData findWebSettings(String webId) {
 		Page page = new Page(0, 1);
 		// TODO: switch to @BeanWrapper
