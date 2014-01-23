@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sk.seges.acris.crypto.util.Hasher;
+import sk.seges.acris.security.server.core.user_management.context.APIKeyUserService;
 
 @Path("/auth")
 public class RestAuthenticationResource {
@@ -25,9 +26,9 @@ public class RestAuthenticationResource {
 		JSONObject result = null;
 		try {
 			if (webId != null && (Hasher.getSHAHexDigest(webId).equals(apiKey))) {
-				result = new JSONObject().put("allowed", "TRUE");
+				result = new JSONObject().put(APIKeyUserService.RESULT_PARAMETER, "TRUE");
 			} else {
-				result = new JSONObject().put("allowed", "FALSE");
+				result = new JSONObject().put(APIKeyUserService.RESULT_PARAMETER, "FALSE");
 			}
 		} catch (JSONException e) {
 			log.error("Could not parse json, cause:" , e);
