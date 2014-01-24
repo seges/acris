@@ -198,6 +198,12 @@
 /acris-security/acris-security-api/.settings
 /acris-security/acris-security-api/target
 
+# /acris-security/acris-security-spring-api/
+/acris-security/acris-security-spring-api/.classpath
+/acris-security/acris-security-spring-api/.project
+/acris-security/acris-security-spring-api/.settings
+/acris-security/acris-security-spring-api/target
+
 # /acris-security/acris-security-appengine/
 /acris-security/acris-security-appengine/.classpath
 /acris-security/acris-security-appengine/.project
