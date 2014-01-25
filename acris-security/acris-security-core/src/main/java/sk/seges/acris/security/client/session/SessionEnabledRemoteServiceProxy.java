@@ -3,6 +3,7 @@ package sk.seges.acris.security.client.session;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RpcRequestBuilder;
 import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
@@ -78,7 +79,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 
 			@Override
 			protected void doFinish(RequestBuilder rb) {
-				create(getServiceEntryPoint() + "?" + data);
+				create(getServiceEntryPoint() + "?" + URL.encode(data));
 				super.setCallback(callback);
 				super.setContentType(contentType);
 				super.setRequestId(id);
