@@ -80,7 +80,7 @@ public class ReportDescriptionService extends RemoteServiceServlet implements IR
 	@Transactional
 	public PagedResult<List<ReportDescriptionData>> findReports(DetachedCriteria criteria, Page requestedPage) {
 //		if (criteria == null) {
-//			criteria = DetachedCriteria.forClass(ReportDescriptionData.class);
+//			criteria = DetachedCriteria.forClass(JpaReportDescription.class);
 //		}
 //		return reportDescriptionDao.findPagedResultByCriteria(criteria, requestedPage);
 		return null;
