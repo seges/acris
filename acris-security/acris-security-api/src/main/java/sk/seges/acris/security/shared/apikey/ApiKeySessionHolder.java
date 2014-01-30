@@ -25,14 +25,11 @@ public class ApiKeySessionHolder implements Serializable {
 			return null;
 		}
 
-		//cleanup expired sessions
+		ApiKeySession session = sessions.get(apiKey);
 		Long now = new Date().getTime();
-		for (String key : sessions.keySet()) {
-			if ((now - EXPIRATION_LIMIT) > sessions.get(key).getExpirationTimestamp()) {
-				sessions.remove(key);
-			}
+		if (session != null && ((now - EXPIRATION_LIMIT) < session.getExpirationTimestamp())) {
+			return session;
 		}
-		
-		return sessions.get(apiKey);
+		return null;
 	}
 }
