@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 public class ApiKeySessionHolder implements Serializable {
 	private static final long serialVersionUID = 1862533361300701448L;
 
-	private int EXPIRATION_LIMIT = 30000;
+	private int EXPIRATION_LIMIT = 60000;
 	
-	private static LinkedHashMap<String, ApiKeySession> sessions;
+	private LinkedHashMap<String, ApiKeySession> sessions;
 	
 	public ApiKeySessionHolder() {
 		sessions = new LinkedHashMap<String, ApiKeySession>();

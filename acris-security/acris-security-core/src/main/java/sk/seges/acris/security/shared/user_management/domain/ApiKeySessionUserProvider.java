@@ -20,7 +20,7 @@ public class ApiKeySessionUserProvider implements ApiKeyUserProvider {
 	
 	@Override
 	public UserData createUser(String apiKey) {
-		ApiKeySession session = apiKeySessionHolder.getSession(apiKey);
+		ApiKeySession session = getSession(apiKey);
 		
 		if (session != null) {
 			Page p = new Page(0, Page.ALL_RESULTS);
@@ -28,5 +28,10 @@ public class ApiKeySessionUserProvider implements ApiKeyUserProvider {
 			return userDao.findUnique(p);
 		}
 		return null;
+	}
+
+	@Override
+	public ApiKeySession getSession(String apiKey) {
+		return apiKeySessionHolder.getSession(apiKey);
 	}
 }
