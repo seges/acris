@@ -449,7 +449,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 
 	private void failure(String msg, Throwable caught) {
-		Log.error(msg);
+		Log.error(msg + ", cause: " + caught.toString());
 	}
 
 	protected void finalizeEnvironment() {
