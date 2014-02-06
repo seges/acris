@@ -52,7 +52,6 @@ public class LoginView extends Composite implements LoginDisplay {
 	private final SimplePanel waitPanel = new SimplePanel();
 	private final HorizontalPanel loginPanel = new HorizontalPanel();
 	private Button loginButton;
-	private Button cancelButton;
 	
 	private final VerticalPanel logoutPanel = new VerticalPanel();
 	private Label loggedUserName;
@@ -155,9 +154,9 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	protected void initComponents() {
 		ensureLoginButton().setText(loginMessages.loginButton());
+		ensureLoginButton().setTitle(loginMessages.loginTitle());
 
 		Panel container = getContainer();
-		container.setTitle(loginMessages.loginTitle());
 		usernameLabel.setText(loginMessages.usernamePrompt());
 		passwordLabel.setText(loginMessages.passwordPrompt());
 
@@ -225,6 +224,7 @@ public class LoginView extends Composite implements LoginDisplay {
 			cancelWrapper.setWidget(ensureCancelButton());
 			ensureCancelButton().addStyleName("login-Button cancel-Button");
 			ensureCancelButton().setText(loginMessages.cancelLogin());
+			ensureCancelButton().setTitle(loginMessages.cancelTitle());
 			grouper.add(cancelWrapper);
 		}
 		
