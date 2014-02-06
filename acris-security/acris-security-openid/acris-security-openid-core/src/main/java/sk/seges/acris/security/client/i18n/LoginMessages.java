@@ -15,4 +15,5 @@ public interface LoginMessages extends Messages {
     public String loginSuccessfulTitle();
     public String loginProgress();
     public String loggedUserMsg();
+    public String cancelLogin();
 }
