@@ -1,5 +1,7 @@
 package sk.seges.acris.security.server.spring.acl.vote.hibernate;
 
+import java.util.List;
+
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.DetachedCriteriaUtils;
 import org.hibernate.criterion.Junction;
@@ -24,7 +26,7 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
 		super(configAttribute, requirePermission);
 	}
 
-	protected DetachedCriteria createCriteria(DetachedCriteria clazzCriteria, Sid[] sids, Class<?> clazz) {
+	protected DetachedCriteria createCriteria(DetachedCriteria clazzCriteria, List<Sid> sids, Class<?> clazz) {
 
         // Create detached criteria with alias - name of the alias is not
         // importat, only purpose
@@ -58,7 +60,8 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
         return clazzCriteria;
     }
     
-    protected void injectIntoCriteria(Sid[] sids, Class<?>[] params, Object[] args) {
+	@Override
+    protected void injectIntoCriteria(List<Sid> sids, Class<?>[] params, Object[] args) {
         int index = 0;
         for (Class<?> clazz : params) {
             if (clazz.isAssignableFrom(DetachedCriteria.class)) {
