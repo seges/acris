@@ -154,9 +154,9 @@ public class LoginView extends Composite implements LoginDisplay {
 
 	protected void initComponents() {
 		ensureLoginButton().setText(loginMessages.loginButton());
+		ensureLoginButton().setTitle(loginMessages.loginTitle());
 
 		Panel container = getContainer();
-		container.setTitle(loginMessages.loginTitle());
 		usernameLabel.setText(loginMessages.usernamePrompt());
 		passwordLabel.setText(loginMessages.passwordPrompt());
 
@@ -218,6 +218,16 @@ public class LoginView extends Composite implements LoginDisplay {
 		buttonWrapper.setWidget(ensureLoginButton());
 		grouper.add(buttonWrapper);
 
+		if (ensureCancelButton() != null) {
+			SimplePanel cancelWrapper = new SimplePanel();
+			cancelWrapper.addStyleName("login-Button-wrapper");
+			cancelWrapper.setWidget(ensureCancelButton());
+			ensureCancelButton().addStyleName("login-Button cancel-Button");
+			ensureCancelButton().setText(loginMessages.cancelLogin());
+			ensureCancelButton().setTitle(loginMessages.cancelTitle());
+			grouper.add(cancelWrapper);
+		}
+		
 		loginPanel.add(grouper);
 
 		grid.setWidget(rowCounter, 1, loginPanel);
@@ -410,6 +420,10 @@ public class LoginView extends Composite implements LoginDisplay {
 		return this.loginButton;
 	}
 	
+	protected Button ensureCancelButton() {
+		return null;
+	}
+	
 	private Button ensureLogoutButton() {
 		if (this.logoutButton == null) {
 			this.logoutButton = GWT.create(Button.class); 
@@ -535,5 +549,13 @@ public class LoginView extends Composite implements LoginDisplay {
 		//TODO server side logout is not called
 		clearLoginCookies();
 		changeState(false);
+	}
+
+	@Override
+	public HandlerRegistration addCancelHandler(ClickHandler handler) {
+		if (ensureCancelButton() == null) {
+			return null; 
+		}
+		return ensureCancelButton().addClickHandler(handler);
 	}
 }

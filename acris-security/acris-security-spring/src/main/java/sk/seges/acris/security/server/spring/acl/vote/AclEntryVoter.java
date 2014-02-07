@@ -87,11 +87,7 @@ public class AclEntryVoter extends AbstractAclVoter {
     }
 
     public boolean supports(ConfigAttribute attribute) {
-        if ((attribute.getAttribute() != null) && attribute.getAttribute().equals(getProcessConfigAttribute())) {
-            return true;
-        } else {
-            return false;
-        }
+        return ((attribute.getAttribute() != null) && attribute.getAttribute().equals(getProcessConfigAttribute()));
     }
 
     protected Object[] getDomainObjectInstances(Object secureObject) {

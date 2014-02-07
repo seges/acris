@@ -2,6 +2,7 @@ package sk.seges.acris.security.client.presenter;
 
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.common.util.URLUtils;
+import sk.seges.acris.security.client.event.CancelLoginEvent;
 import sk.seges.acris.security.client.event.LoginEvent;
 import sk.seges.acris.security.client.handler.HasLoginHandlers;
 import sk.seges.acris.security.client.handler.LoginHandler;
@@ -27,6 +28,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window.Location;
@@ -51,6 +53,8 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		HandlerRegistration addPasswordChangeHandler(ChangeHandler handler);
 
 		HandlerRegistration addLanguageHandler(ChangeHandler handler);
+		
+		HandlerRegistration addCancelHandler(ClickHandler handler);
 
 		void onLoginFailed();
 
@@ -101,6 +105,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	
 	protected boolean authenticate = false;
 	protected boolean switchAfterLogin = false;
+	private SimpleEventBus eventBus = null;
 
 	protected String locale;
 	
@@ -130,6 +135,11 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		this.validator = validator;
 	}
 
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, SimpleEventBus eventBus) {
+		this(display, broadcaster, null, null, false);
+		this.eventBus = eventBus;
+	}
+	
 	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl) {
 		this(display, broadcaster, redirectUrl, null, false);
 	}
@@ -384,6 +394,16 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 			@Override
 			public void onClick(ClickEvent event) {
 				doLogout();
+			}
+		}));
+		
+		registerHandler(display.addCancelHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent arg0) {
+				if (eventBus != null) {
+					eventBus.fireEvent(new CancelLoginEvent());
+				}
 			}
 		}));
 	}
