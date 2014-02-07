@@ -1,15 +1,17 @@
 package sk.seges.acris.reporting.shared.service;
 
+import com.google.gwt.user.client.rpc.RemoteService;
+import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
+import sk.seges.sesam.shared.model.dto.PageDTO;
+import sk.seges.sesam.shared.model.dto.PagedResultDTO;
+import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
+
 import java.util.List;
 
-import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
-import sk.seges.sesam.dao.Page;
-import sk.seges.sesam.dao.PagedResult;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-
+@RemoteServiceDefinition
 public interface IReportDescriptionService extends RemoteService {
-	public static final String FIND_ALL_REPORTS_METHOD="findAllReports";
+
+	public static final String FIND_ALL_REPORTS_METHOD = "findAllReports";
 
 	ReportDescriptionData findById(Long reportId);
 	
@@ -19,7 +21,7 @@ public interface IReportDescriptionService extends RemoteService {
 
 	void remove(Long id);
 
-	PagedResult<List<ReportDescriptionData>> findAllReports(Page requestedPage);
+	PagedResultDTO<List<ReportDescriptionData>> findAllReports(PageDTO requestedPage);
 	
 	Long merge(ReportDescriptionData report);
 

@@ -14,8 +14,21 @@
   	
   	<build>
 		<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes</outputDirectory>  	
-  	</build>
-  	
+
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+
+				<configuration>
+					<extraJvmArgs>-Xmx1000M -XX:MaxPermSize=256m -Xss16M -Dfile.encoding=utf-8</extraJvmArgs>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+
   	<dependencies>
 
 		<!-- Corpis dependencies -->

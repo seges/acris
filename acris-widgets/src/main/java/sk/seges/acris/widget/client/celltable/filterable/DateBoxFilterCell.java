@@ -1,10 +1,5 @@
 package sk.seges.acris.widget.client.celltable.filterable;
 
-import java.util.Date;
-
-import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
-import sk.seges.sesam.dao.BetweenExpression;
-
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -14,7 +9,6 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Event;
@@ -22,8 +16,13 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
+import sk.seges.sesam.shared.model.api.PropertyHolder;
+import sk.seges.sesam.shared.model.dto.BetweenExpressionDTO;
 
-public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<Date>> {
+import java.util.Date;
+
+public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpressionDTO> {
 
 	protected interface Template extends SafeHtmlTemplates {
 		@Template("<div>{0}</div>")
@@ -52,14 +51,14 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 	private Element lastParent;
 	private int lastIndex;
 	private int lastColumn;
-	private BetweenExpression<Date> lastValue;
+	private BetweenExpressionDTO lastValue;
 	private PopupPanel panel;
-	private ValueUpdater<BetweenExpression<Date>> valueUpdater;
+	private ValueUpdater<BetweenExpressionDTO> valueUpdater;
 	private String suffix = null;
 	
-	private final Validator<Date> validator;
+	private final Validator validator;
 	
-	public DateBoxFilterCell(Validator<Date> validator, String text) {
+	public DateBoxFilterCell(Validator validator, String text) {
 		super("click", "keydown");
 		this.text = text;
 		this.validator = validator;
@@ -102,7 +101,7 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 			public void onValueChange(ValueChangeEvent<Date> event) {
 				// Remember the values before hiding the popup.
 				final Element cellParent = lastParent;
-				BetweenExpression<Date> oldValue = lastValue;
+				BetweenExpressionDTO oldValue = lastValue;
 				Object key = lastKey;
 				int index = lastIndex;
 				int column = lastColumn;
@@ -110,14 +109,11 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 
 				// Update the cell and value updater.
 				final Date date = event.getValue();
-//				SimpleExpression<Date> newExpression = new SimpleExpression<Date>();
-//				newExpression.setOperation(oldValue.getOperation());
-//				newExpression.setValue(date);
-//				newExpression.setProperty(oldValue.getProperty());
+
 				if (suffix.equals(FROM_SUFFIX)) {
-					oldValue.setLoValue(date);
+					oldValue.setLoValue(new PropertyHolder(date));
 				} else {
-					oldValue.setHiValue(date);
+					oldValue.setHiValue(new PropertyHolder(date));
 				}
 				
 				//setViewData(key, date);
@@ -137,8 +133,8 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 	}
 
 	@Override
-	public void onBrowserEvent(Context context, Element parent, BetweenExpression<Date> value, NativeEvent event,
-			ValueUpdater<BetweenExpression<Date>> valueUpdater) {
+	public void onBrowserEvent(Context context, Element parent, BetweenExpressionDTO value, NativeEvent event,
+			ValueUpdater<BetweenExpressionDTO> valueUpdater) {
 		super.onBrowserEvent(context, parent, value, event, valueUpdater);
 		if ("click".equals(event.getType())) {
 			onEnterKeyDown(context, parent, value, event, valueUpdater);
@@ -146,7 +142,7 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 	}
 	
 	@Override
-	public void render(Context context, BetweenExpression<Date> value, SafeHtmlBuilder sb) {
+	public void render(Context context, BetweenExpressionDTO value, SafeHtmlBuilder sb) {
 
 		sb.append(template.header(text));
 
@@ -171,7 +167,7 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 		}
 	}
 
-	private boolean handleDate(Context context, Element parent, BetweenExpression<Date> value, String suffix, ValueUpdater<BetweenExpression<Date>> valueUpdater, Date date) {
+	private boolean handleDate(Context context, Element parent, BetweenExpressionDTO value, String suffix, ValueUpdater<BetweenExpressionDTO> valueUpdater, Date date) {
 		if (hasFocus(FILTER_INPUT_PREFIX + value.getProperty() + suffix)) {
 			
 			this.lastKey = context.getKey();
@@ -200,18 +196,18 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 	}
 	
 	@Override
-	protected void onEnterKeyDown(Context context, Element parent, BetweenExpression<Date> value, NativeEvent event,
-			ValueUpdater<BetweenExpression<Date>> valueUpdater) {
+	protected void onEnterKeyDown(Context context, Element parent, BetweenExpressionDTO value, NativeEvent event,
+			ValueUpdater<BetweenExpressionDTO> valueUpdater) {
 
-		boolean filtered = handleDate(context, parent, value, FROM_SUFFIX, valueUpdater, value.getLoValue());
+		boolean filtered = handleDate(context, parent, value, FROM_SUFFIX, valueUpdater, value.getLoValue().getDateValue());
 
 		if (!filtered) {
-			filtered = handleDate(context, parent, value, TO_SUFFIX, valueUpdater, value.getHiValue());
+			filtered = handleDate(context, parent, value, TO_SUFFIX, valueUpdater, value.getHiValue().getDateValue());
 		}
 
 		if (!filtered) {
 			if (valueUpdater != null) {
-				BetweenExpression<Date> newExpression = new BetweenExpression<Date>();
+				BetweenExpressionDTO newExpression = new BetweenExpressionDTO();
 				newExpression.setProperty(value.getProperty());
 
 				valueUpdater.update(newExpression);
@@ -220,7 +216,7 @@ public class DateBoxFilterCell extends AbstractFilterableCell<BetweenExpression<
 	}
 
 	@Override
-	protected String valueToString(BetweenExpression<Date> value, int index) {
+	protected String valueToString(BetweenExpressionDTO value, int index) {
 		
 		switch (index) {
 		case 1:

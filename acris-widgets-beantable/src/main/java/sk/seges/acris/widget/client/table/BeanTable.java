@@ -18,16 +18,10 @@ import sk.seges.acris.widget.client.action.ActionListener;
 import sk.seges.acris.widget.client.advanced.DoubleTextBox;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
 import sk.seges.acris.widget.client.filterpanel.FilterPanelSpec;
-import sk.seges.sesam.dao.Conjunction;
-import sk.seges.sesam.dao.Criterion;
-import sk.seges.sesam.dao.Filter;
-import sk.seges.sesam.dao.IAsyncDataLoader;
-import sk.seges.sesam.dao.ICallback;
-import sk.seges.sesam.dao.Junction;
-import sk.seges.sesam.dao.Page;
-import sk.seges.sesam.dao.PagedResult;
-import sk.seges.sesam.dao.SimpleExpression;
-import sk.seges.sesam.dao.SortInfo;
+import sk.seges.sesam.service.remote.IAsyncDataRemoteLoader;
+import sk.seges.sesam.shared.model.api.PropertyHolder;
+import sk.seges.sesam.shared.model.dao.ICallback;
+import sk.seges.sesam.shared.model.dao.SortInfo;
 import sk.seges.sesam.domain.ValueHolder;
 
 import com.google.gwt.core.client.GWT;
@@ -74,6 +68,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
+import sk.seges.sesam.shared.model.dto.*;
 
 /**
  * @author ladislav.gazo
@@ -93,10 +88,10 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	private FilterPanelSpec advancedFilterPanel;
 
 	private List<String> projectables;
-	private ValueHolder<Criterion> filterableModel;
+	private ValueHolder<CriterionDTO> filterableModel;
 	private Set<ColumnDefinition<T, ?>> filterableColumnDefinitions = new HashSet<ColumnDefinition<T, ?>>();
-	private sk.seges.sesam.handler.ValueChangeHandler<Criterion> filterableListener;
-	private Set<Criterion> staticFilterables = new HashSet<Criterion>();
+	private sk.seges.sesam.handler.ValueChangeHandler<CriterionDTO> filterableListener;
+	private Set<CriterionDTO> staticFilterables = new HashSet<CriterionDTO>();
 	private Set<SortInfo> staticSortables = new HashSet<SortInfo>();
 	private List<Callback> additionalLoadCallbacks;
 	private boolean reloadOnEveryOnLoadCall = true;
@@ -191,7 +186,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	 */
 	protected abstract Class<?> getProjectableResult();
 
-	public BeanTable(IAsyncDataLoader<List<T>> loader) {
+	public BeanTable(IAsyncDataRemoteLoader<List<T>> loader) {
 		this();
 		setLoader(loader);
 	}
@@ -204,7 +199,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		return table;
 	}
 
-	public void setLoader(IAsyncDataLoader<List<T>> loader) {
+	public void setLoader(IAsyncDataRemoteLoader<List<T>> loader) {
 		model.setLoader(loader);
 	}
 
@@ -286,7 +281,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		}
 	}
 
-	public void addStaticFilterable(Criterion filterable) {
+	public void addStaticFilterable(CriterionDTO filterable) {
 		staticFilterables.add(filterable);
 	}
 
@@ -305,18 +300,18 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	private void reconstructFilterable() {
 		boolean skip = false;
 
-		Conjunction conjunction = Filter.conjunction();
+		ConjunctionDTO conjunction = FilterDTO.conjunction();
 		for (ColumnDefinition<T, ?> columnDefinition : filterableColumnDefinitions) {
 			FilterProperty filterProperty = columnDefinition.getColumnProperty(FilterProperty.TYPE);
-			Criterion filterable = filterProperty.getFilterable();
-			if (filterable instanceof SimpleExpression<?>) {
-				SimpleExpression<Comparable<? extends Serializable>> expr = (SimpleExpression<Comparable<? extends Serializable>>) filterable;
-				Comparable<? extends Serializable> value = (Comparable<? extends Serializable>) filterProperty.getWidget().getValue();
+			CriterionDTO filterable = filterProperty.getFilterable();
+			if (filterable instanceof SimpleExpressionDTO) {
+				SimpleExpressionDTO expr = (SimpleExpressionDTO) filterable;
+				Object value = filterProperty.getWidget().getValue();
 				if (value == null || (value instanceof String && "".equals(value))) {
 					// filter value not set
 					skip = true;
 				} else {
-					expr.setValue(value);
+					expr.setValue(new PropertyHolder(value));
 				}
 			}
 			if (!skip) {
@@ -325,7 +320,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 				skip = false;
 			}
 		}
-		for (Criterion staticFilterable : staticFilterables) {
+		for (CriterionDTO staticFilterable : staticFilterables) {
 			conjunction.add(staticFilterable);
 		}
 		if (null != advancedFilterPanel) {
@@ -334,9 +329,9 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		getFilterableModel().setValue(conjunction);
 	}
 
-	private ValueHolder<Criterion> getFilterableModel() {
+	private ValueHolder<CriterionDTO> getFilterableModel() {
 		if (filterableModel == null) {
-			setFilterableModel(new ValueHolder<Criterion>());
+			setFilterableModel(new ValueHolder<CriterionDTO>());
 		}
 		return filterableModel;
 	}
@@ -470,7 +465,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		projectables.add(property);
 	}
 
-	public void setFilterableModel(ValueHolder<Criterion> filterableModel) {
+	public void setFilterableModel(ValueHolder<CriterionDTO> filterableModel) {
 		if (this.filterableModel != null) {
 			this.filterableModel.removePropertyChangeListener(getFilterableListener());
 		}
@@ -478,12 +473,12 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		filterableModel.addPropertyChangeListener(getFilterableListener());
 	}
 
-	private sk.seges.sesam.handler.ValueChangeHandler<Criterion> getFilterableListener() {
+	private sk.seges.sesam.handler.ValueChangeHandler<CriterionDTO> getFilterableListener() {
 		if (filterableListener == null) {
-			filterableListener = new sk.seges.sesam.handler.ValueChangeHandler<Criterion>() {
+			filterableListener = new sk.seges.sesam.handler.ValueChangeHandler<CriterionDTO>() {
 				
 				@Override
-				public void onValueChanged(Criterion oldValue, Criterion newValue) {
+				public void onValueChanged(CriterionDTO oldValue, CriterionDTO newValue) {
 					// reload everytime filterable object changes
 					reload();
 				}
@@ -522,9 +517,9 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 	}
 
 	private class BeanTableModel<E> extends MutableTableModel<E> {
-		private IAsyncDataLoader<List<E>> loader;
+		private IAsyncDataRemoteLoader<List<E>> loader;
 
-		public void setLoader(IAsyncDataLoader<List<E>> loader) {
+		public void setLoader(IAsyncDataRemoteLoader<List<E>> loader) {
 			this.loader = loader;
 		}
 
@@ -548,12 +543,12 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			if (loader == null) {
 				return;
 			}
-			Page page = new Page(request.getStartRow(), request.getNumRows());
+			PageDTO page = new PageDTO(request.getStartRow(), request.getNumRows());
 			enrichWithSortables(request, page);
 			enrichWithProjectables(page);
 			enrichWithFilterable(page);
 
-			loader.load(page, new ICallback<PagedResult<List<E>>>() {
+			loader.load(page, new ICallback<PagedResultDTO<List<E>>>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					callback.onFailure(caught);
@@ -565,7 +560,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 				}
 
 				@Override
-				public void onSuccess(PagedResult<List<E>> result) {
+				public void onSuccess(PagedResultDTO<List<E>> result) {
 					SerializableResponse response = new SerializableResponse(result.getResult());
 					response.setRowCount(result.getTotalResultCount());
 					setRowCount(result.getTotalResultCount());
@@ -579,26 +574,26 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			});
 		}
 
-		private void enrichWithFilterable(Page page) {
+		private void enrichWithFilterable(PageDTO page) {
 			if (filterableModel == null && staticFilterables.size() == 0) {
 				return;
 			}
-			Criterion filterable = getFilterableModel().getValue();
+			CriterionDTO filterable = getFilterableModel().getValue();
 			if (staticFilterables.size() > 0) {
 				if (filterable == null) {
 					// no filter columns yet
-					filterable = Filter.conjunction();
+					filterable = FilterDTO.conjunction();
 				}
 				// add all static filterables
-				Junction junction = (Junction) filterable;
-				for (Criterion crit : staticFilterables) {
+				JunctionDTO junction = (JunctionDTO) filterable;
+				for (CriterionDTO crit : staticFilterables) {
 					junction.add(crit);
 				}
 			}
 			page.setFilterable(filterable);
 		}
 
-		private void enrichWithProjectables(Page page) {
+		private void enrichWithProjectables(PageDTO page) {
 			if (projectables == null) {
 				return;
 			}
@@ -606,11 +601,11 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			page.setProjectableResult(getProjectableResult().getName());
 		}
 
-		private void enrichWithSortables(final Request request, Page page) {
+		private void enrichWithSortables(final Request request, PageDTO page) {
 			if (request.getColumnSortList() == null) {
 				return;
 			}
-			Set<SortInfo> infoSet = new LinkedHashSet<SortInfo>();
+			List<SortInfo> infoSet = new ArrayList<SortInfo>();
 			for (ColumnSortInfo sortInfo : request.getColumnSortList()) {
 				ColumnDefinition<T, ?> columnDef = definition.getColumnDefinition(sortInfo.getColumn());
 				DomainObjectProperty domainObjectProperty = checkAndGetDomainObjectProperty(columnDef);
@@ -620,9 +615,15 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			for (SortInfo info : staticSortables) {
 				infoSet.add(info);
 			}
-			for (SortInfo sortInfo : infoSet) {
-				page.addSortable(sortInfo);
+
+			if (page.getSortables() == null) {
+				page.setSortables(infoSet);
+			} else {
+				page.getSortables().addAll(infoSet);
 			}
+//			for (SortInfo sortInfo : infoSet) {
+//				page.addSortable(sortInfo);
+//			}
 		}
 	}
 
@@ -687,7 +688,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		private Class<T> clazz = null;
 		private Map<T, String> enumMap = null;
 
-		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz, List<T> enumList) {
+		public FilterEnumProperty(Class<? extends Widget> widgetType, CriterionDTO filterable, Class<T> enumClazz, List<T> enumList) {
 			super(widgetType, filterable);
 			this.clazz = enumClazz;
 			enumMap = new HashMap<T, String>();
@@ -696,7 +697,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			}
 		}
 
-		public FilterEnumProperty(Class<? extends Widget> widgetType, Criterion filterable, Class<T> enumClazz, Map<T, String> enumMap) {
+		public FilterEnumProperty(Class<? extends Widget> widgetType, CriterionDTO filterable, Class<T> enumClazz, Map<T, String> enumMap) {
 			super(widgetType, filterable);
 			this.clazz = enumClazz;
 			this.enumMap = enumMap;
@@ -734,14 +735,14 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 		};
 
 		private final Class<? extends Widget> widgetType;
-		private final Criterion filterable;
+		private final CriterionDTO filterable;
 		private HasValue<?> widget;
 
 		public FilterProperty() {
 			this(null, null);
 		}
 
-		public FilterProperty(Class<? extends Widget> widgetType, Criterion filterable) {
+		public FilterProperty(Class<? extends Widget> widgetType, CriterionDTO filterable) {
 			this.widgetType = widgetType;
 			this.filterable = filterable;
 		}
@@ -757,7 +758,7 @@ public abstract class BeanTable<T> extends Composite implements HasDoubleClickHa
 			return widgetType;
 		}
 
-		public Criterion getFilterable() {
+		public CriterionDTO getFilterable() {
 			return filterable;
 		}
 

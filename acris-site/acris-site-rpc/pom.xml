@@ -44,7 +44,7 @@
 		</dependency>
 		<dependency>
             <groupId>sk.seges.corpis</groupId>
-            <artifactId>corpis-application-scaffold-local-service-data-interface-processor </artifactId>
+            <artifactId>corpis-application-scaffold-local-service-data-interface-processor</artifactId>
             <scope>provided</scope>
         </dependency>
 

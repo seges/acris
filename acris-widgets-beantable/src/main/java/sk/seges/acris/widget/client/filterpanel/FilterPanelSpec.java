@@ -1,11 +1,13 @@
 package sk.seges.acris.widget.client.filterpanel;
 
 import com.google.gwt.event.dom.client.ChangeHandler;
-
-import sk.seges.sesam.dao.Criterion;
+import sk.seges.sesam.shared.model.dto.CriterionDTO;
 
 public interface FilterPanelSpec {
-    public void setCommonChangeHandler(ChangeHandler handler);
-    public void removeCommonChangeHandler();
-    public Criterion constructSearchCriteria();
+
+	void setCommonChangeHandler(ChangeHandler handler);
+
+	void removeCommonChangeHandler();
+
+	CriterionDTO constructSearchCriteria();
 }

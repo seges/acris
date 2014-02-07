@@ -7,13 +7,15 @@ import java.util.ArrayList;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.shared.model.dto.PageDTO;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 
 /**
  * @author Peter Simun (simun@seges.sk)
  */
+@RemoteServiceDefinition
 public interface IGeneratorService extends RemoteService {
 
 	/**
@@ -31,5 +33,5 @@ public interface IGeneratorService extends RemoteService {
 	/**
 	 * Content provider services
 	 */
-	ArrayList<String> getAvailableNiceurls(Page page);
+	ArrayList<String> getAvailableNiceurls(PageDTO page);
 }

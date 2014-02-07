@@ -3,7 +3,7 @@
  */
 package sk.seges.acris.callbacks.client;
 
-import sk.seges.sesam.dao.ICallback;
+import sk.seges.sesam.shared.model.dao.ICallback;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

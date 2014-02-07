@@ -1,26 +1,24 @@
 package sk.seges.acris.widget.client.celltable.filterable;
 
-import java.io.Serializable;
-import java.util.List;
-
-import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
-import sk.seges.sesam.dao.SimpleExpression;
-
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.cellview.client.Header;
+import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
+import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
 
-public class FilterableSelectionHeader<T extends Comparable<? extends Serializable>> extends Header<SimpleExpression<T>> {
+import java.util.List;
 
-	private SimpleExpression<T> criteria;
+public class FilterableSelectionHeader extends Header<SimpleExpressionDTO> {
+
+	private SimpleExpressionDTO criteria;
 	
-	public FilterableSelectionHeader(ValueUpdater<SimpleExpression<T>> valueUpdate, SimpleExpression<T> criteria, Validator<T> validator, List<String> options, String text) {
-		super(new SelectionFilterColumn<T>(validator, options, text));
+	public FilterableSelectionHeader(ValueUpdater<SimpleExpressionDTO> valueUpdate, SimpleExpressionDTO criteria, Validator validator, List<String> options, String text) {
+		super(new SelectionFilterColumn(validator, options, text));
 		setUpdater(valueUpdate);
 		this.criteria = criteria;
 	}
 	
 	@Override
-	public SimpleExpression<T> getValue() {
+	public SimpleExpressionDTO getValue() {
 		return criteria;
 	}
 

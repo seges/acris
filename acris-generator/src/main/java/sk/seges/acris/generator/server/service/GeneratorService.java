@@ -1,10 +1,25 @@
 package sk.seges.acris.generator.server.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import sk.seges.acris.common.util.Tuple;
+import sk.seges.acris.core.server.utils.io.StringFile;
+import sk.seges.acris.generator.server.domain.TokenPersistentDataProvider;
+import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
+import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
+import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
+import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
+import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
+import sk.seges.acris.generator.server.service.persist.api.DataPersister;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.site.server.domain.api.ContentData;
+import sk.seges.acris.site.server.model.data.WebSettingsData;
+import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
+import sk.seges.sesam.dao.*;
+import sk.seges.sesam.pap.service.annotation.LocalService;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -17,34 +32,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import sk.seges.acris.common.util.Tuple;
-import sk.seges.acris.core.server.utils.io.StringFile;
-import sk.seges.acris.generator.server.domain.TokenPersistentDataProvider;
-import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
-import sk.seges.acris.generator.server.processor.ContentDataProvider;
-import sk.seges.acris.generator.server.processor.HTMLNodeSplitter;
-import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
-import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
-import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
-import sk.seges.acris.generator.server.service.persist.api.DataPersister;
-import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.generator.shared.service.IGeneratorService;
-import sk.seges.acris.site.server.domain.api.ContentData;
-import sk.seges.acris.site.server.model.data.WebSettingsData;
-import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
-import sk.seges.sesam.dao.Criterion;
-import sk.seges.sesam.dao.Disjunction;
-import sk.seges.sesam.dao.Junction;
-import sk.seges.sesam.dao.Page;
-import sk.seges.sesam.dao.SimpleExpression;
-
 /**
  * @author Peter Simun (simun@seges.sk)
  */
-public class GeneratorService implements IGeneratorService {
+@LocalService
+public class GeneratorService implements IGeneratorServiceLocal {
 
 	private HtmlProcessorFactory htmlProcessorFactory;
 	private IWebSettingsServiceLocal webSettingsService;

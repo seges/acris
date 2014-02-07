@@ -3,14 +3,22 @@
  */
 package sk.seges.acris.widget.rebind.table;
 
-import java.io.PrintWriter;
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.TreeLogger.Type;
+import com.google.gwt.core.ext.typeinfo.*;
+import com.google.gwt.dev.javac.typemodel.JDummyClassType;
+import com.google.gwt.dev.javac.typemodel.JMethodInstancer;
+import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
+import com.google.gwt.gen2.table.client.CellEditor;
+import com.google.gwt.gen2.table.client.CellRenderer;
+import com.google.gwt.i18n.client.Constants;
+import com.google.gwt.i18n.client.ConstantsWithLookup;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
+import com.google.gwt.user.rebind.SourceWriter;
 import sk.seges.acris.callbacks.client.CallbackAdapter;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
@@ -23,32 +31,14 @@ import sk.seges.acris.widget.client.table.BeanTable.FilterProperty;
 import sk.seges.acris.widget.client.table.FreeSpecLoader;
 import sk.seges.acris.widget.client.table.SpecColumn;
 import sk.seges.acris.widget.client.table.SpecParams;
-import sk.seges.sesam.dao.Criterion;
-import sk.seges.sesam.dao.Filter;
-import sk.seges.sesam.dao.Page;
-import sk.seges.sesam.dao.PagedResult;
+import sk.seges.sesam.shared.model.dto.CriterionDTO;
+import sk.seges.sesam.shared.model.dto.FilterDTO;
+import sk.seges.sesam.shared.model.dto.PageDTO;
+import sk.seges.sesam.shared.model.dto.PagedResultDTO;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.TreeLogger.Type;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.dev.javac.typemodel.JDummyClassType;
-import com.google.gwt.dev.javac.typemodel.JMethodInstancer;
-import com.google.gwt.gen2.table.client.AbstractColumnDefinition;
-import com.google.gwt.gen2.table.client.CellEditor;
-import com.google.gwt.gen2.table.client.CellRenderer;
-import com.google.gwt.i18n.client.Constants;
-import com.google.gwt.i18n.client.ConstantsWithLookup;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
-import com.google.gwt.user.rebind.SourceWriter;
+import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 /**
  * @author eldzi
@@ -238,9 +228,9 @@ public class BeanTableSpecCreator {
 		if (methods.length > 0) {
 			// source.println("AbstractColumnDefinition<" + beanTypeName +
 			// ", ?> columnDefinition;");
-			source.println("AbstractColumnDefinition columnDefinition;");
-			source.println("Criterion filterable;");
-			source.println(messagesTypeName() + " msgs = GWT.create(" + messagesTypeName() + ".class);");
+			source.println(AbstractColumnDefinition.class.getSimpleName() + " columnDefinition;");
+			source.println(CriterionDTO.class.getSimpleName() + " filterable;");
+			source.println(messagesTypeName() + " msgs = " + GWT.class.getSimpleName() + ".create(" + messagesTypeName() + ".class);");
 		}
 
 		for (JMethod method : methods) {
@@ -265,14 +255,14 @@ public class BeanTableSpecCreator {
 					+ loaderClassName + "Async>() {"); // acris-os
 			source.println("		@Override");
 			source.println("		protected void load(" + loaderClassName + "Async service, "
-					+ Page.class.getName() + " page,");
-			source.println("				" + CallbackAdapter.class.getName() + "<" + PagedResult.class.getName()
+					+ PageDTO.class.getName() + " page,");
+			source.println("				" + CallbackAdapter.class.getName() + "<" + PagedResultDTO.class.getName()
 					+ "<List<" + beanTypeName + ">>> callback) {");
 			source.println("			service." + loaderParams.loaderMethodName() + "(page, callback);");
 			source.println("		}");
 			source.println("		@Override");
 			source.println("		protected " + loaderClassName + "Async getService() {");
-			source.println("			" + loaderClassName + "Async service = GWT.create(" + loaderClassName
+			source.println("			" + loaderClassName + "Async service = " + GWT.class.getSimpleName() + ".create(" + loaderClassName
 					+ ".class);");
 			source.println("			((" + ServiceDefTarget.class.getCanonicalName()
 					+ ")service).setServiceEntryPoint(\"" + loaderParams.serviceEntryPoint() + "\");");
@@ -334,7 +324,7 @@ public class BeanTableSpecCreator {
 		if (dynamicTranslatorInit != null && dynamicTranslatorInit.length() > 1) {
 			source.println("	" + dynamicTranslatorInit);
 		}
-		source.println("columnDefinition = new AbstractColumnDefinition<" + beanTypeName + ", "
+		source.println("columnDefinition = new " + AbstractColumnDefinition.class.getSimpleName() + "<" + beanTypeName + ", "
 				+ propertyValueType + ">() {");
 		source.println("	@Override");
 		source.println("	public " + propertyValueType + " getCellValue(" + beanTypeName + " rowValue) {");
@@ -365,7 +355,7 @@ public class BeanTableSpecCreator {
 		source.println("};");
 
 		source
-				.println("columnDefinition.setColumnProperty(DomainObjectProperty.TYPE, new DomainObjectProperty(\""
+				.println("columnDefinition.setColumnProperty(" + DomainObjectProperty.class.getSimpleName() + ".TYPE, new " + DomainObjectProperty.class.getSimpleName() + "(\""
 						+ field + (propertyField == null ? "" : "." + propertyField) + "\"));");
 
 		if (specColumn != null) {
@@ -374,30 +364,30 @@ public class BeanTableSpecCreator {
 				if (filterOperation == null) {
 					throw new RuntimeException("Provide filter operation on field " + field);
 				}
-				source.println("filterable = Filter." + filterOperation + "(\"" + field
+				source.println("filterable = " + FilterDTO.class.getSimpleName() + "." + filterOperation + "(\"" + field
 						+ (propertyField == null ? "" : "." + propertyField) + "\");");
 				if (specColumn.filterWidgetType().equals(EnumListBoxWithValue.class)) {
 					String enumValues = Arrays.class.getName() + ".asList("
 							+ fieldType.getQualifiedSourceName() + ".values())";
 					if (isTranslatable) {
 						source.println(Map.class.getName() + "<" + fieldType.getQualifiedSourceName()
-								+ ", String> "+field+"EnumMap = new " + HashMap.class.getName() + "<"
+								+ ", String> " + field + "EnumMap = new " + HashMap.class.getName() + "<"
 								+ fieldType.getQualifiedSourceName() + ", String>();");
 						source.println("for(" + fieldType.getQualifiedSourceName() + " enum1 : " + enumValues
 								+ ") {");
-						source.indentln(field+"EnumMap.put(enum1, "+field+"DynamicTranslator.translate(enum1.name()));");
+						source.indentln(field + "EnumMap.put(enum1, " + field + "DynamicTranslator.translate(enum1.name()));");
 						source.println("}");
-						enumValues = field+"EnumMap";
+						enumValues = field + "EnumMap";
 					}
 					source
-							.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterEnumProperty("
+							.println("columnDefinition.setColumnProperty(" + FilterProperty.class.getSimpleName() + ".TYPE, new " + FilterEnumProperty.class.getSimpleName() + "("
 									+ specColumn.filterWidgetType().getName()
 									+ ".class, filterable, "
 									+ fieldType.getQualifiedSourceName() + ".class, " + enumValues + "));");
 
 				} else {
 					source
-							.println("columnDefinition.setColumnProperty(FilterProperty.TYPE, new FilterProperty("
+							.println("columnDefinition.setColumnProperty(" + FilterProperty.class.getSimpleName() + ".TYPE, new " + FilterProperty.class.getSimpleName() + "("
 									+ specColumn.filterWidgetType().getName() + ".class, filterable));");
 				}
 			}
@@ -468,10 +458,10 @@ public class BeanTableSpecCreator {
 		composer.addImport(BeanTable.class.getCanonicalName());
 		composer.addImport(FilterProperty.class.getCanonicalName());
 		composer.addImport(FilterEnumProperty.class.getCanonicalName());
-		composer.addImport(Criterion.class.getCanonicalName());
-		composer.addImport(Filter.class.getCanonicalName());
-		composer.addImport(Page.class.getCanonicalName());
-		composer.addImport(PagedResult.class.getCanonicalName());
+		composer.addImport(CriterionDTO.class.getCanonicalName());
+		composer.addImport(FilterDTO.class.getCanonicalName());
+		composer.addImport(PageDTO.class.getCanonicalName());
+		composer.addImport(PagedResultDTO.class.getCanonicalName());
 		composer.addImport(GWT.class.getCanonicalName());
 		composer.addImport(AbstractColumnDefinition.class.getCanonicalName());
 	}

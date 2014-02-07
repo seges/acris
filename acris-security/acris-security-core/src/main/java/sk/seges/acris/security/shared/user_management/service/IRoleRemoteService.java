@@ -3,8 +3,8 @@ package sk.seges.acris.security.shared.user_management.service;
 import java.util.List;
 
 import sk.seges.acris.security.shared.user_management.model.dto.SecurityRoleDTO;
-import sk.seges.sesam.dao.Page;
-import sk.seges.sesam.dao.PagedResult;
+import sk.seges.sesam.shared.model.dto.PageDTO;
+import sk.seges.sesam.shared.model.dto.PagedResultDTO;
 import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -16,7 +16,7 @@ public interface IRoleRemoteService extends RemoteService {
 
 	List<String> findSelectedPermissions(Integer roleId);
 
-	PagedResult<List<SecurityRoleDTO>> findAll(Page page);
+	PagedResultDTO<List<SecurityRoleDTO>> findAll(PageDTO page);
 
 	SecurityRoleDTO persist(SecurityRoleDTO role);
 

@@ -147,7 +147,7 @@ public class ReportExportDialogCreator {
 		@Override
 		public void onClick(ClickEvent event) {
 			downloadPanel.setVisible(false);
-			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			Map<String, String> paramsMap = new HashMap<String, String>();
 			List<String> notInsertedValues = new ArrayList<String>();
 			for (IParameterTypePanel<?> w : paramWidgets) {
 				Object value = w.getValue();
@@ -257,7 +257,7 @@ public class ReportExportDialogCreator {
 	}
 
 	/**/
-	protected void doExport(final ReportDescriptionData report, final Panel downloadPanel, Map<String, Object> paramsMap) {
+	protected void doExport(final ReportDescriptionData report, final Panel downloadPanel, Map<String, String> paramsMap) {
 		imagePanel.setVisible(true);
 		// if (EReportExportType.HTML.equals(exportTypeListBox.getValue())) {
 		// reportingService.exportReportToHtml(report.getId(), paramsMap, new

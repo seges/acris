@@ -16,9 +16,9 @@ import sk.seges.acris.generator.client.configuration.GeneratorConfiguration;
 import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
-import sk.seges.sesam.dao.Conjunction;
-import sk.seges.sesam.dao.Filter;
-import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.shared.model.dto.ConjunctionDTO;
+import sk.seges.sesam.shared.model.dto.FilterDTO;
+import sk.seges.sesam.shared.model.dto.PageDTO;
 
 import java.util.ArrayList;
 
@@ -67,10 +67,10 @@ public class ContentInterceptor {
 		
 		GeneratorToken currentToken = generatorEnvironment.getTokensCache().getDefaultToken();
 
-		Page page = new Page(startIndex, pageSize);
-		Conjunction conjunction = Filter.conjunction();
-		conjunction.add(Filter.eq("id.webId").setValue(currentToken.getWebId()));
-		conjunction.add(Filter.eq("id.language").setValue(currentToken.getLanguage()));
+		PageDTO page = new PageDTO(startIndex, pageSize);
+		ConjunctionDTO conjunction = FilterDTO.conjunction();
+		conjunction.add(FilterDTO.eq("id.webId", currentToken.getWebId()));
+		conjunction.add(FilterDTO.eq("id.language", currentToken.getLanguage()));
 		page.setFilterable(conjunction);
 		
 		generatorService.getAvailableNiceurls(page, new AsyncCallback<ArrayList<String>>() {

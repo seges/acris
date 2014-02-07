@@ -41,6 +41,10 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-security-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-service-converter-api</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

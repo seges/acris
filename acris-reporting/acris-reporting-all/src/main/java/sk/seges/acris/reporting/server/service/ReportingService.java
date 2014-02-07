@@ -41,7 +41,7 @@ import sk.seges.acris.reporting.shared.service.IReportingService;
  * @author marta
  * 
  */
-public class ReportingService implements IReportingService {
+public class ReportingService implements IReportingLocalService {
 
 	private static final String OUTPUT = "output";
 
@@ -62,7 +62,7 @@ public class ReportingService implements IReportingService {
 
 	@Transactional
 	@Override
-	public String exportReportToHtml(Long reportDescriptionId, Map<String, Object> parameters) {
+	public String exportReportToHtml(Long reportDescriptionId, Map<String, String> parameters) {
 		ReportDescriptionData report = reportDescriptionService.findById(reportDescriptionId);
 		WSClient client = new WSClient(configuration.getJasperServerUrl() + "/services/repository",
 				configuration.getJasperServerUser(), configuration.getJasperServerPassword());
@@ -92,13 +92,13 @@ public class ReportingService implements IReportingService {
 	
 	@Override
 	@Transactional
-	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters,
+	public String exportReport(Long reportDescriptionId, String exportType, Map<String, String> parameters,
 			String web_id) {
-		return exportReport(reportDescriptionId, exportType, parameters, web_id, "report" + "_" + new Date().getTime());
+		return exportReport(reportDescriptionId, exportType, (Map)parameters, web_id, "report" + "_" + new Date().getTime());
 	}
 	
 	@Override
-	public String exportReport(Long reportDescriptionId, String exportType, 	Map<String, Object> parameters, 
+	public String exportReport(Long reportDescriptionId, String exportType, Map<String, Object> parameters,
 			String webId, String reportName) {
 
 		ReportDescriptionData report = reportDescriptionService.findById(reportDescriptionId);

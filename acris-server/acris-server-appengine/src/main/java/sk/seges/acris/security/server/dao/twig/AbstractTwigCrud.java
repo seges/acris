@@ -10,7 +10,7 @@ import sk.seges.sesam.dao.ICrudDAO;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.dao.SimpleExpression;
-import sk.seges.sesam.dao.SortInfo;
+import sk.seges.sesam.shared.model.dao.SortInfo;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 import com.google.appengine.api.datastore.Key;

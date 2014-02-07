@@ -1,32 +1,5 @@
 package sk.seges.acris.widget.client.celltable;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import sk.seges.acris.common.util.Triple;
-import sk.seges.acris.widget.client.celltable.filterable.FilterableDateHeader;
-import sk.seges.acris.widget.client.celltable.filterable.FilterableSelectionHeader;
-import sk.seges.acris.widget.client.celltable.filterable.FilterableTextHeader;
-import sk.seges.acris.widget.client.celltable.formatter.CellFormatter;
-import sk.seges.acris.widget.client.celltable.formatter.DateCellFormatter;
-import sk.seges.acris.widget.client.celltable.renderer.CellRenderer;
-import sk.seges.acris.widget.client.celltable.renderer.RowRenderer;
-import sk.seges.acris.widget.client.celltable.resource.PagerResources;
-import sk.seges.acris.widget.client.celltable.resource.TableResources;
-import sk.seges.sesam.dao.BetweenExpression;
-import sk.seges.sesam.dao.Conjunction;
-import sk.seges.sesam.dao.Criterion;
-import sk.seges.sesam.dao.Filter;
-import sk.seges.sesam.dao.Page;
-import sk.seges.sesam.dao.SimpleExpression;
-import sk.seges.sesam.dao.SortInfo;
-
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -37,24 +10,30 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortList;
+import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.cellview.client.ColumnSortList.ColumnSortInfo;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
-import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.Range;
-import com.google.gwt.view.client.RangeChangeEvent;
+import com.google.gwt.view.client.*;
 import com.google.gwt.view.client.RangeChangeEvent.Handler;
-import com.google.gwt.view.client.SelectionModel;
-import com.google.gwt.view.client.SingleSelectionModel;
+import sk.seges.acris.common.util.Triple;
+import sk.seges.acris.widget.client.celltable.filterable.FilterableDateHeader;
+import sk.seges.acris.widget.client.celltable.filterable.FilterableSelectionHeader;
+import sk.seges.acris.widget.client.celltable.filterable.FilterableTextHeader;
+import sk.seges.acris.widget.client.celltable.formatter.CellFormatter;
+import sk.seges.acris.widget.client.celltable.formatter.DateCellFormatter;
+import sk.seges.acris.widget.client.celltable.renderer.CellRenderer;
+import sk.seges.acris.widget.client.celltable.renderer.RowRenderer;
+import sk.seges.acris.widget.client.celltable.resource.PagerResources;
+import sk.seges.acris.widget.client.celltable.resource.TableResources;
+import sk.seges.sesam.shared.model.api.PropertyHolder;
+import sk.seges.sesam.shared.model.dao.SortInfo;
+import sk.seges.sesam.shared.model.dto.*;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class AbstractFilterableTable<T> extends CellTable<T> {
 
@@ -76,11 +55,11 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	protected boolean sortable = true;
 	protected boolean filterable = true;
 
-	private Page filter = new Page(0, DEFAULT_PAGE_SIZE);
+	private PageDTO filter = new PageDTO(0, DEFAULT_PAGE_SIZE);
 
 	private static final int DEFAULT_PAGE_SIZE = 10;
 
-	private Map<String, SimpleExpression<?>> filterValues = new HashMap<String, SimpleExpression<?>>();
+	private Map<String, SimpleExpressionDTO> filterValues = new HashMap<String, SimpleExpressionDTO>();
 	private Map<Column<?, ?>, String> columnProperties = new HashMap<Column<?, ?>, String>();
 	
 	protected boolean selectedAllChecked = false;
@@ -181,7 +160,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		}
 	}
 
-	public Criterion getDefaultCriteria() {
+	public CriterionDTO getDefaultCriteria() {
 		return null;
 	}
 
@@ -243,28 +222,28 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 
 	public void addDateColumn(final Column<T, ?> column, int width, String text, String property,
-			Validator<Date> dateValidator, Triple<Button, Integer, ClickHandler> footerButton) {
+			Validator dateValidator, Triple<Button, Integer, ClickHandler> footerButton) {
 
 		initializeColumn(column, property);
 
 		final DateFilter dateFilter = new DateFilter(dateValidator);
 
-		ValueUpdater<BetweenExpression<Date>> dateUpdater = new ValueUpdater<BetweenExpression<Date>>() {
+		ValueUpdater<BetweenExpressionDTO> dateUpdater = new ValueUpdater<BetweenExpressionDTO>() {
 			@Override
-			public void update(BetweenExpression<Date> value) {
+			public void update(BetweenExpressionDTO value) {
 				handleFilterValueChange(dateFilter, value, column);
 			}
 		};
 
 		@SuppressWarnings("unchecked")
-		BetweenExpression<Date> simpleExpression = (BetweenExpression<Date>) filterValues.get(property);
+		BetweenExpressionDTO simpleExpression = (BetweenExpressionDTO) filterValues.get(property);
 
 		Date defaultLoVal = null;
 		Date defaultHiVal = null;
 
 		if (simpleExpression != null) {
-			defaultLoVal = simpleExpression.getLoValue();
-			defaultHiVal = simpleExpression.getHiValue();
+			defaultLoVal = simpleExpression.getLoValue().getDateValue();
+			defaultHiVal = simpleExpression.getHiValue().getDateValue();
 		}
 
 		addColumnWithDateHeader(column, text, property, dateValidator, defaultLoVal, defaultHiVal, dateFilter, dateUpdater, footerButton);
@@ -272,28 +251,28 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public void addFooterWidgetDateColumn(final Column<T, ?> column, int width, String text, String property,
-			Validator<Date> dateValidator, Widget footerWidget) {
+			Validator dateValidator, Widget footerWidget) {
 
 		initializeColumn(column, property);
 
 		final DateFilter dateFilter = new DateFilter(dateValidator);
 
-		ValueUpdater<BetweenExpression<Date>> dateUpdater = new ValueUpdater<BetweenExpression<Date>>() {
+		ValueUpdater<BetweenExpressionDTO> dateUpdater = new ValueUpdater<BetweenExpressionDTO>() {
 			@Override
-			public void update(BetweenExpression<Date> value) {
+			public void update(BetweenExpressionDTO value) {
 				handleFilterValueChange(dateFilter, value, column);
 			}
 		};
 
 		@SuppressWarnings("unchecked")
-		BetweenExpression<Date> simpleExpression = (BetweenExpression<Date>) filterValues.get(property);
+		BetweenExpressionDTO simpleExpression = (BetweenExpressionDTO) filterValues.get(property);
 
 		Date defaultLoVal = null;
 		Date defaultHiVal = null;
 
 		if (simpleExpression != null) {
-			defaultLoVal = simpleExpression.getLoValue();
-			defaultHiVal = simpleExpression.getHiValue();
+			defaultLoVal = simpleExpression.getLoValue().getDateValue();
+			defaultHiVal = simpleExpression.getHiValue().getDateValue();
 		}
 
 		addFooterWidgetColumnWithDateHeader(column, text, property, dateValidator, defaultLoVal, defaultHiVal, dateFilter, dateUpdater, footerWidget);
@@ -301,10 +280,10 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	protected void addColumnWithDateHeader(Column<T, ?> column, String text, String property,
-			Validator<Date> dateValidator, Date defaultLoVal, Date defaultHiVal, DateFilter dateFilter, ValueUpdater<BetweenExpression<Date>> dateUpdater, 
+			Validator dateValidator, Date defaultLoVal, Date defaultHiVal, DateFilter dateFilter, ValueUpdater<BetweenExpressionDTO> dateUpdater,
 			Triple<Button, Integer, ClickHandler> footerButton){
 		FilterableDateHeader filterableDateHeader = new FilterableDateHeader(dateUpdater, dateFilter.getCriterion(
-				property, defaultLoVal, defaultHiVal), dateValidator, text);
+				property, new PropertyHolder(defaultLoVal), new PropertyHolder(defaultHiVal)), dateValidator, text);
 		if(filterable){
 			addColumn(column, filterableDateHeader);
 		}else{
@@ -313,10 +292,10 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	protected void addFooterWidgetColumnWithDateHeader(Column<T, ?> column, String text, String property,
-			Validator<Date> dateValidator, Date defaultLoVal, Date defaultHiVal, DateFilter dateFilter, ValueUpdater<BetweenExpression<Date>> dateUpdater, 
+			Validator dateValidator, Date defaultLoVal, Date defaultHiVal, DateFilter dateFilter, ValueUpdater<BetweenExpressionDTO> dateUpdater,
 			Widget footerWidget){
 		FilterableDateHeader filterableDateHeader = new FilterableDateHeader(dateUpdater, dateFilter.getCriterion(
-				property, defaultLoVal, defaultHiVal), dateValidator, text);
+				property, new PropertyHolder(defaultLoVal), new PropertyHolder(defaultHiVal)), dateValidator, text);
 		if(filterable){
 			addColumn(column, filterableDateHeader);
 		}else{
@@ -350,36 +329,36 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public <F extends Comparable<? extends Serializable>> void addFooterWidgetTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator<F> validator, Widget footerWidget) {
-		addFooterWidgetTextColumn(column, width, text, property, validator, Filter.EQ, footerWidget);
+			String text, String property, Validator validator, Widget footerWidget) {
+		addFooterWidgetTextColumn(column, width, text, property, validator, FilterDTO.EQ, footerWidget);
 	}
 
 	public <F extends Comparable<? extends Serializable>> void addTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator<F> validator, Triple<Button, Integer, ClickHandler> footerButton) {
-		addTextColumn(column, width, text, property, validator, Filter.EQ, footerButton);
+			String text, String property, Validator validator, Triple<Button, Integer, ClickHandler> footerButton) {
+		addTextColumn(column, width, text, property, validator, FilterDTO.EQ, footerButton);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <F extends Comparable<? extends Serializable>> void addTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator<F> validator, String operator, Triple<Button, Integer, ClickHandler> footerButton) {
+			String text, String property, Validator validator, String operator, Triple<Button, Integer, ClickHandler> footerButton) {
 
 		initializeColumn(column, property);
 
-		final InputFilter<F> textFilter = new InputFilter<F>(validator, operator);
+		final InputFilter textFilter = new InputFilter(validator, operator);
 
-		ValueUpdater<SimpleExpression<F>> columnUpdater = new ValueUpdater<SimpleExpression<F>>() {
+		ValueUpdater<SimpleExpressionDTO> columnUpdater = new ValueUpdater<SimpleExpressionDTO>() {
 			@Override
-			public void update(SimpleExpression<F> value) {
+			public void update(SimpleExpressionDTO value) {
 				handleFilterValueChange(textFilter, value, column);
 			}
 		};
 
-		SimpleExpression<F> simpleExpression = (SimpleExpression<F>) filterValues.get(property);
+		SimpleExpressionDTO simpleExpression = filterValues.get(property);
 
 		F defaultVal = null;
 
 		if (simpleExpression != null) {
-			defaultVal = simpleExpression.getValue();
+			defaultVal = (F) simpleExpression.getValue().getValue();
 		}
 
 		addColumnWithTextHeader(column, text, property, validator, textFilter, defaultVal, columnUpdater, footerButton);
@@ -389,25 +368,25 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	@SuppressWarnings("unchecked")
 	public <F extends Comparable<? extends Serializable>> void addFooterWidgetTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator<F> validator, String operator, Widget footerWidget) {
+			String text, String property, Validator validator, String operator, Widget footerWidget) {
 
 		initializeColumn(column, property);
 
-		final InputFilter<F> textFilter = new InputFilter<F>(validator, operator);
+		final InputFilter textFilter = new InputFilter(validator, operator);
 
-		ValueUpdater<SimpleExpression<F>> columnUpdater = new ValueUpdater<SimpleExpression<F>>() {
+		ValueUpdater<SimpleExpressionDTO> columnUpdater = new ValueUpdater<SimpleExpressionDTO>() {
 			@Override
-			public void update(SimpleExpression<F> value) {
+			public void update(SimpleExpressionDTO value) {
 				handleFilterValueChange(textFilter, value, column);
 			}
 		};
 
-		SimpleExpression<F> simpleExpression = (SimpleExpression<F>) filterValues.get(property);
+		SimpleExpressionDTO simpleExpression = filterValues.get(property);
 
 		F defaultVal = null;
 
 		if (simpleExpression != null) {
-			defaultVal = simpleExpression.getValue();
+			defaultVal = (F) simpleExpression.getValue().getValue();
 		}
 
 		addFooterWidgetColumnWithTextHeader(column, text, property, validator, textFilter, defaultVal, columnUpdater, footerWidget);
@@ -417,54 +396,53 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	
 	@SuppressWarnings("unchecked")
-	protected <F extends Comparable<? extends Serializable>> void addColumnWithTextHeader(Column<T, ?> column, String text, String property, 
-			Validator<F> validator, InputFilter<F> textFilter, F defaultVal, ValueUpdater<SimpleExpression<F>> columnUpdater, Triple<Button, Integer, ClickHandler> footerButton){
+	protected <F extends Comparable<? extends Serializable>> void addColumnWithTextHeader(Column<T, ?> column, String text, String property,
+			Validator validator, InputFilter textFilter, F defaultVal, ValueUpdater<SimpleExpressionDTO> columnUpdater, Triple<Button, Integer, ClickHandler> footerButton){
 		if(filterable){
-			addColumn(column, new FilterableTextHeader<F>(columnUpdater,
-					textFilter.getCriterion(property, defaultVal), validator, text));
+			addColumn(column, new FilterableTextHeader(columnUpdater,
+					textFilter.getCriterion(property, new PropertyHolder(defaultVal)), validator, text));
 		}else{
 			addColumn(column, new TextHeader(text));
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <F extends Comparable<? extends Serializable>> void addFooterWidgetColumnWithTextHeader(Column<T, ?> column, String text, String property, 
-			Validator<F> validator, InputFilter<F> textFilter, F defaultVal, ValueUpdater<SimpleExpression<F>> columnUpdater, Widget footerWidget) {
+	protected <F extends Comparable<? extends Serializable>> void addFooterWidgetColumnWithTextHeader(Column<T, ?> column, String text, String property,
+			Validator validator, InputFilter textFilter, F defaultVal, ValueUpdater<SimpleExpressionDTO> columnUpdater, Widget footerWidget) {
 		if(filterable){
-			addColumn(column, new FilterableTextHeader<F>(columnUpdater,
-					textFilter.getCriterion(property, defaultVal), validator, text));
+			addColumn(column, new FilterableTextHeader(columnUpdater, textFilter.getCriterion(property, new PropertyHolder(defaultVal)), validator, text));
 		}else{
 			addColumn(column, new TextHeader(text));
 		}
 	}
 	
-	public <F extends Enum<?>> void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, Validator<F> validator, Triple<Button, Integer, ClickHandler> footerButton, 
+	public void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
+			String property, List<String> options, Validator validator, Triple<Button, Integer, ClickHandler> footerButton,
 			int columnIndex) {
-		addEnumeratedColumn(column, width, text, property, options, validator, Filter.EQ, footerButton, columnIndex);
+		addEnumeratedColumn(column, width, text, property, options, validator, FilterDTO.EQ, footerButton, columnIndex);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <F extends Enum<?>> void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, Validator<F> validator, String operation, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
+	public void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
+			String property, List<String> options, Validator validator, String operation, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
 
 		initializeColumn(column, property);
 
-		final InputFilter<F> textFilter = new InputFilter<F>(validator, operation/*Filter.EQ*/);
+		final InputFilter textFilter = new InputFilter(validator, operation/*Filter.EQ*/);
 
-		ValueUpdater<SimpleExpression<F>> columnUpdater = new ValueUpdater<SimpleExpression<F>>() {
+		ValueUpdater<SimpleExpressionDTO> columnUpdater = new ValueUpdater<SimpleExpressionDTO>() {
 			@Override
-			public void update(SimpleExpression<F> value) {
+			public void update(SimpleExpressionDTO value) {
 				handleFilterValueChange(textFilter, value, column);
 			}
 		};
 
-		SimpleExpression<F> simpleExpression = (SimpleExpression<F>) filterValues.get(property);
+		SimpleExpressionDTO simpleExpression = filterValues.get(property);
 
-		F defaultVal = null;
+		String defaultVal = null;
 
 		if (simpleExpression != null) {
-			defaultVal = simpleExpression.getValue();
+			defaultVal = simpleExpression.getValue().getStringValue();
 		}
 		addColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, validator, text, defaultVal, footerButton, columnIndex);
 		
@@ -473,29 +451,25 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected <F extends Enum<?>> void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpression<F>> columnUpdater, 
-			InputFilter<F> textFilter, String property, List<String> options, Validator<F> validator, String text, F defaultVal, Triple<Button, Integer, ClickHandler> footerButton, 
+	protected <F extends Enum<?>> void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
+			InputFilter textFilter, String property, List<String> options, Validator validator, String text, String defaultVal, Triple<Button, Integer, ClickHandler> footerButton,
 			int columnIndex){
 		if(filterable){
-//			addColumn(column,
-//					new FilterableSelectionHeader<F>(columnUpdater, textFilter.getCriterion(property, defaultVal),
-//							validator, options, text));
-			insertColumn(columnIndex, column, new FilterableSelectionHeader<F>(columnUpdater, textFilter.getCriterion(property, defaultVal),
+			insertColumn(columnIndex, column, new FilterableSelectionHeader(columnUpdater, textFilter.getCriterion(property, new PropertyHolder(defaultVal)),
 							validator, options, text));
 		}else{
-//			addColumn(column, new TextHeader(text));
 			insertColumn(columnIndex, column, new TextHeader(text));
 		}
 	}
 	
 	public void addSelectionColumn(final Column<T, ?> column, int width, String text,
 			String property, List<String> options, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
-		addSelectionColumn(column, width, text, property, options, Filter.EQ, footerButton, columnIndex);
+		addSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerButton, columnIndex);
 	}
 	
 	public void addFooterWidgetSelectionColumn(final Column<T, ?> column, int width, String text,
 			String property, List<String> options, Widget footerWidget) {
-		addFooterWidgetSelectionColumn(column, width, text, property, options, Filter.EQ, footerWidget);
+		addFooterWidgetSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerWidget);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -506,19 +480,19 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		final SelectionFilter textFilter = new SelectionFilter(operation/*Filter.EQ*/);
 
-		ValueUpdater<SimpleExpression<String>> columnUpdater = new ValueUpdater<SimpleExpression<String>>() {
+		ValueUpdater<SimpleExpressionDTO> columnUpdater = new ValueUpdater<SimpleExpressionDTO>() {
 			@Override
-			public void update(SimpleExpression<String> value) {
+			public void update(SimpleExpressionDTO value) {
 				handleFilterValueChange(null, value, column);
 			}
 		};
 
-		SimpleExpression<String> simpleExpression = (SimpleExpression<String>) filterValues.get(property);
+		SimpleExpressionDTO simpleExpression = (SimpleExpressionDTO) filterValues.get(property);
 
 		String defaultVal = null;
 
 		if (simpleExpression != null) {
-			defaultVal = simpleExpression.getValue();
+			defaultVal = simpleExpression.getValue().getStringValue();
 		}
 		addColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerButton, columnIndex);
 		
@@ -534,19 +508,19 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		final SelectionFilter textFilter = new SelectionFilter(operation/*Filter.EQ*/);
 
-		ValueUpdater<SimpleExpression<String>> columnUpdater = new ValueUpdater<SimpleExpression<String>>() {
+		ValueUpdater<SimpleExpressionDTO> columnUpdater = new ValueUpdater<SimpleExpressionDTO>() {
 			@Override
-			public void update(SimpleExpression<String> value) {
+			public void update(SimpleExpressionDTO value) {
 				handleFilterValueChange(null, value, column);
 			}
 		};
 
-		SimpleExpression<String> simpleExpression = (SimpleExpression<String>) filterValues.get(property);
+		SimpleExpressionDTO simpleExpression = filterValues.get(property);
 
 		String defaultVal = null;
 
 		if (simpleExpression != null) {
-			defaultVal = simpleExpression.getValue();
+			defaultVal = simpleExpression.getValue().getStringValue();
 		}
 		addFooterWidgetColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerWidget);
 		
@@ -554,41 +528,37 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		column.setSortable(sortable);
 	}
 	
-	protected void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpression<String>> columnUpdater, 
+	protected void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
 			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal, Triple<Button, Integer, ClickHandler> footerButton, 
 			int columnIndex){
 		if(filterable){
-//			addColumn(column,
-//					new FilterableSelectionHeader<String>(columnUpdater, textFilter.getCriterion(property, defaultVal),
-//							new StringValidator(), options, text));
-			insertColumn(columnIndex, column, new FilterableSelectionHeader<String>(columnUpdater, textFilter.getCriterion(property, defaultVal),
+			insertColumn(columnIndex, column, new FilterableSelectionHeader(columnUpdater, textFilter.getCriterion(property, defaultVal),
 							new StringValidator(), options, text));
 		}else{
-//			addColumn(column, new TextHeader(text));
 			insertColumn(columnIndex, column, new TextHeader(text));
 		}
 	}
 	
-	protected void addFooterWidgetColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpression<String>> columnUpdater, 
+	protected void addFooterWidgetColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
 			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal, Widget footerWidget){
 		if(filterable){
 			addColumn(column,
-					new FilterableSelectionHeader<String>(columnUpdater, textFilter.getCriterion(property, defaultVal),
+					new FilterableSelectionHeader(columnUpdater, textFilter.getCriterion(property, defaultVal),
 							new StringValidator(), options, text));
 		}else{
 			addColumn(column, new TextHeader(text));
 		}
 	}
 
-	public interface Validator<F extends Comparable<? extends Serializable>> {
+	public interface Validator {
 
 		boolean isEmpty(String value);
 
 		boolean isValid(String value);
 
-		F getValue(String value);
+		PropertyHolder getValue(String value);
 
-		String toString(F f);
+		String toString(PropertyHolder f);
 	}
 
 	protected class SelectionFilter{
@@ -599,41 +569,42 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			this.operation = operation;
 		}
 
-		public SimpleExpression<String> getCriterion(String property, String... vals) {
+		public SimpleExpressionDTO getCriterion(String property, String... vals) {
 			if (vals == null || vals.length == 0) {
-				return new SimpleExpression<String>(property, null, operation);
+				return new SimpleExpressionDTO(property, operation, new PropertyHolder());
 			}
-			return new SimpleExpression<String>(property, vals[0], operation);
+			return new SimpleExpressionDTO(property, operation, new PropertyHolder(vals[0]));
 		}
 
-		public SimpleExpression<String> setValue(SimpleExpression<String> expression, String[] values) {
+		public SimpleExpressionDTO setValue(SimpleExpressionDTO expression, String[] values) {
 			String value = null;
 
 			if (values.length > 0) {
 				value = values[0];
 			}
-			return expression.setValue(value.toString());
+			expression.setValue(new PropertyHolder(value.toString()));
+			return expression;
 		}
 	}
 	
-	protected class InputFilter<F extends Comparable<? extends Serializable>>{
+	protected class InputFilter {
 
-		protected final Validator<F> validator;
+		protected final Validator validator;
 		protected final String operation;
 
-		public InputFilter(Validator<F> validator, String operation) {
+		public InputFilter(Validator validator, String operation) {
 			this.validator = validator;
 			this.operation = operation;
 		}
 
-		public SimpleExpression<F> getCriterion(String property, F... vals) {
+		public SimpleExpressionDTO getCriterion(String property, PropertyHolder... vals) {
 			if (vals == null || vals.length == 0) {
-				return new SimpleExpression<F>(property, null, operation);
+				return new SimpleExpressionDTO(operation, property, null);
 			}
-			return new SimpleExpression<F>(property, vals[0], operation);
+			return new SimpleExpressionDTO(operation, property, vals[0]);
 		}
 
-		public SimpleExpression<F> setValue(SimpleExpression<F> expression, String[] values) {
+		public SimpleExpressionDTO setValue(SimpleExpressionDTO expression, String[] values) {
 			String value = null;
 
 			if (values.length > 0) {
@@ -641,10 +612,12 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			}
 
 			if (validator.isEmpty(value)) {
-				return expression.setValue(null);
+				expression.setValue(new PropertyHolder());
+				return expression;
 			}
 			if (validator.isValid(value)) {
-				return expression.setValue(validator.getValue(value));
+				expression.setValue(new PropertyHolder(validator.getValue(value)));
+				return expression;
 			}
 
 			return null;
@@ -652,14 +625,14 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	}
 
-	public static abstract class AbstractValidator<F extends Comparable<? extends Serializable>> implements Validator<F> {
+	public static abstract class AbstractValidator implements Validator {
 		@Override
 		public boolean isEmpty(String value) {
 			return value == null || value.isEmpty();
 		}
 	}
 
-	public class DateValidator extends AbstractValidator<Date> {
+	public class DateValidator extends AbstractValidator {
 
 		private DateTimeFormat format;
 
@@ -682,18 +655,17 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		}
 
 		@Override
-		public Date getValue(String value) {
-			return format.parse(value);
+		public PropertyHolder getValue(String value) {
+			return new PropertyHolder().setValue(format.parse(value));
 		}
 
 		@Override
-		public String toString(Date f) {
-			return format.format(f);
+		public String toString(PropertyHolder f) {
+			return format.format(f.getDateValue());
 		}
-
 	}
 
-	public class StringValidator extends AbstractValidator<String> {
+	public class StringValidator extends AbstractValidator {
 
 		@Override
 		public boolean isValid(String value) {
@@ -701,20 +673,20 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		}
 
 		@Override
-		public String getValue(String value) {
-			return value;
+		public PropertyHolder getValue(String value) {
+			return new PropertyHolder(value);
 		}
 
 		@Override
-		public String toString(String f) {
+		public String toString(PropertyHolder f) {
 			if (f == null) {
 				return "";
 			}
-			return f;
+			return f.getStringValue();
 		}
 	}
 
-	public class LongValidator extends AbstractValidator<Long> {
+	public class LongValidator extends AbstractValidator {
 
 		@Override
 		public boolean isValid(String value) {
@@ -727,54 +699,53 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		}
 
 		@Override
-		public Long getValue(String value) {
-			return Long.valueOf(value);
+		public PropertyHolder getValue(String value) {
+			return new PropertyHolder(Long.valueOf(value));
 		}
 
 		@Override
-		public String toString(Long f) {
+		public String toString(PropertyHolder f) {
 			if (f == null) {
 				return "";
 			}
-			return f.toString();
+			return f.getLongValue().toString();
 		}
-
 	}
 
-	protected class DateFilter extends InputFilter<Date> {
+	protected class DateFilter extends InputFilter {
 
-		public DateFilter(Validator<Date> validator) {
+		public DateFilter(Validator validator) {
 			super(validator, null);
 		}
 
 		@Override
-		public BetweenExpression<Date> getCriterion(String property, Date... dates) {
-			Date low = (dates != null && dates.length > 0) ? dates[0] : null;
-			Date high = (dates != null && dates.length > 1) ? dates[1] : null;
+		public BetweenExpressionDTO getCriterion(String property, PropertyHolder... dates) {
+			Date low = (dates != null && dates.length > 0) ? dates[0].getDateValue() : null;
+			Date high = (dates != null && dates.length > 1) ? dates[1].getDateValue() : null;
 
-			return Filter.between(property, low, high);
+			return FilterDTO.between(property, low, high);
 		}
 
 		@Override
-		public SimpleExpression<Date> setValue(SimpleExpression<Date> expression, String[] values) {
+		public SimpleExpressionDTO setValue(SimpleExpressionDTO expression, String[] values) {
 
 			String low = (values != null && values.length > 0) ? values[0] : null;
 			String high = (values != null && values.length > 1) ? values[1] : null;
 
-			Date lowDate = low != null ? validator.getValue(low) : null;
-			Date hightDate = high != null ? validator.getValue(high) : null;
+			Date lowDate = low != null ? validator.getValue(low).getDateValue() : null;
+			Date hightDate = high != null ? validator.getValue(high).getDateValue() : null;
 
-			if (expression instanceof BetweenExpression) {
-				((BetweenExpression<Date>) expression).setLoValue(lowDate);
-				((BetweenExpression<Date>) expression).setHiValue(hightDate);
+			if (expression instanceof BetweenExpressionDTO) {
+				((BetweenExpressionDTO) expression).setLoValue(new PropertyHolder(lowDate));
+				((BetweenExpressionDTO) expression).setHiValue(new PropertyHolder(hightDate));
 				return expression;
 			}
-			return expression.setValue(lowDate);
+			expression.setValue(new PropertyHolder(lowDate));
+			return expression;
 		}
 	}
 
-	private <F extends Comparable<? extends Serializable>> void handleFilterValueChange(InputFilter<F> dataTypeFilter,
-			SimpleExpression<F> value, Column<T, ?> column) {
+	private void handleFilterValueChange(InputFilter dataTypeFilter, SimpleExpressionDTO value, Column<T, ?> column) {
 		if (value.getValue() == null && value.getOperation() == null && sortable) { 
 			ColumnSortList columnSortList = getColumnSortList();
 			boolean asc = false;
@@ -809,24 +780,19 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		
 		if (projectables == null) {
 			projectables = new LinkedList<String>();
-//			keyP
 		}
-//		getPage().setProjectables(projectables)
 		if (projectables == null) {
 			// create and add ID because it is usually needed in bean
 			projectables = new LinkedList<String>();
-//			if (getIdProperty() != null) {
-//				projectables.add(getIdProperty());
-//			}
 		}
 		projectables.add(property);
 	}
 
-	public Page getPage() {
+	public PageDTO getPage() {
 		//TODO optimize! Do not construct page again and again
-		Page page = new Page(getPager().getPageStart(), getPager().getPageSize());
+		PageDTO page = new PageDTO(getPager().getPageStart(), getPager().getPageSize());
 
-		Criterion defaultCriteria = getDefaultCriteria();
+		CriterionDTO defaultCriteria = getDefaultCriteria();
 
 		if (getColumnSortList().size() > 0) {
 			ColumnSortInfo columnSortInfo = getColumnSortList().get(0);
@@ -842,12 +808,12 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			}
 		}
 
-		Conjunction conjunction = null;
+		ConjunctionDTO conjunction = null;
 
-		for (Entry<String, SimpleExpression<?>> filterValue : filterValues.entrySet()) {
+		for (Entry<String, SimpleExpressionDTO> filterValue : filterValues.entrySet()) {
 			if (filterValue.getValue() != null && filterValue.getValue().getValue() != null) {
 				if (conjunction == null) {
-					conjunction = Filter.conjunction();
+					conjunction = FilterDTO.conjunction();
 				}
 				conjunction.add(filterValue.getValue());
 			}

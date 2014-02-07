@@ -22,7 +22,7 @@ import sk.seges.sesam.dao.PagedResult;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @Service
-public class ReportDescriptionService extends RemoteServiceServlet implements IReportDescriptionService {
+public class ReportDescriptionService extends RemoteServiceServlet implements IReportDescriptionServiceLocal {
 
 	private static final long serialVersionUID = -837395026110031723L;
 

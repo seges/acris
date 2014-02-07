@@ -28,6 +28,10 @@
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-client-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-model-domain-configurations</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

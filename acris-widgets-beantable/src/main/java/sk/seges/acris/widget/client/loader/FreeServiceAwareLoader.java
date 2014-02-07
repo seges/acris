@@ -2,7 +2,7 @@ package sk.seges.acris.widget.client.loader;
 
 import sk.seges.acris.callbacks.client.CallbackAdapter;
 import sk.seges.sesam.dao.IAsyncDataLoader;
-import sk.seges.sesam.dao.ICallback;
+import sk.seges.sesam.shared.model.dao.ICallback;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 

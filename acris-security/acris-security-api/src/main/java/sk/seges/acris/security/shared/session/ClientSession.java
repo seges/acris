@@ -3,12 +3,16 @@
  */
 package sk.seges.acris.security.shared.session;
 
+import sk.seges.acris.core.client.rpc.IDataTransferObject;
+import sk.seges.sesam.shared.model.api.PropertyHolder;
+import sk.seges.sesam.shared.model.api.SessionArrayHolder;
+import sk.seges.sesam.shared.model.api.TransferableEnum;
+import sk.seges.sesam.shared.model.api.ValueType;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import sk.seges.acris.core.client.rpc.IDataTransferObject;
 
 /**
  * @author eldzi
@@ -20,7 +24,7 @@ public class ClientSession<T> implements IDataTransferObject {
 	private static final String SESSION_ID_ATTRIBUTE = "sessionId";
 
 	private Map<String, PropertyHolder> session;
-	private Map<String, Serializable> clientSession;
+	private final Map<String, Serializable> clientSession = new HashMap<String, Serializable>();
 
 	public Map<String, PropertyHolder> getSession() {
 		if (session == null) {
@@ -30,9 +34,6 @@ public class ClientSession<T> implements IDataTransferObject {
 	}
 
 	private Map<String, Serializable> getClientSession() {
-		if (clientSession == null) {
-			clientSession = new HashMap<String, Serializable>();
-		}
 		return clientSession;
 	}
 	
@@ -40,12 +41,12 @@ public class ClientSession<T> implements IDataTransferObject {
 		this.session = session;
 	}
 
-	protected <T> T getValue(String key) {
+	protected <S> S getValue(String key) {
 		PropertyHolder propertyHolder = getSession().get(key);
 		if (propertyHolder == null) {
 			return null;
 		}
-		return (T) propertyHolder.getValue();
+		return (S) propertyHolder.getValue();
 	}
 
 	public String getSessionId() {
@@ -62,7 +63,7 @@ public class ClientSession<T> implements IDataTransferObject {
 		return user;
 	}
 
-	public void setUser(T user) {
+	public void setUser (T user) {
 		this.user = user;
 	}
 
@@ -78,7 +79,7 @@ public class ClientSession<T> implements IDataTransferObject {
 		getSession().put(key, new PropertyHolder(value, ValueType.ARRAY));
 	}
 
-	public void putSharedProperty(String key, Enum<?> value) {
+	public void putSharedProperty(String key, TransferableEnum value) {
 		getSession().put(key, new PropertyHolder(value, ValueType.ENUM));
 	}
 

@@ -29,22 +29,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>build-classpath</goal>
-						</goals>
-						<id>build-classpath</id>
-						<configuration>
-							<outputFile>cp.txt</outputFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -58,6 +42,12 @@
 			<artifactId>sesam-spring</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
+		</dependency>
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-application-scaffold-data-service-converter-processor </artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- Acris client dependencies -->
 		<dependency>
@@ -91,7 +81,6 @@
 			<artifactId>acris-site-rpc</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-server-components</artifactId>
@@ -135,7 +124,5 @@
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
 		</dependency>
-		
-
 	</dependencies>
 </project>

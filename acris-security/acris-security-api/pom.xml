@@ -28,5 +28,14 @@
 			<artifactId>acris-client-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.sesam</groupId>
+			<artifactId>sesam-core-api</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
 	</dependencies>
 </project>

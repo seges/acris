@@ -1,25 +1,22 @@
 package sk.seges.acris.widget.client.celltable.filterable;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
-import sk.seges.sesam.dao.SimpleExpression;
-
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
+import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
 
-public class SelectionFilterColumn<T extends Comparable<? extends Serializable>> extends AbstractFilterableCell<SimpleExpression<T>> {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class SelectionFilterColumn extends AbstractFilterableCell<SimpleExpressionDTO> {
 
 	protected interface Template extends SafeHtmlTemplates {
 		@Template("<div style=\"\">{0}</div>")
@@ -43,9 +40,9 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 
 	protected static final String FILTER_INPUT_PREFIX = "filterInput";
 
-	protected final Validator<T> validator;
+	protected final Validator validator;
 	
-	public SelectionFilterColumn(Validator<T> validator, List<String> options, String text) {
+	public SelectionFilterColumn(Validator validator, List<String> options, String text) {
 		super("click", "change", "focus", "blur", "mousewheel", "mousedown", "mouseup", "mousemove", "DOMMouseScroll");
 
 		this.validator = validator;
@@ -91,7 +88,7 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 	
 	@Override
 	public void onBrowserEvent(Context context, Element parent,
-			SimpleExpression<T> value, NativeEvent event, ValueUpdater<SimpleExpression<T>> valueUpdater) {
+			SimpleExpressionDTO value, NativeEvent event, ValueUpdater<SimpleExpressionDTO> valueUpdater) {
 		super.onBrowserEvent(context, parent, value, event, valueUpdater);
 		String type = event.getType();
 		if ("change".equals(type)) {
@@ -102,11 +99,10 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 			String newValue = options.get(index);
 			setViewData(key, newValue);
 			if (valueUpdater != null) {
-				SimpleExpression<T> newExpression = new SimpleExpression<T>();
+				SimpleExpressionDTO newExpression = new SimpleExpressionDTO();
 				newExpression.setProperty(value.getProperty());
 				newExpression.setOperation(value.getOperation());
 				if (newValue != null && !newValue.isEmpty()) {
-					
 					valueUpdater.update(setValueToExpresion(newExpression, newValue));
 				} else {
 					newExpression.setValue(null);
@@ -127,15 +123,16 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 		GWT.log(event.getType());
 	}
 	
-	protected SimpleExpression<T> setValueToExpresion(SimpleExpression<T> newExpression, String newValue){
-		return newExpression.setValue(validator.getValue(newValue));
+	protected SimpleExpressionDTO setValueToExpresion(SimpleExpressionDTO newExpression, String newValue){
+		newExpression.setValue(validator.getValue(newValue));
+		return newExpression;
 	}
 	
 	
-	protected void changeSorting(SimpleExpression<T> value, ValueUpdater<SimpleExpression<T>> valueUpdater) {
+	protected void changeSorting(SimpleExpressionDTO value, ValueUpdater<SimpleExpressionDTO> valueUpdater) {
 		if (!hasFocus(FILTER_INPUT_PREFIX + value.getProperty())) {
 			if (valueUpdater != null) {
-				SimpleExpression<T> newExpression = new SimpleExpression<T>();
+				SimpleExpressionDTO newExpression = new SimpleExpressionDTO();
 				newExpression.setProperty(value.getProperty());
 	
 				valueUpdater.update(newExpression);
@@ -150,7 +147,7 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 	}
 	
 	@Override
-	public void render(Context context, SimpleExpression<T> value, SafeHtmlBuilder sb) {
+	public void render(Context context, SimpleExpressionDTO value, SafeHtmlBuilder sb) {
 		// Get the view data.
 		sb.append(template.header(text));
 		Object key = context.getKey();
@@ -182,11 +179,11 @@ public class SelectionFilterColumn<T extends Comparable<? extends Serializable>>
 	}
 
 	@Override
-	protected String valueToString(SimpleExpression<T> value, int index) {
+	protected String valueToString(SimpleExpressionDTO value, int index) {
 		return validator.toString(value.getValue());
 	}
 	
-	protected String valueToString(SimpleExpression<T> value) {
+	protected String valueToString(SimpleExpressionDTO value) {
 		return validator.toString(value.getValue());
 	}
 }
