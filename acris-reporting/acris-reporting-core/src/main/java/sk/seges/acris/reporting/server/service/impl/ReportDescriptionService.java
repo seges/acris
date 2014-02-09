@@ -23,8 +23,7 @@ public class ReportDescriptionService implements IReportDescriptionServiceLocal 
 
 	private static final long serialVersionUID = -837395026110031723L;
 
-	private static final Logger LOG = Logger
-			.getLogger(ReportDescriptionService.class);
+	private static final Logger LOG = Logger.getLogger(ReportDescriptionService.class);
 
 	private IReportDescriptionDao<ReportDescriptionData> reportDescriptionDao;
 

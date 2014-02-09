@@ -1,38 +1,25 @@
 package sk.seges.acris.reporting.server.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.j2ee.servlets.ImageServlet;
-
 import org.apache.log4j.Logger;
 import org.gwtwidgets.server.spring.ServletUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import sk.seges.acris.reporting.shared.domain.api.ReportDescriptionData;
-import sk.seges.acris.reporting.shared.service.IReportDescriptionService;
-import sk.seges.acris.reporting.shared.service.IReportingService;
+import sk.seges.sesam.pap.service.annotation.LocalService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * communication with jasper server <br />
@@ -41,6 +28,8 @@ import sk.seges.acris.reporting.shared.service.IReportingService;
  * @author marta
  * 
  */
+
+@LocalService
 public class ReportingService implements IReportingLocalService {
 
 	private static final String OUTPUT = "output";
@@ -53,9 +42,9 @@ public class ReportingService implements IReportingLocalService {
 
 	private final ConfigurationProvider configuration;
 
-	private final IReportDescriptionService reportDescriptionService;
+	private final IReportDescriptionServiceLocal reportDescriptionService;
 
-	public ReportingService(ConfigurationProvider configuration, IReportDescriptionService reportDescriptionService) {
+	public ReportingService(ConfigurationProvider configuration, IReportDescriptionServiceLocal reportDescriptionService) {
 		this.configuration = configuration;
 		this.reportDescriptionService = reportDescriptionService;
 	}
