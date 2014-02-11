@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserRoleData;
 
 import java.util.Collection;
 import java.util.List;
@@ -175,5 +176,15 @@ public class SpringUserAdapter implements UserDetails, UserData {
 	@Override
 	public void setUserPreferences(UserPreferencesData userPreferences) {
 		springSupport.getUser().setUserPreferences(userPreferences);
+	}
+
+	@Override
+	public List<UserRoleData> getUserRoles() {		
+		return springSupport.getUser().getUserRoles();
+	}
+
+	@Override
+	public void setUserRoles(List<UserRoleData> userRoles) {
+		springSupport.getUser().setUserRoles(userRoles);		
 	}
 }

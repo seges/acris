@@ -7,6 +7,7 @@ import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserPreferencesData;
+import sk.seges.corpis.server.domain.user.server.model.data.UserRoleData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,6 +219,18 @@ public class TwigGenericUser implements UserData {
 
 	@Override
 	public void setSurname(String surname) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<UserRoleData> getUserRoles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setUserRoles(List<UserRoleData> userRoles) {
 		// TODO Auto-generated method stub
 		
 	}

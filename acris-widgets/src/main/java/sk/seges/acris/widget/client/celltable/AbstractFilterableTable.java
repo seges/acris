@@ -661,6 +661,9 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		@Override
 		public String toString(PropertyHolder f) {
+			if (f == null || f.getDateValue() == null) {
+				return "";
+			}
 			return format.format(f.getDateValue());
 		}
 	}

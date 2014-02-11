@@ -61,7 +61,7 @@ public class InputFilterColumn extends AbstractFilterableCell<SimpleExpressionDT
 	@Override
 	public void render(com.google.gwt.cell.client.Cell.Context context, SimpleExpressionDTO value, SafeHtmlBuilder sb) {
 		sb.append(template.header(text));
-		sb.append(template.input(FILTER_INPUT_PREFIX + value.getProperty(), convertToString(value)));
+		sb.append(template.input(FILTER_INPUT_PREFIX + value.getProperty(), convertToString(value) == null ? "" : convertToString(value)));
 	}
 
 	@Override
