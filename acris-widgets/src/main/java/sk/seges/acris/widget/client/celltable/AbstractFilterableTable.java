@@ -682,7 +682,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		@Override
 		public String toString(PropertyHolder f) {
-			if (f == null) {
+			if (f.getValue() == null) {
 				return "";
 			}
 			return f.getStringValue();
