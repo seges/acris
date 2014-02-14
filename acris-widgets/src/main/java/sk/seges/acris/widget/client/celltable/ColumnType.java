@@ -125,7 +125,11 @@ public enum ColumnType {
 			return new Column<Map<String, Object>, String>(new TextCell()) {
 				@Override
 				public String getValue(Map<String, Object> arg0) {
-					return arg0.get(column.getField()).toString();
+					Object value = arg0.get(column.getField());
+					if (value == null) {
+						return "-";
+					}
+					return value.toString();
 				}
 			};
 		}
