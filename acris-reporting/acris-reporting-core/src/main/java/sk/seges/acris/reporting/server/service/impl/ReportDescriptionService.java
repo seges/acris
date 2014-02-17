@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.reporting.server.dao.api.IReportDescriptionDao;
 import sk.seges.acris.reporting.server.dao.api.IReportParameterDao;
 import sk.seges.acris.reporting.server.service.IReportDescriptionServiceLocal;
@@ -14,6 +15,7 @@ import sk.seges.acris.reporting.shared.domain.api.ReportParameterData;
 import sk.seges.acris.reporting.shared.domain.dto.ReportDescriptionDTO;
 import sk.seges.acris.reporting.shared.domain.dto.ReportParameterDTO;
 import sk.seges.acris.reporting.shared.service.IReportDescriptionService;
+import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
 import sk.seges.sesam.pap.service.annotation.LocalService;
@@ -99,11 +101,13 @@ public class ReportDescriptionService implements IReportDescriptionServiceLocal 
 	}
 
 	@Override
+	@Transactional
 	public List<ReportDescriptionData> findByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		Page page = new Page(0, Page.ALL_RESULTS);
+		page.setFilterable(Filter.eq(ReportDescriptionData.NAME_ATTR).setValue(name));
+		return reportDescriptionDao.findAll(page).getResult();
 	}
-	
+
 	// TODO replace this part by dozer or something...
 
 	/**
