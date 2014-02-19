@@ -22,8 +22,8 @@ public class JSONParametersManager implements ParametersManager {
 
 	private final ObjectMapper mapper;
 
-	public JSONParametersManager(String parameters) {
-		mapper = new ObjectMapper();
+	public JSONParametersManager(String parameters, ObjectMapper objectMapper) {
+		this.mapper = objectMapper;
 		parseParameters(parameters);
 	}
 
