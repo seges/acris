@@ -1,5 +1,6 @@
 package sk.seges.acris.generator.server.spring.configuration.common;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 
 import sk.seges.acris.generator.server.processor.factory.JSONOfflineWebSettingsFactory;
@@ -12,7 +13,7 @@ public class JSONOfflineSettingsConfiguration {
 
 	@Bean
 	public ParametersManagerFactory parametersManagerFactory() {
-		return new JSONParameterManagerFactory();
+		return new JSONParameterManagerFactory(new ObjectMapper());
 	}
 
 	@Bean
