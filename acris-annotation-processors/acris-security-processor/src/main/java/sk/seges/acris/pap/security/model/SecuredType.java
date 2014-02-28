@@ -3,6 +3,7 @@ package sk.seges.acris.pap.security.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import sk.seges.acris.pap.security.accessor.SecuredAccessor;
 import sk.seges.acris.security.client.CheckableSecuredObject;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableDeclaredType;
 import sk.seges.sesam.core.pap.model.mutable.api.MutableTypeMirror;

@@ -1,13 +1,6 @@
 package sk.seges.acris.pap.security;
 
-import java.util.List;
-
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.util.ElementFilter;
-
+import sk.seges.acris.pap.security.accessor.SecuredAccessor;
 import sk.seges.acris.pap.security.configurer.SecurityProcessorConfigurer;
 import sk.seges.acris.pap.security.model.SecuredType;
 import sk.seges.acris.pap.security.provider.SecuredAuthoritiesProvider;
@@ -21,6 +14,17 @@ import sk.seges.sesam.core.pap.model.mutable.utils.MutableTypes;
 import sk.seges.sesam.core.pap.processor.MutableAnnotationProcessor;
 import sk.seges.sesam.core.pap.utils.ProcessorUtils;
 import sk.seges.sesam.core.pap.writer.FormattedPrintWriter;
+
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import java.util.List;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class SecurityProcessor extends MutableAnnotationProcessor {
@@ -142,7 +146,10 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 	protected void generateSecurityCheckBody(FormattedPrintWriter pw, Element securedElement) {
 
         pw.println("initializeUser();");
+		processElementFields(pw, securedElement);
+	}
 
+	protected void processElementFields(FormattedPrintWriter pw, Element securedElement) {
 		// checking visibility of whole panel
 		List<String> classAuthorities = ensureAuthoritiesProvider().getListAuthoritiesForType(securedElement);
 
@@ -153,7 +160,7 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 			List<String> fieldAuthorities = ensureAuthoritiesProvider().getListAuthoritiesForType(field);
 
 			if (fieldAuthorities != null) {
-				
+
 				if (classAuthorities.size() > 0 && fieldAuthorities.size() == 0) {
 					fieldAuthorities.addAll(classAuthorities);
 				}
@@ -161,6 +168,16 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 				generatePermissionCheck(pw, fieldAuthorities, field.getSimpleName().toString());
 			}
 		}
+
+		TypeMirror superclass = ((TypeElement) securedElement).getSuperclass();
+
+		if (superclass.getKind().equals(TypeKind.DECLARED) && getSecuredAccessor(((DeclaredType)superclass).asElement()).isValid()) {
+			processElementFields(pw, ((DeclaredType)superclass).asElement());
+		}
+	}
+
+	protected SecuredAccessor getSecuredAccessor(Element element) {
+		return new SecuredAccessor(element, processingEnv);
 	}
 
 	protected void generatePermissionCheck(FormattedPrintWriter pw, List<String> fieldAuthorities, String name) {
