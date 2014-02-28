@@ -11,6 +11,6 @@ import sk.seges.acris.security.shared.user_management.domain.Permission;
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
 public @interface PreExecutionAclEvaluation {
-	  public Permission value();
-	  public EPreExecutionAclEvaluationMode checkType() default EPreExecutionAclEvaluationMode.EVALUATE_FIRST_ANNOTATED_PARAMETER;
+	  Permission value();
+	  EPreExecutionAclEvaluationMode checkType() default EPreExecutionAclEvaluationMode.EVALUATE_FIRST_ANNOTATED_PARAMETER;
 }
