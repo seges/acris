@@ -1,22 +1,15 @@
 package sk.seges.acris.widget.client.celltable;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.cellview.client.*;
-import com.google.gwt.user.cellview.client.ColumnSortList.ColumnSortInfo;
-import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.*;
-import com.google.gwt.view.client.RangeChangeEvent.Handler;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.common.util.Triple;
 import sk.seges.acris.widget.client.celltable.filterable.FilterableDateHeader;
 import sk.seges.acris.widget.client.celltable.filterable.FilterableSelectionHeader;
@@ -29,11 +22,41 @@ import sk.seges.acris.widget.client.celltable.resource.PagerResources;
 import sk.seges.acris.widget.client.celltable.resource.TableResources;
 import sk.seges.sesam.shared.model.api.PropertyHolder;
 import sk.seges.sesam.shared.model.dao.SortInfo;
-import sk.seges.sesam.shared.model.dto.*;
+import sk.seges.sesam.shared.model.dto.BetweenExpressionDTO;
+import sk.seges.sesam.shared.model.dto.ConjunctionDTO;
+import sk.seges.sesam.shared.model.dto.CriterionDTO;
+import sk.seges.sesam.shared.model.dto.FilterDTO;
+import sk.seges.sesam.shared.model.dto.PageDTO;
+import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.Map.Entry;
+import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortList;
+import com.google.gwt.user.cellview.client.ColumnSortList.ColumnSortInfo;
+import com.google.gwt.user.cellview.client.SimplePager;
+import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
+import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.ProvidesKey;
+import com.google.gwt.view.client.Range;
+import com.google.gwt.view.client.RangeChangeEvent;
+import com.google.gwt.view.client.RangeChangeEvent.Handler;
+import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 public class AbstractFilterableTable<T> extends CellTable<T> {
 
@@ -217,7 +240,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		addDateColumn(column, width, text, property, new DateValidator(), footerButton);
 	}
 	
-	public void addFooterWidgetDateColumn(final Column<T, ?> column, int width, String text, String property, Widget footerWidget) {
+	public void addFooterWidgetDateColumn(final Column<T, ?> column, int width, String text, String property, List<Pair<Widget, ClickHandler>> footerWidget) {
 		addFooterWidgetDateColumn(column, width, text, property, new DateValidator(), footerWidget);
 	}
 
@@ -251,7 +274,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public void addFooterWidgetDateColumn(final Column<T, ?> column, int width, String text, String property,
-			Validator dateValidator, Widget footerWidget) {
+			Validator dateValidator, List<Pair<Widget, ClickHandler>> footerWidget) {
 
 		initializeColumn(column, property);
 
@@ -293,7 +316,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	protected void addFooterWidgetColumnWithDateHeader(Column<T, ?> column, String text, String property,
 			Validator dateValidator, Date defaultLoVal, Date defaultHiVal, DateFilter dateFilter, ValueUpdater<BetweenExpressionDTO> dateUpdater,
-			Widget footerWidget){
+			List<Pair<Widget, ClickHandler>> footerWidget){
 		FilterableDateHeader filterableDateHeader = new FilterableDateHeader(dateUpdater, dateFilter.getCriterion(
 				property, new PropertyHolder(defaultLoVal), new PropertyHolder(defaultHiVal)), dateValidator, text);
 		if(filterable){
@@ -324,12 +347,12 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		addTextColumn(column, width, text, property, new StringValidator(), footerButton);
 	}
 	
-	public void addFooterWidgetTextColumn(final Column<T, ?> column, int width, String text, String property, Widget footerWidget) {
+	public void addFooterWidgetTextColumn(final Column<T, ?> column, int width, String text, String property, List<Pair<Widget, ClickHandler>> footerWidget) {
 		addFooterWidgetTextColumn(column, width, text, property, new StringValidator(), footerWidget);
 	}
 	
 	public <F extends Comparable<? extends Serializable>> void addFooterWidgetTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator validator, Widget footerWidget) {
+			String text, String property, Validator validator, List<Pair<Widget, ClickHandler>> footerWidget) {
 		addFooterWidgetTextColumn(column, width, text, property, validator, FilterDTO.EQ, footerWidget);
 	}
 
@@ -368,7 +391,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	@SuppressWarnings("unchecked")
 	public <F extends Comparable<? extends Serializable>> void addFooterWidgetTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator validator, String operator, Widget footerWidget) {
+			String text, String property, Validator validator, String operator, List<Pair<Widget, ClickHandler>> footerWidget) {
 
 		initializeColumn(column, property);
 
@@ -408,7 +431,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	@SuppressWarnings("unchecked")
 	protected <F extends Comparable<? extends Serializable>> void addFooterWidgetColumnWithTextHeader(Column<T, ?> column, String text, String property,
-			Validator validator, InputFilter textFilter, F defaultVal, ValueUpdater<SimpleExpressionDTO> columnUpdater, Widget footerWidget) {
+			Validator validator, InputFilter textFilter, F defaultVal, ValueUpdater<SimpleExpressionDTO> columnUpdater, List<Pair<Widget, ClickHandler>> footerWidget) {
 		if(filterable){
 			addColumn(column, new FilterableTextHeader(columnUpdater, textFilter.getCriterion(property, new PropertyHolder(defaultVal)), validator, text));
 		}else{
@@ -468,8 +491,8 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public void addFooterWidgetSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, Widget footerWidget) {
-		addFooterWidgetSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerWidget);
+			String property, List<String> options, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex) {
+		addFooterWidgetSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerWidget, columnIndex);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -502,7 +525,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	@SuppressWarnings("unchecked")
 	public void addFooterWidgetSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, String operation, Widget footerWidget) {
+			String property, List<String> options, String operation, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex) {
 
 		initializeColumn(column, property);
 
@@ -522,7 +545,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		if (simpleExpression != null) {
 			defaultVal = simpleExpression.getValue().getStringValue();
 		}
-		addFooterWidgetColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerWidget);
+		addFooterWidgetColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerWidget, columnIndex);
 		
 		this.setColumnWidth(column, width, Unit.PCT);
 		column.setSortable(sortable);
@@ -540,13 +563,14 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	protected void addFooterWidgetColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
-			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal, Widget footerWidget){
+			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal, List<Pair<Widget, ClickHandler>> footerWidget,
+			int columnIndex){
 		if(filterable){
-			addColumn(column,
+			insertColumn(columnIndex, column,
 					new FilterableSelectionHeader(columnUpdater, textFilter.getCriterion(property, defaultVal),
 							new StringValidator(), options, text));
 		}else{
-			addColumn(column, new TextHeader(text));
+			insertColumn(columnIndex, column, new TextHeader(text));
 		}
 	}
 
