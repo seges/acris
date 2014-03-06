@@ -1,5 +1,4 @@
 package sk.seges.acris.pap.service.model;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -8,7 +7,7 @@ import javax.annotation.Generated;
 @RemoteServiceRelativePath("dummy")
 @Generated(value = "sk.seges.acris.pap.service.AsyncServiceProcessor")
 public interface DummyServiceAsync {
-
-	void method(AsyncCallback<Integer> callback);
-
+	 
+	 
+	void method(AsyncCallback<Integer> callback) ;
 }

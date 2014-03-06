@@ -80,7 +80,12 @@ public class ContentBase implements ContentData, ContentBlobData, ContentForUtil
 	public void setIdForACL(Long idForACL) {
 		//TODO: DO something here
 	}
-	
+
+	@Override
+	public Class<?> getSecuredClass() {
+		return getClass();
+	}
+
 	@Override
 	public void setId(ContentPkData id) {
 		this.id = (ContentPkBase) id;
