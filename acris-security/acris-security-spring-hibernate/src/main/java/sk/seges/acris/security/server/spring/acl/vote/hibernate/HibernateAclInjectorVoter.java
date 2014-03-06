@@ -18,6 +18,7 @@ import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityDat
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclEntry;
 import sk.seges.acris.security.server.spring.acl.vote.AbstractAclInjectionVoter;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
 
 
 public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
@@ -66,7 +67,15 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
         for (Class<?> clazz : params) {
             if (clazz.isAssignableFrom(DetachedCriteria.class)) {
                 Class<?> entityClazz = new DetachedCriteriaUtils().getDetachedCriteriaDomainObjectClass(((DetachedCriteria) args[index]));
-                createCriteria(((DetachedCriteria) args[index]), sids, entityClazz);
+
+				try {
+					Object object = entityClazz.newInstance();
+					if (object instanceof ISecuredObject) {
+						entityClazz = ((ISecuredObject)object).getSecuredClass();
+					}
+				} catch (Exception e) {}
+
+				createCriteria(((DetachedCriteria) args[index]), sids, entityClazz);
             }
 
             index++;

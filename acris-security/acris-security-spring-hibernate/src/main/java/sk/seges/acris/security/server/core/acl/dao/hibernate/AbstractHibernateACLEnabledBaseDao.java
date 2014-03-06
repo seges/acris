@@ -30,7 +30,7 @@ public abstract class AbstractHibernateACLEnabledBaseDao<T extends ISecuredObjec
 	
 	public void remove(T entity) {
 		super.remove(entity);
-		aclManager.removeSecuredObjectIdentity(entity.getIdForACL(), entity.getClass().getName());
+		aclManager.removeSecuredObjectIdentity(entity.getIdForACL(), entity.getSecuredClass().getName());
 	}
 	
 	public T update(T entity) {
