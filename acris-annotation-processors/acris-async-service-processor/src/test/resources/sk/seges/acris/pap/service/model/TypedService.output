@@ -1,5 +1,4 @@
 package sk.seges.acris.pap.service.model;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -11,17 +10,17 @@ import javax.annotation.Generated;
 @RemoteServiceRelativePath("mock")
 @Generated(value = "sk.seges.acris.pap.service.AsyncServiceProcessor")
 public interface TypedServiceAsync<T extends Comparable<Serializable>> {
-
-	void find(AsyncCallback<T> callback);
-
-	void findAll(AsyncCallback<List<T>> callback);
-
-	void findEmAll(AsyncCallback<List<? extends Serializable>> callback);
-
-	<S extends Serializable> void findSomething(AsyncCallback<S> callback);
-
-	void put(T t, AsyncCallback<Void> callback);
-
-	void putAll(T[] t, AsyncCallback<Void> callback);
-
+	 
+	 
+	void find(AsyncCallback<T> callback) ;
+	
+	void findAll(AsyncCallback<List<T>> callback) ;
+	
+	void findEmAll(AsyncCallback<List<? extends Serializable>> callback) ;
+	
+	<S extends Serializable> void findSomething(AsyncCallback<S> callback) ;
+	
+	void put(T t, AsyncCallback<Void> callback) ;
+	
+	void putAll(T[] t, AsyncCallback<Void> callback) ;
 }

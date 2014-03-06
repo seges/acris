@@ -16,5 +16,5 @@ public interface TypedService<T extends Comparable<Serializable>> extends Remote
 	<S extends Serializable> S findSomething();
 	
 	void put(T t);
-	void putAll(T...t);
+	void putAll(T[] t);
 }

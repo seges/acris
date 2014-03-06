@@ -8,10 +8,9 @@ import javax.annotation.Generated;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.*;
 import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import sk.seges.acris.core.client.annotation.RemoteServicePath;
@@ -148,6 +147,13 @@ public class AsyncServiceProcessor extends MutableAnnotationProcessor {
 			remoteServiceTypeElement.printMethodTypeVariablesDefinition(types, pw);
 
 			pw.print("void " + method.getSimpleName().toString() + "(");
+
+			if (method.toString().contains("...")) {
+				//there is an vararg used
+				processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "There is a vararg parameter used in the remote method " + method.getSimpleName() + " in " +
+					element.getQualifiedName().toString() + ". Varargs are forbidden in remote methods because they cannot be used in Async version of the method - cause they are " +
+					"the last parameters of the method.");
+			}
 
 			int i = 0;
 			for (VariableElement parameter: method.getParameters()) {
