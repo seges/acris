@@ -107,7 +107,7 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, footerButton);
 			} else if (column instanceof DynamicColumnDefinitionWithFooterWidget) {
 				Widget footerWidget = ((DynamicColumnDefinitionWithFooterWidget)column).getFooterWidget();
-				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columnIndex, columns.size(), valuesLoader, footerWidget);	
+				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), columnIndex, valuesLoader, footerWidget);	
 			} else {
 				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, null);
 			}
