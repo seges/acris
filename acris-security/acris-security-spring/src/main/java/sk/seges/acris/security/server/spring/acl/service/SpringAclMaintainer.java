@@ -154,7 +154,7 @@ public class SpringAclMaintainer implements AclManager {
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void removeAcl(ISecuredObject<?> securedObject) {
-		ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(securedObject.getClass(),
+		ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(securedObject.getSecuredClass(),
 				securedObject.getIdForACL());
 		aclCache.evictFromCache(objectIdentity);
 		aclService.deleteAcl(objectIdentity, false);
@@ -287,7 +287,7 @@ public class SpringAclMaintainer implements AclManager {
 	}
 
 	private void setAclRecords(ISecuredObject<?> securedObject, Sid sid, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent) {
-		Class<?> clazz = securedObject.getClass();
+		Class<?> clazz = securedObject.getSecuredClass();
 		ISecuredObject<?> securedParent = securedObject.getParent();
 		
 		setAclRecords(clazz, securedObject.getIdForACL(), securedParent, sid, permissions, updateParent);
@@ -317,7 +317,7 @@ public class SpringAclMaintainer implements AclManager {
 
 		MutableAcl parentAcl = null;
         if (securedParent != null && updateParent) {
-			identity = new ObjectIdentityImpl(securedParent.getClass(), securedParent.getIdForACL());
+			identity = new ObjectIdentityImpl(securedParent.getSecuredClass(), securedParent.getIdForACL());
 			
 			parentAcl = getOrCreateParentAcl(securedParent, sid, permissions, identity);
 			acl.setParent(parentAcl);

@@ -310,6 +310,11 @@ public class MockContent implements ContentData {
 	}
 
 	@Override
+	public Class<?> getSecuredClass() {
+		return getClass();
+	}
+
+	@Override
 	public List<? extends ContentData> getSubContents() {
 		// TODO Auto-generated method stub
 		return null;
