@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.common.util.Triple;
 import sk.seges.acris.widget.client.celltable.column.ColumnValuesRemoteLoaderAsync;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
@@ -41,7 +42,7 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, Widget footerWidget) {
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget) {
 			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget);
 		}
 
@@ -66,7 +67,7 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, Widget footerWidget) {
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget) {
 			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget);
 		}
 		
@@ -92,7 +93,7 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, Widget footerWidget) {
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget) {
 			table.addFooterWidgetDateColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget);
 		}
 		
@@ -116,7 +117,7 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, Widget footerWidget) {
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget) {
 			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget);
 		}
 		
@@ -153,14 +154,14 @@ public enum ColumnType {
 		
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(final AbstractFilterableTable<T> table, final DynamicColumDefinition column, 
-				final int columnCount, int columnIndex, ColumnValuesRemoteLoaderAsync valuesLoader, final Widget footerWidget) {
+				final int columnCount, final int columnIndex, ColumnValuesRemoteLoaderAsync valuesLoader, final List<Pair<Widget, ClickHandler>> footerWidget) {
 	
 			valuesLoader.loadColumnValues(table.getDataClass().getName(), column.getField(), new AsyncCallback<List<String>>() {
 				
 				@SuppressWarnings("unchecked")
 				@Override
 				public void onSuccess(List<String> result) {
-					table.addFooterWidgetSelectionColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), result, footerWidget);
+					table.addFooterWidgetSelectionColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), result, footerWidget, columnIndex);
 				}
 				
 				@Override
@@ -183,7 +184,7 @@ public enum ColumnType {
 			Triple<Button, Integer, ClickHandler> footerButton);
 	
 	public abstract <T extends Map<String, Object>> void  addFooterWidgetColumn(AbstractFilterableTable<T> table, final DynamicColumDefinition column, int columnCount, int columnIndex, ColumnValuesRemoteLoaderAsync valuesLoader,
-			Widget footerWidget);
+			List<Pair<Widget, ClickHandler>> footerWidget);
 	
 	public class BooleanCell extends AbstractCell<Boolean> {
 

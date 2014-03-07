@@ -3,19 +3,16 @@ package sk.seges.acris.widget.client.celltable;
 import java.util.List;
 import java.util.Map;
 
+import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.common.util.Triple;
 import sk.seges.acris.widget.client.celltable.column.ColumnValuesRemoteLoaderAsync;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumDefinition;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterButton;
 import sk.seges.acris.widget.client.celltable.column.DynamicColumnDefinitionWithFooterWidget;
 import sk.seges.acris.widget.client.celltable.resource.TableResources;
-import sk.seges.sesam.dao.Filter;
 
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
@@ -106,7 +103,7 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 				Triple<Button, Integer, ClickHandler> footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
 				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, footerButton);
 			} else if (column instanceof DynamicColumnDefinitionWithFooterWidget) {
-				Widget footerWidget = ((DynamicColumnDefinitionWithFooterWidget)column).getFooterWidget();
+				List<Pair<Widget, ClickHandler>> footerWidget = ((DynamicColumnDefinitionWithFooterWidget)column).getFooterWidget();
 				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), columnIndex, valuesLoader, footerWidget);	
 			} else {
 				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, null);
