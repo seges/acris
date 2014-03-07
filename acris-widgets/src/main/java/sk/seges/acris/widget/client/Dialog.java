@@ -248,6 +248,10 @@ public class Dialog extends DialogBox implements FormHolder, HasDialogInitialize
 			registration.removeHandler();
 		}
 	}
+	
+	public void registerHandler(HandlerRegistration registration){
+		handlerRegistrations.add(registration);
+	}
 
 	@Override
 	public void center() {
