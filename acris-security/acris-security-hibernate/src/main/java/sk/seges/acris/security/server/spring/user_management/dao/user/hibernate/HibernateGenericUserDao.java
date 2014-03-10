@@ -5,7 +5,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
-import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
+import sk.seges.acris.security.server.core.user_management.domain.hibernate.HibernateGenericUser;
 import sk.seges.acris.security.shared.user_management.domain.api.GroupAuthoritiesHolder;
 import sk.seges.acris.security.shared.user_management.domain.api.UserPermission;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;

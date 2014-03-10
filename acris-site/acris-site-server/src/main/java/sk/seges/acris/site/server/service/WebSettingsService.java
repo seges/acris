@@ -13,7 +13,7 @@ import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.server.model.data.MetaDataData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
-import sk.seges.corpis.server.domain.HasWebId;
+import sk.seges.corpis.shared.domain.HasWebId;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.corpis.server.service.ICountryService;
 import sk.seges.sesam.dao.Disjunction;

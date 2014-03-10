@@ -12,8 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateGenericUser;
-import sk.seges.acris.security.shared.core.user_management.domain.hibernate.HibernateSecurityRole;
+import sk.seges.acris.security.server.core.user_management.domain.hibernate.HibernateGenericUser;
+import sk.seges.acris.security.server.core.user_management.domain.hibernate.HibernateSecurityRole;
 import sk.seges.corpis.server.domain.user.server.model.base.UserRoleBase;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;

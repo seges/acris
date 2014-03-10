@@ -3,10 +3,10 @@
  */
 package sk.seges.acris.security.client.ui;
 
-import sk.seges.acris.security.client.ISecuredObject;
-import sk.seges.acris.security.shared.session.ClientSession;
-
 import com.google.gwt.user.client.ui.Composite;
+import sk.seges.acris.security.client.ISecuredObject;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 
 /**
  * An acris-security enabled {@link Composite}.
@@ -14,15 +14,16 @@ import com.google.gwt.user.client.ui.Composite;
  * @author ladislav.gazo
  */
 public class SecuredComposite extends Composite implements ISecuredObject {
-	private ClientSession clientSession;
+
+	private ClientSessionDTO clientSession;
 	
 	@Override
-	public ClientSession getClientSession() {
+	public ClientSessionDTO getClientSession() {
 		return clientSession;
 	}
 
 	@Override
-	public void setClientSession(ClientSession clientSession) {
+	public void setClientSession(ClientSessionDTO clientSession) {
 		this.clientSession = clientSession;
 	}
 }

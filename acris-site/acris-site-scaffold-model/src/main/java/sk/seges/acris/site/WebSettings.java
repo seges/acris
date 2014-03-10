@@ -8,8 +8,8 @@ import sk.seges.acris.site.ftp.FTPWebSettings;
 import sk.seges.acris.site.shared.domain.api.MetaDataType;
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
-import sk.seges.corpis.server.domain.HasLanguage;
-import sk.seges.corpis.server.domain.HasWebId;
+import sk.seges.corpis.shared.domain.HasLanguage;
+import sk.seges.corpis.shared.domain.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
 @DomainInterface

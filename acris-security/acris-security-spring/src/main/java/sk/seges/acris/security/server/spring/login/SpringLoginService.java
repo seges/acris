@@ -15,9 +15,9 @@ import sk.seges.acris.security.server.util.LoggedUserRole;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.exception.ServerException;
-import sk.seges.acris.security.shared.session.ClientSession;
-import sk.seges.acris.security.shared.session.SessionIDGenerator;
-import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.server.session.SessionIDGenerator;
+import sk.seges.acris.security.server.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
@@ -91,12 +91,12 @@ public class SpringLoginService implements LoginService {
 	 * 
 	 * @return
 	 */
-	protected ClientSession<UserData> createClientSession() {
-		return new ClientSession<UserData>();
+	protected ClientSession createClientSession() {
+		return new ClientSession();
 	}
 
 	@Override
-	public void changeAuthentication(ClientSession<UserData> clientSession) {
+	public void changeAuthentication(ClientSession clientSession) {
 		UserData userData = (UserData) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		userData.setRoles(clientSession.getUser().getRoles());
 		Authentication oldAuth = SecurityContextHolder.getContext().getAuthentication();
@@ -110,10 +110,10 @@ public class SpringLoginService implements LoginService {
 	 * 
 	 * @param clientSession
 	 */
-	public void postProcessLogin(ClientSession<UserData> clientSession, LoginToken token) {}
+	public void postProcessLogin(ClientSession clientSession, LoginToken token) {}
 
 	@Transactional
-	public ClientSession<UserData> login(LoginToken token) throws ServerException {
+	public ClientSession login(LoginToken token) throws ServerException {
 		Authentication auth;
 		try {
 			auth = authenticationManager.authenticate(createAuthenticationToken(token));
@@ -122,7 +122,7 @@ public class SpringLoginService implements LoginService {
 		}
 		createSecurityContext(auth);
 
-		ClientSession<UserData> clientSession = createClientSession();
+		ClientSession clientSession = createClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
 
 		List<RoleData> roles = new ArrayList<RoleData>();
@@ -164,9 +164,6 @@ public class SpringLoginService implements LoginService {
 		SecurityContextHolder.setContext(sc);
 	}
 
-	/**
-	 * @see sk.seges.acris.security.rpc.user_management.service.IUserService#logout()
-	 */
 	@Override
 	public void logout() {
 		SecurityContextHolder.clearContext();

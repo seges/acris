@@ -11,7 +11,8 @@ import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader
 import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 import com.google.gwt.user.client.rpc.impl.Serializer;
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
-import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 
 /**
  * {@link RemoteServiceProxy} extension for send current session id in request
@@ -27,7 +28,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 	 * ClientSession for holding surrent sessionId. This sessionId will be part
 	 * of request's payload.
 	 */
-	private ClientSession clientSession;
+	private ClientSessionDTO clientSession;
 
 	private static long uniqueRequestId = 0;
 
@@ -91,11 +92,11 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 	}
 
 
-	public ClientSession getSession() {
+	public ClientSessionDTO getSession() {
 		return clientSession;
 	}
 
-	public void setSession(ClientSession clientSession) {
+	public void setSession(ClientSessionDTO clientSession) {
 		this.clientSession = clientSession;
 	}
 

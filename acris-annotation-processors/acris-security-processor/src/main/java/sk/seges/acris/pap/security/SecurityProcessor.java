@@ -5,7 +5,7 @@ import sk.seges.acris.pap.security.configurer.SecurityProcessorConfigurer;
 import sk.seges.acris.pap.security.model.SecuredType;
 import sk.seges.acris.pap.security.provider.SecuredAuthoritiesProvider;
 import sk.seges.acris.pap.security.provider.StringAuthoritiesProvider;
-import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.util.SecurityUtils;
 import sk.seges.sesam.core.pap.configuration.api.ProcessorConfigurer;
@@ -68,7 +68,7 @@ public class SecurityProcessor extends MutableAnnotationProcessor {
 			
 			MutableTypes typeUtils = processingEnv.getTypeUtils();
 			
-			MutableDeclaredType clientSessionType = typeUtils.getDeclaredType(typeUtils.toMutableType(ClientSession.class),
+			MutableDeclaredType clientSessionType = typeUtils.getDeclaredType(typeUtils.toMutableType(ClientSessionDTO.class),
 					new MutableDeclaredType[] {/*typeUtils.toMutableType(GenericUserDTO.class)*/});
 			
 			pw.println("private ", clientSessionType, " clientSession;");

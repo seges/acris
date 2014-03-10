@@ -1,13 +1,13 @@
 package sk.seges.acris.security.server.user_management.service;
 
 import sk.seges.acris.security.server.core.login.api.LoginService;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.server.session.SessionIDGenerator;
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.user_management.dao.api.IOpenIDUserDao;
 import sk.seges.acris.security.server.user_management.server.model.data.OpenIDUserData;
 import sk.seges.acris.security.server.utils.TokenConverter;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
-import sk.seges.acris.security.shared.session.ClientSession;
-import sk.seges.acris.security.shared.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
@@ -56,8 +56,8 @@ public class OpenIDLoginService implements LoginService {
 	}
 
 	@Override
-	public ClientSession<UserData> login(LoginToken token) throws AuthenticationException {
-		ClientSession<UserData> clientSession = new ClientSession<UserData>();
+	public ClientSession login(LoginToken token) throws AuthenticationException {
+		ClientSession clientSession = new ClientSession();
 		clientSession.setSessionId(sessionIDGenerator.generate(token));
 
 		if (token instanceof OpenIDLoginToken) {
@@ -78,7 +78,7 @@ public class OpenIDLoginService implements LoginService {
 	}
 
 	@Override
-	public void changeAuthentication(ClientSession<UserData> clientSession) {
+	public void changeAuthentication(ClientSession clientSession) {
 		// TODO Auto-generated method stub
 	}
 }

@@ -1,10 +1,8 @@
 package sk.seges.acris.pap.security.model;
 
-import sk.seges.acris.security.client.annotations.Secured;
-import sk.seges.acris.security.shared.session.ClientSession;
-import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
-
 import com.google.gwt.user.client.ui.Label;
+import sk.seges.acris.security.client.annotations.Secured;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 
 @Secured
 public class PanelWithClientSession  {
@@ -12,13 +10,13 @@ public class PanelWithClientSession  {
 	@Secured("TEXT")
 	Label label1;
 
-	private ClientSession<GenericUserDTO> clientSession;
+	private ClientSessionDTO clientSession;
 
-	public void setClientSession(ClientSession<GenericUserDTO> clientSession) {
+	public void setClientSession(ClientSessionDTO clientSession) {
 		this.clientSession = clientSession;
 	}
 
-	public ClientSession<GenericUserDTO> getClientSession() {
+	public ClientSessionDTO getClientSession() {
 		return clientSession;
 	}
 

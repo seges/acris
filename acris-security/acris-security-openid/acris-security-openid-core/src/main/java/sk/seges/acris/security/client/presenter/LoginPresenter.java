@@ -11,7 +11,8 @@ import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.exception.SecurityException;
-import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
@@ -197,7 +198,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		readLoginCookies();
 
 		AsyncCallback<String> stringCallback = null;
-		AsyncCallback<ClientSession<GenericUserDTO>> clientCallback = null;
+		AsyncCallback<ClientSessionDTO> clientCallback = null;
 
 		if (redirectUrl != null && !redirectUrl.isEmpty() || authenticate) {
 			stringCallback = new SecuredAsyncCallback<String>() {
@@ -205,7 +206,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 				@Override
 				public void onSuccessCallback(String result) {
 					if (result != null) {
-						ClientSession<GenericUserDTO> resultSession = new ClientSession<GenericUserDTO>();
+						ClientSessionDTO resultSession = new ClientSessionDTO();
 						resultSession.setSessionId(result);
 						handleSuccessfulLogin(resultSession);
 					}
@@ -230,10 +231,10 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 				}
 			};
 		} else {
-			clientCallback = new SecuredAsyncCallback<ClientSession<GenericUserDTO>>() {
+			clientCallback = new SecuredAsyncCallback<ClientSessionDTO>() {
 
 				@Override
-				public void onSuccessCallback(ClientSession<GenericUserDTO> result) {
+				public void onSuccessCallback(ClientSessionDTO result) {
 					if (result != null) {
 						handleSuccessfulLogin(result);
 					}
@@ -426,7 +427,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 			if (redirectUrl != null && !redirectUrl.isEmpty() || authenticate) {
 				broadcaster.authenticate(token, (AsyncCallback<String>) callback);
 			} else {
-				broadcaster.login(token, (AsyncCallback<ClientSession<GenericUserDTO>>) callback);
+				broadcaster.login(token, (AsyncCallback<ClientSessionDTO>) callback);
 			}
 		} else {
 			callback.onFailure(new BroadcastingException("Broadcaster is null."));
@@ -438,7 +439,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		display.showMessage(loginMessages.loginFailedTitle());
 	}
 
-	protected void handleSuccessfulLogin(ClientSession<?> result) {
+	protected void handleSuccessfulLogin(ClientSessionDTO result) {
 		display.setUsername("");
 		display.setPassword("");
 		

@@ -1,13 +1,11 @@
 package sk.seges.acris.security.client.session;
 
-import sk.seges.acris.security.shared.session.ClientSession;
-import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
-
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 
 public interface SessionServiceDefTarget extends ServiceDefTarget {
 
-	ClientSession<GenericUserDTO> getSession();
+	ClientSessionDTO getSession();
 	
-	void setSession(ClientSession<? extends GenericUserDTO> clientSession);
+	void setSession(ClientSessionDTO clientSession);
 }

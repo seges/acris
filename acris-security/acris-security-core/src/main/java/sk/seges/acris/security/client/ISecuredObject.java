@@ -1,6 +1,7 @@
 package sk.seges.acris.security.client;
 
-import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 
 /**
@@ -14,7 +15,7 @@ import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
  */
 public interface ISecuredObject {
 	
-	void setClientSession(ClientSession<GenericUserDTO> clientSession);
+	void setClientSession(ClientSessionDTO clientSession);
 
-	ClientSession<GenericUserDTO> getClientSession();
+	ClientSessionDTO getClientSession();
 }

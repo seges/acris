@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import sk.seges.acris.security.server.core.user_management.dao.permission.api.ISecurityPermissionDao;
-import sk.seges.acris.security.shared.user_management.service.IHierarchyPermissionServiceExt;
+import sk.seges.acris.security.server.user_management.service.IHierarchyPermissionServiceExt;
 import sk.seges.acris.security.user_management.server.model.data.HierarchyPermissionData;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Filter;

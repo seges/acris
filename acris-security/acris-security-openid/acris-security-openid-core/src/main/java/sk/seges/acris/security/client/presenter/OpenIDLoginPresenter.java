@@ -17,7 +17,8 @@ import sk.seges.acris.security.shared.configuration.LoginConfiguration;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerRemoteServiceAsync;
-import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
@@ -43,7 +44,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 	protected IOpenIDConsumerRemoteServiceAsync consumerService;
 
-	protected ClientSession<OpenIDUserDTO> clientSession;
+	protected ClientSessionDTO clientSession;
 	
 	protected LoginConfiguration loginConfiguration = GWT.create(LoginConfiguration.class);
 	protected OpenIdConfiguration openIdConfiguration;
@@ -60,7 +61,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 
 	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled,
-			IOpenIDConsumerRemoteServiceAsync consumerService, ClientSession<OpenIDUserDTO> clientSession, String locale) {
+			IOpenIDConsumerRemoteServiceAsync consumerService, ClientSessionDTO clientSession, String locale) {
 		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, locale);
 		this.consumerService = consumerService;
 		this.clientSession = clientSession;
@@ -76,7 +77,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 		setLocaleFromCookies();
 
 		AsyncCallback<String> stringCallback = null;
-		AsyncCallback<ClientSession<OpenIDUserDTO>> clientCallback = null;
+		AsyncCallback<ClientSessionDTO> clientCallback = null;
 
 		if (redirectUrl != null) {
 			stringCallback = new SecuredAsyncCallback<String>() {
@@ -84,7 +85,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 				@Override
 				public void onSuccessCallback(String result) {
 					if (result != null) {
-						ClientSession<OpenIDUserDTO> resultSession = new ClientSession<OpenIDUserDTO>();
+						ClientSessionDTO resultSession = new ClientSessionDTO();
 						resultSession.setSessionId(result);
 						handleSuccessfulLogin(resultSession);
 					} else {
@@ -114,10 +115,10 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 				}
 			};
 		} else {
-			clientCallback = new SecuredAsyncCallback<ClientSession<OpenIDUserDTO>>() {
+			clientCallback = new SecuredAsyncCallback<ClientSessionDTO>() {
 
 				@Override
-				public void onSuccessCallback(ClientSession<OpenIDUserDTO> result) {
+				public void onSuccessCallback(ClientSessionDTO result) {
 					if (result != null) {
 						handleSuccessfulLogin(result);
 					} else {
@@ -300,7 +301,7 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	}
 
 	@Override
-	protected void handleSuccessfulLogin(ClientSession<?> result) {
+	protected void handleSuccessfulLogin(ClientSessionDTO result) {
 		display.setUsername("");
 		display.setPassword("");
 

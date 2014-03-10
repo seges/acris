@@ -15,9 +15,9 @@ import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.exception.ServerException;
-import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.server.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.context.APIKeyUserContext;
-import sk.seges.acris.security.shared.user_management.domain.api.ApiKeyUserProvider;
+import sk.seges.acris.security.server.user_management.domain.api.ApiKeyUserProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 

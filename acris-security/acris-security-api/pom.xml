@@ -18,6 +18,12 @@
 			<artifactId>sesam-core</artifactId>
 		</dependency>
 
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-user-domain-model</artifactId>
+		</dependency>
+
 		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>

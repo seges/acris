@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.core.server.acl.domain.jpa.JpaAclSid;
 import sk.seges.acris.security.server.spring.acl.domain.api.SpringAclSid;
-import sk.seges.acris.security.shared.spring.user_management.domain.SpringUserAdapter;
+import sk.seges.acris.security.server.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 /**

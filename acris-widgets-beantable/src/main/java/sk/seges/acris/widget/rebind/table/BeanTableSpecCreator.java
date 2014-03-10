@@ -23,7 +23,7 @@ import sk.seges.acris.callbacks.client.CallbackAdapter;
 import sk.seges.acris.core.rebind.RebindUtils;
 import sk.seges.acris.widget.client.advanced.EnumListBoxWithValue;
 import sk.seges.acris.widget.client.i18n.DynamicTranslator;
-import sk.seges.acris.widget.client.loader.FreeServiceAwareLoader;
+import sk.seges.acris.server.widget.loader.FreeServiceAwareLoader;
 import sk.seges.acris.widget.client.table.BeanTable;
 import sk.seges.acris.widget.client.table.BeanTable.DomainObjectProperty;
 import sk.seges.acris.widget.client.table.BeanTable.FilterEnumProperty;

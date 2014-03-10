@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
-import sk.seges.acris.security.shared.spring.authority.GrantedAuthorityImpl;
+import sk.seges.acris.security.server.spring.authority.GrantedAuthorityImpl;
 import sk.seges.acris.security.shared.user_management.domain.Permission;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 

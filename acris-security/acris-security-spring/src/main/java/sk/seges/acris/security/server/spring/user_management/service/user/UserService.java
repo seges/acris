@@ -4,13 +4,12 @@ import sk.seges.acris.security.server.core.login.api.LoginService;
 import sk.seges.acris.security.server.core.login.api.LoginServiceProvider;
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserContextProvider;
+import sk.seges.acris.security.server.session.ClientSession;
 import sk.seges.acris.security.server.user_management.service.IUserServiceLocal;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.exception.ServerException;
-import sk.seges.acris.security.shared.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
-import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 import javax.servlet.http.HttpSession;
 
@@ -32,9 +31,9 @@ public class UserService implements IUserServiceLocal {
 	}
 
 	@Override
-	public ClientSession<UserData> login(LoginToken token) throws ServerException {
+	public ClientSession login(LoginToken token) throws ServerException {
 		LoginService loginService = loginServiceProvider.getLoginService(token);
-		ClientSession<UserData> clientSession = loginService.login(token);
+		ClientSession clientSession = loginService.login(token);
 		
 		if (clientSession != null) {
 			HttpSession session = sessionProvider.getSession();
@@ -64,12 +63,12 @@ public class UserService implements IUserServiceLocal {
 	}
 	
 	@Override
-	public ClientSession<UserData> getLoggedSession(UserContext userContext) {
+	public ClientSession getLoggedSession(UserContext userContext) {
 		return userContextProvider.getUserProviderService(userContext).getLoggedSession(userContext);
 	}
 	
 	@Override
-	public void changeAuthentication(ClientSession<UserData> clientSession) {
+	public void changeAuthentication(ClientSession clientSession) {
 		HttpSession session = sessionProvider.getSession();
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
 		loginServiceProvider.getLoginService(token).changeAuthentication(clientSession);

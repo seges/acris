@@ -2,8 +2,5 @@
 <module>
 
 	<inherits name='sk.seges.corpis.appscaffold.Api' />
-	<inherits name='sk.seges.corpis.server.UserCorpisDomain' />
 
-	<source path="user_management/server/model" />
-	<source path="acl/server/model" />
 </module>

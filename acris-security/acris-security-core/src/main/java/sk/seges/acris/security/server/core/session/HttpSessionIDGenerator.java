@@ -3,7 +3,7 @@
  */
 package sk.seges.acris.security.server.core.session;
 
-import sk.seges.acris.security.shared.session.SessionIDGenerator;
+import sk.seges.acris.security.server.session.SessionIDGenerator;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 
 /**
