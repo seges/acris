@@ -222,4 +222,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setImportImageURL(String importImageURL) {
 		data.set(IMPORT_IMAGE_URL, importImageURL);
 	}
+
+	@Override
+	public String getRedirectLoginURL() {
+		return data.get(REDIRECT_LOGIN_URL);
+	}
+
+	@Override
+	public void setRedirectLoginURL(String redirectLoginURL) {
+		data.set(REDIRECT_LOGIN_URL, redirectLoginURL);
+	}
 }

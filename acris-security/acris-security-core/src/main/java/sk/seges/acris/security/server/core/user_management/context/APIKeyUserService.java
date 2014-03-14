@@ -13,11 +13,11 @@ import org.codehaus.jettison.json.JSONObject;
 
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.server.user_management.domain.api.ApiKeyUserProvider;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.exception.ServerException;
-import sk.seges.acris.security.server.session.ClientSession;
 import sk.seges.acris.security.shared.user_management.context.APIKeyUserContext;
-import sk.seges.acris.security.server.user_management.domain.api.ApiKeyUserProvider;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 
@@ -49,7 +49,7 @@ public class APIKeyUserService implements UserProviderService {
 			clientSession.setUser(apiKeyUserProvider.createUser(((APIKeyUserContext) userContext).getApiKey()));
 			
 			return clientSession;
-		}
+		} else 
 		
 		return null;
 	}

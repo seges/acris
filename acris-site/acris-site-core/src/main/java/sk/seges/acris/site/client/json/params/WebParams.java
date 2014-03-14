@@ -25,7 +25,8 @@ public interface WebParams extends ContentParameters {
 	public static final String SCROLL_MODE = "scrollMode";
 	public static final String IMPORT_URL = "importURL";
 	public static final String IMPORT_IMAGE_URL = "importImageUrl";
-
+	public static final String REDIRECT_LOGIN_URL = "redirectLoginUrl";
+	
 	String[] getOfflinePostProcessorInactive();
 
 	void setOfflinePostProcessorInactive(String[] processors);
@@ -109,4 +110,8 @@ public interface WebParams extends ContentParameters {
 	String getImportImageURL();
 	
 	void setImportImageURL(String importImageURL);
+	
+	String getRedirectLoginURL();
+	
+	void setRedirectLoginURL(String redirectLoginURL);
 }
