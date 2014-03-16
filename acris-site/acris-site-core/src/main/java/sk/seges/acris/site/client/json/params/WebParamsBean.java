@@ -34,7 +34,7 @@ public class WebParamsBean implements WebParams {
 	private String scrollMode;
 	private String importURL;
 	private String importImageUrl;
-	
+	private String redirectLoginURL;
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
 		return publishOnSaveEnabled;
@@ -243,5 +243,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setImportImageURL(String importImageURL) {
 		this.importImageUrl = importImageURL;
+	}
+	
+	@Override
+	public String getRedirectLoginURL() {
+		return redirectLoginURL;
+	}
+	
+	@Override
+	public void setRedirectLoginURL(String redirectLoginURL) {
+		this.redirectLoginURL = redirectLoginURL;
 	}
 }
