@@ -9,6 +9,9 @@ import sk.seges.sesam.pap.model.annotation.Mapping;
 import sk.seges.sesam.pap.model.annotation.Mapping.MappingType;
 import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @TransferObjectMapping(domainClass = HibernateGenericUser.class)
 @Mapping(MappingType.EXPLICIT)
 @GenerateEquals(generate = false)
@@ -20,7 +23,13 @@ public interface GenericUserDTOConfiguration extends IDataTransferObject {
 
 	void id();
 	void userAuthorities();
+
+	@NotNull
+	@Size(min = 3, message = "{user_wrong_length}")
 	void username();
+
+	@NotNull
+	@Size(min = 3, message = "{customer_wrong_password}")
 	void password();
 	void webId();
 	void roles();
