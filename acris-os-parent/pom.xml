@@ -67,6 +67,7 @@
 		<module>../acris-json</module>
 		<module>../acris-json-migration</module>
 		<module>../acris-common</module>
+		<module>../acris-recorder</module>
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
 		<module>../acris-image-utils</module>

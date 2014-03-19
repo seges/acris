@@ -1,18 +1,14 @@
 package sk.seges.acris.recorder.server.dao;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import sk.seges.acris.recorder.server.domain.AuditLog;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 
-@Component
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
+
 @Transactional
 public class AuditLogDAO extends AbstractHibernateCRUD<AuditLog> implements IAuditLogDAO {
 
