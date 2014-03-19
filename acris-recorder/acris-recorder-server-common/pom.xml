@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-recorder-server-common</artifactId>
+	<packaging>jar</packaging>
+	<name>AcrIS Recorder Server Common</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-recorder-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../acris-recorder-parent</relativePath>
+	</parent>
+
+	<dependencies>
+
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-dao-impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-data-dao-api-processor</artifactId>
+			<scope>provided</scope>		
+		</dependency>
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-data-dao-implementation-processor</artifactId>
+			<scope>provided</scope>		
+		</dependency>
+
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-recorder-jpa</artifactId>
+		</dependency>
+	</dependencies>
+	
+</project>
