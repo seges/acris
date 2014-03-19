@@ -2,12 +2,7 @@ package sk.seges.acris.security.server.spring.acl.vote.hibernate;
 
 import java.util.List;
 
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.DetachedCriteriaUtils;
-import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
+import org.hibernate.criterion.*;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
@@ -30,17 +25,16 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
 	protected DetachedCriteria createCriteria(DetachedCriteria clazzCriteria, List<Sid> sids, Class<?> clazz) {
 
         // Create detached criteria with alias - name of the alias is not
-        // importat, only purpose
-        // is to not use this_ default alias
+        // important, only purpose is to not use this_ default alias
         DetachedCriteria criteria = DetachedCriteria.forClass(JpaAclEntry.class, "aclEntry");
 
         // We just want to select objectIdentities
         criteria.setProjection(Projections.alias(Projections.property(AclEntryData.OBJECT_IDENTITY), "object_identity"));
 
-        criteria.createCriteria(AclEntryData.OBJECT_IDENTITY).
-        // select secured object id
-                add(Restrictions.sqlRestriction("{alias}.object_id_identity=this_.id")).createCriteria(
-                        AclSecuredObjectIdentityData.OBJECT_ID_CLASS).
+        criteria.createCriteria(AclEntryData.OBJECT_IDENTITY, "object_identity_alias", CriteriaSpecification.INNER_JOIN, Restrictions.sqlRestriction("object_id_identity=this_.id")).
+        	// select secured object id
+//        	add(Restrictions.sqlRestriction("{alias}.object_id_identity=this_.id")).
+				createCriteria(AclSecuredObjectIdentityData.OBJECT_ID_CLASS).
                 // select secured object class
                 add(Restrictions.eq(AclSecuredClassDescriptionData.CLASS_NAME, clazz.getName()));
 
