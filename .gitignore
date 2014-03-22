@@ -149,12 +149,62 @@
 /acris-pivo/.classpath
 /acris-pivo/.project
 
-# /acris-recorder/
-/acris-recorder/.classpath
-/acris-recorder/.project
-/acris-recorder/.settings
-/acris-recorder/target
-/acris-recorder/bin
+# /acris-recorder-api/
+/acris-recorder/acris-recorder-api/.classpath
+/acris-recorder/acris-recorder-api/.project
+/acris-recorder/acris-recorder-api/.settings
+/acris-recorder/acris-recorder-api/target
+/acris-recorder/acris-recorder-api/bin
+
+# /acris-recorder-client/
+/acris-recorder/acris-recorder-client/.classpath
+/acris-recorder/acris-recorder-client/.project
+/acris-recorder/acris-recorder-client/.settings
+/acris-recorder/acris-recorder-client/target
+/acris-recorder/acris-recorder-client/bin
+/acris-recorder/acris-recorder-client/extras
+
+# /acris-recorder-dto/
+/acris-recorder/acris-recorder-dto/.classpath
+/acris-recorder/acris-recorder-dto/.project
+/acris-recorder/acris-recorder-dto/.settings
+/acris-recorder/acris-recorder-dto/target
+/acris-recorder/acris-recorder-dto/bin
+
+# /acris-recorder-jpa/
+/acris-recorder/acris-recorder-jpa/.classpath
+/acris-recorder/acris-recorder-jpa/.project
+/acris-recorder/acris-recorder-jpa/.settings
+/acris-recorder/acris-recorder-jpa/target
+/acris-recorder/acris-recorder-jpa/bin
+
+# /acris-recorder-rpc/
+/acris-recorder/acris-recorder-rpc/.classpath
+/acris-recorder/acris-recorder-rpc/.project
+/acris-recorder/acris-recorder-rpc/.settings
+/acris-recorder/acris-recorder-rpc/target
+/acris-recorder/acris-recorder-rpc/bin
+
+# /acris-recorder-scaffold-model/
+/acris-recorder/acris-recorder-scaffold-model/.classpath
+/acris-recorder/acris-recorder-scaffold-model/.project
+/acris-recorder/acris-recorder-scaffold-model/.settings
+/acris-recorder/acris-recorder-scaffold-model/target
+/acris-recorder/acris-recorder-scaffold-model/bin
+
+# /acris-recorder-server/
+/acris-recorder/acris-recorder-server/.classpath
+/acris-recorder/acris-recorder-server/.project
+/acris-recorder/acris-recorder-server/.settings
+/acris-recorder/acris-recorder-server/target
+/acris-recorder/acris-recorder-server/bin
+
+# /acris-recorder-server-common/
+/acris-recorder/acris-recorder-server-common/.classpath
+/acris-recorder/acris-recorder-server-common/.project
+/acris-recorder/acris-recorder-server-common/.settings
+/acris-recorder/acris-recorder-server-common/target
+/acris-recorder/acris-recorder-server-common/bin
 
 # /acris-reporting/acris-reporting-all/
 /acris-reporting/acris-reporting-all/.settings
