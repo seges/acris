@@ -23,7 +23,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<configuration>
-					<compileReport>true</compileReport>
+					<compileReport>false</compileReport>
 					<gwtVersion>${gwt.version}</gwtVersion>
 					<logLevel>INFO</logLevel>
 					<port>8890</port>
@@ -40,9 +40,9 @@
 					<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
 					<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</webappDirectory>
 					<disableCastChecking>true</disableCastChecking>
-					<disableClassMetadata>false</disableClassMetadata>
+					<disableClassMetadata>true</disableClassMetadata>
 					<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
-					<enableClosureCompiler>false</enableClosureCompiler>
+					<enableClosureCompiler>true</enableClosureCompiler>
 					<fragmentCount>10</fragmentCount>
 				</configuration>
 				<executions>

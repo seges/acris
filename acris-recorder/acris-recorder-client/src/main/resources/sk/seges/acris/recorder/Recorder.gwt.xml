@@ -15,7 +15,7 @@
 
 	<source path='client' />
 
-	<entry-point class="sk.seges.acris.recorder.client.CursorShowcase"/>
+	<entry-point class="sk.seges.acris.recorder.client.RecordingAction"/>
 	<set-configuration-property name="compiler.enum.name.obfuscate" value="true"/>﻿
 
 	<set-property name="compiler.stackMode" value="strip"/>

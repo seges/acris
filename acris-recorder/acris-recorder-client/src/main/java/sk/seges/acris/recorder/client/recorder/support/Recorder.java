@@ -123,7 +123,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 			return;
 		}
 
-		recordingLogDTO.setEvent(encodedEvents);
+		recordingLogDTO.setEvent(encodedEvents.replace('\0', ' '));
 
 		if (recordingSession.getAuditLogs() == null) {
 			recordingSession.setAuditLogs(new ArrayList<RecordingLogDTO>());
