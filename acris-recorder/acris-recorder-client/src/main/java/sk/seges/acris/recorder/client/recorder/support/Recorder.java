@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 
 abstract public class Recorder extends AbstractRecorder implements RecorderListener {
 	
@@ -39,7 +40,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 		this.recordingSession = new RecordingSessionDTO();
 
-		GWT.log("Starting up...");
+		logger.log(Level.SEVERE, "Starting up...");
 
 		RecordingSessionProvider.getSession(new AsyncCallback<RecordingSessionDetailParams>() {
 			@Override
@@ -164,7 +165,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 	private String encodeEvents(List<AbstractGenericEvent> recorderEventsForPersisting) throws UnsupportedEncodingException {
 
-		GWT.log("Encoding events...");
+		logger.log(Level.SEVERE, "Encoding events...");
 
 		String result = "";
 

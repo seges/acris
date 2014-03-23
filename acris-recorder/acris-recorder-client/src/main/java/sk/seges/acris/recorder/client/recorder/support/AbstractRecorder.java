@@ -2,6 +2,8 @@ package sk.seges.acris.recorder.client.recorder.support;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -27,6 +29,8 @@ public abstract class AbstractRecorder {
 	private List<RecorderListener> recorderListeners = new ArrayList<RecorderListener>();
 
 	private RecorderLevel recorderLevel = RecorderLevel.ALL;
+
+	Logger logger = Logger.getLogger("AbstractRecorder");
 
 	public AbstractRecorder() {
 		this.recordHandler = contructRecorder();
@@ -72,7 +76,9 @@ public abstract class AbstractRecorder {
 	}
 	
 	public void stopRecording() {
-		GWT.log("Stopping recording");
+
+		logger.log(Level.SEVERE, "Stopping recording");
+
 		if (handlerRegistration != null) {
 			handlerRegistration.removeHandler();
 		}
@@ -84,7 +90,7 @@ public abstract class AbstractRecorder {
 	}
 	
 	public void startRecording() {
-		GWT.log("Starting recording");
+		logger.log(Level.SEVERE, "Starting recording");
 		handlerRegistration = Event.addNativePreviewHandler(recordHandler);
 	}
 	
