@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 
 abstract public class Recorder extends AbstractRecorder implements RecorderListener {
 	
@@ -39,7 +40,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 		this.recordingSession = new RecordingSessionDTO();
 
-		GWT.log("Starting up...");
+		logger.log(Level.SEVERE, "Starting up...");
 
 		RecordingSessionProvider.getSession(new AsyncCallback<RecordingSessionDetailParams>() {
 			@Override
@@ -121,11 +122,13 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		try {
 			encodedEvents = encodeEvents(recorderEventsForPersisting);
 		} catch (UnsupportedEncodingException e) {
-			GWT.log("Unable to encode events", e);
+			logger.log(Level.SEVERE, "Unable encode events, " + e.getMessage());
 			return;
 		}
 
-		recordingLogDTO.setEvent(encodedEvents.replace('\0', ' '));
+		recordingLogDTO.setEvent(encodedEvents);
+
+		logger.log(Level.SEVERE, "Preparation...");
 
 		if (recordingSession.getAuditLogs() == null) {
 			recordingSession.setAuditLogs(new ArrayList<RecordingLogDTO>());
@@ -133,6 +136,8 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		recordingSession.getAuditLogs().add(recordingLogDTO);
 
 		if (!sessionStarted) {
+			logger.log(Level.SEVERE, "Session not started...");
+
 			awaitingLogs.add(recordingLogDTO);
 		} else {
 			if (awaitingLogs.size() > 0) {
@@ -148,6 +153,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	}
 
 	private void saveLog(RecordingLogDTO log) {
+		logger.log(Level.SEVERE, "Saving log...");
 		recordingService.recordLog(log, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -164,7 +170,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 	private String encodeEvents(List<AbstractGenericEvent> recorderEventsForPersisting) throws UnsupportedEncodingException {
 
-		GWT.log("Encoding events...");
+		logger.log(Level.SEVERE, "Encoding events...");
 
 		String result = "";
 
