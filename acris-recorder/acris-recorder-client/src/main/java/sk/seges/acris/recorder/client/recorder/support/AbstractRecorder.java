@@ -3,6 +3,7 @@ package sk.seges.acris.recorder.client.recorder.support;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
@@ -71,6 +72,7 @@ public abstract class AbstractRecorder {
 	}
 	
 	public void stopRecording() {
+		GWT.log("Stopping recording");
 		if (handlerRegistration != null) {
 			handlerRegistration.removeHandler();
 		}
@@ -82,6 +84,7 @@ public abstract class AbstractRecorder {
 	}
 	
 	public void startRecording() {
+		GWT.log("Starting recording");
 		handlerRegistration = Event.addNativePreviewHandler(recordHandler);
 	}
 	
