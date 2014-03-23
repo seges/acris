@@ -1,25 +1,21 @@
 package sk.seges.acris.recorder.client.recorder.support;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.Window;
-import sk.seges.acris.recorder.client.listener.RecorderListener;
-import sk.seges.acris.recorder.client.event.HtmlEvent;
-import sk.seges.acris.recorder.client.event.KeyboardEvent;
-import sk.seges.acris.recorder.client.event.MouseEvent;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Window;
+import sk.seges.acris.recorder.client.event.HtmlEvent;
+import sk.seges.acris.recorder.client.event.KeyboardEvent;
+import sk.seges.acris.recorder.client.event.MouseEvent;
+import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
+import sk.seges.acris.recorder.client.listener.RecorderListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractRecorder {
 	
@@ -29,8 +25,6 @@ public abstract class AbstractRecorder {
 	private List<RecorderListener> recorderListeners = new ArrayList<RecorderListener>();
 
 	private RecorderLevel recorderLevel = RecorderLevel.ALL;
-
-	Logger logger = Logger.getLogger("AbstractRecorder");
 
 	public AbstractRecorder() {
 		this.recordHandler = contructRecorder();
@@ -77,8 +71,6 @@ public abstract class AbstractRecorder {
 	
 	public void stopRecording() {
 
-		logger.log(Level.SEVERE, "Stopping recording");
-
 		if (handlerRegistration != null) {
 			handlerRegistration.removeHandler();
 		}
@@ -90,7 +82,6 @@ public abstract class AbstractRecorder {
 	}
 	
 	public void startRecording() {
-		logger.log(Level.SEVERE, "Starting recording");
 		handlerRegistration = Event.addNativePreviewHandler(recordHandler);
 	}
 	
