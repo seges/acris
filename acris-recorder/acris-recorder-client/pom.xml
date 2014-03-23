@@ -24,18 +24,14 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<configuration>
 					<compileReport>false</compileReport>
-					<gwtVersion>${gwt.version}</gwtVersion>
 					<logLevel>INFO</logLevel>
 					<port>8890</port>
 					<module>${gwt.client.module}</module>
-					<runTarget>${gwt.client.module}/${gwt.client.html}</runTarget>
 
-					<!-- style>DETAILED</style--><!-- use OBF for prod -->
 					<style>OBF</style>
 					<noServer>false</noServer>
 					<extraJvmArgs> -Dfile.encoding=utf-8</extraJvmArgs>
 					<debugPort>8990</debugPort>
-					<shellServletMappingURL>/gwt-shell-servlet</shellServletMappingURL>
 					<mergedWebXml>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/web.xml</mergedWebXml>
 					<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
 					<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</webappDirectory>

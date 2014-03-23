@@ -162,12 +162,14 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 	private String encodeEvents(List<AbstractGenericEvent> recorderEventsForPersisting) throws UnsupportedEncodingException {
 
+		GWT.log("Encoding events...");
+
 		String result = "";
 
 		for (AbstractGenericEvent event : recorderEventsForPersisting) {
 			byte[] encodedEvent = EventEncoder.encodeEvent(event);
 
-			result += new String(encodedEvent, "UTF-8") + DELIMITER;
+			result += new String(encodedEvent, "Unicode") + DELIMITER;
 
 			if (event instanceof AbstractGenericTargetableEvent) {
 				result += ((AbstractGenericTargetableEvent)event).getRelatedTargetId();
