@@ -39,6 +39,8 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 		this.recordingSession = new RecordingSessionDTO();
 
+		GWT.log("Starting up...");
+
 		RecordingSessionProvider.getSession(new AsyncCallback<RecordingSessionDetailParams>() {
 			@Override
 			public void onFailure(Throwable caught) {
