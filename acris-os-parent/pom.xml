@@ -71,7 +71,6 @@
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
 		<module>../acris-image-utils</module>
-		<!--module>../acris-recorder</module-->
 		<module>../acris-server</module>
 		<module>../acris-reporting</module>
 		<module>../acris-security</module>
@@ -557,13 +556,56 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-recorder</artifactId>
+				<artifactId>acris-recorder-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-recorder</artifactId>
+				<artifactId>acris-recorder-api</artifactId>
 				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-server-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-dto</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-dto</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-rpc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-rpc</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-scaffold-model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-scaffold-model</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-jpa</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -635,11 +677,6 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-security-spring-hibernate</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>acris-security-spring-jpa</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -777,6 +814,11 @@
 				<groupId>javax.media</groupId>
 				<artifactId>jai-core</artifactId>
 				<version>${jai.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-core</artifactId>
+				<version>${jersey.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.media</groupId>

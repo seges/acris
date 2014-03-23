@@ -33,7 +33,7 @@
 					<!-- style>DETAILED</style--><!-- use OBF for prod -->
 					<style>OBF</style>
 					<noServer>false</noServer>
-					<extraJvmArgs>-Xss1512m -Xmx3024m -XX:MaxPermSize=2024m -Dfile.encoding=utf-8</extraJvmArgs>
+					<extraJvmArgs> -Dfile.encoding=utf-8</extraJvmArgs>
 					<debugPort>8990</debugPort>
 					<shellServletMappingURL>/gwt-shell-servlet</shellServletMappingURL>
 					<mergedWebXml>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/web.xml</mergedWebXml>

@@ -16,7 +16,7 @@ public class JpaRecordingSession extends RecordingSessionBase {
 	@Id
 	@Override
 	@GeneratedValue(generator = "seqRecordingSession")
-	public String getId() {
+	public Long getId() {
 		return super.getId();
 	}
 
@@ -33,12 +33,13 @@ public class JpaRecordingSession extends RecordingSessionBase {
 	}
 
 	@Override
+	@Column(length = 2096)
 	public String getSessionInfo() {
 		return super.getSessionInfo();
 	}
 
 	@Override
-	@OneToMany(targetEntity = HibernateGenericUser.class)
+	@ManyToOne(targetEntity = HibernateGenericUser.class)
 	public UserData getUser() {
 		return super.getUser();
 	}

@@ -7,12 +7,12 @@
 	<inherits name='sk.seges.acris.Core' />
 	<inherits name='sk.seges.acris.Common' />
 	<inherits name='sk.seges.acris.Callbacks' />
+	<inherits name='sk.seges.acris.security.SecurityDTO' />
 
 	<inherits name='sk.seges.acris.security.Session' />
 	<inherits name='sk.seges.acris.security.SecurityApi' />
 
 	<source path="client" />
-	<source path="shared" />
 
 	<!-- Security generators -->
 	<generate-with class="sk.seges.acris.security.rebind.SecuredObjectGenerator">

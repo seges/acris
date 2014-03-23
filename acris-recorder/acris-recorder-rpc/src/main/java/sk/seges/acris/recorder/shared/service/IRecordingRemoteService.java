@@ -16,9 +16,9 @@ import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
  * 
  */
 @RemoteServiceDefinition
-public interface IRecordingService extends RemoteService {
+public interface IRecordingRemoteService extends RemoteService {
 
-	RecordingSessionDTO startSession(RecordingSessionDTO sessionDTO);
+	RecordingSessionDTO startSession(RecordingSessionDTO session);
 
 	void recordLog(RecordingLogDTO recordingLog);
 }

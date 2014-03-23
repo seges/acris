@@ -12,7 +12,7 @@ import java.util.List;
 
 @DomainInterface
 @BaseObject
-public interface RecordingSession extends IMutableDomainObject<String>, HasWebId, HasLanguage {
+public interface RecordingSession extends IMutableDomainObject<Long>, HasWebId, HasLanguage {
 
 	Date sessionTime();
 	String language();

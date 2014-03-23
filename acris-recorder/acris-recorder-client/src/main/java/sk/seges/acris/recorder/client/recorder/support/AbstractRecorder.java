@@ -3,6 +3,9 @@ package sk.seges.acris.recorder.client.recorder.support;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Window;
 import sk.seges.acris.recorder.client.listener.RecorderListener;
 import sk.seges.acris.recorder.client.event.HtmlEvent;
 import sk.seges.acris.recorder.client.event.KeyboardEvent;
@@ -56,7 +59,14 @@ public abstract class AbstractRecorder {
 	    		}
 		    }
 		};
-		
+
+		Window.addCloseHandler(new CloseHandler<Window>() {
+			@Override
+			public void onClose(CloseEvent<Window> event) {
+		   		stopRecording();
+			}
+		});
+
 		return nativePreviewHandler;
 	}
 	

@@ -12,26 +12,35 @@
 	</parent>
 
 	<dependencies>
+		<!-- Corpis dependencies -->
+		<dependency>
+			<groupId>sk.seges.corpis</groupId>
+			<artifactId>corpis-application-scaffold-data-service-converter-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Acris dependencies -->
 		<dependency>
 			<groupId>sk.seges.acris</groupId>
 			<artifactId>acris-recorder-rpc</artifactId>
 		</dependency>
-		<!-- Corpis dependencies -->		
 		<dependency>
-			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-data-dao-api-processor</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>sk.seges.corpis</groupId>
-			<artifactId>corpis-data-dao-implementation-processor</artifactId>
-			<scope>provided</scope>
+			<groupId>sk.seges.acris</groupId>
+			<artifactId>acris-recorder-server-common</artifactId>
 		</dependency>
 
 		<!-- Other dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
 	</dependencies>
 </project>

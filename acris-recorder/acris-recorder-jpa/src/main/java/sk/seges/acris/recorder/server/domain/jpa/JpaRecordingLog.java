@@ -14,12 +14,12 @@ public class JpaRecordingLog extends RecordingLogBase {
 	@Id
 	@Override
 	@GeneratedValue(generator = "seqRecordingLog")
-	public String getId() {
+	public Long getId() {
 		return super.getId();
 	}
 
 	@Override
-	@Column
+	@Column(length = 2096)
 	public String getEvent() {
 		return super.getEvent();
 	}
@@ -31,7 +31,7 @@ public class JpaRecordingLog extends RecordingLogBase {
 	}
 
 	@Override
-	@OneToMany(targetEntity = JpaRecordingSession.class)
+	@ManyToOne(targetEntity = JpaRecordingSession.class)
 	public RecordingSessionData getSession() {
 		return super.getSession();
 	}

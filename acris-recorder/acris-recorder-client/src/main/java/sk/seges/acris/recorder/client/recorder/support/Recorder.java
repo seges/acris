@@ -11,8 +11,9 @@ import sk.seges.acris.recorder.client.session.RecordingSessionProvider;
 import sk.seges.acris.recorder.shared.model.dto.RecordingLogDTO;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
 import sk.seges.acris.recorder.shared.params.RecordingSessionDetailParams;
-import sk.seges.acris.recorder.shared.service.IRecordingService;
-import sk.seges.acris.recorder.shared.service.IRecordingServiceAsync;
+import sk.seges.acris.recorder.shared.service.IRecordingRemoteService;
+import sk.seges.acris.recorder.shared.service.IRecordingRemoteServiceAsync;
+import sk.seges.acris.recorder.shared.service.ServicesDefinition;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -24,10 +25,13 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	protected final RecorderMode mode;
 	
 	protected final List<AbstractGenericEvent> recorderEvents = new ArrayList<AbstractGenericEvent>();
-	private IRecordingServiceAsync auditTrailService;
+	private IRecordingRemoteServiceAsync recordingService;
 
 	private RecordingSessionDTO recordingSession;
 	private RecordingLogDTO recordingLogDTO;
+
+	private boolean sessionStarted = false;
+	private List<RecordingLogDTO> awaitingLogs = new ArrayList<RecordingLogDTO>();
 
 	protected Recorder(RecorderMode mode) {
 		super();
@@ -43,9 +47,23 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 			@Override
 			public void onSuccess(RecordingSessionDetailParams result) {
 				recordingSession.setSessionInfo(result.toString());
+				recordingService.startSession(recordingSession, new AsyncCallback<RecordingSessionDTO>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						GWT.log("Unable to start recording session", caught);
+					}
+
+					@Override
+					public void onSuccess(RecordingSessionDTO result) {
+						sessionStarted = true;
+						recordingSession.setId(result.getId());
+					}
+				});
 			}
 		});
 
+		recordingSession.setSessionTime(new Date());
 		recordingSession.setLanguage(getDefaultLocale());
 		recordingSession.setWebId(getWebId());
 
@@ -53,36 +71,34 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		initializeService();
 	}
 
-	private native final String getWebId() /*-{
+	private native String getWebId() /*-{
         return $wnd.webId;
     }-*/;
 
 
-	private native final String getDefaultLocale() /*-{
+	private native String getDefaultLocale() /*-{
         return $wnd.defaultLocale;
     }-*/;
 
 	private void initializeService() {
-        String auditTrailServiceURL = GWT.getModuleBaseURL() + "acris-service/logservice";
-        auditTrailService = GWT.create(IRecordingService.class);
-        //TODO Initiaze session also
-        ServiceDefTarget auditTrailServiceEndPoint = (ServiceDefTarget)auditTrailService;
-        auditTrailServiceEndPoint.setServiceEntryPoint(auditTrailServiceURL);
+        recordingService = GWT.create(IRecordingRemoteService.class);
+        ServiceDefTarget recordingServiceEndPoint = (ServiceDefTarget) recordingService;
+        recordingServiceEndPoint.setServiceEntryPoint(ServicesDefinition.RECORDING_SERVICE);
 	}
 	
 	@Override
 	public void eventRecorded(AbstractGenericEvent event) {
 		recorderEvents.add(event);
-		logEvents();
+		logEvents(false);
 	}
 	
 	@Override
 	public void stopRecording() {
 		super.stopRecording();
-		logEvents();
+		logEvents(true);
 	}
 	
-	protected void logEvents() {
+	protected void logEvents(boolean force) {
 
 		if (recordingLogDTO == null) {
 			recordingLogDTO = new RecordingLogDTO();
@@ -90,7 +106,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 			recordingLogDTO.setSession(this.recordingSession);
 		}
 
-		if (recorderEvents.size() == mode.getBatchSize()) {
+		if (force || recorderEvents.size() == mode.getBatchSize()) {
 			List<AbstractGenericEvent> recorderEventsForPersisting = new ArrayList<AbstractGenericEvent>(recorderEvents);
 			recorderEvents.clear();
 			logEvents(recorderEventsForPersisting);
@@ -108,17 +124,38 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		}
 
 		recordingLogDTO.setEvent(encodedEvents);
-		auditTrailService.recordLog(recordingLogDTO, new AsyncCallback<Void>() {
+
+		if (recordingSession.getAuditLogs() == null) {
+			recordingSession.setAuditLogs(new ArrayList<RecordingLogDTO>());
+		}
+		recordingSession.getAuditLogs().add(recordingLogDTO);
+
+		if (!sessionStarted) {
+			awaitingLogs.add(recordingLogDTO);
+		} else {
+			if (awaitingLogs.size() > 0) {
+				for (RecordingLogDTO log: awaitingLogs) {
+					saveLog(log);
+				}
+				awaitingLogs.clear();
+			}
+			saveLog(recordingLogDTO);
+		}
+
+		recordingLogDTO = null;
+	}
+
+	private void saveLog(RecordingLogDTO log) {
+		recordingService.recordLog(log, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				GWT.log("Unable to save recording log", caught);
 			}
 
 			@Override
 			public void onSuccess(Void result) {
-
 			}
 		});
-		recordingLogDTO = null;
 	}
 
 	private static final String DELIMITER = "|";

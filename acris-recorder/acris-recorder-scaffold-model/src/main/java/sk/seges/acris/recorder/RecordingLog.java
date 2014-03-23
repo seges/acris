@@ -8,7 +8,7 @@ import java.util.Date;
 
 @DomainInterface
 @BaseObject
-public interface RecordingLog extends IMutableDomainObject<String> {
+public interface RecordingLog extends IMutableDomainObject<Long> {
 
 	RecordingSession session();
 	Date eventTime();

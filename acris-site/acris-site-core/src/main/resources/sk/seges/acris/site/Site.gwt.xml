@@ -1,4 +1,10 @@
 <module>
+	<inherits name="com.google.gwt.json.JSON" />
+
+	<source path="domain">
+		<exclude name='server/**' />
+	</source>
+
 	<source path="client" />
 	<source path="shared" />	
 </module>
