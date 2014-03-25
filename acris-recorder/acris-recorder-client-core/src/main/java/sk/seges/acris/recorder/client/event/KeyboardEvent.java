@@ -109,7 +109,7 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 			} else {
 				return "KeyboardEvent [altKey=" + altKey
 					+ ", canBubble=" + canBubble + ", cancelable=" + cancelable
-					+ ", metaKey=" + metaKey + ", relatedTargetId="
+					+ ", metaKey=" + metaKey + ", relatedTargetXpath="
 					+ ", keyCode= "+ keyCode + ", charCode=" + charCode
 					+ ", shiftKey=" + shiftKey + ", type=" + type + "]";
 			}

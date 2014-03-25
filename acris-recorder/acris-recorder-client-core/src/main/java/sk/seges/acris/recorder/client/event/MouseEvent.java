@@ -86,7 +86,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 	protected void initTarget(Element target, Event event) {
 		super.initTarget(target, event);
 
-		if (this.relatedTargetId != null && this.relatedTargetId.length() > 0) {
+		if (this.relatedTargetXpath != null && this.relatedTargetXpath.length() > 0) {
 			int left = DOM.getAbsoluteLeft(target);
 			int top = DOM.getAbsoluteTop(target);
 	
@@ -180,7 +180,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 			return;
 		}
 		
-		if (this.relatedTargetId != null && this.relatedTargetId.length() > 0) {
+		if (this.relatedTargetXpath != null && this.relatedTargetXpath.length() > 0) {
 			relative = false;
 
 			prepareEvent();
@@ -215,8 +215,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		
 		if (pretty) {
 			if (!detailed) {
-				if (relatedTargetId != null && relatedTargetId.length() > 0) {
-					return type + " on " + relatedTargetId + " element";
+				if (relatedTargetXpath != null && relatedTargetXpath.length() > 0) {
+					return type + " on " + relatedTargetXpath + " element";
 				} else {
 					return type + " to " + getAbsoluteClientX() + ", " + getAbsoluteClientY();
 				}
@@ -225,8 +225,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 						(shiftKey ? "true" : "false") + (metaKey ? "true" : "false");
 				flags += ", button " + button + " pressed";
 				
-				if (relatedTargetId != null && relatedTargetId.length() > 0) {
-					return type + " on " + relatedTargetId + " element" + ", " + flags;
+				if (relatedTargetXpath != null && relatedTargetXpath.length() > 0) {
+					return type + " on " + relatedTargetXpath + " element" + ", " + flags;
 				} else {
 					return type + " to " + getAbsoluteClientX() + ", " + getAbsoluteClientY() + ", " + flags;
 				}
@@ -237,8 +237,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 				+ ", elementRelativeClientY=" + clientY
 				+ ", elementRelativeScreenX=" + screenX
 				+ ", elementRelativeScreenY=" + screenY
-				+ ", relatedTargetId="
-				+ relatedTargetId + ", type=" + type + "]";
+				+ ", relatedTargetXpath="
+				+ relatedTargetXpath + ", type=" + type + "]";
 			} else {
 				return "MouseEvent [altKey=" + altKey + ", button=" + button
 					+ ", canBubble=" + canBubble + ", cancelable=" + cancelable
@@ -247,8 +247,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 					+ ", elementRelativeClientY=" + clientY
 					+ ", elementRelativeScreenX=" + screenX
 					+ ", elementRelativeScreenY=" + screenY
-					+ ", metaKey=" + metaKey + ", relatedTargetId="
-					+ relatedTargetId + ", shiftKey=" + shiftKey + ", type=" + type + "]";
+					+ ", metaKey=" + metaKey + ", relatedTargetXpath="
+					+ relatedTargetXpath + ", shiftKey=" + shiftKey + ", type=" + type + "]";
 			}
 		}
 	}
