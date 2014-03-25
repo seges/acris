@@ -12,7 +12,7 @@
 	</parent>
 
 	<properties>
-		<gwt.client.module>sk.seges.acris.Player</gwt.client.module>
+		<gwt.client.module>sk.seges.acris.Play</gwt.client.module>
 	</properties>
 
   	<build>

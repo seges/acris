@@ -12,7 +12,7 @@
 	</parent>
 
 	<properties>
-		<gwt.client.module>sk.seges.acris.recorder.Recorder</gwt.client.module>
+		<gwt.client.module>sk.seges.acris.recorder.Record</gwt.client.module>
 	</properties>
 
   	<build>
