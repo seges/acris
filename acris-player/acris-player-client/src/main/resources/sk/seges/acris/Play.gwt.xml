@@ -1,0 +1,5 @@
+<module>
+	<inherits name='sk.seges.acris.player.Player'/>
+
+	<entry-point class="sk.seges.acris.player.client.PlayerAction"/>
+</module>

@@ -1,0 +1,9 @@
+<module>
+	<inherits name='com.google.gwt.user.User'/>
+
+	<inherits name='sk.seges.acris.Core'/>
+	<inherits name='sk.seges.acris.recorder.RecorderDTO'/>
+
+	<source path='shared' />
+
+</module>

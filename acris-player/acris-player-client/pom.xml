@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acris-player-client</artifactId>
+	<packaging>war</packaging>
+	<name>AcrIS Player Client</name>
+
+	<parent>
+		<groupId>sk.seges.acris</groupId>
+		<artifactId>acris-player-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../acris-player-parent</relativePath>
+	</parent>
+
+	<properties>
+		<gwt.client.module>sk.seges.acris.Player</gwt.client.module>
+	</properties>
+
+  	<build>
+		<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes</outputDirectory>  	
+
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<configuration>
+					<compileReport>false</compileReport>
+					<logLevel>INFO</logLevel>
+					<port>8890</port>
+					<module>${gwt.client.module}</module>
+
+					<style>OBF</style>
+					<noServer>false</noServer>
+					<extraJvmArgs> -Dfile.encoding=utf-8</extraJvmArgs>
+					<debugPort>8990</debugPort>
+					<mergedWebXml>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/web.xml</mergedWebXml>
+					<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
+					<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</webappDirectory>
+					<disableCastChecking>true</disableCastChecking>
+					<disableClassMetadata>true</disableClassMetadata>
+					<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
+					<enableClosureCompiler>true</enableClosureCompiler>
+					<fragmentCount>10</fragmentCount>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>mergewebxml</goal>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- Acris dependencies -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-player-client-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>acris-player-client-core</artifactId>
+			<classifier>sources</classifier>
+		</dependency>
+	</dependencies>
+</project>
