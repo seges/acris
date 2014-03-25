@@ -41,7 +41,7 @@ public class InputFilterColumn extends AbstractFilterableCell<SimpleExpressionDT
 	
 	protected void initTemplate(){
 		if (template == null) {
-			template = GWT.create(Template.class);
+			template = GWT. create(Template.class);
 		}
 	}
 
