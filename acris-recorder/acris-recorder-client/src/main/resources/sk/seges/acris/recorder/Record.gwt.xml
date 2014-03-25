@@ -1,0 +1,4 @@
+<module>
+	<inherits name='sk.seges.acris.Recorder'/>
+	<entry-point class="sk.seges.acris.recorder.client.RecordingAction"/>
+</module>
