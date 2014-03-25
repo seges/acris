@@ -2,5 +2,6 @@
 <module>
 	<inherits name='sk.seges.acris.security.SecurityDTO' />
 
+	<source path='client'/>
 	<source path='shared'/>
 </module>

@@ -6,6 +6,6 @@ public class HtmlTestEvent extends HtmlEvent {
 
 	public HtmlTestEvent(String type) {
 		this.type = type;
-		this.relatedTargetId = "#testId/table/div/input";
+		this.relatedTargetXpath = "#testId/table/div/input";
 	}
 }

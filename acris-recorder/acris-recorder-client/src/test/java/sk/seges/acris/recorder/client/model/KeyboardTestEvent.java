@@ -15,7 +15,7 @@ public class KeyboardTestEvent extends KeyboardEvent {
 		this.altKey = false;
 		this.shiftKey = false;
 		this.metaKey = false;
-		this.relatedTargetId = "#testId/table/div/input";
+		this.relatedTargetXpath = "#testId/table/div/input";
 		this.type = type;
 	}
 }

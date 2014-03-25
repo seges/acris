@@ -17,6 +17,7 @@
 		<module>../acris-recorder-api</module>
 		<module>../acris-recorder-dto</module>
 		<module>../acris-recorder-client</module>
+		<module>../acris-recorder-client-core</module>
 		<module>../acris-recorder-jpa</module>
 		<module>../acris-recorder-rpc</module>
 		<module>../acris-recorder-server-common</module>
