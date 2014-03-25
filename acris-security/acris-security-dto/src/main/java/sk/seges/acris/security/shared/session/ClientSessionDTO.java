@@ -3,7 +3,7 @@
  */
 package sk.seges.acris.security.shared.session;
 
-import sk.seges.acris.core.client.rpc.IDataTransferObject;
+import sk.seges.acris.core.shared.model.IDataTransferObject;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.sesam.shared.model.api.PropertyHolder;
 import sk.seges.sesam.shared.model.api.SessionArrayHolder;

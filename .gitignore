@@ -677,3 +677,9 @@
 /acris-widgets-beantable/.settings
 /acris-widgets-beantable/.classpath
 /acris-widgets-beantable/.gwt
+
+/acris-recorder/acris-recorder-client-core/target
+/acris-player/acris-player-client/target
+/acris-player/acris-player-client-core/target
+/acris-player/acris-player-rpc/target
+/acris-player/acris-player-server/target

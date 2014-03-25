@@ -1,6 +1,6 @@
 package sk.seges.acris.security.server.user_management.model.dto.configuration;
 
-import sk.seges.acris.core.client.rpc.IDataTransferObject;
+import sk.seges.acris.core.shared.model.IDataTransferObject;
 import sk.seges.acris.security.server.core.user_management.domain.hibernate.HibernateSecurityRole;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.sesam.pap.model.annotation.GenerateEquals;

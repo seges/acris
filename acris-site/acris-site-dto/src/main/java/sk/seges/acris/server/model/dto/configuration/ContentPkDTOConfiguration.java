@@ -1,6 +1,6 @@
 package sk.seges.acris.server.model.dto.configuration;
 
-import sk.seges.acris.core.client.rpc.IDataTransferObject;
+import sk.seges.acris.core.shared.model.IDataTransferObject;
 import sk.seges.acris.site.server.domain.api.ContentPkData;
 import sk.seges.acris.site.server.domain.base.ContentPkBase;
 import sk.seges.sesam.pap.model.annotation.GenerateEquals;

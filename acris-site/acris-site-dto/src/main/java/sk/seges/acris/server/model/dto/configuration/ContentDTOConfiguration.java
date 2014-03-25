@@ -1,6 +1,6 @@
 package sk.seges.acris.server.model.dto.configuration;
 
-import sk.seges.acris.core.client.rpc.IDataTransferObject;
+import sk.seges.acris.core.shared.model.IDataTransferObject;
 import sk.seges.acris.domain.server.domain.base.ContentBase;
 import sk.seges.acris.node.MenuItem;
 import sk.seges.acris.site.server.domain.api.ContentData;

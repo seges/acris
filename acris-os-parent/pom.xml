@@ -68,6 +68,7 @@
 		<module>../acris-json-migration</module>
 		<module>../acris-common</module>
 		<module>../acris-recorder</module>
+		<module>../acris-player</module>
 		<module>../acris-external</module>
 		<module>../acris-generator</module>
 		<module>../acris-image-utils</module>
@@ -380,6 +381,39 @@
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>acris-widgets</artifactId>
+				<classifier>sources</classifier>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-player-client-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-player-client-core</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-client-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-recorder-client-core</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-player-rpc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>acris-player-rpc</artifactId>
 				<classifier>sources</classifier>
 				<version>${project.version}</version>
 			</dependency>
