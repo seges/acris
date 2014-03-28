@@ -1,0 +1,449 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="sk" xml:lang="sk">
+	<head>
+		<title>Site HERO</title>
+   		<link rel="stylesheet" type="text/css" href="styles/site.css">
+		<link rel="shortcut icon" href="Gallery/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="Gallery/favicon.ico" type="image/x-icon">
+		<script src="acris-js/jquery.min.js" type="text/javascript"></script>
+		<script src="acris-js/jquery.slides.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="scripts/parsley.min.js"></script>
+		<script type="text/javascript" src="scripts/validation.js"></script>
+		<script type="text/javascript" src="scripts/placeholder.js"></script>
+		<script type="text/javascript" src="properties.js"></script>
+		<script type="text/javascript" src="scripts/sha1.js"></script>
+		<script type="text/javascript" src="scripts/custom.js"></script>
+		<script type="text/javascript" src="synapso-scripts/create.js"></script>
+		<script type="text/javascript" src="scripts/jquery.iosslider.js"></script>
+		<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+
+		<script language='javascript' src='sk.seges.acris.Play.nocache.js'></script>
+
+		<script type="text/javascript">
+			var stringMap = {};
+			stringMap['0'] = 'Vizitka bola aktivovaná.';
+			stringMap['1'] = 'Nastala chyba pri vytváraní vizitky.';
+			stringMap['2'] = 'Vizitka s danými parametrami uz existuje.';
+			stringMap['wrongNamePwd'] = 'Nesprávne zadaný email alebo heslo.';
+			stringMap['unknownErr'] = 'Nastala neznáma chyba. Prosím skúste neskôr.',
+			stringMap['createFree'] = 'Chcem vytvoriť ZADARMO',
+			stringMap['tryFree'] = 'Vyskúšať bez registrácie',
+			stringMap['demoUser'] = 'demo.sitehero.sk';
+			
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			  ga('create', 'UA-48140461-1', 'spoznaj.ma');
+			  ga('send', 'pageview');
+
+		</script>
+
+		<style>
+			#filterInputsessionTimeFrom, #filterInputsessionTimeTo {
+				width: 49%;
+			}
+
+			.pageFrame {
+				position: absolute;
+				margin: 0px;
+				padding: 0px;
+				width: 100%;
+				height: 100%;
+				border: none;
+			}
+
+			body {
+				margin: 0px;
+				padding: 0px;
+			}
+		</style>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	</head>
+<body>
+	<div class="overlay_wrapper"></div>
+	<div class="header">
+		<img src="Gallery/logo.png" class="logo"/>
+		<div class="social_panel">
+			<a href="https://www.facebook.com/sitehero" class="facebook" target="_blank"></a>
+			<a href="https://twitter.com/sitehero_sk" class="twitter" target="_blank"></a>
+			<a href="https://plus.google.com/u/0/101115691469026027081/posts" class="googleplus" target="_blank"></a>
+		</div>
+		
+		<img src="Gallery/beta.png" class="beta"/>
+
+		<div class="login_panel">
+			<div id="login_button">
+				Prihlásenie
+			</div>
+		</div>
+		<div class="language_panel">
+			<img class="active_flag" src="images/flags/sk.png" />
+			<div class="cleaner"></div>
+			<div class="language_selector">
+				<div class="language_row active">
+					<a href="http://sitehero.sk">
+						<img class="flag" src="images/flags/sk.png" style="margin-left: 6px"/>
+						<div class="separator" ></div>
+						<div class="language_name">
+							Slovenská republika (Slovenčina)
+						</div>
+					</a>
+				</div>
+				<div class="language_row">
+					<a href="http://thesitehero.com">
+						<img class="flag" src="images/flags/uk.png"/>
+						<div class="separator" ></div>
+						<div class="language_name">
+							Anglicko (Angličtina)
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="cleaner"></div>
+		<div id="login_form_wrapper">
+			<div id="login_form">
+				<form class="input_row" id="name_pwd_signin" target="hiddenIframe">
+					<input class="input e-mail" placeholder="Váš email" data-required="false" data-type="email" data-error-container="#login_error_messages" data-error-message="Neplatná mailová adresa!" id="username"/>
+					<input type="password" class="input password" data-required="false" placeholder="Password" data-minlength="2" data-error-container="#login_error_messages" data-error-message="Neplatné heslo (musí obsahovať minimálne 2 znaky)!" id="password"/>
+					<input type="button" class="submit" value="" data-error-container="#login_error_messages"/>
+					<div class="cleaner"></div>
+				</form>
+				<div style="visibility: hidden">
+					<input type="checkbox" name="rememberMe" id="rememberMe"/><label for="rememberMe">Zamamätaj si ma</label>
+					<a href="#" class="forgotPassword">Zabudli ste heslo?</a>
+				</div>
+				<div class="join_row">
+					<h1>Prihlásiť s</h1>
+					<div class="divider"></div>
+					<form action="/synapso-server/synapso-service/login/facebook" method="POST" id="fb_signin" name="fb_signin">
+						<input type="hidden" value="publish_stream,user_photos,offline_access,email" name="scope">
+						<input type="hidden" value="sk" name="locale">
+						<input type="submit" class="fbLogin" value="Facebook" onClick="ga('send', 'event', 'button_click', 'login', 'login_fb');"/>
+					</form>					
+					<form action="/synapso-server/synapso-service/login/twitter" method="POST"  id="tw_signin">
+						<input type="submit" class="twitterLogin" value="Twitter" onClick="ga('send', 'event', 'button_click', 'login', 'login_twitter');"/>
+						<input type="hidden" value="sk" name="locale">
+					</form>
+				</div>
+			</div>
+			<div id="login_form_error_wrapper" class="form_error_wrapper">
+				<div id="login_form_error" class="form_error">
+					<div class="close"></div>
+					<div id="login_error_messages" class="error_messages"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="slider">
+		<div class="slider_wrapper">
+			<div class="slider_content">
+				<div class="slogan_story slogan_story_sk"></div>
+				<div class="slogan_story_arrow"></div>
+				<div class="slider_mini">
+					<div class="iosSlider" id="tablet_slider">
+						<div class="ios-slider container royal_scripts">
+							<div class="royalSlideMain slide">
+								<img src="Gallery/slide_1.jpg"/>
+							</div>
+							<div class="royalSlideMain slide">
+								<img src="Gallery/slide_2.jpg"/>
+							</div>
+							<div class="royalSlideMain slide">
+								<img src="Gallery/slide_3.jpg"/>
+							</div>
+						</div>
+					</div>
+					<div class="acris-inline-scripts">
+						<script type="text/javascript">
+							$(function() {
+								initSlider("tablet_slider", false, false, 1250); 
+							})
+						</script>
+					</div>
+				</div>
+			</div>
+			<div class="left_hand"></div>
+			<div class="right_hand"></div>
+			<div id="register_form_error_wrapper" class="form_error_wrapper">
+				<div id="register_form_error" class="form_error">
+					<div class="close"></div>
+					<div id="register_error_messages" class="error_messages"></div>
+				</div>
+			</div>
+			<div id="register_form_wrapper">
+				<form id="register_form" target="hiddenIframe">
+					<h1>Vitajte v</h1>
+					<h2>Site HERO BETA.</h2>
+					<div class="content">Vytvorte si web so Site HERO v BETA verzii a zostaňte užívateľom ZADARMO navždy.<br/> Po ukončení verzie BETA budú noví užívatelia spoplatňovaní. </div>
+					<input type="hidden" value="sitehero.sk" name="domainSuffix" class="domainSuffix">
+
+					<input type="hidden" value="wizitka-personal" name="theme" class="theme">
+					<input type="hidden" value="WIZITKA" name="program" class="program">
+					<input type="hidden" value="sk" name="locale" class="locale">
+					<input class="input person_name" placeholder="Meno" data-required="true" data-minlength="2" data-error-container="#register_error_messages" data-error-message="Neplatné meno (musí obsahovať minimálne 2 znaky)!"/>
+					<input class="input person_surname" placeholder="Priezvisko" data-required="true" data-minlength="2" data-error-container="#register_error_messages" data-error-message="Neplatné priezvisko (musí obsahovať minimálne 2 znaky)!"/>
+					<div class="note"></div>
+					<input class="input email" placeholder="Váš email" data-required="true" data-type="email" data-error-container="#register_error_messages" data-error-message="Neplatná mailová adresa!"/>
+					<input type="password" class="input password" placeholder="Heslo" data-required="true" data-minlength="2" data-error-container="#register_error_messages" data-error-message="Neplatné heslo (musí obsahovať minimálne 2 znaky)!"/>
+					<input type="button" class="submit button" value="Vytvoriť ZADARMO" data-error-container="#register_error_messages" />
+					<h3>Vytvoriť pomocou</h3>
+					<div class="divider"></div>
+					<div class="cleaner"></div>
+				</form>
+				<form action="/synapso-server/synapso-service/register/facebook" method="POST" id="fb_register" class="register-form" style="float: left;">
+					<input type="hidden" value="publish_stream,user_photos,offline_access,email" name="scope">
+					<input type="hidden" value="wizitka-personal" name="theme">
+					<input type="hidden" value="WIZITKA" name="program">
+					<input type="hidden" value="sk" name="locale">
+					<input type="hidden" value="sitehero.sk" name="domainSufix">
+					<input type="hidden" value="testApp" name="appName">
+					<input type="hidden" value="unknown" name="source" class="source">
+					<input type="hidden" value="unknown" name="domain" class="domain">
+					<input type="submit" class="facebook_button" value="Facebook"/>
+				</form>				
+				<form action="/synapso-server/synapso-service/register/twitter" method="POST" id="tw_signin">
+					<input type="hidden" value="wizitka-personal" name="theme">
+					<input type="hidden" value="WIZITKA" name="program">
+					<input type="hidden" value="sk" name="locale">
+					<input type="hidden" value="sitehero.sk" name="domainSufix">
+					<input type="hidden" value="testApp" name="appName">
+					<input type="hidden" value="unknown" name="source" class="source">
+					<input type="hidden" value="sitehero_sk" name="follower">
+					<input type="submit" class="twitter_button" value="Twitter"/>
+				</form>
+			</div>
+			<div id="loader-wrapper">
+				<h3 id="creating_msg">Vizitka sa práve vytvára....</h3>
+				<h4 id="success_msg">Vizitka je úspešne aktivovaná.</h4>
+				<h5 id="error_msg">Vizitku sa nepodarilo vytvoriť!</h5>
+				<img class="loader" src="images/circle_loader.gif" id="circle_loader"/>
+			</div> 
+			<div class="story_tell story_tell_sk"></div>
+			<div class="story_tell_arrow"></div>
+			<div class="cleaner"></div>
+		</div>
+	</div>
+	<div class="cleaner"></div>
+	<div>
+		<div class="preview_popup">
+			<div class="popup_close_corner">
+				<div class="popup_close_button"></div>
+			</div>
+			<div id="preview_content">
+			</div>
+		</div>
+		<div template="slider-1" skin="synapso-mini-skin" class="template-slider-1">
+			<div id="home_slider" class="slides-container floatCenter">
+				<div class="slides_control">
+					<div class="slide">
+						<div class="personCard">
+							<img src="Gallery/sample_orange.png" />
+							<div class="slide_text">
+								<h1>Váš web, Vaša vizitka.</h1>
+								<div class="content">Potrebujete odprezentovať seba a svoju prácu, ale klasický web je zbytočne veľký a komplikovaný? Ak patríte medzi malých podnikateľov, alebo len chcete povedať svetu kto ste a čo robíte, Site HERO je určený Vám. Vaše ľahko dostupné portfolio.</div>
+								<div class="content colors">
+									<div class="text">Farby</div>
+									<div class="color orange"></div>
+									<div class="color purple"></div>
+									<div class="color blue"></div>
+									
+									<input type="button" class="button preview_button" value="Náhľad" onClick="showPreview('person_card_preview_slides');"/>
+									<div class="cleaner"></div>
+								</div>
+							</div>
+							<div class="cleaner"></div>
+
+							<div id="person_card_preview_slides" class="preview_slides">
+								<div class="iosSlider" id="person_card_preview">
+									<div class="ios-slider container royal_scripts">
+										<div class="royalSlideMain slide preview_slide">
+											<img src="Gallery/preview_purple.jpg"/>
+										</div>
+										<div class="royalSlideMain slide">
+											<img src="Gallery/preview_blue.jpg"/>
+										</div>
+										<div class="royalSlideMain slide">
+											<img src="Gallery/preview_orange.jpg"/>
+										</div>
+									</div>
+								</div>
+								<div class="next navigation_button" style="cursor: pointer;"></div>
+								<div class="prev navigation_button" style="cursor: pointer;"></div>
+							</div>
+						</div>
+					</div>
+					<!--div class="slide">
+						<div class="businessCard">
+							<img src="Gallery/sample_blue.png" />
+							<div class="slide_text">
+								<h1>Business card</h1>
+								<div class="content">Ak je pre Vás klasický korporátny web príliš nudný, alebo len zbytočne veľký a zložitý pre vaše potreby, Site HERO Business je práve pre Vás. Doručte správne informácie správnym ľuďom.</div>
+								<div class="content colors">
+									<div class="text">Colors</div>
+									<div class="color orange"></div>
+									<div class="color purple"></div>
+									<div class="color blue"></div>
+									<input type="button" class="button preview_button" value="Preview" onClick="('Gallery/preview_blue.jpg');"/>
+								</div>
+							</div>
+							<div class="cleaner"></div>
+						</div>
+					</div-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="features">
+		<div class="features_content_top">
+			<div class="features_content_bottom">
+				<div class="features_content">
+					<div class="no_complications no_complications_sk"></div>
+					<div class="arrow_down arrow_no_complications"></div>
+					<div class="feature fast">
+						<img src="Gallery/fast_icon.png" />
+						<h1>Web do niekoľkých<br/>minút</h1>
+						<div>
+							Site HERO Vám umožní vytvoriť menšiu webovú prezentáciu už do niekoľkých minút. Prináša možnosť vytvoriť stránku aj na tablete. Prineste vaším návštevníkom obsah, ktorý potrebujete, aby dostali. 
+						</div>
+					</div>
+					<div class="arrow_up"></div>
+					<div class="feature no_developer">
+						<img src="Gallery/easy_icon.png" />
+						<h1>Nemusíte byť <br/>programátor</h1>
+						<div>
+							Premiestňujte text a ďalšie prvky webu pomocou počítačovej myšky, alebo brušiek vašich prstov na tablete. Text a ďalšie elementy upravíte cez dvojklik. Všetko dokážete spraviť jednoducho a sami.
+						</div>
+					</div>
+					<div class="arrow_down last_arrow"></div>
+					<div class="feature signature">
+						<img src="Gallery/pencil_icon.png" />
+						<h1>Váš jedinečný<br/>rukopis</h1>
+						<div>
+							Vyberte si z množstva pozadí a personalizujte si stránku podľa svojich predstáv. Prostredníctvom systému na správu pozadí je možné upravovať jednotlivo obsah a pozadie každej stránky.
+						</div>
+					</div>
+					<div class="cleaner"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="references">
+		<div class="title title_sk">
+			<div class="divider"></div>
+			<h1>Ako použiť</h1>
+			<img src="Gallery/logo.png" class="logo" /> 
+			<div class="divider"></div>
+			<div class="cleaner"></div>		
+		</div>
+		<div class="slider_wrapper">
+			<div template="slider-1" skin="synapso-mini-skin" class="floatCenter template-slider-2">
+				<div id="samples_slider" class="slides-container">
+					<div class="slides_control">
+						<div class="slide">
+							<a href="http://natare.design.sitehero.sk/" class="person ps" onClick="ga('send', 'event', 'button_click', 'sample', 'sample_1');" target="_blank">
+								<div class="profile">
+									<img src="Gallery/man_1.png" />
+									<h2>Renáta<br/>Maringová</h2>
+									<h3>dizajnérka doplnkov</h3>
+									<div class="cleaner"></div>
+								</div>
+								<div class="text">
+									Tvorba náhrdelníkov, čeleniek a dekorácií je vášeň, ktorej sa venujem vo voľnom čase. Nad webovou stránkou už uvažujem dlhšie. Vždy ma však odrádzal dlhý čas, ktorý by som musela venovať jeho vytvoreniu. Predtým mi to prišlo zložité, dnes už ale viem, že to ide aj inak.
+								</div>
+								<div class="cleaner"></div>
+							</a>
+							<a href="http://jozef.kyselica.vizitka.tvojpriestor.sk" class="person jk" onClick="ga('send', 'event', 'button_click', 'sample', 'sample_3');" target="_blank">
+								<div class="profile">
+									<img src="Gallery/man_2.png" />
+									<h2>Jozef<br/>Kyselica</h2>
+									<h3>grafický dizajnér</h3>
+									<div class="cleaner"></div>
+								</div>
+								<div class="text">
+									Svoje práce mám na Behance, Facebooku a iných sieťach, chýbalo mi ale niečo, čo by všetko spojilo dokopy. Vyjadrujem sa vizuálne a túto možnosť mi Site HERO poskytuje.
+								</div>
+								<div class="cleaner"></div>
+							</a>
+							<a href="http://jarmila.podolska.vizitka.tvojpriestor.sk/" class="person jv" onClick="ga('send', 'event', 'button_click', 'sample', 'sample_2');" target="_blank">
+								<div class="profile">
+									<img src="Gallery/girl.png" />
+									<h2>Jarmila<br/>Podolská</h2>
+									<h3>šperkárka</h3>
+									<div class="cleaner"></div>
+								</div>
+								<div class="text">
+									Šperky vyrábam už nejakú dobu. Vlastný web by som si nemohla dovoliť a len facebook mi na propagáciu nestačí. Teraz okrem podpisu v maile prikladám aj svoju Site Hero stránku. 
+								</div>
+								<div class="cleaner"></div>
+							</a>
+							<div class="cleaner"></div>
+						</div>
+					</div>
+				</div>
+				<div class="acris-inline-scripts">
+					<script type="text/javascript">
+						$(function() {
+						if ($('#samples_slider').attr('loaded') != 'true') {
+							$('#samples_slider').attr('loaded', 'true');
+							$('#samples_slider').slides({
+								effect : 'slide',
+								fadeSpeed : 400,
+								crossfade : true,
+								generatePagination : true,
+								pause : 0,
+								hoverPause : false
+							});
+						}});
+					</script>
+				</div>
+			</div>
+			<div class="arrow_cross"></div>
+			<div class="slogan_unique slogan_unique_sk"></div>
+			<div class="cleaner"></div>
+		</div>
+	</div>
+	<div class="footer">
+		<div class="footer_wrapper">
+			<div class="footer_top">
+				<input type="button" id="up"/>
+				<div class="feedback feedback_sk"></div>
+				<a href="http://www.synapso.sk" class="text" target="_blank">SYNAPSO.SK (c) Všetky práva vyhradené 2014</a>
+				<input type="button" class="button" id="joinUp"/>
+				<div class="cleaner"></div>
+			</div>
+			<div class="footer_bottom">
+				<div id="contact_us" class="text contact_us">Napíšte nám</div>
+				<div class="arrow_white_cross"></div>
+				<div class="text follow_us">Sledujte nás</div>
+				<a href="https://www.facebook.com/sitehero" class="facebook" target="_blank"></a>
+				<a href="https://twitter.com/sitehero_sk" class="twitter" target="_blank"></a>
+				<a href="https://plus.google.com/u/0/101115691469026027081/posts" class="googleplus" target="_blank"></a>
+				<div class="cleaner"></div>
+			</div>
+			<div id="contact_form_wrapper">
+				<form id="contact_form" action="/acris-server/acris-rest/form-submit/send" method="POST" target="hiddenIframe" accept-charset="UTF-8">
+					<div id="close_button"></div>
+					<input type="hidden" name="webID" value="synapso.tvojpriestor.sk"/>
+					<input type="hidden" name="formID" value="vizitka_contact_form">
+					<input type="hidden" id="languageID" name="languageID" value="SK">
+					<input type="hidden" id="subject" name="subject" value="Kontaktný formulár z webvizitky">
+					<input class="input email" type="text" placeholder="Váš email" data-required="true" data-type="email" data-error-container="#contact_error_messages" data-error-message="Neplatná mailová adresa!" id="email" name="email"/>
+					<textarea class="input message" placeholder="Napíšte nám. Prosím, buďte k nám úprimní :-)" data-required="true" data-error-container="#contact_error_messages" data-error-message="Správa je neplatná! (Zabudli ste vyplniť text) :) <br/><br/>" id="message" name="message"></textarea>
+					<input class="submit button" type="button" value="Odoslať" data-error-container="#contact_error_messages"/>
+				</form>
+				<div id="contact_form_error_wrapper" class="form_error_wrapper">
+					<div id="contact_form_error" class="form_error">
+						<div class="close"></div>
+						<div id="contact_error_messages" class="error_messages"></div>
+					</div>
+				</div>
+				<iframe name="hiddenIframe" style="display:none;"></iframe>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

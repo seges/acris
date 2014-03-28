@@ -1,6 +1,7 @@
 package sk.seges.acris.player.client.objects;
 
 
+import sk.seges.acris.player.client.objects.common.AnimationObject;
 import sk.seges.acris.recorder.client.tools.CacheMap;
 
 public class Tooltip extends AnimationObject {
@@ -27,9 +28,4 @@ public class Tooltip extends AnimationObject {
 		}
 	}
 	
-	@Override
-	void runAction(AnimationProperties cursorProperties) {
-		showTooltip();
-		super.runAction(cursorProperties);
-	}
 }

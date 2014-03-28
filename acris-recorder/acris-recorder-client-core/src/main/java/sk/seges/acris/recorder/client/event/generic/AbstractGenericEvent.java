@@ -2,18 +2,16 @@ package sk.seges.acris.recorder.client.event.generic;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.RootPanel;
 import sk.seges.acris.recorder.client.event.IRecordableEvent;
 
 public abstract class AbstractGenericEvent implements IRecordableEvent {
 
 	public static final String TYPE_INT_ATTRIBUTE = "typeInt";
-
-//	protected transient int index = -1;
-//	protected transient ListBox playListList = null;
-//	protected transient CacheMap cacheMap = null;
 
 	protected transient Element el = null;
 
@@ -23,8 +21,7 @@ public abstract class AbstractGenericEvent implements IRecordableEvent {
 
 	protected int deltaTime = -1;
 	
-	protected AbstractGenericEvent() {
-	}
+	protected AbstractGenericEvent() {}
 
 	protected AbstractGenericEvent(Event event) {
 		type = DOM.eventGetTypeString(event);
@@ -66,15 +63,6 @@ public abstract class AbstractGenericEvent implements IRecordableEvent {
 		return true;
 	}
 
-//	public void setCacheMap(CacheMap cacheMap) {
-//		this.cacheMap = cacheMap;
-//	}
-
-//	public void setSelected(int index, ListBox playListList) {
-//		this.index = index;
-//		this.playListList = playListList;
-//	}
-
 //	public void skipEvent() {
 //		if (this.playListList != null) {
 //
@@ -91,16 +79,18 @@ public abstract class AbstractGenericEvent implements IRecordableEvent {
 		prepareEvent();
 
 		NativeEvent event = createEvent(el);
+		//event
 		el.dispatchEvent(event);
 
-//		if (this.playListList != null) {
-//			this.playListList.setSelectedIndex(index);
-//		}
+		//DomEvent.fireNativeEvent(event, RootPanel.get(), el);
 	}
 
 	public void prepareEvent() {
-		el = Document.get().getDocumentElement()
-				.<com.google.gwt.user.client.Element> cast();
+
+
+		if (el == null) {
+			el = Document.get().getDocumentElement().cast();
+		}
 	}
 
 	public boolean hasTarget() {

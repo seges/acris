@@ -1,58 +1,56 @@
 package sk.seges.acris.player.client.players;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.RootPanel;
-import sk.seges.acris.player.client.objects.Cursor;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.WidgetHandlerProvider;
+import sk.seges.acris.player.client.event.handler.StateClickHandler;
+import sk.seges.acris.player.client.listener.CompleteHandler;
+import sk.seges.acris.player.client.objects.HTMLEventExecutor;
+import sk.seges.acris.player.client.objects.KeyboardEventExecutor;
+import sk.seges.acris.player.client.objects.MouseEventExecutor;
+import sk.seges.acris.player.client.objects.common.EventMirror;
+import sk.seges.acris.player.client.objects.common.EventProperties;
 import sk.seges.acris.player.client.playlist.Playlist;
-import sk.seges.acris.player.client.objects.Cursor;
-import sk.seges.acris.recorder.client.event.MouseEvent;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.tools.CacheMap;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class Player {
 
-	private final Cursor cursor;
-//	private final Tooltip tooltip;
-	private Playlist playlist;
+	private List<EventMirror> eventMirrors = new ArrayList<EventMirror>();
 
-	
+	private Playlist playlist;
+	private boolean showPlaylist;
+
+	private List<EventProperties> actionsQueue = new LinkedList<EventProperties>();
+
+	private boolean running = false;
+
 	public Player(int duration, CacheMap cacheMap) {
-		cursor = new Cursor(duration, cacheMap);
-//		tooltip = new Tooltip(200);
-//		cursor.synchronizeWith(tooltip);
+
+		eventMirrors.add(new MouseEventExecutor(duration, cacheMap));
+		eventMirrors.add(new HTMLEventExecutor());
+		eventMirrors.add(new KeyboardEventExecutor());
+
+		running = false;
 	}
 
 	public boolean isPlaying() {
 		return (playlist != null && this.playlist.getEventsCount() > 0);
 	}
 
-//	private static final int MINIMUM_DISTANCE = 10; //in pixels
-
-	private boolean showPlaylist = false;
-	
 	public void showPlaylist() {
 		if (isPlaying()) {
-			DialogBox playlist = GWT.create(DialogBox.class);
-			playlist.setModal(false);
-			playlist.setWidth("100px");
-			playlist.setPopupPosition(1000, 20);
-			ListBox playListList = GWT.create(ListBox.class);
-			playListList.setVisibleItemCount(40);
-			
-			int i = 0;
-			int count = this.playlist.getEventsCount();
-			
-			for (int j = 0; j < count; j++) {
-				AbstractGenericEvent event = this.playlist.getEvent(j);
-//		    	if (count - 1 > i) {
-//		    		event.setSelected(++i, playListList);
-//		    	}
-		    	playListList.addItem(event.toString(true, false));
-		    }
-			playlist.setText("Playlist");
-			playlist.setWidget(playListList);
 			playlist.show();
 		} else {
 			showPlaylist = true;
@@ -61,69 +59,118 @@ public class Player {
 	
 	public void play(Playlist playlist) {
 		this.playlist = playlist;
+
 		if (showPlaylist) {
 			showPlaylist();
 		}
-		RootPanel.get().add(cursor);
-		
+
+		for (EventMirror eventMirror: eventMirrors) {
+			if (eventMirror.getWidget() != null) {
+				RootPanel.get().add(eventMirror.getWidget());
+			}
+			eventMirror.initialize();
+		}
+
 		int count = playlist.getEventsCount();
 
-//		MouseEvent previousMouseEvent = null;
-		
-		//CacheMap cacheMap = new CacheMap(50);
-		
 		for (int i = 0; i < count; i++) {
 			AbstractGenericEvent event = playlist.getEvent(i);
-			//event.setCacheMap(cacheMap);
-//			if (previousMouseEvent != null && 
-//					event.getType().equals(MouseMoveEvent.getType().getName())) {
-//				double distance = AnimationObject.calculateDistance(((MouseEvent)event).getClientX(), ((MouseEvent)event).getClientY(), 
-//						previousMouseEvent.getClientX(), previousMouseEvent.getClientY());
-//				if (distance < MINIMUM_DISTANCE) {
-//					event.skipEvent();
-//					continue;
-//				}
-//			} else if (previousMouseEvent != null) {
-//				previousMouseEvent = null;
-//			}
-
-			if (event instanceof MouseEvent) {
-				MouseEvent mouseEvent = (MouseEvent)event;
-				cursor.move(mouseEvent.getAbsoluteClientX(), mouseEvent.getAbsoluteClientY());
-				cursor.event(mouseEvent);
+			for (EventMirror eventMirror: eventMirrors) {
+				addEvent(event, eventMirror);
 			}
-			
-//			if (event.getType().equals(MouseMoveEvent.getType().getName())) {
-//				previousMouseEvent = (MouseEvent)event;
-//			}
 		}
-		
-//		for (int i = 0; i < count; i++) {
-//			String event = playlist.getEvent(i);
-//			if (EObjectType.CURSOR.equals(getObjectType(event))) {
-//				EObjectActionType  getObjectActionType
-//				String params = getActionParams(event);
-//				
-//				if (params != null) {
-//					if (params.indexOf(",") != -1) {
-//						Position position = new Position(params);
-//					} else {
-//						
-//					}
-//				}
-//				//cursor.
-//			} else {
-//				//tootip
-//			}
-//		}
+
+		runAction();
+	}
+
+	private void addEvent(AbstractGenericEvent event, EventMirror eventMirror) {
+		EventProperties cursorProperties = new EventProperties(eventMirror);
+		cursorProperties.setEvent(event);
+		actionsQueue.add(cursorProperties);
 	}
 
 	public void stop() {
-		cursor.stop();
-		// tooltip.stop();
+		for (EventMirror eventMirror: eventMirrors) {
+			eventMirror.destroy();
+		}
+
+		running = false;
 	}
 
-	public void replay() {
-		play(playlist);
+	class ObjectWrapper<T> {
+		T value;
+	}
+
+	private void waitUntilClickFinished(Element element, final ObjectWrapper<Boolean> finishIndicator) {
+		EventListener eventListener = DOM.getEventListener(element);
+
+		if (eventListener instanceof Widget) {
+			HandlerManager handlerManager = WidgetHandlerProvider.getHandlerManager((Widget) eventListener);
+			int count = handlerManager.getHandlerCount(ClickEvent.getType());
+
+			final ObjectWrapper<Integer> listenersCount = new ObjectWrapper<Integer>();
+			listenersCount.value = 0;
+
+			for (int i = 0; i < count; i++) {
+				ClickHandler clickHandler = handlerManager.getHandler(ClickEvent.getType(), i);
+
+				if (clickHandler instanceof StateClickHandler) {
+					listenersCount.value++;
+				}
+			}
+
+			for (int i = 0; i < count; i++) {
+				ClickHandler clickHandler = handlerManager.getHandler(ClickEvent.getType(), i);
+
+				if (clickHandler instanceof StateClickHandler) {
+					((StateClickHandler)clickHandler).addEventListener(new sk.seges.acris.player.client.listener.EventListener() {
+
+						public void onSuccess() {
+							listenersCount.value--;
+
+							if (listenersCount.value == 0) {
+								if (!finishIndicator.value) {
+									finishIndicator.value = true;
+//									running.value = false;
+//									runAction();
+								}
+							}
+						}
+
+						public void onFailure() {
+							GWT.log("Unable to continue with next action due to error on the page", null);
+						}
+					});
+				}
+			}
+		} else {
+			//not supported widget, execute next Action
+			finishIndicator.value = true;
+//			running = false;
+//			runAction();
+		}
+	}
+
+	private synchronized void runAction() {
+		if (running) {
+			return;
+		}
+		if (actionsQueue.size() == 0) {
+			return;
+		}
+		running = true;
+//		objectAnimation = null;
+//		timer = null;
+		EventProperties cursorProperties = actionsQueue.get(0);
+		actionsQueue.remove(0);
+		EventMirror animationObject = cursorProperties.getEventMirror();
+		animationObject.runAction(cursorProperties, new CompleteHandler() {
+			@Override
+			public void onComplete() {
+				running = false;
+				playlist.selectNextEvent();
+				runAction();
+			}
+		});
 	}
 }

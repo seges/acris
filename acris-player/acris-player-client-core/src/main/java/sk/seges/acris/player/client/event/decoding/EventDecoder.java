@@ -11,7 +11,7 @@ public class EventDecoder {
 
 		long value = longFromByteArray(event);
 
-		EventType eventType = getEventType(event[0]);
+		EventType eventType = getEventType(value);
 
 		AbstractGenericEvent abstractGenericEvent = null;
 
@@ -45,7 +45,7 @@ public class EventDecoder {
 	private static final long longFromByteArray(byte[] bytes) {
 		long value = 0;
 		for (int i = 0; i < bytes.length; i++) {
-			value += ((long) bytes[i] & 0xffL) << (8 * i);
+			value += ((long) bytes[bytes.length - i - 1] & 0xffL) << (8 * i);
 		}
 		return value;
 	}

@@ -34,7 +34,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 	public static final String CLIENT_Y_ATTRIBUTE = "clientY";
 	public static final String SCREEN_X_ATTRIBUTE = "screenX";
 	public static final String SCREEN_Y_ATTRIBUTE = "screenY";
-	
+	public static final String BUTTON_ATTRIBUTE = "button";
+
 	public MouseEvent() {
 	}
 
@@ -166,7 +167,15 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 			return false;
 		return true;
 	}
-	
+
+	public int getButton()  {
+		return button;
+	}
+
+	public void setButton(int button) {
+		this.button = button;
+	}
+
 	public int getScreenX() {
 		return screenX;
 	}
@@ -261,7 +270,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		} else if (MouseDownEvent.getType().getName().equals(type)) {
 			return 2;
 		} else if (MouseMoveEvent.getType().getName().equals(type)) {
-			return 3;
+			return MOUSE_MOVE_TYPE;
 		} else if (MouseOutEvent.getType().getName().equals(type)) {
 			return 4;
 		} else if (MouseOverEvent.getType().getName().equals(type)) {
@@ -272,6 +281,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		
 		return 7;
 	}
+
+	public static final int MOUSE_MOVE_TYPE = 3;
 
 	@Override
 	public void setTypeInt(int type) {
@@ -285,7 +296,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		case 2:
 			this.type = MouseDownEvent.getType().getName();
 			return;
-		case 3:
+		case MOUSE_MOVE_TYPE:
 			this.type = MouseMoveEvent.getType().getName();
 			return;
 		case 4:

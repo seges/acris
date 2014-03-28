@@ -15,4 +15,6 @@ public interface IPlayerRemoteService extends RemoteService {
 	PagedResultDTO<List<RecordingSessionDTO>> getSessions(PageDTO page, String webId, String language);
 
 	PagedResultDTO<List<RecordingLogDTO>> getLogs(PageDTO page, RecordingSessionDTO sessions);
+
+	RecordingSessionDTO getSession(long sessionId);
 }

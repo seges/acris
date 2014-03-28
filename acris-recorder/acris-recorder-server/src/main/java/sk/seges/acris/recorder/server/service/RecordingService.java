@@ -24,7 +24,6 @@ public class RecordingService implements RecordingLocalService {
 	@Override
 	@Transactional
 	public void recordLog(RecordingLogData recordingLog) {
-		recordingLog.setEvent(recordingLog.getEvent().replace('\0', ' '));
 		recordingLogDao.persist(recordingLog);
 	}
 

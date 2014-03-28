@@ -6,6 +6,7 @@ import sk.seges.acris.security.server.core.user_management.domain.hibernate.Hibe
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,12 @@ public class JpaRecordingSession extends RecordingSessionBase {
 	@OneToMany(targetEntity = JpaRecordingLog.class, mappedBy = "session", cascade = { CascadeType.REMOVE })
 	public List<RecordingLogData> getAuditLogs() {
 		return super.getAuditLogs();
+	}
+
+	@Column
+	@Override
+	public Date getSessionTime() {
+		return super.getSessionTime();
 	}
 
 	@Override

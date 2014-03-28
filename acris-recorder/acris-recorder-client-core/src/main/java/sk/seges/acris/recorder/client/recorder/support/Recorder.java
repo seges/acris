@@ -39,6 +39,10 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 		this.recordingSession = new RecordingSessionDTO();
 
+		this.recordingSession.setSessionTime(new Date());
+		this.recordingSession.setLanguage(getDefaultLocale());
+		this.recordingSession.setWebId(getWebId());
+
 		RecordingSessionProvider.getSession(new AsyncCallback<RecordingSessionDetailParams>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -62,10 +66,6 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 				});
 			}
 		});
-
-		recordingSession.setSessionTime(new Date());
-		recordingSession.setLanguage(getDefaultLocale());
-		recordingSession.setWebId(getWebId());
 
 		addRecordListener(this);
 		initializeService();
@@ -157,7 +157,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		});
 	}
 
-	public static final String DELIMITER = "|";
+	public static final String DELIMITER = "||";
 
 	private String encodeEvents(List<AbstractGenericEvent> recorderEventsForPersisting) throws UnsupportedEncodingException {
 
@@ -166,7 +166,9 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		for (AbstractGenericEvent event : recorderEventsForPersisting) {
 			byte[] encodedEvent = EventEncoder.encodeEvent(event);
 
-			result += new String(encodedEvent, "ISO-LATIN-1") + DELIMITER;
+			String encodedEventString = new String(encodedEvent, "ISO-8859-1") + DELIMITER;
+
+			result += encodedEventString;
 
 			if (event instanceof AbstractGenericTargetableEvent) {
 				result += ((AbstractGenericTargetableEvent)event).getRelatedTargetXpath();

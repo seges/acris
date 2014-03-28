@@ -1,0 +1,420 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="sk" xml:lang="sk">
+	<head>
+		<title>Site HERO</title>
+   		<link rel="stylesheet" type="text/css" href="styles/site.css">
+		<link rel="shortcut icon" href="Gallery/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="Gallery/favicon.ico" type="image/x-icon">
+		<script src="acris-js/jquery.min.js" type="text/javascript"></script>
+		<script src="acris-js/jquery.slides.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="scripts/parsley.min.js"></script>
+		<script type="text/javascript" src="scripts/validation.js"></script>
+		<script type="text/javascript" src="scripts/placeholder.js"></script>
+		<script type="text/javascript" src="properties.js"></script>
+        <script type="text/javascript" src="scripts/sha1.js"></script>
+		<script type="text/javascript" src="scripts/custom.js"></script>
+		<script type="text/javascript" src="synapso-scripts/create.js"></script>
+		<script type="text/javascript" src="scripts/jquery.iosslider.js"></script>
+		<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+		<script type="text/javascript">
+			var stringMap = {};
+			stringMap['0'] = 'Page was created successfully.';
+			stringMap['1'] = 'An error ocured while creating the web page.';
+			stringMap['2'] = 'Page already exists.';
+			stringMap['wrongNamePwd'] = 'Wrong email or password.';
+			stringMap['unknownErr'] = 'Unknown error. Please try it again later.',
+			stringMap['createFree'] = 'Join for FREE',
+			stringMap['tryFree'] = 'Test without registration',
+			stringMap['demoUser'] = 'demo.thesitehero.com';
+			
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			  ga('create', 'UA-48140461-2', 'thesitehero.com');
+			  ga('send', 'pageview');
+		</script>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	</head>
+<body>
+	<div class="overlay_wrapper"></div>
+	<div class="header">
+		<img src="Gallery/logo.png" class="logo"/>
+		<div class="social_panel">
+			<a href="https://www.facebook.com/pages/The-Site-HERO/271259083050972?skip_nax_wizard=true" class="facebook" target="_blank"></a>
+			<a href="https://twitter.com/thesitehero" class="twitter" target="_blank"></a>
+			<a href="https://plus.google.com/u/0/b/108845075722566821776/108845075722566821776/about?hl=sk" class="googleplus" target="_blank"></a>
+		</div>
+		<img src="Gallery/beta.png" class="beta"/>
+		<div class="login_panel">
+			<div id="login_button">
+				Login
+			</div>
+		</div>
+		<div class="language_panel">
+			<img class="active_flag" src="images/flags/uk.png" />
+			<div class="cleaner"></div>
+			<div class="language_selector">
+				<div class="language_row">
+					<a href="http://sitehero.sk">
+						<img class="flag" src="images/flags/sk.png" style="margin-left: 6px"/>
+						<div class="separator" ></div>
+						<div class="language_name">
+							Slovakia (Slovak language)
+						</div>
+					</a>
+				</div>
+				<div class="language_row active">
+					<a href="http://thesitehero.com">
+						<img class="flag" src="images/flags/uk.png"/>
+						<div class="separator" ></div>
+						<div class="language_name">
+							United Kingdom (English)
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="cleaner"></div>
+		<div id="login_form_wrapper">
+			<div id="login_form">
+				<form class="input_row" id="name_pwd_signin" target="hiddenIframe">
+					<input class="input email" placeholder="Your email address" data-required="true" data-type="email" data-error-container="#login_error_messages" data-error-message="Email is not valid!" id="username"/>
+					<input type="password" class="input password" data-required="true" placeholder="Password" data-minlength="2" data-error-container="#login_error_messages" data-error-message="Password is not valid (minimum 2 characters)!" id="password"/>
+					<input type="button" class="submit" value="" data-error-container="#login_error_messages"/>
+					<div class="cleaner"></div>
+				</form>
+				<div style="visibility: hidden">
+					<input type="checkbox" name="rememberMe" id="rememberMe"/><label for="rememberMe">Remember me</label>
+					<a href="#" class="forgotPassword">Forgot password?</a>
+				</div>
+				<div class="join_row">
+					<h1>Login with</h1>
+					<div class="divider"></div>
+					<form action="/synapso-server/synapso-service/login/facebook" method="POST" id="fb_signin" name="fb_signin">
+						<input type="hidden" value="publish_stream,user_photos,offline_access,email" name="scope">
+						<input type="hidden" value="en" name="locale">
+						<input type="submit" class="fbLogin" value="Facebook" onClick="ga('send', 'event', 'button_click', 'login', 'login_fb');"/>
+					</form>					
+					<form action="/synapso-server/synapso-service/login/twitter" method="POST"  id="tw_signin">
+						<input type="submit" class="twitterLogin" value="Twitter" onClick="ga('send', 'event', 'button_click', 'login', 'login_twitter');"/>
+						<input type="hidden" value="en" name="locale">
+					</form>
+				</div>
+			</div>
+			<div id="login_form_error_wrapper" class="form_error_wrapper">
+				<div id="login_form_error" class="form_error">
+					<div class="close"></div>
+					<div id="login_error_messages" class="error_messages"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="slider">
+		<div class="slider_wrapper">
+			<div class="slider_content">
+				<div class="slogan_story slogan_story_en"></div>
+				<div class="slogan_story_arrow"></div>
+				<div class="slider_mini">
+					<div class="iosSlider" id="tablet_slider">
+						<div class="ios-slider container royal_scripts">
+							<div class="royalSlideMain slide">
+								<img src="Gallery/slide_1.jpg"/>
+							</div>
+							<div class="royalSlideMain slide">
+								<img src="Gallery/slide_2.jpg"/>
+							</div>
+							<div class="royalSlideMain slide">
+								<img src="Gallery/slide_3.jpg"/>
+							</div>
+						</div>
+					</div>
+					<div class="acris-inline-scripts">
+						<script type="text/javascript">
+							$(function() {
+								initSlider("tablet_slider", false, false, 1250);  
+							})
+						</script>
+					</div>
+				</div>
+			</div>
+			<div class="left_hand"></div>
+			<div class="right_hand"></div>
+			<div id="register_form_error_wrapper" class="form_error_wrapper">
+				<div id="register_form_error" class="form_error">
+					<div class="close"></div>
+					<div id="register_error_messages" class="error_messages"></div>
+				</div>
+			</div>
+			<div id="register_form_wrapper">
+				<form id="register_form" target="hiddenIframe">
+					<h1>Welcome in</h1>
+					<h2>Site HERO BETA.</h2>
+					<div class="content">Create your own web in BETA version and stay 'for free user' for good. After this time Site HERO will be charged for new users</div>
+					<input type="hidden" value="thesitehero.com" name="domainSuffix" class="domainSuffix">
+					<input type="hidden" value="wizitka-personal" name="theme" class="theme">
+					<input type="hidden" value="WIZITKA" name="program" class="program">
+					<input type="hidden" value="en" name="locale" class="locale">
+					<input class="input person_name" placeholder="First name" data-required="true" data-minlength="2" data-error-container="#register_error_messages" data-error-message="First name is not valid (minimum 2 characters)!"/>
+					<input class="input person_surname" placeholder="Last name" data-required="true" data-minlength="2" data-error-container="#register_error_messages" data-error-message="Last name is not valid (minimum 2 characters)!"/>
+					<div class="note"></div>
+					<input class="input email" placeholder="Your email address" data-required="true" data-type="email" data-error-container="#register_error_messages" data-error-message="Email is not valid!"/>
+					<input type="password" class="input password" placeholder="Password" data-required="true" data-minlength="2" data-error-container="#register_error_messages" data-error-message="Password is not valid (minimum 2 characters)!"/>
+					<input type="button" class="submit button" value="Join for FREE" data-error-container="#register_error_messages"/>
+					<h3>Join us with</h3>
+					<div class="divider"></div>
+					<div class="cleaner"></div>
+				</form>
+				<form action="/synapso-server/synapso-service/register/facebook" method="POST" id="fb_register" name="fb_register"  style="float: left;">
+					<input type="hidden" value="publish_stream,user_photos,offline_access,email" name="scope">
+					<input type="hidden" value="wizitka-personal" name="theme">
+					<input type="hidden" value="WIZITKA" name="program">
+					<input type="hidden" value="en" name="locale">
+					<input type="hidden" value="thesitehero.com" name="domainSufix">
+					<input type="hidden" value="testApp" name="appName">
+					<input type="hidden" value="unknown" name="source" class="source">
+					<input type="hidden" value="unknown" name="domain" class="domain">
+					<input type="submit" class="facebook_button" value="Facebook"/>
+				</form>				
+				<form action="/synapso-server/synapso-service/register/twitter" method="POST" id="tw_signin">
+					<input type="hidden" value="wizitka-personal" name="theme">
+					<input type="hidden" value="WIZITKA" name="program">
+					<input type="hidden" value="en" name="locale">
+					<input type="hidden" value="thesitehero.com" name="domainSufix">
+					<input type="hidden" value="testApp" name="appName">
+					<input type="hidden" value="unknown" name="source" class="source">
+					<input type="submit" class="twitter_button" value="Twitter"/>
+				</form>
+			</div>
+			<div id="loader-wrapper">
+				<h3 id="creating_msg">Processing your Site HERO....</h3>
+				<h4 id="success_msg">Your Site HERO was successfully created.</h4>
+				<h5 id="error_msg">Somenthing went wrong :(.</h5>
+				<img class="loader" src="images/circle_loader.gif" id="circle_loader"/>
+			</div>
+			<div class="story_tell story_tell_en"></div>
+			<div class="story_tell_arrow"></div>
+			<div class="cleaner"></div>
+		</div>
+	</div>
+	<div class="cleaner"></div>
+	<div>
+		<div class="preview_popup">
+			<div class="popup_close_corner">
+				<div class="popup_close_button"></div>
+			</div>
+			<div id="preview_content">
+			</div>
+		</div>
+		<div template="slider-1" skin="synapso-mini-skin" class="template-slider-1">
+			<div id="home_slider" class="slides-container floatCenter">
+				<div class="slides_control">
+					<div class="slide">
+						<div class="personCard">
+							<img src="Gallery/sample_orange.png" />
+							<div class="slide_text">
+								<h1>Personal card</h1>
+								<div class="content">Do you need your own personal website to promote yourself and your work, but classic corporate website is unnecessarily large and complicated for you? If you are a small enterpreneur or if you just want to tell the world about you, there is Site HERO. Promote your porfolio and communicate with your potencial clients simply and clearly.</div>
+								<div class="content colors">
+									<div class="text">Colors</div>
+									<div class="color orange"></div>
+									<div class="color purple"></div>
+									<div class="color blue"></div>
+									<input type="button" class="button preview_button" value="Preview" onClick="showPreview('person_card_preview_slides');"/>
+									<div class="cleaner"></div>
+								</div>
+							</div>
+							<div class="cleaner"></div>
+							
+							<div id="person_card_preview_slides" class="preview_slides">
+								<div class="iosSlider" id="person_card_preview">
+									<div class="ios-slider container royal_scripts">
+										<div class="royalSlideMain slide preview_slide">
+											<img src="Gallery/preview_purple.jpg"/>
+										</div>
+										<div class="royalSlideMain slide">
+											<img src="Gallery/preview_blue.jpg"/>
+										</div>
+										<div class="royalSlideMain slide">
+											<img src="Gallery/preview_orange.jpg"/>
+										</div>
+									</div>
+								</div>
+								<div class="next navigation_button" style="cursor: pointer;"></div>
+								<div class="prev navigation_button" style="cursor: pointer;"></div>
+							</div>
+						</div>
+					</div>
+					<!--div class="slide">
+						<div class="businessCard">
+							<img src="Gallery/sample_blue.png" />
+							<div class="slide_text">
+								<h1>Business card</h1>
+								<div class="content">Site HERO Business is designed just for you, if a classic corporate website is too mainstream or just too big for your needs. Deliver the right information to your customers. </div>
+								<div class="content colors">
+									<div class="text">Colors</div>
+									<div class="color orange"></div>
+									<div class="color purple"></div>
+									<div class="color blue"></div>
+									<input type="button" class="button preview_button" value="Preview" onClick="showPreview('Gallery/preview_blue.jpg');"/>
+								</div>
+							</div>
+							<div class="cleaner"></div>
+						</div>
+					</div-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="features">
+		<div class="features_content_top">
+			<div class="features_content_bottom">
+				<div class="features_content">
+					<div class="no_complications no_complications_en"></div>
+					<div class="arrow_down arrow_no_complications"></div>
+					<div class="feature fast">
+						<img src="Gallery/fast_icon.png" />
+						<h1>Done in few <br/>minutes</h1>
+						<div>
+							Site HERO allows you to build your own small web presence in a few minutes and optimize your connection to customers. Create and edit your presentation also at tablet.  Target your audience at the right content. 
+						</div>
+					</div>
+					<div class="arrow_up"></div>
+					<div class="feature no_developer">
+						<img src="Gallery/easy_icon.png" />
+						<h1>No developers <br/>needed</h1>
+						<div>
+							You can move the text and other web elements where you want by using the mouse at PC or your fingertips on tablet. Text and other elements are editable by double clicks. You can do it all by yourself.
+						</div>
+					</div>
+					<div class="arrow_down last_arrow"></div>
+					<div class="feature signature">
+						<img src="Gallery/pencil_icon.png" />
+						<h1>Make it your<br/>signature</h1>
+						<div>
+							You can choose from various templates and personalize it your way. The number of slides is also unlimited. With website background management is possible to seperately edit content and background of the the every single slide. 
+						</div>
+					</div>
+					<div class="cleaner"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="references">
+		<div class="title">
+			<div class="divider"></div>
+			<h1>How people use</h1>
+			<img src="Gallery/logo.png" class="logo" /> 
+			<div class="divider"></div>
+			<div class="cleaner"></div>		
+		</div>
+		<div class="slider_wrapper">
+			<div template="slider-1" skin="synapso-mini-skin" class="floatCenter template-slider-2">
+				<div id="samples_slider" class="slides-container">
+					<div class="slides_control">
+						<div class="slide">
+							<a href="http://renata.maringova.thesitehero.com/" class="person ps" onClick="ga('send', 'event', 'button_click', 'sample', 'sample_1');" target="_blank">
+								<div class="profile">
+									<img src="Gallery/man_1.png" />
+									<h2>Renáta<br/>Maringová</h2>
+									<h3>accessories designer</h3>
+									<div class="cleaner"></div>
+								</div>
+								<div class="text">
+									Necklaces, headbands and decorations, that´s my passion i love to do at my spare time. The idea of my own website was here before, but it was time what discouraged me. Today I know it doesn´t have to take so much time. 
+								</div>
+								<div class="cleaner"></div>
+							</a>
+							<a href="http://jozef.kyselica.thesitehero.com" class="person jk" onClick="ga('send', 'event', 'button_click', 'sample', 'sample_3');" target="_blank">
+								<div class="profile">
+									<img src="Gallery/man_2.png" />
+									<h2>Jozef<br/>Kyselica</h2>
+									<h3>graphic designer</h3>
+									<div class="cleaner"></div>
+								</div>
+								<div class="text">
+									I have my portfolio on Behance, Facebook and other social networks, but I was missing something what put all together. I express myself visually and Site Hero brings me this option.
+								</div>
+								<div class="cleaner"></div>
+							</a>							
+							<a href="http://jarmila.podolska.thesitehero.com/" class="person jv" onClick="ga('send', 'event', 'button_click', 'sample', 'sample_2');" target="_blank">
+								<div class="profile">
+									<img src="Gallery/girl.png" />
+									<h2>Jarmila<br/>Podolská</h2>
+									<h3>jeweler</h3>
+									<div class="cleaner"></div>
+								</div>
+								<div class="text">
+									Making of jewelry is my hobby for a long time. I couldn´t afford my own website and only facebook page for promotion is not enough. Now, when I write an e-mail, I put my Site HERO website as the second signature.
+								</div>
+								<div class="cleaner"></div>
+							</a>
+							<div class="cleaner"></div>
+						</div>
+					</div>
+				</div>
+				<div class="acris-inline-scripts">
+					<script type="text/javascript">
+						$(function() {
+						if ($('#samples_slider').attr('loaded') != 'true') {
+							$('#samples_slider').attr('loaded', 'true');
+							$('#samples_slider').slides({
+								effect : 'slide',
+								fadeSpeed : 400,
+								crossfade : true,
+								generatePagination : true,
+								pause : 0,
+								hoverPause : false
+							});
+						}});
+					</script>
+				</div>
+			</div>
+			<div class="arrow_cross"></div>
+			<div class="slogan_unique slogan_unique_en"></div>
+			<div class="cleaner"></div>
+		</div>
+	</div>
+	<div class="footer">
+		<div class="footer_wrapper">
+			<div class="footer_top">
+				<input type="button" id="up"/>
+				<div class="feedback feedback_en"></div>
+				<a href="http://www.synapso.net" class="text" target="_blank">SYNAPSO.NET (c) All rights reserved 2013</a>
+				<input type="button" class="button" id="joinUp"/>
+				<div class="cleaner"></div>
+			</div>
+			<div class="footer_bottom">
+				<div id="contact_us" class="text contact_us">Contact us</div>
+				<div class="arrow_white_cross"></div>
+				<div class="text follow_us">Follow us</div>
+				<a href="https://www.facebook.com/pages/The-Site-HERO/271259083050972?skip_nax_wizard=true" class="facebook" target="_blank"></a>
+				<a href="https://twitter.com/thesitehero" class="twitter" target="_blank"></a>
+				<a href="https://plus.google.com/u/0/b/108845075722566821776/108845075722566821776/about?hl=sk" class="googleplus" target="_blank"></a>
+				<div class="cleaner"></div>
+			</div>
+			<div id="contact_form_wrapper">
+				<form id="contact_form" action="/acris-server/acris-rest/form-submit/send" method="POST" target="hiddenIframe">
+					<div id="close_button"></div>
+					<input type="hidden" name="webID" value="synapso.tvojpriestor.sk"/>
+					<input type="hidden" name="formID" value="vizitka_contact_form">
+					<input type="hidden" id="languageID" name="languageID" value="EN">
+					<input type="hidden" id="subject" name="subject" value="Contact form from synapso mini">
+					<input class="input email" type="text" placeholder="Your email address" data-required="true" data-type="email" data-error-container="#contact_error_messages" data-error-message="Email is not valid!"/>
+					<textarea class="input message" placeholder="Enter your message. Please, be honest! :-)" data-required="true" data-error-container="#contact_error_messages" data-error-message="Message is not valid! (Write at least something)<br/><br/>"></textarea>
+					<input class="submit button" type="button" value="Send" data-error-container="#contact_error_messages"/>
+				</form>
+				<div id="contact_form_error_wrapper" class="form_error_wrapper">
+					<div id="contact_form_error" class="form_error">
+						<div class="close"></div>
+						<div id="contact_error_messages" class="error_messages"></div>
+					</div>
+				</div>
+				<iframe name="hiddenIframe" style="display:none;"></iframe>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

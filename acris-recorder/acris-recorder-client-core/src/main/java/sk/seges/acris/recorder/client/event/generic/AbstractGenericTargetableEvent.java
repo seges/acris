@@ -136,6 +136,7 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 		this.relatedTargetXpath = relatedTargetXpath;
 	}
 
+	@Override
 	public void prepareEvent() {
 		if (el == null) {
 			el = cacheMap.resolveElement(getRelatedTargetXpath());
