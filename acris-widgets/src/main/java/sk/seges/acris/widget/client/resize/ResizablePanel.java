@@ -73,6 +73,7 @@ public class ResizablePanel extends HTML {
 
 	private void initComponents() {
 		getElement().setClassName(RESIZABLE_PANEL_STYLE);
+		//relative position is there cause of borders with absolute positioning
 		getElement().getStyle().setPosition(Position.RELATIVE);
 
 		handleElement = DOM.createDiv();
