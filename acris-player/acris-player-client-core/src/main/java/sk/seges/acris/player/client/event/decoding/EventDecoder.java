@@ -42,7 +42,7 @@ public class EventDecoder {
 		return abstractGenericEvent;
 	}
 
-	private static final long longFromByteArray(byte[] bytes) {
+	public static final long longFromByteArray(byte[] bytes) {
 		long value = 0;
 		for (int i = 0; i < bytes.length; i++) {
 			value += ((long) bytes[bytes.length - i - 1] & 0xffL) << (8 * i);
@@ -65,6 +65,7 @@ public class EventDecoder {
 	}
 
 	public static EventType getEventType(long event) {
+
 		int type = ValueDecoder.readValueFromPosition(IRecordableEvent.ENCODE_EVENT_TYPE_SHIFT, event, 1);
 
 		EventType eventType = EventType.getEvent(type);

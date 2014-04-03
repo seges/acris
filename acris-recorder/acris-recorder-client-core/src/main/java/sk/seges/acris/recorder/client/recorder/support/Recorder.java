@@ -25,6 +25,8 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	protected final RecorderMode mode;
 	
 	protected final List<AbstractGenericEvent> recorderEvents = new ArrayList<AbstractGenericEvent>();
+	private final EventsEncoder eventsEncoder = new EventsEncoder();
+
 	private IRecordingRemoteServiceAsync recordingService;
 
 	private RecordingSessionDTO recordingSession;
@@ -32,6 +34,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 	private boolean sessionStarted = false;
 	private List<RecordingLogDTO> awaitingLogs = new ArrayList<RecordingLogDTO>();
+	private long lastTime;
 
 	protected Recorder(RecorderMode mode) {
 		super();
@@ -40,6 +43,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		this.recordingSession = new RecordingSessionDTO();
 
 		this.recordingSession.setSessionTime(new Date());
+		this.lastTime = new Date().getTime();
 		this.recordingSession.setLanguage(getDefaultLocale());
 		this.recordingSession.setWebId(getWebId());
 
@@ -88,6 +92,10 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	
 	@Override
 	public void eventRecorded(AbstractGenericEvent event) {
+		long currentTime = new Date().getTime();
+		event.setDeltaTime((int)(currentTime - this.lastTime));
+		this.lastTime = currentTime;
+
 		recorderEvents.add(event);
 		logEvents(false);
 	}
@@ -117,7 +125,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 		String encodedEvents;
 		try {
-			encodedEvents = encodeEvents(recorderEventsForPersisting);
+			encodedEvents = eventsEncoder.encodeEvents(recorderEventsForPersisting);
 		} catch (UnsupportedEncodingException e) {
 			return;
 		}
@@ -157,26 +165,4 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		});
 	}
 
-	public static final String DELIMITER = "||";
-
-	private String encodeEvents(List<AbstractGenericEvent> recorderEventsForPersisting) throws UnsupportedEncodingException {
-
-		String result = "";
-
-		for (AbstractGenericEvent event : recorderEventsForPersisting) {
-			byte[] encodedEvent = EventEncoder.encodeEvent(event);
-
-			String encodedEventString = new String(encodedEvent, "ISO-8859-1") + DELIMITER;
-
-			result += encodedEventString;
-
-			if (event instanceof AbstractGenericTargetableEvent) {
-				result += ((AbstractGenericTargetableEvent)event).getRelatedTargetXpath();
-			}
-
-			result += DELIMITER;
-		}
-
-		return result;
-	}
 }

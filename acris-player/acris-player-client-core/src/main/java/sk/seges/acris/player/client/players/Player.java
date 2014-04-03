@@ -1,20 +1,11 @@
 package sk.seges.acris.player.client.players;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.WidgetHandlerProvider;
-import sk.seges.acris.player.client.event.handler.StateClickHandler;
 import sk.seges.acris.player.client.listener.CompleteHandler;
 import sk.seges.acris.player.client.objects.HTMLEventExecutor;
 import sk.seges.acris.player.client.objects.KeyboardEventExecutor;
 import sk.seges.acris.player.client.objects.MouseEventExecutor;
+import sk.seges.acris.player.client.objects.WaitExecutor;
 import sk.seges.acris.player.client.objects.common.EventMirror;
 import sk.seges.acris.player.client.objects.common.EventProperties;
 import sk.seges.acris.player.client.playlist.Playlist;
@@ -41,6 +32,7 @@ public class Player {
 		eventMirrors.add(new MouseEventExecutor(duration, cacheMap));
 		eventMirrors.add(new HTMLEventExecutor());
 		eventMirrors.add(new KeyboardEventExecutor());
+//		eventMirrors.add(new WaitExecutor());
 
 		running = false;
 	}
@@ -56,7 +48,7 @@ public class Player {
 			showPlaylist = true;
 		}
 	}
-	
+
 	public void play(Playlist playlist) {
 		this.playlist = playlist;
 
@@ -97,60 +89,6 @@ public class Player {
 		running = false;
 	}
 
-	class ObjectWrapper<T> {
-		T value;
-	}
-
-	private void waitUntilClickFinished(Element element, final ObjectWrapper<Boolean> finishIndicator) {
-		EventListener eventListener = DOM.getEventListener(element);
-
-		if (eventListener instanceof Widget) {
-			HandlerManager handlerManager = WidgetHandlerProvider.getHandlerManager((Widget) eventListener);
-			int count = handlerManager.getHandlerCount(ClickEvent.getType());
-
-			final ObjectWrapper<Integer> listenersCount = new ObjectWrapper<Integer>();
-			listenersCount.value = 0;
-
-			for (int i = 0; i < count; i++) {
-				ClickHandler clickHandler = handlerManager.getHandler(ClickEvent.getType(), i);
-
-				if (clickHandler instanceof StateClickHandler) {
-					listenersCount.value++;
-				}
-			}
-
-			for (int i = 0; i < count; i++) {
-				ClickHandler clickHandler = handlerManager.getHandler(ClickEvent.getType(), i);
-
-				if (clickHandler instanceof StateClickHandler) {
-					((StateClickHandler)clickHandler).addEventListener(new sk.seges.acris.player.client.listener.EventListener() {
-
-						public void onSuccess() {
-							listenersCount.value--;
-
-							if (listenersCount.value == 0) {
-								if (!finishIndicator.value) {
-									finishIndicator.value = true;
-//									running.value = false;
-//									runAction();
-								}
-							}
-						}
-
-						public void onFailure() {
-							GWT.log("Unable to continue with next action due to error on the page", null);
-						}
-					});
-				}
-			}
-		} else {
-			//not supported widget, execute next Action
-			finishIndicator.value = true;
-//			running = false;
-//			runAction();
-		}
-	}
-
 	private synchronized void runAction() {
 		if (running) {
 			return;
@@ -159,8 +97,6 @@ public class Player {
 			return;
 		}
 		running = true;
-//		objectAnimation = null;
-//		timer = null;
 		EventProperties cursorProperties = actionsQueue.get(0);
 		actionsQueue.remove(0);
 		EventMirror animationObject = cursorProperties.getEventMirror();

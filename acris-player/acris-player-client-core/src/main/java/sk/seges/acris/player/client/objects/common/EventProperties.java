@@ -5,7 +5,6 @@ import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 
 public class EventProperties {
 
-	private int waitTime;
 	private EventMirror eventMirror;
 	private AbstractGenericEvent event;
 
@@ -23,17 +22,5 @@ public class EventProperties {
 	
 	public EventMirror getEventMirror() {
 		return eventMirror;
-	}
-
-	public int getWaitTime() {
-		return waitTime;
-	}
-
-	public void setWaitTime(int waitTime) {
-		this.waitTime = waitTime;
-	}
-
-	public void setEventMirror(EventMirror eventMirror) {
-		this.eventMirror = eventMirror;
 	}
 }

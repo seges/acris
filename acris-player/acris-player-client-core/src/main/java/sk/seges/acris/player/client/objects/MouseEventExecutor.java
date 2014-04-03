@@ -17,8 +17,4 @@ public class MouseEventExecutor extends AnimationObject {
 		DOM.setStyleAttribute(getWidget().getElement(), "zIndex", Layers.CURSOR_POSITION);
 		setPosition(Window.getClientWidth() / 2, Window.getClientHeight() / 2);
 	}
-	
-	public MouseEventExecutor(CacheMap cahceMap) {
-		this(REALTIME_OBJECT_SPEED, cahceMap);
-	}
 }

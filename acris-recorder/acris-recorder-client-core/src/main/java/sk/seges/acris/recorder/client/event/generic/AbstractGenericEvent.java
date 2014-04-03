@@ -1,12 +1,11 @@
 package sk.seges.acris.recorder.client.event.generic;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.RootPanel;
 import sk.seges.acris.recorder.client.event.IRecordableEvent;
 
 public abstract class AbstractGenericEvent implements IRecordableEvent {
@@ -19,7 +18,7 @@ public abstract class AbstractGenericEvent implements IRecordableEvent {
 	protected boolean canBubble = false;
 	protected boolean cancelable = false;
 
-	protected int deltaTime = -1;
+	protected int deltaTime = 0;
 	
 	protected AbstractGenericEvent() {}
 
@@ -63,31 +62,21 @@ public abstract class AbstractGenericEvent implements IRecordableEvent {
 		return true;
 	}
 
-//	public void skipEvent() {
-//		if (this.playListList != null) {
-//
-//			SelectElement selectElement = this.playListList.getElement()
-//					.<SelectElement> cast();
-//			OptionElement optionElement = selectElement.getOptions().getItem(
-//					index);
-//			optionElement.setText("-" + optionElement.getText());
-//		}
-//	}
-
 	public void fireEvent() {
 
 		prepareEvent();
 
 		NativeEvent event = createEvent(el);
-		//event
-		el.dispatchEvent(event);
 
-		//DomEvent.fireNativeEvent(event, RootPanel.get(), el);
+		if (el != null) {
+			el.dispatchEvent(event);
+		} else {
+			//well, probably generated id - bad luck
+			GWT.log("Element was not found for event: " + toString(true, false));
+		}
 	}
 
 	public void prepareEvent() {
-
-
 		if (el == null) {
 			el = Document.get().getDocumentElement().cast();
 		}

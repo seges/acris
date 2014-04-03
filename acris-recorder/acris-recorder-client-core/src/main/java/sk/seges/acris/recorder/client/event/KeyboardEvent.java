@@ -78,7 +78,8 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	}-*/;
 	
 	protected NativeEvent createEvent(Element el) {
-		return Document.get().createKeyEvent(type, canBubble, cancelable, ctrlKey, altKey, shiftKey, metaKey, keyCode, charCode);
+		return Document.get().createKeyCodeEvent(type,
+				ctrlKey, altKey, shiftKey, metaKey, keyCode);
 	}
 
 	public int getTypeInt() {
@@ -87,7 +88,7 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 		} else if (KeyPressEvent.getType().getName().equals(type)) {
 			return 1;
 		}
-		
+
 		return 2;
 	}
 

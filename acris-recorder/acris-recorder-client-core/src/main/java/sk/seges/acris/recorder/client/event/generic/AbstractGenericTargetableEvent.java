@@ -9,7 +9,7 @@ import sk.seges.acris.recorder.client.tools.CacheMap;
 public abstract class AbstractGenericTargetableEvent extends AbstractGenericEvent implements HasTargetEvent {
 
 	protected String relatedTargetXpath;
-	private CacheMap cacheMap = new CacheMap(30);
+	private CacheMap cacheMap;
 
 	@Override
 	public int hashCode() {
@@ -70,8 +70,27 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 		}
 	}
 
+	public final boolean containsMoreDigits(String s){
+
+		if (s == null || s.isEmpty()) {
+			return false;
+		}
+
+		int digitCount = 0;
+		for (char c : s.toCharArray()) {
+			if (Character.isDigit(c)) {
+				digitCount++;
+				if (digitCount > 3) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 	protected boolean hasId(com.google.gwt.dom.client.Element element) {
-		return (element != null && element.getId() != null && element.getId().length() > 0);
+		//when it contains more that 4 digits its probably generated
+		return (element != null && element.getId() != null && element.getId().length() > 0 && !containsMoreDigits(element.getId()));
 	}
 
 	protected String getXPathForId(com.google.gwt.dom.client.Element element) {
@@ -136,10 +155,27 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 		this.relatedTargetXpath = relatedTargetXpath;
 	}
 
+	public Element getElement() {
+		prepareEvent();
+		return el;
+	}
+
+	public void setCacheMap(CacheMap cacheMap) {
+		this.cacheMap = cacheMap;
+	}
+
+	protected CacheMap getCacheMap() {
+		if (this.cacheMap == null) {
+			this.cacheMap = new CacheMap(30);
+		}
+
+		return this.cacheMap;
+	}
+
 	@Override
 	public void prepareEvent() {
 		if (el == null) {
-			el = cacheMap.resolveElement(getRelatedTargetXpath());
+			el = getCacheMap().resolveElement(getRelatedTargetXpath());
 		}
 	}
 }

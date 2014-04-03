@@ -12,6 +12,8 @@
 	<inherits name='sk.seges.acris.Widgets'/>
 	<inherits name='sk.seges.acris.recorder.Recorder'/>
 
+	<inherits name='com.google.gwt.query.Query'/>
+
 	<source path='client' />
 
 	<set-configuration-property name="compiler.enum.name.obfuscate" value="true"/>﻿

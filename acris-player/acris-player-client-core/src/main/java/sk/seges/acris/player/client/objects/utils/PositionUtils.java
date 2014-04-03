@@ -17,8 +17,8 @@ public class PositionUtils {
 
 		AnimationObject animationObject = (AnimationObject) properties.getEventMirror();
 
-		return calculateDistance(animationObject.getObjectPositionX(), mouseEvent.getClientX(),
-				animationObject.getObjectPositionY(), mouseEvent.getClientY());
+		return calculateDistance(animationObject.getObjectPositionX(), animationObject.getObjectPositionY(),
+				mouseEvent.getClientX(), mouseEvent.getClientY());
 	}
 
 	public static double calculateDistance(int x, int y, int tx, int ty) {

@@ -41,7 +41,10 @@
 			<artifactId>acris-widgets</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-
+		<dependency>
+			<groupId>com.googlecode.gwtquery</groupId>
+			<artifactId>gwtquery</artifactId>
+		</dependency>
 	</dependencies>
 </project>
 

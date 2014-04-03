@@ -46,8 +46,8 @@ public class DecodingTest extends AbstractDecodingTest {
 		testEventDecoding(new MouseTestEvent(BrowserEvents.MOUSEOVER));
 		testEventDecoding(new MouseTestEvent(BrowserEvents.MOUSEUP));
 		testEventDecoding(new MouseTestEvent(BrowserEvents.MOUSEWHEEL));
-		testEventDecoding(new MouseTestEvent(BrowserEvents.CLICK, 2560, 1600, 2110, 1400));
-		MouseTestEvent mouseTestEvent = new MouseTestEvent(BrowserEvents.MOUSEOUT, 2560, 1600, 2110, 1400);
+		testEventDecoding(new MouseTestEvent(BrowserEvents.CLICK, 2110, 1400));
+		MouseTestEvent mouseTestEvent = new MouseTestEvent(BrowserEvents.MOUSEOUT, 2110, 1400);
 		mouseTestEvent.setCtrlKeyInt(1);
 		mouseTestEvent.setAltKeyInt(1);
 		mouseTestEvent.setRelativeInt(1);
