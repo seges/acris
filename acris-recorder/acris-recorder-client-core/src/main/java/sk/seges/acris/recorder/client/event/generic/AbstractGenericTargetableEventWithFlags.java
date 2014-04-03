@@ -2,6 +2,7 @@ package sk.seges.acris.recorder.client.event.generic;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 
 public abstract class AbstractGenericTargetableEventWithFlags extends AbstractGenericTargetableEvent {
 
@@ -15,7 +16,8 @@ public abstract class AbstractGenericTargetableEventWithFlags extends AbstractGe
 	protected boolean shiftKey;
 	protected boolean metaKey;
 
-	public AbstractGenericTargetableEventWithFlags() {
+	public AbstractGenericTargetableEventWithFlags(CacheMap cacheMap) {
+        super(cacheMap);
 	}
 
 	public int getMetaKeyInt() {
@@ -50,8 +52,8 @@ public abstract class AbstractGenericTargetableEventWithFlags extends AbstractGe
 		this.metaKey = metaKey == 1;
 	}
 
-	public AbstractGenericTargetableEventWithFlags(Event event) {
-		super(event);
+	public AbstractGenericTargetableEventWithFlags(CacheMap cacheMap, Event event) {
+		super(cacheMap, event);
 
 		altKey = DOM.eventGetAltKey(event);
 		ctrlKey = DOM.eventGetCtrlKey(event);

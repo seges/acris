@@ -4,10 +4,17 @@ import sk.seges.acris.core.client.bean.BeanWrapper;
 import sk.seges.acris.recorder.client.event.*;
 import sk.seges.acris.recorder.client.event.fields.*;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 
 public class EventDecoder {
 
-	public static AbstractGenericEvent decodeEvent(byte[] event) throws IllegalArgumentException {
+    private final CacheMap cacheMap;
+
+    public EventDecoder(CacheMap cacheMap) {
+        this.cacheMap = cacheMap;
+    }
+
+	public AbstractGenericEvent decodeEvent(byte[] event) throws IllegalArgumentException {
 
 		long value = longFromByteArray(event);
 
@@ -17,21 +24,21 @@ public class EventDecoder {
 
 		if (eventType.equals(EventType.HtmlEvent)) {
 
-			abstractGenericEvent = new HtmlEvent();
+			abstractGenericEvent = new HtmlEvent(cacheMap);
 
 			HtmlEventBeanWrapper htmlEventBeanWrapper = new HtmlEventBeanWrapper();
 			htmlEventBeanWrapper.setBeanWrapperContent((HtmlEvent) abstractGenericEvent);
 
 			decodeEvent(EHtmlEventFields.values(), value, htmlEventBeanWrapper);
 		} else if (eventType.equals(EventType.KeyboardEvent)) {
-			abstractGenericEvent = new KeyboardEvent();
+			abstractGenericEvent = new KeyboardEvent(cacheMap);
 
 			KeyboardEventBeanWrapper keyboardEventBeanWrapper = new KeyboardEventBeanWrapper();
 			keyboardEventBeanWrapper.setBeanWrapperContent((KeyboardEvent) abstractGenericEvent);
 
 			decodeEvent(EKeyboardEventFields.values(), value, keyboardEventBeanWrapper);
 		} else if (eventType.equals(EventType.MouseEvent)) {
-			abstractGenericEvent = new MouseEvent();
+			abstractGenericEvent = new MouseEvent(cacheMap);
 
 			MouseEventBeanWrapper mouseEventBeanWrapper = new MouseEventBeanWrapper();
 			mouseEventBeanWrapper.setBeanWrapperContent((MouseEvent)abstractGenericEvent);
@@ -42,7 +49,7 @@ public class EventDecoder {
 		return abstractGenericEvent;
 	}
 
-	private static final long longFromByteArray(byte[] bytes) {
+	public static final long longFromByteArray(byte[] bytes) {
 		long value = 0;
 		for (int i = 0; i < bytes.length; i++) {
 			value += ((long) bytes[bytes.length - i - 1] & 0xffL) << (8 * i);
@@ -65,6 +72,7 @@ public class EventDecoder {
 	}
 
 	public static EventType getEventType(long event) {
+
 		int type = ValueDecoder.readValueFromPosition(IRecordableEvent.ENCODE_EVENT_TYPE_SHIFT, event, 1);
 
 		EventType eventType = EventType.getEvent(type);

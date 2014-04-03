@@ -14,20 +14,25 @@ import sk.seges.acris.recorder.client.event.KeyboardEvent;
 import sk.seges.acris.recorder.client.event.MouseEvent;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.listener.RecorderListener;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public abstract class AbstractRecorder {
 	
 	private final NativePreviewHandler recordHandler;
+    protected final CacheMap cacheMap;
+
 	private HandlerRegistration handlerRegistration;
 	
 	private List<RecorderListener> recorderListeners = new ArrayList<RecorderListener>();
 
 	private RecorderLevel recorderLevel = RecorderLevel.ALL;
 
-	public AbstractRecorder() {
+	public AbstractRecorder(CacheMap cacheMap) {
+        this.cacheMap = cacheMap;
 		this.recordHandler = contructRecorder();
 	}
 
@@ -49,12 +54,16 @@ public abstract class AbstractRecorder {
 			int type = DOM.eventGetType(gwtevent);
 
 			if (recorderLevel.isRecordable(type)) {
+                long start = new Date().getTime();
 				if (MouseEvent.isCorrectEvent(gwtevent)) {
-					fireListeners(new MouseEvent(gwtevent));
+					MouseEvent mouseEvent = new MouseEvent(cacheMap, gwtevent);
+                    fireListeners(mouseEvent);
 				} else if (KeyboardEvent.isCorrectEvent(gwtevent)) {
-					fireListeners(new KeyboardEvent(gwtevent));
-				} else if (HtmlEvent.isCorrectEvent(gwtevent)) {
-					fireListeners(new HtmlEvent(gwtevent));
+                    KeyboardEvent keyboardEvent = new KeyboardEvent(cacheMap, gwtevent);
+                    fireListeners(keyboardEvent);
+                } else if (HtmlEvent.isCorrectEvent(gwtevent)) {
+                    HtmlEvent htmlEvent = new HtmlEvent(cacheMap, gwtevent);
+                    fireListeners(htmlEvent);
 				}
 			}
 		    }

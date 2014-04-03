@@ -1,15 +1,17 @@
 package sk.seges.acris.recorder.client.event.generic;
 
-import com.google.gwt.dom.client.Node;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import sk.seges.acris.recorder.client.tools.CacheMap;
 
+import java.util.Date;
+
 public abstract class AbstractGenericTargetableEvent extends AbstractGenericEvent implements HasTargetEvent {
 
 	protected String relatedTargetXpath;
-	private CacheMap cacheMap = new CacheMap(30);
+	private final CacheMap cacheMap;
 
 	@Override
 	public int hashCode() {
@@ -37,12 +39,17 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 		return true;
 	}
 
-	protected AbstractGenericTargetableEvent() {
+	protected AbstractGenericTargetableEvent(CacheMap cacheMap) {
+        this.cacheMap = cacheMap;
 	}
 	
-	protected AbstractGenericTargetableEvent(Event event) {
+	protected AbstractGenericTargetableEvent(CacheMap cacheMap, Event event) {
 		super(event);
-		
+
+        this.cacheMap = cacheMap;
+
+        long start = new Date().getTime();
+
 		Element target = DOM.eventGetTarget(event);
 
 		if (target != null) { // handle click events
@@ -68,60 +75,13 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 				}
 			}
 		}
+
+        GWT.log("" + (new Date().getTime() - start));
 	}
 
-	protected boolean hasId(com.google.gwt.dom.client.Element element) {
-		return (element != null && element.getId() != null && element.getId().length() > 0);
-	}
-
-	protected String getXPathForId(com.google.gwt.dom.client.Element element) {
-		return "//*[@id='" + element.getId() + "']";
-	}
-
-	protected String getXPath(com.google.gwt.dom.client.Element element) {
-		if (hasId(element)) {
-			return getXPathForId(element);
-		}
-		return getElementTreeXpath(element);
-	}
-
-	protected String getElementTreeXpath(com.google.gwt.dom.client.Element element) {
-		String result = "";
-
-		// Use nodeName (instead of localName) so namespace prefix is included (if any).
-		for (; element != null && element.getNodeType() == 1; element = element.getParentElement()) {
-
-			if (result.length() > 0) {
-				result = "/" + result;
-			}
-
-			if (hasId(element)) {
-				return getXPathForId(element) + result;
-			}
-
-			int index = 0;
-			for (Node sibling = element.getPreviousSibling(); sibling != null; sibling = sibling.getPreviousSibling())
-			{
-				// Ignore document type declaration.
-				if (sibling.getNodeType() == Node.DOCUMENT_NODE)
-					continue;
-
-				if (sibling.getNodeName().equals(element.getNodeName())) {
-					++index;
-				}
-			}
-
-			String tagName = element.getNodeName().toLowerCase();
-			String pathIndex = (index > 0 ? "[" + (index+1) + "]" : "");
-
-			result = tagName + pathIndex + result;
-		}
-
-		return result;
-	}
 
 	protected void initTarget(Element target, Event event) {
-		this.relatedTargetXpath = getXPath(target);
+		this.relatedTargetXpath = cacheMap.resolveXpath(target);
 	}
 
 	public boolean hasTarget() {
@@ -134,6 +94,11 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 
 	public void setRelatedTargetXpath(String relatedTargetXpath) {
 		this.relatedTargetXpath = relatedTargetXpath;
+	}
+
+	public Element getElement() {
+		prepareEvent();
+		return el;
 	}
 
 	@Override

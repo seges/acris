@@ -1,17 +1,17 @@
 package sk.seges.acris.player.client.model;
 
 import sk.seges.acris.recorder.client.event.MouseEvent;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 
 public class MouseTestEvent extends MouseEvent {
 
 	public MouseTestEvent(String type) {
-		this(type, 1024, 768, 100, 300);
+		this(type, 100, 300);
 	}
 
-	public MouseTestEvent(String type, int screenX, int screenY, int clientX, int clientY) {
+	public MouseTestEvent(String type, int clientX, int clientY) {
+        super(new CacheMap(30));
 		this.detail = 0;
-		this.screenX = screenX;
-		this.screenY = screenY;
 		this.clientX = clientX;
 		this.clientY = clientY;
 		this.button = 1;
