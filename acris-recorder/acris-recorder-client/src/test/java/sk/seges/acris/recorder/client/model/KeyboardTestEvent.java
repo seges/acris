@@ -1,6 +1,7 @@
 package sk.seges.acris.recorder.client.model;
 
 import sk.seges.acris.recorder.client.event.KeyboardEvent;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 
 public class KeyboardTestEvent extends KeyboardEvent {
 
@@ -9,6 +10,7 @@ public class KeyboardTestEvent extends KeyboardEvent {
 	}
 
 	public KeyboardTestEvent(String type, int keyCode, char charCode) {
+        super(new CacheMap(40));
 		this.keyCode = keyCode;
 		this.charCode = charCode;
 		this.ctrlKey = false;
