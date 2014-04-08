@@ -232,4 +232,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setRedirectLoginURL(String redirectLoginURL) {
 		data.set(REDIRECT_LOGIN_URL, redirectLoginURL);
 	}
+
+	@Override
+	public Integer getCountOfDaysToPayInvoice() {
+		return data.getInteger(COUNT_OF_DAYS_TO_PAY_INVOICE);
+	}
+
+	@Override
+	public void setCountOfDaysToPayInvoice(Integer countOfDaysToPayInvoice) {
+		data.set(COUNT_OF_DAYS_TO_PAY_INVOICE, countOfDaysToPayInvoice);
+	}
 }

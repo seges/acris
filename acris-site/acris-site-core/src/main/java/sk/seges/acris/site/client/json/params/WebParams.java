@@ -26,6 +26,7 @@ public interface WebParams extends ContentParameters {
 	public static final String IMPORT_URL = "importURL";
 	public static final String IMPORT_IMAGE_URL = "importImageUrl";
 	public static final String REDIRECT_LOGIN_URL = "redirectLoginUrl";
+	public static final String COUNT_OF_DAYS_TO_PAY_INVOICE = "countOfDaysToPayInvoice";
 	
 	String[] getOfflinePostProcessorInactive();
 
@@ -114,4 +115,8 @@ public interface WebParams extends ContentParameters {
 	String getRedirectLoginURL();
 	
 	void setRedirectLoginURL(String redirectLoginURL);
+
+	Integer getCountOfDaysToPayInvoice();
+
+	void setCountOfDaysToPayInvoice(Integer countOfDaysToPayInvoice);
 }

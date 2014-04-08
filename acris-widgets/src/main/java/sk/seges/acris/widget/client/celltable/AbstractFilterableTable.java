@@ -510,7 +510,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			}
 		};
 
-		SimpleExpressionDTO simpleExpression = (SimpleExpressionDTO) filterValues.get(property);
+		SimpleExpressionDTO simpleExpression = filterValues.get(property);
 
 		String defaultVal = null;
 

@@ -35,6 +35,8 @@ public class WebParamsBean implements WebParams {
 	private String importURL;
 	private String importImageUrl;
 	private String redirectLoginURL;
+	private Integer countOfDaysToPayInvoice;
+
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
 		return publishOnSaveEnabled;
@@ -253,5 +255,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setRedirectLoginURL(String redirectLoginURL) {
 		this.redirectLoginURL = redirectLoginURL;
+	}
+
+	@Override
+	public Integer getCountOfDaysToPayInvoice() {
+		return countOfDaysToPayInvoice;
+	}
+
+	@Override
+	public void setCountOfDaysToPayInvoice(Integer countOfDaysToPayInvoice) {
+		this.countOfDaysToPayInvoice = countOfDaysToPayInvoice;
 	}
 }
