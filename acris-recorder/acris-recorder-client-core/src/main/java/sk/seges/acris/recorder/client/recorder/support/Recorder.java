@@ -3,11 +3,10 @@ package sk.seges.acris.recorder.client.recorder.support;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import sk.seges.acris.recorder.client.event.encoding.EventEncoder;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
 import sk.seges.acris.recorder.client.listener.RecorderListener;
 import sk.seges.acris.recorder.client.session.RecordingSessionProvider;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 import sk.seges.acris.recorder.shared.model.dto.RecordingLogDTO;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
 import sk.seges.acris.recorder.shared.params.RecordingSessionDetailParams;
@@ -25,6 +24,8 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	protected final RecorderMode mode;
 	
 	protected final List<AbstractGenericEvent> recorderEvents = new ArrayList<AbstractGenericEvent>();
+	private final EventsEncoder eventsEncoder = new EventsEncoder();
+
 	private IRecordingRemoteServiceAsync recordingService;
 
 	private RecordingSessionDTO recordingSession;
@@ -32,44 +33,52 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 	private boolean sessionStarted = false;
 	private List<RecordingLogDTO> awaitingLogs = new ArrayList<RecordingLogDTO>();
+	private long lastTime;
 
-	protected Recorder(RecorderMode mode) {
-		super();
+	protected Recorder(CacheMap cacheMap, RecorderMode mode) {
+		super(cacheMap);
 		this.mode = mode;
 
 		this.recordingSession = new RecordingSessionDTO();
 
 		this.recordingSession.setSessionTime(new Date());
+		this.lastTime = new Date().getTime();
 		this.recordingSession.setLanguage(getDefaultLocale());
 		this.recordingSession.setWebId(getWebId());
 
 		RecordingSessionProvider.getSession(new AsyncCallback<RecordingSessionDetailParams>() {
 			@Override
 			public void onFailure(Throwable caught) {
+                GWT.log(caught.getMessage());
+                startSession();
 			}
 
 			@Override
 			public void onSuccess(RecordingSessionDetailParams result) {
 				recordingSession.setSessionInfo(result.toString());
-				recordingService.startSession(recordingSession, new AsyncCallback<RecordingSessionDTO>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						GWT.log("Unable to start recording session", caught);
-					}
-
-					@Override
-					public void onSuccess(RecordingSessionDTO result) {
-						sessionStarted = true;
-						recordingSession.setId(result.getId());
-					}
-				});
+                startSession();
 			}
 		});
 
 		addRecordListener(this);
 		initializeService();
 	}
+
+    private void startSession() {
+        recordingService.startSession(recordingSession, new AsyncCallback<RecordingSessionDTO>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                GWT.log("Unable to start recording session", caught);
+            }
+
+            @Override
+            public void onSuccess(RecordingSessionDTO result) {
+                sessionStarted = true;
+                recordingSession.setId(result.getId());
+            }
+        });
+    }
 
 	private native String getWebId() /*-{
         return $wnd.webId;
@@ -88,6 +97,10 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	
 	@Override
 	public void eventRecorded(AbstractGenericEvent event) {
+		long currentTime = new Date().getTime();
+		event.setDeltaTime((int)(currentTime - this.lastTime));
+		this.lastTime = currentTime;
+
 		recorderEvents.add(event);
 		logEvents(false);
 	}
@@ -117,8 +130,9 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 
 		String encodedEvents;
 		try {
-			encodedEvents = encodeEvents(recorderEventsForPersisting);
+			encodedEvents = eventsEncoder.encodeEvents(recorderEventsForPersisting);
 		} catch (UnsupportedEncodingException e) {
+            GWT.log(e.getMessage());
 			return;
 		}
 
@@ -152,31 +166,8 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 			}
 
 			@Override
-			public void onSuccess(Void result) {
-			}
+			public void onSuccess(Void result) {}
 		});
 	}
 
-	public static final String DELIMITER = "||";
-
-	private String encodeEvents(List<AbstractGenericEvent> recorderEventsForPersisting) throws UnsupportedEncodingException {
-
-		String result = "";
-
-		for (AbstractGenericEvent event : recorderEventsForPersisting) {
-			byte[] encodedEvent = EventEncoder.encodeEvent(event);
-
-			String encodedEventString = new String(encodedEvent, "ISO-8859-1") + DELIMITER;
-
-			result += encodedEventString;
-
-			if (event instanceof AbstractGenericTargetableEvent) {
-				result += ((AbstractGenericTargetableEvent)event).getRelatedTargetXpath();
-			}
-
-			result += DELIMITER;
-		}
-
-		return result;
-	}
 }

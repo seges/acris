@@ -859,7 +859,11 @@
 				<artifactId>jai-codec</artifactId>
 				<version>${jai.version}</version>
 			</dependency>
-			
+			<dependency>
+				<groupId>com.googlecode.gwtquery</groupId>
+				<artifactId>gwtquery</artifactId>
+				<version>1.4.1</version>
+			</dependency>			
 			<dependency>
 				<groupId>org.htmlparser</groupId>
 				<artifactId>htmlparser</artifactId>

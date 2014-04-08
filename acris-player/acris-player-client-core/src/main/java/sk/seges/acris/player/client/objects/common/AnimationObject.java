@@ -1,15 +1,18 @@
 package sk.seges.acris.player.client.objects.common;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import sk.seges.acris.player.client.event.AnimationEvent;
 import sk.seges.acris.player.client.listener.CompleteHandler;
 import sk.seges.acris.player.client.objects.action.MouseMoveAction;
 import sk.seges.acris.recorder.client.event.MouseEvent;
+import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.tools.CacheMap;
 
 public class AnimationObject implements EventMirror {
@@ -27,16 +30,8 @@ public class AnimationObject implements EventMirror {
 
 	private final AcceptsOneWidget widget;
 
-	public AnimationObject(CacheMap cacheMap) {
-		this(new SimplePanel(), DEFAULT_OBJECT_SPEED, cacheMap);
-	}
-
 	public AnimationObject(int speed, CacheMap cacheMap) {
 		this(new SimplePanel(), speed, cacheMap);
-	}
-
-	public AnimationObject(AcceptsOneWidget widget, CacheMap cacheMap) {
-		this(widget, DEFAULT_OBJECT_SPEED, cacheMap);
 	}
 
 	public AnimationObject(AcceptsOneWidget widget, int speed, CacheMap cacheMap) {
@@ -55,16 +50,8 @@ public class AnimationObject implements EventMirror {
 		return objectPositionX;
 	}
 
-	public void setObjectPositionX(int objectPositionX) {
-		this.objectPositionX = objectPositionX;
-	}
-
 	public int getObjectPositionY() {
 		return objectPositionY;
-	}
-
-	public void setObjectPositionY(int objectPositionY) {
-		this.objectPositionY = objectPositionY;
 	}
 
 	public int getSpeed()  {
@@ -81,20 +68,6 @@ public class AnimationObject implements EventMirror {
 			this.left = left;
 			this.top = top;
 		}
-		
-		public Position(String stringPosition) {
-			int index = stringPosition.indexOf(",");
-			
-			if (index == -1) {
-				throw new IllegalArgumentException("Invalid position representation!");
-			}
-			
-			String left = stringPosition.substring(index).trim();
-			String top = stringPosition.substring(index + 1).trim();
-			
-			this.left = Integer.valueOf(left).intValue();
-			this.top = Integer.valueOf(top).intValue();
-		}
 	}
 
 	protected void setWidget(Widget w) {
@@ -110,13 +83,6 @@ public class AnimationObject implements EventMirror {
 
 	public void destroy() {
 		hide();
-
-//		if (objectAnimation != null) {
-//			objectAnimation.cancel();
-//		}
-//		if (timer != null) {
-//			timer.cancel();
-//		}
 	}
 	
 	public void initialize() {
@@ -132,66 +98,36 @@ public class AnimationObject implements EventMirror {
 				return;
 			}
 
+			MouseEvent mouseEvent = (MouseEvent)cursorProperties.getEvent();
+
+			cursorProperties.getEvent().fireEvent();
 			switch (cursorProperties.getEvent().getTypeInt()) {
 				case MouseEvent.MOUSE_MOVE_TYPE:
-					run(new MouseMoveAction().run(cursorProperties), completeHandler);
+					new MouseMoveAction().createAnimation(cursorProperties, completeHandler).run();
+					break;
+				case MouseEvent.MOUSE_CLICK_TYPE:
+					GQuery.$(mouseEvent.getElement()).click();
+					completeHandler.onComplete();
+					break;
+				case MouseEvent.MOUSE_DOUBLE_CLICK_TYPE:
+					GQuery.$(mouseEvent.getElement()).dblclick();
+					completeHandler.onComplete();
+					break;
+				case MouseEvent.MOUSE_WHEEL_TYPE:
+					int scrollTop1 = Document.get().getScrollTop();
+					GQuery.$(GQuery.window).scrollTo(mouseEvent.getClientX(), mouseEvent.getClientY() + scrollTop1);
+					completeHandler.onComplete();
 					break;
 				default:
 					completeHandler.onComplete();
+					break;
 			}
 		} else {
-			Timer timer = new Timer() {
-
-				public void run() {
-					completeHandler.onComplete();
-				}
-			};
-			timer.schedule(cursorProperties.getWaitTime());
-		}
-	}
-
-	private void run(ObjectAnimation objectAnimation, final CompleteHandler completeHandler) {
-		objectAnimation.run(objectAnimation.getDuration());
-		if (objectAnimation.getDuration() > 0 ) {
-			objectAnimation.addAnimationEvent(new AnimationEvent() {
-
-				public void onComplete() {
-					completeHandler.onComplete();
-				}
-			});
-		} else {
-			completeHandler.onComplete();
-		}
+            completeHandler.onComplete();
+        }
 	}
 
 	private void hide() {
 		DOM.setStyleAttribute(getWidget().getElement(), "visibility", "hidden");
 	}
-
-	public Element getElement(String xpath) {
-		return cacheMap.resolveElement(xpath);
-	}
-
-	public Position getElementAbsolutePosition(Element element, boolean offset) {
-		int x = DOM.getAbsoluteLeft(element);
-		int y = DOM.getAbsoluteTop(element);
-		
-		if (offset) {
-			x += element.getClientWidth() / 2;
-			y += element.getClientHeight() / 2;
-		}
-		return new Position(x, y);
-	}
-
-
-//	public void wait(int time) {
-//		EventProperties cursorProperties = new EventProperties(this);
-//		cursorProperties.setWaitTime(time);
-//		getActionsQueue().add(cursorProperties);
-//		runAction();
-//	}
-
-
-
-
 }

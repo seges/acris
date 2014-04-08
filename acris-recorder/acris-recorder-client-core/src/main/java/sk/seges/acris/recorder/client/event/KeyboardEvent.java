@@ -1,8 +1,5 @@
 package sk.seges.acris.recorder.client.event;
 
-import sk.seges.acris.core.client.annotation.BeanWrapper;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEventWithFlags;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -11,6 +8,9 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
+import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEventWithFlags;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 
 @BeanWrapper
 public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
@@ -21,11 +21,12 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	protected int keyCode;
 	protected int charCode;
 
-	public KeyboardEvent() {
+	public KeyboardEvent(CacheMap cacheMap) {
+        super(cacheMap);
 	}
 	
-	public KeyboardEvent(Event event) {
-		super(event);
+	public KeyboardEvent(CacheMap cacheMap, Event event) {
+		super(cacheMap, event);
 		
 		keyCode = DOM.eventGetKeyCode(event);
 		charCode = getCharCode(event);
@@ -78,7 +79,8 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	}-*/;
 	
 	protected NativeEvent createEvent(Element el) {
-		return Document.get().createKeyEvent(type, canBubble, cancelable, ctrlKey, altKey, shiftKey, metaKey, keyCode, charCode);
+		return Document.get().createKeyCodeEvent(type,
+				ctrlKey, altKey, shiftKey, metaKey, keyCode);
 	}
 
 	public int getTypeInt() {
@@ -87,7 +89,7 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 		} else if (KeyPressEvent.getType().getName().equals(type)) {
 			return 1;
 		}
-		
+
 		return 2;
 	}
 

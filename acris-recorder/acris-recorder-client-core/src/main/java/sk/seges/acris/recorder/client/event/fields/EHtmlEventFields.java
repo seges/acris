@@ -5,12 +5,12 @@ import sk.seges.acris.recorder.client.event.HtmlEvent;
 public enum EHtmlEventFields implements IEventFields {
 
 	EVENT_ACTION_TYPE(0, 3, HtmlEvent.TYPE_INT_ATTRIBUTE),
-	EMPTY(EVENT_ACTION_TYPE, 26, 0),
+	EMPTY(EVENT_ACTION_TYPE, 26),
 	EVENT_TYPE(EMPTY, 2, 3),
 	EVENT_LENGTH(EVENT_TYPE, 1, 0);
 	
 	private FieldDefinition fieldDefinition;
-	private int value;
+	private long value;
 
 	private EHtmlEventFields(int position, int length, String field) {
 		fieldDefinition = new FieldDefinition();
@@ -19,22 +19,19 @@ public enum EHtmlEventFields implements IEventFields {
 		fieldDefinition.setField(field);
 	}
 
-	public int getValue() {
-		return value;
+	private EHtmlEventFields(EHtmlEventFields htmlEventFields, int length) {
+		this(htmlEventFields, length, Long.valueOf(new String(new char[length]).replace("\0", "1"), 2));
 	}
 
-	private EHtmlEventFields(EHtmlEventFields keyboardEventFields, int length, String field) {
-		fieldDefinition = new FieldDefinition();
-		fieldDefinition.setPosition(keyboardEventFields.getFieldDefinition().getPosition() + keyboardEventFields.getFieldDefinition().getLength());
-		fieldDefinition.setLength(length);
-		fieldDefinition.setField(field);
-	}
-
-	private EHtmlEventFields(EHtmlEventFields keyboardEventFields, int length, int value) {
+	private EHtmlEventFields(EHtmlEventFields keyboardEventFields, int length, long value) {
 		fieldDefinition = new FieldDefinition();
 		fieldDefinition.setPosition(keyboardEventFields.getFieldDefinition().getPosition() + keyboardEventFields.getFieldDefinition().getLength());
 		fieldDefinition.setLength(length);
 		this.value = value;
+	}
+
+	public long getValue() {
+		return value;
 	}
 
 	public FieldDefinition getFieldDefinition() {

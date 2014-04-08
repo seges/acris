@@ -1,6 +1,7 @@
 package sk.seges.acris.player.client.sessions;
 
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 import sk.seges.acris.recorder.client.session.RecordingSessionDetailParamsJSO;
@@ -35,14 +36,22 @@ public class SessionsListWidget extends AbstractFilterableTable<RecordingSession
 
 	private void initializeColumns() {
 
-		Column<RecordingSessionDTO, String> initialUrlColumn = new Column<RecordingSessionDTO, String>(new TextCell()) {
+        Column<RecordingSessionDTO, Number> idUrlColumn = new Column<RecordingSessionDTO, Number>(new NumberCell()) {
+            @Override
+            public Number getValue(RecordingSessionDTO session) {
+                return session.getId();
+            };
+        };
+        addTextColumn(idUrlColumn, 50, "Id", null, new LongValidator(), null);
+
+        Column<RecordingSessionDTO, String> initialUrlColumn = new Column<RecordingSessionDTO, String>(new TextCell()) {
 			@Override
 			public String getValue(RecordingSessionDTO session) {
 				RecordingSessionDetailParamsJSO recordingSessionDetailParams = new RecordingSessionDetailParamsJSO(session.getSessionInfo());
 				return recordingSessionDetailParams.getInitialUrl();
 			};
 		};
-		addTextColumn(initialUrlColumn, 300, "Initial url", null, new StringValidator(), null);
+		addTextColumn(initialUrlColumn, 250, "Initial url", null, new StringValidator(), null);
 
 		Column<RecordingSessionDTO, String> userAgentColumn = new Column<RecordingSessionDTO, String>(new TextCell()) {
 			@Override

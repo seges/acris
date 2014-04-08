@@ -60,8 +60,7 @@ public class EventEncoder {
 			FieldDefinition fieldDefinition = eventField.getFieldDefinition();
 
 			if (fieldDefinition.getField() == null) {
-				result = ValueEncoder
-						.writeValueOnPosition(eventField.getValue(), fieldDefinition.getPosition(), result);
+				result = ValueEncoder.writeValueOnPosition(eventField.getValue(), fieldDefinition.getPosition(), result);
 			} else {
 
 				Object propertyResult = beanWrapper.getBeanAttribute(fieldDefinition.getField());

@@ -5,35 +5,34 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import sk.seges.acris.player.client.event.decoding.EventDecoder;
+import sk.seges.acris.player.client.event.decoding.EventsDecoder;
 import sk.seges.acris.player.client.players.Player;
 import sk.seges.acris.player.client.playlist.Playlist;
 import sk.seges.acris.player.shared.service.IPlayerRemoteServiceAsync;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 import sk.seges.acris.recorder.shared.model.dto.RecordingLogDTO;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
 import sk.seges.sesam.shared.model.dto.PageDTO;
 import sk.seges.sesam.shared.model.dto.PagedResultDTO;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SessionPresenter extends AbstractActivity {
 
 	private final Player player;
 	private final IPlayerRemoteServiceAsync playerService;
+	private final EventsDecoder eventsDecoder;
 
-	public SessionPresenter(Player player, IPlayerRemoteServiceAsync playerService) {
+	public SessionPresenter(Player player, IPlayerRemoteServiceAsync playerService, CacheMap cacheMap) {
 		this.player = player;
+		this.eventsDecoder = new EventsDecoder(cacheMap);
 		this.playerService = playerService;
 	}
 
 	@Override
-	public void start(AcceptsOneWidget panel, EventBus eventBus) {
-
-	}
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {}
 
 	public void initialize(final RecordingSessionDTO recordingSessionDTO) {
 
@@ -52,7 +51,7 @@ public class SessionPresenter extends AbstractActivity {
 					String encodedEvents = recordingLog.getEvent();
 
 					try {
-						List<AbstractGenericEvent> abstractGenericEvents = decodeEvents(encodedEvents);
+						List<AbstractGenericEvent> abstractGenericEvents = eventsDecoder.decodeEvents(encodedEvents);
 
 						for (AbstractGenericEvent event: abstractGenericEvents) {
 							playlist.addEvent(event);
@@ -67,28 +66,5 @@ public class SessionPresenter extends AbstractActivity {
 				player.play(playlist);
 			}
 		});
-	}
-
-	public static final String DELIMITER = "\\|\\|";
-
-	private List<AbstractGenericEvent> decodeEvents(String encodedEvents) throws UnsupportedEncodingException {
-		String[] eventParts = encodedEvents.split(DELIMITER);
-
-		List<AbstractGenericEvent> result = new ArrayList<AbstractGenericEvent>();
-
-		for (int i = 0; i < eventParts.length / 2; i++) {
-			byte[] bytes = eventParts[i * 2].getBytes("ISO-8859-1");
-			String targetXpath = eventParts[i * 2 + 1];
-
-			AbstractGenericEvent abstractGenericEvent = EventDecoder.decodeEvent(bytes);
-
-			if (abstractGenericEvent != null && abstractGenericEvent instanceof AbstractGenericTargetableEvent) {
-				((AbstractGenericTargetableEvent)abstractGenericEvent).setRelatedTargetXpath(targetXpath);
-			}
-
-			result.add(abstractGenericEvent);
-		}
-
-		return result;
 	}
 }

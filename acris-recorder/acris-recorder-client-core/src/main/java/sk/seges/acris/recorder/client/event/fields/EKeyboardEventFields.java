@@ -8,24 +8,21 @@ public enum EKeyboardEventFields implements IEventFields {
 	EVENT_ALT_KEY(EVENT_CTRL_KEY, 1, KeyboardEvent.ALT_KEY_INT_ATTRIBUTE),
 	EVENT_SHIFT_KEY(EVENT_ALT_KEY, 1, KeyboardEvent.SHIFT_KEY_INT_ATTRIBUTE),
 	EVENT_META_KEY(EVENT_SHIFT_KEY, 1, KeyboardEvent.META_KEY_INT_ATTRIBUTE),
-	EVENT_KEYCODE(EVENT_META_KEY, 8, KeyboardEvent.KEY_CODE_ATTRIBUTE),
-	EVENT_CHARCODE(EVENT_KEYCODE, 8, KeyboardEvent.CHAR_CODE_ATTRIBUTE),
-	EMPTY(EVENT_CHARCODE, 7, 0),
-	EVENT_TYPE(EMPTY, 2, 2),
+	EMPTY_1(EVENT_META_KEY, 4),
+	EVENT_KEYCODE(EMPTY_1, 8, KeyboardEvent.KEY_CODE_ATTRIBUTE),
+	EMPTY_2(EVENT_KEYCODE, 3),
+	EVENT_CHARCODE(EMPTY_2, 8, KeyboardEvent.CHAR_CODE_ATTRIBUTE),
+	EVENT_TYPE(EVENT_CHARCODE, 2, 2),
 	EVENT_LENGTH(EVENT_TYPE, 1, 0);
 	
 	private FieldDefinition fieldDefinition;
-	private int value;
+	private long value;
 
 	private EKeyboardEventFields(int position, int length, String field) {
 		fieldDefinition = new FieldDefinition();
 		fieldDefinition.setPosition(position);
 		fieldDefinition.setLength(length);
 		fieldDefinition.setField(field);
-	}
-
-	public int getValue() {
-		return value;
 	}
 
 	private EKeyboardEventFields(EKeyboardEventFields keyboardEventFields, int length, String field) {
@@ -35,11 +32,19 @@ public enum EKeyboardEventFields implements IEventFields {
 		fieldDefinition.setField(field);
 	}
 
-	private EKeyboardEventFields(EKeyboardEventFields keyboardEventFields, int length, int value) {
+	private EKeyboardEventFields(EKeyboardEventFields keyboardEventFields, int length) {
+		this(keyboardEventFields, length, Long.valueOf(new String(new char[length]).replace("\0", "1"), 2));
+	}
+
+	private EKeyboardEventFields(EKeyboardEventFields keyboardEventFields, int length, long value) {
 		fieldDefinition = new FieldDefinition();
 		fieldDefinition.setPosition(keyboardEventFields.getFieldDefinition().getPosition() + keyboardEventFields.getFieldDefinition().getLength());
 		fieldDefinition.setLength(length);
 		this.value = value;
+	}
+
+	public long getValue() {
+		return value;
 	}
 
 	public FieldDefinition getFieldDefinition() {

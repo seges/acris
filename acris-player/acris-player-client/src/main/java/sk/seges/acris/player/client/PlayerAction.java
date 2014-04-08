@@ -47,7 +47,7 @@ public class PlayerAction implements EntryPoint {
 					SessionsPresenter sessionsPresenter = new SessionsPresenter(new PresenterProvider<SessionPresenter>() {
 						@Override
 						public SessionPresenter getPresenter() {
-							return new SessionPresenter(new TutorialPlayer(cacheMap), playerService);
+							return new SessionPresenter(new TutorialPlayer(cacheMap), playerService, cacheMap);
 						}
 					}, new SessionsView(), playerService);
 
@@ -80,8 +80,8 @@ public class PlayerAction implements EntryPoint {
 
 						@Override
 						public void onSuccess(RecordingSessionDTO result) {
-							SessionPresenter presenter = new SessionPresenter(new TutorialPlayer(cacheMap), playerService);
-							SimplePanel panel = new SimplePanel();
+							SessionPresenter presenter = new SessionPresenter(new TutorialPlayer(cacheMap), playerService, cacheMap);
+                            SimplePanel panel = new SimplePanel();
 							presenter.start(panel, new SimpleEventBus());
 							presenter.initialize(result);
 
@@ -99,7 +99,7 @@ public class PlayerAction implements EntryPoint {
 
 				@Override
 				public void onSuccess() {
-					new BatchRecorder().startRecording();
+					new BatchRecorder(new CacheMap(50)).startRecording();
 				}
 			});
 		}

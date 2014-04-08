@@ -27,9 +27,9 @@ public class PlayerService implements IPlayerRemoteServiceLocal {
 		page.setFilterable(criterion);
 		PagedResult<List<RecordingLogData>> result = recordingLogDao.findAll(page);
 
-		for (RecordingLogData log: result.getResult()) {
-			log.setEvent(log.getEvent().replace(' ', '\0'));
-		}
+//		for (RecordingLogData log: result.getResult()) {
+//			log.setEvent(log.getEvent().replace(' ', '\0'));
+//		}
 
 		return result;
 	}

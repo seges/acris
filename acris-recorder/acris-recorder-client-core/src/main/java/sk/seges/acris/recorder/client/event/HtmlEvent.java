@@ -1,29 +1,24 @@
 package sk.seges.acris.recorder.client.event;
 
-import sk.seges.acris.core.client.annotation.BeanWrapper;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.event.dom.client.ErrorEvent;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import sk.seges.acris.core.client.annotation.BeanWrapper;
+import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
+import sk.seges.acris.recorder.client.tools.CacheMap;
 
 @BeanWrapper
 public class HtmlEvent extends AbstractGenericTargetableEvent {
 
-	public HtmlEvent() {
+	public HtmlEvent(CacheMap cacheMap) {
+        super(cacheMap);
 	}
 	
-	public HtmlEvent(Event event) {
-		super(event);
+	public HtmlEvent(CacheMap cacheMap, Event event) {
+		super(cacheMap, event);
 	}
 
 	public static boolean isCorrectEvent(Event event) {
