@@ -52,6 +52,9 @@ public enum ColumnType {
 			return new Column<Map<String, Object>, String>(new TextCell()) {
 				@Override
 				public String getValue(Map<String, Object> arg0) {
+					if(arg0 == null){
+						return null;
+					}
 					return (String) arg0.get(column.getField());
 				}
 			};

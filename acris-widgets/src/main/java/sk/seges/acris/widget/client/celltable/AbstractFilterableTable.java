@@ -226,7 +226,6 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		initialize();
 
 		if (property != null) {
-			column.setSortable(sortable);
 			columnProperties.put(column, property);
 		}
 	}
@@ -386,7 +385,6 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		addColumnWithTextHeader(column, text, property, validator, textFilter, defaultVal, columnUpdater, footerButton);
 		this.setColumnWidth(column, width, Unit.PCT);
-		column.setSortable(sortable);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -414,7 +412,6 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		addFooterWidgetColumnWithTextHeader(column, text, property, validator, textFilter, defaultVal, columnUpdater, footerWidget);
 		this.setColumnWidth(column, width, Unit.PCT);
-		column.setSortable(sortable);
 	}
 	
 	
@@ -470,7 +467,6 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		addColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, validator, text, defaultVal, footerButton, columnIndex);
 		
 		this.setColumnWidth(column, width, Unit.PCT);
-		column.setSortable(sortable);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -520,7 +516,6 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		addColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerButton, columnIndex);
 		
 		this.setColumnWidth(column, width, Unit.PCT);
-		column.setSortable(sortable);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -548,7 +543,6 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		addFooterWidgetColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerWidget, columnIndex);
 		
 		this.setColumnWidth(column, width, Unit.PCT);
-		column.setSortable(sortable);
 	}
 	
 	protected void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
@@ -779,6 +773,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			if (columnSortList.size() > 0) {
 				ColumnSortInfo columnSortInfo = columnSortList.get(0);
 				asc = !columnSortInfo.isAscending();
+				columnSortInfo.getColumn().setSortable(false);
 			}
 
 			columnSortList.clear();
@@ -788,6 +783,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			SortInfo sortInfo = new SortInfo(asc, value.getProperty());
 			sortables.add(sortInfo);
 			filter.setSortables(sortables);
+			column.setSortable(sortable);
 
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
 		} else if (value.getValue() != null) {
