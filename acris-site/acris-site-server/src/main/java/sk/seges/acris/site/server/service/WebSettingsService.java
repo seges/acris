@@ -7,15 +7,14 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.dao.IWebSettingsDao;
 import sk.seges.acris.site.server.model.data.MetaDataData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
-import sk.seges.corpis.shared.domain.HasWebId;
 import sk.seges.corpis.server.domain.server.model.data.CountryData;
 import sk.seges.corpis.server.service.ICountryService;
+import sk.seges.corpis.shared.domain.HasWebId;
 import sk.seges.sesam.dao.Disjunction;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
@@ -61,19 +60,6 @@ public class WebSettingsService implements IWebSettingsServiceLocal {
 		WebSettingsData webSettings = result.get(0);
 		webSettings.getMetaData().size();
 		return webSettings;
-	}
-	
-	@Override
-	@Transactional
-	public WebSettingsData findWebSettings(String webId) {
-		Page page = new Page(0, 1);
-		// TODO: switch to @BeanWrapper
-		page.setFilterable(Filter.eq(HasWebId.WEB_ID).setValue(webId));
-		List<? extends WebSettingsData> result = webSettingsDao.findAll(page).getResult();
-		if (result.size() == 0) {
-			return null;
-		}
-		return result.get(0);
 	}
 
 	@Override

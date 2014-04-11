@@ -70,9 +70,4 @@ public class MockWebSettingsService implements IWebSettingsServiceLocal {
 	public List<WebSettingsData> loadWebSettingsContainsParams(List<String> params) {
 		return null;
 	}
-
-	@Override
-	public WebSettingsData findWebSettings(String webId) {
-		return null;
-	}
 }
