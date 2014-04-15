@@ -55,8 +55,8 @@ public class SessionUserService implements UserProviderService {
 
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
 		if (token instanceof UserPasswordLoginToken && userContext instanceof SessionUserContext) {
-			String sessionWebId = ((SessionUserContext) userContext).getWebId();
-			String tokenWebId = ((UserPasswordLoginToken) token).getWebId();
+			String sessionWebId = userContext.getWebId();
+			String tokenWebId = token.getWebId();
 			
 			if (!sessionWebId.equals(tokenWebId)) return null;
 		}

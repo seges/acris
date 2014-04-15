@@ -11,11 +11,7 @@ public class DefaultUserContextProvider implements  UserContextProvider {
 
 	private Map<Class<? extends UserContext>, UserProviderService> serviceMap = new HashMap<Class<? extends UserContext>, UserProviderService>();
 	
-	public DefaultUserContextProvider(Class<? extends UserContext> sessionUserContext, UserProviderService sessionLoginService,
-			Class<? extends UserContext> apiKeyUserContext, UserProviderService apiKeyLoginService) {
-		serviceMap.put(sessionUserContext, sessionLoginService);
-		serviceMap.put(apiKeyUserContext, apiKeyLoginService);
-	}
+	public DefaultUserContextProvider() {}
 
 	@Override
 	public UserProviderService getUserProviderService(UserContext userContext) {
