@@ -60,7 +60,7 @@ public class WebIdDaoAuthenticationProvider extends AbstractUserDetailsAuthentic
         UserDetails loadedUser;
 
         try {
-            loadedUser = this.getUserDetailsService().loadUserByUsernameAndWebId(username, ((WebIdUsernamePasswordAuthenticationToken) authentication).getWebId());
+            loadedUser = this.getUserDetailsService().loadUserByUsernameAndWebId(username, ((HasWebIDAuthenticationToken) authentication).getWebId());
         }
         catch (DataAccessException repositoryProblem) {
             throw new AuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
