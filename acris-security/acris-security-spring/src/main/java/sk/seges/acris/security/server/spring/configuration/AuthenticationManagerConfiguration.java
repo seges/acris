@@ -1,11 +1,12 @@
 package sk.seges.acris.security.server.spring.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.access.intercept.RunAsImplAuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.SpringUserService;
+import sk.seges.acris.security.server.spring.user_management.service.WebIdUserDetailsService;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdAnonymousAuthenticationProvider;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdDaoAuthenticationProvider;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
@@ -13,26 +14,25 @@ import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class AuthenticationManagerConfiguration {
 
-	@Autowired
-	private IGenericUserDao<UserData> genericUserDao;
-	
-	@Autowired
-	private WebIdDaoAuthenticationProvider daoAuthenticationProvider;
-	
 	@Bean
-	public SpringUserService userDetailsService() {
+	public WebIdUserDetailsService userDetailsService(IGenericUserDao<UserData> genericUserDao) {
 		return new SpringUserService(genericUserDao);
 	}
-	
+
 	@Bean
-	public ProviderManager authenticationManager(WebIdAnonymousAuthenticationProvider anonymousAuthenticationProvider) {
-		List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
-		providers.add(daoAuthenticationProvider);
-		providers.add(anonymousAuthenticationProvider);
-		ProviderManager providerManager = new ProviderManager(providers);
-		return providerManager;
+	public WebIdDaoAuthenticationProvider daoAuthenticationProvider(WebIdUserDetailsService userDetailsService) {
+		WebIdDaoAuthenticationProvider webIdDaoAuthenticationProvider = new WebIdDaoAuthenticationProvider();
+		webIdDaoAuthenticationProvider.setUserDetailsService(userDetailsService);
+		return webIdDaoAuthenticationProvider;
+	}
+
+	@Bean
+	public RunAsImplAuthenticationProvider runAsAuthenticationProvider() {
+		RunAsImplAuthenticationProvider runAsImplAuthenticationProvider = new RunAsImplAuthenticationProvider();
+		//TODO not so smart!!
+		runAsImplAuthenticationProvider.setKey("secretRunAsKey");
+		return runAsImplAuthenticationProvider;
 	}
 }

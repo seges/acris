@@ -6,17 +6,9 @@
                         http://www.springframework.org/schema/security
                         http://www.springframework.org/schema/security/spring-security-3.1.xsd">
          
-<!--     <authentication-manager> -->
-<!-- 		<authentication-provider ref='runAsAuthenticationProvider' /> -->
-<!-- 	</authentication-manager> -->
-	     
 	<beans:bean id="runAsManager"
 		class="sk.seges.acris.security.server.spring.runas.RoleRunAsManagerImpl">
 		<beans:property name="key" value="secretRunAsKey" />
 	</beans:bean>
 
-	<beans:bean id="runAsAuthenticationProvider"
-		class="org.springframework.security.access.intercept.RunAsImplAuthenticationProvider">
-		<beans:property name="key" value="secretRunAsKey" />
-	</beans:bean>
 </beans:beans>

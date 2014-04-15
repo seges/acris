@@ -16,6 +16,7 @@ public class AccessDecisionManagerConfiguration {
     	return new RoleVoter();
     }
 
+
 	@Bean
 	public UnanimousBased unanonimousDecisionManager() {
 		UnanimousBased decisionManager = new UnanimousBased();
