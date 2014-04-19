@@ -683,3 +683,10 @@
 /acris-player/acris-player-client-core/target
 /acris-player/acris-player-rpc/target
 /acris-player/acris-player-server/target
+
+# /acris-player/acris-player-dto/
+/acris-player/acris-player-dto/target
+/acris-player/acris-player-dto/.project
+/acris-player/acris-player-dto/.settings
+/acris-player/acris-player-dto/.classpath
+/acris-player/acris-player-dto/.gwt
