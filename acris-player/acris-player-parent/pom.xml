@@ -15,6 +15,7 @@
 	<modules>
 		<module>../acris-player-client</module>
 		<module>../acris-player-client-core</module>
+		<module>../acris-player-dto</module>
 		<module>../acris-player-rpc</module>
 		<module>../acris-player-server</module>
 	</modules>

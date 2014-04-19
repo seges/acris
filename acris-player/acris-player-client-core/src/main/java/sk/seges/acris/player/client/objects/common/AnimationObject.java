@@ -1,25 +1,19 @@
 package sk.seges.acris.player.client.objects.common;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import sk.seges.acris.player.client.listener.CompleteHandler;
 import sk.seges.acris.player.client.objects.action.MouseMoveAction;
 import sk.seges.acris.recorder.client.event.MouseEvent;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.tools.CacheMap;
 
-public class AnimationObject implements EventMirror {
+public class AnimationObject implements EventMirror, HasPosition {
 
 	protected static final int DEFAULT_OBJECT_SPEED = 100; //pixels per second
 
-	public static final int REALTIME_OBJECT_SPEED = 300;
+	public static final int REALTIME_OBJECT_SPEED = 800;
 	public static final int PRESENTATION_OBJECT_SPEED = 150;
 
 	protected final int speed;
@@ -39,7 +33,6 @@ public class AnimationObject implements EventMirror {
 		this.cacheMap = cacheMap;
 		this.speed = speed;
 	}
-
 
 	@Override
 	public Widget getWidget() {
@@ -104,19 +97,6 @@ public class AnimationObject implements EventMirror {
 			switch (cursorProperties.getEvent().getTypeInt()) {
 				case MouseEvent.MOUSE_MOVE_TYPE:
 					new MouseMoveAction().createAnimation(cursorProperties, completeHandler).run();
-					break;
-				case MouseEvent.MOUSE_CLICK_TYPE:
-					GQuery.$(mouseEvent.getElement()).click();
-					completeHandler.onComplete();
-					break;
-				case MouseEvent.MOUSE_DOUBLE_CLICK_TYPE:
-					GQuery.$(mouseEvent.getElement()).dblclick();
-					completeHandler.onComplete();
-					break;
-				case MouseEvent.MOUSE_WHEEL_TYPE:
-					int scrollTop1 = Document.get().getScrollTop();
-					GQuery.$(GQuery.window).scrollTo(mouseEvent.getClientX(), mouseEvent.getClientY() + scrollTop1);
-					completeHandler.onComplete();
 					break;
 				default:
 					completeHandler.onComplete();

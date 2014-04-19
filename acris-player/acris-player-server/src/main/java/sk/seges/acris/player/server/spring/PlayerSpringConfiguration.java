@@ -5,8 +5,12 @@ import sk.seges.acris.player.server.service.IPlayerRemoteServiceLocal;
 import sk.seges.acris.player.server.service.PlayerService;
 import sk.seges.acris.player.server.service.PlayerServiceConverter;
 import sk.seges.acris.player.shared.service.IPlayerRemoteService;
+import sk.seges.acris.recorder.server.dao.api.RecordingBlobDaoBase;
 import sk.seges.acris.recorder.server.dao.api.RecordingLogDaoBase;
 import sk.seges.acris.recorder.server.dao.api.RecordingSessionDaoBase;
+import sk.seges.acris.recorder.server.domain.jpa.dao.hibernate.HibernateJpaRecordingBlobDao;
+import sk.seges.acris.recorder.server.domain.jpa.dao.hibernate.HibernateJpaRecordingSessionDao;
+import sk.seges.acris.recorder.server.model.data.RecordingBlobData;
 import sk.seges.acris.recorder.server.model.data.RecordingLogData;
 import sk.seges.acris.recorder.server.model.data.RecordingSessionData;
 import sk.seges.corpis.server.model.converter.provider.AbstractContextualConverterProvider;
@@ -19,9 +23,17 @@ public class PlayerSpringConfiguration {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Bean
-	public IPlayerRemoteServiceLocal playerLocalService(RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao, RecordingLogDaoBase<RecordingLogData> recordingLogDao) {
-		return new PlayerService(recordingSessionDao, recordingLogDao);
+    @Bean
+    public RecordingBlobDaoBase<RecordingBlobData> recordingBlobDao() {
+        HibernateJpaRecordingBlobDao hibernateJpaRecordingBlobDao = new HibernateJpaRecordingBlobDao();
+        hibernateJpaRecordingBlobDao.setEntityManager(entityManager);
+        return hibernateJpaRecordingBlobDao;
+    }
+
+    @Bean
+	public IPlayerRemoteServiceLocal playerLocalService(RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao, RecordingLogDaoBase<RecordingLogData> recordingLogDao,
+                                                        RecordingBlobDaoBase<RecordingBlobData> recordingBlobDao) {
+		return new PlayerService(entityManager, recordingSessionDao, recordingLogDao, recordingBlobDao);
 	}
 
 	@Bean

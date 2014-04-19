@@ -5,7 +5,7 @@ import sk.seges.acris.recorder.client.tools.CacheMap;
 
 public class RealtimePlayer extends Player {
 
-	public RealtimePlayer(CacheMap cacheMap) {
-		super(AnimationObject.REALTIME_OBJECT_SPEED, cacheMap);
+	public RealtimePlayer(boolean viewMode, CacheMap cacheMap) {
+		super(viewMode, AnimationObject.REALTIME_OBJECT_SPEED, cacheMap);
 	}
 }

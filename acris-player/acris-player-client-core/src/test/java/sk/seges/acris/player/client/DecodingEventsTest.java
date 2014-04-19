@@ -42,7 +42,7 @@ public class DecodingEventsTest {
 		mouseTestEvent.setRelatedTargetXpath("//test");
 		events.add(mouseTestEvent);
 
-		List<AbstractGenericEvent> decodedEvents = new EventsDecoder(new CacheMap(30)).decodeEvents(new EventsEncoder().encodeEvents(events));
+        List<AbstractGenericEvent> decodedEvents = new EventsDecoder(null, 10L, new CacheMap(30)).decodeEvents(new EventsEncoder().encodeEvents(events, 0).data);
 
 		Assert.assertEquals("Events count does not match", events.size(), decodedEvents.size());
 

@@ -23,18 +23,21 @@ public class KeyboardEventExecutor extends EventExecutor {
 				element.focus();
 			}
 
+            //TODO ignore special combinations, like
+            //TODO ctrl + c, ctrl + v, ctrl + x
 			switch (keyboardEvent.getTypeInt()) {
 				case 0:
 //					GQuery.$(element).val(GQuery.$(element).val() + (char)keyboardEvent.getKeyCode());
-//					//TODO - handle charCode also
+					//TODO - handle charCode also
 					break;
 				case 1:	//keypress
-					GQuery.$(element).val(GQuery.$(element).val() + (char)keyboardEvent.getKeyCode());
+                    GQuery el = GQuery.$(element);
+                    el.val(el.val() + (char) keyboardEvent.getKeyCode());
 					//TODO - handle charCode also
 					break;
 				case 2:
 //					GQuery.$(element).val(GQuery.$(element).val() + (char)keyboardEvent.getKeyCode());
-//					//TODO - handle charCode also
+					//TODO - handle charCode also
 					break;
 			}
 		} else {

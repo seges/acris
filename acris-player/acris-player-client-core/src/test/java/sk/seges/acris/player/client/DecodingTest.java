@@ -2,9 +2,11 @@ package sk.seges.acris.player.client;
 
 import com.google.gwt.dom.client.BrowserEvents;
 import org.junit.Test;
+import sk.seges.acris.player.client.model.ClipboardTestEvent;
 import sk.seges.acris.player.client.model.HtmlTestEvent;
 import sk.seges.acris.player.client.model.KeyboardTestEvent;
 import sk.seges.acris.player.client.model.MouseTestEvent;
+import sk.seges.acris.recorder.client.event.ClipboardEvent;
 
 public class DecodingTest extends AbstractDecodingTest {
 
@@ -37,7 +39,7 @@ public class DecodingTest extends AbstractDecodingTest {
 	}
 
 	@Test
-	public void testEncodeMouseEvents() {
+	public void testMouseEventsDecode() {
 		testEventDecoding(new MouseTestEvent(BrowserEvents.CLICK));
 		testEventDecoding(new MouseTestEvent(BrowserEvents.DBLCLICK));
 		testEventDecoding(new MouseTestEvent(BrowserEvents.MOUSEDOWN));
@@ -53,4 +55,15 @@ public class DecodingTest extends AbstractDecodingTest {
 		mouseTestEvent.setRelativeInt(1);
 		testEventDecoding(mouseTestEvent);
 	}
+
+    @Test
+    public void testClipboardEventsDecode() {
+        testEventDecoding(new ClipboardTestEvent(ClipboardEvent.PASTE_EVENT_TYPE));
+        testEventDecoding(new ClipboardTestEvent(ClipboardEvent.CUT_EVENT_TYPE));
+
+        ClipboardTestEvent clipboardTestEvent = new ClipboardTestEvent(ClipboardEvent.PASTE_EVENT_TYPE);
+        clipboardTestEvent.setSelectionStart(107);
+        clipboardTestEvent.setSelectionEnd(302);
+        testEventDecoding(clipboardTestEvent);
+    }
 }

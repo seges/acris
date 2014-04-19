@@ -44,7 +44,16 @@ public class EventDecoder {
 			mouseEventBeanWrapper.setBeanWrapperContent((MouseEvent)abstractGenericEvent);
 
 			decodeEvent(EMouseEventFields.values(), value, mouseEventBeanWrapper);
-		}
+		} else if (eventType.equals(EventType.CustomEvent)) {
+            abstractGenericEvent = new ClipboardEvent(cacheMap);
+
+            //Currently supporting only clipboard events. When more comes, it should be distinguished
+            //using 3rd and 17th bit
+            ClipboardEventBeanWrapper clipboardEventBeanWrapper = new ClipboardEventBeanWrapper();
+            clipboardEventBeanWrapper.setBeanWrapperContent((ClipboardEvent)abstractGenericEvent);
+
+            decodeEvent(EClipboardEventFields.values(), value, clipboardEventBeanWrapper);
+        }
 
 		return abstractGenericEvent;
 	}
@@ -73,18 +82,9 @@ public class EventDecoder {
 
 	public static EventType getEventType(long event) {
 
-		int type = ValueDecoder.readValueFromPosition(IRecordableEvent.ENCODE_EVENT_TYPE_SHIFT, event, 1);
+		int type = ValueDecoder.readValueFromPosition(IRecordableEvent.ENCODE_EVENT_TYPE_SHIFT, event, 2);
 
 		EventType eventType = EventType.getEvent(type);
-
-		if (eventType != null) {
-			return eventType;
-		}
-
-		int typeNext = ValueDecoder.readValueFromPosition(IRecordableEvent.ENCODE_EVENT_TYPE_SHIFT - 1, event, 1);
-		int resultType = type * 2 + typeNext;
-
-		eventType = EventType.getEvent(resultType);
 
 		if (eventType != null) {
 			return eventType;

@@ -1,6 +1,10 @@
 package sk.seges.acris.player.client.event.decoding;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import sk.seges.acris.player.shared.service.IPlayerRemoteServiceAsync;
+import sk.seges.acris.recorder.client.event.ClipboardEvent;
+import sk.seges.acris.recorder.client.event.EventType;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
 import sk.seges.acris.recorder.client.recorder.support.EventsEncoder;
@@ -13,9 +17,35 @@ import java.util.List;
 public class EventsDecoder {
 
 	private final CacheMap cacheMap;
+    private final IPlayerRemoteServiceAsync playerService;
+    private final Long sessionId;
 
-	public EventsDecoder(CacheMap cacheMap) {
+    class ClipboardContentCallback {
+
+        private ClipboardEvent event;
+        private String result;
+
+        public void setResult(String result) {
+            if (event == null) {
+                this.result = result;
+            } else {
+                event.setClipboardText(result);
+            }
+        }
+
+        public void setEvent(ClipboardEvent event) {
+            this.event = event;
+            if (result != null) {
+                this.event.setClipboardText(result);
+            }
+        }
+
+    }
+
+	public EventsDecoder(IPlayerRemoteServiceAsync playerService, Long sessionId, CacheMap cacheMap) {
 		this.cacheMap = cacheMap;
+        this.playerService = playerService;
+        this.sessionId = sessionId;
 	}
 
 	private static byte[] subarray(byte[] bytes, int from, int to) {
@@ -33,7 +63,7 @@ public class EventsDecoder {
 
 		List<AbstractGenericEvent> result = new ArrayList<AbstractGenericEvent>();
 
-		byte[] bytes = encodedEvents.getBytes(EventsEncoder.CHARSET_NAME);
+        byte[] isoBytes = encodedEvents.getBytes(EventsEncoder.CHARSET_NAME);
 
 		byte[] eventBytes = null;
 		String targetXpath = null;
@@ -45,28 +75,86 @@ public class EventsDecoder {
 
         EventDecoder eventDecoder = new EventDecoder(cacheMap);
 
-		for (int i = 0; i < bytes.length; i++) {
+        EventType eventType = null;
+        String additionalInfo = null;
+
+        ClipboardContentCallback clipboardCallback = null;
+
+		for (int i = 0; i < isoBytes.length; i++) {
 
 			if (lastIndex == i) {
 				//the first byte is processed, so we are interested in first bit
-				length = bytes[i] < 0 ? 8 : 4;
+				length = isoBytes[i] < 0 ? 8 : 4;
 				continue;
 			}
 
 			if (lastIndex + length == i) {
-				eventBytes = subarray(bytes, lastIndex, i - 1);
-				lastIndex = i;
+				eventBytes = subarray(isoBytes, lastIndex, i - 1);
+                lastIndex = i;
 				length = 0;
-			}
 
-			if (bytes[i] == EventsEncoder.DELIMITER) {
-				if (targetXpath == null) {
+                eventType = EventDecoder.getEventType(EventDecoder.longFromByteArray(eventBytes));
+            }
+
+			if (isoBytes[i] == EventsEncoder.DELIMITER) {
+
+                if (eventType.equals(EventType.CustomEvent) && additionalInfo == null) {
+                    //there is also blob or pasted text encoded, so 1 more delimiter
+                    if (lastIndex == i) {
+                        additionalInfo = "";
+                    } else {
+                        additionalInfo = encodedEvents.substring(lastIndex, i);
+                    }
+
+                    //when length == 0 it was cut event, or pasted empty text
+                    if (additionalInfo.length() > 0) {
+                        //reference to the blob ID
+                        if (additionalInfo.startsWith(EventsEncoder.BLOB_ATTRIBUTE)) {
+                            final ClipboardContentCallback clipboardAsyncCallback = clipboardCallback = new ClipboardContentCallback();
+
+                            long blobId;
+                            String blobStringIdentifier = additionalInfo.substring(EventsEncoder.BLOB_ATTRIBUTE.length());
+                            try {
+                                blobId = Long.parseLong(blobStringIdentifier);
+                            } catch (NumberFormatException nfe) {
+                                throw new RuntimeException("Unable to parse blob identifier: " + blobStringIdentifier);
+                            }
+
+                            //TODO set clipboard event as non initialized
+                            //and playlist should wait until event is initialized
+                            playerService.getRecodedBlob(sessionId, blobId, new AsyncCallback<String>() {
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    throw new RuntimeException(caught);
+                                }
+
+                                @Override
+                                public void onSuccess(String result) {
+                                    clipboardAsyncCallback.setResult(result);
+                                }
+                            });
+                        } else if (additionalInfo.startsWith(EventsEncoder.DATA_ATTRIBUTE)) {
+                            //pasted text is encoded in event itself
+                            clipboardCallback = new ClipboardContentCallback();
+                            clipboardCallback.setResult(additionalInfo.substring(EventsEncoder.DATA_ATTRIBUTE.length()));
+                        } else {
+                            throw new RuntimeException("Invalid clipboard event!");
+                        }
+                    }
+
+                    lastIndex = i;
+                } else if (targetXpath == null) {
 
 					if (lastIndex == i) {
 						targetXpath = "";
 					} else {
-						targetXpath = new String(subarray(bytes, lastIndex, i - 1), EventsEncoder.CHARSET_NAME);
-
+                        int startIndex = lastIndex + (additionalInfo != null ? 1 : 0);
+                        if (startIndex < i) {
+                            targetXpath = encodedEvents.substring(startIndex, i);
+                        } else {
+                            targetXpath = "";
+                        }
 						try {
 							int targetXpathIndex = Integer.valueOf(targetXpath);
 							targetXpath = targetXpaths.get(targetXpathIndex);
@@ -87,7 +175,11 @@ public class EventsDecoder {
 						continue;
 					}
 
-					abstractGenericEvent.setDeltaTime((int)EventDecoder.longFromByteArray(subarray(bytes, lastIndex, i - 1)));
+                    if (clipboardCallback != null) {
+                        clipboardCallback.setEvent((ClipboardEvent) abstractGenericEvent);
+                    }
+
+					abstractGenericEvent.setDeltaTime((int)EventDecoder.longFromByteArray(subarray(isoBytes, lastIndex, i - 1)));
 
 					if (abstractGenericEvent != null && abstractGenericEvent instanceof AbstractGenericTargetableEvent && targetXpath.length() > 0) {
 						((AbstractGenericTargetableEvent)abstractGenericEvent).setRelatedTargetXpath(targetXpath);
@@ -96,6 +188,8 @@ public class EventsDecoder {
 					eventBytes = null;
 					targetXpath = null;
 					lastIndex = i + 1;
+                    clipboardCallback = null;
+                    additionalInfo = null;
 				}
 			}
 		}

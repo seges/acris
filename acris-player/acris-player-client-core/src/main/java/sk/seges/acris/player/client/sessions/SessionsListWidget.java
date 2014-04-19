@@ -3,6 +3,7 @@ package sk.seges.acris.player.client.sessions;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import sk.seges.acris.recorder.client.session.RecordingSessionDetailParamsJSO;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
@@ -71,7 +72,7 @@ public class SessionsListWidget extends AbstractFilterableTable<RecordingSession
 		};
 		addTextColumn(ipAddressColumn, 100, "IP Address", null, new StringValidator(), null);
 
-		Column<RecordingSessionDTO, Date> webIdColumn = new Column<RecordingSessionDTO, Date>(new DateCell()) {
+		Column<RecordingSessionDTO, Date> webIdColumn = new Column<RecordingSessionDTO, Date>(new DateCell(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM))) {
 			@Override
 			public Date getValue(RecordingSessionDTO session) {
 				return session.getSessionTime();

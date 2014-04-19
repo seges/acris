@@ -1,7 +1,6 @@
 package sk.seges.acris.player.client.objects.common;
 
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.core.client.GWT;
 import sk.seges.acris.recorder.client.event.MouseEvent;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 

@@ -1,32 +1,28 @@
 package sk.seges.acris.player.client.sessions;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 import sk.seges.acris.player.client.configuration.PresenterProvider;
-import sk.seges.acris.player.client.event.PlayEvent;
-import sk.seges.acris.player.client.event.decoding.EventDecoder;
-import sk.seges.acris.player.client.players.Player;
-import sk.seges.acris.player.client.playlist.Playlist;
+import sk.seges.acris.player.client.players.event.PlayEvent;
+import sk.seges.acris.player.client.session.SessionPlayer;
 import sk.seges.acris.player.client.session.SessionPresenter;
 import sk.seges.acris.player.shared.service.IPlayerRemoteServiceAsync;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
-import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
-import sk.seges.acris.recorder.client.recorder.support.Recorder;
-import sk.seges.acris.recorder.client.session.RecordingSessionDetailParamsJSO;
-import sk.seges.acris.recorder.shared.model.dto.RecordingLogDTO;
+import sk.seges.acris.recorder.server.model.data.RecordingSessionData;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
+import sk.seges.sesam.dao.Conjunction;
+import sk.seges.sesam.dao.Filter;
+import sk.seges.sesam.shared.model.dao.SortInfo;
+import sk.seges.sesam.shared.model.dto.ConjunctionDTO;
+import sk.seges.sesam.shared.model.dto.FilterDTO;
 import sk.seges.sesam.shared.model.dto.PageDTO;
 import sk.seges.sesam.shared.model.dto.PagedResultDTO;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +30,7 @@ public class SessionsPresenter extends AbstractActivity implements PlayEvent.Pla
 
 	public interface SessionsDisplay extends IsWidget, PlayEvent.HasPlayHandlers {
 
-		void setData(List<RecordingSessionDTO> sessions);
+		void setData(PagedResultDTO<List<RecordingSessionDTO>> sessions);
 	}
 
 	private final SessionsDisplay display;
@@ -56,8 +52,32 @@ public class SessionsPresenter extends AbstractActivity implements PlayEvent.Pla
 
 		panel.setWidget(display);
 
-		PageDTO page = new PageDTO(0, 20);
-		playerService.getSessions(page, null, null, new AsyncCallback<PagedResultDTO<List<RecordingSessionDTO>>>() {
+		PageDTO page = new PageDTO(0, 10);
+        List<SortInfo> sortables = new ArrayList<SortInfo>();
+        sortables.add(new SortInfo(false, RecordingSessionDTO.SESSION_TIME));
+        page.setProjectableResult(RecordingSessionDTO.class.getName());
+        page.setSortables(sortables);
+
+        ConjunctionDTO conjunction = FilterDTO.conjunction();
+
+        String webId = null;
+
+        if (webId != null) {
+            conjunction.and(FilterDTO.eq(RecordingSessionDTO.WEB_ID, webId));
+        }
+
+        String language = null;
+
+        if (language != null) {
+            conjunction.and(FilterDTO.eq(RecordingSessionDTO.LANGUAGE, language));
+        }
+
+        if (conjunction.getJunctions().size() > 0) {
+            page.setFilterable(conjunction);
+        }
+
+        playerService.getSessions(page, new AsyncCallback<PagedResultDTO<List<RecordingSessionDTO>>>() {
+
 			@Override
 			public void onFailure(Throwable caught) {
 				throw new RuntimeException(caught);
@@ -65,7 +85,7 @@ public class SessionsPresenter extends AbstractActivity implements PlayEvent.Pla
 
 			@Override
 			public void onSuccess(PagedResultDTO<List<RecordingSessionDTO>> result) {
-				display.setData(result.getResult());
+				display.setData(result);
 			}
 		});
 
@@ -75,8 +95,7 @@ public class SessionsPresenter extends AbstractActivity implements PlayEvent.Pla
 
 	@Override
 	public void onPlay(final PlayEvent event) {
-		SessionPresenter sessionPresenter = sessionPresenterProvider.getPresenter();
-		sessionPresenter.start(parentPanel, null);
-		sessionPresenter.initialize(event.getRecordingSession());
+        ((Widget)parentPanel).getElement().removeFromParent();
+        new SessionPlayer().replaySession(event.getRecordingSession());
 	}
 }

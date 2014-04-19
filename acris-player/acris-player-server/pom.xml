@@ -36,5 +36,9 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>sk.seges.acris</groupId>
+            <artifactId>acris-site-dto</artifactId>
+        </dependency>
+    </dependencies>
 </project>
