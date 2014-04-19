@@ -2,7 +2,7 @@ package sk.seges.acris.recorder.client.event;
 
 
 public enum EventType {
-	HtmlEvent(3), MouseEvent(0), KeyboardEvent(2);
+	HtmlEvent(3), MouseEvent(0), KeyboardEvent(2), CustomEvent(1);
 	
 	private int type;
 	

@@ -94,7 +94,7 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	}
 
 	public String toString(boolean pretty, boolean detailed) {
-		if (pretty) {
+		if (!pretty) {
 			if (!detailed) {
 				return type + " with keyCode= "+ keyCode + " and charCode=" + charCode;
 			} else {
@@ -107,12 +107,12 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 		} else {
 			if (!detailed) {
 				return "KeyboardEvent [type=" + type 
-					+ ", keyCode= "+ keyCode + " and charCode=" + charCode + "]";
+					+ ", keyCode= "+ keyCode + " and charCode=" + charCode + ", relatedTargetXpath=" + getRelatedTargetXpath() + "]";
 			} else {
 				return "KeyboardEvent [altKey=" + altKey
 					+ ", canBubble=" + canBubble + ", cancelable=" + cancelable
-					+ ", metaKey=" + metaKey + ", relatedTargetXpath="
-					+ ", keyCode= "+ keyCode + ", charCode=" + charCode
+					+ ", metaKey=" + metaKey + ", relatedTargetXpath=" + getRelatedTargetXpath()
+					+ ", keyCode= "+ keyCode + "(" + (char) getKeyCode() + "), charCode=" + charCode + "(" + (char) getCharCode() + ")"
 					+ ", shiftKey=" + shiftKey + ", type=" + type + "]";
 			}
 		}

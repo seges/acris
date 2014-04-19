@@ -1,4 +1,4 @@
-package sk.seges.acris.player.client.event;
+package sk.seges.acris.player.client.players.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;

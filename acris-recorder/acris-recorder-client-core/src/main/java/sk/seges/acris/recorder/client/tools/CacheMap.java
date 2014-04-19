@@ -13,8 +13,8 @@ public class CacheMap {
 
 	private int maxCapacity;
 
-    private LinkedHashMap<String, Element> xpathsMap;
-    private LinkedHashMap<Element, String> elementsMap;
+    protected LinkedHashMap<String, Element> xpathsMap;
+    protected LinkedHashMap<Element, String> elementsMap;
 
 	public CacheMap(int maxCapacity) {
 		this.maxCapacity = maxCapacity;

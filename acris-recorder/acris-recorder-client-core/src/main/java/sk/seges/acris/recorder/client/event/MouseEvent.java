@@ -108,6 +108,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		this.clientY = getClientY_Hi() + clientY_Lo;
 	}
 
+    @Override
 	protected void initTarget(Element target, Event event) {
 		super.initTarget(target, event);
 
@@ -121,7 +122,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		}
 	}
 
-	public int getRelativeInt() {
+    public int getRelativeInt() {
 		return relative ? 1 : 0;
 	}
 
@@ -220,7 +221,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		return clientY;
 	}
 
-	protected NativeEvent createEvent(Element el) {
+	public NativeEvent createEvent(Element el) {
 		//TODO screenX, screenY
 		return Document.get().createMouseEvent(type, canBubble, cancelable, detail, 
 				0, 0, clientX, clientY, ctrlKey, altKey,
@@ -229,7 +230,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 	
 	public String toString(boolean pretty, boolean detailed) {
 		
-		if (pretty) {
+		if (!pretty) {
 			if (!detailed) {
 				if (relatedTargetXpath != null && relatedTargetXpath.length() > 0) {
 					return type + " on " + relatedTargetXpath + " element";

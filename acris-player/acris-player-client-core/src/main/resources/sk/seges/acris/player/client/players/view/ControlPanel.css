@@ -1,0 +1,78 @@
+.controlPanel {
+    opacity: 0.5;
+    background-color: #808080;
+    height: 140px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+}
+
+.controlPanel:hover {
+    opacity: 1;
+}
+
+.controlPanel > div {
+    float: left;
+}
+
+.controlPanelTop {
+    top: 0;
+}
+
+.controlPanelBottom {
+    bottom: 0;
+}
+
+.sessionHolder {
+    background-color: white;
+    position: fixed;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    z-index: 10000;
+}
+
+@sprite .playButton {
+    gwt-image: 'play';
+}
+
+@sprite .pauseButton {
+    gwt-image: 'pause';
+}
+
+@sprite .nextButton {
+    gwt-image: 'next';
+}
+
+.playButton, .pauseButton, .nextButton {
+    border: none;
+    width: 128px;
+    height: 128px;
+    opacity: 0.5;
+}
+
+.playButton:hover, .pauseButton:hover, .nextButton:hover {
+    opacity: 0.8;
+}
+
+.disabled {
+    opacity: 0.8;
+}
+
+.playlist {
+    height: 120px;
+    background-color: transparent;
+    margin: 10px;
+    font-size: 20px;
+    width: 700px;
+    color: white;
+    border: none;
+}
+
+.timer {
+    margin-top: 30px;
+    font-size: 20px;
+    font-color: white;
+}

@@ -23,9 +23,9 @@ public enum EHtmlEventFields implements IEventFields {
 		this(htmlEventFields, length, Long.valueOf(new String(new char[length]).replace("\0", "1"), 2));
 	}
 
-	private EHtmlEventFields(EHtmlEventFields keyboardEventFields, int length, long value) {
+	private EHtmlEventFields(EHtmlEventFields htmlEventFields, int length, long value) {
 		fieldDefinition = new FieldDefinition();
-		fieldDefinition.setPosition(keyboardEventFields.getFieldDefinition().getPosition() + keyboardEventFields.getFieldDefinition().getLength());
+		fieldDefinition.setPosition(htmlEventFields.getFieldDefinition().getPosition() + htmlEventFields.getFieldDefinition().getLength());
 		fieldDefinition.setLength(length);
 		this.value = value;
 	}

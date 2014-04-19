@@ -45,7 +45,7 @@ public class HtmlEvent extends AbstractGenericTargetableEvent {
 	}
 
 	public String toString(boolean pretty, boolean detailed) {
-		if (pretty) {
+		if (!pretty) {
 			if (!detailed) {
 				return type;
 			} else {

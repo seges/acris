@@ -32,8 +32,22 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	private RecordingLogDTO recordingLogDTO;
 
 	private boolean sessionStarted = false;
-	private List<RecordingLogDTO> awaitingLogs = new ArrayList<RecordingLogDTO>();
+	private List<AwaitingLog> awaitingLogs = new ArrayList<AwaitingLog>();
 	private long lastTime;
+    private long blobId = 0;
+
+    public class AwaitingLog {
+        RecordingLogDTO log;
+        List<String> blobs;
+        long blobId;
+
+        public AwaitingLog() {};
+        public AwaitingLog(RecordingLogDTO log, long blobId, List<String> blobs) {
+            this.log = log;
+            this.blobs = blobs;
+            this.blobId = blobId;
+        }
+    }
 
 	protected Recorder(CacheMap cacheMap, RecorderMode mode) {
 		super(cacheMap);
@@ -116,7 +130,6 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		if (recordingLogDTO == null) {
 			recordingLogDTO = new RecordingLogDTO();
 			recordingLogDTO.setEventTime(new Date());
-			recordingLogDTO.setSession(this.recordingSession);
 		}
 
 		if (force || recorderEvents.size() == mode.getBatchSize()) {
@@ -128,15 +141,15 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	
 	protected void logEvents(final List<AbstractGenericEvent> recorderEventsForPersisting) {
 
-		String encodedEvents;
+		EventsEncoder.EncodedEvent encodedEvents;
 		try {
-			encodedEvents = eventsEncoder.encodeEvents(recorderEventsForPersisting);
+			encodedEvents = eventsEncoder.encodeEvents(recorderEventsForPersisting, blobId);
 		} catch (UnsupportedEncodingException e) {
             GWT.log(e.getMessage());
 			return;
 		}
 
-		recordingLogDTO.setEvent(encodedEvents);
+		recordingLogDTO.setEvent(encodedEvents.data);
 
 		if (recordingSession.getAuditLogs() == null) {
 			recordingSession.setAuditLogs(new ArrayList<RecordingLogDTO>());
@@ -144,30 +157,40 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		recordingSession.getAuditLogs().add(recordingLogDTO);
 
 		if (!sessionStarted) {
-			awaitingLogs.add(recordingLogDTO);
+            awaitingLogs.add(new AwaitingLog(recordingLogDTO, blobId, encodedEvents.blobs));
 		} else {
 			if (awaitingLogs.size() > 0) {
-				for (RecordingLogDTO log: awaitingLogs) {
-					saveLog(log);
+				for (AwaitingLog log: awaitingLogs) {
+					saveLog(log.log, log.blobId, log.blobs);
 				}
 				awaitingLogs.clear();
 			}
-			saveLog(recordingLogDTO);
+			saveLog(recordingLogDTO, blobId, encodedEvents.blobs);
 		}
 
+        blobId += encodedEvents.blobs.size();
 		recordingLogDTO = null;
 	}
 
-	private void saveLog(RecordingLogDTO log) {
-		recordingService.recordLog(log, new AsyncCallback<Void>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				GWT.log("Unable to save recording log", caught);
-			}
+	private void saveLog(RecordingLogDTO log, long blobId, List<String> blobs) {
 
-			@Override
-			public void onSuccess(Void result) {}
-		});
+        log.setSessionId(this.recordingSession.getId());
+
+        AsyncCallback<Void> asyncCallback = new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                GWT.log("Unable to save recording log", caught);
+            }
+
+            @Override
+            public void onSuccess(Void result) {
+            }
+        };
+
+        if (blobs.size() == 0) {
+            recordingService.recordLog(log, asyncCallback);
+        } else {
+            recordingService.recordLog(log, blobId, blobs, asyncCallback);
+        }
 	}
-
 }

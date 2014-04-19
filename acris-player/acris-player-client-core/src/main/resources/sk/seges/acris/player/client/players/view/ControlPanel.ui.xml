@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <ui:with field="res" type="sk.seges.acris.player.client.players.view.ResourceBundle"/>
+
+    <g:HTMLPanel styleName="{res.css.controlPanel}">
+        <g:HTMLPanel>
+            <g:Button ui:field="playButton" styleName="{res.css.playButton}"/>
+            <g:Button ui:field="pauseButton" styleName="{res.css.pauseButton}"/>
+            <g:Button ui:field="nextButton" styleName="{res.css.nextButton}"/>
+        </g:HTMLPanel>
+        <g:HTMLPanel>
+            <g:ListBox ui:field="playListBox" styleName="{res.css.playlist}" visibleItemCount="5"/>
+        </g:HTMLPanel>
+        <g:HTMLPanel>
+            <g:Label ui:field="timerLabel" styleName="{res.css.timer}"/>
+        </g:HTMLPanel>
+        <div style="clear:both"></div>
+    </g:HTMLPanel>
+</ui:UiBinder>

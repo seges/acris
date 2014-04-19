@@ -43,5 +43,5 @@
 			<artifactId>acris-security-dto</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-	</dependencies>
+    </dependencies>
 </project>

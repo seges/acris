@@ -1,12 +1,9 @@
 package sk.seges.acris.recorder.client.event.generic;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import sk.seges.acris.recorder.client.tools.CacheMap;
-
-import java.util.Date;
 
 public abstract class AbstractGenericTargetableEvent extends AbstractGenericEvent implements HasTargetEvent {
 
@@ -48,8 +45,6 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 
         this.cacheMap = cacheMap;
 
-        long start = new Date().getTime();
-
 		Element target = DOM.eventGetTarget(event);
 
 		if (target != null) { // handle click events
@@ -64,21 +59,17 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 				if (target != null) {
 					initTarget(target, event);
 				} else {
-					target = DOM.eventGetToElement(event); // Mouse over event
-															// to
+					target = DOM.eventGetToElement(event); // Mouse over event to
 
 					if (target != null) {
 						initTarget(target, event);
 					} else {
-						// TODO
+                        // Unable to identify element, so it'll be null
 					}
 				}
 			}
 		}
-
-        GWT.log("" + (new Date().getTime() - start));
 	}
-
 
 	protected void initTarget(Element target, Event event) {
 		this.relatedTargetXpath = cacheMap.resolveXpath(target);

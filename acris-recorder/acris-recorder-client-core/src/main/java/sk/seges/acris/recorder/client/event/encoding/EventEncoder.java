@@ -27,6 +27,12 @@ public class EventEncoder {
 			return encodeEvent(EMouseEventFields.values(), mouseEventBeanWrapper);
 		}
 
+        if (event instanceof ClipboardEvent) {
+            ClipboardEventBeanWrapper clipboardEventBeanWrapper = new ClipboardEventBeanWrapper();
+            clipboardEventBeanWrapper.setBeanWrapperContent((ClipboardEvent)event);
+            return encodeEvent(EClipboardEventFields.values(), clipboardEventBeanWrapper);
+        }
+
 		throw new IllegalArgumentException("Unknown event type");
 	}
 
