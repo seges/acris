@@ -124,7 +124,7 @@ public class ImageLoaderFactory {
 			case BMP:
 				return new DefaultImageLoader(file);
 			case PNG:
-				return new DefaultImageLoader(file);
+				return new RGBImageLoader(file);
 			case TIFF:
 				{
 					ImageDecoder imageDecoder = TiffImageLoader.getImageDecoder(file);

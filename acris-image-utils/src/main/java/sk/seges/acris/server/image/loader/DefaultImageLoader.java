@@ -24,7 +24,8 @@ public class DefaultImageLoader extends ImageLoader {
 			return null;
 		}
 
-		BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(),
+				BufferedImage.TYPE_INT_RGB);
 		newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, null);
 
 		return newBufferedImage;
