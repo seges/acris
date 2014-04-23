@@ -1,5 +1,9 @@
 package sk.seges.acris.security.server.spring.login;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,24 +12,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
+
 import sk.seges.acris.security.server.core.login.api.LoginService;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.server.session.SessionIDGenerator;
 import sk.seges.acris.security.server.spring.context.AcrisSecurityContext;
+import sk.seges.acris.security.server.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.server.spring.user_management.service.provider.WebIdUsernamePasswordAuthenticationToken;
 import sk.seges.acris.security.server.util.LoggedUserRole;
 import sk.seges.acris.security.shared.exception.AuthenticationException;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.exception.ServerException;
-import sk.seges.acris.security.server.session.ClientSession;
-import sk.seges.acris.security.server.session.SessionIDGenerator;
-import sk.seges.acris.security.server.spring.user_management.domain.SpringUserAdapter;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Standard user service using {@link UserPasswordLoginToken} to log the user in
@@ -112,6 +113,7 @@ public class SpringLoginService implements LoginService {
 	 */
 	public void postProcessLogin(ClientSession clientSession, LoginToken token) {}
 
+	@Override
 	@Transactional
 	public ClientSession login(LoginToken token) throws ServerException {
 		Authentication auth;
