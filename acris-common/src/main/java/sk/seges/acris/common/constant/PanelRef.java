@@ -28,10 +28,6 @@ public interface PanelRef {
 	public static final String BLOG_POSTS_PANEL = "blogPostsPanel";
 	public static final String SEARCH_PANEL = "searchPanel";
 	public static final String NEWS_PANEL = "newsPanel";
-	public static final String PAGER_LAYOUT = "layout.pager";
-	public static final String WIZARD_LAYOUT = "layout.wizard";
-	public static final String FLOW_WIZARD_STEP_LAYOUT = "layout.wizard.step.flow";
-	public static final String BOUND_FIELD_LAYOUT = "layout.boundField";
 	public static final String SLIDER_FLOW_LAYOUT_PANEL = "sliderFlowLP";
 	public static final String DIALOG_LAYOUT_PANEL = "dialogLP";
 	public static final String SITE_LOGIN_PANEL = "siteLoginP";

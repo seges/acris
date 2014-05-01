@@ -9,7 +9,7 @@
 		class="org.gwtwidgets.server.spring.GWTHandler">
 		<property name="mappings">
 			<map>
-				<entry key="/orderService" value-ref="RPCOrderService" />
+				<entry key="/customerService" value-ref="RPCOrderService" />
 			</map>
 		</property>
 	</bean>
