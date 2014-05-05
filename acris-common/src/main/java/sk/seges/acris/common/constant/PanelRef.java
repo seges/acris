@@ -2,9 +2,10 @@ package sk.seges.acris.common.constant;
 
 
 public interface PanelRef {
-	
-	public static final String MENU_CHOCOLATE_PANEL = "menuChocolatePanel";
-	public static final String CHOCOLATE_PANEL = "chocolatePanel";
+
+	//No more used???
+	//public static final String MENU_CHOCOLATE_PANEL = "menuChocolatePanel";
+	//public static final String CHOCOLATE_PANEL = "chocolatePanel";
 
 	public static final String HTML_LAYOUT_PANEL = "htmlLP";
 	public static final String DYNAMIC_HTML_LAYOUT_PANEL = "dynHtmlLP";
@@ -29,10 +30,9 @@ public interface PanelRef {
 	public static final String SEARCH_PANEL = "searchPanel";
 	public static final String NEWS_PANEL = "newsPanel";
 	public static final String SLIDER_FLOW_LAYOUT_PANEL = "sliderFlowLP";
-	public static final String DIALOG_LAYOUT_PANEL = "dialogLP";
+	//public static final String DIALOG_LAYOUT_PANEL = "dialogLP";
 	public static final String SITE_LOGIN_PANEL = "siteLoginP";
-	public static final String DISCOUNT_TYPE_SELECTOR_LAYOUT = "discTypeLP";
-	
+
 	public static final String FORM_VALUES_LAYOUT = "formValuesLP";
 	public static final String GMAP_LAYOUT = "gMapLP";
 	

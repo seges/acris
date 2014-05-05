@@ -622,7 +622,6 @@
 						<disableClassMetadata>true</disableClassMetadata>
 						<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
 						<enableClosureCompiler>true</enableClosureCompiler>
-						<fragmentCount>10</fragmentCount>
 					</configuration>
 					<executions>
 						<execution>
