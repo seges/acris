@@ -608,7 +608,7 @@
 						<runTarget>${gwt.client.module}/${gwt.client.html}</runTarget>
 
 						<!-- style>DETAILED</style--><!-- use OBF for prod -->
-						<style>OBF</style>
+						<style>DETAILED</style>
 						<noServer>false</noServer>
 						<!--extraJvmArgs>-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 -Xmx1024M -Xss16M -Dfile.encoding=utf-8
 						</extraJvmArgs-->
