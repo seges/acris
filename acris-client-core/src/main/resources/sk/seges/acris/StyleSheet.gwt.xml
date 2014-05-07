@@ -16,12 +16,12 @@
 
 	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplIE6">
 		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
-		<when-property-is name="user.agent" value="ie6" />
-	</replace-with>
-
-	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplIE6">
-		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
-		<when-property-is name="user.agent" value="ie8" />
+        <any>
+            <when-property-is name="user.agent" value="ie6" />
+            <when-property-is name="user.agent" value="ie8" />
+            <when-property-is name="user.agent" value="ie9" />
+            <when-property-is name="user.agent" value="ie10" />
+        </any>
 	</replace-with>
 
 	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplMozilla">
