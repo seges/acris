@@ -7,14 +7,14 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import sk.seges.acris.core.client.annotation.BeanWrapper;
+import sk.seges.acris.recorder.client.common.Position;
 import sk.seges.acris.recorder.client.event.fields.EMouseEventFields;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEventWithFlags;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 @BeanWrapper
-public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
+public class MouseEvent extends AbstractGenericTargetableEventWithFlags implements HasAbsolutePosition {
 
-	protected int detail = 0;
 	protected int clientX;
 	protected int clientY;
 	protected int button;
@@ -23,18 +23,16 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 	
 	public static final String RELATIVE_INT_ATTRIBUTE = "relativeInt";
 
-	public static final String CLIENT_X_ATTRIBUTE = "clientX";
 	public static final String CLIENT_X_HI_ATTRIBUTE = "clientX_Hi";
 	public static final String CLIENT_X_LO_ATTRIBUTE = "clientX_Lo";
 
-	public static final String CLIENT_Y_ATTRIBUTE = "clientY";
 	public static final String CLIENT_Y_HI_ATTRIBUTE = "clientY_Hi";
 	public static final String CLIENT_Y_LO_ATTRIBUTE = "clientY_Lo";
 
 	public static final String BUTTON_ATTRIBUTE = "button";
 
-	public MouseEvent(CacheMap cacheMap) {
-        super(cacheMap);
+	public MouseEvent(ElementXpathCache elementXpathCache) {
+        super(elementXpathCache);
 	}
 
 	public static boolean isCorrectEvent(Event event) {
@@ -42,8 +40,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		return isCorrectEvent(type);
 	}
 	
-	public MouseEvent(CacheMap cacheMap, Event event) {
-		super(cacheMap, event);
+	public MouseEvent(ElementXpathCache elementXpathCache, Event event) {
+		super(elementXpathCache, event);
 
 		button = DOM.eventGetButton(event);
 
@@ -54,6 +52,8 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 			this.clientX = DOM.eventGetClientX(event);
 			this.clientY = DOM.eventGetClientY(event);
 		}
+
+        initPositions();
 	}
 
 	public int getClientX() {
@@ -64,22 +64,48 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		this.clientX = clientX;
 	}
 
-	public int getClientX_Lo() {
-		return getClientX() -
-				((getClientX() >> EMouseEventFields.EVENT_CLIENT_X_LO.getFieldDefinition().getLength())
-							  << EMouseEventFields.EVENT_CLIENT_X_LO.getFieldDefinition().getLength());
+    private int getNumber(int loValue, int hiValue, int length) {
+        int multiplier = 1;
+        if ((hiValue | (1 << (length - 1))) == hiValue) {
+            hiValue &= ~(1 << (length - 1));
+            multiplier = -1;
+        }
+
+        return (loValue | (hiValue << length)) * multiplier;
+    }
+
+    private int getNumber(int loValue, int hiValue) {
+        return loValue | hiValue;
+    }
+
+    private int getUnsignedNumberPart(int value, long andVal) {
+        return (int) (Math.abs(value) & andVal);
+    }
+
+    private int getSignedNumberPart(int value, int length) {
+        int result = Math.abs(value) >> length;
+
+        if (value < 0) {
+            result |= 1 << (length - 1);
+        }
+
+        return result;
+    }
+
+    public int getClientX_Lo() {
+        return getUnsignedNumberPart(getClientX(), X_LO_VAL);
 	}
 
 	public int getClientX_Hi() {
-		return getClientX() >> EMouseEventFields.EVENT_CLIENT_X_LO.getFieldDefinition().getLength();
-	}
+        return getSignedNumberPart(getClientX(), EMouseEventFields.EVENT_CLIENT_X_LO.getFieldDefinition().getLength());
+    }
 
 	public void setClientX_Hi(int clientX_Hi) {
-		this.clientX = getClientX_Lo() + (clientX_Hi << EMouseEventFields.EVENT_CLIENT_X_LO.getFieldDefinition().getLength());
+        this.clientX = getNumber(getClientX_Lo(), clientX_Hi, EMouseEventFields.EVENT_CLIENT_X_LO.getFieldDefinition().getLength());
 	}
 
 	public void setClientX_Lo(int clientX_Lo) {
-		this.clientX = getClientX_Hi() + clientX_Lo;
+		this.clientX = getNumber(clientX_Lo, getClientX_Hi());
 	}
 
 	public int getClientY() {
@@ -90,40 +116,39 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		this.clientY = clientY;
 	}
 
-	public int getClientY_Lo() {
-		return getClientY() -
-				((getClientY() >> EMouseEventFields.EVENT_CLIENT_Y_LO.getFieldDefinition().getLength())
-							   << EMouseEventFields.EVENT_CLIENT_Y_LO.getFieldDefinition().getLength());
-	}
+    private static final Long Y_LO_VAL = Long.valueOf(new String(new char[EMouseEventFields.EVENT_CLIENT_Y_LO.getFieldDefinition().getLength()]).replace("\0", "1"), 2);
+    private static final Long X_LO_VAL = Long.valueOf(new String(new char[EMouseEventFields.EVENT_CLIENT_X_LO.getFieldDefinition().getLength()]).replace("\0", "1"), 2);
 
-	public int getClientY_Hi() {
-		return getClientY() >> EMouseEventFields.EVENT_CLIENT_Y_LO.getFieldDefinition().getLength();
-	}
+    public int getClientY_Lo() {
+        return getUnsignedNumberPart(getClientY(), Y_LO_VAL);
+    }
 
-	public void setClientY_Hi(int clientY_Hi) {
-		this.clientY = getClientY_Lo() + (clientY_Hi << EMouseEventFields.EVENT_CLIENT_Y_LO.getFieldDefinition().getLength());
-	}
+    public int getClientY_Hi() {
+        return getSignedNumberPart(getClientY(), EMouseEventFields.EVENT_CLIENT_Y_LO.getFieldDefinition().getLength());
+    }
 
-	public void setClientY_Lo(int clientY_Lo) {
-		this.clientY = getClientY_Hi() + clientY_Lo;
-	}
+    public void setClientY_Hi(int clientY_Hi) {
+        this.clientY = getNumber(getClientY_Lo(), clientY_Hi, EMouseEventFields.EVENT_CLIENT_Y_LO.getFieldDefinition().getLength());
+    }
 
-    @Override
-	protected void initTarget(Element target, Event event) {
-		super.initTarget(target, event);
+    public void setClientY_Lo(int clientY_Lo) {
+        this.clientY = getNumber(clientY_Lo, getClientY_Hi());
+    }
+
+	protected void initPositions() {
 
 		if (this.relatedTargetXpath != null && this.relatedTargetXpath.length() > 0) {
-			int left = DOM.getAbsoluteLeft(target);
-			int top = DOM.getAbsoluteTop(target);
-	
-			relative = true;
-			this.clientX = this.clientX - left;
-			this.clientY = this.clientY - top;
+
+            Position position = elementXpathCache.getElementPosition(getElement(), true);
+
+			this.relative = true;
+			this.clientX = this.clientX - position.left;
+			this.clientY = this.clientY - position.top;
 		}
 	}
 
     public int getRelativeInt() {
-		return relative ? 1 : 0;
+		return this.relative ? 1 : 0;
 	}
 
 	public void setRelativeInt(int relative) {
@@ -156,7 +181,6 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + button;
-		result = prime * result + detail;
 		result = prime * result + clientX;
 		result = prime * result + clientY;
 		result = prime * result + (relative ? 1231 : 1237);
@@ -174,16 +198,10 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		MouseEvent other = (MouseEvent) obj;
 		if (button != other.button)
 			return false;
-		if (detail != other.detail)
-			return false;
 		if (clientX != other.clientX)
 			return false;
-		if (clientY != other.clientY)
-			return false;
-		if (relative != other.relative)
-			return false;
-		return true;
-	}
+        return clientY == other.clientY && relative == other.relative;
+    }
 
 	public int getButton()  {
 		return button;
@@ -201,21 +219,20 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 		if (this.relatedTargetXpath != null && this.relatedTargetXpath.length() > 0) {
 			relative = false;
 
-			prepareEvent();
-			
-			int left = DOM.getAbsoluteLeft(el);
-			int top = DOM.getAbsoluteTop(el);
-			
-			this.clientX = this.clientX + left;
-			this.clientY = this.clientY + top;
+            Position elementPosition = elementXpathCache.getElementPosition(getElement(), true);
+
+            this.clientX = this.clientX + elementPosition.left;
+			this.clientY = this.clientY + elementPosition.top;
 		}
 	}
-	
+
+    @Override
 	public int getAbsoluteClientX() {
 		recalculatePosition();
 		return clientX;
 	}
 
+    @Override
 	public int getAbsoluteClientY() {
 		recalculatePosition();
 		return clientY;
@@ -223,7 +240,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 
 	public NativeEvent createEvent(Element el) {
 		//TODO screenX, screenY
-		return Document.get().createMouseEvent(type, canBubble, cancelable, detail, 
+		return Document.get().createMouseEvent(type, canBubble, cancelable, 0,
 				0, 0, clientX, clientY, ctrlKey, altKey,
 				shiftKey, metaKey, button, el);
 	}
@@ -235,7 +252,7 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 				if (relatedTargetXpath != null && relatedTargetXpath.length() > 0) {
 					return type + " on " + relatedTargetXpath + " element";
 				} else {
-					return type + " to " + getAbsoluteClientX() + ", " + getAbsoluteClientY();
+					return type + " to " + getClientX() + ", " + getClientY();
 				}
 			} else {
 				String flags = "[CASM]" + (ctrlKey ? "true" : "false") + (altKey ? "true" : "false") +
@@ -245,22 +262,22 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags {
 				if (relatedTargetXpath != null && relatedTargetXpath.length() > 0) {
 					return type + " on " + relatedTargetXpath + " element" + ", " + flags;
 				} else {
-					return type + " to " + getAbsoluteClientX() + ", " + getAbsoluteClientY() + ", " + flags;
+					return type + " to " + getClientX() + ", " + getClientY() + ", " + flags;
 				}
 			}
 		} else {
 			if (!detailed) {
-				return "MouseEvent [elementRelativeClientX=" + clientX
-				+ ", elementRelativeClientY=" + clientY
-				+ ", relatedTargetXpath="
+				return "MouseEvent [x=" + getClientX()
+				+ ", y=" + getClientY()
+				+ ", xpath="
 				+ relatedTargetXpath + ", type=" + type + "]";
 			} else {
-				return "MouseEvent [altKey=" + altKey + ", button=" + button
+				return "MouseEvent [alt=" + altKey + ", button=" + button
 					+ ", canBubble=" + canBubble + ", cancelable=" + cancelable
-					+ ", ctrlKey=" + ctrlKey + ", detail=" + detail
-					+ ", elementRelativeClientX=" + clientX
-					+ ", elementRelativeClientY=" + clientY
-					+ ", metaKey=" + metaKey + ", relatedTargetXpath="
+					+ ", ctrlKey=" + ctrlKey
+					+ ", x=" + getClientX()
+					+ ", y=" + getClientY()
+					+ ", metaKey=" + metaKey + ", xpath="
 					+ relatedTargetXpath + ", shiftKey=" + shiftKey + ", type=" + type + "]";
 			}
 		}

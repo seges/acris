@@ -16,7 +16,7 @@ import sk.seges.acris.recorder.client.event.KeyboardEvent;
 import sk.seges.acris.recorder.client.event.MouseEvent;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.listener.RecorderListener;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class AbstractRecorder {
 	
 	private final NativePreviewHandler recordHandler;
-    protected final CacheMap cacheMap;
+    protected final ElementXpathCache elementXpathCache;
 
 	private HandlerRegistration handlerRegistration;
 	
@@ -32,8 +32,8 @@ public abstract class AbstractRecorder {
 
 	private RecorderLevel recorderLevel = RecorderLevel.ALL;
 
-	public AbstractRecorder(CacheMap cacheMap) {
-        this.cacheMap = cacheMap;
+	public AbstractRecorder(ElementXpathCache elementXpathCache) {
+        this.elementXpathCache = elementXpathCache;
 		this.recordHandler = contructRecorder();
 	}
 
@@ -76,7 +76,24 @@ public abstract class AbstractRecorder {
         });
     }-*/;
 
-    protected native JsArrayNumber getSelection(Element el) /*-{
+    private String getValue(Element element) {
+        return DOM.getElementProperty((com.google.gwt.user.client.Element) element, "value");
+    }
+
+    @SuppressWarnings("unused")
+    private void handleChange(Element element, String value, int start, int end, int type) {
+        String newValue = getValue(element);
+
+        ClipboardEvent clipboardEvent = new ClipboardEvent((com.google.gwt.user.client.Element) element, type, elementXpathCache);
+        clipboardEvent.setSelectionStart(start);
+        clipboardEvent.setSelectionEnd(end);
+        if (type == ClipboardEvent.PASTE_EVENT_TYPE) {
+            clipboardEvent.setClipboardText(newValue.substring(start, newValue.length() - value.length() + end));
+        }
+        fireListeners(clipboardEvent);
+    }
+
+    public static native JsArrayNumber getSelection(com.google.gwt.dom.client.Element el) /*-{
         var start = 0, end = 0, normalizedValue, range,
             textInputRange, len, endRange;
 
@@ -117,23 +134,6 @@ public abstract class AbstractRecorder {
         }
         return [ start, end] ;
     }-*/;
-
-    private String getValue(Element element) {
-        return DOM.getElementProperty((com.google.gwt.user.client.Element) element, "value");
-    }
-
-    @SuppressWarnings("unused")
-    private void handleChange(Element element, String value, int start, int end, int type) {
-        String newValue = getValue(element);
-
-        ClipboardEvent clipboardEvent = new ClipboardEvent((com.google.gwt.user.client.Element) element, type, cacheMap);
-        clipboardEvent.setSelectionStart(start);
-        clipboardEvent.setSelectionEnd(end);
-        if (type == ClipboardEvent.PASTE_EVENT_TYPE) {
-            clipboardEvent.setClipboardText(newValue.substring(start, newValue.length() - value.length() + end));
-        }
-        fireListeners(clipboardEvent);
-    }
 
     @SuppressWarnings("unused")
     private void handleCut(Element element) {
@@ -189,13 +189,13 @@ public abstract class AbstractRecorder {
                     }
 
                     if (MouseEvent.isCorrectEvent(gwtevent)) {
-                        MouseEvent mouseEvent = new MouseEvent(cacheMap, gwtevent);
+                        MouseEvent mouseEvent = new MouseEvent(elementXpathCache, gwtevent);
                         fireListeners(mouseEvent);
                     } else if (KeyboardEvent.isCorrectEvent(gwtevent)) {
-                        KeyboardEvent keyboardEvent = new KeyboardEvent(cacheMap, gwtevent);
+                        KeyboardEvent keyboardEvent = new KeyboardEvent(elementXpathCache, gwtevent);
                         fireListeners(keyboardEvent);
                     } else if (HtmlEvent.isCorrectEvent(gwtevent)) {
-                        HtmlEvent htmlEvent = new HtmlEvent(cacheMap, gwtevent);
+                        HtmlEvent htmlEvent = new HtmlEvent(elementXpathCache, gwtevent);
                         fireListeners(htmlEvent);
                     }
                 }

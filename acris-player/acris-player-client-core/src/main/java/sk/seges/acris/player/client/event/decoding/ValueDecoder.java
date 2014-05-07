@@ -1,5 +1,7 @@
 package sk.seges.acris.player.client.event.decoding;
 
+import sk.seges.acris.recorder.client.event.fields.EMouseEventFields;
+
 public class ValueDecoder {
 
 	public static int readValueFromPosition(int position, long encodedEvent, int length) {
@@ -15,10 +17,6 @@ public class ValueDecoder {
 		long decalculatedValue = encodedEvent - clearValue;
 		int result = (int) (decalculatedValue >> intPosition);
 
-		if (result < 0) {
-			result *= -1;
-		}
-		
 		return result;
 	}
 

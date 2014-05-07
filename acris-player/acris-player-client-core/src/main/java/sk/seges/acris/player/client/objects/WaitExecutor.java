@@ -8,7 +8,9 @@ import sk.seges.acris.player.client.objects.common.EventProperties;
 
 public class WaitExecutor implements EventMirror {
 
-	@Override
+    private int speed;
+
+    @Override
 	public void initialize() {}
 
 	@Override
@@ -34,4 +36,14 @@ public class WaitExecutor implements EventMirror {
 
 	@Override
 	public void destroy() {}
+
+    @Override
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    @Override
+    public int getSpeed() {
+        return speed;
+    }
 }

@@ -4,26 +4,44 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
+import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 
 public class ControlEvent extends GwtEvent<ControlEvent.ControlEventHandler> {
 
     public enum ControlType {
-        PLAY, PAUSE, NEXT;
+        PLAY, PAUSE, NEXT, PREVIOUS, SPECIFIC, STOP;
     }
 
 	private static final Type<ControlEventHandler> TYPE = new Type<ControlEventHandler>();
 
 	private ControlType type;
 
+    private int eventIndex;
+    private AbstractGenericEvent event;
+
 	public ControlEvent(ControlType type) {
 		this.type = type;
 	}
+
+    public ControlEvent(ControlType type, AbstractGenericEvent event, int eventIndex) {
+        this.type = type;
+        this.event = event;
+        this.eventIndex = eventIndex;
+    }
 
     public ControlType getControlType() {
         return type;
     }
 
-	public static void fire(HasHandlers source, ControlType type) {
+    public AbstractGenericEvent getEvent() {
+        return event;
+    }
+
+    public int getEventIndex() {
+        return eventIndex;
+    }
+
+    public static void fire(HasHandlers source, ControlType type) {
 		source.fireEvent(new ControlEvent(type));
 	}
 

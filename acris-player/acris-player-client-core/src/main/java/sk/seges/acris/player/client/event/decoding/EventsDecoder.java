@@ -8,7 +8,7 @@ import sk.seges.acris.recorder.client.event.EventType;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
 import sk.seges.acris.recorder.client.recorder.support.EventsEncoder;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class EventsDecoder {
 
-	private final CacheMap cacheMap;
+	private final ElementXpathCache elementXpathCache;
     private final IPlayerRemoteServiceAsync playerService;
     private final Long sessionId;
 
@@ -42,8 +42,8 @@ public class EventsDecoder {
 
     }
 
-	public EventsDecoder(IPlayerRemoteServiceAsync playerService, Long sessionId, CacheMap cacheMap) {
-		this.cacheMap = cacheMap;
+	public EventsDecoder(IPlayerRemoteServiceAsync playerService, Long sessionId, ElementXpathCache elementXpathCache) {
+		this.elementXpathCache = elementXpathCache;
         this.playerService = playerService;
         this.sessionId = sessionId;
 	}
@@ -73,12 +73,14 @@ public class EventsDecoder {
 		int lastIndex = 0;
 		int length = 0;
 
-        EventDecoder eventDecoder = new EventDecoder(cacheMap);
+        EventDecoder eventDecoder = new EventDecoder(elementXpathCache);
 
         EventType eventType = null;
         String additionalInfo = null;
 
         ClipboardContentCallback clipboardCallback = null;
+
+        int j = 0;
 
 		for (int i = 0; i < isoBytes.length; i++) {
 
@@ -93,7 +95,7 @@ public class EventsDecoder {
                 lastIndex = i;
 				length = 0;
 
-                eventType = EventDecoder.getEventType(EventDecoder.longFromByteArray(eventBytes));
+                eventType = EventDecoder.getEventType(eventBytes);
             }
 
 			if (isoBytes[i] == EventsEncoder.DELIMITER) {
@@ -175,11 +177,12 @@ public class EventsDecoder {
 						continue;
 					}
 
+                    j++;
                     if (clipboardCallback != null) {
                         clipboardCallback.setEvent((ClipboardEvent) abstractGenericEvent);
                     }
 
-					abstractGenericEvent.setDeltaTime((int)EventDecoder.longFromByteArray(subarray(isoBytes, lastIndex, i - 1)));
+                    abstractGenericEvent.setDeltaTime(Integer.valueOf(encodedEvents.substring(lastIndex + 1, i - 1)));
 
 					if (abstractGenericEvent != null && abstractGenericEvent instanceof AbstractGenericTargetableEvent && targetXpath.length() > 0) {
 						((AbstractGenericTargetableEvent)abstractGenericEvent).setRelatedTargetXpath(targetXpath);

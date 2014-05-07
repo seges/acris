@@ -9,12 +9,12 @@ import sk.seges.acris.player.client.objects.utils.PositionUtils;
 
 public class MouseMoveAction implements EventExecutionAction {
 
-	public ObjectAnimation createAnimation(EventProperties cursorProperties, final CompleteHandler completeHandler) {
+	public ObjectAnimation createAnimation(EventProperties eventProperties, final CompleteHandler completeHandler) {
 
-		EventMirror eventMirror = cursorProperties.getEventMirror();
+		EventMirror eventMirror = eventProperties.getEventMirror();
 		AnimationObject animationObject = (AnimationObject) eventMirror;
 
-		return new ObjectAnimation(animationObject, cursorProperties, PositionUtils.calculateDuration(cursorProperties, animationObject.getSpeed())) {
+		return new ObjectAnimation(animationObject, eventProperties, PositionUtils.calculateDuration(eventProperties, animationObject.getSpeed())) {
 			@Override
 			protected void onComplete() {
 				super.onComplete();

@@ -66,7 +66,8 @@ public class EventEncoder {
 			FieldDefinition fieldDefinition = eventField.getFieldDefinition();
 
 			if (fieldDefinition.getField() == null) {
-				result = ValueEncoder.writeValueOnPosition(eventField.getValue(), fieldDefinition.getPosition(), result);
+				result = ValueEncoder.writeValueOnPosition(eventField.getValue(), fieldDefinition.getPosition(),
+                        fieldDefinition.getLength(), result);
 			} else {
 
 				Object propertyResult = beanWrapper.getBeanAttribute(fieldDefinition.getField());
@@ -76,10 +77,11 @@ public class EventEncoder {
 							+ fieldDefinition.getField() + "' in " + beanWrapper.getBeanWrapperContent().getClass().getName().toString());
 				}
 
-				result = ValueEncoder.writeValueOnPosition(((Integer) propertyResult).longValue(), fieldDefinition.getPosition(), result);
+				result = ValueEncoder.writeValueOnPosition(((Integer) propertyResult).longValue(), fieldDefinition.getPosition(),
+                        fieldDefinition.getLength(), result);
 			}
 		}
-		
+
 		return longToByteArray(result);
 	}
 }

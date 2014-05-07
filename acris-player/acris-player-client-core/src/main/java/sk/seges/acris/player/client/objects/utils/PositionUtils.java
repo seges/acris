@@ -7,9 +7,11 @@ import sk.seges.acris.recorder.client.event.MouseEvent;
 public class PositionUtils {
 
 	public static int calculateDuration(EventProperties properties, int speed) {
-		double time = calculateDistance(properties)/speed;
-		time *= 1000;
-		return (int)(time+0.5);
+        if (speed == AnimationObject.NO_SPEED) {
+            return 0;
+        }
+		double time = calculateDistance(properties) / speed;
+		return (int)(time * 1000);
 	}
 
 	public static double calculateDistance(EventProperties properties) {

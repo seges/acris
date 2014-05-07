@@ -1,7 +1,7 @@
 package sk.seges.acris.player.client.model;
 
 import sk.seges.acris.recorder.client.event.MouseEvent;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 public class MouseTestEvent extends MouseEvent {
 
@@ -10,8 +10,7 @@ public class MouseTestEvent extends MouseEvent {
 	}
 
 	public MouseTestEvent(String type, int clientX, int clientY) {
-        super(new CacheMap(30));
-		this.detail = 0;
+        super(new ElementXpathCache(30));
 		this.clientX = clientX;
 		this.clientY = clientY;
 		this.button = 1;

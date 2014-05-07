@@ -3,11 +3,12 @@ package sk.seges.acris.recorder.client.tools;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
+import sk.seges.acris.recorder.client.common.Position;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CacheMap {
+public class ElementXpathCache {
 
 	private static final long serialVersionUID = -3807095271203050282L;
 
@@ -15,21 +16,29 @@ public class CacheMap {
 
     protected LinkedHashMap<String, Element> xpathsMap;
     protected LinkedHashMap<Element, String> elementsMap;
+    protected Map<Element, Position> elementPositions;
 
-	public CacheMap(int maxCapacity) {
+	public ElementXpathCache(int maxCapacity) {
 		this.maxCapacity = maxCapacity;
 
         xpathsMap = new LinkedHashMap<String, Element>() {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, Element> eldest) {
-                return size() > CacheMap.this.maxCapacity;
+                return size() > ElementXpathCache.this.maxCapacity;
             }
         };
 
         elementsMap = new LinkedHashMap<Element, String>() {
             @Override
             protected boolean removeEldestEntry(Map.Entry<Element, String> eldest) {
-                return size() > CacheMap.this.maxCapacity;
+                return size() > ElementXpathCache.this.maxCapacity;
+            }
+        };
+
+        elementPositions = new LinkedHashMap<Element, Position>() {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<Element, Position> eldest) {
+                return size() > ElementXpathCache.this.maxCapacity;
             }
         };
 	}
@@ -49,6 +58,54 @@ public class CacheMap {
         xpathsMap.put(xpath, element);
 
         return xpath;
+    }
+
+    private int getSubPixelAbsoluteLeft(com.google.gwt.dom.client.Element elem) {
+        int left = 0;
+        com.google.gwt.dom.client.Element curr = elem;
+        while (curr.getOffsetParent() != null) {
+            left -= curr.getScrollLeft();
+            curr = curr.getParentElement();
+        }
+        while (elem != null) {
+            left += elem.getOffsetLeft();
+            elem = elem.getOffsetParent();
+        }
+        return left;
+    };
+
+    private int getSubPixelAbsoluteTop(com.google.gwt.dom.client.Element elem) {
+        int top = 0;
+        com.google.gwt.dom.client.Element curr = elem;
+        while (curr.getOffsetParent() != null) {
+            top -= curr.getScrollTop();
+            curr = curr.getParentElement();
+        }
+        while (elem != null) {
+            top += elem.getOffsetTop();
+            elem = elem.getOffsetParent();
+        }
+        return top;
+    };
+
+    public Position getElementPosition(Element element, boolean cacheable) {
+
+        Position position = elementPositions.get(element);
+
+        if (position != null && cacheable) {
+            return position;
+        }
+
+        int left = getSubPixelAbsoluteLeft(element);
+        int top = getSubPixelAbsoluteTop(element);
+
+        position = new Position(left, top);
+
+        if (cacheable) {
+            elementPositions.put(element, position);
+        }
+
+        return position;
     }
 
     protected final boolean containsMoreDigits(String s){

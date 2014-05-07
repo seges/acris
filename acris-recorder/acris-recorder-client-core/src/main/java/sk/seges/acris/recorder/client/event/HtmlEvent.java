@@ -8,17 +8,17 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEvent;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 @BeanWrapper
 public class HtmlEvent extends AbstractGenericTargetableEvent {
 
-	public HtmlEvent(CacheMap cacheMap) {
-        super(cacheMap);
+	public HtmlEvent(ElementXpathCache elementXpathCache) {
+        super(elementXpathCache);
 	}
 	
-	public HtmlEvent(CacheMap cacheMap, Event event) {
-		super(cacheMap, event);
+	public HtmlEvent(ElementXpathCache elementXpathCache, Event event) {
+		super(elementXpathCache, event);
 	}
 
 	public static boolean isCorrectEvent(Event event) {

@@ -10,7 +10,7 @@ import sk.seges.acris.player.client.players.TutorialPlayer;
 import sk.seges.acris.player.shared.service.IPlayerRemoteService;
 import sk.seges.acris.player.shared.service.IPlayerRemoteServiceAsync;
 import sk.seges.acris.player.shared.service.ServicesDefinition;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
 
 /**
@@ -18,7 +18,7 @@ import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
  */
 public class SessionPlayer {
 
-    private final CacheMap cacheMap = new CacheMap(50);
+    private final ElementXpathCache elementXpathCache = new ElementXpathCache(50);
     private IPlayerRemoteServiceAsync playerService;
 
     private IPlayerRemoteServiceAsync ensureService() {
@@ -47,7 +47,7 @@ public class SessionPlayer {
     }
 
     public void replaySession(RecordingSessionDTO result) {
-        SessionPresenter presenter = new SessionPresenter(new TutorialPlayer(true, cacheMap), ensureService(), cacheMap);
+        SessionPresenter presenter = new SessionPresenter(new TutorialPlayer(true), ensureService(), elementXpathCache);
         SimplePanel panel = new SimplePanel();
         presenter.start(panel, new SimpleEventBus());
         presenter.initialize(result);

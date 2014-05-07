@@ -1,0 +1,36 @@
+<module>
+	<inherits name="com.google.gwt.core.Core" />
+	<inherits name="com.google.gwt.user.UserAgent" />
+
+	<source path='dom' />
+
+	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplMozilla">
+		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
+		<when-property-is name="user.agent" value="opera" />
+	</replace-with>
+
+	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplMozilla">
+		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
+		<when-property-is name="user.agent" value="safari" />
+	</replace-with>
+
+	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplIE6">
+		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
+		<when-property-is name="user.agent" value="ie6" />
+	</replace-with>
+
+	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplIE6">
+		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
+		<when-property-is name="user.agent" value="ie8" />
+	</replace-with>
+
+	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplMozilla">
+		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
+		<when-property-is name="user.agent" value="gecko1_8" />
+	</replace-with>
+
+	<replace-with class="sk.seges.acris.dom.impl.CSSStyleRuleImplMozilla">
+		<when-type-is class="sk.seges.acris.dom.impl.CSSStyleRuleImpl" />
+		<when-property-is name="user.agent" value="gecko" />
+	</replace-with>
+</module> 

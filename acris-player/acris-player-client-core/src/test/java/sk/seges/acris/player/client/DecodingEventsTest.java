@@ -9,7 +9,7 @@ import sk.seges.acris.player.client.model.KeyboardTestEvent;
 import sk.seges.acris.player.client.model.MouseTestEvent;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.recorder.support.EventsEncoder;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -42,7 +42,7 @@ public class DecodingEventsTest {
 		mouseTestEvent.setRelatedTargetXpath("//test");
 		events.add(mouseTestEvent);
 
-        List<AbstractGenericEvent> decodedEvents = new EventsDecoder(null, 10L, new CacheMap(30)).decodeEvents(new EventsEncoder().encodeEvents(events, 0).data);
+        List<AbstractGenericEvent> decodedEvents = new EventsDecoder(null, 10L, new ElementXpathCache(30)).decodeEvents(new EventsEncoder().encodeEvents(events, 0).data);
 
 		Assert.assertEquals("Events count does not match", events.size(), decodedEvents.size());
 

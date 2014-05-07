@@ -34,6 +34,10 @@ public class Playlist {
         valueChangeHandlers.add(handler);
     }
 
+    public void setCurrent(int current) {
+        this.current = current;
+    }
+
     public void selectNextEvent() {
         for (ValueChangeHandler handler: valueChangeHandlers) {
             handler.onValueChanged(current, current+1);

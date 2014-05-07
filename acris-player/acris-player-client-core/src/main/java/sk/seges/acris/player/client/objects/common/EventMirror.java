@@ -12,4 +12,8 @@ public interface EventMirror {
 	IsWidget getWidget();
 
 	void destroy();
+
+    void setSpeed(int speed);
+
+    int getSpeed();
 }

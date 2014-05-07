@@ -8,7 +8,19 @@ import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 
 public class EventExecutor implements EventMirror {
 
-	@Override
+    protected int speed;
+
+    @Override
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    @Override
+    public int getSpeed() {
+        return speed;
+    }
+
+    @Override
 	public void initialize() {}
 
 	@Override

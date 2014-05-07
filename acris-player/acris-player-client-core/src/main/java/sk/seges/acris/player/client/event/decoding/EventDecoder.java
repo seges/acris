@@ -4,48 +4,48 @@ import sk.seges.acris.core.client.bean.BeanWrapper;
 import sk.seges.acris.recorder.client.event.*;
 import sk.seges.acris.recorder.client.event.fields.*;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 public class EventDecoder {
 
-    private final CacheMap cacheMap;
+    private final ElementXpathCache elementXpathCache;
 
-    public EventDecoder(CacheMap cacheMap) {
-        this.cacheMap = cacheMap;
+    public EventDecoder(ElementXpathCache elementXpathCache) {
+        this.elementXpathCache = elementXpathCache;
     }
 
 	public AbstractGenericEvent decodeEvent(byte[] event) throws IllegalArgumentException {
 
-		long value = longFromByteArray(event);
+        EventType eventType = getEventType(event);
 
-		EventType eventType = getEventType(value);
+        long value = longFromByteArray(event);
 
 		AbstractGenericEvent abstractGenericEvent = null;
 
 		if (eventType.equals(EventType.HtmlEvent)) {
 
-			abstractGenericEvent = new HtmlEvent(cacheMap);
+			abstractGenericEvent = new HtmlEvent(elementXpathCache);
 
 			HtmlEventBeanWrapper htmlEventBeanWrapper = new HtmlEventBeanWrapper();
 			htmlEventBeanWrapper.setBeanWrapperContent((HtmlEvent) abstractGenericEvent);
 
 			decodeEvent(EHtmlEventFields.values(), value, htmlEventBeanWrapper);
 		} else if (eventType.equals(EventType.KeyboardEvent)) {
-			abstractGenericEvent = new KeyboardEvent(cacheMap);
+			abstractGenericEvent = new KeyboardEvent(elementXpathCache);
 
 			KeyboardEventBeanWrapper keyboardEventBeanWrapper = new KeyboardEventBeanWrapper();
 			keyboardEventBeanWrapper.setBeanWrapperContent((KeyboardEvent) abstractGenericEvent);
 
 			decodeEvent(EKeyboardEventFields.values(), value, keyboardEventBeanWrapper);
 		} else if (eventType.equals(EventType.MouseEvent)) {
-			abstractGenericEvent = new MouseEvent(cacheMap);
+			abstractGenericEvent = new MouseEvent(elementXpathCache);
 
 			MouseEventBeanWrapper mouseEventBeanWrapper = new MouseEventBeanWrapper();
 			mouseEventBeanWrapper.setBeanWrapperContent((MouseEvent)abstractGenericEvent);
 
 			decodeEvent(EMouseEventFields.values(), value, mouseEventBeanWrapper);
 		} else if (eventType.equals(EventType.CustomEvent)) {
-            abstractGenericEvent = new ClipboardEvent(cacheMap);
+            abstractGenericEvent = new ClipboardEvent(elementXpathCache);
 
             //Currently supporting only clipboard events. When more comes, it should be distinguished
             //using 3rd and 17th bit
@@ -80,9 +80,20 @@ public class EventDecoder {
 		}
 	}
 
-	public static EventType getEventType(long event) {
+    private static int getBit(byte val, int position) {
+        return (val & (1 << position)) > 0 ? 1 : 0;
+    }
 
-		int type = ValueDecoder.readValueFromPosition(IRecordableEvent.ENCODE_EVENT_TYPE_SHIFT, event, 2);
+	public static EventType getEventType(byte[] event) {
+
+        int length = getBit(event[0], 7);
+
+        int type = getBit(event[0], 6);
+        if (length == 0) {
+            type = type << 1 | getBit(event[0], 5);
+        }
+
+		//int type = ValueDecoder.readValueFromPosition(IRecordableEvent.ENCODE_EVENT_TYPE_SHIFT, event, 2);
 
 		EventType eventType = EventType.getEvent(type);
 

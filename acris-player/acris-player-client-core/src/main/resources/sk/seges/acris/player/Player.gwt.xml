@@ -10,6 +10,7 @@
 	<!-- Acris dependencies -->
 	<inherits name='sk.seges.acris.player.RPC'/>
 	<inherits name='sk.seges.acris.Widgets'/>
+    <inherits name='sk.seges.acris.StyleSheet'/>
 	<inherits name='sk.seges.acris.recorder.Recorder'/>
 
 	<inherits name='com.google.gwt.query.Query'/>

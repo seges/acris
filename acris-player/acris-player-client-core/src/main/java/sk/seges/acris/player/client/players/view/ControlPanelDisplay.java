@@ -9,5 +9,13 @@ import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
  */
 public interface ControlPanelDisplay extends ControlEvent.HasControlEventHandlers {
 
+    public enum PanelPosition {
+        TOP, BOTTOM;
+    };
+
     void showPlaylist(Playlist playlist);
+
+    void showStatus(ControlEvent.ControlType status);
+
+    void setPosition(PanelPosition position);
 }

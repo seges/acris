@@ -3,12 +3,12 @@ package sk.seges.acris.recorder.client.event.generic;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 public abstract class AbstractGenericTargetableEvent extends AbstractGenericEvent implements HasTargetEvent {
 
 	protected String relatedTargetXpath;
-	private final CacheMap cacheMap;
+	protected final ElementXpathCache elementXpathCache;
 
 	@Override
 	public int hashCode() {
@@ -36,30 +36,34 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 		return true;
 	}
 
-	protected AbstractGenericTargetableEvent(CacheMap cacheMap) {
-        this.cacheMap = cacheMap;
+	protected AbstractGenericTargetableEvent(ElementXpathCache elementXpathCache) {
+        this.elementXpathCache = elementXpathCache;
 	}
 	
-	protected AbstractGenericTargetableEvent(CacheMap cacheMap, Event event) {
+	protected AbstractGenericTargetableEvent(ElementXpathCache elementXpathCache, Event event) {
 		super(event);
 
-        this.cacheMap = cacheMap;
+        this.elementXpathCache = elementXpathCache;
 
 		Element target = DOM.eventGetTarget(event);
 
-		if (target != null) { // handle click events
+		if (target != null) {
+		    // handle click events
 			initTarget(target, event);
 		} else {
-			target = DOM.eventGetCurrentTarget(event); // Last event
+            // Last event
+            target = DOM.eventGetCurrentTarget(event);
 			if (target != null) {
 				initTarget(target, event);
 			} else {
-				target = DOM.eventGetFromElement(event); // Mouse out event from
+                // Mouse out event from
+				target = DOM.eventGetFromElement(event);
 
 				if (target != null) {
 					initTarget(target, event);
 				} else {
-					target = DOM.eventGetToElement(event); // Mouse over event to
+                    // Mouse over event to
+					target = DOM.eventGetToElement(event);
 
 					if (target != null) {
 						initTarget(target, event);
@@ -72,7 +76,7 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 	}
 
 	protected void initTarget(Element target, Event event) {
-		this.relatedTargetXpath = cacheMap.resolveXpath(target);
+		this.relatedTargetXpath = elementXpathCache.resolveXpath(target);
 	}
 
 	public boolean hasTarget() {
@@ -95,7 +99,7 @@ public abstract class AbstractGenericTargetableEvent extends AbstractGenericEven
 	@Override
 	public void prepareEvent() {
 		if (el == null) {
-			el = cacheMap.resolveElement(getRelatedTargetXpath());
+			el = elementXpathCache.resolveElement(getRelatedTargetXpath());
 		}
 	}
 }

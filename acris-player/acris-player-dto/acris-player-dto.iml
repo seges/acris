@@ -54,7 +54,7 @@
     <orderEntry type="module" module-name="corpis-model-domain-configurations" />
     <orderEntry type="module" module-name="acris-recorder-dto" />
     <orderEntry type="module" module-name="acris-recorder-jpa" />
-    <orderEntry type="library" name="Maven: com.google.gwt:gwt-user:2.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.gwt:gwt-user:2.6.0" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:1.0.0.GA" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:sources:1.0.0.GA" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
@@ -66,7 +66,7 @@
     <orderEntry type="module" module-name="corpis-lang-api" />
     <orderEntry type="module" module-name="acris-recorder-scaffold-model" />
     <orderEntry type="module" module-name="corpis-user-domain-model" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.5.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.google.gwt:gwt-servlet:2.6.0" level="project" />
     <orderEntry type="module" module-name="acris-security-hibernate" />
     <orderEntry type="module" module-name="acris-security-jpa" />
     <orderEntry type="module" module-name="acris-security-scaffold-model" />

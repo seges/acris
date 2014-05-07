@@ -10,7 +10,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import sk.seges.acris.core.client.annotation.BeanWrapper;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericTargetableEventWithFlags;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 @BeanWrapper
 public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
@@ -21,12 +21,12 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	protected int keyCode;
 	protected int charCode;
 
-	public KeyboardEvent(CacheMap cacheMap) {
-        super(cacheMap);
+	public KeyboardEvent(ElementXpathCache elementXpathCache) {
+        super(elementXpathCache);
 	}
 	
-	public KeyboardEvent(CacheMap cacheMap, Event event) {
-		super(cacheMap, event);
+	public KeyboardEvent(ElementXpathCache elementXpathCache, Event event) {
+		super(elementXpathCache, event);
 		
 		keyCode = DOM.eventGetKeyCode(event);
 		charCode = getCharCode(event);

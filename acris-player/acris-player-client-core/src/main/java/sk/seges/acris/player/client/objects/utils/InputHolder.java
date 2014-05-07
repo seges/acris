@@ -15,6 +15,8 @@ public class InputHolder {
 
     private Map<Integer, Boolean> mouseButtons = new HashMap<Integer, Boolean>();
 
+    private SelectionUtils.SelectionHolder selectionStart;
+
     private boolean shiftKey;
     private boolean altKey;
     private boolean metaKey;
@@ -31,6 +33,22 @@ public class InputHolder {
 
     public void setMouseButton(int button, boolean value) {
         mouseButtons.put(button, value);
+    }
+
+    public SelectionUtils.SelectionHolder getSelectionStart() {
+        return selectionStart;
+    }
+
+    public void setSelectionStart(SelectionUtils.SelectionHolder selectionStart) {
+        this.selectionStart = selectionStart;
+    }
+
+    public boolean isButtonPressed(int button) {
+        if (mouseButtons.containsKey(button)) {
+            return mouseButtons.get(button);
+        }
+
+        return false;
     }
 
     public List<Integer> getPressedMouseButtons() {
@@ -98,7 +116,4 @@ public class InputHolder {
             $doc.activeElement.blur();
         }
     }-*/;
-
-    //Select text
-    //http://stackoverflow.com/questions/646611/programmatically-selecting-partial-text-in-an-input-field
 }

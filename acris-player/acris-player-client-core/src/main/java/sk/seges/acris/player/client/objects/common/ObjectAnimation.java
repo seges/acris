@@ -1,7 +1,9 @@
 package sk.seges.acris.player.client.objects.common;
 
 import com.google.gwt.animation.client.Animation;
-import sk.seges.acris.recorder.client.event.MouseEvent;
+import com.google.gwt.core.client.Scheduler;
+import sk.seges.acris.recorder.client.common.Position;
+import sk.seges.acris.recorder.client.event.HasAbsolutePosition;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 
 public class ObjectAnimation extends Animation {
@@ -25,22 +27,16 @@ public class ObjectAnimation extends Animation {
 
 		AbstractGenericEvent event = eventProperties.getEvent();
 
-		if (event instanceof MouseEvent) {
+		if (event instanceof HasAbsolutePosition) {
 
-			MouseEvent mouseEvent = (MouseEvent)event;
+            HasAbsolutePosition positionEvent = (HasAbsolutePosition)event;
 
-			AnimationObject.Position position;
+			Position position = new Position(positionEvent.getAbsoluteClientX(), positionEvent.getAbsoluteClientY());
 
-//			if (mouseEvent.getRelatedTargetXpath() != null) {
-//				position = animationObject.getElementAbsolutePosition(animationObject.getElement(mouseEvent.getRelatedTargetXpath()), true);
-//			} else {
-				position = new AnimationObject.Position(mouseEvent.getClientX(), mouseEvent.getClientY());
-//			}
+			final int currentPositionX = (int)((position.left - animationObject.getObjectPositionX()) * progress) + animationObject.getObjectPositionX();
+			final int currentPositionY = (int)((position.top - animationObject.getObjectPositionY()) * progress) + animationObject.getObjectPositionY();
 
-			int currentPositionX = (int)((position.left - animationObject.getObjectPositionX()) * progress) + animationObject.getObjectPositionX();
-			int currentPositionY = (int)((position.top - animationObject.getObjectPositionY()) * progress) + animationObject.getObjectPositionY();
-
-			animationObject.setPosition(currentPositionX, currentPositionY);
+            animationObject.setPosition(currentPositionX, currentPositionY);
 		}
 	}
 }

@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
 import sk.seges.acris.recorder.client.listener.RecorderListener;
 import sk.seges.acris.recorder.client.session.RecordingSessionProvider;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 import sk.seges.acris.recorder.shared.model.dto.RecordingLogDTO;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
 import sk.seges.acris.recorder.shared.params.RecordingSessionDetailParams;
@@ -24,17 +24,17 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 	protected final RecorderMode mode;
 	
 	protected final List<AbstractGenericEvent> recorderEvents = new ArrayList<AbstractGenericEvent>();
-	private final EventsEncoder eventsEncoder = new EventsEncoder();
+    protected final EventsEncoder eventsEncoder = new EventsEncoder();
 
-	private IRecordingRemoteServiceAsync recordingService;
+    protected IRecordingRemoteServiceAsync recordingService;
 
-	private RecordingSessionDTO recordingSession;
-	private RecordingLogDTO recordingLogDTO;
+    protected RecordingSessionDTO recordingSession;
+    protected RecordingLogDTO recordingLogDTO;
 
-	private boolean sessionStarted = false;
-	private List<AwaitingLog> awaitingLogs = new ArrayList<AwaitingLog>();
-	private long lastTime;
-    private long blobId = 0;
+    protected boolean sessionStarted = false;
+    protected List<AwaitingLog> awaitingLogs = new ArrayList<AwaitingLog>();
+    protected long lastTime;
+    protected long blobId = 0;
 
     public class AwaitingLog {
         RecordingLogDTO log;
@@ -49,8 +49,8 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
         }
     }
 
-	protected Recorder(CacheMap cacheMap, RecorderMode mode) {
-		super(cacheMap);
+	protected Recorder(ElementXpathCache elementXpathCache, RecorderMode mode) {
+		super(elementXpathCache);
 		this.mode = mode;
 
 		this.recordingSession = new RecordingSessionDTO();
@@ -78,7 +78,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		initializeService();
 	}
 
-    private void startSession() {
+    protected void startSession() {
         recordingService.startSession(recordingSession, new AsyncCallback<RecordingSessionDTO>() {
 
             @Override
@@ -172,7 +172,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
 		recordingLogDTO = null;
 	}
 
-	private void saveLog(RecordingLogDTO log, long blobId, List<String> blobs) {
+	protected void saveLog(RecordingLogDTO log, long blobId, List<String> blobs) {
 
         log.setSessionId(this.recordingSession.getId());
 

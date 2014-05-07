@@ -8,7 +8,7 @@ public class FieldDefinition implements Serializable {
 	private int length;
 	private String field;
 
-	public String getField() {
+    public String getField() {
 		return field;
 	}
 

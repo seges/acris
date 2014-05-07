@@ -35,23 +35,23 @@ public enum EMouseEventFields implements IEventFields {
 		fieldDefinition.setField(field);
 	}
 
-	private EMouseEventFields(EMouseEventFields mouseEventFields, int length, String field) {
-		fieldDefinition = new FieldDefinition();
-		fieldDefinition.setPosition(mouseEventFields.getFieldDefinition().getPosition() + mouseEventFields.getFieldDefinition().getLength());
-		fieldDefinition.setLength(length);
-		fieldDefinition.setField(field);
-	}
+    private EMouseEventFields(EMouseEventFields mouseEventFields, int length, String field) {
+        fieldDefinition = new FieldDefinition();
+        fieldDefinition.setPosition(mouseEventFields.getFieldDefinition().getPosition() + mouseEventFields.getFieldDefinition().getLength());
+        fieldDefinition.setLength(length);
+        fieldDefinition.setField(field);
+    }
 
 	private EMouseEventFields(EMouseEventFields mouseEventFields, int length) {
 		this(mouseEventFields, length, Long.valueOf(new String(new char[length]).replace("\0", "1"), 2));
 	}
 
-	private EMouseEventFields(EMouseEventFields mouseEventFields, int length, long value) {
-		fieldDefinition = new FieldDefinition();
-		fieldDefinition.setPosition(mouseEventFields.getFieldDefinition().getPosition() + mouseEventFields.getFieldDefinition().getLength());
-		fieldDefinition.setLength(length);
-		this.value = value;
-	}
+    private EMouseEventFields(EMouseEventFields mouseEventFields, int length, long value) {
+        fieldDefinition = new FieldDefinition();
+        fieldDefinition.setPosition(mouseEventFields.getFieldDefinition().getPosition() + mouseEventFields.getFieldDefinition().getLength());
+        fieldDefinition.setLength(length);
+        this.value = value;
+    }
 
 	public long getValue() {
 		return value;

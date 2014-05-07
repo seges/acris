@@ -11,7 +11,7 @@ import sk.seges.acris.player.client.players.Player;
 import sk.seges.acris.player.client.playlist.Playlist;
 import sk.seges.acris.player.shared.service.IPlayerRemoteServiceAsync;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 import sk.seges.acris.recorder.shared.model.dto.RecordingLogDTO;
 import sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO;
 import sk.seges.sesam.shared.model.dto.PageDTO;
@@ -24,12 +24,12 @@ public class SessionPresenter extends AbstractActivity {
 
 	private final Player player;
 	private final IPlayerRemoteServiceAsync playerService;
-    private final CacheMap cacheMap;
+    private final ElementXpathCache elementXpathCache;
 
-	public SessionPresenter(Player player, IPlayerRemoteServiceAsync playerService, CacheMap cacheMap) {
+	public SessionPresenter(Player player, IPlayerRemoteServiceAsync playerService, ElementXpathCache elementXpathCache) {
 		this.player = player;
 		this.playerService = playerService;
-        this.cacheMap = cacheMap;
+        this.elementXpathCache = elementXpathCache;
 	}
 
 	@Override
@@ -46,17 +46,17 @@ public class SessionPresenter extends AbstractActivity {
 
 			@Override
 			public void onSuccess(PagedResultDTO<List<RecordingLogDTO>> result) {
-				Playlist playlist = new Playlist();
+                Playlist playlist = new Playlist();
 
-                EventsDecoder eventsDecoder = new EventsDecoder(playerService, recordingSessionDTO.getId(), cacheMap);
+                EventsDecoder eventsDecoder = new EventsDecoder(playerService, recordingSessionDTO.getId(), elementXpathCache);
 
                 for (RecordingLogDTO recordingLog: result.getResult()) {
 					String encodedEvents = recordingLog.getEvent();
 
                     try {
-						List<AbstractGenericEvent> abstractGenericEvents = eventsDecoder.decodeEvents(encodedEvents);
+                        List<AbstractGenericEvent> abstractGenericEvents = eventsDecoder.decodeEvents(encodedEvents);
 
-						for (AbstractGenericEvent event: abstractGenericEvents) {
+                        for (AbstractGenericEvent event: abstractGenericEvents) {
 							playlist.addEvent(event);
 						}
 
@@ -65,10 +65,11 @@ public class SessionPresenter extends AbstractActivity {
 					}
 				}
 
-				//player.showPlaylist();
-				player.setPlaylist(playlist);
+ 				//player.showPlaylist();
+
+                player.setPlaylist(playlist);
                 player.showControlPanel(RootPanel.get());
-			}
+            }
 		});
 	}
 }

@@ -2,14 +2,14 @@ package sk.seges.acris.recorder.client.model;
 
 import com.google.gwt.user.client.Element;
 import sk.seges.acris.recorder.client.event.ClipboardEvent;
-import sk.seges.acris.recorder.client.tools.CacheMap;
+import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 
 /**
  * Created by PeterSimun on 17.4.2014.
  */
 public class ClipboardTestEvent extends ClipboardEvent {
 
-    public static class MockCacheMap extends CacheMap {
+    public static class MockCacheMap extends ElementXpathCache {
 
         private final Element element;
         private final String xpath;
