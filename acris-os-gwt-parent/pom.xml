@@ -619,7 +619,7 @@
 						<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
 						<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</webappDirectory>
 						<disableCastChecking>true</disableCastChecking>
-						<disableClassMetadata>true</disableClassMetadata>
+						<disableClassMetadata>false</disableClassMetadata>
 						<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
 						<enableClosureCompiler>true</enableClosureCompiler>
 					</configuration>
