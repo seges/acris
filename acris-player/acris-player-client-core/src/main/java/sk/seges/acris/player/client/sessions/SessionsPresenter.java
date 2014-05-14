@@ -55,7 +55,7 @@ public class SessionsPresenter extends AbstractActivity implements PlayEvent.Pla
 		PageDTO page = new PageDTO(0, 10);
         List<SortInfo> sortables = new ArrayList<SortInfo>();
         sortables.add(new SortInfo(false, RecordingSessionDTO.SESSION_TIME));
-        page.setProjectableResult(RecordingSessionDTO.class.getName());
+        page.setProjectableResult("sk.seges.acris.recorder.shared.model.dto.RecordingSessionDTO");
         page.setSortables(sortables);
 
         ConjunctionDTO conjunction = FilterDTO.conjunction();
