@@ -27,6 +27,7 @@ public interface WebParams extends ContentParameters {
 	public static final String IMPORT_IMAGE_URL = "importImageUrl";
 	public static final String REDIRECT_LOGIN_URL = "redirectLoginUrl";
 	public static final String COUNT_OF_DAYS_TO_PAY_INVOICE = "countOfDaysToPayInvoice";
+	public static final String IMAGE_SIZES = "imageSizes";	
 	
 	String[] getOfflinePostProcessorInactive();
 
@@ -119,4 +120,8 @@ public interface WebParams extends ContentParameters {
 	Integer getCountOfDaysToPayInvoice();
 
 	void setCountOfDaysToPayInvoice(Integer countOfDaysToPayInvoice);
+	
+	ImageSize[] getImageSizes();
+	
+	void setImageSizes(ImageSize[] imageSizes);
 }

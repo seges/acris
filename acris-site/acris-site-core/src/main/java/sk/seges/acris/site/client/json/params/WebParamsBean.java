@@ -36,6 +36,8 @@ public class WebParamsBean implements WebParams {
 	private String importImageUrl;
 	private String redirectLoginURL;
 	private Integer countOfDaysToPayInvoice;
+	
+	private ImageSize[] imageSizes;
 
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -265,5 +267,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setCountOfDaysToPayInvoice(Integer countOfDaysToPayInvoice) {
 		this.countOfDaysToPayInvoice = countOfDaysToPayInvoice;
+	}
+
+	@Override
+	public ImageSize[] getImageSizes() {		
+		return imageSizes;
+	}
+
+	@Override
+	public void setImageSizes(ImageSize[] imageSizes) {
+		this.imageSizes = imageSizes;		
 	}
 }

@@ -3,6 +3,8 @@ package sk.seges.acris.site.client.json.params;
 import sk.seges.acris.site.client.json.BaseJSONModel;
 import sk.seges.acris.site.client.json.JSONModel;
 
+import com.google.gwt.core.client.JsArray;
+
 public class WebParamsJSO extends BaseJSONModel implements WebParams {
 
 	private static final long serialVersionUID = -728318142595408871L;
@@ -241,5 +243,21 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	@Override
 	public void setCountOfDaysToPayInvoice(Integer countOfDaysToPayInvoice) {
 		data.set(COUNT_OF_DAYS_TO_PAY_INVOICE, countOfDaysToPayInvoice);
+	}
+
+	@Override
+	public ImageSize[] getImageSizes() {
+		JsArray<JSONModel> imageSizes = data.getArray(IMAGE_SIZES);
+		ImageSize[] res = new ImageSize[imageSizes.length()];
+		for (int i=0; i < imageSizes.length(); i++) {
+			JSONModel col = imageSizes.get(i);
+			res[i] = new ImageSizeJSO(col);
+		}
+		return res;
+	}
+
+	@Override
+	public void setImageSizes(ImageSize[] imageSizes) {
+		data.set(IMAGE_SIZES, JSONModel.arrayFromJson(imageSizes.toString()));
 	}
 }
