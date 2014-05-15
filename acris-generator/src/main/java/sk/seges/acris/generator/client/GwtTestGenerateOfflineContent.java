@@ -93,6 +93,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		delayTestFinish(GENERATOR_TIMEOUT);
 
+        Log.error("Test");
+
 		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 
 			@Override
