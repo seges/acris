@@ -25,6 +25,11 @@ public class ImageLoaderFactory {
 			boolean hasExtension(String fileExtension) {
 				return fileExtension.toLowerCase().equals("jpg") || fileExtension.toLowerCase().equals("jpeg");
 			}
+
+			@Override
+			public String getDefaultExtension() {
+				return "jpg";
+			}
 		}, 
 		BMP {
 			@Override
@@ -35,6 +40,11 @@ public class ImageLoaderFactory {
 			@Override
 			boolean hasExtension(String fileExtension) {
 				return fileExtension.toLowerCase().equals("bmp");
+			}
+
+			@Override
+			public String getDefaultExtension() {
+				return "bmp";
 			}
 		}, 
 		PNG {
@@ -47,6 +57,11 @@ public class ImageLoaderFactory {
 			boolean hasExtension(String fileExtension) {
 				return fileExtension.toLowerCase().equals("png");
 			}
+
+			@Override
+			public String getDefaultExtension() {
+				return "png";
+			}
 		}, 
 		TIFF {
 			@Override
@@ -58,10 +73,18 @@ public class ImageLoaderFactory {
 			boolean hasExtension(String fileExtension) {
 				return fileExtension.toLowerCase().equals("tif") || fileExtension.toLowerCase().equals("tiff");
 			}
+
+			@Override
+			public String getDefaultExtension() {
+				return "tif";
+			}
 		};
 		
 		abstract boolean appliedTo(String formatName);
+
 		abstract boolean hasExtension(String fileExtension);
+
+		public abstract String getDefaultExtension();
 
 		public static ImageFormat fromImageExtension(String fileName) {
 			String extensionName = fileName.substring(fileName.lastIndexOf(".") + 1).trim();
