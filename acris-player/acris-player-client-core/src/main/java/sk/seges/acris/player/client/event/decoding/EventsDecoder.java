@@ -157,12 +157,15 @@ public class EventsDecoder {
                         } else {
                             targetXpath = "";
                         }
-						try {
-							int targetXpathIndex = Integer.valueOf(targetXpath);
-							targetXpath = targetXpaths.get(targetXpathIndex);
-						} catch (NumberFormatException ex) {
-							targetXpaths.add(targetXpath);
-						}
+
+                        if (targetXpath != null && targetXpath.length() > 0) {
+                            try {
+                                int targetXpathIndex = Integer.valueOf(targetXpath);
+                                targetXpath = targetXpaths.get(targetXpathIndex);
+                            } catch (NumberFormatException ex) {
+                                targetXpaths.add(targetXpath);
+                            }
+                        }
 					}
 
 					lastIndex = i;
@@ -182,7 +185,12 @@ public class EventsDecoder {
                         clipboardCallback.setEvent((ClipboardEvent) abstractGenericEvent);
                     }
 
-                    abstractGenericEvent.setDeltaTime(Integer.valueOf(encodedEvents.substring(lastIndex + 1, i - 1)));
+                    try {
+                        abstractGenericEvent.setDeltaTime(Integer.valueOf(encodedEvents.substring(lastIndex + 1, i - 1)));
+                    } catch (NumberFormatException ex) {
+                        //strange, but it occurs in production
+                        abstractGenericEvent.setDeltaTime(0);
+                    }
 
 					if (abstractGenericEvent != null && abstractGenericEvent instanceof AbstractGenericTargetableEvent && targetXpath.length() > 0) {
 						((AbstractGenericTargetableEvent)abstractGenericEvent).setRelatedTargetXpath(targetXpath);

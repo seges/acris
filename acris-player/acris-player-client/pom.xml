@@ -15,44 +15,6 @@
 		<gwt.client.module>sk.seges.acris.Play</gwt.client.module>
 	</properties>
 
-  	<build>
-		<outputDirectory>${project.build.directory}/${artifactId}-${project.version}/WEB-INF/classes</outputDirectory>  	
-
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<configuration>
-					<compileReport>false</compileReport>
-					<logLevel>INFO</logLevel>
-					<port>8890</port>
-					<module>${gwt.client.module}</module>
-
-					<style>OBF</style>
-					<noServer>false</noServer>
-					<extraJvmArgs> -Dfile.encoding=utf-8</extraJvmArgs>
-					<debugPort>8990</debugPort>
-					<mergedWebXml>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF/web.xml</mergedWebXml>
-					<hostedWebapp>${project.build.directory}/${project.artifactId}-${project.version}</hostedWebapp>
-					<webappDirectory>${project.build.directory}/${project.artifactId}-${project.version}/</webappDirectory>
-					<disableCastChecking>true</disableCastChecking>
-					<disableClassMetadata>true</disableClassMetadata>
-					<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
-					<enableClosureCompiler>true</enableClosureCompiler>
-					<fragmentCount>10</fragmentCount>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>mergewebxml</goal>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
 	<dependencies>
 		<!-- Acris dependencies -->
 		<dependency>

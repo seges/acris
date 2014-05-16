@@ -601,7 +601,7 @@
 					<configuration>
 						<compileReport>false</compileReport>
 						<gwtVersion>${gwt.version}</gwtVersion>
-						<localWorkers>1</localWorkers>
+						<localWorkers>2</localWorkers>
 						<logLevel>INFO</logLevel>
 						<port>8890</port>
 						<module>${gwt.client.module}</module>
