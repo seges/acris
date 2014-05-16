@@ -70,6 +70,6 @@ public class RecordingService implements RecordingLocalService {
 
 	@Override
 	public List<RecordingSessionData> getRecordingSessions() {
-		return recordingSessionDao.findAll(Page.ALL_RESULTS_PAGE).getResult();
+		return recordingSessionDao.findAll(new Page(0, Page.ALL_RESULTS)).getResult();
 	}
 }
