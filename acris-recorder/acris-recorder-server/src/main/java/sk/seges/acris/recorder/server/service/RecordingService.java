@@ -16,14 +16,14 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 @LocalService
-public class RecordingService implements RecordingLocalService {
+public class RecordingService implements IRecordingRemoteServiceLocal {
 
-	private final RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao;
-	private final RecordingLogDaoBase<RecordingLogData> recordingLogDao;
+    private final RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao;
+    private final RecordingLogDaoBase<RecordingLogData> recordingLogDao;
     private final RecordingBlobDaoBase<RecordingBlobData> recordingBlobDao;
     private final BlobHelper blobHelper;
 
-	public RecordingService(RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao, RecordingLogDaoBase<RecordingLogData> recordingLogDao,
+    public RecordingService(RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao, RecordingLogDaoBase<RecordingLogData> recordingLogDao,
                             RecordingBlobDaoBase<RecordingBlobData> recordingBlobDao, BlobHelper blobHelper) {
 
         assert recordingSessionDao != null;
@@ -32,16 +32,16 @@ public class RecordingService implements RecordingLocalService {
         assert blobHelper != null;
 
         this.blobHelper = blobHelper;
-		this.recordingSessionDao = recordingSessionDao;
-		this.recordingLogDao = recordingLogDao;
+        this.recordingSessionDao = recordingSessionDao;
+        this.recordingLogDao = recordingLogDao;
         this.recordingBlobDao = recordingBlobDao;
-	}
+    }
 
-	@Override
-	@Transactional
-	public void recordLog(RecordingLogData recordingLog) {
-		recordingLogDao.persist(recordingLog);
-	}
+    @Override
+    @Transactional
+    public void recordLog(RecordingLogData recordingLog) {
+        recordingLogDao.persist(recordingLog);
+    }
 
     @Override
     @Transactional
@@ -49,7 +49,7 @@ public class RecordingService implements RecordingLocalService {
 
         int i = 0;
 
-        for (String blob: blobs) {
+        for (String blob : blobs) {
             RecordingBlobData recordingBlob = recordingBlobDao.getEntityInstance();
             recordingBlob.setId(new JpaRecordingBlobPk());
             recordingBlob.getId().setSessionId(recordingLog.getSession().getId());
@@ -63,13 +63,8 @@ public class RecordingService implements RecordingLocalService {
     }
 
     @Override
-	@Transactional
-	public RecordingSessionData startSession(RecordingSessionData session) {
-		return recordingSessionDao.persist(session);
-	}
-
-	@Override
-	public List<RecordingSessionData> getRecordingSessions() {
-		return recordingSessionDao.findAll(new Page(0, Page.ALL_RESULTS)).getResult();
-	}
+    @Transactional
+    public RecordingSessionData startSession(RecordingSessionData session) {
+        return recordingSessionDao.persist(session);
+    }
 }

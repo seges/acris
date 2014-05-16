@@ -10,9 +10,7 @@ import sk.seges.acris.recorder.server.domain.jpa.dao.hibernate.HibernateJpaRecor
 import sk.seges.acris.recorder.server.model.data.RecordingBlobData;
 import sk.seges.acris.recorder.server.model.data.RecordingLogData;
 import sk.seges.acris.recorder.server.model.data.RecordingSessionData;
-import sk.seges.acris.recorder.server.rest.RecordingResource;
 import sk.seges.acris.recorder.server.service.IRecordingRemoteServiceLocal;
-import sk.seges.acris.recorder.server.service.RecordingLocalService;
 import sk.seges.acris.recorder.server.service.RecordingService;
 import sk.seges.acris.recorder.server.service.RecordingServiceConverter;
 import sk.seges.acris.recorder.server.util.BlobHelper;
@@ -55,7 +53,7 @@ public class RecordingSpringConfiguration {
     }
 
     @Bean
-	public RecordingLocalService recordingLocalService(RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao,
+	public IRecordingRemoteServiceLocal recordingLocalService(RecordingSessionDaoBase<RecordingSessionData> recordingSessionDao,
                                                        RecordingLogDaoBase<RecordingLogData> recordingLogDao,
                                                        RecordingBlobDaoBase<RecordingBlobData> recordingBlobDao,
                                                        BlobHelper blobHelper) {
@@ -65,10 +63,5 @@ public class RecordingSpringConfiguration {
 	@Bean
 	public IRecordingRemoteService recordingRemoteService(IRecordingRemoteServiceLocal iRecordingRemoteServiceLocalService, AbstractContextualConverterProvider converterProviderContext) {
 		return new RecordingServiceConverter(iRecordingRemoteServiceLocalService, converterProviderContext, entityManager);
-	}
-
-	@Bean
-	public RecordingResource recordingResource(RecordingLocalService recordingLocalService) {
-		return new RecordingResource(recordingLocalService);
 	}
 }
