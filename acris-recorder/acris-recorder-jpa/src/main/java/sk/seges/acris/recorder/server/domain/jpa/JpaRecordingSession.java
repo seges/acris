@@ -1,5 +1,7 @@
 package sk.seges.acris.recorder.server.domain.jpa;
 
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Immutable;
 import sk.seges.acris.recorder.server.model.base.RecordingSessionBase;
 import sk.seges.acris.recorder.server.model.data.RecordingLogData;
 import sk.seges.acris.security.server.core.user_management.domain.hibernate.HibernateGenericUser;
@@ -14,7 +16,19 @@ import java.util.List;
 @SequenceGenerator(name = "seqRecordingSession", sequenceName = "seq_recording_session", initialValue = 1)
 public class JpaRecordingSession extends RecordingSessionBase {
 
-	@Id
+    private int logsCount;
+
+    @Override
+    @Formula("(select count(*) from recording_log where recording_log.session_id = id)")
+    public int getLogsCount() {
+        return logsCount;
+    }
+
+    public void setLogsCount(int logsCount) {
+        this.logsCount = logsCount;
+    }
+
+    @Id
 	@Override
 	@GeneratedValue(generator = "seqRecordingSession")
 	public Long getId() {

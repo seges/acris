@@ -1,6 +1,7 @@
 package sk.seges.acris.player.server.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import sk.seges.acris.recorder.RecordingSession;
 import sk.seges.acris.recorder.server.dao.api.RecordingBlobDaoBase;
 import sk.seges.acris.recorder.server.dao.api.RecordingLogDaoBase;
 import sk.seges.acris.recorder.server.dao.api.RecordingSessionDaoBase;
@@ -71,6 +72,8 @@ public class PlayerService implements IPlayerRemoteServiceLocal {
 
 	@Override
 	public PagedResult<List<RecordingSessionData>> getSessions(Page page) {
-		return recordingSessionDao.findAll(page);
+        Criterion criterion = Filter.gt("logsCount", 0);
+        page.setFilterable(criterion);
+        return recordingSessionDao.findAll(page);
 	}
 }

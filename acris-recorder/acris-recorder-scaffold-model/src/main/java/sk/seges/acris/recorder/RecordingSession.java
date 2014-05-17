@@ -6,6 +6,7 @@ import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.corpis.shared.domain.HasLanguage;
 import sk.seges.corpis.shared.domain.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
+import sk.seges.sesam.pap.model.annotation.ReadOnly;
 
 import java.util.Date;
 import java.util.List;
@@ -19,5 +20,6 @@ public interface RecordingSession extends IMutableDomainObject<Long>, HasWebId, 
 
 	String sessionInfo();
 	List<RecordingLog> auditLogs();
+    @ReadOnly int getLogsCount();
 	UserData user();
 }
