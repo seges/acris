@@ -103,14 +103,20 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 				Triple<Button, Integer, ClickHandler> footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
 				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, footerButton);
 			} else if (column instanceof DynamicColumnDefinitionWithFooterWidget) {
-				List<Pair<Widget, ClickHandler>> footerWidget = ((DynamicColumnDefinitionWithFooterWidget)column).getFooterWidget();
-				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), columnIndex, valuesLoader, footerWidget);	
+				DynamicColumnDefinitionWithFooterWidget footerWidgetColumn = (DynamicColumnDefinitionWithFooterWidget) column;
+				List<Pair<Widget, ClickHandler>> footerWidget = footerWidgetColumn.getFooterWidget();
+				Integer colSpan = 1;
+				if (footerWidgetColumn.getColSpan() != null) {
+					colSpan = footerWidgetColumn.getColSpan();
+				}
+				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), columnIndex, valuesLoader, footerWidget, colSpan);
 			} else {
 				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, null);
 			}
 		}
 	}
 	
+	@Override
 	public void addCheckboxColumn(int width, Triple<Button, Integer, ClickHandler> footerButton) {
 		super.addCheckboxColumn(width, footerButton);
 		checkboxColumnAdded = true;

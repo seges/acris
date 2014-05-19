@@ -12,4 +12,8 @@ public interface DynamicColumnDefinitionWithFooterWidget extends DynamicColumDef
 	public List<Pair<Widget, ClickHandler>> getFooterWidget();
 
 	public void setFooterWidget(List<Pair<Widget, ClickHandler>> footerWidget);
+
+	public Integer getColSpan();
+
+	public void setColSpan(Integer colSpan);
 }
