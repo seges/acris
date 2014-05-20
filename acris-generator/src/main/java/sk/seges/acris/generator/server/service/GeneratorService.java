@@ -1,7 +1,25 @@
 package sk.seges.acris.generator.server.service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.server.domain.TokenPersistentDataProvider;
@@ -16,21 +34,12 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
-import sk.seges.sesam.dao.*;
+import sk.seges.sesam.dao.Criterion;
+import sk.seges.sesam.dao.Disjunction;
+import sk.seges.sesam.dao.Junction;
+import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.dao.SimpleExpression;
 import sk.seges.sesam.pap.service.annotation.LocalService;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Peter Simun (simun@seges.sk)

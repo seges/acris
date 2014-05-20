@@ -49,12 +49,25 @@ public class WebSettingsService implements IWebSettingsServiceLocal {
 	
 	@Override
 	public WebSettingsData getWebSettings(String webId) {
+		return loadWebSettings(webId, true);
+	}
+	
+	@Override
+	public WebSettingsData findWebSettings(String webId) {
+		return loadWebSettings(webId, false);
+	}
+	
+	private WebSettingsData loadWebSettings(String webId, boolean createDefault) {
 		Page page = new Page(0, 1);
 		// TODO: switch to @BeanWrapper
 		page.setFilterable(Filter.eq(HasWebId.WEB_ID).setValue(webId));
 		List<? extends WebSettingsData> result = webSettingsDao.findAll(page).getResult();
 		if (result.size() == 0) {
-			return createDefaultSettings(webId);
+			if (createDefault) {
+				return createDefaultSettings(webId);
+			} else {
+				return null;
+			}
 		}
 		
 		WebSettingsData webSettings = result.get(0);
