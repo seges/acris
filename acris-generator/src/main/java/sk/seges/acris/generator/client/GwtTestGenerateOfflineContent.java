@@ -22,7 +22,7 @@ import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 import sk.seges.acris.shared.model.dto.WebSettingsDTO;
 import sk.seges.acris.site.client.json.JSONModel;
-import sk.seges.acris.site.shared.service.IWebSettingsServiceAsync;
+import sk.seges.acris.site.shared.service.IWebSettingsRemoteServiceAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -50,7 +50,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 	private OperationTimer timer;
 	protected IGeneratorServiceAsync generatorService;
-	protected IWebSettingsServiceAsync webSettingsService;
+	protected IWebSettingsRemoteServiceAsync webSettingsService;
 	protected OfflineClientWebParams offlineWebParams;
 	
 	private static final boolean PERFORMANCE_MONITOR = true;
@@ -80,7 +80,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	protected abstract EntryPoint getEntryPoint(String webId, String lang, String webAlias);
 
 	protected abstract IGeneratorServiceAsync getGeneratorService();
-	protected abstract IWebSettingsServiceAsync getWebSettingsService();
+	protected abstract IWebSettingsRemoteServiceAsync getWebSettingsService();
 
 	/**
 	 * Parse a URL and return a map of query parameters. If a parameter is supplied without =value, it will be defined

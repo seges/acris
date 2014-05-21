@@ -18,7 +18,8 @@ import sk.seges.sesam.pap.service.annotation.LocalService;
 
 @LocalService
 public class SpringWebSettingsService extends WebSettingsService {
-
+	private static final long serialVersionUID = -1499646050173442838L;
+	
 	public SpringWebSettingsService(IWebSettingsDao<WebSettingsData> webSettings, ICountryService countryService) {
 		super(webSettings, countryService);
 	}

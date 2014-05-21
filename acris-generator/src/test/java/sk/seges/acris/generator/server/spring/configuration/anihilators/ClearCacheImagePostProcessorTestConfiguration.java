@@ -12,11 +12,11 @@ import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfi
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
 import sk.seges.acris.site.server.domain.api.ContentData;
-import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.NocacheScriptWebSettingsBuilder;
 import sk.seges.acris.site.shared.domain.mock.MockContent;
+import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
 
 @Import({WebSettingsServiceConfiguration.class, OfflineSettingsConfiguration.class})
 public class ClearCacheImagePostProcessorTestConfiguration {
@@ -35,7 +35,7 @@ public class ClearCacheImagePostProcessorTestConfiguration {
 	}
 
 	@Bean
-	public IWebSettingsServiceLocal webSettingsService() {
+	public IWebSettingsLocalService webSettingsService() {
 		return new MockWebSettingsService(webSettingsBuilder(), MockTestConfiguration.MOCK_ANALYTICS_SCRIPT, false);
 	}
 
