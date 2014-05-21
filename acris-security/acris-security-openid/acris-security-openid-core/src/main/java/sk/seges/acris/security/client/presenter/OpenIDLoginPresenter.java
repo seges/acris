@@ -1,10 +1,14 @@
 package sk.seges.acris.security.client.presenter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.RootPanel;
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.security.client.event.OpenIDLoginEvent;
 import sk.seges.acris.security.client.handler.HasOpenIDLoginHandlers;
@@ -17,23 +21,17 @@ import sk.seges.acris.security.shared.configuration.LoginConfiguration;
 import sk.seges.acris.security.shared.dto.OpenIDUserDTO;
 import sk.seges.acris.security.shared.exception.SecurityException;
 import sk.seges.acris.security.shared.service.IOpenIDConsumerRemoteServiceAsync;
-import sk.seges.acris.security.server.session.ClientSession;
 import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.domain.OpenIDLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.OpenIDProvider;
-import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster;
+import sk.seges.acris.security.shared.user_management.service.IUserServiceBroadcaster;
 import sk.seges.acris.security.shared.user_management.service.UserServiceBroadcaster.BroadcastingException;
 import sk.seges.acris.security.shared.util.LoginUtils;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Location;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.RootPanel;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> implements HasOpenIDLoginHandlers {
 
@@ -49,17 +47,17 @@ public class OpenIDLoginPresenter extends LoginPresenter<OpenIDLoginDisplay> imp
 	protected LoginConfiguration loginConfiguration = GWT.create(LoginConfiguration.class);
 	protected OpenIdConfiguration openIdConfiguration;
 
-	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
+	public OpenIDLoginPresenter(OpenIDLoginDisplay display, IUserServiceBroadcaster broadcaster, String redirectUrl,
 			IOpenIDConsumerRemoteServiceAsync consumerService) {
 		this(display, broadcaster, redirectUrl, null, false, consumerService, null, null);
 	}
 
-	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
+	public OpenIDLoginPresenter(OpenIDLoginDisplay display, IUserServiceBroadcaster broadcaster, String redirectUrl,
 			IOpenIDConsumerRemoteServiceAsync consumerService, String locale) {
 		this(display, broadcaster, redirectUrl, null, false, consumerService, null, locale);
 	}
 
-	public OpenIDLoginPresenter(OpenIDLoginDisplay display, UserServiceBroadcaster broadcaster, String redirectUrl,
+	public OpenIDLoginPresenter(OpenIDLoginDisplay display, IUserServiceBroadcaster broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled,
 			IOpenIDConsumerRemoteServiceAsync consumerService, ClientSessionDTO clientSession, String locale) {
 		super(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, locale);

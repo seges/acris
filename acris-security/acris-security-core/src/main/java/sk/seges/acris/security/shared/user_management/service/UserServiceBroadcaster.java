@@ -1,26 +1,25 @@
 package sk.seges.acris.security.shared.user_management.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
 import sk.seges.acris.common.util.Pair;
 import sk.seges.acris.core.client.component.semaphore.Semaphore;
 import sk.seges.acris.core.client.component.semaphore.SemaphoreEvent;
 import sk.seges.acris.core.client.component.semaphore.SemaphoreListener;
 import sk.seges.acris.security.client.session.SessionServiceDefTarget;
-import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.shared.exception.ServerException;
 import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * User service broadcaster is responsible for broadcasting login information
@@ -65,7 +64,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  * @author fat
  * @author ladislav.gazo
  */
-public class UserServiceBroadcaster implements IUserServiceAsync {
+public class UserServiceBroadcaster implements IUserServiceBroadcaster {
 
 	public static final String PRIMARY_ENTRY_POINT = "primaryEntryPoint";
 
