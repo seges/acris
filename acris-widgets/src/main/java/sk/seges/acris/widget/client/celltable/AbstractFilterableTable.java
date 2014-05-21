@@ -239,8 +239,8 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		addDateColumn(column, width, text, property, new DateValidator(), footerButton);
 	}
 	
-	public void addFooterWidgetDateColumn(final Column<T, ?> column, int width, String text, String property, List<Pair<Widget, ClickHandler>> footerWidget) {
-		addFooterWidgetDateColumn(column, width, text, property, new DateValidator(), footerWidget);
+	public void addFooterWidgetDateColumn(final Column<T, ?> column, int width, String text, String property, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
+		addFooterWidgetDateColumn(column, width, text, property, new DateValidator(), footerWidget, colSpan);
 	}
 
 	public void addDateColumn(final Column<T, ?> column, int width, String text, String property,
@@ -273,7 +273,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public void addFooterWidgetDateColumn(final Column<T, ?> column, int width, String text, String property,
-			Validator dateValidator, List<Pair<Widget, ClickHandler>> footerWidget) {
+			Validator dateValidator, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
 
 		initializeColumn(column, property);
 
@@ -297,7 +297,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			defaultHiVal = simpleExpression.getHiValue().getDateValue();
 		}
 
-		addFooterWidgetColumnWithDateHeader(column, text, property, dateValidator, defaultLoVal, defaultHiVal, dateFilter, dateUpdater, footerWidget);
+		addFooterWidgetColumnWithDateHeader(column, text, property, dateValidator, defaultLoVal, defaultHiVal, dateFilter, dateUpdater, footerWidget, colSpan);
 		setColumnWidth(column, width, Unit.PCT);
 	}
 	
@@ -315,7 +315,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	protected void addFooterWidgetColumnWithDateHeader(Column<T, ?> column, String text, String property,
 			Validator dateValidator, Date defaultLoVal, Date defaultHiVal, DateFilter dateFilter, ValueUpdater<BetweenExpressionDTO> dateUpdater,
-			List<Pair<Widget, ClickHandler>> footerWidget){
+			List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
 		FilterableDateHeader filterableDateHeader = new FilterableDateHeader(dateUpdater, dateFilter.getCriterion(
 				property, new PropertyHolder(defaultLoVal), new PropertyHolder(defaultHiVal)), dateValidator, text);
 		if(filterable){
@@ -346,13 +346,14 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		addTextColumn(column, width, text, property, new StringValidator(), footerButton);
 	}
 	
-	public void addFooterWidgetTextColumn(final Column<T, ?> column, int width, String text, String property, List<Pair<Widget, ClickHandler>> footerWidget) {
-		addFooterWidgetTextColumn(column, width, text, property, new StringValidator(), footerWidget);
+	public void addFooterWidgetTextColumn(final Column<T, ?> column, int width, String text, String property, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
+		addFooterWidgetTextColumn(column, width, text, property, new StringValidator(), footerWidget, colSpan);
 	}
 	
 	public <F extends Comparable<? extends Serializable>> void addFooterWidgetTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator validator, List<Pair<Widget, ClickHandler>> footerWidget) {
-		addFooterWidgetTextColumn(column, width, text, property, validator, FilterDTO.EQ, footerWidget);
+			String text, String property, Validator validator,
+			List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
+		addFooterWidgetTextColumn(column, width, text, property, validator, FilterDTO.EQ, footerWidget, colSpan);
 	}
 
 	public <F extends Comparable<? extends Serializable>> void addTextColumn(final Column<T, ?> column, int width,
@@ -389,7 +390,8 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	@SuppressWarnings("unchecked")
 	public <F extends Comparable<? extends Serializable>> void addFooterWidgetTextColumn(final Column<T, ?> column, int width,
-			String text, String property, Validator validator, String operator, List<Pair<Widget, ClickHandler>> footerWidget) {
+			String text, String property, Validator validator, String operator,
+			List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
 
 		initializeColumn(column, property);
 
@@ -410,7 +412,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			defaultVal = (F) simpleExpression.getValue().getValue();
 		}
 
-		addFooterWidgetColumnWithTextHeader(column, text, property, validator, textFilter, defaultVal, columnUpdater, footerWidget);
+		addFooterWidgetColumnWithTextHeader(column, text, property, validator, textFilter, defaultVal, columnUpdater, footerWidget, colSpan);
 		this.setColumnWidth(column, width, Unit.PCT);
 	}
 	
@@ -428,7 +430,8 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 	@SuppressWarnings("unchecked")
 	protected <F extends Comparable<? extends Serializable>> void addFooterWidgetColumnWithTextHeader(Column<T, ?> column, String text, String property,
-			Validator validator, InputFilter textFilter, F defaultVal, ValueUpdater<SimpleExpressionDTO> columnUpdater, List<Pair<Widget, ClickHandler>> footerWidget) {
+			Validator validator, InputFilter textFilter,
+			F defaultVal, ValueUpdater<SimpleExpressionDTO> columnUpdater, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
 		if(filterable){
 			addColumn(column, new FilterableTextHeader(columnUpdater, textFilter.getCriterion(property, new PropertyHolder(defaultVal)), validator, text));
 		}else{
@@ -487,8 +490,8 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public void addFooterWidgetSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex) {
-		addFooterWidgetSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerWidget, columnIndex);
+			String property, List<String> options, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex, Integer colSpan) {
+		addFooterWidgetSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerWidget, columnIndex, colSpan);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -520,7 +523,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	@SuppressWarnings("unchecked")
 	public void addFooterWidgetSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, String operation, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex) {
+			String property, List<String> options, String operation, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex, Integer colSpan) {
 
 		initializeColumn(column, property);
 
@@ -540,7 +543,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		if (simpleExpression != null) {
 			defaultVal = simpleExpression.getValue().getStringValue();
 		}
-		addFooterWidgetColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerWidget, columnIndex);
+		addFooterWidgetColumnWithSelectionHeader(column, columnUpdater, textFilter, property, options, text, defaultVal, footerWidget, columnIndex, colSpan);
 		
 		this.setColumnWidth(column, width, Unit.PCT);
 	}
@@ -558,7 +561,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	protected void addFooterWidgetColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
 			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal, List<Pair<Widget, ClickHandler>> footerWidget,
-			int columnIndex){
+			int columnIndex, Integer colSpan) {
 		if(filterable){
 			insertColumn(columnIndex, column,
 					new FilterableSelectionHeader(columnUpdater, textFilter.getCriterion(property, defaultVal),

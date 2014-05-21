@@ -9,7 +9,7 @@ import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 @RemoteServiceDefinition
-public interface IWebSettingsService extends RemoteService {
+public interface IWebSettingsRemoteService extends RemoteService {
 
 	WebSettingsDTO getWebSettings(String webId);
 	

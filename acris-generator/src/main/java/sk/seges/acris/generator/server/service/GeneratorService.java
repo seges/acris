@@ -1,7 +1,25 @@
 package sk.seges.acris.generator.server.service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.server.domain.TokenPersistentDataProvider;
@@ -15,22 +33,13 @@ import sk.seges.acris.generator.server.service.persist.api.DataPersister;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
-import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
-import sk.seges.sesam.dao.*;
+import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
+import sk.seges.sesam.dao.Criterion;
+import sk.seges.sesam.dao.Disjunction;
+import sk.seges.sesam.dao.Junction;
+import sk.seges.sesam.dao.Page;
+import sk.seges.sesam.dao.SimpleExpression;
 import sk.seges.sesam.pap.service.annotation.LocalService;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Peter Simun (simun@seges.sk)
@@ -39,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 public class GeneratorService implements IGeneratorServiceLocal {
 
 	private HtmlProcessorFactory htmlProcessorFactory;
-	private IWebSettingsServiceLocal webSettingsService;
+	private IWebSettingsLocalService webSettingsService;
 
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
@@ -59,7 +68,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 	};
 	
 	public GeneratorService(DataPersister dataPersister, String indexFileName, ContentDataProvider contentDataProvider, 
-			IWebSettingsServiceLocal webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
+			IWebSettingsLocalService webSettingsService, HtmlProcessorFactory htmlProcessorFactory, NodeParserFactory parserFactory) {
 		this.dataPersister = dataPersister;
 		this.indexFileName = indexFileName;
 		this.parserFactory = parserFactory;

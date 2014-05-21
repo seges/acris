@@ -1,5 +1,7 @@
 package sk.seges.acris.crypto.util;
 
+import java.math.BigDecimal;
+
 import sk.seges.acris.crypto.digest.SHA1Digest;
 
 public class Hasher {
@@ -37,4 +39,15 @@ public class Hasher {
 			throw new RuntimeException("Failed to compute hash", e);
 		}
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(getSHAHexDigest("deadda1"));
+		BigDecimal basePrice = new BigDecimal(100);
+		Double priceConditionValue = -40d;
+		basePrice = basePrice.subtract(basePrice.multiply(BigDecimal.valueOf(priceConditionValue/100)));
+				
+		System.out.println(basePrice);
+ 	}
 }
+
+

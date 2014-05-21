@@ -6,10 +6,6 @@ import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MockContentFactory;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.site.server.domain.api.ContentData;
-import sk.seges.acris.site.server.service.IWebSettingsServiceLocal;
-import sk.seges.acris.site.server.service.MockWebSettingsService;
-import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
-import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.domain.mock.MockContent;
 
 public class MockTestConfiguration {

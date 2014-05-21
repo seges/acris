@@ -5,8 +5,9 @@ import java.util.List;
 import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
+import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
 
-public class MockWebSettingsService implements IWebSettingsServiceLocal {
+public class MockWebSettingsService implements IWebSettingsLocalService {
 
 	protected Boolean localeSensitiveServer;
 
@@ -68,6 +69,11 @@ public class MockWebSettingsService implements IWebSettingsServiceLocal {
 
 	@Override
 	public List<WebSettingsData> loadWebSettingsContainsParams(List<String> params) {
+		return null;
+	}
+
+	@Override
+	public WebSettingsData findWebSettings(String webId) {
 		return null;
 	}
 }
