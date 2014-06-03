@@ -11,7 +11,6 @@ import sk.seges.acris.security.client.presenter.LoginPresenter.LoginDisplay;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.callback.SecuredAsyncCallback;
 import sk.seges.acris.security.shared.exception.SecurityException;
-import sk.seges.acris.security.server.session.ClientSession;
 import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
@@ -116,10 +115,12 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	 */
 	protected LoginValidator validator = new LoginValidator() {
 
+		@Override
 		public boolean validateUsername(final String username) {
 			return username.trim().length() > 0;
 		}
 
+		@Override
 		public boolean validatePassword(final String password) {
 			return password.trim().length() > 0;
 		}
@@ -261,6 +262,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		}
 
 		registerLoginHandlers(stringCallback != null ? stringCallback : clientCallback);
+		updateLoginEnabled();
 	}
 
 	protected void setLocaleFromCookies() {
@@ -455,7 +457,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		}
 		
 		if (switchAfterLogin) {
-			display.setLoggedUser((GenericUserDTO) result.getUser());
+			display.setLoggedUser(result.getUser());
 			display.changeState(true);
 		}
 	}
