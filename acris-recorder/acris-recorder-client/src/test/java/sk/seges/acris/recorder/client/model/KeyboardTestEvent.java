@@ -6,13 +6,12 @@ import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 public class KeyboardTestEvent extends KeyboardEvent {
 
 	public KeyboardTestEvent(String type) {
-		this(type, 45, 'A');
+		this(type, 45);
 	}
 
-	public KeyboardTestEvent(String type, int keyCode, char charCode) {
+	public KeyboardTestEvent(String type, int keyCode) {
         super(new ElementXpathCache(40));
 		this.keyCode = keyCode;
-		this.charCode = charCode;
 		this.ctrlKey = false;
 		this.altKey = false;
 		this.shiftKey = false;

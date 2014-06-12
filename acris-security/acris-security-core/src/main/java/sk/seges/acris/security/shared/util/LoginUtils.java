@@ -7,7 +7,7 @@ import com.google.gwt.user.client.Window.Location;
 
 public class LoginUtils {
 
-	public static String getModuleBaseUrl() {
+    public static String getModuleBaseUrl() {
 		String baseUrl = GWT.getModuleBaseURL();
 
 		int indexOf = baseUrl.indexOf(GWT.getModuleName());
