@@ -25,7 +25,7 @@ public class EncodingTest extends AbstractEventTest {
 	@Test
 	public void testEncodeKeyboardEvents() {
 		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN), "01001000001111001011011111000000");
-		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33, '6'), "01000110110111001000011111000000");
+		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33), "01000110110111001000011111000000");
 		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN) {
 			@Override
 			public int getCtrlKeyInt() {

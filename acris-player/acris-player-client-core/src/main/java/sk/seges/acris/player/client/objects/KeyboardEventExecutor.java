@@ -32,6 +32,7 @@ public class KeyboardEventExecutor extends EventExecutor {
 					break;
 				case 1:	//keypress
                     GQuery el = GQuery.$(element);
+                    //http://unixpapa.com/js/key.html
                     el.val(el.val() + (char) keyboardEvent.getKeyCode());
 					//TODO - handle charCode also
 					break;

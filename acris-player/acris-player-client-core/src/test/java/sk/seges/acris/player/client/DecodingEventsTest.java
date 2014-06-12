@@ -25,7 +25,7 @@ public class DecodingEventsTest {
 		events.add(new HtmlTestEvent(BrowserEvents.ERROR));
 		events.add(new HtmlTestEvent(BrowserEvents.FOCUS));
 		events.add(new KeyboardTestEvent(BrowserEvents.KEYDOWN));
-		events.add(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33, '6'));
+		events.add(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33));
 		events.add(new HtmlTestEvent(BrowserEvents.ERROR));
 		events.add(new HtmlTestEvent(BrowserEvents.FOCUS));
 		events.add(new MouseTestEvent(BrowserEvents.CLICK));
