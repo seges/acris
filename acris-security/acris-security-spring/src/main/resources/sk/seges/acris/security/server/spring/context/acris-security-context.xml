@@ -10,7 +10,6 @@
                         http://www.springframework.org/schema/aop 
                         http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
-	<beans:import resource="acris-security-generic-dao-authentication-context.xml" />
 	<beans:import resource="acris-security-http-session-context.xml" />
 	<beans:import resource="acris-security-role-voter-context.xml" />
 	<beans:import resource="acris-security-run-as-context.xml" />

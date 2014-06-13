@@ -1,7 +1,9 @@
 package sk.seges.acris.security.server.spring.configuration;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.intercept.RunAsImplAuthenticationProvider;
+
 import sk.seges.acris.security.server.spring.user_management.dao.user.api.IGenericUserDao;
 import sk.seges.acris.security.server.spring.user_management.service.SpringUserService;
 import sk.seges.acris.security.server.spring.user_management.service.WebIdUserDetailsService;
@@ -11,7 +13,7 @@ import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 public class AuthenticationManagerConfiguration {
 
 	@Bean
-	public WebIdUserDetailsService userDetailsService(IGenericUserDao<UserData> genericUserDao) {
+	public WebIdUserDetailsService userDetailsService(@Qualifier("genericAuthenticationDao") IGenericUserDao<UserData> genericUserDao) {
 		return new SpringUserService(genericUserDao);
 	}
 

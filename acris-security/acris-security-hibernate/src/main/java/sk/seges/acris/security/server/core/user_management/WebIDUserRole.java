@@ -23,15 +23,17 @@ import sk.seges.sesam.model.metadata.annotation.MetaModel;
  * @author ladislav.gazo
  */
 @Entity
-@Table(name = "webid_user_role", uniqueConstraints = { @UniqueConstraint(columnNames = { WebIDUserRole.USER_ID,
+@Table(name = WebIDUserRole.TABLE_NAME, uniqueConstraints = { @UniqueConstraint(columnNames = { WebIDUserRole.USER_ID,
 		WebIDUserRole.WEB_ID, WebIDUserRole.SECURITY_ROLE_ID }) })
 @MetaModel
 public class WebIDUserRole extends UserRoleBase {
 	private static final long serialVersionUID = 1759219506025466660L;
 
-	protected static final String SECURITY_ROLE_ID = "security_role_id";
-	protected static final String USER_ID = "user_id";
+	public static final String SECURITY_ROLE_ID = "security_role_id";
+	public static final String USER_ID = "user_id";
 
+	public static final String TABLE_NAME = "webid_user_role";
+	
 	public static final String ID = "id";
 	public static final String WEB_ID = "webId";
 	public static final String PRIORITY = "priority";
@@ -45,42 +47,51 @@ public class WebIDUserRole extends UserRoleBase {
 		return super.getId();
 	}
 
+	@Override
 	public void setId(Long id) {
 		super.setId(id);
 	}
 
+	@Override
 	public String getWebId() {
 		return super.getWebId();
 	}
 
+	@Override
 	public void setWebId(String webId) {
 		super.setWebId(webId);
 	}
 
+	@Override
 	public Integer getPriority() {
 		return super.getPriority();
 	}
 
+	@Override
 	public void setPriority(Integer priority) {
 		super.setPriority(priority);
 	}
 
+	@Override
 	@ManyToOne(targetEntity = HibernateSecurityRole.class)
 	@JoinColumn(name = SECURITY_ROLE_ID)
 	public RoleData getRole() {
 		return super.getRole();
 	}
 
+	@Override
 	public void setRole(RoleData role) {
 		super.setRole(role);
 	}
 
+	@Override
 	@ManyToOne(targetEntity = HibernateGenericUser.class)
 	@JoinColumn(name = USER_ID)
 	public UserData getUser() {
 		return super.getUser();
 	}
 
+	@Override
 	public void setUser(UserData user) {
 		super.setUser(user);
 	}

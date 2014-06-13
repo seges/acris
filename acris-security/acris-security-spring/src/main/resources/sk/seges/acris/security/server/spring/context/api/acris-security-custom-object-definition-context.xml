@@ -17,8 +17,7 @@
 	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-http-session-context.xml"/>
     <beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-role-voter-context.xml"/>
 	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-acl-context.xml" />
-	<beans:import resource="classpath:sk/seges/acris/security/server/spring/context/acris-security-generic-dao-authentication-context.xml" />
-	
+		
 	<context:component-scan base-package="sk.seges.acris.security.server.spring" />
 	
 </beans:beans>

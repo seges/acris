@@ -21,11 +21,13 @@ import sk.seges.acris.widget.client.celltable.renderer.RowRenderer;
 import sk.seges.acris.widget.client.celltable.resource.PagerResources;
 import sk.seges.acris.widget.client.celltable.resource.TableResources;
 import sk.seges.sesam.shared.model.api.PropertyHolder;
+import sk.seges.sesam.shared.model.dao.MatchMode;
 import sk.seges.sesam.shared.model.dao.SortInfo;
 import sk.seges.sesam.shared.model.dto.BetweenExpressionDTO;
 import sk.seges.sesam.shared.model.dto.ConjunctionDTO;
 import sk.seges.sesam.shared.model.dto.CriterionDTO;
 import sk.seges.sesam.shared.model.dto.FilterDTO;
+import sk.seges.sesam.shared.model.dto.LikeExpressionDTO;
 import sk.seges.sesam.shared.model.dto.PageDTO;
 import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
 
@@ -353,12 +355,12 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	public <F extends Comparable<? extends Serializable>> void addFooterWidgetTextColumn(final Column<T, ?> column, int width,
 			String text, String property, Validator validator,
 			List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
-		addFooterWidgetTextColumn(column, width, text, property, validator, FilterDTO.EQ, footerWidget, colSpan);
+		addFooterWidgetTextColumn(column, width, text, property, validator, FilterDTO.ILIKE, footerWidget, colSpan);
 	}
 
 	public <F extends Comparable<? extends Serializable>> void addTextColumn(final Column<T, ?> column, int width,
 			String text, String property, Validator validator, Triple<Button, Integer, ClickHandler> footerButton) {
-		addTextColumn(column, width, text, property, validator, FilterDTO.EQ, footerButton);
+		addTextColumn(column, width, text, property, validator, FilterDTO.ILIKE, footerButton);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -619,10 +621,14 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 		}
 
 		public SimpleExpressionDTO getCriterion(String property, PropertyHolder... vals) {
-			if (vals == null || vals.length == 0) {
-				return new SimpleExpressionDTO(operation, property, null);
+			PropertyHolder propertyHolder = null;
+			if (vals != null && vals.length == 0) {
+				propertyHolder =  vals[0];
 			}
-			return new SimpleExpressionDTO(operation, property, vals[0]);
+			if(operation.equals(FilterDTO.LIKE) || operation.equals(FilterDTO.ILIKE)){
+				return new LikeExpressionDTO(property, false, MatchMode.ANYWHERE, propertyHolder);
+			}
+			return new SimpleExpressionDTO(operation, property, propertyHolder);
 		}
 
 		public SimpleExpressionDTO setValue(SimpleExpressionDTO expression, String[] values) {
