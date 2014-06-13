@@ -24,7 +24,7 @@ public class DecodingTest extends AbstractDecodingTest {
 	@Test
 	public void testKeyboardEventDecode() {
 		testEventDecoding(new KeyboardTestEvent(BrowserEvents.KEYDOWN));
-		testEventDecoding(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33, '6'));
+		testEventDecoding(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33));
 		KeyboardTestEvent keyboardTestEvent = new KeyboardTestEvent(BrowserEvents.KEYDOWN);
 		keyboardTestEvent.setCtrlKeyInt(1);
 		keyboardTestEvent.setShiftKeyInt(1);

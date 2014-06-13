@@ -43,6 +43,8 @@ public class MouseEventExecutor extends AnimationObject {
 
         MouseEvent mouseEvent = (MouseEvent)cursorProperties.getEvent();
 
+        GWT.log(mouseEvent.toString(true, true));
+
         switch (cursorProperties.getEvent().getTypeInt()) {
             case MouseEvent.MOUSE_CLICK_TYPE:
                 //TODO click on the paragraph discards selection
@@ -147,8 +149,8 @@ public class MouseEventExecutor extends AnimationObject {
                 //completeHandler.onComplete();
                 return;
             case MouseEvent.MOUSE_OUT_TYPE:
-//                mouseEvent.fireEvent();;
-                GQuery.$(mouseEvent.getElement()).mouseout();
+                mouseEvent.fireEvent();
+//                GQuery.$(mouseEvent.getElement()).mouseout();
                 cssSupport.restoreStyles(mouseEvent.getElement());
                 super.runAction(cursorProperties, completeHandler);
                 //completeHandler.onComplete();

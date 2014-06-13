@@ -42,16 +42,20 @@ public class MapTokenCache implements TokensCache {
 		processedTokens.add(niceurl);
 
 		generatorToken = new GeneratorToken();
-
 		generatorToken.setNiceUrl(niceurl);
-		generatorToken.setWebId(defaultToken.getWebId());
-		generatorToken.setLanguage(defaultToken.getLanguage());
-		generatorToken.setAlias(defaultToken.getAlias());
-		
-		if (generatorToken.getNiceUrl().equals(defaultToken.getNiceUrl())) {
+
+		if (defaultToken != null) {
+			generatorToken.setWebId(defaultToken.getWebId());
+			generatorToken.setLanguage(defaultToken.getLanguage());
+			generatorToken.setAlias(defaultToken.getAlias());
+
+			if (generatorToken.getNiceUrl().equals(defaultToken.getNiceUrl())) {
+				generatorToken.setDefaultToken(true);
+			}
+		} else {
 			generatorToken.setDefaultToken(true);
 		}
-		
+
 		return generatorToken;
 	}
 
@@ -74,6 +78,12 @@ public class MapTokenCache implements TokensCache {
 	
 	@Override
 	public void addTokens(Collection<String> tokens) {
+		if (tokens == null || tokens.size() == 0) {
+			if (awaitingTokens.size() == 0) {
+				awaitingTokens.add("");
+			}
+			return;
+		}
 		Iterator<String> iterator = tokens.iterator();
 		
 		while (iterator.hasNext()) {

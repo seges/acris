@@ -239,10 +239,28 @@ public class MouseEvent extends AbstractGenericTargetableEventWithFlags implemen
 	}
 
 	public NativeEvent createEvent(Element el) {
+        switch (getTypeInt()) {
+            case MOUSE_DOWN_TYPE:
+                return Document.get().createMouseDownEvent(0, 0, 0, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button);
+            case MOUSE_OUT_TYPE:
+                return Document.get().createMouseOutEvent(0, 0, 0, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, el);
+            case MOUSE_OVER_TYPE:
+                return Document.get().createMouseOverEvent(0, 0, 0, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button, el);
+            case MOUSE_UP_TYPE:
+                return Document.get().createMouseUpEvent(0, 0, 0, clientX, clientY, ctrlKey, altKey, shiftKey, metaKey, button);
+            case MOUSE_WHEEL_TYPE:
+                break;
+            case MOUSE_CLICK_TYPE:
+            case MOUSE_DOUBLE_CLICK_TYPE:
+            case MOUSE_MOVE_TYPE:
+                return Document.get().createMouseEvent(type, canBubble, cancelable, 0,
+                        0, 0, clientX, clientY, ctrlKey, altKey,
+                        shiftKey, metaKey, button, el);
+        }
 		//TODO screenX, screenY
-		return Document.get().createMouseEvent(type, canBubble, cancelable, 0,
-				0, 0, clientX, clientY, ctrlKey, altKey,
-				shiftKey, metaKey, button, el);
+        return Document.get().createMouseEvent(type, canBubble, cancelable, 0,
+                0, 0, clientX, clientY, ctrlKey, altKey,
+                shiftKey, metaKey, button, el);
 	}
 	
 	public String toString(boolean pretty, boolean detailed) {

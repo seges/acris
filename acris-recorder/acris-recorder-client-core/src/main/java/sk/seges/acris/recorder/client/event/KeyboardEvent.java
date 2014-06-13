@@ -16,10 +16,16 @@ import sk.seges.acris.recorder.client.tools.ElementXpathCache;
 public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 
 	public static final String KEY_CODE_ATTRIBUTE = "keyCode";
-	public static final String CHAR_CODE_ATTRIBUTE = "charCode";
-	
-	protected int keyCode;
-	protected int charCode;
+    public static final String SCROLL_OFFSET = "scrollOffset";
+    public static final String SCROLL_TYPE = "scrollType";
+
+    public enum ScrollType {
+        X, Y;
+    }
+
+    protected int keyCode;
+    protected ScrollType scrollType;
+    protected int scrollOffset;
 
 	public KeyboardEvent(ElementXpathCache elementXpathCache) {
         super(elementXpathCache);
@@ -27,18 +33,18 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	
 	public KeyboardEvent(ElementXpathCache elementXpathCache, Event event) {
 		super(elementXpathCache, event);
-		
-		keyCode = DOM.eventGetKeyCode(event);
-		charCode = getCharCode(event);
+
+        keyCode = getKeyCode(event);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + charCode;
-		result = prime * result + keyCode;
-		return result;
+        result = 31 * result + keyCode;
+        result = 31 * result + (scrollType != null ? scrollType.hashCode() : 0);
+        result = 31 * result + scrollOffset;
+        return result;
 	}
 
 	@Override
@@ -50,14 +56,18 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 		if (!(obj instanceof KeyboardEvent))
 			return false;
 		KeyboardEvent other = (KeyboardEvent) obj;
-		if (charCode != other.charCode)
-			return false;
-		if (keyCode != other.keyCode)
-			return false;
+
+        if (keyCode != other.keyCode)
+            return false;
+        if (scrollOffset != other.scrollOffset)
+            return false;
+        if (scrollType != other.scrollType)
+            return false;
+
 		return true;
-	}
-	
-	public static boolean isCorrectEvent(Event event) {
+    }
+
+    public static boolean isCorrectEvent(Event event) {
 		int type = DOM.eventGetType(event);
 		return isCorrectEvent(type);
 	}
@@ -73,11 +83,11 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 		return false;
 	}
 	
-	private native char getCharCode(NativeEvent e)/*-{
+	private native char getKeyCode(NativeEvent e)/*-{
         e = e || $wnd.event;
         return e.which || e.keyCode;
 	}-*/;
-	
+
 	protected NativeEvent createEvent(Element el) {
 		return Document.get().createKeyCodeEvent(type,
 				ctrlKey, altKey, shiftKey, metaKey, keyCode);
@@ -96,23 +106,23 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	public String toString(boolean pretty, boolean detailed) {
 		if (!pretty) {
 			if (!detailed) {
-				return type + " with keyCode= "+ keyCode + " and charCode=" + charCode;
+				return type + " with keyCode= "+ keyCode;
 			} else {
 				String flags = "[CASM]" + (ctrlKey ? "true" : "false") + (altKey ? "true" : "false") +
 						(shiftKey ? "true" : "false") + (metaKey ? "true" : "false");
 				flags += ", ";
 				
-				return type + " , " + flags + " with keyCode= "+ keyCode + " and charCode=" + charCode;
+				return type + " , " + flags + " with keyCode= "+ keyCode;
 			}
 		} else {
 			if (!detailed) {
 				return "KeyboardEvent [type=" + type 
-					+ ", keyCode= "+ keyCode + " and charCode=" + charCode + ", relatedTargetXpath=" + getRelatedTargetXpath() + "]";
+					+ ", keyCode= "+ keyCode + ", relatedTargetXpath=" + getRelatedTargetXpath() + "]";
 			} else {
 				return "KeyboardEvent [altKey=" + altKey
 					+ ", canBubble=" + canBubble + ", cancelable=" + cancelable
 					+ ", metaKey=" + metaKey + ", relatedTargetXpath=" + getRelatedTargetXpath()
-					+ ", keyCode= "+ keyCode + "(" + (char) getKeyCode() + "), charCode=" + charCode + "(" + (char) getCharCode() + ")"
+					+ ", keyCode= "+ keyCode + "(" + (char) getKeyCode() + ")"
 					+ ", shiftKey=" + shiftKey + ", type=" + type + "]";
 			}
 		}
@@ -126,15 +136,23 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 		this.keyCode = keyCode;
 	}
 
-	public void setCharCode(int charCode) {
-		this.charCode = charCode;
-	}
+    public ScrollType getScrollType() {
+        return scrollType;
+    }
 
-	public int getCharCode() {
-		return charCode;
-	}
+    public void setScrollType(ScrollType scrollType) {
+        this.scrollType = scrollType;
+    }
 
-	public void setTypeInt(int type) {
+    public int getScrollOffset() {
+        return scrollOffset;
+    }
+
+    public void setScrollOffset(int scrollOffset) {
+        this.scrollOffset = scrollOffset;
+    }
+
+    public void setTypeInt(int type) {
 		switch (type) {
 		case 0:
 			this.type = KeyDownEvent.getType().getName();

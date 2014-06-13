@@ -1,5 +1,6 @@
 package sk.seges.acris.recorder.client.recorder.support;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayNumber;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -42,7 +43,8 @@ public abstract class AbstractRecorder {
 	}
 
 	void fireListeners(AbstractGenericEvent event) {
-		for (RecorderListener listener : recorderListeners) {
+        GWT.log(event.toString(true, true));
+        for (RecorderListener listener : recorderListeners) {
 			listener.eventRecorded(event);
 		}
 	}

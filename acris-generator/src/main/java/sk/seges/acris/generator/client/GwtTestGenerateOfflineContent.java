@@ -107,12 +107,15 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer = new OperationTimer();
 		}
 
+		Log.debug("Initialize generator environment");
 		generatorEnvironment = new DefaultGeneratorClientEnvironment(new MapTokenCache());
 		GeneratorToken defaultToken = new GeneratorToken();
 		defaultToken.setWebId(generatorConfiguration.getWebId());
 		defaultToken.setLanguage(generatorConfiguration.getLanguage());
 		defaultToken.setAlias(generatorConfiguration.getAlias());
-		
+
+		Log.debug("Default token is: web=" + generatorConfiguration.getWebId() + ", language=" + generatorConfiguration.getLanguage() + ", alias=" + generatorConfiguration.getAlias());
+
 		generatorEnvironment.getTokensCache().setDefaultToken(defaultToken);
 
 		prepareEnvironment(generatorConfiguration);
@@ -188,6 +191,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		}
 		
 		//Load last token for processing
+		Log.debug("Loading tokens for processing");
+
 		contentProvider.loadTokensForProcessing(new AsyncCallback<Void>() {
 
 			public void onFailure(Throwable caught) {
@@ -202,7 +207,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				if (PERFORMANCE_MONITOR) {
 					timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
 				}
+
 				if (generatorEnvironment.getTokensCache().hasNext()) {
+
+					Log.debug("Loading entry point");
 					loadEntryPointHTML();
 				} else {
 					failure("No tokens available for processing. Finishing", null);
@@ -221,7 +229,8 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		if (PERFORMANCE_MONITOR) {
 			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
 		}
-		
+
+		Log.debug("Loading entry point HTML content");
 		//Load entry point
 		offlineContentProvider.getEntryPointBodyHtml(new AsyncCallback<String>() {
 
@@ -238,6 +247,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 					timer.stop(Operation.GENERATOR_SERVER_READ_PROCESSING);
 					timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
 				}
+				Log.debug("Cleaning UI and setting entry HTML");
 				UIHelper.cleanUI();
 				RootPanel.get().getElement().setInnerHTML(result);
 				if (PERFORMANCE_MONITOR) {
@@ -260,6 +270,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	}
 	
 	private GeneratorToken loadNextContent() {
+
+		Log.debug("Loading next content");
+
 		if (!generatorEnvironment.getTokensCache().hasNext()) {
 			finalizeTest();
 			return null;
@@ -337,7 +350,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		if (PERFORMANCE_MONITOR) {
 			timer.start(Operation.CONTENT_RENDERING);
 		}
-		
+
+		Log.debug("Loading content for current token");
+
 		contentProvider.loadContent(new AsyncCallback<Void>() {
 
 			@Override
@@ -366,7 +381,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 							public void run() {
 								saveAndLoadContent(generatorEnvironment);
 							}
-						}.schedule(2000);
+						}.schedule(1000);
 					}
 				});
 			}
@@ -388,11 +403,11 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer.start(Operation.GENERATOR_DOM_MANIPULATION);
 		}
 
-		Log.info("Preparing for saving the content");
+		Log.debug("Preparing for saving the content");
 
 		com.google.gwt.user.client.Element rootElement = contentProvider.getRootElement();
 
-		Log.info("Collecting anchors for further processing");
+		Log.debug("Collecting anchors for further processing");
 
 		for (NodeCollectorFactory nodeCollectorFactory: getNodeCollectorFactories()) {
 			nodeCollectorFactory.create().collect(rootElement, generatorEnvironment);
@@ -422,7 +437,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer.stop(Operation.GENERATOR_DOM_MANIPULATION);
 			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
 		}
-		
+
+		Log.debug("Saving offline content for token " + generatorEnvironment.getTokensCache().getCurrentToken().getNiceUrl());
+
 		offlineContentProvider.saveOfflineContent(content, generatorEnvironment.getTokensCache().getCurrentToken(), 
 				generatorEnvironment.getServerURL(), new AsyncCallback<Void>() {
 

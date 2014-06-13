@@ -1,6 +1,7 @@
 package sk.seges.acris.recorder.client.recorder.support;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import sk.seges.acris.recorder.client.event.generic.AbstractGenericEvent;
@@ -35,6 +36,7 @@ abstract public class Recorder extends AbstractRecorder implements RecorderListe
     protected List<AwaitingLog> awaitingLogs = new ArrayList<AwaitingLog>();
     protected long lastTime;
     protected long blobId = 0;
+    protected Timer timer;
 
     public class AwaitingLog {
         RecordingLogDTO log;
