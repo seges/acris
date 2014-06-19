@@ -776,6 +776,9 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 
 	private void handleFilterValueChange(InputFilter dataTypeFilter, SimpleExpressionDTO value, Column<T, ?> column) {
+		//reset start index when filtering//
+		getPager().setPageStart(0);
+		
 		if (value.getValue() == null && value.getOperation() == null && sortable) { 
 			ColumnSortList columnSortList = getColumnSortList();
 			boolean asc = false;
