@@ -111,12 +111,5 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
 		</dependency>
-
-		<!-- GWT-SL -->
-		<dependency>
-			<groupId>net.sf.gwt-widget</groupId>
-			<artifactId>gwt-sl</artifactId>
-		</dependency>
-
 	</dependencies>
 </project>

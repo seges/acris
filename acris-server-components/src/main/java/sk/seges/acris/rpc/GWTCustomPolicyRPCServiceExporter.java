@@ -2,8 +2,6 @@ package sk.seges.acris.rpc;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
-import org.gwtwidgets.server.spring.gilead.GileadRPCServiceExporter;
 import org.springframework.web.context.ServletContextAware;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;

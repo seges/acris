@@ -9,8 +9,6 @@ import java.text.ParseException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
-
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
 

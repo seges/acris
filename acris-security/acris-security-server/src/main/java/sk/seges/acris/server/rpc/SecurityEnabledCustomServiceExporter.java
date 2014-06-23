@@ -12,8 +12,8 @@ public class SecurityEnabledCustomServiceExporter extends CustomPolicyRPCService
 
 	@Override
 	protected String handleInvocationTargetException(InvocationTargetException e, Object service, Method targetMethod,
-			RPCRequest rpcRequest) throws Exception {
+			Object[] parameters, RPCRequest rpcRequest) throws Exception {
 		String delegated = SecurityEnabledExporterLogic.handleInvocationTargetException(e, service, targetMethod, rpcRequest);
-		return (delegated != null ? delegated : super.handleInvocationTargetException(e, service, targetMethod, rpcRequest));
+		return (delegated != null ? delegated : super.handleInvocationTargetException(e, service, targetMethod, parameters, rpcRequest));
 	}
 }

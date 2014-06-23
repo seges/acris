@@ -78,7 +78,7 @@ public class JpaWebSettings extends WebSettingsBase {
 	}
 
 	@Override
-	@Column(length=1024, nullable = true)
+	@Column(length=2048, nullable = true)
 	public String getParameters() {
 		return super.getParameters();
 	}

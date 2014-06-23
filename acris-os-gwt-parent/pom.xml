@@ -105,11 +105,6 @@
 			</dependency>
 			<dependency>
 				<groupId>net.sf.gwt-widget</groupId>
-				<artifactId>gwt-sl</artifactId>
-				<version>${gwt-widgets-server.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>net.sf.gwt-widget</groupId>
 				<artifactId>gwt-widgets</artifactId>
 				<version>${gwt-widgets-library.version}</version>
 			</dependency>

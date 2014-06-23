@@ -1,14 +1,12 @@
 package sk.seges.acris.rpc;
 
+import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gwt.user.server.rpc.RPCServletUtils;
-import org.gwtwidgets.server.spring.GWTRPCServiceExporter;
-
 import com.google.gwt.user.server.rpc.SerializationPolicy;
-
-import java.io.IOException;
 
 /**
  * Enhanced GWTRPCServiceExporter except it doesn't use default serialization

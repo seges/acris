@@ -1,7 +1,5 @@
 package sk.seges.acris.rpc;
 
-import org.gwtwidgets.server.spring.RPCServiceExporter;
-import org.gwtwidgets.server.spring.RPCServiceExporterFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
