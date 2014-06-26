@@ -776,9 +776,6 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 
 	private void handleFilterValueChange(InputFilter dataTypeFilter, SimpleExpressionDTO value, Column<T, ?> column) {
-		//reset start index when filtering//
-		getPager().setPageStart(0);
-		
 		if (value.getValue() == null && value.getOperation() == null && sortable) { 
 			ColumnSortList columnSortList = getColumnSortList();
 			boolean asc = false;
@@ -796,18 +793,24 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			sortables.add(sortInfo);
 			filter.setSortables(sortables);
 			column.setSortable(sortable);
-
+			//reset start index when sorting//
+			getPager().setPageStart(0);
+			
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
 		} else if (value.getValue() != null) {
-
-
 			filterValues.put(value.getProperty(), value);
-
+			//reset start index when filtering//
+			getPager().setPageStart(0);
+			
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
 		} else if (value.getValue() == null) {
 			filterValues.remove(value.getProperty());
+			//reset start index when filtering//
+			getPager().setPageStart(0);
+			
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
 		}
+		
 	}
 
 	private void addProjectable(String property) {

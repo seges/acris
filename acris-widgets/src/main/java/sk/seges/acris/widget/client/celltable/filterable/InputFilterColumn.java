@@ -1,16 +1,18 @@
 package sk.seges.acris.widget.client.celltable.filterable;
 
+import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
+import sk.seges.sesam.shared.model.api.PropertyHolder;
+import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
+
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
-import sk.seges.sesam.shared.model.api.PropertyHolder;
-import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
 
 public class InputFilterColumn extends AbstractFilterableCell<SimpleExpressionDTO> {
 
@@ -82,6 +84,9 @@ public class InputFilterColumn extends AbstractFilterableCell<SimpleExpressionDT
 				
 				if (valueUpdater != null) {
 					if (event.getKeyCode() == ENTER) {
+						if(value.getOperation() == null){
+							value.setOperation("");
+						}
 						valueUpdater.update(value);
 					}
 				}
