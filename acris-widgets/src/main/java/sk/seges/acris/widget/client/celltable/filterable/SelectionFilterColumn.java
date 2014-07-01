@@ -1,20 +1,20 @@
 package sk.seges.acris.widget.client.celltable.filterable;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
+import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
+
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import sk.seges.acris.widget.client.celltable.AbstractFilterableTable.Validator;
-import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SelectionFilterColumn extends AbstractFilterableCell<SimpleExpressionDTO> {
 
@@ -31,9 +31,7 @@ public class SelectionFilterColumn extends AbstractFilterableCell<SimpleExpressi
 
 	protected static Template template;
 
-	private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
-
-	protected final List<String> options;
+	protected final Map<String, String> options;
 	protected String text;
 	
 	private final Map<Object, String> viewDataMap = new HashMap<Object, String>();
@@ -42,18 +40,14 @@ public class SelectionFilterColumn extends AbstractFilterableCell<SimpleExpressi
 
 	protected final Validator validator;
 	
-	public SelectionFilterColumn(Validator validator, List<String> options, String text) {
+	public SelectionFilterColumn(Validator validator, Map<String, String> options, String text) {
 		super("click", "change", "focus", "blur", "mousewheel", "mousedown", "mouseup", "mousemove", "DOMMouseScroll");
 
 		this.validator = validator;
 		this.text = text;
 		initTemplate();
 		
-		this.options = new ArrayList<String>(options);
-		int index = 0;
-		for (String option : options) {
-			indexForOption.put(option, index++);
-		}
+		this.options = options;
 	}
 	
 	protected void initTemplate(){
@@ -157,25 +151,24 @@ public class SelectionFilterColumn extends AbstractFilterableCell<SimpleExpressi
 			viewData = null;
 		}
 
-		int selectedIndex = getSelectedIndex(viewData == null ? valueToString(value) : viewData);
+		String selectedValue = getSelectedValue(viewData == null ? valueToString(value) : viewData);
 		sb.appendHtmlConstant("<select tabindex=\"-1\">");
-		int index = 0;
-		for (String option : options) {
-			if (index++ == selectedIndex) {
-				sb.append(template.selected(option));
+		for (String option : options.keySet()) {
+			if (options.get(option).equals(selectedValue)) {
+				sb.append(template.selected(options.get(option)));
 			} else {
-				sb.append(template.deselected(option));
+				sb.append(template.deselected(options.get(option)));
 			}
 		}
 		sb.appendHtmlConstant("</select>");
 	}
 
-	private int getSelectedIndex(String value) {
-		Integer index = indexForOption.get(value);
-		if (index == null) {
-			return -1;
+	private String getSelectedValue(String value) {
+		String selectedValue = options.get(value);
+		if (selectedValue == null) {
+			return "";
 		}
-		return index.intValue();
+		return selectedValue;
 	}
 
 	@Override

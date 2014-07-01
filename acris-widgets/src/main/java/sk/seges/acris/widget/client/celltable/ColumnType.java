@@ -14,6 +14,8 @@ import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.cellview.client.Column;
@@ -35,15 +37,15 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex, 
-				ColumnValuesRemoteLoaderAsync valuesLoader, Triple<Button, Integer, ClickHandler> footerButton) {
-			table.addTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerButton);
+				ColumnValuesRemoteLoaderAsync valuesLoader, Triple<Button, Integer, ClickHandler> footerButton, String locale, String webId) {
+			table.addTextColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerButton);
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
-			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan, String locale, String webId) {
+			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
 		}
 
 	},
@@ -63,20 +65,20 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex, 
-				ColumnValuesRemoteLoaderAsync valuesLoader, Triple<Button, Integer, ClickHandler> footerButton) {
-			table.addTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerButton);
+				ColumnValuesRemoteLoaderAsync valuesLoader, Triple<Button, Integer, ClickHandler> footerButton, String locale, String webId) {
+			table.addTextColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerButton);
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
-			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan, String locale, String webId) {
+			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
 		}
 		
 	}, DATE {
 		public Column<Map<String, Object>, ? extends Object> createColumn(final DynamicColumDefinition column) {
-			return new Column<Map<String, Object>, Date>(new DateCell()) {
+			return new Column<Map<String, Object>, Date>(new DateCell(DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM))) {
 				@Override
 				public Date getValue(Map<String, Object> arg0) {
 					return (Date) arg0.get(column.getField());
@@ -88,16 +90,16 @@ public enum ColumnType {
 		@Override
 		public <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex
 				, ColumnValuesRemoteLoaderAsync valuesLoader, 
-				Triple<Button, Integer, ClickHandler> footerButton) {
-			table.addDateColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerButton);	
+				Triple<Button, Integer, ClickHandler> footerButton, String locale, String webId) {
+			table.addDateColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerButton);	
 		}
 		
 		
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
-			table.addFooterWidgetDateColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan, String locale, String webId) {
+			table.addFooterWidgetDateColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
 		}
 		
 	}, NUMBER {
@@ -113,15 +115,15 @@ public enum ColumnType {
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex, 
-				ColumnValuesRemoteLoaderAsync valuesLoader, Triple<Button, Integer, ClickHandler> footerButton) {
-			table.addTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerButton);
+				ColumnValuesRemoteLoaderAsync valuesLoader, Triple<Button, Integer, ClickHandler> footerButton, String locale, String webId) {
+			table.addTextColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerButton);
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(AbstractFilterableTable<T> table, DynamicColumDefinition column, int columnCount, int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan) {
-			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
+				ColumnValuesRemoteLoaderAsync valuesLoader, List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan, String locale, String webId) {
+			table.addFooterWidgetTextColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), footerWidget, colSpan);
 		}
 		
 	}, ENUM {
@@ -140,14 +142,14 @@ public enum ColumnType {
 
 		@Override
 		public <T extends Map<String, Object>> void addColumn(final AbstractFilterableTable<T> table, final DynamicColumDefinition column, 
-				final int columnCount, final int columnIndex, ColumnValuesRemoteLoaderAsync valuesLoader, final Triple<Button, Integer, ClickHandler> footerButton) {
+				final int columnCount, final int columnIndex, ColumnValuesRemoteLoaderAsync valuesLoader, final Triple<Button, Integer, ClickHandler> footerButton, String locale, String webId) {
 	
-			valuesLoader.loadColumnValues(table.getDataClass().getName(), column.getField(), new AsyncCallback<List<String>>() {
+			valuesLoader.loadColumnValues(table.getDataClass().getName(), column.getField(), locale, webId, new AsyncCallback<Map<String, String>>() {
 				
 				@SuppressWarnings("unchecked")
 				@Override
-				public void onSuccess(List<String> result) {
-					table.addSelectionColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), result, footerButton, columnIndex);
+				public void onSuccess(Map<String, String> result) {
+					table.addSelectionColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), result, footerButton, columnIndex);
 				}
 				
 				@Override
@@ -158,14 +160,14 @@ public enum ColumnType {
 		@Override
 		public <T extends Map<String, Object>> void addFooterWidgetColumn(final AbstractFilterableTable<T> table, final DynamicColumDefinition column, 
 				final int columnCount, final int columnIndex,
-				ColumnValuesRemoteLoaderAsync valuesLoader, final List<Pair<Widget, ClickHandler>> footerWidget, final Integer colSpan) {
+				ColumnValuesRemoteLoaderAsync valuesLoader, final List<Pair<Widget, ClickHandler>> footerWidget, final Integer colSpan, String locale, String webId) {
 	
-			valuesLoader.loadColumnValues(table.getDataClass().getName(), column.getField(), new AsyncCallback<List<String>>() {
+			valuesLoader.loadColumnValues(table.getDataClass().getName(), column.getField(), locale, webId, new AsyncCallback<Map<String, String>>() {
 				
 				@SuppressWarnings("unchecked")
 				@Override
-				public void onSuccess(List<String> result) {
-					table.addFooterWidgetSelectionColumn((Column<T, ?>) createColumn(column), 100 / (columnCount), column.getLabel(), column.getField(), result, footerWidget, columnIndex, colSpan);
+				public void onSuccess(Map<String, String> result) {
+					table.addFooterWidgetSelectionColumn((Column<T, ?>) createColumn(column), column.getWidth() != null ? column.getWidth() : 100 / (columnCount), column.getLabel(), column.getField(), result, footerWidget, columnIndex, colSpan);
 				}
 				
 				@Override
@@ -185,10 +187,10 @@ public enum ColumnType {
 	}
 	
 	public abstract <T extends Map<String, Object>> void addColumn(AbstractFilterableTable<T> table, final DynamicColumDefinition column, int columnCount, int columnIndex, ColumnValuesRemoteLoaderAsync valuesLoader,
-			Triple<Button, Integer, ClickHandler> footerButton);
+			Triple<Button, Integer, ClickHandler> footerButton, String locale, String webId);
 	
 	public abstract <T extends Map<String, Object>> void  addFooterWidgetColumn(AbstractFilterableTable<T> table, final DynamicColumDefinition column, int columnCount, int columnIndex, ColumnValuesRemoteLoaderAsync valuesLoader,
- List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan);
+			List<Pair<Widget, ClickHandler>> footerWidget, Integer colSpan, String locale, String webId);
 	
 	public class BooleanCell extends AbstractCell<Boolean> {
 

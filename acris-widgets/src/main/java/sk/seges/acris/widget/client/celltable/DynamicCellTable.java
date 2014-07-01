@@ -20,6 +20,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object>> {
 
 	private final ColumnValuesRemoteLoaderAsync valuesLoader;
+	private final String locale;
+	private final String webId;
 	protected boolean checkboxColumnAdded = false;
 	
 	static class DynamicCellTableKeyProvider implements ProvidesIdentifier<Map<String, Object>> {
@@ -38,24 +40,33 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 		initialize();
 	}
 
-	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader) {
+	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, String locale, String webId) {
 		super(new DynamicCellTableKeyProvider(), Map.class, false);
 		this.valuesLoader = valuesLoader;
+		this.locale = locale;
+		this.webId = webId;
 	}
 	
-	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean sortable) {
+	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean sortable, String locale, String webId) {
 		super(new DynamicCellTableKeyProvider(), Map.class, false, sortable);
 		this.valuesLoader = valuesLoader;
+		this.locale = locale;
+		this.webId = webId;
 	}
 	
-	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable) {
+	public DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, String locale, String webId) {
 		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, sortable);
 		this.valuesLoader = valuesLoader;
+		this.locale = locale;
+		this.webId = webId;
 	}
 	
-	protected DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, TableResources resources, boolean filterable){
+	protected DynamicCellTable(ColumnValuesRemoteLoaderAsync valuesLoader, boolean multiselect, boolean sortable, TableResources resources, 
+			boolean filterable, String locale, String webId){
 		super(new DynamicCellTableKeyProvider(), Map.class, multiselect, resources, sortable, filterable);
-		this.valuesLoader = valuesLoader;		
+		this.valuesLoader = valuesLoader;
+		this.locale = locale;
+		this.webId = webId;
 	}
 
 	@Override
@@ -101,7 +112,7 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 			}
 			if (column instanceof DynamicColumnDefinitionWithFooterButton) {
 				Triple<Button, Integer, ClickHandler> footerButton = ((DynamicColumnDefinitionWithFooterButton)column).getFooterButton();
-				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, footerButton);
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, footerButton, locale, webId);
 			} else if (column instanceof DynamicColumnDefinitionWithFooterWidget) {
 				DynamicColumnDefinitionWithFooterWidget footerWidgetColumn = (DynamicColumnDefinitionWithFooterWidget) column;
 				List<Pair<Widget, ClickHandler>> footerWidget = footerWidgetColumn.getFooterWidget();
@@ -109,9 +120,9 @@ public class DynamicCellTable extends AbstractFilterableTable<Map<String, Object
 				if (footerWidgetColumn.getColSpan() != null) {
 					colSpan = footerWidgetColumn.getColSpan();
 				}
-				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), columnIndex, valuesLoader, footerWidget, colSpan);
+				ColumnType.fromString(column.getType()).addFooterWidgetColumn(this, column, columns.size(), columnIndex, valuesLoader, footerWidget, colSpan, locale, webId);
 			} else {
-				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, null);
+				ColumnType.fromString(column.getType()).addColumn(this, column, columns.size(), columnIndex, valuesLoader, null, locale, webId);
 			}
 		}
 	}

@@ -442,14 +442,14 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, Validator validator, Triple<Button, Integer, ClickHandler> footerButton,
+			String property, Map<String, String> options, Validator validator, Triple<Button, Integer, ClickHandler> footerButton,
 			int columnIndex) {
 		addEnumeratedColumn(column, width, text, property, options, validator, FilterDTO.EQ, footerButton, columnIndex);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void addEnumeratedColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, Validator validator, String operation, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
+			String property, Map<String, String> options, Validator validator, String operation, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
 
 		initializeColumn(column, property);
 
@@ -476,7 +476,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	@SuppressWarnings("unchecked")
 	protected <F extends Enum<?>> void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
-			InputFilter textFilter, String property, List<String> options, Validator validator, String text, String defaultVal, Triple<Button, Integer, ClickHandler> footerButton,
+			InputFilter textFilter, String property, Map<String, String> options, Validator validator, String text, String defaultVal, Triple<Button, Integer, ClickHandler> footerButton,
 			int columnIndex){
 		if(filterable){
 			insertColumn(columnIndex, column, new FilterableSelectionHeader(columnUpdater, textFilter.getCriterion(property, new PropertyHolder(defaultVal)),
@@ -487,18 +487,18 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	public void addSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
+			String property, Map<String, String> options, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
 		addSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerButton, columnIndex);
 	}
 	
 	public void addFooterWidgetSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex, Integer colSpan) {
+			String property, Map<String, String> options, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex, Integer colSpan) {
 		addFooterWidgetSelectionColumn(column, width, text, property, options, FilterDTO.EQ, footerWidget, columnIndex, colSpan);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void addSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, String operation, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
+			String property, Map<String, String> options, String operation, Triple<Button, Integer, ClickHandler> footerButton, int columnIndex) {
 
 		initializeColumn(column, property);
 
@@ -525,7 +525,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	
 	@SuppressWarnings("unchecked")
 	public void addFooterWidgetSelectionColumn(final Column<T, ?> column, int width, String text,
-			String property, List<String> options, String operation, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex, Integer colSpan) {
+			String property, Map<String, String> options, String operation, List<Pair<Widget, ClickHandler>> footerWidget, int columnIndex, Integer colSpan) {
 
 		initializeColumn(column, property);
 
@@ -551,7 +551,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	protected void addColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
-			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal, Triple<Button, Integer, ClickHandler> footerButton, 
+			SelectionFilter textFilter, String property, Map<String, String> options, String text, String defaultVal, Triple<Button, Integer, ClickHandler> footerButton, 
 			int columnIndex){
 		if(filterable){
 			insertColumn(columnIndex, column, new FilterableSelectionHeader(columnUpdater, textFilter.getCriterion(property, defaultVal),
@@ -562,7 +562,7 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 	}
 	
 	protected void addFooterWidgetColumnWithSelectionHeader(Column<T, ?> column, ValueUpdater<SimpleExpressionDTO> columnUpdater,
-			SelectionFilter textFilter, String property, List<String> options, String text, String defaultVal, List<Pair<Widget, ClickHandler>> footerWidget,
+			SelectionFilter textFilter, String property, Map<String, String> options, String text, String defaultVal, List<Pair<Widget, ClickHandler>> footerWidget,
 			int columnIndex, Integer colSpan) {
 		if(filterable){
 			insertColumn(columnIndex, column,
@@ -594,9 +594,9 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 
 		public SimpleExpressionDTO getCriterion(String property, String... vals) {
 			if (vals == null || vals.length == 0) {
-				return new SimpleExpressionDTO(property, operation, new PropertyHolder());
+				return new SimpleExpressionDTO(operation, property, new PropertyHolder());
 			}
-			return new SimpleExpressionDTO(property, operation, new PropertyHolder(vals[0]));
+			return new SimpleExpressionDTO(operation, property, new PropertyHolder(vals[0]));
 		}
 
 		public SimpleExpressionDTO setValue(SimpleExpressionDTO expression, String[] values) {
@@ -798,13 +798,13 @@ public class AbstractFilterableTable<T> extends CellTable<T> {
 			column.setSortable(sortable);
 
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
-		} else if (value.getValue() != null) {
+		} else if (value.getValue() != null && value.getValue().getValue() != null) {
 
 
 			filterValues.put(value.getProperty(), value);
 
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
-		} else if (value.getValue() == null) {
+		} else if (value.getValue() == null || value.getValue().getValue() == null) {
 			filterValues.remove(value.getProperty());
 			RangeChangeEvent.fire(this, new Range(getPageStart(), getPageSize()));
 		}

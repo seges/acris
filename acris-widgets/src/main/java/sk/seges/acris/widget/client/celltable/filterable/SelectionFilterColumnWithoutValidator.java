@@ -1,13 +1,13 @@
 package sk.seges.acris.widget.client.celltable.filterable;
 
-import java.util.List;
+import java.util.Map;
 
 import sk.seges.sesam.shared.model.api.PropertyHolder;
 import sk.seges.sesam.shared.model.dto.SimpleExpressionDTO;
 
 public class SelectionFilterColumnWithoutValidator extends SelectionFilterColumn {
 
-	public SelectionFilterColumnWithoutValidator(List<String> options, String text) {
+	public SelectionFilterColumnWithoutValidator(Map<String, String> options, String text) {
 		super(null, options, text);
 	}
 

@@ -5,6 +5,7 @@ public interface DynamicColumDefinition {
 	public static final String FIELD = "field";
 	public static final String LABEL = "label";
 	public static final String TYPE = "type";
+	public static final String WIDTH = "width";
 	
 	String getField();
 	void setField(String field);
@@ -15,4 +16,6 @@ public interface DynamicColumDefinition {
 	String getType();
 	void setType(String type);
 
+	Integer getWidth();
+	void setWidth(Integer width);
 }
