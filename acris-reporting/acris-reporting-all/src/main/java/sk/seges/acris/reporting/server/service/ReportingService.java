@@ -155,6 +155,9 @@ public class ReportingService implements IReportingLocalService {
 				}
 
 				File f = new File(filePath);
+				if(f.exists()){
+					f.delete();
+				}
 				FileOutputStream fos = new FileOutputStream(f);
 				copy(proxyIn, fos);
 				fos.close();
