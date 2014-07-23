@@ -445,6 +445,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				failure("Unable to save offline content for token " + generatorEnvironment.getTokensCache().getCurrentToken().getNiceUrl() + ".", caught);
 				if (PERFORMANCE_MONITOR) {
 					timer.stop(Operation.CONTENT_GENERATING);
 					Log.info(timer.report());
