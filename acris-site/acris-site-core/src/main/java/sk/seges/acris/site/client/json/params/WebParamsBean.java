@@ -38,6 +38,7 @@ public class WebParamsBean implements WebParams {
 	private Integer countOfDaysToPayInvoice;
 	
 	private ImageSize[] imageSizes;
+	private Boolean newProductSettingsEnabled;
 
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -278,4 +279,13 @@ public class WebParamsBean implements WebParams {
 	public void setImageSizes(ImageSize[] imageSizes) {
 		this.imageSizes = imageSizes;		
 	}
+	
+	@Override
+	public Boolean isNewProductSettingsEnabled() {
+		return newProductSettingsEnabled;
+	}
+	
+	public void setNewProductSettingsEnabled(Boolean newProductSettingsEnabled) {
+		this.newProductSettingsEnabled = newProductSettingsEnabled;
+	};
 }

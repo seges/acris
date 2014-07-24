@@ -260,4 +260,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setImageSizes(ImageSize[] imageSizes) {
 		data.set(IMAGE_SIZES, JSONModel.arrayFromJson(imageSizes.toString()));
 	}
+
+	@Override
+	public Boolean isNewProductSettingsEnabled() {
+		return data.getBoolean(NEW_PRODUCT_SETTINGS_ENABLED);
+	}
+
+	@Override
+	public void setNewProductSettingsEnabled(Boolean newProductSettingsEnabled) {
+		data.set(NEW_PRODUCT_SETTINGS_ENABLED, newProductSettingsEnabled);
+	}
 }

@@ -28,6 +28,7 @@ public interface WebParams extends ContentParameters {
 	public static final String REDIRECT_LOGIN_URL = "redirectLoginUrl";
 	public static final String COUNT_OF_DAYS_TO_PAY_INVOICE = "countOfDaysToPayInvoice";
 	public static final String IMAGE_SIZES = "imageSizes";	
+	public static final String NEW_PRODUCT_SETTINGS_ENABLED = "newProductSettingsEnabled"; 
 	
 	String[] getOfflinePostProcessorInactive();
 
@@ -124,4 +125,8 @@ public interface WebParams extends ContentParameters {
 	ImageSize[] getImageSizes();
 	
 	void setImageSizes(ImageSize[] imageSizes);
+	
+	Boolean isNewProductSettingsEnabled();
+	
+	void setNewProductSettingsEnabled(Boolean newProductSettingsEnabled);
 }
