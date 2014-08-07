@@ -1,16 +1,29 @@
 package sk.seges.acris.security.server.spring.acl.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.acls.domain.DefaultPermissionFactory;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.model.*;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
@@ -27,10 +40,6 @@ import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
 import sk.seges.sesam.domain.IDomainObject;
 import sk.seges.sesam.security.shared.domain.ISecuredObject;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SpringAclMaintainer implements AclManager {
@@ -266,6 +275,34 @@ public class SpringAclMaintainer implements AclManager {
 
 		if (result != null && result.getParentObject() != null) {
 			return result.getParentObject();
+		}
+		return result;
+	}
+	
+	@Override
+	@RunAs(ACL_MAINTAINER_ROLE)
+	public List<String> loadSidNames(ISecuredObject<?> securedObject) {
+		MutableAcl acl = null;
+		Long securedId = securedObject.getIdForACL();
+		Class<?> clazz = securedObject.getSecuredClass();
+		
+		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(clazz);
+		AclSecuredObjectIdentityData objectIdentity = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), securedId);
+		if (objectIdentity == null) {
+			throw new SecurityException("Could not find acl entry for aclId: " + securedId + " class: " + clazz.getName()
+					+ " cause acl object identity not found!");
+		}
+		try {
+			acl = (MutableAcl) aclService.readAclById(new ObjectIdentityImpl(objectIdentity.getJavaType(), securedId));
+		} catch (NotFoundException e) {
+			throw new SecurityException("Could not find acl entry for aclId: " + securedId + " class: " + clazz.getName()
+					+ " cause acl object identity not found!");
+		}
+		
+		List<String> result = new ArrayList<String>();
+		for (AccessControlEntry ace : acl.getEntries()) {
+			PrincipalSid sid = (PrincipalSid)ace.getSid();
+			result.add(sid.getPrincipal());
 		}
 		return result;
 	}
