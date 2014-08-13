@@ -11,6 +11,7 @@ import sk.seges.acris.generator.server.processor.post.alters.ImageGalleryPathAlt
 import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LocaleGwtPropertyAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.MetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
@@ -20,7 +21,6 @@ import sk.seges.acris.generator.server.processor.post.annihilators.*;
 import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
-import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropertyAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.OfflineTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.TitleAppenderPostProcessor;
@@ -112,7 +112,7 @@ public class PostProcessorsConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor localeGwtPropertyPostProcessor() {
-		return new LocaleGwtPropertyAppenderPostProcessor();
+		return new LocaleGwtPropertyAlterPostProcessor();
 	}
 
 	@Bean

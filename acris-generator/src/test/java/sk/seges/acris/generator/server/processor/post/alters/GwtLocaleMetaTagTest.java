@@ -1,4 +1,4 @@
-package sk.seges.acris.generator.server.processor.post.appender;
+package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
-import sk.seges.acris.generator.server.processor.post.appender.GwtLocaleMetaTagTest.GwtLocaleMetaTagTestConfigurationLoader;
+import sk.seges.acris.generator.server.processor.post.alters.GwtLocaleMetaTagTest.GwtLocaleMetaTagTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.appender.GwtLocaleMetaTagTestConfiguration;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 

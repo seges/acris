@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropertyAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LocaleGwtPropertyAlterPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
@@ -14,7 +14,7 @@ public class GwtLocaleMetaTagTestConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor metaTagPostProcessor() {
-		return new LocaleGwtPropertyAppenderPostProcessor();
+		return new LocaleGwtPropertyAlterPostProcessor();
 	}
 
 }

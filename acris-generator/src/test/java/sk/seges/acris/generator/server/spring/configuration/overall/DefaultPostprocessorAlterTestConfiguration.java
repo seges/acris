@@ -10,6 +10,7 @@ import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagA
 import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LocaleGwtPropertyAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.MetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
@@ -25,7 +26,6 @@ import sk.seges.acris.generator.server.processor.post.annihilators.OnPropertyErr
 import sk.seges.acris.generator.server.processor.post.annihilators.PropertiesScriptAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.TitleAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
-import sk.seges.acris.generator.server.processor.post.appenders.LocaleGwtPropertyAppenderPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;

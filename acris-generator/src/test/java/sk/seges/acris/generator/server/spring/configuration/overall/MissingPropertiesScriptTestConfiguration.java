@@ -3,6 +3,7 @@ package sk.seges.acris.generator.server.spring.configuration.overall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.*;
@@ -79,7 +80,7 @@ public class MissingPropertiesScriptTestConfiguration {
 
 	@Bean
 	public AbstractElementPostProcessor localeGwtPropertyPostProcessor() {
-		return new LocaleGwtPropertyAppenderPostProcessor();
+		return new LocaleGwtPropertyAlterPostProcessor();
 	}
 
 	@Bean

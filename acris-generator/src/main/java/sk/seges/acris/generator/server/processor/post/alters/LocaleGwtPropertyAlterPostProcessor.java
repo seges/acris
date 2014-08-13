@@ -1,4 +1,4 @@
-package sk.seges.acris.generator.server.processor.post.appenders;
+package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
@@ -9,7 +9,7 @@ import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils.MetaTagNameAttribute;
 
-public class LocaleGwtPropertyAppenderPostProcessor extends AbstractAppenderPostProcessor {
+public class LocaleGwtPropertyAlterPostProcessor extends AbstractAlterPostProcessor {
 
 	private static final String NAME_ATTRIBUTE_NAME = "name";
 	private static final String CONTENT_ATTRIBUTE_NAME = "content";
@@ -24,7 +24,8 @@ public class LocaleGwtPropertyAppenderPostProcessor extends AbstractAppenderPost
 
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
-		if (NodesUtils.getChildNode(node, MetaTag.class, new MetaTagNameAttribute(GWT_PROPERTY_NAME)) == null) {
+		MetaTag gwtPropertyTag = NodesUtils.getChildNode(node, MetaTag.class, new MetaTagNameAttribute(GWT_PROPERTY_NAME));
+		if (gwtPropertyTag == null) {
 
 			HeadTag headTag = (HeadTag)node;
 			NodeList headChildNodes = headTag.getChildren();
@@ -47,6 +48,8 @@ public class LocaleGwtPropertyAppenderPostProcessor extends AbstractAppenderPost
 			if (newList) {
 				headTag.setChildren(headChildNodes);
 			}
+		} else {
+			gwtPropertyTag.setAttribute(CONTENT_ATTRIBUTE_NAME, LOCALE_PROPERTY_VALUE + generatorEnvironment.getGeneratorToken().getLanguage());
 		}
 		
 		return true;
