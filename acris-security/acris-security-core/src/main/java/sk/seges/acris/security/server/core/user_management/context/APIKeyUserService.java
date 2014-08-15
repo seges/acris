@@ -29,7 +29,7 @@ public class APIKeyUserService implements UserProviderService {
 	
 	private static final Logger log = Logger.getLogger(APIKeyUserService.class);
 	
-	private String apiKeyURL;
+	protected String apiKeyURL;
 	protected ServerSessionProvider sessionProvider;
 	private ApiKeyUserProvider apiKeyUserProvider;
 	
@@ -127,7 +127,7 @@ public class APIKeyUserService implements UserProviderService {
 		return userContext.getWebId();
 	}
 	
-	private String getUrl(UserContext userContext) {
+	protected String getUrl(UserContext userContext) {
 		String url = apiKeyURL;
 		url += apiKeyURL.contains("?") ? "&" : "?" + WEBID_PARAMETER + "=" + userContext.getWebId();
 		url += "&" + APIKEY_PARAMETER + "=" + ((APIKeyUserContext) userContext).getApiKey();
