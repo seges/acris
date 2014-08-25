@@ -23,6 +23,9 @@ public interface AclManager {
 	void setAclRecords(ISecuredObject<?> securedObject, UserData user, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent);
 	void setAclRecords(ISecuredObject<?> securedObject, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
 	void setAclRecords(ISecuredObject<?> securedObject, RoleData role, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent);
+	void setAclRecords(ISecuredObject<?> securedObject, String authorityName, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
+	void setAclRecords(ISecuredObject<?> securedObject, String authorityName, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent);
+	
 	
 	void setAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, UserData user,	Permission[] authorities);
 	

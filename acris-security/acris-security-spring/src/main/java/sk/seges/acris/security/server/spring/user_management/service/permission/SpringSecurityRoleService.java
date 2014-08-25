@@ -1,15 +1,15 @@
 package sk.seges.acris.security.server.spring.user_management.service.permission;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import sk.seges.acris.security.server.core.user_management.dao.permission.api.ISecurityRoleDao;
 import sk.seges.acris.security.server.core.user_management.service.permission.SecurityRoleService;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
-import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
-
-import java.util.List;
 
 // FIXME
 @Service
@@ -24,8 +24,8 @@ public class SpringSecurityRoleService extends SecurityRoleService {
 
 	@Override
 	@Transactional
-	public RoleData findRole(String roleName) {
-		return super.findRole(roleName);
+	public RoleData findRole(String roleName, String webId) {
+		return super.findRole(roleName, webId);
 	}
 
 	@Override
@@ -36,8 +36,8 @@ public class SpringSecurityRoleService extends SecurityRoleService {
 
 	@Override
 	@Transactional
-	public PagedResult<List<RoleData>> findAll(Page page) {
-		return super.findAll(page);
+	public PagedResult<List<RoleData>> findAll(String webId) {
+		return super.findAll(webId);
 	}
 
 	@Override

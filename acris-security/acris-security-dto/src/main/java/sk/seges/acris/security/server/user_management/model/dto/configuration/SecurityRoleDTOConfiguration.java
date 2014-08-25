@@ -28,5 +28,6 @@ public interface SecurityRoleDTOConfiguration extends IDataTransferObject {
 	void name();
 	void description();
 	void selectedAuthorities();
+	void webId();
 
 }
