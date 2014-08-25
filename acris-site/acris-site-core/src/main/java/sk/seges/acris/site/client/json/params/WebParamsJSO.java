@@ -270,4 +270,24 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setNewProductSettingsEnabled(Boolean newProductSettingsEnabled) {
 		data.set(NEW_PRODUCT_SETTINGS_ENABLED, newProductSettingsEnabled);
 	}
+
+	@Override
+	public String getInvoicePrefix() {
+		return data.get(INVOICE_PREFIX);
+	}
+
+	@Override
+	public void setInvoicePrefix(String invoicePrefix) {
+		data.set(INVOICE_PREFIX, invoicePrefix);
+	}
+
+	@Override
+	public Integer getInvoiceCurrentNumber() {
+		return data.getInteger(INVOICE_CURRENT_NUMBER);
+	}
+
+	@Override
+	public void setInvoiceCurrentNumber(Integer invoiceCurrentNumber) {
+		data.set(INVOICE_CURRENT_NUMBER, invoiceCurrentNumber);
+	}
 }

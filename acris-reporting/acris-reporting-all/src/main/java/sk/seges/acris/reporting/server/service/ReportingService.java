@@ -41,10 +41,6 @@ import sk.seges.sesam.pap.service.annotation.LocalService;
 @LocalService
 public class ReportingService implements IReportingLocalService {
 
-	private static final String OUTPUT = "output";
-
-	private static final String REPORTS_DIR = "reports";
-
 	private static final long serialVersionUID = -7961507798873119425L;
 
 	private static final Logger LOG = Logger.getLogger(ReportingService.class);
@@ -103,7 +99,7 @@ public class ReportingService implements IReportingLocalService {
 		String params = "";
 		params += generateParamsString(parameters);
 		if (exportType == null) {
-			exportType = ((String) parameters.get(OUTPUT)).toLowerCase();
+			exportType = ((String) parameters.get(ReportingConstants.OUTPUT)).toLowerCase();
 		}
 
 		String urlPath = generateCompleteReportUrl(exportType, report, params, configuration.getJasperServerUser(),
@@ -143,7 +139,7 @@ public class ReportingService implements IReportingLocalService {
 
 			if (proxyIn != null) {
 				String fileName = reportName + "." + exportType.toLowerCase();
-				String reportDir = REPORTS_DIR;
+				String reportDir = ReportingConstants.REPORTS_DIR;
 				String directory = configuration.resolveRootDirectoryPath(webId) + "/" + reportDir;
 				File d = new File(directory);
 				if (!d.exists() || !d.isDirectory()) {
@@ -177,7 +173,7 @@ public class ReportingService implements IReportingLocalService {
 		String params = "";
 		if (parameters != null) {
 			for (String key : parameters.keySet()) {
-				if (key != OUTPUT) {
+				if (key != ReportingConstants.OUTPUT) {
 					params += "&" + key + "=" + parameters.get(key);
 				}
 			}

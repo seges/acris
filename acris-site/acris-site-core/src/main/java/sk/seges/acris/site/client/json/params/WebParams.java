@@ -29,6 +29,8 @@ public interface WebParams extends ContentParameters {
 	public static final String COUNT_OF_DAYS_TO_PAY_INVOICE = "countOfDaysToPayInvoice";
 	public static final String IMAGE_SIZES = "imageSizes";	
 	public static final String NEW_PRODUCT_SETTINGS_ENABLED = "newProductSettingsEnabled"; 
+	public static final String INVOICE_PREFIX = "invoicePrefix";
+	public static final String INVOICE_CURRENT_NUMBER = "invoiceCurrentNumber";
 	
 	String[] getOfflinePostProcessorInactive();
 
@@ -129,4 +131,12 @@ public interface WebParams extends ContentParameters {
 	Boolean isNewProductSettingsEnabled();
 	
 	void setNewProductSettingsEnabled(Boolean newProductSettingsEnabled);
+	
+	String getInvoicePrefix();
+	
+	void setInvoicePrefix(String invoicePrefix);
+	
+	Integer getInvoiceCurrentNumber();
+	
+	void setInvoiceCurrentNumber(Integer invoiceCurrentNumber);
 }

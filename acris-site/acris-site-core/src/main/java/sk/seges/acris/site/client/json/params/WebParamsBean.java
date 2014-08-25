@@ -39,6 +39,9 @@ public class WebParamsBean implements WebParams {
 	
 	private ImageSize[] imageSizes;
 	private Boolean newProductSettingsEnabled;
+	
+	private String invoicePrefix;
+	private Integer invoiceCurrentNumber;
 
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -285,7 +288,28 @@ public class WebParamsBean implements WebParams {
 		return newProductSettingsEnabled;
 	}
 	
+	@Override
 	public void setNewProductSettingsEnabled(Boolean newProductSettingsEnabled) {
 		this.newProductSettingsEnabled = newProductSettingsEnabled;
+	}
+
+	@Override
+	public String getInvoicePrefix() {
+		return invoicePrefix;
+	}
+
+	@Override
+	public void setInvoicePrefix(String invoicePrefix) {
+		this.invoicePrefix = invoicePrefix;
+	}
+
+	@Override
+	public Integer getInvoiceCurrentNumber() {
+		return invoiceCurrentNumber;
+	}
+
+	@Override
+	public void setInvoiceCurrentNumber(Integer invoiceCurrentNumber) {
+		this.invoiceCurrentNumber = invoiceCurrentNumber;
 	};
 }
