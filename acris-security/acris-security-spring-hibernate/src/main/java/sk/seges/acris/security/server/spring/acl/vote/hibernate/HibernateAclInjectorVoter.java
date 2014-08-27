@@ -2,7 +2,14 @@ package sk.seges.acris.security.server.spring.acl.vote.hibernate;
 
 import java.util.List;
 
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.DetachedCriteriaUtils;
+import org.hibernate.criterion.Junction;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
@@ -44,6 +51,8 @@ public class HibernateAclInjectorVoter extends AbstractAclInjectionVoter {
         for (Sid sid : sids) {
             if (sid instanceof PrincipalSid) {
                 junction.add(Restrictions.eq(AclSidData.SID, ((PrincipalSid) sid).getPrincipal()));
+            } else if (sid instanceof GrantedAuthoritySid) {
+            	junction.add(Restrictions.eq(AclSidData.SID, ((GrantedAuthoritySid) sid).getGrantedAuthority()));
             }
         }
 
