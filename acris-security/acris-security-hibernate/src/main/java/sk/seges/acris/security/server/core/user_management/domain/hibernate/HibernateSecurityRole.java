@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Fetch;
@@ -22,7 +23,7 @@ import sk.seges.corpis.server.domain.user.server.model.base.RoleBase;
  * custom user service implementation where you can model user <-> role <-> authority relation.
  */
 @Entity
-@Table(name = "role")
+@Table(name = "role", uniqueConstraints = { @UniqueConstraint(columnNames = {HibernateSecurityRole.WEB_ID, HibernateSecurityRole.NAME})})
 @SequenceGenerator(name = "role_id_seq", sequenceName = "role_id_seq", initialValue = 1)
 public class HibernateSecurityRole extends RoleBase {
 	
@@ -33,27 +34,32 @@ public class HibernateSecurityRole extends RoleBase {
 	public HibernateSecurityRole() {
 	}
 
+	@Override
 	@Id
 	@GeneratedValue(generator = "role_id_seq")
 	public Integer getId() {
 		return super.getId();
 	}
 
-	@Column(name = "name", nullable = false, unique = true)
+	@Override
+	@Column(name = "name", nullable = false)
 	public String getName() {
 		return super.getName();
 	}
 
+	@Override
 	@Column
 	public String getDescription() {
 		return super.getDescription();
 	}
 	
+	@Override
 	@Column
 	public String getWebId() {
 		return super.getWebId();
 	}
 
+	@Override
 	@CollectionOfElements(fetch = FetchType.EAGER)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<String> getSelectedAuthorities() {
