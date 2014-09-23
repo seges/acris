@@ -1,19 +1,21 @@
 package sk.seges.acris.security.server.spring.user_management.dao.permission.hibernate;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+
 import sk.seges.acris.security.server.core.user_management.dao.permission.hibernate.IHibernateSecurityRoleDao;
 import sk.seges.acris.security.server.core.user_management.domain.hibernate.HibernateSecurityRole;
 import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.utils.CastUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
 
 public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> implements IHibernateSecurityRoleDao<RoleData> {
 
@@ -43,8 +45,10 @@ public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> im
 	}
 
 	@Override
-	public RoleData findByName(String name) {
-		DetachedCriteria criteria = createCriteria().add(Restrictions.eq(RoleData.NAME, name));
+	public RoleData findByName(String name, String webId) {
+		DetachedCriteria criteria = createCriteria();
+		criteria.add(Restrictions.eq(RoleData.NAME, name));
+		criteria.add(Restrictions.eq(RoleData.WEB_ID, webId));
 		return findUniqueResultByCriteria(criteria);
 	}
 

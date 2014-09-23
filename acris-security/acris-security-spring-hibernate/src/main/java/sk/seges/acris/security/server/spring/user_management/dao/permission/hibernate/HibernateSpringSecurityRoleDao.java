@@ -1,12 +1,13 @@
 package sk.seges.acris.security.server.spring.user_management.dao.permission.hibernate;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import sk.seges.corpis.server.domain.user.server.model.data.RoleData;
 import sk.seges.sesam.dao.Page;
-
-import java.util.List;
 
 @Component
 public class HibernateSpringSecurityRoleDao extends HibernateSecurityRoleDao {
@@ -19,8 +20,8 @@ public class HibernateSpringSecurityRoleDao extends HibernateSecurityRoleDao {
 
 	@Override
 	@Transactional
-	public RoleData findByName(String name) {
-		return super.findByName(name);
+	public RoleData findByName(String name, String webId) {
+		return super.findByName(name, webId);
 	}
 
 	@Override
