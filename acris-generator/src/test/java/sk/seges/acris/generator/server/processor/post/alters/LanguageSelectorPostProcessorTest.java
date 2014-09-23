@@ -38,4 +38,18 @@ public class LanguageSelectorPostProcessorTest extends AbstractProcessorTest {
 		runTest(HTML_FILE_DIRECTORY + "2_test_languageselector_input.html", 
 				HTML_FILE_DIRECTORY + "2_test_languageselector_result.html");
 	}
+	
+	@Test
+	@DirtiesContext
+	public void testAnchorLanguageSelectorPostProcessor() {
+		runTest(HTML_FILE_DIRECTORY + "3_test_languageselector_input.html", 
+				HTML_FILE_DIRECTORY + "3_test_languageselector_result.html");
+	}
+	
+	@Test
+	@DirtiesContext
+	public void testImageLanguageSelectorPostProcessor() {
+		runTest(HTML_FILE_DIRECTORY + "4_test_languageselector_input.html", 
+				HTML_FILE_DIRECTORY + "4_test_languageselector_result.html");
+	}
 }
