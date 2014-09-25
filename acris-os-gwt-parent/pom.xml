@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sk.seges.sesam</groupId>
 		<artifactId>sesam-os-base-parent</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>2.0.0</version>
 	</parent>
 	
 	<name>AcrIS Google Web Toolkit Parent</name>
@@ -28,8 +28,8 @@
 
 	<scm>
 		<url>http://code.google.com/p/acris/source</url>
-		<connection>scm:svn:http://acris.googlecode.com/svn/trunk/acris-os-gwt-parent</connection>
-		<developerConnection>scm:svn:https://acris.googlecode.com/svn/trunk/acris-os-gwt-parent</developerConnection>
+		<connection>scm:git:https://code.google.com/p/acris</connection>
+		<developerConnection>scm:git:https://code.google.com/p/acris</developerConnection>
 	</scm>
 
 	<properties>
