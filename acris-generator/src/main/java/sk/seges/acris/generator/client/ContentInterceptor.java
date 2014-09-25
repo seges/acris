@@ -1,13 +1,7 @@
 package sk.seges.acris.generator.client;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.RootPanel;
+import java.util.ArrayList;
+
 import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
@@ -20,7 +14,14 @@ import sk.seges.sesam.shared.model.dto.ConjunctionDTO;
 import sk.seges.sesam.shared.model.dto.FilterDTO;
 import sk.seges.sesam.shared.model.dto.PageDTO;
 
-import java.util.ArrayList;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class ContentInterceptor {
 
@@ -40,10 +41,12 @@ public class ContentInterceptor {
 		
 		generatorService.getDefaultGeneratorToken(defaultToken.getLanguage(), defaultToken.getWebId(), new AsyncCallback<GeneratorToken>() {
 
+			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
 			}
 
+			@Override
 			public void onSuccess(GeneratorToken result) {
 				if (result != null) {
 
@@ -75,10 +78,12 @@ public class ContentInterceptor {
 		
 		generatorService.getAvailableNiceurls(page, new AsyncCallback<ArrayList<String>>() {
 
+			@Override
 			public void onFailure(Throwable caught) {
 				callback.onFailure(caught);
 			}
 
+			@Override
 			public void onSuccess(ArrayList<String> result) {
 				generatorEnvironment.getTokensCache().addTokens(result);
 				callback.onSuccess(null);
@@ -126,9 +131,16 @@ public class ContentInterceptor {
 				} else {
 					Log.debug("Request finished. Waiting for next " + RPCRequestTracker.getRunningRequestStarted() + " requests for niceurl " + token.getNiceUrl());
 					if (RPCRequestTracker.getRunningRequestStarted() == 0) {
-						timer.cancel();
-						RPCRequestTracker.getTracker().removeAllCallbacks();
-						callback.onSuccess(null);
+						final Timer timer2 = new Timer() {
+
+							@Override
+							public void run() {
+								timer.cancel();
+								RPCRequestTracker.getTracker().removeAllCallbacks();
+								callback.onSuccess(null);
+							}							
+						};
+						timer2.schedule(3000);
 					} else {
 						logAwaitingRequests();
 					}
