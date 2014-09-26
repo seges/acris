@@ -8,6 +8,7 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.corpis.shared.domain.HasWebId;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
+/** Interface for hierarchical permission. */
 @DomainInterface
 @BaseObject
 interface HierarchyPermission extends Serializable, IMutableDomainObject<Integer>, HasWebId {

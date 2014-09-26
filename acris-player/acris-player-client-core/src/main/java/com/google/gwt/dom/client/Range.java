@@ -121,9 +121,6 @@ public class Range extends JavaScriptObject {
      *
      * @param unit character, sentence or word
      *
-     * @return Boolean. One of the following values:
-     *      false	The range was not expanded.
-     *      true	The range was successfully expanded.
      */
     public final native void expand(Unit unit) /*-{
         this.expand(unit.toString());

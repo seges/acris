@@ -8,6 +8,7 @@ import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
 import sk.seges.sesam.domain.IDomainObject;
 import sk.seges.sesam.domain.IMutableDomainObject;
 
+/** Interface representing user role permission. */
 @DomainInterface
 @BaseObject
 interface UserRolePermission extends IMutableDomainObject<String>, Serializable {
