@@ -48,8 +48,18 @@ public class HibernateSecurityRoleDao extends AbstractHibernateCRUD<RoleData> im
 	public RoleData findByName(String name, String webId) {
 		DetachedCriteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(RoleData.NAME, name));
-		criteria.add(Restrictions.eq(RoleData.WEB_ID, webId));
-		return findUniqueResultByCriteria(criteria);
+		criteria.add(Restrictions.disjunction().add(Restrictions.eq(RoleData.WEB_ID, webId))
+				.add(Restrictions.isNull(RoleData.WEB_ID)));
+		List<RoleData> roles = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
+		if(roles != null && !roles.isEmpty()){
+			for(RoleData role : roles){
+				if(role.getWebId() != null){
+					return role;
+				}
+			}
+			return roles.get(0);
+		}
+		return null;
 	}
 
 	@Override
