@@ -131,16 +131,9 @@ public class ContentInterceptor {
 				} else {
 					Log.debug("Request finished. Waiting for next " + RPCRequestTracker.getRunningRequestStarted() + " requests for niceurl " + token.getNiceUrl());
 					if (RPCRequestTracker.getRunningRequestStarted() == 0) {
-						final Timer timer2 = new Timer() {
-
-							@Override
-							public void run() {
-								timer.cancel();
-								RPCRequestTracker.getTracker().removeAllCallbacks();
-								callback.onSuccess(null);
-							}							
-						};
-						timer2.schedule(3000);
+						timer.cancel();
+						RPCRequestTracker.getTracker().removeAllCallbacks();
+						callback.onSuccess(null);
 					} else {
 						logAwaitingRequests();
 					}
