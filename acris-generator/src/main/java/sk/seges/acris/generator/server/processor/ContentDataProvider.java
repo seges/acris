@@ -12,6 +12,7 @@ public interface ContentDataProvider {
 
 	ContentData getContentForLanguage(ContentData contentData, String targetLanguage);
 	ContentData getContent(GeneratorToken token);
+	ContentData getHomeContent(String targetLanguage, String webId);
 
 	boolean exists(GeneratorToken token);
 }

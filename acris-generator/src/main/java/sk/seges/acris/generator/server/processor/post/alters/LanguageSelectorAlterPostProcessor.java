@@ -126,12 +126,17 @@ public class LanguageSelectorAlterPostProcessor extends AbstractAlterPostProcess
 		if (generatorEnvironment.getContent() == null) {
 			return;
 		}
-		
+		logger.debug("creating link for language: " + languageValue + " and content (generatorEnvironment.getContent()) with nice url: " + generatorEnvironment.getContent().getNiceUrl());
 		ContentData content = contentDataProvider.getContentForLanguage(generatorEnvironment.getContent(), languageValue);
 		
-		if (content == null) {
-			return;
+		if (content == null) {			
+			content = contentDataProvider.getHomeContent(languageValue, generatorEnvironment.getContent().getWebId());
+			if(content == null){
+				logger.error("No home page found for webId: " + generatorEnvironment.getContent().getWebId() + " and language: " + languageValue);
+				return;
+			}
 		}
+		logger.debug("found content for language: " + languageValue + " with nice url: " + content.getNiceUrl());
 		
 		String translatedNiceUrl = content.getNiceUrl();
 		String url = linkWebSettings.getTopLevelDomain();

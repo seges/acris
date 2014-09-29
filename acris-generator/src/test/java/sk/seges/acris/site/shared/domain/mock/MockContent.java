@@ -11,6 +11,7 @@ public class MockContent implements ContentData {
 
 	private static final long serialVersionUID = 7293316505683824943L;
 
+	private String niceUrl = "test";
 
 	@Override
 	public String getKeywords() {
@@ -41,11 +42,12 @@ public class MockContent implements ContentData {
 
 	@Override
 	public String getNiceUrl() {
-		return "test";
+		return niceUrl;
 	}
 
 	@Override
 	public void setNiceUrl(String niceUlr) {
+		this.niceUrl = niceUlr;
 	}
 
 	@Override
