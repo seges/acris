@@ -16,11 +16,6 @@
     	<when-type-assignable class="sk.seges.acris.generator.client.configuration.GeneratorConfiguration" />
 	</generate-with>
 
-	<replace-with class="sk.seges.acris.panel.script.OfflineScriptInjector">
-    	<when-type-is class="sk.seges.acris.panel.script.ScriptInjector"/>
-    	<when-property-is name="offline.mode" value="true" />
-  	</replace-with>
-
 	<source path='client' />
 	<source path='shared' />
 </module>
