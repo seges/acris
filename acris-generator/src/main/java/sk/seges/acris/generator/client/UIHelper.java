@@ -7,6 +7,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
 
+@SuppressWarnings("deprecation")
 public class UIHelper {
 
 	private static native String getNodeName(Element elem) /*-{

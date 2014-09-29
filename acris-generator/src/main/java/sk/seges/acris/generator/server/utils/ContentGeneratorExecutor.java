@@ -20,7 +20,7 @@ public abstract class ContentGeneratorExecutor {
 		return "testLoadContent";
 	}
 
-	private void setHtmlProcessingDefaults() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+	public void setHtmlProcessingDefaults() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 		for (Field field: HTMLScanner.class.getDeclaredFields()) {
 			if (field.getName().equals("RECOGNIZED_FEATURES_DEFAULTS")) {
 				field.setAccessible(true);

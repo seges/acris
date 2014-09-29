@@ -129,4 +129,20 @@ public class NodesUtils {
 	public static final <T extends Node> T getChildNode(Node parentNode, Class<T> clazz) {
 		return getChildNode(parentNode, clazz, (Attribute[])null);
 	}
+	
+	public static void appendChild(Node node, Node child) {
+		NodeList nodes = node.getChildren();
+		if (nodes == null) {
+			node.setChildren(new NodeList());
+		}
+		node.getChildren().add(child);
+	}
+
+	public static void prependChild(Node node, Node child) {
+		NodeList nodes = node.getChildren();
+		if (nodes == null) {
+			node.setChildren(new NodeList());
+		}
+		node.getChildren().prepend(child);
+	}
 }

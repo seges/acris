@@ -11,6 +11,7 @@ public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 	private ContentData content;
 	private WebSettingsData webSettings;
 	private boolean indexFile;
+	private NodesContext nodesContext;
 	
 	public DefaultGeneratorEnvironment(WebSettingsData webSettings, GeneratorToken generatorToken, GeneratorToken defaultToken, ContentData content, boolean indexFile) {
 		this.generatorToken = generatorToken;
@@ -20,6 +21,15 @@ public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 		this.defaultToken = defaultToken;
 	}
 		
+	@Override
+	public NodesContext getNodesContext() {
+		return nodesContext;
+	}
+	
+	public void setNodesContext(NodesContext nodesContext) {
+		this.nodesContext = nodesContext;
+	}
+	
 	@Override
 	public GeneratorToken getGeneratorToken() {
 		return generatorToken;

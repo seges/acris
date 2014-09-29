@@ -6,10 +6,34 @@ import org.springframework.context.annotation.Import;
 
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.*;
-import sk.seges.acris.generator.server.processor.post.annihilators.*;
-import sk.seges.acris.generator.server.processor.post.appenders.*;
-import sk.seges.acris.generator.server.spring.configuration.common.*;
+import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LocaleGwtPropertyAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.MetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.StylesAlterPathPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.TitleAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.HeadStyleScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.JavascriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsMetaTagAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NotVisibleTagsAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.OnLoadErrorFnAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.OnPropertyErrorFnAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.PropertiesScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.TitleAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.TitleAppenderPostProcessor;
+import sk.seges.acris.generator.server.spring.configuration.common.JSONOfflineSettingsConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.MxedModeWebSettingsServiceConfiguration;
 
 @Import({MxedModeWebSettingsServiceConfiguration.class, MockTestConfiguration.class,
 		JSONOfflineSettingsConfiguration.class})

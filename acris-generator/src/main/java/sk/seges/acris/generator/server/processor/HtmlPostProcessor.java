@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
+import org.htmlparser.tags.HeadTag;
+import org.htmlparser.tags.Html;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
@@ -14,6 +16,7 @@ import org.htmlparser.util.ParserException;
 import sk.seges.acris.generator.server.processor.factory.CustomPrototypicalNodeFactory;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.model.api.DefaultNodesContext;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.PostProcessorKind.Kind;
@@ -58,11 +61,6 @@ public class HtmlPostProcessor {
 		Parser parser = parserFactory.createParser(content);
 		parser.setNodeFactory(new CustomPrototypicalNodeFactory());
 		
-//		PrototypicalNodeFactory prototypicalNodeFactory = (PrototypicalNodeFactory)parser.getNodeFactory();
-//		prototypicalNodeFactory.registerTag(new StyleLinkTag());
-//		prototypicalNodeFactory.registerTag(new NoScriptTag());
-//		prototypicalNodeFactory.registerTag(new LenientLinkTag());
-		
 		try {
 			NodeIterator nodeIterator = parser.elements();
 			return processNodes(nodeIterator, rootNodes, token, defaultToken, indexFile);
@@ -73,7 +71,9 @@ public class HtmlPostProcessor {
 
 	protected GeneratorEnvironment getGeneratorEnvironment(GeneratorToken generatorToken, GeneratorToken defaultToken, boolean indexFile) {
 		ContentData content = contentMetaDataProvider.getContent(generatorToken);
-		return new DefaultGeneratorEnvironment(webSettings, generatorToken, defaultToken, content, indexFile);
+		DefaultGeneratorEnvironment result = new DefaultGeneratorEnvironment(webSettings, generatorToken, defaultToken, content, indexFile);
+		result.setNodesContext(new DefaultNodesContext());
+		return result;
 	}
 	
 	private String processNodes(NodeIterator nodeIterator, List<Node> rootNodes, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile) throws ParserException {
@@ -89,6 +89,10 @@ public class HtmlPostProcessor {
 
 			if (log.isTraceEnabled()) {
 				log.trace("Processing node " + node.toString());
+			}
+
+			if (node instanceof Html && generatorEnvironment.getNodesContext().getHtmlNode() == null) {
+				generatorEnvironment.getNodesContext().setHtmlNode((Html) node);
 			}
 
 			rootNodes.add(node);
@@ -108,7 +112,7 @@ public class HtmlPostProcessor {
 	private void executeProcessors(Node node, GeneratorEnvironment generatorEnvironment) {
 
 		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-			if (elementPostProcessor.getKind().equals(Kind.ANNIHILATOR)) {
+			if (elementPostProcessor.getKind().equals(Kind.APPENDER)) {
 				if (postProcessorActivator.isActive(elementPostProcessor, generatorEnvironment.getGeneratorToken().isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
 					elementPostProcessor.process(node, generatorEnvironment);
 				}
@@ -124,7 +128,7 @@ public class HtmlPostProcessor {
 		}
 
 		for (AbstractElementPostProcessor elementPostProcessor : postProcessors) {
-			if (elementPostProcessor.getKind().equals(Kind.APPENDER)) {
+			if (elementPostProcessor.getKind().equals(Kind.ANNIHILATOR)) {
 				if (postProcessorActivator.isActive(elementPostProcessor, generatorEnvironment.getGeneratorToken().isDefaultToken()) && elementPostProcessor.supports(node, generatorEnvironment)) {
 					elementPostProcessor.process(node, generatorEnvironment);
 				}
@@ -136,13 +140,23 @@ public class HtmlPostProcessor {
 		if (nodeList == null) {
 			return;
 		}
+		
+		int currentSize = nodeList.size();
 
-		int size = nodeList.size();
-
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < currentSize; i++) {
 			Node node = nodeList.elementAt(i);
 
+			if (node instanceof HeadTag && generatorEnvironment.getNodesContext().getHeadNode() == null) {
+				generatorEnvironment.getNodesContext().setHeadNode((HeadTag) node);
+			}
+
 			executeProcessors(node, generatorEnvironment);
+			
+			if (nodeList.size() < currentSize) {
+				//node was removed
+				i = i - currentSize + nodeList.size();
+				currentSize = nodeList.size();
+			}
 
 			processNodes(node.getChildren(), generatorEnvironment);
 		}

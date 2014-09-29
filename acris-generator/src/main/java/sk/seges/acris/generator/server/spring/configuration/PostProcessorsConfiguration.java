@@ -19,6 +19,7 @@ import sk.seges.acris.generator.server.processor.post.alters.StylesAlterPathPost
 import sk.seges.acris.generator.server.processor.post.alters.TitleAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.*;
 import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.AcrisExternalScriptAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
@@ -46,6 +47,11 @@ public class PostProcessorsConfiguration {
 	}
 
 	@Bean
+	public AbstractElementPostProcessor externalScriptAppenderPostProcessor() {
+		return new AcrisExternalScriptAppenderPostProcessor();
+	}
+	
+	@Bean
 	public AbstractElementPostProcessor offlineTagAppenderPostProcessor() {
 		return new OfflineTagAppenderPostProcessor();
 	}
@@ -55,6 +61,11 @@ public class PostProcessorsConfiguration {
         return new AcrisInlineScriptAnnihilatorPostProcessor();
     }
 
+    @Bean
+    public AbstractElementPostProcessor externalScriptAnnihilatorPostProcessor() {
+        return new AcrisExternalScriptAnnihilatorPostProcessor();
+    }
+    
     @Bean
     public AbstractElementPostProcessor  javascriptAnnihilatorPostProcessor() {
         return new JavascriptAnnihilatorPostProcessor();

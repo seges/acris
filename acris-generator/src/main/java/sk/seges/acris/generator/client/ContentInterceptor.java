@@ -183,6 +183,7 @@ public class ContentInterceptor {
 	    }
 	}
 
+	@SuppressWarnings("deprecation")
 	public com.google.gwt.user.client.Element getRootElement() {
 		return RootPanel.get().getElement();
 	}

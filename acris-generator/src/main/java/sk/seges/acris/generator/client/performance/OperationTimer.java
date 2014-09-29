@@ -41,6 +41,10 @@ public class OperationTimer {
 			operation.clean();
 		}
 	}
+
+	public long getTotalTime() {
+		return total;
+	}
 	
 	public void start(Operation operation) {
 		operation.start();

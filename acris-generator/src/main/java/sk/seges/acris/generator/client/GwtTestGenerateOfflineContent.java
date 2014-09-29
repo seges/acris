@@ -35,10 +35,10 @@ import com.google.gwt.dom.client.ScriptElement;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
+@SuppressWarnings("deprecation")
 public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 	private HtmlFilesHandler offlineContentProvider;
