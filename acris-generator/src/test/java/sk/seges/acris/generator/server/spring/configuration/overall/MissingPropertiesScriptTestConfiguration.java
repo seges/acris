@@ -7,13 +7,15 @@ import org.springframework.context.annotation.Import;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.ImageLanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LinkLanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.LocaleGwtPropertyAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.MetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.SelectLanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.StylesAlterPathPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.TitleAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAnnihilatorPostProcessor;
@@ -53,8 +55,18 @@ public class MissingPropertiesScriptTestConfiguration {
 	}
 
 	@Bean
-	public AbstractElementPostProcessor languageSelectorPostProcessor() {
-		return new LanguageSelectorAlterPostProcessor(contentMetaDataProvider);
+	public AbstractElementPostProcessor imageLanguageSelectorAlterPostProcessor() {
+		return new ImageLanguageSelectorAlterPostProcessor(contentMetaDataProvider);
+	}
+
+	@Bean
+	public AbstractElementPostProcessor linkLanguageSelectorAlterPostProcessor() {
+		return new LinkLanguageSelectorAlterPostProcessor(contentMetaDataProvider);
+	}
+
+	@Bean
+	public AbstractElementPostProcessor selectLanguageSelectorAlterPostProcessor() {
+		return new SelectLanguageSelectorAlterPostProcessor(contentMetaDataProvider);
 	}
 
 	@Bean

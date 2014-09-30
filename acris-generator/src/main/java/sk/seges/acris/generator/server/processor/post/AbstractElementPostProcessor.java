@@ -15,9 +15,13 @@ public abstract class AbstractElementPostProcessor implements PostProcessorKind 
 
 	protected AbstractElementPostProcessor() {
 	}
+
+	protected <T> boolean hasChildNode(Node node, Class<T> nodeClass) {
+		return iterateToNode(node, nodeClass) != null;
+	}
 	
 	@SuppressWarnings("unchecked")
-	protected <T> T interateToNode(Node node, Class<T> nodeClass) {
+	protected <T> T iterateToNode(Node node, Class<T> nodeClass) {
 		NodeList nodeList = node.getChildren();
 
 		if (nodeList == null) {
@@ -35,7 +39,7 @@ public abstract class AbstractElementPostProcessor implements PostProcessorKind 
 				return (T) childNode;
 			}
 
-			T result = interateToNode(childNode, nodeClass);
+			T result = iterateToNode(childNode, nodeClass);
 
 			if (result != null) {
 				return result;

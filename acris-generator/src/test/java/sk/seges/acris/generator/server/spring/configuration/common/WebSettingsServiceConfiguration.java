@@ -19,7 +19,7 @@ import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
 
 public class WebSettingsServiceConfiguration {
 
-	private static final String MOCK_ANALYTICS_SCRIPT = "<script>test analytics script</script>";
+	public static final String MOCK_ANALYTICS_SCRIPT = "<script>test analytics script</script>";
 
 	@Autowired
 	private ApplicationContext applicationContext;

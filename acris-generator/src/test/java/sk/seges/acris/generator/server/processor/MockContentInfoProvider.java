@@ -20,7 +20,7 @@ public class MockContentInfoProvider implements ContentDataProvider {
 	
 	@Override
 	public ContentData getContentForLanguage(ContentData content, String targetLanguage) {
-		if(targetLanguage.equals("de")){
+		if (targetLanguage.equals("de")) {
 			//for testing navigation to home page
 			return null;
 		}

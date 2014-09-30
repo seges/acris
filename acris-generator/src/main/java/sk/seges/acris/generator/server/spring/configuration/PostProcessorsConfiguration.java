@@ -8,18 +8,34 @@ import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcess
 import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.EmptyTagAttributeAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ImageGalleryPathAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.ImageLanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ImagesSourceAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.KeywordsMetaTagAlterPostProcessor;
-import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorAlterPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.LinkLanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.LocaleGwtPropertyAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.MetaTagAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPostProcessor;
+import sk.seges.acris.generator.server.processor.post.alters.SelectLanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.StylesAlterPathPostProcessor;
 import sk.seges.acris.generator.server.processor.post.alters.TitleAlterPostProcessor;
-import sk.seges.acris.generator.server.processor.post.annihilators.*;
-import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.AcrisExternalScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.AcrisInlineScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.ClearCacheImageAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.DescriptionAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.EmulateIE7AnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.HeadStyleScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.JavascriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsMetaTagAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NochacheScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NoscriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.NotVisibleTagsAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.OnLoadErrorFnAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.OnPropertyErrorFnAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.PropertiesScriptAnnihilatorPostProcessor;
+import sk.seges.acris.generator.server.processor.post.annihilators.TitleAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.AcrisExternalScriptAppenderPostProcessor;
+import sk.seges.acris.generator.server.processor.post.appenders.DescriptionMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.GoogleAnalyticAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.MetaTagAppenderPostProcessor;
@@ -37,8 +53,18 @@ public class PostProcessorsConfiguration {
 	}
 
 	@Bean
-	public AbstractElementPostProcessor languageSelectorPostProcessor() {
-		return new LanguageSelectorAlterPostProcessor(contentMetaDataProvider);
+	public AbstractElementPostProcessor imageLanguageSelectorAlterPostProcessor() {
+		return new ImageLanguageSelectorAlterPostProcessor(contentMetaDataProvider);
+	}
+
+	@Bean
+	public AbstractElementPostProcessor linkLanguageSelectorAlterPostProcessor() {
+		return new LinkLanguageSelectorAlterPostProcessor(contentMetaDataProvider);
+	}
+
+	@Bean
+	public AbstractElementPostProcessor selectLanguageSelectorAlterPostProcessor() {
+		return new SelectLanguageSelectorAlterPostProcessor(contentMetaDataProvider);
 	}
 	
 	@Bean

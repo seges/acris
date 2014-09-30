@@ -31,19 +31,31 @@ public class AnchorUtils {
 	}
 	
 	public static String getAnchorTargetHref(String niceUrl, GeneratorEnvironment generatorEnvironment) {
+		if (niceUrl == null) {
+			return null;
+		}
+		
 		if (niceUrl.startsWith("#")) {
 			return niceUrl;
 		}
 		
-		if (generatorEnvironment.getWebSettings().getTopLevelDomain() == null) {
+		String url = generatorEnvironment.getWebSettings().getTopLevelDomain();
+		
+		if (url == null) {
+			if (niceUrl.startsWith("/")) {
+				return niceUrl;
+			}
 			return "/" + niceUrl;
 		} 
-		
-		String url = generatorEnvironment.getWebSettings().getTopLevelDomain();
-		if (!url.endsWith("/")) {
+				
+		if (niceUrl.startsWith("/")) {
+			if (url.endsWith("/")) {
+				url = url.substring(0, url.length() - 1);
+			}
+		} else if (!url.endsWith("/")) {
 			url += "/";
 		}
-
+		
 		return url + niceUrl;
 	}	
 }
