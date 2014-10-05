@@ -1,10 +1,10 @@
 package sk.seges.acris.generator.server.processor.utils;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import sk.seges.acris.generator.server.manager.api.OfflineWebSettings;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class PostProcessorActivator {
 	

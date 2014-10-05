@@ -2,7 +2,6 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.ImageTag;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public class ImagesSourceAlterPostProcessor extends AbstractPathAlterPostProcessor {

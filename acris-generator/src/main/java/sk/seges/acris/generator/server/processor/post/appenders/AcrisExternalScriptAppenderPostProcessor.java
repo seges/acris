@@ -1,7 +1,5 @@
 package sk.seges.acris.generator.server.processor.post.appenders;
 
-import java.util.Vector;
-
 import org.htmlparser.Attribute;
 import org.htmlparser.Node;
 import org.htmlparser.Tag;
@@ -11,11 +9,12 @@ import org.htmlparser.tags.Div;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.ScriptTag;
 import org.htmlparser.util.NodeList;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.alters.AbstractPathAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.ScriptUtils;
+
+import java.util.Vector;
 
 public class AcrisExternalScriptAppenderPostProcessor extends AbstractAppenderPostProcessor {
 

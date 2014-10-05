@@ -7,7 +7,6 @@ import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.CompositeTag;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.SimpleNodeIterator;
-
 import sk.seges.acris.generator.server.processor.node.NodeDefinition;
 import sk.seges.acris.generator.server.processor.post.alters.AbstractMetaTagAlterPostProcessor;
 

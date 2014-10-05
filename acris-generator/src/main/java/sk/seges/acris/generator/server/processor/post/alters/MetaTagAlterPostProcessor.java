@@ -3,7 +3,6 @@ package sk.seges.acris.generator.server.processor.post.alters;
 import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.MetaTag;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils.MetaTagNameAttribute;

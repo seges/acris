@@ -1,9 +1,9 @@
 package sk.seges.acris.generator.client.context.api;
 
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+
 import java.util.Collection;
 import java.util.Iterator;
-
-import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 public interface TokensCache extends Iterator<GeneratorToken> {
 

@@ -1,16 +1,13 @@
 package sk.seges.acris.generator.server.utils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
+import com.google.gwt.junit.TestResultsCleaner;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
-
 import org.cyberneko.html.HTMLScanner;
-
 import sk.seges.acris.generator.client.GwtTestGenerateOfflineContent;
 
-import com.google.gwt.junit.TestResultsCleaner;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public abstract class ContentGeneratorExecutor {
 

@@ -1,12 +1,11 @@
 package sk.seges.acris.generator.client;
 
-import sk.seges.acris.common.util.Tuple;
-import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import sk.seges.acris.common.util.Tuple;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
 /**
  * Loader used to maintain IO operations, e.g. entry point loading, saving

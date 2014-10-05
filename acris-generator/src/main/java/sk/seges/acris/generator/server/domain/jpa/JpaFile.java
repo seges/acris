@@ -1,11 +1,11 @@
 package sk.seges.acris.generator.server.domain.jpa;
 
+import sk.seges.acris.generator.server.domain.api.FileData;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import sk.seges.acris.generator.server.domain.api.FileData;
 
 @Entity
 public class JpaFile implements FileData {

@@ -2,7 +2,6 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.MetaTag;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public abstract class AbstractMetaTagAlterPostProcessor extends AbstractAlterPostProcessor {

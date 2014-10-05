@@ -1,12 +1,6 @@
 package sk.seges.acris.generator.server.processor;
 
-import java.util.Vector;
-
-import org.htmlparser.Attribute;
-import org.htmlparser.Node;
-import org.htmlparser.NodeFilter;
-import org.htmlparser.Parser;
-import org.htmlparser.Tag;
+import org.htmlparser.*;
 import org.htmlparser.filters.HasAttributeFilter;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.nodes.TextNode;
@@ -16,8 +10,9 @@ import org.htmlparser.tags.HeadTag;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
-
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
+
+import java.util.Vector;
 
 public class HTMLNodeSplitter {
 
