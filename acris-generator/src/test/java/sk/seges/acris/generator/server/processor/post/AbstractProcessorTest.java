@@ -43,7 +43,7 @@ public abstract class AbstractProcessorTest {
 		
 		HtmlPostProcessor htmlPostProcessing = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
 		
-		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, getDefaultToken(), indexFile);
+		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, getDefaultToken(), indexFile, getDefaultLocale());
 		if (html != null) {
             String expectedResult = getResultHtml();
             int diff = getDiffPosition(expectedResult, html);
@@ -64,6 +64,10 @@ public abstract class AbstractProcessorTest {
 
 	protected void runTest(String inputHtmlFileName, String resultHtmlFileName) {
 		runTest(inputHtmlFileName, resultHtmlFileName, getDefaultToken());
+	}
+	
+	protected String getDefaultLocale() {
+		return "en";
 	}
 	
 	protected GeneratorToken getDefaultToken() {

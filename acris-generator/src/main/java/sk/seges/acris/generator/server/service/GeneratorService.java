@@ -200,7 +200,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 	}
 
 	private void writeContent(String headerContent, String header, String contentWrapper, 
-			String content, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile) {
+			String content, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile, String defaultLocale) {
 		
 		HTMLNodeSplitter htmlNodeSplitter = new HTMLNodeSplitter(parserFactory);
 		String doctype = htmlNodeSplitter.readDoctype(headerContent);
@@ -215,7 +215,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 
 		HtmlPostProcessor htmlPostProcessor = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
 		
-		result = htmlPostProcessor.getProcessedContent(result, token, defaultToken, indexFile);
+		result = htmlPostProcessor.getProcessedContent(result, token, defaultToken, indexFile, defaultLocale);
 		
 		if (result == null) {
 			log.error("Unable to process HTML nodes for nice-url " + token.getNiceUrl());
@@ -226,7 +226,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 	
 	@Override
 	public void writeOfflineContentHtml(final String entryPointFileName, final String header, final String contentWrapper, 
-			final String htmlContent, final GeneratorToken token, final String currentServerURL) {
+			final String htmlContent, final GeneratorToken token, final String currentServerURL, final String defaultLocale) {
 
 		threadPool.execute(new Runnable() {
 			@Override
@@ -263,8 +263,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 
 				GeneratorToken defaultGeneratorToken = getDefaultGeneratorToken(token.getLanguage(), token.getWebId());
 
-                //
-				writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, token.isDefaultToken());
+				writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, token.isDefaultToken(), defaultLocale);
 			}
 		});
 	}
