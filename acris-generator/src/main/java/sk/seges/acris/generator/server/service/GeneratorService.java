@@ -304,14 +304,8 @@ public class GeneratorService implements IGeneratorServiceLocal {
 			log.debug("Writing offline content for nice-url " + token.getNiceUrl() + " [ " + token.getLanguage() + " ] for " + token.getWebId());
 		}
 
-        if (indexFile) {
-            synchronized (dataPersister) {
-                dataPersister.writeTextToFile(createPersistentDataProvider(token, true, content));
-            }
-        }
-
         synchronized (dataPersister) {
-            dataPersister.writeTextToFile(createPersistentDataProvider(token, false, content));
+            dataPersister.writeTextToFile(createPersistentDataProvider(token, indexFile, content));
         }
 	}
 }
