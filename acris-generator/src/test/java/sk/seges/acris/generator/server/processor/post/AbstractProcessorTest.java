@@ -1,16 +1,15 @@
 package sk.seges.acris.generator.server.processor.post;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.HtmlPostProcessor;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
+
+import java.io.IOException;
 
 public abstract class AbstractProcessorTest {
 
@@ -46,11 +45,22 @@ public abstract class AbstractProcessorTest {
 		
 		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, getDefaultToken(), indexFile);
 		if (html != null) {
-			Assert.assertTrue("Result HTML is not equals to the expected result. Expected result: " + getResultHtml() + ". Current result: " + html, compare(html));
+            String expectedResult = getResultHtml();
+            int diff = getDiffPosition(expectedResult, html);
+
+			Assert.assertTrue("Result HTML is not equals to the expected result.\n\n Expected result: \n" + expectedResult + ".\n\n Current result: \n" + html +
+                    ".\n\nDIFF:\nExpected result:\n" + subString(expectedResult, diff) + "\nCurrent Result:\n" + subString(html, diff) + "\n\n on position: " + diff + "\n", compare(expectedResult, html));
 		} else {
-			Assert.assertFalse("Processing/confguration failure occured.", true);
+			Assert.assertFalse("Processing/configuration failure occurred.", true);
 		}
 	}
+
+    protected String subString(String text, int position) {
+        if (position == -1) {
+            return null;
+        }
+        return text.substring(position, Math.min(position + 60, text.length() - 1));
+    }
 
 	protected void runTest(String inputHtmlFileName, String resultHtmlFileName) {
 		runTest(inputHtmlFileName, resultHtmlFileName, getDefaultToken());
@@ -64,8 +74,22 @@ public abstract class AbstractProcessorTest {
 		return token;
 	}
 
-	protected boolean compare(String result) {
-		return getResultHtml().equals(result);
+    protected int getDiffPosition(String expectedResult, String currentResult) {
+        if (expectedResult == null || currentResult == null) {
+            return -1;
+        }
+
+        for (int i = 0; i < expectedResult.length() || i < currentResult.length(); i++) {
+            if (expectedResult.charAt(i) != currentResult.charAt(i)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    protected boolean compare(String expectedResult, String currentResult) {
+		return expectedResult.equals(currentResult);
 	}
 
 	protected String getInputHtml() {

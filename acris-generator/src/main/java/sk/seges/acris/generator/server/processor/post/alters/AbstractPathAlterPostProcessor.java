@@ -25,7 +25,7 @@ public abstract class AbstractPathAlterPostProcessor extends AbstractAlterPostPr
 		return (text1.trim().toLowerCase().equals(text2.trim().toLowerCase()));
 	}
 
-	protected boolean isPathRelative(String path) {
+	public static boolean isPathRelative(String path) {
 
 		if (path == null) {
 			log.warn("Checking for null path. Probably invalid HTML tag is processed.");
@@ -51,23 +51,31 @@ public abstract class AbstractPathAlterPostProcessor extends AbstractAlterPostPr
 		return !path.toLowerCase().startsWith("www");
 	}
 
+    public static String getRelativePath(String path, GeneratorEnvironment generatorEnvironment) {
+        String pathPrefix = AnchorUtils.getRelativePrefix(generatorEnvironment.getGeneratorToken(), generatorEnvironment.isIndexFile());
+
+        //no special processing required
+        if (pathPrefix.length() == 0) {
+            return null;
+        }
+
+        if (path != null && isPathRelative(path)) {
+            return pathPrefix + path;
+        }
+
+        return null;
+    }
+
 	@Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 
-		String pathPrefix = AnchorUtils.getRelativePrefix(generatorEnvironment.getGeneratorToken(), generatorEnvironment.isIndexFile());
-		
-		//no special processing required
-		if (pathPrefix.length() == 0) {
-			return true;
-		}
+        String path = getRelativePath(getPath(node), generatorEnvironment);
 
-		String path = getPath(node);
-		
-		if (path != null && isPathRelative(path)) {
-			setPath(node, pathPrefix + path);
-		}
-		
-		return true;
+        if (path != null) {
+	        setPath(node, path);
+        }
+
+        return true;
 	}
 
 	protected abstract void setPath(Node node, String path);

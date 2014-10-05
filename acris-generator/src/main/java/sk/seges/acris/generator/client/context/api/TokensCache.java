@@ -18,4 +18,6 @@ public interface TokensCache extends Iterator<GeneratorToken> {
 	void setDefaultToken(GeneratorToken generatorToken);
 
 	GeneratorToken getDefaultToken();
+
+	void setDefaultLocale(String locale);
 }

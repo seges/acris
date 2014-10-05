@@ -336,7 +336,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				timer.start(Operation.CONTENT_RENDERING);
 			}
 			site.onModuleLoad();
-			
+			generatorEnvironment.getTokensCache().setDefaultLocale(getDefaultLocale());
 			generatorEnvironment.setServerURL(GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", ""));
 		} else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -345,6 +345,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		return generatorToken;
 	}
+
+	native protected String getDefaultLocale() /*-{
+		return $wnd.defaultLocale;
+	}-*/;
 
 	private void loadContentForToken() {
 		if (PERFORMANCE_MONITOR) {

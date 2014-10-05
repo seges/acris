@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.alters.DescriptionMetaTagPostProcessorTest.DescriptionTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.alters.DescriptionTestConfiguration;

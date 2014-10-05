@@ -1,16 +1,12 @@
 package sk.seges.acris.generator.server.manager;
 
-import java.util.Iterator;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import sk.seges.acris.generator.server.manager.JSONOfflineWebSettingsTest.JSONOfflineWebSettingsTestLoader;
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
@@ -18,6 +14,8 @@ import sk.seges.acris.generator.server.spring.configuration.JSONTestConfiguratio
 import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
+
+import java.util.Iterator;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = JSONOfflineWebSettingsTestLoader.class)
