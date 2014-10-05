@@ -1,9 +1,5 @@
 package sk.seges.acris.generator.server.processor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
@@ -12,7 +8,6 @@ import org.htmlparser.tags.Html;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
-
 import sk.seges.acris.generator.server.processor.factory.CustomPrototypicalNodeFactory;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.model.api.DefaultGeneratorEnvironment;
@@ -24,6 +19,10 @@ import sk.seges.acris.generator.server.processor.utils.PostProcessorActivator;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class HtmlPostProcessor {
 

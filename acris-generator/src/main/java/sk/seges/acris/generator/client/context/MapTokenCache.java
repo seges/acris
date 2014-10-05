@@ -1,16 +1,10 @@
 package sk.seges.acris.generator.client.context;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
+import com.allen_sauer.gwt.log.client.Log;
 import sk.seges.acris.generator.client.context.api.TokensCache;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.*;
 
 public class MapTokenCache implements TokensCache {
 

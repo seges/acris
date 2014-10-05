@@ -1,7 +1,13 @@
 package sk.seges.acris.generator.client;
 
-import java.util.ArrayList;
-
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
 import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
 import sk.seges.acris.callbacks.client.RPCRequest;
 import sk.seges.acris.callbacks.client.RPCRequestTracker;
@@ -14,14 +20,7 @@ import sk.seges.sesam.shared.model.dto.ConjunctionDTO;
 import sk.seges.sesam.shared.model.dto.FilterDTO;
 import sk.seges.sesam.shared.model.dto.PageDTO;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.RootPanel;
+import java.util.ArrayList;
 
 public class ContentInterceptor {
 

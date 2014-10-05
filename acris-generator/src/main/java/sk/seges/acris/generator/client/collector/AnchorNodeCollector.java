@@ -1,13 +1,12 @@
 package sk.seges.acris.generator.client.collector;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import sk.seges.acris.generator.client.collector.api.NodeCollector;
 import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AnchorNodeCollector implements NodeCollector {
 		

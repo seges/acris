@@ -1,11 +1,11 @@
 package sk.seges.acris.site.server.service;
 
-import java.util.List;
-
 import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
+
+import java.util.List;
 
 public class MockWebSettingsService implements IWebSettingsLocalService {
 

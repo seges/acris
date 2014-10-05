@@ -3,7 +3,6 @@ package sk.seges.acris.generator.server.processor.post.appenders;
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.HeadTag;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public class GoogleAnalyticAppenderPostProcessor extends AbstractAppenderPostProcessor {

@@ -1,22 +1,15 @@
 package sk.seges.acris.generator.server.rewriterules;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.Logger;
-
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.sesam.dao.Conjunction;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractNiceURLGenerator implements INiceUrlGenerator {
 

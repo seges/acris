@@ -1,7 +1,6 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
-
 import sk.seges.acris.generator.server.processor.htmltags.StyleLinkTag;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 

@@ -1,15 +1,14 @@
 package sk.seges.acris.generator.server.service.persist.io;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sk.seges.acris.core.server.utils.io.StringFile;
 import sk.seges.acris.generator.server.domain.api.PersistentDataProvider;
 import sk.seges.acris.generator.server.service.GeneratorService;
 import sk.seges.acris.generator.server.service.persist.api.DataPersister;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FilePersister implements DataPersister {
 

@@ -1,12 +1,11 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.htmlparser.Node;
-
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.htmltags.LenientLinkTag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LinkLanguageSelectorAlterPostProcessor extends AbstractLanguageSelectorAlterPostProcessor<LenientLinkTag, LenientLinkTag> {
 

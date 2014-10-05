@@ -1,12 +1,12 @@
 package sk.seges.acris.generator.server.service;
-import java.util.ArrayList;
-
-import javax.annotation.Generated;
 
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.pap.service.annotation.LocalServiceDefinition;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
 
 @LocalServiceDefinition(remoteService = sk.seges.acris.generator.shared.service.IGeneratorService.class)
 @Generated(value = "sk.seges.corpis.appscaffold.model.pap.LocalServiceDataInterfaceProcessor")

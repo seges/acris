@@ -1,10 +1,10 @@
 package sk.seges.acris.generator.server.processor;
 
-import java.util.List;
-
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.sesam.dao.Page;
+
+import java.util.List;
 
 public interface ContentDataProvider {
 

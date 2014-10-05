@@ -1,13 +1,13 @@
 package sk.seges.acris.generator.server.manager;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import sk.seges.acris.generator.server.manager.api.OfflineWebSettings;
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.shared.params.OfflineParameterType;
 import sk.seges.acris.site.server.manager.api.ParametersManager;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class PlainOfflineWebSettings implements OfflineWebSettings {
 

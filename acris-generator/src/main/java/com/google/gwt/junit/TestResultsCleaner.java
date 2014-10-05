@@ -1,9 +1,9 @@
 package com.google.gwt.junit;
 
+import com.google.gwt.junit.client.impl.JUnitHost.TestInfo;
+
 import java.lang.reflect.Field;
 import java.util.List;
-
-import com.google.gwt.junit.client.impl.JUnitHost.TestInfo;
 
 public class TestResultsCleaner {
 	

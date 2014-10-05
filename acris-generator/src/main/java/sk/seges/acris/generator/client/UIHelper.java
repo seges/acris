@@ -1,11 +1,11 @@
 package sk.seges.acris.generator.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class UIHelper {

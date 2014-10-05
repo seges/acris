@@ -1,14 +1,14 @@
 package sk.seges.acris.generator.server.processor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.domain.api.ContentPkData;
 import sk.seges.acris.site.server.domain.base.ContentPkBase;
 import sk.seges.acris.site.shared.domain.mock.MockContent;
 import sk.seges.sesam.dao.Page;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockContentInfoProvider implements ContentDataProvider {
 
