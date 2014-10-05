@@ -1,11 +1,8 @@
 package sk.seges.acris.generator.server.spring.configuration.common;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.factory.DefaultNodeParserFactory;
 import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
@@ -16,6 +13,8 @@ import sk.seges.acris.site.server.service.MockWebSettingsService;
 import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.server.service.builder.MixedModeWebSettingsBuilder;
 import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
+
+import java.util.Map;
 
 public class MxedModeWebSettingsServiceConfiguration {
 

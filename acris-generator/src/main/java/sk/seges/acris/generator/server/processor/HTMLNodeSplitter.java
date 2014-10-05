@@ -150,7 +150,6 @@ public class HTMLNodeSplitter {
 		
 		NodeList htmlHeadChilds = htmlHeadTag.getChildren();
 
-		
 		try {
 			while (generatedHeadTagIterator.hasMoreNodes()) {
 				Node node = generatedHeadTagIterator.nextNode();

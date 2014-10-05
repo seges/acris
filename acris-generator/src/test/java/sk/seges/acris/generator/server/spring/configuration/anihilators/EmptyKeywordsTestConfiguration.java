@@ -2,7 +2,6 @@ package sk.seges.acris.generator.server.spring.configuration.anihilators;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.MockContentInfoProvider;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
