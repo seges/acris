@@ -3,6 +3,7 @@ package sk.seges.acris.site.shared.service;
 import java.util.List;
 
 import sk.seges.acris.shared.model.dto.WebSitesDTO;
+import sk.seges.acris.site.server.model.data.WebSitesData;
 import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -17,4 +18,10 @@ public interface IWebSitesService extends RemoteService {
 	WebSitesDTO getPrimaryWebSite(String webId, String locale);
 	
 	void deleteWebSites(String webId);
+	
+	void deleteWebSites(WebSitesData webSite);
+	
+	List<String> getCurrentDomainNames(String webId, String locale);
+	
+	List<WebSitesData> findWebSitesByDomain(String domain);
 }

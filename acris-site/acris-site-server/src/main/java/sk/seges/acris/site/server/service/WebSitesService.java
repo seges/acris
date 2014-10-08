@@ -1,5 +1,6 @@
 package sk.seges.acris.site.server.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sk.seges.acris.site.server.dao.IWebSitesDao;
@@ -90,5 +91,23 @@ public class WebSitesService implements IWebSitesServiceDefinition {
 		for(WebSitesData webSite : all.getResult()) {
 			webSitesDao.remove(webSite);
 		}
+	}
+	
+	@Override
+	public List<String> getCurrentDomainNames(String webId, String locale){
+		Page page = Page.ALL_RESULTS_PAGE;
+		Conjunction conjunction = Filter.conjunction();
+		conjunction.add(Filter.eq(HasWebId.WEB_ID).setValue(webId));
+		conjunction.add(Filter.eq(WebSitesData.LANGUAGE).setValue(locale));
+		page.setFilterable(conjunction);
+		 
+		List<WebSitesData> webSitesList = webSitesDao.findAll(page).getResult();;
+		List<String> domainNames = new ArrayList<String>();
+		if(webSitesList != null && !webSitesList.isEmpty()){
+			for(WebSitesData webSite : webSitesList){
+				domainNames.add(webSite.getDomain());
+			}
+		}
+		return domainNames;
 	}
 }
