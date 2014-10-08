@@ -1,9 +1,9 @@
 package sk.seges.acris.generator.server.processor.utils;
 
-import java.io.File;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+
+import java.io.File;
 
 public class AnchorUtils {
 	

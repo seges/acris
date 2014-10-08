@@ -1,8 +1,6 @@
 package sk.seges.acris.generator.client.collector;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.gwt.user.client.ui.RootPanel;
 import junit.framework.Assert;
 import sk.seges.acris.generator.client.collector.panel.AnchorPanel;
 import sk.seges.acris.generator.client.context.DefaultGeneratorClientEnvironment;
@@ -10,7 +8,8 @@ import sk.seges.acris.generator.client.context.MapTokenCache;
 import sk.seges.acris.generator.client.context.api.GeneratorClientEnvironment;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
-import com.google.gwt.user.client.ui.RootPanel;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GwtTestAnchorNodeCollector {
 

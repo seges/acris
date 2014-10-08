@@ -3,14 +3,13 @@
  */
 package sk.seges.acris.generator.shared.service;
 
-import java.util.ArrayList;
-
+import com.google.gwt.user.client.rpc.RemoteService;
 import sk.seges.acris.common.util.Tuple;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
 import sk.seges.sesam.shared.model.dto.PageDTO;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import sk.seges.sesam.pap.service.annotation.RemoteServiceDefinition;
+import java.util.ArrayList;
 
 /**
  * @author Peter Simun (simun@seges.sk)
@@ -23,7 +22,7 @@ public interface IGeneratorService extends RemoteService {
 	 */
 	GeneratorToken getDefaultGeneratorToken(String language, String webId);
 
-	void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL);
+	void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL, String defaultLocale);
 
 	/**
 	 * File provider services

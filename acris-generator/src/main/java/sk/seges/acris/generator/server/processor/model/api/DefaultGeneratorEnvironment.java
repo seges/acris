@@ -12,15 +12,22 @@ public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 	private WebSettingsData webSettings;
 	private boolean indexFile;
 	private NodesContext nodesContext;
+	private final String defaultLlocale;
 	
-	public DefaultGeneratorEnvironment(WebSettingsData webSettings, GeneratorToken generatorToken, GeneratorToken defaultToken, ContentData content, boolean indexFile) {
+	public DefaultGeneratorEnvironment(WebSettingsData webSettings, GeneratorToken generatorToken, GeneratorToken defaultToken, ContentData content, 
+			boolean indexFile, String defaultLlocale) {
 		this.generatorToken = generatorToken;
 		this.webSettings = webSettings;
 		this.content = content;
 		this.indexFile = indexFile;
 		this.defaultToken = defaultToken;
+		this.defaultLlocale = defaultLlocale;
 	}
-		
+	
+	public String getDefaultLlocale() {
+		return defaultLlocale;
+	}
+	
 	@Override
 	public NodesContext getNodesContext() {
 		return nodesContext;
@@ -51,6 +58,9 @@ public class DefaultGeneratorEnvironment implements GeneratorEnvironment {
 	
 	@Override
 	public GeneratorToken getDefaultToken() {
+		if (defaultToken.isDefaultToken()) {
+			return null;
+		}
 		return defaultToken;
 	}
 }

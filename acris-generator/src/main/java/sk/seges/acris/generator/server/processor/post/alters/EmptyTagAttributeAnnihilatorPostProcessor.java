@@ -1,14 +1,13 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.htmlparser.Attribute;
 import org.htmlparser.Node;
 import org.htmlparser.Tag;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class EmptyTagAttributeAnnihilatorPostProcessor extends AbstractAlterPostProcessor {
 

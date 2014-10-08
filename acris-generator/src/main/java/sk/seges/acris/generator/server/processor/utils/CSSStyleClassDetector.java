@@ -1,9 +1,9 @@
 package sk.seges.acris.generator.server.processor.utils;
 
+import org.htmlparser.Tag;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.htmlparser.Tag;
 
 public class CSSStyleClassDetector {
 

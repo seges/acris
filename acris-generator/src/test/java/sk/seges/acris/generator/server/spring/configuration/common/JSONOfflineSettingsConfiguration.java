@@ -2,7 +2,6 @@ package sk.seges.acris.generator.server.spring.configuration.common;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.annotation.Bean;
-
 import sk.seges.acris.generator.server.processor.factory.JSONOfflineWebSettingsFactory;
 import sk.seges.acris.generator.server.processor.factory.JSONParameterManagerFactory;
 import sk.seges.acris.generator.server.processor.factory.PostProcessorActivatorFactory;

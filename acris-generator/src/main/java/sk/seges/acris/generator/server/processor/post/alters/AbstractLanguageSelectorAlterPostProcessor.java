@@ -1,7 +1,5 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Tag;
@@ -9,11 +7,12 @@ import org.htmlparser.nodes.TagNode;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
-
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
+
+import java.util.List;
 
 public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, Child extends Tag> extends AbstractAlterPostProcessor {
 
@@ -85,7 +84,7 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
 		
 		NodeList languageLinksList = new NodeList();
 		
-		NodeList children = getLanguageNodes(tag, parentNode);//tag.getParent().getChildren();
+		NodeList children = getLanguageNodes(tag, parentNode);
 		
 		for (int i = 0; i < children.size(); i++){
 			Node childNode = children.elementAt(i);
@@ -140,9 +139,12 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
 		LOG.debug("Creating link for language: " + locale + " and content (" + generatorEnvironment.getContent() + ") with nice url: " + 
 					generatorEnvironment.getContent().getNiceUrl());
 		ContentData content = contentDataProvider.getContentForLanguage(generatorEnvironment.getContent(), locale);
-		
-		if (content == null) {			
-			content = contentDataProvider.getHomeContent(locale, generatorEnvironment.getContent().getWebId());
+
+		ContentData homeContent = contentDataProvider.getHomeContent(locale, generatorEnvironment.getContent().getWebId());
+
+		if (content == null) {
+			
+			content = homeContent;
 			
 			if (content == null) {
 				LOG.error("No home page found for webId: " + generatorEnvironment.getContent().getWebId() + " and language: " + locale);
@@ -158,6 +160,10 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
 		if (url == null) {
 			LOG.warn("Web " + generatorEnvironment.getGeneratorToken().getWebId() + " doesn't have set top level domain. Using empty URL!");
 			url = "";
+		}
+		
+		if (generatorEnvironment.getDefaultLlocale().equals(content.getId().getLanguage()) && content.getNiceUrl().equals(homeContent.getNiceUrl())) {
+			translatedNiceUrl = "";
 		}
 		
 		if (translatedNiceUrl != null) {

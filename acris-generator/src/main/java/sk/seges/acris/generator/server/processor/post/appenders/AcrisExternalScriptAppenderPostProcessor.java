@@ -1,7 +1,5 @@
 package sk.seges.acris.generator.server.processor.post.appenders;
 
-import java.util.Vector;
-
 import org.htmlparser.Attribute;
 import org.htmlparser.Node;
 import org.htmlparser.Tag;
@@ -11,10 +9,12 @@ import org.htmlparser.tags.Div;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.ScriptTag;
 import org.htmlparser.util.NodeList;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.alters.AbstractPathAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.ScriptUtils;
+
+import java.util.Vector;
 
 public class AcrisExternalScriptAppenderPostProcessor extends AbstractAppenderPostProcessor {
 
@@ -60,6 +60,7 @@ public class AcrisExternalScriptAppenderPostProcessor extends AbstractAppenderPo
 			Node elementAt = children.elementAt(i);
 			if (elementAt instanceof ScriptTag) {
 				String path = ScriptUtils.getPath((ScriptTag)elementAt);
+
 				if (path != null && path.toLowerCase().equals(src.toLowerCase())) {
 					return true;
 				}
@@ -89,9 +90,21 @@ public class AcrisExternalScriptAppenderPostProcessor extends AbstractAppenderPo
 				String path = ScriptUtils.getPath(((ScriptTag)scriptTag));
 				
 				if (!hasScriptBySource(headNode, path)) {
-					TextNode paddingNode = new TextNode("\t");
-					NodesUtils.appendChild(headNode, paddingNode);
-					NodesUtils.appendChild(headNode, scriptTag);
+
+                    boolean contains = false;
+
+                    if (AbstractPathAlterPostProcessor.isPathRelative(path)) {
+                        String relativePath = AbstractPathAlterPostProcessor.getRelativePath(path, generatorEnvironment);
+                        if (relativePath != null) {
+                            contains = hasScriptBySource(headNode, relativePath);
+                        }
+                    }
+
+                    if (!contains) {
+                        TextNode paddingNode = new TextNode("\t");
+                        NodesUtils.appendChild(headNode, paddingNode);
+                        NodesUtils.appendChild(headNode, scriptTag);
+                    }
 				}
 			}
 		}

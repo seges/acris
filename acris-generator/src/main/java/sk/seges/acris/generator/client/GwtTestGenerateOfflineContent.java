@@ -1,13 +1,19 @@
 package sk.seges.acris.generator.client;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import sk.seges.acris.callbacks.client.ICallbackTrackingListener;
-import sk.seges.acris.callbacks.client.RPCRequest;
-import sk.seges.acris.callbacks.client.RPCRequestTracker;
-import sk.seges.acris.callbacks.client.RequestState;
-import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.ScriptElement;
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.RootPanel;
+import sk.seges.acris.callbacks.client.*;
 import sk.seges.acris.generator.client.configuration.GeneratorConfiguration;
 import sk.seges.acris.generator.client.context.DefaultGeneratorClientEnvironment;
 import sk.seges.acris.generator.client.context.MapTokenCache;
@@ -24,19 +30,8 @@ import sk.seges.acris.shared.model.dto.WebSettingsDTO;
 import sk.seges.acris.site.client.json.JSONModel;
 import sk.seges.acris.site.shared.service.IWebSettingsRemoteServiceAsync;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.ScriptElement;
-import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.RootPanel;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuppressWarnings("deprecation")
 public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
@@ -336,7 +331,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 				timer.start(Operation.CONTENT_RENDERING);
 			}
 			site.onModuleLoad();
-			
+			generatorEnvironment.getTokensCache().setDefaultLocale(getDefaultLocale());
 			generatorEnvironment.setServerURL(GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", ""));
 		} else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -345,6 +340,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 
 		return generatorToken;
 	}
+
+	native protected String getDefaultLocale() /*-{
+		return $wnd.defaultLocale;
+	}-*/;
 
 	private void loadContentForToken() {
 		if (PERFORMANCE_MONITOR) {
@@ -435,7 +434,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		Log.debug("Saving offline content for token " + generatorEnvironment.getTokensCache().getCurrentToken().getNiceUrl());
 
 		offlineContentProvider.saveOfflineContent(content, generatorEnvironment.getTokensCache().getCurrentToken(), 
-				generatorEnvironment.getServerURL(), new AsyncCallback<Void>() {
+				generatorEnvironment.getServerURL(), getDefaultLocale(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

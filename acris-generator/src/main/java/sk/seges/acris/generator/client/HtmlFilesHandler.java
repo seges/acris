@@ -1,12 +1,11 @@
 package sk.seges.acris.generator.client;
 
-import sk.seges.acris.common.util.Tuple;
-import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import sk.seges.acris.common.util.Tuple;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
+import sk.seges.acris.generator.shared.service.IGeneratorServiceAsync;
 
 /**
  * Loader used to maintain IO operations, e.g. entry point loading, saving
@@ -61,11 +60,11 @@ public class HtmlFilesHandler {
 	    return $doc.getElementsByTagName("head")[0];
 	}-*/;
 
-	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
+	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, String defaultLocale, final AsyncCallback<Void> callback) {
 
 		String header = getHeadElement().getInnerHTML();
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
 
-		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, callback);
+		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, defaultLocale, callback);
 	}
 }

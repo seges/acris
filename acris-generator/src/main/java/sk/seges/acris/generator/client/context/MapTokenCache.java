@@ -1,24 +1,28 @@
 package sk.seges.acris.generator.client.context;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
+import com.allen_sauer.gwt.log.client.Log;
 import sk.seges.acris.generator.client.context.api.TokensCache;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.*;
 
 public class MapTokenCache implements TokensCache {
 
 	private GeneratorToken generatorToken;
 	private GeneratorToken defaultToken;
-
+	
 	private List<String> awaitingTokens = new ArrayList<String>();
 	private Set<String> processedTokens = new HashSet<String>();
+	
+	private String defaultLocale;
+	
+	@Override
+	public void setDefaultLocale(String locale) {
+		this.defaultLocale = locale;
+		if (defaultToken != null) {
+			defaultToken.setDefaultToken(defaultToken.getLanguage().equals(defaultLocale));
+		}
+	}
 	
 	@Override
 	public int getTokensCount() {
@@ -49,11 +53,12 @@ public class MapTokenCache implements TokensCache {
 			generatorToken.setLanguage(defaultToken.getLanguage());
 			generatorToken.setAlias(defaultToken.getAlias());
 
-			if (generatorToken.getNiceUrl().equals(defaultToken.getNiceUrl())) {
-				generatorToken.setDefaultToken(true);
+			if (generatorToken.getNiceUrl().equals(defaultToken.getNiceUrl()) &&
+				generatorToken.getLanguage().equals(defaultToken.getLanguage())) {
+				generatorToken.setDefaultToken(generatorToken.getLanguage().equals(defaultLocale));
 			}
 		} else {
-			generatorToken.setDefaultToken(true);
+			generatorToken.setDefaultToken(generatorToken.getLanguage().equals(defaultLocale));
 		}
 
 		return generatorToken;

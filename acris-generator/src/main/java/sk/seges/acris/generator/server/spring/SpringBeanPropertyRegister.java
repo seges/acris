@@ -1,8 +1,5 @@
 package sk.seges.acris.generator.server.spring;
 
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -13,8 +10,10 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
-
 import sk.seges.sesam.spring.config.AdvancedPropertyPlaceholderConfigurer;
+
+import java.util.Map.Entry;
+import java.util.Properties;
 
 public class SpringBeanPropertyRegister extends AdvancedPropertyPlaceholderConfigurer implements BeanFactoryPostProcessor, ApplicationContextAware {
 

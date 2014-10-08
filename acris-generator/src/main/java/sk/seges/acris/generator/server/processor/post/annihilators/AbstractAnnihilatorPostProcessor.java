@@ -1,14 +1,13 @@
 package sk.seges.acris.generator.server.processor.post.annihilators;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TagNode;
 import org.htmlparser.util.NodeList;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractAnnihilatorPostProcessor extends AbstractElementPostProcessor {
 

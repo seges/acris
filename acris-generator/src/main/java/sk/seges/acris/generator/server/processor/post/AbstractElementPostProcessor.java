@@ -2,7 +2,6 @@ package sk.seges.acris.generator.server.processor.post;
 
 import org.htmlparser.Node;
 import org.htmlparser.util.NodeList;
-
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 
 public abstract class AbstractElementPostProcessor implements PostProcessorKind {
