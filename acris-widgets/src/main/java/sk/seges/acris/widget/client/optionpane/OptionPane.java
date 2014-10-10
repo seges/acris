@@ -79,10 +79,12 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		input.addStyleName(STYLE_INPUT);
 	}
 
+	@Override
 	public EPanelResult getResult() {
 		return result;
 	}
 
+	@Override
 	public void setResult(EPanelResult result) {
 		this.result = result;
 	}
@@ -143,6 +145,25 @@ public class OptionPane extends FlowPanel implements OptionResultHandler {
 		dialog.setContent(pane);
 
 		dialog.addOptions(optionsFactory.createOptions(pane, EPanelOption.OK_OPTION, null));
+
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			
+			@Override
+			public void execute() {
+				dialog.center();
+			}
+		});
+		
+		return dialog;
+	}
+	
+	public Dialog showWaitingDialog(String message, String title) {
+		final Dialog dialog = widgetFactory.modalDialog();
+		dialog.addStyleName("acris-message-dialog waiting-dialog");
+		dialog.setCaption(title);
+		this.addAditionalStyles(dialog);
+		OptionPane pane = createOptionPaneFromMessage(message + "<br/><br/><div class='loader'></div>", EMessageType.INFORMATION_MESSAGE);
+		dialog.setContent(pane);		
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			
