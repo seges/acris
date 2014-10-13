@@ -108,6 +108,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	private SimpleEventBus eventBus = null;
 
 	protected String locale;
+	protected String webId;
 	
 	/**
 	 * Default validator that simply checks if the username and password are not
@@ -172,6 +173,11 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	
 	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
 			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate, boolean switchAfterLogin, String locale) {
+		this(display, broadcaster, redirectUrl, enabledLanguages, rememberMeEnabled, authenticate, switchAfterLogin, locale, null);
+	}
+	
+	public LoginPresenter(D display, IUserServiceAsync broadcaster, String redirectUrl,
+			Pair<String, String>[] enabledLanguages, boolean rememberMeEnabled, boolean authenticate, boolean switchAfterLogin, String locale, String webId) {
 		super(display);
 
 		this.broadcaster = broadcaster;
@@ -181,6 +187,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 		this.authenticate = authenticate; 
 		this.switchAfterLogin = switchAfterLogin;
 		this.locale = locale;
+		this.webId = webId;
 		
 		display.setEnabledLanguages(enabledLanguages);
 		display.setRememberMeEnabled(rememberMeEnabled);
@@ -335,7 +342,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 			// language support disabled
 		}
 
-		return new UserPasswordLoginToken(username, password, language, null, locale, true);
+		return new UserPasswordLoginToken(username, password, language, webId, locale, true);
 	}
 
 	protected void registerHandlers() {
