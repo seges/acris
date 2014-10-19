@@ -60,11 +60,11 @@ public class HtmlFilesHandler {
 	    return $doc.getElementsByTagName("head")[0];
 	}-*/;
 
-	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, final AsyncCallback<Void> callback) {
+	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, String defaultLocale, final AsyncCallback<Void> callback) {
 
 		String header = getHeadElement().getInnerHTML();
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
 
-		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, callback);
+		generatorService.writeOfflineContentHtml(initialContentFilename, header, bodyContentWrapper, content, token, currentServerURL, defaultLocale, callback);
 	}
 }

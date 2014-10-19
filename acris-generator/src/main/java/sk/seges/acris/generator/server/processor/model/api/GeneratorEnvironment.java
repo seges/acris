@@ -13,6 +13,8 @@ public interface GeneratorEnvironment {
 	
 	ContentData getContent();
 	
+	String getDefaultLlocale();
+
 	WebSettingsData getWebSettings();
 		
 	boolean isIndexFile();

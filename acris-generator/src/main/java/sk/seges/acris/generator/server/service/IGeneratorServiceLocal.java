@@ -19,5 +19,5 @@ public interface IGeneratorServiceLocal {
 	
 	Tuple<String, String> readHtmlBodyFromFile(String filename);
 	
-	void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL);
+	void writeOfflineContentHtml(String entryPointFileName, String header, String contentWrapper, String content, GeneratorToken token, String currentServerURL, String defaultLocale);
 }

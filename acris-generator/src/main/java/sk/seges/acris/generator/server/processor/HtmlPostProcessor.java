@@ -50,7 +50,7 @@ public class HtmlPostProcessor {
 		assert postProcessorActivator != null;
 	}
 
-	public String getProcessedContent(final String content, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile) {
+	public String getProcessedContent(final String content, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile, String defaultLocale) {
 		if (postProcessors == null || postProcessors.size() == 0) {
 			log.warn("No HTML post processor register");
 		}
@@ -62,22 +62,22 @@ public class HtmlPostProcessor {
 		
 		try {
 			NodeIterator nodeIterator = parser.elements();
-			return processNodes(nodeIterator, rootNodes, token, defaultToken, indexFile);
+			return processNodes(nodeIterator, rootNodes, token, defaultToken, indexFile, defaultLocale);
 		} catch (ParserException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected GeneratorEnvironment getGeneratorEnvironment(GeneratorToken generatorToken, GeneratorToken defaultToken, boolean indexFile) {
+	protected GeneratorEnvironment getGeneratorEnvironment(GeneratorToken generatorToken, GeneratorToken defaultToken, boolean indexFile, String defaultLocale) {
 		ContentData content = contentMetaDataProvider.getContent(generatorToken);
-		DefaultGeneratorEnvironment result = new DefaultGeneratorEnvironment(webSettings, generatorToken, defaultToken, content, indexFile);
+		DefaultGeneratorEnvironment result = new DefaultGeneratorEnvironment(webSettings, generatorToken, defaultToken, content, indexFile, defaultLocale);
 		result.setNodesContext(new DefaultNodesContext());
 		return result;
 	}
 	
-	private String processNodes(NodeIterator nodeIterator, List<Node> rootNodes, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile) throws ParserException {
+	private String processNodes(NodeIterator nodeIterator, List<Node> rootNodes, GeneratorToken token, GeneratorToken defaultToken, boolean indexFile, String defaultLocale) throws ParserException {
 		
-		GeneratorEnvironment generatorEnvironment = getGeneratorEnvironment(token, defaultToken, indexFile);
+		GeneratorEnvironment generatorEnvironment = getGeneratorEnvironment(token, defaultToken, indexFile, defaultLocale);
 		
 		while (nodeIterator.hasMoreNodes()) {
 			Node node = nodeIterator.nextNode();

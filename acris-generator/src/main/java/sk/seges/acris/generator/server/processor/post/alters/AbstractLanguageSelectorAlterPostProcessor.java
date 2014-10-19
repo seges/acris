@@ -96,7 +96,7 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
 		
 		NodeList languageLinksList = new NodeList();
 		
-		NodeList children = getLanguageNodes(tag, parentNode);//tag.getParent().getChildren();
+		NodeList children = getLanguageNodes(tag, parentNode);
 		
 		for (int i = 0; i < children.size(); i++){
 			Node childNode = children.elementAt(i);
@@ -151,9 +151,12 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
 		LOG.debug("Creating link for language: " + locale + " and content (" + generatorEnvironment.getContent() + ") with nice url: " + 
 					generatorEnvironment.getContent().getNiceUrl());
 		ContentData content = contentDataProvider.getContentForLanguage(generatorEnvironment.getContent(), locale);
-		
-		if (content == null) {			
-			content = contentDataProvider.getHomeContent(locale, generatorEnvironment.getContent().getWebId());
+
+		ContentData homeContent = contentDataProvider.getHomeContent(locale, generatorEnvironment.getContent().getWebId());
+
+		if (content == null) {
+			
+			content = homeContent;
 			
 			if (content == null) {
 				LOG.error("No home page found for webId: " + generatorEnvironment.getContent().getWebId() + " and language: " + locale);
@@ -169,6 +172,10 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
 		if (url == null) {
 			LOG.warn("Web " + generatorEnvironment.getGeneratorToken().getWebId() + " doesn't have set top level domain. Using empty URL!");
 			url = "";
+		}
+		
+		if (generatorEnvironment.getDefaultLlocale().equals(content.getId().getLanguage()) && content.getNiceUrl().equals(homeContent.getNiceUrl())) {
+			translatedNiceUrl = "";
 		}
 		
 		if (translatedNiceUrl != null) {

@@ -434,7 +434,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		Log.debug("Saving offline content for token " + generatorEnvironment.getTokensCache().getCurrentToken().getNiceUrl());
 
 		offlineContentProvider.saveOfflineContent(content, generatorEnvironment.getTokensCache().getCurrentToken(), 
-				generatorEnvironment.getServerURL(), new AsyncCallback<Void>() {
+				generatorEnvironment.getServerURL(), getDefaultLocale(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
