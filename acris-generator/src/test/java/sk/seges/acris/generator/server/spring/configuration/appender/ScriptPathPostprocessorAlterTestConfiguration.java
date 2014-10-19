@@ -8,12 +8,10 @@ import sk.seges.acris.generator.server.processor.post.alters.ScriptsAlterPathPos
 import sk.seges.acris.generator.server.processor.post.annihilators.AcrisExternalScriptAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.annihilators.JavascriptAnnihilatorPostProcessor;
 import sk.seges.acris.generator.server.processor.post.appenders.AcrisExternalScriptAppenderPostProcessor;
-import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
-import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
-import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.*;
 
-@Import({WebSettingsServiceConfiguration.class, MockTestConfiguration.class, 
-	OfflineSettingsConfiguration.class})
+@Import({WebSettingsServiceConfiguration.class, OfflineModeConfiguration.class,
+        WebSettingsConfiguration.class, MockTestConfiguration.class, OfflineSettingsConfiguration.class})
 public class ScriptPathPostprocessorAlterTestConfiguration {
 
     @Bean

@@ -4,7 +4,9 @@ import org.htmlparser.Node;
 import org.htmlparser.nodes.TagNode;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.Div;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.generator.server.processor.post.annihilators.AcrisInlineScriptAnnihilatorPostProcessor;
 
 public class ImageGalleryPathAlterPostProcessor extends AbstractPathAlterPostProcessor {
@@ -12,7 +14,17 @@ public class ImageGalleryPathAlterPostProcessor extends AbstractPathAlterPostPro
 	private static final String SKIN_DIR = "skinDir";
 	private static final String GALLERY_IDENTIFIER = "myGalleries";
 
-	@Override
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.BOTH;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	protected void setPath(Node node, String path) {
 				
 		for (Node childNode : node.getChildren().toNodeArray()) {

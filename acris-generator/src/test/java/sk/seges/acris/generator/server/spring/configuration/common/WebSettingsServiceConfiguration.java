@@ -9,9 +9,9 @@ import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.server.processor.factory.PostProcessorActivatorFactory;
 import sk.seges.acris.generator.server.processor.factory.api.NodeParserFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
+import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
+import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.acris.site.server.service.MockWebSettingsService;
-import sk.seges.acris.site.server.service.builder.DefaultWebSettingsBuilder;
-import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
 
 import java.util.Map;
@@ -28,15 +28,10 @@ public class WebSettingsServiceConfiguration {
 
 	@Autowired
 	private ContentDataProvider contentMetaDataProvider;
-	
+
 	@Bean
-	public IWebSettingsBuilder webSettingsBuilder() {
-		return new DefaultWebSettingsBuilder();
-	}
-	
-	@Bean
-	public IWebSettingsLocalService webSettingsService() {
-		return new MockWebSettingsService(webSettingsBuilder(), MOCK_ANALYTICS_SCRIPT, false);
+	public IWebSettingsLocalService webSettingsService(WebSettingsData webSettingsData) {
+		return new MockWebSettingsService(webSettingsData);
 	}
 	
 	@Bean

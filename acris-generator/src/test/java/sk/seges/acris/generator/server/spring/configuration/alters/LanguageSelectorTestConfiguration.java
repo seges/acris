@@ -11,9 +11,11 @@ import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPos
 import sk.seges.acris.generator.server.processor.post.alters.SelectLanguageSelectorAlterPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
 
-@Import({WebSettingsServiceConfiguration.class, MockTestConfiguration.class, OfflineSettingsConfiguration.class})
+@Import({WebSettingsServiceConfiguration.class, WebSettingsConfiguration.class,
+        MockTestConfiguration.class, OfflineSettingsConfiguration.class})
 public class LanguageSelectorTestConfiguration {
 
 	@Autowired

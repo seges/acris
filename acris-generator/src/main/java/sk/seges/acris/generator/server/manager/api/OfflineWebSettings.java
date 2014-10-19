@@ -1,14 +1,14 @@
 package sk.seges.acris.generator.server.manager.api;
 
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
+
 import java.util.Set;
 
 public interface OfflineWebSettings {
 
-	Set<String> getInactiveIndexProcessors();
-
-	Set<String> getInactiveProcessors();
-
 	boolean supportsAutodetectMode();
 
 	boolean publishOnSaveEnabled();
+
+    OfflineClientWebParams.OfflineMode getOfflineMode();
 }

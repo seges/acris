@@ -8,11 +8,10 @@ import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcess
 import sk.seges.acris.generator.server.processor.post.alters.*;
 import sk.seges.acris.generator.server.processor.post.annihilators.*;
 import sk.seges.acris.generator.server.processor.post.appenders.*;
-import sk.seges.acris.generator.server.spring.configuration.common.JSONOfflineSettingsConfiguration;
-import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
-import sk.seges.acris.generator.server.spring.configuration.common.MxedModeWebSettingsServiceConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.*;
 
-@Import({MxedModeWebSettingsServiceConfiguration.class, MockTestConfiguration.class,
+@Import({CombinedModeConfiguration.class, WebSettingsConfiguration.class,
+        WebSettingsServiceConfiguration.class, MockTestConfiguration.class,
 		JSONOfflineSettingsConfiguration.class})
 public class MissingPropertiesScriptTestConfiguration {
 

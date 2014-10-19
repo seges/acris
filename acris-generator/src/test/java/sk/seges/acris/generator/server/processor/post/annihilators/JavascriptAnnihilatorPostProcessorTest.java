@@ -1,4 +1,4 @@
-package sk.seges.acris.generator.server.processor.post.anihilators;
+package sk.seges.acris.generator.server.processor.post.annihilators;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.spring.configuration.anihilators.JavascriptAnnihilatorTestConfiguration;
+import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,6 +22,13 @@ public class JavascriptAnnihilatorPostProcessorTest extends AbstractProcessorTes
     }
 
     private String HTML_FILE_DIRECTORY = "sk/seges/acris/generator/server/processor/post/javascript/";
+
+    @Override
+    protected GeneratorToken getDefaultToken() {
+        GeneratorToken token = super.getDefaultToken();
+        token.setDefaultToken(true);
+        return token;
+    }
 
     @Test
     @DirtiesContext

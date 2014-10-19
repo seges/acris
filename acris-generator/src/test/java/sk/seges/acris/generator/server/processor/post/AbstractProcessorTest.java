@@ -41,7 +41,8 @@ public abstract class AbstractProcessorTest {
 		this.inputHtmlFileName = inputHtmlFileName;
 		this.resultHtmlFileName = resultHtmlFileName;
 		
-		HtmlPostProcessor htmlPostProcessing = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+		HtmlPostProcessor htmlPostProcessing = htmlProcessorFactory.create(
+                webSettingsService.getWebSettings(token.getWebId()));
 		
 		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, getDefaultToken(), indexFile);
 		if (html != null) {

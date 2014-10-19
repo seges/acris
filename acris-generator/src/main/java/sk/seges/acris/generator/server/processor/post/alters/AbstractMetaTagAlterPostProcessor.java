@@ -2,7 +2,9 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.MetaTag;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 
 public abstract class AbstractMetaTagAlterPostProcessor extends AbstractAlterPostProcessor {
 	
@@ -11,7 +13,17 @@ public abstract class AbstractMetaTagAlterPostProcessor extends AbstractAlterPos
 	protected abstract String getMetaTagName(GeneratorEnvironment generatorEnvironment);
 	protected abstract String getMetaTagContent(GeneratorEnvironment generatorEnvironment);
 
-	@Override
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.BOTH;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	public boolean process(Node node, GeneratorEnvironment generatorEnvironment) {
 		MetaTag metaTag = (MetaTag)node;
 		String metaTagContent = getMetaTagContent(generatorEnvironment);

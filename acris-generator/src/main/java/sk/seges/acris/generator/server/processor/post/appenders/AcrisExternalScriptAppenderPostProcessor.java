@@ -9,7 +9,9 @@ import org.htmlparser.tags.Div;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.ScriptTag;
 import org.htmlparser.util.NodeList;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.generator.server.processor.post.alters.AbstractPathAlterPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 import sk.seges.acris.generator.server.processor.utils.ScriptUtils;
@@ -19,8 +21,18 @@ import java.util.Vector;
 public class AcrisExternalScriptAppenderPostProcessor extends AbstractAppenderPostProcessor {
 
 	public static final String EXTERNAL_SCRIPTS_CLASS_NAME = "acris-external-scripts";
-	
-	@Override
+
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.OFFLINE;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof Div) {
 			String styleClass = ((Div)node).getAttribute(CLASS_ATTRIBUTE_NAME);
