@@ -1,5 +1,10 @@
 package sk.seges.acris.server.image;
 
+import org.junit.Assert;
+import sk.seges.acris.server.image.loader.ImageLoader;
+import sk.seges.acris.server.image.loader.ImageLoaderFactory;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
@@ -8,13 +13,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
-
-import javax.imageio.ImageIO;
-
-import org.junit.Assert;
-
-import sk.seges.acris.server.image.loader.ImageLoader;
-import sk.seges.acris.server.image.loader.ImageLoaderFactory;
 
 public class ImageTest {
 
@@ -36,7 +34,7 @@ public class ImageTest {
 			boolean result = currentDiff < getMaxAllowedDifference();
 			System.out.println("Diff with original file for file name " + fileName + " is " + currentDiff + "%");
 			Assert.assertTrue("Expected result " + fileName + " should not differ from original!", result);
-			return result;
+			return true;
 		}
 	}
 	
@@ -73,7 +71,9 @@ public class ImageTest {
 		File outputFile = Image.getFileDescriptor("target/result/" + outputName);
 
 		if (!outputFile.exists()) {
-			outputFile.mkdirs();
+			if (!outputFile.mkdirs()) {
+                throw new RuntimeException("Unable to create directory " + outputFile.getAbsolutePath());
+            }
 		}
 
 		ImageIO.write(originalImage, OUTPUT_TYPE, outputFile);
@@ -122,8 +122,8 @@ public class ImageTest {
 			
 			float result = 0;
 			
-			for (int i = 0; i < colorParts.length; i++) {
-				result += ((float)(colorParts[i] - color.colorParts[i])) / 2.55f;
+			for (int i = 0; i < Math.min(color.colorParts.length, colorParts.length); i++) {
+				result += (colorParts[i] - color.colorParts[i]) / 2.55f;
 			}
 			
 			return Math.abs(result / 3);
@@ -144,16 +144,8 @@ public class ImageTest {
 			super(uri);
 		}
 
-		public Image(String directory, String pathname) {
-			super(directory, pathname);
-		}
-
-		public Image(File file, String pathname) {
-			super(file, pathname);
-		}
-
 		public static Image getFileDescriptor(String fileName) {
-			URL url = null;
+			URL url;
 			Image file;
 			
 			if (!fileName.startsWith(FILE_SEPARATOR) && !fileName.startsWith(".")) {
