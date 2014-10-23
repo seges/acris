@@ -42,6 +42,8 @@ public class WebParamsBean implements WebParams {
 	
 	private String invoicePrefix;
 	private Integer invoiceCurrentNumber;
+	
+	private Boolean useGeneratedVariants;
 
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -311,5 +313,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setInvoiceCurrentNumber(Integer invoiceCurrentNumber) {
 		this.invoiceCurrentNumber = invoiceCurrentNumber;
-	};
+	}
+
+	@Override
+	public Boolean getUseGeneratedVariants() {		
+		return useGeneratedVariants;
+	}
+
+	@Override
+	public void setUseGeneratedVariants(Boolean useGeneratedVariants) {
+		this.useGeneratedVariants = useGeneratedVariants;		
+	}
 }

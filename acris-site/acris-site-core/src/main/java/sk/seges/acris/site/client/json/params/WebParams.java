@@ -31,6 +31,7 @@ public interface WebParams extends ContentParameters {
 	public static final String NEW_PRODUCT_SETTINGS_ENABLED = "newProductSettingsEnabled"; 
 	public static final String INVOICE_PREFIX = "invoicePrefix";
 	public static final String INVOICE_CURRENT_NUMBER = "invoiceCurrentNumber";
+	public static final String USE_GENERATED_VARIANTS = "useGeneratedVariants";
 	
 	String[] getOfflinePostProcessorInactive();
 
@@ -139,4 +140,8 @@ public interface WebParams extends ContentParameters {
 	Integer getInvoiceCurrentNumber();
 	
 	void setInvoiceCurrentNumber(Integer invoiceCurrentNumber);
+	
+	Boolean getUseGeneratedVariants();
+	
+	void setUseGeneratedVariants(Boolean useGeneratedVariants);
 }
