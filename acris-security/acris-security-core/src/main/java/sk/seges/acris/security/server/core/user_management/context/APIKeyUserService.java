@@ -47,9 +47,9 @@ public class APIKeyUserService implements UserProviderService {
 			session.setAttribute(LoginConstants.LOGIN_TOKEN_NAME, createLoginToken(userContext.getWebId()));
 			ClientSession clientSession = new ClientSession();
 			clientSession.setUser(apiKeyUserProvider.createUser(((APIKeyUserContext) userContext).getApiKey()));
-			
+			session.setAttribute(LoginConstants.CLIENT_SESSION_NAME, clientSession);
 			return clientSession;
-		} else 
+		}  
 		
 		return null;
 	}

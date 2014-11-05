@@ -1,17 +1,15 @@
 package sk.seges.acris.security.server.core.user_management.context;
 
+import javax.servlet.http.HttpSession;
+
 import sk.seges.acris.security.server.core.session.ServerSessionProvider;
 import sk.seges.acris.security.server.core.user_management.context.api.UserProviderService;
 import sk.seges.acris.security.server.session.ClientSession;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.exception.ServerException;
-import sk.seges.acris.security.shared.user_management.context.SessionUserContext;
-import sk.seges.acris.security.shared.user_management.domain.UserPasswordLoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 import sk.seges.corpis.server.domain.user.server.model.data.UserData;
-
-import javax.servlet.http.HttpSession;
 
 public class SessionUserService implements UserProviderService {
 
@@ -52,15 +50,11 @@ public class SessionUserService implements UserProviderService {
 	@Override
 	public ClientSession getLoggedSession(UserContext userContext) {
 		HttpSession session = sessionProvider.getSession();
-
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
-		if (token instanceof UserPasswordLoginToken && userContext instanceof SessionUserContext) {
-			String sessionWebId = userContext.getWebId();
-			String tokenWebId = token.getWebId();
-			
-			if (!sessionWebId.equals(tokenWebId)) return null;
-		}
-
+		String sessionWebId = userContext.getWebId();
+		String tokenWebId = token.getWebId();
+		if (!sessionWebId.equals(tokenWebId)) return null;
+		
 		return getClientSession();
 	}
 }
