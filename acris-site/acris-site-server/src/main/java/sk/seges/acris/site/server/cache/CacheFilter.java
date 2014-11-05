@@ -10,7 +10,7 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 
 public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
 
-	private static final String CODESVR = "gwt.codesvr=127.0.0.1:9998";
+	private static final String CODESVR = "gwt.codesvr";
 	@Override
 	protected boolean filterNotDisabled(HttpServletRequest httpRequest) {
  		if (!httpRequest.getMethod().equals("GET") || (httpRequest.getHeader("referer") != null && httpRequest.getHeader("referer").contains(CODESVR))) {
