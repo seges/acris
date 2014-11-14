@@ -24,8 +24,8 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 		super(request);
 	}
 
-	private static final char SESSION_DELIMITER = '\uffff';
-	private static final char CHROME_SESSION_DELIMITER = '\ufffd';
+	private String webId;
+	private static final int SPLIT_LIMIT = 4;
 
 	public enum RequestMethodHandler {
 		GET {
@@ -38,24 +38,51 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 			public int getSessionDelimiterLength() {
 				return 1;
 			}
-
+			
+			@Override
 			public int getSessionDelimiterIndex(String payload) {
-				int index = payload.indexOf(SESSION_DELIMITER);
+				int index = payload.indexOf(RequestWrapperConstants.SESSION_DELIMITER);
 				if (index >= 0) {
 					return index;
 				}
-
-				return payload.indexOf(CHROME_SESSION_DELIMITER);
+				return payload.indexOf(RequestWrapperConstants.CHROME_SESSION_DELIMITER);
+			}
+				
+			@Override
+			public String getSessionId(String payload) {
+				String sessionId = "";
+				String[] splitedParams = payload.split(String.valueOf(RequestWrapperConstants.SESSION_DELIMITER), SPLIT_LIMIT);
+				if(splitedParams.length == 0) {
+					splitedParams = payload.split(String.valueOf(RequestWrapperConstants.CHROME_SESSION_DELIMITER), SPLIT_LIMIT);
+				}
+				if(splitedParams.length == 4){
+					sessionId = splitedParams[2];
+				}		
+				return sessionId;
 			}
 
+			@Override
 			public int getSessionDelimiterIndex(String payload, int index) {
-				int i = payload.indexOf(SESSION_DELIMITER, index + getSessionDelimiterLength());
+				int i = payload.indexOf(RequestWrapperConstants.SESSION_DELIMITER, index + getSessionDelimiterLength());
 
 				if (i >= 0) {
 					return i;
 				}
 
-				return payload.indexOf(CHROME_SESSION_DELIMITER, index + getSessionDelimiterLength());
+				return payload.indexOf(RequestWrapperConstants.CHROME_SESSION_DELIMITER, index + getSessionDelimiterLength());
+			}
+			
+			@Override
+			public String getWebId(String payload) {
+				String webId = "";
+				String[] splitedParams = payload.split(String.valueOf(RequestWrapperConstants.SESSION_DELIMITER), SPLIT_LIMIT);
+				if(splitedParams.length == 0) {
+					splitedParams = payload.split(String.valueOf(RequestWrapperConstants.CHROME_SESSION_DELIMITER), SPLIT_LIMIT);
+				}
+				if(splitedParams.length == 4){
+					webId = splitedParams[1];
+				}
+				return webId;
 			}
 
 			@Override
@@ -78,12 +105,35 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 				return 1;
 			}
 
+			@Override
 			public int getSessionDelimiterIndex(String payload) {
-				return payload.indexOf(SESSION_DELIMITER);
+				return payload.indexOf(RequestWrapperConstants.SESSION_DELIMITER);
+			}
+			
+			@Override
+			public String getSessionId(String payload) {
+				String sessionId = "";
+				String[] splitedParams = payload.split(String.valueOf(RequestWrapperConstants.SESSION_DELIMITER),
+						SPLIT_LIMIT);
+				if (splitedParams.length == 4) {
+					sessionId = splitedParams[2];
+				}
+				return sessionId;
+			}
+			
+			@Override
+			public int getSessionDelimiterIndex(String payload, int index) {
+				return payload.indexOf(RequestWrapperConstants.SESSION_DELIMITER, index + getSessionDelimiterLength());
 			}
 
-			public int getSessionDelimiterIndex(String payload, int index) {
-				return payload.indexOf(SESSION_DELIMITER, index + getSessionDelimiterLength());
+			@Override
+			public String getWebId(String payload) {
+				String webId = "";
+				String[] splitedParams = payload.split(String.valueOf(RequestWrapperConstants.SESSION_DELIMITER), SPLIT_LIMIT);
+				if(splitedParams.length == 4){
+					webId = splitedParams[1];
+				}		
+				return webId;
 			}
 
 			@Override
@@ -102,6 +152,8 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 		public abstract int getSessionDelimiterLength();
 		public abstract int getSessionDelimiterIndex(String payload);
 		public abstract int getSessionDelimiterIndex(String payload, int index);
+		public abstract String getSessionId(String payload);
+		public abstract String getWebId(String payload);
 		public abstract String getPayload(HttpServletRequest request);
 
 		public static RequestMethodHandler getHandler(HttpServletRequest request) {
@@ -130,28 +182,34 @@ public class GWTRPCSessionHttpServletRequestWrapper extends SessionHttpServletRe
 
 			String payload = handler.getPayload(request);
 
-			int index = handler.getSessionDelimiterIndex(payload);
+			int sessionDelimiterIndex = handler.getSessionDelimiterIndex(payload);
 
-			if (index == 0) {
-				index = handler.getSessionDelimiterIndex(payload, index);
-				sessionId = payload.substring(handler.getSessionDelimiterLength(), index);
+			if (sessionDelimiterIndex == 0) {
+				webId = handler.getWebId(payload);
+				sessionId = handler.getSessionId(payload);
+				if(webId != null && webId.length() > 0){
+					sessionDelimiterIndex = payload.indexOf(webId) + webId.length();
+				} else {
+					sessionDelimiterIndex++;
+				}
+				sessionDelimiterIndex = handler.getSessionDelimiterIndex(payload, sessionDelimiterIndex);
 				SessionHandlerListener.accessManually(sessionId);
-				payload = payload.substring(index + handler.getSessionDelimiterLength());
-
-				if (handler.equals(RequestMethodHandler.GET)) {
-					queryString = payload;
-				} else {
-					bytes = payload.getBytes(encoding);
-				}
+				payload = payload.substring(sessionDelimiterIndex + handler.getSessionDelimiterLength());
 			} else {
-				sessionId = "";
-				if (handler.equals(RequestMethodHandler.GET)) {
-					queryString = payload;
-				} else {
-					bytes = payload.getBytes(encoding);
-				}
+				webId = "";
+				sessionId = "";				
+			}
+			
+			if (handler.equals(RequestMethodHandler.GET)) {
+				queryString = payload;
+			} else {
+				bytes = payload.getBytes(encoding);
 			}
 		}
+	}
+
+	public String getWebId() {
+		return webId;
 	}
 
 }
