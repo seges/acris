@@ -20,7 +20,7 @@
 
 				<repository>
 					<id>acris-snapshots-repo</id>
-					<url>http://acris.googlecode.com/svn/snapshot-repository/</url>
+					<url>http://acris-repository.googlecode.com/svn/trunk/snapshot-repository/</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
@@ -30,7 +30,7 @@
 				</repository>
 				<repository>
 					<id>acris-releases-repo</id>
-					<url>http://acris.googlecode.com/svn/releases-repository/</url>
+					<url>http://acris-repository.googlecode.com/svn/trunk/releases-repository/</url>
 					<snapshots>
 						<enabled>false</enabled>
 					</snapshots>
@@ -38,7 +38,28 @@
 						<enabled>true</enabled>
 					</releases>
 				</repository>
-				
+			
+				<repository>
+					<id>apache-snapshots-repo</id>
+					<url>https://repository.apache.org/content/repositories/snapshots</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+				</repository>
+				<repository>
+					<id>apache-releases-repo</id>
+					<url>https://repository.apache.org/content/repositories/releases/</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+			
 				<repository>
           				<id>sonatype</id>
 					<url>http://oss.sonatype.org/content/repositories/staging</url>

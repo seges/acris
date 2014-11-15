@@ -1,5 +1,11 @@
 package sk.seges.acris.security.client.session;
 
+import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
+import sk.seges.acris.common.util.ClientCommonUtils;
+import sk.seges.acris.security.server.core.request.session.RequestWrapperConstants;
+import sk.seges.acris.security.server.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
+
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -10,9 +16,6 @@ import com.google.gwt.user.client.rpc.impl.RemoteServiceProxy;
 import com.google.gwt.user.client.rpc.impl.RequestCallbackAdapter.ResponseReader;
 import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 import com.google.gwt.user.client.rpc.impl.Serializer;
-import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
-import sk.seges.acris.security.server.session.ClientSession;
-import sk.seges.acris.security.shared.session.ClientSessionDTO;
 
 /**
  * {@link RemoteServiceProxy} extension for send current session id in request
@@ -35,8 +38,6 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 	protected final RpcRequestBuilder postBuilder;
 	protected final RpcRequestBuilder getBuilder;
 
-	private static final String SESSION_DELIMITER = String.valueOf('\uffff');
-
 	protected SessionEnabledRemoteServiceProxy(String moduleBaseURL,
 			String remoteServiceRelativePath, String serializationPolicyName,
 			Serializer serializer) {
@@ -50,6 +51,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 			private String data;
 			private int id;
 
+			@Override
 			protected RequestBuilder doCreate(String serviceEntryPoint) {
 				return new RequestBuilder(RequestBuilder.GET, serviceEntryPoint);
 			}
@@ -92,14 +94,17 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 	}
 
 
+	@Override
 	public ClientSessionDTO getSession() {
 		return clientSession;
 	}
 
+	@Override
 	public void setSession(ClientSessionDTO clientSession) {
 		this.clientSession = clientSession;
 	}
 
+	@Override
 	protected <T> Request doInvoke(ResponseReader responseReader,
 		      String methodName, RpcStatsContext statsContext, String requestData,
 		      AsyncCallback<T> callback) {
@@ -115,6 +120,7 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 		}
 
 		String sessionID = "";
+		String webId = "";
 
 		if (getSession() != null) {
 			sessionID = getSession().getSessionId();
@@ -123,14 +129,32 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 		if (sessionID == null) {
 			sessionID = "";
 		}
-
-		if (sessionID.length() > 0) {
-
-			return super.doInvoke(responseReader, methodName, statsContext,
-					SESSION_DELIMITER + sessionID + SESSION_DELIMITER + requestData, callback);
+		
+		webId = getWebId();
+		
+		if (webId == null) {
+			webId = "";
 		}
+		
+		String extendedRequestData = requestData;
 
+		if (sessionID.length() > 0 || webId.length() > 0) {			
+			extendedRequestData = RequestWrapperConstants.SESSION_DELIMITER + extendedRequestData;			
+			if (sessionID.length() > 0) {
+				extendedRequestData = sessionID + extendedRequestData;
+			}
+			extendedRequestData = RequestWrapperConstants.SESSION_DELIMITER + extendedRequestData;
+			if (webId.length() > 0) {
+				extendedRequestData = webId + extendedRequestData;
+			}
+			extendedRequestData = RequestWrapperConstants.SESSION_DELIMITER + extendedRequestData;
+		}
+		
 		return super.doInvoke(responseReader, methodName, statsContext,
-				requestData, callback);
+				extendedRequestData, callback);
+	}
+
+	private String getWebId() {
+		return ClientCommonUtils.getWebId();
 	}
 }

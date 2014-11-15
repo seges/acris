@@ -290,4 +290,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setInvoiceCurrentNumber(Integer invoiceCurrentNumber) {
 		data.set(INVOICE_CURRENT_NUMBER, invoiceCurrentNumber);
 	}
+
+	@Override
+	public Boolean getUseGeneratedVariants() {		
+		return data.getBoolean(USE_GENERATED_VARIANTS);
+	}
+
+	@Override
+	public void setUseGeneratedVariants(Boolean useGeneratedVariants) {
+		data.set(USE_GENERATED_VARIANTS, useGeneratedVariants);
+	}
 }
