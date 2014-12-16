@@ -1,7 +1,6 @@
 package sk.seges.acris.server.model.dto.configuration;
 
 import sk.seges.acris.site.server.domain.jpa.JpaWebSites;
-import sk.seges.acris.site.shared.domain.api.SiteType;
 import sk.seges.sesam.pap.model.annotation.GenerateEquals;
 import sk.seges.sesam.pap.model.annotation.GenerateHashcode;
 import sk.seges.sesam.pap.model.annotation.Mapping;
@@ -22,5 +21,5 @@ public interface WebSitesDTOConfiguration {
 	void language();
 	void type();
 	void webId();
-
+	void createdDate();
 }

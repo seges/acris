@@ -9,6 +9,7 @@ import sk.seges.acris.site.shared.domain.api.SiteType;
 import sk.seges.corpis.shared.domain.HasLanguage;
 import sk.seges.corpis.shared.domain.HasWebId;
 import sk.seges.sesam.dao.Conjunction;
+import sk.seges.sesam.dao.Disjunction;
 import sk.seges.sesam.dao.Filter;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.dao.PagedResult;
@@ -28,7 +29,11 @@ public class WebSitesService implements IWebSitesServiceDefinition {
 	@Override
 	public List<WebSitesData> getWebSites(String webId) {
 		Page page = Page.ALL_RESULTS_PAGE;
-		page.setFilterable(Filter.eq(HasWebId.WEB_ID).setValue(webId));
+		Conjunction c = Filter.conjunction();
+		c.add(Filter.eq(HasWebId.WEB_ID, webId));
+		c.add(Filter.eq(WebSitesData.TYPE, SiteType.PRIMARY_PENDING));
+		c.add(Filter.eq(WebSitesData.TYPE, SiteType.PENDING));
+		page.setFilterable(c);
 		return webSitesDao.findAll(page).getResult();
 	}
 
@@ -57,6 +62,28 @@ public class WebSitesService implements IWebSitesServiceDefinition {
 	}
 
 	@Override
+	public WebSitesData  getWebSite(String webId, String locale, SiteType siteType) {
+		Page page = new Page(0,1);
+		Conjunction c = Filter.conjunction();
+		c.add(Filter.eq(HasWebId.WEB_ID, webId));
+		c.add(Filter.eq(HasLanguage.LANGUAGE, locale));
+		c.add(Filter.eq(WebSitesData.TYPE, siteType));
+		page.setFilterable(c);
+		return webSitesDao.findUnique(page);
+	}
+	
+	@Override
+	public List<WebSitesData> loadWebSites(SiteType... siteType) {
+		Page page = new Page(0, Page.ALL_RESULTS);
+		Disjunction dis = Filter.disjunction();
+		for (SiteType type : siteType) {
+			dis.add(Filter.eq(WebSitesData.TYPE, type));
+		}
+		page.setFilterable(dis);
+		return webSitesDao.findAll(page).getResult();
+	}
+	
+	@Override
 	public void deleteWebSites(String webId) {
 		Page page = new Page();
 		page.setFilterable(Filter.eq(HasWebId.WEB_ID, webId));
@@ -75,7 +102,8 @@ public class WebSitesService implements IWebSitesServiceDefinition {
 	}
 
 	@Override
-	public void deleteWebSites(WebSitesData webSite){
+	public void deleteWebSites(WebSitesData webSite) {
+		if (webSite == null) return;
 		WebSitesData webS = webSitesDao.findEntity(webSite);
 		webSitesDao.remove(webS);
 	}
@@ -98,7 +126,11 @@ public class WebSitesService implements IWebSitesServiceDefinition {
 		Page page = Page.ALL_RESULTS_PAGE;
 		Conjunction conjunction = Filter.conjunction();
 		conjunction.add(Filter.eq(HasWebId.WEB_ID).setValue(webId));
-		conjunction.add(Filter.eq(WebSitesData.LANGUAGE).setValue(locale));
+		if (locale != null) {
+			conjunction.add(Filter.eq(WebSitesData.LANGUAGE).setValue(locale));
+		}
+		conjunction.add(Filter.eq(WebSitesData.TYPE, SiteType.PRIMARY_PENDING));
+		conjunction.add(Filter.eq(WebSitesData.TYPE, SiteType.PENDING));
 		page.setFilterable(conjunction);
 		 
 		List<WebSitesData> webSitesList = webSitesDao.findAll(page).getResult();;
