@@ -1,47 +1,42 @@
 package sk.seges.acris.site.server.cache;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.constructs.web.GenericResponseWrapper;
+import net.sf.ehcache.constructs.web.Header;
+import net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sk.seges.acris.security.server.core.request.session.GWTRPCSessionHttpServletRequestWrapper;
+import sk.seges.acris.security.server.util.LoginConstants;
+import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.constructs.web.AlreadyGzippedException;
-import net.sf.ehcache.constructs.web.GenericResponseWrapper;
-import net.sf.ehcache.constructs.web.Header;
-import net.sf.ehcache.constructs.web.PageInfo;
-import net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import sk.seges.acris.security.server.core.request.session.GWTRPCSessionHttpServletRequestWrapper;
-import sk.seges.acris.security.server.util.LoginConstants;
-import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
 
-	private static final String CODESVR = "gwt.codesvr";
-	public static final String WEB_ID_DELIMITER = "___";
+	private static final String CODESVR = "__gwt.codesvr";
     private static final Logger LOG = LoggerFactory.getLogger(CacheFilter.class);
     private static final long ONE_YEAR_IN_MILLISECONDS = 60 * 60 * 24 * 365 * 1000L;
     private static final int MILLISECONDS_PER_SECOND = 1000;
     
-    private final CacheManager cacheManager;
+    private final MutableCacheManager cacheManager;
         
-	public CacheFilter(CacheManager cacheManager) {
+	public CacheFilter(MutableCacheManager cacheManager) {
 		this.cacheManager = cacheManager;
 	}
 
@@ -67,12 +62,11 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
 		StringBuffer stringBuffer = new StringBuffer();
 		if(httpRequest instanceof GWTRPCSessionHttpServletRequestWrapper) {
 			GWTRPCSessionHttpServletRequestWrapper sessionHttpServletRequestWrapper = (GWTRPCSessionHttpServletRequestWrapper) httpRequest;
-			stringBuffer.append(sessionHttpServletRequestWrapper.getWebId() + WEB_ID_DELIMITER);
+			stringBuffer.append(sessionHttpServletRequestWrapper.getWebId() + MutableCacheManager.WEB_ID_DELIMITER);
 		}
 		stringBuffer.append(httpRequest.getMethod()).append(httpRequest.getRequestURI())
 				.append(httpRequest.getQueryString());
-		String key = stringBuffer.toString();
-		return key;
+		return stringBuffer.toString();
 	}
 	
 	@Override
@@ -84,13 +78,13 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
 	}
 
     @Override
-	protected PageInfo buildPageInfo(final HttpServletRequest request,
+	protected PreprocessedPageInfo buildPageInfo(final HttpServletRequest request,
             final HttpServletResponse response, final FilterChain chain)
             throws Exception {
         // Look up the cached page
         final String key = calculateKey(request);
-        PageInfo pageInfo = null;        
-		Element element = get(key);
+        PreprocessedPageInfo pageInfo;
+		Element element = cacheManager.get(key);
 		if (element == null || element.getObjectValue() == null) {
 			try {
 				// Page is not cached - build the response, cache it, and
@@ -98,45 +92,75 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
 				pageInfo = buildPage(request, response, chain);
 				if (pageInfo.isOk()) {
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("PageInfo ok. Adding to cache " + getTargetCacheByKey(key).getName() + " with key " + key);
+						LOG.debug("PageInfo ok. Adding to cache " + cacheManager.getTargetCacheByKey(key).getName() + " with key " + key);
 					}
-					put(new Element(key, pageInfo));
+                    cacheManager.put(new Element(key, pageInfo));
 				} else {
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("PageInfo was not ok(200). Putting null into cache " + getTargetCacheByKey(key).getName()
+						LOG.debug("PageInfo was not ok(200). Putting null into cache " + cacheManager.getTargetCacheByKey(key).getName()
 								+ " with key " + key);
 					}
-					put(new Element(key, null));
+                    cacheManager.put(new Element(key, null));
 				}
 			} catch (final Throwable throwable) {
-				LOG.error("Putting into cache " + getTargetCacheByKey(key).getName() + " failed with key " + key);
-				put(new Element(key, null));
+				LOG.error("Putting into cache " + cacheManager.getTargetCacheByKey(key).getName() + " failed with key " + key);
+                cacheManager.put(new Element(key, null));
 				throw new Exception(throwable);
 			}
 		} else {
-			pageInfo = (PageInfo) element.getObjectValue();
+			pageInfo = (PreprocessedPageInfo) element.getObjectValue();
 		}
         return pageInfo;
     }
     
     @Override
-    protected PageInfo buildPage(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws AlreadyGzippedException, Exception {
-    	// Invoke the next entity in the chain
+    protected PreprocessedPageInfo buildPage(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws Exception {
+
+    	// Invoke the next entityprovider in the chain
         final ByteArrayOutputStream outstr = new ByteArrayOutputStream();
-        final GenericResponseWrapper wrapper = new GenericResponseWrapper(
+        GenericResponseWrapper wrapper = new GenericResponseWrapper(
                 response, outstr);
-        chain.doFilter(request, wrapper);
+        chain.doFilter(new CompressFreeHttpServletRequestWrapper(request), wrapper);
         wrapper.flush();
 
+        //boolean shouldCompress = RPCServletUtils.shouldGzipResponseContent(request, outputString);
+
+//        if (RPCServletUtils.shouldGzipResponseContent(request, outputString)) {
+//            GZIPOutputStream gzipOutputStream = null;
+//            ByteArrayOutputStream output = null;
+//            try {
+//                output = new ByteArrayOutputStream(outstr.toByteArray().length);
+//                gzipOutputStream = new GZIPOutputStream(output);
+//                gzipOutputStream.write(outstr.toByteArray());
+//                gzipOutputStream.finish();
+//                gzipOutputStream.flush();
+//
+//                wrapper = new GenericResponseWrapper(response, output);
+//                wrapper.setHeader(HttpHeaders.CONTENT_ENCODING, CompressFreeHttpServletRequestWrapper.CONTENT_ENCODING_GZIP);
+//                outstr.reset();
+//                outstr.write(output.toByteArray());
+//            } catch (IOException e) {
+//                LOG.info("Unable to gzip response", e);
+//            } finally {
+//                if (null != gzipOutputStream) {
+//                    gzipOutputStream.close();
+//                }
+//                if (null != output) {
+//                    output.close();
+//                }
+//            }
+//        }
+
         Ehcache cache = getTargetCacheByRequest(request); 
-        long timeToLiveSeconds = cache.getCacheConfiguration()
-                .getTimeToLiveSeconds();
+        long timeToLiveSeconds = cache.getCacheConfiguration().getTimeToLiveSeconds();
+
+        String outputString = new String( outstr.toByteArray(), Charset.defaultCharset());
 
         // Create the page info
-        PageInfo pageInfo = new PageInfo(wrapper.getStatus(), wrapper.getContentType(),
-                wrapper.getCookies(), outstr.toByteArray(), true,
-                timeToLiveSeconds, wrapper.getAllHeaders());
+        PreprocessedPageInfo pageInfo = new PreprocessedPageInfo(wrapper.getStatus(), wrapper.getContentType(),
+                wrapper.getCookies(), cacheManager.getResponseForClient(outputString).getBytes(), true,
+                timeToLiveSeconds, wrapper.getAllHeaders(), outputString, cacheManager.getResponseForCache(outputString));
 
         final List<Header<? extends Serializable>> headers = pageInfo.getHeaders();
 
@@ -166,11 +190,11 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
         headers.add(new Header<Long>("Expires", System.currentTimeMillis() + ttlMilliseconds));
         headers.add(new Header<String>("Cache-Control", "max-age=" + ttlMilliseconds / MILLISECONDS_PER_SECOND));
         headers.add(new Header<String>("ETag", generateEtag(ttlMilliseconds)));
-        
+
         return pageInfo;
     }
-    
-	private long calculateTimeToLiveMilliseconds(Ehcache cache) {    	
+
+	private long calculateTimeToLiveMilliseconds(Ehcache cache) {
         if (cache.isDisabled()) {
             return -1;
         } else {
@@ -188,47 +212,12 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
         return cacheManager;
     }
         
-    private Ehcache put(Element element){
-		Object key = element.getObjectKey();
-        Ehcache cache = getTargetCacheByKey(key);
-        cache.put(element);
-        return cache;
-    }
-    
-    private String createCacheName(String webId){
-    	return webId + WEB_ID_DELIMITER + cacheManager.getName();
-    }
 
     private Ehcache getTargetCacheByRequest(HttpServletRequest request){ 
     	String key = calculateKey(request);
-    	return getTargetCacheByKey(key);
+    	return cacheManager.getTargetCacheByKey(key);
     }
     
-    private Ehcache getTargetCacheByKey(Object key){    	
-    	String webId = determineWebId(key);
-    	String cacheName = createCacheName(webId);
-    	Ehcache cache = cacheManager.getEhcache(cacheName);
-    	if(cache == null) {
-            cache = cacheManager.addCacheIfAbsent(cacheName);
-    	}
-    	return cache;
-    }
-    
-	private String determineWebId(Object key) {
-		String keyString = String.valueOf(key);
-		int index = keyString.indexOf(CacheFilter.WEB_ID_DELIMITER);
-		if(index < 0){
-			return null;
-		}
-		return keyString.substring(0, index);
-	}
-	
-	private Element get(Object key){	
-		Ehcache cache = getTargetCacheByKey(key);
-		return cache.get(key);		
-	}
-    
-
     /**
      * ETags are required to have double quotes around the value, unlike any other header.
      * <p/>

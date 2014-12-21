@@ -227,6 +227,12 @@
 	            <scope>provided</scope>
 	        </dependency>
 			<dependency>
+				<groupId>sk.seges.corpis</groupId>
+				<artifactId>corpis-application-scaffold-data-entity-provider-processor</artifactId>
+				<version>${corpis-os.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
 	            <groupId>sk.seges.corpis</groupId>
 	            <artifactId>corpis-application-scaffold-data-domain-model-processor</artifactId>
 				<version>${corpis-os.version}</version>

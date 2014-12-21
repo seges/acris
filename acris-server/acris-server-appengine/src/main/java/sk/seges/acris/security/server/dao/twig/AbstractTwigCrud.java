@@ -129,11 +129,11 @@ public abstract class AbstractTwigCrud<T extends IMutableDomainObject<Long>> imp
 		entity.setId(key.getId());
 		return entity;
 //		Key key = datastore.store()
-//		  .instance(entity)
+//		  .instance(entityprovider)
 //		  .ensureUniqueKey()
 //		  .returnKeyNow();
-//		entity.setId(key.getId());
-//		return entity;
+//		entityprovider.setId(key.getId());
+//		return entityprovider;
 	}
 
 	@Override

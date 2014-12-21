@@ -13,8 +13,8 @@ import sk.seges.sesam.domain.IDomainObject;
  * </pre>
  * 
  * <pre>
- * When necessary you can add entity based DetachedCriteria support by
- * transforming entity into correct java class.
+ * When necessary you can add entityprovider based DetachedCriteria support by
+ * transforming entityprovider into correct java class.
  * </pre>
  * 
  * @author fat
