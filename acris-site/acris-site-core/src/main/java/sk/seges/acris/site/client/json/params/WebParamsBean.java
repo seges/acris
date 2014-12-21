@@ -44,6 +44,8 @@ public class WebParamsBean implements WebParams {
 	private Integer invoiceCurrentNumber;
 	
 	private Boolean useGeneratedVariants;
+	
+	private Boolean enableOrderOfNotPresentItem = false;
 
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -323,5 +325,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setUseGeneratedVariants(Boolean useGeneratedVariants) {
 		this.useGeneratedVariants = useGeneratedVariants;		
+	}
+
+	@Override
+	public Boolean getEnableOrderOfNotPresentItem() {		
+		return enableOrderOfNotPresentItem;
+	}
+
+	@Override
+	public void setEnableOrderOfNotPresentItem(Boolean enableOrderOfNotPresentItem) {
+		this.enableOrderOfNotPresentItem = enableOrderOfNotPresentItem;
 	}
 }

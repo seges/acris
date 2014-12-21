@@ -1,5 +1,7 @@
 package sk.seges.acris.site;
 
+import java.util.Date;
+
 import sk.seges.acris.site.shared.domain.api.SiteType;
 import sk.seges.corpis.appscaffold.shared.annotation.BaseObject;
 import sk.seges.corpis.appscaffold.shared.annotation.DomainInterface;
@@ -22,4 +24,6 @@ interface WebSites extends IMutableDomainObject<Long>, HasWebId, HasLanguage{
 	SiteType type();
 
 	String rootDir();
+	
+	Date createdDate();
 }

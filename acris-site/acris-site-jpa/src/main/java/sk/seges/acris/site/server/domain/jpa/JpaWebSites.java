@@ -1,5 +1,7 @@
 package sk.seges.acris.site.server.domain.jpa;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -71,5 +73,11 @@ public class JpaWebSites extends WebSitesBase {
 	@Column(nullable = false, length = 1024)
 	public String getRootDir() {
 		return super.getRootDir();
+	}
+	
+	@Override
+	@Column
+	public Date getCreatedDate() {
+		return super.getCreatedDate();
 	}
 }
