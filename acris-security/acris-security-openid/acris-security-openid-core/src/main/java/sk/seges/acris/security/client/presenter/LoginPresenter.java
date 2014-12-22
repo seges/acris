@@ -329,6 +329,9 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 				display.setRemeberMe(true);
 			}
 			fireLoginEvent();
+		} else {
+			display.setUsername("");
+			display.setPassword("");
 		}
 	}
 
