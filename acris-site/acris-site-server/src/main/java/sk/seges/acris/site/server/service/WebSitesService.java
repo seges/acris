@@ -31,8 +31,8 @@ public class WebSitesService implements IWebSitesServiceDefinition {
 		Page page = Page.ALL_RESULTS_PAGE;
 		Conjunction c = Filter.conjunction();
 		c.add(Filter.eq(HasWebId.WEB_ID, webId));
-		c.add(Filter.eq(WebSitesData.TYPE, SiteType.PRIMARY_PENDING));
-		c.add(Filter.eq(WebSitesData.TYPE, SiteType.PENDING));
+		c.add(Filter.ne(WebSitesData.TYPE, SiteType.PRIMARY_PENDING));
+		c.add(Filter.ne(WebSitesData.TYPE, SiteType.PENDING));
 		page.setFilterable(c);
 		return webSitesDao.findAll(page).getResult();
 	}
@@ -129,8 +129,8 @@ public class WebSitesService implements IWebSitesServiceDefinition {
 		if (locale != null) {
 			conjunction.add(Filter.eq(WebSitesData.LANGUAGE).setValue(locale));
 		}
-		conjunction.add(Filter.eq(WebSitesData.TYPE, SiteType.PRIMARY_PENDING));
-		conjunction.add(Filter.eq(WebSitesData.TYPE, SiteType.PENDING));
+		conjunction.add(Filter.ne(WebSitesData.TYPE, SiteType.PRIMARY_PENDING));
+		conjunction.add(Filter.ne(WebSitesData.TYPE, SiteType.PENDING));
 		page.setFilterable(conjunction);
 		 
 		List<WebSitesData> webSitesList = webSitesDao.findAll(page).getResult();;
