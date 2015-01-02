@@ -27,17 +27,18 @@ public class HibernateJpaRecordingLogDao extends AbstractHibernateCRUD<Recording
 		return new JpaRecordingLog();
 	}
 
+
 //	@Override
 //	@Transactional
-//	public RecordingLogData persist(RecordingLogData entityprovider) {
-////		entityprovider.setEvent(entityprovider.getEvent().replace('\0', ' '));
-//		return super.persist(entityprovider);
+//	public RecordingLogData persist(RecordingLogData entity) {
+////		entity.setEvent(entity.getEvent().replace('\0', ' '));
+//		return super.persist(entity);
 //	}
 //
 //	@Override
 //	@Transactional
-//	public RecordingLogData merge(RecordingLogData entityprovider) {
-////		entityprovider.setEvent(entityprovider.getEvent().replace('\0', ' '));
-//		return super.merge(entityprovider);
+//	public RecordingLogData merge(RecordingLogData entity) {
+////		entity.setEvent(entity.getEvent().replace('\0', ' '));
+//		return super.merge(entity);
 //	}
 }

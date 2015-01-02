@@ -1,1 +1,1 @@
-/mock-service/s?params
+/mock-service/test?params

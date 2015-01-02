@@ -1,5 +1,4 @@
 package sk.seges.acris.pap.bean.model;
-
 import com.google.gwt.core.client.GWT;
 
 import java.util.List;
@@ -10,50 +9,50 @@ import sk.seges.acris.core.client.bean.BeanWrapper;
 
 @Generated(value = "sk.seges.acris.pap.bean.BeanWrapperProcessor")
 public class DummyBeanBeanWrapper implements BeanWrapper<DummyBean> {
-
+	 
 	protected DummyBean beanWrapperContent;
-
+	
 	public String[] getArrayField(){
 		if (beanWrapperContent != null) {
 			return beanWrapperContent.getArrayField();
 		}
 		return null;
 	}
-
+	
 	public Double getDoubleField(){
 		if (beanWrapperContent != null) {
 			return beanWrapperContent.getDoubleField();
 		}
 		return null;
 	}
-
+	
 	public int getIntField(){
 		if (beanWrapperContent != null) {
 			return beanWrapperContent.getIntField();
 		}
 		return 0;
 	}
-
+	
 	public List<String> getListField(){
 		if (beanWrapperContent != null) {
 			return beanWrapperContent.getListField();
 		}
 		return null;
 	}
-
+	
 	private BeanWrapper<ReferencedBean> referencedField__nested;
-
+	
 	public ReferencedBean getReferencedField() {
 		if (beanWrapperContent.getReferencedField() == null) {
 			return null;
 		}
 		if (this.referencedField__nested == null) {
-			this.referencedField__nested = (sk.seges.acris.core.client.bean.BeanWrapper<sk.seges.acris.pap.bean.model.ReferencedBean>)GWT.create(ReferencedBean.class);
+			this.referencedField__nested = GWT.create(ReferencedBeanBeanWrapper.class);
 			if(beanWrapperContent != null) {
 				this.referencedField__nested.setBeanWrapperContent(beanWrapperContent.getReferencedField());
 			}
 		}
-		return this.referencedField__nested;
+		return this.referencedField__nested.getBeanWrapperContent();
 	}
 	public String getStringField(){
 		if (beanWrapperContent != null) {
@@ -61,51 +60,51 @@ public class DummyBeanBeanWrapper implements BeanWrapper<DummyBean> {
 		}
 		return null;
 	}
-
+	
 	public boolean isBooleanField(){
 		if (beanWrapperContent != null) {
 			return beanWrapperContent.isBooleanField();
 		}
 		return false;
 	}
-
+	
 	public void setArrayField(String[] arrayField) {
 		beanWrapperContent.setArrayField(arrayField);
 	}
-
+	
 	public void setBooleanField(boolean booleanField) {
 		beanWrapperContent.setBooleanField(booleanField);
 	}
-
+	
 	public void setDoubleField(Double doubleField) {
 		beanWrapperContent.setDoubleField(doubleField);
 	}
-
+	
 	public void setIntField(int intField) {
 		beanWrapperContent.setIntField(intField);
 	}
-
+	
 	public void setListField(List<String> listField) {
 		beanWrapperContent.setListField(listField);
 	}
-
+	
 	public void setReferencedField(ReferencedBean referencedField) {
 		beanWrapperContent.setReferencedField(referencedField);
 	}
-
+	
 	public void setStringField(String stringField) {
 		beanWrapperContent.setStringField(stringField);
 	}
-
+	
 	public void setBeanWrapperContent(DummyBean beanWrapperContent) {
 		this.beanWrapperContent = (DummyBean) beanWrapperContent;
 		clearWrappers();
 	}
-
+	
 	public DummyBean getBeanWrapperContent() {
 		return this.beanWrapperContent;
 	}
-
+	
 	public Object getBeanAttribute(String attr) {
 		if (attr.equals("arrayField")) {
 			return this.getArrayField();
@@ -127,27 +126,27 @@ public class DummyBeanBeanWrapper implements BeanWrapper<DummyBean> {
 			return null;
 		}
 	}
-
+	
 	public void setBeanAttribute(String attr, Object value) {
-		if (attr.equals("setArrayField")) { 
+		if (attr.equals("arrayField")) { 
 			this.setArrayField((String[])value);
-		} else if (attr.equals("setBooleanField")) { 
+		} else if (attr.equals("booleanField")) { 
 			this.setBooleanField((Boolean)value);
-		} else if (attr.equals("setDoubleField")) { 
+		} else if (attr.equals("doubleField")) { 
 			this.setDoubleField((Double)value);
-		} else if (attr.equals("setIntField")) { 
+		} else if (attr.equals("intField")) { 
 			this.setIntField((Integer)value);
-		} else if (attr.equals("setListField")) { 
+		} else if (attr.equals("listField")) { 
 			this.setListField((List<String>)value);
-		} else if (attr.equals("setReferencedField")) { 
+		} else if (attr.equals("referencedField")) { 
 			this.setReferencedField((ReferencedBean)value);
-		} else if (attr.equals("setStringField")) { 
+		} else if (attr.equals("stringField")) { 
 			this.setStringField((String)value);
 		} else if (attr.equals("beanWrapperContent")) {
 			this.beanWrapperContent = (DummyBean) value;
 		}
 	}
-
+	
 	private void clearWrappers() {
 		referencedField__nested = null;
 	}

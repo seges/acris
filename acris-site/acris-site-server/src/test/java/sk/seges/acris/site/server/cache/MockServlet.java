@@ -1,5 +1,7 @@
 package sk.seges.acris.site.server.cache;
 
+import net.sf.ehcache.constructs.web.filter.Filter;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +32,9 @@ public abstract class MockServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         count++;
 
-        if (acceptsGzipEncoding(req)) {
+        Object attribute = req.getAttribute(CacheFilter.EHCACHE_ENABLED);
+
+        if (attribute != null && attribute.equals(false) && acceptsGzipEncoding(req)) {
             gzip(resp.getOutputStream(), getResponseText());
         } else {
             resp.getWriter().write(getResponseText());
@@ -52,22 +56,12 @@ public abstract class MockServlet extends HttpServlet {
 
         byte[] responseBytes = responseContent.getBytes(CHARSET_UTF8);
 
-        ByteArrayOutputStream output = null;
-        GZIPOutputStream gzipOutputStream = null;
         try {
-            gzipOutputStream = new GZIPOutputStream(outputStream);
+            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream);
             gzipOutputStream.write(responseBytes);
-            gzipOutputStream.finish();
-            gzipOutputStream.flush();
+            gzipOutputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (null != gzipOutputStream) {
-                gzipOutputStream.close();
-            }
-            if (null != output) {
-                output.close();
-            }
         }
     }
 

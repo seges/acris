@@ -33,7 +33,7 @@ SOFTWARE.
 public class XMLTokener extends JSONTokener {
 
 
-   /** The table of entityprovider values. It initially contains Character values for
+   /** The table of entity values. It initially contains Character values for
     * amp, apos, gt, lt, quot.
     */
    public static final java.util.HashMap entity;
@@ -118,11 +118,11 @@ public class XMLTokener extends JSONTokener {
 
 
     /**
-     * Return the next entityprovider. These entities are translated to Characters:
+     * Return the next entity. These entities are translated to Characters:
      *     <code>&amp;  &apos;  &gt;  &lt;  &quot;</code>.
      * @param a An ampersand character.
-     * @return  A Character or an entityprovider String if the entityprovider is not recognized.
-     * @throws JSONException If missing ';' in XML entityprovider.
+     * @return  A Character or an entity String if the entity is not recognized.
+     * @throws JSONException If missing ';' in XML entity.
      */
     public Object nextEntity(char a) throws JSONException {
         StringBuffer sb = new StringBuffer();
@@ -133,7 +133,7 @@ public class XMLTokener extends JSONTokener {
             } else if (c == ';') {
                 break;
             } else {
-                throw syntaxError("Missing ';' in XML entityprovider: &" + sb);
+                throw syntaxError("Missing ';' in XML entity: &" + sb);
             }
         }
         String s = sb.toString();

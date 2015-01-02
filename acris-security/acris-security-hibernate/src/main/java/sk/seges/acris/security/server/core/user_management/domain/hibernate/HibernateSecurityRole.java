@@ -18,7 +18,7 @@ import org.hibernate.annotations.FetchMode;
 import sk.seges.corpis.server.domain.user.server.model.base.RoleBase;
 
 /**
- * Security role serves as the holder of authorities for specific user (or any other entityprovider). It is the entityprovider grouping
+ * Security role serves as the holder of authorities for specific user (or any other entity). It is the entity grouping
  * authorities but the security mechanism is not dependent on it directly (nor the user). Security role might be used in
  * custom user service implementation where you can model user <-> role <-> authority relation.
  */

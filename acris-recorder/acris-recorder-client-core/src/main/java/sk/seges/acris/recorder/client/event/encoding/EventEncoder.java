@@ -77,11 +77,15 @@ public class EventEncoder {
 							+ fieldDefinition.getField() + "' in " + beanWrapper.getBeanWrapperContent().getClass().getName().toString());
 				}
 
-				result = ValueEncoder.writeValueOnPosition(((Integer) propertyResult).longValue(), fieldDefinition.getPosition(),
+				result = ValueEncoder.writeValueOnPosition(getLongValue(propertyResult), fieldDefinition.getPosition(),
                         fieldDefinition.getLength(), result);
 			}
 		}
 
 		return longToByteArray(result);
 	}
+
+    private static long getLongValue(Object propertyResult) {
+        return ((Integer)propertyResult).longValue();
+    }
 }

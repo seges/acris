@@ -140,6 +140,9 @@ public abstract class AbstractCacheFilterTest {
     @Autowired
     protected CacheFilter cacheFilter;
 
+    @Autowired
+    protected MutableCacheManager cacheManager;
+
     protected String executeFilterChain(ServletRequest request, HttpServlet servlet) throws IOException, ServletException {
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

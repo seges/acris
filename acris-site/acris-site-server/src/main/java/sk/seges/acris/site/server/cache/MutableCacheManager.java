@@ -7,7 +7,6 @@ import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sk.seges.acris.common.util.Pair;
-import sk.seges.sesam.domain.IDomainObject;
 import sk.seges.sesam.shared.model.converter.EntityProviderContext;
 
 import java.net.URL;
@@ -48,12 +47,19 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 
     public static String getResponseForClient(String originalResponse) {
         Pair<Integer, Integer> idIndexes = getResponseIdIndexes(originalResponse);
-        return originalResponse.substring(0, idIndexes.getFirst()) + originalResponse.substring(idIndexes.getSecond() + REMOVE_PREFIX.length());
+        if (idIndexes.getFirst() == -1) {
+            //most probably exception occured
+            return originalResponse;
+        }
+        return originalResponse.substring(0, idIndexes.getFirst()) + originalResponse.substring(1 + idIndexes.getFirst() + idIndexes.getSecond() + REMOVE_PREFIX.length() * 2);
     }
 
     public static String getResponseForCache(String originalResponse) {
         Pair<Integer, Integer> idIndexes = getResponseIdIndexes(originalResponse);
-        return originalResponse.substring(idIndexes.getFirst() + REMOVE_PREFIX.length(), idIndexes.getSecond());
+        if (idIndexes.getFirst() == -1) {
+            return null;
+        }
+        return originalResponse.substring(idIndexes.getFirst() + REMOVE_PREFIX.length() + 1, idIndexes.getFirst() + REMOVE_PREFIX.length() + idIndexes.getSecond());
     }
 
     public Ehcache put(Element element){
@@ -63,19 +69,21 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 
         PreprocessedPageInfo pageInfo = (PreprocessedPageInfo) element.getValue();
 
-        String idList = pageInfo.getResponseForCache();
+        if (pageInfo != null) {
+            String idList = pageInfo.getResponseForCache();
 
-        if (idList != null && idList.length() > 0) {
-            String idListEntries[] = idList.split(",");
+            if (idList != null && idList.length() > 0) {
+                String idListEntries[] = idList.split(",");
 
-            for (String idListEntry : idListEntries) {
-                List<String> cachedEntry = inverseCacheReference.get(idListEntry);
-                if (cachedEntry == null) {
-                    cachedEntry = new ArrayList<String>();
-                    inverseCacheReference.put(idListEntry, cachedEntry);
+                for (String idListEntry : idListEntries) {
+                    List<String> cachedEntry = inverseCacheReference.get(idListEntry);
+                    if (cachedEntry == null) {
+                        cachedEntry = new ArrayList<String>();
+                        inverseCacheReference.put(idListEntry, cachedEntry);
+                    }
+
+                    cachedEntry.add(key);
                 }
-
-                cachedEntry.add(key);
             }
         }
 
@@ -111,14 +119,20 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
     }
 
     @Override
-    public void invalidate(Object entity) {
+    public void invalidate(String entityClassName, long hashCode) {
 
-        if (!(entity instanceof IDomainObject)) {
-            //we do cache only entities that implements IDomainObject
+//        if (!(entity instanceof IDomainObject)) {
+//            //we cache only entities that implements IDomainObject
+//            return;
+//        }
+
+        if (inverseCacheReference.size() == 0) {
             return;
         }
 
-        List<String> cacheReferences = inverseCacheReference.get(entity.getClass().getCanonicalName() + "/" + ((IDomainObject<Long>) entity).getId().hashCode());
+        //entity.getClass().getCanonicalName()
+        //((IDomainObject<Long>) entity).getId().hashCode()
+        List<String> cacheReferences = inverseCacheReference.get(entityClassName + "/" + hashCode);
 
         if (cacheReferences != null) {
             for (String cacheReference : cacheReferences) {
@@ -131,11 +145,11 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
             }
         }
 
-        List<Class<?>> dtoClasses = entityProviderContext.get().getDtoClassForDomain(entity.getClass());
+        List<Class<?>> dtoClasses = entityProviderContext.get().getDtoClassForDomain(entityClassName);
 
-        if (dtoClasses != null || dtoClasses.size() == 0) {
+        if (dtoClasses != null && dtoClasses.size() > 0) {
             for (Class<?> dtoClass: dtoClasses) {
-                cacheReferences = inverseCacheReference.get(dtoClass.getCanonicalName() + "/" + ((IDomainObject<Long>) entity).getId().hashCode());
+                cacheReferences = inverseCacheReference.get(dtoClass.getCanonicalName() + "/" + hashCode);
 
                 if (cacheReferences != null) {
                     for (String cacheReference : cacheReferences) {
@@ -153,8 +167,11 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 
     @Override
     public void clearCache(String webId, String locale) {
-        Ehcache cache = getEhcache(webId);
-        cache.removeAll();
+        String cacheName = createCacheName(webId);
+        Ehcache cache = getEhcache(cacheName);
+        if (cache != null) {
+            cache.removeAll();
+        }
     }
 
     private static volatile MutableCacheManager singleton;

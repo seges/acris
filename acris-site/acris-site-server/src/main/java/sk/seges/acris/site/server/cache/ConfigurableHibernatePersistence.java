@@ -20,17 +20,34 @@ public class ConfigurableHibernatePersistence extends HibernatePersistence {
         this.interceptor = interceptor;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map map) {
+    private Ejb3Configuration createConfiguration(PersistenceUnitInfo info, Map map) {
         Ejb3Configuration cfg = new Ejb3Configuration();
         Ejb3Configuration configured = cfg.configure( info, map );
-        postprocessConfiguration(info, map, configured);
+        postProcessConfiguration(configured);
+        return configured;
+    }
+
+    private Ejb3Configuration createConfiguration(String persistenceUnitName, Map properties) {
+        Ejb3Configuration cfg = new Ejb3Configuration();
+        Ejb3Configuration configured = cfg.configure( persistenceUnitName, properties );
+        postProcessConfiguration(configured);
+        return configured;
+    }
+
+    @Override
+    public EntityManagerFactory createEntityManagerFactory(String persistenceUnitName, Map properties) {
+        Ejb3Configuration configured = createConfiguration(persistenceUnitName, properties);
+        return configured != null ? configured.buildEntityManagerFactory() : null;
+    }
+
+    @Override
+    public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map map) {
+        Ejb3Configuration configured = createConfiguration(info, map);
         return configured != null ? configured.buildEntityManagerFactory() : null;
     }
 
     @SuppressWarnings("unchecked")
-    protected void postprocessConfiguration(PersistenceUnitInfo info, Map map, Ejb3Configuration configured) {
+    protected void postProcessConfiguration(Ejb3Configuration configured) {
         if (this.interceptor != null) {
             if (configured.getInterceptor()==null || EmptyInterceptor.class.equals(configured.getInterceptor().getClass())) {
                 configured.setInterceptor(this.interceptor);

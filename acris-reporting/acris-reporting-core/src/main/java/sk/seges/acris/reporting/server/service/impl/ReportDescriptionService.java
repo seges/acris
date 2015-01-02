@@ -116,7 +116,7 @@ public class ReportDescriptionService implements IReportDescriptionServiceLocal 
 	 * {@link IReportDescriptionDao}
 	 * 
 	 * @param report
-	 * @return entityprovider
+	 * @return entity
 	 */
 	public ReportDescriptionData revert(ReportDescriptionData report) {
 		if (report == null) {

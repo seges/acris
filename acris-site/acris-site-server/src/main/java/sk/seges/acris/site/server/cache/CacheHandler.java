@@ -5,7 +5,7 @@ package sk.seges.acris.site.server.cache;
  */
 public interface CacheHandler {
 
-    void invalidate(Object entity);
+    void invalidate(String entityClassName, long hashCode);
 
     /**
      * Clears cache for the specific web ID

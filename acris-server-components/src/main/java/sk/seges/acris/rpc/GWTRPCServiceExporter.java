@@ -67,6 +67,8 @@ import com.google.gwt.user.client.rpc.impl.AbstractSerializationStream;
  */
 public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCServiceExporter, ServletContextAware, ServletConfigAware, BeanNameAware {
 
+        public static final String EHCACHE_ENABLED = "ehcache";
+
         /**
          * Disable RPC response compression. Value is 0.
          */
@@ -94,7 +96,7 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
         protected int compressResponse = COMPRESSION_AUTO;
         
         protected boolean disableResponseCaching = false;
-        
+
         protected boolean throwUndeclaredExceptionToServletContainer = false;
         
         protected String beanName = "GWTRPCServiceExporter";
@@ -246,8 +248,13 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
                         RPCRequest rpcRequest) throws Exception {
                 Object result = targetMethod.invoke(service, targetParameters);
                 SerializationPolicy serializationPolicy = getSerializationPolicyProvider().getSerializationPolicyForSuccess(rpcRequest, service, targetMethod, targetParameters, result);
-                String encodedResult = CacheableRPC.encodeResponseForSuccess(rpcRequest.getMethod(), result, serializationPolicy, serializationFlags);
-                return encodedResult;
+
+                Object ehCacheStatus = ServletUtils.getRequest().getAttribute(EHCACHE_ENABLED);
+
+                if (disableResponseCaching || ehCacheStatus == null || ehCacheStatus.equals(false)) {
+                    return RPC.encodeResponseForSuccess(rpcRequest.getMethod(), result, serializationPolicy, serializationFlags);
+                }
+                return CacheableRPC.encodeResponseForSuccess(rpcRequest.getMethod(), result, serializationPolicy, serializationFlags);
         }
 
         /**

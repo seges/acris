@@ -17,15 +17,15 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 
 	public static final String KEY_CODE_ATTRIBUTE = "keyCode";
     public static final String SCROLL_OFFSET = "scrollOffset";
-    public static final String SCROLL_TYPE = "scrollType";
+    public static final String SCROLL_TYPE = "scrollTypeInt";
 
     public enum ScrollType {
-        X, Y;
+        X, Y
     }
 
     protected int keyCode;
-    protected ScrollType scrollType;
-    protected int scrollOffset;
+    protected ScrollType scrollType = ScrollType.Y;
+    protected int scrollOffset = 0;
 
 	public KeyboardEvent(ElementXpathCache elementXpathCache) {
         super(elementXpathCache);
@@ -41,9 +41,9 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-        result = 31 * result + keyCode;
-        result = 31 * result + (scrollType != null ? scrollType.hashCode() : 0);
-        result = 31 * result + scrollOffset;
+        result = prime * result + keyCode;
+        result = prime * result + (scrollType != null ? scrollType.hashCode() : 0);
+        result = prime * result + scrollOffset;
         return result;
 	}
 
@@ -142,6 +142,21 @@ public class KeyboardEvent extends AbstractGenericTargetableEventWithFlags {
 
     public void setScrollType(ScrollType scrollType) {
         this.scrollType = scrollType;
+    }
+
+    public int getScrollTypeInt() {
+        return getScrollType().ordinal();
+    }
+
+    public void setScrollTypeInt(int scrollTypeInt) {
+        for (ScrollType scrollType: ScrollType.values()) {
+            if (scrollType.ordinal() == scrollTypeInt) {
+                setScrollType(scrollType);
+                return;
+            }
+        }
+
+        throw new RuntimeException("Unsupported value for scroll type: " + scrollTypeInt);
     }
 
     public int getScrollOffset() {

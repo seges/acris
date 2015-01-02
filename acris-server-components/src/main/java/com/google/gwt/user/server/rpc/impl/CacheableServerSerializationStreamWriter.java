@@ -660,7 +660,7 @@ public class CacheableServerSerializationStreamWriter extends AbstractSerializat
         } catch (NoSuchMethodException e) {
             //that's ok, entityprovider does not have getId methods, keep serializing
         } catch (InvocationTargetException e) {
-            //unable to invoked getID method ... unknown reason, so ignore it
+            //unable to invoke getID method ... unknown reason, so ignore it
             //maybe, we should not cache this results
             e.printStackTrace();
         } catch (IllegalAccessException e) {

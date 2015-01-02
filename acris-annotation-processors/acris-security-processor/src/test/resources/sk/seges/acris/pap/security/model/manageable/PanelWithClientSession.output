@@ -1,5 +1,4 @@
 package sk.seges.acris.pap.security.model;
-
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.UIObject;
 
@@ -11,30 +10,24 @@ import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.util.SecurityUtils;
 
 @Generated(value = "sk.seges.acris.pap.security.ManageableSecuredObjectProcessor")
-public class ManageableSecuredPanelWithClientSession extends PanelWithClientSession implements IManageableSecuredObject, CheckableSecuredObject {
-
+public class PanelWithClientSessionManageableSecured extends PanelWithClientSession implements IManageableSecuredObject, CheckableSecuredObject {
+	 
+	private GenericUserDTO user;
+	
 	private void initializeUser() {
 		user = null;
-
+	
 		if (getClientSession() != null) {
 			user = (GenericUserDTO)getClientSession().getUser();
 		}
-
+	
 	}
-	private GenericUserDTO user;
-
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		check();
-	}
-
 	@Override
 	public void check() {
 		initializeUser();
 		SecurityUtils.handlePermission(user, label1, "TEXT");
 	}
-
+	
 	@Override
 	public void setVisible(UIObject widget, boolean visible) {
 		initializeUser();
@@ -42,14 +35,14 @@ public class ManageableSecuredPanelWithClientSession extends PanelWithClientSess
 			SecurityUtils.handleVisibility(widget, false);
 			return;
 		}
-
+	
 		if (label1 == widget) {
 			SecurityUtils.handleVisibility(user, widget, "TEXT");
 		} else {
 			SecurityUtils.handleVisibility(widget, true);
 		}
 	}
-
+	
 	@Override
 	public void setEnabled(HasEnabled widget, boolean enabled) {
 		initializeUser();
@@ -57,12 +50,11 @@ public class ManageableSecuredPanelWithClientSession extends PanelWithClientSess
 			SecurityUtils.handleEnabledState(widget, false);
 			return;
 		}
-
+	
 		if (label1 == widget) {
 			SecurityUtils.handleEnabledState(user, widget, "TEXT");
 		} else {
 			SecurityUtils.handleEnabledState(widget, true);
 		}
 	}
-
 }

@@ -5,9 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.FilterChainProxy;
+import sk.seges.acris.security.server.AcrisSecurityDtoEntityProvider;
+import sk.seges.acris.server.AcrisSiteDtoEntityProvider;
 import sk.seges.acris.site.server.cache.CacheFilter;
 import sk.seges.acris.site.server.cache.MutableCacheManager;
 import sk.seges.corpis.server.model.converter.provider.AbstractContextualConverterProvider;
+import sk.seges.sesam.server.CorpisModelDomainConfigurationsEntityProvider;
 import sk.seges.sesam.shared.model.converter.EntityProviderContext;
 
 /**
@@ -16,6 +19,22 @@ import sk.seges.sesam.shared.model.converter.EntityProviderContext;
 @Configuration
 @ComponentScan(basePackages = "sk.seges.acris.site.server.cache.configuration.spring")
 public class CacheFilterTestConfiguration {
+
+    class MockConverterContextEntityProviderContext extends EntityProviderContext {
+
+        public EntityProviderContext get() {
+            MockConverterContextEntityProviderContext result = new MockConverterContextEntityProviderContext();
+            result.registerEntityProvider(new AcrisSiteDtoEntityProvider());
+            result.registerEntityProvider(new CorpisModelDomainConfigurationsEntityProvider());
+            result.registerEntityProvider(new AcrisSecurityDtoEntityProvider());
+            return result;
+        }
+    }
+
+    @Bean
+    public EntityProviderContext entityProviderContext() {
+        return new MockConverterContextEntityProviderContext();
+    }
 
     @Bean
     public MutableCacheManager cacheManager(EntityProviderContext entityProviderContext) {
