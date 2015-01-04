@@ -35,7 +35,11 @@ public abstract class AbstractProcessorTest {
 		return resultHtmlFileName;
 	}
 
-	protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token, boolean ignoreCase) {
+    protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token) {
+        runTest(inputHtmlFileName, resultHtmlFileName, token, false, false);
+    }
+
+    protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token, boolean ignoreCase) {
 		runTest(inputHtmlFileName, resultHtmlFileName, token, false, ignoreCase);
 	}
 	
