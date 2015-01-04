@@ -413,7 +413,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		//	http://stackoverflow.com/questions/3700326/decode-amp-back-to-in-javascript
 		//	http://www.webdeveloper.com/forum/archive/index.php/t-136026.html
 		//Later will see whether other characters should be handled this way
-		String content = DOM.getInnerHTML(rootElement);
+		String content = rootElement.getInnerHTML();
 
 		Log.trace("Content of the HTML: " + content);
 

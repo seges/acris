@@ -1,5 +1,6 @@
 package sk.seges.acris.generator.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -62,6 +63,8 @@ public class HtmlFilesHandler {
 
 	public void saveOfflineContent(String content, GeneratorToken token, String currentServerURL, String defaultLocale, final AsyncCallback<Void> callback) {
 
+		Log.debug("Saving offline content.");
+		
 		String header = getHeadElement().getInnerHTML();
 		header = header.replaceAll(currentServerURL + GWT.getModuleName() + "/", "");
 

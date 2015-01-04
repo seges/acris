@@ -95,7 +95,7 @@ public class ContentInterceptor {
 	
 	private void logAwaitingRequests() {
 		for (RPCRequest request: RPCRequestTracker.getAwaitingRequests()) {
-			Log.info("Waiting for request: " + request.getName() + " to be finished");
+			Log.trace("Waiting for request: " + request.getName() + " to be finished");
 		}
 	}
 	
