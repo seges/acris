@@ -1,13 +1,14 @@
 package sk.seges.acris.site.server.hibernate.interceptor;
 
-import org.hibernate.EmptyInterceptor;
-import org.hibernate.type.Type;
-import sk.seges.acris.site.server.cache.CacheHandler;
-import sk.seges.sesam.domain.IDomainObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.EmptyInterceptor;
+import org.hibernate.type.Type;
+
+import sk.seges.acris.site.server.cache.CacheHandler;
+import sk.seges.sesam.domain.IDomainObject;
 
 /**
  * Created by PeterSimun on 25.11.2014.
@@ -43,7 +44,7 @@ public class EntityInterceptor extends EmptyInterceptor {
 
     private void invalidate(Object entity) {
 
-        if (!(entity instanceof IDomainObject)) {
+        if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null) {
             //we cache only entities that implements IDomainObject
             return;
         }
