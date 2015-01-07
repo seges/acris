@@ -1,36 +1,36 @@
 package sk.seges.acris.server.image.loader;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.io.File;
+import org.imgscalr.Scalr;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 public class RGBImageLoader extends ImageLoader {
 
-	private final Image image;
+	private final BufferedImage image;
 	
 	public RGBImageLoader(File file) {
-		Image image = Toolkit.getDefaultToolkit().createImage(file.getAbsolutePath());
-		this.image = new ImageIcon(image).getImage();
+        image = createThumbnail(getBufferedImage(file));
 	}
-	
-	@Override
-	public BufferedImage getBufferedImage() {
-		
-		ColorModel cm = getColorModel(image);
-		boolean hasAlpha = hasAlpha(cm);
 
-		BufferedImage result = new BufferedImage(image.getWidth(null), image.getHeight(null), hasAlpha ? BufferedImage.TYPE_INT_ARGB
-				: BufferedImage.TYPE_INT_RGB);
+    public static BufferedImage createThumbnail(BufferedImage img) {
+        return Scalr.resize(img, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, 2000, 2000, Scalr.OP_ANTIALIAS);
+    }
 
-		Graphics2D g = result.createGraphics();
-		g.drawImage(image, 0, 0, result.getWidth(), result.getHeight(), null);
-		g.dispose();
+    protected BufferedImage getBufferedImage(File file) {
+        try {
+            return ImageIO.read(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load image " + file.getAbsolutePath(), e);
+        }
+    }
 
-		return result;
-	}
+    @Override
+    public BufferedImage getBufferedImage() {
+        return image;
+    }
 }

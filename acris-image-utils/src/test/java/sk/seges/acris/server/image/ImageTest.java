@@ -1,5 +1,6 @@
 package sk.seges.acris.server.image;
 
+import org.imgscalr.Scalr;
 import org.junit.Assert;
 import sk.seges.acris.server.image.loader.ImageLoader;
 import sk.seges.acris.server.image.loader.ImageLoaderFactory;
@@ -43,13 +44,14 @@ public class ImageTest {
 	}
 	
 	protected void interateDirectory(String directory, ImageProcessor imageProcessor) throws IOException {
+
 		for (String fileName: Image.getFileDescriptor(directory).list()) {
 			if (fileName.startsWith(SOURCE_PREFIX)) {
 				String expectedFileName = fileName.replace(SOURCE_PREFIX, RESULT_PREFIX);
 				expectedFileName = expectedFileName.substring(0, expectedFileName.lastIndexOf(".") + 1) + EXPECTED_FILE_EXTENSION;
 				
-				if (directory.endsWith(File.separator)) {
-					directory = directory + File.separator;
+				if (!directory.endsWith(File.separator)) {
+					directory += File.separator;
 				}
 				
 				if (Image.getFileDescriptor(directory + expectedFileName).exists()) {
@@ -81,14 +83,33 @@ public class ImageTest {
 		return outputFile.getAbsolutePath();
 	}
 
-	protected float compareImages(String outputName, String expectedOutputName) {
-		ImageLoader outputImageLoader = ImageLoaderFactory.getImageLoader(Image.getFileDescriptor(outputName));
-		Raster outputRaster = outputImageLoader.getBufferedImage().getRaster();
+    protected BufferedImage getBufferedImage(String fileName) {
+        URL url = Image.getUrl(fileName);
 
-		ImageLoader expectedImageLoader = ImageLoaderFactory.getImageLoader(Image.getFileDescriptor(expectedOutputName));
-		Raster expectedRaster = expectedImageLoader.getBufferedImage().getRaster();
-		
-		float maxDif = 0.0f;
+        try {
+            if (url == null) {
+                return ImageIO.read(new File(fileName));
+            } else {
+                return ImageIO.read(url);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load image " + fileName, e);
+        }
+    }
+
+    protected Raster getRaster(String fileName) {
+        return createThumbnail(getBufferedImage(fileName)).getData();
+    }
+
+    public static BufferedImage createThumbnail(BufferedImage img) {
+        return Scalr.resize(img, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, 2000, 2000, Scalr.OP_ANTIALIAS);
+    }
+
+	protected float compareImages(String outputName, String expectedOutputName) {
+		Raster outputRaster = getRaster(outputName);
+        Raster expectedRaster = getRaster(expectedOutputName);
+
+        float maxDif = 0.0f;
 		float avgDif = 0.0f;
 		
 		for (int x = expectedRaster.getMinX(); x < expectedRaster.getWidth(); ++x) {
@@ -144,27 +165,28 @@ public class ImageTest {
 			super(uri);
 		}
 
+        public static URL getUrl(String fileName) {
+
+            if (!fileName.startsWith(FILE_SEPARATOR) && !fileName.startsWith(".")) {
+                return Image.class.getResource(FILE_SEPARATOR + fileName);
+            }
+
+            return null;
+        }
+
 		public static Image getFileDescriptor(String fileName) {
-			URL url;
-			Image file;
-			
-			if (!fileName.startsWith(FILE_SEPARATOR) && !fileName.startsWith(".")) {
-				url = Image.class.getResource(FILE_SEPARATOR + fileName);
+			URL url = getUrl(fileName);
 
-				if (url == null) {
-					return new Image(fileName);
-				}
+            if (url == null) {
+                return new Image(fileName);
+            }
 
-				try {
-					file = new Image(url.toURI());
-				} catch (URISyntaxException e) {
-					throw new RuntimeException(e);
-				}
-			} else {
-				file = new Image(fileName);
-			}
-			
-			return file;
+            try {
+                return new Image(url.toURI());
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+
 		}
 	}
 }
