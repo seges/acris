@@ -4,10 +4,9 @@ import sk.seges.acris.site.shared.domain.api.ParameterData;
 
 public enum OfflineParameterType implements ParameterData {
 
-	INACTIVE_PROCESSORS("offlinePostProcessorInactive"),
-	INACTIVE_INDEX_PROCESSORS("offlineIndexProcessorInactive"),
 	AUTODETECT_MODE("offlineAutodetectMode"),
-	PUBLISH_ON_SAVE_ENABLED("publishOnSaveEnabled");
+	PUBLISH_ON_SAVE_ENABLED("publishOnSaveEnabled"),
+    OFFLINE_MODE("offlineMode");
 
 	private String key;
 

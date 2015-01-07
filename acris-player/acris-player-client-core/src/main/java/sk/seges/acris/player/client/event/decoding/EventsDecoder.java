@@ -91,6 +91,7 @@ public class EventsDecoder {
 			}
 
 			if (lastIndex + length == i) {
+                //decoded bytes for the event, now
 				eventBytes = subarray(isoBytes, lastIndex, i - 1);
                 lastIndex = i;
 				length = 0;

@@ -8,9 +8,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.alters.LanguageSelectorPostProcessorTest.LanguageSelectorPostProcessorTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.alters.LanguageSelectorTestConfiguration;
-import sk.seges.acris.site.server.service.MockWebSettingsService;
-import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
-import sk.seges.acris.site.server.service.builder.NoTopLevelDomainWebSettingsBuilder;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 
@@ -58,11 +55,9 @@ public class LanguageSelectorPostProcessorTest extends AbstractProcessorTest {
 	@Test
 	@DirtiesContext
 	public void testAnchorLanguageSelectorNoTopLevelDomainPostProcessor() {
-		IWebSettingsBuilder webSettingsBuilder = ((MockWebSettingsService)webSettingsService).getWebSettingsBuilder();
-		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(new NoTopLevelDomainWebSettingsBuilder());
-		runTest(HTML_FILE_DIRECTORY + "5_test_languageselector_input.html", 
-				HTML_FILE_DIRECTORY + "5_test_languageselector_result.html");
-		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(webSettingsBuilder);
+        webSettingsService.getWebSettings(getDefaultToken().getWebId()).setTopLevelDomain(null);
+		runTest(HTML_FILE_DIRECTORY + "5_test_languageselector_input.html",
+                HTML_FILE_DIRECTORY + "5_test_languageselector_result.html");
 	}
 
 }

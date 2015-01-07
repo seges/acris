@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gwt.user.server.rpc.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanNameAware;
@@ -43,10 +44,6 @@ import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.impl.AbstractSerializationStream;
-import com.google.gwt.user.server.rpc.RPC;
-import com.google.gwt.user.server.rpc.RPCRequest;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.google.gwt.user.server.rpc.SerializationPolicy;
 
 
 /**
@@ -69,6 +66,8 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * @author Max Jonas Werner
  */
 public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCServiceExporter, ServletContextAware, ServletConfigAware, BeanNameAware {
+
+        public static final String EHCACHE_ENABLED = "ehcache";
 
         /**
          * Disable RPC response compression. Value is 0.
@@ -97,7 +96,7 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
         protected int compressResponse = COMPRESSION_AUTO;
         
         protected boolean disableResponseCaching = false;
-        
+
         protected boolean throwUndeclaredExceptionToServletContainer = false;
         
         protected String beanName = "GWTRPCServiceExporter";
@@ -249,8 +248,13 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
                         RPCRequest rpcRequest) throws Exception {
                 Object result = targetMethod.invoke(service, targetParameters);
                 SerializationPolicy serializationPolicy = getSerializationPolicyProvider().getSerializationPolicyForSuccess(rpcRequest, service, targetMethod, targetParameters, result);
-                String encodedResult = RPC.encodeResponseForSuccess(rpcRequest.getMethod(), result, serializationPolicy, serializationFlags);
-                return encodedResult;
+
+                Object ehCacheStatus = ServletUtils.getRequest().getAttribute(EHCACHE_ENABLED);
+
+                if (disableResponseCaching || ehCacheStatus == null || ehCacheStatus.equals(false)) {
+                    return RPC.encodeResponseForSuccess(rpcRequest.getMethod(), result, serializationPolicy, serializationFlags);
+                }
+                return CacheableRPC.encodeResponseForSuccess(rpcRequest.getMethod(), result, serializationPolicy, serializationFlags);
         }
 
         /**
@@ -304,7 +308,7 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          */
         protected String encodeResponseForFailure(RPCRequest rpcRequest, Throwable cause, Method targetMethod, Object[] targetParameters) throws SerializationException{
                 SerializationPolicy serializationPolicy = getSerializationPolicyProvider().getSerializationPolicyForFailure(rpcRequest, service, targetMethod, targetParameters, cause);
-                return RPC.encodeResponseForFailure(rpcRequest.getMethod(), cause, serializationPolicy, serializationFlags);
+                return CacheableRPC.encodeResponseForFailure(rpcRequest.getMethod(), cause, serializationPolicy, serializationFlags);
         }
 
         /**
@@ -436,7 +440,7 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * {@link IncompatibleRemoteServiceException}. This implementation
          * propagates the exception back to the client via RPC.
          * 
-         * @param e
+         * @param cause
          *            Exception thrown
          * @return RPC encoded failure response
          * @throws SerializationException
@@ -563,7 +567,7 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
         /**
          * Can be used to set HTTP response headers that explicitly disable caching on the browser side.
          * Note that due to the additional headers the response size increases.
-         * @param responseCaching
+         * @param disableResponseCaching
          */
         public void setResponseCachingDisabled(boolean disableResponseCaching) {
                 this.disableResponseCaching = disableResponseCaching;

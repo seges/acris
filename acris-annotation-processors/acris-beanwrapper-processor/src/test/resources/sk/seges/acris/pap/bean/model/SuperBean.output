@@ -1,0 +1,64 @@
+package sk.seges.acris.pap.bean.model;
+import com.google.gwt.core.client.GWT;
+
+import javax.annotation.Generated;
+
+import sk.seges.acris.core.client.bean.BeanWrapper;
+
+@Generated(value = "sk.seges.acris.pap.bean.BeanWrapperProcessor")
+public class SuperBeanBeanWrapper implements BeanWrapper<SuperBean> {
+
+	protected SuperBean beanWrapperContent;
+
+	public String getCity(){
+		if (beanWrapperContent != null) {
+			return beanWrapperContent.getCity();
+		}
+		return null;
+	}
+
+	private BeanWrapper<ReferencedBean> ref__nested;
+
+	public ReferencedBean getRef() {
+		if (beanWrapperContent.getRef() == null) {
+			return null;
+		}
+		if (this.ref__nested == null) {
+			this.ref__nested = GWT.create(ReferencedBeanBeanWrapper.class);
+			if(beanWrapperContent != null) {
+				this.ref__nested.setBeanWrapperContent(beanWrapperContent.getRef());
+			}
+		}
+		return this.ref__nested.getBeanWrapperContent();
+	}
+	public void setBeanWrapperContent(SuperBean beanWrapperContent) {
+		this.beanWrapperContent = (SuperBean) beanWrapperContent;
+		clearWrappers();
+	}
+
+	public SuperBean getBeanWrapperContent() {
+		return this.beanWrapperContent;
+	}
+
+	public Object getBeanAttribute(String attr) {
+		if (attr.equals("city")) {
+			return this.getCity();
+		} else if (attr.equals("ref")) {
+			return this.getRef();
+		} else if (attr.equals("beanWrapperContent")) {
+			return beanWrapperContent;
+		} else {
+			return null;
+		}
+	}
+
+	public void setBeanAttribute(String attr, Object value) {
+		if (attr.equals("beanWrapperContent")) {
+			this.beanWrapperContent = (SuperBean) value;
+		}
+	}
+
+	private void clearWrappers() {
+		ref__nested = null;
+	}
+}

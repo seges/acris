@@ -10,7 +10,7 @@ public enum EKeyboardEventFields implements IEventFields {
 	EVENT_META_KEY(EVENT_SHIFT_KEY, 1, KeyboardEvent.META_KEY_INT_ATTRIBUTE),
 	EMPTY_1(EVENT_META_KEY, 1),
     EVENT_SCROLL_TYPE(EMPTY_1, 1, KeyboardEvent.SCROLL_TYPE),
-    EMPTY_2(EVENT_SCROLL_TYPE, 1),
+    EMPTY_2(EVENT_SCROLL_TYPE, 1, 0),
     EVENT_SCROLL_OFFSET(EMPTY_2, 11, KeyboardEvent.SCROLL_OFFSET),
     EMPTY_3(EVENT_SCROLL_OFFSET, 1),
 	EVENT_KEYCODE(EMPTY_3, 8, KeyboardEvent.KEY_CODE_ATTRIBUTE),
@@ -28,11 +28,11 @@ public enum EKeyboardEventFields implements IEventFields {
 	}
 
 	private EKeyboardEventFields(EKeyboardEventFields keyboardEventFields, int length, String field) {
-		fieldDefinition = new FieldDefinition();
-		fieldDefinition.setPosition(keyboardEventFields.getFieldDefinition().getPosition() + keyboardEventFields.getFieldDefinition().getLength());
-		fieldDefinition.setLength(length);
-		fieldDefinition.setField(field);
-	}
+        fieldDefinition = new FieldDefinition();
+        fieldDefinition.setPosition(keyboardEventFields.getFieldDefinition().getPosition() + keyboardEventFields.getFieldDefinition().getLength());
+        fieldDefinition.setLength(length);
+        fieldDefinition.setField(field);
+    }
 
 	private EKeyboardEventFields(EKeyboardEventFields keyboardEventFields, int length) {
 		this(keyboardEventFields, length, Long.valueOf(new String(new char[length]).replace("\0", "1"), 2));

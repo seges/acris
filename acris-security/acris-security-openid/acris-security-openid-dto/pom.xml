@@ -12,16 +12,6 @@
 	</parent>
 
 	<dependencies>
-		<!-- Corpis dependencies -->
-		<dependency>
-            <groupId>sk.seges.corpis</groupId>
-            <artifactId>corpis-model-domain-configurations</artifactId>
-        </dependency>
-		<dependency>
-            <groupId>sk.seges.corpis</groupId>
-            <artifactId>corpis-application-scaffold-data-domain-model-converter-processor</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
 		<!-- Acris dependencies -->
 		<dependency>

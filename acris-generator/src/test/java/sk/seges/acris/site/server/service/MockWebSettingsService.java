@@ -2,52 +2,29 @@ package sk.seges.acris.site.server.service;
 
 import sk.seges.acris.site.ftp.server.model.data.FTPWebSettingsData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
-import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
 import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
 
 import java.util.List;
 
 public class MockWebSettingsService implements IWebSettingsLocalService {
 
-	protected Boolean localeSensitiveServer;
+    private final WebSettingsData webSettings;
 
-	protected String googleAnalyticsScript;
-
-	protected IWebSettingsBuilder webSettingsBuilder;
-	
-	public MockWebSettingsService(IWebSettingsBuilder webSettingsBuilder, String googleAnalyticsScript, Boolean localeSensitiveServer) {
-		this.webSettingsBuilder = webSettingsBuilder;
-		this.googleAnalyticsScript = googleAnalyticsScript;
-		this.localeSensitiveServer = localeSensitiveServer;
-	}
-
-	public void setWebSettingsBuilder(IWebSettingsBuilder webSettingsBuilder) {
-		this.webSettingsBuilder = webSettingsBuilder;
-	}
-
-	public IWebSettingsBuilder getWebSettingsBuilder() {
-		return webSettingsBuilder;
-	}
-	
-	public Boolean getLocaleSensitiveServer() {
-		return localeSensitiveServer;
-	}
-
-	public void setLocaleSensitiveServer(Boolean localeSensitiveServer) {
-		this.localeSensitiveServer = localeSensitiveServer;
-	}
-
-	public String getGoogleAnalyticsScript() {
-		return googleAnalyticsScript;
-	}
-
-	public void setGoogleAnalyticsScript(String googleAnalyticsScript) {
-		this.googleAnalyticsScript = googleAnalyticsScript;
+	public MockWebSettingsService(WebSettingsData webSettingsData) {
+        this.webSettings = webSettingsData;
 	}
 
 	@Override
 	public WebSettingsData getWebSettings(String webId) {
-		return webSettingsBuilder.getWebSettings(webId, localeSensitiveServer, googleAnalyticsScript);
+        if (webSettings.getWebId() != null && webSettings.getId().equals(webId)) {
+            return webSettings;
+        }
+
+        webSettings.setWebId(webId);
+        if (webId != null) {
+            webSettings.setTopLevelDomain("http://" + webId + "/");
+        }
+        return webSettings;
 	}
 
 	@Override

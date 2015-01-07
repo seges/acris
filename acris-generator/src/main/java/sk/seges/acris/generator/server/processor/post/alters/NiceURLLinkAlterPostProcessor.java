@@ -2,7 +2,9 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.LinkTag;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.generator.server.processor.utils.AnchorUtils;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
@@ -12,8 +14,18 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 
 	private static final String HREF_ATRIBUTE = "href";
 	private static final String EMAIL_REGEX = "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})";
-	
-	@Override
+
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.BOTH;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof LinkTag) {
 			String link = ((LinkTag)node).getAttribute(HREF_ATRIBUTE);

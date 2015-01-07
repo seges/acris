@@ -1,10 +1,14 @@
 package sk.seges.acris.pap.security.model;
 
 import com.google.gwt.user.client.ui.Label;
+import sk.seges.acris.security.client.annotations.ManagedSecurity;
+import sk.seges.acris.security.client.annotations.RuntimeSecurity;
 import sk.seges.acris.security.client.annotations.Secured;
 import sk.seges.acris.security.shared.session.ClientSessionDTO;
 
 @Secured
+@RuntimeSecurity
+@ManagedSecurity
 public class PanelWithClientSession  {
 
 	@Secured("TEXT")

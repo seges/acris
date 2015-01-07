@@ -300,4 +300,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setUseGeneratedVariants(Boolean useGeneratedVariants) {
 		data.set(USE_GENERATED_VARIANTS, useGeneratedVariants);
 	}
+
+	@Override
+	public Boolean getEnableOrderOfNotPresentItem() {		
+		return data.getBoolean(ENABLE_ORDER_OF_NOT_PRESENT_ITEM);
+	}
+
+	@Override
+	public void setEnableOrderOfNotPresentItem(Boolean enableOrderOfNotPresentItem) {
+		data.set(ENABLE_ORDER_OF_NOT_PRESENT_ITEM, enableOrderOfNotPresentItem);
+	}
 }

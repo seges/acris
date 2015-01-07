@@ -3,11 +3,23 @@ package sk.seges.acris.generator.server.processor.post.appenders;
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.HeadTag;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 
 public class GoogleAnalyticAppenderPostProcessor extends AbstractAppenderPostProcessor {
 
-	@Override
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.BOTH;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		return (node instanceof HeadTag); 
 	}
