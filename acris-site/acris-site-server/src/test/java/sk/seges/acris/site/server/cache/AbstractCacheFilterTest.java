@@ -1,5 +1,6 @@
 package sk.seges.acris.site.server.cache;
 
+import net.sf.ehcache.constructs.web.AlreadyGzippedException;
 import net.sf.ehcache.constructs.web.GenericResponseWrapper;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -18,10 +19,12 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.ws.rs.core.HttpHeaders;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by PeterSimun on 23.11.2014.
@@ -34,8 +37,8 @@ public abstract class AbstractCacheFilterTest {
 
     protected final String EXTENSION = ".txt";
     protected final String URI_SUFFIX = "_request_uri";
-    protected final String COMPRESSED_RESPONSE_SUFFIX = "_response_compressed";
-    protected final String UNCOMPRESSED_RESPONSE_SUFFIX = "_response_uncompressed";
+    protected final String UNPROCESSED_RESPONSE_SUFFIX = "_response_unprocessed";
+    protected final String PROCESSED_RESPONSE_SUFFIX = "_response_processed";
 
     static class CacheFilterTestConfigurationLoader extends ParametrizedAnnotationConfigContextLoader {
 
@@ -50,14 +53,65 @@ public abstract class AbstractCacheFilterTest {
 
     protected void executeTest(final String fileNamePrefix, MockHttpServletRequest request, MockServlet servlet) throws IOException, ServletException {
 
-        String response = executeFilterChain(
+        byte[] response = executeFilterChain(
                 setRequestURI(request, getTestResource(fileNamePrefix, URI_SUFFIX)),
                 servlet
         );
 
-        Assert.assertTrue("Filter chain response does not produce expected output", compareBytes(response.getBytes(),
-                parseBytes(getTestResource(fileNamePrefix, COMPRESSED_RESPONSE_SUFFIX))));
+        String expectedOutput = getTestResource(fileNamePrefix, PROCESSED_RESPONSE_SUFFIX);
+
+        boolean result = compareBytes(response,
+                gzip(expectedOutput.getBytes()));
+
+        if (!result) {
+            System.out.println("Expected output: " + expectedOutput);
+            System.out.println("Actual output: " + new String(ungzip(response)));
+        }
+
+        Assert.assertTrue("Filter chain response does not produce expected output", result);
+
     }
+
+    private static final int GZIP_MAGIC_NUMBER_BYTE_1 = 31;
+    private static final int GZIP_MAGIC_NUMBER_BYTE_2 = -117;
+    private static final int FOUR_KB = 4196;
+
+    public static boolean isGzipped(byte[] candidate) {
+        if (candidate == null || candidate.length < 2) {
+            return false;
+        } else {
+            return (candidate[0] == GZIP_MAGIC_NUMBER_BYTE_1 && candidate[1] == GZIP_MAGIC_NUMBER_BYTE_2);
+        }
+    }
+
+    private byte[] ungzip(final byte[] gzipped) throws IOException {
+        final GZIPInputStream inputStream = new GZIPInputStream(new ByteArrayInputStream(gzipped));
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(gzipped.length);
+        final byte[] buffer = new byte[FOUR_KB];
+        int bytesRead = 0;
+        while (bytesRead != -1) {
+            bytesRead = inputStream.read(buffer, 0, FOUR_KB);
+            if (bytesRead != -1) {
+                byteArrayOutputStream.write(buffer, 0, bytesRead);
+            }
+        }
+        byte[] ungzipped = byteArrayOutputStream.toByteArray();
+        inputStream.close();
+        byteArrayOutputStream.close();
+        return ungzipped;
+    }
+
+    private byte[] gzip(byte[] ungzipped) throws IOException, AlreadyGzippedException {
+        if (isGzipped(ungzipped)) {
+            throw new AlreadyGzippedException("The byte[] is already gzipped. It should not be gzipped again.");
+        }
+        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(bytes);
+        gzipOutputStream.write(ungzipped);
+        gzipOutputStream.close();
+        return bytes.toByteArray();
+    }
+
 
     protected boolean compareBytes(byte[] actual, byte[] expected) {
         if (expected == null) {
@@ -105,19 +159,6 @@ public abstract class AbstractCacheFilterTest {
         System.out.println();
     }
 
-    protected byte[] parseBytes(String output) {
-        String[] parts = output.split(",");
-
-        byte[] result = new byte[parts.length];
-
-        int i = 0;
-        for (String part: parts) {
-            result[i++] = Byte.parseByte(part.trim());
-        }
-
-        return result;
-    }
-
     protected String getTestResource(String fileNamePrefix, String type) {
         final String packageName = getClass().getPackage().getName().replace('.',File.separatorChar);
         return getFileContent(packageName + File.separator + fileNamePrefix + File.separator + fileNamePrefix + type + EXTENSION);
@@ -143,7 +184,7 @@ public abstract class AbstractCacheFilterTest {
     @Autowired
     protected MutableCacheManager cacheManager;
 
-    protected String executeFilterChain(ServletRequest request, HttpServlet servlet) throws IOException, ServletException {
+    protected byte[] executeFilterChain(ServletRequest request, HttpServlet servlet) throws IOException, ServletException {
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final GenericResponseWrapper wrapper = new GenericResponseWrapper(getResponse(), outputStream);
@@ -152,7 +193,7 @@ public abstract class AbstractCacheFilterTest {
         chain.doFilter(request, wrapper);
 
         wrapper.flush();
-        return new String(outputStream.toByteArray(), Charset.defaultCharset());
+        return outputStream.toByteArray();
     }
 
     protected MockHttpServletRequest setRequestURI(MockHttpServletRequest request, String uri) {

@@ -27,7 +27,7 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
         MockServlet servlet = new MockServlet() {
             @Override
             protected String getResponseText() {
-                return getTestResource(TEST_NAME, UNCOMPRESSED_RESPONSE_SUFFIX);
+                return getTestResource(TEST_NAME, UNPROCESSED_RESPONSE_SUFFIX);
             }
         };
 
@@ -44,7 +44,7 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
         MockServlet servlet = new MockServlet() {
             @Override
             protected String getResponseText() {
-                return getTestResource(NO_CACHE_TEST_NAME, UNCOMPRESSED_RESPONSE_SUFFIX);
+                return getTestResource(NO_CACHE_TEST_NAME, PROCESSED_RESPONSE_SUFFIX);
             }
         };
 
@@ -66,7 +66,7 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
         MockServlet servlet = new MockServlet() {
             @Override
             protected String getResponseText() {
-                return getTestResource(NO_CACHE_TEST_NAME, UNCOMPRESSED_RESPONSE_SUFFIX);
+                return getTestResource(NO_CACHE_TEST_NAME, PROCESSED_RESPONSE_SUFFIX);
             }
         };
 
@@ -98,7 +98,7 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
         MockServlet servlet = new MockServlet() {
             @Override
             protected String getResponseText() {
-                return getTestResource(NO_CACHE_TEST_NAME, UNCOMPRESSED_RESPONSE_SUFFIX);
+                return getTestResource(NO_CACHE_TEST_NAME, PROCESSED_RESPONSE_SUFFIX);
             }
         };
 
@@ -118,7 +118,7 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
         MockServlet servlet = new MockServlet() {
             @Override
             protected String getResponseText() {
-                return getTestResource(TEST_NAME, UNCOMPRESSED_RESPONSE_SUFFIX);
+                return getTestResource(TEST_NAME, UNPROCESSED_RESPONSE_SUFFIX);
             }
         };
 
