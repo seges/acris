@@ -141,17 +141,10 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
     @Override
     public void invalidate(String entityClassName, long hashCode) {
 
-//        if (!(entity instanceof IDomainObject)) {
-//            //we cache only entities that implements IDomainObject
-//            return;
-//        }
-
         if (inverseCacheReference.size() == 0) {
             return;
         }
 
-        //entity.getClass().getCanonicalName()
-        //((IDomainObject<Long>) entity).getId().hashCode()
         List<String> cacheReferences = inverseCacheReference.get(entityClassName + "/" + hashCode);
 
         if (cacheReferences != null) {
