@@ -1,6 +1,5 @@
 package sk.seges.acris.site.server.cache.configuration.spring;
 
-import net.sf.ehcache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +8,6 @@ import sk.seges.acris.security.server.AcrisSecurityDtoEntityProvider;
 import sk.seges.acris.server.AcrisSiteDtoEntityProvider;
 import sk.seges.acris.site.server.cache.CacheFilter;
 import sk.seges.acris.site.server.cache.MutableCacheManager;
-import sk.seges.corpis.server.model.converter.provider.AbstractContextualConverterProvider;
-import sk.seges.sesam.server.CorpisModelDomainConfigurationsEntityProvider;
 import sk.seges.sesam.shared.model.converter.EntityProviderContext;
 
 /**
@@ -25,7 +22,6 @@ public class CacheFilterTestConfiguration {
         public EntityProviderContext get() {
             MockConverterContextEntityProviderContext result = new MockConverterContextEntityProviderContext();
             result.registerEntityProvider(new AcrisSiteDtoEntityProvider());
-            result.registerEntityProvider(new CorpisModelDomainConfigurationsEntityProvider());
             result.registerEntityProvider(new AcrisSecurityDtoEntityProvider());
             return result;
         }
