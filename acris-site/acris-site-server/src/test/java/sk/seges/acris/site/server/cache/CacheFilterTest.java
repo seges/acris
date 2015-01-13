@@ -95,26 +95,6 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
     }
 
     @Test
-    public void testDisableCacheFilterByReferrer() throws Exception {
-
-        MockServlet servlet = new MockServlet() {
-            @Override
-            protected String getResponseText() {
-                return getTestResource(NO_CACHE_TEST_NAME, PROCESSED_RESPONSE_SUFFIX);
-            }
-        };
-
-        MockHttpServletRequest request = getRequest();
-        request.addHeader("referer", "gwt.codesvr=localhost:9997"); //TODO typo = referrer
-
-        executeTest(TEST_NAME, request, servlet);
-        Assert.assertEquals("There should be only one execution of the servlet", 1, servlet.getExecutionCount());
-
-        executeTest(TEST_NAME, request, servlet);
-        Assert.assertEquals("There should two executions of the servlet", 2, servlet.getExecutionCount());
-    }
-
-    @Test
     public void testInvalidateCache() throws Exception {
 
         MockServlet servlet = new MockServlet() {
