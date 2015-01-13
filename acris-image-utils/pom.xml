@@ -21,10 +21,13 @@
 			<groupId>com.sun.media</groupId>
 			<artifactId>jai-codec</artifactId>
 		</dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-imaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.imgscalr</groupId>
+            <artifactId>imgscalr-lib</artifactId>
         </dependency>
 
 		<!-- Testing -->

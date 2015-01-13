@@ -1,13 +1,15 @@
 package sk.seges.acris.site.server.hibernate.interceptor;
 
-import org.hibernate.EmptyInterceptor;
-import org.hibernate.type.Type;
-import sk.seges.acris.site.server.cache.CacheHandler;
-import sk.seges.sesam.domain.IDomainObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.CallbackException;
+import org.hibernate.EmptyInterceptor;
+import org.hibernate.type.Type;
+
+import sk.seges.acris.site.server.cache.CacheHandler;
+import sk.seges.sesam.domain.IDomainObject;
 
 /**
  * Created by PeterSimun on 25.11.2014.
@@ -41,9 +43,35 @@ public class EntityInterceptor extends EmptyInterceptor {
         return super.onSave(entity, id, state, propertyNames, types);
     }
 
+	@Override
+	public void onCollectionRemove(Object collection, Serializable key) throws CallbackException {
+		invalidateCollection(collection);
+		super.onCollectionRemove(collection, key);
+	}
+
+	@Override
+	public void onCollectionRecreate(Object collection, Serializable key) throws CallbackException {
+		invalidateCollection(collection);
+		super.onCollectionRecreate(collection, key);
+	}
+
+	@Override
+	public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
+		invalidateCollection(collection);
+		super.onCollectionUpdate(collection, key);
+	}
+
+    private void invalidateCollection(Object collection) {
+    	if(collection instanceof Iterable<?>){
+    		for(Object entity : (Iterable<?>)collection){
+    			invalidate(entity);
+    		}
+    	}
+    }
+    
     private void invalidate(Object entity) {
 
-        if (!(entity instanceof IDomainObject)) {
+        if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null) {
             //we cache only entities that implements IDomainObject
             return;
         }

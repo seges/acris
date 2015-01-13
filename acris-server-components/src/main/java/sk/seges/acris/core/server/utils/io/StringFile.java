@@ -68,8 +68,7 @@ public class StringFile extends File {
 		BufferedReader br;
 
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(
-					this)));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(this)));
 		} catch (FileNotFoundException e) {
 			return null;
 		}

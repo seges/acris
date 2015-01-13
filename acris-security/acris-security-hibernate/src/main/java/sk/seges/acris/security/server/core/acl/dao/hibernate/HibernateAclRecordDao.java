@@ -1,7 +1,14 @@
 package sk.seges.acris.security.server.core.acl.dao.hibernate;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
+
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
@@ -12,11 +19,6 @@ import sk.seges.corpis.dao.hibernate.AbstractHibernateCRUD;
 import sk.seges.sesam.dao.Page;
 import sk.seges.sesam.security.shared.domain.ISecuredObject;
 import sk.seges.sesam.utils.CastUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.List;
 
 public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> implements IAclRecordDao<JpaAclEntry> {
 
@@ -135,7 +137,7 @@ public class HibernateAclRecordDao extends AbstractHibernateCRUD<JpaAclEntry> im
 	public void deleteByIdentityId(long aclObjectId) {
 		DetachedCriteria criteria = createCriteria();
 		criteria.add(Restrictions.eq(AclEntryData.OBJECT_IDENTITY + ".id", aclObjectId));
-		List<JpaAclEntry> entries = findByCriteria(criteria, Page.ALL_RESULTS_PAGE);
+		List<JpaAclEntry> entries = findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
 		for (JpaAclEntry entry : entries) {
 			remove(entry);
 		}

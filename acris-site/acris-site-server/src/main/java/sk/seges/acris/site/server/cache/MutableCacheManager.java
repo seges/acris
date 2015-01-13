@@ -1,19 +1,21 @@
 package sk.seges.acris.site.server.cache;
 
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sk.seges.acris.common.util.Pair;
-import sk.seges.sesam.shared.model.converter.EntityProviderContext;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sk.seges.acris.common.util.Pair;
+import sk.seges.sesam.shared.model.converter.EntityProviderContext;
 
 /**
  * Created by PeterSimun on 25.11.2014.
@@ -118,20 +120,31 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
         return cache.get(key);
     }
 
+    public int getCacheSize(String webId){
+        String cacheName = createCacheName(webId);
+        Ehcache cache = getEhcache(cacheName);
+        if(cache == null) {
+        	return 0;
+        }
+        return cache.getSize();
+    }
+    
+    public int getMaxElementsInMemory(String webId){
+        String cacheName = createCacheName(webId);
+        Ehcache cache = getEhcache(cacheName);
+        if(cache == null) {
+        	return 0;
+        }
+        return cache.getCacheConfiguration().getMaxElementsInMemory();
+    }
+    
     @Override
     public void invalidate(String entityClassName, long hashCode) {
-
-//        if (!(entity instanceof IDomainObject)) {
-//            //we cache only entities that implements IDomainObject
-//            return;
-//        }
 
         if (inverseCacheReference.size() == 0) {
             return;
         }
 
-        //entity.getClass().getCanonicalName()
-        //((IDomainObject<Long>) entity).getId().hashCode()
         List<String> cacheReferences = inverseCacheReference.get(entityClassName + "/" + hashCode);
 
         if (cacheReferences != null) {

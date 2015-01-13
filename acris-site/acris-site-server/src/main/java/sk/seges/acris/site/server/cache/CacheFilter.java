@@ -1,6 +1,18 @@
 package sk.seges.acris.site.server.cache;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -8,28 +20,18 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.web.GenericResponseWrapper;
 import net.sf.ehcache.constructs.web.Header;
 import net.sf.ehcache.constructs.web.filter.SimpleCachingHeadersPageCachingFilter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sk.seges.acris.security.server.core.request.session.GWTRPCSessionHttpServletRequestWrapper;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
-
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.List;
 
 public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
 
     public static final String EHCACHE_ENABLED = "ehcache";
 
-	private static final String CODESVR = "gwt.codesvr";
     private static final Logger LOG = LoggerFactory.getLogger(CacheFilter.class);
 
     private final MutableCacheManager cacheManager;
@@ -41,7 +43,7 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
 	@Override
 	protected boolean filterNotDisabled(HttpServletRequest httpRequest) {
 
-        if (!httpRequest.getMethod().toUpperCase().equals("GET") || (httpRequest.getHeader("referer") != null && httpRequest.getHeader("referer").contains(CODESVR))) {
+        if (!httpRequest.getMethod().toUpperCase().equals("GET")) {
             httpRequest.setAttribute(EHCACHE_ENABLED, false);
             return false;
  		}
