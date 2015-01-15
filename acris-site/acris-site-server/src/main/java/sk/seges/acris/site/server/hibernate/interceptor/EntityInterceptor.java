@@ -3,6 +3,9 @@ package sk.seges.acris.site.server.hibernate.interceptor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
@@ -16,6 +19,7 @@ import sk.seges.sesam.domain.IDomainObject;
  */
 public class EntityInterceptor extends EmptyInterceptor {
 
+	private final ThreadPoolExecutor threadPool;
     private final List<CacheHandler> cacheHandlers;
 
     public EntityInterceptor(CacheHandler... cacheHandlers) {
@@ -23,41 +27,42 @@ public class EntityInterceptor extends EmptyInterceptor {
         for (CacheHandler handler: cacheHandlers) {
             this.cacheHandlers.add(handler);
         }
+        this.threadPool = new ThreadPoolExecutor(1, 10, 1L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
     public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-        invalidate(entity);
+    	invalidateEntityInThread(entity);
         super.onDelete(entity, id, state, propertyNames, types);
     }
 
     @Override
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-        invalidate(entity);
+    	invalidateEntityInThread(entity);
         return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
     }
 
     @Override
     public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-        invalidate(entity);
+    	invalidateEntityInThread(entity);
         return super.onSave(entity, id, state, propertyNames, types);
     }
 
 	@Override
 	public void onCollectionRemove(Object collection, Serializable key) throws CallbackException {
-		invalidateCollection(collection);
+		invalidateCollectionInThread(collection);
 		super.onCollectionRemove(collection, key);
 	}
 
 	@Override
 	public void onCollectionRecreate(Object collection, Serializable key) throws CallbackException {
-		invalidateCollection(collection);
+		invalidateCollectionInThread(collection);
 		super.onCollectionRecreate(collection, key);
 	}
 
 	@Override
 	public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
-		invalidateCollection(collection);
+		invalidateCollectionInThread(collection);
 		super.onCollectionUpdate(collection, key);
 	}
 
@@ -67,6 +72,17 @@ public class EntityInterceptor extends EmptyInterceptor {
     			invalidate(entity);
     		}
     	}
+    }
+
+    private void invalidateCollectionInThread(final Object collection) {
+    	Runnable runnable = new Runnable() {
+
+    			@Override
+    			public void run() {
+    				invalidateCollection(collection);
+    			}
+    		};
+    		threadPool.execute(runnable);
     }
     
     private void invalidate(Object entity) {
@@ -80,4 +96,15 @@ public class EntityInterceptor extends EmptyInterceptor {
             cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());
         }
     }
+    
+	private void invalidateEntityInThread(final Object entity) {
+		Runnable runnable = new Runnable() {
+
+			@Override
+			public void run() {
+				invalidate(entity);
+			}
+		};
+		threadPool.execute(runnable);
+	}  
 }
