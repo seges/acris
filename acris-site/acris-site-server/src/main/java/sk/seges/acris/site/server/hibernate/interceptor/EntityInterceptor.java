@@ -32,37 +32,37 @@ public class EntityInterceptor extends EmptyInterceptor {
 
     @Override
     public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-    	invalidateEntityInThread(entity);
+    	invalidate(entity);
         super.onDelete(entity, id, state, propertyNames, types);
     }
 
     @Override
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState, String[] propertyNames, Type[] types) {
-    	invalidateEntityInThread(entity);
+    	invalidate(entity);
         return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
     }
 
     @Override
     public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-    	invalidateEntityInThread(entity);
+    	invalidate(entity);
         return super.onSave(entity, id, state, propertyNames, types);
     }
 
 	@Override
 	public void onCollectionRemove(Object collection, Serializable key) throws CallbackException {
-		invalidateCollectionInThread(collection);
+		invalidateCollection(collection);
 		super.onCollectionRemove(collection, key);
 	}
 
 	@Override
 	public void onCollectionRecreate(Object collection, Serializable key) throws CallbackException {
-		invalidateCollectionInThread(collection);
+		invalidateCollection(collection);
 		super.onCollectionRecreate(collection, key);
 	}
 
 	@Override
 	public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
-		invalidateCollectionInThread(collection);
+		invalidateCollection(collection);
 		super.onCollectionUpdate(collection, key);
 	}
 
@@ -73,38 +73,21 @@ public class EntityInterceptor extends EmptyInterceptor {
     		}
     	}
     }
-
-    private void invalidateCollectionInThread(final Object collection) {
-    	Runnable runnable = new Runnable() {
-
-    			@Override
-    			public void run() {
-    				invalidateCollection(collection);
-    			}
-    		};
-    		threadPool.execute(runnable);
-    }
     
-    private void invalidate(Object entity) {
-
+    private void invalidate(final Object entity) {
         if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null) {
             //we cache only entities that implements IDomainObject
             return;
         }
 
-        for (CacheHandler cacheHandler: cacheHandlers) {
-            cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());
+        for (final CacheHandler cacheHandler: cacheHandlers) {
+        	Runnable runnable = new Runnable() {
+				@Override
+				public void run() {
+					cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());
+				}
+        	};
+        	threadPool.execute(runnable);
         }
     }
-    
-	private void invalidateEntityInThread(final Object entity) {
-		Runnable runnable = new Runnable() {
-
-			@Override
-			public void run() {
-				invalidate(entity);
-			}
-		};
-		threadPool.execute(runnable);
-	}  
 }
