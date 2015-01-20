@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import sk.seges.acris.security.server.core.request.session.GWTRPCSessionHttpServletRequestWrapper;
 import sk.seges.acris.security.server.util.LoginConstants;
 import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.site.server.cache.model.MockDomainEntity;
@@ -90,8 +91,6 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
 
         executeTest(TEST_NAME, request, servlet);
         Assert.assertEquals("There should two executions of the servlet", 2, servlet.getExecutionCount());
-
-        cacheManager.clearCache(WEB_ID, null);
     }
 
     @Test
@@ -152,7 +151,44 @@ public class CacheFilterTest extends AbstractCacheFilterTest {
 		executeTest(TEST_NAME, request, servlet);
 		cacheSize = cacheManager.getCacheSize(null);
 		Assert.assertEquals("Size of cached elements must be "+maxElements, maxElements, cacheSize);        
-        
     }
 
+    @Test
+    public void testDifferentSessionId() throws Exception {
+        MockServlet servlet = new MockServlet() {
+            @Override
+            protected String getResponseText() {
+                return getTestResource(TEST_NAME, UNPROCESSED_RESPONSE_SUFFIX);
+            }
+        };
+        
+        MockHttpServletRequest request = getRequest();
+        request.setQueryString("");
+        GWTRPCSessionHttpServletRequestWrapper wrapper = new GWTRPCSessionHttpServletRequestWrapper(request);
+
+        //no session id
+        executeTest(TEST_NAME, wrapper, servlet);
+        Assert.assertEquals("There should be only one execution of the servlet", 1, servlet.getExecutionCount());
+
+        executeTest(TEST_NAME, wrapper, servlet);
+        Assert.assertEquals("There should be only one execution of the servlet", 1, servlet.getExecutionCount());
+
+        //first session id
+        request.setQueryString("89877F90C0D0F265D8C21437C067559D");
+        
+        executeTest(TEST_NAME, wrapper, servlet);
+        Assert.assertEquals("There should be only one execution of the servlet", 2, servlet.getExecutionCount());
+
+        executeTest(TEST_NAME, wrapper, servlet);
+        Assert.assertEquals("There should be only one execution of the servlet", 2, servlet.getExecutionCount());
+        
+        //other session id
+        request.setQueryString("9015A02089C15A0E2AC44CEA543F608A");
+        
+        executeTest(TEST_NAME, wrapper, servlet);
+        Assert.assertEquals("There should be only one execution of the servlet", 3, servlet.getExecutionCount());
+
+        executeTest(TEST_NAME, wrapper, servlet);
+        Assert.assertEquals("There should be only one execution of the servlet", 3, servlet.getExecutionCount());
+    }
 }

@@ -59,7 +59,7 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
         httpRequest.setAttribute(EHCACHE_ENABLED, result);
         return result;
 	}
-
+	
     @Override
 	protected String calculateKey(HttpServletRequest httpRequest) {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -67,10 +67,15 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
         if (httpRequest instanceof GWTRPCSessionHttpServletRequestWrapper) {
 			GWTRPCSessionHttpServletRequestWrapper sessionHttpServletRequestWrapper = (GWTRPCSessionHttpServletRequestWrapper) httpRequest;
 			stringBuilder.append(sessionHttpServletRequestWrapper.getWebId()).append(MutableCacheManager.WEB_ID_DELIMITER);
+			String sessionId = ((GWTRPCSessionHttpServletRequestWrapper)httpRequest).getSessionId();
+			if (sessionId != null && !sessionId.isEmpty()) {
+				stringBuilder.append(sessionId).append(MutableCacheManager.WEB_ID_DELIMITER);
+			}
 		} else {
             stringBuilder.append("null").append(MutableCacheManager.WEB_ID_DELIMITER);
         }
 
+        
         stringBuilder.append(httpRequest.getMethod()).append(MutableCacheManager.WEB_ID_DELIMITER).append(httpRequest.getRequestURI())
 				.append(MutableCacheManager.WEB_ID_DELIMITER).append(httpRequest.getQueryString());
 

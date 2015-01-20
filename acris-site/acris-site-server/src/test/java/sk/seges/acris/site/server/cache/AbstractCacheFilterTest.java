@@ -1,7 +1,20 @@
 package sk.seges.acris.site.server.cache;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServlet;
+import javax.ws.rs.core.HttpHeaders;
+
 import net.sf.ehcache.constructs.web.AlreadyGzippedException;
 import net.sf.ehcache.constructs.web.GenericResponseWrapper;
+
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +24,11 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import sk.seges.acris.core.server.utils.io.StringFile;
+import sk.seges.acris.security.server.core.request.session.GWTRPCSessionHttpServletRequestWrapper;
 import sk.seges.acris.site.server.cache.configuration.spring.CacheFilterTestConfiguration;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServlet;
-import javax.ws.rs.core.HttpHeaders;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Created by PeterSimun on 23.11.2014.
@@ -52,12 +56,22 @@ public abstract class AbstractCacheFilterTest {
     }
 
     protected void executeTest(final String fileNamePrefix, MockHttpServletRequest request, MockServlet servlet) throws IOException, ServletException {
-
         byte[] response = executeFilterChain(
                 setRequestURI(request, getTestResource(fileNamePrefix, URI_SUFFIX)),
                 servlet
         );
-
+        validateResponse(fileNamePrefix, response);
+    }
+    
+    protected void executeTest(final String fileNamePrefix, GWTRPCSessionHttpServletRequestWrapper requestWrapper, MockServlet servlet) throws IOException, ServletException {
+        byte[] response = executeFilterChain(
+                setRequestURI((MockHttpServletRequest) requestWrapper.getRequest(), getTestResource(fileNamePrefix, URI_SUFFIX)),
+                servlet
+        );
+    	validateResponse(fileNamePrefix, response);
+    }
+    
+    private void validateResponse(final String fileNamePrefix, final byte[] response) throws IOException {
         String expectedOutput = getTestResource(fileNamePrefix, PROCESSED_RESPONSE_SUFFIX);
 
         boolean result = compareBytes(response,
@@ -69,7 +83,6 @@ public abstract class AbstractCacheFilterTest {
         }
 
         Assert.assertTrue("Filter chain response does not produce expected output", result);
-
     }
 
     private static final int GZIP_MAGIC_NUMBER_BYTE_1 = 31;
@@ -215,7 +228,6 @@ public abstract class AbstractCacheFilterTest {
         request.addHeader(HttpHeaders.COOKIE, "__cfduid=d0c536d7127f83ddad899b4d35d142c2b1416736887; _ga=GA1.2.1835855588.1416736887; _gat=1; acris-token=");
         request.addHeader(HttpHeaders.HOST, "localhost");
         request.addHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36");
-
         return request;
     }
 }
