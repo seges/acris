@@ -9,9 +9,6 @@ import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkPostProcessorTest.NiceURLLinkPostProcessorTestConfigurationLoader;
 import sk.seges.acris.generator.server.spring.configuration.alters.NiceurlPathTestConfiguration;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
-import sk.seges.acris.site.server.service.MockWebSettingsService;
-import sk.seges.acris.site.server.service.builder.IWebSettingsBuilder;
-import sk.seges.acris.site.server.service.builder.NoTopLevelDomainWebSettingsBuilder;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,11 +34,9 @@ public class NiceURLLinkPostProcessorTest extends AbstractProcessorTest {
 	@Test
 	@DirtiesContext
 	public void testNiceUrlHashPostProcessor() {
-		IWebSettingsBuilder webSettingsBuilder = ((MockWebSettingsService)webSettingsService).getWebSettingsBuilder();
-		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(new NoTopLevelDomainWebSettingsBuilder());
-		runTest(HTML_FILE_DIRECTORY + "2_test_niceurl_hash_input.html", 
-				HTML_FILE_DIRECTORY + "2_test_niceurl_hash_result.html");
-		((MockWebSettingsService)webSettingsService).setWebSettingsBuilder(webSettingsBuilder);
+        webSettingsService.getWebSettings(getDefaultToken().getWebId()).setTopLevelDomain(null);
+		runTest(HTML_FILE_DIRECTORY + "2_test_niceurl_hash_input.html",
+                HTML_FILE_DIRECTORY + "2_test_niceurl_hash_result.html");
 	}
 
 	@Test

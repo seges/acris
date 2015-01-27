@@ -1,5 +1,7 @@
 package sk.seges.acris.pap.security.model;
 
+import sk.seges.acris.security.client.annotations.ManagedSecurity;
+import sk.seges.acris.security.client.annotations.RuntimeSecurity;
 import sk.seges.acris.security.client.annotations.Secured;
 
 import com.google.gwt.user.client.ui.CheckBox;
@@ -8,6 +10,8 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 
 @Secured
+@RuntimeSecurity
+@ManagedSecurity
 public class PanelWithPermissions {
 
 	@Secured("TEXT")

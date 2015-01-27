@@ -2,15 +2,27 @@ package sk.seges.acris.generator.server.processor.post.alters;
 
 import org.htmlparser.Node;
 import org.htmlparser.tags.ScriptTag;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.generator.server.processor.utils.ScriptUtils;
 
 public class ScriptsAlterPathPostProcessor extends AbstractPathAlterPostProcessor {
 
 	private static final String JS_TEXT_TYPE = "text/javascript";
-	private static final String JS_LANGUAGE = "javascript";	
+	private static final String JS_LANGUAGE = "javascript";
 
-	@Override
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.BOTH;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 
 		if (node instanceof ScriptTag) {

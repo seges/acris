@@ -7,8 +7,10 @@ import org.htmlparser.nodes.TagNode;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 
@@ -36,8 +38,18 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
 	protected Class<Child> getLanguageSelectorChildTagClass() {
     	return ((Class<Child>) getLanguageSelectorTagClass());
     }
-    
-	@Override
+
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.BOTH;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		if (node instanceof TagNode) {
 			String classAttributeValue = ((TagNode)node).getAttribute(CLASS_ATTRIBUTE_NAME);

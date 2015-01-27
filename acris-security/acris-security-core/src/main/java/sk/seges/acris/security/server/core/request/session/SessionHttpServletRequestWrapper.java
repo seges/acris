@@ -134,4 +134,11 @@ public abstract class SessionHttpServletRequestWrapper extends HttpServletReques
 		};
 	}
 
+	public String getSessionId() {
+		return sessionId;
+	}
+	
+	public HttpServletRequest getRequest() {
+		return request;
+	}
 }

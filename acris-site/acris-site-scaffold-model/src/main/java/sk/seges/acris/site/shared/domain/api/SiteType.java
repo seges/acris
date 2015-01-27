@@ -5,5 +5,5 @@ package sk.seges.acris.site.shared.domain.api;
  *
  */
 public enum SiteType {
-	PRIMARY, ALIAS;
+	PRIMARY, ALIAS, PENDING, PRIMARY_PENDING;
 }

@@ -6,9 +6,10 @@ import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcess
 import sk.seges.acris.generator.server.processor.post.alters.NiceURLLinkAlterPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.common.MockTestConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
 
-@Import({/*PostProcessorsConfiguration.class, */MockTestConfiguration.class, OfflineSettingsConfiguration.class, WebSettingsServiceConfiguration.class})
+@Import({/*PostProcessorsConfiguration.class, */MockTestConfiguration.class, WebSettingsConfiguration.class, OfflineSettingsConfiguration.class, WebSettingsServiceConfiguration.class})
 public class NestedLinkElementsPostProcessorTestConfiguration {
 
 	@Bean

@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.manager.PlainOfflineWebSettingsTest.PlainOfflineWebSettingsTestLoader;
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.server.processor.post.AbstractProcessorTest;
 import sk.seges.acris.generator.server.spring.configuration.DefaultTestConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.PlainParametersTestConfiguration;
+import sk.seges.acris.generator.shared.params.OfflineParameterType;
 import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 import sk.seges.sesam.spring.ParametrizedAnnotationConfigContextLoader;
@@ -23,30 +26,20 @@ public class PlainOfflineWebSettingsTest extends AbstractProcessorTest {
 
 	static class PlainOfflineWebSettingsTestLoader extends ParametrizedAnnotationConfigContextLoader {
 		public PlainOfflineWebSettingsTestLoader() {
-			super(DefaultTestConfiguration.class);
+			super(PlainParametersTestConfiguration.class);
 		}
 	}
 
 	@Autowired
 	private ParametersManagerFactory parameterManagerFactory;
 
-	protected WebSettingsData getWebSettings() {
-		WebSettingsData webSettings = new JpaWebSettings();
-		String parameters = "offlinePostProcessorInactive=;offlineIndexProcessorInactive=NocacheScriptPostProcessor,PropertiesScriptPostProcessor";
-		webSettings.setParameters(parameters);
-		return webSettings;
-	}
+    @Autowired
+    private WebSettingsData webSettingsData;
 
 	@Test
 	@DirtiesContext
 	public void testOfflineSettings() {
-		PlainOfflineWebSettings plainOfflineWebSettings = new PlainOfflineWebSettings(getWebSettings(), parameterManagerFactory);
-		Assert.assertEquals("There should be no processors in the result.", 1, plainOfflineWebSettings.getInactiveProcessors().size());
-		String processor = plainOfflineWebSettings.getInactiveProcessors().iterator().next();
-		Assert.assertEquals("No processor should be defined", "", processor);
-		Assert.assertEquals("There should be 2 processors in the result.", 2, plainOfflineWebSettings.getInactiveIndexProcessors().size());
-		Iterator<String> iterator = plainOfflineWebSettings.getInactiveIndexProcessors().iterator();
-		Assert.assertEquals("Wrong processor is defined", "PropertiesScriptPostProcessor", iterator.next());
-		Assert.assertEquals("Wrong processor is defined", "NocacheScriptPostProcessor", iterator.next());
+		PlainOfflineWebSettings plainOfflineWebSettings = new PlainOfflineWebSettings(webSettingsData, parameterManagerFactory);
+        Assert.assertEquals("There should be COMBINED mode in the params defined", OfflineClientWebParams.OfflineMode.COMBINED, plainOfflineWebSettings.getOfflineMode());
 	}
 }

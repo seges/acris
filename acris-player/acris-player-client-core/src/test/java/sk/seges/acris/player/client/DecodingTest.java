@@ -7,6 +7,7 @@ import sk.seges.acris.player.client.model.HtmlTestEvent;
 import sk.seges.acris.player.client.model.KeyboardTestEvent;
 import sk.seges.acris.player.client.model.MouseTestEvent;
 import sk.seges.acris.recorder.client.event.ClipboardEvent;
+import sk.seges.acris.recorder.client.event.KeyboardEvent;
 
 public class DecodingTest extends AbstractDecodingTest {
 
@@ -36,6 +37,16 @@ public class DecodingTest extends AbstractDecodingTest {
 		keyboardTestEvent.setCtrlKeyInt(1);
 		testEventDecoding(keyboardTestEvent);
 		testEventDecoding(new KeyboardTestEvent(BrowserEvents.KEYUP));
+
+        keyboardTestEvent = new KeyboardTestEvent(BrowserEvents.KEYUP);
+        keyboardTestEvent.setScrollType(KeyboardEvent.ScrollType.Y);
+        keyboardTestEvent.setScrollOffset(20);
+        testEventDecoding(keyboardTestEvent);
+
+        keyboardTestEvent = new KeyboardTestEvent(BrowserEvents.KEYUP);
+        keyboardTestEvent.setScrollType(KeyboardEvent.ScrollType.X);
+        keyboardTestEvent.setScrollOffset(100);
+        testEventDecoding(keyboardTestEvent);
 	}
 
 	@Test

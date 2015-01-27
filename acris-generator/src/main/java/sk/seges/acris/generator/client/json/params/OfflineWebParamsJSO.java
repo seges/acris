@@ -8,11 +8,13 @@ public class OfflineWebParamsJSO extends BaseJSONModel implements OfflineClientW
 
 	private static final long serialVersionUID = -728318142595408871L;
 
-	public OfflineWebParamsJSO(JSONModel fromJson) {
+    private OfflineWebParamsJSO() {}
+
+    public OfflineWebParamsJSO(JSONModel fromJson) {
 		super(fromJson);
 	}
 
-	@Override
+    @Override
 	public Boolean isPublishOnSaveEnabled() {
 		return data.getBoolean(OfflineParameterType.PUBLISH_ON_SAVE_ENABLED.getKey());
 	}
@@ -26,4 +28,18 @@ public class OfflineWebParamsJSO extends BaseJSONModel implements OfflineClientW
 	public Boolean supportsAutodetectMode() {
 		return data.getBoolean(OfflineParameterType.AUTODETECT_MODE.getKey());
 	}
+
+    @Override
+    public OfflineMode getOfflineMode() {
+        String offlineMode = data.get(OfflineParameterType.OFFLINE_MODE.getKey());
+        if (offlineMode == null) {
+            return null;
+        }
+        return OfflineMode.valueOf(offlineMode);
+    }
+
+    @Override
+    public void setOfflineMode(OfflineMode offlineMode) {
+        data.set(OfflineParameterType.OFFLINE_MODE.getKey(), offlineMode.toString());
+    }
 }

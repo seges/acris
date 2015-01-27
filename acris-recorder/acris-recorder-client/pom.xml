@@ -64,5 +64,6 @@
 			<artifactId>acris-recorder-client-core</artifactId>
 			<classifier>sources</classifier>
 		</dependency>
-	</dependencies>
+
+    </dependencies>
 </project>

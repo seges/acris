@@ -4,8 +4,10 @@ import org.htmlparser.Node;
 import org.htmlparser.tags.HeadTag;
 import org.htmlparser.tags.ScriptTag;
 import org.htmlparser.util.NodeList;
+import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.processor.factory.NodeFactory;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.generator.server.processor.utils.NodesUtils;
 
 public class OfflineTagAppenderPostProcessor extends AbstractAppenderPostProcessor {
@@ -13,7 +15,17 @@ public class OfflineTagAppenderPostProcessor extends AbstractAppenderPostProcess
 	private static final String TYPE_ATTRIBUTE_NAME = "type";
 	private static final String TYPE_ATTRIBUTE_JS_VALUE = "text/javascript";
 
-	@Override
+    @Override
+    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+        return OfflineClientWebParams.OfflineMode.BOTH;
+    }
+
+    @Override
+    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+        return TokenSupport.ALL;
+    }
+
+    @Override
 	public boolean supports(Node node, GeneratorEnvironment generatorEnvironment) {
 		return (node instanceof HeadTag); 
 	}

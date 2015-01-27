@@ -1,34 +1,33 @@
 package sk.seges.acris.pap.bean.model;
-
 import javax.annotation.Generated;
 
 import sk.seges.acris.core.client.bean.BeanWrapper;
 
 @Generated(value = "sk.seges.acris.pap.bean.BeanWrapperProcessor")
 public class TypedBeanBeanWrapper<T> implements BeanWrapper<TypedBean<T>> {
-
+	 
 	protected TypedBean<T> beanWrapperContent;
-
+	
 	public T getT(){
 		if (beanWrapperContent != null) {
 			return beanWrapperContent.getT();
 		}
 		return null;
 	}
-
+	
 	public void setT(T t) {
 		beanWrapperContent.setT(t);
 	}
-
+	
 	public void setBeanWrapperContent(TypedBean<T> beanWrapperContent) {
 		this.beanWrapperContent = (TypedBean<T>) beanWrapperContent;
 		clearWrappers();
 	}
-
+	
 	public TypedBean<T> getBeanWrapperContent() {
 		return this.beanWrapperContent;
 	}
-
+	
 	public Object getBeanAttribute(String attr) {
 		if (attr.equals("t")) {
 			return this.getT();
@@ -38,15 +37,15 @@ public class TypedBeanBeanWrapper<T> implements BeanWrapper<TypedBean<T>> {
 			return null;
 		}
 	}
-
+	
 	public void setBeanAttribute(String attr, Object value) {
-		if (attr.equals("setT")) { 
+		if (attr.equals("t")) { 
 			this.setT((T)value);
 		} else if (attr.equals("beanWrapperContent")) {
 			this.beanWrapperContent = (TypedBean<T>) value;
 		}
 	}
-
+	
 	private void clearWrappers() {
 	}
 }

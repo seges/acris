@@ -27,6 +27,7 @@ public class HibernateJpaRecordingLogDao extends AbstractHibernateCRUD<Recording
 		return new JpaRecordingLog();
 	}
 
+
 //	@Override
 //	@Transactional
 //	public RecordingLogData persist(RecordingLogData entity) {

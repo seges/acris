@@ -11,7 +11,6 @@ import javax.annotation.Generated;
 @Generated(value = "sk.seges.acris.pap.service.AsyncServiceProcessor")
 public interface TypedServiceAsync<T extends Comparable<Serializable>> {
 	 
-	 
 	void find(AsyncCallback<T> callback) ;
 	
 	void findAll(AsyncCallback<List<T>> callback) ;

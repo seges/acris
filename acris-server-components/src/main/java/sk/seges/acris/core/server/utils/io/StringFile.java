@@ -1,12 +1,6 @@
 package sk.seges.acris.core.server.utils.io;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,7 +27,7 @@ public class StringFile extends File {
 	}
 
 	public static StringFile getFileDescriptor(String fileName) {
-		URL url = null;
+		URL url;
 		StringFile file;
 		
 		if (!fileName.startsWith(FILE_SEPARATOR) && !fileName.startsWith(".")) {
@@ -74,13 +68,12 @@ public class StringFile extends File {
 		BufferedReader br;
 
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(
-					this)));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(this)));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
 
-		StringBuffer content = new StringBuffer();
+		StringBuilder content = new StringBuilder();
 		String line;
 		while ((line = br.readLine()) != null) {
 			content.append(line);

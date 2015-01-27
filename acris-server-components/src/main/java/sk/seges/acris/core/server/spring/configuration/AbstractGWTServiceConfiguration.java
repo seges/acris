@@ -26,6 +26,7 @@ public abstract class AbstractGWTServiceConfiguration {
 		}
 		
 		CustomPolicyRPCServiceExporter exporter = new CustomPolicyRPCServiceExporter();
+        exporter.setResponseCachingDisabled(false);
 		exporter.setSerializationPolicy(getSerializationPolicy());
 		exporter.setService(service);
 		exporter.setServiceInterfaces(new Class[] { serviceInterface });

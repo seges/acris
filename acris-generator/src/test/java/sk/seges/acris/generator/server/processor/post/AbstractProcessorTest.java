@@ -9,6 +9,8 @@ import sk.seges.acris.generator.server.processor.factory.HtmlProcessorFactory;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public abstract class AbstractProcessorTest {
@@ -33,23 +35,43 @@ public abstract class AbstractProcessorTest {
 		return resultHtmlFileName;
 	}
 
-	protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token) {
-		runTest(inputHtmlFileName, resultHtmlFileName, token, false);
+    protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token) {
+        runTest(inputHtmlFileName, resultHtmlFileName, token, false, false);
+    }
+
+    protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token, boolean ignoreCase) {
+		runTest(inputHtmlFileName, resultHtmlFileName, token, false, ignoreCase);
 	}
 	
-	protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token, boolean indexFile) {
+	protected void runTest(String inputHtmlFileName, String resultHtmlFileName, GeneratorToken token, boolean indexFile, boolean ignoreCase) {
 		this.inputHtmlFileName = inputHtmlFileName;
 		this.resultHtmlFileName = resultHtmlFileName;
 		
-		HtmlPostProcessor htmlPostProcessing = htmlProcessorFactory.create(webSettingsService.getWebSettings(token.getWebId()));
+		HtmlPostProcessor htmlPostProcessing = htmlProcessorFactory.create(
+                webSettingsService.getWebSettings(token.getWebId()));
 		
 		String html = htmlPostProcessing.getProcessedContent(getInputHtml(), token, getDefaultToken(), indexFile, getDefaultLocale());
 		if (html != null) {
+
             String expectedResult = getResultHtml();
+
+            if (ignoreCase) {
+                expectedResult = expectedResult.replaceAll(System.getProperty("line.separator"), "");
+                expectedResult = expectedResult.replaceAll("\\t", "");
+                html = html.replaceAll(System.getProperty("line.separator"), "");
+                html = html.replaceAll("\\t", "");
+            }
+
             int diff = getDiffPosition(expectedResult, html);
 
+            if (diff > 0) {
+                System.out.println("Expected char: " + expectedResult.charAt(diff));
+                System.out.println("Current char: " + html.charAt(diff));
+            }
+
 			Assert.assertTrue("Result HTML is not equals to the expected result.\n\n Expected result: \n" + expectedResult + ".\n\n Current result: \n" + html +
-                    ".\n\nDIFF:\nExpected result:\n" + subString(expectedResult, diff) + "\nCurrent Result:\n" + subString(html, diff) + "\n\n on position: " + diff + "\n", compare(expectedResult, html));
+                    ".\n\nDIFF:\nExpected result:\n" + subString(expectedResult, diff) + "\nCurrent Result:\n" + subString(html, diff) + "\n\n on position: " + diff + "\n",
+                    compare(expectedResult, html));
 		} else {
 			Assert.assertFalse("Processing/configuration failure occurred.", true);
 		}
@@ -63,7 +85,11 @@ public abstract class AbstractProcessorTest {
     }
 
 	protected void runTest(String inputHtmlFileName, String resultHtmlFileName) {
-		runTest(inputHtmlFileName, resultHtmlFileName, getDefaultToken());
+        runTest(inputHtmlFileName, resultHtmlFileName, getDefaultToken(), false);
+    }
+
+    protected void runTest(String inputHtmlFileName, String resultHtmlFileName, boolean ignoreCase) {
+        runTest(inputHtmlFileName, resultHtmlFileName, getDefaultToken(), ignoreCase);
 	}
 	
 	protected String getDefaultLocale() {

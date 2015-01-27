@@ -10,9 +10,10 @@ import sk.seges.acris.generator.server.processor.post.annihilators.KeywordsMetaT
 import sk.seges.acris.generator.server.processor.post.appenders.KeywordsMetaTagAppenderPostProcessor;
 import sk.seges.acris.generator.server.spring.configuration.alters.EmptyKeywordsTestConfiguration.MockLightContentFactory;
 import sk.seges.acris.generator.server.spring.configuration.common.OfflineSettingsConfiguration;
+import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsConfiguration;
 import sk.seges.acris.generator.server.spring.configuration.common.WebSettingsServiceConfiguration;
 
-@Import({WebSettingsServiceConfiguration.class, OfflineSettingsConfiguration.class})
+@Import({WebSettingsServiceConfiguration.class, WebSettingsConfiguration.class, OfflineSettingsConfiguration.class})
 public class EmptyKeywordsTestConfiguration {
 
 	@Bean

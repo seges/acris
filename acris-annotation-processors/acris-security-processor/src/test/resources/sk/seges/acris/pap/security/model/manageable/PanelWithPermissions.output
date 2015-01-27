@@ -1,5 +1,4 @@
 package sk.seges.acris.pap.security.model;
-
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.UIObject;
 
@@ -7,39 +6,33 @@ import javax.annotation.Generated;
 
 import sk.seges.acris.security.client.CheckableSecuredObject;
 import sk.seges.acris.security.client.IManageableSecuredObject;
-import sk.seges.acris.security.shared.session.ClientSession;
+import sk.seges.acris.security.shared.session.ClientSessionDTO;
 import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.util.SecurityUtils;
 
 @Generated(value = "sk.seges.acris.pap.security.ManageableSecuredObjectProcessor")
-public class ManageableSecuredPanelWithPermissions extends PanelWithPermissions implements IManageableSecuredObject, CheckableSecuredObject {
-
+public class PanelWithPermissionsManageableSecured extends PanelWithPermissions implements IManageableSecuredObject, CheckableSecuredObject {
+	 
+	private GenericUserDTO user;
+	
 	private void initializeUser() {
 		user = null;
-
+	
 		if (getClientSession() != null) {
 			user = (GenericUserDTO)getClientSession().getUser();
 		}
-
+	
 	}
-	private GenericUserDTO user;
-
-	private ClientSession<GenericUserDTO> clientSession;
-
-	public ClientSession<GenericUserDTO> getClientSession() {
+	private ClientSessionDTO clientSession;
+	
+	public ClientSessionDTO getClientSession() {
 		return clientSession;
 	}
-
-	public void setClientSession(ClientSession<GenericUserDTO> clientSession) {
+	
+	public void setClientSession(ClientSessionDTO clientSession) {
 		this.clientSession = clientSession;
 	}
-
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		check();
-	}
-
+	
 	@Override
 	public void check() {
 		initializeUser();
@@ -49,7 +42,7 @@ public class ManageableSecuredPanelWithPermissions extends PanelWithPermissions 
 		SecurityUtils.handlePermission(user, checkBox, "SUPPORT");
 		SecurityUtils.handlePermission(user, radioButton, "GENDER");
 	}
-
+	
 	@Override
 	public void setVisible(UIObject widget, boolean visible) {
 		initializeUser();
@@ -57,7 +50,7 @@ public class ManageableSecuredPanelWithPermissions extends PanelWithPermissions 
 			SecurityUtils.handleVisibility(widget, false);
 			return;
 		}
-
+	
 		if (label1 == widget) {
 			SecurityUtils.handleVisibility(user, widget, "TEXT");
 		} else if (label2 == widget) {
@@ -72,7 +65,7 @@ public class ManageableSecuredPanelWithPermissions extends PanelWithPermissions 
 			SecurityUtils.handleVisibility(widget, true);
 		}
 	}
-
+	
 	@Override
 	public void setEnabled(HasEnabled widget, boolean enabled) {
 		initializeUser();
@@ -80,7 +73,7 @@ public class ManageableSecuredPanelWithPermissions extends PanelWithPermissions 
 			SecurityUtils.handleEnabledState(widget, false);
 			return;
 		}
-
+	
 		if (label1 == widget) {
 			SecurityUtils.handleEnabledState(user, widget, "TEXT");
 		} else if (label2 == widget) {
@@ -95,5 +88,4 @@ public class ManageableSecuredPanelWithPermissions extends PanelWithPermissions 
 			SecurityUtils.handleEnabledState(widget, true);
 		}
 	}
-
 }

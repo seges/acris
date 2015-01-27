@@ -1,5 +1,4 @@
 package sk.seges.acris.pap.security.model;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,28 +11,26 @@ import sk.seges.acris.security.shared.user_management.model.dto.GenericUserDTO;
 import sk.seges.acris.security.shared.util.SecurityUtils;
 
 @Generated(value = "sk.seges.acris.pap.security.RuntimeSecuredObjectProcessor")
-public class RuntimeSecuredPanelWithoutClientSession extends PanelWithoutClientSession implements IRuntimeAuthorityMediator, CheckableSecuredObject {
-
+public class PanelWithoutClientSessionRuntimeSecured extends PanelWithoutClientSession implements IRuntimeAuthorityMediator, CheckableSecuredObject {
+	 
 	private GenericUserDTO user;
-
+	
 	private List<String> userGrants = new ArrayList<String>();
-	@Override
-	public void onLoad() {
-		super.onLoad();
-		check();
-	}
-
-	@Override
-	public void check() {
+	private void initializeUser() {
 		user = null;
-
+	
 		if (getClientSession() != null) {
 			user = (GenericUserDTO)getClientSession().getUser();
 		}
-
-		SecurityUtils.handlePermission(user, label1, getGrants(), "TEXT");
+	
 	}
-
+	@Override
+	public void check() {
+		initializeUser();
+		SecurityUtils.handlePermission(user, label1, getGrants(), "TEXT");
+		SecurityUtils.handlePermission(user, this, userGrants.toArray(new String[] {}));
+	}
+	
 	@Override
 	public void setPermission(UserPermission userPermission) {
 		userGrants.clear();
@@ -45,7 +42,7 @@ public class RuntimeSecuredPanelWithoutClientSession extends PanelWithoutClientS
 		userGrants.clear();
 		userGrants.add(grant);
 	}
-
+	
 	@Override
 	public void setPermissions(UserPermission[] permissions) {
 		userGrants.clear();
@@ -60,10 +57,9 @@ public class RuntimeSecuredPanelWithoutClientSession extends PanelWithoutClientS
 			userGrants.add(grant);
 		}
 	}
-
+	
 	@Override
 	public String[] getGrants() {
 		return userGrants.toArray(new String[0]);
 	}
-
 }

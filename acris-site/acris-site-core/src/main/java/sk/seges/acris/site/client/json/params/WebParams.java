@@ -32,6 +32,7 @@ public interface WebParams extends ContentParameters {
 	public static final String INVOICE_PREFIX = "invoicePrefix";
 	public static final String INVOICE_CURRENT_NUMBER = "invoiceCurrentNumber";
 	public static final String USE_GENERATED_VARIANTS = "useGeneratedVariants";
+	public static final String ENABLE_ORDER_OF_NOT_PRESENT_ITEM = "enableOrderOfNotPresentItem";
 	
 	String[] getOfflinePostProcessorInactive();
 
@@ -144,4 +145,8 @@ public interface WebParams extends ContentParameters {
 	Boolean getUseGeneratedVariants();
 	
 	void setUseGeneratedVariants(Boolean useGeneratedVariants);
+	
+	Boolean getEnableOrderOfNotPresentItem();
+	
+	void setEnableOrderOfNotPresentItem(Boolean enableOrderOfNotPresentItem);
 }

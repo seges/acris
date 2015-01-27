@@ -19,11 +19,12 @@ import sk.seges.acris.site.shared.service.IWebSettingsLocalService;
 import sk.seges.sesam.dao.*;
 import sk.seges.sesam.pap.service.annotation.LocalService;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 
 	private static Log log = LogFactory.getLog(GeneratorService.class);
 
-	private DataPersister dataPersister;
+	private final DataPersister dataPersister;
 	private ContentDataProvider contentDataProvider;
 	private NodeParserFactory parserFactory;
 
@@ -94,10 +95,6 @@ public class GeneratorService implements IGeneratorServiceLocal {
 		return result;
 	}
 
-	public boolean saveContent(GeneratorToken token, String contentText) {
-		return true;
-	}
-
 	@Override
 	public ArrayList<String> getAvailableNiceurls(Page page) {
 		List<String> availableNiceurls = contentDataProvider.getAvailableNiceurls(page);
@@ -135,7 +132,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 				if (i > 0) {
 					result += op;
 				}
-				result = "( " + toString(cr) + " )";
+				result += "( " + toString(cr) + " )";
 				i++;
 			}
 			
@@ -158,7 +155,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 
 	public synchronized String readTextFromFile(String filename) {
 
-		URL url = null;
+		URL url;
 
 		if (filename.startsWith("http://")) {
 			try {
@@ -186,7 +183,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 	private synchronized String readTextFromURL(URL url) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 
-		StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
 
 		String line;
 
@@ -268,21 +265,6 @@ public class GeneratorService implements IGeneratorServiceLocal {
 		});
 	}
 
-	/*
-	 * Method is used to encode name of the file 
-	 */
-	protected String encodeFilePath(String path) {
-		 try {
-			path = URLEncoder.encode(path, Charset.defaultCharset().toString());
-			path = path.replaceAll("%2F","/");
-			path = path.replaceAll("%2f","/");
-		} catch (UnsupportedEncodingException e) {
-			log.info("Unable to encode file path " + path);
-		}  
-
-		return path;
-	}
-	
 	protected PersistentDataProvider createPersistentDataProvider(GeneratorToken token, boolean indexFile, String content) {
 		PersistentDataProvider dataProvider = new TokenPersistentDataProvider();
 		dataProvider.setContent(content);
@@ -292,8 +274,7 @@ public class GeneratorService implements IGeneratorServiceLocal {
 		if (indexFile) {
 			dataProvider.setId(indexFileName);
 		} else {
-			//TODO not indexFileName?
-			dataProvider.setId(token.getNiceUrl() + File.separator + "index.html");
+			dataProvider.setId(token.getNiceUrl() + File.separator + indexFileName);
 		}
 		return dataProvider;
 	}

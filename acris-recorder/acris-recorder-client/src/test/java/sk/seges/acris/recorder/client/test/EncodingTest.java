@@ -24,8 +24,8 @@ public class EncodingTest extends AbstractEventTest {
 
 	@Test
 	public void testEncodeKeyboardEvents() {
-		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN), "01001000001111001011011111000000");
-		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33), "01000110110111001000011111000000");
+        testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN), "01000101101100000000000011000000");
+		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN, 33), "01000100001100000000000011000000");
 		testEvent(new KeyboardTestEvent(BrowserEvents.KEYDOWN) {
 			@Override
 			public int getCtrlKeyInt() {
@@ -36,8 +36,8 @@ public class EncodingTest extends AbstractEventTest {
 			public int getShiftKeyInt() {
 				return 1;
 			}
-		}, "01001000001111001011011111010100");
-		testEvent(new KeyboardTestEvent(BrowserEvents.KEYPRESS), "01001000001111001011011111000001");
+		}, "01000101101100000000000011010100");
+		testEvent(new KeyboardTestEvent(BrowserEvents.KEYPRESS), "01000101101100000000000011000001");
 		testEvent(new KeyboardTestEvent(BrowserEvents.KEYPRESS) {
 			@Override
 			public int getMetaKeyInt() {
@@ -53,8 +53,8 @@ public class EncodingTest extends AbstractEventTest {
 			public int getCtrlKeyInt() {
 				return 1;
 			}
-		}, "01001000001111001011011111101101");
-		testEvent(new KeyboardTestEvent(BrowserEvents.KEYUP), "01001000001111001011011111000010");
+		}, "01000101101100000000000011101101");
+		testEvent(new KeyboardTestEvent(BrowserEvents.KEYUP), "01000101101100000000000011000010");
 	}
 
 	@Test
