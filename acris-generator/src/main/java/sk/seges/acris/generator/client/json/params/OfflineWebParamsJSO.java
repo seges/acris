@@ -3,6 +3,7 @@ package sk.seges.acris.generator.client.json.params;
 import sk.seges.acris.generator.shared.params.OfflineParameterType;
 import sk.seges.acris.site.client.json.BaseJSONModel;
 import sk.seges.acris.site.client.json.JSONModel;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 
 public class OfflineWebParamsJSO extends BaseJSONModel implements OfflineClientWebParams {
 

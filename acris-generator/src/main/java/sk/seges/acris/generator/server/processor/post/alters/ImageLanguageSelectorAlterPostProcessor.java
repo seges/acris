@@ -1,15 +1,14 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.htmlparser.Node;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
-import sk.seges.acris.generator.server.processor.ContentDataProvider;
-import sk.seges.acris.generator.server.processor.post.TokenSupport;
 
-import java.util.ArrayList;
-import java.util.List;
+import sk.seges.acris.generator.server.processor.ContentDataProvider;
 
 public class ImageLanguageSelectorAlterPostProcessor extends AbstractLanguageSelectorAlterPostProcessor<ImageTag, ImageTag> {
 

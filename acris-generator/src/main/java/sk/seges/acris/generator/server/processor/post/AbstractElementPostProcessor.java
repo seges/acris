@@ -2,8 +2,9 @@ package sk.seges.acris.generator.server.processor.post;
 
 import org.htmlparser.Node;
 import org.htmlparser.util.NodeList;
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
+
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 
 public abstract class AbstractElementPostProcessor implements PostProcessorKind {
 
@@ -16,9 +17,9 @@ public abstract class AbstractElementPostProcessor implements PostProcessorKind 
 	protected AbstractElementPostProcessor() {
 	}
 
-    public abstract OfflineClientWebParams.OfflineMode getOfflineMode();
+    public abstract OfflineMode getOfflineMode();
 
-    public abstract TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode);
+    public abstract TokenSupport getTokenSupport(OfflineMode offlineMode);
 
 	protected <T> boolean hasChildNode(Node node, Class<T> nodeClass) {
 		return iterateToNode(node, nodeClass) != null;

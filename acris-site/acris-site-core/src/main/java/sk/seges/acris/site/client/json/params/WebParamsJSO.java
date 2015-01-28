@@ -43,26 +43,20 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 		data.set(PRODUCT_CATEGORY_SINGLE_SELECT, productCategorySingleSelect);
 	}
 
-	@Override
-	public String[] getOfflinePostProcessorInactive() {
-		return data.getStringArray(OFFLINE_POST_PROCESSOR_INACTIVE);
-	}
+    @Override
+    public OfflineMode getOfflineMode() {
+        String offlineMode = data.get(OFFLINE_MODE);
+        if (offlineMode == null) {
+            return null;
+        }
+        return OfflineMode.valueOf(offlineMode);
+    }
 
-	@Override
-	public void setOfflinePostProcessorInactive(String[] processors) {
-		data.set(OFFLINE_POST_PROCESSOR_INACTIVE, processors);
-	}
-
-	@Override
-	public String[] getOfflineIndexProcessorInactive() {
-		return data.getStringArray(OFFLINE_INDEX_PROCESSOR_INACTIVE);
-	}
-
-	@Override
-	public void setOfflineIndexProcessorInactive(String[] processors) {
-		data.set(OFFLINE_INDEX_PROCESSOR_INACTIVE, processors);
-	}
-
+    @Override
+    public void setOfflineMode(OfflineMode offlineMode) {
+        data.set(OFFLINE_MODE, offlineMode.toString());
+    }
+	
 	@Override
 	public Boolean isFiltersEnabled() {
 		return data.getBoolean(PRODUCT_LIST_FILTERS_ENABLED);

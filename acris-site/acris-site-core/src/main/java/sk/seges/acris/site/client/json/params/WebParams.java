@@ -4,10 +4,9 @@ import sk.seges.acris.domain.params.ContentParameters;
 
 public interface WebParams extends ContentParameters {
 
-	public static final String OFFLINE_POST_PROCESSOR_INACTIVE = "offlinePostProcessorInactive";
-	public static final String OFFLINE_INDEX_PROCESSOR_INACTIVE = "offlineIndexProcessorInactive";
 	public static final String OFFLINE_AUTODETECT_MODE = "offlineAutodetectMode";
-	public static final String PUBLISH_ON_SAVE_ENABLED = "publishOnSaveEnabled";
+	public static final String OFFLINE_MODE = "offlineMode";
+	public static final String PUBLISH_ON_SAVE_ENABLED = "publishOnSaveEnabled";	
 	public static final String PRODUCT_CATEGORY_SINGLE_SELECT = "productCategorySingleSelect";
 	public static final String PRODUCT_LIST_FILTERS_ENABLED = "productListFilterEnabled";
 	public static final String PRODUCT_LIST_SORT_ENABLED = "productListSortEnabled";
@@ -33,15 +32,24 @@ public interface WebParams extends ContentParameters {
 	public static final String INVOICE_CURRENT_NUMBER = "invoiceCurrentNumber";
 	public static final String USE_GENERATED_VARIANTS = "useGeneratedVariants";
 	public static final String ENABLE_ORDER_OF_NOT_PRESENT_ITEM = "enableOrderOfNotPresentItem";
+
+    public enum OfflineMode {
+        OFFLINE, COMBINED, BOTH {
+            @Override
+            public boolean contains(OfflineMode mode) {
+                return true;
+            }
+        };
+
+        public boolean contains(OfflineMode mode) {
+            return this.equals(mode);
+        }
+    }
+
+	void setOfflineMode(OfflineMode offlineMode);
+
+	OfflineMode getOfflineMode();
 	
-	String[] getOfflinePostProcessorInactive();
-
-	void setOfflinePostProcessorInactive(String[] processors);
-
-	String[] getOfflineIndexProcessorInactive();
-
-	void setOfflineIndexProcessorInactive(String[] processors);
-
 	Boolean isOfflineAutodetectMode();
 
 	void setOfflineAutodetectMode(boolean mode);

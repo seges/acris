@@ -2,12 +2,13 @@ package sk.seges.acris.generator.server.processor.post.annihilators;
 
 import org.htmlparser.Node;
 import org.htmlparser.nodes.TagNode;
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
+
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.generator.server.processor.post.appenders.AcrisExternalScriptAppenderPostProcessor;
 import sk.seges.acris.generator.server.processor.utils.CSSStyleClassDetector;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 
 public class AcrisExternalScriptAnnihilatorPostProcessor extends AbstractElementPostProcessor {
 
@@ -17,12 +18,12 @@ public class AcrisExternalScriptAnnihilatorPostProcessor extends AbstractElement
 	}
 
     @Override
-    public OfflineClientWebParams.OfflineMode getOfflineMode() {
-        return OfflineClientWebParams.OfflineMode.OFFLINE;
+    public OfflineMode getOfflineMode() {
+        return OfflineMode.OFFLINE;
     }
 
     @Override
-    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+    public TokenSupport getTokenSupport(OfflineMode offlineMode) {
         return TokenSupport.ALL;
     }
 

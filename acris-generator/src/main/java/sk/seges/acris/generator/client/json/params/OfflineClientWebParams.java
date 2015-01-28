@@ -1,21 +1,9 @@
 package sk.seges.acris.generator.client.json.params;
 
 import sk.seges.acris.domain.params.ContentParameters;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 
 public interface OfflineClientWebParams extends ContentParameters {
-
-    public enum OfflineMode {
-        OFFLINE, COMBINED, BOTH {
-            @Override
-            public boolean contains(OfflineMode mode) {
-                return true;
-            }
-        };
-
-        public boolean contains(OfflineMode mode) {
-            return this.equals(mode);
-        }
-    }
 
 	Boolean isPublishOnSaveEnabled();
 

@@ -1,5 +1,7 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Tag;
@@ -7,14 +9,13 @@ import org.htmlparser.nodes.TagNode;
 import org.htmlparser.nodes.TextNode;
 import org.htmlparser.tags.LinkTag;
 import org.htmlparser.util.NodeList;
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
+
 import sk.seges.acris.generator.server.processor.ContentDataProvider;
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.TokenSupport;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 import sk.seges.acris.site.server.domain.api.ContentData;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
-
-import java.util.List;
 
 public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, Child extends Tag> extends AbstractAlterPostProcessor {
 
@@ -40,12 +41,12 @@ public abstract class AbstractLanguageSelectorAlterPostProcessor<T extends Tag, 
     }
 
     @Override
-    public OfflineClientWebParams.OfflineMode getOfflineMode() {
-        return OfflineClientWebParams.OfflineMode.BOTH;
+    public OfflineMode getOfflineMode() {
+        return OfflineMode.BOTH;
     }
 
     @Override
-    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+    public TokenSupport getTokenSupport(OfflineMode offlineMode) {
         return TokenSupport.ALL;
     }
 

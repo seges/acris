@@ -16,8 +16,7 @@ public class WebParamsBean implements WebParams {
 	private String searchMode = ESearchMode.EQ.name();
 	private boolean searchLocalePrefix = false;
 
-	private String[] offlinePostProcessorInactive;
-	private String[] offlineIndexProcessorInactive;
+	private OfflineMode offlineMode;
 	
 	private String bluewaveUrl;
 	private String bluewaveUsername;
@@ -78,26 +77,6 @@ public class WebParamsBean implements WebParams {
 	}
 
 	@Override
-	public String[] getOfflinePostProcessorInactive() {
-		return this.offlinePostProcessorInactive;
-	}
-
-	@Override
-	public void setOfflinePostProcessorInactive(String[] processors) {
-		this.offlinePostProcessorInactive = processors;
-	}
-
-	@Override
-	public String[] getOfflineIndexProcessorInactive() {
-		return this.offlineIndexProcessorInactive;
-	}
-
-	@Override
-	public void setOfflineIndexProcessorInactive(String[] processors) {
-		this.offlineIndexProcessorInactive = processors;
-	}
-
-	@Override
 	public Boolean isFiltersEnabled() {
 		return this.filtersEnabled;
 	}
@@ -142,6 +121,17 @@ public class WebParamsBean implements WebParams {
 		return bluewaveUrl;
 	}
 
+	
+	@Override
+	public void setOfflineMode(OfflineMode offlineMode) {
+		this.offlineMode = offlineMode;
+	}
+	
+	@Override
+	public OfflineMode getOfflineMode() {
+		return offlineMode;
+	}
+	
 	@Override
 	public void setBluewaveUrl(String bluewaveUrl) {
 		this.bluewaveUrl = bluewaveUrl;

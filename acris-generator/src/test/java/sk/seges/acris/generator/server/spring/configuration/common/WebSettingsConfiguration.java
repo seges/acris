@@ -1,6 +1,7 @@
 package sk.seges.acris.generator.server.spring.configuration.common;
 
 import org.springframework.context.annotation.Bean;
+
 import sk.seges.acris.site.server.domain.jpa.JpaWebSettings;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 

@@ -1,14 +1,15 @@
 package sk.seges.acris.generator.server.processor.post.alters;
 
+import java.util.regex.Pattern;
+
 import org.htmlparser.Node;
 import org.htmlparser.tags.LinkTag;
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
+
 import sk.seges.acris.generator.server.processor.model.api.GeneratorEnvironment;
 import sk.seges.acris.generator.server.processor.post.TokenSupport;
 import sk.seges.acris.generator.server.processor.utils.AnchorUtils;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
-
-import java.util.regex.Pattern;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 
 public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 
@@ -16,12 +17,12 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 	private static final String EMAIL_REGEX = "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})";
 
     @Override
-    public OfflineClientWebParams.OfflineMode getOfflineMode() {
-        return OfflineClientWebParams.OfflineMode.BOTH;
+    public OfflineMode getOfflineMode() {
+        return OfflineMode.BOTH;
     }
 
     @Override
-    public TokenSupport getTokenSupport(OfflineClientWebParams.OfflineMode offlineMode) {
+    public TokenSupport getTokenSupport(OfflineMode offlineMode) {
         return TokenSupport.ALL;
     }
 

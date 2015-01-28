@@ -1,8 +1,6 @@
 package sk.seges.acris.generator.server.manager.api;
 
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
-
-import java.util.Set;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 
 public interface OfflineWebSettings {
 
@@ -10,5 +8,5 @@ public interface OfflineWebSettings {
 
 	boolean publishOnSaveEnabled();
 
-    OfflineClientWebParams.OfflineMode getOfflineMode();
+    OfflineMode getOfflineMode();
 }

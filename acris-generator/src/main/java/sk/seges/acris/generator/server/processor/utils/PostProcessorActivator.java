@@ -1,16 +1,13 @@
 package sk.seges.acris.generator.server.processor.utils;
 
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.manager.api.OfflineWebSettings;
 import sk.seges.acris.generator.server.processor.post.AbstractElementPostProcessor;
 import sk.seges.acris.generator.server.processor.post.TokenSupport;
-
-import java.util.HashSet;
-import java.util.Set;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 
 public class PostProcessorActivator {
 
-    private OfflineClientWebParams.OfflineMode offlineMode = OfflineClientWebParams.OfflineMode.COMBINED;
+    private OfflineMode offlineMode = OfflineMode.COMBINED;
 
 	public PostProcessorActivator(OfflineWebSettings offlineWebSettings) {
         if (offlineWebSettings.getOfflineMode() != null) {

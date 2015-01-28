@@ -1,9 +1,9 @@
 package sk.seges.acris.generator.server.manager;
 
-import sk.seges.acris.generator.client.json.params.OfflineClientWebParams;
 import sk.seges.acris.generator.server.manager.api.OfflineWebSettings;
 import sk.seges.acris.generator.server.processor.factory.api.ParametersManagerFactory;
 import sk.seges.acris.generator.shared.params.OfflineParameterType;
+import sk.seges.acris.site.client.json.params.WebParams.OfflineMode;
 import sk.seges.acris.site.server.manager.api.ParametersManager;
 import sk.seges.acris.site.server.model.data.WebSettingsData;
 
@@ -16,13 +16,13 @@ public class JSONOfflineWebSettings implements OfflineWebSettings {
 	}
 
     @Override
-    public OfflineClientWebParams.OfflineMode getOfflineMode() {
+    public OfflineMode getOfflineMode() {
         Object offlineModeParameter = parametersManager.getParameterValue(OfflineParameterType.OFFLINE_MODE);
 
         if (offlineModeParameter == null) {
             return null;
         }
-        return OfflineClientWebParams.OfflineMode.valueOf(offlineModeParameter.toString());
+        return OfflineMode.valueOf(offlineModeParameter.toString());
     }
 
 	@Override

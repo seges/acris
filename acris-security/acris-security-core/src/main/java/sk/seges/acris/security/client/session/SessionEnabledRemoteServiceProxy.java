@@ -108,7 +108,10 @@ public abstract class SessionEnabledRemoteServiceProxy extends RemoteServiceProx
 	protected <T> Request doInvoke(ResponseReader responseReader,
 		      String methodName, RpcStatsContext statsContext, String requestData,
 		      AsyncCallback<T> callback) {
-
+		
+		if (requestData.contains("reportResultsAndGetTestBlock")) {
+			return super.doInvoke(responseReader, methodName, statsContext, requestData, callback);
+		}
 
 		long lastUniqueRequestID = uniqueRequestId;
 		uniqueRequestId++;
