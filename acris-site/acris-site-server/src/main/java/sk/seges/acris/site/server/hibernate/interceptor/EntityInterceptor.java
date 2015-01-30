@@ -21,6 +21,7 @@ public class EntityInterceptor extends EmptyInterceptor {
 
 	private final ThreadPoolExecutor threadPool;
     private final List<CacheHandler> cacheHandlers;
+    private boolean disabledInvalidation = false;
 
     public EntityInterceptor(CacheHandler... cacheHandlers) {
         this.cacheHandlers = new ArrayList<CacheHandler>();
@@ -75,7 +76,7 @@ public class EntityInterceptor extends EmptyInterceptor {
     }
     
     private void invalidate(final Object entity) {
-        if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null) {
+        if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null || disabledInvalidation) {
             //we cache only entities that implements IDomainObject
             return;
         }
@@ -90,4 +91,18 @@ public class EntityInterceptor extends EmptyInterceptor {
         	threadPool.execute(runnable);
         }
     }
+    
+    public void clearCache(String webId, String locale){
+    	for (CacheHandler cacheHandler: cacheHandlers) {
+    		cacheHandler.clearCache(webId, locale);
+    	}
+    }
+    
+    public boolean isDisabledInvalidation() {
+		return disabledInvalidation;
+	}
+
+	public void setDisabledInvalidation(boolean disabledInvalidation) {
+		this.disabledInvalidation = disabledInvalidation;
+	}
 }
