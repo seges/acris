@@ -37,4 +37,11 @@ public class NotVisibleTagsAnnihilatorPostProcessorTest extends AbstractProcesso
 				HTML_FILE_DIRECTORY + "2_test_skip_chosen_elements_result.html");
 	}
 
+	@Test
+	@DirtiesContext
+	public void testHiddenIframeElementPostProcessor() {
+		runTest(HTML_FILE_DIRECTORY + "3_test_skip_hidden_iframe_input.html", 
+				HTML_FILE_DIRECTORY + "3_test_skip_hidden_iframe_result.html");
+	}
+
 }
