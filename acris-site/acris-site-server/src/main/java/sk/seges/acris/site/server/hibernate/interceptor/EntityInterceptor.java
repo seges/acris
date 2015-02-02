@@ -27,7 +27,7 @@ public class EntityInterceptor extends EmptyInterceptor {
         for (CacheHandler handler: cacheHandlers) {
             this.cacheHandlers.add(handler);
         }
-        this.threadPool = new ThreadPoolExecutor(1, 10, 1L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        this.threadPool = new ThreadPoolExecutor(1, 200, 1L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
