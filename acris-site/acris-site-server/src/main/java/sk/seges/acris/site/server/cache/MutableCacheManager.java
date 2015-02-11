@@ -145,37 +145,47 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
             return;
         }
 
-        List<String> cacheReferences = inverseCacheReference.get(entityClassName + "/" + hashCode);
+        String id = entityClassName + "/" + hashCode;
+        List<String> cacheReferences = inverseCacheReference.get(id);
 
-        if (cacheReferences != null) {
-            for (String cacheReference : cacheReferences) {
-                Element element = get(cacheReference);
-
-                if (element != null) {
-                    //cached result, remove it
-                    getTargetCacheByKey(cacheReference).remove(cacheReference);
-                }
-            }
-        }
+        removeCacheReferences(id, cacheReferences);
 
         List<Class<?>> dtoClasses = entityProviderContext.get().getDtoClassForDomain(entityClassName);
 
         if (dtoClasses != null && dtoClasses.size() > 0) {
             for (Class<?> dtoClass: dtoClasses) {
-                cacheReferences = inverseCacheReference.get(dtoClass.getCanonicalName() + "/" + hashCode);
+            	id = dtoClass.getCanonicalName() + "/" + hashCode;
+                cacheReferences = inverseCacheReference.get(id);
 
-                if (cacheReferences != null) {
-                    for (String cacheReference : cacheReferences) {
-                        Element element = get(cacheReference);
-
-                        if (element != null) {
-                            //cached result, remove it
-                            getTargetCacheByKey(cacheReference).remove(cacheReference);
-                        }
-                    }
-                }
+                removeCacheReferences(id, cacheReferences);
             }
         }
+    }
+    
+    private void removeCacheReferences(String id, List<String> cacheReferences){
+    	 if (cacheReferences != null) {
+             for (String cacheReference : cacheReferences) {
+                 Element element = get(cacheReference);
+
+                 if (element != null) {
+                     //cached result, remove it
+                     boolean deleted = getTargetCacheByKey(cacheReference).remove(cacheReference);
+                     if(!deleted) {
+                     	LOG.warn("Request reference key not deleted from cache. It was not found in the cache. Request reference key: " + cacheReference);
+                        deleted = getTargetCacheByKey(cacheReference).removeElement(element);
+                        if(deleted) {
+                         	LOG.warn("Request reference element was deleted from cache successful.");
+                        } else {
+                         	LOG.error("Request reference element not deleted from cache. It was not found in the cache. Request reference element: " + element);
+                        }
+                     }
+                 } else {
+                	 LOG.debug("Element is not found in the cache for key: " + cacheReference);
+                 }
+             }
+         } else {
+        	 LOG.debug("Cache reference map contains no mapping for the id: " + id);
+         }
     }
 
     @Override
