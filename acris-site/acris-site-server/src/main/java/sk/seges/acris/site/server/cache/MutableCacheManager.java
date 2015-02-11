@@ -67,7 +67,7 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 				+ REMOVE_PREFIX.length() + idIndexes.getSecond());
 	}
 
-	public Ehcache put(Element element) {
+	public synchronized Ehcache put(Element element) {
 		String key = (String) element.getObjectKey();
 		Ehcache cache = getTargetCacheByKey(key);
 		cache.put(element);
@@ -87,7 +87,9 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 						inverseCacheReference.put(idListEntry, cachedEntry);
 					}
 
-					cachedEntry.add(key);
+					if(!cachedEntry.contains(key)) {
+						cachedEntry.add(key);
+					}
 				}
 			}
 		}
@@ -118,7 +120,7 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 		return cache;
 	}
 
-	public Element get(String key) {
+	public synchronized Element get(String key) {
 		Ehcache cache = getTargetCacheByKey(key);
 		return cache.get(key);
 	}
@@ -142,7 +144,7 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 	}
 
 	@Override
-	public void invalidate(String entityClassName, long hashCode) {
+	public synchronized void invalidate(String entityClassName, long hashCode) {
 
 		if (inverseCacheReference.size() == 0) {
 			return;
@@ -175,15 +177,8 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 					try {
 						boolean deleted = getTargetCacheByKey(cacheReference).remove(cacheReference);
 						if (!deleted) {
-							LOG.warn("Request reference key not deleted from cache. It was not found in the cache. Request reference key: "
+							LOG.error("Request reference key not deleted from cache. It was not found in the cache. Request reference key: "
 									+ cacheReference);
-							deleted = getTargetCacheByKey(cacheReference).removeElement(element);
-							if (deleted) {
-								LOG.warn("Request reference element was deleted from cache successful.");
-							} else {
-								LOG.error("Request reference element not deleted from cache. It was not found in the cache. Request reference element: "
-										+ element);
-							}
 						}
 					} catch (Exception e) {
 						LOG.error("Request reference key/element not deleted from cache. It throws exception.", e);
