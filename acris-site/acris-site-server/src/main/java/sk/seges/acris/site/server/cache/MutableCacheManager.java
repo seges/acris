@@ -28,7 +28,7 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 
 	public static final String WEB_ID_DELIMITER = "___";
 
-	private static final Logger LOG = LoggerFactory.getLogger(CacheManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MutableCacheManager.class);
 
 	private final EntityProviderContext entityProviderContext;
 

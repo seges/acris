@@ -7,8 +7,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import net.sf.ehcache.CacheManager;
-
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
@@ -26,7 +24,7 @@ public class EntityInterceptor extends EmptyInterceptor {
 	private final ThreadPoolExecutor threadPool;
     private final List<CacheHandler> cacheHandlers;
     private boolean disabledInvalidation = false;
-    private static final Logger LOG = LoggerFactory.getLogger(CacheManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EntityInterceptor.class);
 
     public EntityInterceptor(CacheHandler... cacheHandlers) {
         this.cacheHandlers = new ArrayList<CacheHandler>();
