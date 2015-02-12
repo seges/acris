@@ -31,7 +31,7 @@ public class EntityInterceptor extends EmptyInterceptor {
         for (CacheHandler handler: cacheHandlers) {
             this.cacheHandlers.add(handler);
         }
-        this.threadPool = new ThreadPoolExecutor(1, 200, 1L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        this.threadPool = new ThreadPoolExecutor(5, 200, 1L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     @Override
@@ -98,7 +98,11 @@ public class EntityInterceptor extends EmptyInterceptor {
 				}
         	};
         	LOG.debug("execute runnable : " + runnable);
-        	LOG.debug("threadPool : " + threadPool);
+        	LOG.debug("threadPool : " + threadPool.toString());
+        	LOG.debug("threadPool.getActiveCount : " + threadPool.getActiveCount());
+        	LOG.debug("threadPool.getCompletedTaskCount : " + threadPool.getCompletedTaskCount());
+        	LOG.debug("threadPool.getQueue : " + threadPool.getQueue());
+        	LOG.debug("threadPool.getRejectedExecutionHandler : " + threadPool.getRejectedExecutionHandler());
         	threadPool.execute(runnable);
         }
     }
