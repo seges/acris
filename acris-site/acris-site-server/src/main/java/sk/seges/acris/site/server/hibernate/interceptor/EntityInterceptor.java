@@ -7,9 +7,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import net.sf.ehcache.CacheManager;
+
 import org.hibernate.CallbackException;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sk.seges.acris.site.server.cache.CacheHandler;
 import sk.seges.sesam.domain.IDomainObject;
@@ -22,6 +26,7 @@ public class EntityInterceptor extends EmptyInterceptor {
 	private final ThreadPoolExecutor threadPool;
     private final List<CacheHandler> cacheHandlers;
     private boolean disabledInvalidation = false;
+    private static final Logger LOG = LoggerFactory.getLogger(CacheManager.class);
 
     public EntityInterceptor(CacheHandler... cacheHandlers) {
         this.cacheHandlers = new ArrayList<CacheHandler>();
@@ -76,18 +81,26 @@ public class EntityInterceptor extends EmptyInterceptor {
     }
     
     private void invalidate(final Object entity) {
-        if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null || disabledInvalidation) {
+    	LOG.debug("Invalidate entity : " + entity.getClass().getName());    	
+    	if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null || disabledInvalidation) {
+    		LOG.debug("disabledInvalidation: " + disabledInvalidation);
+    		LOG.debug("Cancel invalidation");
             //we cache only entities that implements IDomainObject
             return;
         }
-
+    	LOG.debug("Invalidate entity with id: "+ ((IDomainObject<?>) entity).getId());
+    	LOG.debug("cacheHandlers : " + cacheHandlers);
         for (final CacheHandler cacheHandler: cacheHandlers) {
+        	LOG.debug("creating new runnable ..."); 
         	Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
+					LOG.debug("run thread to invalidate for cachehandler : " + cacheHandler);
 					cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());
 				}
         	};
+        	LOG.debug("execute runnable : " + runnable);
+        	LOG.debug("threadPool : " + threadPool);
         	threadPool.execute(runnable);
         }
     }

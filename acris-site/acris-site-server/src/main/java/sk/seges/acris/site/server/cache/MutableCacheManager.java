@@ -67,7 +67,9 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 				+ REMOVE_PREFIX.length() + idIndexes.getSecond());
 	}
 
-	public synchronized Ehcache put(Element element) {
+	public Ehcache put(Element element) {
+		LOG.debug("Put element: " + element);
+		LOG.debug("Cache manager name: " + getName());
 		String key = (String) element.getObjectKey();
 		Ehcache cache = getTargetCacheByKey(key);
 		cache.put(element);
@@ -113,14 +115,18 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 	public Ehcache getTargetCacheByKey(String key) {
 		String webId = determineWebId(key);
 		String cacheName = createCacheName(webId);
-		Ehcache cache = getEhcache(cacheName);
+		Ehcache cache = getEhcache(cacheName);		
 		if (cache == null) {
+			LOG.debug("Cache is null for key: " + key);
 			cache = addCacheIfAbsent(cacheName);
 		}
+		LOG.debug("Cache name: " + cache.getName());
 		return cache;
 	}
 
-	public synchronized Element get(String key) {
+	public Element get(String key) {
+		LOG.debug("Get key: " + key);
+		LOG.debug("Cache manager name: " + getName());
 		Ehcache cache = getTargetCacheByKey(key);
 		return cache.get(key);
 	}
@@ -144,24 +150,29 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 	}
 
 	@Override
-	public synchronized void invalidate(String entityClassName, long hashCode) {
+	public void invalidate(String entityClassName, long hashCode) {
+		LOG.debug("Start invalidation for: " + entityClassName + "/" + hashCode);
+		LOG.debug("Cache manager name: " + getName());
 
 		if (inverseCacheReference.size() == 0) {
 			return;
 		}
 
 		String id = entityClassName + "/" + hashCode;
+		LOG.debug("entity id: " + id);
 		List<String> cacheReferences = inverseCacheReference.get(id);
-
+		LOG.debug("cacheReferences: " + cacheReferences);
 		removeCacheReferences(id, cacheReferences);
 
 		List<Class<?>> dtoClasses = entityProviderContext.get().getDtoClassForDomain(entityClassName);
-
+		LOG.debug("dtoClasses: " + dtoClasses);
+		
 		if (dtoClasses != null && dtoClasses.size() > 0) {
 			for (Class<?> dtoClass : dtoClasses) {
 				id = dtoClass.getCanonicalName() + "/" + hashCode;
+				LOG.debug("entity id: " + id);
 				cacheReferences = inverseCacheReference.get(id);
-
+				LOG.debug("cacheReferences: " + cacheReferences);
 				removeCacheReferences(id, cacheReferences);
 			}
 		}
