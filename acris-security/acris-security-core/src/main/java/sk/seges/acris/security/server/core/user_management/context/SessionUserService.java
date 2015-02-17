@@ -19,7 +19,6 @@ public class SessionUserService implements UserProviderService {
 		this.sessionProvider = sessionProvider;
 	}
 
-	@SuppressWarnings("unchecked")
 	private ClientSession getClientSession() {
 		HttpSession session = sessionProvider.getSession();
 		return (ClientSession) session.getAttribute(LoginConstants.CLIENT_SESSION_NAME);
@@ -51,10 +50,11 @@ public class SessionUserService implements UserProviderService {
 	public ClientSession getLoggedSession(UserContext userContext) {
 		HttpSession session = sessionProvider.getSession();
 		LoginToken token = (LoginToken) session.getAttribute(LoginConstants.LOGIN_TOKEN_NAME);
-		String sessionWebId = userContext.getWebId();
-		String tokenWebId = token.getWebId();
-		if (!sessionWebId.equals(tokenWebId)) return null;
-		
+		if (token != null) {
+			String sessionWebId = userContext.getWebId();
+			String tokenWebId = token.getWebId();
+			if (!sessionWebId.equals(tokenWebId)) return null;
+		}
 		return getClientSession();
 	}
 }
