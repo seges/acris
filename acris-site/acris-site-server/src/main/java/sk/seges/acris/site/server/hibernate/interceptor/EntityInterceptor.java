@@ -90,22 +90,39 @@ public class EntityInterceptor extends EmptyInterceptor {
     	LOG.debug("cacheHandlers : " + cacheHandlers);
         for (final CacheHandler cacheHandler: cacheHandlers) {
         	LOG.debug("creating new runnable ..."); 
-        	Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					LOG.debug("run thread to invalidate for cachehandler : " + cacheHandler);
-					cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());
-				}
-        	};
+        	Runnable runnable = new InvalidateRunnable(entity, cacheHandler);
         	LOG.debug("execute runnable : " + runnable);
+        	threadPool.execute(runnable);
         	LOG.debug("threadPool : " + threadPool.toString());
+        	LOG.debug("threadPool.getTaskCount : " + threadPool.getTaskCount());
         	LOG.debug("threadPool.getActiveCount : " + threadPool.getActiveCount());
         	LOG.debug("threadPool.getCompletedTaskCount : " + threadPool.getCompletedTaskCount());
         	LOG.debug("threadPool.getQueue : " + threadPool.getQueue());
-        	LOG.debug("threadPool.getRejectedExecutionHandler : " + threadPool.getRejectedExecutionHandler());
-        	threadPool.execute(runnable);
         }
     }
+    
+    public static class InvalidateRunnable implements Runnable {
+		private Object entity;
+		private CacheHandler cacheHandler;
+
+		public InvalidateRunnable(Object entity, CacheHandler cacheHandler) {
+			super();
+			this.entity = entity;
+			this.cacheHandler = cacheHandler;
+		}
+
+		@Override
+		public void run() {
+			LOG.debug("run thread to invalidate for cachehandler : " + cacheHandler);
+			cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());			
+		}
+
+		@Override
+		public String toString() {
+			return "InvalidateRunnable [entity=" + entity.getClass().getCanonicalName() + " with hashcode=" + ((IDomainObject<?>) entity).getId().hashCode() + "]";
+		}		
+		
+	}
     
     public void clearCache(String webId, String locale){
     	for (CacheHandler cacheHandler: cacheHandlers) {
