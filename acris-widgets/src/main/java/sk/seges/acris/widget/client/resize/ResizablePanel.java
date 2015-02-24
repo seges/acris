@@ -3,6 +3,7 @@ package sk.seges.acris.widget.client.resize;
 import java.util.ArrayList;
 import java.util.List;
 
+import sk.seges.acris.widget.client.util.StyleUtil;
 import sk.seges.acris.widget.client.util.WidgetUtils;
 
 import com.google.gwt.dom.client.NativeEvent;
@@ -283,7 +284,11 @@ public class ResizablePanel extends HTML {
 			proxyElement.getStyle().setLeft(this.getAbsoluteLeft(), Unit.PX);
 			proxyElement.getStyle().setTop(this.getAbsoluteTop(), Unit.PX);
 			proxyElement.getStyle().setDisplay(Display.NONE);
-
+			
+			if(!checkIfResized(width, height)){
+				return;
+			}
+			
 			getElement().getStyle().setWidth(width, Unit.PX);
 			getElement().getStyle().setHeight(height, Unit.PX);
 
@@ -292,6 +297,15 @@ public class ResizablePanel extends HTML {
 
 			onResize(width, height);
 		}
+	}
+
+	private boolean checkIfResized(int width, int height){		
+		int lastWidth = (int) Double.parseDouble(StyleUtil.getComputedStyle(getElement(), "width").toUpperCase().replaceAll(Unit.PX + "", ""));
+		int lastHeight = (int) Double.parseDouble(StyleUtil.getComputedStyle(getElement(), "height").toUpperCase().replaceAll(Unit.PX + "", ""));		
+		if((lastWidth + 5) < width || lastWidth > (width + 5) || (lastHeight + 5) < height || lastHeight > (height + 5)){
+			return true;
+		}
+		return false;
 	}
 
 	protected void onMouseMove(Event event) {
