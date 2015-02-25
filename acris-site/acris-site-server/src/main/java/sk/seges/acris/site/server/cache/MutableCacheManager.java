@@ -190,6 +190,8 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 						if (!deleted) {
 							LOG.error("Request reference key not deleted from cache. It was not found in the cache. Request reference key: "
 									+ cacheReference);
+						} else {
+							LOG.debug("Element has been successfully removed from the cache for key: " + cacheReference);
 						}
 					} catch (Exception e) {
 						LOG.error("Request reference key/element not deleted from cache. It throws exception.", e);
