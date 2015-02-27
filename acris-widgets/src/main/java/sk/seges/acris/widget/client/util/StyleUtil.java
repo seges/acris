@@ -111,7 +111,7 @@ public class StyleUtil {
 		int absoluteTop = element.getAbsoluteTop();
 		int clientHeight = Window.getClientHeight();
 		int clientWidth = Window.getClientWidth();
-		if (absoluteLeft > 0 && absoluteLeft < clientWidth && absoluteTop > 0 && absoluteTop < clientHeight) {
+		if (absoluteLeft >= 0 && absoluteLeft <= clientWidth && absoluteTop >= 0 && absoluteTop <= clientHeight) {
 			return true;
 		}
 		return false;
