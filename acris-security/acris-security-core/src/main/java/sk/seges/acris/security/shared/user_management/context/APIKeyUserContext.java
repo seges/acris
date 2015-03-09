@@ -1,27 +1,16 @@
 package sk.seges.acris.security.shared.user_management.context;
 
-import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 
-public class APIKeyUserContext implements UserContext {
+public class APIKeyUserContext extends CommonUserContext {
 	private static final long serialVersionUID = -4356765889005541780L;
 	
-	private String webId;
 	private String apiKey;
 	
-	public APIKeyUserContext() { }
+	public APIKeyUserContext() {}
 	
-	public APIKeyUserContext(String webId, String apiKey) {
-		this.webId = webId;
+	public APIKeyUserContext(String webId, String apiKey, String locale) {
+		super(webId, locale);
 		this.apiKey = apiKey;
-	}
-
-	@Override
-	public String getWebId() {
-		return webId;
-	}
-
-	public void setWebId(String webId) {
-		this.webId = webId;
 	}
 
 	public String getApiKey() {

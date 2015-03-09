@@ -5,4 +5,6 @@ import sk.seges.acris.core.shared.model.IDataTransferObject;
 public interface UserContext extends IDataTransferObject {
 
 	String getWebId();
+	
+	String getLocale();
 }
