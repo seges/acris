@@ -75,7 +75,8 @@ public class EntityInterceptor extends EmptyInterceptor {
     		for(Object entity : (Iterable<?>)collection){
     			if(entity == null){
     				LOG.warn("null entity in collection with key: " + key);
-    				LOG.warn("entity from collection of class: " + collection.getClass());
+    				String collectionEntityClassName = ((Iterable<?>)collection).iterator().hasNext() ? ((Iterable<?>)collection).iterator().next().getClass() + "" : "unable get class from collection";
+    				LOG.warn("entity from collection of class: " + collectionEntityClassName);
     				continue;
     			}
     			invalidate(entity);
