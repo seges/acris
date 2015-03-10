@@ -17,7 +17,6 @@
 package sk.seges.acris.widget.client.util;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -106,7 +105,7 @@ public class StyleUtil {
 		return Double.valueOf((margin == null || margin.isEmpty()) ? "0" : margin);
 	}
 	
-	public static boolean onScreen(Element element) {
+	public static boolean onScreen(com.google.gwt.dom.client.Element element) {
 		int absoluteLeft = element.getAbsoluteLeft();
 		int absoluteTop = element.getAbsoluteTop();
 		int clientHeight = Window.getClientHeight();
@@ -115,5 +114,13 @@ public class StyleUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	public static double getValue(com.google.gwt.dom.client.Element bgElement, String styleProperty) {
+		String value = bgElement.getStyle().getProperty(styleProperty);
+		if (value == null || value.isEmpty()) {
+			return 0.0;
+		}
+		return Double.valueOf(value.replace("px", "").replace("%",""));
 	}
 }
