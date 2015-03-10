@@ -2,6 +2,7 @@ package sk.seges.acris.site.server.hibernate.interceptor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -72,14 +73,26 @@ public class EntityInterceptor extends EmptyInterceptor {
 
     private void invalidateCollection(Object collection, Serializable key) {
     	if(collection instanceof Iterable<?>){
-    		for(Object entity : (Iterable<?>)collection){
+    		Iterator<?> iterator = ((Iterable<?>)collection).iterator();
+    		int positionOfEntityInCollection = -1;
+    		while(iterator.hasNext()){
+    			positionOfEntityInCollection++;
+    			Object entity = iterator.next();    		
     			if(entity == null){
-    				LOG.warn("null entity in collection with key: " + key);
-    				String collectionEntityClassName = ((Iterable<?>)collection).iterator().hasNext() ? ((Iterable<?>)collection).iterator().next().getClass() + "" : "unable get class from collection";
-    				LOG.warn("entity from collection of class: " + collectionEntityClassName);
+    				LOG.warn("null entity presents in collection with key: " + key + " on pisition: " + positionOfEntityInCollection);
+    				String collectionEntityClassName = "";
+    				Iterator<?> iterator2 = ((Iterable<?>)collection).iterator();
+					while (iterator2.hasNext()) { 
+						Object entity2 = iterator2.next();
+						if (entity2 != null) { 
+							collectionEntityClassName = entity2.getClass().getName();
+							break;
+						}
+					}
+    				LOG.warn("entity from collection of class: " + collectionEntityClassName);    				
     				continue;
     			}
-    			invalidate(entity);
+    			invalidate(entity);    			
     		}
     	}
     }
