@@ -54,25 +54,30 @@ public class EntityInterceptor extends EmptyInterceptor {
 
 	@Override
 	public void onCollectionRemove(Object collection, Serializable key) throws CallbackException {
-		invalidateCollection(collection);
+		invalidateCollection(collection, key);
 		super.onCollectionRemove(collection, key);
 	}
 
 	@Override
 	public void onCollectionRecreate(Object collection, Serializable key) throws CallbackException {
-		invalidateCollection(collection);
+		invalidateCollection(collection, key);
 		super.onCollectionRecreate(collection, key);
 	}
 
 	@Override
 	public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
-		invalidateCollection(collection);
+		invalidateCollection(collection, key);
 		super.onCollectionUpdate(collection, key);
 	}
 
-    private void invalidateCollection(Object collection) {
+    private void invalidateCollection(Object collection, Serializable key) {
     	if(collection instanceof Iterable<?>){
     		for(Object entity : (Iterable<?>)collection){
+    			if(entity == null){
+    				LOG.warn("null entity in collection with key: " + key);
+    				LOG.warn("entity from collection of class: " + collection.getClass());
+    				continue;
+    			}
     			invalidate(entity);
     		}
     	}
