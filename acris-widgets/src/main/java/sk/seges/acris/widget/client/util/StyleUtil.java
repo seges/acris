@@ -53,6 +53,10 @@ public class StyleUtil {
 		}
 		return strValue;
 	}-*/;
+    
+    public static native int getOuterHeight(String elementId) /*-{
+    	return $wnd.$(elementId).outerHeight(true);
+    }-*/;
 
 	public static Double getDoubleValueOfStringPropertyWithUnit(String value, Unit unit) {
 		value = value.toUpperCase().replaceAll(unit + "", "");
@@ -116,8 +120,8 @@ public class StyleUtil {
 		return false;
 	}
 	
-	public static double getValue(com.google.gwt.dom.client.Element bgElement, String styleProperty) {
-		String value = bgElement.getStyle().getProperty(styleProperty);
+	public static Double getValue(com.google.gwt.dom.client.Element element, String styleProperty) {
+		String value = element.getStyle().getProperty(styleProperty);
 		if (value == null || value.isEmpty()) {
 			return 0.0;
 		}
