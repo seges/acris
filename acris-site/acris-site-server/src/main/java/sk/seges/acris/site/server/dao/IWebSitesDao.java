@@ -15,4 +15,6 @@ public interface IWebSitesDao <T extends WebSitesData> extends ICrudDAO<T> {
 	WebSitesData loadWebSitesByDomain(String domain);
 	
 	List<WebSitesData> findByCriteria(DetachedCriteria criteria, Page allResultsPage);
+	
+	List<String> findWebSiteWebIds(String domain);
 }

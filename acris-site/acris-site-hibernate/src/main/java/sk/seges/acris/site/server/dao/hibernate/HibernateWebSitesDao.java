@@ -1,5 +1,12 @@
 package sk.seges.acris.site.server.dao.hibernate;
 
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+
 import sk.seges.acris.site.server.dao.IWebSitesDao;
 import sk.seges.acris.site.server.domain.jpa.JpaWebSites;
 import sk.seges.acris.site.server.model.data.WebSitesData;
@@ -27,5 +34,14 @@ public class HibernateWebSitesDao extends AbstractHibernateCRUD<WebSitesData> im
 		page.setFilterable(c);
 		
 		return findUnique(page);
+	}
+
+	@Override
+	public List<String> findWebSiteWebIds(String domain) {
+		DetachedCriteria criteria =  DetachedCriteria.forClass(JpaWebSites.class);
+		criteria.setProjection(Projections.property(WebSitesData.WEB_ID));
+		criteria.add(Restrictions.like(WebSitesData.DOMAIN, "%"+ domain + "%"));
+		List<String> webIds = criteria.getExecutableCriteria((Session) entityManager.getDelegate()).list();
+		return webIds;
 	}
 }
