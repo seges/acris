@@ -111,7 +111,7 @@
 
  				<repository>
           				<id>fornax-repository</id>
-					<url>http://fornax-platform.org/nexus/content/repositories/public</url>
+					<url>http://www.fornax-platform.org/m2/repository</url>
         			</repository>
 			</repositories>
 
