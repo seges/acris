@@ -17,4 +17,6 @@ public interface LoginMessages extends Messages {
     public String loggedUserMsg();
     public String cancelLogin();
     public String cancelTitle();
+    public String usernamePlaceholder();
+    public String languagePlaceholder();
 }

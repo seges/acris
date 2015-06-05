@@ -105,7 +105,7 @@ public class LoginPresenter<D extends LoginDisplay> extends BasePresenter<D> imp
 	
 	protected boolean authenticate = false;
 	protected boolean switchAfterLogin = false;
-	private SimpleEventBus eventBus = null;
+	protected SimpleEventBus eventBus = null;
 
 	protected String locale;
 	protected String webId;
