@@ -36,8 +36,8 @@
 	<properties>
 		<gwt.log.version>3.1.2</gwt.log.version>
 
-		<gwt.version>2.6.0</gwt.version>
-		<gwt-plugin.version>2.6.0</gwt-plugin.version>
+		<gwt.version>2.7.0</gwt.version>
+		<gwt-plugin.version>2.7.0</gwt-plugin.version>
 		<gwtx.version>1.5.3</gwtx.version>
 
 		<gwt-widgets-server.version>1.2</gwt-widgets-server.version>
@@ -646,7 +646,7 @@
 						<disableCastChecking>true</disableCastChecking>
 						<disableClassMetadata>false</disableClassMetadata>
 						<gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>						
-						<enableClosureCompiler>true</enableClosureCompiler>
+						<enableClosureCompiler>false</enableClosureCompiler>
 					</configuration>
 					<executions>
 						<execution>
