@@ -48,8 +48,8 @@
 		<slft4j.version>1.5.8</slft4j.version>
 		<jetty.version>6.1.24</jetty.version>
 		<commons-codec.version>1.4</commons-codec.version>
-		<asm.version>3.1</asm.version>
-		<cglib.version>2.2</cglib.version>
+		<asm.version>5.0.3</asm.version>
+		<cglib.version>3.1</cglib.version>
 		<dozer.version>5.2.2</dozer.version>
 	</properties>
 

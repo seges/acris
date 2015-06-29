@@ -34,7 +34,7 @@
 	</scm>
 
 	<properties>
-		<gwt.log.version>3.1.2</gwt.log.version>
+		<gwt.log.version>3.3.2</gwt.log.version>
 
 		<gwt.version>2.7.0</gwt.version>
 		<gwt-plugin.version>2.7.0</gwt-plugin.version>
@@ -82,7 +82,7 @@
 			</dependency>
 			<!-- GWT log -->
 			<dependency>
-				<groupId>com.google.gwt</groupId>
+				<groupId>com.allen-sauer.gwt.log</groupId>
 				<artifactId>gwt-log</artifactId>
 				<version>${gwt.log.version}</version>
 			</dependency>

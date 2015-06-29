@@ -72,7 +72,7 @@
 			<artifactId>gwt-user</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.gwt</groupId>
+			<groupId>com.allen-sauer.gwt.log</groupId>
 			<artifactId>gwt-log</artifactId>
 		</dependency>
 
