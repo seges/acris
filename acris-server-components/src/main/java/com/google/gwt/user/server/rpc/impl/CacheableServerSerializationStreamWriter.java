@@ -1,15 +1,5 @@
 package com.google.gwt.user.server.rpc.impl;
 
-import com.google.gwt.user.client.rpc.CustomFieldSerializer;
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.client.rpc.impl.AbstractSerializationStreamWriter;
-import com.google.gwt.user.server.Base64Utils;
-import com.google.gwt.user.server.rpc.SerializationPolicy;
-import sk.seges.acris.util.ReflectionUtils;
-import sk.seges.sesam.domain.IDomainObject;
-import sk.seges.sesam.pap.model.annotation.TransferObjectMapping;
-
-import javax.persistence.Entity;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -17,7 +7,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.gwt.user.client.rpc.CustomFieldSerializer;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.impl.AbstractSerializationStreamWriter;
+import com.google.gwt.user.server.Base64Utils;
+import com.google.gwt.user.server.rpc.SerializationPolicy;
 
 /**
  * Created by PeterSimun on 16.11.2014.
@@ -771,6 +772,8 @@ public class CacheableServerSerializationStreamWriter extends AbstractSerializat
     }
 
     private void writeIds(ServerSerializationStreamWriter.LengthConstrainedArray stream) {
+    	if (idsList.isEmpty()) return;
+    	
         stream.addToken(REMOVE_PREFIX);
         ListIterator<String> idIterator = idsList.listIterator();
         while (idIterator.hasNext()) {
