@@ -297,10 +297,13 @@ public class SpringAclMaintainer implements AclManager {
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public List<String> loadSidNames(ISecuredObject<?> securedObject) {
+		return loadSidNames((Class<? extends ISecuredObject<?>>) securedObject.getSecuredClass(), securedObject.getIdForACL());
+	}
+	
+	@Override
+	@RunAs(ACL_MAINTAINER_ROLE)
+	public List<String> loadSidNames(Class<? extends ISecuredObject<?>> clazz, Long securedId) {
 		MutableAcl acl = null;
-		Long securedId = securedObject.getIdForACL();
-		Class<?> clazz = securedObject.getSecuredClass();
-		
 		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(clazz);
 		AclSecuredObjectIdentityData objectIdentity = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), securedId);
 		if (objectIdentity == null) {
@@ -450,5 +453,4 @@ public class SpringAclMaintainer implements AclManager {
 		}
 		return new PrincipalSid(authentication);
 	}
-
 }
