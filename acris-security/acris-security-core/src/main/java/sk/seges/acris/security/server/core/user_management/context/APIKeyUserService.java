@@ -22,10 +22,6 @@ import sk.seges.acris.security.shared.user_management.domain.api.LoginToken;
 import sk.seges.acris.security.shared.user_management.domain.api.UserContext;
 
 public class APIKeyUserService implements UserProviderService {
-
-	public static final String APIKEY_PARAMETER = "apiKey";
-	public static final String WEBID_PARAMETER = "webId";
-	public static final String RESULT_PARAMETER = "allowed";
 	
 	private static final Logger log = Logger.getLogger(APIKeyUserService.class);
 	
@@ -114,12 +110,26 @@ public class APIKeyUserService implements UserProviderService {
 		Boolean allowed = false;
 		if (result != null && !result.isEmpty()) {
 			try {
-				allowed = (Boolean.valueOf((String)new JSONObject(result).get(RESULT_PARAMETER)));
+				allowed = (Boolean.valueOf((String)new JSONObject(result).get(APIKeyConstants.RESULT_PARAMETER)));
 			} catch (Exception e) {
 				log.error("APIKey service do not return correct result = " + result, e);
 			}
 		}
 		return allowed;
+	}
+	
+	protected String getParsedParameter(String result, String paramName) {
+		log.info("Response =" + result + ", loading param: " + paramName);
+
+		String param = null;
+		if (result != null && !result.isEmpty()) {
+			try {
+				param = (String)new JSONObject(result).get(paramName);
+			} catch (Exception e) {
+				log.error("APIKey service do not return correct result = " + result, e);
+			}
+		}
+		return param;
 	}
 	
 	@Override	
@@ -129,8 +139,8 @@ public class APIKeyUserService implements UserProviderService {
 	
 	protected String getUrl(UserContext userContext) {
 		String url = apiKeyURL;
-		url += apiKeyURL.contains("?") ? "&" : "?" + WEBID_PARAMETER + "=" + userContext.getWebId();
-		url += "&" + APIKEY_PARAMETER + "=" + ((APIKeyUserContext) userContext).getApiKey();
+		url += apiKeyURL.contains("?") ? "&" : "?" + APIKeyConstants.WEBID_PARAMETER + "=" + userContext.getWebId();
+		url += "&" + APIKeyConstants.APIKEY_PARAMETER + "=" + ((APIKeyUserContext) userContext).getApiKey();
 		return url;
 	}
 }

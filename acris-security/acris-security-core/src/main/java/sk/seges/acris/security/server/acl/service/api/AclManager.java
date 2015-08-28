@@ -34,4 +34,5 @@ public interface AclManager {
 	void resetAclRecords(Class<? extends ISecuredObject<?>> objectClass, Long aclId, String userName, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
 	
 	List<String> loadSidNames(ISecuredObject<?> securedObject);
+	List<String> loadSidNames(Class<? extends ISecuredObject<?>> clazz, Long securedId);
 }

@@ -1,18 +1,18 @@
 package 	sk.seges.acris.security.server.acl.service;
 
-import sk.seges.acris.security.server.acl.service.api.AclManager;
-import sk.seges.acris.security.server.util.LoggedUserRole;
-import sk.seges.acris.security.server.utils.SecuredClassHelper;
-import sk.seges.sesam.security.shared.domain.ISecuredObject;
-import sk.seges.acris.security.shared.user_management.domain.Permission;
-import sk.seges.corpis.server.domain.user.server.model.data.UserData;
-import sk.seges.sesam.pap.service.annotation.LocalService;
-import sk.seges.sesam.server.model.converter.ClassConverter;
-import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import sk.seges.acris.security.server.acl.service.api.AclManager;
+import sk.seges.acris.security.server.util.LoggedUserRole;
+import sk.seges.acris.security.server.utils.SecuredClassHelper;
+import sk.seges.acris.security.shared.user_management.domain.Permission;
+import sk.seges.corpis.server.domain.user.server.model.data.UserData;
+import sk.seges.sesam.pap.service.annotation.LocalService;
+import sk.seges.sesam.security.shared.domain.ISecuredObject;
+import sk.seges.sesam.server.model.converter.ClassConverter;
+import sk.seges.sesam.shared.model.converter.ConverterProviderContext;
 
 @LocalService
 public class AclMaintenanceService implements IAclMaintenanceServiceLocal {
@@ -82,5 +82,26 @@ public class AclMaintenanceService implements IAclMaintenanceServiceLocal {
 				aclManager.setAclRecords(securedClass, aclId, user, authorities);
 	    	}
 		}
+	}
+
+	@Override
+	public boolean isVisibleFor(String sid, String className, Long aclId) {
+		List<String> sidNames = null;
+		try {
+			sidNames = aclManager.loadSidNames(SecuredClassHelper.getSecuredClass(className), aclId);
+		} catch (SecurityException e) {
+			//it means secured object not found, so it should be visible
+			return true;
+		} 
+		
+		if (sidNames != null && !sidNames.isEmpty()) {
+			for (String sidName : sidNames) {
+				if (sidName.equals(sid)) {
+					return true;
+				}
+			}
+			return false;
+		} 
+		return true;
 	}
 }

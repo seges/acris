@@ -21,4 +21,6 @@ public interface IAclMaintenanceServiceRemote extends RemoteService {
 	
 	void setAclEntries(String className, Long aclId, GenericUserDTO user,Permission[] authorities);
 	void setAclEntries(Map<String, List<Long>> acls, GenericUserDTO user,Permission[] authorities);
+	
+	boolean isVisibleFor(String sid, String className, Long aclId);
 }
