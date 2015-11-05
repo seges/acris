@@ -14,6 +14,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.apache.log4j.Logger;
 
@@ -39,7 +40,8 @@ public class TimeoutServiceFilter implements Filter {
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
 			ServletException {
-		if (maxTimeout != null && maxTimeout > 0) {
+		//do not filter rest requests also
+		if (maxTimeout != null && maxTimeout > 0 && !((HttpServletRequestWrapper)request).getRequestURL().toString().contains("-rest")) {
 			Callable<Void> callable = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
