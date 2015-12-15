@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.Sid;
+
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.server.util.LoggedUserRole;
 import sk.seges.acris.security.server.utils.SecuredClassHelper;
@@ -86,17 +90,18 @@ public class AclMaintenanceService implements IAclMaintenanceServiceLocal {
 
 	@Override
 	public boolean isVisibleFor(String sid, String className, Long aclId) {
-		List<String> sidNames = null;
+		List<Sid> sids = null;
 		try {
-			sidNames = aclManager.loadSidNames(SecuredClassHelper.getSecuredClass(className), aclId);
+			sids = aclManager.loadSidNames(SecuredClassHelper.getSecuredClass(className), aclId);
 		} catch (SecurityException e) {
 			//it means secured object not found, so it should be visible
 			return true;
 		} 
 		
-		if (sidNames != null && !sidNames.isEmpty()) {
-			for (String sidName : sidNames) {
-				if (sidName.equals(sid)) {
+		if (sids != null && !sids.isEmpty()) {
+			for (Sid sidEntry : sids) {
+				if ((sidEntry instanceof PrincipalSid && ((PrincipalSid)sidEntry).getPrincipal().equals(sid)) ||
+						sidEntry instanceof GrantedAuthoritySid && ((GrantedAuthoritySid)sidEntry).getGrantedAuthority().equals(sid)) {
 					return true;
 				}
 			}

@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.acls.domain.DefaultPermissionFactory;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.AccessControlEntry;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sk.seges.acris.security.acl.server.model.data.AclEntryData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredClassDescriptionData;
 import sk.seges.acris.security.acl.server.model.data.AclSecuredObjectIdentityData;
+import sk.seges.acris.security.acl.server.model.data.AclSidData;
 import sk.seges.acris.security.server.acl.service.api.AclManager;
 import sk.seges.acris.security.server.core.acl.dao.api.IAclObjectIdentityDao;
 import sk.seges.acris.security.server.core.acl.dao.api.IAclRecordDao;
@@ -211,6 +213,17 @@ public class SpringAclMaintainer implements AclManager {
 	}
 	
 	@Override
+	public void setAclRecords(ISecuredObject<?> securedObject, String userName, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent, boolean isPrincipal) {
+		Sid sid;
+		if (isPrincipal) {
+			sid = new PrincipalSid(userName);
+		} else {
+			sid = new GrantedAuthoritySid(userName);
+		}
+		setAclRecords(securedObject, sid, permissions, updateParent);
+	}
+	
+	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
 	public void setAclRecords(ISecuredObject<?> securedObject, String authorityName,
 			sk.seges.acris.security.shared.user_management.domain.Permission[] permissions) {
@@ -296,13 +309,13 @@ public class SpringAclMaintainer implements AclManager {
 	
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public List<String> loadSidNames(ISecuredObject<?> securedObject) {
+	public List<Sid> loadSidNames(ISecuredObject<?> securedObject) {
 		return loadSidNames((Class<? extends ISecuredObject<?>>) securedObject.getSecuredClass(), securedObject.getIdForACL());
 	}
 	
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
-	public List<String> loadSidNames(Class<? extends ISecuredObject<?>> clazz, Long securedId) {
+	public List<Sid> loadSidNames(Class<? extends ISecuredObject<?>> clazz, Long securedId) {
 		MutableAcl acl = null;
 		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(clazz);
 		AclSecuredObjectIdentityData objectIdentity = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), securedId);
@@ -317,10 +330,9 @@ public class SpringAclMaintainer implements AclManager {
 					+ " cause acl object identity not found!");
 		}
 		
-		List<String> result = new ArrayList<String>();
+		List<Sid> result = new ArrayList<Sid>();
 		for (AccessControlEntry ace : acl.getEntries()) {
-			PrincipalSid sid = (PrincipalSid)ace.getSid();
-			result.add(sid.getPrincipal());
+			result.add(ace.getSid());
 		}
 		return result;
 	}
