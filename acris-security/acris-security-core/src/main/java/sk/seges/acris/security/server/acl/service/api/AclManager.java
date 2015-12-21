@@ -18,7 +18,8 @@ public interface AclManager {
 	void removeSecuredObjectIdentity(Long aclId, String className);
 	
 	void removeAcl(ISecuredObject<?> securedObject);
-
+	void removeAcl(ISecuredObject<?> securedObject, Class<? extends Sid> sidInstace);
+	
 	void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);
 	void setAclRecords(ISecuredObject<?> securedObject, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions, boolean updateParent);
 	void setAclRecords(ISecuredObject<?> securedObject, UserData user, sk.seges.acris.security.shared.user_management.domain.Permission[] permissions);

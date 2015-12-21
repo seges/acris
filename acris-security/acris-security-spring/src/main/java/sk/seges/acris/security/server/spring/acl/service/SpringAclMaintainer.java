@@ -170,6 +170,30 @@ public class SpringAclMaintainer implements AclManager {
 		aclCache.evictFromCache(objectIdentity);
 		aclService.deleteAcl(objectIdentity, false);
 	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void removeAcl(ISecuredObject<?> securedObject, Class<? extends Sid> sidInstace) {
+		AclSecuredClassDescriptionData aclClass = aclSecuredClassDescriptionDao.load(securedObject.getSecuredClass());
+		AclSecuredObjectIdentityData objectIdentity = aclObjectIdentityDao.findByObjectId(aclClass == null ? -1 : aclClass.getId(), securedObject.getIdForACL());
+		if (objectIdentity == null) {
+			return;
+		}
+		try {
+			MutableAcl mutableAcl = (MutableAcl) aclService.readAclById(new ObjectIdentityImpl(objectIdentity.getJavaType(), securedObject.getIdForACL()));
+			for (int i = 0; i < mutableAcl.getEntries().size(); i++) {
+				AccessControlEntry ace = mutableAcl.getEntries().get(i);
+				if (sidInstace.isInstance(ace.getSid())) {
+					aclCache.evictFromCache(ace);
+					mutableAcl.deleteAce(i);
+				}
+			}
+			aclService.updateAcl(mutableAcl);
+		} catch (NotFoundException e) {
+			return;
+		}
+	}
+	
 
 	@Override
 	@RunAs(ACL_MAINTAINER_ROLE)
