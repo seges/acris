@@ -45,7 +45,8 @@ public class WebParamsBean implements WebParams {
 	private Boolean useGeneratedVariants;
 	
 	private Boolean enableOrderOfNotPresentItem = false;
-
+	private Boolean fastOrder = false;
+	
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
 		return publishOnSaveEnabled;
@@ -325,5 +326,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setEnableOrderOfNotPresentItem(Boolean enableOrderOfNotPresentItem) {
 		this.enableOrderOfNotPresentItem = enableOrderOfNotPresentItem;
+	}
+	
+	@Override
+	public Boolean isFastOrder() {
+		return fastOrder;
+	}
+	
+	@Override
+	public void setFastOrder(Boolean fastOrder) {
+		this.fastOrder = fastOrder;
 	}
 }

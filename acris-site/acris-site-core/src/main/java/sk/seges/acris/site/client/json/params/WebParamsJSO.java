@@ -304,4 +304,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setEnableOrderOfNotPresentItem(Boolean enableOrderOfNotPresentItem) {
 		data.set(ENABLE_ORDER_OF_NOT_PRESENT_ITEM, enableOrderOfNotPresentItem);
 	}
+	
+	@Override
+	public Boolean isFastOrder() {
+		return data.getBoolean(FAST_ORDER);
+	}
+	
+	@Override
+	public void setFastOrder(Boolean fastOrder) {
+		data.set(FAST_ORDER, fastOrder);
+	}
 }

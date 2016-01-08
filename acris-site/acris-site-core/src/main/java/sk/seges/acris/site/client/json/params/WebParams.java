@@ -32,7 +32,8 @@ public interface WebParams extends ContentParameters {
 	public static final String INVOICE_CURRENT_NUMBER = "invoiceCurrentNumber";
 	public static final String USE_GENERATED_VARIANTS = "useGeneratedVariants";
 	public static final String ENABLE_ORDER_OF_NOT_PRESENT_ITEM = "enableOrderOfNotPresentItem";
-
+	public static final String FAST_ORDER = "fastOrder";
+			
     public enum OfflineMode {
         OFFLINE, COMBINED, BOTH {
             @Override
@@ -157,4 +158,8 @@ public interface WebParams extends ContentParameters {
 	Boolean getEnableOrderOfNotPresentItem();
 	
 	void setEnableOrderOfNotPresentItem(Boolean enableOrderOfNotPresentItem);
+	
+	void setFastOrder(Boolean fastOrder);
+	
+	Boolean isFastOrder();
 }
