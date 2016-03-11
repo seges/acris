@@ -17,8 +17,7 @@ public class PostProcessorActivator {
 	}
 	
 	public boolean isActive(AbstractElementPostProcessor postProcessor, boolean index) {
-
-        if (!postProcessor.getOfflineMode().contains(offlineMode)) {
+        if (postProcessor.getOfflineMode() == null || !postProcessor.getOfflineMode().contains(offlineMode)) {
             return false;
         }
 

@@ -12,7 +12,7 @@ public class NoscriptAnnihilatorPostProcessor extends AbstractAnnihilatorPostPro
 
     @Override
     public OfflineMode getOfflineMode() {
-        return OfflineMode.OFFLINE;
+        return null;
     }
 
     @Override
