@@ -26,8 +26,7 @@ public class NoCacheScriptPostProcessorTest extends AbstractProcessorTest {
 	@Test
 	@DirtiesContext
 	public void testNoCacheScriptPostProcessor() {
-        //NocacheAnnihilatorPostProcessor is disabled, so input and result should be same
 		runTest(HTML_FILE_DIRECTORY + "1_no_cache_script_input.html",
-				HTML_FILE_DIRECTORY + "1_no_cache_script_input.html");
+				HTML_FILE_DIRECTORY + "1_no_cache_script_result.html");
 	}
 }
