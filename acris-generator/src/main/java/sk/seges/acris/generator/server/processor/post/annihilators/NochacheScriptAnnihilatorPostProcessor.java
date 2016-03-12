@@ -12,7 +12,7 @@ public class NochacheScriptAnnihilatorPostProcessor extends AbstractAnnihilatorP
 
     @Override
     public OfflineMode getOfflineMode() {
-        return OfflineMode.BOTH;
+        return null;
     }
 
     @Override
