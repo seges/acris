@@ -110,7 +110,11 @@ public class NiceURLLinkAlterPostProcessor extends AbstractAlterPostProcessor {
 				return "";
 			}
 			
-			return link.substring(1);
+			String linkURL = link.substring(1);
+            if (linkURL.length() > 0 && !linkURL.endsWith("/")) {   //link should end with /
+                linkURL += "/";
+            }
+            return linkURL;
 		}
 		
 		return link;
