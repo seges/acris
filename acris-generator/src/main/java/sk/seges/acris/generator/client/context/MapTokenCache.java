@@ -5,6 +5,7 @@ import sk.seges.acris.generator.client.context.api.TokensCache;
 import sk.seges.acris.generator.shared.domain.GeneratorToken;
 
 import java.util.*;
+import com.allen_sauer.gwt.log.client.Log;
 
 public class MapTokenCache implements TokensCache {
 
@@ -53,10 +54,20 @@ public class MapTokenCache implements TokensCache {
 			generatorToken.setLanguage(defaultToken.getLanguage());
 			generatorToken.setAlias(defaultToken.getAlias());
 
-			if (generatorToken.getNiceUrl().equals(defaultToken.getNiceUrl()) &&
-				generatorToken.getLanguage().equals(defaultToken.getLanguage())) {
+			if (generatorToken.getNiceUrl().equals(defaultToken.getNiceUrl())) {
 				generatorToken.setDefaultToken(generatorToken.getLanguage().equals(defaultLocale));
-			}
+                if (!generatorToken.getLanguage().equals(defaultLocale)) {
+                    Log.debug("Token: " + generatorToken.getNiceUrl() + " is not default because language does not match (" + generatorToken.getLanguage()
+                            + "!=" + defaultLocale + ")");
+                }
+            } else {
+                Log.debug("Token: " + generatorToken.getNiceUrl() + " is not default because nice-url does not match (" + generatorToken.getNiceUrl()
+                        + "!=" + defaultToken.getNiceUrl() + ")");
+            }
+
+            if (generatorToken.isDefaultToken()) {
+                Log.debug("Token: " + generatorToken.getNiceUrl() + " is default");
+            }
 		} else {
 			generatorToken.setDefaultToken(generatorToken.getLanguage().equals(defaultLocale));
 		}

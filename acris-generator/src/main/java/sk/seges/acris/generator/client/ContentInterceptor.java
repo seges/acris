@@ -55,7 +55,9 @@ public class ContentInterceptor {
 					
 					defaultToken.setNiceUrl(result.getNiceUrl());
 					defaultToken.setDefaultToken(true);
-					
+
+                    Log.debug("Default nice-url for webId " + defaultToken.getWebId() + " is " + result.getNiceUrl() + " for language " + result.getLanguage());
+
 					getAvailableTokens(callback, generatorConfiguration.getContentStartIndex(), generatorConfiguration.getContentPageSize());
 				} else {
 					callback.onSuccess(null);
