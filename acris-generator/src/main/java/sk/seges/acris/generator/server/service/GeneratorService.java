@@ -220,47 +220,69 @@ public class GeneratorService implements IGeneratorServiceLocal {
 			writeTextToFile(result, indexFile, token);
 		}
 	}
-	
+
+    private abstract class GeneratorRunnable implements Runnable {
+        protected final String entryPointFileName;
+        protected final String header;
+        protected final String contentWrapper;
+        protected final String htmlContent;
+        protected final GeneratorToken token;
+        protected final String currentServerURL;
+        protected final String defaultLocale;
+
+        public GeneratorRunnable(final String entryPointFileName, final String header, final String contentWrapper,
+                                 final String htmlContent, final GeneratorToken token, final String currentServerURL, final String defaultLocale) {
+
+            this.entryPointFileName = entryPointFileName;
+            this.header = header;
+            this.contentWrapper = contentWrapper;
+            this.htmlContent = htmlContent;
+            this.token = token;
+            this.currentServerURL = currentServerURL;
+            this.defaultLocale = defaultLocale;
+        }
+    }
+
 	@Override
-	public void writeOfflineContentHtml(final String entryPointFileName, final String header, final String contentWrapper, 
+	public void writeOfflineContentHtml(final String entryPointFileName, final String header, final String contentWrapper,
 			final String htmlContent, final GeneratorToken token, final String currentServerURL, final String defaultLocale) {
 
-		threadPool.execute(new Runnable() {
+		threadPool.execute(new GeneratorRunnable(entryPointFileName, header, contentWrapper, htmlContent, token, currentServerURL, defaultLocale) {
 			@Override
 			public void run() {
-				String content = htmlContent;
+				String content = this.htmlContent;
 				
 				if (content != null) {
 					content = content.replaceAll("<br></br>", "<br/>");
 				}
 
 				if (log.isDebugEnabled()) {
-					log.debug("Generating offline content for niceurl: " + token.getNiceUrl() + ", language: " + token.getLanguage() + " and webId: "
-							+ token.getWebId());
+					log.debug("Generating offline content for niceurl: " + this.token.getNiceUrl() + ", language: " + this.token.getLanguage() + " and webId: "
+							+ this.token.getWebId() + ". Token is " + (token.isDefaultToken() ? "" : "not ") + "default.");
 				}
 				
 				if (log.isTraceEnabled()) {
 					synchronized (this) { 
-						log.trace("			entryPointFileName: " + entryPointFileName);
-						log.trace("			header: " + header);
-						log.trace("			contentWrapper: " + contentWrapper);
+						log.trace("			entryPointFileName: " + this.entryPointFileName);
+						log.trace("			header: " + this.header);
+						log.trace("			contentWrapper: " + this.contentWrapper);
 						log.trace("			content: " + content);
-						log.trace("			currentServerURL: " + currentServerURL);
+						log.trace("			currentServerURL: " + this.currentServerURL);
 					}
 				}
 		
 				String headerContent;
 				
-				if (entriesUrlCache.get(entryPointFileName) == null) {
-					headerContent = readTextFromFile(entryPointFileName);
-					entriesUrlCache.put(entryPointFileName, headerContent);
+				if (entriesUrlCache.get(this.entryPointFileName) == null) {
+					headerContent = readTextFromFile(this.entryPointFileName);
+					entriesUrlCache.put(this.entryPointFileName, headerContent);
 				} else {
-					headerContent = entriesUrlCache.get(entryPointFileName);
+					headerContent = entriesUrlCache.get(this.entryPointFileName);
 				}
 
-				GeneratorToken defaultGeneratorToken = getDefaultGeneratorToken(token.getLanguage(), token.getWebId());
+				GeneratorToken defaultGeneratorToken = getDefaultGeneratorToken(this.token.getLanguage(), this.token.getWebId());
 
-				writeContent(headerContent, header, contentWrapper, content, token, defaultGeneratorToken, token.isDefaultToken(), defaultLocale);
+				writeContent(headerContent, this.header, this.contentWrapper, content, this.token, defaultGeneratorToken, this.token.isDefaultToken(), this.defaultLocale);
 			}
 		});
 	}

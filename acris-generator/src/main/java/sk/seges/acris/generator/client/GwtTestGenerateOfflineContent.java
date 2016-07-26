@@ -77,25 +77,25 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 	protected abstract IGeneratorServiceAsync getGeneratorService();
 	protected abstract IWebSettingsRemoteServiceAsync getWebSettingsService();
 
-	/**
+    private Throwable uncaughtException = null;
+
+    @Override
+    public boolean catchExceptions() {
+        return false;
+    }
+
+    /**
 	 * Parse a URL and return a map of query parameters. If a parameter is supplied without =value, it will be defined
 	 * as null.
 	 * 
-	 * @param url the full or partial (ie, only location.search) URL to parse
 	 * @return the map of parameter names to values
 	 */
 	public void testLoadContent() {
 
 		delayTestFinish(GENERATOR_TIMEOUT);
 
-		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+        uncaughtException = null;
 
-			@Override
-			public void onUncaughtException(Throwable e) {
-				Log.error("Uncaught exception", e);
-			}
-		});
-		
 		GeneratorConfiguration generatorConfiguration = GWT.create(GeneratorConfiguration.class);
 		
 		if (PERFORMANCE_MONITOR) {
@@ -138,8 +138,9 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		
 		return collectors;
 	}
-	
+
 	protected void prepareEnvironment(GeneratorConfiguration generatorConfiguration) {
+        Log.debug("Loading properties.js from " + generatorConfiguration.getProperties());
 		if (generatorConfiguration.getProperties() != null && generatorConfiguration.getProperties().length() > 0) {
 			ScriptElement scriptElement = Document.get().createScriptElement();
 			scriptElement.setAttribute("type", "text/javascript");
@@ -277,12 +278,7 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			timer.start(Operation.CONTENT_GENERATING);
 			timer.start(Operation.GENERATOR_CLIENT_PROCESSING);
 		}
-		
-		GeneratorToken generatorToken = generatorEnvironment.getTokensCache().next();
-		
-		Log.info("Generating offline content for niceurl [" + (generatorEnvironment.getTokensCache().getTokensCount() - 
-				generatorEnvironment.getTokensCache().getWaitingTokensCount()) + " / " + generatorEnvironment.getTokensCache().getTokensCount() + "]: " + 
-				generatorToken.getNiceUrl());
+
 
 		RPCRequestTracker.getTracker().registerCallbackListener(new ICallbackTrackingListener() {
 
@@ -324,14 +320,36 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 		if (PERFORMANCE_MONITOR) {
 			timer.stop(Operation.GENERATOR_CLIENT_PROCESSING);
 		}
-		
-		if (site == null) {
+
+        if (site == null) {
+            generatorEnvironment.getTokensCache().setDefaultLocale(getDefaultLocale());
+        }
+
+        GeneratorToken generatorToken = generatorEnvironment.getTokensCache().next();
+
+        Log.info("Generating offline content for niceurl [" + (generatorEnvironment.getTokensCache().getTokensCount() -
+                generatorEnvironment.getTokensCache().getWaitingTokensCount()) + " / " + generatorEnvironment.getTokensCache().getTokensCount() + "]: " +
+                generatorToken.getNiceUrl());
+
+        if (site == null) {
 			site = getEntryPoint(generatorToken.getWebId(), generatorToken.getLanguage(), generatorToken.getAlias());
 			if (PERFORMANCE_MONITOR) {
 				timer.start(Operation.CONTENT_RENDERING);
 			}
 			site.onModuleLoad();
-			generatorEnvironment.getTokensCache().setDefaultLocale(getDefaultLocale());
+
+            GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+
+                @Override
+                public void onUncaughtException(Throwable e) {
+                    Log.error("Uncaught exception", e);
+                    if (uncaughtException == null) {
+                        uncaughtException = e;
+                    }
+                }
+            });
+
+            generatorEnvironment.getTokensCache().setDefaultLocale(getDefaultLocale());
 			generatorEnvironment.setServerURL(GWT.getHostPageBaseURL().replaceAll(GWT.getModuleName() + "/", ""));
 		} else {
 			RPCRequestTracker.getTracker().removeAllCallbacks();
@@ -472,6 +490,10 @@ public abstract class GwtTestGenerateOfflineContent extends GWTTestCase {
 			Log.info(timer.report());
 		}
 		finalizeEnvironment();
+        if (uncaughtException != null) {
+            reportUncaughtException(uncaughtException);
+        }
+
 		finishTest();
 	}
 }

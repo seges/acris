@@ -64,7 +64,6 @@ public abstract class ContentGeneratorExecutor {
 			suite.addTest(generateOfflineContent);
 			
 //			setHtmlProcessingDefaults();
-
             System.out.println("Starting test...");
 
             aTestRunner.doRun(suite, false);
