@@ -112,11 +112,10 @@ public class EntityInterceptor extends EmptyInterceptor {
         	Runnable runnable = new InvalidateRunnable(entity, cacheHandler);
         	LOG.debug("execute runnable : " + runnable);
         	threadPool.execute(runnable);
-        	LOG.debug("threadPool : " + threadPool.toString());
         	LOG.debug("threadPool.getTaskCount : " + threadPool.getTaskCount());
         	LOG.debug("threadPool.getActiveCount : " + threadPool.getActiveCount());
         	LOG.debug("threadPool.getCompletedTaskCount : " + threadPool.getCompletedTaskCount());
-        	LOG.debug("threadPool.getQueue : " + threadPool.getQueue());
+//        	LOG.debug("threadPool.getQueue : " + threadPool.getQueue());
         }
     }
     
@@ -132,7 +131,7 @@ public class EntityInterceptor extends EmptyInterceptor {
 
 		@Override
 		public void run() {
-			LOG.debug("run thread to invalidate for cachehandler : " + cacheHandler);
+//			LOG.debug("run thread to invalidate for cachehandler : " + cacheHandler);
 			cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());			
 		}
 
