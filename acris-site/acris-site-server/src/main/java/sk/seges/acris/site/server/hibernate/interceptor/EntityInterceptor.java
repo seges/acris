@@ -106,7 +106,7 @@ public class EntityInterceptor extends EmptyInterceptor {
             return;
         }
     	LOG.debug("Invalidate entity with id: "+ ((IDomainObject<?>) entity).getId());
-    	LOG.debug("cacheHandlers : " + cacheHandlers);
+//    	LOG.debug("cacheHandlers : " + cacheHandlers);
         for (final CacheHandler cacheHandler: cacheHandlers) {
         	LOG.debug("creating new runnable ..."); 
         	Runnable runnable = new InvalidateRunnable(entity, cacheHandler);
