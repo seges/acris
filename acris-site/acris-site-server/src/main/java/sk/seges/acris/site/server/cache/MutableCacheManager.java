@@ -151,28 +151,20 @@ public class MutableCacheManager extends CacheManager implements CacheHandler {
 
 	@Override
 	public void invalidate(String entityClassName, long hashCode) {
-		LOG.debug("Start invalidation for: " + entityClassName + "/" + hashCode);
-		LOG.debug("Cache manager name: " + getName());
-
+		LOG.debug("Start invalidation for: " + entityClassName + "/" + hashCode);		
 		if (inverseCacheReference.size() == 0) {
 			return;
 		}
-
-		String id = entityClassName + "/" + hashCode;
-		LOG.debug("entity id: " + id);
-		List<String> cacheReferences = inverseCacheReference.get(id);
-		LOG.debug("cacheReferences: " + cacheReferences);
+		String id = entityClassName + "/" + hashCode;		
+		List<String> cacheReferences = inverseCacheReference.get(id);		
 		removeCacheReferences(id, cacheReferences);
 
 		List<Class<?>> dtoClasses = entityProviderContext.get().getDtoClassForDomain(entityClassName);
-		LOG.debug("dtoClasses: " + dtoClasses);
 		
 		if (dtoClasses != null && dtoClasses.size() > 0) {
 			for (Class<?> dtoClass : dtoClasses) {
 				id = dtoClass.getCanonicalName() + "/" + hashCode;
-				LOG.debug("entity id: " + id);
 				cacheReferences = inverseCacheReference.get(id);
-				LOG.debug("cacheReferences: " + cacheReferences);
 				removeCacheReferences(id, cacheReferences);
 			}
 		}

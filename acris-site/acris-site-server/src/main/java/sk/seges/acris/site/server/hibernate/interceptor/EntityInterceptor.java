@@ -97,25 +97,14 @@ public class EntityInterceptor extends EmptyInterceptor {
     	}
     }
     
-    private void invalidate(final Object entity) {
-    	LOG.debug("Invalidate entity : " + entity.getClass().getName());    	
+    private void invalidate(final Object entity) {    	    	
     	if (!(entity instanceof IDomainObject) || ((IDomainObject<?>) entity).getId() == null || disabledInvalidation) {
-    		LOG.debug("disabledInvalidation: " + disabledInvalidation);
-    		LOG.debug("Cancel invalidation");
-            //we cache only entities that implements IDomainObject
+    		//we cache only entities that implements IDomainObject
             return;
         }
-    	LOG.debug("Invalidate entity with id: "+ ((IDomainObject<?>) entity).getId());
-//    	LOG.debug("cacheHandlers : " + cacheHandlers);
-        for (final CacheHandler cacheHandler: cacheHandlers) {
-        	LOG.debug("creating new runnable ..."); 
-        	Runnable runnable = new InvalidateRunnable(entity, cacheHandler);
-        	LOG.debug("execute runnable : " + runnable);
-        	threadPool.execute(runnable);
-        	LOG.debug("threadPool.getTaskCount : " + threadPool.getTaskCount());
-        	LOG.debug("threadPool.getActiveCount : " + threadPool.getActiveCount());
-        	LOG.debug("threadPool.getCompletedTaskCount : " + threadPool.getCompletedTaskCount());
-//        	LOG.debug("threadPool.getQueue : " + threadPool.getQueue());
+        for (final CacheHandler cacheHandler: cacheHandlers) {        	
+        	Runnable runnable = new InvalidateRunnable(entity, cacheHandler);        	
+        	threadPool.execute(runnable);        	
         }
     }
     
@@ -131,7 +120,6 @@ public class EntityInterceptor extends EmptyInterceptor {
 
 		@Override
 		public void run() {
-//			LOG.debug("run thread to invalidate for cachehandler : " + cacheHandler);
 			cacheHandler.invalidate(entity.getClass().getCanonicalName(), ((IDomainObject<?>) entity).getId().hashCode());			
 		}
 

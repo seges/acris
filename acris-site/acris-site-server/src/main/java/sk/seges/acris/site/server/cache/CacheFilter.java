@@ -99,7 +99,9 @@ public class CacheFilter extends SimpleCachingHeadersPageCachingFilter {
         PreprocessedPageInfo pageInfo;
 		Element element = cacheManager.get(key);
 		if (element == null || element.getObjectValue() == null) {
-			LOG.debug("Element is null for cache:" + cacheManager.getTargetCacheByKey(key).getName() + " with key " + key);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Element is null for cache:" + cacheManager.getTargetCacheByKey(key).getName() + " with key " + key);
+			}
 			try {
 				// Page is not cached - build the response, cache it, and
 				// send to client
