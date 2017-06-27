@@ -29,7 +29,7 @@ public class TimeoutServiceFilter implements Filter {
 	
 	public void setMaxTimeout(Integer maxTimeout) {
 		TimeoutServiceFilter.maxTimeout = maxTimeout;
-		TimeoutServiceFilter.threadPool = new ThreadPoolExecutor(3, 5, maxTimeout, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		TimeoutServiceFilter.threadPool = new ThreadPoolExecutor(10, 50, maxTimeout, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 	}
 
 	@Override
@@ -46,7 +46,6 @@ public class TimeoutServiceFilter implements Filter {
 				@Override
 				public Void call() throws Exception {
 					chain.doFilter(request, response);
-					restartThreadPool(null);
 					return null;
 				}
 			};
