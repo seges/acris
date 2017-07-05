@@ -5,7 +5,9 @@ package sk.seges.acris.callbacks.client;
 
 import java.util.Date;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /**
  * Extended interface for {@link AsyncCallback} for providing additional
@@ -96,13 +98,17 @@ public abstract class TrackingAsyncCallback<T> implements AsyncCallback<T> {
 	 * @param caught
 	 *            failure encountered while executing a remote procedure call
 	 */
+	@Override
 	public final void onFailure(Throwable caught) {
 		if (request != null) {
 			request.setCallbackResult(RequestState.REQUEST_FAILURE);
 			request.setCaught(caught);
 			this.handleResponseReceived();
 		}
-
+		if (caught instanceof StatusCodeException && ((StatusCodeException) caught).getStatusCode() == 403) {
+			//user is already logged out so it is enough to reload page to show login windows in saleshero
+			Window.Location.reload();
+		}
 		try {
 			onFailureCallback(caught);
 		} finally {
@@ -119,6 +125,7 @@ public abstract class TrackingAsyncCallback<T> implements AsyncCallback<T> {
 	 * @param result
 	 *            the return value of the remote produced call
 	 */
+	@Override
 	public final void onSuccess(T result) {
 
 		if (request != null) {

@@ -4,6 +4,9 @@ package sk.seges.acris.security.shared.callback;
 import sk.seges.acris.callbacks.client.TrackingAsyncCallback;
 import sk.seges.acris.security.shared.exception.SecurityException;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.StatusCodeException;
+
 /**
  * This is a secured AsyncCallback class, enabling a specific failure management for security errors
  * 
@@ -37,14 +40,18 @@ public abstract class SecuredAsyncCallback<T> extends TrackingAsyncCallback<T> {
 	 * @param exception the exception thrown, could be a security exception
 	 */
 
+	@Override
 	public final void onFailureCallback(final Throwable exception) {
 		SecurityException newException = SecurityExceptionsProcessor.convertToSecurityException(exception);
 
 		if (newException != null) {
 			onSecurityException(newException);
+		} else if (exception instanceof StatusCodeException && ((StatusCodeException) exception).getStatusCode() == 403) {
+			//user is already logged out so it is enough to reload page to show login windows in saleshero
+			Window.Location.reload();
 		} else {
 			onOtherException(exception);
-		}
+		} 
 	}
 
 	/*

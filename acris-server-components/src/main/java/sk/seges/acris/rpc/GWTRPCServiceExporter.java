@@ -26,7 +26,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gwt.user.server.rpc.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanNameAware;
@@ -44,6 +43,11 @@ import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.impl.AbstractSerializationStream;
+import com.google.gwt.user.server.rpc.CacheableRPC;
+import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.RPCRequest;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.user.server.rpc.SerializationPolicy;
 
 
 /**
@@ -109,7 +113,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
         
         protected ModulePathTranslation modulePathTranslation = new ModulePathTranslation() {
                 
-                public String computeModuleBaseURL(HttpServletRequest request,
+                @Override
+				public String computeModuleBaseURL(HttpServletRequest request,
                                 String moduleBaseURL, String strongName) {
                         return moduleBaseURL;
                 }
@@ -125,7 +130,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
                         super.checkPermutationStrongName();
         }
         
-        public void setShouldCheckPermutationStrongName(
+        @Override
+		public void setShouldCheckPermutationStrongName(
                         boolean shouldCheckPermutationStrongName) {
                 this.shouldCheckPermutationStrongName = shouldCheckPermutationStrongName;
         }
@@ -159,6 +165,9 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
         @Override
         protected void doUnexpectedFailure(Throwable e) {
                 super.doUnexpectedFailure(e);
+                if(e.getCause().getCause() != null && e.getCause().getCause().getClass().getCanonicalName().contains("AccessDeniedException")) {
+                	getThreadLocalResponse().setStatus(HttpServletResponse.SC_FORBIDDEN);
+                }
                 if (throwUndeclaredExceptionToServletContainer)
                         throw new RuntimeException(e);
         }
@@ -204,7 +213,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * 
          * @param servletContext
          */
-        public void setServletContext(ServletContext servletContext) {
+        @Override
+		public void setServletContext(ServletContext servletContext) {
                 this.servletContext = servletContext;
         }
 
@@ -473,7 +483,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * 
          * @param service Service to which the decoded requests are forwarded
          */
-        public void setService(Object service) {
+        @Override
+		public void setService(Object service) {
                 this.service = service;
         }
 
@@ -481,7 +492,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * Implementation of inherited interface
          * @see {@link HttpRequestHandler#handleRequest(HttpServletRequest, HttpServletResponse)}
          */
-        public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+        @Override
+		public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException,
                         IOException {
                 try {
                         preprocessHTTP(request, response);
@@ -504,7 +516,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * 
          * @param serviceInterfaces
          */
-        public void setServiceInterfaces(Class<RemoteService>[] serviceInterfaces) {
+        @Override
+		public void setServiceInterfaces(Class<RemoteService>[] serviceInterfaces) {
                 this.serviceInterfaces = serviceInterfaces;
         }
 
@@ -513,7 +526,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * by the Spring application context setup.
          * @see InitializingBean#afterPropertiesSet()
          */
-        public void afterPropertiesSet() throws Exception {
+        @Override
+		public void afterPropertiesSet() throws Exception {
                 if (service == null)
                         throw new Exception("You must specify a service object.");
                 if (serviceInterfaces == null) {
@@ -569,7 +583,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * Note that due to the additional headers the response size increases.
          * @param disableResponseCaching
          */
-        public void setResponseCachingDisabled(boolean disableResponseCaching) {
+        @Override
+		public void setResponseCachingDisabled(boolean disableResponseCaching) {
                 this.disableResponseCaching = disableResponseCaching;
         }
 
@@ -578,14 +593,16 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
          * declared in the RPC interface back to the servlet container.
          * @param throwUndeclaredExceptionToServletContainer Defaults to <code>false</code> 
          */
-        public void setThrowUndeclaredExceptionToServletContainer(boolean throwUndeclaredExceptionToServletContainer) {
+        @Override
+		public void setThrowUndeclaredExceptionToServletContainer(boolean throwUndeclaredExceptionToServletContainer) {
                 this.throwUndeclaredExceptionToServletContainer = throwUndeclaredExceptionToServletContainer;
         }
 
         /**
          * Setter for servlet configuration
          */
-        public void setServletConfig(ServletConfig servletConfig) {
+        @Override
+		public void setServletConfig(ServletConfig servletConfig) {
                 try {
                         init(servletConfig);
                 } catch (ServletException e) {
@@ -593,7 +610,8 @@ public class GWTRPCServiceExporter extends RemoteServiceServlet implements RPCSe
                 }
         }
 
-        public void setBeanName(String beanName) {
+        @Override
+		public void setBeanName(String beanName) {
                 this.beanName = beanName;
         }
         
