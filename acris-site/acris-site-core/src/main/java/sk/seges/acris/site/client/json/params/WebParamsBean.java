@@ -46,6 +46,7 @@ public class WebParamsBean implements WebParams {
 	
 	private Boolean enableOrderOfNotPresentItem = false;
 	private Boolean fastOrder = false;
+	private Boolean orderItemsPricesWithDiscounts = false;
 	
 	@Override
 	public Boolean isPublishOnSaveEnabled() {
@@ -336,5 +337,15 @@ public class WebParamsBean implements WebParams {
 	@Override
 	public void setFastOrder(Boolean fastOrder) {
 		this.fastOrder = fastOrder;
+	}
+
+	@Override
+	public void setOrderItemsPricesWithDiscounts(Boolean orderItemsPricesWithDiscounts) {
+		this.orderItemsPricesWithDiscounts = orderItemsPricesWithDiscounts;		
+	}
+
+	@Override
+	public Boolean getOrderItemsPricesWithDiscounts() {		
+		return orderItemsPricesWithDiscounts;
 	}
 }

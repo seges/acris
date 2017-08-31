@@ -314,4 +314,14 @@ public class WebParamsJSO extends BaseJSONModel implements WebParams {
 	public void setFastOrder(Boolean fastOrder) {
 		data.set(FAST_ORDER, fastOrder);
 	}
+
+	@Override
+	public void setOrderItemsPricesWithDiscounts(Boolean orderItemsPricesWithDiscounts) {
+		data.set(ORDER_ITEMS_PRICES_INC_DISCOUNTS, orderItemsPricesWithDiscounts);
+	}
+
+	@Override
+	public Boolean getOrderItemsPricesWithDiscounts() {		
+		return data.getBoolean(ORDER_ITEMS_PRICES_INC_DISCOUNTS);		
+	}
 }
