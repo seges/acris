@@ -21,11 +21,13 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 		super(JpaAclSecuredObjectIdentity.class);
 	}
 
+	@Override
 	@PersistenceContext(unitName = "acrisEntityManagerFactory")
 	public void setEntityManager(EntityManager entityManager) {
 		super.setEntityManager(entityManager);
 	}
 
+	@Override
 	public JpaAclSecuredObjectIdentity findByObjectId(long objectIdClass, long objectIdIdentity) {
 
 		DetachedCriteria criteria = createCriteria();
@@ -58,7 +60,7 @@ public class HibernateAclSecuredObjectIdentityDao extends AbstractHibernateCRUD<
 
 		criteria.add(Restrictions.eq(AclSecuredObjectIdentityData.PARENT_OBJECT, parentObjectIdentityId));
 
-		return findByCriteria(criteria, Page.ALL_RESULTS_PAGE);
+		return findByCriteria(criteria, new Page(0, Page.ALL_RESULTS));
 	}
 
 	@Override
