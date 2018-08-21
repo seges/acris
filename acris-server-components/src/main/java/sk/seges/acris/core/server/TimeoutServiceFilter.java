@@ -41,8 +41,7 @@ public class TimeoutServiceFilter implements Filter {
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
 			ServletException {
 		logger.debug(String.format("doFilter for request: %s", ((HttpServletRequestWrapper)request).getRequestURL()));
-		logger.debug(String.format("threadPool: %s", threadPool));
-		System.err.println("doFilter");
+		logger.debug(String.format("threadPool: %s", threadPool));		
 		//do not filter rest requests also
 		if (maxTimeout != null && maxTimeout > 0 && !((HttpServletRequestWrapper)request).getRequestURL().toString().contains("-rest")) {
 			Callable<Void> callable = new Callable<Void>() {
