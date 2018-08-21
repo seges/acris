@@ -40,12 +40,16 @@ public class TimeoutServiceFilter implements Filter {
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
 			ServletException {
+		logger.debug(String.format("doFilter for request: %s", ((HttpServletRequestWrapper)request).getRequestURL()));
+		logger.debug(String.format("threadPool: %s", threadPool));		
 		//do not filter rest requests also
 		if (maxTimeout != null && maxTimeout > 0 && !((HttpServletRequestWrapper)request).getRequestURL().toString().contains("-rest")) {
 			Callable<Void> callable = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
+					logger.debug("start call");
 					chain.doFilter(request, response);
+					logger.debug("end call");
 					return null;
 				}
 			};
@@ -66,8 +70,9 @@ public class TimeoutServiceFilter implements Filter {
 	
 	private void restartThreadPool(Future<Void> future) {
 		if (future != null) future.cancel(true);
-		TimeoutServiceFilter.threadPool.shutdownNow();
+		TimeoutServiceFilter.threadPool.shutdown();
 		TimeoutServiceFilter.threadPool = new ThreadPoolExecutor(3, 5, maxTimeout, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		logger.debug(String.format("threadPool after restart: %s", threadPool));
 	}
 
 	@Override
